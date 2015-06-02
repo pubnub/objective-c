@@ -6,6 +6,7 @@
 #import "PubNub+Core.h"
 #import "PubNub+ChannelGroup.h"
 #import "PubNub+Subscribe.h"
+#import "PNConfiguration.h"
 #import "PubNub+Presence.h"
 #import "PubNub+Publish.h"
 #import "PubNub+History.h"

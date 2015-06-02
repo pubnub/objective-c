@@ -1,18 +1,42 @@
+#import <Foundation/Foundation.h>
+
+
+#pragma mark Class forward
+
+@class PubNub;
+
+
 /**
+ @brief      Current client state cache manager.
+ @discussion When client use \b state API which allow to pull and push client state, this manager
+             stores all information locally. Locally cached data used by \b PubNub subscriber and
+             presence modules to deliver actual cient state information to \b PubNub network.
+ 
  @author Sergey Mamontov
  @since 4.0
  @copyright © 2009-2015 PubNub, Inc.
  */
-#import "PubNub+State.h"
-
-
-#pragma mark Private interface declaration
-
-@interface PubNub (StatePrivate)
+@interface PNClientState : NSObject
 
 
 ///------------------------------------------------
-/// @name Client state cache
+/// @name Initialization and Configuration
+///------------------------------------------------
+
+/**
+ @brief  Construct state cache manager.
+ 
+ @param client Reference on client for which state manager should be created.
+ 
+ @return Constructed and ready to use client state cache manager.
+ 
+ @since 4.0
+ */
++ (instancetype)stateForClient:(PubNub *)client;
+
+
+///------------------------------------------------
+/// @name Information
 ///------------------------------------------------
 
 /**
@@ -60,7 +84,16 @@
  */
 - (void)setState:(NSDictionary *)state forObject:(NSString *)object;
 
-#pragma mark -
+/**
+ @brief  Clear client state cache from specified objects data.
+ 
+ @param objects Reference on list of objects for which state should be removed.
+ 
+ @since 4.0
+ */
+- (void)removeStateForObjects:(NSArray *)objects;
+
+#pragma mark - 
 
 
 @end

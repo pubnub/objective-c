@@ -38,7 +38,7 @@
     for (NSString *queryKey in dictionary) {
         
         [query appendFormat:@"%@%@=%@", ([query length] ? @"&" : @""), queryKey,
-         [PNString percentEscapedString:dictionary[queryKey]]];
+         dictionary[queryKey]];
     }
     
     return ([query length] > 0 ? [query copy] : nil);

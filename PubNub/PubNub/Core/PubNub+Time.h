@@ -29,7 +29,7 @@
      
      if (result) {
          
-         NSLog(@"Time token: %@", result.data);
+         NSLog(@"Time token: %@", result.data[@"tt"]);
      }
      else {
          

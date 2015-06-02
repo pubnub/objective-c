@@ -19,6 +19,14 @@
 ///------------------------------------------------
 
 /**
+ @brief Stores HTTP status code with which \c request completed processing with \b PubNub
+        service.
+ 
+ @since 4.0
+ */
+@property (nonatomic, readonly, assign) NSInteger statusCode;
+
+/**
  @brief Represent type of operation which has been issued to \b PubNub service and received
         response stored in \c response and processed response in \c data.
 
@@ -27,27 +35,27 @@
 @property (nonatomic, readonly, assign) PNOperationType operation;
 
 /**
- @brief Stores reference on copy of original request which has been used to fetch or push data
-        to \b PubNub service.
+ @brief  Stores whether client currently used secured connection or not.
  
  @since 4.0
  */
-@property (nonatomic, readonly, copy) NSURLRequest *clientRequest;
+@property (nonatomic, readonly, assign, getter = isTLSEnabled) BOOL TLSEnabled;
 
 /**
- @brief  Stores reference on headers which has been passed by \b PubNub service.
+ @brief  UUID which is currently used by client to identify user on \b PubNub service.
  
  @since 4.0
  */
-@property (nonatomic, readonly, copy) NSDictionary *headers;
+@property (nonatomic, readonly, copy) NSString *uuid;
 
 /**
- @brief Stores reference on original (not processed) response body which hasn't been transformed 
-        yet.
-
+ @brief      Authorization which is used to get access to protected remote resources.
+ @discussion Some resources can be protected by \b PAM functionality and access done using this 
+             authorization key.
+ 
  @since 4.0
  */
-@property (nonatomic, readonly, copy) id response;
+@property (nonatomic, readonly, copy) NSString *authKey;
 
 /**
  @brief Stores reference on \b PubNub service host name or IP address against which \c request
@@ -58,12 +66,12 @@
 @property (nonatomic, readonly, copy) NSString *origin;
 
 /**
- @brief Stores HTTP status code with which \c request completed processing with \b PubNub
-        service.
+ @brief Stores reference on copy of original request which has been used to fetch or push data
+        to \b PubNub service.
  
  @since 4.0
  */
-@property (nonatomic, readonly, assign) NSInteger statusCode;
+@property (nonatomic, readonly, copy) NSURLRequest *clientRequest;
 
 /**
  @brief      Stores reference on processed \c response which is ready to use by user.

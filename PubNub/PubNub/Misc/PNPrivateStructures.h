@@ -16,19 +16,21 @@
 
  @since 4.0
  */
-static NSString * const PNOperationTypeStrings[19] = {
+static NSString * const PNOperationTypeStrings[20] = {
     [PNSubscribeOperation] = @"Subscribe",
     [PNUnsubscribeOperation] = @"Unsubscribe",
     [PNPublishOperation] = @"Publish",
     [PNHistoryOperation] = @"History",
     [PNWhereNowOperation] = @"Where Now",
+    [PNHereNowGlobalOperation] = @"Global Here Now",
     [PNHereNowOperation] = @"Here Now",
     [PNHeartbeatOperation] = @"Heartbeat",
     [PNSetStateOperation] = @"Set State",
     [PNStateOperation] = @"Get State",
     [PNAddChannelsToGroupOperation] = @"Add Channels To Group",
-    [PNRemoveChannelFromGroupOperation] = @"Remove Channels From Group",
+    [PNRemoveChannelsFromGroupOperation] = @"Remove Channels From Group",
     [PNChannelGroupsOperation] = @"Get Groups",
+    [PNRemoveGroupOperation] = @"Remove Channel Group",
     [PNChannelsForGroupOperation] = @"Get Channels For Group",
     [PNPushNotificationEnabledChannelsOperation] = @"Get Push Notification Enabled Channels",
     [PNAddPushNotificationsOnChannelsOperation] = @"Enable Push Notifications On Channels",

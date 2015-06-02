@@ -10,25 +10,15 @@
 
 @interface PubNub (PresencePrivate)
 
-
-///------------------------------------------------
-/// @name Heartbeat
-///------------------------------------------------
-
 /**
- @brief  If client configured with heartbeat value and interval client will send "heartbeat" 
-         notification to \b PubNub service.
+ @brief      Issue heartbeat request to \b PubNub network.
+ @discussion Heartbeat help \b PubNub preence service to control subscribers availability.
+ 
+ @param block Reference on block which should be called with service information.
  
  @since 4.0
  */
-- (void)startHeartbeatIfRequired;
-
-/**
- @brief  In case if there is active heartbeat timer it will be stopped.
-
- @since 4.0
- */
-- (void)stopHeartbeatIfPossible;
+- (void)heartbeatWithCompletion:(PNStatusBlock)block;
 
 #pragma mark -
 

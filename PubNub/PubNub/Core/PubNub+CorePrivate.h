@@ -1,7 +1,5 @@
 #import "PubNub+Core.h"
 #import <CocoaLumberjack/CocoaLumberjack.h>
-#import <AFNetworkReachabilityManager.h>
-#import <AFHTTPSessionManager.h>
 #import "PNLog.h"
 
 
@@ -17,7 +15,8 @@ extern DDLogLevel ddLogLevel;
 
 #pragma mark - Class forward
 
-@class PNRequest, PNResult, PNStatus;
+@class PNRequestParameters, PNConfiguration, PNClientState, PNStateListener, PNSubscriber,
+       PNHeartbeat, PNResult, PNStatus;
 
 
 /**
@@ -38,34 +37,40 @@ extern DDLogLevel ddLogLevel;
 ///------------------------------------------------
 
 /**
- @brief      Stores reference on dispatch queue which is used to synchronize access to \b PubNub 
-             client configuration.
- @discussion Client provide ability to change any of it's configuration fields on run-time. Changes
-             may happen on different threads in relation to thread on which client may need to read
-             them.
+@brief  Stores reference on active \b PubNub client configuration.
 
- @since 4.0
+@since 4.0
 */
-@property (nonatomic, readonly, strong) dispatch_queue_t configurationAccessQueue;
+@property (nonatomic, readonly, copy) PNConfiguration *configuration;
 
 /**
- @brief      Stores reference on dispatch queue which is used to synchronize access to resources 
-             related to subscription process.
- @discussion Subscribe and leave requests issued on this queue because their order should be 
-             strictly serialized.
+ @brief  Stores reference on instance which manage all subscribe loop logic and help to deliver
+         updates from remote data objects live feed to the client.
  
  @since 4.0
  */
-@property (nonatomic, readonly, strong) dispatch_queue_t subscribeQueue;
+@property (nonatomic, readonly, strong) PNSubscriber *subsceriberManager;
 
 /**
- @brief      Stores reference on dispatch queue which is used by non-subscription APIs.
- @discussion Queue is used to issue non-subscription API request to \b PubNub service like message
-             posting, history, presence and other.
+ @brief  Stores reference on instance which is responsible for cached client state management.
  
  @since 4.0
  */
-@property (nonatomic, readonly, strong) dispatch_queue_t serviceQueue;
+@property (nonatomic, readonly, strong) PNClientState *clientStateManager;
+
+/**
+ @brief  Stores reference on instance which is responsible for subscriber listeners management.
+ 
+ @since 4.0
+ */
+@property (nonatomic, readonly, strong) PNStateListener *listenersManager;
+
+/**
+ @brief  Stores reference on instance which is responsible for presence heartbeat management.
+ 
+ @since 4.0
+ */
+@property (nonatomic, readonly, strong) PNHeartbeat *heartbeatManager;
 
 /**
  @brief  Stores reference about recent client state (whether it was connected or not).
@@ -75,12 +80,16 @@ extern DDLogLevel ddLogLevel;
 @property (nonatomic, readonly, assign) PNStatusCategory recentClientStatus;
 
 /**
- @brief Stores reference on session with pre-configured options useful for 'non-subscription' API 
-        group.
+ @brief      Reference on queue on which completion/processing blocks will be called.
+ @discussion At the end of each operation completion blocks will be called asynchronously on
+             provided queue.
+ 
+ @default    By default all callback blocks will be called on main queue 
+             (\c dispatch_get_main_queue()).
  
  @since 4.0
  */
-@property (nonatomic, readonly, strong) AFHTTPSessionManager *serviceSession;
+@property (nonatomic, readonly, strong) dispatch_queue_t callbackQueue;
 
 
 ///------------------------------------------------
@@ -88,60 +97,55 @@ extern DDLogLevel ddLogLevel;
 ///------------------------------------------------
 
 /**
- @brief  Complete request configuration and use it to communicate with \b PubNub service.
- 
- @param request Reference on request instance which hold base information required to build request
-                to get access to remote data objects.
- 
+ @brief  Compose request to \b PubNub network basing on operation type and passed \c parameters.
+
+ @param operationType One of \b PNOperationType enum fields which represent type of operation which
+                      should be issued to \b PubNub network.
+ @param parameters    Resource and query path fields wrapped into object.
+ @param block         Reference on operation processing completion block.
+
  @since 4.0
  */
-- (void)processRequest:(PNRequest *)request;
+- (void)processOperation:(PNOperationType)operationType
+          withParameters:(PNRequestParameters *)parameters
+         completionBlock:(id)block;
 
 /**
- @brief      Notify about request processing error.
- @discussion In most cases this method will be used by client itself to report about API calls
-             processing issues (incomplete or unacceptable parameters has been passed to methods).
+ @brief  Compose request to \b PubNub network basing on operation type and passed \c parameters.
+
+ @param operationType One of \b PNOperationType enum fields which represent type of operation which
+                      should be issued to \b PubNub network.
+ @param parameters    Resource and query path fields wrapped into object.
+ @param data          Reference on data which should be pushed to \b PubNub network.
+ @param block         Reference on operation processing completion block.
 
  @since 4.0
  */
-- (void)handleRequestFailure:(PNRequest *)request withError:(NSError *)error;
+- (void)processOperation:(PNOperationType)operationType
+          withParameters:(PNRequestParameters *)parameters data:(NSData *)data
+         completionBlock:(id)block;
 
 /**
- @brief  Handle successful request task execution with further building of result and status 
-         objects which will be distributed to the user.
- 
- @param request Reference on original request which has been used to build network request to PubNub
-                service.
- @param task    Reference on data download task which hold information about NSURL request used to
-                load data and server response information.
- @param data    Reference on data which has been downloaded in response for client request.
+ @brief  Cancel any active long-polling operations scheduled for processing.
  
  @since 4.0
  */
-- (void)handleRequestSuccess:(PNRequest *)request withTask:(NSURLSessionDataTask *)task
-                     andData:(id)data;
+- (void)cancelAllLongPollingOperations;
+
+
+///------------------------------------------------
+/// @name Operation information
+///------------------------------------------------
 
 /**
- @brief  Handle request task execution failure with further building of result and status objects 
-         which will be distributed to the user.
+ @brief  Add available client information to object instance subclassed from \b PNResult 
+         (\b PNStatus)
  
- @param request Reference on original request which has been used to build network request to PubNub
-                service.
- @param task    Reference on data download task which hold information about NSURL request used to
-                load data and server response information.
- @param error   Reference on error which occurred while request executed.
+ @param result Reference on object which should be updated with client information.
  
  @since 4.0
  */
-- (void)handleRequestFailure:(PNRequest *)request withTask:(NSURLSessionDataTask *)task
-                    andError:(NSError *)error;
-
-/**
- @brief  Terminate any long-poll based tasks.
-
- @since 4.0
- */
-- (void)cancelAllLongPollRequests;
+- (void)appendClientInformation:(PNResult *)result;
 
 
 ///------------------------------------------------
@@ -160,36 +164,6 @@ extern DDLogLevel ddLogLevel;
  */
 - (void)callBlock:(id)block status:(BOOL)callingStatusBlock withResult:(PNResult *)result
         andStatus:(PNStatus *)status;
-
-
-///------------------------------------------------
-/// @name Processing
-///------------------------------------------------
-
-/**
- @brief      Default request result processing method which will return corresponding objects
-             depending on request results data.
- @discussion This method mostly used by API endpoints which doesn't require additional data 
-             pre-processing before objects will be passed further.
- 
- @param result Reference on address pointer where request's result object should be stored.
- @param status Reference on address pointer where request's processing status object should be 
-               stored.
- @param request Reference on request which should be processed and correspondoing objects generated.
- 
- @since 4.0
- */
-- (void)getResult:(PNResult *__autoreleasing *)result andStatus:(PNStatus *__autoreleasing *)status
-       forRequest:(PNRequest *)request;
-
-/**
- @brief  Compile status object with all client state information which is available at this moment.
- 
- @param status Reference on object which should be completed with client state.
- 
- @since 4.0
- */
-- (void)completeStatusObject:(PNStatus *)status;
 
 #pragma mark -
 

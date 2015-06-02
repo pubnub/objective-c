@@ -69,6 +69,57 @@
  */
 + (NSArray *)namesFromRequest:(NSString *)response;
 
+
+///------------------------------------------------
+/// @name Subscriber helper
+///------------------------------------------------
+
+/**
+ @brief  Check whether passed object represence presence event feed or not.
+ 
+ @param object Reference on name of the object against which check should be done.
+ 
+ @return \c NO in case if passed object represent non-presence object.
+ 
+ @since 4.0
+ */
++ (BOOL)isPresenceObject:(NSString *)object;
+
+/**
+ @brief  Construct name of the channel from it's presence channel name.
+ 
+ @param presenceChannel Reference on presence channel which should be used for construction.
+ 
+ @return Regular channel name.
+ 
+ @since 4.0
+ */
++ (NSString *)channelForPresence:(NSString *)presenceChannel;
+
+/**
+ @brief  Convert provided list of \c names to names which correspond to presence objects naming 
+         conventions.
+ 
+ @param names List of names which should be converted.
+ 
+ @return List of names which correspond to requirements of presence \b PubNub service.
+ 
+ @since 4.0
+ */
++ (NSArray *)presenceChannelsFrom:(NSArray *)names;
+
+/**
+ @brief  Filter provided mixed list of channels/groups and presence channels/groups to list w/o 
+         presence channels in it.
+ 
+ @param names List of names which should be filtered.
+ 
+ @return Filtered channels list.
+ 
+ @since 4.0
+ */
++ (NSArray *)objectsWithOutPresenceFrom:(NSArray *)names;
+
 #pragma mark -
 
 

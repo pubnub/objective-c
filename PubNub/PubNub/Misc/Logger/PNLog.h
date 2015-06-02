@@ -19,7 +19,7 @@
                                                 0, nil, __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
 #define DDLogAESError(frmt, ...) LOG_MAYBE(NO, ddLogLevel, (DDLogFlag)PNAESErrorLogLevel,  0, nil, \
                                            __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
-#define DDLogAPICall(frmt, ...) LOG_MAYBE(NO, ddLogLevel, (DDLogFlag)PNAESErrorLogLevel,  0, nil, \
+#define DDLogAPICall(frmt, ...) LOG_MAYBE(NO, ddLogLevel, (DDLogFlag)PNAPICallLogLevel,  0, nil, \
                                           __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
 
 

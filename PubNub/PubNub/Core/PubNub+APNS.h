@@ -6,7 +6,7 @@
  @brief      \b PubNub client core class extension to provide access to 'APNS' API group.
  @discussion Set of API which allow to manage push notifications on separate channels.
              If push notifications has been enabled on channels, then device will start receiving 
-             notifications hile device inactive.
+             notifications while device inactive.
  
  @author Sergey Mamontov
  @since 4.0

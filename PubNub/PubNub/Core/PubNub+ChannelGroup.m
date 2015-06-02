@@ -4,12 +4,10 @@
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "PubNub+ChannelGroup.h"
+#import "PNRequestParameters.h"
 #import "PubNub+CorePrivate.h"
-#import "PNRequest+Private.h"
-#import "PNStatus+Private.h"
-#import "PNErrorCodes.h"
-#import "PNResponse.h"
 #import "PNHelpers.h"
+#import "PNStatus.h"
 
 
 #pragma mark Protected interface declaration
@@ -34,52 +32,6 @@
 - (void)     add:(BOOL)shouldAdd channels:(NSArray *)channels toGroup:(NSString *)group
   withCompletion:(PNStatusBlock)block;
 
-
-#pragma mark - Handlers
-
-/**
- @brief  Process channel group channels list modification request completion and notify observers 
-         about results.
-
- @param request Reference on base request which is used for communication with \b PubNub service.
-                Object also contains request processing results.
- @param block   Channel group list modification process completion block which pass only one
-                argument - request processing status to report about how data pushing was successful
-                or not.
-
- @since 4.0
- */
-- (void)handleGroupModificationRequest:(PNRequest *)request withCompletion:(PNStatusBlock)block;
-
-
-#pragma mark - Processing
-
-/**
- @brief  Try to pre-process provided data and translate it's content to expected from 'Channel Group
-         Audition' API group.
- 
- @param response Reference on Foundation object which should be pre-processed.
- 
- @return Pre-processed dictionary or \c nil in case if passed \c response doesn't meet format 
-         requirements to be handled by 'Channel Group Audition' API group.
- 
- @since 4.0
- */
-- (NSDictionary *)processedChannelGroupAuditionResponse:(id)response;
-
-/**
- @brief  Try to pre-process provided data and translate it's content to expected from 'Channel Group
-         Modification' API group.
- 
- @param response Reference on Foundation object which should be pre-processed.
- 
- @return Pre-processed dictionary or \c nil in case if passed \c response doesn't meet format 
-         requirements to be handled by 'Channel Group Modification' API group.
- 
- @since 4.0
- */
-- (NSDictionary *)processedChannelGroupModificationResponse:(id)response;
-
 #pragma mark -
 
 
@@ -100,39 +52,37 @@
 
 - (void)channelsForGroup:(NSString *)group withCompletion:(PNCompletionBlock)block {
 
-    // Dispatching async on private queue which is able to serialize access with client
-    // configuration data.
+    PNOperationType operationType = (group ? PNChannelGroupsOperation :
+                                     PNChannelsForGroupOperation);
+
+    PNRequestParameters *parameters = [PNRequestParameters new];
+    if ([group length]) {
+
+        [parameters addPathComponent:[PNString percentEscapedString:group]
+                      forPlaceholder:@"{channel-group}"];
+        DDLogAPICall(@"<PubNub> Request channels for '%@' channel group.", group);
+    }
+    else {
+
+        DDLogAPICall(@"<PubNub> Request channel groups list.");
+    }
+
+    PNCompletionBlock blockCopy = [block copy];
     __weak __typeof(self) weakSelf = self;
-    dispatch_async(self.serviceQueue, ^{
-        
-        __strong __typeof(self) strongSelf = weakSelf;
-        PNOperationType operationType = (group ? PNChannelGroupsOperation :
-                                         PNChannelsForGroupOperation);
-        NSString *subscribeKey = [PNString percentEscapedString:strongSelf.subscribeKey];
-        NSString *path = [NSString stringWithFormat:@"/v1/channel-registration/sub-key/%@"
-                          "/channel-group%@", subscribeKey,
-                          (group ? [NSString stringWithFormat:@"/%@",
-                                    [PNString percentEscapedString:group]] : @"")];
-        PNRequest *request = [PNRequest requestWithPath:path parameters:nil
-                                           forOperation:operationType withCompletion:nil];
-        request.parseBlock = ^id(id rawData) {
-            
-            __strong __typeof(self) strongSelfForParsing = weakSelf;
-            return [strongSelfForParsing processedChannelGroupAuditionResponse:rawData];
-        };
-        
-        if (group) {
-            
-            DDLogAPICall(@"<PubNub> Request channels for '%@' channel group.", group);
-        }
-        else {
-            
-            DDLogAPICall(@"<PubNub> Request channel groups list.");
-        }
-        request.reportBlock = block;
-        
-        [strongSelf processRequest:request];
-    });
+    [self processOperation:operationType withParameters:parameters
+           completionBlock:^(PNResult *result, PNStatus *status){
+               
+               // Silence static analyzer warnings.
+               // Code is aware about this case and at the end will simply call on 'nil'
+               // object method. This instance is one of client properties and if client
+               // already deallocated there is no need to this object which will be
+               // deallocated as well.
+               #pragma clang diagnostic push
+               #pragma clang diagnostic ignored "-Wreceiver-is-weak"
+               #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
+               [weakSelf callBlock:blockCopy status:NO withResult:result andStatus:status];
+               #pragma clang diagnostic pop
+           }];
 }
 
 
@@ -158,131 +108,50 @@
 - (void)     add:(BOOL)shouldAdd channels:(NSArray *)channels toGroup:(NSString *)group
   withCompletion:(PNStatusBlock)block {
 
-    // Dispatching async on private queue which is able to serialize access with client
-    // configuration data.
+    BOOL removeAllObjects = (!shouldAdd && channels == nil);
+    PNOperationType operationType = PNRemoveGroupOperation;
+    PNRequestParameters *parameters = [PNRequestParameters new];
+    if ([group length]) {
+
+        [parameters addPathComponent:[PNString percentEscapedString:group]
+                      forPlaceholder:@"{channel-group}"];
+    }
+
+    if (!removeAllObjects){
+
+        operationType = (shouldAdd ? PNAddChannelsToGroupOperation :
+                         PNRemoveChannelsFromGroupOperation);
+        if ([channels count]) {
+
+            [parameters addQueryParameter:[PNChannel namesForRequest:channels]
+                             forFieldName:(shouldAdd ? @"add":@"remove")];
+        }
+
+        DDLogAPICall(@"<PubNub> %@ channels %@ '%@' channel group: %@",
+                (shouldAdd ? @"Add" : @"Remove"), (shouldAdd ? @"to" : @"from"),
+                (group?: @"<error>"), ([PNChannel namesForRequest:channels]?: @"<error>"));
+    }
+    else {
+
+        DDLogAPICall(@"<PubNub> Remove '%@' channel group", (group?: @"<error>"));
+    }
+
+    PNStatusBlock blockCopy = [block copy];
     __weak __typeof(self) weakSelf = self;
-    dispatch_async(self.serviceQueue, ^{
-        
-        __strong __typeof(self) strongSelf = weakSelf;
-        BOOL removeAllObjects = (!shouldAdd && channels == nil);
-        PNOperationType operationType = PNRemoveGroupOperation;
-        NSString *subscribeKey = [PNString percentEscapedString:strongSelf.subscribeKey];
-        NSString *channelsList = [PNChannel namesForRequest:channels];
-        NSDictionary *parameters = nil;
-        if (!removeAllObjects){
-            
-            operationType = (shouldAdd ? PNAddChannelsToGroupOperation :
-                             PNRemoveChannelFromGroupOperation);
-            parameters = @{(shouldAdd ? @"add":@"remove"): channelsList};
-        }
-        NSString *path = [NSString stringWithFormat:@"/v1/channel-registration/sub-key/%@"
-                          "/channel-group/%@%@", subscribeKey, [PNString percentEscapedString:group],
-                          (removeAllObjects ? @"/remove" : @"")];
-        PNRequest *request = [PNRequest requestWithPath:path parameters:parameters
-                                           forOperation:operationType
-                                         withCompletion:^(PNRequest *completedRequest) {
-                                                            
-            __strong __typeof(self) strongSelfForResults = weakSelf;
-            [strongSelfForResults handleGroupModificationRequest:completedRequest
-                                                  withCompletion:[block copy]];
-        }];
-        request.parseBlock = ^id(id rawData) {
-            
-            __strong __typeof(self) strongSelfForParsing = weakSelf;
-            return [strongSelfForParsing processedChannelGroupModificationResponse:rawData];
-        };
-        request.reportBlock = block;
-        
-        if (removeAllObjects) {
-            
-            DDLogAPICall(@"<PubNub> Remove '%@' channel group", (group?: @"<error>"));
-        }
-        else {
-            
-            DDLogAPICall(@"<PubNub> %@ channels %@ '%@' channel group: %@",
-                         (shouldAdd ? @"Add" : @"Remove"), (shouldAdd ? @"to" : @"from"),
-                         (group?: @"<error>"), (channelsList?: @"<error>"));
-        }
-
-        // Ensure what all required fields passed before starting processing.
-        if ([group length] && (removeAllObjects || [channels count])) {
-
-            [strongSelf processRequest:request];
-        }
-        // Notify about incomplete parameters set.
-        else {
-
-            NSString *description = @"Channel group not specified.";
-            if (!removeAllObjects && [channels count] == 0) {
-
-                description = @"Empty channels list.";
-            }
-            NSError *error = [NSError errorWithDomain:kPNAPIErrorDomain
-                                                 code:kPNAPIUnacceptableParameters
-                                             userInfo:@{NSLocalizedDescriptionKey:description}];
-            [strongSelf handleRequestFailure:request withError:error];
-        }
-    });
-}
-
-
-#pragma mark - Handlers 
-
-- (void)handleGroupModificationRequest:(PNRequest *)request withCompletion:(PNStatusBlock)block {
-    
-    // Construct corresponding data objects which should be delivered through completion block.
-    PNStatus *status = [PNStatus statusForRequest:request withError:request.response.error];
-    
-    [self callBlock:block status:YES withResult:nil andStatus:status];
-}
-
-
-#pragma mark - Processing
-
-- (NSDictionary *)processedChannelGroupAuditionResponse:(id)response {
-    
-    // To handle case when response is unexpected for this type of operation processed value sent
-    // through 'nil' initialized local variable.
-    NSDictionary *processedResponse = nil;
-    
-    // Dictionary is valid response type for channel group audition response.
-    if ([response isKindOfClass:[NSDictionary class]] && response[@"payload"]) {
-        
-        if (response[@"payload"][@"channels"]) {
-            
-            processedResponse = @{@"channels": response[@"payload"][@"channels"]};
-        }
-        else if (response[@"payload"][@"groups"]) {
-            
-            processedResponse = @{@"channel-groups": response[@"payload"][@"groups"]};
-        }
-    }
-    
-    return [processedResponse copy];
-}
-
-- (NSDictionary *)processedChannelGroupModificationResponse:(id)response {
-    
-    // To handle case when response is unexpected for this type of operation processed value sent
-    // through 'nil' initialized local variable.
-    NSDictionary *processedResponse = nil;
-    
-    // Dictionary is valid response type for channel group modification response.
-    if ([response isKindOfClass:[NSDictionary class]] &&
-        response[@"message"] && response[@"error"]) {
-        
-        BOOL isError = ([response[@"error"] integerValue] == 1);
-        NSMutableDictionary *data = [[NSMutableDictionary alloc] initWithDictionary:@{@"status":@YES}];
-        data[@"error"] = @(isError);
-        if (isError) {
-            
-            data[@"information"] = response[@"message"];
-            data[@"status"] = @NO;
-        }
-        processedResponse = data;
-    }
-    
-    return [processedResponse copy];
+    [self processOperation:operationType withParameters:parameters
+           completionBlock:^(PNStatus *status){
+               
+               // Silence static analyzer warnings.
+               // Code is aware about this case and at the end will simply call on 'nil'
+               // object method. This instance is one of client properties and if client
+               // already deallocated there is no need to this object which will be
+               // deallocated as well.
+               #pragma clang diagnostic push
+               #pragma clang diagnostic ignored "-Wreceiver-is-weak"
+               #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
+               [weakSelf callBlock:blockCopy status:YES withResult:nil andStatus:status];
+               #pragma clang diagnostic pop
+           }];
 }
 
 #pragma mark -

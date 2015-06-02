@@ -6,34 +6,22 @@
 #import "PNResult.h"
 
 
-#pragma mark Class forward
+#pragma mark Private interface declaration
 
-@class PNRequest;
-
-
-#pragma mark - Private interface declaration
-
-@interface PNResult ()
+@interface PNResult () <NSCopying>
 
 
 ///------------------------------------------------
 /// @name Information
 ///------------------------------------------------
 
-/**
- @brief  Stores reference on request object which has been used as template for network request to
-         \b PubNub services.
-
- @since 4.0
-*/
-@property (nonatomic, strong) PNRequest *requestObject;
-\
-@property (nonatomic, copy) NSURLRequest *clientRequest;
-@property (nonatomic, copy) NSDictionary *headers;
-@property (nonatomic, copy) id response;
-@property (nonatomic, copy) NSString *origin;
-@property (nonatomic, assign) PNOperationType operation;
 @property (nonatomic, assign) NSInteger statusCode;
+@property (nonatomic, assign) PNOperationType operation;
+@property (nonatomic, assign, getter = isTLSEnabled) BOOL TLSEnabled;
+@property (nonatomic, copy) NSString *uuid;
+@property (nonatomic, copy) NSString *authKey;
+@property (nonatomic, copy) NSString *origin;
+@property (nonatomic, copy) NSURLRequest *clientRequest;
 @property (nonatomic, copy) NSDictionary *data;
 
 
@@ -42,74 +30,53 @@
 ///------------------------------------------------
 
 /**
- @brief  Create operation result object with pre-defined set of parameters.
-
- @param request  Reference on base request instance which hold information about operation type and
-                 real network request built from it.
+ @brief  Consntruct result instance in response to successful task completion.
  
- @return Initialized and ready to use status object.
+ @param operation     One of \b PNOperationType enum fields to describe what kind of operation has
+                      been processed.
+ @param task          Reference on data task which has been used to communicate with \b PubNub
+                      network.
+ @param processedData Reference on data which has been loaded and pre-processed by corresponding
+                      parser.
  
- @since 4.0
- */
-+ (instancetype)resultForRequest:(PNRequest *)request;
-
-/**
- @brief  Extract result information from status object and populate it with new data.
- @discussion This method moslty used by API endpoints which should provide operation status, but
-             also may receive additional data which should be converted to result.
- 
- @param status \b PNStatus instance which should be used to pulk out data.
- @param data   Pre-parsed data which should be bound to result object.
- 
- @return Created and ready to use status instance
+ @return Constructed and ready to use result instance.
  
  @since 4.0
  */
-+ (instancetype)resultFromStatus:(PNStatus *)status withData:(id)data;
++ (instancetype)objectForOperation:(PNOperationType)operation
+                 completedWithTaks:(NSURLSessionDataTask *)task
+                     processedData:(NSDictionary *)processedData;
 
 /**
- @brief  Initialize operation result object with pre-defined set of parameters.
+ @brief  Initialize result instance in response to successful task completion.
  
- @param request  Reference on base request instance which hold information about operation type and
-                 real network request built from it.
+ @param operation     One of \b PNOperationType enum fields to describe what kind of operation has
+                      been processed.
+ @param task          Reference on data task which has been used to communicate with \b PubNub
+                      network.
+ @param processedData Reference on data which has been loaded and pre-processed by corresponding
+                      parser.
  
- @return Ready to use status object.
+ @return Initialized and ready to use result instance.
  
  @since 4.0
  */
-- (instancetype)initForRequest:(PNRequest *)request;
+- (instancetype)initForOperation:(PNOperationType)operation
+               completedWithTaks:(NSURLSessionDataTask *)task
+                   processedData:(NSDictionary *)processedData NS_DESIGNATED_INITIALIZER;
 
 /**
- @brief      Make copy of current status object with data to store in it.
+ @brief      Make copy of current result object with mutated data which should be stored in it.
  @discussion Method can be used to create sub-events (for example one for each message or presence 
              event).
  
- @param data Reference on data which should be stored within status object.
+ @param data Reference on data which should be stored within new instance.
  
  @return Copy of receiver with modified data.
  
  @since 4.0
  */
-- (instancetype)copyWithData:(id)data;
-
-
-///------------------------------------------------
-/// @name Processing
-///------------------------------------------------
-
-/**
- @brief      Try parse received data as error response.
- @discussion In case if initial parsing using suggested processing block failed this method is used
-             to try process data as error.
- 
- @param data Reference on data which should be parsed.
- 
- @return Error information stored in \a NSDIctionary or \c nil in case if error format not 
-         recognized.
- 
- @since 4.0
- */
-- (NSDictionary *)dataParsedAsError:(id)data;
+- (instancetype)copyWithMutatedData:(id)data;
 
 
 ///------------------------------------------------

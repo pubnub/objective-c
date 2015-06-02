@@ -8,13 +8,47 @@
 #import "PNPrivateStructures.h"
 #import "PNStatus+Private.h"
 #import "PNResult+Private.h"
-#import "PNResponse.h"
 #import "PNLog.h"
 
 
 #pragma mark Private interface
 
 @interface PNStatus ()
+
+
+#pragma mark - Initialization and configuration
+
+/**
+ @brief  Initializr minimal object to describe state using operation type and status category
+         information.
+ 
+ @param operation Type of operation for which this status report.
+ @param category  Operation processing status category.
+ 
+ @return Initialized and ready to use status object.
+ 
+ @since 4.0
+ */
+- (instancetype)initForOperation:(PNOperationType)operation
+                        category:(PNStatusCategory)category NS_DESIGNATED_INITIALIZER;
+
+/**
+ @brief  Initialize result instance in response to successful task completion.
+ 
+ @param operation     One of \b PNOperationType enum fields to describe what kind of operation has
+                      been processed.
+ @param task          Reference on data task which has been used to communicate with \b PubNub
+                      network.
+ @param processedData Reference on data which has been loaded and pre-processed by corresponding
+                      parser.
+ 
+ @return Initialized and ready to use result instance.
+ 
+ @since 4.0
+ */
+- (instancetype)initForOperation:(PNOperationType)operation
+               completedWithTaks:(NSURLSessionDataTask *)task
+                   processedData:(NSDictionary *)processedData NS_DESIGNATED_INITIALIZER;
 
 
 #pragma mark - Interpretation
@@ -56,71 +90,12 @@
 
 @implementation PNStatus
 
-+ (instancetype)statusForOperation:(PNOperationType)operation category:(PNStatusCategory)category {
-    
-    PNStatus *status = [PNStatus new];
-    status.operation = operation;
-    status.category = category;
-    status->_subCategory = category;
-    if (status.category == PNConnectedCategory || status.category == PNDisconnectedCategory ||
-        status.category == PNUnexpectedDisconnectCategory || status.category == PNCancelledCategory ||
-        status.category == PNAcknowledgmentCategory) {
-        
-        status.error = NO;
-        status.statusCode = 200;
-    }
-    else {
-        
-        status.statusCode = (status.category == PNAccessDeniedCategory ? 403 : 400);
-    }
-    
-    return status;
-}
 
-+ (instancetype)statusFromResult:(PNResult *)result {
+#pragma mark - Information
 
-    return [[self alloc] initForRequest:result.requestObject
-                              withError:result.requestObject.response.error];
-}
-
-+ (instancetype)statusForRequest:(PNRequest *)request withError:(NSError *)error {
+- (void)updateCategory:(PNStatusCategory)category; {
     
-    return [[self alloc] initForRequest:request withError:error];
-}
-
-- (instancetype)initForRequest:(PNRequest *)request withError:(NSError *)error {
-    
-    // Check whether initialization has been successful or not.
-    if ((self = [super initForRequest:request])) {
-        
-        NSError *processingError = (error?: request.response.error);
-        
-        // Check whether status should represent acknowledgment or not.
-        if (self.statusCode == 200 && !processingError) {
-            
-            self.category = PNAcknowledgmentCategory;
-        }
-        else if (self.category == PNUnknownCategory) {
-            
-            // Try extract category basing on response status codes.
-            self.category = [self categoryTypeFromStatusCode:self.statusCode];
-
-            // Extract status category from passed error object.
-            if (self.category == PNUnknownCategory) {
-                
-                self.category = [self categoryTypeFromError:processingError];
-            }
-        }
-        _subCategory = self.category;
-        self.error = (self.category != PNAcknowledgmentCategory);
-        if (self.isError && ![self.data count]) {
-            
-            self.data = ([self dataParsedAsError:request.response.data]?: [self dataFromError:error]);
-        }
-        self.data = (([self.data count] ? self.data : [self dataFromError:error]) ?: request.response.data);
-    }
-    
-    return self;
+    self.category = category;
 }
 
 - (void)setCategory:(PNStatusCategory)category {
@@ -130,42 +105,87 @@
         
         self.error = YES;
     }
-    else if (_category == PNDisconnectedCategory || _category == PNUnexpectedDisconnectCategory ||
-             _category == PNReconnectedCategory) {
+    else if (_category == PNConnectedCategory || _category == PNReconnectedCategory ||
+             _category == PNDisconnectedCategory || _category == PNUnexpectedDisconnectCategory) {
         
         self.error = NO;
     }
 }
 
-- (void)revertToOriginalCategory {
+
+#pragma mark - Initialization and configuration
+
++ (instancetype)statusForOperation:(PNOperationType)operation category:(PNStatusCategory)category {
     
-    if (self.subCategory != PNUnknownCategory) {
+    return [[self alloc] initForOperation:operation category:category];
+}
+
+- (instancetype)initForOperation:(PNOperationType)operation category:(PNStatusCategory)category {
+    
+    // Check whether intialization was successful or not.
+    if ((self = [super initForOperation:operation completedWithTaks:nil processedData:nil])) {
         
-        self.category = self.subCategory;
+        _category = category;
+        if (_category == PNConnectedCategory || _category == PNReconnectedCategory ||
+            _category == PNDisconnectedCategory || _category == PNUnexpectedDisconnectCategory ||
+            _category == PNCancelledCategory || _category == PNAcknowledgmentCategory) {
+            
+            _error = NO;
+            self.statusCode = 200;
+        }
+        else if (_category != PNUnknownCategory) {
+            
+            _error = YES;
+            self.statusCode = (_category == PNAccessDeniedCategory ? 403 : 400);
+        }
     }
+    
+    return self;
+}
+
+- (instancetype)initForOperation:(PNOperationType)operation
+               completedWithTaks:(NSURLSessionDataTask *)task
+                   processedData:(NSDictionary *)processedData {
+    
+    // Check whether initialization was successful or not.
+    if ((self = [super initForOperation:operation completedWithTaks:task processedData:processedData])) {
+        
+        _error = (task.error != nil || self.statusCode != 200);
+        if (_error && ![processedData count]) {
+            
+            self.data = [self dataFromError:task.error];
+        }
+        
+        // Check whether status should represent acknowledgment or not.
+        if (self.statusCode == 200 && !task.error) {
+            
+            _category = PNAcknowledgmentCategory;
+        }
+        else if (_category == PNUnknownCategory) {
+            
+            // Try extract category basing on response status codes.
+            _category = [self categoryTypeFromStatusCode:self.statusCode];
+            
+            // Extract status category from passed error object.
+            if (_category == PNUnknownCategory) {
+                
+                _category = [self categoryTypeFromError:task.error];
+            }
+        }
+    }
+    
+    return self;
 }
 
 - (id)copyWithZone:(NSZone *)zone {
     
-    PNStatus *status = [[[self class] allocWithZone:zone] init];
-    status.clientRequest = self.clientRequest;
-    status.headers = self.headers;
-    status.response = self.response;
-    status.statusCode = self.statusCode;
-    status.operation = self.operation;
-    status.origin = self.origin;
-    status.data = self.data;
+    PNStatus *status = [super copyWithZone:zone];
     status.category = self.category;
-    status->_subCategory = self.subCategory;
-    status.TLSEnabled = self.isTLSEnabled;
-    status.channels = self.channels;
-    status.channelGroups = self.channelGroups;
-    status.uuid = self.uuid;
-    status.authKey = self.authKey;
-    status.state = self.state;
+    status.subscribedChannels = self.subscribedChannels;
+    status.subscribedChannelGroups = self.subscribedChannelGroups;
     status.error = self.isError;
     status.currentTimetoken = self.currentTimetoken;
-    status.previousTimetoken = self.previousTimetoken;
+    status.lastTimetoken = self.lastTimetoken;
     status.automaticallyRetry = self.willAutomaticallyRetry;
     status.retryBlock = self.retryBlock;
     status.retryCancelBlock = self.retryCancelBlock;
@@ -279,19 +299,48 @@
 
 - (NSDictionary *)dataFromError:(NSError *)error {
     
-    NSDictionary *data = nil;
-    NSString *information = error.userInfo[NSLocalizedDescriptionKey];
-    if (!information) {
+    // Try to fetch server response if available.
+    id errorDetails = nil;
+    if (error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey]) {
         
-        information = error.userInfo[@"NSDebugDescription"];
+        // In most cases service provide JSON error response. Try de-serialize it.
+        NSError *deSerializationError;
+        NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
+        errorDetails = [NSJSONSerialization JSONObjectWithData:errorData
+                                                       options:(NSJSONReadingOptions)0
+                                                         error:&deSerializationError];
+        
+        // Check whether JSON de-serialization failed and try to pull regular string
+        // from response.
+        if (!errorDetails) {
+            
+            errorDetails = [[NSString alloc] initWithData:errorData encoding:NSUTF8StringEncoding];
+        }
+        if (deSerializationError) {
+            
+            error = deSerializationError;
+        }
+    }
+    else if (error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey]) {
+        
+        errorDetails = error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey];
     }
     
-    if (information) {
+    if (!errorDetails) {
         
-        data = @{@"information":information};
+        NSString *information = error.userInfo[NSLocalizedDescriptionKey];
+        if (!information) {
+            
+            information = error.userInfo[@"NSDebugDescription"];
+        }
+        
+        if (information) {
+            
+            errorDetails = @{@"information":information};
+        }
     }
     
-    return data;
+    return errorDetails;
 }
 
 
@@ -301,22 +350,19 @@
     
     NSMutableDictionary *status = [[super dictionaryRepresentation] mutableCopy];
     [status addEntriesFromDictionary:@{@"Category": PNStatusCategoryStrings[self.category],
-                                       @"Secure": (self.isTLSEnabled ? @"YES" : @"NO"),
-                                       @"UUID": (self.uuid?: @"uknonwn"),
-                                       @"Authorization": (self.authKey?: @"not set"),
-                                       @"Time": @{@"Current": (self.currentTimetoken?: @(0)),
-                                                  @"Previous": (self.previousTimetoken?: @(0))},
                                        @"Error": (self.isError ? @"YES" : @"NO")}];
-    if ([self.channels count] || [self.channelGroups count]) {
+    if ([self.subscribedChannels count] || [self.subscribedChannelGroups count]) {
         
+        status[@"Time"] = @{@"Current": (self.currentTimetoken?: @(0)),
+                            @"Previous": (self.lastTimetoken?: @(0))};
         status[@"Objects"] = [NSMutableDictionary new];
-        if ([self.channels count]) {
+        if ([self.subscribedChannels count]) {
             
-            status[@"Objects"][@"Channels"] = self.channels;
+            status[@"Objects"][@"Channels"] = self.subscribedChannels;
         }
-        if ([self.channelGroups count]) {
+        if ([self.subscribedChannelGroups count]) {
             
-            status[@"Objects"][@"Channel groups"] = self.channelGroups;
+            status[@"Objects"][@"Channel groups"] = self.subscribedChannelGroups;
         }
     }
     

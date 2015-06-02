@@ -4,11 +4,10 @@
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "PubNub+Publish.h"
+#import "PNRequestParameters.h"
 #import "PubNub+CorePrivate.h"
-#import "PNRequest+Private.h"
 #import "PNStatus+Private.h"
-#import "PNErrorCodes.h"
-#import "PNResponse.h"
+#import "PNConfiguration.h"
 #import "PNHelpers.h"
 #import "PNAES.h"
 
@@ -16,38 +15,6 @@
 #pragma mark Private interface declaration
 
 @interface PubNub (PublishPrivate)
-
-
-#pragma mark - Handlers
-
-/**
- @brief  Process message publish request completion and notify observers about results.
-
- @param request Reference on base request which is used for communication with \b PubNub service.
-                Object also contains request processing results.
- @param block   State audition for user on cahnnel processing completion block which pass only one 
-                argument - request processing status to report about how data pushing was successful 
-                or not.
-
- @since 4.0
- */
-- (void)handlePublishRequest:(PNRequest *)request withCompletion:(PNStatusBlock)block;
-
-
-#pragma mark - Processing
-
-/**
- @brief  Try to pre-process provided data and translate it's content to expected from 'publish' API
-         group.
- 
- @param response Reference on Foundation object which should be pre-processed.
- 
- @return Pre-processed dictionary or \c nil in case if passed \c response doesn't meet format 
-         requirements to be handled by 'publish' API group.
- 
- @since 4.0
- */
-- (NSDictionary *)processedPublishResponse:(id)response;
 
 
 #pragma mark - Misc
@@ -152,145 +119,72 @@
   mobilePushPayload:(NSDictionary *)payloads storeInHistory:(BOOL)shouldStore
          compressed:(BOOL)compressed withCompletion:(PNStatusBlock)block {
 
-    // Dispatching async on private queue which is able to serialize access with client
-    // configuration data.
+    // Push further code execution on secondary queue to make service queue responsive during
+    // JSON serialization and encryption process.
+    PNStatusBlock blockCopy = [block copy];
     __weak __typeof(self) weakSelf = self;
-    dispatch_async(self.serviceQueue, ^{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 
-        __strong __typeof(self) strongSelf = weakSelf;
-        NSString *publishKey = [PNString percentEscapedString:strongSelf.publishKey];
-        NSString *subscribeKey = [PNString percentEscapedString:strongSelf.subscribeKey];
-        NSString *cipherKey = [strongSelf.cipherKey copy];
+        NSError *publishError = nil;
+        NSString *messageForPublish = [PNJSON JSONStringFrom:message withError:&publishError];
 
-        // Push further code execution on secondary queue to make service queue responsive during
-        // JSON serialization and encryption process.
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        // Encrypt message in case if serialization to JSON was successful.
+        if (!publishError) {
 
-            __strong __typeof(self) strongSelfForPreparation = weakSelf;
-            NSError *publishError = nil;
-            NSString *messageForPublish = [PNJSON JSONStringFrom:message withError:&publishError];
+            // Try perform user message encryption.
+            messageForPublish = [self encryptedMessage:messageForPublish
+                                         withCipherKey:self.configuration.cipherKey
+                                                 error:&publishError];
+        }
 
-            // Encrypt message in case if serialization to JSON was successful.
-            if (!publishError) {
+        // Merge user message with push notification payloads (if provided).
+        if (!publishError && [payloads count]) {
 
-                // Try perform user message encryption.
-                messageForPublish = [strongSelfForPreparation encryptedMessage:messageForPublish
-                                                                 withCipherKey:cipherKey
-                                                                         error:&publishError];
-            }
-
-            // Merge user message with push notification payloads (if provided).
-            if (!publishError && [payloads count]) {
-
-                NSDictionary *mergedData = [self mergedMessage:messageForPublish
-                                         withMobilePushPayload:payloads];
-                messageForPublish = [PNJSON JSONStringFrom:mergedData withError:&publishError];
-            }
-
-            NSDictionary *parameters = (!shouldStore ? @{@"store": @"0"} : nil);
-            NSMutableString *path = [NSMutableString stringWithFormat:@"/publish/%@/%@/0/%@/0",
-                                     publishKey, subscribeKey,
-                                     [PNString percentEscapedString:channel]];
-            if (!compressed) {
-
-                [path appendFormat:@"/%@", [PNString percentEscapedString:messageForPublish]];
-            }
-            PNRequest *request = [PNRequest requestWithPath:path parameters:parameters
-                                               forOperation:PNPublishOperation
-                                             withCompletion:^(PNRequest *completedRequest) {
-
-                __strong __typeof(self) strongSelfForResponse = weakSelf;
-                [strongSelfForResponse handlePublishRequest:completedRequest
-                                             withCompletion:[block copy]];
-            }];
-            if (compressed) {
-
-                NSData *messageData = [messageForPublish dataUsingEncoding:NSUTF8StringEncoding];
-                NSData *compressedBody = [PNGZIP GZIPDeflatedData:messageData];
-                request.body = (compressedBody?: [@"" dataUsingEncoding:NSUTF8StringEncoding]);
-            }
-            request.parseBlock = ^id(id rawData){
-
-                __strong __typeof(self) strongSelfForProcessing = weakSelf;
-                return [strongSelfForProcessing processedPublishResponse:rawData];
-            };
+            NSDictionary *mergedData = [self mergedMessage:messageForPublish
+                                     withMobilePushPayload:payloads];
+            messageForPublish = [PNJSON JSONStringFrom:mergedData withError:&publishError];
+        }
+        PNRequestParameters *parameters = [PNRequestParameters new];
+        if ([channel length]) {
             
-            DDLogAPICall(@"<PubNub> Publish%@ message to '%@' channel%@%@",
-                         (compressed ? @" compressed" : @""), (channel?: @"<error>"),
-                         (!shouldStore ? @" which won't be saved in hisotry" : @""),
-                         (!compressed ? [NSString stringWithFormat:@": %@",
-                                         (messageForPublish?: @"<error>")] : @"."));
+            [parameters addPathComponent:[PNString percentEscapedString:channel]
+                          forPlaceholder:@"{channel}"];
+        }
+        [parameters addQueryParameter:(shouldStore? @"1" : @"0") forFieldName:@"store"];
+        if (!compressed && [messageForPublish length]) {
 
-            // Ensure what all required fields passed before starting processing.
-            if (!publishError && [channel length] && ((!compressed && [messageForPublish length]) ||
-                (compressed && [request.body length]))) {
+            [parameters addPathComponent:[PNString percentEscapedString:messageForPublish]
+                          forPlaceholder:@"{message}"];
+        }
+        NSData *publishData = nil;
+        if (compressed) {
 
-                [strongSelfForPreparation processRequest:request];
-            }
-            // Notify about incomplete parameters set.
-            else {
+            NSData *messageData = [messageForPublish dataUsingEncoding:NSUTF8StringEncoding];
+            NSData *compressedBody = [PNGZIP GZIPDeflatedData:messageData];
+            publishData = (compressedBody?: [@"" dataUsingEncoding:NSUTF8StringEncoding]);
+        }
+        
+        DDLogAPICall(@"<PubNub> Publish%@ message to '%@' channel%@%@",
+                     (compressed ? @" compressed" : @""), (channel?: @"<error>"),
+                     (!shouldStore ? @" which won't be saved in hisotry" : @""),
+                     (!compressed ? [NSString stringWithFormat:@": %@",
+                                     (messageForPublish?: @"<error>")] : @"."));
 
-                NSString *description = @"Channel not specified.";
-                if (!compressed && [messageForPublish length]) {
-
-                    description = @"Empty message.";
-                }
-                else if  (compressed && [request.body length]) {
-
-                    description = @"Message compression failed.";
-                }
-                NSError *error = [NSError errorWithDomain:kPNAPIErrorDomain
-                                                     code:kPNAPIUnacceptableParameters
-                                                 userInfo:@{NSLocalizedDescriptionKey:description}];
-                [strongSelfForPreparation handleRequestFailure:request
-                                                     withError:(publishError?: error)];
-            }
-        });
+        [self processOperation:PNPublishOperation withParameters:parameters data:publishData
+               completionBlock:^(PNStatus *status) {
+                   
+                   // Silence static analyzer warnings.
+                   // Code is aware about this case and at the end will simply call on 'nil'
+                   // object method. This instance is one of client properties and if client
+                   // already deallocated there is no need to this object which will be
+                   // deallocated as well.
+                   #pragma clang diagnostic push
+                   #pragma clang diagnostic ignored "-Wreceiver-is-weak"
+                   #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
+                   [weakSelf callBlock:blockCopy status:YES withResult:nil andStatus:status];
+                   #pragma clang diagnostic pop
+               }];
     });
-}
-
-
-#pragma mark - Handlers
-
-- (void)handlePublishRequest:(PNRequest *)request withCompletion:(PNCompletionBlock)block {
-    
-    // Construct corresponding data objects which should be delivered through completion block.
-    PNStatus *status = [PNStatus statusForRequest:request withError:request.response.error];
-    [self callBlock:block status:YES withResult:nil andStatus:status];
-}
-
-
-#pragma mark - Processing
-
-- (NSDictionary *)processedPublishResponse:(id)response {
-    
-    // To handle case when response is unexpected for this type of operation processed value sent
-    // through 'nil' initialized local variable.
-    NSDictionary *processedResponse = nil;
-
-    // Response in form of array arrive in two cases: publish successful and failed.
-    // In case if no valid Foundation object has been passed it is possible what service returned
-    // HTML and it should be treated as data publish error.
-    if ([response isKindOfClass:[NSArray class]] || !response) {
-        
-        NSNumber *status = @(NO);
-        NSString *information = @"Message Not Published";
-        NSNumber *timeToken = nil;
-        if ([(NSArray *)response count] == 3) {
-            
-            status = @([response[0] integerValue] == 1);
-            information = response[1];
-            timeToken = response[2];
-        }
-        else {
-            
-            timeToken = @((unsigned long long)([[NSDate date] timeIntervalSince1970]*10000000));
-        }
-        
-        processedResponse = @{@"status":status, @"information":information, @"tt": timeToken};
-    }
-
-    return processedResponse;
 }
 
 

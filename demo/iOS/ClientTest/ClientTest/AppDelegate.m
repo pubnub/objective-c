@@ -20,8 +20,10 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
+
     // Initialize PubNub client.
-    self.client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
+    PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" subscribeKey:@"demo"];
+    self.client = [PubNub clientWithConfiguration:configuration];
     [self.client addListeners:@[self]];
     
     // Time

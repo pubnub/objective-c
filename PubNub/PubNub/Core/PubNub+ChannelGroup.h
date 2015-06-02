@@ -5,7 +5,7 @@
 /**
  @brief      \b PubNub client core class extension to provide access to 'stream controller' API 
              group.
- @discussion Set of API which allow to manage channels colletions and manipulate list of channels
+ @discussion Set of API which allow to manage channels collections and manipulate list of channels
              in collection.
  
  @author Sergey Mamontov

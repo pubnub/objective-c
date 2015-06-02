@@ -4,9 +4,7 @@
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "PNResult+Private.h"
-#import "PNRequest+Private.h"
 #import "PNPrivateStructures.h"
-#import "PNResponse.h"
 #import "PNStatus.h"
 #import "PNJSON.h"
 
@@ -16,104 +14,58 @@
 @implementation PNResult
 
 
-#pragma mark - Initialization and configuration
+#pragma mark - Initialization and Configuration
 
-+ (instancetype)resultForRequest:(PNRequest *)request {
++ (instancetype)objectForOperation:(PNOperationType)operation
+                 completedWithTaks:(NSURLSessionDataTask *)task
+                     processedData:(NSDictionary *)processedData {
     
-    return [[self alloc] initForRequest:request];
+    return [[self alloc] initForOperation:operation completedWithTaks:task
+                            processedData:processedData];
 }
 
-+ (instancetype)resultFromStatus:(PNStatus *)status withData:(id)data {
+- (instancetype)initForOperation:(PNOperationType)operation
+               completedWithTaks:(NSURLSessionDataTask *)task
+                   processedData:(NSDictionary *)processedData {
     
-    // Create result object based on status with new pre-processed data.
-    PNResult *result = [self new];
-    result->_clientRequest = [status.clientRequest copy];
-    result->_headers = [status.headers copy];
-    result->_response = [status.response copy];
-    result->_origin = [status.origin copy];
-    result->_statusCode = status.statusCode;
-    result->_operation = status.operation;
-    result->_data = [data copy];
-    
-    return result;
-}
-
-- (instancetype)initForRequest:(PNRequest *)request {
-    
-    // Check whether initialization has been successful or not
+    // Check whether initialization was successful or not.
     if ((self = [super init])) {
-
-        self.requestObject = request;
-
-        self.clientRequest = request.response.clientRequest;
-        self.headers = [request.response.response allHeaderFields];
-        self.response = request.response.data;
-        self.statusCode = (request.response.response ? request.response.response.statusCode : 200);
-        self.operation = request.operation;
-        self.origin = [[_clientRequest URL] host];
-
-        // Call parse block which has been passed by calling API to pre-process
-        // received data before returning it to te user.
-        if (self.response) {
+        
+        _statusCode = (task ? ((NSHTTPURLResponse *)task.response).statusCode : 200);
+        _operation = operation;
+        _clientRequest = [task.currentRequest copy];
+        _data = [processedData copy];
+        if ([_data[@"status"] isKindOfClass:[NSNumber class]] &&
+            [(NSNumber *)_data[@"status"] integerValue] > 200) {
             
-            if (self.requestObject.parseBlock) {
-                
-                self.data = (self.requestObject.parseBlock(self.response)?:
-                             [self dataParsedAsError:_response]);
-            }
-            else {
-                
-                self.data = [self dataParsedAsError:self.response];
-            }
+            _statusCode = [(NSNumber *)_data[@"status"] integerValue];
         }
     }
     
     return self;
 }
 
-- (instancetype)copyWithData:(id)data {
+- (id)copyWithZone:(NSZone *)zone {
     
-    PNResult *result = [[self class] resultForRequest:self.requestObject];
-    result->_data = [data copy];
+    PNResult *result = [[[self class] allocWithZone:zone] init];
+    result.statusCode = self.statusCode;
+    result.operation = self.operation;
+    result.TLSEnabled = self.isTLSEnabled;
+    result.uuid = self.uuid;
+    result.authKey = self.authKey;
+    result.origin = self.origin;
+    result.clientRequest = self.clientRequest;
+    result.data = self.data;
     
     return result;
 }
 
-
-#pragma mark - Processing
-
-- (NSDictionary *)dataParsedAsError:(id <NSObject, NSCopying>)data {
+- (instancetype)copyWithMutatedData:(id)data {
     
-    NSMutableDictionary *errorData = nil;
-    if ([data isKindOfClass:[NSDictionary class]]) {
-        
-        errorData = [NSMutableDictionary new];
-        if (data[@"message"]) {
-            
-            errorData[@"information"] = data[@"message"];
-        }
-        else if (data[@"error"]) {
-            
-            errorData[@"information"] = data[@"error"];
-        }
-        if (data[@"payload"]) {
-            
-            if (data[@"payload"][@"channels"]) {
-                
-                errorData[@"channels"] = data[@"payload"][@"channels"];
-            }
-            if (data[@"payload"][@"channel-groups"]) {
-                
-                errorData[@"channel-groups"] = data[@"payload"][@"channel-groups"];
-            }
-            if (!errorData[@"channels"] && !errorData[@"channel-groups"]) {
-                
-                errorData[@"data"] = data[@"payload"];
-            }
-        }
-    }
+    PNResult *result = [self copy];
+    result->_data = [data copy];
     
-    return [errorData copy];
+    return result;
 }
 
 
@@ -125,10 +77,11 @@
              @"Request": @{@"Method": (self.clientRequest.HTTPMethod?: @"GET"),
                            @"URL": ([self.clientRequest.URL absoluteString]?: @"null"),
                            @"POST Body size": @([self.clientRequest.HTTPBody length]),
+                           @"Secure": (self.isTLSEnabled ? @"YES" : @"NO"),
+                           @"UUID": (self.uuid?: @"uknonwn"),
+                           @"Authorization": (self.authKey?: @"not set"),
                            @"Origin": (self.origin?: @"unknown")},
              @"Response": @{@"Status code": @(self.statusCode),
-                            @"Headers": (self.headers?: @"no headers"),
-                            @"Raw data": (self.response?: @"no response"),
                             @"Processed data": (self.data?: @"no data")}};
 }
 

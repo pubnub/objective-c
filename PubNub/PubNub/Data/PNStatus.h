@@ -28,57 +28,20 @@
 @property (nonatomic, readonly, assign) PNStatusCategory category;
 
 /**
- @brief  Stores whether client currently used secured connection or not.
- 
- @since 4.0
- */
-@property (nonatomic, readonly, assign, getter = isTLSEnabled) BOOL TLSEnabled;
-
-/**
- @brief  Stores reference on list of channels on which client currently subscribed.
- 
- @since 4.0
- */
-@property (nonatomic, readonly, copy) NSArray *channels;
-
-/**
- @brief  Stores reference on channel group names list on which client currently subscribed.
- 
- @since 4.0
- */
-@property (nonatomic, readonly, copy) NSArray *channelGroups;
-
-/**
- @brief  UUID which is currently used by client to identify user on \b PubNub service.
- 
- @since 4.0
- */
-@property (nonatomic, readonly, copy) NSString *uuid;
-
-/**
- @brief      Authorization which is used to get access to protected remote resources.
- @discussion Some resources can be protected by \b PAM functionality and access done using this 
-             authorization key.
- 
- @since 4.0
- */
-@property (nonatomic, readonly, copy) NSString *authKey;
-
-/**
- @brief      Reference on cached client state which is used for subscribe and heartbeat requests.
- @discussion To keep bound client state on remote service client should perform "heartbeat" requests
-             to keep it there.
- 
- @since 4.0
- */
-@property (nonatomic, readonly, copy) NSDictionary *state;
-
-/**
  @brief  Whether status object represent error or not.
  
  @since 4.0
  */
 @property (nonatomic, readonly, assign, getter = isError) BOOL error;
+
+/**
+ @brief      Stores whether client will try to resend request associated with status or not.
+ @discussion In most cases client will keep retry request sending till it won't be successful or
+             canceled with \c -cancelAutomaticRetry method.
+
+ @since 4.0
+ */
+@property (nonatomic, readonly, assign, getter = willAutomaticallyRetry) BOOL automaticallyRetry;
 
 /**
  @brief  Stores reference on time token which has been used to establish current subscription cycle.
@@ -93,16 +56,21 @@
  
  @since 4.0
  */
-@property (nonatomic, readonly, strong) NSNumber *previousTimetoken;
+@property (nonatomic, readonly, strong) NSNumber *lastTimetoken;
 
 /**
- @brief      Stores whether client will try to resend request associated with status or not.
- @discussion In most cases client will keep retry request sending till it won't be successful or
-             canceled with \c -cancelAutomaticRetry method.
-
+ @brief  Stores reference on list of channels on which client currently subscribed.
+ 
  @since 4.0
  */
-@property (nonatomic, readonly, assign, getter = willAutomaticallyRetry) BOOL automaticallyRetry;
+@property (nonatomic, readonly, copy) NSArray *subscribedChannels;
+
+/**
+ @brief  Stores reference on channel group names list on which client currently subscribed.
+ 
+ @since 4.0
+ */
+@property (nonatomic, readonly, copy) NSArray *subscribedChannelGroups;
 
 
 #pragma mark - Recovery

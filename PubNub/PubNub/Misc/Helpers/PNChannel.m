@@ -8,6 +8,16 @@
 #import "PNArray.h"
 
 
+#pragma mark Static
+
+/**
+ @brief  Reference on suffix which is used to mark channel as presence channel.
+ 
+ @since 4.0
+ */
+static NSString * const kPubNubPresenceChannelNameSuffix = @"-pnpres";
+
+
 #pragma mark Interface implementation
 
 @implementation PNChannel
@@ -42,6 +52,51 @@
 
     return [response componentsSeparatedByString:@","];
 }
+
+
+#pragma mark - Subscriber helper
+
++ (BOOL)isPresenceObject:(NSString *)object {
+    
+    return [object hasSuffix:kPubNubPresenceChannelNameSuffix];
+}
+
++ (NSString *)channelForPresence:(NSString *)presenceChannel {
+    
+    return [presenceChannel stringByReplacingOccurrencesOfString:kPubNubPresenceChannelNameSuffix
+                                                      withString:@""];
+}
+
++ (NSArray *)presenceChannelsFrom:(NSArray *)names {
+    
+    NSMutableSet *presenceNames = [[NSMutableSet alloc] initWithCapacity:[names count]];
+    for (NSString *name in names) {
+        
+        NSString *targetName = name;
+        if (![name hasSuffix:kPubNubPresenceChannelNameSuffix]) {
+            
+            targetName = [name stringByAppendingString:kPubNubPresenceChannelNameSuffix];
+        }
+        [presenceNames addObject:targetName];
+    }
+    
+    return [[presenceNames allObjects] copy];
+}
+
++ (NSArray *)objectsWithOutPresenceFrom:(NSArray *)names {
+    
+    NSMutableSet *filteredNames = [[NSMutableSet alloc] initWithCapacity:[names count]];
+    for (NSString *name in names) {
+        
+        if (![name hasSuffix:kPubNubPresenceChannelNameSuffix]) {
+            
+            [filteredNames addObject:name];
+        }
+    }
+    
+    return [[filteredNames allObjects] copy];
+}
+
 
 #pragma mark -
 

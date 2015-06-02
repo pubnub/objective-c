@@ -7,15 +7,17 @@
 #import "PubNub+SubscribePrivate.h"
 #import "PubNub+PresencePrivate.h"
 #import "PNObjectEventListener.h"
-#import "PNResponse+Private.h"
-#import "PNRequest+Private.h"
+#import "PNRequestParameters.h"
 #import "PNResult+Private.h"
 #import "PNStatus+Private.h"
-#import "PubNub+Presence.h"
-#import "PubNub+Time.h"
-#import "PNConstants.h"
-#import "PNHelpers.h"
-#import "PNLog.h"
+#import "PNConfiguration.h"
+#import "PNStateListener.h"
+#import "PNReachability.h"
+#import "PNClientState.h"
+#import "PNSubscriber.h"
+#import <UIKit/UIKit.h>
+#import "PNHeartbeat.h"
+#import "PNNetwork.h"
 
 
 #pragma mark Static
@@ -26,8 +28,8 @@
  @since 4.0
  */
 DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNReachabilityLogLevel|
-                                            PNFailureStatusLogLevel|PNAPICallLogLevel|
-                                            PNAESErrorLogLevel);
+                                     PNFailureStatusLogLevel|PNAPICallLogLevel|
+                                     PNAESErrorLogLevel);
 
 
 #pragma mark - Protected interface declaration
@@ -37,184 +39,78 @@ DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNReachabilityLogLevel|
 
 #pragma mark - Properties
 
-@property (nonatomic, strong) dispatch_queue_t configurationAccessQueue;
-@property (nonatomic, strong) dispatch_queue_t subscribeQueue;
-@property (nonatomic, strong) dispatch_queue_t serviceQueue;
-
-/**
- @brief Stores reference on unique device identifier based on bundle identifier used by software
-        vendor.
- 
- @since 4.0
- */
-@property (nonatomic, copy) NSString *deviceID;
-
+@property (nonatomic, strong) dispatch_queue_t callbackQueue;
+@property (nonatomic, copy) PNConfiguration *configuration;
+@property (nonatomic, strong) PNSubscriber *subsceriberManager;
+@property (nonatomic, strong) PNClientState *clientStateManager;
+@property (nonatomic, strong) PNStateListener *listenersManager;
+@property (nonatomic, strong) PNHeartbeat *heartbeatManager;
 @property (nonatomic, assign) PNStatusCategory recentClientStatus;
 
 /**
- @brief  Stores whether remote service ping active at this moment or not.
+ @brief Stores reference on \b PubNub network manager configured to be used for 'subscription' API 
+        group with long-polling.
  
  @since 4.0
  */
-@property (nonatomic, assign, getter = pingingRemoteService) BOOL pingRemoteService;
+@property (nonatomic, strong) PNNetwork *subscriptionNetwork;
 
 /**
- @brief Stores reference on session with pre-configured options useful for 'subscription' API group
-        with long-polling.
- 
- @since 4.0
- */
-@property (nonatomic, strong) AFHTTPSessionManager *subscriptionSession;
-
-/**
- @brief Stores reference on session with pre-configured options useful for 'non-subscription' API 
+ @brief Stores reference on \b PubNub network manager configer to be used for 'non-subscription' API
         group.
  
  @since 4.0
  */
-@property (nonatomic, strong) AFHTTPSessionManager *serviceSession;
+@property (nonatomic, strong) PNNetwork *serviceNetwork;
 
 /**
- @brief  Stores reference on queue which is used by \a AFNetworking to issue tasks completion.
- @discussion Queue is targetting configuration queue to serialize access to shared resources.
+ @brief  Stores reference on reachability helper.
+ @discussion Helper used by client to know about when something happened with network and when it is
+             safe to issue requests to \b PubNub network.
  
  @since 4.0
  */
-@property (nonatomic, strong) dispatch_queue_t sessionTaskCompletionQueue;
-
-/**
- @brief      Stores reference on list of sessions which has been issues with invalidate and waiting 
-             for their tasts completion.
- @discussion This array temporally store reference on previous sessions to allow them complete tasks
-             and report back before complete invalidation.
- 
- @since 4.0
- */
-@property (nonatomic, strong) NSMutableArray *sessions;
-
-/**
- @brief  Stores reference on reachability monitor used to track state of network connection.
- 
- @since 4.0
- */
-@property (nonatomic, strong) AFNetworkReachabilityManager *reachabilityManager;
-@property (nonatomic, assign) AFNetworkReachabilityStatus reachabilityStatus;
+@property (nonatomic, strong) PNReachability *reachability;
 
 
 #pragma mark - Initialization
 
 /**
- @brief      Initialize \b PubNub client instance with pre-defined publish and subscribe keys.
- @discussion If all keys will be specified, client will be able to read and modify data on
+ @brief      Initialize \b PubNub client instance with pre-defined configuration.
+ @discussion If all keys will be specified, client will be able to read and modify data on 
              \b PubNub service.
 
- @param publishKey   Key which allow client to use data push API.
- @param subscribeKey Key which allow client to subscribe on live feeds pushed from \b PubNub
-                     service.
+ @param configuration Reference on instance which store all user-provided information about how
+                      client should operate and handle events.
+ @param callbackQueue Reference on queue which should be used by client fot comletion block and 
+                      delegate calls.
 
  @return Initialized and ready to use \b PubNub client.
+ 
  @since 4.0
 */
-- (instancetype)initWithPublishKey:(NSString *)publishKey andSubscribeKey:(NSString *)subscribeKey;
+- (instancetype)initWithConfiguration:(PNConfiguration *)configuration
+                        callbackQueue:(dispatch_queue_t)callbackQueue NS_DESIGNATED_INITIALIZER;
 
 
 #pragma mark - Reachability
 
 /**
- @brief  Launch \a AFNetworking based reachability monitor.
- @discussion Monitor launched every time when clien state switch from disconnected to connected.
+ @brief      Complete reachability helper configuration.
  
  @since 4.0
  */
-- (void)startReachability;
+- (void)prepareReachability;
+
+
+#pragma mark - PubNub Network managers
 
 /**
- @brief  Terminate any active reachability monitors and reset state.
+ @brief  Initialize and configure required \b PubNub network managers.
  
  @since 4.0
  */
-- (void)stopReachability;
-
-/**
- @brief      Launch remote service pinging process till successful response will be received.
- @discussion Ping is used as confirmation what network again become available and subscription 
-             process should be restored.
- 
- @since 4.0
- */
-- (void)startRemoteServicePing;
-
-
-#pragma mark - Sessions
-
-/**
- @brief  Construct basic URL session configuration which can be extended.
- 
- @return Basic URL session configuration.
- 
- @since 4.0
- */
-- (NSURLSessionConfiguration *)baseConfiguration;
-
-/**
- @brief  Construct reference on URL session for long-polling non-concurrent requests.
- 
- @return Pre-configured session manager.
- 
- @since 4.0
- */
-- (AFHTTPSessionManager *)sessionForLongPollingRequests;
-
-/**
- @brief  Construct reference on URL session for immediate concurrent requests.
- 
- @return Pre-configured session manager.
- 
- @since 4.0
- */
-- (AFHTTPSessionManager *)sessionForImmediateRequests;
-
-/**
- @brief  Invalidate specified session.
- @discussion Depending on whether \c waitForTaskCompletion is set to \c YES or not, session will 
-             wait for tasks completion before reporting invalidation.
-             This method required to store session which is about to invalidate (so it won't release
-             with incompleted tasks).
- 
- @param sessionManager        Reference on HTTP manager which wotk with URL session and should be 
-                              invalidated.
- @param waitForTaskCompletion Whether manager should let session to complete all tasks or not.
- 
- @since 4.0
- */
-- (void)invalidateSession:(AFHTTPSessionManager *)sessionManager
-      afterTaskCompletion:(BOOL)waitForTaskCompletion;
-
-
-#pragma mark - URL composition
-
-/**
- @brief  Construct base NSURL using \c origin provided during client configuration.
- 
- @return Base URL which can be used as request path prefixes.
- 
- @since 4.0
- */
-- (NSURL *)baseServiceURL;
-
-/**
- @brief      Construct complete NSURL for request.
- @discussion NSURL built using output of \a -baseServiceURL concat with resource relative path and
-             encoded query string.
- 
- @param resourcePath Reference on relative to base service URL resource path.
- @param parameters   Reference on list of query parameters which should be appended to request.
- 
- @return Complete NSURL instance which can be used for request.
- 
- @since 4.0
- */
-- (NSURL *)requestURLWithPath:(NSString *)resourcePath andParameters:(NSDictionary *)parameters;
+- (void)prepareNetworkManagers;
 
 
 #pragma mark - Handlers
@@ -242,7 +138,7 @@ DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNReachabilityLogLevel|
 #pragma mark - Logger
 
 /**
- @brief  Called by Cocoa Lumberjack during initalization.
+ @brief  Called by Cocoa Lumberjack during initialization.
  
  @return Desired logger level for \b PubNub client main class.
  
@@ -266,803 +162,175 @@ DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNReachabilityLogLevel|
 }
 
 
-#pragma mark - Information and configuration
+#pragma mark - Information
 
-- (void)commitConfiguration:(dispatch_block_t)block {
-
-    __weak __typeof(self) weakSelf = self;
-    dispatch_barrier_async(self.configurationAccessQueue, ^{
-        
-        __strong __typeof(self) strongSelf = weakSelf;
-        
-        // Store current configuration value to identify what part of client will require for
-        // changes basing on updates information.
-        NSString *origin = [strongSelf.origin copy];
-        NSString *publishKey = [strongSelf.publishKey copy];
-        NSString *subscribeKey = [strongSelf.subscribeKey copy];
-        NSString *authKey = [strongSelf.authKey copy];
-        NSString *uuid = [strongSelf.uuid copy];
-        NSString *cipherKey = [strongSelf.cipherKey copy];
-        NSTimeInterval subscribeMaximumIdleTime = strongSelf.subscribeMaximumIdleTime;
-        NSTimeInterval nonSubscribeRequestTimeout = strongSelf.nonSubscribeRequestTimeout;
-        NSInteger presenceHeartbeatValue = strongSelf.presenceHeartbeatValue;
-        NSInteger presenceHeartbeatInterval = strongSelf.presenceHeartbeatInterval;
-        BOOL isTLSEnabled = strongSelf.isTLSEnabled;
-        BOOL keepTimeTokeOnListChange = strongSelf.shouldKeepTimeTokenOnListChange;
-        BOOL shouldRestoreSubscription = strongSelf.shouldRestoreSubscription;
-        BOOL shouldCatchUpOnRestore = strongSelf.shouldTryCatchUpOnSubscriptionRestore;
-        
-        // Performing client configuration change committed by user.
-        if (block) {
-
-            block();
-        }
-        
-        BOOL serviceOriginChanged = ![origin isEqualToString:strongSelf.origin];
-        BOOL publishKeyChanged = ![publishKey isEqualToString:strongSelf.publishKey];
-        BOOL subscribeKeyChanged = ![subscribeKey isEqualToString:strongSelf.subscribeKey];
-        BOOL authKeyChanged = ((authKey || strongSelf.authKey) &&
-                               ![authKey isEqualToString:strongSelf.authKey]);
-        BOOL uuidChanged = ((uuid || strongSelf.uuid) && ![uuid isEqualToString:strongSelf.uuid]);
-        BOOL cipherKeyChanged = ((cipherKey || strongSelf.cipherKey) &&
-                                 ![cipherKey isEqualToString:strongSelf.cipherKey]);
-        BOOL maximumSubscribeIdleChanged =  (subscribeMaximumIdleTime != strongSelf.subscribeMaximumIdleTime);
-        BOOL nonSubscribeTimeoutChanged =  (nonSubscribeRequestTimeout != strongSelf.nonSubscribeRequestTimeout);
-        BOOL heartbeatValueChanged =  (presenceHeartbeatValue != strongSelf.presenceHeartbeatValue);
-        BOOL heartbeatIntervalChanged =  (presenceHeartbeatInterval != strongSelf.presenceHeartbeatInterval);
-        BOOL TLSModeChanged = (isTLSEnabled != strongSelf.isTLSEnabled);
-        BOOL keepTimeTokeOnListChanged = (keepTimeTokeOnListChange != strongSelf.shouldKeepTimeTokenOnListChange);
-        BOOL shouldRestoreSubscriptionChanged = (shouldRestoreSubscription != strongSelf.shouldRestoreSubscription);
-        BOOL shouldCatchUpOnRestoreChanged = (shouldCatchUpOnRestore != strongSelf.shouldTryCatchUpOnSubscriptionRestore);
-        if (!serviceOriginChanged && !publishKeyChanged && !subscribeKeyChanged &&
-            !authKeyChanged && !uuidChanged && !cipherKeyChanged &&
-            !maximumSubscribeIdleChanged && !nonSubscribeTimeoutChanged && !heartbeatValueChanged &&
-            !heartbeatIntervalChanged && !TLSModeChanged && !keepTimeTokeOnListChanged &&
-            !shouldRestoreSubscriptionChanged && !shouldCatchUpOnRestoreChanged) {
-            
-            DDLogClientInfo(@"<PubNub> Configuration not changed.");
-        }
-        else {
-            
-            NSMutableString *configuration = [NSMutableString stringWithString:@"Configuration modification:\n"];
-            if (serviceOriginChanged) {
-                [configuration appendFormat:@"Changed from '%@' to '%@'\n",
-                 origin, strongSelf.origin];
-            }
-            if (publishKeyChanged) {
-                [configuration appendFormat:@"Publish key changed from '%@' to '%@'\n",
-                 publishKey, strongSelf.publishKey];
-            }
-            if (subscribeKeyChanged) {
-                [configuration appendFormat:@"Subscribe key changed from '%@' to '%@'\n",
-                 subscribeKey, strongSelf.subscribeKey];
-            }
-            if (authKeyChanged) {
-                [configuration appendFormat:@"Authorization key changed from '%@' to '%@'\n",
-                 authKey, strongSelf.authKey];
-            }
-            if (uuidChanged) {
-                [configuration appendFormat:@"UUID changed from '%@' to '%@'\n",
-                 uuid, strongSelf.uuid];
-            }
-            if (cipherKeyChanged) {
-                [configuration appendFormat:@"Cipher key changed from '%@' to '%@'\n",
-                 cipherKey, strongSelf.cipherKey];
-            }
-            if (maximumSubscribeIdleChanged) {
-                [configuration appendFormat:@"Maximum subscribe idle changed from '%@' to '%@'\n",
-                 @(subscribeMaximumIdleTime), @(strongSelf.subscribeMaximumIdleTime)];
-            }
-            if (nonSubscribeTimeoutChanged) {
-                [configuration appendFormat:@"Non-subscribe timeout changed from '%@' to '%@'\n",
-                 @(nonSubscribeRequestTimeout), @(strongSelf.nonSubscribeRequestTimeout)];
-            }
-            if (heartbeatValueChanged) {
-                [configuration appendFormat:@"Heartbeat value changed from '%@' to '%@'\n",
-                 @(presenceHeartbeatValue), @(strongSelf.presenceHeartbeatValue)];
-            }
-            if (heartbeatIntervalChanged) {
-                [configuration appendFormat:@"Heartbeat interval changed from '%@' to '%@'\n",
-                 @(presenceHeartbeatInterval), @(strongSelf.presenceHeartbeatInterval)];
-            }
-            if (TLSModeChanged) {
-                [configuration appendFormat:@"TLS mode changed from '%@' to '%@'\n",
-                 (isTLSEnabled ? @"YES" : @"NO"), (strongSelf.isTLSEnabled ? @"YES" : @"NO")];
-            }
-            if (keepTimeTokeOnListChanged) {
-                [configuration appendFormat:@"Keep time token on channels list change changed from "
-                                             " '%@' to '%@'\n",
-                 (keepTimeTokeOnListChange ? @"YES" : @"NO"),
-                 (strongSelf.shouldKeepTimeTokenOnListChange ? @"YES" : @"NO")];
-            }
-            if (shouldRestoreSubscriptionChanged) {
-                [configuration appendFormat:@"Should restore subscription changed from '%@' to '%@'\n",
-                 (shouldRestoreSubscription ? @"YES" : @"NO"),
-                 (strongSelf.shouldRestoreSubscription ? @"YES" : @"NO")];
-            }
-            if (shouldCatchUpOnRestoreChanged) {
-                [configuration appendFormat:@"Try catch up on subscribe restore changed from "
-                                             "'%@' to '%@'\n",
-                 (shouldCatchUpOnRestore ? @"YES" : @"NO"),
-                 (strongSelf.shouldTryCatchUpOnSubscriptionRestore ? @"YES" : @"NO")];
-            }
-            DDLogClientInfo(@"<PubNub> %@", configuration);
-        }
-
-        // Check whether base URL has been changed or not
-        if (!serviceOriginChanged && !TLSModeChanged) {
-
-            if (subscribeKeyChanged || authKeyChanged || uuidChanged ||
-                maximumSubscribeIdleChanged){
-
-                // Check whether request or session related information has been changed.
-                if (maximumSubscribeIdleChanged) {
-
-                    // Recreate subscription URL session with new configuration.
-                    [strongSelf invalidateSession:strongSelf.subscriptionSession
-                              afterTaskCompletion:NO];
-                    strongSelf.subscriptionSession = [strongSelf sessionForLongPollingRequests];
-                }
-                else {
-
-                    // Terminate all active tasks on long-polling URL session.
-                    NSArray *tasks = [strongSelf.subscriptionSession tasks];
-                    for (NSURLSessionDataTask *task in tasks) {
-
-                        [task cancel];
-                    }
-                }
-
-                // Resume subscription cycle.
-                [self restoreSubscriptionCycleIfRequired];
-            }
-            if (nonSubscribeTimeoutChanged) {
-
-                // Recreate service URL session with new configuration allowing exising operations
-                // to be completed.
-                [strongSelf invalidateSession:strongSelf.serviceSession afterTaskCompletion:YES];
-                strongSelf.serviceSession = [strongSelf sessionForImmediateRequests];
-            }
-            if (heartbeatValueChanged || heartbeatIntervalChanged) {
-
-                // Check whether heartbeat value important for service has been changed or not.
-                if (heartbeatValueChanged) {
-                    
-                    // Terminate all active tasks on long-polling URL session.
-                    NSArray *tasks = [strongSelf.subscriptionSession tasks];
-                    for (NSURLSessionDataTask *task in tasks) {
-                        
-                        [task cancel];
-                    }
-
-                    // Resume subscription cycle.
-                    [strongSelf restoreSubscriptionCycleIfRequired];
-                }
-                else {
-
-                    [strongSelf startHeartbeatIfRequired];
-                }
-            }
-        }
-        else {
-            
-            [strongSelf invalidateSession:strongSelf.subscriptionSession afterTaskCompletion:NO];
-            strongSelf.subscriptionSession = [strongSelf sessionForLongPollingRequests];
-            [strongSelf invalidateSession:strongSelf.serviceSession afterTaskCompletion:YES];
-            strongSelf.serviceSession = [strongSelf sessionForImmediateRequests];
-
-            // Resume subscription cycle.
-            [strongSelf restoreSubscriptionCycleIfRequired];
-        }
-    });
+- (NSString *)uuid {
+    
+    return self.configuration.uuid;
 }
 
 
 #pragma mark - Initialization
 
-+ (instancetype)clientWithPublishKey:(NSString *)publishKey
-                     andSubscribeKey:(NSString *)subscribeKey {
++ (instancetype)clientWithConfiguration:(PNConfiguration *)configuration {
     
-    PubNub *client = nil;
-    if ([publishKey length] && [subscribeKey length]) {
-
-        client = [[self alloc] initWithPublishKey:publishKey andSubscribeKey:subscribeKey];
-    }
-
-    return client;
+    return [[self alloc] initWithConfiguration:configuration
+                                 callbackQueue:dispatch_get_main_queue()];
 }
 
-- (instancetype)init {
-
-    @throw [NSException exceptionWithName:@"InitializerNotAllowed"
-                       reason:@"+new and -init methods can't be used with PubNub for instantiation."
-                               "Use +clientWithPublishKey:andSubscribeKey: for this purposes."
-                     userInfo:nil];
-
-    return nil;
++ (instancetype)clientWithConfiguration:(PNConfiguration *)configuration
+                          callbackQueue:(dispatch_queue_t)callbackQueue {
+    
+    return [[self alloc] initWithConfiguration:configuration callbackQueue:callbackQueue];
 }
 
-- (instancetype)initWithPublishKey:(NSString *)publishKey andSubscribeKey:(NSString *)subscribeKey {
+- (instancetype)initWithConfiguration:(PNConfiguration *)configuration
+                        callbackQueue:(dispatch_queue_t)callbackQueue {
     
     // Check whether initialization has been successful or not
     if ((self = [super init])) {
         
         [PNLog prepare];
-        _deviceID = [[[[UIDevice currentDevice] identifierForVendor] UUIDString] copy];
-        self.origin = kPNDefaultOrigin;
-        self.publishKey = publishKey;
-        self.subscribeKey = subscribeKey;
-        self.uuid = [[NSUUID UUID] UUIDString];
-        self.subscribeMaximumIdleTime = kPNDefaultSubscribeMaximumIdleTime;
-        self.nonSubscribeRequestTimeout = kPNDefaultNonSubscribeRequestTimeout;
-        self.TLSEnabled = kPNDefaultIsTLSEnabled;
-        self.keepTimeTokenOnListChange = kPNDefaultShouldKeepTimeTokenOnListChange;
-        self.restoreSubscription = kPNDefaultShouldRestoreSubscription;
-        self.catchUpOnSubscriptionRestore = kPNDefaultShouldTryCatchUpOnSubscriptionRestore;
-        self.callbackQueue = dispatch_get_main_queue();
+        _configuration = [configuration copy];
+        _callbackQueue = callbackQueue;
+        [self prepareNetworkManagers];
         
-        // Create queue which will be used to syncronize shared resources modification (client
-        // configuration) and other queue which would like to use them.
-        self.configurationAccessQueue = dispatch_queue_create("com.pubnub.configuration",
-                                                              DISPATCH_QUEUE_CONCURRENT);
-        
-        // Create queue which will be used to issue calls from subscription API group.
-        self.subscribeQueue = dispatch_queue_create("com.pubnub.subscription",
-                                                    DISPATCH_QUEUE_SERIAL);
-        
-        // Synchronize blocks call on subscribe queue with configuration access queue to serialize
-        // access to shared resources (client configuration).
-        dispatch_set_target_queue(self.subscribeQueue, self.configurationAccessQueue);
-        
-        // Create queue which will be used to issue calls from non-subscription API group.
-        self.serviceQueue = dispatch_queue_create("com.pubnub.service", DISPATCH_QUEUE_CONCURRENT);
-        
-        // Synchronize blocks call on service queue with configuration access queue to serialize
-        // access to shared resources (client configuration).
-        dispatch_set_target_queue(self.serviceQueue, self.configurationAccessQueue);
-
-        // Create queue which will be used by AFNetwork session managers to report about tasks
-        // processing results.
-        self.sessionTaskCompletionQueue = dispatch_queue_create("com.pubnub.task.completion",
-                                                                DISPATCH_QUEUE_CONCURRENT);
-
-        // Synchronize blocks call on completion block queue with configuration access queue to
-        // serialize access to shared resources (client configuration).
-        dispatch_set_target_queue(self.sessionTaskCompletionQueue, self.configurationAccessQueue);
-
-        self.sessions = [NSMutableArray new];
-        self.subscriptionSession = [self sessionForLongPollingRequests];
-        self.serviceSession = [self sessionForImmediateRequests];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(handleContextTransition:)
-                                                     name:UIApplicationWillEnterForegroundNotification
-                                                   object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(handleContextTransition:)
-                                                     name:UIApplicationDidEnterBackgroundNotification
-                                                   object:nil];
+        _subsceriberManager = [PNSubscriber subscriberForClient:self];
+        _clientStateManager = [PNClientState stateForClient:self];
+        _listenersManager = [PNStateListener stateListenerForClient:self];
+        _heartbeatManager = [PNHeartbeat heartbeatForClient:self];
         [self addListeners:@[self]];
-        [self startReachability];
+        [self prepareReachability];
+        
+        NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+        [notificationCenter addObserver:self selector:@selector(handleContextTransition:)
+                                   name:UIApplicationWillEnterForegroundNotification object:nil];
+        [notificationCenter addObserver:self selector:@selector(handleContextTransition:)
+                                   name:UIApplicationDidEnterBackgroundNotification object:nil];
     }
-    
     
     return self;
 }
 
-- (void)setOrigin:(NSString *)origin {
-    
-    _origin = [(origin?: kPNDefaultOrigin) copy];
-}
-
-- (void)setPublishKey:(NSString *)publishKey {
-
-    if (![publishKey length]) {
-
-        @throw [NSException exceptionWithName:@"UnacceptableValue"
-                                       reason:@"Publish key required property and can't be nil"
-                                     userInfo:nil];
-    }
-  
-    _publishKey = [publishKey copy];
-}
-
-- (void)setSubscribeKey:(NSString *)subscribeKey {
-
-    if (![subscribeKey length]) {
-
-        @throw [NSException exceptionWithName:@"UnacceptableValue"
-                                       reason:@"Subscribe key required property and can't be nil"
-                                     userInfo:nil];
-    }
-    
-    _subscribeKey = [subscribeKey copy];
-}
-
-- (void)setUUID:(NSString *)uuid {
-    
-    static NSString *_lifetimeUUID;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        
-        _lifetimeUUID = [uuid copy];
-    });
-    _uuid = [(uuid?: _lifetimeUUID) copy];
-}
-
 - (void)setRecentClientStatus:(PNStatusCategory)recentClientStatus {
     
-    __weak __typeof(self) weakSelf = self;
-    dispatch_barrier_async(self.configurationAccessQueue, ^{
+    // Check whether previous client state reported unexpected disconnection from remote data
+    // objects live feed or not.
+    PNStatusCategory previousState = self.recentClientStatus;
+    PNStatusCategory currentState = recentClientStatus;
+    
+    // In case if client disconnected only from one of it's channels it should keep 'connected'
+    // state.
+    if (currentState == PNDisconnectedCategory &&
+        ([[self channels] count] || [[self channelGroups] count] || [[self presenceChannels] count])) {
         
-        // Check whether previous client state reported unexpected disconnection from remote data
-        // objects live feed or not.
-        __strong __typeof(self) strongSelf = weakSelf;
-        PNStatusCategory previousState = strongSelf.recentClientStatus;
-        PNStatusCategory currentState = recentClientStatus;
-        
-        // In case if client disconnected only from one of it's channels it should keep 'connected'
-        // state.
-        if (currentState == PNDisconnectedCategory &&
-            ([[strongSelf channels] count] || [[strongSelf channelGroups] count] ||
-             [[strongSelf presenceChannels] count])) {
-            
-            currentState = PNConnectedCategory;
-        }
-        strongSelf->_recentClientStatus = currentState;
-        
-        // Check whether client reported unexpected disconnection.
-        if (currentState == PNUnexpectedDisconnectCategory) {
-            
-            // Check whether client unexpectedly disconnected while tried to subscribe or not.
-            if (previousState != PNUnknownCategory && previousState != PNDisconnectedCategory) {
-                
-                // Dispatching check block with small delay, which will alloow to fire reachability
-                // change event.
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)),
-                               dispatch_get_main_queue(), ^{
-                   
-                    __strong __typeof(self) strongSelfForDelayed = weakSelf;
-                    [strongSelfForDelayed startRemoteServicePing];
-                });
-            }
-        }
-    });
-}
-
-- (void)setCallbackQueue:(dispatch_queue_t)callbackQueue {
-    
-    _callbackQueue = (callbackQueue?: dispatch_get_main_queue());
-}
-
-- (void)setPresenceHeartbeatValue:(NSInteger)presenceHeartbeatValue {
-    
-    _presenceHeartbeatValue = MAX(5, presenceHeartbeatValue);
-    _presenceHeartbeatInterval = (_presenceHeartbeatValue - 3);
-}
-
-- (void)setPresenceHeartbeatInterval:(NSInteger)presenceHeartbeatInterval {
-    
-    _presenceHeartbeatInterval = (presenceHeartbeatInterval > _presenceHeartbeatValue ?
-                                  _presenceHeartbeatValue - 3: presenceHeartbeatInterval);
-}
-
-
-#pragma mark - URL composition
-
-- (NSURL *)baseServiceURL {
-    
-    NSString *scheme = (self.isTLSEnabled ? @"https://" : @"http://");
-    
-    return [NSURL URLWithString:[scheme stringByAppendingString:self.origin]];;
-}
-
-- (NSURL *)requestURLWithPath:(NSString *)resourcePath andParameters:(NSDictionary *)parameters {
-    
-    NSURL *url = [[self baseServiceURL] URLByAppendingPathComponent:resourcePath];
-    if (parameters) {
-        
-        NSArray *pairs = [PNArray mapObjects:[parameters allKeys] usingBlock:^id(id fieldName){
-            
-            return [NSString stringWithFormat:@"%@=%@", fieldName,
-                    [PNString percentEscapedString:parameters[fieldName]]];
-        }];
-        NSString *path = [[url absoluteString] stringByAppendingFormat:@"?%@",
-                          [pairs componentsJoinedByString:@"&"]];
-        url = [NSURL URLWithString:path];
+        currentState = PNConnectedCategory;
     }
+    self->_recentClientStatus = currentState;
     
-    return url;
+    // Check whether client reported unexpected disconnection.
+    if (currentState == PNUnexpectedDisconnectCategory) {
+        
+        // Check whether client unexpectedly disconnected while tried to subscribe or not.
+        if (previousState != PNUnknownCategory && previousState != PNDisconnectedCategory) {
+            
+            // Dispatching check block with small delay, which will alloow to fire reachability
+            // change event.
+            __weak __typeof(self) weakSelf = self;
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)),
+                           dispatch_get_main_queue(), ^{
+                               
+                // Silence static analyzer warnings.
+                // Code is aware about this case and at the end will simply call on 'nil' object method.
+                // This instance is one of client properties and if client already deallocated there is
+                // no need to this object which will be deallocated as well.
+                #pragma clang diagnostic push
+                #pragma clang diagnostic ignored "-Wreceiver-is-weak"
+                #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
+                [weakSelf.reachability startServicePing];
+                #pragma clang diagnostic pop
+            });
+        }
+    }
 }
 
 
 #pragma mark - Reachability
 
-- (void)startReachability {
-
+- (void)prepareReachability {
+    
     __weak __typeof(self) weakSelf = self;
-    [self stopReachability];
-    dispatch_barrier_async(self.configurationAccessQueue, ^{
-
-        __strong __typeof(self) strongSelf = weakSelf;
-        strongSelf.reachabilityStatus = AFNetworkReachabilityStatusUnknown;
-        strongSelf.reachabilityManager = [AFNetworkReachabilityManager managerForDomain:strongSelf.origin];
-        [strongSelf.reachabilityManager setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
-            
-            __strong __typeof(self) strongSelfForHandler = weakSelf;
-            if (status == AFNetworkReachabilityStatusReachableViaWiFi) {
-                
-                DDLogReachability(@"<PubNub> Network available via WiFi");
-            } else if (status == AFNetworkReachabilityStatusReachableViaWWAN) {
-                
-                DDLogReachability(@"<PubNub> Network available via WWAN");
-            } else if (status == AFNetworkReachabilityStatusNotReachable &&
-                       strongSelfForHandler.reachabilityStatus != status) {
-                
-                DDLogReachability(@"<PubNub> Network not available");
-            }
-            
-            AFNetworkReachabilityStatus previousStatus = strongSelfForHandler.reachabilityStatus;
-            strongSelfForHandler.reachabilityStatus = status;
-            if (previousStatus == AFNetworkReachabilityStatusNotReachable &&
-                status != AFNetworkReachabilityStatusNotReachable &&
-                status != AFNetworkReachabilityStatusUnknown) {
-                
-                DDLogReachability(@"<PubNub> Connection restored.");
-                
-                // Launch service ping process.
-                [strongSelfForHandler startRemoteServicePing];
-            }
-            else if (status == AFNetworkReachabilityStatusNotReachable &&
-                     previousStatus != AFNetworkReachabilityStatusNotReachable &&
-                     previousStatus != AFNetworkReachabilityStatusUnknown) {
-                
-                DDLogReachability(@"<PubNub> Connection went down.");
-            }
-        }];
+    _reachability = [PNReachability reachabilityForClient:self
+                                           withPingStatus:^(BOOL pingSuccessful) {
         
-        DDLogReachability(@"<PubNub> Start reachability monitor for: %@", strongSelf.origin);
-        [strongSelf.reachabilityManager startMonitoring];
-    });
-}
-
-- (void)stopReachability {
-
-    __weak __typeof(self) weakSelf = self;
-    dispatch_barrier_async(self.configurationAccessQueue, ^{
-
-        __strong __typeof(self) strongSelf = weakSelf;
-        strongSelf.reachabilityStatus = AFNetworkReachabilityStatusUnknown;
-        if (strongSelf.reachabilityManager) {
+        if (pingSuccessful) {
             
-            DDLogReachability(@"<PubNub> Stop reachability monitor for: %@", strongSelf.origin);
-            [strongSelf.reachabilityManager stopMonitoring];
-            strongSelf.reachabilityManager = nil;
+            // Silence static analyzer warnings.
+            // Code is aware about this case and at the end will simply call on 'nil' object method.
+            // This instance is one of client properties and if client already deallocated there is
+            // no need to this object which will be deallocated as well.
+            #pragma clang diagnostic push
+            #pragma clang diagnostic ignored "-Wreceiver-is-weak"
+            #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
+            [weakSelf.reachability stopServicePing];
+            [weakSelf.subsceriberManager restoreSubscriptionCycleIfRequired];
+            #pragma clang diagnostic pop
         }
-    });
-}
-
-- (void)startRemoteServicePing {
-    
-    __weak __typeof(self) weakSelf = self;
-    dispatch_async([self serviceQueue], ^{
-        
-        __strong __typeof(self) strongSelf = weakSelf;
-        if (!strongSelf.pingingRemoteService) {
-            
-            strongSelf.pingRemoteService = YES;
-            
-            // Try to request 'time' API to ensure what network really available.
-            [strongSelf timeWithCompletion:^(PNResult *result, __unused PNStatus *requestStatus) {
-                
-                __strong __typeof(self) strongSelfForResponse = weakSelf;
-                if (result.data) {
-                    
-                    [strongSelfForResponse restoreSubscriptionCycleIfRequired];
-                    [strongSelfForResponse startHeartbeatIfRequired];
-                }
-                else if (strongSelfForResponse.reachabilityManager &&
-                         strongSelfForResponse.reachabilityStatus != AFNetworkReachabilityStatusNotReachable) {
-                    
-                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)),
-                                   dispatch_get_main_queue(), ^{
-                                       
-                                       __strong __typeof(self) strongSelfForDelayed = weakSelf;
-                                       [strongSelfForDelayed startRemoteServicePing];
-                                   });
-                }
-                strongSelfForResponse.pingRemoteService = NO;
-            }];
-        }
-    });
-}
-
-
-#pragma mark - Sessions
-
-- (NSURLSessionConfiguration *)baseConfiguration {
-    
-    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration ephemeralSessionConfiguration];
-    configuration.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
-    configuration.HTTPShouldUsePipelining = YES;
-    configuration.HTTPAdditionalHeaders = @{@"Accept":@"*/*",
-                                            @"Accept-Encoding":@"gzip,deflate",
-                                            @"Connection":@"keep-alive"};
-    
-    return configuration;
-}
-
-- (AFHTTPSessionManager *)sessionForLongPollingRequests {
-    
-    NSURLSessionConfiguration *configuration = [self baseConfiguration];
-    configuration.timeoutIntervalForRequest = self.subscribeMaximumIdleTime;
-    configuration.HTTPMaximumConnectionsPerHost = 1;
-    AFHTTPSessionManager *sessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:[self baseServiceURL]
-                                                                    sessionConfiguration:configuration];
-    [sessionManager setCompletionQueue:self.sessionTaskCompletionQueue];
-    
-    // Configure sessions to re-initialize after it has been invalidated.
-    __weak __typeof(self) weakSelf = self;
-    [sessionManager setSessionDidBecomeInvalidBlock:^(NSURLSession *session,
-                                                      __unused NSError *error) {
-        
-        __strong __typeof(self) strongSelf = weakSelf;
-        dispatch_barrier_async(strongSelf.configurationAccessQueue, ^{
-            
-            for (AFHTTPSessionManager *manager in strongSelf.sessions) {
-                
-                if ([manager.session isEqual:session]) {
-                    
-                    [strongSelf.sessions removeObject:manager];
-                    break;
-                }
-            }
-        });
     }];
-
-    return sessionManager;
 }
 
-- (AFHTTPSessionManager *)sessionForImmediateRequests {
-    
-    NSURLSessionConfiguration *configuration = [self baseConfiguration];
-    configuration.timeoutIntervalForRequest = self.nonSubscribeRequestTimeout;
-    configuration.HTTPMaximumConnectionsPerHost = 3;
-    AFHTTPSessionManager *sessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:[self baseServiceURL]
-                                                                    sessionConfiguration:configuration];
-    [sessionManager setCompletionQueue:self.sessionTaskCompletionQueue];
-    
-    // Configure sessions to re-initialize after it has been invalidated.
-    __weak __typeof(self) weakSelf = self;
-    [sessionManager setSessionDidBecomeInvalidBlock:^(NSURLSession *session,
-                                                      __unused NSError *error) {
-        
-        __strong __typeof(self) strongSelf = weakSelf;
-        dispatch_barrier_async(strongSelf.configurationAccessQueue, ^{
-            
-            for (AFHTTPSessionManager *manager in strongSelf.sessions) {
-                
-                if ([manager.session isEqual:session]) {
-                    
-                    [strongSelf.sessions removeObject:manager];
-                    break;
-                }
-            }
-        });
-    }];
 
-    return sessionManager;
-}
+#pragma mark - PubNub Network managers
 
-- (void)invalidateSession:(AFHTTPSessionManager *)sessionManager
-      afterTaskCompletion:(BOOL)waitForTaskCompletion {
+- (void)prepareNetworkManagers {
     
-    [self.sessions addObject:sessionManager];
-    [sessionManager invalidateSessionCancelingTasks:!waitForTaskCompletion];
+    _subscriptionNetwork = [PNNetwork networkForClient:self
+                                        requestTimeout:_configuration.subscribeMaximumIdleTime
+                                    maximumConnections:1 longPoll:YES];
+    _serviceNetwork = [PNNetwork networkForClient:self
+                                   requestTimeout:_configuration.nonSubscribeRequestTimeout
+                               maximumConnections:3 longPoll:NO];
 }
 
 
 #pragma mark - Operation processing
 
-- (void)processRequest:(PNRequest *)request {
+- (void)processOperation:(PNOperationType)operationType
+          withParameters:(PNRequestParameters *)parameters
+         completionBlock:(id)block {
 
-    __weak __typeof(self) weakSelf = self;
-    void(^processingBlock)(AFHTTPSessionManager *) = ^(AFHTTPSessionManager *session){
+    [self processOperation:operationType withParameters:parameters data:nil completionBlock:block];
+}
 
-        // Check whether passed operation is from long-polling dependant operations or not
-        if (request.operation == PNSubscribeOperation ||
-            request.operation == PNUnsubscribeOperation) {
-
-            // Previous long-poll operation should be terminated.
-            NSArray *activeTasks = [[session tasks] copy];
-            [activeTasks enumerateObjectsUsingBlock:^(NSURLSessionTask *task,
-                                                      __unused NSUInteger taskIdx,
-                                                      __unused BOOL *tasksEnumeratorStop) {
-
-                // Cancel task w/o waiting for it's processing results.
-                [task cancel];
-            }];
-        }
-        
-        // Add parameters required 
-        NSMutableDictionary *query = [request.parameters mutableCopy];
-        [query addEntriesFromDictionary:@{@"uuid":self.uuid,@"deviceid":self.deviceID,
-                                          @"pnsdk":[NSString stringWithFormat:@"PubNub-%@/%@",
-                                                    kPNClientName, kPNLibraryVersion]}];
-        if ([self.authKey length]) {
-            
-            query[@"auth"] = self.authKey;
-        }
-        void(^success)(id,id) = ^(NSURLSessionDataTask *task, id responseObject) {
-            
-            __strong __typeof(self) strongSelf = weakSelf;
-            [strongSelf handleRequestSuccess:request withTask:task andData:responseObject];
-        };
-        void(^failure)(id, id) = ^(id task, id error) {
-            
-            __strong __typeof(self) strongSelf = weakSelf;
-            [strongSelf handleRequestFailure:request withTask:task andError:error];
-        };
-
-        if (ddLogLevel & PNRequestLogLevel) {
-            
-            NSString *queryString = [PNDictionary queryStringFrom:query];
-            DDLogRequest(@"<PubNub> %@ %@%@%@%@", (request.body ? @"POST" : @"GET"),
-                         [session.baseURL absoluteString], request.resourcePath,
-                         (queryString ? @"?" : @""), (queryString?: @""));
-        }
-        
-        // Check whether API endpoint specified completion block or default processing route should
-        // be used.
-        if (!request.completionBlock) {
-            
-            request.completionBlock = ^(PNRequest *completedRequest) {
-                
-                // Construct corresponding data objects which should be delivered through completion
-                // block.
-                __strong __typeof(self) strongSelf = weakSelf;
-                PNResult *result = nil;
-                PNStatus *status = nil;
-                [strongSelf getResult:&result andStatus:&status forRequest:completedRequest];
-                [strongSelf callBlock:completedRequest.reportBlock status:NO withResult:result
-                            andStatus:status];
-            };
-        }
-        
-        // Check whether request should pass binary data with POST body or not.
-        if (!request.body) {
-
-            [session GET:request.resourcePath parameters:query success:success failure:failure];
-        }
-        else {
-
-            __strong __typeof(self) strongSelf = weakSelf;
-            
-            // AFNetwork has it's own route on composing requests for POST with body.
-            // Build own request with pre-defined header fields and body before passing to
-            // AFNetwork session manager.
-            NSURL *url = [strongSelf requestURLWithPath:request.resourcePath andParameters:query];
-            NSMutableURLRequest *httpRequest = [session.requestSerializer requestWithMethod:@"POST"
-                                                 URLString:[url absoluteString] parameters:nil
-                                                                                     error:nil];
-            httpRequest.allHTTPHeaderFields = @{@"Content-Encoding":@"gzip",
-                                                @"Content-Type":@"application/json;charset=UTF-8",
-                                                @"Content-Length":[NSString stringWithFormat:@"%@",
-                                                                   @([request.body length])]};
-            [httpRequest setHTTPBody:request.body];
-            
-            // Create request data task which will send our request with specified body to PubNub
-            // service.
-            __block NSURLSessionDataTask *task = [session dataTaskWithRequest:httpRequest
-                                                    completionHandler:^(__unused NSURLResponse *response,
-                                                                        id responseObject,
-                                                                        NSError *error) {
-                                                        
-                (!error ? success : failure)(task, (error?: responseObject));
-            }];
-            [task resume];
-        }
-    };
+- (void)processOperation:(PNOperationType)operationType
+          withParameters:(PNRequestParameters *)parameters data:(NSData *)data
+         completionBlock:(id)block {
     
-    if (request.operation == PNSubscribeOperation || request.operation == PNUnsubscribeOperation) {
+    if (operationType == PNSubscribeOperation || operationType == PNUnsubscribeOperation) {
 
-        // Block executed w/o switching to queue because switching done on 'subscribe' API group
-        // level to control commands execution.
-        processingBlock(self.subscriptionSession);
+        [self.subscriptionNetwork processOperation:operationType withParameters:parameters
+                                              data:data completionBlock:block];
     }
     else {
-        
-        dispatch_async(self.serviceQueue, ^{
-            
-            __strong __typeof(self) strongSelf = weakSelf;
-            processingBlock(strongSelf.serviceSession);
-        });
+
+        [self.serviceNetwork processOperation:operationType withParameters:parameters
+                                         data:data completionBlock:block];
     }
 }
 
-- (void)handleRequestSuccess:(PNRequest *)request withTask:(NSURLSessionDataTask *)task
-                     andData:(id)data {
+- (void)cancelAllLongPollingOperations {
     
-    request.response = [PNResponse responseWith:(NSHTTPURLResponse *)task.response
-                                     forRequest:task.currentRequest
-                                       withData:data andError:nil];
-    if (request.completionBlock) {
-        
-        request.completionBlock(request);
-    }
+    [self.subscriptionNetwork cancelAllRequests];
 }
 
-- (void)handleRequestFailure:(PNRequest *)request withError:(NSError *)error {
+#pragma mark - Operation information
 
-    [self handleRequestFailure:request withTask:nil andError:error];
-}
-
-- (void)handleRequestFailure:(PNRequest *)request withTask:(NSURLSessionDataTask *)task
-                    andError:(NSError *)error {
-
-    NSError *processingError = error;
-    id errorDetails = nil;
+- (void)appendClientInformation:(PNResult *)result {
     
-    // Try to fetch server response if available.
-    if (error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey]) {
-        
-        // In most cases service provide JSON error response. Try de-serialize it.
-        NSError *deSerializationError;
-        NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
-        errorDetails = [NSJSONSerialization JSONObjectWithData:errorData
-                                                       options:(NSJSONReadingOptions)0
-                                                         error:&deSerializationError];
-        
-        // Check whether JSON de-serialization failed and try to pull regular string
-        // from response.
-        if (!errorDetails) {
-            
-            errorDetails = [[NSString alloc] initWithData:errorData encoding:NSUTF8StringEncoding];
-        }
-        if (deSerializationError) {
-            
-            processingError = deSerializationError;
-        }
-    }
-    else if (error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey]) {
-        
-        errorDetails = error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey];
-    }
-    
-    // Update request with information about it's processing results.
-    request.response = [PNResponse responseWith:(NSHTTPURLResponse *)task.response
-                                     forRequest:task.currentRequest
-                                       withData:errorDetails andError:processingError];
-    if (request.completionBlock) {
-        
-        request.completionBlock(request);
-    }
-    else {
-        
-        // Construct corresponding data objects which should be delivered through completion
-        // block.
-        PNResult *result = nil;
-        PNStatus *status = nil;
-        [self getResult:&result andStatus:&status forRequest:request];
-        [self callBlock:request.reportBlock status:NO withResult:result andStatus:status];
-    }
-}
-
-- (void)cancelAllLongPollRequests {
-
-    __weak __typeof(self) weakSelf = self;
-    dispatch_barrier_async(self.configurationAccessQueue, ^{
-
-        // Previous long-poll operation should be terminated.
-        __strong __typeof(self) strongSelf = weakSelf;
-        NSArray *tasks = [[strongSelf.subscriptionSession tasks] copy];
-        [tasks enumerateObjectsUsingBlock:^(NSURLSessionTask *task, __unused NSUInteger taskIdx,
-                                            __unused BOOL *tasksEnumeratorStop) {
-
-            // Cancel task w/o waiting for it's processing results.
-            [task cancel];
-        }];
-    });
+    result.TLSEnabled = self.configuration.isTLSEnabled;
+    result.uuid = self.configuration.uuid;
+    result.authKey = self.configuration.authKey;
+    result.origin = self.configuration.origin;
 }
 
 
@@ -1070,12 +338,6 @@ DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNReachabilityLogLevel|
 
 - (void)callBlock:(id)block status:(BOOL)callingStatusBlock withResult:(PNResult *)result
         andStatus:(PNStatus *)status {
-
-    // Check whether result information should be post-processed or not.
-    if (status) {
-
-        [self completeStatusObject:status];
-    }
     
     if (result) {
             
@@ -1103,15 +365,8 @@ DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNReachabilityLogLevel|
                 ((PNCompletionBlock)block)(result, status);
             }
             else {
-                
-                PNStatus *targetStatus = status;
-                if (status.category == PNConnectedCategory ||
-                    status.category == PNDisconnectedCategory) {
-                    
-                    targetStatus = [status copy];
-                    [targetStatus revertToOriginalCategory];
-                }
-                ((PNStatusBlock)block)(targetStatus);
+
+                ((PNStatusBlock)block)(status);
             }
         });
     }
@@ -1124,32 +379,6 @@ DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNReachabilityLogLevel|
         
         self.recentClientStatus = status.category;
     }
-}
-
-
-#pragma mark - Processing
-
-- (void)getResult:(PNResult *__autoreleasing *)result andStatus:(PNStatus *__autoreleasing *)status
-       forRequest:(PNRequest *)request{
-    
-    // Construct corresponding data objects which should be delivered through completion block.
-    *result = nil;
-    *status = nil;
-    if (request.response.error || request.response.response.statusCode != 200) {
-        
-        *status = [PNStatus statusForRequest:request withError:request.response.error];
-    }
-    else {
-        
-        *result = [PNResult resultForRequest:request];
-    }
-}
-
-- (void)completeStatusObject:(in PNStatus *)status {
-    
-    status.uuid = self.uuid;
-    status.TLSEnabled = self.isTLSEnabled;
-    status.authKey = self.authKey;
 }
 
 
@@ -1172,12 +401,11 @@ DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNReachabilityLogLevel|
 
 - (void)dealloc {
     
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:UIApplicationWillEnterForegroundNotification
-                                                  object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:UIApplicationDidEnterBackgroundNotification
-                                                  object:nil];
+    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+    [notificationCenter removeObserver:self name:UIApplicationWillEnterForegroundNotification
+                                object:nil];
+    [notificationCenter removeObserver:self name:UIApplicationDidEnterBackgroundNotification
+                                object:nil];
 }
 
 #pragma mark -
