@@ -26,6 +26,8 @@
 
 @property(nonatomic, strong) NSTimer *timer;
 
+@property(nonatomic, strong) PNConfiguration *myConfig;
+
 
 #pragma mark - Configuration
 
@@ -42,14 +44,20 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
+#pragma mark - PAM Use Case Config
+
     // Settings Config for PAM Example
+    // Uncomment this section line for a PAM use-case example
+
     // http://www.pubnub.com/console/?channel=good&origin=d.pubnub.com&sub=pam&pub=pam&cipher=&ssl=false&secret=pam&auth=myAuthKey
 
-//    self.channel1 = @"bad";
-//    self.channel2 = @"good";
-//    self.pubKey = @"pam";
-//    self.subKey = @"pam";
-//    self.authKey = @"myAuthKey";
+    // self.channel1 = @"bad";
+    // self.channel2 = @"good";
+    // self.pubKey = @"pam";
+    // self.subKey = @"pam";
+    // self.authKey = @"myAuthKey";
+
+#pragma mark - Non-PAM Use Case Config
 
     // Settings Config for Non-PAM Example
     self.channel1 = @"bot";
@@ -58,21 +66,27 @@
     self.subKey = @"demo-36";
     self.authKey = @"myAuthKey";
 
-
     [self tireKicker];
     return YES;
 }
 
 - (void)tireKicker {
     [self pubNubInit];
-    [self pubNubTime];
-    //[self pubNubHistory];
+//    [self pubNubTime];
+//    [self pubNubHistory];
+//    [self pubNubHereNow];
+//    [self pubNubCGAdd];
+//    [self pubNubCGRemoveAllChannels];
+//    [self pubNubCGRemoveSomeChannels];
+//    [self pubNubWhereNow];
+
     [self pubNubSubscribe];
 }
 
 - (void)pubNubInit {
     // Initialize PubNub client.
-    self.client = [PubNub clientWithPublishKey:_pubKey andSubscribeKey:_subKey];
+    // Initialize PubNub client.
+    self.myConfig = [PNConfiguration configurationWithPublishKey:_pubKey subscribeKey:_subKey];
 
     // Bind didReceiveMessage, didReceiveStatus, and didReceivePresenceEvent 'listeners' to this delegate
     // just be sure the target has implemented the PNObjectEventListener extension
@@ -82,41 +96,85 @@
     [PNLog enableLogLevel:PNRequestLogLevel];
     [self updateClientConfiguration];
     [self printClientConfiguration];
-}
 
-//- (void)delayedSub {
-//    NSLog(@"Timer Called");
-//    [self.client subscribeToChannels:@[_channel2] withPresence:NO andCompletion:^(PNStatus *status) {
-//        if (!status.isError) {
-//            NSLog(@"^^^^Second Subscribe request succeeded at timetoken %@.", status.currentTimetoken);
-//        } else {
-//            NSLog(@"^^^^Second Subscribe request did not succeed. All subscribe operations will autoretry when possible.");
-//            [self handleStatus:status];
-//        }
-//    }];
-//}
+    self.client = [PubNub clientWithConfiguration:self.myConfig];
+
+}
 
 - (void)pubNubSubscribe {
     // Subscribe
 
-    [self.client subscribeToChannels:@[_channel1] withPresence:NO andCompletion:^(PNStatus *status) {
+    [self.client subscribeToChannels:@[_channel1] withPresence:NO];
 
-        // There are two places to monitor for the outcomes of a subscribe.
+}
 
-        // The first place is here, within the subscribe status completion block.
-        // Here we monitor subscribe events that we care about only at subscribe call time.
-        // This context will disappear after the initial subscribe connect event.
+- (void)pubNubWhereNow {
+    [self.client whereNowUUID:@"12345" withCompletion:^(PNResult *result, PNStatus *status) {
+        if (status) {
+            // As a status, this contains error or non-error information about the history request, but not the actual history data I requested.
+            // Timeout Error, PAM Error, etc.
 
-        // Subsequent subscribe loop status events are received within didReceiveStatus listener
-        // And the messages that arrive via this subscribe call are received via the didReceiveMessage listener
-
-        if (!status.isError) {
-            NSLog(@"^^^^Subscribe request succeeded at timetoken %@.", status.currentTimetoken);
-            //self.timer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(delayedSub) userInfo:nil repeats:NO];
-        } else {
-            NSLog(@"^^^^Second Subscribe request did not succeed. All subscribe operations will autoretry when possible.");
             [self handleStatus:status];
         }
+        else if (result) {
+            // As a result, this contains the messages, start, and end timetoken in the data attribute
+
+            NSLog(@"^^^^ Loaded whereNow data: %@", result.data);  // TODO: Call out data attributes here
+        }
+    }];
+}
+
+- (void)pubNubCGRemoveSomeChannels {
+    [self.client removeChannels:@[_channel2] fromGroup:@"myChannelGroup" withCompletion:^(PNStatus *status) {
+        if (!status.isError) {
+            NSLog(@"^^^^CG Remove Some Channels request succeeded at timetoken %@.", status.currentTimetoken);
+        } else {
+            NSLog(@"^^^^CG Remove Some Channels request did not succeed. All subscribe operations will autoretry when possible.");
+            [self handleStatus:status];
+        }
+    }];
+}
+
+- (void)pubNubCGRemoveAllChannels {
+    [self.client removeChannelsFromGroup:@"myChannelGroup" withCompletion:^(PNStatus *status) {
+        if (!status.isError) {
+            NSLog(@"^^^^CG Remove All Channels request succeeded at timetoken %@.", status.currentTimetoken);
+        } else {
+            NSLog(@"^^^^CG Remove All Channels request did not succeed. All subscribe operations will autoretry when possible.");
+            [self handleStatus:status];
+        }
+    }];
+}
+
+
+- (void)pubNubCGAdd {
+    [self.client addChannels:@[_channel1, _channel2] toGroup:@"myChannelGroup" withCompletion:^(PNStatus *status) {
+
+        if (!status.isError) {
+            NSLog(@"^^^^CGAdd request succeeded at timetoken %@.", status.currentTimetoken);
+        } else {
+            NSLog(@"^^^^CGAdd Subscribe request did not succeed. All subscribe operations will autoretry when possible.");
+            [self handleStatus:status];
+        }
+
+    }];
+}
+
+- (void)pubNubHereNow {
+    [self.client hereNowForChannel:_channel1 withCompletion:^(PNResult *result, PNStatus *status) {
+
+        if (status) {
+            // As a status, this contains error or non-error information about the history request, but not the actual history data I requested.
+            // Timeout Error, PAM Error, etc.
+
+            [self handleStatus:status];
+        }
+        else if (result) {
+            // As a result, this contains the messages, start, and end timetoken in the data attribute
+
+            NSLog(@"^^^^ Loaded hereNowForChannel data: %@", result.data);  // TODO: Call out data attributes here
+        }
+
     }];
 }
 
@@ -272,39 +330,24 @@
     // If its a PAM error on subscribe, lets grab the channel name in question, and unsubscribe from it, and re-subscribe to a channel that we're authed to
 
     if (status.operation == PNSubscribeOperation) {
+
         if ([pamResourceType isEqualToString:@"channel"]) {
             NSLog(@"^^^^ Unsubscribing from %@", pamResourceName);
-            [self.client unsubscribeFromChannels:@[pamResourceName] withPresence:YES andCompletion:^(PNStatus *status) {
-
-                // If the Unsubscribe was error-free
-
-                if (!status.isError) {
-                    NSLog(@"^^^^ Unsubscribe successful. Subscribing to channel %@", _channel2);
-
-                    [self.client subscribeToChannels:@[_channel2] withPresence:NO andCompletion:^(PNStatus *status) {
-                        if (!status.isError) {
-                            NSLog(@"^^^^ Subscribe to new authorized channel %@ successful.", _channel2);
-                        } else {
-                            // Handle sub error, etc.
-                            NSLog(@"^^^^ Subscribe to new authorized channel %@ failed.", _channel2);
-                        }
-                    }];
-                } else {
-                    // If the Unsubscribe was NOT error-free
-                    // Handle unsub error
-
-                    NSLog(@"^^^^ Unsubscribe successful. Subscribing to channel 'good'");
-                }
-            }];
-        } else {
-            [self.client unsubscribeFromChannelGroups:pamResourceName withPresence:YES andCompletion:^(PNStatus *status) {
-                // the case where we're dealing with CGs instead of CHs... follows the same pattern as above
-            }];
+            [self.client unsubscribeFromChannels:@[pamResourceName] withPresence:YES];
+            [self.client subscribeToChannels:@[_channel2] withPresence:NO];
         }
+
+        else {
+            [self.client unsubscribeFromChannelGroups:pamResourceName withPresence:YES];
+            // the case where we're dealing with CGs instead of CHs... follows the same pattern as above
+        }
+
     } else if (status.operation == PNPublishOperation) {
+
         NSLog(@"^^^^ Error publishing with authKey: %@ to channel %@.", _authKey, pamResourceName);
         NSLog(@"^^^^ Setting auth to an authKey that will allow for both sub and pub");
-        [self.client setAuthKey:@"myAuthKeyForPubAndSubToChannelGood"];
+        // TODO Fix:
+        // [self.client setAuthKey:@"myAuthKeyForPubAndSubToChannelGood"];
     }
 }
 
@@ -334,14 +377,14 @@
         if (status.category == PNDisconnectedCategory) {
             // PNDisconnect happens as part of our regular operation
             // No need to monitor for this unless requested by support
-            NSLog(@"^^^^ Non-error status: Expected Disconnect, Channel Info: %@", status.channels);
+            NSLog(@"^^^^ Non-error status: Expected Disconnect, Channel Info: %@", status.subscribedChannels);
         }
 
         else if (status.category == PNUnexpectedDisconnectCategory) {
             // PNUnexpectedDisconnect happens as part of our regular operation
             // This event happens when radio / connectivity is lost
 
-            NSLog(@"^^^^ Non-error status: Unexpected Disconnect, Channel Info: %@", status.channels);
+            NSLog(@"^^^^ Non-error status: Unexpected Disconnect, Channel Info: %@", status.subscribedChannels);
         }
 
         else if (status.category == PNConnectedCategory) {
@@ -350,7 +393,7 @@
             // Or just use the connected event to confirm you are subscribed for UI / internal notifications, etc
 
             // NSLog(@"Subscribe Connected to %@", status.data[@"channels"]);
-            NSLog(@"^^^^ Non-error status: Connected, Channel Info: %@", status.channels);
+            NSLog(@"^^^^ Non-error status: Connected, Channel Info: %@", status.subscribedChannels);
             [self publishHelloWorld];
 
         }
@@ -359,7 +402,7 @@
             // PNUnexpectedDisconnect happens as part of our regular operation
             // This event happens when radio / connectivity is lost
 
-            NSLog(@"^^^^ Non-error status: Reconnected, Channel Info: %@", status.channels);
+            NSLog(@"^^^^ Non-error status: Reconnected, Channel Info: %@", status.subscribedChannels);
 
         }
 
@@ -371,50 +414,47 @@
 
 - (void)updateClientConfiguration {
 
-    [self.client commitConfiguration:^{
-
         // Set PubNub Configuration
-        self.client.TLSEnabled = YES;
-        self.client.origin = @"ios4.pubnub.com";
-        self.client.authKey = _authKey;
-        self.client.uuid = @"ios4.0Tutorial";
+        self.myConfig.TLSEnabled = YES;
+        self.myConfig.origin = @"ios4.pubnub.com";
+        self.myConfig.authKey = _authKey;
+        self.myConfig.uuid = @"ios4.0Tutorial";
 
         // Presence Settings
-        self.client.presenceHeartbeatValue = 120;
-        self.client.presenceHeartbeatInterval = 60;
+        self.myConfig.presenceHeartbeatValue = 120;
+        self.myConfig.presenceHeartbeatInterval = 60;
 
         // Cipher Key Settings
         //self.client.cipherKey = @"enigma";
 
         // Time Token Handling Settings
-        self.client.keepTimeTokenOnListChange = YES;
-        self.client.restoreSubscription = YES;
-        self.client.catchUpOnSubscriptionRestore = YES;
-    }];
+        self.myConfig.keepTimeTokenOnListChange = YES;
+        self.myConfig.restoreSubscription = YES;
+        self.myConfig.catchUpOnSubscriptionRestore = YES;
 }
 
 - (void)printClientConfiguration {
 
     // Get PubNub Options
-    NSLog(@"SSELEnabled: %@", (self.client.isTLSEnabled ? @"YES" : @"NO"));
-    NSLog(@"Origin: %@", self.client.origin);
-    NSLog(@"authKey: %@", self.client.authKey);
-    NSLog(@"UUID: %@", self.client.uuid);
+    NSLog(@"SSELEnabled: %@", (self.myConfig.isTLSEnabled ? @"YES" : @"NO"));
+    NSLog(@"Origin: %@", self.myConfig.origin);
+    NSLog(@"authKey: %@", self.myConfig.authKey);
+    NSLog(@"UUID: %@", self.myConfig.uuid);
 
     // Time Token Handling Settings
     NSLog(@"keepTimeTokenOnChannelChange: %@",
-            (self.client.shouldKeepTimeTokenOnListChange ? @"YES" : @"NO"));
+            (self.myConfig.shouldKeepTimeTokenOnListChange ? @"YES" : @"NO"));
     NSLog(@"resubscribeOnConnectionRestore: %@",
-            (self.client.shouldRestoreSubscription ? @"YES" : @"NO"));
+            (self.myConfig.shouldRestoreSubscription ? @"YES" : @"NO"));
     NSLog(@"catchUpOnSubscriptionRestore: %@",
-            (self.client.shouldTryCatchUpOnSubscriptionRestore ? @"YES" : @"NO"));
+            (self.myConfig.shouldTryCatchUpOnSubscriptionRestore ? @"YES" : @"NO"));
 
     // Get Presence Options
-    NSLog(@"Heartbeat value: %@", @(self.client.presenceHeartbeatValue));
-    NSLog(@"Heartbeat interval: %@", @(self.client.presenceHeartbeatInterval));
+    NSLog(@"Heartbeat value: %@", @(self.myConfig.presenceHeartbeatValue));
+    NSLog(@"Heartbeat interval: %@", @(self.myConfig.presenceHeartbeatInterval));
 
     // Get CipherKey
-    NSLog(@"Cipher key: %@", self.client.cipherKey);
+    NSLog(@"Cipher key: %@", self.myConfig.cipherKey);
 }
 
 #pragma mark -
