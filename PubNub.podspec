@@ -11,15 +11,33 @@ Pod::Spec.new do |s|
   s.name             = "PubNub"
   s.version          = "4.0"
   s.summary          = "The PubNub Real-Time Network. Build real-time apps quickly and scale them globally."
-  s.description      = <<-DESC
-                       An optional longer description of PubNub
+  s.homepage         = "https://github.com/pubnub/objective-c"
 
-                       * Markdown format.
-                       * Don't worry about the indent, we strip it!
-                       DESC
-  s.homepage         = "https://github.com/<GITHUB_USERNAME>/PubNub"
-  # s.screenshots     = "www.example.com/screenshots_1", "www.example.com/screenshots_2"
-  s.homepage = 'http://www.pubnub.com/'
+  s.authors = {
+    'PubNub, Inc.' => 'support@pubnub.com'
+  }
+  s.source = {
+    :git => 'https://github.com/pubnub/objective-c.git',
+    :tag => 'v4.0'
+    }
+  s.social_media_url = 'https://twitter.com/pubnub'
+
+  s.platform     = :ios, '7.0'
+  s.requires_arc = true
+
+  s.source_files = 'Pod/Classes/**/*'
+  s.resource_bundles = {
+    'PubNub' => ['Pod/Assets/*.png']
+  }
+
+  # s.public_header_files = 'Pod/Classes/**/*.h'
+  # s.frameworks = 'UIKit', 'MapKit'
+  # s.dependency 'AFNetworking', '~> 2.3'
+  s.library   = 'z'
+  s.dependency 'AFNetworking', '~> 2.5'
+  s.dependency 'CocoaLumberjack'
+
+
 s.license = %{
 :type => 'MIT',
 :text => <<-LICENSE'
@@ -52,25 +70,5 @@ http://www.pubnub.com/
 http://www.pubnub.com/terms
 LICENSE
 }
-  s.author           = { "Jordan Zucker" => "jordan.zucker@gmail.com" }
-  s.source = {
-    :git => 'https://github.com/pubnub/objective-c.git',
-    :tag => 'v4.0'
-    }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
-
-  s.platform     = :ios, '7.0'
-  s.requires_arc = true
-
-  s.source_files = 'Pod/Classes/**/*'
-  s.resource_bundles = {
-    'PubNub' => ['Pod/Assets/*.png']
-  }
-
-  # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
-  s.library   = 'z'
-  s.dependency 'AFNetworking', '~> 2.5'
-  s.dependency 'CocoaLumberjack'
+  
 end
