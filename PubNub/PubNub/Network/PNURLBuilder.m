@@ -18,7 +18,7 @@
 static NSString * const PNOperationRequestTemplate[20] = {
     [PNSubscribeOperation] = @"/subscribe/{sub-key}/{channels}/0/{tt}",
     [PNUnsubscribeOperation] = @"/v2/presence/sub_key/{sub-key}/channel/{channels}/leave",
-    [PNPublishOperation] = @"/publish/{pub-key}/{sub-key}/0/{channel}/{message}",
+    [PNPublishOperation] = @"/publish/{pub-key}/{sub-key}/0/{channel}/0/{message}",
     [PNHistoryOperation] = @"/v2/history/sub-key/{sub-key}/channel/{channel}",
     [PNWhereNowOperation] = @"/v2/presence/sub-key/{sub-key}/uuid/{uuid}",
     [PNHereNowGlobalOperation] = @"/v2/presence/sub-key/{sub-key}",
@@ -61,6 +61,12 @@ static NSString * const PNOperationRequestTemplate[20] = {
     }];
     if ([requestURLString rangeOfString:@"{"].location == NSNotFound) {
         
+        if ([requestURLString hasSuffix:@"/"]) {
+            
+            NSRange lastSlashRange = NSMakeRange(requestURLString.length - 2, 2);
+            [requestURLString replaceOccurrencesOfString:@"/" withString:@""
+                                                 options:NSBackwardsSearch range:lastSlashRange];
+        }
         if ([parameters.query count]) {
             
             [requestURLString appendFormat:@"?%@", [PNDictionary queryStringFrom:parameters.query]];
