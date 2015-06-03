@@ -151,9 +151,10 @@
                           forPlaceholder:@"{channel}"];
         }
         [parameters addQueryParameter:(shouldStore? @"1" : @"0") forFieldName:@"store"];
-        if (!compressed && [messageForPublish length]) {
+        if ([messageForPublish length]) {
 
-            [parameters addPathComponent:[PNString percentEscapedString:messageForPublish]
+            [parameters addPathComponent:(!compressed ? [PNString percentEscapedString:messageForPublish] :
+                                          @"")
                           forPlaceholder:@"{message}"];
         }
         NSData *publishData = nil;

@@ -318,9 +318,10 @@
 
 - (NSURLRequest *)requestWithURL:(NSURL *)requestURL data:(NSData *)postData {
     
+    NSURL *fullURL = [NSURL URLWithString:[requestURL absoluteString] relativeToURL:self.session.baseURL];
     NSString *httpMethod = ([postData length] ? @"POST" : @"GET");
     NSMutableURLRequest *httpRequest = [self.session.requestSerializer requestWithMethod:httpMethod
-                                        URLString:[requestURL absoluteString] parameters:nil error:nil];
+                                        URLString:[fullURL absoluteString] parameters:nil error:nil];
     if (postData) {
         
         httpRequest.allHTTPHeaderFields = @{@"Content-Encoding":@"gzip",
@@ -409,7 +410,7 @@
                                     @"{pub-key}": (self.configuration.publishKey?: @"")}];
     [parameters addQueryParameters:@{@"uuid": (self.configuration.uuid?: @""),
                                      @"deviceid": self.configuration.deviceID,
-                                     @"pnsdk":[NSString stringWithFormat:@"PubNub-%@/%@",
+                                     @"pnsdk":[NSString stringWithFormat:@"PubNub-%@%%2F%@",
                                                kPNClientName, kPNLibraryVersion]}];
     if ([self.configuration.authKey length]) {
         
