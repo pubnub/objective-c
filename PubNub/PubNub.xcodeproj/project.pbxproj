@@ -34,6 +34,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		0B1E9DBD626B1786F111B05F /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A4A310BDE81DA98AE284218C /* libPods.a */; };
 		790B69C51B10CBA000C94581 /* PNNetwork.h in Headers */ = {isa = PBXBuildFile; fileRef = 790B69C31B10CBA000C94581 /* PNNetwork.h */; };
 		790B69C61B10CBA000C94581 /* PNNetwork.h in Headers */ = {isa = PBXBuildFile; fileRef = 790B69C31B10CBA000C94581 /* PNNetwork.h */; };
 		790B69C71B10CBA000C94581 /* PNNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = 790B69C41B10CBA000C94581 /* PNNetwork.m */; };
@@ -383,6 +384,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0B1E9DBD626B1786F111B05F /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -923,6 +925,7 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
 		};
 		79B114041B0F4B36008651AD /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;

@@ -164,17 +164,17 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
               withAdditionalParserData:(NSDictionary *)additionalData {
     
     NSMutableDictionary *event = [NSMutableDictionary new];
-    if (channel) {
+    if ([channel length]) {
         
-        event[(!channelGroup ? @"subscribed_channel": @"actual_channel")] = channel;
+        event[(![channelGroup length] ? @"subscribed_channel": @"actual_channel")] = channel;
     }
-    if (channelGroup) {
+    if ([channelGroup length]) {
         
         event[@"subscribed_channel"] = channelGroup;
     }
     
     BOOL isPresenceEvent = [PNChannel isPresenceObject:channel];
-    if (!channel && [data isKindOfClass:[NSDictionary class]]) {
+    if (![channel length] && [data isKindOfClass:[NSDictionary class]]) {
         
         isPresenceEvent = (data[@"action"] != nil && data[@"timestamp"] != nil);
     }
