@@ -58,8 +58,8 @@
     // Check whether initialization was successful or not.
     if ((self = [super init])) {
         
-        self.resourcePathComponents = [NSMutableDictionary new];
-        self.queryFields = [NSMutableDictionary new];
+        _resourcePathComponents = [NSMutableDictionary new];
+        _queryFields = [NSMutableDictionary new];
     }
     
     return self;
