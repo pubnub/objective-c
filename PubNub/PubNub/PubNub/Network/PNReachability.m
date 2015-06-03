@@ -390,7 +390,8 @@ void reachabilityContextInformationReleaseCallBack(const void *info) {
             if (SCNetworkReachabilitySetCallback(self.serviceReachability, PNReachabilityCallback, &context)) {
 
                 // Schedule service reachability monitoring on private queue
-                SCNetworkReachabilitySetDispatchQueue(self.serviceReachability, [self pn_privateQueue]);
+//                SCNetworkReachabilitySetDispatchQueue(self.serviceReachability, [self pn_privateQueue]);
+                    SCNetworkReachabilitySetDispatchQueue(self.serviceReachability, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
             }
 
 
@@ -499,7 +500,7 @@ void reachabilityContextInformationReleaseCallBack(const void *info) {
         
         self.restartReachabilityOnLookupComplete = NO;
 
-        // Check whether reachability instance crated before destroy it
+        // Check whether reachability instance created before destroy it
         if (self.serviceReachability) {
 
             SCNetworkReachabilitySetDispatchQueue(self.serviceReachability, NULL);
@@ -514,8 +515,12 @@ void reachabilityContextInformationReleaseCallBack(const void *info) {
                 return @[PNLoggerSymbols.reachability.stopReachabilityObservation];
             }];
         }
-
-        [self startServiceReachabilityMonitoring:NO];
+        
+        // wait a delay to give reachability some time to destroy
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [self startServiceReachabilityMonitoring:NO];
+        });
     }];
 }
 
