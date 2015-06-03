@@ -1,3 +1,8 @@
+06-03-2015 - c76f36e - 3.7.10.9
+
+. allow nested client states
+. handle reachability callbacks in separate queue
+
 04-29-2015 - 50ee54b - 3.7.10.8
 
 . parser adjustment
