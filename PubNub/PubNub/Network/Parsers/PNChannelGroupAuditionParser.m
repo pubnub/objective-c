@@ -37,7 +37,7 @@
         
         if (response[@"payload"][@"channels"]) {
             
-            processedResponse = @{@"channelMembers": response[@"payload"][@"channels"]};
+            processedResponse = @{@"channels": response[@"payload"][@"channels"]};
         }
         else if (response[@"payload"][@"groups"]) {
             
