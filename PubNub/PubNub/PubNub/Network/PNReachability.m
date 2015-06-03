@@ -1072,13 +1072,8 @@ void reachabilityContextInformationReleaseCallBack(const void *info) {
             currentNetworkAddress = @"'not assigned'";
         }
 
-        // In case if reachability report that connection is available (not on cellular) we should launch additional lookup service which will
-        // allow to check network state for sure
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-        BOOL shouldSuspectWrongState = updatedStatus != PNReachabilityStatusReachableViaCellular;
-#else
+        // Allow to run look up timer even when we use Cellular data in this case
         BOOL shouldSuspectWrongState = YES;
-#endif
 
         if (![self isServiceAvailableForStatus:updatedStatus] ||
             ([self isServiceAvailableForStatus:self.status] && [self isServiceAvailableForStatus:updatedStatus])) {
