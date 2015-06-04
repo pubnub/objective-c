@@ -26,10 +26,17 @@ Pod::Spec.new do |s|
   s.requires_arc = true
 
   s.source_files = 'PubNub/**/*'
+  s.private_header_files = [
+    'PubNub/Core/*Private.h',
+    'PubNub/Data/*Private.h',
+    'PubNub/Misc/PNPrivateStructures.h',
+    'PubNub/Misc/Helpers/*.h',
+    'PubNub/Misc/Logger/PNLogFileManager.h',
+    'PubNub/Misc/Protocols/PNParser.h',
+    'PubNub/Network/**/*',
+  ]
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
   s.library   = 'z'
   s.dependency 'AFNetworking', '~> 2.5'
   s.dependency 'CocoaLumberjack'

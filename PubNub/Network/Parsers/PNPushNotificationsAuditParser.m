@@ -4,6 +4,7 @@
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "PNPushNotificationsAuditParser.h"
+#import "PNDictionary.h"
 
 
 #pragma mark Interface implementation
@@ -35,7 +36,7 @@
     // Array is valid response type for device removal from APNS request.
     if ([response isKindOfClass:[NSArray class]]) {
         
-        processedResponse = @{@"associatedChannels": response};
+        processedResponse = [PNDictionary dictionaryWithDictionary:@{@"channels": response}];
     }
     
     return processedResponse;

@@ -4,6 +4,7 @@
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "PNErrorParser.h"
+#import "PNDictionary.h"
 
 
 #pragma mark Interface implementation
@@ -52,14 +53,14 @@
             }
             if (response[@"payload"][@"channel-groups"]) {
                 
-                errorData[@"channel-groups"] = response[@"payload"][@"channel-groups"];
+                errorData[@"channelGroups"] = response[@"payload"][@"channel-groups"];
             }
             if (!errorData[@"channels"] && !errorData[@"channel-groups"]) {
                 
                 errorData[@"data"] = response[@"payload"];
             }
         }
-        processedResponse = [errorData copy];
+        processedResponse = [PNDictionary dictionaryWithDictionary:errorData];
     }
     
     return processedResponse;

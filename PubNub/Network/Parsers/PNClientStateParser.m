@@ -4,6 +4,7 @@
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "PNClientStateParser.h"
+#import "PNDictionary.h"
 
 
 #pragma mark Interface implementation
@@ -37,11 +38,13 @@
         
         if (response[@"payload"][@"channels"]) {
             
-            processedResponse = @{@"channels": response[@"payload"][@"channels"]};
+            processedResponse = [PNDictionary dictionaryWithDictionary:@{
+                                 @"channels": response[@"payload"][@"channels"]}];
         }
         else {
             
-            processedResponse = @{@"state": response[@"payload"]};
+            processedResponse = [PNDictionary dictionaryWithDictionary:@{
+                                                     @"state": response[@"payload"]}];
         }
     }
     

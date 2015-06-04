@@ -19,6 +19,7 @@
 #import "PNHeartbeat.h"
 #import "PNNetwork.h"
 
+#import "PubNub+Publish.h"
 
 #pragma mark Static
 
@@ -258,7 +259,7 @@ DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNReachabilityLogLevel|
 #pragma mark - Reachability
 
 - (void)prepareReachability {
-    
+
     __weak __typeof(self) weakSelf = self;
     _reachability = [PNReachability reachabilityForClient:self
                                            withPingStatus:^(BOOL pingSuccessful) {
@@ -372,7 +373,7 @@ DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNReachabilityLogLevel|
     }
 }
 
-- (void)client:(PubNub *)__unused client didReceiveStatus:(PNStatus *)status {
+- (void)client:(PubNub *)__unused client didReceiveStatus:(PNStatus<PNPublishStatus> *)status {
     
     if (status.category == PNConnectedCategory || status.category == PNDisconnectedCategory ||
         status.category == PNUnexpectedDisconnectCategory) {

@@ -4,6 +4,7 @@
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "PNMessagePublishParser.h"
+#import "PNDictionary.h"
 
 
 @implementation PNMessagePublishParser
@@ -47,7 +48,8 @@
             timeToken = @((unsigned long long)([[NSDate date] timeIntervalSince1970] * 10000000));
         }
         
-        processedResponse = @{@"information": information, @"timetoken": timeToken};
+        processedResponse = [PNDictionary dictionaryWithDictionary:@{
+                             @"information": information, @"timetoken": timeToken}];
     }
     
     return processedResponse;

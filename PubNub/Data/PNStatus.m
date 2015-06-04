@@ -8,6 +8,7 @@
 #import "PNPrivateStructures.h"
 #import "PNStatus+Private.h"
 #import "PNResult+Private.h"
+#import "PNDictionary.h"
 #import "PNLog.h"
 
 
@@ -153,7 +154,7 @@
         _error = (task.error != nil || self.statusCode != 200);
         if (_error && ![processedData count]) {
             
-            self.data = [self dataFromError:task.error];
+            [self updateData:[self dataFromError:task.error]];
         }
         
         // Check whether status should represent acknowledgment or not.
@@ -338,6 +339,10 @@
             
             errorDetails = @{@"information":information};
         }
+    }
+    if (errorDetails) {
+        
+        errorDetails = [PNDictionary dictionaryWithDictionary:errorDetails];
     }
     
     return errorDetails;

@@ -35,7 +35,7 @@
     // Dictionary is valid response type for heartbeat request.
     if ([response isKindOfClass:[NSDictionary class]]) {
         
-        processedResponse = response;
+        processedResponse = @{};
     }
     
     return processedResponse;

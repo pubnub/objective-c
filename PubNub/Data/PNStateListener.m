@@ -161,7 +161,7 @@
     dispatch_async(self.resourceAccessQueue, block);
 }
 
-- (void)notifyMessage:(PNResult *)message withStatus:(PNStatus *)status {
+- (void)notifyMessage:(PNResult<PNMessageResult> *)message withStatus:(PNStatus<PNStatus> *)status {
     
     NSArray *listeners = [self.messageListeners allObjects];
     // Silence static analyzer warnings.
@@ -181,7 +181,7 @@
     #pragma clang diagnostic pop
 }
 
-- (void)notifyPresenceEvent:(PNResult *)event {
+- (void)notifyPresenceEvent:(PNResult<PNPresenceEventResult> *)event {
     
     NSArray *listeners = [self.presenceEventListeners allObjects];
     // Silence static analyzer warnings.
@@ -201,7 +201,7 @@
     #pragma clang diagnostic pop
 }
 
-- (void)notifyStatusChange:(PNStatus *)status {
+- (void)notifyStatusChange:(PNStatus<PNSubscriberStatus> *)status {
     
     NSArray *listeners = [self.stateListeners allObjects];
     // Silence static analyzer warnings.

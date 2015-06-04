@@ -1,9 +1,6 @@
 #import <Foundation/Foundation.h>
-
-
-#pragma mark Class forward 
-
-@class PubNub, PNResult, PNStatus;
+#import "PNDataObjectProtocols.h"
+#import "PubNub+Subscribe.h"
 
 
 /**
@@ -35,7 +32,8 @@
  
  @since 4.0
  */
-- (void)client:(PubNub *)client didReceiveMessage:(PNResult *)message withStatus:(PNStatus *)status;
+- (void)client:(PubNub *)client didReceiveMessage:(PNResult<PNMessageResult> *)message
+    withStatus:(PNStatus<PNStatus> *)status;
 
 /**
  @brief  Notify listener about new presence events which arrived from one of remote data object's 
@@ -47,7 +45,7 @@
  
  @since 4.0
  */
-- (void)client:(PubNub *)client didReceivePresenceEvent:(PNResult *)event;
+- (void)client:(PubNub *)client didReceivePresenceEvent:(PNResult<PNPresenceEventResult> *)event;
 
 
 ///------------------------------------------------
@@ -64,7 +62,7 @@
  
  @since 4.0
  */
-- (void)client:(PubNub *)client didReceiveStatus:(PNStatus *)status;
+- (void)client:(PubNub *)client didReceiveStatus:(PNStatus<PNSubscriberStatus> *)status;
 
 #pragma mark -
 

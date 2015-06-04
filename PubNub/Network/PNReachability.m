@@ -190,7 +190,7 @@
         #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
         // Try to request 'time' API to ensure what network really available.
         __weak __typeof(self) weakSelf = self;
-        [self.client timeWithCompletion:^(PNResult *result, __unused PNStatus *requestStatus) {
+        [self.client timeWithCompletion:^(PNResult<PNTimeResult> *result, PNStatus<PNStatus> *status) {
             
             weakSelf.pingCompleteBlock(result.data != nil);
             if (weakSelf.pingingRemoteService) {

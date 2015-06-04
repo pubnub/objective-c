@@ -34,7 +34,7 @@
  @since 4.0
  */
 - (void)setState:(NSDictionary *)state forUUID:(NSString *)uuid onChannel:(BOOL)onChannel
-        withName:(NSString *)object withCompletion:(PNStatusBlock)block;
+        withName:(NSString *)object withCompletion:(PNSetStateCompletionBlock)block;
 
 /**
  @brief  Retrieve state information for \c uuid on specified remote data object.
@@ -51,7 +51,7 @@
  @since 4.0
  */
 - (void)stateForUUID:(NSString *)uuid onChannel:(BOOL)onChannel withName:(NSString *)object
-      withCompletion:(PNCompletionBlock)block;
+      withCompletion:(id)block;
 
 
 #pragma mark - Handlers
@@ -68,8 +68,8 @@
 
  @since 4.0
  */
-- (void)handleSetStateStatus:(PNStatus *)status forUUID:(NSString *)uuid
-                    atObject:(NSString *)object withCompletion:(PNStatusBlock)block;
+- (void)handleSetStateStatus:(PNStatus<PNChannelStateStatus> *)status forUUID:(NSString *)uuid
+                    atObject:(NSString *)object withCompletion:(PNSetStateCompletionBlock)block;
 
 /**
  @brief  Process client state audition request completion and notify observers about results.
@@ -86,8 +86,8 @@
 
  @since 4.0
  */
-- (void)handleStateResult:(PNResult *)result withStatus:(PNStatus *)status forUUID:(NSString *)uuid
-                 atObject:(NSString *)object withCompletion:(PNCompletionBlock)block;
+- (void)handleStateResult:(PNResult<PNChannelStateResult> *)result withStatus:(PNStatus *)status
+                  forUUID:(NSString *)uuid atObject:(NSString *)object withCompletion:(id)block;
 
 #pragma mark - 
 
@@ -103,26 +103,26 @@
 #pragma mark - Client state information manipulation
 
 - (void)setState:(NSDictionary *)state forUUID:(NSString *)uuid onChannel:(NSString *)channel
-  withCompletion:(PNStatusBlock)block {
+  withCompletion:(PNSetStateCompletionBlock)block {
     
     [self setState:state forUUID:uuid onChannel:YES withName:channel withCompletion:block];
 }
 
 - (void)setState:(NSDictionary *)state forUUID:(NSString *)uuid onChannelGroup:(NSString *)group
-  withCompletion:(PNStatusBlock)block {
+  withCompletion:(PNSetStateCompletionBlock)block {
     
     [self setState:state forUUID:uuid onChannel:NO withName:group withCompletion:block];
 }
 
 - (void)setState:(NSDictionary *)state forUUID:(NSString *)uuid onChannel:(BOOL)onChannel
-        withName:(NSString *)object withCompletion:(PNStatusBlock)block {
+        withName:(NSString *)object withCompletion:(PNSetStateCompletionBlock)block {
     
-    PNStatusBlock blockCopy = [block copy];
+    PNSetStateCompletionBlock blockCopy = [block copy];
     __weak __typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         
         PNRequestParameters *parameters = [PNRequestParameters new];
-        [parameters addPathComponent:(onChannel ? [PNString percentEscapedString:object] : @".")
+        [parameters addPathComponent:(onChannel ? [PNString percentEscapedString:object] : @",")
                       forPlaceholder:@"{channel}"];
         NSString *stateString = ([PNJSON JSONStringFrom:state withError:NULL]?: @"{}");
         [parameters addQueryParameter:[PNString percentEscapedString:stateString]
@@ -153,8 +153,8 @@
                    #pragma clang diagnostic push
                    #pragma clang diagnostic ignored "-Wreceiver-is-weak"
                    #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
-                   [weakSelf handleSetStateStatus:status forUUID:uuid atObject:object
-                                   withCompletion:blockCopy];
+                   [weakSelf handleSetStateStatus:(PNStatus<PNChannelStateStatus> *)status
+                                          forUUID:uuid atObject:object withCompletion:blockCopy];
                    #pragma clang diagnostic pop
                }];
     });
@@ -164,22 +164,22 @@
 #pragma mark - Client state information audit
 
 - (void)stateForUUID:(NSString *)uuid onChannel:(NSString *)channel
-      withCompletion:(PNCompletionBlock)block {
+      withCompletion:(PNChannelStateCompletionBlock)block {
     
     [self stateForUUID:uuid onChannel:YES withName:channel withCompletion:block];
 }
 
 - (void)stateForUUID:(NSString *)uuid onChannelGroup:(NSString *)group
-      withCompletion:(PNCompletionBlock)block {
+      withCompletion:(PNChannelGroupStateCompletionBlock)block {
     
     [self stateForUUID:uuid onChannel:NO withName:group withCompletion:block];
 }
 
 - (void)stateForUUID:(NSString *)uuid onChannel:(BOOL)onChannel withName:(NSString *)object
-      withCompletion:(PNCompletionBlock)block {
+      withCompletion:(id)block {
     
     PNRequestParameters *parameters = [PNRequestParameters new];
-    [parameters addPathComponent:(onChannel ? [PNString percentEscapedString:object] : @".")
+    [parameters addPathComponent:(onChannel ? [PNString percentEscapedString:object] : @",")
                   forPlaceholder:@"{channel}"];
     if ([uuid length]) {
         
@@ -195,7 +195,7 @@
     DDLogAPICall(@"<PubNub> State request on '%@' channel%@: %@.", (uuid?: @"<error>"),
                  (object?: @"<error>"), (!onChannel ? @" group" : @""));
     
-    PNCompletionBlock blockCopy = [block copy];
+    id blockCopy = [block copy];
     __weak __typeof(self) weakSelf = self;
     [self processOperation:PNStateOperation withParameters:parameters
            completionBlock:^(PNResult *result, PNStatus *status) {
@@ -208,7 +208,8 @@
                #pragma clang diagnostic push
                #pragma clang diagnostic ignored "-Wreceiver-is-weak"
                #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
-               [weakSelf handleStateResult:result withStatus:status forUUID:uuid atObject:object
+               [weakSelf handleStateResult:(PNResult<PNChannelStateResult> *)result
+                                withStatus:status forUUID:uuid atObject:object
                             withCompletion:blockCopy];
                #pragma clang diagnostic pop
            }];
@@ -217,28 +218,28 @@
 
 #pragma mark - Handlers
 
-- (void)handleSetStateStatus:(PNStatus *)status forUUID:(NSString *)uuid
-                    atObject:(NSString *)object withCompletion:(PNStatusBlock)block {
+- (void)handleSetStateStatus:(PNStatus<PNChannelStateStatus> *)status forUUID:(NSString *)uuid
+                    atObject:(NSString *)object withCompletion:(PNSetStateCompletionBlock)block {
     
     // Check whether state modification to the client has been successful or not.
     if (status && !status.isError && [uuid isEqualToString:self.configuration.uuid]) {
 
         // Overwrite cached state information.
-        [self.clientStateManager setState:(status.data[@"state"]?: @{}) forObject:object];
+        [self.clientStateManager setState:(status.data.state?: @{}) forObject:object];
     }
-    [self callBlock:block status:YES withResult:nil andStatus:status];
+    [self callBlock:block status:YES withResult:nil andStatus:(PNStatus *)status];
 }
 
-- (void)handleStateResult:(PNResult *)result withStatus:(PNStatus *)status forUUID:(NSString *)uuid
-                 atObject:(NSString *)object withCompletion:(PNCompletionBlock)block {
+- (void)handleStateResult:(PNResult<PNChannelStateResult> *)result withStatus:(PNStatus *)status
+                  forUUID:(NSString *)uuid atObject:(NSString *)object withCompletion:(id)block {
     
     // Check whether state successfully fetched or not.
-    if (result && [uuid isEqualToString:self.configuration.uuid] && result.data[@"state"]) {
+    if (result && [uuid isEqualToString:self.configuration.uuid] && result.data.state) {
 
         // Overwrite cached state information.
-        [self.clientStateManager setState:(result.data[@"state"]?: @{}) forObject:object];
+        [self.clientStateManager setState:(result.data.state?: @{}) forObject:object];
     }
-    [self callBlock:block status:NO withResult:result andStatus:status];
+    [self callBlock:block status:NO withResult:(PNResult *)result andStatus:status];
 }
 
 #pragma mark -

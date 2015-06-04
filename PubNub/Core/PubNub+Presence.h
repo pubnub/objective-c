@@ -2,6 +2,290 @@
 #import "PubNub+Core.h"
 
 
+#pragma mark API group protocols
+
+/**
+ @brief      Protocol which describe here now data object structure.
+ @discussion Contain presence information about channels.
+ 
+ @author Sergey Mamontov
+ @since 4.0
+ @copyright © 2009-2015 PubNub, Inc.
+ */
+@protocol PNHereNowData
+
+
+///------------------------------------------------
+/// @name Information
+///------------------------------------------------
+
+/**
+ @brief  Active channel subscribers unique identifiers.
+ @note   This object can be empty in case if only occupancy has been requested.
+ @note   This object can contain list of uuids or dictionary with uuids and client state information
+         bound to them.
+ 
+ @return Subscribers information (unique identifiers list of dictionary with client's state 
+         information).
+ 
+ @since 4.0
+ */
+- (id)uuids;
+
+/**
+ @brief  Active subscribers count.
+ 
+ @return Number of unique subscribers on channel.
+ 
+ @since 4.0
+ */
+- (NSNumber *)occupancy;
+
+@end
+
+
+/**
+ @brief      Protocol which describe global here now data object structure.
+ @discussion Contain presence information about each channel which is registered for \b PunNub 
+             application keys.
+ 
+ @author Sergey Mamontov
+ @since 4.0
+ @copyright © 2009-2015 PubNub, Inc.
+ */
+@protocol PNGlobalHereNowData
+
+
+///------------------------------------------------
+/// @name Information
+///------------------------------------------------
+
+/**
+ @brief      Active channels list.
+ @discussion Each dictionary key represent channel name and it's value is presence information for 
+             it.
+ 
+ @return Channel based presence information dictionary.
+ 
+ @since 4.0
+ */
+- (NSDictionary *)channels;
+
+/**
+ @brief  Total number of active channels.
+ 
+ @return Number of channels with active subscribers.
+ 
+ @since 4.0
+ */
+- (NSNumber *)totalChannels;
+
+/**
+ @brief  Total number of subscribers.
+ 
+ @return Overall number of subscribers on channels.
+ 
+ @since 4.0
+ */
+- (NSNumber *)totalOccupancy;
+
+@end
+
+
+/**
+ @brief      Protocol used to provide access to \c data field structure for \b PNStatus instance 
+             object.
+ @discussion Mostly used for state set operations and represent resulting object which has been 
+             stored in \b PubNub network.
+ 
+ @author Sergey Mamontov
+ @since 4.0
+ @copyright © 2009-2015 PubNub, Inc.
+ */
+@protocol PNChannelGroupHereNowData <PNGlobalHereNowData>
+
+@end
+
+
+/**
+ @brief      Protocol used to provide access to \c data field structure for \b PNStatus instance 
+             object.
+ @discussion Mostly used for state set operations and represent resulting object which has been 
+             stored in \b PubNub network.
+ 
+ @author Sergey Mamontov
+ @since 4.0
+ @copyright © 2009-2015 PubNub, Inc.
+ */
+@protocol PNWhereNowData
+
+
+///------------------------------------------------
+/// @name Information
+///------------------------------------------------
+
+/**
+ @brief  List of channels on which client subscribed.
+ 
+ @return Channel names list.
+ 
+ @since 4.0
+ */
+- (NSDictionary *)channels;
+
+@end
+
+
+/**
+ @brief      Protocol which describe object returned from state audit API.
+ @discussion This method allow to provide access to structured response data field.
+ 
+ @author Sergey Mamontov
+ @since 4.0
+ @copyright © 2009-2015 PubNub, Inc.
+ */
+@protocol PNHereNowResult <PNResult>
+
+
+///------------------------------------------------
+/// @name Information
+///------------------------------------------------
+
+/**
+ @brief  Structured \b PNResult \c data field information.
+ 
+ @return Reference on field which hold structured service response.
+ 
+ @since 4.0
+ */
+@property (nonatomic, readonly, copy) NSObject<PNHereNowData> *data;
+
+@end
+
+
+/**
+ @brief  Protocol which describe operation processing resulting object with typed with \c data field
+         with corresponding data type.
+ 
+ @author Sergey Mamontov
+ @since 4.0
+ @copyright © 2009-2015 PubNub, Inc.
+ */
+@protocol PNGlobalHereNowResult <PNResult>
+
+
+///------------------------------------------------
+/// @name Information
+///------------------------------------------------
+
+/**
+ @brief  Reference on service response data casted to required type.
+ 
+ @since 4.0
+ */
+@property (nonatomic, readonly, copy) NSObject<PNGlobalHereNowData> *data;
+
+@end
+
+
+/**
+ @brief  Protocol which describe operation processing resulting object with typed with \c data field
+         with corresponding data type.
+ 
+ @author Sergey Mamontov
+ @since 4.0
+ @copyright © 2009-2015 PubNub, Inc.
+ */
+@protocol PNChannelGroupHereNowResult <PNResult>
+
+
+///------------------------------------------------
+/// @name Information
+///------------------------------------------------
+
+/**
+ @brief  Reference on service response data casted to required type.
+ 
+ @since 4.0
+ */
+@property (nonatomic, readonly, copy) NSObject<PNChannelGroupHereNowData> *data;
+
+@end
+
+
+/**
+ @brief  Protocol which describe operation processing resulting object with typed with \c data field
+         with corresponding data type.
+ 
+ @author Sergey Mamontov
+ @since 4.0
+ @copyright © 2009-2015 PubNub, Inc.
+ */
+@protocol PNWhereNowResult <PNResult>
+
+
+///------------------------------------------------
+/// @name Information
+///------------------------------------------------
+
+/**
+ @brief  Reference on service response data casted to required type.
+ 
+ @since 4.0
+ */
+@property (nonatomic, readonly, copy) NSObject<PNWhereNowData> *data;
+
+@end
+
+
+#pragma mark - Types
+
+/**
+ @brief  Here now completion block.
+ 
+ @param result Reference on result object which describe service response on here now request.
+ @param status Reference on status instance which hold information about procesing results.
+ 
+ @since 4.0
+ */
+typedef void(^PNHereNowCompletionBlock)(PNResult<PNHereNowResult> *result,
+                                        PNStatus<PNStatus> *status);
+
+/**
+ @brief  Global here now completion block.
+ 
+ @param result Reference on result object which describe service response on here now request.
+ @param status Reference on status instance which hold information about procesing results.
+ 
+ @since 4.0
+ */
+typedef void(^PNGlobalHereNowCompletionBlock)(PNResult<PNGlobalHereNowResult> *result,
+                                              PNStatus<PNStatus> *status);
+
+/**
+ @brief  Channel group here now completion block.
+ 
+ @param result Reference on result object which describe service response on here now request.
+ @param status Reference on status instance which hold information about procesing results.
+ 
+ @since 4.0
+ */
+typedef void(^PNChannelGroupHereNowCompletionBlock)(PNResult<PNChannelGroupHereNowResult> *result,
+                                                    PNStatus<PNStatus> *status);
+
+/**
+ @brief  UUID where now completion block.
+ 
+ @param result Reference on result object which describe service response on where now request.
+ @param status Reference on status instance which hold information about procesing results.
+ 
+ @since 4.0
+ */
+typedef void(^PNWhereNowCompletionBlock)(PNResult<PNWhereNowResult> *result,
+                                         PNStatus<PNStatus> *status);
+
+
+#pragma mark - API group interface
 /**
  @brief      \b PubNub client core class extension to provide access to 'presence' API group.
  @discussion Set of API which allow to retrieve information about subscriber(s) on remote data 
@@ -75,7 +359,7 @@
  
  @since 4.0
  */
-- (void)hereNowWithCompletion:(PNCompletionBlock)block;
+- (void)hereNowWithCompletion:(PNGlobalHereNowCompletionBlock)block;
 
 /**
  @brief      Request information about subscribers on all remote data objects live feeds.
@@ -144,7 +428,7 @@
  
  @since 4.0
  */
-- (void)hereNowData:(PNHereNowDataType)type withCompletion:(PNCompletionBlock)block;
+- (void)hereNowData:(PNHereNowDataType)type withCompletion:(PNGlobalHereNowCompletionBlock)block;
 
 
 ///------------------------------------------------
@@ -199,7 +483,7 @@
  
  @since 4.0
  */
-- (void)hereNowForChannel:(NSString *)channel withCompletion:(PNCompletionBlock)block;
+- (void)hereNowForChannel:(NSString *)channel withCompletion:(PNHereNowCompletionBlock)block;
 
 /**
  @brief  Request information about subscribers on specific channel live feeds.
@@ -262,7 +546,7 @@
  @since 4.0
  */
 - (void)hereNowData:(PNHereNowDataType)type forChannel:(NSString *)channel
-     withCompletion:(PNCompletionBlock)block;
+     withCompletion:(PNHereNowCompletionBlock)block;
 
 
 ///------------------------------------------------
@@ -324,7 +608,8 @@
  
  @since 4.0
  */
-- (void)hereNowForChannelGroup:(NSString *)group withCompletion:(PNCompletionBlock)block;
+- (void)hereNowForChannelGroup:(NSString *)group
+                withCompletion:(PNChannelGroupHereNowCompletionBlock)block;
 
 /**
  @brief  Request information about subscribers on specific channel group live feeds.
@@ -394,7 +679,7 @@
  @since 4.0
  */
 - (void)hereNowData:(PNHereNowDataType)type forChannelGroup:(NSString *)group
-     withCompletion:(PNCompletionBlock)block;
+     withCompletion:(PNChannelGroupHereNowCompletionBlock)block;
 
 
 ///------------------------------------------------
@@ -449,7 +734,7 @@
  
  @since 4.0
  */
-- (void)whereNowUUID:(NSString *)uuid withCompletion:(PNCompletionBlock)block;
+- (void)whereNowUUID:(NSString *)uuid withCompletion:(PNWhereNowCompletionBlock)block;
 
 #pragma mark -
 
