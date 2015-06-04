@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 #import <PubNub/PubNub.h>
+#import <OHHTTPStubs/OHHTTPStubs.h>
 
 @interface iOS_Tests : XCTestCase
 @property (nonatomic) PubNub *client;
