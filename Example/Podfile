@@ -1,4 +1,5 @@
 source 'https://github.com/CocoaPods/Specs.git'
+workspace '../PubNub'
 use_frameworks!
 
 target 'PubNub_Example', :exclusive => true do

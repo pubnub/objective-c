@@ -1,0 +1,12 @@
+source "https://github.com/CocoaPods/Specs"
+
+xcodeproj "PubNub Tests"
+workspace "../PubNub"
+
+target :ios do
+  platform :ios, "7.0"
+  link_with "iOS Tests"
+  pod "Expecta", "~> 1.0"
+  pod "OHHTTPStubs", "~> 4.0"
+  pod "PubNub", :path => "../"
+end
