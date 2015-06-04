@@ -30,7 +30,7 @@
  @since 4.0
  */
 - (void)     add:(BOOL)shouldAdd channels:(NSArray *)channels toGroup:(NSString *)group
-  withCompletion:(PNStatusBlock)block;
+  withCompletion:(PNChannelGroupChangeCompletionBlock)block;
 
 #pragma mark -
 
@@ -45,12 +45,12 @@
 
 #pragma mark - Channel group audition
 
-- (void)channelGroupsWithCompletion:(PNCompletionBlock)block {
+- (void)channelGroupsWithCompletion:(PNGroupAuditCompletionBlock)block {
     
     [self channelsForGroup:nil withCompletion:block];
 }
 
-- (void)channelsForGroup:(NSString *)group withCompletion:(PNCompletionBlock)block {
+- (void)channelsForGroup:(NSString *)group withCompletion:(PNGroupChannelsAuditCompletionBlock)block {
 
     PNOperationType operationType = (group ? PNChannelGroupsOperation :
                                      PNChannelsForGroupOperation);
@@ -67,7 +67,7 @@
         DDLogAPICall(@"<PubNub> Request channel groups list.");
     }
 
-    PNCompletionBlock blockCopy = [block copy];
+    id blockCopy = [block copy];
     __weak __typeof(self) weakSelf = self;
     [self processOperation:operationType withParameters:parameters
            completionBlock:^(PNResult *result, PNStatus *status){
@@ -89,24 +89,25 @@
 #pragma mark - Channel group content manipulation
 
 - (void)addChannels:(NSArray *)channels toGroup:(NSString *)group
-     withCompletion:(PNStatusBlock)block {
+     withCompletion:(PNChannelGroupChangeCompletionBlock)block {
     
     [self add:YES channels:channels toGroup:group withCompletion:block];
 }
 
 - (void)removeChannels:(NSArray *)channels fromGroup:(NSString *)group
-        withCompletion:(PNStatusBlock)block {
+        withCompletion:(PNChannelGroupChangeCompletionBlock)block {
     
     [self add:NO channels:channels toGroup:group withCompletion:block];
 }
 
-- (void)removeChannelsFromGroup:(NSString *)group withCompletion:(PNStatusBlock)block {
+- (void)removeChannelsFromGroup:(NSString *)group
+                 withCompletion:(PNChannelGroupChangeCompletionBlock)block {
     
     [self removeChannels:nil fromGroup:group withCompletion:block];
 }
 
 - (void)     add:(BOOL)shouldAdd channels:(NSArray *)channels toGroup:(NSString *)group
-  withCompletion:(PNStatusBlock)block {
+  withCompletion:(PNChannelGroupChangeCompletionBlock)block {
 
     BOOL removeAllObjects = (!shouldAdd && channels == nil);
     PNOperationType operationType = PNRemoveGroupOperation;
@@ -136,7 +137,7 @@
         DDLogAPICall(@"<PubNub> Remove '%@' channel group", (group?: @"<error>"));
     }
 
-    PNStatusBlock blockCopy = [block copy];
+    PNChannelGroupChangeCompletionBlock blockCopy = [block copy];
     __weak __typeof(self) weakSelf = self;
     [self processOperation:operationType withParameters:parameters
            completionBlock:^(PNStatus *status){

@@ -32,7 +32,8 @@
  @since 4.0
  */
 - (void)enablePushNotification:(BOOL)shouldEnabled onChannels:(NSArray *)channels
-           withDevicePushToken:(NSData *)pushToken andCompletion:(PNStatusBlock)block;
+           withDevicePushToken:(NSData *)pushToken
+                 andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block;
 
 #pragma mark - 
 
@@ -48,7 +49,7 @@
 #pragma mark - Push notifications state manipulation
 
 - (void)addPushNotificationsOnChannels:(NSArray *)channels withDevicePushToken:(NSData *)pushToken
-                         andCompletion:(PNStatusBlock)block {
+                         andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block {
     
     [self enablePushNotification:YES onChannels:channels withDevicePushToken:pushToken
                    andCompletion:block];
@@ -56,21 +57,21 @@
 
 - (void)removePushNotificationsFromChannels:(NSArray *)channels
                         withDevicePushToken:(NSData *)pushToken
-                              andCompletion:(PNStatusBlock)block {
+                              andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block {
     
     [self enablePushNotification:NO onChannels:channels withDevicePushToken:pushToken
                    andCompletion:block];
 }
 
 - (void)removeAllPushNotificationsFromDeviceWithPushToken:(NSData *)pushToken
-                                            andCompletion:(PNStatusBlock)block {
+                          andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block {
     
     [self enablePushNotification:NO onChannels:nil withDevicePushToken:pushToken
                    andCompletion:block];
 }
 
 - (void)enablePushNotification:(BOOL)shouldEnabled onChannels:(NSArray *)channels
-           withDevicePushToken:(NSData *)pushToken andCompletion:(PNStatusBlock)block {
+           withDevicePushToken:(NSData *)pushToken andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block {
 
     BOOL removeAllChannels = (!shouldEnabled && channels == nil);
     PNOperationType operationType = PNRemoveAllPushNotificationsOperation;
@@ -102,7 +103,7 @@
                 [[PNData HEXFromDevicePushToken:pushToken] lowercaseString]);
     }
 
-    PNStatusBlock blockCopy = [block copy];
+    PNPushNotificationsStateModificationCompletionBlock blockCopy = [block copy];
     __weak __typeof(self) weakSelf = self;
     [self processOperation:operationType withParameters:parameters
            completionBlock:^(PNStatus *status){
@@ -124,7 +125,7 @@
 #pragma mark - Push notifications state audit
 
 - (void)pushNotificationEnabledChannelsForDeviceWithPushToken:(NSData *)pushToken
-                                                andCompletion:(PNCompletionBlock)block {
+                                 andCompletion:(PNPushNotificationsStateAuditCompletionBlock)block {
 
     PNRequestParameters *parameters = [PNRequestParameters new];
     if ([pushToken length]) {
@@ -136,7 +137,7 @@
     DDLogAPICall(@"<PubNub> Push notification enabled channels for device '%@'.",
             [[PNData HEXFromDevicePushToken:pushToken] lowercaseString]);
 
-    PNCompletionBlock blockCopy = [block copy];
+    PNPushNotificationsStateAuditCompletionBlock blockCopy = [block copy];
     __weak __typeof(self) weakSelf = self;
     [self processOperation:PNPushNotificationEnabledChannelsOperation withParameters:parameters
            completionBlock:^(PNResult *result, PNStatus *status){

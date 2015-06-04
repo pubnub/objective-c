@@ -4,6 +4,7 @@
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "PNTimeParser.h"
+#import "PNDictionary.h"
 
 
 #pragma mark Interface implementation
@@ -35,7 +36,8 @@
     // Array is valid response type for time request.
     if ([response isKindOfClass:[NSArray class]] && [(NSArray *)response count] == 1) {
         
-        processedResponse = @{@"timetoken": (NSArray *)response[0]};
+        processedResponse = [PNDictionary dictionaryWithDictionary:@{
+                             @"timetoken": (NSArray *)response[0]}];
     }
     
     return processedResponse;

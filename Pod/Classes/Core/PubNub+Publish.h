@@ -2,6 +2,85 @@
 #import "PubNub+Core.h"
 
 
+#pragma mark API group protocols
+
+/**
+ @brief      Protocol which describe publish result data object structure.
+ @discussion Contain information about when message has been accepted by \b PubNub service and
+             message associated with operation.
+ 
+ @author Sergey Mamontov
+ @since 4.0
+ @copyright © 2009-2015 PubNub, Inc.
+ */
+@protocol PNPublishData <PNErrorStatusData>
+
+
+///------------------------------------------------
+/// @name Information
+///------------------------------------------------
+
+/**
+ @brief  Service-provided time stamp at which message has been pushed to remote data object live
+         feed.
+ 
+ @return Number with unsigned long long as timestamp.
+ 
+ @since 4.0
+ */
+- (NSNumber *)timetoken;
+
+/**
+ @brief  Service-provide information about service response message.
+ 
+ @return String received from \b PubNub service along with processing results.
+ 
+ @since 4.0
+ */
+- (NSString *)information;
+
+@end
+
+
+/**
+ @brief  Protocol which describe operation processing status object with typed with \c data field
+         with corresponding data type.
+ 
+ @author Sergey Mamontov
+ @since 4.0
+ @copyright © 2009-2015 PubNub, Inc.
+ */
+@protocol PNPublishStatus <PNStatus>
+
+
+///------------------------------------------------
+/// @name Information
+///------------------------------------------------
+
+/**
+ @brief  Reference on service response data casted to required type.
+ 
+ @since 4.0
+ */
+@property (nonatomic, readonly, copy) NSObject<PNPublishData> *data;
+
+@end
+
+
+#pragma mark - Types
+
+/**
+ @brief  Message publish completion block.
+ 
+ @param status Reference on status instance which hold information about procesing results.
+ 
+ @since 4.0
+ */
+typedef void(^PNPublishCompletionBlock)(PNStatus<PNPublishStatus> *status);
+
+
+#pragma mark - API group interface
+
 /**
  @brief      \b PubNub client core class extension to provide access to 'publish' API group.
  @discussion Set of API which allow to push data to \b PubNub service. Data pusched to remote data
@@ -67,7 +146,8 @@
  
  @since 4.0
  */
-- (void)publish:(id)message toChannel:(NSString *)channel withCompletion:(PNStatusBlock)block;
+- (void)  publish:(id)message toChannel:(NSString *)channel
+   withCompletion:(PNPublishCompletionBlock)block;
 
 /**
  @brief      Send provided Foundation object to \b PubNub service.
@@ -127,8 +207,8 @@
 
  @since 4.0
  */
-- (void)publish:(id)message toChannel:(NSString *)channel compressed:(BOOL)compressed
- withCompletion:(PNStatusBlock)block;
+- (void)  publish:(id)message toChannel:(NSString *)channel compressed:(BOOL)compressed
+   withCompletion:(PNPublishCompletionBlock)block;
 
 /**
  @brief      Send provided Foundation object to \b PubNub service.
@@ -186,8 +266,8 @@
  
  @since 4.0
  */
-- (void)publish:(id)message toChannel:(NSString *)channel storeInHistory:(BOOL)shouldStore
- withCompletion:(PNStatusBlock)block;
+- (void)  publish:(id)message toChannel:(NSString *)channel storeInHistory:(BOOL)shouldStore
+   withCompletion:(PNPublishCompletionBlock)block;
 
 /**
  @brief      Send provided Foundation object to \b PubNub service.
@@ -248,7 +328,7 @@
  @since 4.0
  */
 - (void)publish:(id)message toChannel:(NSString *)channel storeInHistory:(BOOL)shouldStore
-     compressed:(BOOL)compressed withCompletion:(PNStatusBlock)block;
+     compressed:(BOOL)compressed withCompletion:(PNPublishCompletionBlock)block;
 
 
 ///------------------------------------------------
@@ -313,7 +393,7 @@
  @since 4.0
  */
 - (void)    publish:(id)message toChannel:(NSString *)channel
-  mobilePushPayload:(NSDictionary *)payloads withCompletion:(PNStatusBlock)block;
+  mobilePushPayload:(NSDictionary *)payloads withCompletion:(PNPublishCompletionBlock)block;
 
 /**
  @brief      Send provided Foundation object to \b PubNub service.
@@ -377,7 +457,7 @@
  @since 4.0
  */
 - (void)publish:(id)message toChannel:(NSString *)channel mobilePushPayload:(NSDictionary *)payloads
-     compressed:(BOOL)compressed withCompletion:(PNStatusBlock)block;
+     compressed:(BOOL)compressed withCompletion:(PNPublishCompletionBlock)block;
 
 /**
  @brief      Send provided Foundation object to \b PubNub service.
@@ -440,7 +520,7 @@
  */
 - (void)    publish:(id)message toChannel:(NSString *)channel
   mobilePushPayload:(NSDictionary *)payloads storeInHistory:(BOOL)shouldStore
-     withCompletion:(PNStatusBlock)block;
+     withCompletion:(PNPublishCompletionBlock)block;
 
 /**
  @brief      Send provided Foundation object to \b PubNub service.
@@ -506,7 +586,7 @@
  */
 - (void)    publish:(id)message toChannel:(NSString *)channel
   mobilePushPayload:(NSDictionary *)payloads storeInHistory:(BOOL)shouldStore
-         compressed:(BOOL)compressed withCompletion:(PNStatusBlock)block;
+         compressed:(BOOL)compressed withCompletion:(PNPublishCompletionBlock)block;
 
 #pragma mark -
 

@@ -1,4 +1,5 @@
 #import <Foundation/Foundation.h>
+#import "PubNub+Subscribe.h"
 
 
 #pragma mark Class forward
@@ -91,7 +92,7 @@
  
  @since 4.0
  */
-- (void)notifyMessage:(PNResult *)message withStatus:(PNStatus *)status;
+- (void)notifyMessage:(PNResult<PNMessageResult> *)message withStatus:(PNStatus<PNStatus> *)status;
 
 /**
  @brief   Notify all presence event listeners about new event.
@@ -103,7 +104,7 @@
  
  @since 4.0
  */
-- (void)notifyPresenceEvent:(PNResult *)event;
+- (void)notifyPresenceEvent:(PNResult<PNPresenceEventResult> *)event;
 
 /**
  @brief   Notify all state change listeners about changes in subscriber state.
@@ -114,7 +115,7 @@
  
  @since 4.0
  */
-- (void)notifyStatusChange:(PNStatus *)status;
+- (void)notifyStatusChange:(PNStatus<PNSubscriberStatus> *)status;
 
 #pragma mark -
 

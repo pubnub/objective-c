@@ -9,6 +9,30 @@
 #import "PNJSON.h"
 
 
+#pragma mark Protected interface declaration
+
+@interface PNResult () <NSCopying>
+
+
+///------------------------------------------------
+/// @name Information
+///------------------------------------------------
+
+@property (nonatomic, assign) NSInteger statusCode;
+@property (nonatomic, assign) PNOperationType operation;
+@property (nonatomic, assign, getter = isTLSEnabled) BOOL TLSEnabled;
+@property (nonatomic, copy) NSString *uuid;
+@property (nonatomic, copy) NSString *authKey;
+@property (nonatomic, copy) NSString *origin;
+@property (nonatomic, copy) NSURLRequest *clientRequest;
+@property (nonatomic, copy) id data;
+
+#pragma mark -
+
+
+@end
+
+
 #pragma mark Interface implementation
 
 @implementation PNResult
@@ -66,6 +90,11 @@
     result->_data = [data copy];
     
     return result;
+}
+
+- (void)updateData:(id)data {
+    
+    _data = [data copy];
 }
 
 

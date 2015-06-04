@@ -38,7 +38,7 @@
  @since 4.0
  */
 - (void)hereNowData:(PNHereNowDataType)type forChannel:(BOOL)forChannel withName:(NSString *)object
-     withCompletion:(PNCompletionBlock)block;
+     withCompletion:(id)block;
 
 #pragma mark -
 
@@ -53,12 +53,12 @@
 
 #pragma mark - Global here now
 
-- (void)hereNowWithCompletion:(PNCompletionBlock)block {
+- (void)hereNowWithCompletion:(PNGlobalHereNowCompletionBlock)block {
     
     [self hereNowData:PNHereNowUUID withCompletion:block];
 }
 
-- (void)hereNowData:(PNHereNowDataType)type withCompletion:(PNCompletionBlock)block {
+- (void)hereNowData:(PNHereNowDataType)type withCompletion:(PNGlobalHereNowCompletionBlock)block {
     
     [self hereNowData:type forChannel:nil withCompletion:block];
 }
@@ -66,13 +66,13 @@
 
 #pragma mark - Channel here now
 
-- (void)hereNowForChannel:(NSString *)channel withCompletion:(PNCompletionBlock)block {
+- (void)hereNowForChannel:(NSString *)channel withCompletion:(PNHereNowCompletionBlock)block {
     
     [self hereNowData:PNHereNowUUID forChannel:channel withCompletion:block];
 }
 
 - (void)hereNowData:(PNHereNowDataType)type forChannel:(NSString *)channel
-     withCompletion:(PNCompletionBlock)block {
+     withCompletion:(PNHereNowCompletionBlock)block {
     
     [self hereNowData:type forChannel:YES withName:channel withCompletion:block];
 }
@@ -80,19 +80,20 @@
 
 #pragma mark - Channel group here now
 
-- (void)hereNowForChannelGroup:(NSString *)group withCompletion:(PNCompletionBlock)block {
+- (void)hereNowForChannelGroup:(NSString *)group
+                withCompletion:(PNChannelGroupHereNowCompletionBlock)block {
     
     [self hereNowData:PNHereNowUUID forChannel:NO withName:group withCompletion:block];
 }
 
 - (void)hereNowData:(PNHereNowDataType)type forChannelGroup:(NSString *)group
-     withCompletion:(PNCompletionBlock)block {
+     withCompletion:(PNChannelGroupHereNowCompletionBlock)block {
     
     [self hereNowData:type forChannel:NO withName:group withCompletion:block];
 }
 
 - (void)hereNowData:(PNHereNowDataType)type forChannel:(BOOL)forChannel withName:(NSString *)object
-     withCompletion:(PNCompletionBlock)block {
+     withCompletion:(id)block {
 
     PNRequestParameters *parameters = [PNRequestParameters new];
     [parameters addQueryParameter:@"1" forFieldName:@"disable_uuids"];
@@ -131,7 +132,7 @@
                      PNHereNowDataStrings[type]);
     }
     
-    PNCompletionBlock blockCopy = [block copy];
+    id blockCopy = [block copy];
     __weak __typeof(self) weakSelf = self;
     [self processOperation:(![object length] ? PNHereNowGlobalOperation : PNHereNowOperation)
             withParameters:parameters completionBlock:^(PNResult *result, PNStatus *status) {
@@ -151,7 +152,7 @@
 
 #pragma mark - Client where now
 
-- (void)whereNowUUID:(NSString *)uuid withCompletion:(PNCompletionBlock)block {
+- (void)whereNowUUID:(NSString *)uuid withCompletion:(PNWhereNowCompletionBlock)block {
 
     PNRequestParameters *parameters = [PNRequestParameters new];
     if ([uuid length]) {

@@ -26,6 +26,15 @@ Pod::Spec.new do |s|
   s.requires_arc = true
 
   s.source_files = 'Pod/Classes/**/*'
+  s.private_header_files = [
+    'Pod/Classes/Core/*Private.h',
+    'Pod/Classes/Data/*Private.h',
+    'Pod/Classes/Misc/PNPrivateStructures.h',
+    'Pod/Classes/Misc/Helpers/*.h',
+    'Pod/Classes/Misc/Logger/PNLogFileManager.h',
+    'Pod/Classes/Misc/Protocols/PNParser.h',
+    'Pod/Classes/Network/**/*',
+  ]
   s.resource_bundles = {
     'PubNub' => ['Pod/Assets/*.png']
   }

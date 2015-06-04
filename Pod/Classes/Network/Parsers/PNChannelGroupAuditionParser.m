@@ -4,6 +4,7 @@
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "PNChannelGroupAuditionParser.h"
+#import "PNDictionary.h"
 
 
 #pragma mark Interface implementation
@@ -37,11 +38,13 @@
         
         if (response[@"payload"][@"channels"]) {
             
-            processedResponse = @{@"channels": response[@"payload"][@"channels"]};
+            processedResponse = [PNDictionary dictionaryWithDictionary:@{
+                                 @"channels": response[@"payload"][@"channels"]}];
         }
         else if (response[@"payload"][@"groups"]) {
             
-            processedResponse = @{@"groups": response[@"payload"][@"groups"]};
+            processedResponse = [PNDictionary dictionaryWithDictionary:@{
+                                 @"groups": response[@"payload"][@"groups"]}];
         }
     }
     

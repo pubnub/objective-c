@@ -41,13 +41,13 @@ DEPENDENCIES:
 
 EXTERNAL SOURCES:
   PubNub:
-    :path: ../
+    :path: "../"
 
 SPEC CHECKSUMS:
   AFNetworking: 05edc0ac4c4c8cf57bcf4b84be5b0744b6d8e71e
   CocoaLumberjack: a6f77d987d65dc7ba86b0f84db7d0b9084f77bcb
   Expecta: 32604574add2c46a36f8d2f716b6c5736eb75024
   OHHTTPStubs: dbd1957d414659783e07b49c961940b7564c23d9
-  PubNub: 30ff50193aa0adf6d335afccdc47d0191ba07d4e
+  PubNub: ba9dffc43333692c453b0fe4caca2f56166c14fb
 
 COCOAPODS: 0.37.2

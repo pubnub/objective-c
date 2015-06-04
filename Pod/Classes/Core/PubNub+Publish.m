@@ -64,27 +64,28 @@
 
 #pragma mark - Plain message publish
 
-- (void)publish:(id)message toChannel:(NSString *)channel withCompletion:(PNStatusBlock)block {
+- (void)  publish:(id)message toChannel:(NSString *)channel
+   withCompletion:(PNPublishCompletionBlock)block {
 
     [self publish:message toChannel:channel compressed:NO withCompletion:block];
 }
 
-- (void)publish:(id)message toChannel:(NSString *)channel compressed:(BOOL)compressed
- withCompletion:(PNStatusBlock)block {
+- (void)  publish:(id)message toChannel:(NSString *)channel compressed:(BOOL)compressed
+   withCompletion:(PNPublishCompletionBlock)block {
 
     [self publish:message toChannel:channel storeInHistory:YES compressed:compressed
    withCompletion:block];
 }
 
-- (void)publish:(id)message toChannel:(NSString *)channel storeInHistory:(BOOL)shouldStore
- withCompletion:(PNStatusBlock)block {
+- (void) publish:(id)message toChannel:(NSString *)channel storeInHistory:(BOOL)shouldStore
+  withCompletion:(PNPublishCompletionBlock)block {
 
     [self publish:message toChannel:channel storeInHistory:shouldStore compressed:NO
    withCompletion:block];
 }
 
 - (void)publish:(id)message toChannel:(NSString *)channel storeInHistory:(BOOL)shouldStore
-     compressed:(BOOL)compressed withCompletion:(PNStatusBlock)block {
+     compressed:(BOOL)compressed withCompletion:(PNPublishCompletionBlock)block {
 
     [self publish:message toChannel:channel mobilePushPayload:nil storeInHistory:shouldStore
        compressed:compressed withCompletion:block];
@@ -94,14 +95,14 @@
 #pragma mark - Composited message publish
 
 - (void)    publish:(id)message toChannel:(NSString *)channel
-  mobilePushPayload:(NSDictionary *)payloads withCompletion:(PNStatusBlock)block {
+  mobilePushPayload:(NSDictionary *)payloads withCompletion:(PNPublishCompletionBlock)block {
     
     [self publish:message toChannel:channel mobilePushPayload:payloads compressed:NO
    withCompletion:block];
 }
 
 - (void)publish:(id)message toChannel:(NSString *)channel mobilePushPayload:(NSDictionary *)payloads
-     compressed:(BOOL)compressed withCompletion:(PNStatusBlock)block {
+     compressed:(BOOL)compressed withCompletion:(PNPublishCompletionBlock)block {
 
     [self publish:message toChannel:channel mobilePushPayload:payloads storeInHistory:YES
        compressed:compressed withCompletion:block];
@@ -109,7 +110,7 @@
 
 - (void)    publish:(id)message toChannel:(NSString *)channel
   mobilePushPayload:(NSDictionary *)payloads storeInHistory:(BOOL)shouldStore
-     withCompletion:(PNStatusBlock)block {
+     withCompletion:(PNPublishCompletionBlock)block {
 
     [self publish:message toChannel:channel mobilePushPayload:payloads storeInHistory:shouldStore
        compressed:NO withCompletion:block];
@@ -117,11 +118,11 @@
 
 - (void)    publish:(id)message toChannel:(NSString *)channel
   mobilePushPayload:(NSDictionary *)payloads storeInHistory:(BOOL)shouldStore
-         compressed:(BOOL)compressed withCompletion:(PNStatusBlock)block {
+         compressed:(BOOL)compressed withCompletion:(PNPublishCompletionBlock)block {
 
     // Push further code execution on secondary queue to make service queue responsive during
     // JSON serialization and encryption process.
-    PNStatusBlock blockCopy = [block copy];
+    PNPublishCompletionBlock blockCopy = [block copy];
     __weak __typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 

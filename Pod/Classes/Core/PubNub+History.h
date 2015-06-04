@@ -2,6 +2,94 @@
 #import "PubNub+Core.h"
 
 
+#pragma mark API group protocols
+
+/**
+ @brief      Protocol which describe history data object structure.
+ @discussion Contain information about messages and time frame for fetched history.
+ 
+ @author Sergey Mamontov
+ @since 4.0
+ @copyright © 2009-2015 PubNub, Inc.
+ */
+@protocol PNHistoryData
+
+
+///------------------------------------------------
+/// @name Information
+///------------------------------------------------
+
+/**
+ @brief  Channel history messages.
+ 
+ @return List of channels which has been stored in history within known interval.
+ 
+ @since 4.0
+ */
+- (NSArray *)messages;
+
+/**
+ @brief  History time frame start time.
+ 
+ @return Number with unsigned long long as timestamp.
+ 
+ @since 4.0
+ */
+- (NSNumber *)start;
+
+/**
+ @brief   History time frame end time.
+ 
+ @return Number with unsigned long long as timestamp.
+ 
+ @since 4.0
+ */
+- (NSNumber *)end;
+
+@end
+
+
+/**
+ @brief  Protocol which describe operation processing resulting object with typed with \c data field
+         with corresponding data type.
+ 
+ @author Sergey Mamontov
+ @since 4.0
+ @copyright © 2009-2015 PubNub, Inc.
+ */
+@protocol PNHistoryResult <PNResult>
+
+
+///------------------------------------------------
+/// @name Information
+///------------------------------------------------
+
+/**
+ @brief  Reference on service response data casted to required type.
+ 
+ @since 4.0
+ */
+@property (nonatomic, readonly, copy) NSObject<PNHistoryData> *data;
+
+@end
+
+
+#pragma mark - Types
+
+/**
+ @brief  Channel history fetch completion block.
+ 
+ @param result Reference on result object which describe service response on history request.
+ @param status Reference on status instance which hold information about procesing results.
+ 
+ @since 4.0
+ */
+typedef void(^PNHistoryCompletionBlock)(PNResult<PNHistoryResult> *result,
+                                        PNStatus<PNStatus> *status);
+
+
+#pragma mark - API group interface
+
 /**
  @brief      \b PubNub client core class extension to provide access to 'history' API group.
  @discussion Set of API which allow to fetch events which has been moved from remote data object
@@ -73,7 +161,7 @@
  
  @since 4.0
  */
-- (void)historyForChannel:(NSString *)channel withCompletion:(PNCompletionBlock)block;
+- (void)historyForChannel:(NSString *)channel withCompletion:(PNHistoryCompletionBlock)block;
 
 
 ///------------------------------------------------
@@ -146,7 +234,7 @@
  @since 4.0
  */
 - (void)historyForChannel:(NSString *)channel start:(NSNumber *)startDate end:(NSNumber *)endDate
-           withCompletion:(PNCompletionBlock)block;
+           withCompletion:(PNHistoryCompletionBlock)block;
 
 /**
  @brief  Allow to fetch events from specified \c channel's history within specified time frame.
@@ -221,7 +309,7 @@
  @since 4.0
  */
 - (void)historyForChannel:(NSString *)channel start:(NSNumber *)startDate end:(NSNumber *)endDate
-                    limit:(NSUInteger)limit withCompletion:(PNCompletionBlock)block;
+                    limit:(NSUInteger)limit withCompletion:(PNHistoryCompletionBlock)block;
 
 
 ///------------------------------------------------
@@ -306,7 +394,7 @@
  @since 4.0
  */
 - (void)historyForChannel:(NSString *)channel start:(NSNumber *)startDate end:(NSNumber *)endDate
-         includeTimeToken:(BOOL)shouldIncludeTimeToken withCompletion:(PNCompletionBlock)block;
+         includeTimeToken:(BOOL)shouldIncludeTimeToken withCompletion:(PNHistoryCompletionBlock)block;
 
 /**
  @brief  Allow to fetch events from specified \c channel's history within specified time frame.
@@ -389,7 +477,7 @@
  */
 - (void)historyForChannel:(NSString *)channel start:(NSNumber *)startDate end:(NSNumber *)endDate
                     limit:(NSUInteger)limit includeTimeToken:(BOOL)shouldIncludeTimeToken
-           withCompletion:(PNCompletionBlock)block;
+           withCompletion:(PNHistoryCompletionBlock)block;
 
 /**
  @brief  Allow to fetch events from specified \c channel's history within specified time frame.
@@ -467,7 +555,7 @@
  */
 - (void)historyForChannel:(NSString *)channel start:(NSNumber *)startDate end:(NSNumber *)endDate
                     limit:(NSUInteger)limit reverse:(BOOL)shouldReverseOrder
-           withCompletion:(PNCompletionBlock)block;
+           withCompletion:(PNHistoryCompletionBlock)block;
 
 /**
  @brief  Allow to fetch events from specified \c channel's history within specified time frame.
@@ -551,7 +639,7 @@
  */
 - (void)historyForChannel:(NSString *)channel start:(NSNumber *)startDate end:(NSNumber *)endDate
                     limit:(NSUInteger)limit reverse:(BOOL)shouldReverseOrder
-         includeTimeToken:(BOOL)shouldIncludeTimeToken withCompletion:(PNCompletionBlock)block;
+         includeTimeToken:(BOOL)shouldIncludeTimeToken withCompletion:(PNHistoryCompletionBlock)block;
 
 #pragma mark -
 

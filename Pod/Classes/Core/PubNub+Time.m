@@ -16,10 +16,10 @@
 
 #pragma mark - Time token request
 
-- (void)timeWithCompletion:(PNCompletionBlock)block {
+- (void)timeWithCompletion:(PNTimeCompletionBlock)block {
     
     DDLogAPICall(@"<PubNub> Time token request.");
-    PNCompletionBlock blockCopy = [block copy];
+    PNTimeCompletionBlock blockCopy = [block copy];
     __weak __typeof(self) weakSelf = self;
     [self processOperation:PNTimeOperation withParameters:[PNRequestParameters new]
            completionBlock:^(PNResult *result, PNStatus *status) {

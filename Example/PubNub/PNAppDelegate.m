@@ -69,7 +69,7 @@
 
 - (void)tireKicker {
     [self pubNubInit];
-    //    [self pubNubTime];
+        [self pubNubTime];
     //    [self pubNubHistory];
     //    [self pubNubHereNow];
     //    [self pubNubCGAdd];
@@ -106,7 +106,9 @@
 }
 
 - (void)pubNubWhereNow {
-    [self.client whereNowUUID:@"12345" withCompletion:^(PNResult *result, PNStatus *status) {
+    
+    [self.client whereNowUUID:@"12345" withCompletion:^(PNResult<PNWhereNowResult> *result,
+                                                        PNStatus<PNStatus> *status) {
         if (status) {
             // As a status, this contains error or non-error information about the history request, but not the actual history data I requested.
             // Timeout Error, PAM Error, etc.
@@ -116,26 +118,31 @@
         else if (result) {
             // As a result, this contains the messages, start, and end timetoken in the data attribute
             
-            NSLog(@"^^^^ Loaded whereNow data: %@", result.data);  // TODO: Call out data attributes here
+            NSLog(@"^^^^ Loaded whereNow data: %@", result.data.channels);  // TODO: Call out data attributes here
         }
     }];
 }
 
 - (void)pubNubCGRemoveSomeChannels {
-    [self.client removeChannels:@[_channel2] fromGroup:@"myChannelGroup" withCompletion:^(PNStatus *status) {
-        if (!status.isError) {
-            NSLog(@"^^^^CG Remove Some Channels request succeeded at timetoken %@.", status.currentTimetoken);
-        } else {
-            NSLog(@"^^^^CG Remove Some Channels request did not succeed. All subscribe operations will autoretry when possible.");
-            [self handleStatus:status];
-        }
+    
+    [self.client removeChannels:@[_channel2] fromGroup:@"myChannelGroup"
+                 withCompletion:^(PNStatus<PNStatus> *status) {
+        
+         if (!status.isError) {
+             NSLog(@"^^^^CG Remove Some Channels request succeeded at timetoken");
+         } else {
+             NSLog(@"^^^^CG Remove Some Channels request did not succeed. All subscribe operations will autoretry when possible.");
+             [self handleStatus:status];
+         }
     }];
 }
 
 - (void)pubNubCGRemoveAllChannels {
-    [self.client removeChannelsFromGroup:@"myChannelGroup" withCompletion:^(PNStatus *status) {
+    
+    [self.client removeChannelsFromGroup:@"myChannelGroup" withCompletion:^(PNStatus<PNStatus> *status) {
+
         if (!status.isError) {
-            NSLog(@"^^^^CG Remove All Channels request succeeded at timetoken %@.", status.currentTimetoken);
+            NSLog(@"^^^^CG Remove All Channels request succeeded at timetoken");
         } else {
             NSLog(@"^^^^CG Remove All Channels request did not succeed. All subscribe operations will autoretry when possible.");
             [self handleStatus:status];
@@ -145,21 +152,24 @@
 
 
 - (void)pubNubCGAdd {
+    
     __weak typeof (self) wself = self;
-    [self.client addChannels:@[_channel1, _channel2] toGroup:@"myChannelGroup" withCompletion:^(PNStatus *status) {
-        __strong typeof (wself) sself = wself;
-        if (!status.isError) {
-            NSLog(@"^^^^CGAdd request succeeded at timetoken %@.", status.currentTimetoken);
-        } else {
-            NSLog(@"^^^^CGAdd Subscribe request did not succeed. All subscribe operations will autoretry when possible.");
-            [sself handleStatus:status];
-        }
+    [self.client addChannels:@[_channel1, _channel2] toGroup:@"myChannelGroup"
+              withCompletion:^(PNStatus<PNStatus> *status) {
+                  
+          if (!status.isError) {
+              NSLog(@"^^^^CGAdd request succeeded at timetoken.");
+          } else {
+              NSLog(@"^^^^CGAdd Subscribe request did not succeed. All subscribe operations will autoretry when possible.");
+              [wself handleStatus:status];
+          }
         
     }];
 }
 
 - (void)pubNubHereNow {
-    [self.client hereNowForChannel:_channel1 withCompletion:^(PNResult *result, PNStatus *status) {
+    
+    [self.client hereNowForChannel:_channel1 withCompletion:^(PNResult<PNHereNowResult> *result, PNStatus<PNStatus> *status) {
         
         if (status) {
             // As a status, this contains error or non-error information about the history request, but not the actual history data I requested.
@@ -172,14 +182,14 @@
             
             NSLog(@"^^^^ Loaded hereNowForChannel data: %@", result.data);  // TODO: Call out data attributes here
         }
-        
     }];
 }
 
 - (void)pubNubHistory {
-    // History
     
-    [self.client historyForChannel:_channel1 withCompletion:^(PNResult *result, PNStatus *status) {
+    // History
+    [self.client historyForChannel:_channel1
+                    withCompletion:^(PNResult<PNHistoryResult> *result, PNStatus<PNStatus> *status) {
         
         // For completion blocks that provide both result and status parameters, you will only ever
         // have a non-nil status or result.
@@ -203,32 +213,41 @@
 
 
 - (void)pubNubTime {
-    // Time (Ping) to PubNub Servers
+
     
-    [self.client timeWithCompletion:^(PNResult *result, PNStatus *status) {
+    // Time (Ping) to PubNub Servers
+    [self.client timeWithCompletion:^(PNResult<PNTimeResult> *result, PNStatus<PNStatus> *status) {
+        
         if (result.data) {
-            NSLog(@"Result from Time: %@", result.data);
+            NSLog(@"Result from Time: %@", result.data.timetoken);
         }
         else if (status) {
+            
             [self handleStatus:status];
         }
     }];
 }
 
 - (void)publishHelloWorld {
+    
     [self.client publish:@"I'm here!" toChannel:_channel1
-          withCompletion:^(PNStatus *status) {
-              if (!status.isError) {
-                  NSLog(@"Message sent at TT: %@", status.data[@"tt"]);
-              } else {
-                  [self handleStatus:status];
-              }
-          }];
+          withCompletion:^(PNStatus<PNPublishStatus> *status) {
+        
+        if (!status.isError) {
+            
+            NSLog(@"Message sent at TT: %@", status.data.timetoken);
+        }
+        else {
+            
+            [self handleStatus:status];
+        }
+    }];
 }
 
 #pragma mark - Streaming Data didReceiveMessage Listener
 
-- (void)client:(PubNub *)client didReceiveMessage:(PNResult *)message withStatus:(PNStatus *)status {
+- (void)client:(PubNub *)client didReceiveMessage:(PNResult<PNMessageResult> *)message
+    withStatus:(PNStatus<PNStatus> *)status {
     
     if (status) {
         [self handleStatus:status];
@@ -239,7 +258,7 @@
 
 #pragma mark - Streaming Data didReceivePresenceEvent Listener
 
-- (void)client:(PubNub *)client didReceivePresenceEvent:(PNResult *)event {
+- (void)client:(PubNub *)client didReceivePresenceEvent:(PNResult<PNPresenceEventResult> *)event {
     // TODO detail fields in data that depict the Presence event
     
     NSLog(@"Did receive presence event: %@", event.data);
@@ -247,7 +266,7 @@
 
 #pragma mark - Streaming Data didReceiveStatus Listener
 
-- (void)client:(PubNub *)client didReceiveStatus:(PNStatus *)status {
+- (void)client:(PubNub *)client didReceiveStatus:(PNStatus<PNSubscriberStatus> *)status {
     
     // This is where we'll find ongoing status events from our subscribe loop
     // Results (messages) from our subscribe loop will be found in didReceiveMessage
@@ -258,7 +277,7 @@
 
 #pragma mark - example status handling
 
-- (void)handleStatus:(PNStatus *)status {
+- (void)handleStatus:(PNStatus<PNStatus> *)status {
     
     // TODO differentiate between errors, non-errors, connection, ack status events
     // TODO handleErrorStatus vs handleNonErrorStatus ?
@@ -280,7 +299,7 @@
     
 }
 
-- (void)handleErrorStatus:(PNStatus *)status {
+- (void)handleErrorStatus:(PNStatus<PNStatus> *)status {
     
     
     NSLog(@"^^^^ Debug: %@", status.debugDescription);
@@ -316,12 +335,12 @@
     }
 }
 
-- (void)handlePAMError:(PNStatus *)status {
+- (void)handlePAMError:(PNStatus<PNStatus> *)status {
     // Access Denied via PAM. Access status.data to determine the resource in question that was denied.
     // In addition, you can also change auth key dynamically if needed."
     
-    NSString *pamResourceName = status.data[@"channels"] ? status.data[@"channels"][0] : status.data[@"channel-groups"];
-    NSString *pamResourceType = status.data[@"channels"] ? @"channel" : @"channel-groups";
+    NSString *pamResourceName = status.data.channels ? status.data.channels[0] : status.data.channelGroups;
+    NSString *pamResourceType = status.data.channels ? @"channel" : @"channel-groups";
     
     NSLog(@"PAM error on %@ %@", pamResourceType, pamResourceName);
     
@@ -349,7 +368,7 @@
     }
 }
 
-- (void)handleNonErrorStatus:(PNStatus *)status {
+- (void)handleNonErrorStatus:(PNStatus<PNStatus> *)status {
     
     // This method demonstrates how to handle status events that are not errors -- that is,
     // status events that can safely be ignored, but if you do choose to handle them, you
@@ -366,6 +385,7 @@
     
     if (status.operation == PNSubscribeOperation) {
         
+        PNStatus<PNSubscriberStatus> *subscriberStatus = ( PNStatus<PNSubscriberStatus> *)status;
         // Specific to the subscribe loop operation, you can handle connection events
         // These status checks are only available via the subscribe status completion block or
         // on the long-running subscribe loop listener didReceiveStatus
@@ -375,14 +395,16 @@
         if (status.category == PNDisconnectedCategory) {
             // PNDisconnect happens as part of our regular operation
             // No need to monitor for this unless requested by support
-            NSLog(@"^^^^ Non-error status: Expected Disconnect, Channel Info: %@", status.subscribedChannels);
+            NSLog(@"^^^^ Non-error status: Expected Disconnect, Channel Info: %@",
+                  subscriberStatus.subscribedChannels);
         }
         
         else if (status.category == PNUnexpectedDisconnectCategory) {
             // PNUnexpectedDisconnect happens as part of our regular operation
             // This event happens when radio / connectivity is lost
             
-            NSLog(@"^^^^ Non-error status: Unexpected Disconnect, Channel Info: %@", status.subscribedChannels);
+            NSLog(@"^^^^ Non-error status: Unexpected Disconnect, Channel Info: %@",
+                  subscriberStatus.subscribedChannels);
         }
         
         else if (status.category == PNConnectedCategory) {
@@ -391,7 +413,8 @@
             // Or just use the connected event to confirm you are subscribed for UI / internal notifications, etc
             
             // NSLog(@"Subscribe Connected to %@", status.data[@"channels"]);
-            NSLog(@"^^^^ Non-error status: Connected, Channel Info: %@", status.subscribedChannels);
+            NSLog(@"^^^^ Non-error status: Connected, Channel Info: %@",
+                  subscriberStatus.subscribedChannels);
             [self publishHelloWorld];
             
         }
@@ -400,7 +423,8 @@
             // PNUnexpectedDisconnect happens as part of our regular operation
             // This event happens when radio / connectivity is lost
             
-            NSLog(@"^^^^ Non-error status: Reconnected, Channel Info: %@", status.subscribedChannels);
+            NSLog(@"^^^^ Non-error status: Reconnected, Channel Info: %@",
+                  subscriberStatus.subscribedChannels);
             
         }
         

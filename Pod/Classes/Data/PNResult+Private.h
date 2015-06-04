@@ -4,11 +4,12 @@
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "PNResult.h"
+#import "PNStructures.h"
 
 
 #pragma mark Private interface declaration
 
-@interface PNResult () <NSCopying>
+@interface PNResult (Private) <NSCopying>
 
 
 ///------------------------------------------------
@@ -22,7 +23,6 @@
 @property (nonatomic, copy) NSString *authKey;
 @property (nonatomic, copy) NSString *origin;
 @property (nonatomic, copy) NSURLRequest *clientRequest;
-@property (nonatomic, copy) NSDictionary *data;
 
 
 ///------------------------------------------------
@@ -63,7 +63,7 @@
  */
 - (instancetype)initForOperation:(PNOperationType)operation
                completedWithTaks:(NSURLSessionDataTask *)task
-                   processedData:(NSDictionary *)processedData NS_DESIGNATED_INITIALIZER;
+                   processedData:(NSDictionary *)processedData;
 
 /**
  @brief      Make copy of current result object with mutated data which should be stored in it.
@@ -77,6 +77,15 @@
  @since 4.0
  */
 - (instancetype)copyWithMutatedData:(id)data;
+
+/**
+ @brief  Update data stored for result object.
+ 
+ @param data New data which should be placed into result object.
+ 
+ @since 4.0
+ */
+- (void)updateData:(id)data;
 
 
 ///------------------------------------------------

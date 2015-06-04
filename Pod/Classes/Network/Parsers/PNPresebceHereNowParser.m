@@ -4,6 +4,7 @@
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "PNPresebceHereNowParser.h"
+#import "PNDictionary.h"
 
 
 #pragma mark Interface implementation
@@ -56,12 +57,14 @@
             return [parsedUUIDData copy];
         };
         
+        NSDictionary *hereNowData = nil;
+        
         // Check whether global here now has been performed or not
         if (response[@"payload"][@"channels"]) {
             
             // Composing initial response content.
-            NSMutableDictionary *data = [@{@"total_channels":response[@"payload"][@"total_channels"],
-                                           @"total_occupancy":response[@"payload"][@"total_occupancy"],
+            NSMutableDictionary *data = [@{@"totalChannels":response[@"payload"][@"total_channels"],
+                                           @"totalOccupancy":response[@"payload"][@"total_occupancy"],
                                            @"channels": [NSMutableDictionary new]} mutableCopy];
             for (NSDictionary *channelName in response[@"payload"][@"channels"]) {
                 
@@ -75,17 +78,18 @@
                 
                 data[@"channels"][channelName] = parsedChannelData;
             }
-            processedResponse = data;
+            hereNowData = data;
         }
         else if (response[@"uuids"]){
             
-            processedResponse = @{@"occupancy":response[@"occupancy"],
+            hereNowData = @{@"occupancy":response[@"occupancy"],
                                   @"uuids":uuidParseBlock(response[@"uuids"])};
         }
         else if (response[@"occupancy"]){
             
-            processedResponse = @{@"occupancy":response[@"occupancy"]};
+            hereNowData = @{@"occupancy":response[@"occupancy"]};
         }
+        processedResponse = [PNDictionary dictionaryWithDictionary:hereNowData];
     }
     
     return processedResponse;

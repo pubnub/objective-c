@@ -31,7 +31,7 @@
  @since 4.0
  */
 - (void)handleHistoryResult:(PNResult *)result withStatus:(PNStatus *)status
-                 completion:(PNCompletionBlock)block;
+                 completion:(PNHistoryCompletionBlock)block;
 
 #pragma mark -
 
@@ -46,7 +46,7 @@
 
 #pragma mark - Full history
 
-- (void)historyForChannel:(NSString *)channel withCompletion:(PNCompletionBlock)block {
+- (void)historyForChannel:(NSString *)channel withCompletion:(PNHistoryCompletionBlock)block {
     
     [self historyForChannel:channel start:nil end:nil withCompletion:block];
 }
@@ -55,13 +55,13 @@
 #pragma mark - History in specified frame
 
 - (void)historyForChannel:(NSString *)channel start:(NSNumber *)startDate end:(NSNumber *)endDate
-           withCompletion:(PNCompletionBlock)block {
+           withCompletion:(PNHistoryCompletionBlock)block {
     
     [self historyForChannel:channel start:startDate end:endDate limit:100 withCompletion:block];
 }
 
 - (void)historyForChannel:(NSString *)channel start:(NSNumber *)startDate end:(NSNumber *)endDate
-                    limit:(NSUInteger)limit withCompletion:(PNCompletionBlock)block {
+                    limit:(NSUInteger)limit withCompletion:(PNHistoryCompletionBlock)block {
     
     [self historyForChannel:channel start:startDate end:endDate limit:limit includeTimeToken:NO
              withCompletion:block];
@@ -71,7 +71,7 @@
 #pragma mark - History in frame with extended response
 
 - (void)historyForChannel:(NSString *)channel start:(NSNumber *)startDate end:(NSNumber *)endDate
-         includeTimeToken:(BOOL)shouldIncludeTimeToken withCompletion:(PNCompletionBlock)block {
+         includeTimeToken:(BOOL)shouldIncludeTimeToken withCompletion:(PNHistoryCompletionBlock)block {
     
     [self historyForChannel:channel start:startDate end:endDate limit:100
            includeTimeToken:shouldIncludeTimeToken withCompletion:block];
@@ -79,7 +79,7 @@
 
 - (void)historyForChannel:(NSString *)channel start:(NSNumber *)startDate end:(NSNumber *)endDate
                     limit:(NSUInteger)limit includeTimeToken:(BOOL)shouldIncludeTimeToken
-           withCompletion:(PNCompletionBlock)block {
+           withCompletion:(PNHistoryCompletionBlock)block {
     
     [self historyForChannel:channel start:startDate end:endDate limit:limit reverse:NO
            includeTimeToken:shouldIncludeTimeToken withCompletion:block];
@@ -87,7 +87,7 @@
 
 - (void)historyForChannel:(NSString *)channel start:(NSNumber *)startDate end:(NSNumber *)endDate
                     limit:(NSUInteger)limit reverse:(BOOL)shouldReverseOrder
-           withCompletion:(PNCompletionBlock)block {
+           withCompletion:(PNHistoryCompletionBlock)block {
     
     [self historyForChannel:channel start:startDate end:endDate limit:limit
                     reverse:shouldReverseOrder includeTimeToken:NO withCompletion:block];
@@ -95,7 +95,7 @@
 
 - (void)historyForChannel:(NSString *)channel start:(NSNumber *)startDate end:(NSNumber *)endDate
                     limit:(NSUInteger)limit reverse:(BOOL)shouldReverseOrder
-         includeTimeToken:(BOOL)shouldIncludeTimeToken withCompletion:(PNCompletionBlock)block {
+         includeTimeToken:(BOOL)shouldIncludeTimeToken withCompletion:(PNHistoryCompletionBlock)block {
     
     // Swap time frame dates if required.
     if ([startDate compare:endDate] == NSOrderedDescending) {
@@ -131,7 +131,7 @@
                  (endDate ? [NSString stringWithFormat:@" to %@", endDate] : @""), @(limit),
                  (shouldIncludeTimeToken ? @" (including message time tokens)" : @""));
 
-    PNCompletionBlock blockCopy = [block copy];
+    PNHistoryCompletionBlock blockCopy = [block copy];
     __weak __typeof(self) weakSelf = self;
     [self processOperation:PNHistoryOperation withParameters:parameters
            completionBlock:^(PNResult *result, PNStatus *status) {
@@ -152,16 +152,16 @@
 
 #pragma mark - Handlers
 
-- (void)handleHistoryResult:(PNResult *)result withStatus:(PNStatus *)status
-                 completion:(PNCompletionBlock)block {
+- (void)handleHistoryResult:(PNResult<PNHistoryResult> *)result withStatus:(PNStatus *)status
+                 completion:(PNHistoryCompletionBlock)block {
 
-    if (result && result.data[@"decryptError"]) {
+    if (result && ((NSDictionary *)result.data)[@"decryptError"]) {
 
         status = [PNStatus statusForOperation:PNHistoryOperation
                                      category:PNDecryptionErrorCategory];
         NSMutableDictionary *updatedData = [result.data mutableCopy];
         [updatedData removeObjectForKey:@"decryptError"];
-        status.data = updatedData;
+        [status updateData:updatedData];
     }
     [self callBlock:block status:NO withResult:result andStatus:status];
 }

@@ -2,6 +2,242 @@
 #import "PubNub+Core.h"
 
 
+#pragma mark API group protocols
+
+/**
+ @brief      Protocol which describe client state update status data object structure.
+ @discussion Contain information about final state which has been applied or error information.
+ 
+ @author Sergey Mamontov
+ @since 4.0
+ @copyright © 2009-2015 PubNub, Inc.
+ */
+@protocol PNSetStateData <PNErrorStatusData>
+
+
+///------------------------------------------------
+/// @name Information
+///------------------------------------------------
+
+/**
+ @brief  User-provided client state information.
+ 
+ @return Client state which has been used during subscription process or using 'set state' API.
+ 
+ @since 4.0
+ */
+- (NSDictionary *)state;
+
+@end
+
+
+/**
+ @brief      Protocol which describe client state audit on channel result data object structure.
+ @discussion Contain information about client state which has been assigned to the channel.
+ 
+ @author Sergey Mamontov
+ @since 4.0
+ @copyright © 2009-2015 PubNub, Inc.
+ */
+@protocol PNChannelStateData <PNSetStateData>
+
+@end
+
+
+/**
+ @brief      Protocol which describe client state audit on channel group result data object 
+             structure.
+ @discussion Contain information about client state which has been assigned to the channel group.
+ 
+ @author Sergey Mamontov
+ @since 4.0
+ @copyright © 2009-2015 PubNub, Inc.
+ */
+@protocol PNChannelGroupStateData <PNChannelStateData>
+
+
+///------------------------------------------------
+/// @name Information
+///------------------------------------------------
+
+/**
+ @brief  Multi channel client state information.
+ @note   In case if status object represent error, this property may contain list of channels to 
+         which client doesn't have access.
+ 
+ @return Return dictionary which contains name of the channels as keys and their state stored as
+         value.
+ 
+ @since 4.0
+ */
+- (id)channels;
+
+@end
+
+
+/**
+ @brief      Protocol which describe object returned from channel state audit API.
+ @discussion This method allow to provide access to structured response data field.
+ 
+ @author Sergey Mamontov
+ @since 4.0
+ @copyright © 2009-2015 PubNub, Inc.
+ */
+@protocol PNChannelStateResult <PNResult>
+
+
+///------------------------------------------------
+/// @name Information
+///------------------------------------------------
+
+/**
+ @brief  Reference on service response data casted to required type.
+ 
+ @since 4.0
+ */
+@property (nonatomic, readonly, copy) NSObject<PNChannelStateData> *data;
+
+@end
+
+
+/**
+ @brief      Protocol which describe object returned from channel group state audit API.
+ @discussion This method allow to provide access to structured response data field.
+ 
+ @author Sergey Mamontov
+ @since 4.0
+ @copyright © 2009-2015 PubNub, Inc.
+ */
+@protocol PNChannelGroupStateResult <PNResult>
+
+
+///------------------------------------------------
+/// @name Information
+///------------------------------------------------
+
+/**
+ @brief  Reference on service response data casted to required type.
+ 
+ @since 4.0
+ */
+@property (nonatomic, readonly, copy) NSObject<PNChannelGroupStateData> *data;
+
+@end
+
+
+/**
+ @brief  Protocol which describe operation processing status object with typed with \c data field
+         with corresponding data type.
+ 
+ @author Sergey Mamontov
+ @since 4.0
+ @copyright © 2009-2015 PubNub, Inc.
+ */
+@protocol PNChannelStateStatus <PNStatus>
+
+
+///------------------------------------------------
+/// @name Information
+///------------------------------------------------
+
+/**
+ @brief  Reference on service response data casted to required type.
+ 
+ @since 4.0
+ */
+@property (nonatomic, readonly, copy) NSObject<PNChannelStateData> *data;
+
+@end
+
+
+/**
+ @brief  Protocol which describe operation processing status object with typed with \c data field
+         with corresponding data type.
+ 
+ @author Sergey Mamontov
+ @since 4.0
+ @copyright © 2009-2015 PubNub, Inc.
+ */
+@protocol PNChannelGroupStateStatus <PNStatus>
+
+
+///------------------------------------------------
+/// @name Information
+///------------------------------------------------
+
+/**
+ @brief  Reference on service response data casted to required type.
+ 
+ @since 4.0
+ */
+@property (nonatomic, readonly, copy) NSObject<PNChannelGroupStateData> *data;
+
+@end
+
+
+/**
+ @brief  Protocol which describe operation processing status object with typed with \c data field
+         with corresponding data type.
+ 
+ @author Sergey Mamontov
+ @since 4.0
+ @copyright © 2009-2015 PubNub, Inc.
+ */
+@protocol PNSetStateStatus <PNStatus>
+
+
+///------------------------------------------------
+/// @name Information
+///------------------------------------------------
+
+/**
+ @brief  Reference on service response data casted to required type.
+ 
+ @since 4.0
+ */
+@property (nonatomic, readonly, copy) NSObject<PNSetStateData> *data;
+
+@end
+
+
+#pragma mark - Types
+
+/**
+ @brief State modification completion block.
+ 
+ @param status Reference on status instance which hold information about procesing results.
+ 
+ @since 4.0
+ */
+typedef void(^PNSetStateCompletionBlock)(PNStatus<PNSetStateStatus> *status);
+
+/**
+ @brief  Channel state audition completion block.
+ 
+ @param result Reference on result object which describe service response on channel state audit
+               request.
+ @param status Reference on status instance which hold information about procesing results.
+ 
+ @since 4.0
+ */
+typedef void(^PNChannelStateCompletionBlock)(PNResult<PNChannelStateResult> *result,
+                                             PNStatus<PNChannelStateStatus> *status);
+
+/**
+ @brief  Channel group state audition completion block.
+ 
+ @param result Reference on result object which describe service response on channel group state 
+               audit request.
+ @param status Reference on status instance which hold information about procesing results.
+ 
+ @since 4.0
+ */
+typedef void(^PNChannelGroupStateCompletionBlock)(PNResult<PNChannelGroupStateResult> *result,
+                                                  PNStatus<PNChannelGroupStateStatus> *status);
+
+
+#pragma mark - API group interface
+
 /**
  @brief      \b PubNub client core class extension to provide access to 'state' API group.
  @discussion Set of API which allow to fetch events which has been moved from remote data object
@@ -32,7 +268,7 @@
  @since 4.0
  */
 - (void)setState:(NSDictionary *)state forUUID:(NSString *)uuid onChannel:(NSString *)channel
-  withCompletion:(PNStatusBlock)block;
+  withCompletion:(PNSetStateCompletionBlock)block;
 
 /**
  @brief  Modify state information for \c uuid on specified channel group.
@@ -47,7 +283,7 @@
  @since 4.0
  */
 - (void)setState:(NSDictionary *)state forUUID:(NSString *)uuid onChannelGroup:(NSString *)group
-  withCompletion:(PNStatusBlock)block;
+  withCompletion:(PNSetStateCompletionBlock)block;
 
 
 ///------------------------------------------------
@@ -67,7 +303,7 @@
  @since 4.0
  */
 - (void)stateForUUID:(NSString *)uuid onChannel:(NSString *)channel
-      withCompletion:(PNCompletionBlock)block;
+      withCompletion:(PNChannelStateCompletionBlock)block;
 
 /**
  @brief  Retrieve state information for \c uuid on specified channel group.
@@ -82,7 +318,7 @@
  @since 4.0
  */
 - (void)stateForUUID:(NSString *)uuid onChannelGroup:(NSString *)group
-      withCompletion:(PNCompletionBlock)block;
+      withCompletion:(PNChannelGroupStateCompletionBlock)block;
 
 #pragma mark -
 
