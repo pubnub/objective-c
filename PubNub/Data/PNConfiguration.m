@@ -81,9 +81,13 @@
     configuration.origin = self.origin;
     configuration.publishKey = self.publishKey;
     configuration.subscribeKey = self.subscribeKey;
+    configuration.authKey = self.authKey;
     configuration.uuid = self.uuid;
+    configuration.cipherKey = self.cipherKey;
     configuration.subscribeMaximumIdleTime = self.subscribeMaximumIdleTime;
     configuration.nonSubscribeRequestTimeout = self.nonSubscribeRequestTimeout;
+    configuration.presenceHeartbeatValue = self.presenceHeartbeatValue;
+    configuration.presenceHeartbeatInterval = self.presenceHeartbeatInterval;
     configuration.TLSEnabled = self.isTLSEnabled;
     configuration.keepTimeTokenOnListChange = self.shouldKeepTimeTokenOnListChange;
     configuration.restoreSubscription = self.shouldRestoreSubscription;
