@@ -845,6 +845,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                 self.channelsSet = [NSMutableSet new];
                 self.channelGroupsSet = [NSMutableSet new];
                 self.presenceChannelsSet = [NSMutableSet new];
+                self.currentTimeToken = @(0);
+                self.lastTimetoken = @(0);
             }
             [(PNStatus *)status updateCategory:PNUnexpectedDisconnectCategory];
             
@@ -871,11 +873,18 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
     // 'shouldKeepTimeTokenOnListChange' property should never allow to reset time tokens in
     // case if there is a few more subscribe requests is waiting for their turn to be sent.
-    if (initialSubscription && self.client.configuration.shouldKeepTimeTokenOnListChange) {
+    if (initialSubscription) {
+        
+        BOOL shouldUseLastTimeToken = self.client.configuration.shouldKeepTimeTokenOnListChange;
+        if (!shouldUseLastTimeToken) {
             
+            shouldUseLastTimeToken = (self.client.configuration.shouldRestoreSubscription &&
+                                      self.client.configuration.shouldTryCatchUpOnSubscriptionRestore);
+        }
+        
         // Ensure what we already don't use value from previous time token assigned during
         // previous sessions.
-        if ([self.lastTimetoken integerValue] > 0) {
+        if (shouldUseLastTimeToken && [self.lastTimetoken integerValue] > 0) {
             
             shouldAcceptNewTimeToken = NO;
             
