@@ -205,7 +205,7 @@
 /**
  @brief State modification completion block.
  
- @param status Reference on status instance which hold information about procesing results.
+ @param status Reference on status instance which hold information about processing results.
  
  @since 4.0
  */
@@ -216,7 +216,7 @@ typedef void(^PNSetStateCompletionBlock)(PNStatus<PNSetStateStatus> *status);
  
  @param result Reference on result object which describe service response on channel state audit
                request.
- @param status Reference on status instance which hold information about procesing results.
+ @param status Reference on status instance which hold information about processing results.
  
  @since 4.0
  */
@@ -228,7 +228,7 @@ typedef void(^PNChannelStateCompletionBlock)(PNResult<PNChannelStateResult> *res
  
  @param result Reference on result object which describe service response on channel group state 
                audit request.
- @param status Reference on status instance which hold information about procesing results.
+ @param status Reference on status instance which hold information about processing results.
  
  @since 4.0
  */

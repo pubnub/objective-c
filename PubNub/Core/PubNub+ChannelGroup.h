@@ -116,7 +116,7 @@
  @brief  Channel groups list audition completion block.
  
  @param result Reference on result object which describe service response on audition request.
- @param status Reference on status instance which hold information about procesing results.
+ @param status Reference on status instance which hold information about processing results.
  
  @since 4.0
  */
@@ -127,7 +127,7 @@ typedef void(^PNGroupAuditCompletionBlock)(PNResult<PNGroupsResult> *result,
  @brief  Channel group channels list audition completion block.
  
  @param result Reference on result object which describe service response on audition request.
- @param status Reference on status instance which hold information about procesing results.
+ @param status Reference on status instance which hold information about processing results.
  
  @since 4.0
  */
@@ -137,7 +137,7 @@ typedef void(^PNGroupChannelsAuditCompletionBlock)(PNResult<PNGroupChannelsResul
 /**
  @brief  Channel group content modification completion block.
  
- @param status Reference on status instance which hold information about procesing results.
+ @param status Reference on status instance which hold information about processing results.
  
  @since 4.0
  */

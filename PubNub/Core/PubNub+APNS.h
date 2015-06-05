@@ -62,7 +62,7 @@
 /**
  @brief  Push notifications state modification completion block.
  
- @param status Reference on status instance which hold information about procesing results.
+ @param status Reference on status instance which hold information about processing results.
  
  @since 4.0
  */
@@ -71,7 +71,7 @@ typedef void(^PNPushNotificationsStateModificationCompletionBlock)(PNStatus<PNSt
 /**
  @brief  Push notifications state audit completion block.
  
- @param status Reference on status instance which hold information about procesing results.
+ @param status Reference on status instance which hold information about processing results.
  
  @since 4.0
  */

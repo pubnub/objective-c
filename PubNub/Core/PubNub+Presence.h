@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import "PubNub+Core.h"
+#import "PNStructures.h"
 
 
 #pragma mark API group protocols
@@ -244,7 +245,7 @@
  @brief  Here now completion block.
  
  @param result Reference on result object which describe service response on here now request.
- @param status Reference on status instance which hold information about procesing results.
+ @param status Reference on status instance which hold information about processing results.
  
  @since 4.0
  */
@@ -255,7 +256,7 @@ typedef void(^PNHereNowCompletionBlock)(PNResult<PNHereNowResult> *result,
  @brief  Global here now completion block.
  
  @param result Reference on result object which describe service response on here now request.
- @param status Reference on status instance which hold information about procesing results.
+ @param status Reference on status instance which hold information about processing results.
  
  @since 4.0
  */
@@ -266,7 +267,7 @@ typedef void(^PNGlobalHereNowCompletionBlock)(PNResult<PNGlobalHereNowResult> *r
  @brief  Channel group here now completion block.
  
  @param result Reference on result object which describe service response on here now request.
- @param status Reference on status instance which hold information about procesing results.
+ @param status Reference on status instance which hold information about processing results.
  
  @since 4.0
  */
@@ -277,7 +278,7 @@ typedef void(^PNChannelGroupHereNowCompletionBlock)(PNResult<PNChannelGroupHereN
  @brief  UUID where now completion block.
  
  @param result Reference on result object which describe service response on where now request.
- @param status Reference on status instance which hold information about procesing results.
+ @param status Reference on status instance which hold information about processing results.
  
  @since 4.0
  */
@@ -370,8 +371,8 @@ typedef void(^PNWhereNowCompletionBlock)(PNResult<PNWhereNowResult> *result,
 
  @code
  @endcode
- Extension to \c -hereNowWithCompletion: and allow to specify here now data which should be returned
- by \b PubNub service.
+ Extension to \c -hereNowWithCompletion: and allow to specify here now data which should be
+ returned by \b PubNub service.
  
  @code
  @endcode
@@ -420,15 +421,16 @@ typedef void(^PNWhereNowCompletionBlock)(PNResult<PNWhereNowResult> *result,
  }];
  @endcode
  
- @param type  Reference on one of \b PNHereNowDataType fields to instruct what exactly data it 
-              expected in response.
- @param block Here now processing completion block which pass two arguments: \c result - in case of 
-              successful request processing \c data field will contain results of here now
-              operation; \c status - in case if error occurred during request processing.
+ @param level  Reference on one of \b PNHereNowVerbosityLevel fields to instruct what exactly data
+               it expected in response.
+ @param block  Here now processing completion block which pass two arguments: \c result - in case of
+               successful request processing \c data field will contain results of here now
+               operation; \c status - in case if error occurred during request processing.
  
  @since 4.0
  */
-- (void)hereNowData:(PNHereNowDataType)type withCompletion:(PNGlobalHereNowCompletionBlock)block;
+- (void)hereNowWithVerbosity:(PNHereNowVerbosityLevel)level
+                  completion:(PNGlobalHereNowCompletionBlock)block;
 
 
 ///------------------------------------------------
@@ -487,7 +489,7 @@ typedef void(^PNWhereNowCompletionBlock)(PNResult<PNWhereNowResult> *result,
 
 /**
  @brief  Request information about subscribers on specific channel live feeds.
- @note   This API will retrieve only list of UUIDs for specifiedchannel and number of subscribers on
+ @note   This API will retrieve only list of UUIDs for specified channel and number of subscribers on
          it.
 
  @code
@@ -536,8 +538,8 @@ typedef void(^PNWhereNowCompletionBlock)(PNResult<PNWhereNowResult> *result,
  }];
  @endcode
  
- @param type    Reference on one of \b PNHereNowDataType fields to instruct what exactly data it
-                expected in response.
+ @param level   Reference on one of \b PNHereNowVerbosityLevel fields to instruct what exactly data
+                it expected in response.
  @param channel Reference on channel for which here now information should be received.
  @param block   Here now processing completion block which pass two arguments: \c result - in case 
                 of successful request processing \c data field will contain results of here now 
@@ -545,8 +547,8 @@ typedef void(^PNWhereNowCompletionBlock)(PNResult<PNWhereNowResult> *result,
  
  @since 4.0
  */
-- (void)hereNowData:(PNHereNowDataType)type forChannel:(NSString *)channel
-     withCompletion:(PNHereNowCompletionBlock)block;
+- (void)hereNowForChannel:(NSString *)channel withVerbosity:(PNHereNowVerbosityLevel)level
+               completion:(PNHereNowCompletionBlock)block;
 
 
 ///------------------------------------------------
@@ -669,7 +671,7 @@ typedef void(^PNWhereNowCompletionBlock)(PNResult<PNWhereNowResult> *result,
  }];
  @endcode
  
- @param type  Reference on one of \b PNHereNowDataType fields to instruct what exactly data it
+ @param level Reference on one of \b PNHereNowVerbosityLevel fields to instruct what exactly data it
               expected in response.
  @param group Reference on channel group for which here now information should be received.
  @param block Here now processing completion block which pass two arguments: \c result - in case of 
@@ -678,8 +680,8 @@ typedef void(^PNWhereNowCompletionBlock)(PNResult<PNWhereNowResult> *result,
  
  @since 4.0
  */
-- (void)hereNowData:(PNHereNowDataType)type forChannelGroup:(NSString *)group
-     withCompletion:(PNChannelGroupHereNowCompletionBlock)block;
+- (void)hereNowForChannelGroup:(NSString *)group withVerbosity:(PNHereNowVerbosityLevel)level
+                    completion:(PNChannelGroupHereNowCompletionBlock)block;
 
 
 ///------------------------------------------------

@@ -281,7 +281,7 @@ typedef NS_OPTIONS(NSInteger, PNStatusCategory) {
 
  @since 4.0
  */
-typedef NS_OPTIONS(NSInteger, PNHereNowDataType) {
+typedef NS_OPTIONS(NSInteger, PNHereNowVerbosityLevel) {
 
     /**
      @brief  Request presence service return only number of participants at specified remote data

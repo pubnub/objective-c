@@ -72,7 +72,7 @@
 /**
  @brief  Message publish completion block.
  
- @param status Reference on status instance which hold information about procesing results.
+ @param status Reference on status instance which hold information about processing results.
  
  @since 4.0
  */

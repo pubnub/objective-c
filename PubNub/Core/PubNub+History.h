@@ -80,7 +80,7 @@
  @brief  Channel history fetch completion block.
  
  @param result Reference on result object which describe service response on history request.
- @param status Reference on status instance which hold information about procesing results.
+ @param status Reference on status instance which hold information about processing results.
  
  @since 4.0
  */

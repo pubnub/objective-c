@@ -11,7 +11,7 @@
 #import "PNClientState.h"
 #import "PNSubscriber.h"
 #import "PNHelpers.h"
-
+#import "PNStructures.h"
 
 
 #pragma mark - Protected interface declaration
@@ -26,7 +26,7 @@
  @note   This API will retrieve only list of UUIDs for specified remote data object and number of
          subscribers on it.
  
- @param type       Reference on one of \b PNHereNowDataType fields to instruct what exactly data it
+ @param level      Reference on one of \b PNHereNowVerbosityLevel fields to instruct what exactly data it
                    expected in response.
  @param forChannel Whether 'here now' information should be pulled for channel or group.
  @param object     Reference on remote data object for which here now information should be 
@@ -37,8 +37,8 @@
  
  @since 4.0
  */
-- (void)hereNowData:(PNHereNowDataType)type forChannel:(BOOL)forChannel withName:(NSString *)object
-     withCompletion:(id)block;
+- (void)hereNowWithVerbosity:(PNHereNowVerbosityLevel)level forChannel:(BOOL)forChannel
+                    withName:(NSString *)object withCompletion:(id)block;
 
 #pragma mark -
 
@@ -54,27 +54,28 @@
 #pragma mark - Global here now
 
 - (void)hereNowWithCompletion:(PNGlobalHereNowCompletionBlock)block {
-    
-    [self hereNowData:PNHereNowUUID withCompletion:block];
+
+    [self hereNowWithVerbosity:PNHereNowState completion:block];
 }
 
-- (void)hereNowData:(PNHereNowDataType)type withCompletion:(PNGlobalHereNowCompletionBlock)block {
-    
-    [self hereNowData:type forChannel:nil withCompletion:block];
+- (void)hereNowWithVerbosity:(PNHereNowVerbosityLevel)level
+                  completion:(PNGlobalHereNowCompletionBlock)block {
+
+    [self hereNowForChannel:nil withVerbosity:level completion:(id)block];
 }
 
 
 #pragma mark - Channel here now
 
 - (void)hereNowForChannel:(NSString *)channel withCompletion:(PNHereNowCompletionBlock)block {
-    
-    [self hereNowData:PNHereNowUUID forChannel:channel withCompletion:block];
+
+    [self hereNowForChannel:channel withVerbosity:PNHereNowState completion:block];
 }
 
-- (void)hereNowData:(PNHereNowDataType)type forChannel:(NSString *)channel
-     withCompletion:(PNHereNowCompletionBlock)block {
-    
-    [self hereNowData:type forChannel:YES withName:channel withCompletion:block];
+- (void)hereNowForChannel:(NSString *)channel withVerbosity:(PNHereNowVerbosityLevel)level
+               completion:(PNHereNowCompletionBlock)block {
+
+    [self hereNowWithVerbosity:level forChannel:YES withName:channel withCompletion:block];
 }
 
 
@@ -82,26 +83,26 @@
 
 - (void)hereNowForChannelGroup:(NSString *)group
                 withCompletion:(PNChannelGroupHereNowCompletionBlock)block {
-    
-    [self hereNowData:PNHereNowUUID forChannel:NO withName:group withCompletion:block];
+
+    [self hereNowWithVerbosity:PNHereNowState forChannel:NO withName:group withCompletion:block];
 }
 
-- (void)hereNowData:(PNHereNowDataType)type forChannelGroup:(NSString *)group
-     withCompletion:(PNChannelGroupHereNowCompletionBlock)block {
-    
-    [self hereNowData:type forChannel:NO withName:group withCompletion:block];
+- (void)hereNowForChannelGroup:(NSString *)group withVerbosity:(PNHereNowVerbosityLevel)level
+                    completion:(PNChannelGroupHereNowCompletionBlock)block {
+
+    [self hereNowWithVerbosity:level forChannel:NO withName:group withCompletion:block];
 }
 
-- (void)hereNowData:(PNHereNowDataType)type forChannel:(BOOL)forChannel withName:(NSString *)object
-     withCompletion:(id)block {
+- (void)hereNowWithVerbosity:(PNHereNowVerbosityLevel)level forChannel:(BOOL)forChannel
+                    withName:(NSString *)object withCompletion:(id)block {
 
     PNRequestParameters *parameters = [PNRequestParameters new];
     [parameters addQueryParameter:@"1" forFieldName:@"disable_uuids"];
     [parameters addQueryParameter:@"0" forFieldName:@"state"];
-    if (type == PNHereNowUUID || type == PNHereNowState){
+    if (level == PNHereNowUUID || level == PNHereNowState){
         
         [parameters addQueryParameter:@"0" forFieldName:@"disable_uuids"];
-        if (type == PNHereNowState) {
+        if (level == PNHereNowState) {
             
             [parameters addQueryParameter:@"1" forFieldName:@"state"];
         }
@@ -123,13 +124,13 @@
     if (![object length]) {
         
         DDLogAPICall(@"<PubNub> Global 'here now' information with %@ data.",
-                     PNHereNowDataStrings[type]);
+                     PNHereNowDataStrings[level]);
     }
     else {
         
         DDLogAPICall(@"<PubNub> Channel%@ 'here now' information for %@ with %@ data.",
                      (!forChannel ? @" group" : @""), (object?: @"<error>"),
-                     PNHereNowDataStrings[type]);
+                     PNHereNowDataStrings[level]);
     }
     
     id blockCopy = [block copy];
