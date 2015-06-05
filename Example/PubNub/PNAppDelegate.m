@@ -73,19 +73,28 @@
 //    [self publishHelloWorld];
 //    [self pubNubHistory];
 //    [self pubNubHereNow];
+//    [self pubNubWhereNow];
 //    [self pubNubCGAdd];
 //    [self pubNubCGRemoveAllChannels];
 //    [self pubNubCGRemoveSomeChannels];
-//    [self pubNubWhereNow];
-//    [self pubNubSubscribeToChannels];
+    [self pubNubSubscribeToChannels];
 //    [self pubNubSubscribeToChannelGroups];
 //    [self pubNubUnsubFromChannelGroups];
-    [self pubNubSubscribeWithState];
+//    [self pubNubSetRandomState];
+//    [self pubNubSubscribeWithState];
+//    [self pubNubSubscribeToPresence];
 
+}
+
+- (void)pubNubSetRandomState{
+    [self.client setState:@{[self randomString] : @{[self randomString] : [self randomString]}} forUUID:_myConfig.uuid onChannel:_channel1 withCompletion:^(PNStatus <PNSetStateStatus> *status) {
+        //self.timer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(pubNubSetRandomState) userInfo:nil repeats:NO];
+    }];
 }
 
 - (void)pubNubSubscribeWithState{
     [self.client subscribeToChannels:@[_channel1] withPresence:NO clientState: @{_channel1: @{@"foo":@"bar"}}];
+    //self.timer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(pubNubSetRandomState) userInfo:nil repeats:NO];
 }
 
 - (void)pubNubSubscribeToChannelGroups {
@@ -96,6 +105,16 @@
 - (void)pubNubUnsubFromChannelGroups {
     [self.client unsubscribeFromChannelGroups:@[@"myChannelGroup"] withPresence:NO];
     self.timer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(pubNubSubscribeToChannelGroups) userInfo:nil repeats:NO];
+}
+
+- (void)pubNubSubscribeToPresence {
+    [self.client subscribeToPresenceChannels:@[_channel1]];
+    //self.timer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(pubNubUnsubFromPresence) userInfo:nil repeats:NO];
+}
+
+- (void)pubNubUnsubFromPresence {
+    [self.client unsubscribeFromPresenceChannels:@[_channel1]];
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(pubNubSubscribeToPresence) userInfo:nil repeats:NO];
 }
 
 - (void)pubNubInit {
@@ -115,7 +134,6 @@
     // Bind didReceiveMessage, didReceiveStatus, and didReceivePresenceEvent 'listeners' to this delegate
     // just be sure the target has implemented the PNObjectEventListener extension
     [self.client addListeners:@[self]];
-
 
 }
 
@@ -144,6 +162,8 @@
             // As a result, this contains the messages, start, and end timetoken in the data attribute
 
             NSLog(@"^^^^ Loaded whereNow data: %@", result.data.channels);  // TODO: Call out data attributes here
+
+
         }
     }];
 }
@@ -189,7 +209,6 @@
 - (void)pubNubHereNow {
 
     [self.client hereNowForChannel:_channel1 withCompletion:^(PNResult <PNHereNowResult> *result, PNStatus <PNStatus> *status) {
-
         if (status) {
             // As a status, this contains error or non-error information about the history request, but not the actual history data I requested.
             // Timeout Error, PAM Error, etc.
@@ -234,7 +253,7 @@
 
     [self.client timeWithCompletion:^(PNResult <PNTimeResult> *result, PNStatus <PNStatus> *status) {
     if (result.data) {
-            NSLog(@"Result from Time: %@", result.data);
+            NSLog(@"Result from Time: %@", result.data.timetoken);
         }
         else if (status) {
             [self handleStatus:status];
@@ -246,7 +265,7 @@
     [self.client publish:@"Connected! I'm here!" toChannel:_channel1
           withCompletion:^(PNStatus <PNPublishStatus> *status) {
               if (!status.isError) {
-                  NSLog(@"Message sent at TT: %@", status.data);
+                  NSLog(@"Message sent at TT: %@", status.data.timetoken);
               } else {
                   [self handleStatus:status];
               }
@@ -269,7 +288,7 @@
 - (void)client:(PubNub *)client didReceivePresenceEvent:(PNResult <PNPresenceEventResult> *)event {
     // TODO detail fields in data that depict the Presence event
 
-    NSLog(@"Did receive presence event: %@", event.data);
+    NSLog(@"^^^^^ Did receive presence event: %@", event.data);
 }
 
 #pragma mark - Streaming Data didReceiveStatus Listener
