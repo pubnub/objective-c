@@ -974,7 +974,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wreceiver-is-weak"
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
-    [self.client.listenersManager notifyMessage:data withStatus:status];
+    [self.client.listenersManager notifyMessage:data withStatus:(PNStatus<PNStatus> *)status];
     #pragma clang diagnostic pop
 }
 
