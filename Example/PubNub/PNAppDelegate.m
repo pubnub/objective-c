@@ -48,20 +48,20 @@
 
     // http://www.pubnub.com/console/?channel=good&origin=d.pubnub.com&sub=pam&pub=pam&cipher=&ssl=false&secret=pam&auth=myAuthKey
 
-    // self.channel1 = @"bad";
-    // self.channel2 = @"good";
-    // self.pubKey = @"pam";
-    // self.subKey = @"pam";
-    // self.authKey = @"myAuthKey";
+     self.channel1 = @"bad";
+     self.channel2 = @"good";
+     self.pubKey = @"pam";
+     self.subKey = @"pam";
+     self.authKey = @"myAuthKey";
 
 #pragma mark - Non-PAM Use Case Config
 
     // Settings Config for Non-PAM Example
-    self.channel1 = @"bot";
-    self.channel2 = @"myCh";
-    self.pubKey = @"demo-36";
-    self.subKey = @"demo-36";
-    self.authKey = @"myAuthKey";
+//    self.channel1 = @"bot";
+//    self.channel2 = @"myCh";
+//    self.pubKey = @"demo-36";
+//    self.subKey = @"demo-36";
+//    self.authKey = @"myAuthKey";
 
     [self tireKicker];
     return YES;
@@ -392,6 +392,13 @@
         NSLog(@"^^^^ Setting auth to an authKey that will allow for both sub and pub");
         // TODO Fix:
         // [self.client setAuthKey:@"myAuthKeyForPubAndSubToChannelGood"];
+        [self.client removeListeners:@[self]];
+        NSArray *currentChannels = status.data.channels;
+        NSArray *currentChannelGroups = status.data.channelGroups;
+        self.client = [PubNub clientWithConfiguration:self.myConfig];
+        [self.client addListeners:@[self]];
+        [self.client subscribeToChannels:currentChannels withPresence:YES];
+        [self.client subscribeToChannelGroups:currentChannelGroups withPresence:YES];
     }
 }
 
