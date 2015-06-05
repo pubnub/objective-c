@@ -329,6 +329,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 @implementation PNSubscriber
 
 @synthesize retryTimer = _retryTimer;
+@synthesize currentTimeToken = _currentTimeToken;
+@synthesize lastTimetoken = _lastTimetoken;
 
 
 #pragma mark - Information
@@ -451,6 +453,44 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     dispatch_barrier_async(self.resourceAccessQueue, ^{
         
         [self.presenceChannelsSet minusSet:[NSSet setWithArray:presenceChannels]];
+    });
+}
+
+- (NSNumber *)currentTimeToken {
+    
+    __block NSNumber *currentTimeToken = nil;
+    dispatch_sync(self.resourceAccessQueue, ^{
+        
+        currentTimeToken = self->_currentTimeToken;
+    });
+    
+    return currentTimeToken;
+}
+
+- (void)setCurrentTimeToken:(NSNumber *)currentTimeToken {
+    
+    dispatch_barrier_async(self.resourceAccessQueue, ^{
+        
+        _currentTimeToken = currentTimeToken;
+    });
+}
+
+- (NSNumber *)lastTimetoken {
+    
+    __block NSNumber *lastTimetoken = nil;
+    dispatch_sync(self.resourceAccessQueue, ^{
+        
+        lastTimetoken = self->_lastTimetoken;
+    });
+    
+    return lastTimetoken;
+}
+
+- (void)setLastTimeToken:(NSNumber *)lastTimetoken {
+    
+    dispatch_barrier_async(self.resourceAccessQueue, ^{
+        
+        _lastTimetoken = lastTimetoken;
     });
 }
 
@@ -1061,10 +1101,10 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 
 - (void)appendSubscriberInformation:(PNStatus *)status {
     
-    status.currentTimetoken = self.currentTimeToken;
-    status.lastTimetoken = self.lastTimetoken;
-    status.subscribedChannels = [[self.channelsSet setByAddingObjectsFromSet:self.presenceChannelsSet] allObjects];
-    status.subscribedChannelGroups = [self.channelGroupsSet allObjects];
+    status.currentTimetoken = _currentTimeToken;
+    status.lastTimetoken = _lastTimetoken;
+    status.subscribedChannels = [[_channelsSet setByAddingObjectsFromSet:_presenceChannelsSet] allObjects];
+    status.subscribedChannelGroups = [_channelGroupsSet allObjects];
 }
 
 #pragma mark -
