@@ -48,20 +48,20 @@
 
     // http://www.pubnub.com/console/?channel=good&origin=d.pubnub.com&sub=pam&pub=pam&cipher=&ssl=false&secret=pam&auth=myAuthKey
 
-     self.channel1 = @"bad";
-     self.channel2 = @"good";
-     self.pubKey = @"pam";
-     self.subKey = @"pam";
-     self.authKey = @"myAuthKey";
+//     self.channel1 = @"good";
+//     self.channel2 = @"bad";
+//     self.pubKey = @"pam";
+//     self.subKey = @"pam";
+//     self.authKey = @"foo";
 
 #pragma mark - Non-PAM Use Case Config
 
-    // Settings Config for Non-PAM Example
-//    self.channel1 = @"bot";
-//    self.channel2 = @"myCh";
-//    self.pubKey = @"demo-36";
-//    self.subKey = @"demo-36";
-//    self.authKey = @"myAuthKey";
+//    Settings Config for Non-PAM Example
+    self.channel1 = @"bot";
+    self.channel2 = @"myCh";
+    self.pubKey = @"demo-36";
+    self.subKey = @"demo-36";
+    self.authKey = @"myAuthKey";
 
     [self tireKicker];
     return YES;
@@ -377,8 +377,7 @@
 
         if ([pamResourceType isEqualToString:@"channel"]) {
             NSLog(@"^^^^ Unsubscribing from %@", pamResourceName);
-            [self.client unsubscribeFromChannels:@[pamResourceName] withPresence:YES];
-            [self.client subscribeToChannels:@[_channel2] withPresence:NO];
+            [self reconfigOnPAMError:status];
         }
 
         else {
@@ -392,14 +391,30 @@
         NSLog(@"^^^^ Setting auth to an authKey that will allow for both sub and pub");
         // TODO Fix:
         // [self.client setAuthKey:@"myAuthKeyForPubAndSubToChannelGood"];
-        [self.client removeListeners:@[self]];
-        NSArray *currentChannels = status.data.channels;
-        NSArray *currentChannelGroups = status.data.channelGroups;
-        self.client = [PubNub clientWithConfiguration:self.myConfig];
-        [self.client addListeners:@[self]];
-        [self.client subscribeToChannels:currentChannels withPresence:YES];
-        [self.client subscribeToChannelGroups:currentChannelGroups withPresence:YES];
+
+        [self reconfigOnPAMError:status];
     }
+}
+
+- (void)reconfigOnPAMError:(PNStatus <PNStatus> *)status {
+    // TODO: Will create a clientWithClient helper to let user more easily swap out a new config
+
+    [self.client removeListeners:@[self]];
+    NSArray *currentChannels = status.data.channels;
+    NSArray *currentChannelGroups = status.data.channelGroups;
+
+    // TODO: Implement a proper "LEAVE" in the helper method for better presence support
+    // [self.client unsubscribeFromChannels:currentChannels withPresence:YES];
+
+    self.myConfig.authKey = @"myAuthKey";
+    NSLog(@"client: %p", self.client);
+    self.client = [PubNub clientWithConfiguration:self.myConfig];
+    NSLog(@"after client: %p", self.client);
+    [self.client addListeners:@[self]];
+
+
+    [self.client subscribeToChannels:currentChannels withPresence:YES];
+    // [self.client subscribeToChannelGroups:currentChannelGroups withPresence:YES];
 }
 
 - (void)handleNonErrorStatus:(PNStatus<PNStatus> *)status {
