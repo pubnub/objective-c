@@ -94,6 +94,7 @@
 
 - (void)subscribeToPresenceChannels:(NSArray *)channels {
     
+    channels = [PNChannel presenceChannelsFrom:channels];
     [self.subsceriberManager addPresenceChannels:channels];
     [self.subsceriberManager subscribe:YES withState:nil];
 }
@@ -125,7 +126,8 @@
 }
 
 - (void)unsubscribeFromPresenceChannels:(NSArray *)channels {
-
+    
+    channels = [PNChannel presenceChannelsFrom:channels];
     [self.subsceriberManager removePresenceChannels:channels];
     [self.subsceriberManager unsubscribeFrom:YES objects:channels];
 }
