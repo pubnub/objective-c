@@ -20,6 +20,7 @@
 * Provide Swift Bridge and associated docs
 * Add automated integration testing
 * Approach >= 75% automated test code coverage as we approach final release
+* Subscribe catchup on unexpected disconnect/reconnect needs more testing
 
 ## Installing the Source
 
