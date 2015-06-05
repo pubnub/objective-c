@@ -14,18 +14,13 @@
 ## Known issues and TODOs in beta2:
 
 * Needs better handling for invalid API keys (right now fails with undefined error)
-* Client should not allow duplicate channel names in subscribe field
-* Not all status field attributes are being populated at Status emission time for all operations (will address via TDD)
-* Ability to turn logging completely off
+* Not all result status field attributes are being populated at Status emission time for all operations (will address via testing)
+* Better documentation of logging options
 * Verify HTTP pipelining behavior
-* Prevent suspended dispatch queue instability when released if it contains unexecuted blocks
-* Audit larger methods -- refactor into smaller where possible
-* Revising Result/Status model for a more consistent behavior across all completion blocks and listener blocks, for error and non-errors
-* Provide additional examples in Example App
-* Implement a generic status catch for non 200/403 responses
 * Provide Swift Bridge and associated docs
-* Add automated integration testing (most likely using KIF)
-* Approach >= 80% automated test code coverage as we approach final beta
+* Add automated integration testing
+* Approach >= 75% automated test code coverage as we approach final release
+* Subscribe catchup on unexpected disconnect/reconnect needs more testing
 
 ## Installing the Source
 
