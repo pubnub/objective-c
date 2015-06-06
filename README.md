@@ -104,20 +104,70 @@ You should now have a skeleton PubNub project.
 
 Run the app, and watch it work!
 
-## New in 4.0 -- Result and Status Event Objects
+## New for 4.0
 
-In 4.0, we introduce the concept of Status and Result events. For every PubNub operation you call, you will be returned either a Result, or a Status, but not both.
+Across all PubNub SDK client platforms, we are introducing the Result/Status model in 4.0. The Result/Status model simplifies handling of all types of PubNub Cloud responses, including method call results, status events (such as acknowledgements), errors (from expected errors like PAM 403s, to unexpected errors like timeouts or intermittent network layer issues) commonly encountered by mobile devices on-the-move.
+
+### How its Received: Result and Status Event Objects
+
+For any PubNub operation you call, you will be returned either a Result, or a Status, but never both at the same time.  A generic example of a history call being made in the Result/Status pattern looks like this:
+
+```
+pubnub.history("myChannel", myResultHandler, myStatusHandler);
+```
+
+Where **myResultHandler** is a callback with history results, and **myStatusHandler** is callback for **everything else**. 
+
+When a result comes in, we can inspect the data attribute on the result object for the messages, start, and end attributes.
+
+When a status comes in, to determine what everything else can be, we inspect attributes on the status object, including:
+
+1. isError - Is this an error, or more informational, such as an ACK, CONNECT, DISCONNECT, RECONNECT event?
+2. willAutomaticallyRetry - Do I need to manually retry, or will the system retry for me?
+3. category - this can be ACCESS_DENIED (PAM), TIMEOUT, NON_JSON_RESPONSE, API_KEY_ERROR, ENCRYPTION_ERROR
 
 Status objects inherit from Result objects, so both contain common information like raw request, raw response, HTTP response code information, etc.
 
-On the Result object, if you dig deeper into the data attribute, you can get information specific to the request. 
+Its important to keep in mind that although all operations will return a Status, only some have the capacity to return both Status and Results:
 
-For example, when you make a history call, when the call is successful, you would receive a history Result object containing (within the data attribute) the messages, start, and end timetokens. 
+#### Operations that only return Status, never a Result
 
-If there was an error, such as a PAM error, you would receive instead a Status object. Status.category explains the type of Status (PAM, Timeout, Acknowledgement info, Connection Status (Connect, Reconnect, Disconnect), etc), Status.isError describes the severity of the Status (whether its merely informational and can be safely ignored without consequence, or whether the operation of your  application is affected).
+* Publish
+* Heartbeat
+* Set State
+* Channel Group Add|Remove
+* Mobile GW Add|Remove
+* Leave
+
+#### Operations that can return Status or Result
+
+* Channel / Channel Group / Presence Subscribe
+* Time
+* History
+* Here Now
+* Global Here Now
+* Where Now
+* Get State
+* Mobile GW List
+* List All Channels in Channel Group
+* List All Channel Groups
+
+### Where its Received: Completion Blocks and Listeners
+
+With PubNub, operations can be grouped into two groups: Streamed (Subscribed Messages, Presence Events), and Non-Streamed (History, Here Now, Add Channel to Channel Group, etc).
+
+Streamed operation method calls return Results and Statuses via listeners. For example:
+
+1. [Calling a subscribe operation] (https://github.com/pubnub/objective-c/blob/4.0b2/Example/PubNub/PNAppDelegate.m#L96) will return Result objects (received messages) to the (didReceiveMessage listener)[https://github.com/pubnub/objective-c/blob/4.0b2/Example/PubNub/PNAppDelegate.m#L275] and Status objects  (such as PAM errors, Connect, Disconnect state changes) to the (didReceiveStatus listener)[https://github.com/pubnub/objective-c/blob/4.0b2/Example/PubNub/PNAppDelegate.m#L296]
+
+2. [Calling a presence operation](https://github.com/pubnub/objective-c/blob/4.0b2/Example/PubNub/PNAppDelegate.m#L111) will return Result objects (Such as Join, Leave Presence Events) to the (didReceivePresenceEvents listener)[https://github.com/pubnub/objective-c/blob/4.0b2/Example/PubNub/PNAppDelegate.m#L286] and Status objects to the (didReceiveStatus listener)[https://github.com/pubnub/objective-c/blob/4.0b2/Example/PubNub/PNAppDelegate.m#L296]
+
+Non-Streamed operation method calls use completion blocks which return either a result or status object. An example of this can be seen in the [history call example](https://github.com/pubnub/objective-c/blob/4.0b2/Example/PubNub/PNAppDelegate.m#L228).
+
+## Reference App - Example
 
 In Beta2, [we provide Example](https://github.com/pubnub/objective-c/tree/4.0b2/Example) as a generic reference on how to set config options, make Pub, Sub, and History calls (with and without PAM), and handle the various Status and Result events that may arise from them.  
 
-As we approach final beta, Example demo app will increase in breadth, and also be accompanied by more detailed tutorials. 
+As we approach final beta, full docs will become available as well. For now, the Example app is used as a reference app. It will evolve over time as we approach release and final docs.
 
 If you have questions about how the Result and Status objects work in the meantime, feel free to contact support@pubnub.com and cc: geremy@pubnub.com, and we'll be happy to assist.
