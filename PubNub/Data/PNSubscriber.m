@@ -639,10 +639,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
             NSNumber *currentTimeToken = self.currentTimeToken;
             if ([currentTimeToken compare:@0] != NSOrderedSame) {
                 
-                NSLog(@"=== #1 LAST TIME TOKEN CHANGE: %@ -> %@", self.lastTimeToken, currentTimeToken);
                 self.lastTimeToken = currentTimeToken;
             }
-            NSLog(@"--- #1 CURRENT TIME TOKEN CHANGE: %@ -> %@", currentTimeToken, @(0));
             self.currentTimeToken = @(0);
         }
         
@@ -667,9 +665,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         PNStatus *status = [PNStatus statusForOperation:PNSubscribeOperation
                                                category:PNDisconnectedCategory];
         [self.client appendClientInformation:status];
-        NSLog(@"=== #2 LAST TIME TOKEN CHANGE: %@ -> %@", self.lastTimeToken, @(0));
         self.lastTimeToken = @(0);
-        NSLog(@"--- #2 CURRENT TIME TOKEN CHANGE: %@ -> %@", self.currentTimeToken, @(0));
         self.currentTimeToken = @(0);
         if (block) {
             
@@ -759,9 +755,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     }
     else {
         
-        NSLog(@"=== #3 LAST TIME TOKEN CHANGE: %@ -> %@", self.lastTimeToken, @(0));
         self.lastTimeToken = @(0);
-        NSLog(@"--- #3 CURRENT TIME TOKEN CHANGE: %@ -> %@", self.currentTimeToken, @(0));
         self.currentTimeToken = @(0);
         [self subscribe:YES withState:nil completion:^(PNStatus<PNSubscriberStatus> *status) {
             
@@ -924,17 +918,13 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                     NSNumber *currentTimeToken = self.currentTimeToken;
                     if ([currentTimeToken compare:@0] != NSOrderedSame) {
                         
-                        NSLog(@"=== #4 LAST TIME TOKEN CHANGE: %@ -> %@", self.lastTimeToken, currentTimeToken);
                         self.lastTimeToken = currentTimeToken;
-                        NSLog(@"--- #4 CURRENT TIME TOKEN CHANGE: %@ -> %@", currentTimeToken, @(0));
                         self.currentTimeToken = @(0);
                     }
                 }
                 else {
                     
-                    NSLog(@"--- #5 CURRENT TIME TOKEN CHANGE: %@ -> %@", self.currentTimeToken, @(0));
                     self.currentTimeToken = @(0);
-                    NSLog(@"=== #5 LAST TIME TOKEN CHANGE: %@ -> %@", self.lastTimeToken, @(0));
                     self.lastTimeToken = @(0);
                 }
             }
@@ -946,9 +936,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                 self.channelsSet = [NSMutableSet new];
                 self.channelGroupsSet = [NSMutableSet new];
                 self.presenceChannelsSet = [NSMutableSet new];
-                NSLog(@"--- #6 CURRENT TIME TOKEN CHANGE: %@ -> %@", self.currentTimeToken, @(0));
                 self.currentTimeToken = @(0);
-                NSLog(@"=== #6 LAST TIME TOKEN CHANGE: %@ -> %@", self.lastTimeToken, @(0));
                 self.lastTimeToken = @(0);
             }
             [(PNStatus *)status updateCategory:PNUnexpectedDisconnectCategory];
@@ -994,9 +982,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
             
             // Swap time tokens to catch up on events which happened while client changed
             // channels and groups list configuration.
-            NSLog(@"--- #7 CURRENT TIME TOKEN CHANGE: %@ -> %@", self.currentTimeToken, lastTimeToken);
             self.currentTimeToken = lastTimeToken;
-            NSLog(@"=== #7 LAST TIME TOKEN CHANGE: %@ -> %@", lastTimeToken, @(0));
             self.lastTimeToken = @(0);
         }
     }
@@ -1006,8 +992,6 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     // subscription while current time token report 0.
     if (!initialSubscription && [currentTimeToken compare:@0] == NSOrderedSame) {
         
-        NSLog(@"!!! POTENTIALLY DELAYED NON-0 TT SUBSCRIBE RESPONSE AT THE TIME WHEN CLIENT EXPECT"
-              " FOR INITIAL TIME TOKEN !!!");
         shouldAcceptNewTimeToken = NO;
     }
     
@@ -1015,10 +999,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         
         if ([currentTimeToken compare:@0] != NSOrderedSame) {
             
-            NSLog(@"=== #8 LAST TIME TOKEN CHANGE: %@ -> %@", self.lastTimeToken, currentTimeToken);
             self.lastTimeToken = currentTimeToken;
         }
-        NSLog(@"--- #8 CURRENT TIME TOKEN CHANGE: %@ -> %@", currentTimeToken, timeToken);
         self.currentTimeToken = timeToken;
     }
 }

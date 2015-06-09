@@ -46,6 +46,8 @@
  */
 - (void)prepare;
 
+- (void)dumpToFile:(BOOL)shouldDumpToFile;
+
 #pragma mark -
 
 
@@ -81,11 +83,6 @@
     self.fileLogger.maximumFileSize = (5 * 1024 * 1024);
     self.fileLogger.logFileManager.maximumNumberOfLogFiles = 5;
     self.fileLogger.logFileManager.logFilesDiskQuota = (50 * 1024 * 1024);
-#if DEBUG
-    [[self class] dumpToFile:YES];
-#else
-    [[self class] dumpToFile:NO];
-#endif
 }
 
 + (void)enabled:(BOOL)isLoggingEnabled {
@@ -136,21 +133,26 @@
 
 + (void)dumpToFile:(BOOL)shouldDumpToFile {
     
-    if ([self sharedInstance].isFileLoggerActive != shouldDumpToFile) {
+    [[self sharedInstance] dumpToFile:shouldDumpToFile];
+}
+
+- (void)dumpToFile:(BOOL)shouldDumpToFile {
+    
+    if (self.isFileLoggerActive != shouldDumpToFile) {
         
         if (!shouldDumpToFile) {
             
             DDLogInfo(@"<PubNub> File logger disabled");
-            [DDLog removeLogger:[self sharedInstance].fileLogger];
+            [DDLog removeLogger:self.fileLogger];
         }
         else {
             
             DDLogInfo(@"<PubNub> File logger enabnled");
             DDLogInfo(@"<PubNub> Log files stored in: %@",
-                      [[self sharedInstance].fileLogger.logFileManager logsDirectory]);
-            [DDLog addLogger:[self sharedInstance].fileLogger withLevel:(DDLogLevel)PNVerboseLogLevel];
+                      [self.fileLogger.logFileManager logsDirectory]);
+            [DDLog addLogger:self.fileLogger withLevel:(DDLogLevel)PNVerboseLogLevel];
         }
-        [self sharedInstance].fileLoggerActive = shouldDumpToFile;
+        self.fileLoggerActive = shouldDumpToFile;
     }
 }
 

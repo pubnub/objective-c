@@ -196,7 +196,11 @@ DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNReachabilityLogLevel|
     // Check whether initialization has been successful or not
     if ((self = [super init])) {
         
-        [PNLog setLogLevel:(PNLogLevel)ddLogLevel];
+#if DEBUG
+        [PNLog dumpToFile:YES];
+#else
+        [PNLog dumpToFile:NO];
+#endif
         _configuration = [configuration copy];
         _callbackQueue = callbackQueue;
         [self prepareNetworkManagers];
