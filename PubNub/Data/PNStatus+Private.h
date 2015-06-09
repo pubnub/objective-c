@@ -50,7 +50,7 @@
  
  @since 4.0
  */
-@property (nonatomic, strong) NSNumber *lastTimetoken;
+@property (nonatomic, strong) NSNumber *lastTimeToken;
 
 /**
  @brief  Stores reference on list of channels on which client currently subscribed.

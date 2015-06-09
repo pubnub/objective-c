@@ -49,7 +49,7 @@ extern DDLogLevel ddLogLevel;
  
  @since 4.0
  */
-@property (nonatomic, readonly, strong) PNSubscriber *subsceriberManager;
+@property (nonatomic, readonly, strong) PNSubscriber *subscriberManager;
 
 /**
  @brief  Stores reference on instance which is responsible for cached client state management.

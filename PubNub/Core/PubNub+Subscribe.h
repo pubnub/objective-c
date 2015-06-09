@@ -225,7 +225,7 @@
  
  @since 4.0
  */
-@property (nonatomic, readonly, strong) NSNumber *lastTimetoken;
+@property (nonatomic, readonly, strong) NSNumber *lastTimeToken;
 
 /**
  @brief  List of channels on which client currently subscribed.

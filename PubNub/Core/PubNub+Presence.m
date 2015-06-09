@@ -188,8 +188,8 @@
     __weak __typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         
-        NSArray *channels = [self.subsceriberManager channels];
-        NSArray *groups = [PNChannel objectsWithOutPresenceFrom:[self.subsceriberManager channelGroups]];
+        NSArray *channels = [self.subscriberManager channels];
+        NSArray *groups = [PNChannel objectsWithOutPresenceFrom:[self.subscriberManager channelGroups]];
         if (self.configuration.presenceHeartbeatValue > 0 && ([channels count] || [groups count])) {
             
             PNRequestParameters *parameters = [PNRequestParameters new];

@@ -186,7 +186,7 @@
     status.subscribedChannelGroups = self.subscribedChannelGroups;
     status.error = self.isError;
     status.currentTimetoken = self.currentTimetoken;
-    status.lastTimetoken = self.lastTimetoken;
+    status.lastTimeToken = self.lastTimeToken;
     status.automaticallyRetry = self.willAutomaticallyRetry;
     status.retryBlock = self.retryBlock;
     status.retryCancelBlock = self.retryCancelBlock;
@@ -359,7 +359,7 @@
     if ([self.subscribedChannels count] || [self.subscribedChannelGroups count]) {
         
         status[@"Time"] = @{@"Current": (self.currentTimetoken?: @(0)),
-                            @"Previous": (self.lastTimetoken?: @(0))};
+                            @"Previous": (self.lastTimeToken?: @(0))};
         status[@"Objects"] = [NSMutableDictionary new];
         if ([self.subscribedChannels count]) {
             

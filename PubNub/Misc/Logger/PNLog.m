@@ -8,17 +8,7 @@
 #import "PubNub+Core.h"
 
 
-#pragma mark Static
-
-/**
- @brief  Stores reference on shared logger helper instance.
- 
- @since 4.0
- */
-static PNLog *_sharedInstance = nil;
-
-
-#pragma mark - Protected interface declaration
+#pragma mark Protected interface declaration
 
 @interface PNLog ()
 
@@ -41,6 +31,15 @@ static PNLog *_sharedInstance = nil;
 #pragma mark - Initialization and configuration
 
 /**
+ @brief  Retrieve reference on singleton logger instance.
+ 
+ @return Configured and ready to use logger manager.
+ 
+ @since 4.0
+ */
++ (PNLog *)sharedInstance;
+
+/**
  @brief  Complete helper preparations.
  
  @since 4.0
@@ -60,14 +59,45 @@ static PNLog *_sharedInstance = nil;
 
 #pragma mark - Initialization and configuration
 
-+ (void)prepare {
++ (PNLog *)sharedInstance {
     
+    static PNLog *_sharedInstance;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         
         _sharedInstance = [PNLog new];
         [_sharedInstance prepare];
     });
+    
+    return _sharedInstance;
+}
+
+- (void)prepare {
+    
+    [DDLog addLogger:[DDTTYLogger sharedInstance]];
+    
+    // Adding file logger for messages sent by PubNub client.
+    self.fileLogger = [[DDFileLogger alloc] initWithLogFileManager:[PNLogFileManager new]];
+    self.fileLogger.maximumFileSize = (5 * 1024 * 1024);
+    self.fileLogger.logFileManager.maximumNumberOfLogFiles = 5;
+    self.fileLogger.logFileManager.logFilesDiskQuota = (50 * 1024 * 1024);
+#if DEBUG
+    [[self class] dumpToFile:YES];
+#else
+    [[self class] dumpToFile:NO];
+#endif
+}
+
++ (void)enabled:(BOOL)isLoggingEnabled {
+    
+    if (isLoggingEnabled) {
+        
+        [self setLogLevel:PNVerboseLogLevel];
+    }
+    else {
+        
+        [self setLogLevel:PNSilentLogLevel];
+    }
 }
 
 + (void)enableLogLevel:(PNLogLevel)logLevel {
@@ -91,45 +121,42 @@ static PNLog *_sharedInstance = nil;
     [DDLog setLevel:(DDLogLevel)logLevel forClass:[PubNub class]];
 }
 
+
+#pragma mark - File logging
+
++ (void)setMaximumLogFileSize:(NSUInteger)size {
+    
+    [self sharedInstance].fileLogger.maximumFileSize = size;
+}
+
++ (void)setMaximumNumberOfLogFiles:(NSUInteger)count {
+    
+    [self sharedInstance].fileLogger.logFileManager.maximumNumberOfLogFiles = count;
+}
+
 + (void)dumpToFile:(BOOL)shouldDumpToFile {
     
-    if (_sharedInstance.isFileLoggerActive != shouldDumpToFile) {
+    if ([self sharedInstance].isFileLoggerActive != shouldDumpToFile) {
         
         if (!shouldDumpToFile) {
             
             DDLogInfo(@"<PubNub> File logger disabled");
-            [DDLog removeLogger:_sharedInstance.fileLogger];
+            [DDLog removeLogger:[self sharedInstance].fileLogger];
         }
         else {
             
             DDLogInfo(@"<PubNub> File logger enabnled");
             DDLogInfo(@"<PubNub> Log files stored in: %@",
-                      [_sharedInstance.fileLogger.logFileManager logsDirectory]);
-            [DDLog addLogger:_sharedInstance.fileLogger withLevel:(DDLogLevel)PNVerboseLogLevel];
+                      [[self sharedInstance].fileLogger.logFileManager logsDirectory]);
+            [DDLog addLogger:[self sharedInstance].fileLogger withLevel:(DDLogLevel)PNVerboseLogLevel];
         }
-        _sharedInstance.fileLoggerActive = shouldDumpToFile;
+        [self sharedInstance].fileLoggerActive = shouldDumpToFile;
     }
 }
 
 + (BOOL)isDumpingToFile {
     
-    return _sharedInstance.isFileLoggerActive;
-}
-
-- (void)prepare {
-    
-    [DDLog addLogger:[DDTTYLogger sharedInstance]];
-    
-    // Adding file logger for messages sent by PubNub client.
-    self.fileLogger = [[DDFileLogger alloc] initWithLogFileManager:[PNLogFileManager new]];
-    self.fileLogger.maximumFileSize = (5 * 1024 * 1024);
-    self.fileLogger.logFileManager.maximumNumberOfLogFiles = 5;
-    self.fileLogger.logFileManager.logFilesDiskQuota = (50 * 1024 * 1024);
-#if DEBUG
-    [[self class] dumpToFile:YES];
-#else
-    [[self class] dumpToFile:NO];
-#endif
+    return [self sharedInstance].isFileLoggerActive;
 }
 
 #pragma mark -

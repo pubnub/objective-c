@@ -42,7 +42,7 @@ DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNReachabilityLogLevel|
 
 @property (nonatomic, strong) dispatch_queue_t callbackQueue;
 @property (nonatomic, copy) PNConfiguration *configuration;
-@property (nonatomic, strong) PNSubscriber *subsceriberManager;
+@property (nonatomic, strong) PNSubscriber *subscriberManager;
 @property (nonatomic, strong) PNClientState *clientStateManager;
 @property (nonatomic, strong) PNStateListener *listenersManager;
 @property (nonatomic, strong) PNHeartbeat *heartbeatManager;
@@ -191,12 +191,12 @@ DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNReachabilityLogLevel|
     // Check whether initialization has been successful or not
     if ((self = [super init])) {
         
-        [PNLog prepare];
+        [PNLog setLogLevel:(PNLogLevel)ddLogLevel];
         _configuration = [configuration copy];
         _callbackQueue = callbackQueue;
         [self prepareNetworkManagers];
         
-        _subsceriberManager = [PNSubscriber subscriberForClient:self];
+        _subscriberManager = [PNSubscriber subscriberForClient:self];
         _clientStateManager = [PNClientState stateForClient:self];
         _listenersManager = [PNStateListener stateListenerForClient:self];
         _heartbeatManager = [PNHeartbeat heartbeatForClient:self];
@@ -274,7 +274,7 @@ DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNReachabilityLogLevel|
             #pragma clang diagnostic ignored "-Wreceiver-is-weak"
             #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
             [weakSelf.reachability stopServicePing];
-            [weakSelf.subsceriberManager restoreSubscriptionCycleIfRequired];
+            [weakSelf.subscriberManager restoreSubscriptionCycleIfRequired];
             #pragma clang diagnostic pop
         }
     }];

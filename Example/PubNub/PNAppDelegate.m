@@ -195,12 +195,13 @@
 
 - (void)pubNubCGAdd {
 
+    __weak __typeof(self) weakSelf = self;
     [self.client addChannels:@[_channel1, _channel2] toGroup:@"myChannelGroup" withCompletion:^(PNStatus <PNStatus> *status) {
         if (!status.isError) {
             NSLog(@"^^^^CGAdd request succeeded at timetoken %@.", status.data.channels);
         } else {
             NSLog(@"^^^^CGAdd Subscribe request did not succeed. All subscribe operations will autoretry when possible.");
-            [self handleStatus:status];
+            [weakSelf handleStatus:status];
         }
 
     }];
@@ -274,7 +275,8 @@
 
 #pragma mark - Streaming Data didReceiveMessage Listener
 
-- (void)client:(PubNub *)client didReceiveMessage:(PNResult <PNMessageResult>*)message withStatus:(PNStatus *)status {
+- (void)client:(PubNub *)client didReceiveMessage:(PNResult <PNMessageResult>*)message
+    withStatus:(PNStatus<PNStatus> *)status {
 
     if (status) {
         [self handleStatus:status];

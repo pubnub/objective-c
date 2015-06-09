@@ -198,7 +198,7 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
     
     NSMutableDictionary *message = [PNDictionary dictionaryWithDictionary:@{@"message":data}];
     // Try decrypt message body if possible.
-    if ([additionalData[@"cipherKey"] length] && [data isKindOfClass:[NSString class]]) {
+    if ([data isKindOfClass:[NSString class]] && [(NSString *)additionalData[@"cipherKey"] length]){
         
         NSError *decryptionError;
         NSData *eventData = [PNAES decrypt:data withKey:additionalData[@"cipherKey"]

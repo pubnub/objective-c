@@ -150,7 +150,7 @@
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wreceiver-is-weak"
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
-    if ([[PNChannel objectsWithOutPresenceFrom:[self.client.subsceriberManager allObjects]] count]) {
+    if ([[PNChannel objectsWithOutPresenceFrom:[self.client.subscriberManager allObjects]] count]) {
         
         [self.client heartbeatWithCompletion:NULL];
     }

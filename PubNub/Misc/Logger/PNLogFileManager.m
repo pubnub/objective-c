@@ -26,7 +26,7 @@
 
 - (BOOL)isLogFile:(NSString *)fileName {
     
-    NSString *originalName = [fileName stringByReplacingOccurrencesOfString:@".pnlog"
+    NSString *originalName = [fileName stringByReplacingOccurrencesOfString:@".log"
                                                                  withString:@".txt"];
     
     return [super isLogFile:originalName];

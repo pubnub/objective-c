@@ -141,7 +141,7 @@
             #pragma clang diagnostic push
             #pragma clang diagnostic ignored "-Wreceiver-is-weak"
             #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
-            [objects removeObjectsInArray:[self.client.subsceriberManager allObjects]];
+            [objects removeObjectsInArray:[self.client.subscriberManager allObjects]];
             #pragma clang diagnostic pop
             [self removeStateForObjects:objects];
         });

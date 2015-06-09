@@ -21,17 +21,17 @@
 
 - (NSArray *)channels {
     
-    return [self.subsceriberManager channels];
+    return [self.subscriberManager channels];
 }
 
 - (NSArray *)channelGroups {
     
-    return [self.subsceriberManager channelGroups];
+    return [self.subscriberManager channelGroups];
 }
 
 - (NSArray *)presenceChannels {
     
-    return [self.subsceriberManager presenceChannels];
+    return [self.subscriberManager presenceChannels];
 }
 
 - (BOOL)isSubscribedOn:(NSString *)name {
@@ -71,8 +71,8 @@
 
         presenceChannelsList = [PNChannel presenceChannelsFrom:channels];
     }
-    [self.subsceriberManager addChannels:[channels arrayByAddingObjectsFromArray:presenceChannelsList]];
-    [self.subsceriberManager subscribe:YES withState:state];
+    [self.subscriberManager addChannels:[channels arrayByAddingObjectsFromArray:presenceChannelsList]];
+    [self.subscriberManager subscribe:YES withState:state];
 }
 
 - (void)subscribeToChannelGroups:(NSArray *)groups withPresence:(BOOL)shouldObservePresence {
@@ -88,15 +88,15 @@
 
         groupsList = [groups arrayByAddingObjectsFromArray:[PNChannel presenceChannelsFrom:groups]];
     }
-    [self.subsceriberManager addChannelGroups:groupsList];
-    [self.subsceriberManager subscribe:YES withState:state];
+    [self.subscriberManager addChannelGroups:groupsList];
+    [self.subscriberManager subscribe:YES withState:state];
 }
 
 - (void)subscribeToPresenceChannels:(NSArray *)channels {
     
     channels = [PNChannel presenceChannelsFrom:channels];
-    [self.subsceriberManager addPresenceChannels:channels];
-    [self.subsceriberManager subscribe:YES withState:nil];
+    [self.subscriberManager addPresenceChannels:channels];
+    [self.subscriberManager subscribe:YES withState:nil];
 }
 
 
@@ -110,8 +110,8 @@
         presenceChannels = [PNChannel presenceChannelsFrom:channels];
     }
     NSArray *fullChannelsList = [channels arrayByAddingObjectsFromArray:presenceChannels];
-    [self.subsceriberManager removeChannels:fullChannelsList];
-    [self.subsceriberManager unsubscribeFrom:YES objects:fullChannelsList];
+    [self.subscriberManager removeChannels:fullChannelsList];
+    [self.subscriberManager unsubscribeFrom:YES objects:fullChannelsList];
 }
 
 - (void)unsubscribeFromChannelGroups:(NSArray *)groups withPresence:(BOOL)shouldObservePresence {
@@ -121,15 +121,15 @@
 
         groupsList = [groupsList arrayByAddingObjectsFromArray:[PNChannel presenceChannelsFrom:groups]];
     }
-    [self.subsceriberManager removeChannelGroups:groupsList];
-    [self.subsceriberManager unsubscribeFrom:NO objects:groupsList];
+    [self.subscriberManager removeChannelGroups:groupsList];
+    [self.subscriberManager unsubscribeFrom:NO objects:groupsList];
 }
 
 - (void)unsubscribeFromPresenceChannels:(NSArray *)channels {
     
     channels = [PNChannel presenceChannelsFrom:channels];
-    [self.subsceriberManager removePresenceChannels:channels];
-    [self.subsceriberManager unsubscribeFrom:YES objects:channels];
+    [self.subscriberManager removePresenceChannels:channels];
+    [self.subscriberManager unsubscribeFrom:YES objects:channels];
 }
 
 #pragma mark -

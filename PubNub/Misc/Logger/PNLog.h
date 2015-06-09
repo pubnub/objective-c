@@ -39,7 +39,15 @@
 /// @name Initialization and configuration
 ///------------------------------------------------
 
-+ (void)prepare;
+/**
+ @brief  Shortcut to \c +setLogLevel: method and allow to enable/disable logging using bool switch.
+ 
+ @param isLoggingEnabled \c YES in case if logger should allow output from DDLog. Verbose level will
+                         be used.
+ 
+ @since 4.0
+ */
++ (void)enabled:(BOOL)isLoggingEnabled;
 
 /**
  @brief  Enable particular logging level.
@@ -68,6 +76,33 @@
  @since 4.0
  */
 + (void)setLogLevel:(PNLogLevel)logLevel;
+
+
+///------------------------------------------------
+/// @name File logging
+///------------------------------------------------
+
+/**
+ @brief      Specify maximum file size for single log dup file.
+ @discussion As soon as file will exceed specified \c size it will be reotated and depending on 
+             configuration can be removed.
+ 
+ @param size Maximum single log dump file size.
+ 
+ @since 4.0
+ */
++ (void)setMaximumLogFileSize:(NSUInteger)size;
+
+/**
+ @brief      Manage clean up logic and will keep on file system only last \c count log dump files.
+ @discussion If in case of logs rotation new file will be created and overall count of files will
+             exceed \c count older files will be removed.
+ 
+ @param count Number of log dump files which should be kept of file system after log rotations.
+ 
+ @since 4.0
+ */
++ (void)setMaximumNumberOfLogFiles:(NSUInteger)count;
 
 /**
  @brief  Specify whether logger should store output to log files or not.
