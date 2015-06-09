@@ -165,6 +165,35 @@ By default, the logger will save 5 files on the local device, each at 5M each, f
 
 When filing a ticket with support, its handy to have your logs. Use a tool such as iExplorer to grab the logs off the APPNAME/Documents directory on your device, and be sure to include them in your support ticket as an attachment.
 
+## Configuration
+
+To setup a custom configuration:
+
+* Define a configuration variable:
+
+```objective-c
+@property(nonatomic, strong) PNConfiguration *myConfig;
+```
+
+* Once you have the configuration variable, the following configuration options are available:
+
+    self.myConfig.TLSEnabled = YES; # Secure Connection
+    self.myConfig.uuid = [self randomString]; # Setup a UUID
+    self.myConfig.origin = @"pubsub.pubnub.com"; # Setup a custom origin. Don't do this unless support requests.
+    self.myConfig.authKey = _authKey; # For PAM, an auth key for authorization
+
+    // Presence Settings
+    self.myConfig.presenceHeartbeatValue = 120; # Tell the server that the hearbeat timeout is 120s
+    self.myConfig.presenceHeartbeatInterval = 60; # Send the heartbeat to the server every 60 seconds
+
+    // Cipher Key Settings
+    //self.client.cipherKey = @"enigma"; # Set this to enable PN AES encryption
+
+    // Time Token Handling Settings
+    self.myConfig.keepTimeTokenOnListChange = YES; # When changing channels, 'catchup' ?
+    self.myConfig.restoreSubscription = YES; # If you lose the connection, should you resubscribe when it comes back?
+    self.myConfig.catchUpOnSubscriptionRestore = YES; # If restoreSubscription == YES, catchup ? Or start at 'now' ?
+
 ## New for 4.0
 
 Across all PubNub SDK client platforms, we are introducing the Result/Status model in 4.0. The Result/Status model simplifies handling of all types of PubNub Cloud responses, including method call results, status events (such as acknowledgements), errors (from expected errors like PAM 403s, to unexpected errors like timeouts or intermittent network layer issues) commonly encountered by mobile devices on-the-move.
