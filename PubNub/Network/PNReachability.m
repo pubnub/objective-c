@@ -128,42 +128,21 @@
             }
             
             weakSelf.reachabilityStatus = status;
-            if ((previousStatus == AFNetworkReachabilityStatusUnknown ||
-                 previousStatus == AFNetworkReachabilityStatusNotReachable) &&
+            if (previousStatus == AFNetworkReachabilityStatusNotReachable &&
                 status != AFNetworkReachabilityStatusNotReachable &&
                 status != AFNetworkReachabilityStatusUnknown) {
                 
-                if (previousStatus == AFNetworkReachabilityStatusUnknown) {
-                    
-                    DDLogReachability(@"<PubNub> Connection detected.");
-                }
-                else {
-                    
-                    DDLogReachability(@"<PubNub> Connection restored.");
-                }
-                
-                // Launch service ping process.
-                [weakSelf startServicePing];
-            }
-            else if (status != AFNetworkReachabilityStatusNotReachable &&
-                     (previousStatus == AFNetworkReachabilityStatusReachableViaWiFi ||
-                      previousStatus == AFNetworkReachabilityStatusReachableViaWWAN)) {
-                         
-                DDLogReachability(@"<PubNub> Network interface switched.");
-                [weakSelf.client cancelAllLongPollingOperations];
-                
-                // Launch service ping process.
-                [weakSelf startServicePing];
+                DDLogReachability(@"<PubNub> Connection restored.");
             }
             else if (status == AFNetworkReachabilityStatusNotReachable &&
                      previousStatus != AFNetworkReachabilityStatusNotReachable &&
                      previousStatus != AFNetworkReachabilityStatusUnknown) {
                 
                 DDLogReachability(@"<PubNub> Connection went down.");
-                
-                // Launch service ping process.
-                [weakSelf startServicePing];
             }
+                
+            // Launch service ping process.
+            [weakSelf startServicePing];
             #pragma clang diagnostic pop
         }];
         
