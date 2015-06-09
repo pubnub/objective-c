@@ -104,6 +104,21 @@ You should now have a skeleton PubNub project.
 
 Run the app, and watch it work!
 
+## Logging
+
+PNLog is the logging configuration Singleton that handles logging and log levels.
+
+### Logging
+
+#### setLogLevel
+
+setLogLevel() will turn on logging at level to the log level you specify, plus all lesser log levels leading up to it.  For example, if you execute:
+
+```objective-c
+[PNLog setLogLevel:PNVerboseLogLevel];
+```
+To disable logging, set the log level to PNSilentLogLevel.
+
 ## New for 4.0
 
 Across all PubNub SDK client platforms, we are introducing the Result/Status model in 4.0. The Result/Status model simplifies handling of all types of PubNub Cloud responses, including method call results, status events (such as acknowledgements), errors (from expected errors like PAM 403s, to unexpected errors like timeouts or intermittent network layer issues) commonly encountered by mobile devices on-the-move.
