@@ -128,21 +128,32 @@
             }
             
             weakSelf.reachabilityStatus = status;
-            if (previousStatus == AFNetworkReachabilityStatusNotReachable &&
+            if ((previousStatus == AFNetworkReachabilityStatusUnknown ||
+                 previousStatus == AFNetworkReachabilityStatusNotReachable) &&
                 status != AFNetworkReachabilityStatusNotReachable &&
                 status != AFNetworkReachabilityStatusUnknown) {
                 
-                DDLogReachability(@"<PubNub> Connection restored.");
+                if (previousStatus == AFNetworkReachabilityStatusUnknown) {
+                    
+                    DDLogReachability(@"<PubNub> Connection detected.");
+                }
+                else {
+                    
+                    DDLogReachability(@"<PubNub> Connection restored.");
+                }
+                
+                // Launch service ping process.
+                [weakSelf startServicePing];
             }
             else if (status == AFNetworkReachabilityStatusNotReachable &&
                      previousStatus != AFNetworkReachabilityStatusNotReachable &&
                      previousStatus != AFNetworkReachabilityStatusUnknown) {
                 
                 DDLogReachability(@"<PubNub> Connection went down.");
-            }
                 
-            // Launch service ping process.
-            [weakSelf startServicePing];
+                // Launch service ping process.
+                [weakSelf startServicePing];
+            }
             #pragma clang diagnostic pop
         }];
         
