@@ -637,7 +637,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
             
             self.mayRequireSubscriptionRestore = NO;
             NSNumber *currentTimeToken = self.currentTimeToken;
-            if ([currentTimeToken integerValue] > 0) {
+            if ([currentTimeToken compare:@0] != NSOrderedSame) {
                 
                 NSLog(@"=== #1 LAST TIME TOKEN CHANGE: %@ -> %@", self.lastTimeToken, currentTimeToken);
                 self.lastTimeToken = currentTimeToken;
@@ -835,7 +835,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     
     // Try fetch time token from passed result/status objects.
     NSNumber *timeToken = @([[status.clientRequest.URL lastPathComponent] longLongValue]);
-    BOOL isInitialSubscription = ([timeToken integerValue] == 0);
+    BOOL isInitialSubscription = ([timeToken compare:@0] == NSOrderedSame);
     
     // Silence static analyzer warnings.
     // Code is aware about this case and at the end will simply call on 'nil' object method.
@@ -922,7 +922,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                 if (self.client.configuration.shouldTryCatchUpOnSubscriptionRestore) {
                     
                     NSNumber *currentTimeToken = self.currentTimeToken;
-                    if ([currentTimeToken integerValue] > 0) {
+                    if ([currentTimeToken compare:@0] != NSOrderedSame) {
                         
                         NSLog(@"=== #4 LAST TIME TOKEN CHANGE: %@ -> %@", self.lastTimeToken, currentTimeToken);
                         self.lastTimeToken = currentTimeToken;
@@ -988,7 +988,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         // Ensure what we already don't use value from previous time token assigned during
         // previous sessions.
         NSNumber *lastTimeToken = self.lastTimeToken;
-        if (shouldUselastTimeToken && [lastTimeToken integerValue] > 0) {
+        if (shouldUselastTimeToken && [lastTimeToken compare:@0] != NSOrderedSame) {
             
             shouldAcceptNewTimeToken = NO;
             
@@ -1004,7 +1004,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     NSNumber *currentTimeToken = self.currentTimeToken;
     // Ensure what client won't handle delayed requests.It is impossible to have non-initial
     // subscription while current time token report 0.
-    if (!initialSubscription && [currentTimeToken integerValue] == 0) {
+    if (!initialSubscription && [currentTimeToken compare:@0] == NSOrderedSame) {
         
         NSLog(@"!!! POTENTIALLY DELAYED NON-0 TT SUBSCRIBE RESPONSE AT THE TIME WHEN CLIENT EXPECT"
               " FOR INITIAL TIME TOKEN !!!");
@@ -1013,7 +1013,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     
     if (shouldAcceptNewTimeToken) {
         
-        if ([currentTimeToken integerValue] > 0) {
+        if ([currentTimeToken compare:@0] != NSOrderedSame) {
             
             NSLog(@"=== #8 LAST TIME TOKEN CHANGE: %@ -> %@", self.lastTimeToken, currentTimeToken);
             self.lastTimeToken = currentTimeToken;
