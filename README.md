@@ -1,7 +1,7 @@
 # PubNub 4.0b2 for iOS 7+ (Beta, not for Production Use)
 
 ## Changes from 3.x
-* 4.0 is a non-bw compatible REWRITE with 96% less lines of code than our 3.x!
+* 4.0 is a non-bw compatible REWRITE with 95% less lines of code than our 3.x!
 * Removed support for iOS 6 and earlier
 * Removed support for JSONKit
 * Removed custom connection, request, logging, and reachability logic, replacing with NSURLSession, DDLog, and AFNetworking libraries
@@ -148,14 +148,18 @@ Method names have been optimized. Be sure to consult with the API reference belo
 
 PNLog is the logging configuration Singleton that handles logging and log levels.
 
-### setLogLevel
-
-setLogLevel() will turn on logging at level to the log level you specify, plus all lesser log levels leading up to it.  For example, if you execute:
+### Enable
 
 ```objective-c
-[PNLog setLogLevel:PNVerboseLogLevel];
+[PNLog enabled:YES];
 ```
-To disable logging, set the log level to PNSilentLogLevel.
+
+### Disable
+
+```objective-c
+[PNLog enabled:NO];
+```
+
 
 ### Log Rotation Settings
 
