@@ -177,6 +177,7 @@ To setup a custom configuration:
 
 * Once you have the configuration variable, the following configuration options are available:
 
+```objective-c
     self.myConfig.TLSEnabled = YES; # Secure Connection
     self.myConfig.uuid = [self randomString]; # Setup a UUID
     self.myConfig.origin = @"pubsub.pubnub.com"; # Setup a custom origin. Don't do this unless support requests.
@@ -193,6 +194,7 @@ To setup a custom configuration:
     self.myConfig.keepTimeTokenOnListChange = YES; # When changing channels, 'catchup' ?
     self.myConfig.restoreSubscription = YES; # If you lose the connection, should you resubscribe when it comes back?
     self.myConfig.catchUpOnSubscriptionRestore = YES; # If restoreSubscription == YES, catchup ? Or start at 'now' ?
+```
 
 ## New for 4.0
 
