@@ -148,22 +148,21 @@ Method names have been optimized. Be sure to consult with the API reference belo
 
 PNLog is the logging configuration Singleton that handles logging and log levels.
 
-### Enable
+### Enable / Disable
 
 ```objective-c
-[PNLog enabled:YES];
-```
-
-### Disable
-
-```objective-c
-[PNLog enabled:NO];
+[PNLog enabled:YES]; # Enable
+[PNLog enabled:NO];  # Disable
 ```
 
 
 ### Log Rotation Settings
 
-By default, the logger will save 5 files on the local device, each at 5M each, for a total of 25M of log files. To change this value, modify PNLog.m's prepare() method.
+```objective-c
+    [PNLog setMaximumLogFileSize:5];      # Value in MB. 5 is the default
+    [PNLog setMaximumNumberOfLogFiles:5]; # 5 is the default
+```
+    
 
 ### Sending Logs to Support
 
