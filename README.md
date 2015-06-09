@@ -1,6 +1,6 @@
 # Please direct all Support Questions and Concerns to Support@PubNub.com
 
-This is Objective-C client (current version **3.7.10.9**) for the [PubNub.com](http://www.pubnub.com/) real-time messaging network which can be used for iOS 6.1+ and Mac OS 10.6+ projects.  
+This is Objective-C client (current version **3.7.11**) for the [PubNub.com](http://www.pubnub.com/) real-time messaging network which can be used for iOS 6.1+ and Mac OS 10.6+ projects.  
 
 Table of Contents
 =================
@@ -163,7 +163,7 @@ touch Podfile
 ```
 <a/>4. Using your favorite text editor add next line into **Podfile**:  
 ```bash
-pod 'PubNub', '3.7.10.9’
+pod 'PubNub', '3.7.11'
 ```
 <a/>5. Install dependencies using _Terminal_:  
 ```bash
