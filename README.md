@@ -8,14 +8,12 @@
 * Simplified serialization/deserialization threading logic
 * Removed support for blocking, syncronous calls (all calls are now async)
 * Simplified usability by enforcing completion block pattern -- client no longer supports Singleton, Delegate, Observer, Notifications response patterns
-* Replaced configuration class with setter configuration pattern (same as NSURLSession)
 * Consolidated instance method names
  
 ## Known issues and TODOs in beta2:
 
 * Needs better handling for invalid API keys (right now fails with undefined error)
 * Not all result status field attributes are being populated at Status emission time for all operations (will address via testing)
-* Better documentation of logging options
 * Verify HTTP pipelining behavior
 * Provide Swift Bridge and associated docs
 * Add automated integration testing
@@ -104,13 +102,53 @@ You should now have a skeleton PubNub project.
 
 Run the app, and watch it work!
 
+## Migrating from 3.x
+
+Its important to note that a lot of things have changed in 4.x. When migrating your applications from PN 3.x to PN 4.0, please be sure to read this section.
+
+### Project Setup
+
+We're using Cocoapods as our exclusive method of installing the client SDK. Please see "Installing the Source" and "Hello World" above for the new way to configure PubNub 4.0 for iOS.
+
+### Method Names and Overall Operation have changed
+
+Please checkout the "New for 4.0" section below for a general overview of the major changes in the usage pattern introduced in 4.0.
+
+### Removed support for iOS 6 and earlier
+
+PubNub 4.0 for iOS supports iOS 7+. If you regard this as an issue, please contact us at support@pubnub.com.
+
+### Removed support for JSONKit
+
+This should only be an issue for you if you are supporting very old iOS versions. If you regard this as an issue, please contact us at support@pubnub.com.
+
+### Removed support for blocking, syncronous calls (all calls are now async)
+
+In the 3.x version of the client, the developer had the option to call a method blocking, or asyncronously. In the new version, asyncronously is the only option. Be sure that any blocking-dependent code is refactored to take the new 100% async behavior into account.
+
+### Removed support for Singleton, Delegate, Observer, Notifications response patterns
+
+We've removed the Singleton, Delegate, Observer, Notifications pattern support in 4.0, and instead provide you with one of two versitle alternatives on a per-method basis -- Completion Blocks, or Listeners. 
+
+Please checkout the "New for 4.0" section below for a general overview of the major changes in the usage pattern introduced in 4.0, as well as the Example app for more information.
+
+### New Configuration Class
+
+There is a new configuration class which is not backwards compatible with the configuration class introduced in 3.x. Be sure to examine the "Configuration" section below, or the Example app for proper usage. 
+
+### New Logger and Logging Options
+
+In 4.x we use DDLog (Lumberjack) for our logging, and therefore, logging configuration has changed. Please see "Logging" below for more information on how to use the new logger.
+
+### Optimized / Consolidated instance method names
+
+Method names have been optimized. Be sure to consult with the API reference below for more info on the available method names.
+
 ## Logging
 
 PNLog is the logging configuration Singleton that handles logging and log levels.
 
-### Logging
-
-#### setLogLevel
+### setLogLevel
 
 setLogLevel() will turn on logging at level to the log level you specify, plus all lesser log levels leading up to it.  For example, if you execute:
 
@@ -118,6 +156,14 @@ setLogLevel() will turn on logging at level to the log level you specify, plus a
 [PNLog setLogLevel:PNVerboseLogLevel];
 ```
 To disable logging, set the log level to PNSilentLogLevel.
+
+### Log Rotation Settings
+
+By default, the logger will save 5 files on the local device, each at 5M each, for a total of 25M of log files. To change this value, modify PNLog.m's prepare() method.
+
+### Sending Logs to Support
+
+When filing a ticket with support, its handy to have your logs. Use a tool such as iExplorer to grab the logs off the APPNAME/Documents directory on your device, and be sure to include them in your support ticket as an attachment.
 
 ## New for 4.0
 
