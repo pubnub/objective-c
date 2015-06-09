@@ -7,14 +7,14 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>29D9BE6D-F6EC-4B6E-BDDC-758E75F2EFAE</string>
 	<key>IDESourceControlProjectName</key>
-	<string>project</string>
+	<string>UnitTests</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>E43D1A5E7D6A1BB1B77CBD55622D3351A48F12E0</key>
 		<string>github.com:pubnub/objective-c.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>iOS/tests/UnitTests/UnitTests.xcodeproj/project.xcworkspace</string>
+	<string>iOS/tests/UnitTests/UnitTests.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>E43D1A5E7D6A1BB1B77CBD55622D3351A48F12E0</key>

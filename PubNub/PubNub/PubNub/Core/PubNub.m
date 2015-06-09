@@ -56,7 +56,7 @@
 /**
  Name of the branch which is used to store current codebase.
  */
-static NSString * const kPNCodebaseBranch = @"hotfix-reachability";
+static NSString * const kPNCodebaseBranch = @"master";
 
 /**
  SHA of the commit which stores actual changes in this codebase.

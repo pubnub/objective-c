@@ -1,4 +1,4 @@
-06-03-2015 - c76f36e - 3.7.10.9
+06-09-2015 - c76f36e - 3.7.11
 
 . allow nested client states
 . handle reachability callbacks in separate queue
