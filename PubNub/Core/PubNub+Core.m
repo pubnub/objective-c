@@ -4,10 +4,10 @@
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "PubNub+CorePrivate.h"
+#import "PubNub+SubscribePrivate.h"
 #import "PubNub+PresencePrivate.h"
 #import "PNObjectEventListener.h"
 #import "PNRequestParameters.h"
-#import "PubNub+Subscribe.h"
 #import "PNResult+Private.h"
 #import "PNStatus+Private.h"
 #import "PNConfiguration.h"
@@ -165,6 +165,11 @@ DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNReachabilityLogLevel|
 
 #pragma mark - Information
 
+- (PNConfiguration *)currentConfiguration {
+    
+    return [self.configuration copy];
+}
+
 - (NSString *)uuid {
     
     return self.configuration.uuid;
@@ -211,6 +216,50 @@ DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNReachabilityLogLevel|
     }
     
     return self;
+}
+
+- (void)copyWithConfiguration:(PNConfiguration *)configuration
+                   completion:(void(^)(PubNub *client))block {
+
+    [self copyWithConfiguration:configuration callbackQueue:self.callbackQueue completion:block];
+}
+
+- (void)copyWithConfiguration:(PNConfiguration *)configuration
+                callbackQueue:(dispatch_queue_t)callbackQueue
+                   completion:(void(^)(PubNub *client))block {
+    
+    PubNub *client = [[[self class] alloc] initWithConfiguration:configuration
+                                                   callbackQueue:callbackQueue];
+    [client.subscriberManager inheritStateFromSubscriber:self.subscriberManager];
+    [client.clientStateManager inheritStateFromState:self.clientStateManager];
+    [client.listenersManager inheritStateFromListener:self.listenersManager];
+    [client removeListeners:@[self]];
+    
+    if ([[self.subscriberManager allObjects] count]) {
+        
+        __weak __typeof(self) weakSelf = self;
+        void(^blockCopy)(PubNub *client) = [block copy];
+        [self unsubscribeFromChannels:self.subscriberManager.channels withPresence:YES
+                           completion:^(PNStatus<PNSubscriberStatus> *status) {
+               
+             __strong __typeof(self) strongSelf = weakSelf;
+            [strongSelf unsubscribeFromChannelGroups:strongSelf.subscriberManager.channelGroups
+                                        withPresence:YES
+                                          completion:^(PNStatus<PNSubscriberStatus> *status) {
+                                      
+                [client.subscriberManager continueSubscriptionCycleIfRequiredWithCompletion:^(PNStatus<PNSubscriberStatus> *status) {
+                    
+                    if (blockCopy) {
+                        
+                        dispatch_async(client.callbackQueue, ^{
+                            
+                            blockCopy(client);
+                        });
+                    }
+                }];
+            }];
+        }];
+    }
 }
 
 - (void)setRecentClientStatus:(PNStatusCategory)recentClientStatus {
@@ -274,7 +323,7 @@ DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNReachabilityLogLevel|
             #pragma clang diagnostic ignored "-Wreceiver-is-weak"
             #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
             [weakSelf.reachability stopServicePing];
-            [weakSelf.subscriberManager restoreSubscriptionCycleIfRequired];
+            [weakSelf.subscriberManager restoreSubscriptionCycleIfRequiredWithCompletion:nil];
             #pragma clang diagnostic pop
         }
     }];

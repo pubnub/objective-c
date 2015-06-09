@@ -192,13 +192,6 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 #pragma mark - Subscription
 
 /**
- @brief  Continue subscription cycle using \c currentTimeToken value and channels, stored in cache.
- 
- @since 4.0
- */
-- (void)continueSubscriptionCycleIfRequired;
-
-/**
  @brief      Launch subscription retry timer.
  @discussion Launch timer with default 1 second interval after each subscribe attempt. In most of
              cases timer used to retry subscription after PubNub Access Manager denial because of
@@ -608,10 +601,24 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     return self;
 }
 
+- (void)inheritStateFromSubscriber:(PNSubscriber *)subscriber {
+    
+    _channelsSet = [subscriber.channelsSet mutableCopy];
+    _channelGroupsSet = [subscriber.channelGroupsSet mutableCopy];
+    _presenceChannelsSet = [subscriber.presenceChannelsSet mutableCopy];
+    if ([_channelsSet count] || [_channelGroupsSet count] || [_presenceChannelsSet count]) {
+        
+        _currentState = PNDisconnectedSubscriberState;
+    }
+    _currentTimeToken = subscriber.currentTimeToken;
+    _lastTimeToken = subscriber.lastTimeToken;
+}
+
 
 #pragma mark - Subscription
 
-- (void)subscribe:(BOOL)initialSubscribe withState:(NSDictionary *)state {
+- (void)subscribe:(BOOL)initialSubscribe withState:(NSDictionary *)state
+       completion:(PNSubscriberCompletionBlock)block {
     
     [self stopRetryTimer];
 
@@ -641,10 +648,18 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         
         PNRequestParameters *parameters = [self subscribeRequestParametersWithState:state];
         __weak __typeof(self) weakSelf = self;
+        PNSubscriberCompletionBlock blockCopy = [block copy];
         [self.client processOperation:PNSubscribeOperation withParameters:parameters
                       completionBlock:^(PNStatus *status){
                           
               [weakSelf handleSubscriptionStatus:(PNStatus<PNSubscriberStatus> *)status];
+              if (blockCopy) {
+                  
+                  dispatch_async(weakSelf.client.callbackQueue, ^{
+                      
+                      blockCopy((PNStatus<PNSubscriberStatus> *)status);
+                  });
+              }
           }];
     }
     else {
@@ -656,6 +671,13 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         self.lastTimeToken = @(0);
         NSLog(@"--- #2 CURRENT TIME TOKEN CHANGE: %@ -> %@", self.currentTimeToken, @(0));
         self.currentTimeToken = @(0);
+        if (block) {
+            
+            dispatch_async(self.client.callbackQueue, ^{
+                
+                block((PNStatus<PNSubscriberStatus> *)status);
+            });
+        }
         [self updateStateTo:PNDisconnectedSubscriberState
                  withStatus:(PNStatus<PNSubscriberStatus> *)status];
         [self.client cancelAllLongPollingOperations];
@@ -664,7 +686,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     #pragma clang diagnostic pop
 }
 
-- (void)restoreSubscriptionCycleIfRequired {
+- (void)restoreSubscriptionCycleIfRequiredWithCompletion:(PNSubscriberCompletionBlock)block {
     
     __block BOOL shouldRestore;
     __block BOOL ableToRestore;
@@ -677,16 +699,21 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     });
     if (shouldRestore && ableToRestore) {
         
-        [self subscribe:YES withState:nil];
+        [self subscribe:YES withState:nil completion:block];
+    }
+    else if (block) {
+            
+        block(nil);
     }
 }
 
-- (void)continueSubscriptionCycleIfRequired {
+- (void)continueSubscriptionCycleIfRequiredWithCompletion:(PNSubscriberCompletionBlock)block {
 
-    [self subscribe:NO withState:nil];
+    [self subscribe:NO withState:nil completion:block];
 }
 
-- (void)unsubscribeFrom:(BOOL)channels objects:(NSArray *)objects {
+- (void)unsubscribeFrom:(BOOL)channels objects:(NSArray *)objects
+             completion:(PNSubscriberCompletionBlock)block {
     
     // Silence static analyzer warnings.
     // Code is aware about this case and at the end will simply call on 'nil' object method.
@@ -700,6 +727,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     PNStatus *successStatus = [PNStatus statusForOperation:PNUnsubscribeOperation
                                                   category:PNAcknowledgmentCategory];
     [self.client appendClientInformation:successStatus];
+    __weak __typeof(self) weakSelf = self;
     
     if ([objectWithOutPresence count]) {
         
@@ -710,14 +738,23 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
             
             [parameters addQueryParameter:objectsList forFieldName:@"channel-group"];
         }
-        __weak __typeof(self) weakSelf = self;
+        PNSubscriberCompletionBlock blockCopy = [block copy];
         [self.client processOperation:PNUnsubscribeOperation withParameters:parameters
                       completionBlock:^(__unused PNStatus *status){
                           
-            [weakSelf updateStateTo:PNDisconnectedSubscriberState
-                         withStatus:(PNStatus<PNSubscriberStatus> *)successStatus];
-            [weakSelf.client callBlock:nil status:YES withResult:nil andStatus:successStatus];
-            [weakSelf subscribe:YES withState:nil];
+            [weakSelf subscribe:YES withState:nil completion:^(PNStatus<PNSubscriberStatus> *status) {
+                
+                if (blockCopy) {
+                    
+                    dispatch_async(weakSelf.client.callbackQueue, ^{
+                        
+                        blockCopy((PNStatus<PNSubscriberStatus> *)successStatus);
+                    });
+                }
+                [weakSelf updateStateTo:PNDisconnectedSubscriberState
+                             withStatus:(PNStatus<PNSubscriberStatus> *)successStatus];
+                [weakSelf.client callBlock:nil status:YES withResult:nil andStatus:successStatus];
+            }];
         }];
     }
     else {
@@ -726,10 +763,19 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         self.lastTimeToken = @(0);
         NSLog(@"--- #3 CURRENT TIME TOKEN CHANGE: %@ -> %@", self.currentTimeToken, @(0));
         self.currentTimeToken = @(0);
-        [self updateStateTo:PNDisconnectedSubscriberState
-                 withStatus:(PNStatus<PNSubscriberStatus> *)successStatus];
-        [self subscribe:YES withState:nil];
-        [self.client callBlock:nil status:YES withResult:nil andStatus:successStatus];
+        [self subscribe:YES withState:nil completion:^(PNStatus<PNSubscriberStatus> *status) {
+            
+            if (block) {
+                
+                dispatch_async(weakSelf.client.callbackQueue, ^{
+                
+                    block((PNStatus<PNSubscriberStatus> *)successStatus);
+                });
+            }
+            [weakSelf updateStateTo:PNDisconnectedSubscriberState
+                         withStatus:(PNStatus<PNSubscriberStatus> *)successStatus];
+            [weakSelf.client callBlock:nil status:YES withResult:nil andStatus:successStatus];
+        }];
     }
     #pragma clang diagnostic pop
 }
@@ -750,7 +796,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         #pragma clang diagnostic push
         #pragma clang diagnostic ignored "-Wreceiver-is-weak"
         #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
-        [weakSelf continueSubscriptionCycleIfRequired];
+        [weakSelf continueSubscriptionCycleIfRequiredWithCompletion:nil];
         #pragma clang diagnostic pop
     });
     dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(kPubNubSubscriptionRetryInterval * NSEC_PER_SEC));
@@ -804,7 +850,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     }
     
     [self handleLiveFeedEvents:status];
-    [self continueSubscriptionCycleIfRequired];
+    [self continueSubscriptionCycleIfRequiredWithCompletion:nil];
     
     // Because client received new event from service, it can restart reachability timer with
     // new interval.

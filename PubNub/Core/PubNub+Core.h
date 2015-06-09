@@ -26,6 +26,16 @@
 ///------------------------------------------------
 
 /**
+ @brief  Retrieve reference on current client's configuration.
+ 
+ @return Currently used configuration instance copy. Changes to this instance won't affect 
+         receiver's configuration.
+ 
+ @since 4.0
+ */
+- (PNConfiguration *)currentConfiguration;
+
+/**
  @brief  Retrieve UUID which has been used during client initialization.
  
  @return User-provided or generated unique user identifier.
@@ -98,6 +108,57 @@
 */
 + (instancetype)clientWithConfiguration:(PNConfiguration *)configuration
                           callbackQueue:(dispatch_queue_t)callbackQueue;
+
+/**
+ @brief      Make copy of client with it's current state using new configuration.
+ @discussion Allow to retrieve reference on client which will have same state as receiver, but will
+             use updated configuration. If authorization and/or uuid keys has been changed while 
+             subscribed, this method will trigger \c leave presence event on behalf of current uuid
+             and subscribe using new one.
+ @note       Copy will be returned asynchronous, because some operations may require communication
+             with \b PubNub network (like switching active \c uuid while subscribed).
+ @note       Re-subscription with new \c uuid will be done using catchup and all messages which has 
+             been sent while client changed configuration will be handled.
+ @note       All listeners will be copied to new client.
+ 
+ @param configuration Reference on configuration which should be used to create new instance from 
+                      receiver.
+ @param block         Copy completion block which will pass only one argument - reference on new 
+                      \b PubNub client instance with updated configuration. Block will be called on
+                      custom queue (if has been passed to receiver during instantiatio) or main 
+                      queue.
+ 
+ @since 4.0
+ */
+- (void)copyWithConfiguration:(PNConfiguration *)configuration
+                   completion:(void(^)(PubNub *client))block;
+
+/**
+ @brief      Make copy of client with it's current state using new configuration.
+ @discussion Allow to retrieve reference on client which will have same state as receiver, but will
+             use updated configuration. If authorization and/or uuid keys has been changed while 
+             subscribed, this method will trigger \c leave presence event on behalf of current uuid
+             and subscribe using new one.
+ @note       Copy will be returned asynchronous, because some operations may require communication
+             with \b PubNub network (like switching active \c uuid while subscribed).
+ @note       Re-subscription with new \c uuid will be done using catchup and all messages which has 
+             been sent while client changed configuration will be handled.
+ @note       All listeners will be copied to new client.
+ 
+ @param configuration Reference on configuration which should be used to create new instance from 
+                      receiver.
+ @param callbackQueue Reference on queue which should be used by client fot comletion block and 
+                      delegate calls.
+ @param block         Copy completion block which will pass only one argument - reference on new 
+                      \b PubNub client instance with updated configuration. Block will be called on
+                      custom queue (if has been passed to receiver during instantiatio) or main 
+                      queue.
+ 
+ @since 4.0
+ */
+- (void)copyWithConfiguration:(PNConfiguration *)configuration
+                callbackQueue:(dispatch_queue_t)callbackQueue
+                   completion:(void(^)(PubNub *client))block;
 
 #pragma mark -
 

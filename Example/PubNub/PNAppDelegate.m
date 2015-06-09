@@ -399,9 +399,8 @@
 }
 
 - (void)reconfigOnPAMError:(PNStatus <PNStatus> *)status {
+    
     // TODO: Will create a clientWithClient helper to let user more easily swap out a new config
-
-    [self.client removeListeners:@[self]];
     NSArray *currentChannels = status.data.channels;
     NSArray *currentChannelGroups = status.data.channelGroups;
 
@@ -410,13 +409,15 @@
 
     self.myConfig.authKey = @"myAuthKey";
     NSLog(@"client: %p", self.client);
-    self.client = [PubNub clientWithConfiguration:self.myConfig];
-    NSLog(@"after client: %p", self.client);
-    [self.client addListeners:@[self]];
+    [self.client copyWithConfiguration:self.myConfig completion:^(PubNub *client){
+        
+        self.client = client;
+        NSLog(@"after client: %p", self.client);
+        
+        [self.client subscribeToChannels:currentChannels withPresence:YES];
+        [self.client subscribeToChannelGroups:currentChannelGroups withPresence:YES];
+    }];
 
-
-    [self.client subscribeToChannels:currentChannels withPresence:YES];
-    // [self.client subscribeToChannelGroups:currentChannelGroups withPresence:YES];
 }
 
 - (void)handleNonErrorStatus:(PNStatus<PNStatus> *)status {

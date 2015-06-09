@@ -1,10 +1,23 @@
 #import <Foundation/Foundation.h>
+#import "PubNub+Subscribe.h"
 #import "PNStructures.h"
 
 
 #pragma mark Class forward
 
 @class PubNub;
+
+
+#pragma mark - Types
+
+/**
+ @brief  Subscriber operation completion block.
+ 
+ @param status Reference on subscribe/unsubscribe operation request service processing result.
+ 
+ @since 4.0
+ */
+typedef void(^PNSubscriberCompletionBlock)(PNStatus<PNSubscriberStatus> *status);
 
 
 /**
@@ -73,6 +86,16 @@
  @since 4.0
  */
 + (instancetype)subscriberForClient:(PubNub *)client;
+
+/**
+ @brief  Copy specified subscriber's state information.
+ 
+ @param subscriber Reference on subscriber whose information should be copied into receiver's state
+                   objects.
+ 
+ @since 4.0
+ */
+- (void)inheritStateFromSubscriber:(PNSubscriber *)subscriber;
 
 
 ///------------------------------------------------
@@ -147,18 +170,31 @@
                          trigger all required presence notifications or  not.
  @param state            Reference on client state which should be bound to channels on which
                          client has been subscribed or will subscribe now.
+ @param block            Reference on subscription completion block which is used to notify code.
  
  @since 4.0
  */
-- (void)subscribe:(BOOL)initialSubscribe withState:(NSDictionary *)state;
+- (void)subscribe:(BOOL)initialSubscribe withState:(NSDictionary *)state
+       completion:(PNSubscriberCompletionBlock)block;
 
 /**
  @brief  Try restore subscription cycle by using \b 0 time token and if required try to catch up on
          previous subscribe time token (basing on user configuration).
  
+ @param block Reference on unsubscription completion block which is used to notify code.
+ 
  @since 4.0
  */
-- (void)restoreSubscriptionCycleIfRequired;
+- (void)restoreSubscriptionCycleIfRequiredWithCompletion:(PNSubscriberCompletionBlock)block;
+
+/**
+ @brief  Continue subscription cycle using \c currentTimeToken value and channels, stored in cache.
+ 
+ @param block Reference on unsubscription completion block which is used to notify code.
+ 
+ @since 4.0
+ */
+- (void)continueSubscriptionCycleIfRequiredWithCompletion:(PNSubscriberCompletionBlock)block;
 
 /**
  @brief      Perform unsubscription operation.
@@ -167,10 +203,12 @@
  
  @param channels Whether unsubscribing from list of channels or channel groups.
  @param objects  List of objects from which client should unsubscribe.
+ @param block    Reference on unsubscription completion block which is used to notify code.
  
  @since 4.0
  */
-- (void)unsubscribeFrom:(BOOL)channels objects:(NSArray *)objects;
+- (void)unsubscribeFrom:(BOOL)channels objects:(NSArray *)objects
+             completion:(PNSubscriberCompletionBlock)block;
 
 #pragma mark -
 

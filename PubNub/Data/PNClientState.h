@@ -34,6 +34,16 @@
  */
 + (instancetype)stateForClient:(PubNub *)client;
 
+/**
+ @brief  Copy specified client's state information.
+ 
+ @param state Reference on client state manager whose information should be copied into receiver's
+              state objects.
+ 
+ @since 4.0
+ */
+- (void)inheritStateFromState:(PNClientState *)state;
+
 
 ///------------------------------------------------
 /// @name Information

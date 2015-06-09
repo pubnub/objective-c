@@ -105,6 +105,13 @@
     return self;
 }
 
+- (void)inheritStateFromListener:(PNStateListener *)listener {
+    
+    _messageListeners = [listener.messageListeners mutableCopy];
+    _presenceEventListeners = [listener.presenceEventListeners mutableCopy];
+    _stateListeners = [listener.stateListeners mutableCopy];
+}
+
 
 #pragma mark - Listeners list modification
 

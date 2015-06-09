@@ -37,6 +37,16 @@
  */
 + (instancetype)stateListenerForClient:(PubNub *)client;
 
+/**
+ @brief  Copy specified listener's state information.
+ 
+ @param listener Reference on state listener manager whose information should be copied into 
+                 receiver's state objects.
+ 
+ @since 4.0
+ */
+- (void)inheritStateFromListener:(PNStateListener *)listener;
+
 
 ///------------------------------------------------
 /// @name Listeners list modification

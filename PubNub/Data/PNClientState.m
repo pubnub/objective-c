@@ -84,6 +84,11 @@
     return self;
 }
 
+- (void)inheritStateFromState:(PNClientState *)state {
+    
+    _stateCache = [state.stateCache mutableCopy];
+}
+
 
 #pragma mark - Information
 
