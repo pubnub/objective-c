@@ -7,11 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		513F0B901B278D350054979D /* PNIntegrationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 513F0B8F1B278D350054979D /* PNIntegrationTests.m */; };
 		519C32831B20C11500FAC283 /* iOS_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 519C32821B20C11500FAC283 /* iOS_Tests.m */; };
 		E307AD049F55BEF780943655 /* libPods-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6097435E3C07196A4F24B6B6 /* libPods-ios.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		513F0B8F1B278D350054979D /* PNIntegrationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNIntegrationTests.m; sourceTree = "<group>"; };
 		519C327D1B20C11500FAC283 /* iOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "iOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		519C32811B20C11500FAC283 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		519C32821B20C11500FAC283 /* iOS_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = iOS_Tests.m; sourceTree = "<group>"; };
@@ -54,6 +56,7 @@
 			isa = PBXGroup;
 			children = (
 				519C32821B20C11500FAC283 /* iOS_Tests.m */,
+				513F0B8F1B278D350054979D /* PNIntegrationTests.m */,
 				519C32801B20C11500FAC283 /* Supporting Files */,
 			);
 			path = "iOS Tests";
@@ -185,6 +188,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				519C32831B20C11500FAC283 /* iOS_Tests.m in Sources */,
+				513F0B901B278D350054979D /* PNIntegrationTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
