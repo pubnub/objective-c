@@ -29,7 +29,7 @@ PODS:
   - CocoaLumberjack/Extensions (2.0.0):
     - CocoaLumberjack/Default
   - Expecta (1.0.0)
-  - JSZVCR (0.1.0)
+  - JSZVCR (0.2.0)
   - OHHTTPStubs (4.0.2)
   - PubNub (4.0):
     - AFNetworking (~> 2.5)
@@ -37,7 +37,7 @@ PODS:
 
 DEPENDENCIES:
   - Expecta (~> 1.0)
-  - JSZVCR (~> 0.1.0)
+  - JSZVCR (~> 0.2.0)
   - OHHTTPStubs (~> 4.0)
   - PubNub (from `../`)
 
@@ -49,7 +49,7 @@ SPEC CHECKSUMS:
   AFNetworking: 05edc0ac4c4c8cf57bcf4b84be5b0744b6d8e71e
   CocoaLumberjack: a6f77d987d65dc7ba86b0f84db7d0b9084f77bcb
   Expecta: 32604574add2c46a36f8d2f716b6c5736eb75024
-  JSZVCR: dfd845e4a63e5b8c88ed5a636388a3e7613a6cf6
+  JSZVCR: 806628f433977c9331288685a57cf6029950eae6
   OHHTTPStubs: dbd1957d414659783e07b49c961940b7564c23d9
   PubNub: 7fdce42eb9ca9a4dcfae446cb1e71700a2a54e5f
 

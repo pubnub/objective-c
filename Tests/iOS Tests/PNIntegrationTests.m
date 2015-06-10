@@ -11,11 +11,11 @@
 #import <PubNub/PubNub.h>
 #import <JSZVCR/JSZVCR.h>
 #import <OHHTTPStubs/OHHTTPStubs.h>
+#import <JSZVCR/JSZVCRResourceLoader.h>
 
 @interface PNIntegrationTests : XCTestCase <PNObjectEventListener>
 @property (nonatomic) PubNub *client;
 @property (nonatomic) XCTestExpectation *networkExpectation;
-@property (nonatomic) NSArray *networkResponses;
 @end
 
 @implementation PNIntegrationTests
@@ -23,20 +23,24 @@
 + (void)setUp {
     [super setUp];
 //    [JSZVCR swizzleNSURLSessionClasses];
+    [[JSZVCRResourceLoader sharedInstance] setResourceBundle:@"NetworkResponses" containingClass:self.class];
 }
 
 - (void)setUp {
     [super setUp];
-    NSString *filePath = [[NSBundle mainBundle] pathForResource:@"AC941D0E-EB09-4E8D-8489-84534DD51756" ofType:@"plist"];
-    NSDictionary *dict = [[NSDictionary alloc] initWithContentsOfFile:filePath];
-    self.networkResponses = [NSArray arrayWithArray:[dict objectForKey:@"Root"]];
-    // Put setup code here. This method is called before the invocation of each test method in the class.
+    [[JSZVCRResourceLoader sharedInstance] setTest:self];
     [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest *request) {
-        return [request.URL.absoluteString isEqualToString:@"https://pubsub.pubnub.com/time/0?pnsdk=PubNub-ObjC-iOS%2F4.0&deviceid=7BD5E671-EAE9-47EE-B238-B664101D4994&uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C"];
+        return [[JSZVCRResourceLoader sharedInstance] hasResponseForRequest:request];
     } withStubResponse:^OHHTTPStubsResponse*(NSURLRequest *request) {
-        return [OHHTTPStubsResponse responseWithHTTPMessageData:nil];
+        // Stub it with our "wsresponse.json" stub file (which is in same bundle as self)
+        NSDictionary *responseDict = [[JSZVCRResourceLoader sharedInstance] responseForRequest:request];
+        return [OHHTTPStubsResponse responseWithData:responseDict[@"data"]
+                                          statusCode:[responseDict[@"statusCode"] intValue]
+                                             headers:responseDict[@"httpHeaders"]];
     }];
-    self.client = [PubNub clientWithConfiguration:[PNConfiguration configurationWithPublishKey:@"demo-36" subscribeKey:@"demo-36"]];
+    PNConfiguration *config = [PNConfiguration configurationWithPublishKey:@"demo-36" subscribeKey:@"demo-36"];
+    config.uuid = @"322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C";
+    self.client = [PubNub clientWithConfiguration:config];
     [self.client addListeners:@[self]];
 }
 
@@ -50,32 +54,20 @@
 }
 
 + (void)tearDown {
-    [[JSZVCR sharedInstance] dumpRecordingsToFile:@"testfile"];
+//    [[JSZVCR sharedInstance] dumpRecordingsToFile:@"testfile"];
     [super tearDown];
 }
 
 - (void)testSimpleSubscribe {
     self.networkExpectation = [self expectationWithDescription:@"network"];
     [self.client subscribeToChannels:@[@"a"] withPresence:NO];
-    [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
         if (error) {
             NSLog(@"error: %@", error);
             XCTFail(@"what went wrong?");
         }
     }];
 }
-
-//- (void)testExample {
-//    // This is an example of a functional test case.
-//    XCTAssert(YES, @"Pass");
-//}
-//
-//- (void)testPerformanceExample {
-//    // This is an example of a performance test case.
-//    [self measureBlock:^{
-//        // Put the code you want to measure the time of here.
-//    }];
-//}
 
 #pragma mark - PNObjectEventListener
 
@@ -87,13 +79,13 @@
     NSLog(@"message.uuid:");
     NSLog(@"%@", message.uuid);
     XCTAssertNotNil(message.uuid);
-//    XCTAssertNil(message.authKey);
+    XCTAssertNil(message.authKey);
     XCTAssertEqual(message.statusCode, 200);
     XCTAssertTrue(message.TLSEnabled);
     XCTAssertEqual(message.operation, PNSubscribeOperation);
     NSLog(@"message:");
     NSLog(@"%@", message.data.message);
-    XCTAssertEqualObjects(message.data.message, @"*.............. 3306 - 2015-06-09 16:09:40");
+    XCTAssertEqualObjects(message.data.message, @"******......... 3440 - 2015-06-10 14:33:55");
 }
 
 - (void)client:(PubNub *)client didReceivePresenceEvent:(PNResult<PNPresenceEventResult> *)event {
