@@ -1,4 +1,5 @@
-# PubNub 4.0b2 for iOS 7+ (Beta, not for Production Use)
+# PubNub 4.0b2 for iOS 7+
+### (Beta, not for Production Use)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
