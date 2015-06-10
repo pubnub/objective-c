@@ -1,24 +1,55 @@
-# PubNub 4.0b2 for iOS 7+ (Beta, not for Production Use)
+# PubNub 4.0b2 for iOS 7+
+### (Beta, not for Production Use)
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [PubNub 4.0b2 for iOS 7+ (Beta, not for Production Use)](#pubnub-40b2-for-ios-7-beta-not-for-production-use)
+  - [Changes from 3.x](#changes-from-3x)
+  - [Known issues and TODOs in beta2:](#known-issues-and-todos-in-beta2)
+  - [Installing the Source](#installing-the-source)
+  - [Hello World](#hello-world)
+  - [Migrating from 3.x](#migrating-from-3x)
+    - [Project Setup](#project-setup)
+    - [Method Names and Overall Operation have changed](#method-names-and-overall-operation-have-changed)
+    - [Removed support for iOS 6 and earlier](#removed-support-for-ios-6-and-earlier)
+    - [Removed support for JSONKit](#removed-support-for-jsonkit)
+    - [Removed support for blocking, syncronous calls (all calls are now async)](#removed-support-for-blocking-syncronous-calls-all-calls-are-now-async)
+    - [Removed support for Singleton, Delegate, Observer, Notifications response patterns](#removed-support-for-singleton-delegate-observer-notifications-response-patterns)
+    - [New Configuration Class](#new-configuration-class)
+    - [New Logger and Logging Options](#new-logger-and-logging-options)
+    - [Optimized / Consolidated instance method names](#optimized--consolidated-instance-method-names)
+  - [Logging](#logging)
+    - [Enable / Disable](#enable--disable)
+    - [Log Rotation Settings](#log-rotation-settings)
+    - [Sending Logs to Support](#sending-logs-to-support)
+  - [Configuration](#configuration)
+  - [New for 4.0](#new-for-40)
+    - [How its Received: Result and Status Event Objects](#how-its-received-result-and-status-event-objects)
+      - [Operations that only return Status, never a Result](#operations-that-only-return-status-never-a-result)
+      - [Operations that can return Status or Result](#operations-that-can-return-status-or-result)
+    - [Where its Received: Completion Blocks and Listeners](#where-its-received-completion-blocks-and-listeners)
+  - [Reference App - Example](#reference-app---example)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Changes from 3.x
-* 4.0 is a non-bw compatible REWRITE with 96% less lines of code than our 3.x!
+* 4.0 is a non-bw compatible REWRITE with 95% less lines of code than our 3.x!
 * Removed support for iOS 6 and earlier
 * Removed support for JSONKit
 * Removed custom connection, request, logging, and reachability logic, replacing with NSURLSession, DDLog, and AFNetworking libraries
 * Simplified serialization/deserialization threading logic
 * Removed support for blocking, syncronous calls (all calls are now async)
 * Simplified usability by enforcing completion block pattern -- client no longer supports Singleton, Delegate, Observer, Notifications response patterns
-* Consolidated instance method names
+* Consolidated instance method namesv
  
 ## Known issues and TODOs in beta2:
 
 * Needs better handling for invalid API keys (right now fails with undefined error)
 * Not all result status field attributes are being populated at Status emission time for all operations (will address via testing)
-* Verify HTTP pipelining behavior
 * Provide Swift Bridge and associated docs
-* Add automated integration testing
 * Approach >= 75% automated test code coverage as we approach final release
-* Subscribe catchup on unexpected disconnect/reconnect needs more testing
 
 ## Installing the Source
 
@@ -148,18 +179,21 @@ Method names have been optimized. Be sure to consult with the API reference belo
 
 PNLog is the logging configuration Singleton that handles logging and log levels.
 
-### setLogLevel
-
-setLogLevel() will turn on logging at level to the log level you specify, plus all lesser log levels leading up to it.  For example, if you execute:
+### Enable / Disable
 
 ```objective-c
-[PNLog setLogLevel:PNVerboseLogLevel];
+[PNLog enabled:YES]; # Enable
+[PNLog enabled:NO];  # Disable
 ```
-To disable logging, set the log level to PNSilentLogLevel.
+
 
 ### Log Rotation Settings
 
-By default, the logger will save 5 files on the local device, each at 5M each, for a total of 25M of log files. To change this value, modify PNLog.m's prepare() method.
+```objective-c
+    [PNLog setMaximumLogFileSize:5];      # Value in MB. 5 is the default
+    [PNLog setMaximumNumberOfLogFiles:5]; # 5 is the default
+```
+    
 
 ### Sending Logs to Support
 

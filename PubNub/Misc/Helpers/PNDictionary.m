@@ -104,6 +104,11 @@
     return [self.storage objectForKey:aKey];
 }
 
+- (void)removeObjectForKey:(id)aKey {
+    
+    [self.storage removeObjectForKey:aKey];
+}
+
 - (NSUInteger)count {
     
     return [self.storage count];

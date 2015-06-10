@@ -642,8 +642,17 @@
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
     [self.client appendClientInformation:result];
     [self.client appendClientInformation:status];
-    [self.client callBlock:block status:![self operationExpectResult:operation] withResult:result
-                 andStatus:status];
+    if (block) {
+        
+        if ([self operationExpectResult:operation]) {
+            
+            ((PNCompletionBlock)block)(result, status);
+        }
+        else {
+            
+            ((void(^)(id))block)(result?: status);
+        }
+    }
     #pragma clang diagnostic pop
 }
 

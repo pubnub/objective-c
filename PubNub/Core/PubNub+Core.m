@@ -238,31 +238,43 @@ DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNReachabilityLogLevel|
     [client.clientStateManager inheritStateFromState:self.clientStateManager];
     [client.listenersManager inheritStateFromListener:self.listenersManager];
     [client removeListeners:@[self]];
+    [self.listenersManager removeAllListeners];
     
+    void(^blockCopy)(PubNub *client) = [block copy];
+    dispatch_block_t subscriptionRestoreBlock = [^{
+        
+        [client.subscriberManager continueSubscriptionCycleIfRequiredWithCompletion:^(PNStatus<PNSubscriberStatus> *status) {
+            
+            if (blockCopy) {
+                
+                dispatch_async(client.callbackQueue, ^{
+                    
+                    blockCopy(client);
+                });
+            }
+        }];
+    } copy];
     if ([[self.subscriberManager allObjects] count]) {
         
-        __weak __typeof(self) weakSelf = self;
-        void(^blockCopy)(PubNub *client) = [block copy];
-        [self unsubscribeFromChannels:self.subscriberManager.channels withPresence:YES
-                           completion:^(PNStatus<PNSubscriberStatus> *status) {
-               
-             __strong __typeof(self) strongSelf = weakSelf;
-            [strongSelf unsubscribeFromChannelGroups:strongSelf.subscriberManager.channelGroups
-                                        withPresence:YES
-                                          completion:^(PNStatus<PNSubscriberStatus> *status) {
-                                      
-                [client.subscriberManager continueSubscriptionCycleIfRequiredWithCompletion:^(PNStatus<PNSubscriberStatus> *status) {
-                    
-                    if (blockCopy) {
-                        
-                        dispatch_async(client.callbackQueue, ^{
-                            
-                            blockCopy(client);
-                        });
-                    }
+        if (![configuration.uuid isEqualToString:self.configuration.uuid] ||
+            ![configuration.authKey isEqualToString:self.configuration.authKey]) {
+            __weak __typeof(self) weakSelf = self;
+            [self unsubscribeFromChannels:self.subscriberManager.channels withPresence:YES
+                               completion:^(PNStatus<PNSubscriberStatus> *status) {
+                   
+                 __strong __typeof(self) strongSelf = weakSelf;
+                [strongSelf unsubscribeFromChannelGroups:strongSelf.subscriberManager.channelGroups
+                                            withPresence:YES
+                                              completion:^(PNStatus<PNSubscriberStatus> *status) {
+                                          
+                    subscriptionRestoreBlock();
                 }];
             }];
-        }];
+        }
+        else {
+            
+            subscriptionRestoreBlock();
+        }
     }
 }
 
