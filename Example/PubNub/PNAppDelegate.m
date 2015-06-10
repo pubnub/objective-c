@@ -119,8 +119,9 @@
 
 - (void)pubNubInit {
 
-    [PNLog setLogLevel:PNRequestLogLevel];
-    //[PNLog enableLogLevel:PNRequestLogLevel];
+    [PNLog enabled:YES];
+    [PNLog setMaximumLogFileSize:10];
+    [PNLog setMaximumNumberOfLogFiles:10];
 
     // Initialize PubNub client.
     self.myConfig = [PNConfiguration configurationWithPublishKey:_pubKey subscribeKey:_subKey];
@@ -253,7 +254,7 @@
     // Time (Ping) to PubNub Servers
 
     [self.client timeWithCompletion:^(PNResult <PNTimeResult> *result, PNStatus <PNStatus> *status) {
-    if (result.data) {
+        if (result.data) {
             NSLog(@"Result from Time: %@", result.data.timetoken);
         }
         else if (status) {
@@ -399,24 +400,29 @@
 }
 
 - (void)reconfigOnPAMError:(PNStatus <PNStatus> *)status {
-    
-    // TODO: Will create a clientWithClient helper to let user more easily swap out a new config
-    NSArray *currentChannels = status.data.channels;
-    NSArray *currentChannelGroups = status.data.channelGroups;
 
-    // TODO: Implement a proper "LEAVE" in the helper method for better presence support
-    // [self.client unsubscribeFromChannels:currentChannels withPresence:YES];
 
-    self.myConfig.authKey = @"myAuthKey";
-    NSLog(@"client: %p", self.client);
-    [self.client copyWithConfiguration:self.myConfig completion:^(PubNub *client){
-        
-        self.client = client;
-        NSLog(@"after client: %p", self.client);
-        
-        [self.client subscribeToChannels:currentChannels withPresence:YES];
-        [self.client subscribeToChannelGroups:currentChannelGroups withPresence:YES];
-    }];
+    // If this is a subscribe PAM error
+
+    if (status.operation == PNSubscribeOperation) {
+
+        PNStatus<PNSubscriberStatus> *subscriberStatus = ( PNStatus<PNSubscriberStatus> *)status;
+
+        NSArray *currentChannels = subscriberStatus.subscribedChannels;
+        NSArray *currentChannelGroups = subscriberStatus.subscribedChannelGroups;
+
+        // TODO: Implement a proper "LEAVE" in the helper method for better presence support
+
+        self.myConfig.authKey = @"myAuthKey";
+
+        [self.client copyWithConfiguration:self.myConfig completion:^(PubNub *client){
+
+            self.client = client;
+
+            [self.client subscribeToChannels:currentChannels withPresence:NO];
+            [self.client subscribeToChannelGroups:currentChannelGroups withPresence:NO];
+        }];
+    }
 
 }
 
@@ -448,7 +454,7 @@
             // PNDisconnect happens as part of our regular operation
             // No need to monitor for this unless requested by support
             NSLog(@"^^^^ Non-error status: Expected Disconnect, Channel Info: %@",
-                  subscriberStatus.subscribedChannels);
+                    subscriberStatus.subscribedChannels);
         }
 
         else if (status.category == PNUnexpectedDisconnectCategory) {
@@ -456,7 +462,7 @@
             // This event happens when radio / connectivity is lost
 
             NSLog(@"^^^^ Non-error status: Unexpected Disconnect, Channel Info: %@",
-                  subscriberStatus.subscribedChannels);
+                    subscriberStatus.subscribedChannels);
         }
 
         else if (status.category == PNConnectedCategory) {
@@ -466,7 +472,7 @@
 
             // NSLog(@"Subscribe Connected to %@", status.data[@"channels"]);
             NSLog(@"^^^^ Non-error status: Connected, Channel Info: %@",
-                  subscriberStatus.subscribedChannels);
+                    subscriberStatus.subscribedChannels);
             [self publishHelloWorld];
 
         }
@@ -476,7 +482,7 @@
             // This event happens when radio / connectivity is lost
 
             NSLog(@"^^^^ Non-error status: Reconnected, Channel Info: %@",
-                  subscriberStatus.subscribedChannels);
+                    subscriberStatus.subscribedChannels);
 
         }
 
@@ -489,7 +495,7 @@
 - (void)updateClientConfiguration {
 
     // Set PubNub Configuration
-    self.myConfig.TLSEnabled = YES;
+    self.myConfig.TLSEnabled = NO;
     self.myConfig.uuid = [self randomString];
     self.myConfig.origin = @"pubsub.pubnub.com";
     self.myConfig.authKey = _authKey;
