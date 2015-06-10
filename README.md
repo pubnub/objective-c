@@ -8,17 +8,14 @@
 * Simplified serialization/deserialization threading logic
 * Removed support for blocking, syncronous calls (all calls are now async)
 * Simplified usability by enforcing completion block pattern -- client no longer supports Singleton, Delegate, Observer, Notifications response patterns
-* Consolidated instance method names
+* Consolidated instance method namesv
  
 ## Known issues and TODOs in beta2:
 
 * Needs better handling for invalid API keys (right now fails with undefined error)
 * Not all result status field attributes are being populated at Status emission time for all operations (will address via testing)
-* Verify HTTP pipelining behavior
 * Provide Swift Bridge and associated docs
-* Add automated integration testing
 * Approach >= 75% automated test code coverage as we approach final release
-* Subscribe catchup on unexpected disconnect/reconnect needs more testing
 
 ## Installing the Source
 
