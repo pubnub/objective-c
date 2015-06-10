@@ -72,12 +72,18 @@
 //    [self pubNubTime];
 //    [self publishHelloWorld];
 //    [self pubNubHistory];
-//    [self pubNubHereNow];
+
+//    [self pubNubHereNowForChannel];
+//    [self pubNubHereNowForChannelWithVerbosity];
+
+//    [self pubNubGlobalHereNow];
+//    [self pubNubGlobalHereNowWithVerbosity];
+
 //    [self pubNubWhereNow];
 //    [self pubNubCGAdd];
 //    [self pubNubCGRemoveAllChannels];
 //    [self pubNubCGRemoveSomeChannels];
-    [self pubNubSubscribeToChannels];
+//    [self pubNubSubscribeToChannels];
 //    [self pubNubSubscribeToChannelGroups];
 //    [self pubNubUnsubFromChannelGroups];
 //    [self pubNubSetRandomState];
@@ -208,18 +214,62 @@
     }];
 }
 
-- (void)pubNubHereNow {
+- (void)pubNubHereNowForChannelWithVerbosity {
+    // If you want to control the 'verbosity' of the server response -- restrict to (values are additive):
+
+    // Occupancy                : PNHereNowOccupancy
+    // Occupancy + UUID         : PNHereNowUUID
+    // Occupancy + UUID + State : PNHereNowState
+
+    [self.client hereNowForChannel:_channel1 withVerbosity:PNHereNowState completion:^(PNResult <PNHereNowResult> *result, PNStatus <PNStatus> *status) {
+        if (status) {
+            [self handleStatus:status];
+        }
+        else if (result) {
+            NSLog(@"^^^^ Loaded hereNowForChannel data: occupancy: %@, uuids: %@", result.data.occupancy, result.data.uuids);
+        }
+    }];
+}
+
+- (void)pubNubHereNowForChannel {
 
     [self.client hereNowForChannel:_channel1 withCompletion:^(PNResult <PNHereNowResult> *result, PNStatus <PNStatus> *status) {
         if (status) {
-            // As a status, this contains error or non-error information about the history request, but not the actual history data I requested.
-            // Timeout Error, PAM Error, etc.
 
             [self handleStatus:status];
         }
         else if (result) {
-            // As a result, this contains the messages, start, and end timetoken in the data attribute
-            NSLog(@"^^^^ Loaded hereNowForChannel data: %@", result.data);  // TODO: Call out data attributes here
+            NSLog(@"^^^^ Loaded hereNowForChannel data: occupancy: %@, uuids: %@", result.data.occupancy, result.data.uuids);
+        }
+    }];
+}
+
+- (void)pubNubGlobalHereNowWithVerbosity {
+
+    // If you want to control the 'verbosity' of the server response -- restrict to (values are additive):
+
+    // Occupancy                : PNHereNowOccupancy
+    // Occupancy + UUID         : PNHereNowUUID
+    // Occupancy + UUID + State : PNHereNowState
+
+    [self.client hereNowWithVerbosity:PNHereNowOccupancy completion:^(PNResult <PNGlobalHereNowResult> *result, PNStatus <PNStatus> *status) {
+    if (status) {
+            [self handleStatus:status];
+        }
+        else if (result) {
+            NSLog(@"^^^^ Loaded Global hereNow data: channels: %@, total channels: %@, total occupancy: %@", result.data.channels, result.data.totalChannels, result.data.totalOccupancy);
+        }
+    }];
+}
+
+- (void)pubNubGlobalHereNow {
+
+    [self.client hereNowWithCompletion:^(PNResult <PNGlobalHereNowResult> *result, PNStatus <PNStatus> *status) {
+        if (status) {
+            [self handleStatus:status];
+        }
+        else if (result) {
+            NSLog(@"^^^^ Loaded Global hereNow data: channels: %@, total channels: %@, total occupancy: %@", result.data.channels, result.data.totalChannels, result.data.totalOccupancy);
         }
     }];
 }
