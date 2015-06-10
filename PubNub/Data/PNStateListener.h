@@ -75,6 +75,12 @@
  */
 - (void)removeListeners:(NSArray *)listeners;
 
+/**
+ @brief  Remove all registered listeners (for message, presence event and client state change).
+ 
+ @since 4.0
+ */
+- (void)removeAllListeners;
 
 ///------------------------------------------------
 /// @name Listeners notification
