@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		513F0B901B278D350054979D /* PNIntegrationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 513F0B8F1B278D350054979D /* PNIntegrationTests.m */; };
 		519C32831B20C11500FAC283 /* iOS_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 519C32821B20C11500FAC283 /* iOS_Tests.m */; };
+		51F7AAC31B27AD8800BEDA1F /* AC941D0E-EB09-4E8D-8489-84534DD51756.plist in Resources */ = {isa = PBXBuildFile; fileRef = 51F7AAC21B27AD8800BEDA1F /* AC941D0E-EB09-4E8D-8489-84534DD51756.plist */; };
 		E307AD049F55BEF780943655 /* libPods-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6097435E3C07196A4F24B6B6 /* libPods-ios.a */; };
 /* End PBXBuildFile section */
 
@@ -17,6 +18,7 @@
 		519C327D1B20C11500FAC283 /* iOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "iOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		519C32811B20C11500FAC283 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		519C32821B20C11500FAC283 /* iOS_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = iOS_Tests.m; sourceTree = "<group>"; };
+		51F7AAC21B27AD8800BEDA1F /* AC941D0E-EB09-4E8D-8489-84534DD51756.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "AC941D0E-EB09-4E8D-8489-84534DD51756.plist"; sourceTree = "<group>"; };
 		5ACDABA811F4B25CD768FB4E /* Pods-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ios/Pods-ios.debug.xcconfig"; sourceTree = "<group>"; };
 		6097435E3C07196A4F24B6B6 /* libPods-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F1E7CCB0F5454CF57A04DA9 /* Pods-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios.release.xcconfig"; path = "Pods/Target Support Files/Pods-ios/Pods-ios.release.xcconfig"; sourceTree = "<group>"; };
@@ -57,6 +59,7 @@
 			children = (
 				519C32821B20C11500FAC283 /* iOS_Tests.m */,
 				513F0B8F1B278D350054979D /* PNIntegrationTests.m */,
+				51F7AAC11B27AD7400BEDA1F /* Fixtures */,
 				519C32801B20C11500FAC283 /* Supporting Files */,
 			);
 			path = "iOS Tests";
@@ -68,6 +71,14 @@
 				519C32811B20C11500FAC283 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		51F7AAC11B27AD7400BEDA1F /* Fixtures */ = {
+			isa = PBXGroup;
+			children = (
+				51F7AAC21B27AD8800BEDA1F /* AC941D0E-EB09-4E8D-8489-84534DD51756.plist */,
+			);
+			name = Fixtures;
 			sourceTree = "<group>";
 		};
 		6A027B24426654F78826ED2D /* Pods */ = {
@@ -144,6 +155,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				51F7AAC31B27AD8800BEDA1F /* AC941D0E-EB09-4E8D-8489-84534DD51756.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

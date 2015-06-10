@@ -34,25 +34,25 @@
     [super tearDown];
 }
 
-+ (void)tearDown {
-    [[JSZVCR sharedInstance] dumpRecordingsToFile:@"testfile"];
-}
+//+ (void)tearDown {
+//    [[JSZVCR sharedInstance] dumpRecordingsToFile:@"testfile"];
+//}
 
 - (void)testExample {
     // This is an example of a functional test case.
     XCTAssert(YES, @"Pass");
 }
 
-- (void)testSimpleSubscribe {
-    self.networkExpectation = [self expectationWithDescription:@"network call"];
-    [self.client subscribeToChannels:@[@"a"] withPresence:NO];
-    [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
-        if (error) {
-            NSLog(@"error: %@", error);
-        }
-    }];
-    
-}
+//- (void)testSimpleSubscribe {
+//    self.networkExpectation = [self expectationWithDescription:@"network call"];
+//    [self.client subscribeToChannels:@[@"a"] withPresence:NO];
+//    [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
+//        if (error) {
+//            NSLog(@"error: %@", error);
+//        }
+//    }];
+//    
+//}
 
 - (void)testPerformanceExample {
     // This is an example of a performance test case.
