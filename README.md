@@ -3132,6 +3132,11 @@ You can use logging system provided by PubNub for you using [__PNLogger__](PubNu
 ```
 **By default for client which has been used via CocoaPods logging will be completely disabled and you will have to use `+loggerEnabled:` and `+dumpToFile:` if you want to change this behavior.**  
 
+```objc
+[PNLogLevel loggerEnabled:YES];
+[PNLogLevel loggerEnabled:NO];
+```
+
 You can alter any of available levels during run-time using provided methods of [__PNLogger__](PubNub/PubNub/PubNub/Misc/PNLogger.h#L273) singleton:  
 ```objc
 + (void)enableFor:(PNLogLevel)level;
