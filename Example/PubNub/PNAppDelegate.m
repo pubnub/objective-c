@@ -63,6 +63,11 @@
     self.subKey = @"demo-36";
     self.authKey = @"myAuthKey";
 
+
+
+
+#pragma mark - Kick the Tires!
+
     [self tireKicker];
     return YES;
 }
@@ -73,23 +78,24 @@
 //    [self publishHelloWorld];
 //    [self pubNubHistory];
 
-//    [self pubNubHereNowForChannel];
-//    [self pubNubHereNowForChannelWithVerbosity];
-
-//    [self pubNubGlobalHereNow];
-//    [self pubNubGlobalHereNowWithVerbosity];
-
-//    [self pubNubWhereNow];
-//    [self pubNubCGAdd];
-//    [self pubNubCGRemoveAllChannels];
-//    [self pubNubCGRemoveSomeChannels];
-//    [self pubNubSubscribeToChannels];
-//    [self pubNubSubscribeToChannelGroups];
-//    [self pubNubUnsubFromChannelGroups];
-//    [self pubNubSetRandomState];
+    [self pubNubSubscribeToChannels];
 //    [self pubNubSubscribeWithState];
 //    [self pubNubSubscribeToPresence];
 
+
+//    [self pubNubHereNowForChannel];
+//    [self pubNubHereNowForChannelWithVerbosity];
+//    [self pubNubGlobalHereNow];
+//    [self pubNubGlobalHereNowWithVerbosity];
+//    [self pubNubWhereNow];
+
+//    [self pubNubCGAdd];
+//    [self pubNubCGRemoveAllChannels];
+//    [self pubNubCGRemoveSomeChannels];
+//    [self pubNubSubscribeToChannelGroups];
+//    [self pubNubUnsubFromChannelGroups];
+
+//    [self pubNubSetRandomState];
 }
 
 - (void)pubNubSetRandomState{
@@ -392,7 +398,6 @@
 
         NSLog(@"Decryption error. Be sure the data is encrypted and/or encrypted with the correct cipher key.");
         NSLog(@"You can find the raw data returned from the server in the status.data attribute: %@", status.data);
-        // TODO: detail fields in data that show "broken" ciphertext
     }
     else if (status.category == PNMalformedResponseCategory) {
 
