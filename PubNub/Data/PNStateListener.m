@@ -160,6 +160,16 @@
     });
 }
 
+- (void)removeAllListeners {
+    
+    dispatch_async(self.resourceAccessQueue, ^{
+            
+        [self.messageListeners removeAllObjects];
+        [self.presenceEventListeners removeAllObjects];
+        [self.stateListeners removeAllObjects];
+    });
+}
+
 
 #pragma mark - Listeners notification
 

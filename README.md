@@ -1,3 +1,6 @@
+# PubNub 4.0b2 for iOS 7+
+### (Beta, not for Production Use)
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
@@ -30,8 +33,6 @@
   - [Reference App - Example](#reference-app---example)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-# PubNub 4.0b2 for iOS 7+ (Beta, not for Production Use)
 
 ## Changes from 3.x
 * 4.0 is a non-bw compatible REWRITE with 95% less lines of code than our 3.x!

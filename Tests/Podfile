@@ -8,5 +8,6 @@ target :ios do
   link_with "iOS Tests"
   pod "Expecta", "~> 1.0"
   pod "OHHTTPStubs", "~> 4.0"
+  pod "JSZVCR", "~> 0.2.0"
   pod "PubNub", :path => "../"
 end
