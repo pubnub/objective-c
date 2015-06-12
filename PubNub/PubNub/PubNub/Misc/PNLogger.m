@@ -1187,6 +1187,12 @@ typedef NS_OPTIONS(NSUInteger, PNLoggerConfiguration) {
 
     BOOL isDumpingIntoFile = [self isDumpingToFile];
     unsigned long configuration = [self sharedInstance].configuration;
+    
+    // check if we need to prepare for logging
+    if ([self sharedInstance].dumpFilePath == nil) {
+        [PNLogger prepare];
+    }
+    
     (shouldDumpToFile ? [PNBitwiseHelper addTo:&configuration bit:PNConsoleDumpIntoFile] :
                         [PNBitwiseHelper removeFrom:&configuration bit:PNConsoleDumpIntoFile]);
     [self sharedInstance].configuration = configuration;
