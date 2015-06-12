@@ -32,7 +32,7 @@ PODS:
   - OHHTTPStubs (4.0.2)
   - PubNub (4.0):
     - AFNetworking (~> 2.5)
-    - CocoaLumberjack
+    - CocoaLumberjack (~> 2.0)
 
 DEPENDENCIES:
   - Expecta (~> 1.0)
@@ -48,6 +48,6 @@ SPEC CHECKSUMS:
   CocoaLumberjack: a6f77d987d65dc7ba86b0f84db7d0b9084f77bcb
   Expecta: 32604574add2c46a36f8d2f716b6c5736eb75024
   OHHTTPStubs: dbd1957d414659783e07b49c961940b7564c23d9
-  PubNub: 7fdce42eb9ca9a4dcfae446cb1e71700a2a54e5f
+  PubNub: 5a9b0845783c4d4f844d205f0fd02c586de862eb
 
-COCOAPODS: 0.37.1
+COCOAPODS: 0.37.2

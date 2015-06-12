@@ -245,8 +245,8 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
         
         presence[@"presence"][@"occupancy"] = data[@"occupancy"];
     }
-    else {
-        
+    if (data[@"data"]) {
+     
         presence[@"presence"][@"state"] = data[@"data"];
     }
     
