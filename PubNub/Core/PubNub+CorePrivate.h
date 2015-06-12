@@ -138,6 +138,22 @@ extern DDLogLevel ddLogLevel;
 ///------------------------------------------------
 
 /**
+ @brief  Calculate actual size of packet for passed \c operationType which will be sent to \b PubNub
+         network.
+ 
+ @param operationType One of \b PNOperationType enum fields which specify for what kind of operation
+                      packet size should be calculated.
+ @param parameters    List of passed parameters which should be passed to URL builder.
+ @param data          Data which can be pushed along with request to \b PubNub network if required.
+ 
+ @return Size of the packet which include request string, host, headers and HTTP post body.
+ 
+ @since 4.0
+ */
+- (NSInteger)packetSizeForOperation:(PNOperationType)operationType
+                     withParameters:(PNRequestParameters *)parameters data:(NSData *)data;
+
+/**
  @brief  Add available client information to object instance subclassed from \b PNResult 
          (\b PNStatus)
  

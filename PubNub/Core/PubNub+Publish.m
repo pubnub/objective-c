@@ -20,6 +20,23 @@
 #pragma mark - Misc
 
 /**
+ @brief  Compose set of parameters which is required to publish message.
+ 
+ @param message         Reference on message which should be published.
+ @param channel         Reference on name of the channel to which message should be published.
+ @param compressMessage Whether message should be compressed before publish.
+ @param shouldStore     Whether message should be stored in history storage or not.
+ 
+ @return Configured and ready to use request parameters instance.
+ 
+ @since 4.0
+ */
+- (PNRequestParameters *)requestParametersForMessage:(NSString *)message
+                                           toChannel:(NSString *)channel
+                                          compressed:(BOOL)compressMessage
+                                      storeInHistory:(BOOL)shouldStore;
+
+/**
  @brief      Merge user-specified message with push payloads into single message which will be 
              processed on \b PubNub service.
  @discussion In case if aside from \c message has been passed \c payloads this method will merge
@@ -145,19 +162,10 @@
                                      withMobilePushPayload:payloads];
             messageForPublish = [PNJSON JSONStringFrom:mergedData withError:&publishError];
         }
-        PNRequestParameters *parameters = [PNRequestParameters new];
-        if ([channel length]) {
-            
-            [parameters addPathComponent:[PNString percentEscapedString:channel]
-                          forPlaceholder:@"{channel}"];
-        }
-        [parameters addQueryParameter:(shouldStore? @"1" : @"0") forFieldName:@"store"];
-        if ([messageForPublish length]) {
-
-            [parameters addPathComponent:(!compressed ? [PNString percentEscapedString:messageForPublish] :
-                                          @"")
-                          forPlaceholder:@"{message}"];
-        }
+        PNRequestParameters *parameters = [self requestParametersForMessage:messageForPublish
+                                                                  toChannel:channel
+                                                                 compressed:compressed
+                                                             storeInHistory:shouldStore];
         NSData *publishData = nil;
         if (compressed) {
 
@@ -190,7 +198,114 @@
 }
 
 
+#pragma mark - Message helper
+
+- (void)sizeOfMessage:(id)message toChannel:(NSString *)channel
+       withCompletion:(PNMessageSizeCalculationCompletionBlock)block {
+    
+    [self sizeOfMessage:message toChannel:channel compressed:NO withCompletion:block];
+}
+
+- (void)sizeOfMessage:(id)message toChannel:(NSString *)channel compressed:(BOOL)compressMessage
+       withCompletion:(PNMessageSizeCalculationCompletionBlock)block {
+    
+    [self sizeOfMessage:message toChannel:channel compressed:compressMessage storeInHistory:YES
+         withCompletion:block];
+}
+
+- (void)sizeOfMessage:(id)message toChannel:(NSString *)channel storeInHistory:(BOOL)shouldStore
+       withCompletion:(PNMessageSizeCalculationCompletionBlock)block {
+    
+    [self sizeOfMessage:message toChannel:channel compressed:NO storeInHistory:shouldStore
+         withCompletion:block];
+}
+
+- (void)sizeOfMessage:(id)message toChannel:(NSString *)channel compressed:(BOOL)compressMessage
+       storeInHistory:(BOOL)shouldStore
+       withCompletion:(PNMessageSizeCalculationCompletionBlock)block {
+    
+    if (block) {
+        
+        // Push further code execution on secondary queue to make service queue responsive during
+        // JSON serialization and encryption process.
+        PNMessageSizeCalculationCompletionBlock blockCopy = [block copy];
+        __weak __typeof(self) weakSelf = self;
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            
+            NSError *publishError = nil;
+            NSString *messageForPublish = [PNJSON JSONStringFrom:message withError:&publishError];
+            // Silence static analyzer warnings.
+            // Code is aware about this case and at the end will simply call on 'nil'
+            // object method. This instance is one of client properties and if client
+            // already deallocated there is no need to this object which will be
+            // deallocated as well.
+            #pragma clang diagnostic push
+            #pragma clang diagnostic ignored "-Wreceiver-is-weak"
+            #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
+            // Encrypt message in case if serialization to JSON was successful.
+            if (!publishError) {
+                
+                // Try perform user message encryption.
+                messageForPublish = [self encryptedMessage:messageForPublish
+                                             withCipherKey:self.configuration.cipherKey
+                                                     error:&publishError];
+            }
+            PNRequestParameters *parameters = [self requestParametersForMessage:messageForPublish
+                                                                      toChannel:channel
+                                                                     compressed:compressMessage
+                                                                 storeInHistory:shouldStore];
+            NSData *publishData = nil;
+            if (compressMessage) {
+                
+                NSData *messageData = [messageForPublish dataUsingEncoding:NSUTF8StringEncoding];
+                NSData *compressedBody = [PNGZIP GZIPDeflatedData:messageData];
+                publishData = (compressedBody?: [@"" dataUsingEncoding:NSUTF8StringEncoding]);
+            }
+            NSInteger size = [weakSelf packetSizeForOperation:PNPublishOperation
+                                               withParameters:parameters data:publishData];
+            dispatch_async(weakSelf.callbackQueue, ^{
+                
+                blockCopy(size);
+            });
+            #pragma clang diagnostic pop
+        });
+    }
+}
+
+
 #pragma mark - Misc
+
+- (PNRequestParameters *)requestParametersForMessage:(NSString *)message
+                                           toChannel:(NSString *)channel
+                                          compressed:(BOOL)compressMessage
+                                      storeInHistory:(BOOL)shouldStore {
+    
+    PNRequestParameters *parameters = [PNRequestParameters new];
+    if ([channel length]) {
+        
+        [parameters addPathComponent:[PNString percentEscapedString:channel]
+                      forPlaceholder:@"{channel}"];
+    }
+    if (!shouldStore) {
+        
+        [parameters addQueryParameter:@"0" forFieldName:@"store"];
+    }
+    if ([message length]) {
+        
+        [parameters addPathComponent:(!compressMessage ? [PNString percentEscapedString:message] :
+                                      @"")
+                      forPlaceholder:@"{message}"];
+    }
+    NSData *publishData = nil;
+    if (compressMessage) {
+        
+        NSData *messageData = [message dataUsingEncoding:NSUTF8StringEncoding];
+        NSData *compressedBody = [PNGZIP GZIPDeflatedData:messageData];
+        publishData = (compressedBody?: [@"" dataUsingEncoding:NSUTF8StringEncoding]);
+    }
+    
+    return parameters;
+}
 
 - (NSDictionary *)mergedMessage:(NSString *)message withMobilePushPayload:(NSDictionary *)payloads {
 

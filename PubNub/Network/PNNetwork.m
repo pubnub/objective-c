@@ -15,6 +15,7 @@
 #import "PNURLBuilder.h"
 #import "PNStructures.h"
 #import "PNConstants.h"
+#import "PNHelpers.h"
 #import "PNParser.h"
 #import "PNLog.h"
 
@@ -84,6 +85,16 @@
 
 
 #pragma mark - Request helper
+
+/**
+ @brief  Append additional parameters general for all requests.
+ 
+ @param parameters Reference on request parameters instance which should be updated with required
+                   set of parameters.
+ 
+ @since 4.0
+ */
+- (void)appendRequierdParametersTo:(PNRequestParameters *)parameters;
 
 /**
  @brief  Construct URL request suitable to send POST request (if required).
@@ -316,6 +327,20 @@
 
 #pragma mark - Request helper
 
+- (void)appendRequierdParametersTo:(PNRequestParameters *)parameters {
+    
+    [parameters addPathComponents:@{@"{sub-key}": (self.configuration.subscribeKey?: @""),
+                                    @"{pub-key}": (self.configuration.publishKey?: @"")}];
+    [parameters addQueryParameters:@{@"uuid": (self.configuration.uuid?: @""),
+                                     @"deviceid": self.configuration.deviceID,
+                                     @"pnsdk":[NSString stringWithFormat:@"PubNub-%@%%2F%@",
+                                               kPNClientName, kPNLibraryVersion]}];
+    if ([self.configuration.authKey length]) {
+        
+        [parameters addQueryParameter:self.configuration.authKey forFieldName:@"auth"];
+    }
+}
+
 - (NSURLRequest *)requestWithURL:(NSURL *)requestURL data:(NSData *)postData {
     
     NSURL *fullURL = [NSURL URLWithString:[requestURL absoluteString] relativeToURL:self.session.baseURL];
@@ -406,16 +431,7 @@
     }
     
     id blockCopy = [block copy];
-    [parameters addPathComponents:@{@"{sub-key}": (self.configuration.subscribeKey?: @""),
-                                    @"{pub-key}": (self.configuration.publishKey?: @"")}];
-    [parameters addQueryParameters:@{@"uuid": (self.configuration.uuid?: @""),
-                                     @"deviceid": self.configuration.deviceID,
-                                     @"pnsdk":[NSString stringWithFormat:@"PubNub-%@%%2F%@",
-                                               kPNClientName, kPNLibraryVersion]}];
-    if ([self.configuration.authKey length]) {
-        
-        [parameters addQueryParameter:self.configuration.authKey forFieldName:@"auth"];
-    }
+    [self appendRequierdParametersTo:parameters];
     
     // Silence static analyzer warnings.
     // Code is aware about this case and at the end will simply call on 'nil' object method.
@@ -531,6 +547,23 @@
 }
 
 
+#pragma mark - Operation information
+
+- (NSInteger)packetSizeForOperation:(PNOperationType)operationType
+                     withParameters:(PNRequestParameters *)parameters data:(NSData *)data {
+    
+    NSInteger size = -1;
+    [self appendRequierdParametersTo:parameters];
+    NSURL *requestURL = [PNURLBuilder URLForOperation:operationType withParameters:parameters];
+    if (requestURL) {
+        
+        size = [PNURLRequest packetSizeForRequest:[self requestWithURL:requestURL data:data]];
+    }
+    
+    return size;
+}
+
+
 #pragma mark - Session constructor
 
 - (void)prepareSessionWithRequesrTimeout:(NSTimeInterval)timeout
@@ -570,8 +603,7 @@
     AFHTTPSessionManager *sessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:origin
                                                                     sessionConfiguration:configuration];
     sessionManager.completionQueue = queue;
-//    sessionManager.operationQueue.underlyingQueue = queue;
-//    sessionManager.operationQueue.maxConcurrentOperationCount = configuration.HTTPMaximumConnectionsPerHost;
+    sessionManager.operationQueue.maxConcurrentOperationCount = configuration.HTTPMaximumConnectionsPerHost;
     
     return sessionManager;
 }

@@ -161,7 +161,12 @@
 }
 
 - (void)pubNubSizeOfMessage{
-    // TODO
+    
+    [self.client sizeOfMessage:@"Connected! I'm here!" toChannel:_channel1
+                withCompletion:^(NSInteger size) {
+                    
+                    NSLog(@"^^^^ Message size: %@", @(size));
+                }];
 }
 
 - (void)pubNubAESDecrypt{

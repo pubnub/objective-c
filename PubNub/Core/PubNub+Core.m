@@ -389,7 +389,20 @@ DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNReachabilityLogLevel|
     [self.subscriptionNetwork cancelAllRequests];
 }
 
+
 #pragma mark - Operation information
+
+- (NSInteger)packetSizeForOperation:(PNOperationType)operationType
+                     withParameters:(PNRequestParameters *)parameters data:(NSData *)data {
+    
+    PNNetwork *network = self.subscriptionNetwork;
+    if (operationType != PNSubscribeOperation && operationType != PNUnsubscribeOperation) {
+        
+        network = self.serviceNetwork;
+    }
+    
+    return [network packetSizeForOperation:operationType withParameters:parameters data:data];
+}
 
 - (void)appendClientInformation:(PNResult *)result {
     

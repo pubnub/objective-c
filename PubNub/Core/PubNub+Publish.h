@@ -78,6 +78,15 @@
  */
 typedef void(^PNPublishCompletionBlock)(PNStatus<PNPublishStatus> *status);
 
+/**
+ @brief  Message size calculation completion block.
+ 
+ @param size Calculated size of the packet which will be used to send message.
+ 
+ @since 4.0
+ */
+typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
+
 
 #pragma mark - API group interface
 
@@ -587,6 +596,96 @@ typedef void(^PNPublishCompletionBlock)(PNStatus<PNPublishStatus> *status);
 - (void)    publish:(id)message toChannel:(NSString *)channel
   mobilePushPayload:(NSDictionary *)payloads storeInHistory:(BOOL)shouldStore
          compressed:(BOOL)compressed withCompletion:(PNPublishCompletionBlock)block;
+
+
+///------------------------------------------------
+/// @name Message helper
+///------------------------------------------------
+
+/**
+ @brief      Helper method which allow to calculate resulting message before it will be sent to
+             \b PubNub network.
+ @discussion Size calculation use percent-escaped \c message and all added headers to get full size.
+ 
+ @param message Message for which size should be calculated.
+ @param channel Name of the channel to which message should be sent (it is part of request URI).
+ @param block   Referecnce on block which should be sent, when message size calculation will be
+                completed.
+ 
+ @since 4.0
+ */
+- (void)sizeOfMessage:(id)message toChannel:(NSString *)channel
+       withCompletion:(PNMessageSizeCalculationCompletionBlock)block;
+
+/**
+ @brief      Helper method which allow to calculate resulting message before it will be sent to
+             \b PubNub network.
+ @discussion Size calculation use percent-escaped \c message and all added headers to get full size.
+
+ @code
+ @endcode
+ Extension to \c -sizeOfMessage:toChannel:withCompletion: and specify whether message should be 
+ compressed or not.
+ 
+ @param message         Message for which size should be calculated.
+ @param channel         Name of the channel to which message should be sent (it is part of request 
+                        URI).
+ @param compressMessage \c YES in case if message should be compressed before sending to \b PubNub
+                        network.
+ @param block           Referecnce on block which should be sent, when message size calculation will
+                        be completed.
+ 
+ @since 4.0
+ */
+- (void)sizeOfMessage:(id)message toChannel:(NSString *)channel compressed:(BOOL)compressMessage
+       withCompletion:(PNMessageSizeCalculationCompletionBlock)block;
+
+/**
+ @brief      Helper method which allow to calculate resulting message before it will be sent to
+             \b PubNub network.
+ @discussion Size calculation use percent-escaped \c message and all added headers to get full size.
+
+ @code
+ @endcode
+ Extension to \c -sizeOfMessage:toChannel:withCompletion: and specify whether message should be
+ stored in history or not.
+ 
+ @param message     Message for which size should be calculated.
+ @param channel     Name of the channel to which message should be sent (it is part of request URI).
+ @param shouldStore \c YES in case if message should be placed into history storage.
+ @param block       Referecnce on block which should be sent, when message size calculation will be
+                    completed.
+ 
+ @since 4.0
+ */
+- (void)sizeOfMessage:(id)message toChannel:(NSString *)channel storeInHistory:(BOOL)shouldStore
+       withCompletion:(PNMessageSizeCalculationCompletionBlock)block;
+
+/**
+ @brief      Helper method which allow to calculate resulting message before it will be sent to
+             \b PubNub network.
+ @discussion Size calculation use percent-escaped \c message and all added headers to get full size.
+
+ @code
+ @endcode
+ Extension to \c -sizeOfMessage:toChannel:compressed:withCompletion: and specify whether message 
+ should be stored in history or not.
+ 
+ @param message         Message for which size should be calculated.
+ @param channel         Name of the channel to which message should be sent (it is part of request 
+                        URI).
+ @param compressMessage \c YES in case if message should be compressed before sending to \b PubNub
+                        network.
+ @param shouldStore     \c NO in case if message shouldn't be available after it has been sent via
+                        history storage API methods group.
+ @param block           Referecnce on block which should be sent, when message size calculation will
+                        be completed.
+ 
+ @since 4.0
+ */
+- (void)sizeOfMessage:(id)message toChannel:(NSString *)channel compressed:(BOOL)compressMessage
+       storeInHistory:(BOOL)shouldStore
+       withCompletion:(PNMessageSizeCalculationCompletionBlock)block;
 
 #pragma mark -
 
