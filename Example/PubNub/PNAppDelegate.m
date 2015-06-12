@@ -18,6 +18,7 @@
 @property(nonatomic, strong) PubNub *client;
 @property(nonatomic, strong) NSString *channel1;
 @property(nonatomic, strong) NSString *channel2;
+@property(nonatomic, strong) NSString *channelGroup1;
 @property(nonatomic, strong) NSString *subKey;
 @property(nonatomic, strong) NSString *pubKey;
 @property(nonatomic, strong) NSString *authKey;
@@ -59,6 +60,7 @@
 //    Settings Config for Non-PAM Example
     self.channel1 = @"bot";
     self.channel2 = @"myCh";
+    self.channelGroup1 = @"myChannelGroup";
     self.pubKey = @"demo-36";
     self.subKey = @"demo-36";
     self.authKey = @"myAuthKey";
@@ -70,63 +72,6 @@
 
     [self tireKicker];
     return YES;
-}
-
-- (void)tireKicker {
-    [self pubNubInit];
-//    [self pubNubTime];
-//    [self publishHelloWorld];
-//    [self pubNubHistory];
-
-    [self pubNubSubscribeToChannels];
-//    [self pubNubSubscribeWithState];
-//    [self pubNubSubscribeToPresence];
-
-
-//    [self pubNubHereNowForChannel];
-//    [self pubNubHereNowForChannelWithVerbosity];
-//    [self pubNubGlobalHereNow];
-//    [self pubNubGlobalHereNowWithVerbosity];
-//    [self pubNubWhereNow];
-
-//    [self pubNubCGAdd];
-//    [self pubNubCGRemoveAllChannels];
-//    [self pubNubCGRemoveSomeChannels];
-//    [self pubNubSubscribeToChannelGroups];
-//    [self pubNubUnsubFromChannelGroups];
-
-//    [self pubNubSetRandomState];
-}
-
-- (void)pubNubSetRandomState{
-    [self.client setState:@{[self randomString] : @{[self randomString] : [self randomString]}} forUUID:_myConfig.uuid onChannel:_channel1 withCompletion:^(PNStatus <PNSetStateStatus> *status) {
-        //self.timer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(pubNubSetRandomState) userInfo:nil repeats:NO];
-    }];
-}
-
-- (void)pubNubSubscribeWithState{
-    [self.client subscribeToChannels:@[_channel1] withPresence:NO clientState: @{_channel1: @{@"foo":@"bar"}}];
-    //self.timer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(pubNubSetRandomState) userInfo:nil repeats:NO];
-}
-
-- (void)pubNubSubscribeToChannelGroups {
-    [self.client subscribeToChannelGroups:@[@"myChannelGroup"] withPresence:NO];
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(pubNubUnsubFromChannelGroups) userInfo:nil repeats:NO];
-}
-
-- (void)pubNubUnsubFromChannelGroups {
-    [self.client unsubscribeFromChannelGroups:@[@"myChannelGroup"] withPresence:NO];
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(pubNubSubscribeToChannelGroups) userInfo:nil repeats:NO];
-}
-
-- (void)pubNubSubscribeToPresence {
-    [self.client subscribeToPresenceChannels:@[_channel1]];
-    //self.timer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(pubNubUnsubFromPresence) userInfo:nil repeats:NO];
-}
-
-- (void)pubNubUnsubFromPresence {
-    [self.client unsubscribeFromPresenceChannels:@[_channel1]];
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(pubNubSubscribeToPresence) userInfo:nil repeats:NO];
 }
 
 - (void)pubNubInit {
@@ -147,17 +92,180 @@
     // Bind didReceiveMessage, didReceiveStatus, and didReceivePresenceEvent 'listeners' to this delegate
     // just be sure the target has implemented the PNObjectEventListener extension
     [self.client addListeners:@[self]];
+    [self pubNubSetState];
+}
+
+- (void)tireKicker {
+    [self pubNubInit];
+
+#pragma mark - Time
+
+    [self pubNubTime];
+
+#pragma mark - Publish
+    [self pubNubPublish];
+
+#pragma mark - History
+
+    [self pubNubHistory];
+
+#pragma mark - Channel Groups Subscribe / Unsubscribe
+
+    [self pubNubSubscribeToChannelGroup];
+    [self pubNubUnsubFromChannelGroups];
+
+#pragma mark - Channel Subscribe / Unsubscribe
+
+    [self pubNubSubscribeToChannels];
+    [self pubNubUnsubscribeFromChannels];
+
+#pragma mark - Presence Subscribe / Unsubscribe
+
+    [self pubNubSubscribeToPresence];
+    [self pubNubUnsubFromPresence];
+
+#pragma mark - Here Nows
+
+    [self pubNubHereNowForChannel];
+    [self pubNubGlobalHereNow];
+    [self pubNubHereNowForChannelGroups];
+    [self pubNubWhereNow];
+
+#pragma mark - CG Admin
+
+    [self pubNubCGAdd];
+    [self pubNubCGRemoveAllChannels];
+    [self pubNubCGRemoveSomeChannels];
+
+#pragma mark - State Admin
+    [self pubNubSetState];
+    [self pubNubGetState];
+
+
+#pragma mark - 3rd Party Push Notifications Admin
+
+    [self pubNubAddPushNotifications];
+    [self pubNubRemovePushNotification];
+    [self pubNubRemoveAllPushNotifications];
+    [self pubNubGetAllPushNotifications];
+
+#pragma mark - Public Encryption/Decryption Methods
+
+    [self pubNubAESDecrypt];
+    [self pubNubAESEncrypt];
+
+#pragma mark - Message Size Check Methods
+
+    [self pubNubSizeOfMessage];
 
 }
 
+- (void)pubNubSizeOfMessage{
+    // TODO
+}
+
+- (void)pubNubAESDecrypt{
+    /*
+    [PNAES decrypt:<#(NSString *)object#> withKey:<#(NSString *)key#>];
+    [PNAES decrypt:<#(NSString *)object#> withKey:<#(NSString *)key#> andError:<#(NSError *__autoreleasing *)error#>];
+    */
+}
+
+- (void)pubNubAESEncrypt{
+    /*
+    [PNAES encrypt:<#(NSData *)data#> withKey:<#(NSString *)key#>];
+    [PNAES encrypt:<#(NSData *)data#> withKey:<#(NSString *)key#> andError:<#(NSError *__autoreleasing *)error#>];
+     */
+}
+
+- (void)pubNubAddPushNotifications {
+    /*
+    [self.client addPushNotificationsOnChannels:<#(NSArray *)channels#> withDevicePushToken:<#(NSData *)pushToken#> andCompletion:<#(PNPushNotificationsStateModificationCompletionBlock)block#>];
+     */
+}
+
+- (void)pubNubRemovePushNotification {
+    /*
+    [self.client removePushNotificationsFromChannels:<#(NSArray *)channels#> withDevicePushToken:<#(NSData *)pushToken#> andCompletion:<#(PNPushNotificationsStateModificationCompletionBlock)block#>];
+     */
+}
+
+- (void)pubNubRemoveAllPushNotifications {
+    /*
+    [self.client removeAllPushNotificationsFromDeviceWithPushToken:<#(NSData *)pushToken#> andCompletion:<#(PNPushNotificationsStateModificationCompletionBlock)block#>];
+     */
+}
+
+- (void)pubNubGetAllPushNotifications {
+    /*
+    [self.client pushNotificationEnabledChannelsForDeviceWithPushToken:<#(NSData *)pushToken#> andCompletion:<#(PNPushNotificationsStateAuditCompletionBlock)block#>];
+     */
+}
+
+- (void)pubNubSetState {
+    [self.client setState:@{[self randomString] : @{[self randomString] : [self randomString]}} forUUID:_myConfig.uuid onChannel:_channel1 withCompletion:^(PNStatus <PNSetStateStatus> *status) {
+        //self.timer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(pubNubSetState) userInfo:nil repeats:NO];
+    }];
+}
+
+- (void)pubNubGetState{
+    /*
+    [self.client stateForUUID:<#(NSString *)uuid#> onChannel:<#(NSString *)channel#> withCompletion:<#(PNChannelStateCompletionBlock)block#>];
+    [self.client stateForUUID:<#(NSString *)uuid#> onChannelGroup:<#(NSString *)group#> withCompletion:<#(PNChannelGroupStateCompletionBlock)block#>];
+     */
+}
+
+
+
+- (void)pubNubUnsubFromChannelGroups {
+    [self.client unsubscribeFromChannelGroups:@[@"myChannelGroup"] withPresence:NO];
+
+    /*
+    // TODO: Is this needed?
+    [self.client unsubscribeFromChannelGroups:@[_channelGroup1] withPresence:YES completion:^(PNStatus <PNSubscriberStatus> *status) {
+    }];
+    */
+
+}
+
+- (void)pubNubSubscribeToPresence {
+    [self.client subscribeToPresenceChannels:@[_channel1]];
+}
+
+- (void)pubNubUnsubFromPresence {
+    [self.client unsubscribeFromPresenceChannels:@[_channel1]];
+}
+
+
+
 - (void)pubNubSubscribeToChannels {
-    // Subscribe
-    [self.client subscribeToChannels:@[_channel1] withPresence:NO];
+    [self.client subscribeToChannels:@[_channel1] withPresence:YES clientState:@{_channel1:@{@"foo":@"bar"}}];
+
+    /*
+    [self.client subscribeToChannels:<#(NSArray *)channels#> withPresence:<#(BOOL)shouldObservePresence#>];
+    [self.client isSubscribedOn:<#(NSString *)name#>]
+      */
+
+}
+
+- (void)pubNubUnsubscribeFromChannels {
+    [self.client unsubscribeFromChannels:@[_channel1] withPresence:YES];
+
+
+    /*
+    // TODO: This should be removed?
+    [self.client unsubscribeFromChannels:@[_channel1] withPresence:YES completion:^(PNStatus <PNSubscriberStatus> *status) {
+    }];
+    */
+
 }
 
 - (void)pubNubSubscribeToChannelGroup {
-    // Subscribe
-    [self.client subscribeToChannelGroups:@[@"myChannelGroup"] withPresence:NO];
+    [self.client subscribeToChannelGroups:@[_channelGroup1] withPresence:NO];
+    /*
+    [self.client subscribeToChannelGroups:@[_channelGroup1] withPresence:YES clientState:@{@"foo":@"bar"}];
+     */
+
 }
 
 
@@ -175,8 +283,6 @@
             // As a result, this contains the messages, start, and end timetoken in the data attribute
 
             NSLog(@"^^^^ Loaded whereNow data: %@", result.data.channels);  // TODO: Call out data attributes here
-
-
         }
     }];
 }
@@ -197,7 +303,7 @@
 
     [self.client removeChannelsFromGroup:@"myChannelGroup" withCompletion:^(PNStatus <PNStatus> *status) {
         if (!status.isError) {
-            NSLog(@"^^^^CG Remove All Channels request succeeded at timetoken %@.", status.data.channels);
+            NSLog(@"^^^^CG Remove All Channels request succeeded");
         } else {
             NSLog(@"^^^^CG Remove All Channels request did not succeed. All subscribe operations will autoretry when possible.");
             [self handleStatus:status];
@@ -209,18 +315,30 @@
 - (void)pubNubCGAdd {
 
     __weak __typeof(self) weakSelf = self;
-    [self.client addChannels:@[_channel1, _channel2] toGroup:@"myChannelGroup" withCompletion:^(PNStatus <PNStatus> *status) {
+    [self.client addChannels:@[_channel1, _channel2] toGroup:_channel1 withCompletion:^(PNStatus <PNStatus> *status) {
         if (!status.isError) {
-            NSLog(@"^^^^CGAdd request succeeded at timetoken %@.", status.data.channels);
+            NSLog(@"^^^^CGAdd request succeeded");
         } else {
             NSLog(@"^^^^CGAdd Subscribe request did not succeed. All subscribe operations will autoretry when possible.");
             [weakSelf handleStatus:status];
         }
-
     }];
+
 }
 
-- (void)pubNubHereNowForChannelWithVerbosity {
+
+- (void)pubNubHereNowForChannel {
+
+    [self.client hereNowForChannel:_channel1 withCompletion:^(PNResult <PNHereNowResult> *result, PNStatus <PNStatus> *status) {
+        if (status) {
+
+            [self handleStatus:status];
+        }
+        else if (result) {
+            NSLog(@"^^^^ Loaded hereNowForChannel data: occupancy: %@, uuids: %@", result.data.occupancy, result.data.uuids);
+        }
+    }];
+
     // If you want to control the 'verbosity' of the server response -- restrict to (values are additive):
 
     // Occupancy                : PNHereNowOccupancy
@@ -235,38 +353,9 @@
             NSLog(@"^^^^ Loaded hereNowForChannel data: occupancy: %@, uuids: %@", result.data.occupancy, result.data.uuids);
         }
     }];
+
 }
 
-- (void)pubNubHereNowForChannel {
-
-    [self.client hereNowForChannel:_channel1 withCompletion:^(PNResult <PNHereNowResult> *result, PNStatus <PNStatus> *status) {
-        if (status) {
-
-            [self handleStatus:status];
-        }
-        else if (result) {
-            NSLog(@"^^^^ Loaded hereNowForChannel data: occupancy: %@, uuids: %@", result.data.occupancy, result.data.uuids);
-        }
-    }];
-}
-
-- (void)pubNubGlobalHereNowWithVerbosity {
-
-    // If you want to control the 'verbosity' of the server response -- restrict to (values are additive):
-
-    // Occupancy                : PNHereNowOccupancy
-    // Occupancy + UUID         : PNHereNowUUID
-    // Occupancy + UUID + State : PNHereNowState
-
-    [self.client hereNowWithVerbosity:PNHereNowOccupancy completion:^(PNResult <PNGlobalHereNowResult> *result, PNStatus <PNStatus> *status) {
-    if (status) {
-            [self handleStatus:status];
-        }
-        else if (result) {
-            NSLog(@"^^^^ Loaded Global hereNow data: channels: %@, total channels: %@, total occupancy: %@", result.data.channels, result.data.totalChannels, result.data.totalOccupancy);
-        }
-    }];
-}
 
 - (void)pubNubGlobalHereNow {
 
@@ -278,9 +367,33 @@
             NSLog(@"^^^^ Loaded Global hereNow data: channels: %@, total channels: %@, total occupancy: %@", result.data.channels, result.data.totalChannels, result.data.totalOccupancy);
         }
     }];
+
+    // If you want to control the 'verbosity' of the server response -- restrict to (values are additive):
+
+    // Occupancy                : PNHereNowOccupancy
+    // Occupancy + UUID         : PNHereNowUUID
+    // Occupancy + UUID + State : PNHereNowState
+
+    [self.client hereNowWithVerbosity:PNHereNowOccupancy completion:^(PNResult <PNGlobalHereNowResult> *result, PNStatus <PNStatus> *status) {
+        if (status) {
+            [self handleStatus:status];
+        }
+        else if (result) {
+            NSLog(@"^^^^ Loaded Global hereNow data: channels: %@, total channels: %@, total occupancy: %@", result.data.channels, result.data.totalChannels, result.data.totalOccupancy);
+        }
+    }];
+
 }
 
-- (void)pubNubHistory {
+- (void)pubNubHereNowForChannelGroups{
+    /*
+    [self.client hereNowForChannelGroup:<#(NSString *)group#> withCompletion:<#(PNChannelGroupHereNowCompletionBlock)block#>];
+    [self.client hereNowForChannelGroup:<#(NSString *)group#> withVerbosity:<#(PNHereNowVerbosityLevel)level#> completion:<#(PNChannelGroupHereNowCompletionBlock)block#>];
+    */
+}
+
+
+    - (void)pubNubHistory {
     // History
 
     [self.client historyForChannel:_channel1 withCompletion:^(PNResult <PNHistoryResult> *result, PNStatus <PNStatus> *status) {
@@ -303,11 +416,21 @@
             NSLog(@"Loaded history data: %@", result.data);  // TODO: Call out data attributes here
         }
     }];
+
+        /*
+    [self.client historyForChannel:<#(NSString *)channel#> start:<#(NSNumber *)startDate#> end:<#(NSNumber *)endDate#> includeTimeToken:<#(BOOL)shouldIncludeTimeToken#> withCompletion:<#(PNHistoryCompletionBlock)block#>];
+    [self.client historyForChannel:<#(NSString *)channel#> start:<#(NSNumber *)startDate#> end:<#(NSNumber *)endDate#> limit:<#(NSUInteger)limit#> includeTimeToken:<#(BOOL)shouldIncludeTimeToken#> withCompletion:<#(PNHistoryCompletionBlock)block#>];
+    [self.client historyForChannel:<#(NSString *)channel#> start:<#(NSNumber *)startDate#> end:<#(NSNumber *)endDate#> limit:<#(NSUInteger)limit#> reverse:<#(BOOL)shouldReverseOrder#> includeTimeToken:<#(BOOL)shouldIncludeTimeToken#> withCompletion:<#(PNHistoryCompletionBlock)block#>];
+    [self.client historyForChannel:<#(NSString *)channel#> start:<#(NSNumber *)startDate#> end:<#(NSNumber *)endDate#> limit:<#(NSUInteger)limit#> reverse:<#(BOOL)shouldReverseOrder#> withCompletion:<#(PNHistoryCompletionBlock)block#>];
+    [self.client historyForChannel:<#(NSString *)channel#> start:<#(NSNumber *)startDate#> end:<#(NSNumber *)endDate#> limit:<#(NSUInteger)limit#> withCompletion:<#(PNHistoryCompletionBlock)block#>];
+    [self.client historyForChannel:<#(NSString *)channel#> start:<#(NSNumber *)startDate#> end:<#(NSNumber *)endDate#> withCompletion:<#(PNHistoryCompletionBlock)block#>];
+    [self.client historyForChannel:<#(NSString *)channel#> withCompletion:<#(PNHistoryCompletionBlock)block#>];
+          */
+
 }
 
 
 - (void)pubNubTime {
-    // Time (Ping) to PubNub Servers
 
     [self.client timeWithCompletion:^(PNResult <PNTimeResult> *result, PNStatus <PNStatus> *status) {
         if (result.data) {
@@ -319,7 +442,7 @@
     }];
 }
 
-- (void)publishHelloWorld {
+- (void)pubNubPublish {
     [self.client publish:@"Connected! I'm here!" toChannel:_channel1
           withCompletion:^(PNStatus <PNPublishStatus> *status) {
               if (!status.isError) {
@@ -328,6 +451,18 @@
                   [self handleStatus:status];
               }
           }];
+
+    /*
+    [self.client publish:<#(id)message#> toChannel:<#(NSString *)channel#> compressed:<#(BOOL)compressed#> withCompletion:<#(PNPublishCompletionBlock)block#>];
+    [self.client publish:<#(id)message#> toChannel:<#(NSString *)channel#> withCompletion:<#(PNPublishCompletionBlock)block#>];
+    [self.client publish:<#(id)message#> toChannel:<#(NSString *)channel#> storeInHistory:<#(BOOL)shouldStore#> withCompletion:<#(PNPublishCompletionBlock)block#>];
+    [self.client publish:<#(id)message#> toChannel:<#(NSString *)channel#> storeInHistory:<#(BOOL)shouldStore#> compressed:<#(BOOL)compressed#> withCompletion:<#(PNPublishCompletionBlock)block#>];
+    [self.client publish:<#(id)message#> toChannel:<#(NSString *)channel#> mobilePushPayload:<#(NSDictionary *)payloads#> withCompletion:<#(PNPublishCompletionBlock)block#>];
+    [self.client publish:<#(id)message#> toChannel:<#(NSString *)channel#> mobilePushPayload:<#(NSDictionary *)payloads#> compressed:<#(BOOL)compressed#> withCompletion:<#(PNPublishCompletionBlock)block#>];
+    [self.client publish:<#(id)message#> toChannel:<#(NSString *)channel#> mobilePushPayload:<#(NSDictionary *)payloads#> storeInHistory:<#(BOOL)shouldStore#> withCompletion:<#(PNPublishCompletionBlock)block#>];
+    [self.client publish:<#(id)message#> toChannel:<#(NSString *)channel#> mobilePushPayload:<#(NSDictionary *)payloads#> storeInHistory:<#(BOOL)shouldStore#> compressed:<#(BOOL)compressed#> withCompletion:<#(PNPublishCompletionBlock)block#>];
+    */
+
 }
 
 #pragma mark - Streaming Data didReceiveMessage Listener
@@ -347,7 +482,7 @@
 - (void)client:(PubNub *)client didReceivePresenceEvent:(PNResult <PNPresenceEventResult> *)event {
     // TODO detail fields in data that depict the Presence event
 
-    NSLog(@"^^^^^ Did receive presence event: %@", event.data);
+    NSLog(@"^^^^^ Did receive presence event: %@", event.data.data);
 }
 
 #pragma mark - Streaming Data didReceiveStatus Listener
@@ -466,8 +601,6 @@
         NSArray *currentChannels = subscriberStatus.subscribedChannels;
         NSArray *currentChannelGroups = subscriberStatus.subscribedChannelGroups;
 
-        // TODO: Implement a proper "LEAVE" in the helper method for better presence support
-
         self.myConfig.authKey = @"myAuthKey";
 
         [self.client copyWithConfiguration:self.myConfig completion:^(PubNub *client){
@@ -528,7 +661,7 @@
             // NSLog(@"Subscribe Connected to %@", status.data[@"channels"]);
             NSLog(@"^^^^ Non-error status: Connected, Channel Info: %@",
                     subscriberStatus.subscribedChannels);
-            [self publishHelloWorld];
+            [self pubNubPublish];
 
         }
         else if (status.category == PNReconnectedCategory) {
