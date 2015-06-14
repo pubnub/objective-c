@@ -563,8 +563,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
             [self appendSubscriberInformation:targetStatus];
             // Silence static analyzer warnings.
             // Code is aware about this case and at the end will simply call on 'nil' object method.
-            // This instance is one of client properties and if client already deallocated there is
-            // no need to this object which will be deallocated as well.
+            // In most cases if referenced object become 'nil' it mean what there is no more need in
+            // it and probably whole client instance has been deallocated.
             #pragma clang diagnostic push
             #pragma clang diagnostic ignored "-Wreceiver-is-weak"
             #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
@@ -624,8 +624,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 
     // Silence static analyzer warnings.
     // Code is aware about this case and at the end will simply call on 'nil' object method.
-    // This instance is one of client properties and if client already deallocated there is
-    // no need to this object which will be deallocated as well.
+    // In most cases if referenced object become 'nil' it mean what there is no more need in
+    // it and probably whole client instance has been deallocated.
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wreceiver-is-weak"
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
@@ -646,16 +646,15 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         
         PNRequestParameters *parameters = [self subscribeRequestParametersWithState:state];
         __weak __typeof(self) weakSelf = self;
-        PNSubscriberCompletionBlock blockCopy = [block copy];
         [self.client processOperation:PNSubscribeOperation withParameters:parameters
                       completionBlock:^(PNStatus *status){
                           
               [weakSelf handleSubscriptionStatus:(PNStatus<PNSubscriberStatus> *)status];
-              if (blockCopy) {
+              if (block) {
                   
                   dispatch_async(weakSelf.client.callbackQueue, ^{
                       
-                      blockCopy((PNStatus<PNSubscriberStatus> *)status);
+                      block((PNStatus<PNSubscriberStatus> *)status);
                   });
               }
           }];
@@ -713,8 +712,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     
     // Silence static analyzer warnings.
     // Code is aware about this case and at the end will simply call on 'nil' object method.
-    // This instance is one of client properties and if client already deallocated there is
-    // no need to this object which will be deallocated as well.
+    // In most cases if referenced object become 'nil' it mean what there is no more need in
+    // it and probably whole client instance has been deallocated.
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wreceiver-is-weak"
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
@@ -734,17 +733,16 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
             
             [parameters addQueryParameter:objectsList forFieldName:@"channel-group"];
         }
-        PNSubscriberCompletionBlock blockCopy = [block copy];
         [self.client processOperation:PNUnsubscribeOperation withParameters:parameters
-                      completionBlock:^(__unused PNStatus *status){
+                      completionBlock:^(__unused PNStatus *status1){
                           
-            [weakSelf subscribe:YES withState:nil completion:^(PNStatus<PNSubscriberStatus> *status) {
+            [weakSelf subscribe:YES withState:nil completion:^(PNStatus<PNSubscriberStatus> *status2) {
                 
-                if (blockCopy) {
+                if (block) {
                     
                     dispatch_async(weakSelf.client.callbackQueue, ^{
                         
-                        blockCopy((PNStatus<PNSubscriberStatus> *)successStatus);
+                        block((PNStatus<PNSubscriberStatus> *)successStatus);
                     });
                 }
                 [weakSelf updateStateTo:PNDisconnectedSubscriberState
@@ -785,11 +783,10 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         
         // Silence static analyzer warnings.
         // Code is aware about this case and at the end will simply call on 'nil' object method.
-        // This instance is one of client properties and if client already deallocated there is
-        // no need to this object which will be deallocated as well.
+        // In most cases if referenced object become 'nil' it mean what there is no more need in
+        // it and probably whole client instance has been deallocated.
         #pragma clang diagnostic push
         #pragma clang diagnostic ignored "-Wreceiver-is-weak"
-        #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
         [weakSelf continueSubscriptionCycleIfRequiredWithCompletion:nil];
         #pragma clang diagnostic pop
     });
@@ -833,8 +830,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     
     // Silence static analyzer warnings.
     // Code is aware about this case and at the end will simply call on 'nil' object method.
-    // This instance is one of client properties and if client already deallocated there is
-    // no need to this object which will be deallocated as well.
+    // In most cases if referenced object become 'nil' it mean what there is no more need in
+    // it and probably whole client instance has been deallocated.
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wreceiver-is-weak"
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
@@ -862,8 +859,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     
     // Silence static analyzer warnings.
     // Code is aware about this case and at the end will simply call on 'nil' object method.
-    // This instance is one of client properties and if client already deallocated there is
-    // no need to this object which will be deallocated as well.
+    // In most cases if referenced object become 'nil' it mean what there is no more need in
+    // it and probably whole client instance has been deallocated.
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wreceiver-is-weak"
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
@@ -957,8 +954,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     
     // Silence static analyzer warnings.
     // Code is aware about this case and at the end will simply call on 'nil' object method.
-    // This instance is one of client properties and if client already deallocated there is
-    // no need to this object which will be deallocated as well.
+    // In most cases if referenced object become 'nil' it mean what there is no more need in
+    // it and probably whole client instance has been deallocated.
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wreceiver-is-weak"
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
@@ -1012,11 +1009,10 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         
         // Silence static analyzer warnings.
         // Code is aware about this case and at the end will simply call on 'nil' object method.
-        // This instance is one of client properties and if client already deallocated there is
-        // no need to this object which will be deallocated as well.
+        // In most cases if referenced object become 'nil' it mean what there is no more need in
+        // it and probably whole client instance has been deallocated.
         #pragma clang diagnostic push
         #pragma clang diagnostic ignored "-Wreceiver-is-weak"
-        #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
         [self.client.listenersManager notifyWithBlock:^{
             
             // Iterate through array with notifications and report back using callback blocks to the
@@ -1077,11 +1073,10 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     }
     // Silence static analyzer warnings.
     // Code is aware about this case and at the end will simply call on 'nil' object method.
-    // This instance is one of client properties and if client already deallocated there is
-    // no need to this object which will be deallocated as well.
+    // In most cases if referenced object become 'nil' it mean what there is no more need in
+    // it and probably whole client instance has been deallocated.
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wreceiver-is-weak"
-    #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
     [self.client.listenersManager notifyMessage:data withStatus:(PNStatus<PNStatus> *)status];
     #pragma clang diagnostic pop
 }
@@ -1090,8 +1085,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     
     // Silence static analyzer warnings.
     // Code is aware about this case and at the end will simply call on 'nil' object method.
-    // This instance is one of client properties and if client already deallocated there is
-    // no need to this object which will be deallocated as well.
+    // In most cases if referenced object become 'nil' it mean what there is no more need in
+    // it and probably whole client instance has been deallocated.
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wreceiver-is-weak"
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
@@ -1123,8 +1118,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     
     // Silence static analyzer warnings.
     // Code is aware about this case and at the end will simply call on 'nil' object method.
-    // This instance is one of client properties and if client already deallocated there is
-    // no need to this object which will be deallocated as well.
+    // In most cases if referenced object become 'nil' it mean what there is no more need in
+    // it and probably whole client instance has been deallocated.
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wreceiver-is-weak"
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"

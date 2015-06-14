@@ -27,7 +27,7 @@
         [packetData appendData:[@"\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
     }
     
-    return ([packetData length] > 0 ? [packetData length] : -1);
+    return ([packetData length] > 0 ? (NSInteger)[packetData length] : -1);
 }
 
 #pragma mark -

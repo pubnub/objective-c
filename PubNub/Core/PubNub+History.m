@@ -131,20 +131,17 @@
                  (endDate ? [NSString stringWithFormat:@" to %@", endDate] : @""), @(limit),
                  (shouldIncludeTimeToken ? @" (including message time tokens)" : @""));
 
-    PNHistoryCompletionBlock blockCopy = [block copy];
     __weak __typeof(self) weakSelf = self;
     [self processOperation:PNHistoryOperation withParameters:parameters
            completionBlock:^(PNResult *result, PNStatus *status) {
 
                // Silence static analyzer warnings.
-               // Code is aware about this case and at the end will simply call on 'nil'
-               // object method. This instance is one of client properties and if client
-               // already deallocated there is no need to this object which will be
-               // deallocated as well.
+               // Code is aware about this case and at the end will simply call on 'nil' object
+               // method. In most cases if referenced object become 'nil' it mean what there is no
+               // more need in it and probably whole client instance has been deallocated.
                #pragma clang diagnostic push
                #pragma clang diagnostic ignored "-Wreceiver-is-weak"
-               #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
-               [weakSelf handleHistoryResult:result withStatus:status completion:blockCopy];
+               [weakSelf handleHistoryResult:result withStatus:status completion:block];
                #pragma clang diagnostic pop
            }];
 }

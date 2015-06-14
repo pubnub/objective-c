@@ -130,19 +130,17 @@
                      PNHereNowDataStrings[level]);
     }
     
-    id blockCopy = [block copy];
     __weak __typeof(self) weakSelf = self;
     [self processOperation:(![object length] ? PNHereNowGlobalOperation : PNHereNowOperation)
             withParameters:parameters completionBlock:^(PNResult *result, PNStatus *status) {
                
                // Silence static analyzer warnings.
-               // Code is aware about this case and at the end will simply call on 'nil' object method.
-               // This instance is one of client properties and if client already deallocated there is
-               // no need to this object which will be deallocated as well.
+               // Code is aware about this case and at the end will simply call on 'nil' object
+               // method. In most cases if referenced object become 'nil' it mean what there is no
+               // more need in it and probably whole client instance has been deallocated.
                #pragma clang diagnostic push
                #pragma clang diagnostic ignored "-Wreceiver-is-weak"
-               #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
-               [weakSelf callBlock:blockCopy status:NO withResult:result andStatus:status];
+               [weakSelf callBlock:block status:NO withResult:result andStatus:status];
                #pragma clang diagnostic pop
            }];
 }
@@ -159,19 +157,17 @@
     }
     DDLogAPICall(@"<PubNub> 'Where now' presence information for %@.", (uuid?: @"<error>"));
 
-    PNCompletionBlock blockCopy = [block copy];
     __weak __typeof(self) weakSelf = self;
     [self processOperation:PNWhereNowOperation withParameters:parameters
            completionBlock:^(PNResult *result, PNStatus *status) {
                
                // Silence static analyzer warnings.
-               // Code is aware about this case and at the end will simply call on 'nil' object method.
-               // This instance is one of client properties and if client already deallocated there is
-               // no need to this object which will be deallocated as well.
+               // Code is aware about this case and at the end will simply call on 'nil' object
+               // method. In most cases if referenced object become 'nil' it mean what there is no
+               // more need in it and probably whole client instance has been deallocated.
                #pragma clang diagnostic push
                #pragma clang diagnostic ignored "-Wreceiver-is-weak"
-               #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
-               [weakSelf callBlock:blockCopy status:NO withResult:result andStatus:status];
+               [weakSelf callBlock:block status:NO withResult:result andStatus:status];
                #pragma clang diagnostic pop
            }];
 }
@@ -181,7 +177,6 @@
 
 - (void)heartbeatWithCompletion:(PNStatusBlock)block {
     
-    PNStatusBlock blockCopy = [block copy];
     __weak __typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         
@@ -216,17 +211,15 @@
             [self processOperation:PNHeartbeatOperation withParameters:parameters
                    completionBlock:^(PNStatus *status) {
                        
-                       // Silence static analyzer warnings.
-                       // Code is aware about this case and at the end will simply call on 'nil'
-                       // object method. This instance is one of client properties and if client
-                       // already deallocated there is no need to this object which will be
-                       // deallocated as well.
-                       #pragma clang diagnostic push
-                       #pragma clang diagnostic ignored "-Wreceiver-is-weak"
-                       #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
-                       [weakSelf callBlock:blockCopy status:YES withResult:nil andStatus:status];
-                       #pragma clang diagnostic pop
-                   }];
+               // Silence static analyzer warnings.
+               // Code is aware about this case and at the end will simply call on 'nil' object
+               // method. In most cases if referenced object become 'nil' it mean what there is no
+               // more need in it and probably whole client instance has been deallocated.
+               #pragma clang diagnostic push
+               #pragma clang diagnostic ignored "-Wreceiver-is-weak"
+               [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
+               #pragma clang diagnostic pop
+           }];
         }
     });
 }

@@ -15,7 +15,6 @@
 #import "PNReachability.h"
 #import "PNClientState.h"
 #import "PNSubscriber.h"
-#import <UIKit/UIKit.h>
 #import "PNHeartbeat.h"
 #import "PNNetwork.h"
 
@@ -240,32 +239,31 @@ DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNReachabilityLogLevel|
     [client removeListeners:@[self]];
     [self.listenersManager removeAllListeners];
     
-    void(^blockCopy)(PubNub *client) = [block copy];
-    dispatch_block_t subscriptionRestoreBlock = [^{
+    dispatch_block_t subscriptionRestoreBlock = ^{
         
         [client.subscriberManager continueSubscriptionCycleIfRequiredWithCompletion:^(PNStatus<PNSubscriberStatus> *status) {
             
-            if (blockCopy) {
+            if (block) {
                 
                 dispatch_async(client.callbackQueue, ^{
                     
-                    blockCopy(client);
+                    block(client);
                 });
             }
         }];
-    } copy];
+    };
     if ([[self.subscriberManager allObjects] count]) {
         
         if (![configuration.uuid isEqualToString:self.configuration.uuid] ||
             ![configuration.authKey isEqualToString:self.configuration.authKey]) {
             __weak __typeof(self) weakSelf = self;
             [self unsubscribeFromChannels:self.subscriberManager.channels withPresence:YES
-                               completion:^(PNStatus<PNSubscriberStatus> *status) {
+                               completion:^(PNStatus<PNSubscriberStatus> *status1) {
                    
                  __strong __typeof(self) strongSelf = weakSelf;
                 [strongSelf unsubscribeFromChannelGroups:strongSelf.subscriberManager.channelGroups
                                             withPresence:YES
-                                              completion:^(PNStatus<PNSubscriberStatus> *status) {
+                                              completion:^(PNStatus<PNSubscriberStatus> *status2) {
                                           
                     subscriptionRestoreBlock();
                 }];
@@ -307,12 +305,11 @@ DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNReachabilityLogLevel|
                            dispatch_get_main_queue(), ^{
                                
                 // Silence static analyzer warnings.
-                // Code is aware about this case and at the end will simply call on 'nil' object method.
-                // This instance is one of client properties and if client already deallocated there is
-                // no need to this object which will be deallocated as well.
+                // Code is aware about this case and at the end will simply call on 'nil' object
+                // method. In most cases if referenced object become 'nil' it mean what there is no
+                // more need in it and probably whole client instance has been deallocated.
                 #pragma clang diagnostic push
                 #pragma clang diagnostic ignored "-Wreceiver-is-weak"
-                #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
                 [weakSelf.reachability startServicePing];
                 #pragma clang diagnostic pop
             });
@@ -333,8 +330,8 @@ DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNReachabilityLogLevel|
             
             // Silence static analyzer warnings.
             // Code is aware about this case and at the end will simply call on 'nil' object method.
-            // This instance is one of client properties and if client already deallocated there is
-            // no need to this object which will be deallocated as well.
+            // In most cases if referenced object become 'nil' it mean what there is no more need in
+            // it and probably whole client instance has been deallocated.
             #pragma clang diagnostic push
             #pragma clang diagnostic ignored "-Wreceiver-is-weak"
             #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"

@@ -430,16 +430,13 @@
         [self cancelAllRequests];
     }
     
-    id blockCopy = [block copy];
     [self appendRequierdParametersTo:parameters];
-    
     // Silence static analyzer warnings.
     // Code is aware about this case and at the end will simply call on 'nil' object method.
-    // This instance is one of client properties and if client already deallocated there is
-    // no need to this object which will be deallocated as well.
+    // In most cases if referenced object become 'nil' it mean what there is no more need in
+    // it and probably whole client instance has been deallocated.
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wreceiver-is-weak"
-    #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
     NSURL *requestURL = [PNURLBuilder URLForOperation:operationType withParameters:parameters];
     if (requestURL) {
         
@@ -450,12 +447,12 @@
         void(^success)(id,id) = ^(NSURLSessionDataTask *task, id responseObject) {
             
             [weakSelf handleOperation:operationType taskDidComplete:task withData:responseObject
-                      completionBlock:blockCopy];
+                      completionBlock:block];
         };
         void(^failure)(id, id) = ^(NSURLSessionDataTask *task, id error) {
             
             [weakSelf handleOperation:operationType taskDidFail:task withError:error
-                      completionBlock:blockCopy];
+                      completionBlock:block];
         };
         if (!data) {
             
@@ -473,15 +470,15 @@
         PNStatus *badRequestStatus = [PNStatus statusForOperation:operationType
                                                          category:PNBadRequestCategory];
         [self.client appendClientInformation:badRequestStatus];
-        if (blockCopy) {
+        if (block) {
             
             if ([self operationExpectResult:operationType]) {
                 
-                ((PNCompletionBlock)blockCopy)(nil, badRequestStatus);
+                ((PNCompletionBlock)block)(nil, badRequestStatus);
             }
             else {
                 
-                ((PNStatusBlock)blockCopy)(badRequestStatus);
+                ((PNStatusBlock)block)(badRequestStatus);
             }
         }
     }
@@ -506,12 +503,12 @@
             
             // Silence static analyzer warnings.
             // Code is aware about this case and at the end will simply call on 'nil' object method.
-            // This instance is one of client properties and if client already deallocated there is
-            // no need to this object which will be deallocated as well.
+            // In most cases if referenced object become 'nil' it mean what there is no more need in
+            // it and probably whole client instance has been deallocated.
             #pragma clang diagnostic push
             #pragma clang diagnostic ignored "-Wreceiver-is-weak"
-            #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
-            [weakSelf parseData:data withParser:[PNErrorParser class] error:parseError completion:block];
+            [weakSelf parseData:data withParser:[PNErrorParser class] error:parseError
+                     completion:block];
             #pragma clang diagnostic pop
         }
     };
@@ -667,8 +664,8 @@
     
     // Silence static analyzer warnings.
     // Code is aware about this case and at the end will simply call on 'nil' object method.
-    // This instance is one of client properties and if client already deallocated there is
-    // no need to this object which will be deallocated as well.
+    // In most cases if referenced object become 'nil' it mean what there is no more need in
+    // it and probably whole client instance has been deallocated.
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wreceiver-is-weak"
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"

@@ -139,7 +139,6 @@
 
     // Push further code execution on secondary queue to make service queue responsive during
     // JSON serialization and encryption process.
-    PNPublishCompletionBlock blockCopy = [block copy];
     __weak __typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 
@@ -183,17 +182,15 @@
         [self processOperation:PNPublishOperation withParameters:parameters data:publishData
                completionBlock:^(PNStatus *status) {
                    
-                   // Silence static analyzer warnings.
-                   // Code is aware about this case and at the end will simply call on 'nil'
-                   // object method. This instance is one of client properties and if client
-                   // already deallocated there is no need to this object which will be
-                   // deallocated as well.
-                   #pragma clang diagnostic push
-                   #pragma clang diagnostic ignored "-Wreceiver-is-weak"
-                   #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
-                   [weakSelf callBlock:blockCopy status:YES withResult:nil andStatus:status];
-                   #pragma clang diagnostic pop
-               }];
+           // Silence static analyzer warnings.
+           // Code is aware about this case and at the end will simply call on 'nil' object method.
+           // In most cases if referenced object become 'nil' it mean what there is no more need in
+           // it and probably whole client instance has been deallocated.
+           #pragma clang diagnostic push
+           #pragma clang diagnostic ignored "-Wreceiver-is-weak"
+           [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
+           #pragma clang diagnostic pop
+       }];
     });
 }
 
@@ -228,17 +225,15 @@
         
         // Push further code execution on secondary queue to make service queue responsive during
         // JSON serialization and encryption process.
-        PNMessageSizeCalculationCompletionBlock blockCopy = [block copy];
         __weak __typeof(self) weakSelf = self;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             
             NSError *publishError = nil;
             NSString *messageForPublish = [PNJSON JSONStringFrom:message withError:&publishError];
             // Silence static analyzer warnings.
-            // Code is aware about this case and at the end will simply call on 'nil'
-            // object method. This instance is one of client properties and if client
-            // already deallocated there is no need to this object which will be
-            // deallocated as well.
+            // Code is aware about this case and at the end will simply call on 'nil' object method.
+            // In most cases if referenced object become 'nil' it mean what there is no more need in
+            // it and probably whole client instance has been deallocated.
             #pragma clang diagnostic push
             #pragma clang diagnostic ignored "-Wreceiver-is-weak"
             #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
@@ -265,7 +260,7 @@
                                                withParameters:parameters data:publishData];
             dispatch_async(weakSelf.callbackQueue, ^{
                 
-                blockCopy(size);
+                block(size);
             });
             #pragma clang diagnostic pop
         });

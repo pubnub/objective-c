@@ -117,7 +117,6 @@
 - (void)setState:(NSDictionary *)state forUUID:(NSString *)uuid onChannel:(BOOL)onChannel
         withName:(NSString *)object withCompletion:(PNSetStateCompletionBlock)block {
     
-    PNSetStateCompletionBlock blockCopy = [block copy];
     __weak __typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         
@@ -145,18 +144,16 @@
         [self processOperation:PNSetStateOperation withParameters:parameters
                completionBlock:^(PNStatus *status) {
                    
-                   // Silence static analyzer warnings.
-                   // Code is aware about this case and at the end will simply call on 'nil'
-                   // object method. This instance is one of client properties and if client
-                   // already deallocated there is no need to this object which will be
-                   // deallocated as well.
-                   #pragma clang diagnostic push
-                   #pragma clang diagnostic ignored "-Wreceiver-is-weak"
-                   #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
-                   [weakSelf handleSetStateStatus:(PNStatus<PNChannelStateStatus> *)status
-                                          forUUID:uuid atObject:object withCompletion:blockCopy];
-                   #pragma clang diagnostic pop
-               }];
+           // Silence static analyzer warnings.
+           // Code is aware about this case and at the end will simply call on 'nil' object method.
+           // In most cases if referenced object become 'nil' it mean what there is no more need in
+           // it and probably whole client instance has been deallocated.
+           #pragma clang diagnostic push
+           #pragma clang diagnostic ignored "-Wreceiver-is-weak"
+           [weakSelf handleSetStateStatus:(PNStatus<PNChannelStateStatus> *)status
+                                  forUUID:uuid atObject:object withCompletion:block];
+           #pragma clang diagnostic pop
+       }];
     });
 }
 
@@ -195,24 +192,21 @@
     DDLogAPICall(@"<PubNub> State request on '%@' channel%@: %@.", (uuid?: @"<error>"),
                  (object?: @"<error>"), (!onChannel ? @" group" : @""));
     
-    id blockCopy = [block copy];
     __weak __typeof(self) weakSelf = self;
     [self processOperation:PNStateOperation withParameters:parameters
            completionBlock:^(PNResult *result, PNStatus *status) {
                
-               // Silence static analyzer warnings.
-               // Code is aware about this case and at the end will simply call on 'nil'
-               // object method. This instance is one of client properties and if client
-               // already deallocated there is no need to this object which will be
-               // deallocated as well.
-               #pragma clang diagnostic push
-               #pragma clang diagnostic ignored "-Wreceiver-is-weak"
-               #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
-               [weakSelf handleStateResult:(PNResult<PNChannelStateResult> *)result
-                                withStatus:status forUUID:uuid atObject:object
-                            withCompletion:blockCopy];
-               #pragma clang diagnostic pop
-           }];
+        // Silence static analyzer warnings.
+        // Code is aware about this case and at the end will simply call on 'nil' object method.
+        // In most cases if referenced object become 'nil' it mean what there is no more need in
+        // it and probably whole client instance has been deallocated.
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wreceiver-is-weak"
+        [weakSelf handleStateResult:(PNResult<PNChannelStateResult> *)result
+                         withStatus:status forUUID:uuid atObject:object
+                     withCompletion:block];
+        #pragma clang diagnostic pop
+    }];
 }
 
 
