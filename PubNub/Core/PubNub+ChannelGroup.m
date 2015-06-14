@@ -52,8 +52,8 @@
 
 - (void)channelsForGroup:(NSString *)group withCompletion:(PNGroupChannelsAuditCompletionBlock)block {
 
-    PNOperationType operationType = (group ? PNChannelGroupsOperation :
-                                     PNChannelsForGroupOperation);
+    PNOperationType operationType = (group ? PNChannelsForGroupOperation :
+                                     PNChannelGroupsOperation);
 
     PNRequestParameters *parameters = [PNRequestParameters new];
     if ([group length]) {

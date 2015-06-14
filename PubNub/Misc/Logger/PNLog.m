@@ -76,7 +76,7 @@
 
 - (void)prepare {
     
-    [DDLog addLogger:[DDTTYLogger sharedInstance] withLevel:PNVerboseLogLevel];
+    [DDLog addLogger:[DDTTYLogger sharedInstance] withLevel:(DDLogLevel)PNVerboseLogLevel];
     
     // Adding file logger for messages sent by PubNub client.
     self.fileLogger = [[DDFileLogger alloc] initWithLogFileManager:[PNLogFileManager new]];

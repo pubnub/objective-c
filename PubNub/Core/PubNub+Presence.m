@@ -109,12 +109,9 @@
     }
     if ([object length]) {
         
-        if (forChannel) {
-            
-            [parameters addPathComponent:[PNString percentEscapedString:object]
-                          forPlaceholder:@"{channel}"];
-        }
-        else {
+        [parameters addPathComponent:(forChannel ? [PNString percentEscapedString:object] : @",")
+                      forPlaceholder:@"{channel}"];
+        if (!forChannel) {
             
             [parameters addQueryParameter:[PNString percentEscapedString:object]
                              forFieldName:@"channel-group"];
