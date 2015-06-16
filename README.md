@@ -651,6 +651,79 @@ Use the following methods to determine which channels you are already subscribed
         }
     }];
 ```
+### Here and Where Now Methods
+
+To determine [who is here now, and where someone is now we provide the Here Now and Where Now method calls.](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/hereNowWithCompletion:)
+
+– hereNowWithCompletion:
+
+– hereNowWithVerbosity:completion:
+
+– hereNowForChannel:withCompletion:
+
+– hereNowForChannel:withVerbosity:completion:
+
+– hereNowForChannelGroup:withCompletion:
+
+– hereNowForChannelGroup:withVerbosity:completion:
+
+– whereNowUUID:withCompletion:
+
+Who is here now, on this channel? Verbosity contructor allows us to set level of information returned. Using with non-verbosity version of method returns full information.
+
+```objective-c
+
+    // If you want to control the 'verbosity' of the server response -- restrict to (values are additive):
+
+    // Occupancy                : PNHereNowOccupancy
+    // Occupancy + UUID         : PNHereNowUUID
+    // Occupancy + UUID + State : PNHereNowState
+
+    [self.client hereNowForChannel:_channel1 withVerbosity:PNHereNowState completion:^(PNResult <PNHereNowResult> *result, PNStatus <PNStatus> *status) {
+        if (status) {
+            [self handleStatus:status];
+        }
+        else if (result) {
+            NSLog(@"^^^^ Loaded hereNowForChannel data: occupancy: %@, uuids: %@", result.data.occupancy, result.data.uuids);
+        }
+    }];
+```
+
+Here now without a channel results in a "Global Here Now" -- shows everyone everywhere! Verbosity contructor allows us to set level of information returned. Using with non-verbosity version of method returns full information.
+
+```objective-c
+    // If you want to control the 'verbosity' of the server response -- restrict to (values are additive):
+
+    // Occupancy                : PNHereNowOccupancy
+    // Occupancy + UUID         : PNHereNowUUID
+    // Occupancy + UUID + State : PNHereNowState
+
+    [self.client hereNowWithVerbosity:PNHereNowOccupancy completion:^(PNResult <PNGlobalHereNowResult> *result, PNStatus <PNStatus> *status) {
+        if (status) {
+            [self handleStatus:status];
+        }
+        else if (result) {
+            NSLog(@"^^^^ Loaded Global hereNow data: channels: %@, total channels: %@, total occupancy: %@", result.data.channels, result.data.totalChannels, result.data.totalOccupancy);
+        }
+    }];
+    
+```
+
+Where is UUID x now? User Where Now to find out!
+
+```objective-c
+    [self.client whereNowUUID:@"123456" withCompletion:^(PNResult <PNWhereNowResult> *result, PNStatus <PNStatus> *status) {
+
+        if (status) {
+            [self handleStatus:status];
+        }
+        else if (result) {
+            // As a result, this contains the messages, start, and end timetoken in the data attribute
+
+            NSLog(@"^^^^ Loaded whereNow data: %@", result.data.channels);
+        }
+    }];
+```
 
 ### Admin for Channel Groups
 
