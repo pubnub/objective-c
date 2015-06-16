@@ -7,7 +7,7 @@ target :ios do
   platform :ios, "7.0"
   link_with "iOS Tests"
   pod "Expecta", "~> 1.0"
-  pod "OHHTTPStubs", "~> 4.0"
-  pod "JSZVCR", "~> 0.2.0"
+  #pod "OHHTTPStubs", "~> 4.0"
+  pod "JSZVCR", "~> 0.3.0"
   pod "PubNub", :path => "../"
 end

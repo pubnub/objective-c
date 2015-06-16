@@ -10,8 +10,8 @@
 #import <XCTest/XCTest.h>
 #import <PubNub/PubNub.h>
 #import <JSZVCR/JSZVCR.h>
-#import <OHHTTPStubs/OHHTTPStubs.h>
-#import <JSZVCR/JSZVCRResourceLoader.h>
+//#import <OHHTTPStubs/OHHTTPStubs.h>
+//#import <JSZVCR/JSZVCRResourceLoader.h>
 
 @interface PNIntegrationTests : XCTestCase <PNObjectEventListener>
 @property (nonatomic) PubNub *client;
@@ -23,21 +23,21 @@
 + (void)setUp {
     [super setUp];
 //    [JSZVCR swizzleNSURLSessionClasses];
-    [[JSZVCRResourceLoader sharedInstance] setResourceBundle:@"NetworkResponses" containingClass:self.class];
+//    [[JSZVCRResourceLoader sharedInstance] setResourceBundle:@"NetworkResponses" containingClass:self.class];
 }
 
 - (void)setUp {
     [super setUp];
-    [[JSZVCRResourceLoader sharedInstance] setTest:self];
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest *request) {
-        return [[JSZVCRResourceLoader sharedInstance] hasResponseForRequest:request];
-    } withStubResponse:^OHHTTPStubsResponse*(NSURLRequest *request) {
-        // Stub it with our "wsresponse.json" stub file (which is in same bundle as self)
-        NSDictionary *responseDict = [[JSZVCRResourceLoader sharedInstance] responseForRequest:request];
-        return [OHHTTPStubsResponse responseWithData:responseDict[@"data"]
-                                          statusCode:[responseDict[@"statusCode"] intValue]
-                                             headers:responseDict[@"httpHeaders"]];
-    }];
+//    [[JSZVCRResourceLoader sharedInstance] setTest:self];
+//    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest *request) {
+//        return [[JSZVCRResourceLoader sharedInstance] hasResponseForRequest:request];
+//    } withStubResponse:^OHHTTPStubsResponse*(NSURLRequest *request) {
+//        // Stub it with our "wsresponse.json" stub file (which is in same bundle as self)
+//        NSDictionary *responseDict = [[JSZVCRResourceLoader sharedInstance] responseForRequest:request];
+//        return [OHHTTPStubsResponse responseWithData:responseDict[@"data"]
+//                                          statusCode:[responseDict[@"statusCode"] intValue]
+//                                             headers:responseDict[@"httpHeaders"]];
+//    }];
     PNConfiguration *config = [PNConfiguration configurationWithPublishKey:@"demo-36" subscribeKey:@"demo-36"];
     config.uuid = @"322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C";
     self.client = [PubNub clientWithConfiguration:config];
@@ -49,7 +49,7 @@
     self.networkExpectation = nil;
     [self.client removeListeners:@[self]];
     self.client = nil;
-    [OHHTTPStubs removeAllStubs];
+//    [OHHTTPStubs removeAllStubs];
     [super tearDown];
 }
 
