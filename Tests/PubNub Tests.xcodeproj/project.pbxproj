@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		177481501B30A82600544130 /* PNSubscribeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1774814F1B30A82600544130 /* PNSubscribeTests.m */; };
+		1782511F1B30AAE3006BC234 /* PNBasicClientTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 1782511E1B30AAE3006BC234 /* PNBasicClientTestCase.m */; };
+		178251231B30AE3D006BC234 /* PNBasicSubscribeTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 178251221B30AE3D006BC234 /* PNBasicSubscribeTestCase.m */; };
 		51F7AAC91B28B3E200BEDA1F /* PNSubscribeTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 51F7AAC81B28B3E200BEDA1F /* PNSubscribeTests.bundle */; };
 		97FA41F31B2FF518003B9B57 /* PNPublishTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 97FA41F21B2FF518003B9B57 /* PNPublishTests.m */; };
 		97FA41F51B2FFB61003B9B57 /* PNPublishTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 97FA41F41B2FFB61003B9B57 /* PNPublishTests.bundle */; };
@@ -16,6 +18,10 @@
 
 /* Begin PBXFileReference section */
 		1774814F1B30A82600544130 /* PNSubscribeTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNSubscribeTests.m; sourceTree = "<group>"; };
+		1782511D1B30AAE3006BC234 /* PNBasicClientTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNBasicClientTestCase.h; sourceTree = "<group>"; };
+		1782511E1B30AAE3006BC234 /* PNBasicClientTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNBasicClientTestCase.m; sourceTree = "<group>"; };
+		178251211B30AE3D006BC234 /* PNBasicSubscribeTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNBasicSubscribeTestCase.h; sourceTree = "<group>"; };
+		178251221B30AE3D006BC234 /* PNBasicSubscribeTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNBasicSubscribeTestCase.m; sourceTree = "<group>"; };
 		519C327D1B20C11500FAC283 /* iOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "iOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		519C32811B20C11500FAC283 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		51F7AAC81B28B3E200BEDA1F /* PNSubscribeTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNSubscribeTests.bundle; sourceTree = "<group>"; };
@@ -38,6 +44,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		178251201B30AAE6006BC234 /* Base Test Classes */ = {
+			isa = PBXGroup;
+			children = (
+				1782511D1B30AAE3006BC234 /* PNBasicClientTestCase.h */,
+				1782511E1B30AAE3006BC234 /* PNBasicClientTestCase.m */,
+				178251211B30AE3D006BC234 /* PNBasicSubscribeTestCase.h */,
+				178251221B30AE3D006BC234 /* PNBasicSubscribeTestCase.m */,
+			);
+			name = "Base Test Classes";
+			sourceTree = "<group>";
+		};
 		519C32721B20BF4D00FAC283 = {
 			isa = PBXGroup;
 			children = (
@@ -61,6 +78,7 @@
 			children = (
 				1774814F1B30A82600544130 /* PNSubscribeTests.m */,
 				97FA41F21B2FF518003B9B57 /* PNPublishTests.m */,
+				178251201B30AAE6006BC234 /* Base Test Classes */,
 				51F7AAC11B27AD7400BEDA1F /* Fixtures */,
 				519C32801B20C11500FAC283 /* Supporting Files */,
 			);
@@ -204,7 +222,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				97FA41F31B2FF518003B9B57 /* PNPublishTests.m in Sources */,
+				1782511F1B30AAE3006BC234 /* PNBasicClientTestCase.m in Sources */,
 				177481501B30A82600544130 /* PNSubscribeTests.m in Sources */,
+				178251231B30AE3D006BC234 /* PNBasicSubscribeTestCase.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -9,11 +9,10 @@
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 #import <PubNub/PubNub.h>
-#import <JSZVCR/JSZVCR.h>
 
-@interface PNSubscribeTests : JSZVCRTestCase <PNObjectEventListener>
-@property (nonatomic) PubNub *client;
-@property (nonatomic) XCTestExpectation *networkExpectation;
+#import "PNBasicSubscribeTestCase.h"
+
+@interface PNSubscribeTests : PNBasicSubscribeTestCase <PNObjectEventListener>
 @end
 
 @implementation PNSubscribeTests
@@ -22,23 +21,8 @@
     return NO;
 }
 
-- (void)setUp {
-    [super setUp];
-    PNConfiguration *config = [PNConfiguration configurationWithPublishKey:@"demo-36" subscribeKey:@"demo-36"];
-    config.uuid = @"322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C";
-    self.client = [PubNub clientWithConfiguration:config];
-    [self.client addListeners:@[self]];
-}
-
-- (void)tearDown {
-    self.networkExpectation = nil;
-    [self.client removeListeners:@[self]];
-    self.client = nil;
-    [super tearDown];
-}
-
 - (void)testSimpleSubscribe {
-    self.networkExpectation = [self expectationWithDescription:@"network"];
+    self.subscribeExpectation = [self expectationWithDescription:@"network"];
     [self.client subscribeToChannels:@[@"a"] withPresence:NO];
     [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
         if (error) {
@@ -62,7 +46,7 @@
     NSLog(@"message:");
     NSLog(@"%@", message.data.message);
     XCTAssertEqualObjects(message.data.message, @"**............. 6091 - 2015-06-16 11:33:10");
-    [self.networkExpectation fulfill];
+    [self.subscribeExpectation fulfill];
 }
 
 - (void)client:(PubNub *)client didReceivePresenceEvent:(PNResult<PNPresenceEventResult> *)event {
