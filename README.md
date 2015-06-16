@@ -394,7 +394,7 @@ If you lose the connection, do you automatically resubscribe (default YES) when 
 
 ##### [catchUpOnSubscriptionRestore](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/catchUpOnSubscriptionRestore)
   
-If you automatically resubscribe on connetion restore, do you catchup? (default YES)
+If you automatically resubscribe on connection restore, do you catchup? (default YES)
 
 ```objective-c
 - (void)updateClientConfiguration {
@@ -562,12 +562,14 @@ PubNub returns data to the user via Result or Status objects. Because of the asy
 
 Add the class you wish to receive streaming Result and Status on as a listener (this is mandatory in order to receive streaming messages and statuses), using the [– addListeners:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/addListeners:) method call.
 
-Once the class is added as a listener, it will receive streaming events on the following listener methods:
+Once the class is added as a listener, it will receive streaming events on the [following listener methods](PubNub/Misc/Protocols/PNObjectEventListener.h):
 
-[- (void)client:(PubNub *)client didReceiveMessage:(PNResult<PNMessageResult> *)message
+- (void)client:(PubNub *)client didReceiveMessage:(PNResult<PNMessageResult> *)message
     withStatus:(PNStatus<PNStatus> *)status;
+
 - (void)client:(PubNub *)client didReceivePresenceEvent:(PNResult<PNPresenceEventResult> *)event;
-- (void)client:(PubNub *)client didReceiveStatus:(PNStatus<PNSubscriberStatus> *)status;](PubNub/Misc/Protocols/PNObjectEventListener.h)
+
+- (void)client:(PubNub *)client didReceiveStatus:(PNStatus<PNSubscriberStatus> *)status;
     
 A completed example of subscribing [can be found in the Hello World snippet](#hello-world). You can also see it in the Example app.  Example implementations of the above listeners, taken from Example, may look similar to:
 
