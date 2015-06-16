@@ -434,6 +434,33 @@ self.client = [PubNub clientWithConfiguration:self.myConfig];
 [self.client addListeners:@[self]];
 ```
 
+### Time
+
+[– timeWithCompletion:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/timeWithCompletion:)
+
+Request current time from \b PubNub service servers.
+
+```objective-c
+- (void)pubNubTime {
+
+    [self.client timeWithCompletion:^(PNResult <PNTimeResult> *result, PNStatus <PNStatus> *status) {
+        if (result.data) {
+            NSLog(@"Result from Time: %@", result.data.timetoken);
+        }
+        else if (status) {
+            [self handleStatus:status];
+        }
+    }];
+}
+```
+
+On success, result.data.timetoken will include the timetoken value. On status, review isError and category attributes to pinpoint the exact situation, and handle accordingly. See the [handleStatus:(PNStatus)status](Example/PubNub/PNAppDelegate.m#L528) method in Example for an example.
+
+
+
+
+
+
 You can have multiple listeners across multiple files.
 
 A completed example of this [can be found in the Hello World snippet](#hello-world)
