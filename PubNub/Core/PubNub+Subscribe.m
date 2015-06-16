@@ -43,16 +43,22 @@
 
 #pragma mark - Listeners
 
-- (void)addListener:(id <PNObjectEventListener>)listener {
+- (void)addListeners:(NSArray *)listeners {
     
-    // Forwarding calls to listener manager.
-    [self.listenersManager addListener:listener];
+    for (id listener in listeners) {
+        
+        // Forwarding calls to listener manager.
+        [self.listenersManager addListener:listener];
+    }
 }
 
-- (void)removeListener:(id <PNObjectEventListener>)listener {
+- (void)removeListeners:(NSArray *)listeners {
     
-    // Forwarding calls to listener manager.
-    [self.listenersManager removeListener:listener];
+    for (id listener in listeners) {
+    
+        // Forwarding calls to listener manager.
+        [self.listenersManager removeListener:listener];
+    }
 }
 
 
