@@ -1,8 +1,8 @@
 //
-//  PNIntegrationTests.m
+//  PNSubscribeTests.m
 //  PubNub Tests
 //
-//  Created by Jordan Zucker on 6/9/15.
+//  Created by Jordan Zucker on 6/16/15.
 //
 //
 
@@ -11,12 +11,12 @@
 #import <PubNub/PubNub.h>
 #import <JSZVCR/JSZVCR.h>
 
-@interface PNIntegrationTests : JSZVCRTestCase <PNObjectEventListener>
+@interface PNSubscribeTests : JSZVCRTestCase <PNObjectEventListener>
 @property (nonatomic) PubNub *client;
 @property (nonatomic) XCTestExpectation *networkExpectation;
 @end
 
-@implementation PNIntegrationTests
+@implementation PNSubscribeTests
 
 - (BOOL)recording {
     return NO;
@@ -51,7 +51,6 @@
 #pragma mark - PNObjectEventListener
 
 - (void)client:(PubNub *)client didReceiveMessage:(PNResult<PNMessageResult> *)message withStatus:(PNStatus<PNStatus> *)status {
-    [self.networkExpectation fulfill];
     XCTAssertNil(status);
     XCTAssertEqualObjects(self.client, client);
     XCTAssertEqualObjects(client.uuid, message.uuid);
@@ -63,6 +62,7 @@
     NSLog(@"message:");
     NSLog(@"%@", message.data.message);
     XCTAssertEqualObjects(message.data.message, @"**............. 6091 - 2015-06-16 11:33:10");
+    [self.networkExpectation fulfill];
 }
 
 - (void)client:(PubNub *)client didReceivePresenceEvent:(PNResult<PNPresenceEventResult> *)event {
