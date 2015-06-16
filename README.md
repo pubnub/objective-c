@@ -296,4 +296,43 @@ In Beta2, [we provide Example](https://github.com/pubnub/objective-c/tree/4.0b2/
 
 As we approach final beta, full docs will become available as well. For now, the Example app is used as a reference app. It will evolve over time as we approach release and final docs.
 
+## Beta API Reference
+
+### Initialization
+
+The first thing you need to do is create a configuration. Configurations are immutable. The most common use case is to instantiate a configuration with your publish an subscribe keys:
+
+[+ configurationWithPublishKey:subscribeKey:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html)
+
+Once you create a configuration, you can set the following options:
+
+  [publishKey](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/publishKey)
+
+  [subscribeKey](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/subscribeKey)
+
+  [authKey](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/authKey)
+
+  [uuid](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/uuid)
+
+  [cipherKey](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/cipherKey)
+
+  [subscribeMaximumIdleTime](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/subscribeMaximumIdleTime)
+
+  [nonSubscribeRequestTimeout](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/nonSubscribeRequestTimeout)
+
+  [presenceHeartbeatValue](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/presenceHeartbeatValue)
+
+  [presenceHeartbeatInterval](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/presenceHeartbeatInterval)
+
+  [TLSEnabled](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/TLSEnabled)
+
+  [keepTimeTokenOnListChange](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/keepTimeTokenOnListChange)
+
+  [restoreSubscription](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/restoreSubscription)
+
+  [catchUpOnSubscriptionRestore](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/catchUpOnSubscriptionRestore)
+  
+
+
+
 If you have questions about how the Result and Status objects work in the meantime, feel free to contact support@pubnub.com and cc: geremy@pubnub.com, and we'll be happy to assist.
