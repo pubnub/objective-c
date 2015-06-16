@@ -28,7 +28,7 @@
     self.settingUp = YES;
     self.subscribeExpectation = [self expectationWithDescription:@"subscribe"];
     [self.client subscribeToChannels:@[@"a"] withPresence:YES];
-    [self waitForExpectationsWithTimeout:500 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
         NSLog(@"error: %@", error);
     }];
     
@@ -42,7 +42,7 @@
 - (void)testUnsubscribe {    
     self.unsubscribeExpectation = [self expectationWithDescription:@"unsubscribe"];
     [self.client unsubscribeFromChannels:@[@"a"] withPresence:YES];
-    [self waitForExpectationsWithTimeout:500 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
         NSLog(@"error: %@", error);
     }];
     
