@@ -12,12 +12,12 @@
 
 - (void)setUp {
     [super setUp];
-    [self.client addListener:self];
+    [self.client addListeners:@[self]];
 }
 
 - (void)tearDown {
     self.subscribeExpectation = nil;
-    [self.client removeListener:self];
+    [self.client removeListeners:@[self]];
     [super tearDown];
 }
 
