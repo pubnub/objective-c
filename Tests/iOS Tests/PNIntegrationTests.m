@@ -62,7 +62,7 @@
     XCTAssertEqual(message.operation, PNSubscribeOperation);
     NSLog(@"message:");
     NSLog(@"%@", message.data.message);
-    XCTAssertEqualObjects(message.data.message, @"*********...... 2501 - 2015-06-15 22:23:26");
+    XCTAssertEqualObjects(message.data.message, @"**............. 6091 - 2015-06-16 11:33:10");
 }
 
 - (void)client:(PubNub *)client didReceivePresenceEvent:(PNResult<PNPresenceEventResult> *)event {

@@ -42,7 +42,7 @@
 - (void)performVerifiedPublish:(id)message {
     XCTestExpectation *networkExpectation = [self expectationWithDescription:@"network"];
     NSString *uniqueChannel = [NSUUID UUID].UUIDString;
-    [self.client publish:@"test" toChannel:uniqueChannel withCompletion:^(PNStatus<PNPublishStatus> *status) {
+    [self.client publish:message toChannel:uniqueChannel withCompletion:^(PNStatus<PNPublishStatus> *status) {
         XCTAssertNotNil(status);
         XCTAssertEqual(status.category, PNAcknowledgmentCategory);
         XCTAssertEqual(status.operation, PNPublishOperation);
@@ -50,7 +50,7 @@
         XCTAssertFalse(status.isError);
         XCTAssertEqualObjects(status.data.information, @"Sent");
         NSLog(@"timeToken: %@", status.data.timetoken);
-//        XCTAssertEqualObjects(status.data.timetoken, @14344367967452689);
+        XCTAssertEqualObjects(status.data.timetoken, @14344794403500414);
         [networkExpectation fulfill];
     }];
     [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
