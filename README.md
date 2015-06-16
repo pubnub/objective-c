@@ -391,14 +391,6 @@ If you lose the connection, do you automatically resubscribe (default YES) when 
   
 If you automatically resubscribe on connetion restore, do you catchup? (default YES)
 
-#### Step 2 - Instantiate a Client Instance with a Config
-
-Once you've created the instance, instantiate the instance using one of the below methods:
-
-##### [+ clientWithConfiguration:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/clientWithConfiguration:)
-
-##### [+ clientWithConfiguration:callbackQueue:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/clientWithConfiguration:callbackQueue:)
-
 ```objective-c
 - (void)updateClientConfiguration {
 
@@ -420,6 +412,17 @@ Once you've created the instance, instantiate the instance using one of the belo
     self.myConfig.restoreSubscription = YES;
     self.myConfig.catchUpOnSubscriptionRestore = YES;
 }
+```
+#### Step 2 - Instantiate a Client Instance with a Config
+
+Once you've created the instance, instantiate the instance using one of the below methods:
+
+##### [+ clientWithConfiguration:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/clientWithConfiguration:)
+
+##### [+ clientWithConfiguration:callbackQueue:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/clientWithConfiguration:callbackQueue:)
+
+```objective-c
+self.client = [PubNub clientWithConfiguration:self.myConfig];
 ```
 
 #### Step 3 - Add a Listener in order to Receive Subscribe and Presence Stream Events
