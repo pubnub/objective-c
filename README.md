@@ -672,6 +672,114 @@ Use the following methods to determine which channels you are already subscribed
     }];
 ```
 
+### Admin for Channel Groups
+
+[Channel Groups admin methods](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/channelGroupsWithCompletion:) enable you to administer which channels are included within which channel groups.
+
+– channelGroupsWithCompletion:
+
+– channelsForGroup:withCompletion:
+
+– addChannels:toGroup:withCompletion:
+
+– removeChannels:fromGroup:withCompletion:
+
+– removeChannelsFromGroup:withCompletion:
+
+Add Channels:
+
+```objective-c
+
+    [self.client addChannels:@[_channel1, _channel2] toGroup:_channel1 withCompletion:^(PNStatus <PNStatus> *status) {
+        if (!status.isError) {
+            NSLog(@"^^^^CGAdd request succeeded");
+        } else {
+            NSLog(@"^^^^CGAdd Subscribe request did not succeed. All subscribe operations will autoretry when possible.");
+            [weakSelf handleStatus:status];
+        }
+    }];
+```
+    
+Remove some channels from a group:
+
+```objective-c
+
+    [self.client removeChannels:@[_channel2] fromGroup:@"myChannelGroup" withCompletion:^(PNStatus <PNStatus> *status) {
+
+        if (!status.isError) {
+            NSLog(@"^^^^CG Remove Some Channels request succeeded at timetoken %@.", status.data);
+        } else {
+            NSLog(@"^^^^CG Remove Some Channels request did not succeed. All subscribe operations will autoretry when possible.");
+            [self handleStatus:status];
+        }
+    }];
+```
+
+Remove all channels from a group:
+
+```objective-c
+        [self.client removeChannelsFromGroup:@"myChannelGroup" withCompletion:^(PNStatus <PNStatus> *status) {
+        if (!status.isError) {
+            NSLog(@"^^^^CG Remove All Channels request succeeded");
+        } else {
+            NSLog(@"^^^^CG Remove All Channels request did not succeed. All subscribe operations will autoretry when possible.");
+            [self handleStatus:status];
+        }
+    }];
+```
+
+List all existing channels associated with a channel group:
+
+```objective-c
+    [self.client channelsForGroup:_channelGroup1 withCompletion:^(PNResult <PNGroupChannelsResult> *result, PNStatus <PNStatus> *status) {
+        if (status) {
+            [self handleStatus:status];
+        }
+        else if (result) {
+            NSLog(@"^^^^ Loaded all channels %@ for group %@", result.data.channels, _channelGroup1);
+        }
+    }];
+```
+
+Note that only channelsForGroup:withCompletion: returns a Result or Status. The other Admin Channel Group methods will only return Status.
+
+### Admin for State
+
+The [Admin methods for State](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/setState:forUUID:onChannel:withCompletion:) allow you to set and get state which is displayed in Presence Results.
+
+– setState:forUUID:onChannel:withCompletion:
+
+– setState:forUUID:onChannelGroup:withCompletion:
+
+– stateForUUID:onChannel:withCompletion:
+
+– stateForUUID:onChannelGroup:withCompletion:
+
+To get state:
+
+```objective-c
+    [self.client stateForUUID:_myConfig.uuid onChannel:_channel1 withCompletion:^(PNResult <PNChannelStateResult> *result, PNStatus <PNChannelStateStatus> *status) {
+        if (status) {
+            [self handleStatus:status];
+        }
+        else if (result) {
+            NSLog(@"^^^^ Loaded state %@ for channel %@", result.data.data, _channel1);
+        }
+    }];
+```
+
+To set state:
+
+```objective-c
+    [self.client setState:@{[self randomString] : @{[self randomString] : [self randomString]}} forUUID:_myConfig.uuid onChannel:_channel1 withCompletion:^(PNStatus <PNSetStateStatus> *status) {
+            [self handleStatus:status];
+    }];
+```
+
+### Admin for 3rd Party Notifications
+
+### Public Encryption Methods
+### Logging
 
 
 
