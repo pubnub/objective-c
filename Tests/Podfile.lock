@@ -29,7 +29,7 @@ PODS:
   - CocoaLumberjack/Extensions (2.0.0):
     - CocoaLumberjack/Default
   - Expecta (1.0.0)
-  - JSZVCR (0.3.5):
+  - JSZVCR (0.3.6):
     - OHHTTPStubs (~> 4.0)
   - OHHTTPStubs (4.0.2)
   - PubNub (4.0):
@@ -38,18 +38,26 @@ PODS:
 
 DEPENDENCIES:
   - Expecta (~> 1.0)
-  - JSZVCR (~> 0.3.0)
+  - JSZVCR (from `https://github.com/jzucker2/JSZVCR.git`, branch `master`)
   - PubNub (from `../`)
 
 EXTERNAL SOURCES:
+  JSZVCR:
+    :branch: master
+    :git: https://github.com/jzucker2/JSZVCR.git
   PubNub:
     :path: ../
+
+CHECKOUT OPTIONS:
+  JSZVCR:
+    :commit: 193b35d37b64ed8232b72d1593a83c5900fff0bc
+    :git: https://github.com/jzucker2/JSZVCR.git
 
 SPEC CHECKSUMS:
   AFNetworking: 05edc0ac4c4c8cf57bcf4b84be5b0744b6d8e71e
   CocoaLumberjack: a6f77d987d65dc7ba86b0f84db7d0b9084f77bcb
   Expecta: 32604574add2c46a36f8d2f716b6c5736eb75024
-  JSZVCR: 9a67928ed0ece370f1fe0f27f2fbc4b3e8fd63e2
+  JSZVCR: 5c3419e9d96c6c1338311e0b442b481b30f58ce7
   OHHTTPStubs: dbd1957d414659783e07b49c961940b7564c23d9
   PubNub: 5a9b0845783c4d4f844d205f0fd02c586de862eb
 
