@@ -300,63 +300,79 @@ As we approach final beta, full docs will become available as well. For now, the
 
 ### Initialization
 
+#### Step 1 - Create a Config
 The first thing you need to do is create a configuration. Configurations are immutable. The most common use case is to instantiate a configuration with your publish an subscribe keys:
 
-#### [+ configurationWithPublishKey:subscribeKey:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html)
+##### [+ configurationWithPublishKey:subscribeKey:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html)
+
+In addition, if you have an existing Configuration that you simply wish to change the UUID or PAM token on, you can reuse an existing Configuration with one these methods:
+
+##### [– copyWithConfiguration:completion:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/copyWithConfiguration:completion:)
+
+##### [– copyWithConfiguration:callbackQueue:completion:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/copyWithConfiguration:callbackQueue:completion:)
+
+**By using the above methods to reuse an existing configuration, when you subscribe again with this reused Configuration, you will resume (catchup) at the point in time where you left off.**
 
 Once you create a configuration, you can set the following options:
 
-#### [publishKey](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/publishKey)
+##### [publishKey](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/publishKey)
 
 Your publish key is assigned to you via admin.pubnub.com. You can set it to nil if you prefer not to include this in your client, however, if you don't include it, you won't be able to publish.
 
-#### [subscribeKey](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/subscribeKey)
+##### [subscribeKey](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/subscribeKey)
 
 Your subscribe key is assigned to you via admin.pubnub.com. It is mandatory.
 
-#### [authKey](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/authKey)
+##### [authKey](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/authKey)
 
 authKey is used as an authorization token. You don't need to set this value, unless you are in a PAM-enabled environment.
 
-#### [uuid](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/uuid)
+##### [uuid](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/uuid)
 
 UUID is used to uniquely ID a user. If you do not set one explicitly, a random one is generated for you.
 
-#### [cipherKey](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/cipherKey)
+##### [cipherKey](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/cipherKey)
 
 cipherKey is the value used when enabling built-in AES encryption. If you do not set this value, all traffic is sent in plain text (unless TLS is enabled, and then, data is sent plaintext over an encrypted TLS connection.) This same value must be set across all client SDKs (regardless of platform) or you will not be able to bidirectionally communicate.
 
-#### [subscribeMaximumIdleTime](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/subscribeMaximumIdleTime)
+##### [subscribeMaximumIdleTime](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/subscribeMaximumIdleTime)
 
 This is the subscribe request timeout. Do not modify this unless instructed by support.
 
-#### [nonSubscribeRequestTimeout](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/nonSubscribeRequestTimeout)
+##### [nonSubscribeRequestTimeout](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/nonSubscribeRequestTimeout)
 
 This is the non-subscribe request timeout. Do not modify this unless instructed by support.
 
-#### [presenceHeartbeatValue](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/presenceHeartbeatValue)
+##### [presenceHeartbeatValue](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/presenceHeartbeatValue)
 
 This value instructs the server to wait this amount of seconds without hearing from you. Not hearing from you is defined by not receiving a message, or you not sending a heartbeat. The default is 5 minutes.
 
-#### [presenceHeartbeatInterval](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/presenceHeartbeatInterval)
+##### [presenceHeartbeatInterval](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/presenceHeartbeatInterval)
 
 This is the rate that the client will send heartbeats to the server. By default, it autosets at ((presenceHeartbeatValue/2) - 1) seconds.
 
-#### [TLSEnabled](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/TLSEnabled)
+##### [TLSEnabled](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/TLSEnabled)
 
 This enables TLS (encrypted data transfer between client and server).
 
-#### [keepTimeTokenOnListChange](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/keepTimeTokenOnListChange)
+##### [keepTimeTokenOnListChange](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/keepTimeTokenOnListChange)
   
 When changing channels, do you catchup where you left off (default YES), or do you get all new messages as of channel change completion?
   
-#### [restoreSubscription](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/restoreSubscription)
+##### [restoreSubscription](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/restoreSubscription)
 
 If you lose the connection, do you automatically resubscribe (default YES) when you reconnect?
 
-#### [catchUpOnSubscriptionRestore](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/catchUpOnSubscriptionRestore)
+##### [catchUpOnSubscriptionRestore](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/catchUpOnSubscriptionRestore)
   
 If you automatically resubscribe on connetion restore, do you catchup? (default YES)
 
+#### Step 2 - Instantiate a Client Instance with a Config
+
+Once you've created the instance, instantiate the instance using one of the below methods:
+
+##### [+ clientWithConfiguration:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/clientWithConfiguration:)
+
+##### [+ clientWithConfiguration:callbackQueue:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/clientWithConfiguration:callbackQueue:)
 
 If you have questions about how the Result and Status objects work in the meantime, feel free to contact support@pubnub.com and cc: geremy@pubnub.com, and we'll be happy to assist.
