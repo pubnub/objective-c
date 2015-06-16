@@ -175,26 +175,6 @@ In 4.x we use DDLog (Lumberjack) for our logging, and therefore, logging configu
 
 Method names have been optimized. Be sure to consult with the API reference below for more info on the available method names.
 
-## Logging
-
-PNLog is the logging configuration Singleton that handles logging and log levels.
-
-### Enable / Disable
-
-```objective-c
-[PNLog enabled:YES]; # Enable
-[PNLog enabled:NO];  # Disable
-```
-
-
-### Log Rotation Settings
-
-```objective-c
-    [PNLog setMaximumLogFileSize:5];      # Value in MB. 5 is the default
-    [PNLog setMaximumNumberOfLogFiles:5]; # 5 is the default
-```
-    
-
 ### Sending Logs to Support
 
 When filing a ticket with support, its handy to have your logs. Use a tool such as iExplorer to grab the logs off the APPNAME/Documents directory on your device, and be sure to include them in your support ticket as an attachment.
@@ -777,10 +757,49 @@ To set state:
 ```
 
 ### Admin for 3rd Party Notifications
+[To associate deviceIDs with the PubNub Mobile Gateway](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/addPushNotificationsOnChannels:withDevicePushToken:andCompletion:) in order to fork messages sent via PubNub to APNS devices, use the Admin methods for 3rd Party Notifications.
+
+– addPushNotificationsOnChannels:withDevicePushToken:andCompletion:
+
+– removePushNotificationsFromChannels:withDevicePushToken:andCompletion:
+
+– removeAllPushNotificationsFromDeviceWithPushToken:andCompletion:
+
+– pushNotificationEnabledChannelsForDeviceWithPushToken:andCompletion:
 
 ### Public Encryption Methods
+
+Sometimes its neccesary to manually encrypt and decrypt data using the same cipher PubNub uses internally. The [public AES Encrytpion Methods](https://github.com/pubnub/objective-c/blob/4.0b2/PubNub/Data/PNAES.h) provide the ability to do just that.
+
++ (NSString *)encrypt:(NSData *)data withKey:(NSString *)key;
+
++ (NSString *)encrypt:(NSData *)data withKey:(NSString *)key
+             andError:(NSError *__autoreleasing *)error;
+             
++ (NSData *)decrypt:(NSString *)object withKey:(NSString *)key;
+
++ (NSData *)decrypt:(NSString *)object withKey:(NSString *)key
+           andError:(NSError *__autoreleasing *)error;             
+
 ### Logging
 
+PNLog is the logging configuration Singleton that handles logging and log levels.
+
+#### Enable / Disable
+
+```objective-c
+[PNLog enabled:YES]; # Enable
+[PNLog enabled:NO];  # Disable
+```
+
+
+#### Log Rotation Settings
+
+```objective-c
+    [PNLog setMaximumLogFileSize:5];      # Value in MB. 5 is the default
+    [PNLog setMaximumNumberOfLogFiles:5]; # 5 is the default
+```
+    
 
 
 

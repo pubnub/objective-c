@@ -11,7 +11,7 @@
 
 @class XCTestExpectation;
 
-@interface PNBasicSubscribeTestCase : PNBasicClientTestCase
+@interface PNBasicSubscribeTestCase : PNBasicClientTestCase <PNObjectEventListener>
 
 @property (nonatomic) XCTestExpectation *subscribeExpectation;
 
