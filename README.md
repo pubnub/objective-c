@@ -465,18 +465,31 @@ You can have multiple listeners across multiple files.
 
 ### Publish
 
-[– publish:toChannel:withCompletion:
+– publish:toChannel:withCompletion:
+
 – publish:toChannel:compressed:withCompletion:
+
 – publish:toChannel:storeInHistory:withCompletion:
+
 – publish:toChannel:storeInHistory:compressed:withCompletion:
+
 – publish:toChannel:mobilePushPayload:withCompletion:
+
 – publish:toChannel:mobilePushPayload:compressed:withCompletion:
+
 – publish:toChannel:mobilePushPayload:storeInHistory:withCompletion:
+
 – publish:toChannel:mobilePushPayload:storeInHistory:compressed:withCompletion:
+
 – sizeOfMessage:toChannel:withCompletion:
+
 – sizeOfMessage:toChannel:compressed:withCompletion:
+
 – sizeOfMessage:toChannel:storeInHistory:withCompletion:
-– sizeOfMessage:toChannel:compressed:storeInHistory:withCompletion:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/publish:toChannel:withCompletion:)
+
+– sizeOfMessage:toChannel:compressed:storeInHistory:withCompletion:
+
+[Full reference on Publish Methods is available here.](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/publish:toChannel:withCompletion:)
 
 Publish a message.
 
@@ -525,14 +538,23 @@ On success, isError will be NO, and status.data.timetoken will include the ingre
 
 #### Subscribing to Channels, Channel Groups, and Presence Events
 
-[– subscribeToChannels:withPresence:
+– subscribeToChannels:withPresence:
+
 – subscribeToChannels:withPresence:clientState:
+
 – subscribeToChannelGroups:withPresence:
+
 – subscribeToChannelGroups:withPresence:clientState:
+
 – subscribeToPresenceChannels:
+
 – unsubscribeFromChannels:withPresence:
+
 – unsubscribeFromChannelGroups:withPresence:
-– unsubscribeFromPresenceChannels:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/subscribeToChannels:withPresence:)
+
+– unsubscribeFromPresenceChannels:
+
+[The full subscribe and unsubscribe method reference can be found here.](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/subscribeToChannels:withPresence:)
 
 Subscribe and Unsubscribe to Channels, Channel Groups, and Presence events.
 
@@ -588,18 +610,26 @@ All other streaming non-Result (Status) data is monitored via the didReceiveStat
 
 Before a class can receive messages, it must be assigned as a listener. You can use the following methods to add and remove listeners:
 
-[– addListeners:
-– removeListeners:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/addListeners:)
+– addListeners:
+
+– removeListeners:
+
+[The complete reference for these methods is available here.](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/addListeners:)
 
 
 #### Determining Current Subscribtion Status
 
 Use the following methods to determine which channels you are already subscribed to:
 
-[– channels
+– channels
+
 – channelGroups
+
 – presenceChannels
-– isSubscribedOn:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/channels)
+
+– isSubscribedOn:
+
+[The complete reference for these methods is available here](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/channels)
 
 
 
