@@ -97,7 +97,7 @@
 
 - (void)tireKicker {
     [self pubNubInit];
-    
+
 #pragma mark - Time
 
     [self pubNubTime];
@@ -134,6 +134,7 @@
 #pragma mark - CG Admin
 
     [self pubNubCGAdd];
+    [self pubNubChannelsForGroup];
     [self pubNubCGRemoveAllChannels];
     [self pubNubCGRemoveSomeChannels];
 
@@ -161,10 +162,10 @@
 }
 
 - (void)pubNubSizeOfMessage{
-    
+
     [self.client sizeOfMessage:@"Connected! I'm here!" toChannel:_channel1
                 withCompletion:^(NSInteger size) {
-                    
+
                     NSLog(@"^^^^ Message size: %@", @(size));
                 }];
 }
@@ -209,13 +210,24 @@
 
 - (void)pubNubSetState {
     [self.client setState:@{[self randomString] : @{[self randomString] : [self randomString]}} forUUID:_myConfig.uuid onChannel:_channel1 withCompletion:^(PNStatus <PNSetStateStatus> *status) {
-        //self.timer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(pubNubSetState) userInfo:nil repeats:NO];
+        [self handleStatus:status];
     }];
 }
 
 - (void)pubNubGetState{
+
+    [self.client stateForUUID:_myConfig.uuid onChannel:_channel1 withCompletion:^(PNResult <PNChannelStateResult> *result, PNStatus <PNChannelStateStatus> *status) {
+
+        if (status) {
+            [self handleStatus:status];
+        }
+        else if (result) {
+            NSLog(@"^^^^ Loaded state %@ for channel %@", result.data.data, _channel1);
+        }
+
+    }];
+
     /*
-    [self.client stateForUUID:<#(NSString *)uuid#> onChannel:<#(NSString *)channel#> withCompletion:<#(PNChannelStateCompletionBlock)block#>];
     [self.client stateForUUID:<#(NSString *)uuid#> onChannelGroup:<#(NSString *)group#> withCompletion:<#(PNChannelGroupStateCompletionBlock)block#>];
      */
 }
@@ -225,11 +237,6 @@
 - (void)pubNubUnsubFromChannelGroups {
     [self.client unsubscribeFromChannelGroups:@[@"myChannelGroup"] withPresence:NO];
 
-    /*
-    // TODO: Is this needed?
-    [self.client unsubscribeFromChannelGroups:@[_channelGroup1] withPresence:YES completion:^(PNStatus <PNSubscriberStatus> *status) {
-    }];
-    */
 
 }
 
@@ -255,14 +262,6 @@
 
 - (void)pubNubUnsubscribeFromChannels {
     [self.client unsubscribeFromChannels:@[_channel1] withPresence:YES];
-
-
-    /*
-    // TODO: This should be removed?
-    [self.client unsubscribeFromChannels:@[_channel1] withPresence:YES completion:^(PNStatus <PNSubscriberStatus> *status) {
-    }];
-    */
-
 }
 
 - (void)pubNubSubscribeToChannelGroup {
@@ -279,22 +278,18 @@
     [self.client whereNowUUID:@"123456" withCompletion:^(PNResult <PNWhereNowResult> *result, PNStatus <PNStatus> *status) {
 
         if (status) {
-            // As a status, this contains error or non-error information about the history request, but not the actual history data I requested.
-            // Timeout Error, PAM Error, etc.
-
             [self handleStatus:status];
         }
         else if (result) {
-            // As a result, this contains the messages, start, and end timetoken in the data attribute
-
-            NSLog(@"^^^^ Loaded whereNow data: %@", result.data.channels);  // TODO: Call out data attributes here
+            NSLog(@"^^^^ Loaded whereNow data: %@", result.data.channels);
         }
     }];
 }
 
 - (void)pubNubCGRemoveSomeChannels {
 
-    [self.client removeChannels:@[_channel2] fromGroup:@"myChannelGroup" withCompletion:^(PNStatus <PNStatus> *status) {
+    [self.client removeChannels:@[_channel2] fromGroup:_channelGroup1 withCompletion:^(PNStatus <PNStatus> *status) {
+
 
         if (!status.isError) {
             NSLog(@"^^^^CG Remove Some Channels request succeeded at timetoken %@.", status.data);
@@ -307,7 +302,7 @@
 
 - (void)pubNubCGRemoveAllChannels {
 
-    [self.client removeChannelsFromGroup:@"myChannelGroup" withCompletion:^(PNStatus <PNStatus> *status) {
+    [self.client removeChannelsFromGroup:_channelGroup1 withCompletion:^(PNStatus <PNStatus> *status) {
         if (!status.isError) {
             NSLog(@"^^^^CG Remove All Channels request succeeded");
         } else {
@@ -321,7 +316,7 @@
 - (void)pubNubCGAdd {
 
     __weak __typeof(self) weakSelf = self;
-    [self.client addChannels:@[_channel1, _channel2] toGroup:_channel1 withCompletion:^(PNStatus <PNStatus> *status) {
+    [self.client addChannels:@[_channel1, _channel2] toGroup:_channelGroup1 withCompletion:^(PNStatus <PNStatus> *status) {
         if (!status.isError) {
             NSLog(@"^^^^CGAdd request succeeded");
         } else {
@@ -332,6 +327,17 @@
 
 }
 
+- (void)pubNubChannelsForGroup {
+
+    [self.client channelsForGroup:_channelGroup1 withCompletion:^(PNResult <PNGroupChannelsResult> *result, PNStatus <PNStatus> *status) {
+        if (status) {
+            [self handleStatus:status];
+        }
+        else if (result) {
+            NSLog(@"^^^^ Loaded all channels %@ for group %@", result.data.channels, _channelGroup1);
+        }
+    }];
+}
 
 - (void)pubNubHereNowForChannel {
 
@@ -399,7 +405,7 @@
 }
 
 
-    - (void)pubNubHistory {
+- (void)pubNubHistory {
     // History
 
     [self.client historyForChannel:_channel1 withCompletion:^(PNResult <PNHistoryResult> *result, PNStatus <PNStatus> *status) {
@@ -419,19 +425,19 @@
         else if (result) {
             // As a result, this contains the messages, start, and end timetoken in the data attribute
 
-            NSLog(@"Loaded history data: %@", result.data);  // TODO: Call out data attributes here
+            NSLog(@"Loaded history data: %@ with start %@ and end %@", result.data.messages, result.data.start, result.data.end);
         }
     }];
 
-        /*
-    [self.client historyForChannel:<#(NSString *)channel#> start:<#(NSNumber *)startDate#> end:<#(NSNumber *)endDate#> includeTimeToken:<#(BOOL)shouldIncludeTimeToken#> withCompletion:<#(PNHistoryCompletionBlock)block#>];
-    [self.client historyForChannel:<#(NSString *)channel#> start:<#(NSNumber *)startDate#> end:<#(NSNumber *)endDate#> limit:<#(NSUInteger)limit#> includeTimeToken:<#(BOOL)shouldIncludeTimeToken#> withCompletion:<#(PNHistoryCompletionBlock)block#>];
-    [self.client historyForChannel:<#(NSString *)channel#> start:<#(NSNumber *)startDate#> end:<#(NSNumber *)endDate#> limit:<#(NSUInteger)limit#> reverse:<#(BOOL)shouldReverseOrder#> includeTimeToken:<#(BOOL)shouldIncludeTimeToken#> withCompletion:<#(PNHistoryCompletionBlock)block#>];
-    [self.client historyForChannel:<#(NSString *)channel#> start:<#(NSNumber *)startDate#> end:<#(NSNumber *)endDate#> limit:<#(NSUInteger)limit#> reverse:<#(BOOL)shouldReverseOrder#> withCompletion:<#(PNHistoryCompletionBlock)block#>];
-    [self.client historyForChannel:<#(NSString *)channel#> start:<#(NSNumber *)startDate#> end:<#(NSNumber *)endDate#> limit:<#(NSUInteger)limit#> withCompletion:<#(PNHistoryCompletionBlock)block#>];
-    [self.client historyForChannel:<#(NSString *)channel#> start:<#(NSNumber *)startDate#> end:<#(NSNumber *)endDate#> withCompletion:<#(PNHistoryCompletionBlock)block#>];
-    [self.client historyForChannel:<#(NSString *)channel#> withCompletion:<#(PNHistoryCompletionBlock)block#>];
-          */
+    /*
+[self.client historyForChannel:<#(NSString *)channel#> start:<#(NSNumber *)startDate#> end:<#(NSNumber *)endDate#> includeTimeToken:<#(BOOL)shouldIncludeTimeToken#> withCompletion:<#(PNHistoryCompletionBlock)block#>];
+[self.client historyForChannel:<#(NSString *)channel#> start:<#(NSNumber *)startDate#> end:<#(NSNumber *)endDate#> limit:<#(NSUInteger)limit#> includeTimeToken:<#(BOOL)shouldIncludeTimeToken#> withCompletion:<#(PNHistoryCompletionBlock)block#>];
+[self.client historyForChannel:<#(NSString *)channel#> start:<#(NSNumber *)startDate#> end:<#(NSNumber *)endDate#> limit:<#(NSUInteger)limit#> reverse:<#(BOOL)shouldReverseOrder#> includeTimeToken:<#(BOOL)shouldIncludeTimeToken#> withCompletion:<#(PNHistoryCompletionBlock)block#>];
+[self.client historyForChannel:<#(NSString *)channel#> start:<#(NSNumber *)startDate#> end:<#(NSNumber *)endDate#> limit:<#(NSUInteger)limit#> reverse:<#(BOOL)shouldReverseOrder#> withCompletion:<#(PNHistoryCompletionBlock)block#>];
+[self.client historyForChannel:<#(NSString *)channel#> start:<#(NSNumber *)startDate#> end:<#(NSNumber *)endDate#> limit:<#(NSUInteger)limit#> withCompletion:<#(PNHistoryCompletionBlock)block#>];
+[self.client historyForChannel:<#(NSString *)channel#> start:<#(NSNumber *)startDate#> end:<#(NSNumber *)endDate#> withCompletion:<#(PNHistoryCompletionBlock)block#>];
+[self.client historyForChannel:<#(NSString *)channel#> withCompletion:<#(PNHistoryCompletionBlock)block#>];
+      */
 
 }
 
@@ -476,18 +482,18 @@
 - (void)client:(PubNub *)client didReceiveMessage:(PNResult <PNMessageResult>*)message
     withStatus:(PNStatus<PNStatus> *)status {
 
+    Boolean *isSubbed= [self.client isSubscribedOn:@"foo"];
+
     if (status) {
         [self handleStatus:status];
     } else if (message) {
-        NSLog(@"Received message: %@", message.data.message);
+        NSLog(@"Received message: %@ on channel %@ at %@", message.data.message, message.data.subscribedChannel, message.data.timetoken);
     }
 }
 
 #pragma mark - Streaming Data didReceivePresenceEvent Listener
 
 - (void)client:(PubNub *)client didReceivePresenceEvent:(PNResult <PNPresenceEventResult> *)event {
-    // TODO detail fields in data that depict the Presence event
-
     NSLog(@"^^^^^ Did receive presence event: %@", event.data.data);
 }
 
@@ -505,9 +511,6 @@
 #pragma mark - example status handling
 
 - (void)handleStatus:(PNStatus<PNStatus> *)status {
-
-    // TODO differentiate between errors, non-errors, connection, ack status events
-    // TODO handleErrorStatus vs handleNonErrorStatus ?
 
 //    Two types of status events are possible. Errors, and non-errors. Errors will prevent normal operation of your app.
 //
@@ -588,8 +591,6 @@
 
         NSLog(@"^^^^ Error publishing with authKey: %@ to channel %@.", _authKey, pamResourceName);
         NSLog(@"^^^^ Setting auth to an authKey that will allow for both sub and pub");
-        // TODO Fix:
-        // [self.client setAuthKey:@"myAuthKeyForPubAndSubToChannelGood"];
 
         [self reconfigOnPAMError:status];
     }
