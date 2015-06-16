@@ -93,16 +93,23 @@ typedef void(^PNTimeCompletionBlock)(PNResult<PNTimeResult> *result,
  \b Example:
  
  @code
- PubNub *client = [PubNub new];
- [client timeWithHandlingBlock:^(PNResult *result, PNStatus *status){
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [client timeWithHandlingBlock:^(PNResult<PNTimeResult> *result, PNStatus<PNStatus> *status) {
      
-     if (result) {
+     // Check whether request successfully completed or not.
+     if (!status.isError) {
          
-         NSLog(@"Time token: %@", result.data[@"tt"]);
+         // Handle downloaded server time token using: result.data.timetoken
      }
+     // Request processing failed.
      else {
-         
-         NSLog(@"Request failed: %@", status);
+     
+         // Handle tmie token download error. Check 'category' property to find out possible
+         // issue because of which request did fail.
+         //
+         // Request can be resend using: [status retry];
      }
  }];
  @endcode

@@ -308,48 +308,40 @@ typedef void(^PNWhereNowCompletionBlock)(PNResult<PNWhereNowResult> *result,
  @brief      Request information about subscribers on all remote data objects live feeds.
  @discussion This is application wide request for all remote data objects which is registered under
              publish and subscribe keys used for client configuration.
- @note       This API will retrieve only list of UUIDs for each remote data object and number of 
-             subscribers in total for objects and overall.
+ @note       This API will retrieve only list of UUIDs along with their state for each remote data
+             object and number of subscribers in total for objects and overall.
  
  @code
  @endcode
  \b Example:
  
  @code
- PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- [client hereNowWithCompletion:^(PNResult *result, PNStatus *status) {
-        
+ // Client configuration.
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client hereNowWithCompletion:^(PNResult<PNGlobalHereNowResult> *result, 
+                                      PNStatus<PNStatus> *status) {
+ 
      // Check whether request successfully completed or not.
      if (!status.isError) {
-
-         // Global here now information successfully received.
-         // result.data will look like this:
-         // {
-         //     "channels": {
-         //         <channel name>: {
-         //             "occupancy": Number,
-         //             "uuids": [
-         //                 String,
-         //                 ...
-         //             ]
-         //         },
-         //         ...
-         //     },
-         //     "total_channels": Number,
-         //     "total_occupancy": Number
-         // }
+ 
+        // Handle downloaded presence information using:
+        //   result.data.channels - dictionary with active channels and presence information on 
+        //                          each. Each channel will have next fields: "uuids" - list of
+        //                          subscribers; occupancy - number of active subscribers.
+        //                          Each uuids entry has next fields: "uuid" - identifier and 
+        //                          "state" if it has been provided.
+        //   result.data.totalChannels - total number of active channels.
+        //   result.data.totalOccupancy - total number of active subscribers.
      }
      // Request processing failed.
      else {
-            
-         // status.category field contains reference on one of PNStatusCategory enum fields
-         // which describe error category (can be access denied in case if PAM used for keys
-         // which is used for configuration). All PNStatusCategory fields has  builtin documentation
-         // and describe what exactly happened.
-         // Depending on category type status.data may contain additional information about issue 
-         // (service response).
-         //
-         // Request can be resend using: [status retry];
+     
+        // Handle presence audit error. Check 'category' property to find out possible issue because
+        // of which request did fail.
+        //
+        // Request can be resend using: [status retry];
      }
  }];
  @endcode
@@ -366,8 +358,6 @@ typedef void(^PNWhereNowCompletionBlock)(PNResult<PNWhereNowResult> *result,
  @brief      Request information about subscribers on all remote data objects live feeds.
  @discussion This is application wide request for all remote data objects which is registered under
              publish and subscribe keys used for client configuration.
- @note       This API will retrieve only list of UUIDs for each remote data object and number of 
-             subscribers in total for objects and overall.
 
  @code
  @endcode
@@ -379,44 +369,33 @@ typedef void(^PNWhereNowCompletionBlock)(PNResult<PNWhereNowResult> *result,
  \b Example:
  
  @code
- PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- [client hereNowData:PNHereNowState withCompletion:^(PNResult *result, PNStatus *status) {
-        
+ // Client configuration.
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client hereNowWithVerbosity:PNHereNowState
+                        completion:^(PNResult<PNGlobalHereNowResult> *result,
+                                     PNStatus<PNStatus> *status) {
+ 
      // Check whether request successfully completed or not.
      if (!status.isError) {
-
-         // Global here now information successfully received. Additionally state for each 
-         // subscriber has been requested.
-         // result.data will look like this:
-         // {
-         //     "channels": {
-         //         <channel name>: {
-         //             "occupancy": Number,
-         //             "uuids": [
-         //                 {
-         //                     "uuid": String,
-         //                     "state": Dictionary
-         //                 },
-         //                 ...
-         //             ]
-         //         },
-         //         ...
-         //     },
-         //     "total_channels": Number,
-         //     "total_occupancy": Number
-         // }
+ 
+        // Handle downloaded presence information using:
+        //   result.data.channels - dictionary with active channels and presence information on 
+        //                          each. Each channel will have next fields: "uuids" - list of
+        //                          subscribers; "occupancy" - number of active subscribers.
+        //                          Each uuids entry has next fields: "uuid" - identifier and 
+        //                          "state" if it has been provided.
+        //   result.data.totalChannels - total number of active channels.
+        //   result.data.totalOccupancy - total number of active subscribers.
      }
      // Request processing failed.
      else {
-            
-         // status.category field contains reference on one of PNStatusCategory enum fields
-         // which describe error category (can be access denied in case if PAM used for keys
-         // which is used for configuration). All PNStatusCategory fields has  builtin documentation
-         // and describe what exactly happened.
-         // Depending on category type status.data may contain additional information about issue 
-         // (service response).
-         //
-         // Request can be resend using: [status retry];
+     
+        // Handle presence audit error. Check 'category' property to find out possible issue because
+        // of which request did fail.
+        //
+        // Request can be resend using: [status retry];
      }
  }];
  @endcode
@@ -439,41 +418,36 @@ typedef void(^PNWhereNowCompletionBlock)(PNResult<PNWhereNowResult> *result,
 
 /**
  @brief  Request information about subscribers on specific channel live feeds.
- @note   This API will retrieve only list of UUIDs for specified channel and number of subscribers 
-         on it.
+ @note   This API will retrieve only list of UUIDs along with their state for each remote data
+         object and number of subscribers in total for objects and overall.
  
  @code
  @endcode
  \b Example:
  
  @code
- PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- [client hereNowForChannel:@"pubnub" withCompletion:^(PNResult *result, PNStatus *status) {
-        
+ // Client configuration.
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client hereNowForChannel:@"pubnub" withCompletion:^(PNResult<PNHereNowResult> *result, 
+                                                           PNStatus<PNStatus> *status) {
+ 
      // Check whether request successfully completed or not.
      if (!status.isError) {
-
-         // Channel here now information successfully received.
-         // result.data will look like this:
-         // {
-         //     "occupancy": Number,
-         //     "uuids": [
-         //         String,
-         //         ...
-         //     ]
-         // }
+ 
+        // Handle downloaded presence information using:
+        //   result.data.uuids - dictionary with active subscriber. Each entry will have next 
+        //                       fields: "uuid" - identifier and "state" if it has been provided.
+        //   result.data.occupancy - total number of active subscribers.
      }
      // Request processing failed.
      else {
-            
-         // status.category field contains reference on one of PNStatusCategory enum fields
-         // which describe error category (can be access denied in case if PAM used for keys
-         // which is used for configuration). All PNStatusCategory fields has  builtin documentation
-         // and describe what exactly happened.
-         // Depending on category type status.data may contain additional information about issue 
-         // (service response).
-         //
-         // Request can be resend using: [status retry];
+     
+        // Handle presence audit error. Check 'category' property to find out possible issue because
+        // of which request did fail.
+        //
+        // Request can be resend using: [status retry];
      }
  }];
  @endcode
@@ -489,8 +463,6 @@ typedef void(^PNWhereNowCompletionBlock)(PNResult<PNWhereNowResult> *result,
 
 /**
  @brief  Request information about subscribers on specific channel live feeds.
- @note   This API will retrieve only list of UUIDs for specified channel and number of subscribers on
-         it.
 
  @code
  @endcode
@@ -502,45 +474,35 @@ typedef void(^PNWhereNowCompletionBlock)(PNResult<PNWhereNowResult> *result,
  \b Example:
  
  @code
- PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- [client hereNowData:PNHereNowState forChannel:@"pubnub" 
-      withCompletion:^(PNResult *result, PNStatus *status) {
-        
+ // Client configuration.
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client hereNowForChannel:@"pubnub"  withVerbosity:PNHereNowState
+                     completion:^(PNResult<PNHereNowResult> *result, PNStatus<PNStatus> *status) {
+ 
      // Check whether request successfully completed or not.
      if (!status.isError) {
-
-         // Channel here now information successfully received. Additionally state for each
-         // subscriber has been requested.
-         // result.data will look like this:
-         // {
-         //     "occupancy": Number,
-         //     "uuids": [
-         //         {
-         //             "uuid": String,
-         //             "state": Dictionary
-         //         },
-         //         ...
-         //     ]
-         // }
+ 
+        // Handle downloaded presence information using:
+        //   result.data.uuids - dictionary with active subscriber. Each entry will have next 
+        //                       fields: "uuid" - identifier and "state" if it has been provided.
+        //   result.data.occupancy - total number of active subscribers.
      }
      // Request processing failed.
      else {
-            
-         // status.category field contains reference on one of PNStatusCategory enum fields
-         // which describe error category (can be access denied in case if PAM used for keys
-         // which is used for configuration). All PNStatusCategory fields has  builtin documentation
-         // and describe what exactly happened.
-         // Depending on category type status.data may contain additional information about issue 
-         // (service response).
-         //
-         // Request can be resend using: [status retry];
+     
+        // Handle presence audit error. Check 'category' property to find out possible issue because
+        // of which request did fail.
+        //
+        // Request can be resend using: [status retry];
      }
  }];
  @endcode
  
+ @param channel Reference on channel for which here now information should be received.
  @param level   Reference on one of \b PNHereNowVerbosityLevel fields to instruct what exactly data
                 it expected in response.
- @param channel Reference on channel for which here now information should be received.
  @param block   Here now processing completion block which pass two arguments: \c result - in case 
                 of successful request processing \c data field will contain results of here now 
                 operation; \c status - in case if error occurred during request processing.
@@ -557,48 +519,41 @@ typedef void(^PNWhereNowCompletionBlock)(PNResult<PNWhereNowResult> *result,
 
 /**
  @brief  Request information about subscribers on specific channel group live feeds.
- @note   This API will retrieve only list of UUIDs for specified channel group and number of
-         subscribers on it.
+ @note   This API will retrieve only list of UUIDs along with their state for each remote data
+         object and number of subscribers in total for objects and overall.
  
  @code
  @endcode
  \b Example:
  
  @code
- PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- [client hereNowForChannelGroup:@"developers" withCompletion:^(PNResult *result, PNStatus *status) {
-        
+ // Client configuration.
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client hereNowForChannelGroup:@"developers" 
+                      withCompletion:^(PNResult<PNChannelGroupHereNowResult> *result, 
+                                       PNStatus<PNStatus> *status) {
+ 
      // Check whether request successfully completed or not.
      if (!status.isError) {
-
-         // Channel group here now information successfully received.
-         // result.data will look like this:
-         // {
-         //     "channels": {
-         //         <channel name>: {
-         //             "occupancy": Number,
-         //             "uuids": [
-         //                 String,
-         //                 ...
-         //             ]
-         //         },
-         //         ...
-         //     },
-         //     "total_channels": Number,
-         //     "total_occupancy": Number
-         // }
+ 
+        // Handle downloaded presence information using:
+        //   result.data.channels - dictionary with active channels and presence information on 
+        //                          each. Each channel will have next fields: "uuids" - list of
+        //                          subscribers; occupancy - number of active subscribers.
+        //                          Each uuids entry has next fields: "uuid" - identifier and 
+        //                          "state" if it has been provided.
+        //   result.data.totalChannels - total number of active channels.
+        //   result.data.totalOccupancy - total number of active subscribers.
      }
      // Request processing failed.
      else {
-            
-         // status.category field contains reference on one of PNStatusCategory enum fields
-         // which describe error category (can be access denied in case if PAM used for keys
-         // which is used for configuration). All PNStatusCategory fields has  builtin documentation
-         // and describe what exactly happened.
-         // Depending on category type status.data may contain additional information about issue 
-         // (service response).
-         //
-         // Request can be resend using: [status retry];
+     
+        // Handle presence audit error. Check 'category' property to find out possible issue because
+        // of which request did fail.
+        //
+        // Request can be resend using: [status retry];
      }
  }];
  @endcode
@@ -615,58 +570,44 @@ typedef void(^PNWhereNowCompletionBlock)(PNResult<PNWhereNowResult> *result,
 
 /**
  @brief  Request information about subscribers on specific channel group live feeds.
- @note   This API will retrieve only list of UUIDs for specified channel group and number of
-         subscribers on it.
 
  @code
  @endcode
- Extension to \c -hereNowForChannel:withCompletion: and allow to specify here now data which should
- be returned by \b PubNub service.
+ Extension to \c -hereNowForChannelGroup:withCompletion: and allow to specify here now data which 
+ should be returned by \b PubNub service.
  
  @code
  @endcode
  \b Example:
  
  @code
- PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- [client hereNowData:PNHereNowState forChannelGroup:@"developers" 
-      withCompletion:^(PNResult *result, PNStatus *status) {
-        
+ // Client configuration.
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client hereNowForChannelGroup:@"developers" withVerbosity:PNHereNowState
+                          completion:^(PNResult<PNChannelGroupHereNowResult> *result,
+                                       PNStatus<PNStatus> *status) {
+ 
      // Check whether request successfully completed or not.
      if (!status.isError) {
-
-         // Channel group here now information successfully received. Additionally state for each
-         // subscriber has been requested.
-         // result.data will look like this:
-         // {
-         //     "channels": {
-         //         <channel name>: {
-         //             "occupancy": Number,
-         //             "uuids": [
-         //                 {
-         //                     "uuid": String,
-         //                     "state": Dictionary
-         //                 },
-         //                 ...
-         //             ]
-         //         },
-         //         ...
-         //     },
-         //     "total_channels": Number,
-         //     "total_occupancy": Number
-         // }
+ 
+        // Handle downloaded presence information using:
+        //   result.data.channels - dictionary with active channels and presence information on 
+        //                          each. Each channel will have next fields: "uuids" - list of
+        //                          subscribers; occupancy - number of active subscribers.
+        //                          Each uuids entry has next fields: "uuid" - identifier and 
+        //                          "state" if it has been provided.
+        //   result.data.totalChannels - total number of active channels.
+        //   result.data.totalOccupancy - total number of active subscribers.
      }
      // Request processing failed.
      else {
-            
-         // status.category field contains reference on one of PNStatusCategory enum fields
-         // which describe error category (can be access denied in case if PAM used for keys
-         // which is used for configuration). All PNStatusCategory fields has  builtin documentation
-         // and describe what exactly happened.
-         // Depending on category type status.data may contain additional information about issue 
-         // (service response).
-         //
-         // Request can be resend using: [status retry];
+     
+        // Handle presence audit error. Check 'category' property to find out possible issue because
+        // of which request did fail.
+        //
+        // Request can be resend using: [status retry];
      }
  }];
  @endcode
@@ -697,34 +638,25 @@ typedef void(^PNWhereNowCompletionBlock)(PNResult<PNWhereNowResult> *result,
  \b Example:
  
  @code
- PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- [client hereNowData:PNHereNowState forChannelGroup:@"developers" 
-      withCompletion:^(PNResult *result, PNStatus *status) {
-        
+ // Client configuration.
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client whereNowUUID:@"Steve" withCompletion:^(PNResult<PNWhereNowResult> *result, 
+                                                     PNStatus<PNStatus> *status) {
+ 
      // Check whether request successfully completed or not.
      if (!status.isError) {
-
-         // Client where now information successfully received. Additionally state for each
-         // subscriber has been requested.
-         // result.data will look like this:
-         // {
-         //     "channels": {
-         //         String,
-         //         ...
-         //     }
-         // }
+ 
+        // Handle downloaded presence 'where now' information using: result.data.channels
      }
      // Request processing failed.
      else {
-            
-         // status.category field contains reference on one of PNStatusCategory enum fields
-         // which describe error category (can be access denied in case if PAM used for keys
-         // which is used for configuration). All PNStatusCategory fields has  builtin documentation
-         // and describe what exactly happened.
-         // Depending on category type status.data may contain additional information about issue 
-         // (service response).
-         //
-         // Request can be resend using: [status retry];
+     
+        // Handle presence audit error. Check 'category' property to find out possible issue because
+        // of which request did fail.
+        //
+        // Request can be resend using: [status retry];
      }
  }];
  @endcode

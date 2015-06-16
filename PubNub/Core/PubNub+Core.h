@@ -64,7 +64,7 @@
  @code
  PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo"
                                                                   subscribeKey:@"demo"];
- PubNub *client = [PubNub clientWithConfiguration:configuration];
+ self.client = [PubNub clientWithConfiguration:configuration];
  @endcode
 
  @param configuration Reference on instance which store all user-provided information about how
@@ -94,7 +94,7 @@
                                                 DISPATCH_QUEUE_SERIAL);
  PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo"
                                                                   subscribeKey:@"demo"];
- PubNub *client = [PubNub clientWithConfiguration:configuration callbackQueue:queue];
+ self.client = [PubNub clientWithConfiguration:configuration callbackQueue:queue];
  @endcode
 
  @param configuration Reference on instance which store all user-provided information about how
@@ -121,6 +121,20 @@
              been sent while client changed configuration will be handled.
  @note       All listeners will be copied to new client.
  
+ @code
+ @endcode
+ \b Example:
+ @code
+ __weak __typeof(self) weakSelf = self;
+ PNConfiguration *configuration = [self.client currentConfiguration];
+ configuration.TLSEnabled = NO;
+ [self.client copyWithConfiguration:configuration completion:^(PubNub *client) {
+    
+    // Store reference on new client with updated configuration.
+    weakSelf.client - client;
+ }];
+ @endcode
+ 
  @param configuration Reference on configuration which should be used to create new instance from 
                       receiver.
  @param block         Copy completion block which will pass only one argument - reference on new 
@@ -144,6 +158,22 @@
  @note       Re-subscription with new \c uuid will be done using catchup and all messages which has 
              been sent while client changed configuration will be handled.
  @note       All listeners will be copied to new client.
+ 
+ @code
+ @endcode
+ \b Example:
+ @code
+ __weak __typeof(self) weakSelf = self;
+ dispatch_queue_t queue = dispatch_queue_create("com.my-app.callback-queue",
+                                                DISPATCH_QUEUE_SERIAL);
+ PNConfiguration *configuration = [self.client currentConfiguration];
+ configuration.TLSEnabled = NO;
+ [self.client copyWithConfiguration:configuration callbackQueue:queue completion:^(PubNub *client) {
+    
+    // Store reference on new client with updated configuration.
+    weakSelf.client - client;
+ }];
+ @endcode
  
  @param configuration Reference on configuration which should be used to create new instance from 
                       receiver.

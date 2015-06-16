@@ -114,42 +114,28 @@ typedef void(^PNHistoryCompletionBlock)(PNResult<PNHistoryResult> *result,
  \b Example:
  
  @code
- PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- [client historyForChannel:@"storage" withCompletion:^(PNResult *result, PNStatus *status) {
-    
+ // Client configuration.
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client historyForChannel:@"storage" withCompletion:^(PNResult<PNHistoryResult> *result,
+                                                            PNStatus<PNStatus> *status) {
+ 
      // Check whether request successfully completed or not.
      if (!status.isError) {
-            
-         // Message from history available in result.data[@"messages"].
-         // result.data will look like this:
-         // {
-         //     "messages": [
-         //         id,
-         //         ...
-         //     ],
-         //     "start": Number,
-         //     "data": Number
-         // }
+ 
+        // Handle downloaded history using: 
+        //   result.data.start - oldest message time stamp in response
+        //   result.data.end - newest message time stamp in response
+        //   result.data.messages - list of messages
      }
      // Request processing failed.
      else {
-            
-         // status.category field contains reference on one of PNStatusCategory enum fields
-         // which describe error category (can be access denied in case if PAM used for keys
-         // which is used for configuration). All PNStatusCategory fields has  builtin documentation
-         // and describe what exactly happened.
-         // Depending on category type status.data may contain additional information about issue 
-         // (service response).
-         // status.data for PNAccessDeniedCategory it will look like this:
-         // {
-         //     "information": String (description),
-         //     "channels": [
-         //         String,
-         //         ...
-         //     ]
-         // }
-         //
-         // Request can be resend using: [status retry];
+     
+        // Handle message history download error. Check 'category' property to find out possible 
+        // issue because of which request did fail.
+        //
+        // Request can be resend using: [status retry];
      }
  }];
  @endcode
@@ -179,45 +165,30 @@ typedef void(^PNHistoryCompletionBlock)(PNResult<PNHistoryResult> *result,
  \b Example:
  
  @code
- PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
+ // Client configuration.
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
  NSNumber *startDate = @((unsigned long long)([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]*10000000));
  NSNumber *endDate = @((unsigned long long)([[NSDate date] timeIntervalSince1970]*10000000));
- [client historyForChannel:@"storage" start:startDate end:endDate
-            withCompletion:^(PNResult *result, PNStatus *status) {
-    
+ [self.client historyForChannel:@"storage" start:startDate end:endDate
+                 withCompletion:^(PNResult<PNHistoryResult> *result, PNStatus<PNStatus> *status) {
+ 
      // Check whether request successfully completed or not.
      if (!status.isError) {
-            
-         // Message from history available in result.data[@"messages"].
-         // result.data will look like this:
-         // {
-         //     "messages": [
-         //         id,
-         //         ...
-         //     ],
-         //     "start": Number,
-         //     "data": Number
-         // }
+ 
+        // Handle downloaded history using: 
+        //   result.data.start - oldest message time stamp in response
+        //   result.data.end - newest message time stamp in response
+        //   result.data.messages - list of messages
      }
      // Request processing failed.
      else {
-            
-         // status.category field contains reference on one of PNStatusCategory enum fields
-         // which describe error category (can be access denied in case if PAM used for keys
-         // which is used for configuration). All PNStatusCategory fields has  builtin documentation
-         // and describe what exactly happened.
-         // Depending on category type status.data may contain additional information about issue 
-         // (service response).
-         // status.data for PNAccessDeniedCategory it will look like this:
-         // {
-         //     "information": String (description),
-         //     "channels": [
-         //         String,
-         //         ...
-         //     ]
-         // }
-         //
-         // Request can be resend using: [status retry];
+     
+        // Handle message history download error. Check 'category' property to find out possible 
+        // issue because of which request did fail.
+        //
+        // Request can be resend using: [status retry];
      }
  }];
  @endcode
@@ -252,45 +223,30 @@ typedef void(^PNHistoryCompletionBlock)(PNResult<PNHistoryResult> *result,
  \b Example:
  
  @code
- PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
+ // Client configuration.
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
  NSNumber *startDate = @((unsigned long long)([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]*10000000));
  NSNumber *endDate = @((unsigned long long)([[NSDate date] timeIntervalSince1970]*10000000));
- [client historyForChannel:@"storage" start:startDate end:endDate limit:50
-            withCompletion:^(PNResult *result, PNStatus *status) {
-    
+ [self.client historyForChannel:@"storage" start:startDate end:endDate limit:50
+                 withCompletion:^(PNResult<PNHistoryResult> *result, PNStatus<PNStatus> *status) {
+ 
      // Check whether request successfully completed or not.
      if (!status.isError) {
-            
-         // Message from history available in result.data[@"messages"].
-         // result.data will look like this:
-         // {
-         //     "messages": [
-         //         id,
-         //         ...
-         //     ],
-         //     "start": Number,
-         //     "data": Number
-         // }
+ 
+        // Handle downloaded history using: 
+        //   result.data.start - oldest message time stamp in response
+        //   result.data.end - newest message time stamp in response
+        //   result.data.messages - list of messages
      }
      // Request processing failed.
      else {
-            
-         // status.category field contains reference on one of PNStatusCategory enum fields
-         // which describe error category (can be access denied in case if PAM used for keys
-         // which is used for configuration). All PNStatusCategory fields has  builtin documentation
-         // and describe what exactly happened.
-         // Depending on category type status.data may contain additional information about issue 
-         // (service response).
-         // status.data for PNAccessDeniedCategory it will look like this:
-         // {
-         //     "information": String (description),
-         //     "channels": [
-         //         String,
-         //         ...
-         //     ]
-         // }
-         //
-         // Request can be resend using: [status retry];
+     
+        // Handle message history download error. Check 'category' property to find out possible 
+        // issue because of which request did fail.
+        //
+        // Request can be resend using: [status retry];
      }
  }];
  @endcode
@@ -332,48 +288,32 @@ typedef void(^PNHistoryCompletionBlock)(PNResult<PNHistoryResult> *result,
  \b Example:
  
  @code
- PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
+ // Client configuration.
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
  NSNumber *startDate = @((unsigned long long)([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]*10000000));
  NSNumber *endDate = @((unsigned long long)([[NSDate date] timeIntervalSince1970]*10000000));
- [client historyForChannel:@"storage" start:startDate end:endDate includeTimeToken:YES
-            withCompletion:^(PNResult *result, PNStatus *status) {
-    
+ [self.client historyForChannel:@"storage" start:startDate end:endDate includeTimeToken:YES
+                 withCompletion:^(PNResult<PNHistoryResult> *result, PNStatus<PNStatus> *status) {
+ 
      // Check whether request successfully completed or not.
      if (!status.isError) {
-            
-         // Message from history available in result.data[@"messages"].
-         // result.data will look like this in case if time token for messages has been requested:
-         // {
-         //     "messages": [
-         //         {
-         //             "message": id,
-         //             "tt": Number
-         //         },
-         //         ...
-         //     ],
-         //     "start": Number,
-         //     "data": Number
-         // }
+ 
+        // Handle downloaded history using: 
+        //   result.data.start - oldest message time stamp in response
+        //   result.data.end - newest message time stamp in response
+        //   result.data.messages - list of dictionaries. Each entry will include two keys: 
+        //                          "message" - for body and "timetoken" for date when message has
+        //                          been sent.
      }
      // Request processing failed.
      else {
-            
-         // status.category field contains reference on one of PNStatusCategory enum fields
-         // which describe error category (can be access denied in case if PAM used for keys
-         // which is used for configuration). All PNStatusCategory fields has  builtin documentation
-         // and describe what exactly happened.
-         // Depending on category type status.data may contain additional information about issue 
-         // (service response).
-         // status.data for PNAccessDeniedCategory it will look like this:
-         // {
-         //     "information": String (description),
-         //     "channels": [
-         //         String,
-         //         ...
-         //     ]
-         // }
-         //
-         // Request can be resend using: [status retry];
+     
+        // Handle message history download error. Check 'category' property to find out possible 
+        // issue because of which request did fail.
+        //
+        // Request can be resend using: [status retry];
      }
  }];
  @endcode
@@ -412,48 +352,32 @@ typedef void(^PNHistoryCompletionBlock)(PNResult<PNHistoryResult> *result,
  \b Example:
  
  @code
- PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
+ // Client configuration.
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
  NSNumber *startDate = @((unsigned long long)([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]*10000000));
  NSNumber *endDate = @((unsigned long long)([[NSDate date] timeIntervalSince1970]*10000000));
- [client historyForChannel:@"storage" start:startDate end:endDate limit:35 includeTimeToken:YES
-            withCompletion:^(PNResult *result, PNStatus *status) {
-    
+ [self.client historyForChannel:@"storage" start:startDate end:endDate limit:35 includeTimeToken:YES
+                 withCompletion:^(PNResult<PNHistoryResult> *result, PNStatus<PNStatus> *status) {
+ 
      // Check whether request successfully completed or not.
      if (!status.isError) {
-            
-         // Message from history available in result.data[@"messages"].
-         // result.data will look like this in case if time token for messages has been requested:
-         // {
-         //     "messages": [
-         //         {
-         //             "message": id,
-         //             "tt": Number
-         //         },
-         //         ...
-         //     ],
-         //     "start": Number,
-         //     "data": Number
-         // }
+ 
+        // Handle downloaded history using: 
+        //   result.data.start - oldest message time stamp in response
+        //   result.data.end - newest message time stamp in response
+        //   result.data.messages - list of dictionaries. Each entry will include two keys: 
+        //                          "message" - for body and "timetoken" for date when message has
+        //                          been sent.
      }
      // Request processing failed.
      else {
-            
-         // status.category field contains reference on one of PNStatusCategory enum fields
-         // which describe error category (can be access denied in case if PAM used for keys
-         // which is used for configuration). All PNStatusCategory fields has  builtin documentation
-         // and describe what exactly happened.
-         // Depending on category type status.data may contain additional information about issue 
-         // (service response).
-         // status.data for PNAccessDeniedCategory it will look like this:
-         // {
-         //     "information": String (description),
-         //     "channels": [
-         //         String,
-         //         ...
-         //     ]
-         // }
-         //
-         // Request can be resend using: [status retry];
+     
+        // Handle message history download error. Check 'category' property to find out possible 
+        // issue because of which request did fail.
+        //
+        // Request can be resend using: [status retry];
      }
  }];
  @endcode
@@ -495,45 +419,30 @@ typedef void(^PNHistoryCompletionBlock)(PNResult<PNHistoryResult> *result,
  \b Example:
  
  @code
- PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
+ // Client configuration.
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
  NSNumber *startDate = @((unsigned long long)([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]*10000000));
  NSNumber *endDate = @((unsigned long long)([[NSDate date] timeIntervalSince1970]*10000000));
- [client historyForChannel:@"storage" start:startDate end:endDate limit:35 reverse:YES
-            withCompletion:^(PNResult *result, PNStatus *status) {
-    
+ [self.client historyForChannel:@"storage" start:startDate end:endDate limit:35 reverse:YES
+                 withCompletion:^(PNResult<PNHistoryResult> *result, PNStatus<PNStatus> *status) {
+ 
      // Check whether request successfully completed or not.
      if (!status.isError) {
-            
-         // Message from history available in result.data[@"messages"].
-         // result.data will look like this:
-         // {
-         //     "messages": [
-         //         id,
-         //         ...
-         //     ],
-         //     "start": Number,
-         //     "data": Number
-         // }
+ 
+        // Handle downloaded history using: 
+        //   result.data.start - oldest message time stamp in response
+        //   result.data.end - newest message time stamp in response
+        //   result.data.messages - list of messages
      }
      // Request processing failed.
      else {
-            
-         // status.category field contains reference on one of PNStatusCategory enum fields
-         // which describe error category (can be access denied in case if PAM used for keys
-         // which is used for configuration). All PNStatusCategory fields has  builtin documentation
-         // and describe what exactly happened.
-         // Depending on category type status.data may contain additional information about issue 
-         // (service response).
-         // status.data for PNAccessDeniedCategory it will look like this:
-         // {
-         //     "information": String (description),
-         //     "channels": [
-         //         String,
-         //         ...
-         //     ]
-         // }
-         //
-         // Request can be resend using: [status retry];
+     
+        // Handle message history download error. Check 'category' property to find out possible 
+        // issue because of which request did fail.
+        //
+        // Request can be resend using: [status retry];
      }
  }];
  @endcode
@@ -573,48 +482,33 @@ typedef void(^PNHistoryCompletionBlock)(PNResult<PNHistoryResult> *result,
  \b Example:
  
  @code
- PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
+ // Client configuration.
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
  NSNumber *startDate = @((unsigned long long)([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]*10000000));
  NSNumber *endDate = @((unsigned long long)([[NSDate date] timeIntervalSince1970]*10000000));
- [client historyForChannel:@"storage" start:startDate end:endDate limit:35 reverse:YES 
-          includeTimeToken:YES withCompletion:^(PNResult *result, PNStatus *status) {
-    
+ [self.client historyForChannel:@"storage" start:startDate end:endDate limit:35 reverse:YES 
+               includeTimeToken:YES withCompletion:^(PNResult<PNHistoryResult> *result, 
+                                                     PNStatus<PNStatus> *status) {
+ 
      // Check whether request successfully completed or not.
      if (!status.isError) {
-            
-         // Message from history available in result.data[@"messages"].
-         // result.data will look like this in case if time token for messages has been requested:
-         // {
-         //     "messages": [
-         //         {
-         //             "message": id,
-         //             "tt": Number
-         //         },
-         //         ...
-         //     ],
-         //     "start": Number,
-         //     "data": Number
-         // }
+ 
+        // Handle downloaded history using: 
+        //   result.data.start - oldest message time stamp in response
+        //   result.data.end - newest message time stamp in response
+        //   result.data.messages - list of dictionaries. Each entry will include two keys: 
+        //                          "message" - for body and "timetoken" for date when message has
+        //                          been sent.
      }
      // Request processing failed.
      else {
-            
-         // status.category field contains reference on one of PNStatusCategory enum fields
-         // which describe error category (can be access denied in case if PAM used for keys
-         // which is used for configuration). All PNStatusCategory fields has  builtin documentation
-         // and describe what exactly happened.
-         // Depending on category type status.data may contain additional information about issue 
-         // (service response).
-         // status.data for PNAccessDeniedCategory it will look like this:
-         // {
-         //     "information": String (description),
-         //     "channels": [
-         //         String,
-         //         ...
-         //     ]
-         // }
-         //
-         // Request can be resend using: [status retry];
+     
+        // Handle message history download error. Check 'category' property to find out possible 
+        // issue because of which request did fail.
+        //
+        // Request can be resend using: [status retry];
      }
  }];
  @endcode

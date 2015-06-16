@@ -2,6 +2,8 @@
 #import "PubNub+Core.h"
 
 
+@protocol PNObjectEventListener;
+
 #pragma mark API group protocols
 
 /**
@@ -344,27 +346,27 @@
 ///------------------------------------------------
 
 /**
- @brief      Add list of observers which conform to \b PNObjectEventListener protocol and would like
-             to receive updates based on live feed events and status change.
+ @brief      Add observer which conform to \b PNObjectEventListener protocol and would like to 
+             receive updates based on live feed events and status change.
  @discussion Listener can implement only required callbacks from \b PNObjectEventListener protocol
              and called only when desired type of event arrive.
  
- @param listeners List of listeners which would like to receive updates.
+ @param listener Listener which would like to receive updates.
  
  @since 4.0
  */
-- (void)addListeners:(NSArray *)listeners;
+- (void)addListener:(id <PNObjectEventListener>)listener;
 
 /**
- @brief      Remove listeners from list for callback calls.
+ @brief      Remove listener from list for callback calls.
  @discussion When listener not interested in live feed updates it can remove itself from updates 
              list using this method.
  
- @param listeners List of listeners which doesn't want to receive updates anymore.
+ @param listener Listener which doesn't want to receive updates anymore.
  
  @since 4.0
  */
-- (void)removeListeners:(NSArray *)listeners;
+- (void)removeListener:(id <PNObjectEventListener>)listener;
 
 
 ///------------------------------------------------
@@ -381,8 +383,10 @@
  \b Example:
  
  @code
- PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- [client subscribeToChannels:@[@"swift"] withPresence:YES];
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client subscribeToChannels:@[@"swift"] withPresence:YES];
  @endcode
  
  @param channels              List of channel names on which client should try to subscribe.
@@ -406,8 +410,10 @@
  \b Example:
  
  @code
- PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- [client subscribeToChannels:@[@"swift"] withPresence:YES
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client subscribeToChannels:@[@"swift"] withPresence:YES
                  clientState:@{@"swift": @{@"Type": @"Developer"}}];
  @endcode
  
@@ -431,8 +437,10 @@
  \b Example:
  
  @code
- PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- [client subscribeToChannelGroups:@[@"developers"] withPresence:YES];
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client subscribeToChannelGroups:@[@"developers"] withPresence:YES];
  @endcode
  
  @param groups                List of channel group names on which client should try to subscribe.
@@ -456,8 +464,10 @@
  \b Example:
  
  @code
- PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- [client subscribeToChannelGroups:@[@"developers"] withPresence:YES
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client subscribeToChannelGroups:@[@"developers"] withPresence:YES
                       clientState:@{@"developers": @{@"Name": @"Bob"}}];
  @endcode
  
@@ -481,8 +491,10 @@
  \b Example:
  
  @code
- PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- [client subscribeToPresenceChannels:@[@"swift-pnpres"]];
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client subscribeToPresenceChannels:@[@"swift-pnpres"]];
  @endcode
  
  @param channels List of channel names for which client should try to subscribe on presence 
@@ -507,8 +519,10 @@
  \b Example:
  
  @code
- PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- [client unsubscribeFromChannels:@[@"objc"] withPresence:YES];
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client unsubscribeFromChannels:@[@"objc"] withPresence:YES];
  @endcode
  
  @param channels              List of channel names from which client should try to unsubscribe.
@@ -530,8 +544,10 @@
  \b Example:
  
  @code
- PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- [client unsubscribeFromChannelGroups:@[@"developers"] withPresence:YES];
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client unsubscribeFromChannelGroups:@[@"developers"] withPresence:YES];
  @endcode
  
  @param groups                List of channel group names from which client should try to 
@@ -552,8 +568,10 @@
  \b Example:
  
  @code
- PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- [client unsubscribeFromPresenceChannels:@[@"swifty-pnpres"]];
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client unsubscribeFromPresenceChannels:@[@"swifty-pnpres"]];
  @endcode
  
  @param channels List of channel names for which client should try to unsubscribe from presence 

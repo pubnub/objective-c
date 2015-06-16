@@ -115,48 +115,33 @@
 
 #pragma mark - Listeners list modification
 
-- (void)addListeners:(NSArray *)listeners {
+- (void)addListener:(id <PNObjectEventListener>)listener {
     
     dispatch_async(self.resourceAccessQueue, ^{
         
-        for (id listener in listeners) {
+        if ([listener respondsToSelector:@selector(client:didReceiveMessage:withStatus:)]) {
             
-            // Ensure what provided listener conforms to required protocol.
-            if ([listener conformsToProtocol:@protocol(PNObjectEventListener)]) {
-                
-                if ([listener respondsToSelector:@selector(client:didReceiveMessage:withStatus:)]) {
-                    
-                    [self.messageListeners addObject:listener];
-                }
-                if ([listener respondsToSelector:@selector(client:didReceivePresenceEvent:)]) {
-                    
-                    [self.presenceEventListeners addObject:listener];
-                }
-                
-                if ([listener respondsToSelector:@selector(client:didReceiveStatus:)]) {
-                    
-                    [self.stateListeners addObject:listener];
-                }
-            }
-            else {
-                
-                DDLogWarn(@"<PubNub> %@ can't be used as object event listener because it "
-                          "doesn't conform to PNObjectEventListener protocol", listener);
-            }
+            [self.messageListeners addObject:listener];
+        }
+        if ([listener respondsToSelector:@selector(client:didReceivePresenceEvent:)]) {
+            
+            [self.presenceEventListeners addObject:listener];
+        }
+        
+        if ([listener respondsToSelector:@selector(client:didReceiveStatus:)]) {
+            
+            [self.stateListeners addObject:listener];
         }
     });
 }
 
-- (void)removeListeners:(NSArray *)listeners {
+- (void)removeListener:(id <PNObjectEventListener>)listener {
     
     dispatch_async(self.resourceAccessQueue, ^{
         
-        for (id listener in listeners) {
-            
-            [self.messageListeners removeObject:listener];
-            [self.presenceEventListeners removeObject:listener];
-            [self.stateListeners removeObject:listener];
-        }
+        [self.messageListeners removeObject:listener];
+        [self.presenceEventListeners removeObject:listener];
+        [self.stateListeners removeObject:listener];
     });
 }
 

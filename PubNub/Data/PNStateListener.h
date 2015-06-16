@@ -53,27 +53,27 @@
 ///------------------------------------------------
 
 /**
- @brief      Add list of observers which conform to \b PNObjectEventListener protocol and would like
-             to receive updates based on live feed events and status change.
+ @brief      Add observer which conform to \b PNObjectEventListener protocol and would like to 
+             receive updates based on live feed events and status change.
  @discussion Listener can implement only required callbacks from \b PNObjectEventListener protocol
              and called only when desired type of event arrive.
  
- @param listeners List of listeners which would like to receive updates.
+ @param listener Listener which would like to receive updates.
  
  @since 4.0
  */
-- (void)addListeners:(NSArray *)listeners;
+- (void)addListener:(id <PNObjectEventListener>)listener;
 
 /**
- @brief      Remove listeners from list for callback calls.
+ @brief      Remove listener from list for callback calls.
  @discussion When listener not interested in live feed updates it can remove itself from updates 
              list using this method.
  
- @param listeners List of listeners which doesn't want to receive updates anymore.
+ @param listener Listener which doesn't want to receive updates anymore.
  
  @since 4.0
  */
-- (void)removeListeners:(NSArray *)listeners;
+- (void)removeListener:(id <PNObjectEventListener>)listener;
 
 /**
  @brief  Remove all registered listeners (for message, presence event and client state change).

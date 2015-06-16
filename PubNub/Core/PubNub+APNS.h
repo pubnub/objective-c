@@ -27,7 +27,7 @@
  
  @since 4.0
  */
-- (NSDictionary *)channels;
+- (NSArray *)channels;
 
 @end
 
@@ -101,6 +101,35 @@ typedef void(^PNPushNotificationsStateAuditCompletionBlock)(PNResult<PNPushNotif
 /**
  @brief  Enabled push notifications on provided set of \c channels.
  
+ @code
+ @endcode
+ \b Example:
+ 
+ @code
+ // Client configuration.
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client addPushNotificationsOnChannels:@[@"wwdc",@"google.io"] 
+                         withDevicePushToken:self.devicePushToken 
+                               andCompletion:^(PNStatus<PNStatus> *status) {
+ 
+     // Check whether request successfully completed or not.
+     if (!status.isError) {
+        
+        // Handle successful push notification enabling on passed channels.
+     }
+     // Request processing failed.
+     else {
+     
+        // Handle modification error. Check 'category' property to find out possible issue because
+        // of which request did fail.
+        //
+        // Request can be resend using: [status retry];
+     }
+ }];
+ @endcode
+ 
  @param channels  List of channel names for which push notifications should be enabled.
  @param pushToken Device push token which should be used to enabled push notifications on specified
                   set of channels.
@@ -118,6 +147,35 @@ typedef void(^PNPushNotificationsStateAuditCompletionBlock)(PNResult<PNPushNotif
  @warning If \c nil will be passed as \c channels then client will remove push notifications from 
           all channels which associated with \c pushToken.
  
+ @code
+ @endcode
+ \b Example:
+ 
+ @code
+ // Client configuration.
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client removePushNotificationsFromChannels:@[@"wwdc",@"google.io"]
+                              withDevicePushToken:self.devicePushToken
+                                    andCompletion:^(PNStatus<PNStatus> *status) {
+ 
+     // Check whether request successfully completed or not.
+     if (!status.isError) {
+        
+        // Handle successful push notification enabling on passed channels.
+     }
+     // Request processing failed.
+     else {
+     
+        // Handle modification error. Check 'category' property to find out possible issue because
+        // of which request did fail.
+        //
+        // Request can be resend using: [status retry];
+     }
+ }];
+ @endcode
+ 
  @param channels  List of channel names for which push notifications should be disabled.
  @param pushToken Device push token which should be used to disable push notifications on specified
                   set of channels.
@@ -134,6 +192,35 @@ typedef void(^PNPushNotificationsStateAuditCompletionBlock)(PNResult<PNPushNotif
 /**
  @brief  Disable push notifications from all channels which is registered with specified 
          \c pushToken.
+ 
+ @code
+ @endcode
+ \b Example:
+ 
+ @code
+ // Client configuration.
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client removeAllPushNotificationsFromDeviceWithPushToken:self.devicePushToken
+                                                  andCompletion:^(PNStatus<PNStatus> *status) {
+ 
+     // Check whether request successfully completed or not.
+     if (!status.isError) {
+        
+        // Handle successful push notification disabling for all channels associated with specified
+        // device push token.
+     }
+     // Request processing failed.
+     else {
+     
+        // Handle modification error. Check 'category' property to find out possible issue because
+        // of which request did fail.
+        //
+        // Request can be resend using: [status retry];
+     }
+ }];
+ @endcode
  
  @param pushToken Device push token which should be used to disable push notifications on specified
                   set of channels.
@@ -154,6 +241,35 @@ typedef void(^PNPushNotificationsStateAuditCompletionBlock)(PNResult<PNPushNotif
 /**
  @brief  Request for all channels on which push notification has been enabled using specified
          \c pushToken.
+ 
+ @code
+ @endcode
+ \b Example:
+ 
+ @code
+ // Client configuration.
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client pushNotificationEnabledChannelsForDeviceWithPushToken:self.devicePushToken
+                              andCompletion:^(PNResult<PNPushNotificationsStateAuditResult> *result, 
+                                              PNStatus<PNStatus> *status) {
+ 
+     // Check whether request successfully completed or not.
+     if (!status.isError) {
+ 
+        // Handle downloaded list of chanels using: result.data.channels
+     }
+     // Request processing failed.
+     else {
+     
+        // Handle audition error. Check 'category' property to find out possible issue because of 
+        // which request did fail.
+        //
+        // Request can be resend using: [status retry];
+     }
+ }];
+ @endcode
  
  @param pushToken Device push token against which search on \b PubNub service should be performed.
  @param block     Push notifications status processing completion block which pass two arguments:

@@ -171,31 +171,25 @@ typedef void(^PNChannelGroupChangeCompletionBlock)(PNStatus<PNStatus> *status);
  \b Example:
  
  @code
- PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- [client channelGroupsWithCompletion:^(PNResult *result, PNStatus *status) {
-        
+ // Client configuration.
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client channelGroupsWithCompletion:^(PNResult<PNGroupsResult> *result,
+                                            PNStatus<PNStatus> *status) {
+ 
      // Check whether request successfully completed or not.
      if (!status.isError) {
-
-         // Fetched list of groups stored in result.data[@"channel-groups"]
+ 
+        // Handle downloaded list of groups using: result.data.groups
      }
      // Request processing failed.
      else {
-
-         // status.category field contains reference on one of PNStatusCategory enum fields
-         // which describe error category (can be access denied in case if PAM used for keys
-         // which is used for configuration). All PNStatusCategory fields has  builtin documentation
-         // and describe what exactly happened.
-         // Depending on category type status.data may contain additional information about issue 
-         // (service response).
-         // status.data for PNAccessDeniedCategory it will look like this:
-         // {
-         //     "error": Number (boolean),
-         //     "status": Number (boolean),
-         //     "information": String (description)
-         // }
-         //
-         // Request can be resend using: [status retry];
+     
+        // Handle channel group audition error. Check 'category' property to find out possible issue 
+        // because of which request did fail.
+        //
+        // Request can be resend using: [status retry];
      }
  }];
  @endcode
@@ -219,31 +213,25 @@ typedef void(^PNChannelGroupChangeCompletionBlock)(PNStatus<PNStatus> *status);
  \b Example:
  
  @code
- PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- [client channelsForGroup:@"pubnub" withCompletion:^(PNResult *result, PNStatus *status) {
-        
+ // Client configuration.
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client channelsForGroup:@"pubnub" withCompletion:^(PNResult<PNGroupChannelsResult> *result, 
+                                                          PNStatus<PNStatus> *status) {
+ 
      // Check whether request successfully completed or not.
      if (!status.isError) {
-
-         // Fetched list of channels stored in result.data[@"channels"]
+ 
+        // Handle downloaded list of chanels using: result.data.channels
      }
      // Request processing failed.
      else {
-
-         // status.category field contains reference on one of PNStatusCategory enum fields
-         // which describe error category (can be access denied in case if PAM used for keys
-         // which is used for configuration). All PNStatusCategory fields has  builtin documentation
-         // and describe what exactly happened.
-         // Depending on category type status.data may contain additional information about issue 
-         // (service response).
-         // status.data for PNAccessDeniedCategory it will look like this:
-         // {
-         //     "error": Number (boolean),
-         //     "status": Number (boolean),
-         //     "information": String (description)
-         // }
-         //
-         // Request can be resend using: [status retry];
+     
+        // Handle channels for group audition error. Check 'category' property to find out possible 
+        // issue because of which request did fail.
+        //
+        // Request can be resend using: [status retry];
      }
  }];
  @endcode
@@ -273,32 +261,25 @@ typedef void(^PNChannelGroupChangeCompletionBlock)(PNStatus<PNStatus> *status);
  \b Example:
  
  @code
- PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- [self.client addChannels:@[@"ios", @"macos", @"MS"] toGroup:@"os"
-           withCompletion:^(PNStatus *status) {
-        
+ // Client configuration.
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client addChannels:@[@"ios", @"macos", @"Win"] toGroup:@"os"
+           withCompletion:^(PNStatus<PNStatus> *status) {
+ 
      // Check whether request successfully completed or not.
      if (!status.isError) {
-            
-         // Channels successfully added to specified channel group.
+ 
+        // Handle successful channels list modification for group.
      }
      // Request processing failed.
      else {
-            
-         // status.category field contains reference on one of PNStatusCategory enum fields
-         // which describe error category (can be access denied in case if PAM used for keys
-         // which is used for configuration). All PNStatusCategory fields has  builtin documentation
-         // and describe what exactly happened.
-         // Depending on category type status.data may contain additional information about issue 
-         // (service response).
-         // status.data for PNAccessDeniedCategory it will look like this:
-         // {
-         //     "error": Number (boolean),
-         //     "status": Number (boolean),
-         //     "information": String (description)
-         // }
-         //
-         // Request can be resend using: [status retry];
+     
+        // Handle channels list modificatoin for group error. Check 'category' property to find out 
+        // possible issue because of which request did fail.
+        //
+        // Request can be resend using: [status retry];
      }
  }];
  @endcode
@@ -326,32 +307,25 @@ typedef void(^PNChannelGroupChangeCompletionBlock)(PNStatus<PNStatus> *status);
  \b Example:
  
  @code
- PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- [self.client removeChannels:@[@"ios", @"macos", @"MS"] fromGroup:@"os"
-              withCompletion:^(PNStatus *status) {
-        
+ // Client configuration.
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client removeChannels:@[@"ios", @"macos", @"Win"] fromGroup:@"os"
+              withCompletion:^(PNStatus<PNStatus> *status) {
+ 
      // Check whether request successfully completed or not.
      if (!status.isError) {
-            
-         // Channels successfully removed from specified channel group.
+ 
+        // Handle successful channels list modification for group.
      }
      // Request processing failed.
      else {
-            
-         // status.category field contains reference on one of PNStatusCategory enum fields
-         // which describe error category (can be access denied in case if PAM used for keys
-         // which is used for configuration). All PNStatusCategory fields has  builtin documentation
-         // and describe what exactly happened.
-         // Depending on category type status.data may contain additional information about issue 
-         // (service response).
-         // status.data for PNAccessDeniedCategory it will look like this:
-         // {
-         //     "error": Number (boolean),
-         //     "status": Number (boolean),
-         //     "information": String (description)
-         // }
-         //
-         // Request can be resend using: [status retry];
+     
+        // Handle channels list modificatoin for group error. Check 'category' property to find out 
+        // possible issue because of which request did fail.
+        //
+        // Request can be resend using: [status retry];
      }
  }];
  @endcode
@@ -376,31 +350,24 @@ typedef void(^PNChannelGroupChangeCompletionBlock)(PNStatus<PNStatus> *status);
  \b Example:
  
  @code
- PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- [self.client removeChannelsFromGroup:@"os" withCompletion:^(PNStatus *status) {
-        
+ // Client configuration.
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client removeChannelsFromGroup:@"os" withCompletion:^(PNStatus<PNStatus> *status) {
+ 
      // Check whether request successfully completed or not.
      if (!status.isError) {
-            
-         // All channels from channel group and group itself successfully removed.
+ 
+        // Handle successful channel group removal.
      }
      // Request processing failed.
      else {
-            
-         // status.category field contains reference on one of PNStatusCategory enum fields
-         // which describe error category (can be access denied in case if PAM used for keys
-         // which is used for configuration). All PNStatusCategory fields has  builtin documentation
-         // and describe what exactly happened.
-         // Depending on category type status.data may contain additional information about issue 
-         // (service response).
-         // status.data for PNAccessDeniedCategory it will look like this:
-         // {
-         //     "error": Number (boolean),
-         //     "status": Number (boolean),
-         //     "information": String (description)
-         // }
-         //
-         // Request can be resend using: [status retry];
+     
+        // Handle channel group removal error. Check 'category' property to find out possible issue
+        // because of which request did fail.
+        //
+        // Request can be resend using: [status retry];
      }
  }];
  @endcode

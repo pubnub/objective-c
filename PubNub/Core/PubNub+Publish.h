@@ -118,8 +118,12 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
  \b Example:
  
  @code
- PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- [client publish:@{@"Hello":@"world"} toChannel:@"announcement" withCompletion:^(PNStatus *status) {
+ // Client configuration.
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client publish:@{@"Hello":@"world"} toChannel:@"announcement"
+       withCompletion:^(PNStatus<PNPublishStatus> *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {
@@ -128,19 +132,9 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
      }
      // Request processing failed.
      else {
- 
-         // status.category field contains reference on one of PNStatusCategory enum fields
-         // which describe error category (can be access denied in case if PAM used for keys
-         // which is used for configuration). All PNStatusCategory fields has  builtin documentation
-         // and describe what exactly happened.
-         // Depending on category type status.data may contain additional information about issue 
-         // (service response).
-         // status.data for PNAccessDeniedCategory it will look like this:
-         // {
-         //     "error": Number (boolean),
-         //     "status": Number (boolean),
-         //     "information": String (description)
-         // }
+     
+         // Handle message publish error. Check 'category' property to find out possible issue 
+         // because of which request did fail.
          //
          // Request can be resend using: [status retry];
      }
@@ -175,9 +169,12 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
  \b Example:
  
  @code
- PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- [client publish:@{@"Hello":@"world"} toChannel:@"announcement" compressed:NO 
-  withCompletion:^(PNStatus *status) {
+ // Client configuration.
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client publish:@{@"Hello":@"world"} toChannel:@"announcement" compressed:NO
+       withCompletion:^(PNStatus<PNPublishStatus> *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {
@@ -186,19 +183,9 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
      }
      // Request processing failed.
      else {
- 
-         // status.category field contains reference on one of PNStatusCategory enum fields
-         // which describe error category (can be access denied in case if PAM used for keys
-         // which is used for configuration). All PNStatusCategory fields has  builtin documentation
-         // and describe what exactly happened.
-         // Depending on category type status.data may contain additional information about issue 
-         // (service response).
-         // status.data for PNAccessDeniedCategory it will look like this:
-         // {
-         //     "error": Number (boolean),
-         //     "status": Number (boolean),
-         //     "information": String (description)
-         // }
+     
+         // Handle message publish error. Check 'category' property to find out possible issue 
+         // because of which request did fail.
          //
          // Request can be resend using: [status retry];
      }
@@ -236,9 +223,12 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
  \b Example:
  
  @code
- PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- [client publish:@{@"Hello":@"world"} toChannel:@"announcement" storeInHistory:NO
-  withCompletion:^(PNStatus *status) {
+ // Client configuration.
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client publish:@{@"Hello":@"world"} toChannel:@"announcement" storeInHistory:NO
+       withCompletion:^(PNStatus<PNPublishStatus> *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {
@@ -247,19 +237,9 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
      }
      // Request processing failed.
      else {
- 
-         // status.category field contains reference on one of PNStatusCategory enum fields
-         // which describe error category (can be access denied in case if PAM used for keys
-         // which is used for configuration). All PNStatusCategory fields has  builtin documentation
-         // and describe what exactly happened.
-         // Depending on category type status.data may contain additional information about issue 
-         // (service response).
-         // status.data for PNAccessDeniedCategory it will look like this:
-         // {
-         //     "error": Number (boolean),
-         //     "status": Number (boolean),
-         //     "information": String (description)
-         // }
+     
+         // Handle message publish error. Check 'category' property to find out possible issue 
+         // because of which request did fail.
          //
          // Request can be resend using: [status retry];
      }
@@ -295,9 +275,12 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
  \b Example:
  
  @code
- PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- [client publish:@{@"Hello":@"world"} toChannel:@"announcement" storeInHistory:NO compressed:YES
-  withCompletion:^(PNStatus *status) {
+ // Client configuration.
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client publish:@{@"Hello":@"world"} toChannel:@"announcement" storeInHistory:NO 
+           compressed:YES withCompletion:^(PNStatus<PNPublishStatus> *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {
@@ -306,19 +289,9 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
      }
      // Request processing failed.
      else {
- 
-         // status.category field contains reference on one of PNStatusCategory enum fields
-         // which describe error category (can be access denied in case if PAM used for keys
-         // which is used for configuration). All PNStatusCategory fields has  builtin documentation
-         // and describe what exactly happened.
-         // Depending on category type status.data may contain additional information about issue 
-         // (service response).
-         // status.data for PNAccessDeniedCategory it will look like this:
-         // {
-         //     "error": Number (boolean),
-         //     "status": Number (boolean),
-         //     "information": String (description)
-         // }
+     
+         // Handle message publish error. Check 'category' property to find out possible issue 
+         // because of which request did fail.
          //
          // Request can be resend using: [status retry];
      }
@@ -361,9 +334,13 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
  \b Example:
  
  @code
- PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- [client    publish:@{@"Hello":@"world"} toChannel:@"announcement"
-  mobilePushPayload:@{@"apns":@{@"alert":@"Hello from PubNub"}} withCompletion:^(PNStatus *status) {
+ // Client configuration.
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client publish:@{@"Hello":@"world"} toChannel:@"announcement"
+    mobilePushPayload:@{@"apns":@{@"alert":@"Hello from PubNub"}}
+       withCompletion:^(PNStatus<PNPublishStatus> *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {
@@ -372,19 +349,9 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
      }
      // Request processing failed.
      else {
- 
-         // status.category field contains reference on one of PNStatusCategory enum fields
-         // which describe error category (can be access denied in case if PAM used for keys
-         // which is used for configuration). All PNStatusCategory fields has  builtin documentation
-         // and describe what exactly happened.
-         // Depending on category type status.data may contain additional information about issue 
-         // (service response).
-         // status.data for PNAccessDeniedCategory it will look like this:
-         // {
-         //     "error": Number (boolean),
-         //     "status": Number (boolean),
-         //     "information": String (description)
-         // }
+     
+         // Handle message publish error. Check 'category' property to find out possible issue 
+         // because of which request did fail.
          //
          // Request can be resend using: [status retry];
      }
@@ -422,10 +389,13 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
  \b Example:
  
  @code
- PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- [client    publish:@{@"Hello":@"world"} toChannel:@"announcement"
-  mobilePushPayload:@{@"apns":@{@"alert":@"Hello from PubNub"}} compressed:YES
-     withCompletion:^(PNStatus *status) {
+ // Client configuration.
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client publish:@{@"Hello":@"world"} toChannel:@"announcement"
+    mobilePushPayload:@{@"apns":@{@"alert":@"Hello from PubNub"}} compressed:YES
+       withCompletion:^(PNStatus<PNPublishStatus> *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {
@@ -434,19 +404,9 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
      }
      // Request processing failed.
      else {
- 
-         // status.category field contains reference on one of PNStatusCategory enum fields
-         // which describe error category (can be access denied in case if PAM used for keys
-         // which is used for configuration). All PNStatusCategory fields has  builtin documentation
-         // and describe what exactly happened.
-         // Depending on category type status.data may contain additional information about issue 
-         // (service response).
-         // status.data for PNAccessDeniedCategory it will look like this:
-         // {
-         //     "error": Number (boolean),
-         //     "status": Number (boolean),
-         //     "information": String (description)
-         // }
+     
+         // Handle message publish error. Check 'category' property to find out possible issue 
+         // because of which request did fail.
          //
          // Request can be resend using: [status retry];
      }
@@ -485,10 +445,13 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
  \b Example:
  
  @code
- PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- [client    publish:@{@"Hello":@"world"} toChannel:@"announcement"
-  mobilePushPayload:@{@"apns":@{@"alert":@"Hello from PubNub"}} storeInHistory:YES
-     withCompletion:^(PNStatus *status) {
+ // Client configuration.
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client publish:@{@"Hello":@"world"} toChannel:@"announcement"
+    mobilePushPayload:@{@"apns":@{@"alert":@"Hello from PubNub"}} storeInHistory:YES
+       withCompletion:^(PNStatus<PNPublishStatus> *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {
@@ -497,19 +460,9 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
      }
      // Request processing failed.
      else {
- 
-         // status.category field contains reference on one of PNStatusCategory enum fields
-         // which describe error category (can be access denied in case if PAM used for keys
-         // which is used for configuration). All PNStatusCategory fields has  builtin documentation
-         // and describe what exactly happened.
-         // Depending on category type status.data may contain additional information about issue 
-         // (service response).
-         // status.data for PNAccessDeniedCategory it will look like this:
-         // {
-         //     "error": Number (boolean),
-         //     "status": Number (boolean),
-         //     "information": String (description)
-         // }
+     
+         // Handle message publish error. Check 'category' property to find out possible issue 
+         // because of which request did fail.
          //
          // Request can be resend using: [status retry];
      }
@@ -549,10 +502,13 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
  \b Example:
  
  @code
- PubNub *client = [PubNub clientWithPublishKey:@"demo" andSubscribeKey:@"demo"];
- [client    publish:@{@"Hello":@"world"} toChannel:@"announcement"
-  mobilePushPayload:@{@"apns":@{@"alert":@"Hello from PubNub"}} storeInHistory:YES compressed:NO
-     withCompletion:^(PNStatus *status) {
+ // Client configuration.
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client publish:@{@"Hello":@"world"} toChannel:@"announcement"
+    mobilePushPayload:@{@"apns":@{@"alert":@"Hello from PubNub"}} storeInHistory:YES compressed:NO
+       withCompletion:^(PNStatus<PNPublishStatus> *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {
@@ -561,19 +517,9 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
      }
      // Request processing failed.
      else {
- 
-         // status.category field contains reference on one of PNStatusCategory enum fields
-         // which describe error category (can be access denied in case if PAM used for keys
-         // which is used for configuration). All PNStatusCategory fields has  builtin documentation
-         // and describe what exactly happened.
-         // Depending on category type status.data may contain additional information about issue 
-         // (service response).
-         // status.data for PNAccessDeniedCategory it will look like this:
-         // {
-         //     "error": Number (boolean),
-         //     "status": Number (boolean),
-         //     "information": String (description)
-         // }
+     
+         // Handle message publish error. Check 'category' property to find out possible issue 
+         // because of which request did fail.
          //
          // Request can be resend using: [status retry];
      }
@@ -607,6 +553,22 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
              \b PubNub network.
  @discussion Size calculation use percent-escaped \c message and all added headers to get full size.
  
+ @code
+ @endcode
+ \b Example:
+ 
+ @code
+ // Client configuration.
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client sizeOfMessage:@{@"Hello":@"world"} toChannel:@"announcement"
+             withCompletion:^(NSInteger size) {
+ 
+     // Actual message size is: size
+ }];
+ @endcode
+ 
  @param message Message for which size should be calculated.
  @param channel Name of the channel to which message should be sent (it is part of request URI).
  @param block   Referecnce on block which should be sent, when message size calculation will be
@@ -626,6 +588,22 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
  @endcode
  Extension to \c -sizeOfMessage:toChannel:withCompletion: and specify whether message should be 
  compressed or not.
+ 
+ @code
+ @endcode
+ \b Example:
+ 
+ @code
+ // Client configuration.
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client sizeOfMessage:@{@"Hello":@"world"} toChannel:@"announcement" compressed:YES
+             withCompletion:^(NSInteger size) {
+ 
+     // Actual message size is: size
+ }];
+ @endcode
  
  @param message         Message for which size should be calculated.
  @param channel         Name of the channel to which message should be sent (it is part of request 
@@ -650,6 +628,22 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
  Extension to \c -sizeOfMessage:toChannel:withCompletion: and specify whether message should be
  stored in history or not.
  
+ @code
+ @endcode
+ \b Example:
+ 
+ @code
+ // Client configuration.
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client sizeOfMessage:@{@"Hello":@"world"} toChannel:@"announcement" storeInHistory:NO
+             withCompletion:^(NSInteger size) {
+ 
+     // Actual message size is: size
+ }];
+ @endcode
+ 
  @param message     Message for which size should be calculated.
  @param channel     Name of the channel to which message should be sent (it is part of request URI).
  @param shouldStore \c YES in case if message should be placed into history storage.
@@ -670,6 +664,22 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
  @endcode
  Extension to \c -sizeOfMessage:toChannel:compressed:withCompletion: and specify whether message 
  should be stored in history or not.
+ 
+ @code
+ @endcode
+ \b Example:
+ 
+ @code
+ // Client configuration.
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client sizeOfMessage:@{@"Hello":@"world"} toChannel:@"announcement" compressed:NO 
+             storeInHistory:NO withCompletion:^(NSInteger size) {
+ 
+     // Actual message size is: size
+ }];
+ @endcode
  
  @param message         Message for which size should be calculated.
  @param channel         Name of the channel to which message should be sent (it is part of request 

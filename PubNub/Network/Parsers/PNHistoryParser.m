@@ -86,7 +86,7 @@
             
             if (message) {
                 
-                message = (timeToken ? @{@"message":message, @"tt":timeToken} : message);
+                message = (timeToken ? @{@"message":message, @"timetoken":timeToken} : message);
                 [data[@"messages"] addObject:message];
             }
         }];

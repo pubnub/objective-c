@@ -91,7 +91,7 @@
 
     // Bind didReceiveMessage, didReceiveStatus, and didReceivePresenceEvent 'listeners' to this delegate
     // just be sure the target has implemented the PNObjectEventListener extension
-    [self.client addListeners:@[self]];
+    [self.client addListener:self];
     [self pubNubSetState];
 }
 
@@ -293,6 +293,7 @@
 }
 
 - (void)pubNubCGRemoveSomeChannels {
+
     [self.client removeChannels:@[_channel2] fromGroup:@"myChannelGroup" withCompletion:^(PNStatus <PNStatus> *status) {
 
         if (!status.isError) {
