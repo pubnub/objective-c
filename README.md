@@ -325,6 +325,10 @@ The first thing you need to do is create a configuration. Configurations are imm
 
 ##### [+ configurationWithPublishKey:subscribeKey:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html)
 
+```objective-c
+self.myConfig = [PNConfiguration configurationWithPublishKey:_pubKey subscribeKey:_subKey];
+```
+
 In addition, if you have an existing Configuration that you simply wish to change the UUID or PAM token on, you can reuse an existing Configuration with one these methods:
 
 ##### [– copyWithConfiguration:completion:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/copyWithConfiguration:completion:)
@@ -394,6 +398,29 @@ Once you've created the instance, instantiate the instance using one of the belo
 ##### [+ clientWithConfiguration:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/clientWithConfiguration:)
 
 ##### [+ clientWithConfiguration:callbackQueue:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/clientWithConfiguration:callbackQueue:)
+
+```objective-c
+- (void)updateClientConfiguration {
+
+    // Set PubNub Configuration
+    self.myConfig.TLSEnabled = NO;
+    self.myConfig.uuid = [self randomString];
+    self.myConfig.origin = @"pubsub.pubnub.com";
+    self.myConfig.authKey = _authKey;
+
+    // Presence Settings
+    self.myConfig.presenceHeartbeatValue = 120;
+    self.myConfig.presenceHeartbeatInterval = 60;
+
+    // Cipher Key Settings
+    //self.client.cipherKey = @"enigma";
+
+    // Time Token Handling Settings
+    self.myConfig.keepTimeTokenOnListChange = YES;
+    self.myConfig.restoreSubscription = YES;
+    self.myConfig.catchUpOnSubscriptionRestore = YES;
+}
+```
 
 #### Step 3 - Add a Listener in order to Receive Subscribe and Presence Stream Events
 
