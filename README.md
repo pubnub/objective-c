@@ -318,7 +318,7 @@ As we approach final beta, full docs will become available as well. For now, the
 
 ### Initialization
 
-#### Step 0 - Basic Setup
+#### Basic Setup
 
 ##### Install the CocoaPod
 To get the PubNub source code onto your system first you must [install the Pod](#installing-the-pod).
@@ -341,7 +341,7 @@ Import PubNub into your application:
 @end
 ```
 
-#### Step 1 - Create a Config
+#### Create a Config
 The first thing you need to do is create a configuration. Configurations are immutable. The most common use case is to instantiate a configuration with your publish an subscribe keys:
 
 ##### [+ configurationWithPublishKey:subscribeKey:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html)
@@ -357,6 +357,8 @@ In addition, if you have an existing Configuration that you simply wish to chang
 ##### [– copyWithConfiguration:callbackQueue:completion:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/copyWithConfiguration:callbackQueue:completion:)
 
 **By using the above methods to reuse an existing configuration, when you subscribe again with this reused Configuration, you will resume (catchup) at the point in time where you left off.**
+
+#### Configuration Options
 
 Once you create a configuration, you can set the following options:
 
@@ -434,7 +436,7 @@ If you automatically resubscribe on connection restore, do you catchup? (default
     self.myConfig.catchUpOnSubscriptionRestore = YES;
 }
 ```
-#### Step 2 - Instantiate a Client Instance with a Config
+#### Instantiate a Client Instance with a Config
 
 Once you've created the instance, instantiate the instance using one of the below methods:
 
@@ -446,7 +448,7 @@ Once you've created the instance, instantiate the instance using one of the belo
 self.client = [PubNub clientWithConfiguration:self.myConfig];
 ```
 
-#### Step 3 - Add a Listener in order to Receive Subscribe and Presence Stream Events
+#### Add a Listener in order to Receive Subscribe and Presence Stream Events
 
 ```objective-c
 [self.client addListeners:@[self]];
