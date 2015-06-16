@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		513F0B901B278D350054979D /* PNIntegrationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 513F0B8F1B278D350054979D /* PNIntegrationTests.m */; };
 		51F7AAC91B28B3E200BEDA1F /* PNIntegrationTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 51F7AAC81B28B3E200BEDA1F /* PNIntegrationTests.bundle */; };
+		97FA41F31B2FF518003B9B57 /* PNPublishTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 97FA41F21B2FF518003B9B57 /* PNPublishTests.m */; };
+		97FA41F51B2FFB61003B9B57 /* PNPublishTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 97FA41F41B2FFB61003B9B57 /* PNPublishTests.bundle */; };
 		E307AD049F55BEF780943655 /* libPods-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6097435E3C07196A4F24B6B6 /* libPods-ios.a */; };
 /* End PBXBuildFile section */
 
@@ -20,6 +22,8 @@
 		5ACDABA811F4B25CD768FB4E /* Pods-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ios/Pods-ios.debug.xcconfig"; sourceTree = "<group>"; };
 		6097435E3C07196A4F24B6B6 /* libPods-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F1E7CCB0F5454CF57A04DA9 /* Pods-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios.release.xcconfig"; path = "Pods/Target Support Files/Pods-ios/Pods-ios.release.xcconfig"; sourceTree = "<group>"; };
+		97FA41F21B2FF518003B9B57 /* PNPublishTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNPublishTests.m; sourceTree = "<group>"; };
+		97FA41F41B2FFB61003B9B57 /* PNPublishTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNPublishTests.bundle; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +60,7 @@
 			isa = PBXGroup;
 			children = (
 				513F0B8F1B278D350054979D /* PNIntegrationTests.m */,
+				97FA41F21B2FF518003B9B57 /* PNPublishTests.m */,
 				51F7AAC11B27AD7400BEDA1F /* Fixtures */,
 				519C32801B20C11500FAC283 /* Supporting Files */,
 			);
@@ -73,6 +78,7 @@
 		51F7AAC11B27AD7400BEDA1F /* Fixtures */ = {
 			isa = PBXGroup;
 			children = (
+				97FA41F41B2FFB61003B9B57 /* PNPublishTests.bundle */,
 				51F7AAC81B28B3E200BEDA1F /* PNIntegrationTests.bundle */,
 			);
 			name = Fixtures;
@@ -153,6 +159,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				51F7AAC91B28B3E200BEDA1F /* PNIntegrationTests.bundle in Resources */,
+				97FA41F51B2FFB61003B9B57 /* PNPublishTests.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -197,6 +204,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				513F0B901B278D350054979D /* PNIntegrationTests.m in Sources */,
+				97FA41F31B2FF518003B9B57 /* PNPublishTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
