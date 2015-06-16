@@ -300,6 +300,26 @@ As we approach final beta, full docs will become available as well. For now, the
 
 ### Initialization
 
+#### Step 0 - Basic Setup
+
+##### Import PubNub.h
+
+Import PubNub into your application:
+
+```objective-c
+#import <PubNub/PubNub.h>
+```
+
+##### Conform to the PNObjectEventListener protocol and Define a client property.
+
+
+```objective-c
+# In this example, we implement within AppDelegate.m 
+@interface AppDelegate () <PNObjectEventListener>
+@property(nonatomic, strong) PubNub *client;
+@end
+```
+
 #### Step 1 - Create a Config
 The first thing you need to do is create a configuration. Configurations are immutable. The most common use case is to instantiate a configuration with your publish an subscribe keys:
 
@@ -374,5 +394,15 @@ Once you've created the instance, instantiate the instance using one of the belo
 ##### [+ clientWithConfiguration:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/clientWithConfiguration:)
 
 ##### [+ clientWithConfiguration:callbackQueue:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/clientWithConfiguration:callbackQueue:)
+
+#### Step 3 - Add a Listener in order to Receive Subscribe and Presence Stream Events
+
+```objective-c
+[self.client addListeners:@[self]];
+```
+
+You can have multiple listeners across multiple files.
+
+A completed example of this [can be found in the Hello World snippet](#hello-world)
 
 If you have questions about how the Result and Status objects work in the meantime, feel free to contact support@pubnub.com and cc: geremy@pubnub.com, and we'll be happy to assist.
