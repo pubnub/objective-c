@@ -8,7 +8,7 @@
 - [PubNub 4.0b2 for iOS 7+ (Beta, not for Production Use)](#pubnub-40b2-for-ios-7-beta-not-for-production-use)
   - [Changes from 3.x](#changes-from-3x)
   - [Known issues and TODOs in beta2:](#known-issues-and-todos-in-beta2)
-  - [Installing the Source](#installing-the-source)
+  - [Installing the Pod](#installing-the-pod)
   - [Hello World](#hello-world)
   - [Migrating from 3.x](#migrating-from-3x)
     - [Project Setup](#project-setup)
@@ -290,6 +290,8 @@ Streamed operation method calls return Results and Statuses via listeners. For e
 
 Non-Streamed operation method calls use completion blocks which return either a result or status object. An example of this can be seen in the [history call example](https://github.com/pubnub/objective-c/blob/4.0b2/Example/PubNub/PNAppDelegate.m#L228).
 
+If you have questions about how the Result and Status objects work in the meantime, feel free to contact support@pubnub.com and cc: geremy@pubnub.com, and we'll be happy to assist.
+
 ## Reference App - Example
 
 In Beta2, [we provide Example](https://github.com/pubnub/objective-c/tree/4.0b2/Example) as a generic reference on how to set config options, make Pub, Sub, and History calls (with and without PAM), and handle the various Status and Result events that may arise from them.  
@@ -303,7 +305,7 @@ As we approach final beta, full docs will become available as well. For now, the
 #### Step 0 - Basic Setup
 
 ##### Install the CocoaPod
-[Install the Pod](#installing-the-pod)
+To get the PubNub source code onto your system first you must [install the Pod](#installing-the-pod).
 
 ##### Import PubNub.h
 
@@ -434,11 +436,13 @@ self.client = [PubNub clientWithConfiguration:self.myConfig];
 [self.client addListeners:@[self]];
 ```
 
+A completed example of this step [can be found in the Hello World snippet](#hello-world)
+
 ### Time
 
 [– timeWithCompletion:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/timeWithCompletion:)
 
-Request current time from \b PubNub service servers.
+Request current time from PubNub network.
 
 ```objective-c
 - (void)pubNubTime {
@@ -456,13 +460,152 @@ Request current time from \b PubNub service servers.
 
 On success, result.data.timetoken will include the timetoken value. On status, review isError and category attributes to pinpoint the exact situation, and handle accordingly. See the [handleStatus:(PNStatus)status](Example/PubNub/PNAppDelegate.m#L528) method in Example for an example.
 
-
-
-
-
-
 You can have multiple listeners across multiple files.
 
-A completed example of this [can be found in the Hello World snippet](#hello-world)
 
-If you have questions about how the Result and Status objects work in the meantime, feel free to contact support@pubnub.com and cc: geremy@pubnub.com, and we'll be happy to assist.
+### Publish
+
+[– publish:toChannel:withCompletion:
+– publish:toChannel:compressed:withCompletion:
+– publish:toChannel:storeInHistory:withCompletion:
+– publish:toChannel:storeInHistory:compressed:withCompletion:
+– publish:toChannel:mobilePushPayload:withCompletion:
+– publish:toChannel:mobilePushPayload:compressed:withCompletion:
+– publish:toChannel:mobilePushPayload:storeInHistory:withCompletion:
+– publish:toChannel:mobilePushPayload:storeInHistory:compressed:withCompletion:
+– sizeOfMessage:toChannel:withCompletion:
+– sizeOfMessage:toChannel:compressed:withCompletion:
+– sizeOfMessage:toChannel:storeInHistory:withCompletion:
+– sizeOfMessage:toChannel:compressed:storeInHistory:withCompletion:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/publish:toChannel:withCompletion:)
+
+Publish a message.
+
+```objective-c
+    [self.client publish:@"Connected! I'm here!" toChannel:_channel1
+          withCompletion:^(PNStatus <PNPublishStatus> *status) {
+              if (!status.isError) {
+                  NSLog(@"Message sent at TT: %@", status.data.timetoken);
+              } else {
+                  [self handleStatus:status];
+              }
+          }];
+
+    /*
+    [self.client publish:<#(id)message#> toChannel:<#(NSString *)channel#> compressed:<#(BOOL)compressed#> withCompletion:<#(PNPublishCompletionBlock)block#>];
+    [self.client publish:<#(id)message#> toChannel:<#(NSString *)channel#> withCompletion:<#(PNPublishCompletionBlock)block#>];
+    [self.client publish:<#(id)message#> toChannel:<#(NSString *)channel#> storeInHistory:<#(BOOL)shouldStore#> withCompletion:<#(PNPublishCompletionBlock)block#>];
+    [self.client publish:<#(id)message#> toChannel:<#(NSString *)channel#> storeInHistory:<#(BOOL)shouldStore#> compressed:<#(BOOL)compressed#> withCompletion:<#(PNPublishCompletionBlock)block#>];
+    [self.client publish:<#(id)message#> toChannel:<#(NSString *)channel#> mobilePushPayload:<#(NSDictionary *)payloads#> withCompletion:<#(PNPublishCompletionBlock)block#>];
+    [self.client publish:<#(id)message#> toChannel:<#(NSString *)channel#> mobilePushPayload:<#(NSDictionary *)payloads#> compressed:<#(BOOL)compressed#> withCompletion:<#(PNPublishCompletionBlock)block#>];
+    [self.client publish:<#(id)message#> toChannel:<#(NSString *)channel#> mobilePushPayload:<#(NSDictionary *)payloads#> storeInHistory:<#(BOOL)shouldStore#> withCompletion:<#(PNPublishCompletionBlock)block#>];
+    [self.client publish:<#(id)message#> toChannel:<#(NSString *)channel#> mobilePushPayload:<#(NSDictionary *)payloads#> storeInHistory:<#(BOOL)shouldStore#> compressed:<#(BOOL)compressed#> withCompletion:<#(PNPublishCompletionBlock)block#>];
+    */
+```
+
+If sending with a 3rd Party Push payload, use a dictionary, with key(s) of "apns" and/or "gcm", with the correct corresponding payloads native for that platform. For example, to publish with an APNS specific payload, and a "for everyone else" payload, your dict may look like:
+
+```javascript
+{
+    "apns": {
+        "aps": {
+            "alert": "Only associated iOS devices get this.",
+            "badge": "5"
+        },
+        "fooDataForEveryone": {
+            "bar": "Non-iOS devices will get payload, and the apns data as well.",
+            "foobaz": "baz"
+        }
+    }
+}
+```
+
+On success, isError will be NO, and status.data.timetoken will include the ingress timetoken value. If isError is YES, review the category attribute to pinpoint the exact situation, and handle accordingly. See the [handleStatus:(PNStatus)status](Example/PubNub/PNAppDelegate.m#L528) method in Example for an example.
+
+### Subcribe / Unsubscribe
+
+#### Subscribing to Channels, Channel Groups, and Presence Events
+
+[– subscribeToChannels:withPresence:
+– subscribeToChannels:withPresence:clientState:
+– subscribeToChannelGroups:withPresence:
+– subscribeToChannelGroups:withPresence:clientState:
+– subscribeToPresenceChannels:
+– unsubscribeFromChannels:withPresence:
+– unsubscribeFromChannelGroups:withPresence:
+– unsubscribeFromPresenceChannels:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/subscribeToChannels:withPresence:)
+
+Subscribe and Unsubscribe to Channels, Channel Groups, and Presence events.
+
+PubNub returns data to the user via Result or Status objects. Because of the asyncronous, long-running characteristics of subscribe data, unlike other methods which return Result or Status objects via their associated completion blocks, subscribe Result and Status data is instead returned via listeners.
+
+Add the class you wish to receive streaming Result and Status on as a listener (this is mandatory in order to receive streaming messages and statuses), using the [– addListeners:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/addListeners:) method call.
+
+Once the class is added as a listener, it will receive streaming events on the following listener methods:
+
+[- (void)client:(PubNub *)client didReceiveMessage:(PNResult<PNMessageResult> *)message
+    withStatus:(PNStatus<PNStatus> *)status;
+- (void)client:(PubNub *)client didReceivePresenceEvent:(PNResult<PNPresenceEventResult> *)event;
+- (void)client:(PubNub *)client didReceiveStatus:(PNStatus<PNSubscriberStatus> *)status;](PubNub/Misc/Protocols/PNObjectEventListener.h)
+    
+A completed example of subscribing [can be found in the Hello World snippet](#hello-world). You can also see it in the Example app.  Example implementations of the above listeners, taken from Example, may look similar to:
+
+```objective-c
+- (void)client:(PubNub *)client didReceiveMessage:(PNResult <PNMessageResult>*)message
+    withStatus:(PNStatus<PNStatus> *)status {
+
+    if (status) {
+        [self handleStatus:status];
+    } else if (message) {
+        NSLog(@"Received message: %@ on channel %@ at %@", message.data.message, message.data.subscribedChannel, message.data.timetoken);
+    }
+}
+
+#pragma mark - Streaming Data didReceivePresenceEvent Listener
+
+- (void)client:(PubNub *)client didReceivePresenceEvent:(PNResult <PNPresenceEventResult> *)event {
+    NSLog(@"^^^^^ Did receive presence event: %@", event.data.data);
+}
+
+#pragma mark - Streaming Data didReceiveStatus Listener
+
+- (void)client:(PubNub *)client didReceiveStatus:(PNStatus <PNSubscriberStatus> *)status {
+
+    // This is where we'll find ongoing status events from our subscribe loop
+    // Results (messages) from our subscribe loop will be found in didReceiveMessage
+    // Results (presence events) from our subscribe loop will be found in didReceiveStatus
+
+    [self handleStatus:status];
+}
+```
+
+When subscribing to channels and channel groups, message.data.message, message.data.subscribedChannel, and message.data.timetoken are the fields you can receive message data on.
+
+When subscribing to Presence Events, event.data.data will contain the presence data dictionary.
+
+All other streaming non-Result (Status) data is monitored via the didReceiveStatus listener. See the [handleStatus:(PNStatus)status](Example/PubNub/PNAppDelegate.m#L528) method in Example for an example on how to handle these sorts of things.
+
+#### Listener Methods
+
+Before a class can receive messages, it must be assigned as a listener. You can use the following methods to add and remove listeners:
+
+[– addListeners:
+– removeListeners:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/addListeners:)
+
+
+#### Determining Current Subscribtion Status
+
+Use the following methods to determine which channels you are already subscribed to:
+
+[– channels
+– channelGroups
+– presenceChannels
+– isSubscribedOn:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/channels)
+
+
+
+
+
+
+
+
+
