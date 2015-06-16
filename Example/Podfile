@@ -9,6 +9,6 @@ end
 target 'PubNub_Tests', :exclusive => true do
   pod "PubNub", :path => "../"
   pod "Expecta", "~> 1.0"
-  pod "OHHTTPStubs", "~> 4.0"
+#  pod "OHHTTPStubs", "~> 4.0"
 #  pod "VCRURLConnection", "~> 0.2"  
 end
