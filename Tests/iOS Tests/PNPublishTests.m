@@ -19,7 +19,7 @@
 @implementation PNPublishTests
 
 - (BOOL)recording {
-    return YES;
+    return NO;
 }
 
 - (void)setUp {

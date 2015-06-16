@@ -7,13 +7,13 @@
 		<dict>
 			<key>data</key>
 			<data>
-			WzEsIlNlbnQiLCIxNDM0NDM2NDI2MjI0MzUzNiJd
+			WzEsIlNlbnQiLCIxNDM0NDM4MDU1OTI0MzY5NyJd
 			</data>
 			<key>json</key>
 			<array>
 				<integer>1</integer>
 				<string>Sent</string>
-				<string>14344364262243536</string>
+				<string>14344380559243697</string>
 			</array>
 		</dict>
 		<key>request</key>
@@ -25,7 +25,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/F849557E-9C1C-4319-910D-00BF8FA376D4/0/%22test%22?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=31D0087A-8A32-40AF-9CF0-530BC27AD2E1&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/5469AA7A-162F-4027-B42B-A6E124674AEC/0/%22test%22?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=31D0087A-8A32-40AF-9CF0-530BC27AD2E1&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -49,7 +49,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/F849557E-9C1C-4319-910D-00BF8FA376D4/0/%22test%22?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=31D0087A-8A32-40AF-9CF0-530BC27AD2E1&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/5469AA7A-162F-4027-B42B-A6E124674AEC/0/%22test%22?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=31D0087A-8A32-40AF-9CF0-530BC27AD2E1&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept-Language</key>
@@ -70,7 +70,7 @@
 				<key>MIMEType</key>
 				<string>text/javascript</string>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/F849557E-9C1C-4319-910D-00BF8FA376D4/0/%22test%22?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=31D0087A-8A32-40AF-9CF0-530BC27AD2E1&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/5469AA7A-162F-4027-B42B-A6E124674AEC/0/%22test%22?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=31D0087A-8A32-40AF-9CF0-530BC27AD2E1&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHeaderFields</key>
 				<dict>
 					<key>Access-Control-Allow-Methods</key>
@@ -86,7 +86,7 @@
 					<key>Content-Type</key>
 					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
-					<string>Tue, 16 Jun 2015 06:33:46 GMT</string>
+					<string>Tue, 16 Jun 2015 07:00:55 GMT</string>
 				</dict>
 				<key>expectedContentLength</key>
 				<integer>30</integer>
