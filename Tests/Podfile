@@ -8,6 +8,6 @@ target :ios do
   link_with "iOS Tests"
   pod "Expecta", "~> 1.0"
   #pod "OHHTTPStubs", "~> 4.0"
-  pod "JSZVCR", :git => 'https://github.com/jzucker2/JSZVCR.git', :branch => 'master'
+  pod "JSZVCR", "~> 0.3"
   pod "PubNub", :path => "../"
 end

@@ -38,20 +38,12 @@ PODS:
 
 DEPENDENCIES:
   - Expecta (~> 1.0)
-  - JSZVCR (from `https://github.com/jzucker2/JSZVCR.git`, branch `master`)
+  - JSZVCR (~> 0.3)
   - PubNub (from `../`)
 
 EXTERNAL SOURCES:
-  JSZVCR:
-    :branch: master
-    :git: https://github.com/jzucker2/JSZVCR.git
   PubNub:
     :path: ../
-
-CHECKOUT OPTIONS:
-  JSZVCR:
-    :commit: 193b35d37b64ed8232b72d1593a83c5900fff0bc
-    :git: https://github.com/jzucker2/JSZVCR.git
 
 SPEC CHECKSUMS:
   AFNetworking: 05edc0ac4c4c8cf57bcf4b84be5b0744b6d8e71e
