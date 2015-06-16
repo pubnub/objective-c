@@ -51,7 +51,7 @@
 * Provide Swift Bridge and associated docs
 * Approach >= 75% automated test code coverage as we approach final release
 
-## Installing the Source
+## Installing the Pod
 
 * Create a new project in Xcode as you would normally.
 * Close XCode
@@ -301,6 +301,9 @@ As we approach final beta, full docs will become available as well. For now, the
 ### Initialization
 
 #### Step 0 - Basic Setup
+
+##### Install the CocoaPod
+[Install the Pod](#installing-the-pod)
 
 ##### Import PubNub.h
 
