@@ -189,20 +189,19 @@
         #pragma clang diagnostic ignored "-Wreceiver-is-weak"
         #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
         // Try to request 'time' API to ensure what network really available.
-        __weak __typeof(self) weakSelf = self;
         [self.client timeWithCompletion:^(PNResult<PNTimeResult> *result, PNStatus<PNStatus> *status) {
             
-            weakSelf.pingCompleteBlock(result.data != nil);
-            if (weakSelf.pingingRemoteService) {
+            self.pingCompleteBlock(result.data != nil);
+            if (self.pingingRemoteService) {
                 
-                NSTimeInterval delay = (weakSelf.reachabilityStatus == AFNetworkReachabilityStatusNotReachable ||
-                                        weakSelf.reachabilityStatus == AFNetworkReachabilityStatusUnknown ?
+                NSTimeInterval delay = (self.reachabilityStatus == AFNetworkReachabilityStatusNotReachable ||
+                                        self.reachabilityStatus == AFNetworkReachabilityStatusUnknown ?
                                         10.f : 1.0f);
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)),
                                dispatch_get_main_queue(), ^{
                                    
-                                   weakSelf.pingRemoteService = NO;
-                                   [weakSelf startServicePing];
+                                   self.pingRemoteService = NO;
+                                   [self startServicePing];
                                });
             }
         }];

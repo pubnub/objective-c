@@ -10,7 +10,7 @@
 
 @class PubNub;
 
-@interface PNBasicClientTestCase : JSZVCRTestCase
+@interface PNBasicClientTestCase : JSZVCRTestCase <PNObjectEventListener>
 
 @property (nonatomic) PubNub *client;
 

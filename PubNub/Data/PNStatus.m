@@ -95,7 +95,7 @@
 #pragma mark - Information
 
 - (void)updateCategory:(PNStatusCategory)category; {
-    
+
     self.category = category;
 }
 
@@ -172,6 +172,11 @@
                 
                 _category = [self categoryTypeFromError:task.error];
             }
+        }
+        
+        if (_category == PNCancelledCategory) {
+            
+            _error = NO;
         }
     }
     

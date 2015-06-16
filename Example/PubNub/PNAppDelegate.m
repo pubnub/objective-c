@@ -97,7 +97,7 @@
 
 - (void)tireKicker {
     [self pubNubInit];
-
+    
 #pragma mark - Time
 
     [self pubNubTime];
