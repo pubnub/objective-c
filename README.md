@@ -633,9 +633,44 @@ Use the following methods to determine which channels you are already subscribed
 
 [The complete reference for these methods is available here](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/channels)
 
+### History
 
+[History methods](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/historyForChannel:withCompletion:) let you access PubNub's Storage and Playback system.
 
+– historyForChannel:withCompletion:
 
+– historyForChannel:start:end:withCompletion:
+
+– historyForChannel:start:end:limit:withCompletion:
+
+– historyForChannel:start:end:includeTimeToken:withCompletion:
+
+– historyForChannel:start:end:limit:includeTimeToken:withCompletion:
+
+– historyForChannel:start:end:limit:reverse:withCompletion:
+
+– historyForChannel:start:end:limit:reverse:includeTimeToken:withCompletion:
+
+```objective-c
+    [self.client historyForChannel:_channel1 withCompletion:^(PNResult <PNHistoryResult> *result, PNStatus <PNStatus> *status) {
+
+        // If you have a result, the data you specifically requested (in this case, history response) is available in result.data
+        
+        // If you have a status, error or non-error status information is available regarding the call.
+
+        if (status) {
+            // As a status, this contains error or non-error information about the history request, but not the actual history data I requested.
+            // Timeout Error, PAM Error, etc.
+
+            [self handleStatus:status];
+        }
+        else if (result) {
+            // As a result, this contains the messages, start, and end timetoken in the data attribute
+
+            NSLog(@"Loaded history data: %@ with start %@ and end %@", result.data.messages, result.data.start, result.data.end);
+        }
+    }];
+```
 
 
 
