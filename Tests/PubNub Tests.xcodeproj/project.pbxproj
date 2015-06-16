@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		513F0B901B278D350054979D /* PNIntegrationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 513F0B8F1B278D350054979D /* PNIntegrationTests.m */; };
-		51F7AAC91B28B3E200BEDA1F /* NetworkResponses.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 51F7AAC81B28B3E200BEDA1F /* NetworkResponses.bundle */; };
+		51F7AAC91B28B3E200BEDA1F /* PNIntegrationTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 51F7AAC81B28B3E200BEDA1F /* PNIntegrationTests.bundle */; };
 		E307AD049F55BEF780943655 /* libPods-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6097435E3C07196A4F24B6B6 /* libPods-ios.a */; };
 /* End PBXBuildFile section */
 
@@ -16,7 +16,7 @@
 		513F0B8F1B278D350054979D /* PNIntegrationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNIntegrationTests.m; sourceTree = "<group>"; };
 		519C327D1B20C11500FAC283 /* iOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "iOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		519C32811B20C11500FAC283 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		51F7AAC81B28B3E200BEDA1F /* NetworkResponses.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = NetworkResponses.bundle; sourceTree = "<group>"; };
+		51F7AAC81B28B3E200BEDA1F /* PNIntegrationTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNIntegrationTests.bundle; sourceTree = "<group>"; };
 		5ACDABA811F4B25CD768FB4E /* Pods-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ios/Pods-ios.debug.xcconfig"; sourceTree = "<group>"; };
 		6097435E3C07196A4F24B6B6 /* libPods-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F1E7CCB0F5454CF57A04DA9 /* Pods-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios.release.xcconfig"; path = "Pods/Target Support Files/Pods-ios/Pods-ios.release.xcconfig"; sourceTree = "<group>"; };
@@ -73,7 +73,7 @@
 		51F7AAC11B27AD7400BEDA1F /* Fixtures */ = {
 			isa = PBXGroup;
 			children = (
-				51F7AAC81B28B3E200BEDA1F /* NetworkResponses.bundle */,
+				51F7AAC81B28B3E200BEDA1F /* PNIntegrationTests.bundle */,
 			);
 			name = Fixtures;
 			sourceTree = "<group>";
@@ -152,7 +152,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				51F7AAC91B28B3E200BEDA1F /* NetworkResponses.bundle in Resources */,
+				51F7AAC91B28B3E200BEDA1F /* PNIntegrationTests.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
