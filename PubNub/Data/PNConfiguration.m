@@ -58,7 +58,11 @@
     // Check whether initialization successful or not.
     if ((self = [super init])) {
         
+#if TEST
+        _deviceID = @"3650F534-FC54-4EE8-884C-EF1B83188BB7";
+#else
         _deviceID = [[[[UIDevice currentDevice] identifierForVendor] UUIDString] copy];
+#endif
         _origin = [kPNDefaultOrigin copy];
         _publishKey = [publishKey copy];
         _subscribeKey = [subscribeKey copy];

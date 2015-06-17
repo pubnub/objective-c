@@ -12,8 +12,9 @@
 
 #import "PNBasicSubscribeTestCase.h"
 
-@interface PNChannelGroupTests : PNBasicSubscribeTestCase
+static NSString * const kChannelGroup = @"79713A48-107C-4338-9977-92EEC1F29577";
 
+@interface PNChannelGroupTests : PNBasicSubscribeTestCase
 @end
 
 @implementation PNChannelGroupTests
@@ -22,10 +23,20 @@
     return NO;
 }
 
+- (void)tearDown {
+    XCTestExpectation *channelGroupTearDownExpectation = [self expectationWithDescription:@"tearDownExpectation"];
+    [self.client removeChannelsFromGroup:kChannelGroup withCompletion:^(PNStatus<PNStatus> *status) {
+        [channelGroupTearDownExpectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
+        NSLog(@"error: %@", error);
+    }];
+    [super tearDown];
+}
+
 - (void)testChannelGroupAdd {
     self.subscribeExpectation = [self expectationWithDescription:@"network"];
-    NSString *channelGroup = [NSUUID UUID].UUIDString;
-    [self.client addChannels:@[@"a", @"c"] toGroup:channelGroup withCompletion:^(PNStatus<PNStatus> *status) {
+    [self.client addChannels:@[@"a", @"c"] toGroup:kChannelGroup withCompletion:^(PNStatus<PNStatus> *status) {
         XCTAssertNotNil(status);
         XCTAssertFalse(status.isError);
         XCTAssertEqual(status.operation, PNAddChannelsToGroupOperation);

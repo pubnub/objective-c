@@ -45,7 +45,7 @@
     XCTAssertEqual(message.operation, PNSubscribeOperation);
     NSLog(@"message:");
     NSLog(@"%@", message.data.message);
-    XCTAssertEqualObjects(message.data.message, @"************... 281 - 2015-06-17 12:13:32");
+    XCTAssertEqualObjects(message.data.message, @"*************** 5849 - 2015-06-17 15:19:49");
     [self.subscribeExpectation fulfill];
 }
 
