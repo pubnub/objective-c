@@ -66,6 +66,7 @@
 		519C32721B20BF4D00FAC283 = {
 			isa = PBXGroup;
 			children = (
+				969714371B32F08E001DECD1 /* Categories */,
 				519C327F1B20C11500FAC283 /* iOS Tests */,
 				519C327E1B20C11500FAC283 /* Products */,
 				6A027B24426654F78826ED2D /* Pods */,
@@ -129,6 +130,13 @@
 				6097435E3C07196A4F24B6B6 /* libPods-ios.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		969714371B32F08E001DECD1 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Categories;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
