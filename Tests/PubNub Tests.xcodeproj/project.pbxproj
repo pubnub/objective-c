@@ -391,7 +391,7 @@
 				519C32781B20BF4D00FAC283 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		519C32861B20C11500FAC283 /* Build configuration list for PBXNativeTarget "iOS Tests" */ = {
 			isa = XCConfigurationList;
@@ -400,7 +400,7 @@
 				519C32851B20C11500FAC283 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};
