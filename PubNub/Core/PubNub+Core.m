@@ -17,8 +17,8 @@
 #import "PNSubscriber.h"
 #import "PNHeartbeat.h"
 #import "PNNetwork.h"
+#import "PNHelpers.h"
 
-#import "PubNub+Publish.h"
 
 #pragma mark Static
 
@@ -30,6 +30,17 @@
 DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNReachabilityLogLevel|
                                      PNFailureStatusLogLevel|PNAPICallLogLevel|
                                      PNAESErrorLogLevel);
+
+
+#pragma mark - Externs
+
+void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
+    
+    if (queue && block) {
+        
+        dispatch_async(queue, block);
+    }
+}
 
 
 #pragma mark - Protected interface declaration
@@ -241,11 +252,11 @@ DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNReachabilityLogLevel|
     
     dispatch_block_t subscriptionRestoreBlock = ^{
         
-        [client.subscriberManager continueSubscriptionCycleIfRequiredWithCompletion:^(PNStatus<PNSubscriberStatus> *status) {
+        [client.subscriberManager continueSubscriptionCycleIfRequiredWithCompletion:^(PNSubscribeStatus *status) {
             
             if (block) {
                 
-                dispatch_async(client.callbackQueue, ^{
+                pn_dispatch_async(client.callbackQueue, ^{
                     
                     block(client);
                 });
@@ -258,12 +269,12 @@ DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNReachabilityLogLevel|
             ![configuration.authKey isEqualToString:self.configuration.authKey]) {
             __weak __typeof(self) weakSelf = self;
             [self unsubscribeFromChannels:self.subscriberManager.channels withPresence:YES
-                               completion:^(PNStatus<PNSubscriberStatus> *status1) {
+                               completion:^(PNSubscribeStatus *status1) {
                    
                  __strong __typeof(self) strongSelf = weakSelf;
                 [strongSelf unsubscribeFromChannelGroups:strongSelf.subscriberManager.channelGroups
                                             withPresence:YES
-                                              completion:^(PNStatus<PNSubscriberStatus> *status2) {
+                                              completion:^(PNSubscribeStatus *status2) {
                                           
                     subscriptionRestoreBlock();
                 }];
@@ -434,7 +445,7 @@ DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNReachabilityLogLevel|
 
     if (block) {
 
-        dispatch_async(self.callbackQueue, ^{
+        pn_dispatch_async(self.callbackQueue, ^{
 
             if (!callingStatusBlock) {
                 
@@ -448,7 +459,7 @@ DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNReachabilityLogLevel|
     }
 }
 
-- (void)client:(PubNub *)__unused client didReceiveStatus:(PNStatus<PNPublishStatus> *)status {
+- (void)client:(PubNub *)__unused client didReceiveStatus:(PNSubscribeStatus *)status {
     
     if (status.category == PNConnectedCategory || status.category == PNDisconnectedCategory ||
         status.category == PNUnexpectedDisconnectCategory) {

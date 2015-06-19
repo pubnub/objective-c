@@ -209,20 +209,23 @@
 }
 
 - (void)pubNubSetState {
-    [self.client setState:@{[self randomString] : @{[self randomString] : [self randomString]}} forUUID:_myConfig.uuid onChannel:_channel1 withCompletion:^(PNStatus <PNSetStateStatus> *status) {
+    
+    [self.client setState:@{[self randomString] : @{[self randomString] : [self randomString]}} forUUID:_myConfig.uuid onChannel:_channel1 withCompletion:^(PNClientStateUpdateStatus *status) {
         [self handleStatus:status];
     }];
 }
 
 - (void)pubNubGetState{
 
-    [self.client stateForUUID:_myConfig.uuid onChannel:_channel1 withCompletion:^(PNResult <PNChannelStateResult> *result, PNStatus <PNChannelStateStatus> *status) {
+    [self.client stateForUUID:_myConfig.uuid onChannel:_channel1
+               withCompletion:^(PNChannelClientStateResult *result, PNErrorStatus *status) {
 
         if (status) {
             [self handleStatus:status];
         }
         else if (result) {
-            NSLog(@"^^^^ Loaded state %@ for channel %@", result.data.data, _channel1);
+            
+            NSLog(@"^^^^ Loaded state %@ for channel %@", result.data.state, self->_channel1);
         }
 
     }];
@@ -275,7 +278,8 @@
 
 
 - (void)pubNubWhereNow {
-    [self.client whereNowUUID:@"123456" withCompletion:^(PNResult <PNWhereNowResult> *result, PNStatus <PNStatus> *status) {
+    [self.client whereNowUUID:@"123456" withCompletion:^(PNPresenceWhereNowResult *result,
+                                                         PNErrorStatus *status) {
 
         if (status) {
             [self handleStatus:status];
@@ -288,11 +292,11 @@
 
 - (void)pubNubCGRemoveSomeChannels {
 
-    [self.client removeChannels:@[_channel2] fromGroup:_channelGroup1 withCompletion:^(PNStatus <PNStatus> *status) {
+    [self.client removeChannels:@[_channel2] fromGroup:_channelGroup1 withCompletion:^(PNAcknowledgmentStatus *status) {
 
 
         if (!status.isError) {
-            NSLog(@"^^^^CG Remove Some Channels request succeeded at timetoken %@.", status.data);
+            NSLog(@"^^^^CG Remove Some Channels request succeeded at timetoken %@.", status);
         } else {
             NSLog(@"^^^^CG Remove Some Channels request did not succeed. All subscribe operations will autoretry when possible.");
             [self handleStatus:status];
@@ -302,7 +306,9 @@
 
 - (void)pubNubCGRemoveAllChannels {
 
-    [self.client removeChannelsFromGroup:_channelGroup1 withCompletion:^(PNStatus <PNStatus> *status) {
+    [self.client removeChannelsFromGroup:_channelGroup1
+                          withCompletion:^(PNAcknowledgmentStatus *status) {
+                              
         if (!status.isError) {
             NSLog(@"^^^^CG Remove All Channels request succeeded");
         } else {
@@ -316,7 +322,7 @@
 - (void)pubNubCGAdd {
 
     __weak __typeof(self) weakSelf = self;
-    [self.client addChannels:@[_channel1, _channel2] toGroup:_channelGroup1 withCompletion:^(PNStatus <PNStatus> *status) {
+    [self.client addChannels:@[_channel1, _channel2] toGroup:_channelGroup1 withCompletion:^(PNAcknowledgmentStatus *status) {
         if (!status.isError) {
             NSLog(@"^^^^CGAdd request succeeded");
         } else {
@@ -329,19 +335,22 @@
 
 - (void)pubNubChannelsForGroup {
 
-    [self.client channelsForGroup:_channelGroup1 withCompletion:^(PNResult <PNGroupChannelsResult> *result, PNStatus <PNStatus> *status) {
+    [self.client channelsForGroup:_channelGroup1
+                   withCompletion:^(PNChannelGroupChannelsResult *result, PNErrorStatus *status) {
         if (status) {
             [self handleStatus:status];
         }
         else if (result) {
-            NSLog(@"^^^^ Loaded all channels %@ for group %@", result.data.channels, _channelGroup1);
+            NSLog(@"^^^^ Loaded all channels %@ for group %@",
+                  result.data.channels, self->_channelGroup1);
         }
     }];
 }
 
 - (void)pubNubHereNowForChannel {
 
-    [self.client hereNowForChannel:_channel1 withCompletion:^(PNResult <PNHereNowResult> *result, PNStatus <PNStatus> *status) {
+    [self.client hereNowForChannel:_channel1 withCompletion:^(PNPresenceChannelHereNowResult *result,
+                                                              PNErrorStatus *status) {
         if (status) {
 
             [self handleStatus:status];
@@ -357,7 +366,8 @@
     // Occupancy + UUID         : PNHereNowUUID
     // Occupancy + UUID + State : PNHereNowState
 
-    [self.client hereNowForChannel:_channel1 withVerbosity:PNHereNowState completion:^(PNResult <PNHereNowResult> *result, PNStatus <PNStatus> *status) {
+    [self.client hereNowForChannel:_channel1 withVerbosity:PNHereNowState
+                        completion:^(PNPresenceChannelHereNowResult *result, PNErrorStatus *status) {
         if (status) {
             [self handleStatus:status];
         }
@@ -371,7 +381,7 @@
 
 - (void)pubNubGlobalHereNow {
 
-    [self.client hereNowWithCompletion:^(PNResult <PNGlobalHereNowResult> *result, PNStatus <PNStatus> *status) {
+    [self.client hereNowWithCompletion:^(PNPresenceGlobalHereNowResult *result, PNErrorStatus *status) {
         if (status) {
             [self handleStatus:status];
         }
@@ -386,7 +396,8 @@
     // Occupancy + UUID         : PNHereNowUUID
     // Occupancy + UUID + State : PNHereNowState
 
-    [self.client hereNowWithVerbosity:PNHereNowOccupancy completion:^(PNResult <PNGlobalHereNowResult> *result, PNStatus <PNStatus> *status) {
+    [self.client hereNowWithVerbosity:PNHereNowOccupancy completion:^(PNPresenceGlobalHereNowResult *result,
+                                                                      PNErrorStatus *status) {
         if (status) {
             [self handleStatus:status];
         }
@@ -408,7 +419,8 @@
 - (void)pubNubHistory {
     // History
 
-    [self.client historyForChannel:_channel1 withCompletion:^(PNResult <PNHistoryResult> *result, PNStatus <PNStatus> *status) {
+    [self.client historyForChannel:_channel1 withCompletion:^(PNHistoryResult *result,
+                                                              PNErrorStatus *status) {
 
         // For completion blocks that provide both result and status parameters, you will only ever
         // have a non-nil status or result.
@@ -444,7 +456,7 @@
 
 - (void)pubNubTime {
 
-    [self.client timeWithCompletion:^(PNResult <PNTimeResult> *result, PNStatus <PNStatus> *status) {
+    [self.client timeWithCompletion:^(PNTimeResult *result, PNErrorStatus *status) {
         if (result.data) {
             NSLog(@"Result from Time: %@", result.data.timetoken);
         }
@@ -456,7 +468,7 @@
 
 - (void)pubNubPublish {
     [self.client publish:@"Connected! I'm here!" toChannel:_channel1
-          withCompletion:^(PNStatus <PNPublishStatus> *status) {
+          withCompletion:^(PNPublishStatus *status) {
               if (!status.isError) {
                   NSLog(@"Message sent at TT: %@", status.data.timetoken);
               } else {
@@ -479,27 +491,29 @@
 
 #pragma mark - Streaming Data didReceiveMessage Listener
 
-- (void)client:(PubNub *)client didReceiveMessage:(PNResult <PNMessageResult>*)message
-    withStatus:(PNStatus<PNStatus> *)status {
+- (void)client:(PubNub *)client didReceiveMessage:(PNMessageResult *)message
+    withStatus:(PNErrorStatus *)status {
 
-    Boolean *isSubbed= [self.client isSubscribedOn:@"foo"];
+    BOOL isSubbed= [self.client isSubscribedOn:@"foo"];
 
     if (status) {
         [self handleStatus:status];
     } else if (message) {
-        NSLog(@"Received message: %@ on channel %@ at %@", message.data.message, message.data.subscribedChannel, message.data.timetoken);
+        
+        NSLog(@"Received message: %@ on channel %@ at %@", message.data.message,
+              message.data.subscribedChannel, message.data.timetoken);
     }
 }
 
 #pragma mark - Streaming Data didReceivePresenceEvent Listener
 
-- (void)client:(PubNub *)client didReceivePresenceEvent:(PNResult <PNPresenceEventResult> *)event {
-    NSLog(@"^^^^^ Did receive presence event: %@", event.data.data);
+- (void)client:(PubNub *)client didReceivePresenceEvent:(PNPresenceEventResult *)event {
+    NSLog(@"^^^^^ Did receive presence event: %@", event.data.presenceEvent);
 }
 
 #pragma mark - Streaming Data didReceiveStatus Listener
 
-- (void)client:(PubNub *)client didReceiveStatus:(PNStatus <PNSubscriberStatus> *)status {
+- (void)client:(PubNub *)client didReceiveStatus:(PNSubscribeStatus *)status {
 
     // This is where we'll find ongoing status events from our subscribe loop
     // Results (messages) from our subscribe loop will be found in didReceiveMessage
@@ -510,7 +524,7 @@
 
 #pragma mark - example status handling
 
-- (void)handleStatus:(PNStatus<PNStatus> *)status {
+- (void)handleStatus:(PNStatus *)status {
 
 //    Two types of status events are possible. Errors, and non-errors. Errors will prevent normal operation of your app.
 //
@@ -522,15 +536,14 @@
 //    Retry attempts can be cancelled via [status cancelAutomaticRetry]
 
     if (status.isError) {
-        [self handleErrorStatus:status];
+        [self handleErrorStatus:(PNErrorStatus *)status];
     } else {
         [self handleNonErrorStatus:status];
     }
 
 }
 
-- (void)handleErrorStatus:(PNStatus<PNStatus> *)status {
-
+- (void)handleErrorStatus:(PNErrorStatus *)status {
 
     NSLog(@"^^^^ Debug: %@", status.debugDescription);
     NSLog(@"^^^^ handleErrorStatus: PAM Error: for resource Will Auto Retry?: %@", status.willAutomaticallyRetry ? @"YES" : @"NO");
@@ -541,7 +554,7 @@
     else if (status.category == PNDecryptionErrorCategory) {
 
         NSLog(@"Decryption error. Be sure the data is encrypted and/or encrypted with the correct cipher key.");
-        NSLog(@"You can find the raw data returned from the server in the status.data attribute: %@", status.data);
+        NSLog(@"You can find the raw data returned from the server in the status.data attribute: %@", status.errorData);
     }
     else if (status.category == PNMalformedResponseCategory) {
 
@@ -564,12 +577,12 @@
     }
 }
 
-- (void)handlePAMError:(PNStatus<PNStatus> *)status {
+- (void)handlePAMError:(PNErrorStatus *)status {
     // Access Denied via PAM. Access status.data to determine the resource in question that was denied.
     // In addition, you can also change auth key dynamically if needed."
 
-    NSString *pamResourceName = status.data.channels ? status.data.channels[0] : status.data.channelGroups;
-    NSString *pamResourceType = status.data.channels ? @"channel" : @"channel-groups";
+    NSString *pamResourceName = status.errorData.channels ? status.errorData.channels[0] : status.errorData.channelGroups;
+    NSString *pamResourceType = status.errorData.channels ? @"channel" : @"channel-groups";
 
     NSLog(@"PAM error on %@ %@", pamResourceType, pamResourceName);
 
@@ -596,14 +609,14 @@
     }
 }
 
-- (void)reconfigOnPAMError:(PNStatus <PNStatus> *)status {
+- (void)reconfigOnPAMError:(PNErrorStatus *)status {
 
 
     // If this is a subscribe PAM error
 
     if (status.operation == PNSubscribeOperation) {
 
-        PNStatus<PNSubscriberStatus> *subscriberStatus = ( PNStatus<PNSubscriberStatus> *)status;
+        PNSubscribeStatus *subscriberStatus = (PNSubscribeStatus *)status;
 
         NSArray *currentChannels = subscriberStatus.subscribedChannels;
         NSArray *currentChannelGroups = subscriberStatus.subscribedChannelGroups;
@@ -621,7 +634,7 @@
 
 }
 
-- (void)handleNonErrorStatus:(PNStatus<PNStatus> *)status {
+- (void)handleNonErrorStatus:(PNStatus *)status {
 
     // This method demonstrates how to handle status events that are not errors -- that is,
     // status events that can safely be ignored, but if you do choose to handle them, you
@@ -638,7 +651,7 @@
 
     if (status.operation == PNSubscribeOperation) {
 
-        PNStatus<PNSubscriberStatus> *subscriberStatus = ( PNStatus<PNSubscriberStatus> *)status;
+        PNSubscribeStatus *subscriberStatus = (PNSubscribeStatus *)status;
         // Specific to the subscribe loop operation, you can handle connection events
         // These status checks are only available via the subscribe status completion block or
         // on the long-running subscribe loop listener didReceiveStatus

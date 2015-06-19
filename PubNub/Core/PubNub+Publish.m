@@ -31,7 +31,7 @@
  
  @since 4.0
  */
-- (PNRequestParameters *)requestParametersForMessage:(NSString *)message
+- (PNRequestParameters *)requestParametersForMessage:(id)message
                                            toChannel:(NSString *)channel
                                           compressed:(BOOL)compressMessage
                                       storeInHistory:(BOOL)shouldStore;
@@ -258,7 +258,7 @@
             }
             NSInteger size = [weakSelf packetSizeForOperation:PNPublishOperation
                                                withParameters:parameters data:publishData];
-            dispatch_async(weakSelf.callbackQueue, ^{
+            pn_dispatch_async(weakSelf.callbackQueue, ^{
                 
                 block(size);
             });
@@ -270,7 +270,7 @@
 
 #pragma mark - Misc
 
-- (PNRequestParameters *)requestParametersForMessage:(NSString *)message
+- (PNRequestParameters *)requestParametersForMessage:(id)message
                                            toChannel:(NSString *)channel
                                           compressed:(BOOL)compressMessage
                                       storeInHistory:(BOOL)shouldStore {
@@ -285,7 +285,7 @@
         
         [parameters addQueryParameter:@"0" forFieldName:@"store"];
     }
-    if ([message length]) {
+    if (([message isKindOfClass:[NSString class]] && [message length]) || message) {
         
         [parameters addPathComponent:(!compressMessage ? [PNString percentEscapedString:message] :
                                       @"")

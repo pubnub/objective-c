@@ -25,7 +25,8 @@ static NSString * const kChannelGroup = @"79713A48-107C-4338-9977-92EEC1F29577";
 
 - (void)tearDown {
     XCTestExpectation *channelGroupTearDownExpectation = [self expectationWithDescription:@"tearDownExpectation"];
-    [self.client removeChannelsFromGroup:kChannelGroup withCompletion:^(PNStatus<PNStatus> *status) {
+    [self.client removeChannelsFromGroup:kChannelGroup
+                          withCompletion:^(PNAcknowledgmentStatus *status) {
         [channelGroupTearDownExpectation fulfill];
     }];
     [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
@@ -36,7 +37,8 @@ static NSString * const kChannelGroup = @"79713A48-107C-4338-9977-92EEC1F29577";
 
 - (void)testChannelGroupAdd {
     self.subscribeExpectation = [self expectationWithDescription:@"network"];
-    [self.client addChannels:@[@"a", @"c"] toGroup:kChannelGroup withCompletion:^(PNStatus<PNStatus> *status) {
+    [self.client addChannels:@[@"a", @"c"] toGroup:kChannelGroup
+              withCompletion:^(PNAcknowledgmentStatus *status) {
         XCTAssertNotNil(status);
         XCTAssertFalse(status.isError);
         XCTAssertEqual(status.operation, PNAddChannelsToGroupOperation);

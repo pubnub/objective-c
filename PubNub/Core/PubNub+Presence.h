@@ -1,245 +1,14 @@
 #import <Foundation/Foundation.h>
-#import "PubNub+Core.h"
+#import "PNPresenceChannelGroupHereNowResult.h"
+#import "PNPresenceChannelHereNowResult.h"
+#import "PNPresenceGlobalHereNowResult.h"
+#import "PNPresenceWhereNowResult.h"
+#import "PNErrorStatus.h"
 #import "PNStructures.h"
+#import "PubNub+Core.h"
 
 
-#pragma mark API group protocols
-
-/**
- @brief      Protocol which describe here now data object structure.
- @discussion Contain presence information about channels.
- 
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
- */
-@protocol PNHereNowData
-
-
-///------------------------------------------------
-/// @name Information
-///------------------------------------------------
-
-/**
- @brief  Active channel subscribers unique identifiers.
- @note   This object can be empty in case if only occupancy has been requested.
- @note   This object can contain list of uuids or dictionary with uuids and client state information
-         bound to them.
- 
- @return Subscribers information (unique identifiers list of dictionary with client's state 
-         information).
- 
- @since 4.0
- */
-- (id)uuids;
-
-/**
- @brief  Active subscribers count.
- 
- @return Number of unique subscribers on channel.
- 
- @since 4.0
- */
-- (NSNumber *)occupancy;
-
-@end
-
-
-/**
- @brief      Protocol which describe global here now data object structure.
- @discussion Contain presence information about each channel which is registered for \b PunNub 
-             application keys.
- 
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
- */
-@protocol PNGlobalHereNowData
-
-
-///------------------------------------------------
-/// @name Information
-///------------------------------------------------
-
-/**
- @brief      Active channels list.
- @discussion Each dictionary key represent channel name and it's value is presence information for 
-             it.
- 
- @return Channel based presence information dictionary.
- 
- @since 4.0
- */
-- (NSDictionary *)channels;
-
-/**
- @brief  Total number of active channels.
- 
- @return Number of channels with active subscribers.
- 
- @since 4.0
- */
-- (NSNumber *)totalChannels;
-
-/**
- @brief  Total number of subscribers.
- 
- @return Overall number of subscribers on channels.
- 
- @since 4.0
- */
-- (NSNumber *)totalOccupancy;
-
-@end
-
-
-/**
- @brief      Protocol used to provide access to \c data field structure for \b PNStatus instance 
-             object.
- @discussion Mostly used for state set operations and represent resulting object which has been 
-             stored in \b PubNub network.
- 
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
- */
-@protocol PNChannelGroupHereNowData <PNGlobalHereNowData>
-
-@end
-
-
-/**
- @brief      Protocol used to provide access to \c data field structure for \b PNStatus instance 
-             object.
- @discussion Mostly used for state set operations and represent resulting object which has been 
-             stored in \b PubNub network.
- 
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
- */
-@protocol PNWhereNowData
-
-
-///------------------------------------------------
-/// @name Information
-///------------------------------------------------
-
-/**
- @brief  List of channels on which client subscribed.
- 
- @return Channel names list.
- 
- @since 4.0
- */
-- (NSDictionary *)channels;
-
-@end
-
-
-/**
- @brief      Protocol which describe object returned from state audit API.
- @discussion This method allow to provide access to structured response data field.
- 
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
- */
-@protocol PNHereNowResult <PNResult>
-
-
-///------------------------------------------------
-/// @name Information
-///------------------------------------------------
-
-/**
- @brief  Structured \b PNResult \c data field information.
- 
- @return Reference on field which hold structured service response.
- 
- @since 4.0
- */
-@property (nonatomic, readonly, copy) NSObject<PNHereNowData> *data;
-
-@end
-
-
-/**
- @brief  Protocol which describe operation processing resulting object with typed with \c data field
-         with corresponding data type.
- 
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
- */
-@protocol PNGlobalHereNowResult <PNResult>
-
-
-///------------------------------------------------
-/// @name Information
-///------------------------------------------------
-
-/**
- @brief  Reference on service response data casted to required type.
- 
- @since 4.0
- */
-@property (nonatomic, readonly, copy) NSObject<PNGlobalHereNowData> *data;
-
-@end
-
-
-/**
- @brief  Protocol which describe operation processing resulting object with typed with \c data field
-         with corresponding data type.
- 
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
- */
-@protocol PNChannelGroupHereNowResult <PNResult>
-
-
-///------------------------------------------------
-/// @name Information
-///------------------------------------------------
-
-/**
- @brief  Reference on service response data casted to required type.
- 
- @since 4.0
- */
-@property (nonatomic, readonly, copy) NSObject<PNChannelGroupHereNowData> *data;
-
-@end
-
-
-/**
- @brief  Protocol which describe operation processing resulting object with typed with \c data field
-         with corresponding data type.
- 
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
- */
-@protocol PNWhereNowResult <PNResult>
-
-
-///------------------------------------------------
-/// @name Information
-///------------------------------------------------
-
-/**
- @brief  Reference on service response data casted to required type.
- 
- @since 4.0
- */
-@property (nonatomic, readonly, copy) NSObject<PNWhereNowData> *data;
-
-@end
-
-
-#pragma mark - Types
+#pragma mark Types
 
 /**
  @brief  Here now completion block.
@@ -249,8 +18,8 @@
  
  @since 4.0
  */
-typedef void(^PNHereNowCompletionBlock)(PNResult<PNHereNowResult> *result,
-                                        PNStatus<PNStatus> *status);
+typedef void(^PNHereNowCompletionBlock)(PNPresenceChannelHereNowResult *result,
+                                        PNErrorStatus *status);
 
 /**
  @brief  Global here now completion block.
@@ -260,8 +29,8 @@ typedef void(^PNHereNowCompletionBlock)(PNResult<PNHereNowResult> *result,
  
  @since 4.0
  */
-typedef void(^PNGlobalHereNowCompletionBlock)(PNResult<PNGlobalHereNowResult> *result,
-                                              PNStatus<PNStatus> *status);
+typedef void(^PNGlobalHereNowCompletionBlock)(PNPresenceGlobalHereNowResult *result,
+                                              PNErrorStatus *status);
 
 /**
  @brief  Channel group here now completion block.
@@ -271,8 +40,8 @@ typedef void(^PNGlobalHereNowCompletionBlock)(PNResult<PNGlobalHereNowResult> *r
  
  @since 4.0
  */
-typedef void(^PNChannelGroupHereNowCompletionBlock)(PNResult<PNChannelGroupHereNowResult> *result,
-                                                    PNStatus<PNStatus> *status);
+typedef void(^PNChannelGroupHereNowCompletionBlock)(PNPresenceWhereNowResult *result,
+                                                    PNErrorStatus *status);
 
 /**
  @brief  UUID where now completion block.
@@ -282,8 +51,7 @@ typedef void(^PNChannelGroupHereNowCompletionBlock)(PNResult<PNChannelGroupHereN
  
  @since 4.0
  */
-typedef void(^PNWhereNowCompletionBlock)(PNResult<PNWhereNowResult> *result,
-                                         PNStatus<PNStatus> *status);
+typedef void(^PNWhereNowCompletionBlock)(PNPresenceWhereNowResult *result, PNErrorStatus *status);
 
 
 #pragma mark - API group interface
@@ -320,8 +88,7 @@ typedef void(^PNWhereNowCompletionBlock)(PNResult<PNWhereNowResult> *result,
  PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
                                                                   subscribeKey:@"demo"];
  self.client = [PubNub clientWithConfiguration:configuration];
- [self.client hereNowWithCompletion:^(PNResult<PNGlobalHereNowResult> *result, 
-                                      PNStatus<PNStatus> *status) {
+ [self.client hereNowWithCompletion:^(PNPresenceGlobalHereNowResult *result, PNErrorStatus *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {
@@ -374,8 +141,7 @@ typedef void(^PNWhereNowCompletionBlock)(PNResult<PNWhereNowResult> *result,
                                                                   subscribeKey:@"demo"];
  self.client = [PubNub clientWithConfiguration:configuration];
  [self.client hereNowWithVerbosity:PNHereNowState
-                        completion:^(PNResult<PNGlobalHereNowResult> *result,
-                                     PNStatus<PNStatus> *status) {
+                        completion:^(PNPresenceGlobalHereNowResult *result, PNErrorStatus *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {
@@ -430,8 +196,8 @@ typedef void(^PNWhereNowCompletionBlock)(PNResult<PNWhereNowResult> *result,
  PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
                                                                   subscribeKey:@"demo"];
  self.client = [PubNub clientWithConfiguration:configuration];
- [self.client hereNowForChannel:@"pubnub" withCompletion:^(PNResult<PNHereNowResult> *result, 
-                                                           PNStatus<PNStatus> *status) {
+ [self.client hereNowForChannel:@"pubnub" withCompletion:^(PNPresenceChannelHereNowResult *result,
+                                                           PNErrorStatus *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {
@@ -479,7 +245,7 @@ typedef void(^PNWhereNowCompletionBlock)(PNResult<PNWhereNowResult> *result,
                                                                   subscribeKey:@"demo"];
  self.client = [PubNub clientWithConfiguration:configuration];
  [self.client hereNowForChannel:@"pubnub"  withVerbosity:PNHereNowState
-                     completion:^(PNResult<PNHereNowResult> *result, PNStatus<PNStatus> *status) {
+                     completion:^(PNPresenceChannelHereNowResult *result, PNErrorStatus *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {
@@ -532,8 +298,7 @@ typedef void(^PNWhereNowCompletionBlock)(PNResult<PNWhereNowResult> *result,
                                                                   subscribeKey:@"demo"];
  self.client = [PubNub clientWithConfiguration:configuration];
  [self.client hereNowForChannelGroup:@"developers" 
-                      withCompletion:^(PNResult<PNChannelGroupHereNowResult> *result, 
-                                       PNStatus<PNStatus> *status) {
+                      withCompletion:^(PNPresenceWhereNowResult *result, PNErrorStatus *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {
@@ -586,8 +351,7 @@ typedef void(^PNWhereNowCompletionBlock)(PNResult<PNWhereNowResult> *result,
                                                                   subscribeKey:@"demo"];
  self.client = [PubNub clientWithConfiguration:configuration];
  [self.client hereNowForChannelGroup:@"developers" withVerbosity:PNHereNowState
-                          completion:^(PNResult<PNChannelGroupHereNowResult> *result,
-                                       PNStatus<PNStatus> *status) {
+                          completion:^(PNPresenceWhereNowResult *result, PNErrorStatus *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {
@@ -642,8 +406,8 @@ typedef void(^PNWhereNowCompletionBlock)(PNResult<PNWhereNowResult> *result,
  PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
                                                                   subscribeKey:@"demo"];
  self.client = [PubNub clientWithConfiguration:configuration];
- [self.client whereNowUUID:@"Steve" withCompletion:^(PNResult<PNWhereNowResult> *result, 
-                                                     PNStatus<PNStatus> *status) {
+ [self.client whereNowUUID:@"Steve" withCompletion:^(PNPresenceWhereNowResult *result, 
+                                                     PNErrorStatus *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {

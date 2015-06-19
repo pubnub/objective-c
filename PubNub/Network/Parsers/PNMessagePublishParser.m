@@ -48,8 +48,7 @@
             timeToken = @((unsigned long long)([[NSDate date] timeIntervalSince1970] * 10000000));
         }
         
-        processedResponse = [PNDictionary dictionaryWithDictionary:@{
-                             @"information": information, @"timetoken": timeToken}];
+        processedResponse = @{@"information": information, @"timetoken": timeToken};
     }
     
     return processedResponse;

@@ -150,8 +150,7 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
             }
             feedEvents = [events copy];
         }
-        processedResponse = [PNDictionary dictionaryWithDictionary:@{
-                             @"events":feedEvents,@"timetoken":timeToken}];
+        processedResponse = @{@"events":feedEvents,@"timetoken":timeToken};
     }
     
     return processedResponse;
@@ -164,7 +163,7 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
                                  group:(NSString *)channelGroup
               withAdditionalParserData:(NSDictionary *)additionalData {
     
-    NSMutableDictionary *event = [PNDictionary new];
+    NSMutableDictionary *event = [NSMutableDictionary new];
     if ([channel length]) {
         
         event[(![channelGroup length] ? @"subscribedChannel": @"actualChannel")] = channel;
@@ -196,7 +195,7 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
 + (NSMutableDictionary *)messageFromData:(id)data
                 withAdditionalParserData:(NSDictionary *)additionalData {
     
-    NSMutableDictionary *message = [PNDictionary dictionaryWithDictionary:@{@"message":data}];
+    NSMutableDictionary *message = [@{@"message":data} mutableCopy];
     // Try decrypt message body if possible.
     if ([data isKindOfClass:[NSString class]] && [(NSString *)additionalData[@"cipherKey"] length]){
         
@@ -229,11 +228,11 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
 
 + (NSMutableDictionary *)presenceFromData:(NSDictionary *)data {
     
-    NSMutableDictionary *presence = [PNDictionary new];
+    NSMutableDictionary *presence = [NSMutableDictionary new];
     
     // Processing common for all presence events data.
     presence[@"presenceEvent"] = data[@"action"];
-    presence[@"presence"] = [PNDictionary new];
+    presence[@"presence"] = [NSMutableDictionary new];
     presence[@"presence"][@"timetoken"] = data[@"timestamp"];
     if (data[@"uuid"]) {
         

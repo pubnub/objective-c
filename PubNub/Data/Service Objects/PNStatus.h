@@ -14,6 +14,41 @@
  */
 @interface PNStatus : PNResult
 
+///------------------------------------------------
+/// @name Information
+///------------------------------------------------
+
+/**
+ @brief  One of \b PNStatusCategory fields which provide information about for which status this
+         instance has been created.
+ 
+ @return Processing status category.
+
+ @since 4.0
+ */
+@property (nonatomic, readonly, assign) PNStatusCategory category;
+
+/**
+ @brief  Whether status object represent error or not.
+ 
+ @return \c YES in case if status represent request processing error.
+ 
+ @since 4.0
+ */
+@property (nonatomic, readonly, assign, getter = isError) BOOL error;
+
+/**
+ @brief      Auto-retry configuration information.
+ @discussion In most cases client will keep retry request sending till it won't be successful or
+             canceled with \c -cancelAutomaticRetry method.
+ 
+ @return \c YES in case if request which represented with this failed status will be resent
+         automatically or not.
+
+ @since 4.0
+ */
+@property (nonatomic, readonly, assign, getter = willAutomaticallyRetry) BOOL automaticallyRetry;
+
 
 ///------------------------------------------------
 /// @name Recovery

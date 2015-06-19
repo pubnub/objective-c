@@ -156,7 +156,7 @@ You should now have a skeleton PubNub project.
 * Add a message listener method to your AppDelegate.m:
 
 ```objective-c
-- (void)client:(PubNub *)client didReceiveMessage:(PNResult <PNMessageResult>*)message withStatus:(PNStatus *)status {
+- (void)client:(PubNub *)client didReceiveMessage:(PNMessageResult *)message withStatus:(PNErrorStatus *)status {
     
     if (status) {
         // analyze the status object for next steps -- See Example for in-depth examples
@@ -583,18 +583,18 @@ Add the class you wish to receive streaming Result and Status on as a listener (
 
 Once the class is added as a listener, it will receive streaming events on the [following listener methods](PubNub/Misc/Protocols/PNObjectEventListener.h):
 
-- (void)client:(PubNub *)client didReceiveMessage:(PNResult<PNMessageResult> *)message
-    withStatus:(PNStatus<PNStatus> *)status;
+- (void)client:(PubNub *)client didReceiveMessage:(PNMessageResult *)message
+    withStatus:(PNErrorStatus *)status;
 
-- (void)client:(PubNub *)client didReceivePresenceEvent:(PNResult<PNPresenceEventResult> *)event;
+- (void)client:(PubNub *)client didReceivePresenceEvent:(PNPresenceEventResult *)event;
 
-- (void)client:(PubNub *)client didReceiveStatus:(PNStatus<PNSubscriberStatus> *)status;
+- (void)client:(PubNub *)client didReceiveStatus:(PNSubscribeStatus *)status;
     
 A completed example of subscribing [can be found in the Hello World snippet](#hello-world). You can also see it in the Example app.  Example implementations of the above listeners, taken from Example, may look similar to:
 
 ```objective-c
-- (void)client:(PubNub *)client didReceiveMessage:(PNResult <PNMessageResult>*)message
-    withStatus:(PNStatus<PNStatus> *)status {
+- (void)client:(PubNub *)client didReceiveMessage:(PNMessageResult *)message
+    withStatus:(PNErrorStatus *)status {
 
     if (status) {
         [self handleStatus:status];
@@ -605,13 +605,13 @@ A completed example of subscribing [can be found in the Hello World snippet](#he
 
 #pragma mark - Streaming Data didReceivePresenceEvent Listener
 
-- (void)client:(PubNub *)client didReceivePresenceEvent:(PNResult <PNPresenceEventResult> *)event {
+- (void)client:(PubNub *)client didReceivePresenceEvent:(PNPresenceEventResult *)event {
     NSLog(@"^^^^^ Did receive presence event: %@", event.data.data);
 }
 
 #pragma mark - Streaming Data didReceiveStatus Listener
 
-- (void)client:(PubNub *)client didReceiveStatus:(PNStatus <PNSubscriberStatus> *)status {
+- (void)client:(PubNub *)client didReceiveStatus:(PNSubscribeStatus *)status {
 
     // This is where we'll find ongoing status events from our subscribe loop
     // Results (messages) from our subscribe loop will be found in didReceiveMessage

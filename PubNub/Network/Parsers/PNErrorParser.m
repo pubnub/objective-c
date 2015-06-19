@@ -60,7 +60,7 @@
                 errorData[@"data"] = response[@"payload"];
             }
         }
-        processedResponse = [PNDictionary dictionaryWithDictionary:errorData];
+        processedResponse = errorData;
     }
     
     return processedResponse;

@@ -96,6 +96,7 @@
 - (void)hereNowWithVerbosity:(PNHereNowVerbosityLevel)level forChannel:(BOOL)forChannel
                     withName:(NSString *)object withCompletion:(id)block {
 
+    PNOperationType operation = PNHereNowGlobalOperation;
     PNRequestParameters *parameters = [PNRequestParameters new];
     [parameters addQueryParameter:@"1" forFieldName:@"disable_uuids"];
     [parameters addQueryParameter:@"0" forFieldName:@"state"];
@@ -109,10 +110,12 @@
     }
     if ([object length]) {
         
+        operation = PNHereNowForChannelOperation;
         [parameters addPathComponent:(forChannel ? [PNString percentEscapedString:object] : @",")
                       forPlaceholder:@"{channel}"];
         if (!forChannel) {
             
+            operation = PNHereNowForChannelGroupOperation;
             [parameters addQueryParameter:[PNString percentEscapedString:object]
                              forFieldName:@"channel-group"];
         }
@@ -131,18 +134,18 @@
     }
     
     __weak __typeof(self) weakSelf = self;
-    [self processOperation:(![object length] ? PNHereNowGlobalOperation : PNHereNowOperation)
-            withParameters:parameters completionBlock:^(PNResult *result, PNStatus *status) {
+    [self processOperation:operation withParameters:parameters completionBlock:^(PNResult *result,
+                                                                                 PNStatus *status) {
                
-               // Silence static analyzer warnings.
-               // Code is aware about this case and at the end will simply call on 'nil' object
-               // method. In most cases if referenced object become 'nil' it mean what there is no
-               // more need in it and probably whole client instance has been deallocated.
-               #pragma clang diagnostic push
-               #pragma clang diagnostic ignored "-Wreceiver-is-weak"
-               [weakSelf callBlock:block status:NO withResult:result andStatus:status];
-               #pragma clang diagnostic pop
-           }];
+           // Silence static analyzer warnings.
+           // Code is aware about this case and at the end will simply call on 'nil' object
+           // method. In most cases if referenced object become 'nil' it mean what there is no
+           // more need in it and probably whole client instance has been deallocated.
+           #pragma clang diagnostic push
+           #pragma clang diagnostic ignored "-Wreceiver-is-weak"
+           [weakSelf callBlock:block status:NO withResult:result andStatus:status];
+           #pragma clang diagnostic pop
+       }];
 }
 
 

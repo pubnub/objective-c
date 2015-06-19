@@ -3,20 +3,21 @@
  @since 4.0
  @copyright © 2009-2015 PubNub, Inc.
  */
-#import "PNPresebceHereNowParser.h"
+#import "PNPresenceHereNowParser.h"
 #import "PNDictionary.h"
 
 
 #pragma mark Interface implementation
 
-@implementation PNPresebceHereNowParser
+@implementation PNPresenceHereNowParser
 
 
 #pragma mark - Identification
 
 + (NSArray *)operations {
     
-    return @[@(PNHereNowGlobalOperation), @(PNHereNowOperation)];
+    return @[@(PNHereNowGlobalOperation), @(PNHereNowForChannelOperation),
+             @(PNHereNowForChannelGroupOperation)];
 }
 
 + (BOOL)requireAdditionalData {
@@ -89,7 +90,7 @@
             
             hereNowData = @{@"occupancy":response[@"occupancy"]};
         }
-        processedResponse = [PNDictionary dictionaryWithDictionary:hereNowData];
+        processedResponse = hereNowData;
     }
     
     return processedResponse;

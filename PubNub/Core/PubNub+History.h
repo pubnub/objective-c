@@ -1,80 +1,10 @@
 #import <Foundation/Foundation.h>
+#import "PNHistoryResult.h"
+#import "PNErrorStatus.h"
 #import "PubNub+Core.h"
 
 
-#pragma mark API group protocols
-
-/**
- @brief      Protocol which describe history data object structure.
- @discussion Contain information about messages and time frame for fetched history.
- 
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
- */
-@protocol PNHistoryData
-
-
-///------------------------------------------------
-/// @name Information
-///------------------------------------------------
-
-/**
- @brief  Channel history messages.
- 
- @return List of channels which has been stored in history within known interval.
- 
- @since 4.0
- */
-- (NSArray *)messages;
-
-/**
- @brief  History time frame start time.
- 
- @return Number with unsigned long long as timestamp.
- 
- @since 4.0
- */
-- (NSNumber *)start;
-
-/**
- @brief   History time frame end time.
- 
- @return Number with unsigned long long as timestamp.
- 
- @since 4.0
- */
-- (NSNumber *)end;
-
-@end
-
-
-/**
- @brief  Protocol which describe operation processing resulting object with typed with \c data field
-         with corresponding data type.
- 
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
- */
-@protocol PNHistoryResult <PNResult>
-
-
-///------------------------------------------------
-/// @name Information
-///------------------------------------------------
-
-/**
- @brief  Reference on service response data casted to required type.
- 
- @since 4.0
- */
-@property (nonatomic, readonly, copy) NSObject<PNHistoryData> *data;
-
-@end
-
-
-#pragma mark - Types
+#pragma mark Types
 
 /**
  @brief  Channel history fetch completion block.
@@ -84,8 +14,7 @@
  
  @since 4.0
  */
-typedef void(^PNHistoryCompletionBlock)(PNResult<PNHistoryResult> *result,
-                                        PNStatus<PNStatus> *status);
+typedef void(^PNHistoryCompletionBlock)(PNHistoryResult *result, PNErrorStatus *status);
 
 
 #pragma mark - API group interface
@@ -118,8 +47,8 @@ typedef void(^PNHistoryCompletionBlock)(PNResult<PNHistoryResult> *result,
  PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
                                                                   subscribeKey:@"demo"];
  self.client = [PubNub clientWithConfiguration:configuration];
- [self.client historyForChannel:@"storage" withCompletion:^(PNResult<PNHistoryResult> *result,
-                                                            PNStatus<PNStatus> *status) {
+ [self.client historyForChannel:@"storage" withCompletion:^(PNHistoryResult *result,
+                                                            PNErrorStatus *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {
@@ -172,7 +101,7 @@ typedef void(^PNHistoryCompletionBlock)(PNResult<PNHistoryResult> *result,
  NSNumber *startDate = @((unsigned long long)([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]*10000000));
  NSNumber *endDate = @((unsigned long long)([[NSDate date] timeIntervalSince1970]*10000000));
  [self.client historyForChannel:@"storage" start:startDate end:endDate
-                 withCompletion:^(PNResult<PNHistoryResult> *result, PNStatus<PNStatus> *status) {
+                 withCompletion:^(PNHistoryResult *result, PNErrorStatus *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {
@@ -230,7 +159,7 @@ typedef void(^PNHistoryCompletionBlock)(PNResult<PNHistoryResult> *result,
  NSNumber *startDate = @((unsigned long long)([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]*10000000));
  NSNumber *endDate = @((unsigned long long)([[NSDate date] timeIntervalSince1970]*10000000));
  [self.client historyForChannel:@"storage" start:startDate end:endDate limit:50
-                 withCompletion:^(PNResult<PNHistoryResult> *result, PNStatus<PNStatus> *status) {
+                 withCompletion:^(PNHistoryResult *result, PNErrorStatus *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {
@@ -295,7 +224,7 @@ typedef void(^PNHistoryCompletionBlock)(PNResult<PNHistoryResult> *result,
  NSNumber *startDate = @((unsigned long long)([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]*10000000));
  NSNumber *endDate = @((unsigned long long)([[NSDate date] timeIntervalSince1970]*10000000));
  [self.client historyForChannel:@"storage" start:startDate end:endDate includeTimeToken:YES
-                 withCompletion:^(PNResult<PNHistoryResult> *result, PNStatus<PNStatus> *status) {
+                 withCompletion:^(PNHistoryResult *result, PNErrorStatus *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {
@@ -359,7 +288,7 @@ typedef void(^PNHistoryCompletionBlock)(PNResult<PNHistoryResult> *result,
  NSNumber *startDate = @((unsigned long long)([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]*10000000));
  NSNumber *endDate = @((unsigned long long)([[NSDate date] timeIntervalSince1970]*10000000));
  [self.client historyForChannel:@"storage" start:startDate end:endDate limit:35 includeTimeToken:YES
-                 withCompletion:^(PNResult<PNHistoryResult> *result, PNStatus<PNStatus> *status) {
+                 withCompletion:^(PNHistoryResult *result, PNErrorStatus *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {
@@ -426,7 +355,7 @@ typedef void(^PNHistoryCompletionBlock)(PNResult<PNHistoryResult> *result,
  NSNumber *startDate = @((unsigned long long)([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]*10000000));
  NSNumber *endDate = @((unsigned long long)([[NSDate date] timeIntervalSince1970]*10000000));
  [self.client historyForChannel:@"storage" start:startDate end:endDate limit:35 reverse:YES
-                 withCompletion:^(PNResult<PNHistoryResult> *result, PNStatus<PNStatus> *status) {
+                 withCompletion:^(PNHistoryResult *result, PNErrorStatus *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {
@@ -489,8 +418,7 @@ typedef void(^PNHistoryCompletionBlock)(PNResult<PNHistoryResult> *result,
  NSNumber *startDate = @((unsigned long long)([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]*10000000));
  NSNumber *endDate = @((unsigned long long)([[NSDate date] timeIntervalSince1970]*10000000));
  [self.client historyForChannel:@"storage" start:startDate end:endDate limit:35 reverse:YES 
-               includeTimeToken:YES withCompletion:^(PNResult<PNHistoryResult> *result, 
-                                                     PNStatus<PNStatus> *status) {
+               includeTimeToken:YES withCompletion:^(PNHistoryResult *result, PNErrorStatus *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {

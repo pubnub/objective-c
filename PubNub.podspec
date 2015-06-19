@@ -29,6 +29,7 @@ Pod::Spec.new do |s|
   s.private_header_files = [
     'PubNub/Core/*Private.h',
     'PubNub/Data/*Private.h',
+    'PubNub/Data/Managers/**/*',
     'PubNub/Misc/PNPrivateStructures.h',
     'PubNub/Misc/Helpers/*.h',
     'PubNub/Misc/Logger/PNLogFileManager.h',

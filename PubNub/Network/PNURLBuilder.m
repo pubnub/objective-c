@@ -15,17 +15,19 @@
  
  @since 4.0
  */
-static NSString * const PNOperationRequestTemplate[20] = {
+static NSString * const PNOperationRequestTemplate[22] = {
     [PNSubscribeOperation] = @"/subscribe/{sub-key}/{channels}/0/{tt}",
     [PNUnsubscribeOperation] = @"/v2/presence/sub_key/{sub-key}/channel/{channels}/leave",
     [PNPublishOperation] = @"/publish/{pub-key}/{sub-key}/0/{channel}/0/{message}",
     [PNHistoryOperation] = @"/v2/history/sub-key/{sub-key}/channel/{channel}",
     [PNWhereNowOperation] = @"/v2/presence/sub-key/{sub-key}/uuid/{uuid}",
     [PNHereNowGlobalOperation] = @"/v2/presence/sub-key/{sub-key}",
-    [PNHereNowOperation] = @"/v2/presence/sub-key/{sub-key}/channel/{channel}",
+    [PNHereNowForChannelOperation] = @"/v2/presence/sub-key/{sub-key}/channel/{channel}",
+    [PNHereNowForChannelGroupOperation] = @"/v2/presence/sub-key/{sub-key}/channel/{channel}",
     [PNHeartbeatOperation] = @"/v2/presence/sub-key/{sub-key}/channel/{channels}/heartbeat",
     [PNSetStateOperation] = @"/v2/presence/sub-key/{sub-key}/channel/{channel}/uuid/{uuid}/data",
-    [PNStateOperation] = @"/v2/presence/sub-key/{sub-key}/channel/{channel}/uuid/{uuid}",
+    [PNStateForChannelOperation] = @"/v2/presence/sub-key/{sub-key}/channel/{channel}/uuid/{uuid}",
+    [PNStateForChannelGroupOperation] = @"/v2/presence/sub-key/{sub-key}/channel/{channel}/uuid/{uuid}",
     [PNAddChannelsToGroupOperation] = @"/v1/channel-registration/sub-key/{sub-key}/channel-group/{channel-group}",
     [PNRemoveChannelsFromGroupOperation] = @"/v1/channel-registration/sub-key/{sub-key}/channel-group/{channel-group}",
     [PNChannelGroupsOperation] = @"/v1/channel-registration/sub-key/{sub-key}/channel-group",

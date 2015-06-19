@@ -34,7 +34,7 @@
 
 #pragma mark - PNObjectEventListener
 
-- (void)client:(PubNub *)client didReceiveMessage:(PNResult<PNMessageResult> *)message withStatus:(PNStatus<PNStatus> *)status {
+- (void)client:(PubNub *)client didReceiveMessage:(PNMessageResult *)message withStatus:(PNErrorStatus *)status {
     XCTAssertNil(status);
     XCTAssertEqualObjects(self.client, client);
     XCTAssertEqualObjects(client.uuid, message.uuid);
@@ -49,11 +49,11 @@
     [self.subscribeExpectation fulfill];
 }
 
-- (void)client:(PubNub *)client didReceivePresenceEvent:(PNResult<PNPresenceEventResult> *)event {
+- (void)client:(PubNub *)client didReceivePresenceEvent:(PNPresenceEventResult *)event {
     NSLog(@"%s", __PRETTY_FUNCTION__);
 }
 
-- (void)client:(PubNub *)client didReceiveStatus:(PNStatus<PNSubscriberStatus> *)status {
+- (void)client:(PubNub *)client didReceiveStatus:(PNSubscribeStatus *)status {
     NSLog(@"%s", __PRETTY_FUNCTION__);
 }
 

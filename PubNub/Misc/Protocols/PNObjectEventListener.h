@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
-#import "PNDataObjectProtocols.h"
 #import "PubNub+Subscribe.h"
+#import "PNErrorStatus.h"
 
 
 /**
@@ -32,8 +32,8 @@
  
  @since 4.0
  */
-- (void)client:(PubNub *)client didReceiveMessage:(PNResult<PNMessageResult> *)message
-    withStatus:(PNStatus<PNStatus> *)status;
+- (void)client:(PubNub *)client didReceiveMessage:(PNMessageResult *)message
+    withStatus:(PNErrorStatus *)status;
 
 /**
  @brief  Notify listener about new presence events which arrived from one of remote data object's 
@@ -45,7 +45,7 @@
  
  @since 4.0
  */
-- (void)client:(PubNub *)client didReceivePresenceEvent:(PNResult<PNPresenceEventResult> *)event;
+- (void)client:(PubNub *)client didReceivePresenceEvent:(PNPresenceEventResult *)event;
 
 
 ///------------------------------------------------
@@ -62,7 +62,7 @@
  
  @since 4.0
  */
-- (void)client:(PubNub *)client didReceiveStatus:(PNStatus<PNSubscriberStatus> *)status;
+- (void)client:(PubNub *)client didReceiveStatus:(PNSubscribeStatus *)status;
 
 #pragma mark -
 

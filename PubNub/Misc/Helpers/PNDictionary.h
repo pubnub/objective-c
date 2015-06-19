@@ -8,7 +8,7 @@
  @since 4.0
  @copyright © 2009-2015 PubNub, Inc.
  */
-@interface PNDictionary : NSMutableDictionary
+@interface PNDictionary : NSObject
 
 
 ///------------------------------------------------

@@ -24,6 +24,15 @@
 @property (nonatomic, copy) NSString *origin;
 @property (nonatomic, copy) NSURLRequest *clientRequest;
 
+/**
+ @brief      Stores reference on processed \c response which is ready to use by user.
+ @discussion Content and format for this property different for API. Each method has description
+             about expected fields and data stored inside.
+ 
+ @since 4.0
+ */
+@property (nonatomic, copy) NSDictionary *serviceData;
+
 
 ///------------------------------------------------
 /// @name Initialization and configuration

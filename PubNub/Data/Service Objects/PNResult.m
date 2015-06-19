@@ -25,7 +25,7 @@
 @property (nonatomic, copy) NSString *authKey;
 @property (nonatomic, copy) NSString *origin;
 @property (nonatomic, copy) NSURLRequest *clientRequest;
-@property (nonatomic, copy) id data;
+@property (nonatomic, copy) NSDictionary *serviceData;
 
 #pragma mark -
 
@@ -58,11 +58,11 @@
         _statusCode = (task ? ((NSHTTPURLResponse *)task.response).statusCode : 200);
         _operation = operation;
         _clientRequest = [task.currentRequest copy];
-        _data = [processedData copy];
-        if ([_data[@"status"] isKindOfClass:[NSNumber class]] &&
-            [(NSNumber *)_data[@"status"] integerValue] > 200) {
+        _serviceData = [processedData copy];
+        if ([_serviceData[@"status"] isKindOfClass:[NSNumber class]] &&
+            [(NSNumber *)_serviceData[@"status"] integerValue] > 200) {
             
-            _statusCode = [(NSNumber *)_data[@"status"] integerValue];
+            _statusCode = [(NSNumber *)_serviceData[@"status"] integerValue];
         }
     }
     
@@ -79,7 +79,7 @@
     result.authKey = self.authKey;
     result.origin = self.origin;
     result.clientRequest = self.clientRequest;
-    result.data = self.data;
+    result.serviceData = self.serviceData;
     
     return result;
 }
@@ -87,18 +87,29 @@
 - (instancetype)copyWithMutatedData:(id)data {
     
     PNResult *result = [self copy];
-    result->_data = [data copy];
+    result->_serviceData = [data copy];
     
     return result;
 }
 
 - (void)updateData:(id)data {
     
-    _data = [data copy];
+    _serviceData = [data copy];
 }
 
 
 #pragma mark - Misc
+
+- (NSMethodSignature *)methodSignatureForSelector:(SEL)sel {
+    
+    return [[self class] instanceMethodSignatureForSelector:@selector(doNothing)];
+}
+
+- (void)forwardInvocation:(NSInvocation *)inv {
+}
+
+- (void)doNothing {
+}
 
 - (NSDictionary *)dictionaryRepresentation {
     
@@ -111,7 +122,7 @@
                            @"Authorization": (self.authKey?: @"not set"),
                            @"Origin": (self.origin?: @"unknown")},
              @"Response": @{@"Status code": @(self.statusCode),
-                            @"Processed data": (self.data?: @"no data")}};
+                            @"Processed data": (self.serviceData?: @"no data")}};
 }
 
 - (NSString *)stringifiedRepresentation {

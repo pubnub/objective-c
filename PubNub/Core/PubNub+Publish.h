@@ -1,70 +1,6 @@
 #import <Foundation/Foundation.h>
+#import "PNPublishStatus.h"
 #import "PubNub+Core.h"
-
-
-#pragma mark API group protocols
-
-/**
- @brief      Protocol which describe publish result data object structure.
- @discussion Contain information about when message has been accepted by \b PubNub service and
-             message associated with operation.
- 
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
- */
-@protocol PNPublishData <PNErrorStatusData>
-
-
-///------------------------------------------------
-/// @name Information
-///------------------------------------------------
-
-/**
- @brief  Service-provided time stamp at which message has been pushed to remote data object live
-         feed.
- 
- @return Number with unsigned long long as timestamp.
- 
- @since 4.0
- */
-- (NSNumber *)timetoken;
-
-/**
- @brief  Service-provide information about service response message.
- 
- @return String received from \b PubNub service along with processing results.
- 
- @since 4.0
- */
-- (NSString *)information;
-
-@end
-
-
-/**
- @brief  Protocol which describe operation processing status object with typed with \c data field
-         with corresponding data type.
- 
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
- */
-@protocol PNPublishStatus <PNStatus>
-
-
-///------------------------------------------------
-/// @name Information
-///------------------------------------------------
-
-/**
- @brief  Reference on service response data casted to required type.
- 
- @since 4.0
- */
-@property (nonatomic, readonly, copy) NSObject<PNPublishData> *data;
-
-@end
 
 
 #pragma mark - Types
@@ -76,7 +12,7 @@
  
  @since 4.0
  */
-typedef void(^PNPublishCompletionBlock)(PNStatus<PNPublishStatus> *status);
+typedef void(^PNPublishCompletionBlock)(PNPublishStatus *status);
 
 /**
  @brief  Message size calculation completion block.
@@ -123,7 +59,7 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
                                                                   subscribeKey:@"demo"];
  self.client = [PubNub clientWithConfiguration:configuration];
  [self.client publish:@{@"Hello":@"world"} toChannel:@"announcement"
-       withCompletion:^(PNStatus<PNPublishStatus> *status) {
+       withCompletion:^(PNPublishStatus *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {
@@ -174,7 +110,7 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
                                                                   subscribeKey:@"demo"];
  self.client = [PubNub clientWithConfiguration:configuration];
  [self.client publish:@{@"Hello":@"world"} toChannel:@"announcement" compressed:NO
-       withCompletion:^(PNStatus<PNPublishStatus> *status) {
+       withCompletion:^(PNPublishStatus *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {
@@ -228,7 +164,7 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
                                                                   subscribeKey:@"demo"];
  self.client = [PubNub clientWithConfiguration:configuration];
  [self.client publish:@{@"Hello":@"world"} toChannel:@"announcement" storeInHistory:NO
-       withCompletion:^(PNStatus<PNPublishStatus> *status) {
+       withCompletion:^(PNPublishStatus *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {
@@ -280,7 +216,7 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
                                                                   subscribeKey:@"demo"];
  self.client = [PubNub clientWithConfiguration:configuration];
  [self.client publish:@{@"Hello":@"world"} toChannel:@"announcement" storeInHistory:NO 
-           compressed:YES withCompletion:^(PNStatus<PNPublishStatus> *status) {
+           compressed:YES withCompletion:^(PNPublishStatus *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {
@@ -340,7 +276,7 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
  self.client = [PubNub clientWithConfiguration:configuration];
  [self.client publish:@{@"Hello":@"world"} toChannel:@"announcement"
     mobilePushPayload:@{@"apns":@{@"alert":@"Hello from PubNub"}}
-       withCompletion:^(PNStatus<PNPublishStatus> *status) {
+       withCompletion:^(PNPublishStatus *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {
@@ -395,7 +331,7 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
  self.client = [PubNub clientWithConfiguration:configuration];
  [self.client publish:@{@"Hello":@"world"} toChannel:@"announcement"
     mobilePushPayload:@{@"apns":@{@"alert":@"Hello from PubNub"}} compressed:YES
-       withCompletion:^(PNStatus<PNPublishStatus> *status) {
+       withCompletion:^(PNPublishStatus *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {
@@ -451,7 +387,7 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
  self.client = [PubNub clientWithConfiguration:configuration];
  [self.client publish:@{@"Hello":@"world"} toChannel:@"announcement"
     mobilePushPayload:@{@"apns":@{@"alert":@"Hello from PubNub"}} storeInHistory:YES
-       withCompletion:^(PNStatus<PNPublishStatus> *status) {
+       withCompletion:^(PNPublishStatus *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {
@@ -508,7 +444,7 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
  self.client = [PubNub clientWithConfiguration:configuration];
  [self.client publish:@{@"Hello":@"world"} toChannel:@"announcement"
     mobilePushPayload:@{@"apns":@{@"alert":@"Hello from PubNub"}} storeInHistory:YES compressed:NO
-       withCompletion:^(PNStatus<PNPublishStatus> *status) {
+       withCompletion:^(PNPublishStatus *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {

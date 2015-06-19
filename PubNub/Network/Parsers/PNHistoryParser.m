@@ -90,7 +90,7 @@
                 [data[@"messages"] addObject:message];
             }
         }];
-        processedResponse = [PNDictionary dictionaryWithDictionary:data];
+        processedResponse = data;
     }
     
     return processedResponse;

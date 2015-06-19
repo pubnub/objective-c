@@ -345,10 +345,6 @@
             errorDetails = @{@"information":information};
         }
     }
-    if (errorDetails) {
-        
-        errorDetails = [PNDictionary dictionaryWithDictionary:errorDetails];
-    }
     
     return errorDetails;
 }

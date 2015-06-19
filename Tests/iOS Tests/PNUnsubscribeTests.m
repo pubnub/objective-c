@@ -48,17 +48,18 @@
     
 }
 
-- (void)client:(PubNub *)client didReceiveMessage:(PNResult<PNMessageResult> *)message withStatus:(PNStatus<PNStatus> *)status {
+- (void)client:(PubNub *)client didReceiveMessage:(PNMessageResult *)message withStatus:(PNErrorStatus *)status {
     NSLog(@"message: %@", message);
     NSLog(@"status: %@", status);
 }
 
-- (void)client:(PubNub *)client didReceivePresenceEvent:(PNResult<PNPresenceEventResult> *)event {
+- (void)client:(PubNub *)client didReceivePresenceEvent:(PNPresenceEventResult *)event {
     NSLog(@"event: %@", event);
 }
 
-- (void)client:(PubNub *)client didReceiveStatus:(PNStatus<PNSubscriberStatus> *)status {
-    NSLog(@"status: %@", status);
+- (void)client:(PubNub *)client didReceiveStatus:(PNSubscribeStatus *)status {
+    
+    NSLog(@"status: %@", [status debugDescription]);
     if (self.isSettingUp) {
         XCTAssertNotNil(status);
         XCTAssertEqual(status.category, PNConnectedCategory);
@@ -71,7 +72,7 @@
         [self.subscribeExpectation fulfill];
         return;
     }
-    NSLog(@"status: %@", status);
+    NSLog(@"status: %@", [status debugDescription]);
     XCTAssertNotNil(status);
     XCTAssertFalse(status.isError);
     XCTAssertEqual(status.operation, PNSubscribeOperation);

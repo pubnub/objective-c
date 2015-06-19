@@ -36,8 +36,7 @@
     // Array is valid response type for time request.
     if ([response isKindOfClass:[NSArray class]] && [(NSArray *)response count] == 1) {
         
-        processedResponse = [PNDictionary dictionaryWithDictionary:@{
-                             @"timetoken": (NSArray *)response[0]}];
+        processedResponse = @{@"timetoken": (NSArray *)response[0]};
     }
     
     return processedResponse;
