@@ -12,6 +12,8 @@
 
 #import "PNBasicClientTestCase.h"
 
+#import "NSString+Test.h"
+
 @interface PNPublishTests : PNBasicClientTestCase
 @end
 
@@ -19,6 +21,7 @@
 
 - (BOOL)recording {
     return NO;
+    
 }
 
 - (void)testSimplePublish {
@@ -32,7 +35,7 @@
         NSLog(@"status.data.information: %@", status.data.information);
         NSLog(@"status.data.timeToken: %@", status.data.timetoken);
         XCTAssertEqualObjects(status.data.information, @"Sent");
-        XCTAssertEqualObjects(status.data.timetoken, @"14346446402567850");
+        XCTAssertEqualObjects(status.data.timetoken, @"14347265638751945");
     }];
 }
 
@@ -62,7 +65,7 @@
         NSLog(@"status.data.information: %@", status.data.information);
         NSLog(@"status.data.timeToken: %@", status.data.timetoken);
         XCTAssertEqualObjects(status.data.information, @"Sent");
-        XCTAssertEqualObjects(status.data.timetoken, @"14346446398129324");
+        XCTAssertEqualObjects(status.data.timetoken, @"14347265622706178");
     }];
 }
 
@@ -151,7 +154,6 @@
  NSSet is not among our allowed object to send, according to documentation, 
  but it seems we missed isValidJSONObject check before we try to serialize 
   some object.
- 
  - (void)testPublishSet {
     [self performVerifiedPublish:[NSSet setWithObjects:@"1", @(5), @"3", nil]
                        onChannel:[NSUUID UUID].UUIDString
@@ -167,6 +169,63 @@
     }];
 }
  */
+
+- (void)testPublish1kCharactersString {
+    
+    // generate long string
+    NSString *testString = [NSString randomAlphanumericStringWithLength:1000];
+    
+    [self performVerifiedPublish:testString
+                       onChannel:[NSUUID UUID].UUIDString
+                  withAssertions:^(PNStatus<PNPublishStatus> *status) {
+                      XCTAssertNotNil(status);
+                      XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+                      XCTAssertEqual(status.operation, PNPublishOperation);
+                      XCTAssertEqual(status.statusCode, 200);
+                      XCTAssertFalse(status.isError);
+                      NSLog(@"status.data.information: %@", status.data.information);
+                      NSLog(@"status.data.timeToken: %@", status.data.timetoken);
+                      XCTAssertEqualObjects(status.data.information, @"Sent");
+                  }];
+}
+
+- (void)testPublish10kCharactersString {
+    
+    // generate long string
+    NSString *testString = [NSString randomAlphanumericStringWithLength:10000];
+    
+    [self performVerifiedPublish:testString
+                       onChannel:[NSUUID UUID].UUIDString
+                  withAssertions:^(PNStatus<PNPublishStatus> *status) {
+                      XCTAssertNotNil(status);
+                      XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+                      XCTAssertEqual(status.operation, PNPublishOperation);
+                      XCTAssertEqual(status.statusCode, 200);
+                      XCTAssertFalse(status.isError);
+                      NSLog(@"status.data.information: %@", status.data.information);
+                      NSLog(@"status.data.timeToken: %@", status.data.timetoken);
+                      XCTAssertEqualObjects(status.data.information, @"Sent");
+                  }];
+}
+
+
+- (void)testPublishStringWithSpecialSymbols {
+    
+    NSString *stringWithSpecialSymbols = @"!@#$%^&*()_+|";
+    
+    [self performVerifiedPublish:stringWithSpecialSymbols
+                       onChannel:[NSUUID UUID].UUIDString
+                  withAssertions:^(PNStatus<PNPublishStatus> *status) {
+                      XCTAssertNotNil(status);
+                      XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+                      XCTAssertEqual(status.operation, PNPublishOperation);
+                      XCTAssertEqual(status.statusCode, 200);
+                      XCTAssertFalse(status.isError);
+                      NSLog(@"status.data.information: %@", status.data.information);
+                      NSLog(@"status.data.timeToken: %@", status.data.timetoken);
+                      XCTAssertEqualObjects(status.data.information, @"Sent");
+                  }];
+}
 
 #pragma mark - Main flow
 
