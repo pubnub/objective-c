@@ -219,7 +219,7 @@ void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
         _clientStateManager = [PNClientState stateForClient:self];
         _listenersManager = [PNStateListener stateListenerForClient:self];
         _heartbeatManager = [PNHeartbeat heartbeatForClient:self];
-        [self addListeners:@[self]];
+        [self addListener:self];
         [self prepareReachability];
         
         NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
@@ -247,7 +247,7 @@ void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
     [client.subscriberManager inheritStateFromSubscriber:self.subscriberManager];
     [client.clientStateManager inheritStateFromState:self.clientStateManager];
     [client.listenersManager inheritStateFromListener:self.listenersManager];
-    [client removeListeners:@[self]];
+    [client removeListener:self];
     [self.listenersManager removeAllListeners];
     
     dispatch_block_t subscriptionRestoreBlock = ^{
