@@ -92,14 +92,12 @@
     // Bind didReceiveMessage, didReceiveStatus, and didReceivePresenceEvent 'listeners' to this delegate
     // just be sure the target has implemented the PNObjectEventListener extension
     [self.client addListener:self];
-//    [self pubNubSetState];
+    [self pubNubSetState];
 }
 
 - (void)tireKicker {
     [self pubNubInit];
 
-    [self.client subscribeToChannels:@[@"swifty"] withPresence:NO];
-    return;
 #pragma mark - Time
 
     [self pubNubTime];
@@ -711,8 +709,8 @@
     self.myConfig.authKey = _authKey;
 
     // Presence Settings
-    self.myConfig.presenceHeartbeatValue = 60;
-    self.myConfig.presenceHeartbeatInterval = 29;
+    self.myConfig.presenceHeartbeatValue = 120;
+    self.myConfig.presenceHeartbeatInterval = 60;
 
     // Cipher Key Settings
     //self.client.cipherKey = @"enigma";
