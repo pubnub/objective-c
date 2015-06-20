@@ -23,6 +23,7 @@
 		6003F5B2195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
 		6003F5BA195388D20070C39A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6003F5B8195388D20070C39A /* InfoPlist.strings */; };
 		873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 873B8AEA1B1F5CCA007FD442 /* Main.storyboard */; };
+		97FB4DB91B36266800CA7C91 /* Rakefile in Resources */ = {isa = PBXBuildFile; fileRef = 97FB4DB81B36266800CA7C91 /* Rakefile */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +65,7 @@
 		7A9945019D33BCC2C3B3B7C1 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		873B8AEA1B1F5CCA007FD442 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		8C8CD53952CF88BD96334AF7 /* Pods-PubNub_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PubNub_Example.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-PubNub_Example/Pods-PubNub_Example.debug.xcconfig"; sourceTree = "<group>"; };
+		97FB4DB81B36266800CA7C91 /* Rakefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Rakefile; path = ../Rakefile; sourceTree = "<group>"; };
 		9ADC3110B845C6573F921809 /* Pods-PubNub_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PubNub_Tests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-PubNub_Tests/Pods-PubNub_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		AC31377CA12379BC3F929B77 /* Pods-PubNub_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PubNub_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-PubNub_Example/Pods-PubNub_Example.release.xcconfig"; sourceTree = "<group>"; };
 		B34CA237B4B1C0B1CCF01E75 /* Pods-PubNub_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PubNub_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PubNub_Example/Pods-PubNub_Example.debug.xcconfig"; sourceTree = "<group>"; };
@@ -198,6 +200,7 @@
 				78D5FDD94AEDFE48ED24E6A4 /* PubNub.podspec */,
 				7A9945019D33BCC2C3B3B7C1 /* README.md */,
 				C4C1ED79724D56B45766CFFA /* LICENSE */,
+				97FB4DB81B36266800CA7C91 /* Rakefile */,
 			);
 			name = "Podspec Metadata";
 			sourceTree = "<group>";
@@ -288,6 +291,7 @@
 				873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */,
 				6003F5A9195388D20070C39A /* Images.xcassets in Resources */,
 				6003F598195388D20070C39A /* InfoPlist.strings in Resources */,
+				97FB4DB91B36266800CA7C91 /* Rakefile in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

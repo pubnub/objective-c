@@ -20,6 +20,21 @@ PODS:
   - AFNetworking/UIKit (2.5.4):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
+  - BlocksKit (2.2.5):
+    - BlocksKit/All (= 2.2.5)
+  - BlocksKit/All (2.2.5):
+    - BlocksKit/Core
+    - BlocksKit/DynamicDelegate
+    - BlocksKit/MessageUI
+    - BlocksKit/UIKit
+  - BlocksKit/Core (2.2.5)
+  - BlocksKit/DynamicDelegate (2.2.5)
+  - BlocksKit/MessageUI (2.2.5):
+    - BlocksKit/Core
+    - BlocksKit/DynamicDelegate
+  - BlocksKit/UIKit (2.2.5):
+    - BlocksKit/Core
+    - BlocksKit/DynamicDelegate
   - CocoaLumberjack (2.0.0):
     - CocoaLumberjack/Default (= 2.0.0)
     - CocoaLumberjack/Extensions (= 2.0.0)
@@ -29,7 +44,8 @@ PODS:
   - CocoaLumberjack/Extensions (2.0.0):
     - CocoaLumberjack/Default
   - Expecta (1.0.0)
-  - JSZVCR (0.3.7):
+  - JSZVCR (0.4.4):
+    - BlocksKit (~> 2.2)
     - OHHTTPStubs (~> 4.0)
   - OHHTTPStubs (4.0.2)
   - PubNub (4.0):
@@ -38,18 +54,19 @@ PODS:
 
 DEPENDENCIES:
   - Expecta (~> 1.0)
-  - JSZVCR (~> 0.3)
+  - JSZVCR (~> 0.4)
   - PubNub (from `.`)
 
 EXTERNAL SOURCES:
   PubNub:
-    :path: "."
+    :path: .
 
 SPEC CHECKSUMS:
   AFNetworking: 05edc0ac4c4c8cf57bcf4b84be5b0744b6d8e71e
+  BlocksKit: 7f422b971407001178d181a43b99014ea2591fe6
   CocoaLumberjack: a6f77d987d65dc7ba86b0f84db7d0b9084f77bcb
   Expecta: 32604574add2c46a36f8d2f716b6c5736eb75024
-  JSZVCR: b18ade048115b32ab2f951e9a3e32f9973dba909
+  JSZVCR: fdc55fd0e4ae9ef17e8299fa2fbc246c7bc193a2
   OHHTTPStubs: dbd1957d414659783e07b49c961940b7564c23d9
   PubNub: 6a824dadb62ea7744e5b5ea860eef40ee15f8e09
 

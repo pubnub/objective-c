@@ -1,8 +1,15 @@
 namespace :test do
 
   desc "Run the PubNub Integration Tests for iOS"
-  task :ios do  
-    run_tests('iOS Tests')
+  task :ios do
+    simulators = get_ios_simulators
+    destinations = Array.new
+    simulators.each {|version, available_simulators|
+    destinations.push("platform=iOS Simulator,OS=#{available_simulators[:runtime]},name=#{available_simulators[:device_names][0]}")
+    puts "Will run tests for iOS Simulator on iOS #{available_simulators[:runtime]} using #{available_simulators[:device_names][0]}"
+    }
+
+    run_tests('iOS Tests', 'iphonesimulator', destinations)
   end
 
 end
@@ -17,8 +24,9 @@ task :default => 'test'
 
 private
 
-def run_tests(scheme)
-  sh("xcodebuild -scheme '#{scheme}' -destination 'platform=iOS Simulator,name=iPhone 6,OS=latest' -configuration 'Debug' test | xcpretty -c")
+def run_tests(scheme, sdk, destinations)
+    destinations = destinations.map! { |destination| "-destination \'#{destination}\'" }.join(' ')
+    sh("xcodebuild -workspace PubNub.xcworkspace -scheme '#{scheme}' -sdk '#{sdk}' #{destinations} -configuration 'Debug' clean test | xcpretty -c")
 end
 
 def get_ios_simulators
