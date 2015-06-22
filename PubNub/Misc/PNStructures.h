@@ -111,7 +111,7 @@ typedef NS_OPTIONS(NSUInteger, PNLogLevel){
  
  @since 4.0
  */
-typedef NS_OPTIONS(NSInteger, PNOperationType){
+typedef NS_ENUM(NSInteger, PNOperationType){
     PNSubscribeOperation,
     PNUnsubscribeOperation,
     PNPublishOperation,
@@ -142,7 +142,7 @@ typedef NS_OPTIONS(NSInteger, PNOperationType){
 
  @since 4.0
  */
-typedef NS_OPTIONS(NSInteger, PNStatusCategory) {
+typedef NS_ENUM(NSInteger, PNStatusCategory) {
     
     PNUnknownCategory,
     
@@ -283,7 +283,7 @@ typedef NS_OPTIONS(NSInteger, PNStatusCategory) {
 
  @since 4.0
  */
-typedef NS_OPTIONS(NSInteger, PNHereNowVerbosityLevel) {
+typedef NS_ENUM(NSInteger, PNHereNowVerbosityLevel) {
 
     /**
      @brief  Request presence service return only number of participants at specified remote data
