@@ -7,6 +7,8 @@ namespace :test do
     destinations = Array.new
     # collect all sims except for "Resizable sims"
     simulators.each { |version, available_simulators|
+      # sims for 7.0.3 exist on Travis CI but not on local machines, so remove
+      # because we can't reproduce results locally
       if available_simulators[:runtime] != '7.0.3'
         available_simulators[:device_names].each { |device|
           if !device.match(/^Resizable/)
