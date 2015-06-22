@@ -39,16 +39,12 @@
     [super tearDown];
 }
 
-- (void)testUnsubscribe {    
+- (void)DISABLED_testUnsubscribe {
     self.unsubscribeExpectation = [self expectationWithDescription:@"unsubscribe"];
     [self.client unsubscribeFromChannels:@[@"a"] withPresence:YES];
     [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
         NSLog(@"error: %@", error);
     }];
-#ifdef __IPHONE_7_0
-    XCTFail(@"testing!");
-#endif
-    
 }
 
 - (void)client:(PubNub *)client didReceiveMessage:(PNMessageResult *)message withStatus:(PNErrorStatus *)status {
