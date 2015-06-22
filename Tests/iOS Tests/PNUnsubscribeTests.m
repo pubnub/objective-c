@@ -45,6 +45,9 @@
     [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
         NSLog(@"error: %@", error);
     }];
+#ifdef __IPHONE_7_0
+    XCTFail(@"testing!");
+#endif
     
 }
 
