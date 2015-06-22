@@ -19,6 +19,8 @@
 		9604EE9D1B34628C009EB15C /* NSString+Test.m in Sources */ = {isa = PBXBuildFile; fileRef = 9604EE9C1B34628C009EB15C /* NSString+Test.m */; };
 		9604EE9F1B346CD9009EB15C /* PNPublishWithHistoryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9604EE9E1B346CD9009EB15C /* PNPublishWithHistoryTests.m */; };
 		9604EEA11B34953B009EB15C /* PNPublishWithHistoryTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 9604EEA01B34953A009EB15C /* PNPublishWithHistoryTests.bundle */; };
+		96F519851B3869A900053FB7 /* PNPublishCompressedTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 96F519841B3869A900053FB7 /* PNPublishCompressedTests.m */; };
+		96F519871B3878AB00053FB7 /* PNPublishCompressedTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 96F519861B3878AB00053FB7 /* PNPublishCompressedTests.bundle */; };
 		97FA41F31B2FF518003B9B57 /* PNPublishTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 97FA41F21B2FF518003B9B57 /* PNPublishTests.m */; };
 		97FA41F51B2FFB61003B9B57 /* PNPublishTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 97FA41F41B2FFB61003B9B57 /* PNPublishTests.bundle */; };
 /* End PBXBuildFile section */
@@ -44,6 +46,8 @@
 		9604EE9C1B34628C009EB15C /* NSString+Test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+Test.m"; path = "iOS Tests/NSString+Test.m"; sourceTree = "<group>"; };
 		9604EE9E1B346CD9009EB15C /* PNPublishWithHistoryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNPublishWithHistoryTests.m; sourceTree = "<group>"; };
 		9604EEA01B34953A009EB15C /* PNPublishWithHistoryTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNPublishWithHistoryTests.bundle; sourceTree = "<group>"; };
+		96F519841B3869A900053FB7 /* PNPublishCompressedTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNPublishCompressedTests.m; sourceTree = "<group>"; };
+		96F519861B3878AB00053FB7 /* PNPublishCompressedTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNPublishCompressedTests.bundle; sourceTree = "<group>"; };
 		97FA41F21B2FF518003B9B57 /* PNPublishTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNPublishTests.m; sourceTree = "<group>"; };
 		97FA41F41B2FFB61003B9B57 /* PNPublishTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNPublishTests.bundle; sourceTree = "<group>"; };
 		C081D126B561273617A72F85 /* Pods-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios.release.xcconfig"; path = "../Pods/Target Support Files/Pods-ios/Pods-ios.release.xcconfig"; sourceTree = "<group>"; };
@@ -101,6 +105,7 @@
 				1736E1A31B30F2C00077B2E7 /* PNChannelGroupTests.m */,
 				97FA41F21B2FF518003B9B57 /* PNPublishTests.m */,
 				9604EE9E1B346CD9009EB15C /* PNPublishWithHistoryTests.m */,
+				96F519841B3869A900053FB7 /* PNPublishCompressedTests.m */,
 				178251241B30BF29006BC234 /* PNUnsubscribeTests.m */,
 				178251201B30AAE6006BC234 /* Base Test Classes */,
 				51F7AAC11B27AD7400BEDA1F /* Fixtures */,
@@ -120,6 +125,7 @@
 		51F7AAC11B27AD7400BEDA1F /* Fixtures */ = {
 			isa = PBXGroup;
 			children = (
+				96F519861B3878AB00053FB7 /* PNPublishCompressedTests.bundle */,
 				9604EEA01B34953A009EB15C /* PNPublishWithHistoryTests.bundle */,
 				1736E1A71B30F5E00077B2E7 /* PNChannelGroupTests.bundle */,
 				178251261B30D5F7006BC234 /* PNUnsubscribeTests.bundle */,
@@ -222,6 +228,7 @@
 				1736E1A81B30F5E00077B2E7 /* PNChannelGroupTests.bundle in Resources */,
 				97FA41F51B2FFB61003B9B57 /* PNPublishTests.bundle in Resources */,
 				9604EEA11B34953B009EB15C /* PNPublishWithHistoryTests.bundle in Resources */,
+				96F519871B3878AB00053FB7 /* PNPublishCompressedTests.bundle in Resources */,
 				178251271B30D5F7006BC234 /* PNUnsubscribeTests.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -281,6 +288,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				96F519851B3869A900053FB7 /* PNPublishCompressedTests.m in Sources */,
 				97FA41F31B2FF518003B9B57 /* PNPublishTests.m in Sources */,
 				1736E1A41B30F2C00077B2E7 /* PNChannelGroupTests.m in Sources */,
 				9604EE9D1B34628C009EB15C /* NSString+Test.m in Sources */,
