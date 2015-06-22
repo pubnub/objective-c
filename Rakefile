@@ -7,12 +7,14 @@ namespace :test do
     destinations = Array.new
     # collect all sims except for "Resizable sims"
     simulators.each { |version, available_simulators|
-      available_simulators[:device_names].each { |device|
-        if !device.match(/^Resizable/)
-          destinations.push("platform=iOS Simulator,OS=#{available_simulators[:runtime]},name=#{device}")
-          puts "Will run tests for iOS Simulator on iOS #{available_simulators[:runtime]} using #{device}"
-        end
-      }
+      if available_simulators[:runtime] != '7.0.3'
+        available_simulators[:device_names].each { |device|
+          if !device.match(/^Resizable/)
+            destinations.push("platform=iOS Simulator,OS=#{available_simulators[:runtime]},name=#{device}")
+            puts "Will run tests for iOS Simulator on iOS #{available_simulators[:runtime]} using #{device}"
+          end
+        }
+      end
     }
     final_exit_status = 0
     destinations.each { |destination|
