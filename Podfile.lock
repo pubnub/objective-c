@@ -44,7 +44,7 @@ PODS:
   - CocoaLumberjack/Extensions (2.0.0):
     - CocoaLumberjack/Default
   - Expecta (1.0.0)
-  - JSZVCR (0.4.4):
+  - JSZVCR (0.5.0):
     - BlocksKit (~> 2.2)
     - OHHTTPStubs (~> 4.0)
   - OHHTTPStubs (4.0.2)
@@ -54,7 +54,7 @@ PODS:
 
 DEPENDENCIES:
   - Expecta (~> 1.0)
-  - JSZVCR (~> 0.4)
+  - JSZVCR (~> 0.5)
   - PubNub (from `.`)
 
 EXTERNAL SOURCES:
@@ -66,7 +66,7 @@ SPEC CHECKSUMS:
   BlocksKit: 7f422b971407001178d181a43b99014ea2591fe6
   CocoaLumberjack: a6f77d987d65dc7ba86b0f84db7d0b9084f77bcb
   Expecta: 32604574add2c46a36f8d2f716b6c5736eb75024
-  JSZVCR: fdc55fd0e4ae9ef17e8299fa2fbc246c7bc193a2
+  JSZVCR: c1519aaeb0e6b10add5830857983eb97805dc608
   OHHTTPStubs: dbd1957d414659783e07b49c961940b7564c23d9
   PubNub: 6a824dadb62ea7744e5b5ea860eef40ee15f8e09
 
