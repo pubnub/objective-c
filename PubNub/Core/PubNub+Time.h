@@ -1,61 +1,10 @@
 #import <Foundation/Foundation.h>
+#import "PNErrorStatus.h"
+#import "PNTimeResult.h"
 #import "PubNub+Core.h"
 
 
-#pragma mark - API group protocols
-
-/**
- @brief      Protocol which describe time data object structure.
- 
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
- */
-@protocol PNTimeData
-
-
-///------------------------------------------------
-/// @name Information
-///------------------------------------------------
-
-/**
- @brief  Current time on \b PubNub network servers.
- 
- @return Number with unsigned long long as timestamp.
- 
- @since 4.0
- */
-- (NSNumber *)timetoken;
-
-@end
-
-
-/**
- @brief  Protocol which describe operation processing resulting object with typed with \c data field
-         with corresponding data type.
- 
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
- */
-@protocol PNTimeResult <PNResult>
-
-
-///------------------------------------------------
-/// @name Information
-///------------------------------------------------
-
-/**
- @brief  Reference on service response data casted to required type.
- 
- @since 4.0
- */
-@property (nonatomic, readonly, copy) NSObject<PNTimeData> *data;
-
-@end
-
-
-#pragma mark - Types
+#pragma mark Types
 
 /**
  @brief  Time request completion block.
@@ -65,8 +14,7 @@
  
  @since 4.0
  */
-typedef void(^PNTimeCompletionBlock)(PNResult<PNTimeResult> *result,
-                                     PNStatus<PNStatus> *status);
+typedef void(^PNTimeCompletionBlock)(PNTimeResult *result, PNErrorStatus *status);
 
 
 #pragma mark - API group interface
@@ -96,7 +44,7 @@ typedef void(^PNTimeCompletionBlock)(PNResult<PNTimeResult> *result,
  PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
                                                                   subscribeKey:@"demo"];
  self.client = [PubNub clientWithConfiguration:configuration];
- [client timeWithHandlingBlock:^(PNResult<PNTimeResult> *result, PNStatus<PNStatus> *status) {
+ [client timeWithHandlingBlock:^(PNTimeResult *result, PNErrorStatus *status) {
      
      // Check whether request successfully completed or not.
      if (!status.isError) {

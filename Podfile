@@ -13,14 +13,12 @@ target 'PubNub_Tests', :exclusive => true do
   platform :ios, '7.0'
   xcodeproj 'Example/PubNub.xcodeproj'
   pod "PubNub", :path => "."
-  pod "Expecta", "~> 1.0"
 end
 
 target 'iOS Tests', :exclusive => true do
   platform :ios, "7.0"
   xcodeproj 'Tests/PubNub Tests.xcodeproj'
-  pod "Expecta", "~> 1.0"
-  pod "JSZVCR", "~> 0.3"
+  pod "JSZVCR", "~> 0.5"
   pod "PubNub", :path => "."
 end
 

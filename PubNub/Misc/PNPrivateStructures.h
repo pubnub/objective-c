@@ -16,17 +16,19 @@
 
  @since 4.0
  */
-static NSString * const PNOperationTypeStrings[20] = {
+static NSString * const PNOperationTypeStrings[22] = {
     [PNSubscribeOperation] = @"Subscribe",
     [PNUnsubscribeOperation] = @"Unsubscribe",
     [PNPublishOperation] = @"Publish",
     [PNHistoryOperation] = @"History",
     [PNWhereNowOperation] = @"Where Now",
     [PNHereNowGlobalOperation] = @"Global Here Now",
-    [PNHereNowOperation] = @"Here Now",
+    [PNHereNowForChannelOperation] = @"Here Now for Channel",
+    [PNHereNowForChannelGroupOperation] = @"Here Now for Channel Group",
     [PNHeartbeatOperation] = @"Heartbeat",
     [PNSetStateOperation] = @"Set State",
-    [PNStateOperation] = @"Get State",
+    [PNStateForChannelOperation] = @"Get State for Channel",
+    [PNStateForChannelGroupOperation] = @"Get State for Channel Group",
     [PNAddChannelsToGroupOperation] = @"Add Channels To Group",
     [PNRemoveChannelsFromGroupOperation] = @"Remove Channels From Group",
     [PNChannelGroupsOperation] = @"Get Groups",
@@ -37,6 +39,45 @@ static NSString * const PNOperationTypeStrings[20] = {
     [PNRemovePushNotificationsFromChannelsOperation] = @"Remove Push Notifications From Channels",
     [PNRemoveAllPushNotificationsOperation] = @"Remove All Push Notifications",
     [PNTimeOperation] = @"Time",
+};
+
+static NSString * const PNOperationResultClasses[22] = {
+    [PNHistoryOperation] = @"PNHistoryResult",
+    [PNWhereNowOperation] = @"PNPresenceWhereNowResult",
+    [PNHereNowGlobalOperation] = @"PNPresenceGlobalHereNowResult",
+    [PNHereNowForChannelOperation] = @"PNPresenceChannelHereNowResult",
+    [PNHereNowForChannelGroupOperation] = @"PNPresenceChannelGroupHereNowResult",
+    [PNStateForChannelOperation] = @"PNChannelClientStateResult",
+    [PNStateForChannelGroupOperation] = @"PNChannelGroupClientStateResult",
+    [PNChannelGroupsOperation] = @"PNChannelGroupsResult",
+    [PNChannelsForGroupOperation] = @"PNChannelGroupChannelsResult",
+    [PNPushNotificationEnabledChannelsOperation] = @"PNAPNSEnabledChannelsResult",
+    [PNTimeOperation] = @"PNTimeResult",
+};
+
+static NSString * const PNOperationStatusClasses[22] = {
+    [PNSubscribeOperation] = @"PNSubscribeStatus",
+    [PNUnsubscribeOperation] = @"PNAcknowledgmentStatus",
+    [PNPublishOperation] = @"PNPublishStatus",
+    [PNHistoryOperation] = @"PNErrorStatus",
+    [PNWhereNowOperation] = @"PNErrorStatus",
+    [PNHereNowGlobalOperation] = @"PNErrorStatus",
+    [PNHereNowForChannelOperation] = @"PNErrorStatus",
+    [PNHereNowForChannelGroupOperation] = @"PNErrorStatus",
+    [PNHeartbeatOperation] = @"PNAcknowledgmentStatus",
+    [PNSetStateOperation] = @"PNClientStateUpdateStatus",
+    [PNStateForChannelOperation] = @"PNErrorStatus",
+    [PNStateForChannelGroupOperation] = @"PNErrorStatus",
+    [PNAddChannelsToGroupOperation] = @"PNAcknowledgmentStatus",
+    [PNRemoveChannelsFromGroupOperation] = @"PNAcknowledgmentStatus",
+    [PNChannelGroupsOperation] = @"PNErrorStatus",
+    [PNRemoveGroupOperation] = @"PNAcknowledgmentStatus",
+    [PNChannelsForGroupOperation] = @"PNErrorStatus",
+    [PNPushNotificationEnabledChannelsOperation] = @"PNErrorStatus",
+    [PNAddPushNotificationsOnChannelsOperation] = @"PNAcknowledgmentStatus",
+    [PNRemovePushNotificationsFromChannelsOperation] = @"PNAcknowledgmentStatus",
+    [PNRemoveAllPushNotificationsOperation] = @"PNAcknowledgmentStatus",
+    [PNTimeOperation] = @"PNErrorStatus",
 };
 
 /**

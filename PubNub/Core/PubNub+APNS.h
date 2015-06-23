@@ -1,63 +1,11 @@
 #import <Foundation/Foundation.h>
+#import "PNAPNSEnabledChannelsResult.h"
+#import "PNAcknowledgmentStatus.h"
+#import "PNErrorStatus.h"
 #import "PubNub+Core.h"
 
 
-#pragma mark API group protocols
-
-/**
- @brief      Protocol which describe push notification state audit data object structure.
- @discussion Contain information about channels, for which push notifications has been enabled
-             earlier.
- 
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
- */
-@protocol PNPushNotificationStateData
-
-
-///------------------------------------------------
-/// @name Information
-///------------------------------------------------
-
-/**
- @brief  Channels with active push notifications.
- 
- @return List of channel names for which client enabled push notifications earlier.
- 
- @since 4.0
- */
-- (NSArray *)channels;
-
-@end
-
-
-/**
- @brief  Protocol which describe operation processing resulting object with typed with \c data field
-         with corresponding data type.
- 
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
- */
-@protocol PNPushNotificationsStateAuditResult <PNResult>
-
-
-///------------------------------------------------
-/// @name Information
-///------------------------------------------------
-
-/**
- @brief  Reference on service response data casted to required type.
- 
- @since 4.0
- */
-@property (nonatomic, readonly, copy) NSObject<PNPushNotificationStateData> *data;
-
-@end
-
-
-#pragma mark - Types
+#pragma mark Types
 
 /**
  @brief  Push notifications state modification completion block.
@@ -66,7 +14,7 @@
  
  @since 4.0
  */
-typedef void(^PNPushNotificationsStateModificationCompletionBlock)(PNStatus<PNStatus> *status);
+typedef void(^PNPushNotificationsStateModificationCompletionBlock)(PNAcknowledgmentStatus *status);
 
 /**
  @brief  Push notifications state audit completion block.
@@ -75,8 +23,8 @@ typedef void(^PNPushNotificationsStateModificationCompletionBlock)(PNStatus<PNSt
  
  @since 4.0
  */
-typedef void(^PNPushNotificationsStateAuditCompletionBlock)(PNResult<PNPushNotificationsStateAuditResult> *result,
-                                                            PNStatus<PNStatus> *status);
+typedef void(^PNPushNotificationsStateAuditCompletionBlock)(PNAPNSEnabledChannelsResult *result,
+                                                            PNErrorStatus *status);
 
 
 #pragma mark - API group interface
@@ -112,7 +60,7 @@ typedef void(^PNPushNotificationsStateAuditCompletionBlock)(PNResult<PNPushNotif
  self.client = [PubNub clientWithConfiguration:configuration];
  [self.client addPushNotificationsOnChannels:@[@"wwdc",@"google.io"] 
                          withDevicePushToken:self.devicePushToken 
-                               andCompletion:^(PNStatus<PNStatus> *status) {
+                               andCompletion:^(PNAcknowledgmentStatus *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {
@@ -158,7 +106,7 @@ typedef void(^PNPushNotificationsStateAuditCompletionBlock)(PNResult<PNPushNotif
  self.client = [PubNub clientWithConfiguration:configuration];
  [self.client removePushNotificationsFromChannels:@[@"wwdc",@"google.io"]
                               withDevicePushToken:self.devicePushToken
-                                    andCompletion:^(PNStatus<PNStatus> *status) {
+                                    andCompletion:^(PNAcknowledgmentStatus *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {
@@ -203,7 +151,7 @@ typedef void(^PNPushNotificationsStateAuditCompletionBlock)(PNResult<PNPushNotif
                                                                   subscribeKey:@"demo"];
  self.client = [PubNub clientWithConfiguration:configuration];
  [self.client removeAllPushNotificationsFromDeviceWithPushToken:self.devicePushToken
-                                                  andCompletion:^(PNStatus<PNStatus> *status) {
+                                                  andCompletion:^(PNAcknowledgmentStatus *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {
@@ -252,8 +200,8 @@ typedef void(^PNPushNotificationsStateAuditCompletionBlock)(PNResult<PNPushNotif
                                                                   subscribeKey:@"demo"];
  self.client = [PubNub clientWithConfiguration:configuration];
  [self.client pushNotificationEnabledChannelsForDeviceWithPushToken:self.devicePushToken
-                              andCompletion:^(PNResult<PNPushNotificationsStateAuditResult> *result, 
-                                              PNStatus<PNStatus> *status) {
+                              andCompletion:^(PNAPNSEnabledChannelsResult *result,
+                                              PNErrorStatus *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {

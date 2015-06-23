@@ -149,13 +149,13 @@
 
 #pragma mark - Handlers
 
-- (void)handleHistoryResult:(PNResult<PNHistoryResult> *)result withStatus:(PNStatus *)status
+- (void)handleHistoryResult:(PNHistoryResult *)result withStatus:(PNErrorStatus *)status
                  completion:(PNHistoryCompletionBlock)block {
 
     if (result && ((NSDictionary *)result.data)[@"decryptError"]) {
 
-        status = [PNStatus statusForOperation:PNHistoryOperation
-                                     category:PNDecryptionErrorCategory];
+        status = (PNErrorStatus *)[PNStatus statusForOperation:PNHistoryOperation
+                                                      category:PNDecryptionErrorCategory];
         NSMutableDictionary *updatedData = [result.data mutableCopy];
         [updatedData removeObjectForKey:@"decryptError"];
         [status updateData:updatedData];

@@ -23,4 +23,8 @@
     [super tearDown];
 }
 
+- (Class<JSZVCRMatching>)matcherClass {
+    return [JSZVCRUnorderedQueryMatcher class];
+}
+
 @end

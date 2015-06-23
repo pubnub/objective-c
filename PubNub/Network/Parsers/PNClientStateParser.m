@@ -16,7 +16,8 @@
 
 + (NSArray *)operations {
     
-    return @[@(PNSetStateOperation), @(PNStateOperation)];
+    return @[@(PNSetStateOperation), @(PNStateForChannelOperation),
+             @(PNStateForChannelGroupOperation)];
 }
 
 + (BOOL)requireAdditionalData {
@@ -38,13 +39,11 @@
         
         if (response[@"payload"][@"channels"]) {
             
-            processedResponse = [PNDictionary dictionaryWithDictionary:@{
-                                 @"channels": response[@"payload"][@"channels"]}];
+            processedResponse = @{@"channels": response[@"payload"][@"channels"]};
         }
         else {
             
-            processedResponse = [PNDictionary dictionaryWithDictionary:@{
-                                                     @"state": response[@"payload"]}];
+            processedResponse = @{@"state": response[@"payload"]};
         }
     }
     

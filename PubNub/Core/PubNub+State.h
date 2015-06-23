@@ -1,206 +1,12 @@
 #import <Foundation/Foundation.h>
+#import "PNChannelGroupClientStateResult.h"
+#import "PNChannelClientStateResult.h"
+#import "PNClientStateUpdateStatus.h"
+#import "PNErrorStatus.h"
 #import "PubNub+Core.h"
 
 
-#pragma mark API group protocols
-
-/**
- @brief      Protocol which describe client state update status data object structure.
- @discussion Contain information about final state which has been applied or error information.
- 
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
- */
-@protocol PNSetStateData <PNErrorStatusData>
-
-
-///------------------------------------------------
-/// @name Information
-///------------------------------------------------
-
-/**
- @brief  User-provided client state information.
- 
- @return Client state which has been used during subscription process or using 'set state' API.
- 
- @since 4.0
- */
-- (NSDictionary *)state;
-
-@end
-
-
-/**
- @brief      Protocol which describe client state audit on channel result data object structure.
- @discussion Contain information about client state which has been assigned to the channel.
- 
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
- */
-@protocol PNChannelStateData <PNSetStateData>
-
-@end
-
-
-/**
- @brief      Protocol which describe client state audit on channel group result data object 
-             structure.
- @discussion Contain information about client state which has been assigned to the channel group.
- 
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
- */
-@protocol PNChannelGroupStateData <PNChannelStateData>
-
-
-///------------------------------------------------
-/// @name Information
-///------------------------------------------------
-
-/**
- @brief  Multi channel client state information.
- @note   In case if status object represent error, this property may contain list of channels to 
-         which client doesn't have access.
- 
- @return Return dictionary which contains name of the channels as keys and their state stored as
-         value.
- 
- @since 4.0
- */
-- (id)channels;
-
-@end
-
-
-/**
- @brief      Protocol which describe object returned from channel state audit API.
- @discussion This method allow to provide access to structured response data field.
- 
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
- */
-@protocol PNChannelStateResult <PNResult>
-
-
-///------------------------------------------------
-/// @name Information
-///------------------------------------------------
-
-/**
- @brief  Reference on service response data casted to required type.
- 
- @since 4.0
- */
-@property (nonatomic, readonly, copy) NSObject<PNChannelStateData> *data;
-
-@end
-
-
-/**
- @brief      Protocol which describe object returned from channel group state audit API.
- @discussion This method allow to provide access to structured response data field.
- 
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
- */
-@protocol PNChannelGroupStateResult <PNResult>
-
-
-///------------------------------------------------
-/// @name Information
-///------------------------------------------------
-
-/**
- @brief  Reference on service response data casted to required type.
- 
- @since 4.0
- */
-@property (nonatomic, readonly, copy) NSObject<PNChannelGroupStateData> *data;
-
-@end
-
-
-/**
- @brief  Protocol which describe operation processing status object with typed with \c data field
-         with corresponding data type.
- 
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
- */
-@protocol PNChannelStateStatus <PNStatus>
-
-
-///------------------------------------------------
-/// @name Information
-///------------------------------------------------
-
-/**
- @brief  Reference on service response data casted to required type.
- 
- @since 4.0
- */
-@property (nonatomic, readonly, copy) NSObject<PNChannelStateData> *data;
-
-@end
-
-
-/**
- @brief  Protocol which describe operation processing status object with typed with \c data field
-         with corresponding data type.
- 
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
- */
-@protocol PNChannelGroupStateStatus <PNStatus>
-
-
-///------------------------------------------------
-/// @name Information
-///------------------------------------------------
-
-/**
- @brief  Reference on service response data casted to required type.
- 
- @since 4.0
- */
-@property (nonatomic, readonly, copy) NSObject<PNChannelGroupStateData> *data;
-
-@end
-
-
-/**
- @brief  Protocol which describe operation processing status object with typed with \c data field
-         with corresponding data type.
- 
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
- */
-@protocol PNSetStateStatus <PNStatus>
-
-
-///------------------------------------------------
-/// @name Information
-///------------------------------------------------
-
-/**
- @brief  Reference on service response data casted to required type.
- 
- @since 4.0
- */
-@property (nonatomic, readonly, copy) NSObject<PNSetStateData> *data;
-
-@end
-
-
-#pragma mark - Types
+#pragma mark Types
 
 /**
  @brief State modification completion block.
@@ -209,7 +15,7 @@
  
  @since 4.0
  */
-typedef void(^PNSetStateCompletionBlock)(PNStatus<PNSetStateStatus> *status);
+typedef void(^PNSetStateCompletionBlock)(PNClientStateUpdateStatus *status);
 
 /**
  @brief  Channel state audition completion block.
@@ -220,8 +26,8 @@ typedef void(^PNSetStateCompletionBlock)(PNStatus<PNSetStateStatus> *status);
  
  @since 4.0
  */
-typedef void(^PNChannelStateCompletionBlock)(PNResult<PNChannelStateResult> *result,
-                                             PNStatus<PNChannelStateStatus> *status);
+typedef void(^PNChannelStateCompletionBlock)(PNChannelClientStateResult *result,
+                                             PNErrorStatus *status);
 
 /**
  @brief  Channel group state audition completion block.
@@ -232,8 +38,8 @@ typedef void(^PNChannelStateCompletionBlock)(PNResult<PNChannelStateResult> *res
  
  @since 4.0
  */
-typedef void(^PNChannelGroupStateCompletionBlock)(PNResult<PNChannelGroupStateResult> *result,
-                                                  PNStatus<PNChannelGroupStateStatus> *status);
+typedef void(^PNChannelGroupStateCompletionBlock)(PNChannelGroupClientStateResult *result,
+                                                  PNErrorStatus *status);
 
 
 #pragma mark - API group interface
@@ -268,7 +74,7 @@ typedef void(^PNChannelGroupStateCompletionBlock)(PNResult<PNChannelGroupStateRe
                                                                   subscribeKey:@"demo"];
  self.client = [PubNub clientWithConfiguration:configuration];
  [self.client setState:@{@"state":@"online"} forUUID:self.client.uuid onChannel:@"chat"
-        withCompletion:^(PNStatus<PNSetStateStatus> *status) {
+        withCompletion:^(PNClientStateUpdateStatus *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {
@@ -311,7 +117,7 @@ typedef void(^PNChannelGroupStateCompletionBlock)(PNResult<PNChannelGroupStateRe
                                                                   subscribeKey:@"demo"];
  self.client = [PubNub clientWithConfiguration:configuration];
  [self.client setState:@{@"announcement":@"New red is blue"} forUUID:self.client.uuid 
-        onChannelGroup:@"system" withCompletion:^(PNStatus<PNSetStateStatus> *status) {
+        onChannelGroup:@"system" withCompletion:^(PNClientStateUpdateStatus *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {
@@ -359,8 +165,7 @@ typedef void(^PNChannelGroupStateCompletionBlock)(PNResult<PNChannelGroupStateRe
                                                                   subscribeKey:@"demo"];
  self.client = [PubNub clientWithConfiguration:configuration];
  [self.client stateForUUID:self.client.uuid onChannel:@"chat"    
-            withCompletion:^(PNResult<PNChannelStateResult> *result, 
-                             PNStatus<PNChannelStateStatus> *status) {
+            withCompletion:^(PNChannelClientStateResult *result, PNErrorStatus *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {
@@ -403,8 +208,7 @@ typedef void(^PNChannelGroupStateCompletionBlock)(PNResult<PNChannelGroupStateRe
                                                                   subscribeKey:@"demo"];
  self.client = [PubNub clientWithConfiguration:configuration];
  [self.client stateForUUID:self.client.uuid onChannelGroup:@"system"
-            withCompletion:^(PNResult<PNChannelStateResult> *result, 
-                             PNStatus<PNChannelStateStatus> *status) {
+            withCompletion:^(PNChannelGroupClientStateResult *result, PNErrorStatus *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {

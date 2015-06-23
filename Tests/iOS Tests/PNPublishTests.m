@@ -26,7 +26,8 @@
 
 - (void)testSimplePublish {
     NSString *uniqueChannel = @"2EC925F0-B996-47A4-AF54-A605E1A9AEBA";
-    [self performVerifiedPublish:@"test" onChannel:uniqueChannel withAssertions:^(PNStatus<PNPublishStatus> *status) {
+    [self performVerifiedPublish:@"test" onChannel:uniqueChannel
+                  withAssertions:^(PNPublishStatus *status) {
         XCTAssertNotNil(status);
         XCTAssertEqual(status.category, PNAcknowledgmentCategory);
         XCTAssertEqual(status.operation, PNPublishOperation);
@@ -41,7 +42,8 @@
 
 - (void)testPublishNilMessage {
     NSString *uniqueChannel = @"2EC925F0-B996-47A4-AF54-A605E1A9AEBA";
-    [self performVerifiedPublish:nil onChannel:uniqueChannel withAssertions:^(PNStatus<PNPublishStatus> *status) {
+    [self performVerifiedPublish:nil onChannel:uniqueChannel
+                  withAssertions:^(PNPublishStatus *status) {
         XCTAssertNotNil(status);
         XCTAssertEqual(status.category, PNBadRequestCategory);
         XCTAssertEqual(status.operation, PNPublishOperation);
@@ -56,7 +58,8 @@
 
 - (void)testPublishDictionary {
     NSString *uniqueChannel = @"2EC925F0-B996-47A4-AF54-A605E1A9AEBA";
-    [self performVerifiedPublish:@{@"test" : @"test"} onChannel:uniqueChannel withAssertions:^(PNStatus<PNPublishStatus> *status) {
+    [self performVerifiedPublish:@{@"test" : @"test"} onChannel:uniqueChannel
+                  withAssertions:^(PNPublishStatus *status) {
         XCTAssertNotNil(status);
         XCTAssertEqual(status.category, PNAcknowledgmentCategory);
         XCTAssertEqual(status.operation, PNPublishOperation);
@@ -231,7 +234,8 @@
 
 - (void)performVerifiedPublish:(id)message onChannel:(NSString *)channel withAssertions:(PNPublishCompletionBlock)verificationBlock {
     XCTestExpectation *networkExpectation = [self expectationWithDescription:@"network"];
-    [self.client publish:message toChannel:channel withCompletion:^(PNStatus<PNPublishStatus> *status) {
+    [self.client publish:message toChannel:channel
+          withCompletion:^(PNPublishStatus *status) {
         verificationBlock(status);
         [networkExpectation fulfill];
     }];

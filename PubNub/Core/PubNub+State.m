@@ -68,26 +68,28 @@
 
  @since 4.0
  */
-- (void)handleSetStateStatus:(PNStatus<PNChannelStateStatus> *)status forUUID:(NSString *)uuid
+- (void)handleSetStateStatus:(PNClientStateUpdateStatus *)status forUUID:(NSString *)uuid
                     atObject:(NSString *)object withCompletion:(PNSetStateCompletionBlock)block;
 
 /**
  @brief  Process client state audition request completion and notify observers about results.
 
- @param result Reference on service response results instance.
- @param status Reference on state request status instance.
- @param uuid   Reference on unique user identifier for which state should be retrieved.
- @param object Name of remote data object from which state information for \c uuid will be pulled
-               out.
- @param block  State audition for user on cahnnel processing completion block which pass two
-               arguments: \c result - in case of successful request processing \c data field will
-               contain results of client state retrieve operation; \c status - in case if error
-               occurred during request processing.
+ @param result    Reference on service response results instance.
+ @param status    Reference on state request status instance.
+ @param uuid      Reference on unique user identifier for which state should be retrieved.
+ @param isChannel Whether received state information for channel or not.
+ @param object    Name of remote data object from which state information for \c uuid will be pulled
+                  out.
+ @param block     State audition for user on cahnnel processing completion block which pass two
+                  arguments: \c result - in case of successful request processing \c data field will
+                  contain results of client state retrieve operation; \c status - in case if error
+                  occurred during request processing.
 
  @since 4.0
  */
-- (void)handleStateResult:(PNResult<PNChannelStateResult> *)result withStatus:(PNStatus *)status
-                  forUUID:(NSString *)uuid atObject:(NSString *)object withCompletion:(id)block;
+- (void)handleStateResult:(PNChannelClientStateResult *)result withStatus:(PNStatus *)status
+                  forUUID:(NSString *)uuid atChannel:(BOOL)isChannel object:(NSString *)object
+           withCompletion:(id)block;
 
 #pragma mark - 
 
@@ -150,7 +152,7 @@
            // it and probably whole client instance has been deallocated.
            #pragma clang diagnostic push
            #pragma clang diagnostic ignored "-Wreceiver-is-weak"
-           [weakSelf handleSetStateStatus:(PNStatus<PNChannelStateStatus> *)status
+           [weakSelf handleSetStateStatus:(PNClientStateUpdateStatus *)status
                                   forUUID:uuid atObject:object withCompletion:block];
            #pragma clang diagnostic pop
        }];
@@ -193,8 +195,8 @@
                  (object?: @"<error>"), (!onChannel ? @" group" : @""));
     
     __weak __typeof(self) weakSelf = self;
-    [self processOperation:PNStateOperation withParameters:parameters
-           completionBlock:^(PNResult *result, PNStatus *status) {
+    [self processOperation:(onChannel ? PNStateForChannelOperation : PNStateForChannelGroupOperation)
+            withParameters:parameters completionBlock:^(PNResult *result, PNStatus *status) {
                
         // Silence static analyzer warnings.
         // Code is aware about this case and at the end will simply call on 'nil' object method.
@@ -202,9 +204,8 @@
         // it and probably whole client instance has been deallocated.
         #pragma clang diagnostic push
         #pragma clang diagnostic ignored "-Wreceiver-is-weak"
-        [weakSelf handleStateResult:(PNResult<PNChannelStateResult> *)result
-                         withStatus:status forUUID:uuid atObject:object
-                     withCompletion:block];
+        [weakSelf handleStateResult:(PNChannelClientStateResult *)result withStatus:status
+                            forUUID:uuid atChannel:onChannel object:object withCompletion:block];
         #pragma clang diagnostic pop
     }];
 }
@@ -212,7 +213,7 @@
 
 #pragma mark - Handlers
 
-- (void)handleSetStateStatus:(PNStatus<PNChannelStateStatus> *)status forUUID:(NSString *)uuid
+- (void)handleSetStateStatus:(PNClientStateUpdateStatus *)status forUUID:(NSString *)uuid
                     atObject:(NSString *)object withCompletion:(PNSetStateCompletionBlock)block {
     
     // Check whether state modification to the client has been successful or not.
@@ -224,11 +225,12 @@
     [self callBlock:block status:YES withResult:nil andStatus:(PNStatus *)status];
 }
 
-- (void)handleStateResult:(PNResult<PNChannelStateResult> *)result withStatus:(PNStatus *)status
-                  forUUID:(NSString *)uuid atObject:(NSString *)object withCompletion:(id)block {
+- (void)handleStateResult:(PNChannelClientStateResult *)result withStatus:(PNStatus *)status
+                  forUUID:(NSString *)uuid atChannel:(BOOL)isChannel object:(NSString *)object
+           withCompletion:(id)block {
     
     // Check whether state successfully fetched or not.
-    if (result && [uuid isEqualToString:self.configuration.uuid] && result.data.state) {
+    if (result && [uuid isEqualToString:self.configuration.uuid] && isChannel) {
 
         // Overwrite cached state information.
         [self.clientStateManager setState:(result.data.state?: @{}) forObject:object];

@@ -6,6 +6,7 @@
 #import "PNStateListener.h"
 #import "PNObjectEventListener.h"
 #import "PubNub+CorePrivate.h"
+#import "PNHelpers.h"
 
 
 #pragma mark Protected interface declaration
@@ -163,7 +164,7 @@
     dispatch_async(self.resourceAccessQueue, block);
 }
 
-- (void)notifyMessage:(PNResult<PNMessageResult> *)message withStatus:(PNStatus<PNStatus> *)status {
+- (void)notifyMessage:(PNMessageResult *)message withStatus:(PNErrorStatus *)status {
     
     NSArray *listeners = [self.messageListeners allObjects];
     // Silence static analyzer warnings.
@@ -173,7 +174,7 @@
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wreceiver-is-weak"
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
-    dispatch_async(self.client.callbackQueue, ^{
+    pn_dispatch_async(self.client.callbackQueue, ^{
         
         for (id <PNObjectEventListener> listener in listeners) {
             
@@ -183,7 +184,7 @@
     #pragma clang diagnostic pop
 }
 
-- (void)notifyPresenceEvent:(PNResult<PNPresenceEventResult> *)event {
+- (void)notifyPresenceEvent:(PNPresenceEventResult *)event {
     
     NSArray *listeners = [self.presenceEventListeners allObjects];
     // Silence static analyzer warnings.
@@ -193,7 +194,7 @@
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wreceiver-is-weak"
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
-    dispatch_async(self.client.callbackQueue, ^{
+    pn_dispatch_async(self.client.callbackQueue, ^{
         
         for (id <PNObjectEventListener> listener in listeners) {
             
@@ -203,8 +204,8 @@
     #pragma clang diagnostic pop
 }
 
-- (void)notifyStatusChange:(PNStatus<PNSubscriberStatus> *)status {
-    
+- (void)notifyStatusChange:(PNSubscribeStatus *)status {
+
     NSArray *listeners = [self.stateListeners allObjects];
     // Silence static analyzer warnings.
     // Code is aware about this case and at the end will simply call on 'nil' object method.
@@ -213,7 +214,7 @@
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wreceiver-is-weak"
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
-    dispatch_async(self.client.callbackQueue, ^{
+    pn_dispatch_async(self.client.callbackQueue, ^{
         
         for (id <PNObjectEventListener> listener in listeners) {
             

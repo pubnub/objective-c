@@ -74,6 +74,8 @@
 
 @implementation PNHeartbeat
 
+@synthesize heartbeatTimer = _heartbeatTimer;
+
 
 #pragma mark - Initialization and Configuration
 
@@ -93,6 +95,25 @@
     }
     
     return self;
+}
+
+- (dispatch_source_t)heartbeatTimer {
+    
+    __block dispatch_source_t timer = nil;
+    dispatch_sync(self.resourceAccessQueue, ^{
+        
+        timer = _heartbeatTimer;
+    });
+    
+    return timer;
+}
+
+- (void)setHeartbeatTimer:(dispatch_source_t)heartbeatTimer {
+    
+    dispatch_barrier_async(self.resourceAccessQueue, ^{
+        
+        self->_heartbeatTimer = heartbeatTimer;
+    });
 }
 
 
@@ -132,7 +153,7 @@
 
     dispatch_source_t timer = self.heartbeatTimer;
     if (timer != NULL && dispatch_source_testcancel(timer) == 0) {
-
+        
         dispatch_source_cancel(timer);
     }
     self.heartbeatTimer = nil;

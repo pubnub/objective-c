@@ -1,290 +1,13 @@
 #import <Foundation/Foundation.h>
+#import "PNSubscriberResults.h"
+#import "PNSubscribeStatus.h"
 #import "PubNub+Core.h"
 
 
+#pragma mark Protocols
+
 @protocol PNObjectEventListener;
 
-#pragma mark API group protocols
-
-/**
- @brief      Protocol which describe subscriber data object structure.
- @discussion Contain information about channel on which event happened and reference on channel for
-             which client subscribed.
- 
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
- */
-@protocol PNSubscriberData <PNErrorStatusData>
-
-
-///------------------------------------------------
-/// @name Information
-///------------------------------------------------
-
-/**
- @brief  Name of regular channel or channel group.
- 
- @return Name of the object on which client subscribed.
- 
- @since 4.0
- */
-- (NSString *)subscribedChannel;
-
-/**
- @brief  Name of channel in case if \c -subscribedChannel represent channel group.
- 
- @return Name of channel from which event arrived.
- 
- @since 4.0
- */
-- (NSString *)actualChannel;
-
-/**
- @brief  Time at which even arrived
- 
- @return Number with unsigned long long timestamp.
- 
- @since 4.0
- */
-- (NSNumber *)timetoken;
-
-@end
-
-
-/**
- @brief      Protocol which describe message data object structure.
- @discussion Contain information about message which arrived on certain channel (information about 
-             channel group to which channel belong).
- 
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
- */
-@protocol PNMessageData <PNSubscriberData>
-
-
-///------------------------------------------------
-/// @name Information
-///------------------------------------------------
-
-/**
- @brief  Message which has been delivered through data object live feed.
- 
- @return De-serialized message object.
- 
- @since 4.0
- */
-- (id)message;
-
-@end
-
-/**
- @brief      Protocol which describe presence event details object structure.
- @discussion Contain information about presence event which arrived on certain channel.
- 
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
- */
-@protocol PNPresenceDetails
-
-
-///------------------------------------------------
-/// @name Information
-///------------------------------------------------
-
-/**
- @brief  Time when presence event has been tirggered.
- 
- @return Number with unsugned long long timestamp.
- 
- @since 4.0
- */
-- (NSNumber *)timetoken;
-
-/**
- @brief  Reference on unique user identifier for which event has been triggered.
- 
- @return UUID string.
- 
- @since 4.0
- */
-- (NSString *)uuid;
-
-/**
- @brief  Channel presence information.
- 
- @return Number of subscribers which become after presence event has been triggered.
- 
- @since 4.0
- */
-- (NSNumber *)occupancy;
-
-/**
- @brief  User changed client state.
- 
- @return In case of state change presence event will contain actual client state infotmation for
-         \c -uuid.
- 
- @since 4.0
- */
-- (NSDictionary *)state;
-
-@end
-
-
-/**
- @brief      Protocol which describe presence event data object structure.
- @discussion Contain information about presence event which arrived on certain channel.
- 
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
- */
-@protocol PNPresenceEventData <PNSubscriberData>
-
-
-///------------------------------------------------
-/// @name Informatino
-///------------------------------------------------
-
-/**
- @brief  Type of presence event.
- 
- @return One of available presence event types.
- 
- @since 4.0
- */
-- (NSString *)presenceEvent;
-
-/**
- @brief  Additional presence information.
- 
- @return Object which has additional information about arrived presence event.
- 
- @since 4.0
- */
-- (NSObject<PNPresenceDetails> *)presence;
-
-@end
-
-
-/**
- @brief  Protocol which describe operation processing resulting object with typed with \c data field
-         with corresponding data type.
- 
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
- */
-@protocol PNMessageResult <PNResult>
-
-
-///------------------------------------------------
-/// @name Information
-///------------------------------------------------
-
-/**
- @brief  Reference on service response data casted to required type.
- 
- @since 4.0
- */
-@property (nonatomic, readonly, copy) NSObject<PNMessageData> *data;
-
-@end
-
-
-/**
- @brief  Protocol which describe operation processing status object with typed with \c data field
-         with corresponding data type.
- 
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
- */
-@protocol PNSubscriberStatus <PNStatus>
-
-
-///------------------------------------------------
-/// @name Information
-///------------------------------------------------
-
-/**
- @brief  Time token which has been used to establish current subscription cycle.
- 
- @return Number with unsigned long long as timestamp.
- 
- @since 4.0
- */
-@property (nonatomic, readonly, strong) NSNumber *currentTimetoken;
-
-/**
- @brief  Stores reference on previous key which has been used in subscription cycle to receive
-         \c currentTimetoken along with other events.
- 
- @return Number with unsigned long long as timestamp.
- 
- @since 4.0
- */
-@property (nonatomic, readonly, strong) NSNumber *lastTimeToken;
-
-/**
- @brief  List of channels on which client currently subscribed.
- 
- @return List of channel names.
- 
- @since 4.0
- */
-@property (nonatomic, readonly, copy) NSArray *subscribedChannels;
-
-/**
- @brief  List of channel group names on which client currently subscribed.
- 
- @return List of channel group names.
- 
- @since 4.0
- */
-@property (nonatomic, readonly, copy) NSArray *subscribedChannelGroups;
-
-/**
- @brief  Structured \b PNResult \c data field information.
- 
- @return Reference on field which hold structured service response.
- 
- @since 4.0
- */
-@property (nonatomic, readonly, copy) NSObject<PNSubscriberData> *data;
-
-@end
-
-
-/**
- @brief  Protocol which describe operation processing resulting object with typed with \c data field
-         with corresponding data type.
- 
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
- */
-@protocol PNPresenceEventResult <PNResult>
-
-
-///------------------------------------------------
-/// @name Information
-///------------------------------------------------
-
-/**
- @brief  Reference on service response data casted to required type.
- 
- @since 4.0
- */
-@property (nonatomic, readonly, copy) NSObject<PNPresenceEventData> *data;
-
-@end
-
-
-#pragma mark - API group interface
 
 /**
  @brief      \b PubNub client core class extension to provide access to 'publish' API group.
@@ -346,27 +69,27 @@
 ///------------------------------------------------
 
 /**
- @brief      Add list of observers which conform to \b PNObjectEventListener protocol and would like
+ @brief      Add observer which conform to \b PNObjectEventListener protocol and would like
              to receive updates based on live feed events and status change.
  @discussion Listener can implement only required callbacks from \b PNObjectEventListener protocol
              and called only when desired type of event arrive.
  
- @param listeners List listeners which would like to receive updates.
+ @param listener Listener which would like to receive updates.
  
  @since 4.0
  */
-- (void)addListeners:(NSArray *)listeners;
+- (void)addListener:(id <PNObjectEventListener>)listener;
 
 /**
- @brief      Remove listeners from list for callback calls.
+ @brief      Remove listener from list for callback calls.
  @discussion When listener not interested in live feed updates it can remove itself from updates 
              list using this method.
  
- @param listeners List of listener which doesn't want to receive updates anymore.
+ @param listener Listener which doesn't want to receive updates anymore.
  
  @since 4.0
  */
-- (void)removeListeners:(NSArray *)listeners;
+- (void)removeListener:(id <PNObjectEventListener>)listener;
 
 
 ///------------------------------------------------

@@ -36,8 +36,7 @@
     // Dictionary is valid response type for where now response.
     if ([response isKindOfClass:[NSDictionary class]] && response[@"payload"][@"channels"]) {
         
-        processedResponse = [PNDictionary dictionaryWithDictionary:@{
-                             @"channels": response[@"payload"][@"channels"]}];
+        processedResponse = @{@"channels": response[@"payload"][@"channels"]};
     }
     
     return processedResponse;

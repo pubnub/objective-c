@@ -2,6 +2,7 @@
 #define PubNub_h
 
 #import "PNObjectEventListener.h"
+#import "PNErrorStatus.h"
 
 #import "PubNub+Core.h"
 #import "PubNub+ChannelGroup.h"

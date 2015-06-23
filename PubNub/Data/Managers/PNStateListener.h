@@ -4,7 +4,7 @@
 
 #pragma mark Class forward
 
-@class PNStatus, PNResult, PubNub;
+@class PNErrorStatus, PubNub;
 
 
 /**
@@ -108,7 +108,7 @@
  
  @since 4.0
  */
-- (void)notifyMessage:(PNResult<PNMessageResult> *)message withStatus:(PNStatus<PNStatus> *)status;
+- (void)notifyMessage:(PNMessageResult *)message withStatus:(PNErrorStatus *)status;
 
 /**
  @brief   Notify all presence event listeners about new event.
@@ -120,7 +120,7 @@
  
  @since 4.0
  */
-- (void)notifyPresenceEvent:(PNResult<PNPresenceEventResult> *)event;
+- (void)notifyPresenceEvent:(PNPresenceEventResult *)event;
 
 /**
  @brief   Notify all state change listeners about changes in subscriber state.
@@ -131,7 +131,7 @@
  
  @since 4.0
  */
-- (void)notifyStatusChange:(PNStatus<PNSubscriberStatus> *)status;
+- (void)notifyStatusChange:(PNSubscribeStatus *)status;
 
 #pragma mark -
 

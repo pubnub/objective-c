@@ -47,7 +47,7 @@
 
 - (void)channelGroupsWithCompletion:(PNGroupAuditCompletionBlock)block {
     
-    [self channelsForGroup:nil withCompletion:block];
+    [self channelsForGroup:nil withCompletion:(id)block];
 }
 
 - (void)channelsForGroup:(NSString *)group withCompletion:(PNGroupChannelsAuditCompletionBlock)block {

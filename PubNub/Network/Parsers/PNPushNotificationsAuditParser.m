@@ -36,7 +36,7 @@
     // Array is valid response type for device removal from APNS request.
     if ([response isKindOfClass:[NSArray class]]) {
         
-        processedResponse = [PNDictionary dictionaryWithDictionary:@{@"channels": response}];
+        processedResponse = @{@"channels": response};
     }
     
     return processedResponse;

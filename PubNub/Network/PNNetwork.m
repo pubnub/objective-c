@@ -7,9 +7,11 @@
 #import <AFNetworking/AFNetworking.h>
 #import "PNConfiguration+Private.h"
 #import "PNRequestParameters.h"
+#import "PNPrivateStructures.h"
 #import "PubNub+CorePrivate.h"
 #import "PNResult+Private.h"
 #import "PNStatus+Private.h"
+#import "PNErrorStatus.h"
 #import "PNErrorParser.h"
 #import <objc/runtime.h>
 #import "PNURLBuilder.h"
@@ -150,6 +152,30 @@
  @since 4.0
  */
 - (Class <PNParser>)parserForOperation:(PNOperationType)operation;
+
+/**
+ @brief  Retrieve reference on class which can be used to represent request processing results.
+ 
+ @param operation Type of operation which is expecting response from \b PubNub network.
+ 
+ @return Target class which should be used instead of \b PNResult (if non will be found 
+         \b PNResult).
+ 
+ @since 4.0
+ */
+- (Class)resultClassForOperaion:(PNOperationType)operation;
+
+/**
+ @brief  Retrieve reference on class which can be used to represent request processing status.
+ 
+ @param operation Type of operation which is expecting status from \b PubNub network.
+ 
+ @return Target class which should be used instead of \b PNStatus (if non will be found
+         \b PNStatus).
+ 
+ @since 4.0
+ */
+- (Class)statusClassForOperaion:(PNOperationType)operation;
 
 /**
  @brief  Try process \c data using parser suitable for operation for which data has been received.
@@ -384,9 +410,10 @@
         
         _resultExpectingOperations = @[
                    @(PNHistoryOperation), @(PNWhereNowOperation), @(PNHereNowGlobalOperation),
-                   @(PNHereNowOperation), @(PNStateOperation), @(PNChannelGroupsOperation),
-                   @(PNChannelsForGroupOperation), @(PNPushNotificationEnabledChannelsOperation),
-                   @(PNTimeOperation)];
+                   @(PNHereNowForChannelOperation), @(PNHereNowForChannelGroupOperation),
+                   @(PNStateForChannelOperation), @(PNStateForChannelGroupOperation),
+                   @(PNChannelGroupsOperation), @(PNChannelsForGroupOperation),
+                   @(PNPushNotificationEnabledChannelsOperation), @(PNTimeOperation)];
     });
     
     return [_resultExpectingOperations containsObject:@(operation)];
@@ -421,6 +448,28 @@
     return _parsers[@(operation)];
 }
 
+- (Class)resultClassForOperaion:(PNOperationType)operation {
+    
+    Class class = [PNResult class];
+    if (PNOperationResultClasses[operation]) {
+        
+        class = NSClassFromString(PNOperationResultClasses[operation]);
+    }
+    
+    return class;
+}
+
+- (Class)statusClassForOperaion:(PNOperationType)operation {
+    
+    Class class = [PNStatus class];
+    if (PNOperationStatusClasses[operation]) {
+        
+        class = NSClassFromString(PNOperationStatusClasses[operation]);
+    }
+    
+    return class;
+}
+
 - (void)processOperation:(PNOperationType)operationType
           withParameters:(PNRequestParameters *)parameters data:(NSData *)data
          completionBlock:(id)block {
@@ -439,7 +488,7 @@
     #pragma clang diagnostic ignored "-Wreceiver-is-weak"
     NSURL *requestURL = [PNURLBuilder URLForOperation:operationType withParameters:parameters];
     if (requestURL) {
-        
+    
         DDLogRequest(@"<PubNub> %@ %@", ([data length] ? @"POST" : @"GET"),
                      [requestURL absoluteString]);
         
@@ -467,8 +516,8 @@
     }
     else {
         
-        PNStatus *badRequestStatus = [PNStatus statusForOperation:operationType
-                                                         category:PNBadRequestCategory];
+        PNErrorStatus *badRequestStatus = [PNErrorStatus statusForOperation:operationType
+                                                                   category:PNBadRequestCategory];
         [self.client appendClientInformation:badRequestStatus];
         if (block) {
             
@@ -530,7 +579,7 @@
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 
             NSDictionary *parsedData = [parser parsedServiceResponse:data withData:additionalData];
-            dispatch_async(self.session.completionQueue, ^{
+            pn_dispatch_async(self.session.completionQueue, ^{
                 
                 parseCompletion(parsedData);
             });
@@ -623,20 +672,27 @@
 - (void)handleOperation:(PNOperationType)operation taskDidFail:(NSURLSessionDataTask *)task
               withError:(NSError *)error completionBlock:(id)block {
     
-    __block BOOL parseError = NO;
-    id errorDetails = nil;
-    NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
-    if (errorData) {
+    if (error.code == NSURLErrorCancelled) {
         
-        errorDetails = [NSJSONSerialization JSONObjectWithData:errorData
-                                                       options:(NSJSONReadingOptions)0 error:NULL];
+        [self handleOperation:operation taskDidComplete:task withData:nil completionBlock:block];
     }
-    [self parseData:errorDetails withParser:[PNErrorParser class] error:&parseError
-         completion:^(NSDictionary *parsedData) {
-             
-             [self handleParsedData:parsedData loadedWithTask:task forOperation:operation
-                              error:YES completionBlock:block];
-         }];
+    else {
+        
+        __block BOOL parseError = NO;
+        id errorDetails = nil;
+        NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
+        if (errorData) {
+            
+            errorDetails = [NSJSONSerialization JSONObjectWithData:errorData
+                                                           options:(NSJSONReadingOptions)0 error:NULL];
+        }
+        [self parseData:errorDetails withParser:[PNErrorParser class] error:&parseError
+             completion:^(NSDictionary *parsedData) {
+                 
+                 [self handleParsedData:parsedData loadedWithTask:task forOperation:operation
+                                  error:YES completionBlock:block];
+             }];
+    }
 }
 
 - (void)handleParsedData:(NSDictionary *)data loadedWithTask:(NSURLSessionDataTask *)task
@@ -645,12 +701,17 @@
     PNResult *result = nil;
     PNStatus *status = nil;
     if ([self operationExpectResult:operation] && !isError) {
-        result = [PNResult objectForOperation:operation completedWithTaks:task processedData:data];
+        
+        result = [[self resultClassForOperaion:operation] objectForOperation:operation
+                                                           completedWithTaks:task
+                                                               processedData:data];
     }
     
     if (isError || !data || ![self operationExpectResult:operation]){
         
-        status = [PNStatus objectForOperation:operation completedWithTaks:task processedData:data];
+        Class statusClass = (isError ? [PNErrorStatus class] : [self statusClassForOperaion:operation]);
+        status = [statusClass objectForOperation:operation completedWithTaks:task
+                                   processedData:data];
     }
     if (result || status) {
 

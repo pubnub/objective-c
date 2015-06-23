@@ -17,7 +17,7 @@
  
  @since 4.0
  */
-typedef void(^PNSubscriberCompletionBlock)(PNStatus<PNSubscriberStatus> *status);
+typedef void(^PNSubscriberCompletionBlock)(PNSubscribeStatus *status);
 
 
 /**
