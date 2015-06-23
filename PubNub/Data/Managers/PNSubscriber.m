@@ -816,7 +816,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 - (void)handleSubscriptionStatus:(PNSubscribeStatus *)status {
 
     [self stopRetryTimer];
-    if (!status.isError) {
+    if (!status.isError && status.category != PNCancelledCategory) {
         
         [self handleSuccessSubscriptionStatus:status];
     }

@@ -55,7 +55,7 @@
 
 - (PNPresenceDetailsData *)presence {
     
-    return [PNPresenceDetailsData dataWithServiceResponse:self.serviceData[@"presenceEvent"][@"presence"]];
+    return [PNPresenceDetailsData dataWithServiceResponse:self.serviceData[@"presence"]];
 }
 
 #pragma mark -
