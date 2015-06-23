@@ -6,9 +6,9 @@
 //
 //
 
-#import "NSString+Test.h"
+#import "NSString+PNTest.h"
 
-@implementation NSString (Test)
+@implementation NSString (PNTest)
 
 + (NSString *)randomAlphanumericStringWithLength:(NSInteger)length
 {

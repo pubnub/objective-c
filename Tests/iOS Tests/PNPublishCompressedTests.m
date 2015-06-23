@@ -12,7 +12,7 @@
 
 #import "PNBasicClientTestCase.h"
 
-#import "NSString+Test.h"
+#import "NSString+PNTest.h"
 
 @interface PNPublishCompressedTests : PNBasicClientTestCase
 
