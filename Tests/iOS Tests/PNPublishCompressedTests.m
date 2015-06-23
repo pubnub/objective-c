@@ -28,7 +28,7 @@
 - (void)testSimplePublishCompressed {
     [self performVerifiedPublish:@"test"
                        onChannel:[NSUUID UUID].UUIDString
-                      compressed:YES withAssertions:^(PNStatus<PNPublishStatus> *status) {
+                      compressed:YES withAssertions:^(PNPublishStatus *status) {
                           XCTAssertNotNil(status);
                           XCTAssertEqual(status.category, PNAcknowledgmentCategory);
                           XCTAssertEqual(status.operation, PNPublishOperation);
@@ -44,7 +44,7 @@
     [self performVerifiedPublish:@"test"
                        onChannel:[NSUUID UUID].UUIDString
                       compressed:NO
-                  withAssertions:^(PNStatus<PNPublishStatus> *status) {
+                  withAssertions:^(PNPublishStatus *status) {
                       XCTAssertNotNil(status);
                       XCTAssertEqual(status.category, PNAcknowledgmentCategory);
                       XCTAssertEqual(status.operation, PNPublishOperation);
@@ -60,7 +60,7 @@
     [self performVerifiedPublish:nil
                        onChannel:[NSUUID UUID].UUIDString
                       compressed:YES
-                  withAssertions:^(PNStatus<PNPublishStatus> *status) {
+                  withAssertions:^(PNPublishStatus *status) {
                       XCTAssertNotNil(status);
                       XCTAssertEqual(status.category, PNBadRequestCategory);
                       XCTAssertEqual(status.operation, PNPublishOperation);
@@ -77,7 +77,7 @@
     [self performVerifiedPublish:nil
                        onChannel:[NSUUID UUID].UUIDString
                       compressed:NO
-                  withAssertions:^(PNStatus<PNPublishStatus> *status) {
+                  withAssertions:^(PNPublishStatus *status) {
                       XCTAssertNotNil(status);
                       XCTAssertEqual(status.category, PNBadRequestCategory);
                       XCTAssertEqual(status.operation, PNPublishOperation);
@@ -94,7 +94,7 @@
     [self performVerifiedPublish:@{@"test" : @"test"}
                        onChannel:[NSUUID UUID].UUIDString
                       compressed:YES
-                  withAssertions:^(PNStatus<PNPublishStatus> *status) {
+                  withAssertions:^(PNPublishStatus *status) {
                       XCTAssertNotNil(status);
                       XCTAssertEqual(status.category, PNAcknowledgmentCategory);
                       XCTAssertEqual(status.operation, PNPublishOperation);
@@ -110,7 +110,7 @@
     [self performVerifiedPublish:@{@"test" : @"test"}
                        onChannel:[NSUUID UUID].UUIDString
                       compressed:NO
-                  withAssertions:^(PNStatus<PNPublishStatus> *status) {
+                  withAssertions:^(PNPublishStatus *status) {
                       XCTAssertNotNil(status);
                       XCTAssertEqual(status.category, PNAcknowledgmentCategory);
                       XCTAssertEqual(status.operation, PNPublishOperation);
@@ -126,7 +126,7 @@
     [self performVerifiedPublish:@{@"test" : @"test"}
                        onChannel:nil
                       compressed:YES
-                  withAssertions:^(PNStatus<PNPublishStatus> *status) {
+                  withAssertions:^(PNPublishStatus *status) {
                       XCTAssertNotNil(status);
                       XCTAssertEqual(status.category, PNBadRequestCategory);
                       XCTAssertEqual(status.operation, PNPublishOperation);
@@ -143,7 +143,7 @@
     [self performVerifiedPublish:@{@"test" : @"test"}
                        onChannel:nil
                       compressed:NO
-                  withAssertions:^(PNStatus<PNPublishStatus> *status) {
+                  withAssertions:^(PNPublishStatus *status) {
                       XCTAssertNotNil(status);
                       XCTAssertEqual(status.category, PNBadRequestCategory);
                       XCTAssertEqual(status.operation, PNPublishOperation);
@@ -164,7 +164,7 @@
                 withAssertions:(PNPublishCompletionBlock)verificationBlock {
     XCTestExpectation *networkExpectation = [self expectationWithDescription:@"network"];
     [self.client publish:message toChannel:channel compressed:compressed
-          withCompletion:^(PNStatus<PNPublishStatus> *status) {
+          withCompletion:^(PNPublishStatus *status) {
               verificationBlock(status);
               [networkExpectation fulfill];
           }];

@@ -25,21 +25,122 @@
     
 }
 
+- (void)testSimplePublishSimpleMobilePushPayload {
+    
+    NSDictionary *payload = @{@"aps" :
+                                  @{@"alert" : @"You got your emails.@",
+                                    @"badge" : @(9),
+                                    @"sound" : @"bingbong.aiff"},
+                              @"acme 1" : @(42)};
+    
+    [self performVerifiedPublish:@"test"
+                       onChannel:[NSUUID UUID].UUIDString
+               mobilePushPayload:payload
+                  storeInHistory:YES
+                      compressed:YES
+                  withAssertions:^(PNPublishStatus *status) {
+                      XCTAssertNotNil(status);
+                      XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+                      XCTAssertEqual(status.operation, PNPublishOperation);
+                      XCTAssertEqual(status.statusCode, 200);
+                      XCTAssertFalse(status.isError);
+                      NSLog(@"status.data.information: %@", status.data.information);
+                      NSLog(@"status.data.timeToken: %@", status.data.timetoken);
+                      XCTAssertEqualObjects(status.data.information, @"Sent");
+                  }];
+}
+
 - (void)testSimplePublishNilMobilePushPayload {
     [self performVerifiedPublish:@"test"
                        onChannel:[NSUUID UUID].UUIDString
-     mobilePushPayload:nil
+               mobilePushPayload:nil
                   storeInHistory:YES
-                      compressed:YES withAssertions:^(PNStatus<PNPublishStatus> *status) {
-                          XCTAssertNotNil(status);
-                          XCTAssertEqual(status.category, PNAcknowledgmentCategory);
-                          XCTAssertEqual(status.operation, PNPublishOperation);
-                          XCTAssertEqual(status.statusCode, 200);
-                          XCTAssertFalse(status.isError);
-                          NSLog(@"status.data.information: %@", status.data.information);
-                          NSLog(@"status.data.timeToken: %@", status.data.timetoken);
-                          XCTAssertEqualObjects(status.data.information, @"Sent");
-                      }];
+                      compressed:YES
+                  withAssertions:^(PNPublishStatus *status) {
+                      XCTAssertNotNil(status);
+                      XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+                      XCTAssertEqual(status.operation, PNPublishOperation);
+                      XCTAssertEqual(status.statusCode, 200);
+                      XCTAssertFalse(status.isError);
+                      NSLog(@"status.data.information: %@", status.data.information);
+                      NSLog(@"status.data.timeToken: %@", status.data.timetoken);
+                      XCTAssertEqualObjects(status.data.information, @"Sent");
+                  }];
+}
+
+- (void)testPublishMobilePayloadNotStoreInHistory {
+    
+    NSDictionary *payload = @{@"aps" :
+                                  @{@"alert" : @"You got your emails.@",
+                                    @"badge" : @(9),
+                                    @"sound" : @"bingbong.aiff"},
+                              @"acme 1" : @(42)};
+    
+    [self performVerifiedPublish:@"test"
+                       onChannel:[NSUUID UUID].UUIDString
+               mobilePushPayload:payload
+                  storeInHistory:NO
+                      compressed:YES
+                  withAssertions:^(PNPublishStatus *status) {
+                      XCTAssertNotNil(status);
+                      XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+                      XCTAssertEqual(status.operation, PNPublishOperation);
+                      XCTAssertEqual(status.statusCode, 200);
+                      XCTAssertFalse(status.isError);
+                      NSLog(@"status.data.information: %@", status.data.information);
+                      NSLog(@"status.data.timeToken: %@", status.data.timetoken);
+                      XCTAssertEqualObjects(status.data.information, @"Sent");
+                  }];
+}
+
+- (void)testPublishMobilePayloadNotStoreInHistoryNotCompressed {
+    
+    NSDictionary *payload = @{@"aps" :
+                                  @{@"alert" : @"You got your emails.@",
+                                    @"badge" : @(9),
+                                    @"sound" : @"bingbong.aiff"},
+                              @"acme 1" : @(42)};
+    
+    [self performVerifiedPublish:@"test"
+                       onChannel:[NSUUID UUID].UUIDString
+               mobilePushPayload:payload
+                  storeInHistory:NO
+                      compressed:NO
+                  withAssertions:^(PNPublishStatus *status) {
+                      XCTAssertNotNil(status);
+                      XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+                      XCTAssertEqual(status.operation, PNPublishOperation);
+                      XCTAssertEqual(status.statusCode, 200);
+                      XCTAssertFalse(status.isError);
+                      NSLog(@"status.data.information: %@", status.data.information);
+                      NSLog(@"status.data.timeToken: %@", status.data.timetoken);
+                      XCTAssertEqualObjects(status.data.information, @"Sent");
+                  }];
+}
+
+- (void)testPublishMobilePayloadToNillChannnel {
+    
+    NSDictionary *payload = @{@"aps" :
+                                  @{@"alert" : @"You got your emails.@",
+                                    @"badge" : @(9),
+                                    @"sound" : @"bingbong.aiff"},
+                              @"acme 1" : @(42)};
+    
+    [self performVerifiedPublish:@"test"
+                       onChannel:nil
+               mobilePushPayload:payload
+                  storeInHistory:NO
+                      compressed:NO
+                  withAssertions:^(PNPublishStatus *status) {
+                      XCTAssertNotNil(status);
+                      XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+                      XCTAssertEqual(status.operation, PNPublishOperation);
+                      XCTAssertEqual(status.statusCode, 200);
+                      XCTAssertFalse(status.isError);
+                      NSLog(@"status.data.information: %@", status.data.information);
+                      NSLog(@"status.data.timeToken: %@", status.data.timetoken);
+                      XCTAssertEqualObjects(status.data.information, @"Sent");
+                  }];
 }
 
 #pragma mark - Main flow
@@ -56,7 +157,7 @@
        mobilePushPayload:payload
           storeInHistory:storeInHistory
               compressed:compressed
-          withCompletion:^(PNStatus<PNPublishStatus> *status) {
+          withCompletion:^(PNPublishStatus *status) {
               verificationBlock(status);
               [networkExpectation fulfill];
           }];

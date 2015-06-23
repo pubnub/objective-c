@@ -73,7 +73,7 @@
 }
 
 - (void)testPublishToNilChannel {
-    [self performVerifiedPublish:@{@"test" : @"test"} onChannel:nil withAssertions:^(PNStatus<PNPublishStatus> *status) {
+    [self performVerifiedPublish:@{@"test" : @"test"} onChannel:nil withAssertions:^(PNPublishStatus *status) {
         XCTAssertNotNil(status);
         XCTAssertEqual(status.category, PNBadRequestCategory);
         XCTAssertEqual(status.operation, PNPublishOperation);
@@ -87,7 +87,7 @@
 }
 
 - (void)testPublishNestedDictionary {
-    [self performVerifiedPublish:@{@"test" : @{@"test": @"test"}} onChannel:[NSUUID UUID].UUIDString withAssertions:^(PNStatus<PNPublishStatus> *status) {
+    [self performVerifiedPublish:@{@"test" : @{@"test": @"test"}} onChannel:[NSUUID UUID].UUIDString withAssertions:^(PNPublishStatus *status) {
         XCTAssertNotNil(status);
         XCTAssertEqual(status.category, PNAcknowledgmentCategory);
         XCTAssertEqual(status.operation, PNPublishOperation);
@@ -109,7 +109,7 @@
 - (void)testPublishNumber {
     [self performVerifiedPublish:[NSNumber numberWithFloat:700]
                        onChannel:[NSUUID UUID].UUIDString
-                  withAssertions:^(PNStatus<PNPublishStatus> *status) {
+                  withAssertions:^(PNPublishStatus *status) {
         XCTAssertNotNil(status);
         XCTAssertEqual(status.category, PNAcknowledgmentCategory);
         XCTAssertEqual(status.operation, PNPublishOperation);
@@ -125,7 +125,7 @@
 - (void)testPublishArray {
     [self performVerifiedPublish:@[@"1", @"2", @"3", @"4"]
                        onChannel:[NSUUID UUID].UUIDString
-                  withAssertions:^(PNStatus<PNPublishStatus> *status) {
+                  withAssertions:^(PNPublishStatus *status) {
         XCTAssertNotNil(status);
         XCTAssertEqual(status.category, PNAcknowledgmentCategory);
         XCTAssertEqual(status.operation, PNPublishOperation);
@@ -140,7 +140,7 @@
 - (void)testPublishComplexArray {
     [self performVerifiedPublish:@[@"1", @{@"1": @{@"1": @"2"}}, @[@"1", @"2", @(2)], @(567)]
                        onChannel:[NSUUID UUID].UUIDString
-                  withAssertions:^(PNStatus<PNPublishStatus> *status) {
+                  withAssertions:^(PNPublishStatus *status) {
                       XCTAssertNotNil(status);
                       XCTAssertEqual(status.category, PNAcknowledgmentCategory);
                       XCTAssertEqual(status.operation, PNPublishOperation);
@@ -160,7 +160,7 @@
  - (void)testPublishSet {
     [self performVerifiedPublish:[NSSet setWithObjects:@"1", @(5), @"3", nil]
                        onChannel:[NSUUID UUID].UUIDString
-                  withAssertions:^(PNStatus<PNPublishStatus> *status) {
+                  withAssertions:^(PNPublishStatus *status) {
         XCTAssertNotNil(status);
         XCTAssertEqual(status.category, PNAcknowledgmentCategory);
         XCTAssertEqual(status.operation, PNPublishOperation);
@@ -180,7 +180,7 @@
     
     [self performVerifiedPublish:testString
                        onChannel:[NSUUID UUID].UUIDString
-                  withAssertions:^(PNStatus<PNPublishStatus> *status) {
+                  withAssertions:^(PNPublishStatus *status) {
                       XCTAssertNotNil(status);
                       XCTAssertEqual(status.category, PNAcknowledgmentCategory);
                       XCTAssertEqual(status.operation, PNPublishOperation);
@@ -199,7 +199,7 @@
     
     [self performVerifiedPublish:testString
                        onChannel:[NSUUID UUID].UUIDString
-                  withAssertions:^(PNStatus<PNPublishStatus> *status) {
+                  withAssertions:^(PNPublishStatus *status) {
                       XCTAssertNotNil(status);
                       XCTAssertEqual(status.category, PNAcknowledgmentCategory);
                       XCTAssertEqual(status.operation, PNPublishOperation);
@@ -218,7 +218,7 @@
     
     [self performVerifiedPublish:stringWithSpecialSymbols
                        onChannel:[NSUUID UUID].UUIDString
-                  withAssertions:^(PNStatus<PNPublishStatus> *status) {
+                  withAssertions:^(PNPublishStatus *status) {
                       XCTAssertNotNil(status);
                       XCTAssertEqual(status.category, PNAcknowledgmentCategory);
                       XCTAssertEqual(status.operation, PNPublishOperation);

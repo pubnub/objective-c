@@ -28,7 +28,7 @@
 - (void)testSimplePublishWithHistory {
     [self performVerifiedPublish:@"test" onChannel:[NSUUID UUID].UUIDString
                   storeInHistory:YES
-                  withAssertions:^(PNStatus<PNPublishStatus> *status) {
+                  withAssertions:^(PNPublishStatus *status) {
         XCTAssertNotNil(status);
         XCTAssertEqual(status.category, PNAcknowledgmentCategory);
         XCTAssertEqual(status.operation, PNPublishOperation);
@@ -43,7 +43,7 @@
 - (void)testSimplePublishWithoutHistory {
     [self performVerifiedPublish:@"test" onChannel:[NSUUID UUID].UUIDString
                   storeInHistory:NO
-                  withAssertions:^(PNStatus<PNPublishStatus> *status) {
+                  withAssertions:^(PNPublishStatus *status) {
                       XCTAssertNotNil(status);
                       XCTAssertEqual(status.category, PNAcknowledgmentCategory);
                       XCTAssertEqual(status.operation, PNPublishOperation);
@@ -59,7 +59,7 @@
     [self performVerifiedPublish:nil
                        onChannel:[NSUUID UUID].UUIDString
                   storeInHistory:YES
-                  withAssertions:^(PNStatus<PNPublishStatus> *status) {
+                  withAssertions:^(PNPublishStatus *status) {
         XCTAssertNotNil(status);
         XCTAssertEqual(status.category, PNBadRequestCategory);
         XCTAssertEqual(status.operation, PNPublishOperation);
@@ -76,7 +76,7 @@
     [self performVerifiedPublish:nil
                        onChannel:[NSUUID UUID].UUIDString
                   storeInHistory:NO
-                  withAssertions:^(PNStatus<PNPublishStatus> *status) {
+                  withAssertions:^(PNPublishStatus *status) {
                       XCTAssertNotNil(status);
                       XCTAssertEqual(status.category, PNBadRequestCategory);
                       XCTAssertEqual(status.operation, PNPublishOperation);
@@ -93,7 +93,7 @@
     [self performVerifiedPublish:@{@"test" : @"test"}
                        onChannel:[NSUUID UUID].UUIDString
                   storeInHistory:YES
-                  withAssertions:^(PNStatus<PNPublishStatus> *status) {
+                  withAssertions:^(PNPublishStatus *status) {
         XCTAssertNotNil(status);
         XCTAssertEqual(status.category, PNAcknowledgmentCategory);
         XCTAssertEqual(status.operation, PNPublishOperation);
@@ -109,7 +109,7 @@
     [self performVerifiedPublish:@{@"test" : @"test"}
                        onChannel:[NSUUID UUID].UUIDString
                   storeInHistory:NO
-                  withAssertions:^(PNStatus<PNPublishStatus> *status) {
+                  withAssertions:^(PNPublishStatus *status) {
                       XCTAssertNotNil(status);
                       XCTAssertEqual(status.category, PNAcknowledgmentCategory);
                       XCTAssertEqual(status.operation, PNPublishOperation);
@@ -125,7 +125,7 @@
     [self performVerifiedPublish:@{@"test" : @"test"}
                        onChannel:nil
                   storeInHistory:YES
-                  withAssertions:^(PNStatus<PNPublishStatus> *status) {
+                  withAssertions:^(PNPublishStatus *status) {
         XCTAssertNotNil(status);
         XCTAssertEqual(status.category, PNBadRequestCategory);
         XCTAssertEqual(status.operation, PNPublishOperation);
@@ -142,7 +142,7 @@
     [self performVerifiedPublish:@{@"test" : @"test"}
                        onChannel:nil
                   storeInHistory:NO
-                  withAssertions:^(PNStatus<PNPublishStatus> *status) {
+                  withAssertions:^(PNPublishStatus *status) {
                       XCTAssertNotNil(status);
                       XCTAssertEqual(status.category, PNBadRequestCategory);
                       XCTAssertEqual(status.operation, PNPublishOperation);
@@ -162,7 +162,7 @@
                 storeInHistory:(BOOL)storeInHistory
                 withAssertions:(PNPublishCompletionBlock)verificationBlock {
     XCTestExpectation *networkExpectation = [self expectationWithDescription:@"network"];
-    [self.client publish:message toChannel:channel storeInHistory:storeInHistory withCompletion:^(PNStatus<PNPublishStatus> *status) {
+    [self.client publish:message toChannel:channel storeInHistory:storeInHistory withCompletion:^(PNPublishStatus *status) {
         verificationBlock(status);
         [networkExpectation fulfill];
     }];
