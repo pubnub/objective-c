@@ -1,7 +1,8 @@
 language: objective-c
 before_install:
-    - gem install cocoapods -v '0.37.2' --no-rdoc --no-ri --no-document --quiet
+    - gem install cocoapods --no-rdoc --no-ri --no-document --quiet
     - gem install xcpretty --no-rdoc --no-ri --no-document --quiet
     - gem install slather --no-rdoc --no-ri --no-document --quiet
+    - gem install activesupport --no-rdoc --no-ri --no-document --quiet
 script: rake test
 after_success: rake coverage
