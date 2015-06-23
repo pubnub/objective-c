@@ -1,2 +1,2 @@
-xcodeproj: Example/PubNub.xcodeproj/
+xcodeproj: Tests/PubNub.xcodeproj/
 source_directory: PubNub/
