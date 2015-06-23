@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1721D3B61B39F57D0018CF00 /* PNHistoryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1721D3B51B39F57D0018CF00 /* PNHistoryTests.m */; };
+		172EC56C1B39F7E3002FF303 /* PNHistoryTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 172EC56B1B39F7E3002FF303 /* PNHistoryTests.bundle */; };
 		1736E1A41B30F2C00077B2E7 /* PNChannelGroupTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1736E1A31B30F2C00077B2E7 /* PNChannelGroupTests.m */; };
 		1736E1A81B30F5E00077B2E7 /* PNChannelGroupTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 1736E1A71B30F5E00077B2E7 /* PNChannelGroupTests.bundle */; };
 		177481501B30A82600544130 /* PNSubscribeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1774814F1B30A82600544130 /* PNSubscribeTests.m */; };
@@ -21,6 +23,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1721D3B51B39F57D0018CF00 /* PNHistoryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNHistoryTests.m; sourceTree = "<group>"; };
+		172EC56B1B39F7E3002FF303 /* PNHistoryTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNHistoryTests.bundle; sourceTree = "<group>"; };
 		1736E1A31B30F2C00077B2E7 /* PNChannelGroupTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannelGroupTests.m; sourceTree = "<group>"; };
 		1736E1A71B30F5E00077B2E7 /* PNChannelGroupTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNChannelGroupTests.bundle; sourceTree = "<group>"; };
 		1774814F1B30A82600544130 /* PNSubscribeTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNSubscribeTests.m; sourceTree = "<group>"; };
@@ -93,6 +97,7 @@
 				1736E1A31B30F2C00077B2E7 /* PNChannelGroupTests.m */,
 				97FA41F21B2FF518003B9B57 /* PNPublishTests.m */,
 				178251241B30BF29006BC234 /* PNUnsubscribeTests.m */,
+				1721D3B51B39F57D0018CF00 /* PNHistoryTests.m */,
 				178251201B30AAE6006BC234 /* Base Test Classes */,
 				51F7AAC11B27AD7400BEDA1F /* Fixtures */,
 				519C32801B20C11500FAC283 /* Supporting Files */,
@@ -111,6 +116,7 @@
 		51F7AAC11B27AD7400BEDA1F /* Fixtures */ = {
 			isa = PBXGroup;
 			children = (
+				172EC56B1B39F7E3002FF303 /* PNHistoryTests.bundle */,
 				1736E1A71B30F5E00077B2E7 /* PNChannelGroupTests.bundle */,
 				178251261B30D5F7006BC234 /* PNUnsubscribeTests.bundle */,
 				97FA41F41B2FFB61003B9B57 /* PNPublishTests.bundle */,
@@ -201,6 +207,7 @@
 			files = (
 				51F7AAC91B28B3E200BEDA1F /* PNSubscribeTests.bundle in Resources */,
 				1736E1A81B30F5E00077B2E7 /* PNChannelGroupTests.bundle in Resources */,
+				172EC56C1B39F7E3002FF303 /* PNHistoryTests.bundle in Resources */,
 				97FA41F51B2FFB61003B9B57 /* PNPublishTests.bundle in Resources */,
 				178251271B30D5F7006BC234 /* PNUnsubscribeTests.bundle in Resources */,
 			);
@@ -266,6 +273,7 @@
 				1782511F1B30AAE3006BC234 /* PNBasicClientTestCase.m in Sources */,
 				177481501B30A82600544130 /* PNSubscribeTests.m in Sources */,
 				178251251B30BF29006BC234 /* PNUnsubscribeTests.m in Sources */,
+				1721D3B61B39F57D0018CF00 /* PNHistoryTests.m in Sources */,
 				178251231B30AE3D006BC234 /* PNBasicSubscribeTestCase.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

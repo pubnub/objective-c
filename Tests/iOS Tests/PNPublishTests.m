@@ -17,7 +17,7 @@
 
 @implementation PNPublishTests
 
-- (BOOL)recording {
+- (BOOL)isRecording {
     return NO;
 }
 

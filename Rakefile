@@ -42,6 +42,11 @@ task :test do
   Rake::Task['test:ios'].invoke
 end
 
+desc 'Print test coverage of the last test run'
+task :coverage do
+  sh("slather")
+end
+
 task :default => 'test'
 
 
