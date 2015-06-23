@@ -17,7 +17,7 @@
 
 @implementation PNSubscribeTests
 
-- (BOOL)recording {
+- (BOOL)isRecording {
     return NO;
 }
 
