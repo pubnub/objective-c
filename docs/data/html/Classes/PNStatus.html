@@ -14,7 +14,7 @@
 		<div class="container" class="hide-in-xcode">
 			
 			<h1 id="library-title">
-				<a href="../index.html">PubNub 4.0b2 for iOS </a>
+				<a href="../index.html">PubNub 4.0b3 for iOS </a>
 			</h1>
 
 			<p id="developer-home">
@@ -154,6 +154,175 @@
 						<a title="Tasks" name="tasks"></a>
 						
 
+						<a title="Information" name="task_Information"></a>
+						<h2 class="task-title">Information</h2>
+
+						<div class="task-list">
+							<div class="section-method">
+	<a name="//api/name/category" title="category"></a>
+	<h3 class="method-title"><code><a href="#//api/name/category">&nbsp;&nbsp;category</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>One of \b PNStatusCategory fields which provide information about for which status this
+         instance has been created.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, assign) PNStatusCategory category</code></div>
+
+		    
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>Processing status category.</p>
+			</div>
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNStatus.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/error" title="error"></a>
+	<h3 class="method-title"><code><a href="#//api/name/error">&nbsp;&nbsp;error</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Whether status object represent error or not.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, assign, getter=isError) BOOL error</code></div>
+
+		    
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>\c YES in case if status represent request processing error.</p>
+			</div>
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNStatus.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/automaticallyRetry" title="automaticallyRetry"></a>
+	<h3 class="method-title"><code><a href="#//api/name/automaticallyRetry">&nbsp;&nbsp;automaticallyRetry</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Auto<a href="#//api/name/retry">retry</a> configuration information.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, assign, getter=willAutomaticallyRetry) BOOL automaticallyRetry</code></div>
+
+		    
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>\c YES in case if request which represented with this failed status will be resent
+         automatically or not.</p>
+			</div>
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>In most cases client will keep <a href="#//api/name/retry">retry</a> request sending till it won&rsquo;t be successful or
+             canceled with \c <a href="#//api/name/cancelAutomaticRetry">cancelAutomaticRetry</a> method.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNStatus.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div>
+						</div>
+						
+
 						<a title="Recovery" name="task_Recovery"></a>
 						<h2 class="task-title">Recovery</h2>
 
@@ -270,151 +439,6 @@
 
 						<div class="task-list">
 							<div class="section-method">
-	<a name="//api/name/category" title="category"></a>
-	<h3 class="method-title"><code><a href="#//api/name/category">&nbsp;&nbsp;category</a></code>
-</h3>
-
-	<div class="method-info">
-		<div class="pointy-thing"></div>
-
-		<div class="method-info-container">
-			
-			
-			<div class="method-subsection brief-description">
-				<p>One of \b PNStatusCategory fields which provide information about for which status this
-         instance has been created.</p>
-			</div>
-			
-		    
-
-			<div class="method-subsection method-declaration"><code>@property (nonatomic, assign) PNStatusCategory category</code></div>
-
-		    
-			
-
-			
-
-			
-			<div class="method-subsection availability">
-				<h4 class="method-subtitle parameter-title">Availability</h4>
-				<p>4.0</p>
-			</div>
-			
-
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection declared-in-section">
-				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">PNStatus+Private.h</code></p>
-			</div>
-			
-			
-		</div>
-	</div>
-</div><div class="section-method">
-	<a name="//api/name/error" title="error"></a>
-	<h3 class="method-title"><code><a href="#//api/name/error">&nbsp;&nbsp;error</a></code>
-</h3>
-
-	<div class="method-info">
-		<div class="pointy-thing"></div>
-
-		<div class="method-info-container">
-			
-			
-			<div class="method-subsection brief-description">
-				<p>Whether status object represent error or not.</p>
-			</div>
-			
-		    
-
-			<div class="method-subsection method-declaration"><code>@property (nonatomic, assign, getter=isError) BOOL error</code></div>
-
-		    
-			
-
-			
-
-			
-			<div class="method-subsection availability">
-				<h4 class="method-subtitle parameter-title">Availability</h4>
-				<p>4.0</p>
-			</div>
-			
-
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection declared-in-section">
-				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">PNStatus+Private.h</code></p>
-			</div>
-			
-			
-		</div>
-	</div>
-</div><div class="section-method">
-	<a name="//api/name/automaticallyRetry" title="automaticallyRetry"></a>
-	<h3 class="method-title"><code><a href="#//api/name/automaticallyRetry">&nbsp;&nbsp;automaticallyRetry</a></code>
-</h3>
-
-	<div class="method-info">
-		<div class="pointy-thing"></div>
-
-		<div class="method-info-container">
-			
-			
-			<div class="method-subsection brief-description">
-				<p>Stores whether client will try to resend request associated with status or not.</p>
-			</div>
-			
-		    
-
-			<div class="method-subsection method-declaration"><code>@property (nonatomic, assign, getter=willAutomaticallyRetry) BOOL automaticallyRetry</code></div>
-
-		    
-			
-
-			
-
-			
-			<div class="method-subsection availability">
-				<h4 class="method-subtitle parameter-title">Availability</h4>
-				<p>4.0</p>
-			</div>
-			
-
-			
-			<div class="method-subsection discussion-section">
-				<h4 class="method-subtitle">Discussion</h4>
-				<p>In most cases client will keep <a href="#//api/name/retry">retry</a> request sending till it won&rsquo;t be successful or
-             canceled with \c <a href="#//api/name/cancelAutomaticRetry">cancelAutomaticRetry</a> method.</p>
-			</div>
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection declared-in-section">
-				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">PNStatus+Private.h</code></p>
-			</div>
-			
-			
-		</div>
-	</div>
-</div><div class="section-method">
 	<a name="//api/name/currentTimetoken" title="currentTimetoken"></a>
 	<h3 class="method-title"><code><a href="#//api/name/currentTimetoken">&nbsp;&nbsp;currentTimetoken</a></code>
 </h3>
@@ -1215,7 +1239,7 @@
 				<footer>
 					<div class="footer-copyright">
 						
-						<p class="copyright">Copyright &copy; 2015 PubNub. All rights reserved. Updated: 2015-06-15</p>
+						<p class="copyright">Copyright &copy; 2015 PubNub. All rights reserved. Updated: 2015-06-24</p>
 						
 						
 						<p class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2.1 (build 1333)</a>.</p>
