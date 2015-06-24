@@ -110,7 +110,7 @@ platform :ios, '7.0'
 pod 'PubNub', :git => 'https://github.com/PubNub/objective-c.git', :branch => '4.0b2'
 ```
 
-* Be sure the git argument in the Podfile is pointing to the [4.0b2 branch](https://github.com/pubnub/objective-c/tree/4.0b2) of the [PubNub source directory](https://github.com/pubnub/objective-c).
+* Be sure the git argument in the Podfile is pointing to the [4.0b2 branch](https://github.com/pubnub/objective-c/tree/4.0b3) of the [PubNub source directory](https://github.com/pubnub/objective-c).
 
 * Run:
  ```
