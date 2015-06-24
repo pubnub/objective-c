@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/pubnub/objective-c.svg?branch=4.0b3)](https://travis-ci.org/pubnub/objective-c)
 [![Coverage Status](https://coveralls.io/repos/pubnub/objective-c/badge.svg?branch=4.0b3)](https://coveralls.io/r/pubnub/objective-c?branch=4.0b3)
 
-# PubNub 4.0b2 for iOS 7+
+# PubNub 4.0b3 for iOS 7+
 ### (Beta, not for Production Use)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
