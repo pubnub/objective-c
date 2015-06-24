@@ -86,7 +86,7 @@
 * Simplified usability by enforcing completion block pattern -- client no longer supports Singleton, Delegate, Observer, Notifications response patterns
 * Consolidated instance method namesv
  
-## Known issues and TODOs in beta2:
+## Known issues and TODOs in beta3:
 
 * Provide Swift Bridge and associated docs
 * Approach >= 75% automated test code coverage as we approach final release
@@ -107,7 +107,7 @@ touch Podfile
 ```
 source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '7.0'
-pod 'PubNub', :git => 'https://github.com/PubNub/objective-c.git', :branch => '4.0b2'
+pod 'PubNub', :git => 'https://github.com/PubNub/objective-c.git', :branch => '4.0b3'
 ```
 
 * Be sure the git argument in the Podfile is pointing to the [4.0b2 branch](https://github.com/pubnub/objective-c/tree/4.0b3) of the [PubNub source directory](https://github.com/pubnub/objective-c).
