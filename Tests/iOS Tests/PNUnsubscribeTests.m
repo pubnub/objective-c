@@ -39,7 +39,7 @@
     [super tearDown];
 }
 
-- (void)DISABLED_testUnsubscribe {
+- (void)testUnsubscribe {
     self.unsubscribeExpectation = [self expectationWithDescription:@"unsubscribe"];
     [self.client unsubscribeFromChannels:@[@"a"] withPresence:YES];
     [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
@@ -75,6 +75,10 @@
     XCTAssertNotNil(status);
     XCTAssertFalse(status.isError);
     XCTAssertEqual(status.operation, PNSubscribeOperation);
+    XCTAssertNotNil(status.subscribedChannels);
+    XCTAssertEqual(status.subscribedChannels.count, 0);
+    XCTAssertNotNil(status.subscribedChannelGroups);
+    XCTAssertEqual(status.subscribedChannelGroups.count, 0);
     XCTAssertEqual(status.category, PNDisconnectedCategory);
     XCTAssertEqual(status.statusCode, 200);
     [self.unsubscribeExpectation fulfill];
