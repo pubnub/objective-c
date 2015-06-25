@@ -242,4 +242,169 @@
     }];
 }
 
+- (void)testSize10kMessageStoreInHistoryCompressed {
+    
+    NSString *channelName = [[NSUUID UUID] UUIDString];
+    NSString *message = [NSString randomAlphanumericStringWithLength:10000];
+
+    
+    XCTestExpectation *completionBlockExpectation = [self expectationWithDescription:@"Completion"];
+    
+    [self.client sizeOfMessage:message
+                     toChannel:channelName
+                    compressed:YES
+                storeInHistory:YES
+                withCompletion:^(NSInteger size) {
+                    NSLog(@"%@", @(size));
+                    
+                    XCTAssertTrue(size > 8000, @"Size is different than expected %@ < %@", @(size), @(8000));
+                    
+                    [completionBlockExpectation fulfill];
+                }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
+        if (error) {
+            NSLog(@"error: %@", error);
+            XCTFail(@"what went wrong?");
+        }
+    }];
+}
+
+- (void)testSize100kMessageStoreInHistoryCompressed {
+    
+    NSString *channelName = [[NSUUID UUID] UUIDString];
+    NSString *message = [NSString randomAlphanumericStringWithLength:100000];
+    
+    
+    XCTestExpectation *completionBlockExpectation = [self expectationWithDescription:@"Completion"];
+    
+    [self.client sizeOfMessage:message
+                     toChannel:channelName
+                    compressed:YES
+                storeInHistory:YES
+                withCompletion:^(NSInteger size) {
+                    NSLog(@"%@", @(size));
+                    
+                    XCTAssertTrue(size > 75000, @"Size is different than expected %@ < %@", @(size), @(75000));
+                    
+                    [completionBlockExpectation fulfill];
+                }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
+        if (error) {
+            NSLog(@"error: %@", error);
+            XCTFail(@"what went wrong?");
+        }
+    }];
+}
+
+- (void)testSizeDictionaryMessageStoreInHistoryCompressed {
+    
+    NSString *channelName = [[NSUUID UUID] UUIDString];
+    NSDictionary *message = @{@"1": @"3", @"2": @"3"};
+    
+    
+    XCTestExpectation *completionBlockExpectation = [self expectationWithDescription:@"Completion"];
+    
+    [self.client sizeOfMessage:message
+                     toChannel:channelName
+                    compressed:YES
+                storeInHistory:YES
+                withCompletion:^(NSInteger size) {
+                    NSLog(@"%@", @(size));
+                    
+                    XCTAssertEqual(size, 528, @"Size is different than expected %@ <> %@", @(size), @(528));
+                    
+                    [completionBlockExpectation fulfill];
+                }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
+        if (error) {
+            NSLog(@"error: %@", error);
+            XCTFail(@"what went wrong?");
+        }
+    }];
+}
+
+- (void)testSizeNestedDictionaryMessageStoreInHistoryCompressed {
+    
+    NSString *channelName = [[NSUUID UUID] UUIDString];
+    NSDictionary *message = @{@"1": @{@"1": @{@"3": @"5"}}, @"2": @"3"};
+    
+    XCTestExpectation *completionBlockExpectation = [self expectationWithDescription:@"Completion"];
+    
+    [self.client sizeOfMessage:message
+                     toChannel:channelName
+                    compressed:YES
+                storeInHistory:YES
+                withCompletion:^(NSInteger size) {
+                    NSLog(@"%@", @(size));
+                    
+                    XCTAssertEqual(size, 538, @"Size is different than expected %@ <> %@", @(size), @(538));
+                    
+                    [completionBlockExpectation fulfill];
+                }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
+        if (error) {
+            NSLog(@"error: %@", error);
+            XCTFail(@"what went wrong?");
+        }
+    }];
+}
+
+- (void)testSizeArrayMessageStoreInHistoryCompressed {
+    
+    NSString *channelName = [[NSUUID UUID] UUIDString];
+    NSArray *message = @[@"1", @"2", @"3", @"4"];
+    
+    XCTestExpectation *completionBlockExpectation = [self expectationWithDescription:@"Completion"];
+    
+    [self.client sizeOfMessage:message
+                     toChannel:channelName
+                    compressed:YES
+                storeInHistory:YES
+                withCompletion:^(NSInteger size) {
+                    NSLog(@"%@", @(size));
+                    
+                    XCTAssertEqual(size, 529, @"Size is different than expected %@ <> %@", @(size), @(529));
+                    
+                    [completionBlockExpectation fulfill];
+                }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
+        if (error) {
+            NSLog(@"error: %@", error);
+            XCTFail(@"what went wrong?");
+        }
+    }];
+}
+
+- (void)testSizeComplexArrayMessageStoreInHistoryCompressed {
+    
+    NSString *channelName = [[NSUUID UUID] UUIDString];
+    NSArray *message =   @[@"1", @{@"1": @{@"1": @"2"}}, @[@"1", @"2", @(2)], @(567)];
+    
+    XCTestExpectation *completionBlockExpectation = [self expectationWithDescription:@"Completion"];
+    
+    [self.client sizeOfMessage:message
+                     toChannel:channelName
+                    compressed:YES
+                storeInHistory:YES
+                withCompletion:^(NSInteger size) {
+                    NSLog(@"%@", @(size));
+                    
+                    XCTAssertEqual(size, 544, @"Size is different than expected %@ <> %@", @(size), @(544));
+                    
+                    [completionBlockExpectation fulfill];
+                }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
+        if (error) {
+            NSLog(@"error: %@", error);
+            XCTFail(@"what went wrong?");
+        }
+    }];
+}
+
 @end
