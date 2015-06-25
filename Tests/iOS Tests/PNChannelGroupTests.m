@@ -19,7 +19,7 @@ static NSString * const kChannelGroup = @"79713A48-107C-4338-9977-92EEC1F29577";
 
 @implementation PNChannelGroupTests
 
-- (BOOL)isRecording {
+- (BOOL)isRecording{
     return NO;
 }
 

@@ -19,7 +19,7 @@
 
 @implementation PNUnsubscribeTests
 
-- (BOOL)isRecording {
+- (BOOL)isRecording{
     return NO;
 }
 
