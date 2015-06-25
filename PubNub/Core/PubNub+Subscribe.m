@@ -12,7 +12,7 @@
 #import "PNHelpers.h"
 
 
-#pragma mark Interface implementation
+#pragma mark - Interface implementation
 
 @implementation PubNub (Subscribe)
 

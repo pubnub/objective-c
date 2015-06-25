@@ -11,7 +11,7 @@
 #import "PNHelpers.h"
 
 
-#pragma mark Private interface
+#pragma mark - Private interface
 
 @interface PubNub (HistoryPrivate)
 

@@ -14,7 +14,7 @@
 #import "PNStructures.h"
 
 
-#pragma mark - Protected interface declaration
+#pragma mark Protected interface declaration
 
 @interface PubNub (PresenceProtected)
 

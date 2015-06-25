@@ -40,7 +40,7 @@ Pod::Spec.new do |s|
   # s.public_header_files = 'Pod/Classes/**/*.h'
   s.library   = 'z'
   s.dependency 'AFNetworking', '~> 2.5'
-  s.dependency 'CocoaLumberjack', '~> 2.0'
+  s.dependency 'CocoaLumberjack', '2.0.0'
 
 
 s.license = %{

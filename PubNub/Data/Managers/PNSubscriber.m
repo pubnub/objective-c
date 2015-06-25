@@ -23,6 +23,13 @@
 #pragma mark Static
 
 /**
+ @brief  Cocoa Lumberjack logging level configuration for subscriber.
+ 
+ @since 4.0
+ */
+static DDLogLevel ddLogLevel = (DDLogLevel)PNAPICallLogLevel;
+
+/**
  @brief  Reference on time which should be used by retry timer as interval between subscription
  retry attempts.
  
@@ -327,6 +334,33 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 @synthesize retryTimer = _retryTimer;
 @synthesize currentTimeToken = _currentTimeToken;
 @synthesize lastTimeToken = _lastTimeToken;
+
+
+#pragma mark - Logger
+
+/**
+ @brief  Called by Cocoa Lumberjack during initialization.
+ 
+ @return Desired logger level for \b PubNub client main class.
+ 
+ @since 4.0
+ */
++ (DDLogLevel)ddLogLevel {
+    
+    return ddLogLevel;
+}
+
+/**
+ @brief  Allow modify logger level used by Cocoa Lumberjack with logging macros.
+ 
+ @param logLevel New log level which should be used by logger.
+ 
+ @since 4.0
+ */
++ (void)ddSetLogLevel:(DDLogLevel)logLevel {
+    
+    ddLogLevel = logLevel;
+}
 
 
 #pragma mark - Information
