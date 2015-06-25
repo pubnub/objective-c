@@ -5,22 +5,24 @@
 #pragma mark Log macro declaration
 
 
-#define DDLogClientInfo(frmt, ...) LOG_MAYBE(NO, ddLogLevel, (DDLogFlag)PNInfoLogLevel,  0, nil, \
-                                             __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
-#define DDLogReachability(frmt, ...) LOG_MAYBE(NO, ddLogLevel, (DDLogFlag)PNReachabilityLogLevel, \
-                                               0, nil, __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
-#define DDLogRequest(frmt, ...) LOG_MAYBE(NO, ddLogLevel, (DDLogFlag)PNRequestLogLevel,  0, nil, \
-                                          __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
-#define DDLogResult(frmt, ...) LOG_MAYBE(NO, ddLogLevel, (DDLogFlag)PNResultLogLevel,  0, nil, \
-                                         __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
-#define DDLogStatus(frmt, ...) LOG_MAYBE(NO, ddLogLevel, (DDLogFlag)PNStatusLogLevel,  0, nil, \
-                                         __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
-#define DDLogFailureStatus(frmt, ...) LOG_MAYBE(NO, ddLogLevel, (DDLogFlag)PNFailureStatusLogLevel, \
-                                                0, nil, __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
-#define DDLogAESError(frmt, ...) LOG_MAYBE(NO, ddLogLevel, (DDLogFlag)PNAESErrorLogLevel,  0, nil, \
-                                           __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
-#define DDLogAPICall(frmt, ...) LOG_MAYBE(NO, ddLogLevel, (DDLogFlag)PNAPICallLogLevel,  0, nil, \
-                                          __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
+#define DDLogClientInfo(frmt, ...) LOG_MAYBE(NO, [[self class] ddLogLevel], (DDLogFlag)PNInfoLogLevel, \
+                                             0, nil, __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
+#define DDLogReachability(frmt, ...) LOG_MAYBE(NO, [[self class] ddLogLevel], \
+                                               (DDLogFlag)PNReachabilityLogLevel, 0, nil, \
+                                               __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
+#define DDLogRequest(frmt, ...) LOG_MAYBE(NO, [[self class] ddLogLevel], (DDLogFlag)PNRequestLogLevel, \
+                                          0, nil, __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
+#define DDLogResult(frmt, ...) LOG_MAYBE(NO, [[self class] ddLogLevel], (DDLogFlag)PNResultLogLevel, \
+                                         0, nil, __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
+#define DDLogStatus(frmt, ...) LOG_MAYBE(NO, [[self class] ddLogLevel], (DDLogFlag)PNStatusLogLevel, \
+                                         0, nil, __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
+#define DDLogFailureStatus(frmt, ...) LOG_MAYBE(NO, [[self class] ddLogLevel], \
+                                                (DDLogFlag)PNFailureStatusLogLevel, 0, nil, \
+                                                __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
+#define DDLogAESError(frmt, ...) LOG_MAYBE(NO, [[self class] ddLogLevel], (DDLogFlag)PNAESErrorLogLevel, \
+                                           0, nil, __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
+#define DDLogAPICall(frmt, ...) LOG_MAYBE(NO, [[self class] ddLogLevel], (DDLogFlag)PNAPICallLogLevel, \
+                                          0, nil, __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
 
 
 

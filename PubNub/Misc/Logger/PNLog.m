@@ -5,10 +5,21 @@
  */
 #import "PNLog.h"
 #import "PNLogFileManager.h"
-#import "PubNub+Core.h"
+#import "PNHelpers.h"
+#import "PNLogger.h"
 
 
-#pragma mark Protected interface declaration
+#pragma mark CocoaLumberjack logging support
+
+/**
+ @brief  Cocoa Lumberjack logging level configuration for cryptor helper.
+ 
+ @since 4.0
+ */
+static DDLogLevel ddLogLevel = DDLogLevelInfo;
+
+
+#pragma mark - Protected interface declaration
 
 @interface PNLog ()
 
@@ -40,6 +51,15 @@
 + (PNLog *)sharedInstance;
 
 /**
+ @brief  List of classes which support logger level manipulation.
+ 
+ @return List of channels which allow to change logger level.
+ 
+ @since 4.0
+ */
++ (NSArray *)logEnabledClasses;
+
+/**
  @brief  Complete helper preparations.
  
  @since 4.0
@@ -59,6 +79,33 @@
 @implementation PNLog
 
 
+#pragma mark - Logger
+
+/**
+ @brief  Called by Cocoa Lumberjack during initialization.
+ 
+ @return Desired logger level for \b PubNub client main class.
+ 
+ @since 4.0
+ */
++ (DDLogLevel)ddLogLevel {
+    
+    return ddLogLevel;
+}
+
+/**
+ @brief  Allow modify logger level used by Cocoa Lumberjack with logging macros.
+ 
+ @param logLevel New log level which should be used by logger.
+ 
+ @since 4.0
+ */
++ (void)ddSetLogLevel:(DDLogLevel)logLevel {
+    
+    ddLogLevel = logLevel;
+}
+
+
 #pragma mark - Initialization and configuration
 
 + (PNLog *)sharedInstance {
@@ -74,9 +121,21 @@
     return _sharedInstance;
 }
 
++ (NSArray *)logEnabledClasses {
+    
+    static NSArray *logEnabledClasses;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        
+        logEnabledClasses = [PNClass classesRespondingToSelector:@selector(ddLogLevel)];
+    });
+    
+    return logEnabledClasses;
+}
+
 - (void)prepare {
     
-    [DDLog addLogger:[DDTTYLogger sharedInstance] withLevel:(DDLogLevel)PNVerboseLogLevel];
+    [DDLog addLogger:[PNLogger new] withLevel:(DDLogLevel)PNVerboseLogLevel];
     
     // Adding file logger for messages sent by PubNub client.
     self.fileLogger = [[DDFileLogger alloc] initWithLogFileManager:[PNLogFileManager new]];
@@ -99,12 +158,12 @@
 
 + (void)enableLogLevel:(PNLogLevel)logLevel {
     
-    [self setLogLevel:([DDLog levelForClass:[PubNub class]] | logLevel)];
+    [self setLogLevel:([DDLog levelForClass:NSClassFromString(@"PubNub")] | logLevel)];
 }
 
 + (void)disableLogLevel:(PNLogLevel)logLevel {
     
-    [self setLogLevel:([DDLog levelForClass:[PubNub class]] & ~logLevel)];
+    [self setLogLevel:([DDLog levelForClass:NSClassFromString(@"PubNub")] & ~logLevel)];
 }
 
 + (void)setLogLevel:(PNLogLevel)logLevel {
@@ -114,8 +173,15 @@
         
         logLevel = PNSilentLogLevel;
     }
+    else {
+        
+        logLevel |= DDLogLevelInfo;
+    }
     
-    [DDLog setLevel:(DDLogLevel)logLevel forClass:[PubNub class]];
+    for (Class class in [self logEnabledClasses]) {
+        
+        [DDLog setLevel:(DDLogLevel)logLevel forClass:class];
+    }
 }
 
 

@@ -12,6 +12,13 @@
 #pragma mark Static
 
 /**
+ @brief  Cocoa Lumberjack logging level configuration for subscriber results parser.
+ 
+ @since 4.0
+ */
+static DDLogLevel ddLogLevel = (DDLogLevel)PNAESErrorLogLevel;
+
+/**
  Stores reference on index under which events list is stored.
  */
 static NSUInteger const kPNEventsListElementIndex = 0;
@@ -94,6 +101,33 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
 #pragma mark - Interface implementation
 
 @implementation PNSubscribeParser
+
+
+#pragma mark - Logger
+
+/**
+ @brief  Called by Cocoa Lumberjack during initialization.
+ 
+ @return Desired logger level for \b PubNub client main class.
+ 
+ @since 4.0
+ */
++ (DDLogLevel)ddLogLevel {
+    
+    return ddLogLevel;
+}
+
+/**
+ @brief  Allow modify logger level used by Cocoa Lumberjack with logging macros.
+ 
+ @param logLevel New log level which should be used by logger.
+ 
+ @since 4.0
+ */
++ (void)ddSetLogLevel:(DDLogLevel)logLevel {
+    
+    ddLogLevel = logLevel;
+}
 
 
 #pragma mark - Identification

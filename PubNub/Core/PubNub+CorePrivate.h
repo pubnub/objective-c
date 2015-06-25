@@ -3,17 +3,7 @@
 #import "PNLog.h"
 
 
-#pragma mark Static
-
-/**
- @brief  Cocoa Lumberjack logging level configuration for \b PubNub client class and categories.
- 
- @since 4.0
- */
-extern DDLogLevel ddLogLevel;
-
-
-#pragma mark - Class forward
+#pragma mark Class forward
 
 @class PNRequestParameters, PNConfiguration, PNClientState, PNStateListener, PNSubscriber,
        PNHeartbeat, PNResult, PNStatus;

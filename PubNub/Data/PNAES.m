@@ -12,7 +12,17 @@
 #import "PNHelpers.h"
 
 
-#pragma mark Static
+#pragma mark CocoaLumberjack logging support
+
+/**
+ @brief  Cocoa Lumberjack logging level configuration for cryptor helper.
+ 
+ @since 4.0
+ */
+static DDLogLevel ddLogLevel = (DDLogLevel)PNAESErrorLogLevel;
+
+
+#pragma mark - Static
 
 /**
  @brief  Initializing vector used to initialize (de)cryptor.
@@ -73,6 +83,33 @@ static const void * kPNAESInitializationVector = "0123456789012345";
 #pragma mark - Interface implementation
 
 @implementation PNAES
+
+
+#pragma mark - Logger
+
+/**
+ @brief  Called by Cocoa Lumberjack during initialization.
+ 
+ @return Desired logger level for \b PubNub client main class.
+ 
+ @since 4.0
+ */
++ (DDLogLevel)ddLogLevel {
+    
+    return ddLogLevel;
+}
+
+/**
+ @brief  Allow modify logger level used by Cocoa Lumberjack with logging macros.
+ 
+ @param logLevel New log level which should be used by logger.
+ 
+ @since 4.0
+ */
++ (void)ddSetLogLevel:(DDLogLevel)logLevel {
+    
+    ddLogLevel = logLevel;
+}
 
 
 #pragma mark - Data encryption

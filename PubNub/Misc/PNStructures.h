@@ -29,7 +29,7 @@ typedef NS_OPTIONS(NSUInteger, PNLogLevel){
      
      @since 4.0
      */
-    PNSilentLogLevel = (1 << 5),
+    PNSilentLogLevel = (~(NSUIntegerMax >> 1)),
     
     /**
      @brief  \b PNLog level which allow to print out client information data.
@@ -38,14 +38,14 @@ typedef NS_OPTIONS(NSUInteger, PNLogLevel){
      
      @since 4.0
      */
-    PNInfoLogLevel = (1 << 6),
+    PNInfoLogLevel = (~(NSUIntegerMax >> 2)),
     
     /**
      @brief  \b PNLog level which allow to print out all reachability events.
      
      @since 4.0
      */
-    PNReachabilityLogLevel = (1 << 7),
+    PNReachabilityLogLevel = (~(NSUIntegerMax >> 3)),
     
     /**
      @brief  \b PNLog level which allow to print out all API call request URI which has been passed
@@ -53,14 +53,14 @@ typedef NS_OPTIONS(NSUInteger, PNLogLevel){
      
      @since 4.0
      */
-    PNRequestLogLevel = (1 << 8),
+    PNRequestLogLevel = (~(NSUIntegerMax >> 4)),
     
     /**
      @brief  \b PNLog level which allow to print out API execution results.
      
      @since 4.0
      */
-    PNResultLogLevel = (1 << 9),
+    PNResultLogLevel = (~(NSUIntegerMax >> 5)),
     
     /**
      @brief  \b PNLog level which allow to print out client state change status information and 
@@ -68,7 +68,7 @@ typedef NS_OPTIONS(NSUInteger, PNLogLevel){
      
      @since 4.0
      */
-    PNStatusLogLevel = (1 << 10),
+    PNStatusLogLevel = (~(NSUIntegerMax >> 6)),
     
     /**
      @brief      \b PNLog level which allow to print out every failure status information.
@@ -77,7 +77,7 @@ typedef NS_OPTIONS(NSUInteger, PNLogLevel){
      
      @since 4.0
      */
-    PNFailureStatusLogLevel = (1 << 11),
+    PNFailureStatusLogLevel = (~(NSUIntegerMax >> 7)),
     
     /**
      @brief      \b PNLog level which allow to print out all API calls with passed parameters.
@@ -86,14 +86,14 @@ typedef NS_OPTIONS(NSUInteger, PNLogLevel){
      
      @since 4.0
      */
-    PNAPICallLogLevel = (1 << 12),
+    PNAPICallLogLevel = (~(NSUIntegerMax >> 8)),
     
     /**
      @brief  \b PNLog level which allow to print out all AES errors.
      
      @since 4.0
      */
-    PNAESErrorLogLevel = (1 << 13),
+    PNAESErrorLogLevel = (~(NSUIntegerMax >> 9)),
     
     /**
      @brief  Log every message from \b PubNub client.
