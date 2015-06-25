@@ -1,5 +1,12 @@
 # Please direct all Support Questions and Concerns to Support@PubNub.com
 
+## Beta 4.0 Is Now Available!!
+3.x will be sunsetted, and all your new projects should be using the 4.0 client (now in final beta) available at [https://github.com/pubnub/objective-c/tree/4.0b3](https://github.com/pubnub/objective-c/tree/4.0b3)
+
+4.0 is slated to go Production by July 1, 2015.
+
+If you choose to go into production with 4.0 before that time, please contact us at support@pubnub.com first so we can validate your implementation, and be sure you are on the latest and greatest, and that there are no known issues / non-merged fixes you need that would impede your release.
+
 This is Objective-C client (current version **3.7.11**) for the [PubNub.com](http://www.pubnub.com/) real-time messaging network which can be used for iOS 6.1+ and Mac OS 10.6+ projects.  
 
 Table of Contents
@@ -55,6 +62,13 @@ Table of Contents
 - [Logging](#logger)
 - [Important Changes](#important-changes)
 - [Tests](#tests)
+
+## Beta 4.0 Is Now Available!!
+3.x will be sunsetted, and all your new projects should be using the 4.0 client (now in final beta) available at [https://github.com/pubnub/objective-c/tree/4.0b3](https://github.com/pubnub/objective-c/tree/4.0b3)
+
+4.0 is slated to go Production by July 1, 2015.
+
+If you choose to go into production with 4.0 before that time, please contact us at support@pubnub.com first so we can validate your implementation, and be sure you are on the latest and greatest, and that there are no known issues / non-merged fixes you need that would impede your release.
 
 <a name="use_in_project" />
 # How to use in project  
