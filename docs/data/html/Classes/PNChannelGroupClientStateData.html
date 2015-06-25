@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>PNGroupChannelsData Protocol Reference</title>
+	<title>PNChannelGroupClientStateData Class Reference</title>
 
 	<link rel="stylesheet" href="../css/style.css">
 	<meta name="viewport" content="initial-scale=1, maximum-scale=1.4">
@@ -14,7 +14,7 @@
 		<div class="container" class="hide-in-xcode">
 			
 			<h1 id="library-title">
-				<a href="../index.html">PubNub 4.0b2 for iOS </a>
+				<a href="../index.html">PubNub 4.0b3 for iOS </a>
 			</h1>
 
 			<p id="developer-home">
@@ -54,15 +54,17 @@
 
 	
 	
-
-	
-
-	
-	<optgroup label="Instance Methods">
+	<optgroup label="Properties">
 		
-		<option value="//api/name/channels">- channels</option>
+		<option value="//api/name/channels">channels</option>
+		
+		<option value="//api/name/data">data</option>
 		
 	</optgroup>
+	
+
+	
+
 	
 	
 </select>
@@ -77,26 +79,21 @@
 		<div id="overview_contents" class="container">
 			<div id="content">
 				<main role="main">
-					<h1 class="title">PNGroupChannelsData Protocol Reference</h1>
+					<h1 class="title">PNChannelGroupClientStateData Class Reference</h1>
 
 					
 					<div class="section section-specification"><table cellspacing="0"><tbody>
 						<tr>
+	<th>Inherits from</th>
+	<td><a href="../Classes/PNServiceData.html">PNServiceData</a> : NSObject</td>
+</tr><tr>
 	<th>Declared in</th>
-	<td>PubNub+ChannelGroup.h</td>
+	<td>PNChannelGroupClientStateResult.h<br />PNChannelGroupClientStateResult.m</td>
 </tr>
 						</tbody></table></div>
 					
 
                     
-					
-					<div class="section section-overview">
-						<a title="Overview" name="overview"></a>
-						<h2 class="subtitle subtitle-overview">Overview</h2>
-						<p>Contain information about <a href="#//api/name/channels">channels</a>, which has has been registered with channel group.</p>
-
-<p>@author Sergey Mamontov</p>
-					</div>
 					
 					
 
@@ -112,8 +109,8 @@
 						<div class="task-list">
 							<div class="section-method">
 	<a name="//api/name/channels" title="channels"></a>
-	<h3 class="method-title"><code><a href="#//api/name/channels">&ndash;&nbsp;channels</a></code>
-<span class="task-item-suffix">required method</span></h3>
+	<h3 class="method-title"><code><a href="#//api/name/channels">&nbsp;&nbsp;channels</a></code>
+</h3>
 
 	<div class="method-info">
 		<div class="pointy-thing"></div>
@@ -122,21 +119,16 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>Registered channels within channel group.</p>
+				<p>Multi channel client state information.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (NSArray *)channels</code></div>
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, strong) id channels</code></div>
 
 		    
 			
 
-			
-			<div class="method-subsection return">
-				<h4 class="method-subtitle parameter-title">Return Value</h4>
-				<p>List of channels which has been registered in target channel group.</p>
-			</div>
 			
 
 			
@@ -147,11 +139,51 @@
 			
 
 			
-			<div class="method-subsection discussion-section">
-				<h4 class="method-subtitle">Discussion</h4>
-				<div class="note"><p><strong>Note:</strong> In case if status object represent error, this property may contain list of channels to
-         which client doesn&rsquo;t have access.</p></div>
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNChannelGroupClientStateResult.h</code></p>
 			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/data" title="data"></a>
+	<h3 class="method-title"><code><a href="#//api/name/data">&nbsp;&nbsp;data</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Stores reference on client state for channel group request processing information.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, strong) PNChannelGroupClientStateData *data</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
 			
 
 			
@@ -161,7 +193,7 @@
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">PubNub+ChannelGroup.h</code></p>
+				<p><code class="declared-in-ref">PNChannelGroupClientStateResult.h</code></p>
 			</div>
 			
 			
@@ -182,7 +214,7 @@
 				<footer>
 					<div class="footer-copyright">
 						
-						<p class="copyright">Copyright &copy; 2015 PubNub. All rights reserved. Updated: 2015-06-15</p>
+						<p class="copyright">Copyright &copy; 2015 PubNub. All rights reserved. Updated: 2015-06-24</p>
 						
 						
 						<p class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2.1 (build 1333)</a>.</p>

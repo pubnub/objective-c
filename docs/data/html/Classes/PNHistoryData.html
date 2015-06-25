@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>PNGlobalHereNowData Protocol Reference</title>
+	<title>PNHistoryData Class Reference</title>
 
 	<link rel="stylesheet" href="../css/style.css">
 	<meta name="viewport" content="initial-scale=1, maximum-scale=1.4">
@@ -14,7 +14,7 @@
 		<div class="container" class="hide-in-xcode">
 			
 			<h1 id="library-title">
-				<a href="../index.html">PubNub 4.0b2 for iOS </a>
+				<a href="../index.html">PubNub 4.0b3 for iOS </a>
 			</h1>
 
 			<p id="developer-home">
@@ -54,19 +54,21 @@
 
 	
 	
-
-	
-
-	
-	<optgroup label="Instance Methods">
+	<optgroup label="Properties">
 		
-		<option value="//api/name/channels">- channels</option>
+		<option value="//api/name/data">data</option>
 		
-		<option value="//api/name/totalChannels">- totalChannels</option>
+		<option value="//api/name/end">end</option>
 		
-		<option value="//api/name/totalOccupancy">- totalOccupancy</option>
+		<option value="//api/name/messages">messages</option>
+		
+		<option value="//api/name/start">start</option>
 		
 	</optgroup>
+	
+
+	
+
 	
 	
 </select>
@@ -81,27 +83,21 @@
 		<div id="overview_contents" class="container">
 			<div id="content">
 				<main role="main">
-					<h1 class="title">PNGlobalHereNowData Protocol Reference</h1>
+					<h1 class="title">PNHistoryData Class Reference</h1>
 
 					
 					<div class="section section-specification"><table cellspacing="0"><tbody>
 						<tr>
+	<th>Inherits from</th>
+	<td><a href="../Classes/PNServiceData.html">PNServiceData</a> : NSObject</td>
+</tr><tr>
 	<th>Declared in</th>
-	<td>PubNub+Presence.h</td>
+	<td>PNHistoryResult.h<br />PNHistoryResult.m</td>
 </tr>
 						</tbody></table></div>
 					
 
                     
-					
-					<div class="section section-overview">
-						<a title="Overview" name="overview"></a>
-						<h2 class="subtitle subtitle-overview">Overview</h2>
-						<p>Contain presence information about each channel which is registered for \b PunNub
-             application keys.</p>
-
-<p>@author Sergey Mamontov</p>
-					</div>
 					
 					
 
@@ -116,9 +112,9 @@
 <h2 class="task-title">Information</h2>
 						<div class="task-list">
 							<div class="section-method">
-	<a name="//api/name/channels" title="channels"></a>
-	<h3 class="method-title"><code><a href="#//api/name/channels">&ndash;&nbsp;channels</a></code>
-<span class="task-item-suffix">required method</span></h3>
+	<a name="//api/name/messages" title="messages"></a>
+	<h3 class="method-title"><code><a href="#//api/name/messages">&nbsp;&nbsp;messages</a></code>
+</h3>
 
 	<div class="method-info">
 		<div class="pointy-thing"></div>
@@ -127,21 +123,16 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>Active channels list.</p>
+				<p>Channel history messages.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (NSDictionary *)channels</code></div>
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, strong) NSArray *messages</code></div>
 
 		    
 			
 
-			
-			<div class="method-subsection return">
-				<h4 class="method-subtitle parameter-title">Return Value</h4>
-				<p>Channel based presence information dictionary.</p>
-			</div>
 			
 
 			
@@ -152,12 +143,6 @@
 			
 
 			
-			<div class="method-subsection discussion-section">
-				<h4 class="method-subtitle">Discussion</h4>
-				<p>Each dictionary key represent channel name and it&rsquo;s value is presence information for
-             it.</p>
-			</div>
-			
 
 			
 
@@ -166,16 +151,16 @@
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">PubNub+Presence.h</code></p>
+				<p><code class="declared-in-ref">PNHistoryResult.h</code></p>
 			</div>
 			
 			
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/totalChannels" title="totalChannels"></a>
-	<h3 class="method-title"><code><a href="#//api/name/totalChannels">&ndash;&nbsp;totalChannels</a></code>
-<span class="task-item-suffix">required method</span></h3>
+	<a name="//api/name/start" title="start"></a>
+	<h3 class="method-title"><code><a href="#//api/name/start">&nbsp;&nbsp;start</a></code>
+</h3>
 
 	<div class="method-info">
 		<div class="pointy-thing"></div>
@@ -184,21 +169,16 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>Total number of active <a href="#//api/name/channels">channels</a>.</p>
+				<p>History time frame start time.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (NSNumber *)totalChannels</code></div>
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, strong) NSNumber *start</code></div>
 
 		    
 			
 
-			
-			<div class="method-subsection return">
-				<h4 class="method-subtitle parameter-title">Return Value</h4>
-				<p>Number of <a href="#//api/name/channels">channels</a> with active subscribers.</p>
-			</div>
 			
 
 			
@@ -217,16 +197,16 @@
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">PubNub+Presence.h</code></p>
+				<p><code class="declared-in-ref">PNHistoryResult.h</code></p>
 			</div>
 			
 			
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/totalOccupancy" title="totalOccupancy"></a>
-	<h3 class="method-title"><code><a href="#//api/name/totalOccupancy">&ndash;&nbsp;totalOccupancy</a></code>
-<span class="task-item-suffix">required method</span></h3>
+	<a name="//api/name/end" title="end"></a>
+	<h3 class="method-title"><code><a href="#//api/name/end">&nbsp;&nbsp;end</a></code>
+</h3>
 
 	<div class="method-info">
 		<div class="pointy-thing"></div>
@@ -235,21 +215,16 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>Total number of subscribers.</p>
+				<p>History time frame end time.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (NSNumber *)totalOccupancy</code></div>
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, strong) NSNumber *end</code></div>
 
 		    
 			
 
-			
-			<div class="method-subsection return">
-				<h4 class="method-subtitle parameter-title">Return Value</h4>
-				<p>Overall number of subscribers on <a href="#//api/name/channels">channels</a>.</p>
-			</div>
 			
 
 			
@@ -268,7 +243,53 @@
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">PubNub+Presence.h</code></p>
+				<p><code class="declared-in-ref">PNHistoryResult.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/data" title="data"></a>
+	<h3 class="method-title"><code><a href="#//api/name/data">&nbsp;&nbsp;data</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Stores reference on channel history request processing information.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, strong) PNHistoryData *data</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNHistoryResult.h</code></p>
 			</div>
 			
 			
@@ -289,7 +310,7 @@
 				<footer>
 					<div class="footer-copyright">
 						
-						<p class="copyright">Copyright &copy; 2015 PubNub. All rights reserved. Updated: 2015-06-15</p>
+						<p class="copyright">Copyright &copy; 2015 PubNub. All rights reserved. Updated: 2015-06-24</p>
 						
 						
 						<p class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2.1 (build 1333)</a>.</p>

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>PNPresenceDetails Protocol Reference</title>
+	<title>PNErrorData Class Reference</title>
 
 	<link rel="stylesheet" href="../css/style.css">
 	<meta name="viewport" content="initial-scale=1, maximum-scale=1.4">
@@ -14,7 +14,7 @@
 		<div class="container" class="hide-in-xcode">
 			
 			<h1 id="library-title">
-				<a href="../index.html">PubNub 4.0b2 for iOS </a>
+				<a href="../index.html">PubNub 4.0b3 for iOS </a>
 			</h1>
 
 			<p id="developer-home">
@@ -54,21 +54,23 @@
 
 	
 	
-
-	
-
-	
-	<optgroup label="Instance Methods">
+	<optgroup label="Properties">
 		
-		<option value="//api/name/occupancy">- occupancy</option>
+		<option value="//api/name/channelGroups">channelGroups</option>
 		
-		<option value="//api/name/state">- state</option>
+		<option value="//api/name/channels">channels</option>
 		
-		<option value="//api/name/timetoken">- timetoken</option>
+		<option value="//api/name/data">data</option>
 		
-		<option value="//api/name/uuid">- uuid</option>
+		<option value="//api/name/errorData">errorData</option>
+		
+		<option value="//api/name/information">information</option>
 		
 	</optgroup>
+	
+
+	
+
 	
 	
 </select>
@@ -83,26 +85,21 @@
 		<div id="overview_contents" class="container">
 			<div id="content">
 				<main role="main">
-					<h1 class="title">PNPresenceDetails Protocol Reference</h1>
+					<h1 class="title">PNErrorData Class Reference</h1>
 
 					
 					<div class="section section-specification"><table cellspacing="0"><tbody>
 						<tr>
+	<th>Inherits from</th>
+	<td><a href="../Classes/PNServiceData.html">PNServiceData</a> : NSObject</td>
+</tr><tr>
 	<th>Declared in</th>
-	<td>PubNub+Subscribe.h</td>
+	<td>PNErrorStatus.h<br />PNErrorStatus.m</td>
 </tr>
 						</tbody></table></div>
 					
 
                     
-					
-					<div class="section section-overview">
-						<a title="Overview" name="overview"></a>
-						<h2 class="subtitle subtitle-overview">Overview</h2>
-						<p>Contain information about presence event which arrived on certain channel.</p>
-
-<p>@author Sergey Mamontov</p>
-					</div>
 					
 					
 
@@ -117,9 +114,9 @@
 <h2 class="task-title">Information</h2>
 						<div class="task-list">
 							<div class="section-method">
-	<a name="//api/name/timetoken" title="timetoken"></a>
-	<h3 class="method-title"><code><a href="#//api/name/timetoken">&ndash;&nbsp;timetoken</a></code>
-<span class="task-item-suffix">required method</span></h3>
+	<a name="//api/name/channels" title="channels"></a>
+	<h3 class="method-title"><code><a href="#//api/name/channels">&nbsp;&nbsp;channels</a></code>
+</h3>
 
 	<div class="method-info">
 		<div class="pointy-thing"></div>
@@ -128,21 +125,16 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>Time when presence event has been tirggered.</p>
+				<p>List of channels for which error has been triggered.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (NSNumber *)timetoken</code></div>
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, strong) NSArray *channels</code></div>
 
 		    
 			
 
-			
-			<div class="method-subsection return">
-				<h4 class="method-subtitle parameter-title">Return Value</h4>
-				<p>Number with unsugned long long timestamp.</p>
-			</div>
 			
 
 			
@@ -161,16 +153,16 @@
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">PubNub+Subscribe.h</code></p>
+				<p><code class="declared-in-ref">PNErrorStatus.h</code></p>
 			</div>
 			
 			
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/uuid" title="uuid"></a>
-	<h3 class="method-title"><code><a href="#//api/name/uuid">&ndash;&nbsp;uuid</a></code>
-<span class="task-item-suffix">required method</span></h3>
+	<a name="//api/name/channelGroups" title="channelGroups"></a>
+	<h3 class="method-title"><code><a href="#//api/name/channelGroups">&nbsp;&nbsp;channelGroups</a></code>
+</h3>
 
 	<div class="method-info">
 		<div class="pointy-thing"></div>
@@ -179,21 +171,16 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>Reference on unique user identifier for which event has been triggered.</p>
+				<p>List of channel groups for which error has been triggered.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (NSString *)uuid</code></div>
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, strong) NSArray *channelGroups</code></div>
 
 		    
 			
 
-			
-			<div class="method-subsection return">
-				<h4 class="method-subtitle parameter-title">Return Value</h4>
-				<p>UUID string.</p>
-			</div>
 			
 
 			
@@ -212,16 +199,16 @@
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">PubNub+Subscribe.h</code></p>
+				<p><code class="declared-in-ref">PNErrorStatus.h</code></p>
 			</div>
 			
 			
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/occupancy" title="occupancy"></a>
-	<h3 class="method-title"><code><a href="#//api/name/occupancy">&ndash;&nbsp;occupancy</a></code>
-<span class="task-item-suffix">required method</span></h3>
+	<a name="//api/name/information" title="information"></a>
+	<h3 class="method-title"><code><a href="#//api/name/information">&nbsp;&nbsp;information</a></code>
+</h3>
 
 	<div class="method-info">
 		<div class="pointy-thing"></div>
@@ -230,21 +217,16 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>Channel presence information.</p>
+				<p>Service-provided information about error.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (NSNumber *)occupancy</code></div>
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, strong) NSString *information</code></div>
 
 		    
 			
 
-			
-			<div class="method-subsection return">
-				<h4 class="method-subtitle parameter-title">Return Value</h4>
-				<p>Number of subscribers which become after presence event has been triggered.</p>
-			</div>
 			
 
 			
@@ -263,16 +245,16 @@
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">PubNub+Subscribe.h</code></p>
+				<p><code class="declared-in-ref">PNErrorStatus.h</code></p>
 			</div>
 			
 			
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/state" title="state"></a>
-	<h3 class="method-title"><code><a href="#//api/name/state">&ndash;&nbsp;state</a></code>
-<span class="task-item-suffix">required method</span></h3>
+	<a name="//api/name/data" title="data"></a>
+	<h3 class="method-title"><code><a href="#//api/name/data">&nbsp;&nbsp;data</a></code>
+</h3>
 
 	<div class="method-info">
 		<div class="pointy-thing"></div>
@@ -281,22 +263,16 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>User changed client state.</p>
+				<p>Service-provided additional <a href="#//api/name/information">information</a> about error.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (NSDictionary *)state</code></div>
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, strong) id data</code></div>
 
 		    
 			
 
-			
-			<div class="method-subsection return">
-				<h4 class="method-subtitle parameter-title">Return Value</h4>
-				<p>In case of state change presence event will contain actual client state infotmation for
-         \c <a href="#//api/name/uuid">uuid</a>.</p>
-			</div>
 			
 
 			
@@ -315,7 +291,59 @@
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">PubNub+Subscribe.h</code></p>
+				<p><code class="declared-in-ref">PNErrorStatus.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/errorData" title="errorData"></a>
+	<h3 class="method-title"><code><a href="#//api/name/errorData">&nbsp;&nbsp;errorData</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Stores reference on additional <a href="#//api/name/information">information</a> related to error status object.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, strong) PNErrorData *errorData</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>If error status arrived from \b PubNub network in most cases it will be because of
+             \b PAM errors.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNErrorStatus.h</code></p>
 			</div>
 			
 			
@@ -336,7 +364,7 @@
 				<footer>
 					<div class="footer-copyright">
 						
-						<p class="copyright">Copyright &copy; 2015 PubNub. All rights reserved. Updated: 2015-06-15</p>
+						<p class="copyright">Copyright &copy; 2015 PubNub. All rights reserved. Updated: 2015-06-24</p>
 						
 						
 						<p class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2.1 (build 1333)</a>.</p>

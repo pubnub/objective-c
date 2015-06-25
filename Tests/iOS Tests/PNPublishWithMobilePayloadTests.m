@@ -121,7 +121,7 @@
 - (void)testPublishMobilePayloadToNillChannnel {
     
     NSDictionary *payload = @{@"aps" :
-                                  @{@"alert" : @"You got your emails.@",
+                                  @{@"alert" : @"You got your emails",
                                     @"badge" : @(9),
                                     @"sound" : @"bingbong.aiff"},
                               @"acme 1" : @(42)};
@@ -133,13 +133,12 @@
                       compressed:NO
                   withAssertions:^(PNPublishStatus *status) {
                       XCTAssertNotNil(status);
-                      XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+                      XCTAssertEqual(status.category, PNBadRequestCategory);
                       XCTAssertEqual(status.operation, PNPublishOperation);
-                      XCTAssertEqual(status.statusCode, 200);
-                      XCTAssertFalse(status.isError);
+                      XCTAssertEqual(status.statusCode, 400);
+                      XCTAssertTrue(status.isError);
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
-                      XCTAssertEqualObjects(status.data.information, @"Sent");
                   }];
 }
 

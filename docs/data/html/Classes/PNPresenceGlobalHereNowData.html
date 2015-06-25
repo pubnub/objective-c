@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>PNSubscriberData Protocol Reference</title>
+	<title>PNPresenceGlobalHereNowData Class Reference</title>
 
 	<link rel="stylesheet" href="../css/style.css">
 	<meta name="viewport" content="initial-scale=1, maximum-scale=1.4">
@@ -14,7 +14,7 @@
 		<div class="container" class="hide-in-xcode">
 			
 			<h1 id="library-title">
-				<a href="../index.html">PubNub 4.0b2 for iOS </a>
+				<a href="../index.html">PubNub 4.0b3 for iOS </a>
 			</h1>
 
 			<p id="developer-home">
@@ -54,19 +54,21 @@
 
 	
 	
-
-	
-
-	
-	<optgroup label="Instance Methods">
+	<optgroup label="Properties">
 		
-		<option value="//api/name/actualChannel">- actualChannel</option>
+		<option value="//api/name/channels">channels</option>
 		
-		<option value="//api/name/subscribedChannel">- subscribedChannel</option>
+		<option value="//api/name/data">data</option>
 		
-		<option value="//api/name/timetoken">- timetoken</option>
+		<option value="//api/name/totalChannels">totalChannels</option>
+		
+		<option value="//api/name/totalOccupancy">totalOccupancy</option>
 		
 	</optgroup>
+	
+
+	
+
 	
 	
 </select>
@@ -81,30 +83,21 @@
 		<div id="overview_contents" class="container">
 			<div id="content">
 				<main role="main">
-					<h1 class="title">PNSubscriberData Protocol Reference</h1>
+					<h1 class="title">PNPresenceGlobalHereNowData Class Reference</h1>
 
 					
 					<div class="section section-specification"><table cellspacing="0"><tbody>
 						<tr>
-	<th>Conforms to</th>
-	<td>PNErrorStatusData</td>
+	<th>Inherits from</th>
+	<td><a href="../Classes/PNServiceData.html">PNServiceData</a> : NSObject</td>
 </tr><tr>
 	<th>Declared in</th>
-	<td>PubNub+Subscribe.h</td>
+	<td>PNPresenceGlobalHereNowResult.h<br />PNPresenceGlobalHereNowResult.m</td>
 </tr>
 						</tbody></table></div>
 					
 
                     
-					
-					<div class="section section-overview">
-						<a title="Overview" name="overview"></a>
-						<h2 class="subtitle subtitle-overview">Overview</h2>
-						<p>Contain information about channel on which event happened and reference on channel for
-             which client subscribed.</p>
-
-<p>@author Sergey Mamontov</p>
-					</div>
 					
 					
 
@@ -119,9 +112,9 @@
 <h2 class="task-title">Information</h2>
 						<div class="task-list">
 							<div class="section-method">
-	<a name="//api/name/subscribedChannel" title="subscribedChannel"></a>
-	<h3 class="method-title"><code><a href="#//api/name/subscribedChannel">&ndash;&nbsp;subscribedChannel</a></code>
-<span class="task-item-suffix">required method</span></h3>
+	<a name="//api/name/channels" title="channels"></a>
+	<h3 class="method-title"><code><a href="#//api/name/channels">&nbsp;&nbsp;channels</a></code>
+</h3>
 
 	<div class="method-info">
 		<div class="pointy-thing"></div>
@@ -130,21 +123,16 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>Name of regular channel or channel group.</p>
+				<p>Active channels list.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (NSString *)subscribedChannel</code></div>
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, strong) NSDictionary *channels</code></div>
 
 		    
 			
 
-			
-			<div class="method-subsection return">
-				<h4 class="method-subtitle parameter-title">Return Value</h4>
-				<p>Name of the object on which client subscribed.</p>
-			</div>
 			
 
 			
@@ -155,6 +143,12 @@
 			
 
 			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Each dictionary key represent channel name and it&rsquo;s value is presence information for
+             it.</p>
+			</div>
+			
 
 			
 
@@ -163,16 +157,16 @@
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">PubNub+Subscribe.h</code></p>
+				<p><code class="declared-in-ref">PNPresenceGlobalHereNowResult.h</code></p>
 			</div>
 			
 			
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/actualChannel" title="actualChannel"></a>
-	<h3 class="method-title"><code><a href="#//api/name/actualChannel">&ndash;&nbsp;actualChannel</a></code>
-<span class="task-item-suffix">required method</span></h3>
+	<a name="//api/name/totalChannels" title="totalChannels"></a>
+	<h3 class="method-title"><code><a href="#//api/name/totalChannels">&nbsp;&nbsp;totalChannels</a></code>
+</h3>
 
 	<div class="method-info">
 		<div class="pointy-thing"></div>
@@ -181,21 +175,16 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>Name of channel in case if \c <a href="#//api/name/subscribedChannel">subscribedChannel</a> represent channel group.</p>
+				<p>Total number of active <a href="#//api/name/channels">channels</a>.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (NSString *)actualChannel</code></div>
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, strong) NSNumber *totalChannels</code></div>
 
 		    
 			
 
-			
-			<div class="method-subsection return">
-				<h4 class="method-subtitle parameter-title">Return Value</h4>
-				<p>Name of channel from which event arrived.</p>
-			</div>
 			
 
 			
@@ -214,16 +203,16 @@
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">PubNub+Subscribe.h</code></p>
+				<p><code class="declared-in-ref">PNPresenceGlobalHereNowResult.h</code></p>
 			</div>
 			
 			
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/timetoken" title="timetoken"></a>
-	<h3 class="method-title"><code><a href="#//api/name/timetoken">&ndash;&nbsp;timetoken</a></code>
-<span class="task-item-suffix">required method</span></h3>
+	<a name="//api/name/totalOccupancy" title="totalOccupancy"></a>
+	<h3 class="method-title"><code><a href="#//api/name/totalOccupancy">&nbsp;&nbsp;totalOccupancy</a></code>
+</h3>
 
 	<div class="method-info">
 		<div class="pointy-thing"></div>
@@ -232,21 +221,16 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>Time at which even arrived</p>
+				<p>Total number of subscribers.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (NSNumber *)timetoken</code></div>
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, strong) NSNumber *totalOccupancy</code></div>
 
 		    
 			
 
-			
-			<div class="method-subsection return">
-				<h4 class="method-subtitle parameter-title">Return Value</h4>
-				<p>Number with unsigned long long timestamp.</p>
-			</div>
 			
 
 			
@@ -265,7 +249,53 @@
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">PubNub+Subscribe.h</code></p>
+				<p><code class="declared-in-ref">PNPresenceGlobalHereNowResult.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/data" title="data"></a>
+	<h3 class="method-title"><code><a href="#//api/name/data">&nbsp;&nbsp;data</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Stores reference on global presence request processing information.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, strong) PNPresenceGlobalHereNowData *data</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNPresenceGlobalHereNowResult.h</code></p>
 			</div>
 			
 			
@@ -286,7 +316,7 @@
 				<footer>
 					<div class="footer-copyright">
 						
-						<p class="copyright">Copyright &copy; 2015 PubNub. All rights reserved. Updated: 2015-06-15</p>
+						<p class="copyright">Copyright &copy; 2015 PubNub. All rights reserved. Updated: 2015-06-24</p>
 						
 						
 						<p class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2.1 (build 1333)</a>.</p>

@@ -21,7 +21,6 @@
 
 - (BOOL)isRecording{
     return NO;
-    
 }
 
 - (void)testSimplePublish {

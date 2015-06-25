@@ -1,6 +1,7 @@
 [![Build Status](https://travis-ci.org/pubnub/objective-c.svg?branch=4.0b3)](https://travis-ci.org/pubnub/objective-c)
+[![Coverage Status](https://coveralls.io/repos/pubnub/objective-c/badge.svg?branch=4.0b3)](https://coveralls.io/r/pubnub/objective-c?branch=4.0b3)
 
-# PubNub 4.0b2 for iOS 7+
+# PubNub 4.0b3 for iOS 7+
 ### (Beta, not for Production Use)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
@@ -8,7 +9,7 @@
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Changes from 3.x](#changes-from-3x)
-- [Known issues and TODOs in beta2:](#known-issues-and-todos-in-beta2)
+- [Known issues and TODOs in beta3:](#known-issues-and-todos-in-beta3)
 - [Installing the Pod](#installing-the-pod)
 - [Hello World](#hello-world)
 - [Migrating from 3.x](#migrating-from-3x)
@@ -36,26 +37,26 @@
       - [Import PubNub.h](#import-pubnubh)
       - [Conform to the PNObjectEventListener protocol and Define a client property.](#conform-to-the-pnobjecteventlistener-protocol-and-define-a-client-property)
     - [Create a Config](#create-a-config)
-      - [[+ configurationWithPublishKey:subscribeKey:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html)](#-configurationwithpublishkeysubscribekeyhttpsrawgitcompubnubobjective-c40b2docsdatahtmlclassespnconfigurationhtml)
-      - [[– copyWithConfiguration:completion:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/copyWithConfiguration:completion:)](#%E2%80%93-copywithconfigurationcompletionhttpsrawgitcompubnubobjective-c40b2docscorehtmlclassespubnubhtml#apinamecopywithconfigurationcompletion)
-      - [[– copyWithConfiguration:callbackQueue:completion:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/copyWithConfiguration:callbackQueue:completion:)](#%E2%80%93-copywithconfigurationcallbackqueuecompletionhttpsrawgitcompubnubobjective-c40b2docscorehtmlclassespubnubhtml#apinamecopywithconfigurationcallbackqueuecompletion)
+      - [+ configurationWithPublishKey:subscribeKey:](#-configurationwithpublishkeysubscribekey)
+      - [– copyWithConfiguration:completion:](#%E2%80%93-copywithconfigurationcompletion)
+      - [– copyWithConfiguration:callbackQueue:completion:](#%E2%80%93-copywithconfigurationcallbackqueuecompletion)
     - [Configuration Options](#configuration-options)
-      - [[publishKey](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/publishKey)](#publishkeyhttpsrawgitcompubnubobjective-c40b2docsdatahtmlclassespnconfigurationhtml#apinamepublishkey)
-      - [[subscribeKey](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/subscribeKey)](#subscribekeyhttpsrawgitcompubnubobjective-c40b2docsdatahtmlclassespnconfigurationhtml#apinamesubscribekey)
-      - [[authKey](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/authKey)](#authkeyhttpsrawgitcompubnubobjective-c40b2docsdatahtmlclassespnconfigurationhtml#apinameauthkey)
-      - [[uuid](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/uuid)](#uuidhttpsrawgitcompubnubobjective-c40b2docsdatahtmlclassespnconfigurationhtml#apinameuuid)
-      - [[cipherKey](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/cipherKey)](#cipherkeyhttpsrawgitcompubnubobjective-c40b2docsdatahtmlclassespnconfigurationhtml#apinamecipherkey)
-      - [[subscribeMaximumIdleTime](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/subscribeMaximumIdleTime)](#subscribemaximumidletimehttpsrawgitcompubnubobjective-c40b2docsdatahtmlclassespnconfigurationhtml#apinamesubscribemaximumidletime)
-      - [[nonSubscribeRequestTimeout](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/nonSubscribeRequestTimeout)](#nonsubscriberequesttimeouthttpsrawgitcompubnubobjective-c40b2docsdatahtmlclassespnconfigurationhtml#apinamenonsubscriberequesttimeout)
-      - [[presenceHeartbeatValue](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/presenceHeartbeatValue)](#presenceheartbeatvaluehttpsrawgitcompubnubobjective-c40b2docsdatahtmlclassespnconfigurationhtml#apinamepresenceheartbeatvalue)
-      - [[presenceHeartbeatInterval](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/presenceHeartbeatInterval)](#presenceheartbeatintervalhttpsrawgitcompubnubobjective-c40b2docsdatahtmlclassespnconfigurationhtml#apinamepresenceheartbeatinterval)
-      - [[TLSEnabled](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/TLSEnabled)](#tlsenabledhttpsrawgitcompubnubobjective-c40b2docsdatahtmlclassespnconfigurationhtml#apinametlsenabled)
-      - [[keepTimeTokenOnListChange](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/keepTimeTokenOnListChange)](#keeptimetokenonlistchangehttpsrawgitcompubnubobjective-c40b2docsdatahtmlclassespnconfigurationhtml#apinamekeeptimetokenonlistchange)
-      - [[restoreSubscription](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/restoreSubscription)](#restoresubscriptionhttpsrawgitcompubnubobjective-c40b2docsdatahtmlclassespnconfigurationhtml#apinamerestoresubscription)
-      - [[catchUpOnSubscriptionRestore](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/catchUpOnSubscriptionRestore)](#catchuponsubscriptionrestorehttpsrawgitcompubnubobjective-c40b2docsdatahtmlclassespnconfigurationhtml#apinamecatchuponsubscriptionrestore)
+      - [publishKey](#publishkey)
+      - [subscribeKey](#subscribekey)
+      - [authKey](#authkey)
+      - [uuid](#uuid)
+      - [cipherKey](#cipherkey)
+      - [subscribeMaximumIdleTime](#subscribemaximumidletime)
+      - [nonSubscribeRequestTimeout](#nonsubscriberequesttimeout)
+      - [presenceHeartbeatValue](#presenceheartbeatvalue)
+      - [presenceHeartbeatInterval](#presenceheartbeatinterval)
+      - [TLSEnabled](#tlsenabled)
+      - [keepTimeTokenOnListChange](#keeptimetokenonlistchange)
+      - [restoreSubscription](#restoresubscription)
+      - [catchUpOnSubscriptionRestore](#catchuponsubscriptionrestore)
     - [Instantiate a Client Instance with a Config](#instantiate-a-client-instance-with-a-config)
-      - [[+ clientWithConfiguration:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/clientWithConfiguration:)](#-clientwithconfigurationhttpsrawgitcompubnubobjective-c40b2docscorehtmlclassespubnubhtml#apinameclientwithconfiguration)
-      - [[+ clientWithConfiguration:callbackQueue:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/clientWithConfiguration:callbackQueue:)](#-clientwithconfigurationcallbackqueuehttpsrawgitcompubnubobjective-c40b2docscorehtmlclassespubnubhtml#apinameclientwithconfigurationcallbackqueue)
+      - [+ clientWithConfiguration:](#-clientwithconfiguration)
+      - [+ clientWithConfiguration:callbackQueue:](#-clientwithconfigurationcallbackqueue)
     - [Add a Listener in order to Receive Subscribe and Presence Stream Events](#add-a-listener-in-order-to-receive-subscribe-and-presence-stream-events)
   - [Time](#time)
   - [Publish](#publish)
@@ -85,7 +86,7 @@
 * Simplified usability by enforcing completion block pattern -- client no longer supports Singleton, Delegate, Observer, Notifications response patterns
 * Consolidated instance method namesv
  
-## Known issues and TODOs in beta2:
+## Known issues and TODOs in beta3:
 
 * Provide Swift Bridge and associated docs
 * Approach >= 75% automated test code coverage as we approach final release
@@ -106,10 +107,10 @@ touch Podfile
 ```
 source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '7.0'
-pod 'PubNub', :git => 'https://github.com/PubNub/objective-c.git', :branch => '4.0b2'
+pod 'PubNub', :git => 'https://github.com/PubNub/objective-c.git', :branch => '4.0b3'
 ```
 
-* Be sure the git argument in the Podfile is pointing to the [4.0b2 branch](https://github.com/pubnub/objective-c/tree/4.0b2) of the [PubNub source directory](https://github.com/pubnub/objective-c).
+* Be sure the git argument in the Podfile is pointing to the [4.0b3 branch](https://github.com/pubnub/objective-c/tree/4.0b3) of the [PubNub source directory](https://github.com/pubnub/objective-c).
 
 * Run:
  ```
@@ -303,19 +304,19 @@ With PubNub, operations can be grouped into two groups: Streamed (Subscribed Mes
 
 Streamed operation method calls return Results and Statuses via listeners. For example:
 
-1. [Calling a subscribe operation] (https://github.com/pubnub/objective-c/blob/4.0b2/Example/PubNub/PNAppDelegate.m#L96) will return Result objects (received messages) to the (didReceiveMessage listener)[https://github.com/pubnub/objective-c/blob/4.0b2/Example/PubNub/PNAppDelegate.m#L275] and Status objects  (such as PAM errors, Connect, Disconnect state changes) to the (didReceiveStatus listener)[https://github.com/pubnub/objective-c/blob/4.0b2/Example/PubNub/PNAppDelegate.m#L296]
+1. [Calling a subscribe operation](Example/PubNub/PNAppDelegate.m#L96) will return Result objects (received messages) to the (didReceiveMessage listener)[Example/PubNub/PNAppDelegate.m#L275] and Status objects  (such as PAM errors, Connect, Disconnect state changes) to the (didReceiveStatus listener)[Example/PubNub/PNAppDelegate.m#L296]
 
-2. [Calling a presence operation](https://github.com/pubnub/objective-c/blob/4.0b2/Example/PubNub/PNAppDelegate.m#L111) will return Result objects (Such as Join, Leave Presence Events) to the (didReceivePresenceEvents listener)[https://github.com/pubnub/objective-c/blob/4.0b2/Example/PubNub/PNAppDelegate.m#L286] and Status objects to the (didReceiveStatus listener)[https://github.com/pubnub/objective-c/blob/4.0b2/Example/PubNub/PNAppDelegate.m#L296]
+2. [Calling a presence operation](Example/PubNub/PNAppDelegate.m#L111) will return Result objects (Such as Join, Leave Presence Events) to the (didReceivePresenceEvents listener)[Example/PubNub/PNAppDelegate.m#L286] and Status objects to the (didReceiveStatus listener)[Example/PubNub/PNAppDelegate.m#L296]
 
-Non-Streamed operation method calls use completion blocks which return either a result or status object. An example of this can be seen in the [history call example](https://github.com/pubnub/objective-c/blob/4.0b2/Example/PubNub/PNAppDelegate.m#L228).
+Non-Streamed operation method calls use completion blocks which return either a result or status object. An example of this can be seen in the [history call example](Example/PubNub/PNAppDelegate.m#L228).
 
 If you have questions about how the Result and Status objects work in the meantime, feel free to contact support@pubnub.com and cc: geremy@pubnub.com, and we'll be happy to assist.
 
 ## Reference App - Example
 
-In Beta2, [we provide Example](https://github.com/pubnub/objective-c/tree/4.0b2/Example) as a generic reference on how to set config options, make Pub, Sub, and History calls (with and without PAM), and handle the various Status and Result events that may arise from them.  
+In 4.0, [we provide Example](Example) as a generic reference on how to set config options, make Pub, Sub, and History calls (with and without PAM), and handle the various Status and Result events that may arise from them.  
 
-As we approach final beta, full docs will become available as well. For now, the Example app is used as a reference app. It will evolve over time as we approach release and final docs.
+The Example app is used as a simple reference app. It will evolve over time, along with other example apps -- stay tuned for that!
 
 ## Beta API Reference
 
@@ -347,7 +348,8 @@ Import PubNub into your application:
 #### Create a Config
 The first thing you need to do is create a configuration. Configurations are immutable. The most common use case is to instantiate a configuration with your publish an subscribe keys:
 
-##### [+ configurationWithPublishKey:subscribeKey:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html)
+##### + configurationWithPublishKey:subscribeKey:
+[more info](https://rawgit.com/pubnub/objective-c/4.0b3/docs/data/html/Classes/PNConfiguration.html)
 
 ```objective-c
 self.myConfig = [PNConfiguration configurationWithPublishKey:_pubKey subscribeKey:_subKey];
@@ -355,9 +357,11 @@ self.myConfig = [PNConfiguration configurationWithPublishKey:_pubKey subscribeKe
 
 In addition, if you have an existing Configuration that you simply wish to change the UUID or PAM token on, you can reuse an existing Configuration with one these methods:
 
-##### [– copyWithConfiguration:completion:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/copyWithConfiguration:completion:)
+##### – copyWithConfiguration:completion:
+[more info](https://rawgit.com/pubnub/objective-c/4.0b3/docs/core/html/Classes/PubNub.html#//api/name/copyWithConfiguration:completion:)
 
-##### [– copyWithConfiguration:callbackQueue:completion:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/copyWithConfiguration:callbackQueue:completion:)
+##### – copyWithConfiguration:callbackQueue:completion:
+[more info](https://rawgit.com/pubnub/objective-c/4.0b3/docs/core/html/Classes/PubNub.html#//api/name/copyWithConfiguration:callbackQueue:completion:)
 
 **By using the above methods to reuse an existing configuration, when you subscribe again with this reused Configuration, you will resume (catchup) at the point in time where you left off.**
 
@@ -365,55 +369,68 @@ In addition, if you have an existing Configuration that you simply wish to chang
 
 Once you create a configuration, you can set the following options:
 
-##### [publishKey](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/publishKey)
+##### publishKey
+[more info](https://rawgit.com/pubnub/objective-c/4.0b3/docs/data/html/Classes/PNConfiguration.html#//api/name/publishKey)
 
 Your publish key is assigned to you via admin.pubnub.com. You can set it to nil if you prefer not to include this in your client, however, if you don't include it, you won't be able to publish.
 
-##### [subscribeKey](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/subscribeKey)
+##### subscribeKey
+[more info](https://rawgit.com/pubnub/objective-c/4.0b3/docs/data/html/Classes/PNConfiguration.html#//api/name/subscribeKey)
 
 Your subscribe key is assigned to you via admin.pubnub.com. It is mandatory.
 
-##### [authKey](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/authKey)
+##### authKey
+[more info](https://rawgit.com/pubnub/objective-c/4.0b3/docs/data/html/Classes/PNConfiguration.html#//api/name/authKey)
 
 authKey is used as an authorization token. You don't need to set this value, unless you are in a PAM-enabled environment.
 
-##### [uuid](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/uuid)
+##### uuid
+[more info](https://rawgit.com/pubnub/objective-c/4.0b3/docs/data/html/Classes/PNConfiguration.html#//api/name/uuid)
 
 UUID is used to uniquely ID a user. If you do not set one explicitly, a random one is generated for you.
 
-##### [cipherKey](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/cipherKey)
+##### cipherKey
+[more info](https://rawgit.com/pubnub/objective-c/4.0b3/docs/data/html/Classes/PNConfiguration.html#//api/name/cipherKey)
 
 cipherKey is the value used when enabling built-in AES encryption. If you do not set this value, all traffic is sent in plain text (unless TLS is enabled, and then, data is sent plaintext over an encrypted TLS connection.) This same value must be set across all client SDKs (regardless of platform) or you will not be able to bidirectionally communicate.
 
-##### [subscribeMaximumIdleTime](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/subscribeMaximumIdleTime)
+##### subscribeMaximumIdleTime
+[more info](https://rawgit.com/pubnub/objective-c/4.0b3/docs/data/html/Classes/PNConfiguration.html#//api/name/subscribeMaximumIdleTime)
 
 This is the subscribe request timeout. Do not modify this unless instructed by support.
 
-##### [nonSubscribeRequestTimeout](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/nonSubscribeRequestTimeout)
+##### nonSubscribeRequestTimeout
+[more info](https://rawgit.com/pubnub/objective-c/4.0b3/docs/data/html/Classes/PNConfiguration.html#//api/name/nonSubscribeRequestTimeout)
 
 This is the non-subscribe request timeout. Do not modify this unless instructed by support.
 
-##### [presenceHeartbeatValue](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/presenceHeartbeatValue)
+##### presenceHeartbeatValue
+[more info](https://rawgit.com/pubnub/objective-c/4.0b3/docs/data/html/Classes/PNConfiguration.html#//api/name/presenceHeartbeatValue)
 
 This value instructs the server to wait this amount of seconds without hearing from you. Not hearing from you is defined by not receiving a message, or you not sending a heartbeat. The default is 5 minutes.
 
-##### [presenceHeartbeatInterval](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/presenceHeartbeatInterval)
+##### presenceHeartbeatInterval
+[more info](https://rawgit.com/pubnub/objective-c/4.0b3/docs/data/html/Classes/PNConfiguration.html#//api/name/presenceHeartbeatInterval)
 
 This is the rate that the client will send heartbeats to the server. By default, it autosets at ((presenceHeartbeatValue/2) - 1) seconds.
 
-##### [TLSEnabled](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/TLSEnabled)
+##### TLSEnabled
+[more info](https://rawgit.com/pubnub/objective-c/4.0b3/docs/data/html/Classes/PNConfiguration.html#//api/name/TLSEnabled)
 
 This enables TLS (encrypted data transfer between client and server).
 
-##### [keepTimeTokenOnListChange](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/keepTimeTokenOnListChange)
+##### keepTimeTokenOnListChange
+[more info](https://rawgit.com/pubnub/objective-c/4.0b3/docs/data/html/Classes/PNConfiguration.html#//api/name/keepTimeTokenOnListChange)
   
 When changing channels, do you catchup where you left off (default YES), or do you get all new messages as of channel change completion?
   
-##### [restoreSubscription](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/restoreSubscription)
+##### restoreSubscription
+[more info](https://rawgit.com/pubnub/objective-c/4.0b3/docs/data/html/Classes/PNConfiguration.html#//api/name/restoreSubscription)
 
 If you lose the connection, do you automatically resubscribe (default YES) when you reconnect?
 
-##### [catchUpOnSubscriptionRestore](https://rawgit.com/pubnub/objective-c/4.0b2/docs/data/html/Classes/PNConfiguration.html#//api/name/catchUpOnSubscriptionRestore)
+##### catchUpOnSubscriptionRestore
+[more info](https://rawgit.com/pubnub/objective-c/4.0b3/docs/data/html/Classes/PNConfiguration.html#//api/name/catchUpOnSubscriptionRestore)
   
 If you automatically resubscribe on connection restore, do you catchup? (default YES)
 
@@ -443,9 +460,11 @@ If you automatically resubscribe on connection restore, do you catchup? (default
 
 Once you've created the instance, instantiate the instance using one of the below methods:
 
-##### [+ clientWithConfiguration:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/clientWithConfiguration:)
+##### + clientWithConfiguration:
+[more info](https://rawgit.com/pubnub/objective-c/4.0b3/docs/core/html/Classes/PubNub.html#//api/name/clientWithConfiguration:)
 
-##### [+ clientWithConfiguration:callbackQueue:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/clientWithConfiguration:callbackQueue:)
+##### + clientWithConfiguration:callbackQueue:
+[more info](https://rawgit.com/pubnub/objective-c/4.0b3/docs/core/html/Classes/PubNub.html#//api/name/clientWithConfiguration:callbackQueue:)
 
 ```objective-c
 self.client = [PubNub clientWithConfiguration:self.myConfig];
@@ -461,14 +480,13 @@ A completed example of this step [can be found in the Hello World snippet](#hell
 
 ### Time
 
-[– timeWithCompletion:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/timeWithCompletion:)
+– timeWithCompletion:
+[more info](https://rawgit.com/pubnub/objective-c/4.0b3/docs/core/html/Classes/PubNub.html#//api/name/timeWithCompletion:)
 
 Request current time from PubNub network.
 
 ```objective-c
-- (void)pubNubTime {
-
-    [self.client timeWithCompletion:^(PNResult <PNTimeResult> *result, PNStatus <PNStatus> *status) {
+    [self.client timeWithCompletion:^(PNTimeResult *result, PNErrorStatus *status) {
         if (result.data) {
             NSLog(@"Result from Time: %@", result.data.timetoken);
         }
@@ -476,7 +494,6 @@ Request current time from PubNub network.
             [self handleStatus:status];
         }
     }];
-}
 ```
 
 On success, result.data.timetoken will include the timetoken value. On status, review isError and category attributes to pinpoint the exact situation, and handle accordingly. See the [handleStatus:(PNStatus)status](Example/PubNub/PNAppDelegate.m#L528) method in Example for an example.
@@ -510,20 +527,19 @@ You can have multiple listeners across multiple files.
 
 – sizeOfMessage:toChannel:compressed:storeInHistory:withCompletion:
 
-[Full reference on Publish Methods is available here.](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/publish:toChannel:withCompletion:)
+[Full reference on Publish Methods is available here.](https://rawgit.com/pubnub/objective-c/4.0b3/docs/core/html/Classes/PubNub.html#//api/name/publish:toChannel:withCompletion:)
 
 Publish a message.
 
 ```objective-c
     [self.client publish:@"Connected! I'm here!" toChannel:_channel1
-          withCompletion:^(PNStatus <PNPublishStatus> *status) {
+          withCompletion:^(PNPublishStatus *status) {
               if (!status.isError) {
                   NSLog(@"Message sent at TT: %@", status.data.timetoken);
               } else {
                   [self handleStatus:status];
               }
           }];
-
     /*
     [self.client publish:<#(id)message#> toChannel:<#(NSString *)channel#> compressed:<#(BOOL)compressed#> withCompletion:<#(PNPublishCompletionBlock)block#>];
     [self.client publish:<#(id)message#> toChannel:<#(NSString *)channel#> withCompletion:<#(PNPublishCompletionBlock)block#>];
@@ -575,13 +591,13 @@ On success, isError will be NO, and status.data.timetoken will include the ingre
 
 – unsubscribeFromPresenceChannels:
 
-[The full subscribe and unsubscribe method reference can be found here.](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/subscribeToChannels:withPresence:)
+[The full subscribe and unsubscribe method reference can be found here.](https://rawgit.com/pubnub/objective-c/4.0b3/docs/core/html/Classes/PubNub.html#//api/name/subscribeToChannels:withPresence:)
 
 Subscribe and Unsubscribe to Channels, Channel Groups, and Presence events.
 
 PubNub returns data to the user via Result or Status objects. Because of the asyncronous, long-running characteristics of subscribe data, unlike other methods which return Result or Status objects via their associated completion blocks, subscribe Result and Status data is instead returned via listeners.
 
-Add the class you wish to receive streaming Result and Status on as a listener (this is mandatory in order to receive streaming messages and statuses), using the [– addListeners:](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/addListeners:) method call.
+Add the class you wish to receive streaming Result and Status on as a listener (this is mandatory in order to receive streaming messages and statuses), using the [– addListeners:](https://rawgit.com/pubnub/objective-c/4.0b3/docs/core/html/Classes/PubNub.html#//api/name/addListeners:) method call.
 
 Once the class is added as a listener, it will receive streaming events on the [following listener methods](PubNub/Misc/Protocols/PNObjectEventListener.h):
 
@@ -637,7 +653,7 @@ Before a class can receive messages, it must be assigned as a listener. You can 
 
 – removeListeners:
 
-[The complete reference for these methods is available here.](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/addListeners:)
+[The complete reference for these methods is available here.](https://rawgit.com/pubnub/objective-c/4.0b3/docs/core/html/Classes/PubNub.html#//api/name/addListeners:)
 
 
 #### Determining Current Subscribtion Status
@@ -652,11 +668,11 @@ Use the following methods to determine which channels you are already subscribed
 
 – isSubscribedOn:
 
-[The complete reference for these methods is available here](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/channels)
+[The complete reference for these methods is available here](https://rawgit.com/pubnub/objective-c/4.0b3/docs/core/html/Classes/PubNub.html#//api/name/channels)
 
 ### History
 
-[History methods](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/historyForChannel:withCompletion:) let you access PubNub's Storage and Playback system.
+[History methods](https://rawgit.com/pubnub/objective-c/4.0b3/docs/core/html/Classes/PubNub.html#//api/name/historyForChannel:withCompletion:) let you access PubNub's Storage and Playback system.
 
 – historyForChannel:withCompletion:
 
@@ -673,10 +689,11 @@ Use the following methods to determine which channels you are already subscribed
 – historyForChannel:start:end:limit:reverse:includeTimeToken:withCompletion:
 
 ```objective-c
-    [self.client historyForChannel:_channel1 withCompletion:^(PNResult <PNHistoryResult> *result, PNStatus <PNStatus> *status) {
-
+    [self.client historyForChannel:_channel1 withCompletion:^(PNHistoryResult *result,
+                                                              PNErrorStatus *status) {
+        // For completion blocks that provide both result and status parameters, you will only ever
+        // have a non-nil status or result.
         // If you have a result, the data you specifically requested (in this case, history response) is available in result.data
-        
         // If you have a status, error or non-error status information is available regarding the call.
 
         if (status) {
@@ -694,7 +711,7 @@ Use the following methods to determine which channels you are already subscribed
 ```
 ### Here and Where Now Methods
 
-To determine [who is here now, and where someone is now we provide the Here Now and Where Now method calls.](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/hereNowWithCompletion:)
+To determine [who is here now, and where someone is now we provide the Here Now and Where Now method calls.](https://rawgit.com/pubnub/objective-c/4.0b3/docs/core/html/Classes/PubNub.html#//api/name/hereNowWithCompletion:)
 
 – hereNowWithCompletion:
 
@@ -720,7 +737,8 @@ Who is here now, on this channel? Verbosity contructor allows us to set level of
     // Occupancy + UUID         : PNHereNowUUID
     // Occupancy + UUID + State : PNHereNowState
 
-    [self.client hereNowForChannel:_channel1 withVerbosity:PNHereNowState completion:^(PNResult <PNHereNowResult> *result, PNStatus <PNStatus> *status) {
+    [self.client hereNowForChannel:_channel1 withVerbosity:PNHereNowState
+                        completion:^(PNPresenceChannelHereNowResult *result, PNErrorStatus *status) {
         if (status) {
             [self handleStatus:status];
         }
@@ -739,7 +757,8 @@ Here now without a channel results in a "Global Here Now" -- shows everyone ever
     // Occupancy + UUID         : PNHereNowUUID
     // Occupancy + UUID + State : PNHereNowState
 
-    [self.client hereNowWithVerbosity:PNHereNowOccupancy completion:^(PNResult <PNGlobalHereNowResult> *result, PNStatus <PNStatus> *status) {
+    [self.client hereNowWithVerbosity:PNHereNowOccupancy completion:^(PNPresenceGlobalHereNowResult *result,
+                                                                      PNErrorStatus *status) {
         if (status) {
             [self handleStatus:status];
         }
@@ -753,14 +772,12 @@ Here now without a channel results in a "Global Here Now" -- shows everyone ever
 Where is UUID x now? User Where Now to find out!
 
 ```objective-c
-    [self.client whereNowUUID:@"123456" withCompletion:^(PNResult <PNWhereNowResult> *result, PNStatus <PNStatus> *status) {
-
+    [self.client whereNowUUID:@"123456" withCompletion:^(PNPresenceWhereNowResult *result,
+                                                         PNErrorStatus *status) {
         if (status) {
             [self handleStatus:status];
         }
         else if (result) {
-            // As a result, this contains the messages, start, and end timetoken in the data attribute
-
             NSLog(@"^^^^ Loaded whereNow data: %@", result.data.channels);
         }
     }];
@@ -768,7 +785,7 @@ Where is UUID x now? User Where Now to find out!
 
 ### Admin for Channel Groups
 
-[Channel Groups admin methods](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/channelGroupsWithCompletion:) enable you to administer which channels are included within which channel groups.
+[Channel Groups admin methods](https://rawgit.com/pubnub/objective-c/4.0b3/docs/core/html/Classes/PubNub.html#//api/name/channelGroupsWithCompletion:) enable you to administer which channels are included within which channel groups.
 
 – channelGroupsWithCompletion:
 
@@ -783,8 +800,7 @@ Where is UUID x now? User Where Now to find out!
 Add Channels:
 
 ```objective-c
-
-    [self.client addChannels:@[_channel1, _channel2] toGroup:_channel1 withCompletion:^(PNStatus <PNStatus> *status) {
+    [self.client addChannels:@[_channel1, _channel2] toGroup:_channelGroup1 withCompletion:^(PNAcknowledgmentStatus *status) {
         if (!status.isError) {
             NSLog(@"^^^^CGAdd request succeeded");
         } else {
@@ -797,11 +813,9 @@ Add Channels:
 Remove some channels from a group:
 
 ```objective-c
-
-    [self.client removeChannels:@[_channel2] fromGroup:@"myChannelGroup" withCompletion:^(PNStatus <PNStatus> *status) {
-
+    [self.client removeChannels:@[_channel2] fromGroup:_channelGroup1 withCompletion:^(PNAcknowledgmentStatus *status) {
         if (!status.isError) {
-            NSLog(@"^^^^CG Remove Some Channels request succeeded at timetoken %@.", status.data);
+            NSLog(@"^^^^CG Remove Some Channels request succeeded at timetoken %@.", status);
         } else {
             NSLog(@"^^^^CG Remove Some Channels request did not succeed. All subscribe operations will autoretry when possible.");
             [self handleStatus:status];
@@ -812,7 +826,8 @@ Remove some channels from a group:
 Remove all channels from a group:
 
 ```objective-c
-        [self.client removeChannelsFromGroup:@"myChannelGroup" withCompletion:^(PNStatus <PNStatus> *status) {
+    [self.client removeChannelsFromGroup:_channelGroup1
+                          withCompletion:^(PNAcknowledgmentStatus *status) {
         if (!status.isError) {
             NSLog(@"^^^^CG Remove All Channels request succeeded");
         } else {
@@ -825,12 +840,14 @@ Remove all channels from a group:
 List all existing channels associated with a channel group:
 
 ```objective-c
-    [self.client channelsForGroup:_channelGroup1 withCompletion:^(PNResult <PNGroupChannelsResult> *result, PNStatus <PNStatus> *status) {
+    [self.client channelsForGroup:_channelGroup1
+                   withCompletion:^(PNChannelGroupChannelsResult *result, PNErrorStatus *status) {
         if (status) {
             [self handleStatus:status];
         }
         else if (result) {
-            NSLog(@"^^^^ Loaded all channels %@ for group %@", result.data.channels, _channelGroup1);
+            NSLog(@"^^^^ Loaded all channels %@ for group %@",
+                  result.data.channels, self->_channelGroup1);
         }
     }];
 ```
@@ -839,7 +856,7 @@ Note that only channelsForGroup:withCompletion: returns a Result or Status. The 
 
 ### Admin for State
 
-The [Admin methods for State](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/setState:forUUID:onChannel:withCompletion:) allow you to set and get state which is displayed in Presence Results.
+The [Admin methods for State](https://rawgit.com/pubnub/objective-c/4.0b3/docs/core/html/Classes/PubNub.html#//api/name/setState:forUUID:onChannel:withCompletion:) allow you to set and get state which is displayed in Presence Results.
 
 – setState:forUUID:onChannel:withCompletion:
 
@@ -852,26 +869,29 @@ The [Admin methods for State](https://rawgit.com/pubnub/objective-c/4.0b2/docs/c
 To get state:
 
 ```objective-c
-    [self.client stateForUUID:_myConfig.uuid onChannel:_channel1 withCompletion:^(PNResult <PNChannelStateResult> *result, PNStatus <PNChannelStateStatus> *status) {
+    [self.client stateForUUID:_myConfig.uuid onChannel:_channel1
+               withCompletion:^(PNChannelClientStateResult *result, PNErrorStatus *status) {
         if (status) {
             [self handleStatus:status];
         }
         else if (result) {
-            NSLog(@"^^^^ Loaded state %@ for channel %@", result.data.data, _channel1);
+            
+            NSLog(@"^^^^ Loaded state %@ for channel %@", result.data.state, self->_channel1);
         }
+
     }];
 ```
 
 To set state:
 
 ```objective-c
-    [self.client setState:@{[self randomString] : @{[self randomString] : [self randomString]}} forUUID:_myConfig.uuid onChannel:_channel1 withCompletion:^(PNStatus <PNSetStateStatus> *status) {
-            [self handleStatus:status];
+    [self.client setState:@{[self randomString] : @{[self randomString] : [self randomString]}} forUUID:_myConfig.uuid onChannel:_channel1 withCompletion:^(PNClientStateUpdateStatus *status) {
+        [self handleStatus:status];
     }];
 ```
 
 ### Admin for 3rd Party Notifications
-[To associate deviceIDs with the PubNub Mobile Gateway](https://rawgit.com/pubnub/objective-c/4.0b2/docs/core/html/Classes/PubNub.html#//api/name/addPushNotificationsOnChannels:withDevicePushToken:andCompletion:) in order to fork messages sent via PubNub to APNS devices, use the Admin methods for 3rd Party Notifications.
+[To associate deviceIDs with the PubNub Mobile Gateway](https://rawgit.com/pubnub/objective-c/4.0b3/docs/core/html/Classes/PubNub.html#//api/name/addPushNotificationsOnChannels:withDevicePushToken:andCompletion:) in order to fork messages sent via PubNub to APNS devices, use the Admin methods for 3rd Party Notifications.
 
 – addPushNotificationsOnChannels:withDevicePushToken:andCompletion:
 
@@ -883,7 +903,7 @@ To set state:
 
 ### Public Encryption Methods
 
-Sometimes its neccesary to manually encrypt and decrypt data using the same cipher PubNub uses internally. The [public AES Encrytpion Methods](https://github.com/pubnub/objective-c/blob/4.0b2/PubNub/Data/PNAES.h) provide the ability to do just that.
+Sometimes its neccesary to manually encrypt and decrypt data using the same cipher PubNub uses internally. The [public AES Encrytpion Methods](https://github.com/pubnub/objective-c/blob/4.0b3/PubNub/Data/PNAES.h) provide the ability to do just that.
 
 + (NSString *)encrypt:(NSData *)data withKey:(NSString *)key;
 

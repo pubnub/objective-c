@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>PNSubscriberStatus Protocol Reference</title>
+	<title>PNSubscriberData Class Reference</title>
 
 	<link rel="stylesheet" href="../css/style.css">
 	<meta name="viewport" content="initial-scale=1, maximum-scale=1.4">
@@ -14,7 +14,7 @@
 		<div class="container" class="hide-in-xcode">
 			
 			<h1 id="library-title">
-				<a href="../index.html">PubNub 4.0b2 for iOS </a>
+				<a href="../index.html">PubNub 4.0b3 for iOS </a>
 			</h1>
 
 			<p id="developer-home">
@@ -56,15 +56,21 @@
 	
 	<optgroup label="Properties">
 		
+		<option value="//api/name/actualChannel">actualChannel</option>
+		
 		<option value="//api/name/currentTimetoken">currentTimetoken</option>
 		
 		<option value="//api/name/data">data</option>
 		
 		<option value="//api/name/lastTimeToken">lastTimeToken</option>
 		
+		<option value="//api/name/subscribedChannel">subscribedChannel</option>
+		
 		<option value="//api/name/subscribedChannelGroups">subscribedChannelGroups</option>
 		
 		<option value="//api/name/subscribedChannels">subscribedChannels</option>
+		
+		<option value="//api/name/timetoken">timetoken</option>
 		
 	</optgroup>
 	
@@ -85,16 +91,16 @@
 		<div id="overview_contents" class="container">
 			<div id="content">
 				<main role="main">
-					<h1 class="title">PNSubscriberStatus Protocol Reference</h1>
+					<h1 class="title">PNSubscriberData Class Reference</h1>
 
 					
 					<div class="section section-specification"><table cellspacing="0"><tbody>
 						<tr>
-	<th>Conforms to</th>
-	<td>PNStatus</td>
+	<th>Inherits from</th>
+	<td><a href="../Classes/PNServiceData.html">PNServiceData</a> : NSObject</td>
 </tr><tr>
 	<th>Declared in</th>
-	<td>PubNub+Subscribe.h</td>
+	<td>PNSubscribeStatus.h<br />PNSubscribeStatus.m</td>
 </tr>
 						</tbody></table></div>
 					
@@ -114,9 +120,147 @@
 <h2 class="task-title">Information</h2>
 						<div class="task-list">
 							<div class="section-method">
+	<a name="//api/name/subscribedChannel" title="subscribedChannel"></a>
+	<h3 class="method-title"><code><a href="#//api/name/subscribedChannel">&nbsp;&nbsp;subscribedChannel</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Name of regular channel or channel group.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, strong) NSString *subscribedChannel</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscribeStatus.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/actualChannel" title="actualChannel"></a>
+	<h3 class="method-title"><code><a href="#//api/name/actualChannel">&nbsp;&nbsp;actualChannel</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Name of channel in case if \c <a href="#//api/name/subscribedChannel">subscribedChannel</a> represent channel group.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, strong) NSString *actualChannel</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscribeStatus.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/timetoken" title="timetoken"></a>
+	<h3 class="method-title"><code><a href="#//api/name/timetoken">&nbsp;&nbsp;timetoken</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Time at which even arrived.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, strong) NSNumber *timetoken</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscribeStatus.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
 	<a name="//api/name/currentTimetoken" title="currentTimetoken"></a>
 	<h3 class="method-title"><code><a href="#//api/name/currentTimetoken">&nbsp;&nbsp;currentTimetoken</a></code>
-<span class="task-item-suffix">required method</span></h3>
+</h3>
 
 	<div class="method-info">
 		<div class="pointy-thing"></div>
@@ -136,11 +280,6 @@
 			
 
 			
-			<div class="method-subsection return">
-				<h4 class="method-subtitle parameter-title">Return Value</h4>
-				<p>Number with unsigned long long as timestamp.</p>
-			</div>
-			
 
 			
 			<div class="method-subsection availability">
@@ -158,7 +297,7 @@
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">PubNub+Subscribe.h</code></p>
+				<p><code class="declared-in-ref">PNSubscribeStatus.h</code></p>
 			</div>
 			
 			
@@ -167,7 +306,7 @@
 </div><div class="section-method">
 	<a name="//api/name/lastTimeToken" title="lastTimeToken"></a>
 	<h3 class="method-title"><code><a href="#//api/name/lastTimeToken">&nbsp;&nbsp;lastTimeToken</a></code>
-<span class="task-item-suffix">required method</span></h3>
+</h3>
 
 	<div class="method-info">
 		<div class="pointy-thing"></div>
@@ -188,11 +327,6 @@
 			
 
 			
-			<div class="method-subsection return">
-				<h4 class="method-subtitle parameter-title">Return Value</h4>
-				<p>Number with unsigned long long as timestamp.</p>
-			</div>
-			
 
 			
 			<div class="method-subsection availability">
@@ -210,7 +344,7 @@
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">PubNub+Subscribe.h</code></p>
+				<p><code class="declared-in-ref">PNSubscribeStatus.h</code></p>
 			</div>
 			
 			
@@ -219,7 +353,7 @@
 </div><div class="section-method">
 	<a name="//api/name/subscribedChannels" title="subscribedChannels"></a>
 	<h3 class="method-title"><code><a href="#//api/name/subscribedChannels">&nbsp;&nbsp;subscribedChannels</a></code>
-<span class="task-item-suffix">required method</span></h3>
+</h3>
 
 	<div class="method-info">
 		<div class="pointy-thing"></div>
@@ -239,11 +373,6 @@
 			
 
 			
-			<div class="method-subsection return">
-				<h4 class="method-subtitle parameter-title">Return Value</h4>
-				<p>List of channel names.</p>
-			</div>
-			
 
 			
 			<div class="method-subsection availability">
@@ -261,7 +390,7 @@
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">PubNub+Subscribe.h</code></p>
+				<p><code class="declared-in-ref">PNSubscribeStatus.h</code></p>
 			</div>
 			
 			
@@ -270,7 +399,7 @@
 </div><div class="section-method">
 	<a name="//api/name/subscribedChannelGroups" title="subscribedChannelGroups"></a>
 	<h3 class="method-title"><code><a href="#//api/name/subscribedChannelGroups">&nbsp;&nbsp;subscribedChannelGroups</a></code>
-<span class="task-item-suffix">required method</span></h3>
+</h3>
 
 	<div class="method-info">
 		<div class="pointy-thing"></div>
@@ -290,11 +419,6 @@
 			
 
 			
-			<div class="method-subsection return">
-				<h4 class="method-subtitle parameter-title">Return Value</h4>
-				<p>List of channel group names.</p>
-			</div>
-			
 
 			
 			<div class="method-subsection availability">
@@ -312,7 +436,7 @@
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">PubNub+Subscribe.h</code></p>
+				<p><code class="declared-in-ref">PNSubscribeStatus.h</code></p>
 			</div>
 			
 			
@@ -321,7 +445,7 @@
 </div><div class="section-method">
 	<a name="//api/name/data" title="data"></a>
 	<h3 class="method-title"><code><a href="#//api/name/data">&nbsp;&nbsp;data</a></code>
-<span class="task-item-suffix">required method</span></h3>
+</h3>
 
 	<div class="method-info">
 		<div class="pointy-thing"></div>
@@ -330,21 +454,16 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>Structured \b PNResult \c data field information.</p>
+				<p>Structured \b <a href="../Classes/PNResult.html">PNResult</a> \c data field information.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, copy) NSObject&lt;PNSubscriberData&gt; *data</code></div>
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, copy) PNSubscriberData *data</code></div>
 
 		    
 			
 
-			
-			<div class="method-subsection return">
-				<h4 class="method-subtitle parameter-title">Return Value</h4>
-				<p>Reference on field which hold structured service response.</p>
-			</div>
 			
 
 			
@@ -363,7 +482,7 @@
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">PubNub+Subscribe.h</code></p>
+				<p><code class="declared-in-ref">PNSubscribeStatus.h</code></p>
 			</div>
 			
 			
@@ -384,7 +503,7 @@
 				<footer>
 					<div class="footer-copyright">
 						
-						<p class="copyright">Copyright &copy; 2015 PubNub. All rights reserved. Updated: 2015-06-15</p>
+						<p class="copyright">Copyright &copy; 2015 PubNub. All rights reserved. Updated: 2015-06-24</p>
 						
 						
 						<p class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2.1 (build 1333)</a>.</p>

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>PNHeartbeat Class Reference</title>
+	<title>PNPresenceDetailsData Class Reference</title>
 
 	<link rel="stylesheet" href="../css/style.css">
 	<meta name="viewport" content="initial-scale=1, maximum-scale=1.4">
@@ -56,35 +56,27 @@
 	
 	<optgroup label="Properties">
 		
-		<option value="//api/name/client">client</option>
+		<option value="//api/name/data">data</option>
 		
-		<option value="//api/name/heartbeatTimer">heartbeatTimer</option>
+		<option value="//api/name/message">message</option>
 		
-		<option value="//api/name/resourceAccessQueue">resourceAccessQueue</option>
+		<option value="//api/name/occupancy">occupancy</option>
+		
+		<option value="//api/name/presence">presence</option>
+		
+		<option value="//api/name/presenceEvent">presenceEvent</option>
+		
+		<option value="//api/name/state">state</option>
+		
+		<option value="//api/name/timetoken">timetoken</option>
+		
+		<option value="//api/name/uuid">uuid</option>
 		
 	</optgroup>
 	
 
 	
-	<optgroup label="Class Methods">
-		
-		<option value="//api/name/heartbeatForClient:">+ heartbeatForClient:</option>
-		
-	</optgroup>
-	
 
-	
-	<optgroup label="Instance Methods">
-		
-		<option value="//api/name/handleHeartbeatTimer">- handleHeartbeatTimer</option>
-		
-		<option value="//api/name/initForClient:">- initForClient:</option>
-		
-		<option value="//api/name/startHeartbeatIfRequired">- startHeartbeatIfRequired</option>
-		
-		<option value="//api/name/stopHeartbeatIfPossible">- stopHeartbeatIfPossible</option>
-		
-	</optgroup>
 	
 	
 </select>
@@ -99,30 +91,21 @@
 		<div id="overview_contents" class="container">
 			<div id="content">
 				<main role="main">
-					<h1 class="title">PNHeartbeat Class Reference</h1>
+					<h1 class="title">PNPresenceDetailsData Class Reference</h1>
 
 					
 					<div class="section section-specification"><table cellspacing="0"><tbody>
 						<tr>
 	<th>Inherits from</th>
-	<td>NSObject</td>
+	<td><a href="../Classes/PNSubscriberData.html">PNSubscriberData</a> : <a href="../Classes/PNServiceData.html">PNServiceData</a> : NSObject</td>
 </tr><tr>
 	<th>Declared in</th>
-	<td>PNHeartbeat.h</td>
+	<td>PNSubscriberResults.h<br />PNSubscriberResults.m</td>
 </tr>
 						</tbody></table></div>
 					
 
                     
-					
-					<div class="section section-overview">
-						<a title="Overview" name="overview"></a>
-						<h2 class="subtitle subtitle-overview">Overview</h2>
-						<p>Allow to notify service and tell what subscriber still alive and waiting for events
-             from live feed.</p>
-
-<p>@author Sergey Mamontov</p>
-					</div>
 					
 					
 
@@ -132,13 +115,13 @@
 						<a title="Tasks" name="tasks"></a>
 						
 
-						<a title="Initialization and Configuration" name="task_Initialization and Configuration"></a>
-						<h2 class="task-title">Initialization and Configuration</h2>
-
+						<a title="Information" name="task_Information"></a>
+						
+<h2 class="task-title">Information</h2>
 						<div class="task-list">
 							<div class="section-method">
-	<a name="//api/name/heartbeatForClient:" title="heartbeatForClient:"></a>
-	<h3 class="method-title"><code><a href="#//api/name/heartbeatForClient:">+&nbsp;heartbeatForClient:</a></code>
+	<a name="//api/name/timetoken" title="timetoken"></a>
+	<h3 class="method-title"><code><a href="#//api/name/timetoken">&nbsp;&nbsp;timetoken</a></code>
 </h3>
 
 	<div class="method-info">
@@ -148,32 +131,20 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>Construct and configure heartbeat manager.</p>
+				<p>Time when <a href="#//api/name/presence">presence</a> event has been tirggered.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>+ (instancetype)heartbeatForClient:(PubNub *)<em>client</em></code></div>
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, strong) NSNumber *timetoken</code></div>
 
 		    
-			
-			<div class="method-subsection arguments-section parameters">
-				<h4 class="method-subtitle parameter-title">Parameters</h4>
-				<table class="argument-def parameter-def">
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>client</code></th>
-						<td><p>Reference on \b PubNub <a href="#//api/name/client">client</a> for which heartbeat manager has been created.</p></td>
-					</tr>
-				
-				</table>
-			</div>
 			
 
 			
 			<div class="method-subsection return">
 				<h4 class="method-subtitle parameter-title">Return Value</h4>
-				<p>Constructed and ready to use heartbeat manager.</p>
+				<p>Number with unsugned long long timestamp.</p>
 			</div>
 			
 
@@ -193,70 +164,15 @@
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">PNHeartbeat.h</code></p>
-			</div>
-			
-			
-		</div>
-	</div>
-</div>
-						</div>
-						
-
-						<a title="State manipulation" name="task_State manipulation"></a>
-						<h2 class="task-title">State manipulation</h2>
-
-						<div class="task-list">
-							<div class="section-method">
-	<a name="//api/name/startHeartbeatIfRequired" title="startHeartbeatIfRequired"></a>
-	<h3 class="method-title"><code><a href="#//api/name/startHeartbeatIfRequired">&ndash;&nbsp;startHeartbeatIfRequired</a></code>
-</h3>
-
-	<div class="method-info">
-		<div class="pointy-thing"></div>
-
-		<div class="method-info-container">
-			
-			
-			<div class="method-subsection brief-description">
-				<p>If <a href="#//api/name/client">client</a> configured with heartbeat value and interval <a href="#//api/name/client">client</a> will send &ldquo;heartbeat&rdquo;
-         notification to \b PubNub service.</p>
-			</div>
-			
-		    
-
-			<div class="method-subsection method-declaration"><code>- (void)startHeartbeatIfRequired</code></div>
-
-		    
-			
-
-			
-
-			
-			<div class="method-subsection availability">
-				<h4 class="method-subtitle parameter-title">Availability</h4>
-				<p>4.0</p>
-			</div>
-			
-
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection declared-in-section">
-				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">PNHeartbeat.h</code></p>
+				<p><code class="declared-in-ref">PNSubscriberResults.h</code></p>
 			</div>
 			
 			
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/stopHeartbeatIfPossible" title="stopHeartbeatIfPossible"></a>
-	<h3 class="method-title"><code><a href="#//api/name/stopHeartbeatIfPossible">&ndash;&nbsp;stopHeartbeatIfPossible</a></code>
+	<a name="//api/name/uuid" title="uuid"></a>
+	<h3 class="method-title"><code><a href="#//api/name/uuid">&nbsp;&nbsp;uuid</a></code>
 </h3>
 
 	<div class="method-info">
@@ -266,225 +182,20 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>In case if there is active heartbeat timer it will be stopped.</p>
+				<p>Reference on unique user identifier for which event has been triggered.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (void)stopHeartbeatIfPossible</code></div>
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, strong) NSString *uuid</code></div>
 
 		    
-			
-
-			
-
-			
-			<div class="method-subsection availability">
-				<h4 class="method-subtitle parameter-title">Availability</h4>
-				<p>4.0</p>
-			</div>
-			
-
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection declared-in-section">
-				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">PNHeartbeat.h</code></p>
-			</div>
-			
-			
-		</div>
-	</div>
-</div>
-						</div>
-						
-
-						<a title="Extension Methods" name="task_Extension Methods"></a>
-						<h2 class="task-title">Extension Methods</h2>
-
-						<div class="task-list">
-							<div class="section-method">
-	<a name="//api/name/client" title="client"></a>
-	<h3 class="method-title"><code><a href="#//api/name/client">&nbsp;&nbsp;client</a></code>
-</h3>
-
-	<div class="method-info">
-		<div class="pointy-thing"></div>
-
-		<div class="method-info-container">
-			
-			
-			<div class="method-subsection brief-description">
-				<p>Stores weak reference on client for which heartbeat manager has been created.</p>
-			</div>
-			
-		    
-
-			<div class="method-subsection method-declaration"><code>@property (nonatomic, weak) PubNub *client</code></div>
-
-		    
-			
-
-			
-
-			
-			<div class="method-subsection availability">
-				<h4 class="method-subtitle parameter-title">Availability</h4>
-				<p>4.0</p>
-			</div>
-			
-
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection declared-in-section">
-				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">PNHeartbeat.m</code></p>
-			</div>
-			
-			
-		</div>
-	</div>
-</div><div class="section-method">
-	<a name="//api/name/heartbeatTimer" title="heartbeatTimer"></a>
-	<h3 class="method-title"><code><a href="#//api/name/heartbeatTimer">&nbsp;&nbsp;heartbeatTimer</a></code>
-</h3>
-
-	<div class="method-info">
-		<div class="pointy-thing"></div>
-
-		<div class="method-info-container">
-			
-			
-			<div class="method-subsection brief-description">
-				<p>Stores reference on timer used to trigger heartbeat requests.</p>
-			</div>
-			
-		    
-
-			<div class="method-subsection method-declaration"><code>@property (nonatomic, strong) dispatch_source_t heartbeatTimer</code></div>
-
-		    
-			
-
-			
-
-			
-			<div class="method-subsection availability">
-				<h4 class="method-subtitle parameter-title">Availability</h4>
-				<p>4.0</p>
-			</div>
-			
-
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection declared-in-section">
-				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">PNHeartbeat.m</code></p>
-			</div>
-			
-			
-		</div>
-	</div>
-</div><div class="section-method">
-	<a name="//api/name/resourceAccessQueue" title="resourceAccessQueue"></a>
-	<h3 class="method-title"><code><a href="#//api/name/resourceAccessQueue">&nbsp;&nbsp;resourceAccessQueue</a></code>
-</h3>
-
-	<div class="method-info">
-		<div class="pointy-thing"></div>
-
-		<div class="method-info-container">
-			
-			
-			<div class="method-subsection brief-description">
-				<p>Stores reference on queue which is used to serialize access to shared heartbeat
-         information.</p>
-			</div>
-			
-		    
-
-			<div class="method-subsection method-declaration"><code>@property (nonatomic, strong) dispatch_queue_t resourceAccessQueue</code></div>
-
-		    
-			
-
-			
-
-			
-			<div class="method-subsection availability">
-				<h4 class="method-subtitle parameter-title">Availability</h4>
-				<p>4.0</p>
-			</div>
-			
-
-			
-
-			
-
-			
-
-			
-			<div class="method-subsection declared-in-section">
-				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">PNHeartbeat.m</code></p>
-			</div>
-			
-			
-		</div>
-	</div>
-</div><div class="section-method">
-	<a name="//api/name/initForClient:" title="initForClient:"></a>
-	<h3 class="method-title"><code><a href="#//api/name/initForClient:">&ndash;&nbsp;initForClient:</a></code>
-</h3>
-
-	<div class="method-info">
-		<div class="pointy-thing"></div>
-
-		<div class="method-info-container">
-			
-			
-			<div class="method-subsection brief-description">
-				<p>Initialize and configure heartbeat manager.</p>
-			</div>
-			
-		    
-
-			<div class="method-subsection method-declaration"><code>- (instancetype)initForClient:(PubNub *)<em>client</em></code></div>
-
-		    
-			
-			<div class="method-subsection arguments-section parameters">
-				<h4 class="method-subtitle parameter-title">Parameters</h4>
-				<table class="argument-def parameter-def">
-				
-					<tr>
-						<th scope="row" class="argument-name"><code>client</code></th>
-						<td><p>Reference on \b PubNub <a href="#//api/name/client">client</a> for which heartbeat manager has been created.</p></td>
-					</tr>
-				
-				</table>
-			</div>
 			
 
 			
 			<div class="method-subsection return">
 				<h4 class="method-subtitle parameter-title">Return Value</h4>
-				<p>Initialized and ready to use heartbeat manager.</p>
+				<p>UUID string.</p>
 			</div>
 			
 
@@ -504,15 +215,15 @@
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">PNHeartbeat.m</code></p>
+				<p><code class="declared-in-ref">PNSubscriberResults.h</code></p>
 			</div>
 			
 			
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/handleHeartbeatTimer" title="handleHeartbeatTimer"></a>
-	<h3 class="method-title"><code><a href="#//api/name/handleHeartbeatTimer">&ndash;&nbsp;handleHeartbeatTimer</a></code>
+	<a name="//api/name/occupancy" title="occupancy"></a>
+	<h3 class="method-title"><code><a href="#//api/name/occupancy">&nbsp;&nbsp;occupancy</a></code>
 </h3>
 
 	<div class="method-info">
@@ -522,12 +233,268 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>Process heartbeat timer fire event and send heartbeat request to \b PubNub service.</p>
+				<p>Channel <a href="#//api/name/presence">presence</a> information.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (void)handleHeartbeatTimer</code></div>
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, strong) NSNumber *occupancy</code></div>
+
+		    
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>Number of subscribers which become after <a href="#//api/name/presence">presence</a> event has been triggered.</p>
+			</div>
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriberResults.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/state" title="state"></a>
+	<h3 class="method-title"><code><a href="#//api/name/state">&nbsp;&nbsp;state</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>User changed client state.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, strong) NSDictionary *state</code></div>
+
+		    
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>In case of state change <a href="#//api/name/presence">presence</a> event will contain actual client state infotmation for
+         \c <a href="#//api/name/uuid">uuid</a>.</p>
+			</div>
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriberResults.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/presenceEvent" title="presenceEvent"></a>
+	<h3 class="method-title"><code><a href="#//api/name/presenceEvent">&nbsp;&nbsp;presenceEvent</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Type of <a href="#//api/name/presence">presence</a> event.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, strong) NSString *presenceEvent</code></div>
+
+		    
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>One of available <a href="#//api/name/presence">presence</a> event types.</p>
+			</div>
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriberResults.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/presence" title="presence"></a>
+	<h3 class="method-title"><code><a href="#//api/name/presence">&nbsp;&nbsp;presence</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Additional presence information.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, strong) PNPresenceDetailsData *presence</code></div>
+
+		    
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>Object which has additional information about arrived presence event.</p>
+			</div>
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriberResults.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/message" title="message"></a>
+	<h3 class="method-title"><code><a href="#//api/name/message">&nbsp;&nbsp;message</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Message which has been delivered through <a href="#//api/name/data">data</a> object live feed.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, strong) id message</code></div>
+
+		    
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>De-serialized message object.</p>
+			</div>
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriberResults.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/data" title="data"></a>
+	<h3 class="method-title"><code><a href="#//api/name/data">&nbsp;&nbsp;data</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Stores reference on <a href="#//api/name/message">message</a> object from live feed.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, strong) PNMessageData *data</code></div>
 
 		    
 			
@@ -550,7 +517,7 @@
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">PNHeartbeat.m</code></p>
+				<p><code class="declared-in-ref">PNSubscriberResults.h</code></p>
 			</div>
 			
 			

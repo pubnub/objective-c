@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>PNHistoryData Protocol Reference</title>
+	<title>PNServiceData Class Reference</title>
 
 	<link rel="stylesheet" href="../css/style.css">
 	<meta name="viewport" content="initial-scale=1, maximum-scale=1.4">
@@ -14,7 +14,7 @@
 		<div class="container" class="hide-in-xcode">
 			
 			<h1 id="library-title">
-				<a href="../index.html">PubNub 4.0b2 for iOS </a>
+				<a href="../index.html">PubNub 4.0b3 for iOS </a>
 			</h1>
 
 			<p id="developer-home">
@@ -54,17 +54,25 @@
 
 	
 	
+	<optgroup label="Properties">
+		
+		<option value="//api/name/serviceData">serviceData</option>
+		
+	</optgroup>
+	
 
+	
+	<optgroup label="Class Methods">
+		
+		<option value="//api/name/dataWithServiceResponse:">+ dataWithServiceResponse:</option>
+		
+	</optgroup>
 	
 
 	
 	<optgroup label="Instance Methods">
 		
-		<option value="//api/name/end">- end</option>
-		
-		<option value="//api/name/messages">- messages</option>
-		
-		<option value="//api/name/start">- start</option>
+		<option value="//api/name/initWithServiceResponse:">- initWithServiceResponse:</option>
 		
 	</optgroup>
 	
@@ -81,26 +89,21 @@
 		<div id="overview_contents" class="container">
 			<div id="content">
 				<main role="main">
-					<h1 class="title">PNHistoryData Protocol Reference</h1>
+					<h1 class="title">PNServiceData Class Reference</h1>
 
 					
 					<div class="section section-specification"><table cellspacing="0"><tbody>
 						<tr>
+	<th>Inherits from</th>
+	<td>NSObject</td>
+</tr><tr>
 	<th>Declared in</th>
-	<td>PubNub+History.h</td>
+	<td>PNServiceData.h</td>
 </tr>
 						</tbody></table></div>
 					
 
                     
-					
-					<div class="section section-overview">
-						<a title="Overview" name="overview"></a>
-						<h2 class="subtitle subtitle-overview">Overview</h2>
-						<p>Contain information about <a href="#//api/name/messages">messages</a> and time frame for fetched history.</p>
-
-<p>@author Sergey Mamontov</p>
-					</div>
 					
 					
 
@@ -110,14 +113,14 @@
 						<a title="Tasks" name="tasks"></a>
 						
 
-						<a title="Information" name="task_Information"></a>
-						
-<h2 class="task-title">Information</h2>
+						<a title="Private Methods" name="task_Private Methods"></a>
+						<h2 class="task-title">Private Methods</h2>
+
 						<div class="task-list">
 							<div class="section-method">
-	<a name="//api/name/messages" title="messages"></a>
-	<h3 class="method-title"><code><a href="#//api/name/messages">&ndash;&nbsp;messages</a></code>
-<span class="task-item-suffix">required method</span></h3>
+	<a name="//api/name/serviceData" title="serviceData"></a>
+	<h3 class="method-title"><code><a href="#//api/name/serviceData">&nbsp;&nbsp;serviceData</a></code>
+</h3>
 
 	<div class="method-info">
 		<div class="pointy-thing"></div>
@@ -126,21 +129,16 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>Channel history messages.</p>
+				<p>Stores reference on service response data.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (NSArray *)messages</code></div>
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, copy) NSDictionary *serviceData</code></div>
 
 		    
 			
 
-			
-			<div class="method-subsection return">
-				<h4 class="method-subtitle parameter-title">Return Value</h4>
-				<p>List of channels which has been stored in history within known interval.</p>
-			</div>
 			
 
 			
@@ -159,16 +157,16 @@
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">PubNub+History.h</code></p>
+				<p><code class="declared-in-ref">PNServiceData+Private.h</code></p>
 			</div>
 			
 			
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/start" title="start"></a>
-	<h3 class="method-title"><code><a href="#//api/name/start">&ndash;&nbsp;start</a></code>
-<span class="task-item-suffix">required method</span></h3>
+	<a name="//api/name/dataWithServiceResponse:" title="dataWithServiceResponse:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/dataWithServiceResponse:">+&nbsp;dataWithServiceResponse:</a></code>
+</h3>
 
 	<div class="method-info">
 		<div class="pointy-thing"></div>
@@ -177,20 +175,33 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>History time frame start time.</p>
+				<p>Construct data object using \b PubNub service response dictionary.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (NSNumber *)start</code></div>
+			<div class="method-subsection method-declaration"><code>+ (instancetype)dataWithServiceResponse:(NSDictionary *)<em>response</em></code></div>
 
 		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>response</code></th>
+						<td><p>Reference on dictionary which should be stored internally and used by subclasses
+                 when give access to entries to the user.</p></td>
+					</tr>
+				
+				</table>
+			</div>
 			
 
 			
 			<div class="method-subsection return">
 				<h4 class="method-subtitle parameter-title">Return Value</h4>
-				<p>Number with unsigned long long as timestamp.</p>
+				<p>Constructed and ready to use service data object.</p>
 			</div>
 			
 
@@ -210,16 +221,24 @@
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">PubNub+History.h</code></p>
+				<p><code class="declared-in-ref">PNServiceData+Private.h</code></p>
 			</div>
 			
 			
 		</div>
 	</div>
-</div><div class="section-method">
-	<a name="//api/name/end" title="end"></a>
-	<h3 class="method-title"><code><a href="#//api/name/end">&ndash;&nbsp;end</a></code>
-<span class="task-item-suffix">required method</span></h3>
+</div>
+						</div>
+						
+
+						<a title="Extension Methods" name="task_Extension Methods"></a>
+						<h2 class="task-title">Extension Methods</h2>
+
+						<div class="task-list">
+							<div class="section-method">
+	<a name="//api/name/initWithServiceResponse:" title="initWithServiceResponse:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/initWithServiceResponse:">&ndash;&nbsp;initWithServiceResponse:</a></code>
+</h3>
 
 	<div class="method-info">
 		<div class="pointy-thing"></div>
@@ -228,20 +247,33 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>History time frame end time.</p>
+				<p>Initialize data object using \b PubNub service response dictionary.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (NSNumber *)end</code></div>
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithServiceResponse:(NSDictionary *)<em>response</em></code></div>
 
 		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>response</code></th>
+						<td><p>Reference on dictionary which should be stored internally and used by subclasses
+                 when give access to entries to the user.</p></td>
+					</tr>
+				
+				</table>
+			</div>
 			
 
 			
 			<div class="method-subsection return">
 				<h4 class="method-subtitle parameter-title">Return Value</h4>
-				<p>Number with unsigned long long as timestamp.</p>
+				<p>Initialized and ready to use service data object.</p>
 			</div>
 			
 
@@ -261,7 +293,7 @@
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">PubNub+History.h</code></p>
+				<p><code class="declared-in-ref">PNServiceData.m</code></p>
 			</div>
 			
 			
@@ -282,7 +314,7 @@
 				<footer>
 					<div class="footer-copyright">
 						
-						<p class="copyright">Copyright &copy; 2015 PubNub. All rights reserved. Updated: 2015-06-15</p>
+						<p class="copyright">Copyright &copy; 2015 PubNub. All rights reserved. Updated: 2015-06-24</p>
 						
 						
 						<p class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2.1 (build 1333)</a>.</p>

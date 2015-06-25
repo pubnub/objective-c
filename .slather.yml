@@ -1,2 +1,7 @@
+coverage_service: coveralls
 xcodeproj: Example/PubNub.xcodeproj/
 source_directory: PubNub/
+ignore:
+  - Tests/*
+  - Example/*
+  - Pods/*

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>PNPresenceEventData Protocol Reference</title>
+	<title>PNPresenceChannelHereNowData Class Reference</title>
 
 	<link rel="stylesheet" href="../css/style.css">
 	<meta name="viewport" content="initial-scale=1, maximum-scale=1.4">
@@ -14,7 +14,7 @@
 		<div class="container" class="hide-in-xcode">
 			
 			<h1 id="library-title">
-				<a href="../index.html">PubNub 4.0b2 for iOS </a>
+				<a href="../index.html">PubNub 4.0b3 for iOS </a>
 			</h1>
 
 			<p id="developer-home">
@@ -54,17 +54,19 @@
 
 	
 	
-
-	
-
-	
-	<optgroup label="Instance Methods">
+	<optgroup label="Properties">
 		
-		<option value="//api/name/presence">- presence</option>
+		<option value="//api/name/data">data</option>
 		
-		<option value="//api/name/presenceEvent">- presenceEvent</option>
+		<option value="//api/name/occupancy">occupancy</option>
+		
+		<option value="//api/name/uuids">uuids</option>
 		
 	</optgroup>
+	
+
+	
+
 	
 	
 </select>
@@ -79,29 +81,21 @@
 		<div id="overview_contents" class="container">
 			<div id="content">
 				<main role="main">
-					<h1 class="title">PNPresenceEventData Protocol Reference</h1>
+					<h1 class="title">PNPresenceChannelHereNowData Class Reference</h1>
 
 					
 					<div class="section section-specification"><table cellspacing="0"><tbody>
 						<tr>
-	<th>Conforms to</th>
-	<td><a href="../Protocols/PNSubscriberData.html">PNSubscriberData</a></td>
+	<th>Inherits from</th>
+	<td><a href="../Classes/PNServiceData.html">PNServiceData</a> : NSObject</td>
 </tr><tr>
 	<th>Declared in</th>
-	<td>PubNub+Subscribe.h</td>
+	<td>PNPresenceChannelHereNowResult.h<br />PNPresenceChannelHereNowResult.m</td>
 </tr>
 						</tbody></table></div>
 					
 
                     
-					
-					<div class="section section-overview">
-						<a title="Overview" name="overview"></a>
-						<h2 class="subtitle subtitle-overview">Overview</h2>
-						<p>Contain information about <a href="#//api/name/presence">presence</a> event which arrived on certain channel.</p>
-
-<p>@author Sergey Mamontov</p>
-					</div>
 					
 					
 
@@ -111,14 +105,14 @@
 						<a title="Tasks" name="tasks"></a>
 						
 
-						<a title="Informatino" name="task_Informatino"></a>
+						<a title="Information" name="task_Information"></a>
 						
-<h2 class="task-title">Informatino</h2>
+<h2 class="task-title">Information</h2>
 						<div class="task-list">
 							<div class="section-method">
-	<a name="//api/name/presenceEvent" title="presenceEvent"></a>
-	<h3 class="method-title"><code><a href="#//api/name/presenceEvent">&ndash;&nbsp;presenceEvent</a></code>
-<span class="task-item-suffix">required method</span></h3>
+	<a name="//api/name/uuids" title="uuids"></a>
+	<h3 class="method-title"><code><a href="#//api/name/uuids">&nbsp;&nbsp;uuids</a></code>
+</h3>
 
 	<div class="method-info">
 		<div class="pointy-thing"></div>
@@ -127,21 +121,16 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>Type of <a href="#//api/name/presence">presence</a> event.</p>
+				<p>Active channel subscribers unique identifiers.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (NSString *)presenceEvent</code></div>
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, strong) id uuids</code></div>
 
 		    
 			
 
-			
-			<div class="method-subsection return">
-				<h4 class="method-subtitle parameter-title">Return Value</h4>
-				<p>One of available <a href="#//api/name/presence">presence</a> event types.</p>
-			</div>
 			
 
 			
@@ -152,6 +141,12 @@
 			
 
 			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<div class="note"><p><strong>Note:</strong> This object can be empty in case if only <a href="#//api/name/occupancy">occupancy</a> has been requested.</p></div><div class="note"><p><strong>Note:</strong> This object can contain list of uuids or dictionary with uuids and client state information
+         bound to them.</p></div>
+			</div>
+			
 
 			
 
@@ -160,16 +155,16 @@
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">PubNub+Subscribe.h</code></p>
+				<p><code class="declared-in-ref">PNPresenceChannelHereNowResult.h</code></p>
 			</div>
 			
 			
 		</div>
 	</div>
 </div><div class="section-method">
-	<a name="//api/name/presence" title="presence"></a>
-	<h3 class="method-title"><code><a href="#//api/name/presence">&ndash;&nbsp;presence</a></code>
-<span class="task-item-suffix">required method</span></h3>
+	<a name="//api/name/occupancy" title="occupancy"></a>
+	<h3 class="method-title"><code><a href="#//api/name/occupancy">&nbsp;&nbsp;occupancy</a></code>
+</h3>
 
 	<div class="method-info">
 		<div class="pointy-thing"></div>
@@ -178,21 +173,16 @@
 			
 			
 			<div class="method-subsection brief-description">
-				<p>Additional presence information.</p>
+				<p>Active subscribers count.</p>
 			</div>
 			
 		    
 
-			<div class="method-subsection method-declaration"><code>- (NSObject&lt;PNPresenceDetails&gt; *)presence</code></div>
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, strong) NSNumber *occupancy</code></div>
 
 		    
 			
 
-			
-			<div class="method-subsection return">
-				<h4 class="method-subtitle parameter-title">Return Value</h4>
-				<p>Object which has additional information about arrived presence event.</p>
-			</div>
 			
 
 			
@@ -211,7 +201,53 @@
 			
 			<div class="method-subsection declared-in-section">
 				<h4 class="method-subtitle">Declared In</h4>
-				<p><code class="declared-in-ref">PubNub+Subscribe.h</code></p>
+				<p><code class="declared-in-ref">PNPresenceChannelHereNowResult.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/data" title="data"></a>
+	<h3 class="method-title"><code><a href="#//api/name/data">&nbsp;&nbsp;data</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Stores reference on channel presence request processing information.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, strong) PNPresenceChannelHereNowData *data</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNPresenceChannelHereNowResult.h</code></p>
 			</div>
 			
 			
@@ -232,7 +268,7 @@
 				<footer>
 					<div class="footer-copyright">
 						
-						<p class="copyright">Copyright &copy; 2015 PubNub. All rights reserved. Updated: 2015-06-15</p>
+						<p class="copyright">Copyright &copy; 2015 PubNub. All rights reserved. Updated: 2015-06-24</p>
 						
 						
 						<p class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2.1 (build 1333)</a>.</p>

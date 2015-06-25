@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>cancelled</key>
+		<false/>
+		<key>data</key>
+		<dict>
+			<key>data</key>
+			<data>
+			MjgiLCIqKioqKioqKi4uLi4uLi4gNDAzIC0gMjAxNS0wNi0yMyAx
+			MzoyMTozMSIsIioqKioqKioqKi4uLi4uLiA0MDQgLSAyMDE1LTA2
+			LTIzIDEzOjIxOjMzIiwiKioqKioqKioqKi4uLi4uIDQwNSAtIDIw
+			MTUtMDYtMjMgMTM6MjE6MzUiLCIqKioqKioqKioqKi4uLi4gNDA2
+			IC0gMjAxNS0wNi0yMyAxMzoyMTozNyIsIioqKioqKioqKioqKi4u
+			LiA0MDcgLSAyMDE1LTA2LTIzIDEzOjIxOjM5IiwiKioqKioqKioq
+			KioqKi4uIDQwOCAtIDIwMTUtMDYtMjMgMTM6MjE6NDEiLCIqKioq
+			KioqKioqKioqKi4gNDA5IC0gMjAxNS0wNi0yMyAxMzoyMTo0MyIs
+			IioqKioqKioqKioqKioqKiA0MTAgLSAyMDE1LTA2LTIzIDEzOjIx
+			OjQ1IiwiKi4uLi4uLi4uLi4uLi4uIDQxMSAtIDIwMTUtMDYtMjMg
+			MTM6MjE6NDciLCIqKi4uLi4uLi4uLi4uLi4gNDEyIC0gMjAxNS0w
+			Ni0yMyAxMzoyMTo0OSIsIioqKi4uLi4uLi4uLi4uLiA0MTMgLSAy
+			MDE1LTA2LTIzIDEzOjIxOjUxIiwiKioqKi4uLi4uLi4uLi4uIDQx
+			NCAtIDIwMTUtMDYtMjMgMTM6MjE6NTMiLCIqKioqKi4uLi4uLi4u
+			Li4gNDE1IC0gMjAxNS0wNi0yMyAxMzoyMTo1NSIsIioqKioqKi4u
+			Li4uLi4uLiA0MTYgLSAyMDE1LTA2LTIzIDEzOjIxOjU3Il0sMTQz
+			NTA5MDcyNDYzMDEwNjMsMTQzNTA5MDkxODQ2OTU2NTld
+			</data>
+		</dict>
+		<key>request</key>
+		<dict>
+			<key>currentRequest</key>
+			<dict>
+				<key>HTTPMethod</key>
+				<string>GET</string>
+				<key>HTTPShouldHandleCookies</key>
+				<true/>
+				<key>URL</key>
+				<string>https://pubsub.pubnub.com/v2/history/sub-key/demo-36/channel/a?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;include_token=false&amp;count=100&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;reverse=false&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<key>allHTTPHeaderFields</key>
+				<dict>
+					<key>Accept</key>
+					<string>*/*</string>
+					<key>Accept-Encoding</key>
+					<string>gzip, deflate</string>
+					<key>Accept-Language</key>
+					<string>en;q=1, fr;q=0.9, de;q=0.8, zh-Hans;q=0.7, zh-Hant;q=0.6, ja;q=0.5</string>
+					<key>User-Agent</key>
+					<string>(null)/(null) (iPhone Simulator; iOS 8.3; Scale/2.00)</string>
+				</dict>
+				<key>allowsCellularAccess</key>
+				<true/>
+				<key>timeoutInterval</key>
+				<real>60</real>
+			</dict>
+			<key>originalRequest</key>
+			<dict>
+				<key>HTTPMethod</key>
+				<string>GET</string>
+				<key>HTTPShouldHandleCookies</key>
+				<true/>
+				<key>URL</key>
+				<string>https://pubsub.pubnub.com/v2/history/sub-key/demo-36/channel/a?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;include_token=false&amp;count=100&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;reverse=false&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<key>allHTTPHeaderFields</key>
+				<dict>
+					<key>Accept-Language</key>
+					<string>en;q=1, fr;q=0.9, de;q=0.8, zh-Hans;q=0.7, zh-Hant;q=0.6, ja;q=0.5</string>
+					<key>User-Agent</key>
+					<string>(null)/(null) (iPhone Simulator; iOS 8.3; Scale/2.00)</string>
+				</dict>
+				<key>allowsCellularAccess</key>
+				<true/>
+				<key>timeoutInterval</key>
+				<real>60</real>
+			</dict>
+		</dict>
+		<key>response</key>
+		<dict>
+			<key>response</key>
+			<dict>
+				<key>MIMEType</key>
+				<string>text/javascript</string>
+				<key>URL</key>
+				<string>https://pubsub.pubnub.com/v2/history/sub-key/demo-36/channel/a?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;include_token=false&amp;count=100&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;reverse=false&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<key>allHeaderFields</key>
+				<dict>
+					<key>Access-Control-Allow-Methods</key>
+					<string>GET</string>
+					<key>Access-Control-Allow-Origin</key>
+					<string>*</string>
+					<key>Age</key>
+					<string>0</string>
+					<key>Cache-Control</key>
+					<string>no-cache</string>
+					<key>Connection</key>
+					<string>keep-alive</string>
+					<key>Content-Encoding</key>
+					<string>gzip</string>
+					<key>Content-Type</key>
+					<string>text/javascript; charset="UTF-8"</string>
+					<key>Date</key>
+					<string>Tue, 23 Jun 2015 20:22:00 GMT</string>
+					<key>Server</key>
+					<string>Pubnub</string>
+					<key>Transfer-Encoding</key>
+					<string>Identity</string>
+				</dict>
+				<key>expectedContentLength</key>
+				<integer>4439</integer>
+				<key>statusCode</key>
+				<integer>200</integer>
+				<key>suggestedFileName</key>
+				<string>a.js</string>
+				<key>textEncodingName</key>
+				<string>"utf-8"</string>
+			</dict>
+		</dict>
+	</dict>
+</array>
+</plist>

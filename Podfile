@@ -3,6 +3,8 @@ workspace 'PubNub.xcworkspace'
 xcodeproj 'Example/PubNub.xcodeproj'
 use_frameworks!
 
+plugin 'slather'
+
 target 'PubNub_Example', :exclusive => true do
   platform :ios, '7.0'
   xcodeproj 'Example/PubNub.xcodeproj'
