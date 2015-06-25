@@ -7,7 +7,9 @@
 
 If you choose to go into production with 4.0 before that time, please contact us at support@pubnub.com first so we can validate your implementation, and be sure you are on the latest and greatest, and that there are no known issues / non-merged fixes you need that would impede your release.
 
-This is Objective-C client (current version **3.7.11**) for the [PubNub.com](http://www.pubnub.com/) real-time messaging network which can be used for iOS 6.1+ and Mac OS 10.6+ projects.  
+### 3.x 
+
+This is the Objective-C client (current version **3.7.11**) for the [PubNub.com](http://www.pubnub.com/) real-time messaging network which can be used for iOS 6.1+ and Mac OS 10.6+ projects.  
 
 Table of Contents
 =================
@@ -80,7 +82,7 @@ First of all you need to get latest version from [GitHub](https://github.com/pub
 ```bash
 git clone git@github.com:pubnub/objective-c.git
 ```
-Depending on preferred dependencies organization approach PubNub client can be added to your project in few ways.  
+Depending on preferred dependencies organization approach PubNub client can be added to your project in a few ways.  
 
 <a name="use_in_project_from_github_source_code" />
 ### Source code
@@ -213,6 +215,12 @@ To use Objective-C classes in Swift project you need to do next steps:
 4. Search for "**Objective-C Bridging Header**" field  
 5. Specify there path to bridging header created in step **#1** relatively to project file on file system (on same level with _.xcodeproj_ file is folder with name of the project from which path should start).  
 
+## Beta 4.0 Is Now Available!!
+3.x will be sunsetted, and all your new projects should be using the 4.0 client (now in final beta) available at [https://github.com/pubnub/objective-c/tree/4.0b3](https://github.com/pubnub/objective-c/tree/4.0b3)
+
+4.0 is slated to go Production by July 1, 2015.
+
+If you choose to go into production with 4.0 before that time, please contact us at support@pubnub.com first so we can validate your implementation, and be sure you are on the latest and greatest, and that there are no known issues / non-merged fixes you need that would impede your release.
 
 <a name="quick_start" />
 ## Quick start
@@ -336,6 +344,13 @@ Choose class where you would like to initiate PubNub client and handle events vi
 ```
 This results in a simple application that displays a PubNub 'Ping' message, published every second from PubNub PHP Bot.  
 That was just a quick and dirty demo to cut your teeth on... There are other PubNub client demo applications available! These demonstrate in more detail how you can use the delegate and completion block features of the PubNub client.
+
+## Beta 4.0 Is Now Available!!
+3.x will be sunsetted, and all your new projects should be using the 4.0 client (now in final beta) available at [https://github.com/pubnub/objective-c/tree/4.0b3](https://github.com/pubnub/objective-c/tree/4.0b3)
+
+4.0 is slated to go Production by July 1, 2015.
+
+If you choose to go into production with 4.0 before that time, please contact us at support@pubnub.com first so we can validate your implementation, and be sure you are on the latest and greatest, and that there are no known issues / non-merged fixes you need that would impede your release.
 
 iOS examples:
   - The [SimpleSubscribe](iOS/HOWTO/SimpleSubscribe) application references how to create a simple subscribe-only, non-UI application using PubNub. [A getting started walk-through document is also available](https://raw.github.com/pubnub/objective-c/master/iOS/HOWTO/SimpleSubscribe/SimpleSubscribeHOWTO_34.pdf).  
@@ -3236,3 +3251,10 @@ Unit-tests for each class are grouped by class. To configure the test scheme fur
 3. Select tests to run as wanted from right menu
 
 # Please direct all Support Questions and Concerns to Support@PubNub.com
+
+## Beta 4.0 Is Now Available!!
+3.x will be sunsetted, and all your new projects should be using the 4.0 client (now in final beta) available at [https://github.com/pubnub/objective-c/tree/4.0b3](https://github.com/pubnub/objective-c/tree/4.0b3)
+
+4.0 is slated to go Production by July 1, 2015.
+
+If you choose to go into production with 4.0 before that time, please contact us at support@pubnub.com first so we can validate your implementation, and be sure you are on the latest and greatest, and that there are no known issues / non-merged fixes you need that would impede your release.
