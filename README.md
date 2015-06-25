@@ -314,7 +314,7 @@ If you have questions about how the Result and Status objects work in the meanti
 
 ## Reference App - Example
 
-In 4.0, [we provide Example](https://github.com/pubnub/objective-c/tree/4.0b2/Example) as a generic reference on how to set config options, make Pub, Sub, and History calls (with and without PAM), and handle the various Status and Result events that may arise from them.  
+In 4.0, [we provide Example](Example) as a generic reference on how to set config options, make Pub, Sub, and History calls (with and without PAM), and handle the various Status and Result events that may arise from them.  
 
 The Example app is used as a simple reference app. It will evolve over time, along with other example apps -- stay tuned for that!
 
