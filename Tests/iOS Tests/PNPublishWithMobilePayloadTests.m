@@ -20,7 +20,7 @@
 
 @implementation PNPublishWithMobilePayloadTests
 
-- (BOOL)recording {
+- (BOOL)isRecording{
     return YES;
     
 }

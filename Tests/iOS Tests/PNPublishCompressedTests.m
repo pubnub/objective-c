@@ -20,7 +20,7 @@
 
 @implementation PNPublishCompressedTests
 
-- (BOOL)recording {
+- (BOOL)isRecording{
     return NO;
     
 }

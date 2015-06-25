@@ -23,6 +23,7 @@
 		96F519891B387F4E00053FB7 /* PNPublishWithMobilePayloadTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 96F519881B387F4E00053FB7 /* PNPublishWithMobilePayloadTests.m */; };
 		96F5198E1B39C6B800053FB7 /* PNPublishWithMobilePayloadTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 96F5198D1B39C6B800053FB7 /* PNPublishWithMobilePayloadTests.bundle */; };
 		96F519911B39CB1E00053FB7 /* NSString+PNTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96F519901B39CB1E00053FB7 /* NSString+PNTest.m */; };
+		96F519931B3B508000053FB7 /* PNPublishSizeOfMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 96F519921B3B508000053FB7 /* PNPublishSizeOfMessage.m */; };
 		97FA41F31B2FF518003B9B57 /* PNPublishTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 97FA41F21B2FF518003B9B57 /* PNPublishTests.m */; };
 		97FA41F51B2FFB61003B9B57 /* PNPublishTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 97FA41F41B2FFB61003B9B57 /* PNPublishTests.bundle */; };
 /* End PBXBuildFile section */
@@ -52,6 +53,7 @@
 		96F5198D1B39C6B800053FB7 /* PNPublishWithMobilePayloadTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNPublishWithMobilePayloadTests.bundle; sourceTree = "<group>"; };
 		96F5198F1B39CB1E00053FB7 /* NSString+PNTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+PNTest.h"; path = "iOS Tests/NSString+PNTest.h"; sourceTree = "<group>"; };
 		96F519901B39CB1E00053FB7 /* NSString+PNTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+PNTest.m"; path = "iOS Tests/NSString+PNTest.m"; sourceTree = "<group>"; };
+		96F519921B3B508000053FB7 /* PNPublishSizeOfMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNPublishSizeOfMessage.m; sourceTree = "<group>"; };
 		97FA41F21B2FF518003B9B57 /* PNPublishTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNPublishTests.m; sourceTree = "<group>"; };
 		97FA41F41B2FFB61003B9B57 /* PNPublishTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNPublishTests.bundle; sourceTree = "<group>"; };
 		C081D126B561273617A72F85 /* Pods-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios.release.xcconfig"; path = "../Pods/Target Support Files/Pods-ios/Pods-ios.release.xcconfig"; sourceTree = "<group>"; };
@@ -112,6 +114,7 @@
 				96F519841B3869A900053FB7 /* PNPublishCompressedTests.m */,
 				96F519881B387F4E00053FB7 /* PNPublishWithMobilePayloadTests.m */,
 				178251241B30BF29006BC234 /* PNUnsubscribeTests.m */,
+				96F519921B3B508000053FB7 /* PNPublishSizeOfMessage.m */,
 				178251201B30AAE6006BC234 /* Base Test Classes */,
 				51F7AAC11B27AD7400BEDA1F /* Fixtures */,
 				519C32801B20C11500FAC283 /* Supporting Files */,
@@ -298,6 +301,7 @@
 				96F519851B3869A900053FB7 /* PNPublishCompressedTests.m in Sources */,
 				97FA41F31B2FF518003B9B57 /* PNPublishTests.m in Sources */,
 				1736E1A41B30F2C00077B2E7 /* PNChannelGroupTests.m in Sources */,
+				96F519931B3B508000053FB7 /* PNPublishSizeOfMessage.m in Sources */,
 				96F519911B39CB1E00053FB7 /* NSString+PNTest.m in Sources */,
 				96F519891B387F4E00053FB7 /* PNPublishWithMobilePayloadTests.m in Sources */,
 				1782511F1B30AAE3006BC234 /* PNBasicClientTestCase.m in Sources */,

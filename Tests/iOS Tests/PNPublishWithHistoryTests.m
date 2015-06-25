@@ -20,7 +20,7 @@
 
 @implementation PNPublishWithHistoryTests
 
-- (BOOL)recording {
+- (BOOL)isRecording{
     return NO;
     
 }
