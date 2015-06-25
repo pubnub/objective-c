@@ -13,7 +13,6 @@
 #import "PNStatus+Private.h"
 #import "PNErrorStatus.h"
 #import "PNErrorParser.h"
-#import <objc/runtime.h>
 #import "PNURLBuilder.h"
 #import "PNStructures.h"
 #import "PNConstants.h"
@@ -22,7 +21,17 @@
 #import "PNLog.h"
 
 
-#pragma mark Protected interface declaration
+#pragma mark CocoaLumberjack logging support
+
+/**
+ @brief  Cocoa Lumberjack logging level configuration for network manager.
+ 
+ @since 4.0
+ */
+static DDLogLevel ddLogLevel;
+
+
+#pragma mark - Protected interface declaration
 
 @interface PNNetwork ()
 
@@ -322,6 +331,33 @@
 @implementation PNNetwork
 
 
+#pragma mark - Logger
+
+/**
+ @brief  Called by Cocoa Lumberjack during initialization.
+ 
+ @return Desired logger level for \b PubNub client main class.
+ 
+ @since 4.0
+ */
++ (DDLogLevel)ddLogLevel {
+    
+    return ddLogLevel;
+}
+
+/**
+ @brief  Allow modify logger level used by Cocoa Lumberjack with logging macros.
+ 
+ @param logLevel New log level which should be used by logger.
+ 
+ @since 4.0
+ */
++ (void)ddSetLogLevel:(DDLogLevel)logLevel {
+    
+    ddLogLevel = logLevel;
+}
+
+
 #pragma mark - Initialization and Configuration
 
 + (instancetype)networkForClient:(PubNub *)client requestTimeout:(NSTimeInterval)timeout
@@ -425,23 +461,15 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         
-        Protocol *parserProtocol = @protocol(PNParser);
         NSMutableDictionary *parsers = [NSMutableDictionary new];
-        unsigned int visibleClassesCount;
-        Class *classes = objc_copyClassList(&visibleClassesCount);
-        for (unsigned int classIdx = 0; classIdx < visibleClassesCount; classIdx++) {
+        for (Class class in [PNClass classesConformingToProtocol:@protocol(PNParser)]) {
             
-            Class class = classes[classIdx];
-            if (class_conformsToProtocol(class, parserProtocol)) {
+            NSArray *operations = [(Class<PNParser>)class operations];
+            for (NSNumber *operationType in operations) {
                 
-                NSArray *operations = [(Class<PNParser>)class operations];
-                for (NSNumber *operationType in operations) {
-                    
-                    parsers[operationType] = class;
-                }
+                parsers[operationType] = class;
             }
         }
-        free(classes);
         _parsers = [parsers copy];
     });
     
@@ -557,7 +585,7 @@
             #pragma clang diagnostic push
             #pragma clang diagnostic ignored "-Wreceiver-is-weak"
             [weakSelf parseData:data withParser:[PNErrorParser class] error:parseError
-                     completion:block];
+                     completion:[block copy]];
             #pragma clang diagnostic pop
         }
     };
@@ -661,11 +689,12 @@
                withData:(id)responseObject completionBlock:(id)block {
     
     __block BOOL parseError = NO;
+    __weak __typeof(self) weakSelf = self;
     [self parseData:responseObject withParser:[self parserForOperation:operation] error:&parseError
          completion:^(NSDictionary *parsedData) {
 
-             [self handleParsedData:parsedData loadedWithTask:task forOperation:operation
-                              error:parseError completionBlock:block];
+             [weakSelf handleParsedData:parsedData loadedWithTask:task forOperation:operation
+                                  error:parseError completionBlock:[block copy]];
          }];
 }
 

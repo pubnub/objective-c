@@ -11,6 +11,10 @@
 
 @implementation PNBasicClientTestCase
 
+- (JSZVCRTestingStrictness)matchingFailStrictness {
+    return JSZVCRTestingStrictnessFailWhenNoMatch;
+}
+
 - (void)setUp {
     [super setUp];
     PNConfiguration *config = [PNConfiguration configurationWithPublishKey:@"demo-36" subscribeKey:@"demo-36"];

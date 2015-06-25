@@ -11,6 +11,7 @@
 #import "PNChannel.h"
 #import "PNString.h"
 #import "PNArray.h"
+#import "PNClass.h"
 #import "PNData.h"
 #import "PNJSON.h"
 #import "PNGZIP.h"

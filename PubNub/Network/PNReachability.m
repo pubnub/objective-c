@@ -10,7 +10,17 @@
 #import "PubNub.h"
 
 
-#pragma mark Protected interface declaration
+#pragma mark CocoaLumberjack logging support
+
+/**
+ @brief  Cocoa Lumberjack logging level configuration for network manager.
+ 
+ @since 4.0
+ */
+static DDLogLevel ddLogLevel = (DDLogLevel)PNReachabilityLogLevel;
+
+
+#pragma mark - Protected interface declaration
 
 @interface PNReachability ()
 
@@ -84,6 +94,33 @@
 @implementation PNReachability
 
 @synthesize pingRemoteService = _pingRemoteService;
+
+
+#pragma mark - Logger
+
+/**
+ @brief  Called by Cocoa Lumberjack during initialization.
+ 
+ @return Desired logger level for \b PubNub client main class.
+ 
+ @since 4.0
+ */
++ (DDLogLevel)ddLogLevel {
+    
+    return ddLogLevel;
+}
+
+/**
+ @brief  Allow modify logger level used by Cocoa Lumberjack with logging macros.
+ 
+ @param logLevel New log level which should be used by logger.
+ 
+ @since 4.0
+ */
++ (void)ddSetLogLevel:(DDLogLevel)logLevel {
+    
+    ddLogLevel = logLevel;
+}
 
 
 #pragma mark - Initialization and Configuration

@@ -27,9 +27,8 @@
  
  @since 4.0
  */
-DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNReachabilityLogLevel|
-                                     PNFailureStatusLogLevel|PNAPICallLogLevel|
-                                     PNAESErrorLogLevel);
+static DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNFailureStatusLogLevel|
+                                            PNAPICallLogLevel);
 
 
 #pragma mark - Externs
