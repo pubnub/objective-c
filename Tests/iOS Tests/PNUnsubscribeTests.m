@@ -39,7 +39,7 @@
     [super tearDown];
 }
 
-- (void)testUnsubscribe {
+- (void)DISABLED_testUnsubscribe {
     self.unsubscribeExpectation = [self expectationWithDescription:@"unsubscribe"];
     [self.client unsubscribeFromChannels:@[@"a"] withPresence:YES];
     [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
