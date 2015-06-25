@@ -497,8 +497,10 @@
     BOOL isSubbed= [self.client isSubscribedOn:@"foo"];
 
     if (status) {
+        
         [self handleStatus:status];
-    } else if (message) {
+    }
+    else if (message) {
         
         NSLog(@"Received message: %@ on channel %@ at %@", message.data.message,
               message.data.subscribedChannel, message.data.timetoken);
@@ -508,6 +510,7 @@
 #pragma mark - Streaming Data didReceivePresenceEvent Listener
 
 - (void)client:(PubNub *)client didReceivePresenceEvent:(PNPresenceEventResult *)event {
+    
     NSLog(@"^^^^^ Did receive presence event: %@", event.data.presenceEvent);
 }
 

@@ -40,7 +40,7 @@ typedef void(^PNGlobalHereNowCompletionBlock)(PNPresenceGlobalHereNowResult *res
  
  @since 4.0
  */
-typedef void(^PNChannelGroupHereNowCompletionBlock)(PNPresenceWhereNowResult *result,
+typedef void(^PNChannelGroupHereNowCompletionBlock)(PNPresenceChannelGroupHereNowResult *result,
                                                     PNErrorStatus *status);
 
 /**
@@ -298,7 +298,8 @@ typedef void(^PNWhereNowCompletionBlock)(PNPresenceWhereNowResult *result, PNErr
                                                                   subscribeKey:@"demo"];
  self.client = [PubNub clientWithConfiguration:configuration];
  [self.client hereNowForChannelGroup:@"developers" 
-                      withCompletion:^(PNPresenceWhereNowResult *result, PNErrorStatus *status) {
+                      withCompletion:^(PNPresenceChannelGroupHereNowResult *result, 
+                                       PNErrorStatus *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {
@@ -351,7 +352,8 @@ typedef void(^PNWhereNowCompletionBlock)(PNPresenceWhereNowResult *result, PNErr
                                                                   subscribeKey:@"demo"];
  self.client = [PubNub clientWithConfiguration:configuration];
  [self.client hereNowForChannelGroup:@"developers" withVerbosity:PNHereNowState
-                          completion:^(PNPresenceWhereNowResult *result, PNErrorStatus *status) {
+                          completion:^(PNPresenceChannelGroupHereNowResult *result,
+                                       PNErrorStatus *status) {
  
      // Check whether request successfully completed or not.
      if (!status.isError) {
