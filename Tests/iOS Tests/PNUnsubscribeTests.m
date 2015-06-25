@@ -28,7 +28,7 @@
     self.settingUp = YES;
     self.subscribeExpectation = [self expectationWithDescription:@"subscribe"];
     [self.client subscribeToChannels:@[@"a"] withPresence:YES];
-    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:15 handler:^(NSError *error) {
         NSLog(@"error: %@", error);
     }];
     
