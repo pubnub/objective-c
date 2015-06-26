@@ -145,7 +145,7 @@ You should now have a skeleton PubNub project.
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
 	PNConfiguration *config = [PNConfiguration configurationWithPublishKey:@"demo" subscribeKey:@"demo"];
-    self.client = [PubNub clientWithConfiguration:config];
+        self.client = [PubNub clientWithConfiguration:config];
         [self.client addListener:self];
 
 
