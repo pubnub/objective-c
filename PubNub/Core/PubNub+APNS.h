@@ -1,11 +1,13 @@
 #import <Foundation/Foundation.h>
-#import "PNAPNSEnabledChannelsResult.h"
-#import "PNAcknowledgmentStatus.h"
-#import "PNErrorStatus.h"
 #import "PubNub+Core.h"
 
 
-#pragma mark Types
+#pragma mark Class forward
+
+@class PNAPNSEnabledChannelsResult, PNAcknowledgmentStatus, PNErrorStatus;
+
+
+#pragma mark - Types
 
 /**
  @brief  Push notifications state modification completion block.
@@ -206,7 +208,7 @@ typedef void(^PNPushNotificationsStateAuditCompletionBlock)(PNAPNSEnabledChannel
      // Check whether request successfully completed or not.
      if (!status.isError) {
  
-        // Handle downloaded list of chanels using: result.data.channels
+        // Handle downloaded list of channels using: result.data.channels
      }
      // Request processing failed.
      else {

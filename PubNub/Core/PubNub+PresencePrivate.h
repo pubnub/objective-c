@@ -12,7 +12,7 @@
 
 /**
  @brief      Issue heartbeat request to \b PubNub network.
- @discussion Heartbeat help \b PubNub preence service to control subscribers availability.
+ @discussion Heartbeat help \b PubNub presence service to control subscribers availability.
  
  @param block Reference on block which should be called with service information.
  

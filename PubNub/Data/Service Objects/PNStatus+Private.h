@@ -97,7 +97,8 @@
  
  @since 4.0
  */
-+ (instancetype)statusForOperation:(PNOperationType)operation category:(PNStatusCategory)category;
++ (instancetype)statusForOperation:(PNOperationType)operation category:(PNStatusCategory)category
+               withProcessingError:(NSError *)error;
 
 /**
  @brief  Alter status category.

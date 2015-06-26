@@ -21,7 +21,7 @@
 @property (nonatomic, strong) NSMutableDictionary *resourcePathComponents;
 
 /**
- @brief  Stores reference on key/value pairst which should be expanded in query string.
+ @brief  Stores reference on key/value pairs which should be expanded in query string.
  
  @since 4.0
  */

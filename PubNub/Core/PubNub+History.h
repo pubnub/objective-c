@@ -1,10 +1,13 @@
 #import <Foundation/Foundation.h>
-#import "PNHistoryResult.h"
-#import "PNErrorStatus.h"
 #import "PubNub+Core.h"
 
 
-#pragma mark Types
+#pragma mark Class forward
+
+@class PNHistoryResult, PNErrorStatus;
+
+
+#pragma mark - Types
 
 /**
  @brief  Channel history fetch completion block.
@@ -69,7 +72,7 @@ typedef void(^PNHistoryCompletionBlock)(PNHistoryResult *result, PNErrorStatus *
  }];
  @endcode
  
- @param channel Name of the channel for hich events should be pulled out from storage.
+ @param channel Name of the channel for which events should be pulled out from storage.
  @param block   History pull processing completion block which pass two arguments: \c result - in
                 case of successful request processing \c data field will contain results of history
                 request operation; \c status - in case if error occurred during request processing.
@@ -87,7 +90,7 @@ typedef void(^PNHistoryCompletionBlock)(PNHistoryResult *result, PNErrorStatus *
  @brief  Allow to fetch events from specified \c channel's history within specified time frame.
  @note   All 'history' API group methods allow to fetch up to \b 100 events at once. If in specified
          time frame there is more then 100 events paging may be required. For paging use last event
-         time token from respone and some distant future date for next portion of events.
+         time token from response and some distant future date for next portion of events.
  
  @code
  @endcode
@@ -122,7 +125,7 @@ typedef void(^PNHistoryCompletionBlock)(PNHistoryResult *result, PNErrorStatus *
  }];
  @endcode
  
- @param channel   Name of the channel for hich events should be pulled out from storage.
+ @param channel   Name of the channel for which events should be pulled out from storage.
  @param startDate Reference on time token for oldest event starting from which next should be 
                   returned events.
  @param endDate   Reference on time token for latest event till which events should be pulled out.
@@ -140,7 +143,7 @@ typedef void(^PNHistoryCompletionBlock)(PNHistoryResult *result, PNErrorStatus *
  @brief  Allow to fetch events from specified \c channel's history within specified time frame.
  @note   All 'history' API group methods allow to fetch up to \b 100 events at once. If in specified
          time frame there is more then 100 events paging may be required. For paging use last event
-         time token from respone and some distant future date for next portion of events.
+         time token from response and some distant future date for next portion of events.
  
  @code
  @endcode
@@ -180,7 +183,7 @@ typedef void(^PNHistoryCompletionBlock)(PNHistoryResult *result, PNErrorStatus *
  }];
  @endcode
  
- @param channel   Name of the channel for hich events should be pulled out from storage.
+ @param channel   Name of the channel for which events should be pulled out from storage.
  @param startDate Reference on time token for oldest event starting from which next should be 
                   returned events.
  @param endDate   Reference on time token for latest event till which events should be pulled out.
@@ -198,14 +201,14 @@ typedef void(^PNHistoryCompletionBlock)(PNHistoryResult *result, PNErrorStatus *
 
 
 ///------------------------------------------------
-/// @name Hisotry in frame with extended response
+/// @name History in frame with extended response
 ///------------------------------------------------
 
 /**
  @brief  Allow to fetch events from specified \c channel's history within specified time frame.
  @note   All 'history' API group methods allow to fetch up to \b 100 events at once. If in specified
          time frame there is more then 100 events paging may be required. For paging use last event
-         time token from respone and some distant future date for next portion of events.
+         time token from response and some distant future date for next portion of events.
  
  @code
  @endcode
@@ -247,7 +250,7 @@ typedef void(^PNHistoryCompletionBlock)(PNHistoryResult *result, PNErrorStatus *
  }];
  @endcode
  
- @param channel                Name of the channel for hich events should be pulled out from 
+ @param channel                Name of the channel for which events should be pulled out from
                                storage.
  @param startDate              Reference on time token for oldest event starting from which next 
                                should be returned events.
@@ -269,7 +272,7 @@ typedef void(^PNHistoryCompletionBlock)(PNHistoryResult *result, PNErrorStatus *
  @brief  Allow to fetch events from specified \c channel's history within specified time frame.
  @note   All 'history' API group methods allow to fetch up to \b 100 events at once. If in specified
          time frame there is more then 100 events paging may be required. For paging use last event
-         time token from respone and some distant future date for next portion of events.
+         time token from response and some distant future date for next portion of events.
  
  @code
  @endcode
@@ -311,7 +314,7 @@ typedef void(^PNHistoryCompletionBlock)(PNHistoryResult *result, PNErrorStatus *
  }];
  @endcode
  
- @param channel                Name of the channel for hich events should be pulled out from 
+ @param channel                Name of the channel for which events should be pulled out from
                                storage.
  @param startDate              Reference on time token for oldest event starting from which next 
                                should be returned events.
@@ -336,7 +339,7 @@ typedef void(^PNHistoryCompletionBlock)(PNHistoryResult *result, PNErrorStatus *
  @brief  Allow to fetch events from specified \c channel's history within specified time frame.
  @note   All 'history' API group methods allow to fetch up to \b 100 events at once. If in specified
          time frame there is more then 100 events paging may be required. For paging use last event
-         time token from respone and some distant future date for next portion of events.
+         time token from response and some distant future date for next portion of events.
  
  @code
  @endcode
@@ -376,7 +379,7 @@ typedef void(^PNHistoryCompletionBlock)(PNHistoryResult *result, PNErrorStatus *
  }];
  @endcode
  
- @param channel            Name of the channel for hich events should be pulled out from storage.
+ @param channel            Name of the channel for which events should be pulled out from storage.
  @param startDate          Reference on time token for oldest event starting from which next should
                            be returned events.
  @param endDate            Reference on time token for latest event till which events should be
@@ -399,7 +402,7 @@ typedef void(^PNHistoryCompletionBlock)(PNHistoryResult *result, PNErrorStatus *
  @brief  Allow to fetch events from specified \c channel's history within specified time frame.
  @note   All 'history' API group methods allow to fetch up to \b 100 events at once. If in specified
          time frame there is more then 100 events paging may be required. For paging use last event
-         time token from respone and some distant future date for next portion of events.
+         time token from response and some distant future date for next portion of events.
  
  @code
  @endcode
@@ -441,7 +444,7 @@ typedef void(^PNHistoryCompletionBlock)(PNHistoryResult *result, PNErrorStatus *
  }];
  @endcode
  
- @param channel                Name of the channel for hich events should be pulled out from 
+ @param channel                Name of the channel for which events should be pulled out from
                                storage.
  @param startDate              Reference on time token for oldest event starting from which next 
                                should be returned events.

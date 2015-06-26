@@ -3,8 +3,8 @@
 
 /**
  @brief      \b PubNub client configuration wrapper.
- @discussion Uset this instance to provide values which should be by client to communicate with
-             \b PubNub netwrok.
+ @discussion Use this instance to provide values which should be by client to communicate with
+             \b PubNub network.
  
  @author Sergey Mamontov
  @since 4.0

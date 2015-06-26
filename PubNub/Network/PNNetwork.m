@@ -1,4 +1,4 @@
- /**
+/**
  @author Sergey Mamontov
  @since 4.0
  @copyright © 2009-2015 PubNub, Inc.
@@ -14,11 +14,8 @@
 #import "PNErrorStatus.h"
 #import "PNErrorParser.h"
 #import "PNURLBuilder.h"
-#import "PNStructures.h"
 #import "PNConstants.h"
 #import "PNHelpers.h"
-#import "PNParser.h"
-#import "PNLog.h"
 
 
 #pragma mark CocoaLumberjack logging support
@@ -172,7 +169,7 @@ static DDLogLevel ddLogLevel;
  
  @since 4.0
  */
-- (Class)resultClassForOperaion:(PNOperationType)operation;
+- (Class)resultClassForOperation:(PNOperationType)operation;
 
 /**
  @brief  Retrieve reference on class which can be used to represent request processing status.
@@ -184,7 +181,7 @@ static DDLogLevel ddLogLevel;
  
  @since 4.0
  */
-- (Class)statusClassForOperaion:(PNOperationType)operation;
+- (Class)statusClassForOperation:(PNOperationType)operation;
 
 /**
  @brief  Try process \c data using parser suitable for operation for which data has been received.
@@ -192,7 +189,7 @@ static DDLogLevel ddLogLevel;
  @param data       Reference on data which has been received from \b PubNub network in response for
                    operation.
  @param parser     Reference on class which should be used to parse data.
- @param parseError Stores reference to boolean which allow to identify wheher parsing switched to
+ @param parseError Stores reference to boolean which allow to identify whether parsing switched to
                    error parser to handle data or not.
  @param block      Reference on block which should be called back at the end of parsing process.
  
@@ -205,7 +202,7 @@ static DDLogLevel ddLogLevel;
 #pragma mark - Session constructor
 
 /**
- @brief  Complete AFNetworking/NSURLSession istantiation and configuration.
+ @brief  Complete AFNetworking/NSURLSession instantiation and configuration.
  
  @param timeout            Maximum time which manager should wait for response on request.
  @param maximumConnections Maximum simultaneously connections (requests) which can be opened.
@@ -297,13 +294,15 @@ static DDLogLevel ddLogLevel;
  @param operation One of \b PNOperationType enum fields which clarify what kind of request has been
                   done to \b PubNub network and for which response has been processed.
  @param isError   Whether pre-processed data represent error or not.
- @param block     Block which should be called at the end of pre-processed data wrapping into 
+ @param error     Reference on data/request processing error.
+ @param block     Block which should be called at the end of pre-processed data wrapping into
                   objects.
  
  @since 4.0
  */
 - (void)handleParsedData:(NSDictionary *)data loadedWithTask:(NSURLSessionDataTask *)task
-            forOperation:(PNOperationType)operation error:(BOOL)isError completionBlock:(id)block;
+            forOperation:(PNOperationType)operation parsedAsError:(BOOL)isError
+         processingError:(NSError *)error completionBlock:(id)block;
 
 /**
  @brief  Used to handle prepared objects and pass them to the code.
@@ -476,7 +475,7 @@ static DDLogLevel ddLogLevel;
     return _parsers[@(operation)];
 }
 
-- (Class)resultClassForOperaion:(PNOperationType)operation {
+- (Class)resultClassForOperation:(PNOperationType)operation {
     
     Class class = [PNResult class];
     if (PNOperationResultClasses[operation]) {
@@ -487,7 +486,7 @@ static DDLogLevel ddLogLevel;
     return class;
 }
 
-- (Class)statusClassForOperaion:(PNOperationType)operation {
+- (Class)statusClassForOperation:(PNOperationType)operation {
     
     Class class = [PNStatus class];
     if (PNOperationStatusClasses[operation]) {
@@ -545,7 +544,8 @@ static DDLogLevel ddLogLevel;
     else {
         
         PNErrorStatus *badRequestStatus = [PNErrorStatus statusForOperation:operationType
-                                                                   category:PNBadRequestCategory];
+                                                                   category:PNBadRequestCategory
+                                                        withProcessingError:nil];
         [self.client appendClientInformation:badRequestStatus];
         if (block) {
             
@@ -656,7 +656,7 @@ static DDLogLevel ddLogLevel;
 - (NSURLSessionConfiguration *)configurationWithRequestTimeout:(NSTimeInterval)timeout
                                             maximumConnections:(NSInteger)maximumConnections {
     
-    // Prepare base configuration with predefined timeout values and maximym connections
+    // Prepare base configuration with predefined timeout values and maximum connections
     // to same host (basically how many requests can be handled at once).
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration ephemeralSessionConfiguration];
     configuration.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
@@ -694,7 +694,8 @@ static DDLogLevel ddLogLevel;
          completion:^(NSDictionary *parsedData) {
 
              [weakSelf handleParsedData:parsedData loadedWithTask:task forOperation:operation
-                                  error:parseError completionBlock:[block copy]];
+                          parsedAsError:parseError processingError:task.error
+                        completionBlock:[block copy]];
          }];
 }
 
@@ -709,7 +710,7 @@ static DDLogLevel ddLogLevel;
         
         __block BOOL parseError = NO;
         id errorDetails = nil;
-        NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
+        NSData *errorData = (error?: task.error).userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
         if (errorData) {
             
             errorDetails = [NSJSONSerialization JSONObjectWithData:errorData
@@ -717,30 +718,33 @@ static DDLogLevel ddLogLevel;
         }
         [self parseData:errorDetails withParser:[PNErrorParser class] error:&parseError
              completion:^(NSDictionary *parsedData) {
-                 
+
                  [self handleParsedData:parsedData loadedWithTask:task forOperation:operation
-                                  error:YES completionBlock:block];
+                          parsedAsError:YES processingError:(error?: task.error)
+                        completionBlock:[block copy]];
              }];
     }
 }
 
 - (void)handleParsedData:(NSDictionary *)data loadedWithTask:(NSURLSessionDataTask *)task
-            forOperation:(PNOperationType)operation error:(BOOL)isError completionBlock:(id)block {
+            forOperation:(PNOperationType)operation parsedAsError:(BOOL)isError
+         processingError:(NSError *)error completionBlock:(id)block {
     
     PNResult *result = nil;
     PNStatus *status = nil;
     if ([self operationExpectResult:operation] && !isError) {
         
-        result = [[self resultClassForOperaion:operation] objectForOperation:operation
+        result = [[self resultClassForOperation:operation] objectForOperation:operation
                                                            completedWithTaks:task
-                                                               processedData:data];
+                                                               processedData:data
+                                                             processingError:error];
     }
     
     if (isError || !data || ![self operationExpectResult:operation]){
         
-        Class statusClass = (isError ? [PNErrorStatus class] : [self statusClassForOperaion:operation]);
-        status = [statusClass objectForOperation:operation completedWithTaks:task
-                                   processedData:data];
+        Class statusClass = (isError ? [PNErrorStatus class] : [self statusClassForOperation:operation]);
+        status = (PNStatus *)[statusClass objectForOperation:operation completedWithTaks:task
+                                               processedData:data processingError:error];
     }
     if (result || status) {
 

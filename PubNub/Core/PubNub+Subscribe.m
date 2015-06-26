@@ -5,9 +5,6 @@
  */
 #import "PubNub+Subscribe.h"
 #import "PubNub+CorePrivate.h"
-#import "PNResult+Private.h"
-#import "PNStatus+Private.h"
-#import "PNStateListener.h"
 #import "PNSubscriber.h"
 #import "PNHelpers.h"
 

@@ -25,13 +25,15 @@
  
  @param operation Type of operation for which this status report.
  @param category  Operation processing status category.
+ @param error     Reference on processing error.
  
  @return Initialized and ready to use status object.
  
  @since 4.0
  */
 - (instancetype)initForOperation:(PNOperationType)operation
-                        category:(PNStatusCategory)category NS_DESIGNATED_INITIALIZER;
+                        category:(PNStatusCategory)category
+             withProcessingError:(NSError *)error NS_DESIGNATED_INITIALIZER;
 
 /**
  @brief  Initialize result instance in response to successful task completion.
@@ -42,6 +44,7 @@
                       network.
  @param processedData Reference on data which has been loaded and pre-processed by corresponding
                       parser.
+ @param error         Reference on processing error.
  
  @return Initialized and ready to use result instance.
  
@@ -49,7 +52,8 @@
  */
 - (instancetype)initForOperation:(PNOperationType)operation
                completedWithTaks:(NSURLSessionDataTask *)task
-                   processedData:(NSDictionary *)processedData NS_DESIGNATED_INITIALIZER;
+                   processedData:(NSDictionary *)processedData
+                 processingError:(NSError *)error NS_DESIGNATED_INITIALIZER;
 
 
 #pragma mark - Interpretation
@@ -116,15 +120,18 @@
 
 #pragma mark - Initialization and configuration
 
-+ (instancetype)statusForOperation:(PNOperationType)operation category:(PNStatusCategory)category {
++ (instancetype)statusForOperation:(PNOperationType)operation category:(PNStatusCategory)category
+               withProcessingError:(NSError *)error {
     
-    return [[self alloc] initForOperation:operation category:category];
+    return [[self alloc] initForOperation:operation category:category withProcessingError:error];
 }
 
-- (instancetype)initForOperation:(PNOperationType)operation category:(PNStatusCategory)category {
+- (instancetype)initForOperation:(PNOperationType)operation category:(PNStatusCategory)category
+             withProcessingError:(NSError *)error {
     
-    // Check whether intialization was successful or not.
-    if ((self = [super initForOperation:operation completedWithTaks:nil processedData:nil])) {
+    // Check whether initialization was successful or not.
+    if ((self = [super initForOperation:operation completedWithTaks:nil processedData:nil
+                        processingError:error])) {
         
         _category = category;
         if (_category == PNConnectedCategory || _category == PNReconnectedCategory ||
@@ -146,19 +153,20 @@
 
 - (instancetype)initForOperation:(PNOperationType)operation
                completedWithTaks:(NSURLSessionDataTask *)task
-                   processedData:(NSDictionary *)processedData {
+                   processedData:(NSDictionary *)processedData processingError:(NSError *)error {
     
     // Check whether initialization was successful or not.
-    if ((self = [super initForOperation:operation completedWithTaks:task processedData:processedData])) {
+    if ((self = [super initForOperation:operation completedWithTaks:task processedData:processedData
+                        processingError:error])) {
         
-        _error = (task.error != nil || self.statusCode != 200);
+        _error = (error != nil || self.statusCode != 200);
         if (_error && ![processedData count]) {
             
-            [self updateData:[self dataFromError:task.error]];
+            [self updateData:[self dataFromError:error]];
         }
         
         // Check whether status should represent acknowledgment or not.
-        if (self.statusCode == 200 && !task.error) {
+        if (self.statusCode == 200 && !_error) {
             
             _category = PNAcknowledgmentCategory;
         }
@@ -170,7 +178,7 @@
             // Extract status category from passed error object.
             if (_category == PNUnknownCategory) {
                 
-                _category = [self categoryTypeFromError:task.error];
+                _category = [self categoryTypeFromError:error];
             }
         }
         

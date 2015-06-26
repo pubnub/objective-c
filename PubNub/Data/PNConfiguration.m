@@ -80,7 +80,7 @@
 
 - (id)copyWithZone:(NSZone *)zone {
     
-    PNConfiguration *configuration = [[[self class] allocWithZone:zone] init];
+    PNConfiguration *configuration = [[PNConfiguration allocWithZone:zone] init];
     configuration.deviceID = self.deviceID;
     configuration.origin = self.origin;
     configuration.publishKey = self.publishKey;

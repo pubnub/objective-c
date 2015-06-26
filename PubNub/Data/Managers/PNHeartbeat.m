@@ -7,7 +7,6 @@
 #import "PubNub+PresencePrivate.h"
 #import "PubNub+CorePrivate.h"
 #import "PNConfiguration.h"
-#import "PNSubscriber.h"
 #import "PNHelpers.h"
 
 

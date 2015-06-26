@@ -7,7 +7,6 @@
 #import "PNRequestParameters.h"
 #import "PubNub+CorePrivate.h"
 #import "PNHelpers.h"
-#import "PNStatus.h"
 
 
 #pragma mark Protected interface declaration

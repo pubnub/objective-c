@@ -31,7 +31,7 @@
  
  @since 4.0
  */
-- (PNRequestParameters *)requestParametersForMessage:(id)message
+- (PNRequestParameters *)requestParametersForMessage:(NSString *)message
                                            toChannel:(NSString *)channel
                                           compressed:(BOOL)compressMessage
                                       storeInHistory:(BOOL)shouldStore;
@@ -56,12 +56,12 @@
 /**
  @brief  Try perform encryption of data which should be pushed to \b PubNub services.
  
- @param message Referebce on data which \b PNAES should try to encrypt.
+ @param message Reference on data which \b PNAES should try to encrypt.
  @param key     Reference on cipher key which should be used during encryption.
  @param error   Reference on pointer into which data encryption error will be passed.
  
  @return Encrypted Base64-encoded string or original message, if there is no \c key has been passed.
-         \c nil will be returned in case if encrytption failed.
+         \c nil will be returned in case if encryption failed.
  
  @since 4.0
  */
@@ -109,7 +109,7 @@
 }
 
 
-#pragma mark - Composited message publish
+#pragma mark - Composite message publish
 
 - (void)    publish:(id)message toChannel:(NSString *)channel
   mobilePushPayload:(NSDictionary *)payloads withCompletion:(PNPublishCompletionBlock)block {
@@ -270,7 +270,7 @@
 
 #pragma mark - Misc
 
-- (PNRequestParameters *)requestParametersForMessage:(id)message
+- (PNRequestParameters *)requestParametersForMessage:(NSString *)message
                                            toChannel:(NSString *)channel
                                           compressed:(BOOL)compressMessage
                                       storeInHistory:(BOOL)shouldStore {
@@ -290,13 +290,6 @@
         [parameters addPathComponent:(!compressMessage ? [PNString percentEscapedString:message] :
                                       @"")
                       forPlaceholder:@"{message}"];
-    }
-    NSData *publishData = nil;
-    if (compressMessage) {
-        
-        NSData *messageData = [message dataUsingEncoding:NSUTF8StringEncoding];
-        NSData *compressedBody = [PNGZIP GZIPDeflatedData:messageData];
-        publishData = (compressedBody?: [@"" dataUsingEncoding:NSUTF8StringEncoding]);
     }
     
     return parameters;

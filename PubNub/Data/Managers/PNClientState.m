@@ -5,7 +5,6 @@
  */
 #import "PNClientState.h"
 #import "PubNub+CorePrivate.h"
-#import "PNSubscriber.h"
 
 
 #pragma mark Protected interface declaration

@@ -3,7 +3,7 @@
 
 
 /**
- @brief      Class which allow to perform AES based encryption/descryption on provided data.
+ @brief      Class which allow to perform AES based encryption/decryption on provided data.
  @discussion Encryption works with native Foundation objects which internally will be translated
              to JSON object. Decryption process will return Foundation object in response on
              Base64 encoded string.

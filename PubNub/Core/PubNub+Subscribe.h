@@ -1,10 +1,13 @@
 #import <Foundation/Foundation.h>
-#import "PNSubscriberResults.h"
-#import "PNSubscribeStatus.h"
 #import "PubNub+Core.h"
 
 
-#pragma mark Protocols
+#pragma mark Class forward
+
+@class PNSubscribeStatus;
+
+
+#pragma mark - Protocols
 
 @protocol PNObjectEventListener;
 

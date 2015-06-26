@@ -8,10 +8,7 @@
 #import "PNRequestParameters.h"
 #import "PubNub+CorePrivate.h"
 #import "PNConfiguration.h"
-#import "PNClientState.h"
-#import "PNSubscriber.h"
 #import "PNHelpers.h"
-#import "PNStructures.h"
 
 
 #pragma mark Protected interface declaration

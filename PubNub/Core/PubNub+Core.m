@@ -5,17 +5,12 @@
  */
 #import "PubNub+CorePrivate.h"
 #import "PubNub+SubscribePrivate.h"
-#import "PubNub+PresencePrivate.h"
 #import "PNObjectEventListener.h"
 #import "PNRequestParameters.h"
 #import "PNResult+Private.h"
 #import "PNStatus+Private.h"
 #import "PNConfiguration.h"
-#import "PNStateListener.h"
 #import "PNReachability.h"
-#import "PNClientState.h"
-#import "PNSubscriber.h"
-#import "PNHeartbeat.h"
 #import "PNNetwork.h"
 #import "PNHelpers.h"
 
@@ -66,8 +61,8 @@ void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
 @property (nonatomic, strong) PNNetwork *subscriptionNetwork;
 
 /**
- @brief Stores reference on \b PubNub network manager configer to be used for 'non-subscription' API
-        group.
+ @brief Stores reference on \b PubNub network manager configured to be used for 'non-subscription'
+        API group.
  
  @since 4.0
  */
@@ -147,25 +142,11 @@ void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
 
 #pragma mark - Logger
 
-/**
- @brief  Called by Cocoa Lumberjack during initialization.
- 
- @return Desired logger level for \b PubNub client main class.
- 
- @since 4.0
- */
 + (DDLogLevel)ddLogLevel {
     
     return ddLogLevel;
 }
 
-/**
- @brief  Allow modify logger level used by Cocoa Lumberjack with logging macros.
- 
- @param logLevel New log level which should be used by logger.
- 
- @since 4.0
- */
 + (void)ddSetLogLevel:(DDLogLevel)logLevel {
     
     ddLogLevel = logLevel;
@@ -241,8 +222,7 @@ void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
                 callbackQueue:(dispatch_queue_t)callbackQueue
                    completion:(void(^)(PubNub *client))block {
     
-    PubNub *client = [[[self class] alloc] initWithConfiguration:configuration
-                                                   callbackQueue:callbackQueue];
+    PubNub *client = [PubNub clientWithConfiguration:configuration callbackQueue:callbackQueue];
     [client.subscriberManager inheritStateFromSubscriber:self.subscriberManager];
     [client.clientStateManager inheritStateFromState:self.clientStateManager];
     [client.listenersManager inheritStateFromListener:self.listenersManager];
@@ -308,7 +288,7 @@ void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
         // Check whether client unexpectedly disconnected while tried to subscribe or not.
         if (previousState != PNUnknownCategory && previousState != PNDisconnectedCategory) {
             
-            // Dispatching check block with small delay, which will alloow to fire reachability
+            // Dispatching check block with small delay, which will allow to fire reachability
             // change event.
             __weak __typeof(self) weakSelf = self;
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)),

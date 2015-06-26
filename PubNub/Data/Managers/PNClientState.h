@@ -10,7 +10,7 @@
  @brief      Current client state cache manager.
  @discussion When client use \b state API which allow to pull and push client state, this manager
              stores all information locally. Locally cached data used by \b PubNub subscriber and
-             presence modules to deliver actual cient state information to \b PubNub network.
+             presence modules to deliver actual client state information to \b PubNub network.
  
  @author Sergey Mamontov
  @since 4.0

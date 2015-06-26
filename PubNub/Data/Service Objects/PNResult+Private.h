@@ -47,6 +47,7 @@
                       network.
  @param processedData Reference on data which has been loaded and pre-processed by corresponding
                       parser.
+ @param error         Reference on request processing error.
  
  @return Constructed and ready to use result instance.
  
@@ -54,7 +55,7 @@
  */
 + (instancetype)objectForOperation:(PNOperationType)operation
                  completedWithTaks:(NSURLSessionDataTask *)task
-                     processedData:(NSDictionary *)processedData;
+                     processedData:(NSDictionary *)processedData processingError:(NSError *)error;
 
 /**
  @brief  Initialize result instance in response to successful task completion.
@@ -65,6 +66,7 @@
                       network.
  @param processedData Reference on data which has been loaded and pre-processed by corresponding
                       parser.
+ @param error         Reference on request processing error.
  
  @return Initialized and ready to use result instance.
  
@@ -72,7 +74,8 @@
  */
 - (instancetype)initForOperation:(PNOperationType)operation
                completedWithTaks:(NSURLSessionDataTask *)task
-                   processedData:(NSDictionary *)processedData;
+                   processedData:(NSDictionary *)processedData
+                 processingError:(NSError *)error;
 
 /**
  @brief      Make copy of current result object with mutated data which should be stored in it.

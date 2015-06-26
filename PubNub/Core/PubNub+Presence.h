@@ -1,14 +1,14 @@
 #import <Foundation/Foundation.h>
-#import "PNPresenceChannelGroupHereNowResult.h"
-#import "PNPresenceChannelHereNowResult.h"
-#import "PNPresenceGlobalHereNowResult.h"
-#import "PNPresenceWhereNowResult.h"
-#import "PNErrorStatus.h"
-#import "PNStructures.h"
 #import "PubNub+Core.h"
 
 
-#pragma mark Types
+#pragma mark Class forward
+
+@class PNPresenceChannelGroupHereNowResult, PNPresenceChannelHereNowResult,
+       PNPresenceGlobalHereNowResult, PNPresenceWhereNowResult, PNErrorStatus;
+
+
+#pragma mark - Types
 
 /**
  @brief  Here now completion block.

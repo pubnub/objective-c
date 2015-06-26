@@ -1,9 +1,32 @@
 #ifndef PubNub_h
 #define PubNub_h
 
+// Protocols
 #import "PNObjectEventListener.h"
-#import "PNErrorStatus.h"
 
+// Data objects
+#import "PNPresenceChannelGroupHereNowResult.h"
+#import "PNChannelGroupClientStateResult.h"
+#import "PNPresenceChannelHereNowResult.h"
+#import "PNPresenceGlobalHereNowResult.h"
+#import "PNChannelGroupChannelsResult.h"
+#import "PNAPNSEnabledChannelsResult.h"
+#import "PNChannelClientStateResult.h"
+#import "PNClientStateUpdateStatus.h"
+#import "PNPresenceWhereNowResult.h"
+#import "PNAcknowledgmentStatus.h"
+#import "PNChannelGroupsResult.h"
+#import "PNSubscriberResults.h"
+#import "PNSubscribeStatus.h"
+#import "PNPublishStatus.h"
+#import "PNHistoryResult.h"
+#import "PNServiceData.h"
+#import "PNErrorStatus.h"
+#import "PNTimeResult.h"
+#import "PNResult.h"
+#import "PNStatus.h"
+
+// API
 #import "PubNub+Core.h"
 #import "PubNub+ChannelGroup.h"
 #import "PubNub+Subscribe.h"

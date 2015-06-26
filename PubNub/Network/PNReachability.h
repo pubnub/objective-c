@@ -25,7 +25,7 @@
 ///------------------------------------------------
 
 /**
- @brief  Construct reachablity helper which will allow to identify current \b PubNub network state.
+ @brief  Construct reachability helper which will allow to identify current \b PubNub network state.
  
  @param client Reference on \b PubNub client for which this helper has been created.
  @param block  Reference on block which is called by helper to inform about current ping round

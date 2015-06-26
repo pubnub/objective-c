@@ -1,10 +1,11 @@
 #import <Foundation/Foundation.h>
-#import "PNChannelGroupClientStateResult.h"
-#import "PNChannelClientStateResult.h"
-#import "PNClientStateUpdateStatus.h"
-#import "PNErrorStatus.h"
 #import "PubNub+Core.h"
 
+
+#pragma mark Class forward
+
+@class PNChannelGroupClientStateResult, PNChannelClientStateResult, PNClientStateUpdateStatus,
+       PNErrorStatus;
 
 #pragma mark Types
 
@@ -95,7 +96,7 @@ typedef void(^PNChannelGroupStateCompletionBlock)(PNChannelGroupClientStateResul
  @param state   Reference on dictionary which should be bound to \c uuid on specified channel.
  @param uuid    Reference on unique user identifier for which state should be bound.
  @param channel Name of the channel which will store provided state information for \c uuid.
- @param block   State modification for user on cahnnel processing completion block which pass only 
+ @param block   State modification for user on channel processing completion block which pass only
                 one argument - request processing status to report about how data pushing was 
                 successful or not.
  
@@ -138,7 +139,7 @@ typedef void(^PNChannelGroupStateCompletionBlock)(PNChannelGroupClientStateResul
  @param state  Reference on dictionary which should be bound to \c uuid on channel group.
  @param uuid   Reference on unique user identifier for which state should be bound.
  @param group  Name of channel group which will store provided state information for \c uuid.
- @param block  State modification for user on cahnnel processing completion block which pass only
+ @param block  State modification for user on channel processing completion block which pass only
                one argument - request processing status to report about how data pushing was 
                successful or not.
  
@@ -185,7 +186,7 @@ typedef void(^PNChannelGroupStateCompletionBlock)(PNChannelGroupClientStateResul
 
  @param uuid    Reference on unique user identifier for which state should be retrieved.
  @param channel Name of channel from which state information for \c uuid will be pulled out.
- @param block   State audition for user on cahnnel processing completion block which pass two
+ @param block   State audition for user on channel processing completion block which pass two
                 arguments: \c result - in case of successful request processing \c data field will
                 contain results of client state retrieve operation; \c status - in case if error
                 occurred during request processing.
@@ -229,7 +230,7 @@ typedef void(^PNChannelGroupStateCompletionBlock)(PNChannelGroupClientStateResul
 
  @param uuid  Reference on unique user identifier for which state should be retrieved.
  @param group Name of channel group from which state information for \c uuid will be pulled out.
- @param block State audition for user on cahnnel group processing completion block which pass two 
+ @param block State audition for user on channel group processing completion block which pass two
               arguments: \c result - in case of successful request processing \c data field will 
               contain results of client state retrieve operation; \c status - in case if error 
               occurred during request processing.

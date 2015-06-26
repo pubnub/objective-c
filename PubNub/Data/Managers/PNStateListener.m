@@ -25,7 +25,7 @@
 
 /**
  @brief  Stores list of listeners which would like to be notified when new message arrive from
-         remote data feed objects on which client subscrubed at this moment.
+         remote data feed objects on which client subscribed at this moment.
  
  @return Hash table with list of new message listeners.
  
@@ -35,7 +35,7 @@
 
 /**
  @brief  Stores list of listeners which would like to be notified when new presence event arrive 
-         from remote data feed objects on which client subscrubed at this moment.
+         from remote data feed objects on which client subscribed at this moment.
  
  @return Hash table with list of presence event listeners.
  
@@ -93,7 +93,7 @@
 
 - (instancetype)initForClient:(PubNub *)client {
     
-    // Check whether initializtion was successful or not.
+    // Check whether initialization was successful or not.
     if ((self = [super init])) {
         
         _client = client;

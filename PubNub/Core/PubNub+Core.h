@@ -98,7 +98,7 @@
 
  @param configuration Reference on instance which store all user-provided information about how
                       client should operate and handle events.
- @param callbackQueue Reference on queue which should be used by client fot comletion block and 
+ @param callbackQueue Reference on queue which should be used by client fot completion block and
                       delegate calls.
 
  @return Configured and ready to use \b PubNub client.
@@ -138,7 +138,7 @@
                       receiver.
  @param block         Copy completion block which will pass only one argument - reference on new 
                       \b PubNub client instance with updated configuration. Block will be called on
-                      custom queue (if has been passed to receiver during instantiatio) or main 
+                      custom queue (if has been passed to receiver during instantiation) or main
                       queue.
  
  @since 4.0
@@ -176,11 +176,11 @@
  
  @param configuration Reference on configuration which should be used to create new instance from 
                       receiver.
- @param callbackQueue Reference on queue which should be used by client fot comletion block and 
+ @param callbackQueue Reference on queue which should be used by client fot completion block and
                       delegate calls.
  @param block         Copy completion block which will pass only one argument - reference on new 
                       \b PubNub client instance with updated configuration. Block will be called on
-                      custom queue (if has been passed to receiver during instantiatio) or main 
+                      custom queue (if has been passed to receiver during instantiation) or main
                       queue.
  
  @since 4.0

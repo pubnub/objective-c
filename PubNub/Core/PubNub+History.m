@@ -8,6 +8,7 @@
 #import "PubNub+CorePrivate.h"
 #import "PNResult+Private.h"
 #import "PNStatus+Private.h"
+#import "PNHistoryResult.h"
 #import "PNHelpers.h"
 
 
@@ -152,11 +153,12 @@
 - (void)handleHistoryResult:(PNHistoryResult *)result withStatus:(PNErrorStatus *)status
                  completion:(PNHistoryCompletionBlock)block {
 
-    if (result && ((NSDictionary *)result.data)[@"decryptError"]) {
+    if (result && (result.serviceData)[@"decryptError"]) {
 
-        status = (PNErrorStatus *)[PNStatus statusForOperation:PNHistoryOperation
-                                                      category:PNDecryptionErrorCategory];
-        NSMutableDictionary *updatedData = [result.data mutableCopy];
+        status = (PNErrorStatus *) [PNStatus statusForOperation:PNHistoryOperation
+                                                       category:PNDecryptionErrorCategory
+                                            withProcessingError:nil];
+        NSMutableDictionary *updatedData = [result.serviceData mutableCopy];
         [updatedData removeObjectForKey:@"decryptError"];
         [status updateData:updatedData];
     }

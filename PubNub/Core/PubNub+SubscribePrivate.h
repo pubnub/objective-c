@@ -4,7 +4,6 @@
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "PubNub+Subscribe.h"
-#import "PNSubscriber.h"
 
 
 #pragma mark Private interface declaration
@@ -49,7 +48,6 @@
  */
 - (void)unsubscribeFromChannelGroups:(NSArray *)groups withPresence:(BOOL)shouldObservePresence
                      completion:(PNSubscriberCompletionBlock)block;
-
 
 #pragma mark -
 

@@ -49,7 +49,7 @@ static const void * kPNAESInitializationVector = "0123456789012345";
                   decrypted.
  @param cipherKey Reference on key which should be used during encryption/decryption process to get
                   expected results.
- @param operation Encryption (\c kCCEncrypt) or decryptuib (\c kCCDecrypt) operation type.
+ @param operation Encryption (\c kCCEncrypt) or decryption (\c kCCDecrypt) operation type.
  @param status    Data processing resulting status (one of \c CCCryptorStatus fields).
  
  @return Output from processed \c data using provided \c cipherKey for concrete \c operation.

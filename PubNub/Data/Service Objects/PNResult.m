@@ -42,15 +42,16 @@
 
 + (instancetype)objectForOperation:(PNOperationType)operation
                  completedWithTaks:(NSURLSessionDataTask *)task
-                     processedData:(NSDictionary *)processedData {
+                     processedData:(NSDictionary *)processedData processingError:(NSError *)error {
     
     return [[self alloc] initForOperation:operation completedWithTaks:task
-                            processedData:processedData];
+                            processedData:processedData processingError:error];
 }
 
 - (instancetype)initForOperation:(PNOperationType)operation
                completedWithTaks:(NSURLSessionDataTask *)task
-                   processedData:(NSDictionary *)processedData {
+                   processedData:(NSDictionary *)processedData
+                 processingError:(NSError *)__unused error {
     
     // Check whether initialization was successful or not.
     if ((self = [super init])) {

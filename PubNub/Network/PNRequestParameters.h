@@ -26,7 +26,7 @@
 @property (nonatomic, readonly) NSDictionary *pathComponents;
 
 /**
- @brief  Stores reference on key/value pairst which should be expanded in query string.
+ @brief  Stores reference on key/value pairs which should be expanded in query string.
  
  @since 4.0
  */
@@ -52,7 +52,7 @@
  @brief      Add resource path components in placeholder/value format with dictionary.
  @discussion Corresponding placeholder will be placed in request template with specified value.
  
- @param components Disctionary with placeholder name / value pairs.
+ @param components Dictionary with placeholder name / value pairs.
  
  @since 4.0
  */
@@ -76,7 +76,7 @@
 /**
  @brief      Add query parameters in field name / value format with dictionary.
  
- @param parameters Disctionary with field name / value pairs.
+ @param parameters Dictionary with field name / value pairs.
  
  @since 4.0
  */

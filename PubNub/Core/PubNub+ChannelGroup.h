@@ -1,12 +1,13 @@
 #import <Foundation/Foundation.h>
-#import "PNChannelGroupChannelsResult.h"
-#import "PNAcknowledgmentStatus.h"
-#import "PNChannelGroupsResult.h"
-#import "PNErrorStatus.h"
 #import "PubNub+Core.h"
 
 
-#pragma mark Types
+#pragma mark Class forward
+
+@class PNChannelGroupChannelsResult, PNAcknowledgmentStatus, PNChannelGroupsResult, PNErrorStatus;
+
+
+#pragma mark - Types
 
 /**
  @brief  Channel groups list audition completion block.
@@ -170,7 +171,7 @@ typedef void(^PNChannelGroupChangeCompletionBlock)(PNAcknowledgmentStatus *statu
      // Request processing failed.
      else {
      
-        // Handle channels list modificatoin for group error. Check 'category' property to find out 
+        // Handle channels list modification for group error. Check 'category' property to find out
         // possible issue because of which request did fail.
         //
         // Request can be resend using: [status retry];
@@ -216,7 +217,7 @@ typedef void(^PNChannelGroupChangeCompletionBlock)(PNAcknowledgmentStatus *statu
      // Request processing failed.
      else {
      
-        // Handle channels list modificatoin for group error. Check 'category' property to find out 
+        // Handle channels list modification for group error. Check 'category' property to find out
         // possible issue because of which request did fail.
         //
         // Request can be resend using: [status retry];

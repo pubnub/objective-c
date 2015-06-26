@@ -4,7 +4,7 @@
 
 #pragma mark Class forward
 
-@class PNErrorStatus, PubNub;
+@class PNPresenceEventResult, PNMessageResult, PNErrorStatus, PubNub;
 
 
 /**

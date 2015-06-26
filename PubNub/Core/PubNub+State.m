@@ -4,11 +4,11 @@
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "PubNub+State.h"
+#import "PNClientStateUpdateStatus.h"
 #import "PNRequestParameters.h"
 #import "PubNub+CorePrivate.h"
 #import "PNStatus+Private.h"
 #import "PNConfiguration.h"
-#import "PNClientState.h"
 #import "PNHelpers.h"
 
 
@@ -27,7 +27,7 @@
  @param onChannel Whether state has been provided for channel or channel group.
  @param object    Name of remote data object which will store provided state information for 
                   \c uuid.
- @param block     State modification for user on cahnnel processing completion block which pass only
+ @param block     State modification for user on channel processing completion block which pass only
                   one argument - request processing status to report about how data pushing was 
                   successful or not.
  
@@ -62,7 +62,7 @@
  @param status Reference on state modification status instance.
  @param uuid   Reference on unique user identifier for which state should be updated.
  @param object Name of remote data object for which state information for \c uuid had been bound.
- @param block  State modification for user on cahnnel processing completion block which pass only
+ @param block  State modification for user on channel processing completion block which pass only
                one argument - request processing status to report about how data pushing was
                successful or not.
 
@@ -80,7 +80,7 @@
  @param isChannel Whether received state information for channel or not.
  @param object    Name of remote data object from which state information for \c uuid will be pulled
                   out.
- @param block     State audition for user on cahnnel processing completion block which pass two
+ @param block     State audition for user on channel processing completion block which pass two
                   arguments: \c result - in case of successful request processing \c data field will
                   contain results of client state retrieve operation; \c status - in case if error
                   occurred during request processing.

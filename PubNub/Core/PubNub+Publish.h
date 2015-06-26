@@ -1,6 +1,10 @@
 #import <Foundation/Foundation.h>
-#import "PNPublishStatus.h"
 #import "PubNub+Core.h"
+
+
+#pragma mark Class forward
+
+@class PNPublishStatus;
 
 
 #pragma mark - Types
@@ -28,7 +32,7 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
 
 /**
  @brief      \b PubNub client core class extension to provide access to 'publish' API group.
- @discussion Set of API which allow to push data to \b PubNub service. Data pusched to remote data
+ @discussion Set of API which allow to push data to \b PubNub service. Data pushed to remote data
              objects called 'channels' and then delivered on their live feeds to all subscribers.
  
  @author Sergey Mamontov
@@ -250,7 +254,7 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
 
 
 ///------------------------------------------------
-/// @name Composited message publish
+/// @name Composite message publish
 ///------------------------------------------------
 
 /**
@@ -507,7 +511,7 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
  
  @param message Message for which size should be calculated.
  @param channel Name of the channel to which message should be sent (it is part of request URI).
- @param block   Referecnce on block which should be sent, when message size calculation will be
+ @param block   Reference on block which should be sent, when message size calculation will be
                 completed.
  
  @since 4.0
@@ -546,7 +550,7 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
                         URI).
  @param compressMessage \c YES in case if message should be compressed before sending to \b PubNub
                         network.
- @param block           Referecnce on block which should be sent, when message size calculation will
+ @param block           Reference on block which should be sent, when message size calculation will
                         be completed.
  
  @since 4.0
@@ -583,7 +587,7 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
  @param message     Message for which size should be calculated.
  @param channel     Name of the channel to which message should be sent (it is part of request URI).
  @param shouldStore \c YES in case if message should be placed into history storage.
- @param block       Referecnce on block which should be sent, when message size calculation will be
+ @param block       Reference on block which should be sent, when message size calculation will be
                     completed.
  
  @since 4.0
@@ -624,7 +628,7 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
                         network.
  @param shouldStore     \c NO in case if message shouldn't be available after it has been sent via
                         history storage API methods group.
- @param block           Referecnce on block which should be sent, when message size calculation will
+ @param block           Reference on block which should be sent, when message size calculation will
                         be completed.
  
  @since 4.0

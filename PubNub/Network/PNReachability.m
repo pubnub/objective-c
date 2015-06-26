@@ -28,7 +28,7 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNReachabilityLogLevel;
 #pragma mark - Information
 
 /**
- @brief  Reference on client which created this reachbility helper instance and will be used to 
+ @brief  Reference on client which created this reachability helper instance and will be used to
          call \b time API for \c ping requests.
  
  @since 4.0
@@ -70,7 +70,7 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNReachabilityLogLevel;
 #pragma mark - Initialization and Configuration
 
 /**
- @brief  Initialize reachablity helper which will allow to identify current \b PubNub network state.
+ @brief  Initialize reachability helper which will allow to identify current \b PubNub network state.
  
  @param client Reference on \b PubNub client for which this helper has been created.
  @param block  Reference on block which is called by helper to inform about current ping round

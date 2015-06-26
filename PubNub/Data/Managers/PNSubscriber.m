@@ -4,19 +4,13 @@
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "PNSubscriber.h"
-#import "PubNub+PresencePrivate.h"
-#import "PNRequestParameters.h"
 #import "PNSubscriberResults.h"
+#import "PNRequestParameters.h"
 #import "PubNub+CorePrivate.h"
-#import "PNSubscribeStatus.h"
 #import "PNStatus+Private.h"
-#import "PubNub+Subscribe.h"
 #import "PNResult+Private.h"
-#import "PNStateListener.h"
 #import "PNConfiguration.h"
-#import "PNClientState.h"
 #import <objc/runtime.h>
-#import "PNHeartbeat.h"
 #import "PNHelpers.h"
 
 
@@ -59,23 +53,23 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     
     /**
      @brief  State set at the moment when client lost connection or experienced other issues with
-             communication etsablished with \b PubNub service.
+             communication established with \b PubNub service.
      
      @since 4.0
      */
     PNDisconnectedUnexpectedlySubscriberState,
     
     /**
-     @brief  State set at the moment when client received response with 200 status code for subcribe
-             request with TT 0.
+     @brief  State set at the moment when client received response with 200 status code for
+             subscribe request with TT 0.
      
      @since 4.0
      */
     PNConnectedSubscriberState,
     
     /**
-     @brief  State set at the moment when client received response with 403 status code for subcribe
-             request.
+     @brief  State set at the moment when client received response with 403 status code for
+             subscribe request.
      
      @since 4.0
      */
@@ -162,7 +156,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 @property (nonatomic, strong) dispatch_queue_t resourceAccessQueue;
 
 /**
- @brief      Stores reference on GCD timer used to re-issue subscrbibe request.
+ @brief      Stores reference on GCD timer used to re-issue subscribe request.
  @discussion Timer activated in cases if previous subscribe loop failed with category type which
              can be temporary.
  
@@ -171,7 +165,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 @property (nonatomic, strong) dispatch_source_t retryTimer;
 
 
-#pragma mark - Initialization and Configurtion
+#pragma mark - Initialization and Configuration
 
 /**
  @brief  Initialize subscribe loop manager for concrete \b PubNub client.
@@ -288,7 +282,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 - (void)handleNewMessage:(PNMessageResult *)data;
 
 /**
- @brief  Process presence event which just has been receoved from \b PubNub service through presence
+ @brief  Process presence event which just has been received from \b PubNub service through presence
          live feeds on which client subscribed at this moment.
  
  @param data      Reference on result data which hold information about request on which this 
@@ -302,7 +296,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 #pragma mark - Misc
 
 /**
- @brief  Compose request parameterts instance basing on current subscriber state.
+ @brief  Compose request parameters instance basing on current subscriber state.
  
  @param state Reference on merged client state which should be used in request.
  
@@ -516,7 +510,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     return lastTimeToken;
 }
 
-- (void)setlastTimeToken:(NSNumber *)lastTimeToken {
+- (void)setLastTimeToken:(NSNumber *)lastTimeToken {
     
     dispatch_barrier_async(self.resourceAccessQueue, ^{
         
@@ -575,12 +569,12 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                 targetState = PNInitializedSubscriberState;
             }
         }
-        // Check whether transit to 'access deined' state.
+        // Check whether transit to 'access denied' state.
         else if (targetState == PNAccessRightsErrorSubscriberState) {
             
             self.mayRequireSubscriptionRestore = NO;
             
-            // Check whether client transit from non-'access deined' -> 'access deined' state.
+            // Check whether client transit from non-'access denied' -> 'access denied' state.
             shouldHandleTransition = YES;
             category = PNAccessDeniedCategory;
         }
@@ -595,7 +589,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
             PNStatus *targetStatus = (PNStatus *)status;
             if (!targetStatus) {
                 
-                targetStatus = [PNStatus statusForOperation:PNSubscribeOperation category:category];
+                targetStatus = [PNStatus statusForOperation:PNSubscribeOperation category:category
+                                        withProcessingError:nil];
             }
             [targetStatus updateCategory:category];
             [self appendSubscriberInformation:targetStatus];
@@ -608,7 +603,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
             #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
             [self.client.listenersManager notifyWithBlock:^{
                 
-                [self.client.listenersManager notifyStatusChange:status];
+                [self.client.listenersManager notifyStatusChange:(PNSubscribeStatus *)targetStatus];
             }];
             #pragma clang diagnostic pop
         }
@@ -701,7 +696,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     else {
         
         PNStatus *status = [PNStatus statusForOperation:PNSubscribeOperation
-                                               category:PNDisconnectedCategory];
+                                               category:PNDisconnectedCategory
+                                    withProcessingError:nil];
         [self.client appendClientInformation:status];
         self.lastTimeToken = @(0);
         self.currentTimeToken = @(0);
@@ -758,7 +754,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     [self.client.clientStateManager removeStateForObjects:objects];
     NSArray *objectWithOutPresence = [PNChannel objectsWithOutPresenceFrom:objects];
     PNStatus *successStatus = [PNStatus statusForOperation:PNUnsubscribeOperation
-                                                  category:PNAcknowledgmentCategory];
+                                                  category:PNAcknowledgmentCategory
+                                       withProcessingError:nil];
     [self.client appendClientInformation:successStatus];
     __weak __typeof(self) weakSelf = self;
     
@@ -1042,7 +1039,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 
 - (void)handleLiveFeedEvents:(PNSubscribeStatus *)status {
     
-    NSArray *events = [(NSArray *)((NSDictionary *)status.data)[@"events"] copy];
+    NSArray *events = [(NSArray *)(status.serviceData)[@"events"] copy];
     if ([events count]) {
         
         // Silence static analyzer warnings.
@@ -1078,11 +1075,11 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                     }
                 }
                 
-                PNResult *eventResultObject = [(PNStatus *)status copyWithMutatedData:event];
+                id eventResultObject = [status copyWithMutatedData:event];
                 if (isPresenceEvent) {
                     
                     object_setClass(eventResultObject, [PNPresenceEventResult class]);
-                    [self handleNewPresenceEvent:(PNPresenceEventResult *)eventResultObject];
+                    [self handleNewPresenceEvent:((PNPresenceEventResult *)eventResultObject)];
                 }
                 else {
                     
@@ -1093,7 +1090,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         }];
         #pragma clang diagnostic pop
     }
-    [status updateData:[(NSDictionary *)status.data dictionaryWithValuesForKeys:@[@"timetoken"]]];
+    [status updateData:[status.serviceData dictionaryWithValuesForKeys:@[@"timetoken"]]];
 }
 
 - (void)handleNewMessage:(PNMessageResult *)data {
@@ -1102,11 +1099,11 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     if (data) {
         
         DDLogResult([[self class] ddLogLevel], @"<PubNub> %@", [(PNResult *)data stringifiedRepresentation]);
-        if ([((NSDictionary *)data.data)[@"decryptError"] boolValue]) {
+        if ([(data.serviceData)[@"decryptError"] boolValue]) {
             
             status = [PNStatus statusForOperation:PNSubscribeOperation
-                                         category:PNDecryptionErrorCategory];
-            NSMutableDictionary *updatedData = [data.data mutableCopy];
+                                         category:PNDecryptionErrorCategory withProcessingError:nil];
+            NSMutableDictionary *updatedData = [data.serviceData mutableCopy];
             [updatedData removeObjectForKey:@"decryptError"];
             [status updateData:updatedData];
         }

@@ -4,7 +4,6 @@
 
 #pragma mark Log macro declaration
 
-//[[self class] ddLogLevel]
 #define DDLogClientInfo(pnll, frmt, ...) LOG_MAYBE(NO, pnll, (DDLogFlag)PNInfoLogLevel, 0, nil, \
                                                    __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
 #define DDLogReachability(pnll, frmt, ...) LOG_MAYBE(NO, pnll, (DDLogFlag)PNReachabilityLogLevel, 0, \

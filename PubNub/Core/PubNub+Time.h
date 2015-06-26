@@ -1,10 +1,13 @@
 #import <Foundation/Foundation.h>
-#import "PNErrorStatus.h"
-#import "PNTimeResult.h"
 #import "PubNub+Core.h"
 
 
-#pragma mark Types
+#pragma mark Class forward
+
+@class PNErrorStatus, PNTimeResult;
+
+
+#pragma mark - Types
 
 /**
  @brief  Time request completion block.
