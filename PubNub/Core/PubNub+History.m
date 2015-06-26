@@ -6,6 +6,7 @@
 #import "PubNub+History.h"
 #import "PNRequestParameters.h"
 #import "PubNub+CorePrivate.h"
+#import "PNSubscribeStatus.h"
 #import "PNResult+Private.h"
 #import "PNStatus+Private.h"
 #import "PNHistoryResult.h"

@@ -7,6 +7,7 @@
 #import "PubNub+SubscribePrivate.h"
 #import "PNObjectEventListener.h"
 #import "PNRequestParameters.h"
+#import "PNSubscribeStatus.h"
 #import "PNResult+Private.h"
 #import "PNStatus+Private.h"
 #import "PNConfiguration.h"

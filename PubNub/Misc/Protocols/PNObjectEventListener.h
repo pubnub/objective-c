@@ -1,6 +1,10 @@
 #import <Foundation/Foundation.h>
 #import "PubNub+Subscribe.h"
-#import "PNErrorStatus.h"
+
+
+#pragma mark Class forward
+
+@class PNPresenceEventResult, PNSubscribeStatus, PNMessageResult, PNErrorStatus;
 
 
 /**
