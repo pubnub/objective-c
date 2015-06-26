@@ -146,7 +146,8 @@ You should now have a skeleton PubNub project.
 
 	PNConfiguration *config = [PNConfiguration configurationWithPublishKey:@"demo" subscribeKey:@"demo"];
     self.client = [PubNub clientWithConfiguration:config];
-    [self.client addListeners:@[self]];
+        [self.client addListener:self];
+
 
     [self.client subscribeToChannels:@[@"myChannel"] withPresence:NO];        
         
