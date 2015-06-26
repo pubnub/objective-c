@@ -3,7 +3,6 @@ namespace :test do
   desc "Run the PubNub Integration Tests for iOS"
   task :ios do
     simulators = get_ios_simulators
-    puts simulators
     destinations = Array.new
     # collect all sims except for "Resizable sims"
     simulators.each { |version, available_simulators|
