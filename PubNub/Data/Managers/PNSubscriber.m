@@ -924,7 +924,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
             ((PNStatus *)status).automaticallyRetry = YES;
             ((PNStatus *)status).retryCancelBlock = ^{
                 
-                DDLogAPICall(@"<PubNub> Cancel retry");
+                DDLogAPICall([[weakSelf class] ddLogLevel], @"<PubNub> Cancel retry");
                 [weakSelf stopRetryTimer];
             };
             [self startRetryTimer];
@@ -1101,7 +1101,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     PNStatus *status = nil;
     if (data) {
         
-        DDLogResult(@"<PubNub> %@", [(PNResult *)data stringifiedRepresentation]);
+        DDLogResult([[self class] ddLogLevel], @"<PubNub> %@", [(PNResult *)data stringifiedRepresentation]);
         if ([((NSDictionary *)data.data)[@"decryptError"] boolValue]) {
             
             status = [PNStatus statusForOperation:PNSubscribeOperation

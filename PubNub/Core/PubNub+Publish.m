@@ -173,7 +173,7 @@
             publishData = (compressedBody?: [@"" dataUsingEncoding:NSUTF8StringEncoding]);
         }
         
-        DDLogAPICall(@"<PubNub> Publish%@ message to '%@' channel%@%@",
+        DDLogAPICall([[self class] ddLogLevel], @"<PubNub> Publish%@ message to '%@' channel%@%@",
                      (compressed ? @" compressed" : @""), (channel?: @"<error>"),
                      (!shouldStore ? @" which won't be saved in hisotry" : @""),
                      (!compressed ? [NSString stringWithFormat:@": %@",

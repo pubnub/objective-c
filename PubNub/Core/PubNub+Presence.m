@@ -123,12 +123,12 @@
     
     if (![object length]) {
         
-        DDLogAPICall(@"<PubNub> Global 'here now' information with %@ data.",
+        DDLogAPICall([[self class] ddLogLevel], @"<PubNub> Global 'here now' information with %@ data.",
                      PNHereNowDataStrings[level]);
     }
     else {
         
-        DDLogAPICall(@"<PubNub> Channel%@ 'here now' information for %@ with %@ data.",
+        DDLogAPICall([[self class] ddLogLevel], @"<PubNub> Channel%@ 'here now' information for %@ with %@ data.",
                      (!forChannel ? @" group" : @""), (object?: @"<error>"),
                      PNHereNowDataStrings[level]);
     }
@@ -158,7 +158,8 @@
         
         [parameters addPathComponent:[PNString percentEscapedString:uuid] forPlaceholder:@"{uuid}"];
     }
-    DDLogAPICall(@"<PubNub> 'Where now' presence information for %@.", (uuid?: @"<error>"));
+    DDLogAPICall([[self class] ddLogLevel], @"<PubNub> 'Where now' presence information for %@.",
+                 (uuid?: @"<error>"));
 
     __weak __typeof(self) weakSelf = self;
     [self processOperation:PNWhereNowOperation withParameters:parameters
@@ -207,7 +208,7 @@
                                      forFieldName:@"state"];
                 }
             }
-            DDLogAPICall(@"<PubNub> Heartbeat for channels %@ and groups %@.",
+            DDLogAPICall([[self class] ddLogLevel], @"<PubNub> Heartbeat for channels %@ and groups %@.",
                          [channels componentsJoinedByString:@", "],
                          [groups componentsJoinedByString:@", "]);
             

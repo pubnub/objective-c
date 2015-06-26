@@ -154,14 +154,14 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNReachabilityLogLevel;
             AFNetworkReachabilityStatus previousStatus = weakSelf.reachabilityStatus;
             if (status == AFNetworkReachabilityStatusReachableViaWiFi) {
                 
-                DDLogReachability(@"<PubNub> Network available via WiFi");
+                DDLogReachability([[weakSelf class] ddLogLevel], @"<PubNub> Network available via WiFi");
             } else if (status == AFNetworkReachabilityStatusReachableViaWWAN) {
                 
-                DDLogReachability(@"<PubNub> Network available via WWAN");
+                DDLogReachability([[weakSelf class] ddLogLevel], @"<PubNub> Network available via WWAN");
             } else if (status == AFNetworkReachabilityStatusNotReachable &&
                        weakSelf.reachabilityStatus != status) {
                 
-                DDLogReachability(@"<PubNub> Network not available");
+                DDLogReachability([[weakSelf class] ddLogLevel], @"<PubNub> Network not available");
             }
             
             weakSelf.reachabilityStatus = status;
@@ -169,13 +169,13 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNReachabilityLogLevel;
                 status != AFNetworkReachabilityStatusNotReachable &&
                 status != AFNetworkReachabilityStatusUnknown) {
                 
-                DDLogReachability(@"<PubNub> Connection restored.");
+                DDLogReachability([[weakSelf class] ddLogLevel], @"<PubNub> Connection restored.");
             }
             else if (status == AFNetworkReachabilityStatusNotReachable &&
                      previousStatus != AFNetworkReachabilityStatusNotReachable &&
                      previousStatus != AFNetworkReachabilityStatusUnknown) {
                 
-                DDLogReachability(@"<PubNub> Connection went down.");
+                DDLogReachability([[weakSelf class] ddLogLevel], @"<PubNub> Connection went down.");
             }
                 
             // Launch service ping process.
@@ -183,7 +183,8 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNReachabilityLogLevel;
             #pragma clang diagnostic pop
         }];
         
-        DDLogReachability(@"<PubNub> Start reachability monitor for: %@", client.configuration.origin);
+        DDLogReachability([[self class] ddLogLevel], @"<PubNub> Start reachability monitor for: %@",
+                          client.configuration.origin);
         [_reachabilityManager startMonitoring];
     }
     

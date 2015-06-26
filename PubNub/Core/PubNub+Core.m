@@ -427,18 +427,18 @@ void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
     
     if (result) {
             
-        DDLogResult(@"<PubNub> %@", [result stringifiedRepresentation]);
+        DDLogResult([[self class] ddLogLevel], @"<PubNub> %@", [result stringifiedRepresentation]);
     }
     
     if (status) {
         
         if (status.isError) {
             
-            DDLogFailureStatus(@"<PubNub> %@", [status stringifiedRepresentation]);
+            DDLogFailureStatus([[self class] ddLogLevel], @"<PubNub> %@", [status stringifiedRepresentation]);
         }
         else {
             
-            DDLogStatus(@"<PubNub> %@", [status stringifiedRepresentation]);
+            DDLogStatus([[self class] ddLogLevel], @"<PubNub> %@", [status stringifiedRepresentation]);
         }
     }
 
@@ -474,11 +474,11 @@ void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
     
     if ([notification.name isEqualToString:UIApplicationDidEnterBackgroundNotification]) {
         
-        DDLogClientInfo(@"<PubNub> Did enter background execution context.");
+        DDLogClientInfo([[self class] ddLogLevel], @"<PubNub> Did enter background execution context.");
     }
     else if ([notification.name isEqualToString:UIApplicationWillEnterForegroundNotification]) {
         
-        DDLogClientInfo(@"<PubNub> Will enter foreground execution context.");
+        DDLogClientInfo([[self class] ddLogLevel], @"<PubNub> Will enter foreground execution context.");
     }
 }
 

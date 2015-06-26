@@ -517,7 +517,7 @@ static DDLogLevel ddLogLevel;
     NSURL *requestURL = [PNURLBuilder URLForOperation:operationType withParameters:parameters];
     if (requestURL) {
     
-        DDLogRequest(@"<PubNub> %@ %@", ([data length] ? @"POST" : @"GET"),
+        DDLogRequest([[self class] ddLogLevel], @"<PubNub> %@ %@", ([data length] ? @"POST" : @"GET"),
                      [requestURL absoluteString]);
         
         __weak __typeof(self) weakSelf = self;
