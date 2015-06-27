@@ -130,7 +130,7 @@
  [self.client copyWithConfiguration:configuration completion:^(PubNub *client) {
     
     // Store reference on new client with updated configuration.
-    weakSelf.client - client;
+    weakSelf.client = client;
  }];
  @endcode
  
@@ -170,7 +170,7 @@
  [self.client copyWithConfiguration:configuration callbackQueue:queue completion:^(PubNub *client) {
     
     // Store reference on new client with updated configuration.
-    weakSelf.client - client;
+    weakSelf.client = client;
  }];
  @endcode
  
