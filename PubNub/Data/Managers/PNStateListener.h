@@ -103,12 +103,10 @@
  
  @param message Reference on event object which provide information about operation type and service
                 response for it.
- @param status  Additional status object used to notify listenres about possible issues with
-                received message.
  
  @since 4.0
  */
-- (void)notifyMessage:(PNMessageResult *)message withStatus:(PNErrorStatus *)status;
+- (void)notifyMessage:(PNMessageResult *)message;
 
 /**
  @brief   Notify all presence event listeners about new event.

@@ -120,7 +120,7 @@
     
     dispatch_async(self.resourceAccessQueue, ^{
         
-        if ([listener respondsToSelector:@selector(client:didReceiveMessage:withStatus:)]) {
+        if ([listener respondsToSelector:@selector(client:didReceiveMessage:)]) {
             
             [self.messageListeners addObject:listener];
         }
@@ -164,7 +164,7 @@
     dispatch_async(self.resourceAccessQueue, block);
 }
 
-- (void)notifyMessage:(PNMessageResult *)message withStatus:(PNErrorStatus *)status {
+- (void)notifyMessage:(PNMessageResult *)message {
     
     NSArray *listeners = [self.messageListeners allObjects];
     // Silence static analyzer warnings.
@@ -178,7 +178,7 @@
         
         for (id <PNObjectEventListener> listener in listeners) {
             
-            [listener client:self.client didReceiveMessage:message withStatus:status];
+            [listener client:self.client didReceiveMessage:message];
         }
     });
     #pragma clang diagnostic pop

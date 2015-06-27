@@ -160,11 +160,10 @@ You should now have a skeleton PubNub project.
 * Add a message listener method to your AppDelegate.m:
 
 ```objective-c
-- (void)client:(PubNub *)client didReceiveMessage:(PNMessageResult *)message withStatus:(PNErrorStatus *)status {
+- (void)client:(PubNub *)client didReceiveMessage:(PNMessageResult *)message {
     
-    if (status) {
-        // analyze the status object for next steps -- See Example for in-depth examples
-    } else if (message) {
+    if (message) {
+ 
         NSLog(@"Received message: %@", message.data.message);
     }
 }
@@ -602,8 +601,7 @@ Add the class you wish to receive streaming Result and Status on as a listener (
 
 Once the class is added as a listener, it will receive streaming events on the [following listener methods](PubNub/Misc/Protocols/PNObjectEventListener.h):
 
-- (void)client:(PubNub *)client didReceiveMessage:(PNMessageResult *)message
-    withStatus:(PNErrorStatus *)status;
+- (void)client:(PubNub *)client didReceiveMessage:(PNMessageResult *)message;
 
 - (void)client:(PubNub *)client didReceivePresenceEvent:(PNPresenceEventResult *)event;
 
@@ -612,12 +610,10 @@ Once the class is added as a listener, it will receive streaming events on the [
 A completed example of subscribing [can be found in the Hello World snippet](#hello-world). You can also see it in the Example app.  Example implementations of the above listeners, taken from Example, may look similar to:
 
 ```objective-c
-- (void)client:(PubNub *)client didReceiveMessage:(PNMessageResult *)message
-    withStatus:(PNErrorStatus *)status {
+- (void)client:(PubNub *)client didReceiveMessage:(PNMessageResult *)message {
 
-    if (status) {
-        [self handleStatus:status];
-    } else if (message) {
+    if (message) {
+ 
         NSLog(@"Received message: %@ on channel %@ at %@", message.data.message, message.data.subscribedChannel, message.data.timetoken);
     }
 }
