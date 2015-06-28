@@ -34,8 +34,7 @@
 
 #pragma mark - PNObjectEventListener
 
-- (void)client:(PubNub *)client didReceiveMessage:(PNMessageResult *)message withStatus:(PNErrorStatus *)status {
-    XCTAssertNil(status);
+- (void)client:(PubNub *)client didReceiveMessage:(PNMessageResult *)message {
     XCTAssertEqualObjects(self.client, client);
     XCTAssertEqualObjects(client.uuid, message.uuid);
     XCTAssertNotNil(message.uuid);

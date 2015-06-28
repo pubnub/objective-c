@@ -47,9 +47,8 @@
     }];
 }
 
-- (void)client:(PubNub *)client didReceiveMessage:(PNMessageResult *)message withStatus:(PNErrorStatus *)status {
+- (void)client:(PubNub *)client didReceiveMessage:(PNMessageResult *)message {
     NSLog(@"message: %@", message);
-    NSLog(@"status: %@", status);
 }
 
 - (void)client:(PubNub *)client didReceivePresenceEvent:(PNPresenceEventResult *)event {

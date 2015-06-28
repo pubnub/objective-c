@@ -491,16 +491,11 @@
 
 #pragma mark - Streaming Data didReceiveMessage Listener
 
-- (void)client:(PubNub *)client didReceiveMessage:(PNMessageResult *)message
-    withStatus:(PNErrorStatus *)status {
+- (void)client:(PubNub *)client didReceiveMessage:(PNMessageResult *)message {
 
     BOOL isSubbed= [self.client isSubscribedOn:@"foo"];
 
-    if (status) {
-        
-        [self handleStatus:status];
-    }
-    else if (message) {
+    if (message) {
         
         NSLog(@"Received message: %@ on channel %@ at %@", message.data.message,
               message.data.subscribedChannel, message.data.timetoken);

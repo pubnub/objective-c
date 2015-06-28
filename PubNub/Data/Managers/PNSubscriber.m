@@ -1095,14 +1095,15 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 
 - (void)handleNewMessage:(PNMessageResult *)data {
     
-    PNStatus *status = nil;
+    PNErrorStatus *status = nil;
     if (data) {
         
         DDLogResult([[self class] ddLogLevel], @"<PubNub> %@", [(PNResult *)data stringifiedRepresentation]);
         if ([(data.serviceData)[@"decryptError"] boolValue]) {
             
-            status = [PNStatus statusForOperation:PNSubscribeOperation
-                                         category:PNDecryptionErrorCategory withProcessingError:nil];
+            status = (PNErrorStatus *)[PNStatus statusForOperation:PNSubscribeOperation
+                                                          category:PNDecryptionErrorCategory
+                                               withProcessingError:nil];
             NSMutableDictionary *updatedData = [data.serviceData mutableCopy];
             [updatedData removeObjectForKey:@"decryptError"];
             [status updateData:updatedData];
@@ -1114,7 +1115,11 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     // it and probably whole client instance has been deallocated.
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wreceiver-is-weak"
-    [self.client.listenersManager notifyMessage:data withStatus:(PNErrorStatus *)status];
+    [self.client.listenersManager notifyMessage:data];
+    if (status) {
+        
+        [self.client.listenersManager notifyStatusChange:(id)status];
+    }
     #pragma clang diagnostic pop
 }
 
