@@ -18,12 +18,18 @@
 @implementation PNSubscribeTests
 
 - (BOOL)isRecording{
-    return NO;
+    return YES;
+}
+
+- (NSArray *)subscriptionChannels {
+    return @[
+             @"a"
+             ];
 }
 
 - (void)testSimpleSubscribe {
     self.subscribeExpectation = [self expectationWithDescription:@"network"];
-    [self.client subscribeToChannels:@[@"a"] withPresence:NO];
+    [self.client subscribeToChannels:[self subscriptionChannels] withPresence:NO];
     [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
         if (error) {
             NSLog(@"error: %@", error);
@@ -44,7 +50,7 @@
     XCTAssertEqual(message.operation, PNSubscribeOperation);
     NSLog(@"message:");
     NSLog(@"%@", message.data.message);
-    XCTAssertEqualObjects(message.data.message, @"*************** 5849 - 2015-06-17 15:19:49");
+    XCTAssertEqualObjects(message.data.message, @"*********...... 8030 - 2015-06-28 14:52:13");
     [self.subscribeExpectation fulfill];
 }
 

@@ -25,9 +25,13 @@
     
 }
 
+- (NSString *)publishChannelString {
+    return @"F16CB07C-9F3F-41AA-8A0A-313960F21AAB";
+}
+
 - (void)testSimplePublishCompressed {
     [self performVerifiedPublish:@"test"
-                       onChannel:[NSUUID UUID].UUIDString
+                       onChannel:[self publishChannelString]
                       compressed:YES withAssertions:^(PNPublishStatus *status) {
                           XCTAssertNotNil(status);
                           XCTAssertEqual(status.category, PNAcknowledgmentCategory);
@@ -37,12 +41,13 @@
                           NSLog(@"status.data.information: %@", status.data.information);
                           NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                           XCTAssertEqualObjects(status.data.information, @"Sent");
+                          XCTAssertEqualObjects(status.data.timetoken, @"14355315263325276");
                       }];
 }
 
 - (void)testSimplePublishNotCompressed {
     [self performVerifiedPublish:@"test"
-                       onChannel:[NSUUID UUID].UUIDString
+                       onChannel:[self publishChannelString]
                       compressed:NO
                   withAssertions:^(PNPublishStatus *status) {
                       XCTAssertNotNil(status);
@@ -53,12 +58,13 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
+                      XCTAssertEqualObjects(status.data.timetoken, @"14355315264254610");
                   }];
 }
 
 - (void)testPublishNilMessageCompressed {
     [self performVerifiedPublish:nil
-                       onChannel:[NSUUID UUID].UUIDString
+                       onChannel:[self publishChannelString]
                       compressed:YES
                   withAssertions:^(PNPublishStatus *status) {
                       XCTAssertNotNil(status);
@@ -75,7 +81,7 @@
 
 - (void)testPublishNilMessageNotCompressed {
     [self performVerifiedPublish:nil
-                       onChannel:[NSUUID UUID].UUIDString
+                       onChannel:[self publishChannelString]
                       compressed:NO
                   withAssertions:^(PNPublishStatus *status) {
                       XCTAssertNotNil(status);
@@ -92,7 +98,7 @@
 
 - (void)testPublishDictionaryCompressed {
     [self performVerifiedPublish:@{@"test" : @"test"}
-                       onChannel:[NSUUID UUID].UUIDString
+                       onChannel:[self publishChannelString]
                       compressed:YES
                   withAssertions:^(PNPublishStatus *status) {
                       XCTAssertNotNil(status);
@@ -103,12 +109,13 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
+                      XCTAssertEqualObjects(status.data.timetoken, @"14355315261129449");
                   }];
 }
 
 - (void)testPublishDictionaryNotCompressed {
     [self performVerifiedPublish:@{@"test" : @"test"}
-                       onChannel:[NSUUID UUID].UUIDString
+                       onChannel:[self publishChannelString]
                       compressed:NO
                   withAssertions:^(PNPublishStatus *status) {
                       XCTAssertNotNil(status);
@@ -119,6 +126,7 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
+                      XCTAssertEqualObjects(status.data.timetoken, @"14355315262089406");
                   }];
 }
 
