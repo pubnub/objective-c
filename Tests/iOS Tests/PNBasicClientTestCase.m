@@ -12,7 +12,7 @@
 @implementation PNBasicClientTestCase
 
 - (JSZVCRTestingStrictness)matchingFailStrictness {
-    return JSZVCRTestingStrictnessFailWhenNoMatch;
+    return JSZVCRTestingStrictnessNone;
 }
 
 - (void)setUp {

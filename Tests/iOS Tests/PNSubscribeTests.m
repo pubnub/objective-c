@@ -18,7 +18,7 @@
 @implementation PNSubscribeTests
 
 - (BOOL)isRecording{
-    return YES;
+    return NO;
 }
 
 - (NSArray *)subscriptionChannels {
@@ -50,7 +50,7 @@
     XCTAssertEqual(message.operation, PNSubscribeOperation);
     NSLog(@"message:");
     NSLog(@"%@", message.data.message);
-    XCTAssertEqualObjects(message.data.message, @"*********...... 8030 - 2015-06-28 14:52:13");
+    XCTAssertEqualObjects(message.data.message, @"*******........ 9888 - 2015-06-28 15:54:23");
     [self.subscribeExpectation fulfill];
 }
 
