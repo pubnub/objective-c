@@ -11,12 +11,6 @@ target 'PubNub_Example', :exclusive => true do
   pod "PubNub", :path => "."
 end
 
-target 'PubNub_Tests', :exclusive => true do
-  platform :ios, '7.0'
-  xcodeproj 'Example/PubNub.xcodeproj'
-  pod "PubNub", :path => "."
-end
-
 target 'iOS Tests', :exclusive => true do
   platform :ios, "7.0"
   xcodeproj 'Tests/PubNub Tests.xcodeproj'
