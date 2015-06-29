@@ -59,7 +59,8 @@
         XCTAssertEqual(status.category, PNConnectedCategory);
         XCTAssertEqual(status.subscribedChannelGroups.count, 0);
         NSArray *expectedPresenceSubscriptions = @[@"a", @"a-pnpres"];
-        XCTAssertEqualObjects(status.subscribedChannels, expectedPresenceSubscriptions);
+        XCTAssertEqualObjects([NSSet setWithArray:status.subscribedChannels],
+                              [NSSet setWithArray:expectedPresenceSubscriptions]);
         XCTAssertEqual(status.operation, PNSubscribeOperation);
         NSLog(@"timeToken: %@", status.currentTimetoken);
         XCTAssertEqualObjects(status.currentTimetoken, @14355650216268818);
@@ -93,7 +94,8 @@
         XCTAssertEqual(status.category, PNConnectedCategory);
         XCTAssertEqual(status.subscribedChannelGroups.count, 0);
         NSArray *expectedPresenceSubscriptions = @[@"a"];
-        XCTAssertEqualObjects(status.subscribedChannels, expectedPresenceSubscriptions);
+        XCTAssertEqualObjects([NSSet setWithArray:status.subscribedChannels],
+                              [NSSet setWithArray:expectedPresenceSubscriptions]);
         XCTAssertEqual(status.operation, PNSubscribeOperation);
         NSLog(@"timeToken: %@", status.currentTimetoken);
         XCTAssertEqualObjects(status.currentTimetoken, @14355650194021434);

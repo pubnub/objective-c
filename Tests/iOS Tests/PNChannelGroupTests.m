@@ -64,7 +64,8 @@ static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupTestsName";
         XCTAssertNotNil(result);
         XCTAssertEqual(result.statusCode, 200);
         XCTAssertEqual(result.operation, PNChannelsForGroupOperation);
-        XCTAssertEqualObjects(result.data.channels, channelGroups);
+        XCTAssertEqualObjects([NSSet setWithArray:result.data.channels],
+                              [NSSet setWithArray:channelGroups]);
         [channelsForGroup fulfill];
     }];
     [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {

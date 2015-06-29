@@ -41,7 +41,8 @@
         XCTAssertEqual(status.category, PNConnectedCategory);
         XCTAssertEqual(status.subscribedChannelGroups.count, 0);
         NSArray *expectedPresenceSubscriptions = @[@"a"];
-        XCTAssertEqualObjects(status.subscribedChannels, expectedPresenceSubscriptions);
+        XCTAssertEqualObjects([NSSet setWithArray:status.subscribedChannels],
+                              [NSSet setWithArray:expectedPresenceSubscriptions]);
         XCTAssertEqual(status.operation, PNSubscribeOperation);
         NSLog(@"timeToken: %@", status.currentTimetoken);
         if (self.invocation.selector == @selector(testSetClientStateOnNotSubscribedChannel)) {

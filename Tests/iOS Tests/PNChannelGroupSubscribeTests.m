@@ -54,7 +54,8 @@ static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupSubscribeTest
                                            [kPNChannelGroupTestsName stringByAppendingString:@"-pnpres"]
                                            ];
         XCTAssertEqual(status.subscribedChannels.count, 0);
-        XCTAssertEqualObjects(status.subscribedChannelGroups, expectedChannelGroups);
+        XCTAssertEqualObjects([NSSet setWithArray:status.subscribedChannelGroups],
+                              [NSSet setWithArray:expectedChannelGroups]);
         
         XCTAssertEqual(status.operation, PNSubscribeOperation);
         NSLog(@"timeToken: %@", status.currentTimetoken);
@@ -95,7 +96,8 @@ static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupSubscribeTest
                                            kPNChannelGroupTestsName
                                            ];
         XCTAssertEqual(status.subscribedChannels.count, 0);
-        XCTAssertEqualObjects(status.subscribedChannelGroups, expectedChannelGroups);
+        XCTAssertEqualObjects([NSSet setWithArray:status.subscribedChannelGroups],
+                              [NSSet setWithArray:expectedChannelGroups]);
         
         XCTAssertEqual(status.operation, PNSubscribeOperation);
         NSLog(@"timeToken: %@", status.currentTimetoken);
