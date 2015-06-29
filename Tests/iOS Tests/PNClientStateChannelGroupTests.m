@@ -55,7 +55,7 @@ static NSString * const kPNChannelGroupTestsName = @"PNClientStateChannelGroupTe
         NSLog(@"timeToken: %@", status.currentTimetoken);
         if (self.invocation.selector == @selector(testSetClientStateOnSubscribedChannelGroup)) {
             XCTAssertEqualObjects(status.currentTimetoken, @14355768305464885);
-        } else if (self.invocation.selector == @selector(testSetClientStateOnNotSubscribedChannelGroup)) {
+        } else if (self.invocation.selector == @selector(testSetClientStateOnNotExistingChannelGroup)) {
             XCTAssertEqualObjects(status.currentTimetoken, @14355750743453296);
         }
         XCTAssertEqualObjects(status.currentTimetoken, status.data.timetoken);
@@ -87,24 +87,25 @@ static NSString * const kPNChannelGroupTestsName = @"PNClientStateChannelGroupTe
     }];
 }
 
-- (void)testSetClientStateOnNotSubscribedChannelGroup {
+- (void)testSetClientStateOnNotExistingChannelGroup {
     self.didReceiveStatusAssertions = nil;
     XCTestExpectation *stateExpectation = [self expectationWithDescription:@"clientState"];
     NSDictionary *state = @{
                             @"test" : @"test"
                             };
     PNWeakify(self);
-    [self.client setState:state forUUID:self.client.uuid onChannelGroup:@"42" withCompletion:^(PNClientStateUpdateStatus *status) {
+    [self.client setState:state forUUID:self.client.uuid onChannelGroup:@"42"
+           withCompletion:^(PNClientStateUpdateStatus *status) {
         PNStrongify(self);
         XCTAssertNotNil(status);
-        XCTAssertFalse(status.isError);
+        XCTAssertTrue(status.isError);
         XCTAssertEqual(status.operation, PNSetStateOperation);
-        XCTAssertEqual(status.category, PNAcknowledgmentCategory);
-        XCTAssertEqual(status.statusCode, 200);
+        XCTAssertEqual(status.category, PNBadRequestCategory);
+        XCTAssertEqual(status.statusCode, 400);
         XCTAssertNil(status.data.state);
         // TOOD: there should be a property for this?
 //        XCTAssertEqualObjects(status.data, @"No valid channels specified");
-        XCTFail(@"no way to access data in %@", status.data);
+        NSLog(@"Information %@", status.errorData.information);
         [stateExpectation fulfill];
     }];
     [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
