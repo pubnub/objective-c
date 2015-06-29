@@ -12,7 +12,7 @@
 
 #import "PNBasicSubscribeTestCase.h"
 
-@interface PNUnsubscribeTests : PNBasicSubscribeTestCase <PNObjectEventListener>
+@interface PNUnsubscribeTests : PNBasicSubscribeTestCase
 @end
 
 @implementation PNUnsubscribeTests
