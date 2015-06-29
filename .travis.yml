@@ -5,4 +5,6 @@ before_install:
     - gem install slather --no-rdoc --no-ri --no-document --quiet
     - gem install activesupport --no-rdoc --no-ri --no-document --quiet
 script: rake test
-after_success: rake coverage
+#after_success: rake coverage
+# for now, always calculate code coverage
+after_script: rake coverage
