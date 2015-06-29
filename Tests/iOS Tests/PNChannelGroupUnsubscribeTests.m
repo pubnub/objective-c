@@ -105,9 +105,9 @@ static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupUnsubscribeTe
         XCTAssertNotNil(client);
         XCTAssertNotNil(status);
         XCTAssertEqualObjects(self.client, client);
-        XCTAssertEqual(status.category, PNUnexpectedDisconnectCategory);
+        XCTAssertEqual(status.category, PNDisconnectedCategory);
         XCTAssertFalse(status.isError);
-        XCTAssertEqual(status.statusCode, 0);
+        XCTAssertEqual(status.statusCode, 200);
         XCTAssertEqual(status.operation, PNUnsubscribeOperation);
         [self.channelGroupUnsubscribeExpectation fulfill];
     };
@@ -121,9 +121,9 @@ static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupUnsubscribeTe
         XCTAssertNotNil(client);
         XCTAssertNotNil(status);
         XCTAssertEqualObjects(self.client, client);
-        XCTAssertEqual(status.category, PNUnexpectedDisconnectCategory);
+        XCTAssertEqual(status.category, PNDisconnectedCategory);
         XCTAssertFalse(status.isError);
-        XCTAssertEqual(status.statusCode, 0);
+        XCTAssertEqual(status.statusCode, 200);
         XCTAssertEqual(status.operation, PNUnsubscribeOperation);
         [self.channelGroupUnsubscribeExpectation fulfill];
     };
