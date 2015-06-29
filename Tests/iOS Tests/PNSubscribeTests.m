@@ -39,8 +39,8 @@
         XCTAssertEqualObjects(status.subscribedChannels, expectedPresenceSubscriptions);
         XCTAssertEqual(status.operation, PNSubscribeOperation);
         NSLog(@"timeToken: %@", status.currentTimetoken);
-        XCTAssertEqual(status.currentTimetoken, @14355377127740789);
-        XCTAssertEqual(status.currentTimetoken, status.data.timetoken);
+        XCTAssertEqualObjects(status.currentTimetoken, @14355377127740789);
+        XCTAssertEqualObjects(status.currentTimetoken, status.data.timetoken);
         
     };
     self.didReceiveMessageAssertions = ^void (PubNub *client, PNMessageResult *message) {
