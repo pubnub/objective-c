@@ -27,39 +27,67 @@
              ];
 }
 
-- (void)testSimpleSubscribe {
+- (void)testSimpleSubscribeWithPresence {
+    PNWeakify(self);
+    self.didReceiveStatusAssertions = ^void (PubNub *client, PNSubscribeStatus *status) {
+        PNStrongify(self);
+        XCTAssertEqualObjects(self.client, client);
+        XCTAssertNotNil(status);
+        XCTAssertFalse(status.isError);
+        XCTAssertEqual(status.category, PNConnectedCategory);
+        NSArray *expectedPresenceSubscriptions = @[@"a", @"a-pnpres"];
+        XCTAssertEqualObjects(status.subscribedChannels, expectedPresenceSubscriptions);
+        XCTAssertEqual(status.operation, PNSubscribeOperation);
+        NSLog(@"timeToken: %@", status.currentTimetoken);
+        XCTAssertEqual(status.currentTimetoken, @14355377127740789);
+        XCTAssertEqual(status.currentTimetoken, status.data.timetoken);
+        
+    };
+    self.didReceiveMessageAssertions = ^void (PubNub *client, PNMessageResult *message) {
+        PNStrongify(self);
+        XCTAssertEqualObjects(self.client, client);
+        XCTAssertEqualObjects(client.uuid, message.uuid);
+        XCTAssertNotNil(message.uuid);
+        XCTAssertNil(message.authKey);
+        XCTAssertEqual(message.statusCode, 200);
+        XCTAssertTrue(message.TLSEnabled);
+        XCTAssertEqual(message.operation, PNSubscribeOperation);
+        NSLog(@"message:");
+        NSLog(@"%@", message.data.message);
+        XCTAssertEqualObjects(message.data.message, @"*.............. 2703 - 2015-06-28 17:28:33");
+        [self.subscribeExpectation fulfill];
+    };
+    [self PNTest_subscribeToChannels:[self subscriptionChannels] withPresence:YES];
+}
+
+#pragma mark - Helpers
+
+- (void)PNTest_subscribeToChannels:(NSArray *)channels withPresence:(BOOL)shouldObservePresence {
     self.subscribeExpectation = [self expectationWithDescription:@"network"];
-    [self.client subscribeToChannels:[self subscriptionChannels] withPresence:NO];
+    [self.client subscribeToChannels:[self subscriptionChannels] withPresence:YES];
     [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
-        if (error) {
-            NSLog(@"error: %@", error);
-            XCTFail(@"what went wrong?");
-        }
+        XCTAssertNil(error);
     }];
 }
 
 #pragma mark - PNObjectEventListener
 
 - (void)client:(PubNub *)client didReceiveMessage:(PNMessageResult *)message {
-    XCTAssertEqualObjects(self.client, client);
-    XCTAssertEqualObjects(client.uuid, message.uuid);
-    XCTAssertNotNil(message.uuid);
-    XCTAssertNil(message.authKey);
-    XCTAssertEqual(message.statusCode, 200);
-    XCTAssertTrue(message.TLSEnabled);
-    XCTAssertEqual(message.operation, PNSubscribeOperation);
-    NSLog(@"message:");
-    NSLog(@"%@", message.data.message);
-    XCTAssertEqualObjects(message.data.message, @"*******........ 9888 - 2015-06-28 15:54:23");
-    [self.subscribeExpectation fulfill];
+    if (self.didReceiveMessageAssertions) {
+        self.didReceiveMessageAssertions(client, message);
+    }
 }
 
 - (void)client:(PubNub *)client didReceivePresenceEvent:(PNPresenceEventResult *)event {
-    NSLog(@"%s", __PRETTY_FUNCTION__);
+    if (self.didReceivePresenceEventAssertions) {
+        self.didReceivePresenceEventAssertions(client, event);
+    }
 }
 
 - (void)client:(PubNub *)client didReceiveStatus:(PNSubscribeStatus *)status {
-    NSLog(@"%s", __PRETTY_FUNCTION__);
+    if (self.didReceiveStatusAssertions) {
+        self.didReceiveStatusAssertions(client, status);
+    }
 }
 
 @end

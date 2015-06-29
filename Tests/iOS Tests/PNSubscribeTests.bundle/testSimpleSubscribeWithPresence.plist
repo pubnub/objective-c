@@ -9,12 +9,13 @@
 		<dict>
 			<key>data</key>
 			<data>
-			W1tdLCIxNDM1NTMyMDYyNTAxNTA3MyJd
+			W1tdLCIxNDM1NTM3NzEyNzc0MDc4OSIsIiJd
 			</data>
 			<key>json</key>
 			<array>
 				<array/>
-				<string>14355320625015073</string>
+				<string>14355377127740789</string>
+				<string></string>
 			</array>
 		</dict>
 		<key>request</key>
@@ -26,7 +27,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/subscribe/demo-36/a/0/0?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/subscribe/demo-36/a,a-pnpres/0/0?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -50,7 +51,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/subscribe/demo-36/a/0/0?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/subscribe/demo-36/a,a-pnpres/0/0?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept-Language</key>
@@ -71,7 +72,7 @@
 				<key>MIMEType</key>
 				<string>text/javascript</string>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/subscribe/demo-36/a/0/0?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/subscribe/demo-36/a,a-pnpres/0/0?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHeaderFields</key>
 				<dict>
 					<key>Access-Control-Allow-Methods</key>
@@ -83,14 +84,14 @@
 					<key>Connection</key>
 					<string>keep-alive</string>
 					<key>Content-Length</key>
-					<string>24</string>
+					<string>27</string>
 					<key>Content-Type</key>
 					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
-					<string>Sun, 28 Jun 2015 22:54:22 GMT</string>
+					<string>Mon, 29 Jun 2015 00:28:34 GMT</string>
 				</dict>
 				<key>expectedContentLength</key>
-				<integer>24</integer>
+				<integer>27</integer>
 				<key>statusCode</key>
 				<integer>200</integer>
 				<key>suggestedFileName</key>
@@ -107,11 +108,11 @@
 		<dict>
 			<key>data</key>
 			<data>
-			WzE0MzU1MzIwNjI2NDcxMTgzXQ==
+			WzE0MzU1Mzc3MTQzMDg5NzM2XQ==
 			</data>
 			<key>json</key>
 			<array>
-				<integer>14355320626471183</integer>
+				<integer>14355377143089736</integer>
 			</array>
 		</dict>
 		<key>request</key>
@@ -184,7 +185,7 @@
 					<key>Content-Type</key>
 					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
-					<string>Sun, 28 Jun 2015 22:54:22 GMT</string>
+					<string>Mon, 29 Jun 2015 00:28:34 GMT</string>
 				</dict>
 				<key>expectedContentLength</key>
 				<integer>19</integer>
@@ -204,15 +205,16 @@
 		<dict>
 			<key>data</key>
 			<data>
-			W1siKioqKioqKi4uLi4uLi4uIDk4ODggLSAyMDE1LTA2LTI4IDE1
-			OjU0OjIzIl0sIjE0MzU1MzIwNjQ1NTE5MDg3Il0=
+			W1siKi4uLi4uLi4uLi4uLi4uIDI3MDMgLSAyMDE1LTA2LTI4IDE3
+			OjI4OjMzIl0sIjE0MzU1Mzc3MTQ4MTUwNDA1IiwiYSJd
 			</data>
 			<key>json</key>
 			<array>
 				<array>
-					<string>*******........ 9888 - 2015-06-28 15:54:23</string>
+					<string>*.............. 2703 - 2015-06-28 17:28:33</string>
 				</array>
-				<string>14355320645519087</string>
+				<string>14355377148150405</string>
+				<string>a</string>
 			</array>
 		</dict>
 		<key>request</key>
@@ -224,7 +226,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/subscribe/demo-36/a/0/14355320625015073?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/subscribe/demo-36/a,a-pnpres/0/14355377127740789?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -248,7 +250,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/subscribe/demo-36/a/0/14355320625015073?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/subscribe/demo-36/a,a-pnpres/0/14355377127740789?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept-Language</key>
@@ -269,7 +271,7 @@
 				<key>MIMEType</key>
 				<string>text/javascript</string>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/subscribe/demo-36/a/0/14355320625015073?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/subscribe/demo-36/a,a-pnpres/0/14355377127740789?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHeaderFields</key>
 				<dict>
 					<key>Access-Control-Allow-Methods</key>
@@ -281,18 +283,18 @@
 					<key>Connection</key>
 					<string>keep-alive</string>
 					<key>Content-Length</key>
-					<string>68</string>
+					<string>72</string>
 					<key>Content-Type</key>
 					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
-					<string>Sun, 28 Jun 2015 22:54:24 GMT</string>
+					<string>Mon, 29 Jun 2015 00:28:34 GMT</string>
 				</dict>
 				<key>expectedContentLength</key>
-				<integer>68</integer>
+				<integer>72</integer>
 				<key>statusCode</key>
 				<integer>200</integer>
 				<key>suggestedFileName</key>
-				<string>14355320625015073.js</string>
+				<string>14355377127740789.js</string>
 				<key>textEncodingName</key>
 				<string>"utf-8"</string>
 			</dict>
