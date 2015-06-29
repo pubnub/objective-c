@@ -39,6 +39,22 @@
     }];
 }
 
+- (void)PNTest_subscribeToChannelGroups:(NSArray *)groups withPresence:(BOOL)shouldObservePresence {
+    self.channelGroupSubscribeExpectation = [self expectationWithDescription:@"channelGroupSubscribe"];
+    [self.client subscribeToChannelGroups:groups withPresence:shouldObservePresence];
+    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
+        XCTAssertNil(error);
+    }];
+}
+
+- (void)PNTest_unsubscribeFromChannelGroups:(NSArray *)groups withPresence:(BOOL)shouldObservePresence {
+    self.channelGroupUnsubscribeExpectation = [self expectationWithDescription:@"channelGroupUnsubscribe"];
+    [self.client unsubscribeFromChannelGroups:groups withPresence:shouldObservePresence];
+    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
+        XCTAssertNil(error);
+    }];
+}
+
 #pragma mark - PNObjectEventListener
 
 - (void)client:(PubNub *)client didReceiveMessage:(PNMessageResult *)message {

@@ -19,6 +19,8 @@ typedef void (^PNClientDidReceiveStatusAssertions)(PubNub *client, PNSubscribeSt
 
 @property (nonatomic) XCTestExpectation *subscribeExpectation;
 @property (nonatomic) XCTestExpectation *unsubscribeExpectation;
+@property (nonatomic) XCTestExpectation *channelGroupSubscribeExpectation;
+@property (nonatomic) XCTestExpectation *channelGroupUnsubscribeExpectation;
 
 @property (nonatomic, copy) PNClientDidReceiveMessageAssertions didReceiveMessageAssertions;
 @property (nonatomic, copy) PNClientDidReceivePresenceEventAssertions didReceivePresenceEventAssertions;
@@ -27,5 +29,8 @@ typedef void (^PNClientDidReceiveStatusAssertions)(PubNub *client, PNSubscribeSt
 - (void)PNTest_subscribeToChannels:(NSArray *)channels withPresence:(BOOL)shouldObservePresence;
 
 - (void)PNTest_unsubscribeFromChannels:(NSArray *)channels withPresence:(BOOL)shouldObservePresence;
+
+- (void)PNTest_subscribeToChannelGroups:(NSArray *)groups withPresence:(BOOL)shouldObservePresence;
+- (void)PNTest_unsubscribeFromChannelGroups:(NSArray *)groups withPresence:(BOOL)shouldObservePresence;
 
 @end

@@ -11,7 +11,6 @@
 #import <PubNub/PubNub.h>
 
 #import "PNBasicClientTestCase.h"
-typedef void (^PNChannelGroupAssertions)(PNAcknowledgmentStatus *status);
 
 static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupTestsName";
 
@@ -130,48 +129,6 @@ static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupTestsName";
         [getAllChannelGroups fulfill];
     }];
     [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
-        XCTAssertNil(error);
-    }];
-}
-
-#pragma mark - Helpers
-
-- (void)performVerifiedAddChannels:(NSArray *)channels toGroup:(NSString *)channelGroup withAssertions:(PNChannelGroupAssertions)assertions {
-    XCTestExpectation *addChannelsToGroupExpectation = [self expectationWithDescription:@"addChannels"];
-    [self.client addChannels:channels toGroup:channelGroup
-              withCompletion:^(PNAcknowledgmentStatus *status) {
-                  if (assertions) {
-                      assertions(status);
-                  }
-                  [addChannelsToGroupExpectation fulfill];
-              }];
-    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
-        XCTAssertNil(error);
-    }];
-}
-
-- (void)performVerifiedRemoveAllChannelsFromGroup:(NSString *)channelGroup withAssertions:(PNChannelGroupAssertions)assertions {
-    XCTestExpectation *removeChannels = [self expectationWithDescription:@"removeChannels"];
-    [self.client removeChannelsFromGroup:channelGroup withCompletion:^(PNAcknowledgmentStatus *status) {
-        if (assertions) {
-            assertions(status);
-        }
-        [removeChannels fulfill];
-    }];
-    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
-        XCTAssertNil(error);
-    }];
-}
-
-- (void)performVerifiedRemoveChannels:(NSArray *)channels fromGroup:(NSString *)channelGroup withAssertions:(PNChannelGroupAssertions)assertions {
-    XCTestExpectation *removeSpecificChannels = [self expectationWithDescription:@"removeSpecificChannels"];
-    [self.client removeChannels:channels fromGroup:channelGroup withCompletion:^(PNAcknowledgmentStatus *status) {
-        if (assertions) {
-            assertions(status);
-        }
-        [removeSpecificChannels fulfill];
-    }];
-    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
         XCTAssertNil(error);
     }];
 }

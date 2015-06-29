@@ -12,7 +12,7 @@
 
 #import "PNBasicSubscribeTestCase.h"
 
-@interface PNSubscribeTests : PNBasicSubscribeTestCase <PNObjectEventListener>
+@interface PNSubscribeTests : PNBasicSubscribeTestCase
 @end
 
 @implementation PNSubscribeTests
@@ -35,6 +35,7 @@
         XCTAssertNotNil(status);
         XCTAssertFalse(status.isError);
         XCTAssertEqual(status.category, PNConnectedCategory);
+        XCTAssertEqual(status.subscribedChannelGroups.count, 0);
         NSArray *expectedPresenceSubscriptions = @[@"a", @"a-pnpres"];
         XCTAssertEqualObjects(status.subscribedChannels, expectedPresenceSubscriptions);
         XCTAssertEqual(status.operation, PNSubscribeOperation);
