@@ -23,6 +23,7 @@ typedef void (^PNChannelGroupAssertions)(PNAcknowledgmentStatus *status);
 
 @interface PNBasicClientTestCase : JSZVCRTestCase <PNObjectEventListener>
 
+@property (nonatomic) PNConfiguration *configuration;
 @property (nonatomic) PubNub *client;
 
 - (void)performVerifiedAddChannels:(NSArray *)channels toGroup:(NSString *)channelGroup withAssertions:(PNChannelGroupAssertions)assertions;
