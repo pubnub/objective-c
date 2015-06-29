@@ -38,7 +38,7 @@
 //        XCTAssertEqual(status.category, PNDisconnectedCategory);
 //        XCTAssertEqual(status.subscribedChannels.count, 0);
         XCTAssertEqual(status.subscribedChannelGroups.count, 0);
-        XCTAssertEqual(status.operation, PNSubscribeOperation);
+        XCTAssertEqual(status.operation, PNUnsubscribeOperation);
         NSLog(@"timeToken: %@", status.currentTimetoken);
 //        XCTAssertEqualObjects(status.currentTimetoken, @14355626738514132);
 //        XCTAssertEqualObjects(status.currentTimetoken, status.data.timetoken);

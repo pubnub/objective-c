@@ -41,7 +41,15 @@
         if ([(NSArray *)response count] == 3) {
             
             information = response[1];
-            timeToken = response[2];
+            if ([response[2] isKindOfClass:[NSString class]]) {
+                
+                const char *token = [(NSString *)response[2] cStringUsingEncoding:NSUTF8StringEncoding];
+                timeToken = @(strtoull(token, NULL, 0));
+            }
+            else {
+                
+                timeToken = response[2];
+            }
         }
         else {
             

@@ -265,6 +265,13 @@ void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
             subscriptionRestoreBlock();
         }
     }
+    else if (block) {
+        
+        pn_dispatch_async(client.callbackQueue, ^{
+            
+            block(client);
+        });
+    }
 }
 
 - (void)setRecentClientStatus:(PNStatusCategory)recentClientStatus {
