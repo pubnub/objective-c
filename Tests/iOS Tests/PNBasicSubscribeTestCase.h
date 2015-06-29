@@ -18,9 +18,14 @@ typedef void (^PNClientDidReceiveStatusAssertions)(PubNub *client, PNSubscribeSt
 @interface PNBasicSubscribeTestCase : PNBasicClientTestCase <PNObjectEventListener>
 
 @property (nonatomic) XCTestExpectation *subscribeExpectation;
+@property (nonatomic) XCTestExpectation *unsubscribeExpectation;
 
 @property (nonatomic, copy) PNClientDidReceiveMessageAssertions didReceiveMessageAssertions;
 @property (nonatomic, copy) PNClientDidReceivePresenceEventAssertions didReceivePresenceEventAssertions;
 @property (nonatomic, copy) PNClientDidReceiveStatusAssertions didReceiveStatusAssertions;
+
+- (void)PNTest_subscribeToChannels:(NSArray *)channels withPresence:(BOOL)shouldObservePresence;
+
+- (void)PNTest_unsubscribeFromChannels:(NSArray *)channels withPresence:(BOOL)shouldObservePresence;
 
 @end
