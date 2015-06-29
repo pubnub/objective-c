@@ -17,6 +17,7 @@
 
 - (void)setUp {
     [super setUp];
+    [PNLog enabled:YES];
     self.configuration = [PNConfiguration configurationWithPublishKey:@"demo-36" subscribeKey:@"demo-36"];
     self.configuration.uuid = @"322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C";
     self.client = [PubNub clientWithConfiguration:self.configuration];
