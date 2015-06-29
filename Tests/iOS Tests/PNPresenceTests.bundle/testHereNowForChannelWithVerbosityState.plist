@@ -9,11 +9,11 @@
 		<dict>
 			<key>data</key>
 			<data>
-			WzE0MzU1NTgzODEzODgxMTUwXQ==
+			WzE0MzU2MTA2NjQ5ODIwMjc0XQ==
 			</data>
 			<key>json</key>
 			<array>
-				<integer>14355583813881150</integer>
+				<integer>14356106649820274</integer>
 			</array>
 		</dict>
 		<key>request</key>
@@ -86,7 +86,7 @@
 					<key>Content-Type</key>
 					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
-					<string>Mon, 29 Jun 2015 06:13:01 GMT</string>
+					<string>Mon, 29 Jun 2015 20:44:24 GMT</string>
 				</dict>
 				<key>expectedContentLength</key>
 				<integer>19</integer>
@@ -188,7 +188,7 @@
 					<key>Access-Control-Allow-Origin</key>
 					<string>*</string>
 					<key>Age</key>
-					<string>0</string>
+					<string>3</string>
 					<key>Cache-Control</key>
 					<string>no-cache</string>
 					<key>Connection</key>
@@ -198,7 +198,7 @@
 					<key>Content-Type</key>
 					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
-					<string>Mon, 29 Jun 2015 06:13:01 GMT</string>
+					<string>Mon, 29 Jun 2015 20:44:25 GMT</string>
 					<key>Server</key>
 					<string>Pubnub Presence</string>
 				</dict>

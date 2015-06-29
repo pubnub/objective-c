@@ -20,6 +20,7 @@
 		51F7AAC91B28B3E200BEDA1F /* PNSubscribeTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 51F7AAC81B28B3E200BEDA1F /* PNSubscribeTests.bundle */; };
 		9604EE9F1B346CD9009EB15C /* PNPublishWithHistoryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9604EE9E1B346CD9009EB15C /* PNPublishWithHistoryTests.m */; };
 		9604EEA11B34953B009EB15C /* PNPublishWithHistoryTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 9604EEA01B34953A009EB15C /* PNPublishWithHistoryTests.bundle */; };
+		962C062B1B41EE4E00922282 /* NSDictionary+PNTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 962C062A1B41EE4E00922282 /* NSDictionary+PNTest.m */; };
 		96D55D7E1B3D97BE00B6680F /* PNPresenceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 96D55D7D1B3D97BE00B6680F /* PNPresenceTests.m */; };
 		96E691CB1B409B37003D4D21 /* PNPresenceTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 96E691CA1B409B37003D4D21 /* PNPresenceTests.bundle */; };
 		96F519851B3869A900053FB7 /* PNPublishCompressedTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 96F519841B3869A900053FB7 /* PNPublishCompressedTests.m */; };
@@ -61,6 +62,8 @@
 		6F1E7CCB0F5454CF57A04DA9 /* Pods-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios.release.xcconfig"; path = "Pods/Target Support Files/Pods-ios/Pods-ios.release.xcconfig"; sourceTree = "<group>"; };
 		9604EE9E1B346CD9009EB15C /* PNPublishWithHistoryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNPublishWithHistoryTests.m; sourceTree = "<group>"; };
 		9604EEA01B34953A009EB15C /* PNPublishWithHistoryTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNPublishWithHistoryTests.bundle; sourceTree = "<group>"; };
+		962C06291B41EE4E00922282 /* NSDictionary+PNTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSDictionary+PNTest.h"; path = "iOS Tests/NSDictionary+PNTest.h"; sourceTree = "<group>"; };
+		962C062A1B41EE4E00922282 /* NSDictionary+PNTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSDictionary+PNTest.m"; path = "iOS Tests/NSDictionary+PNTest.m"; sourceTree = "<group>"; };
 		96D55D7D1B3D97BE00B6680F /* PNPresenceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNPresenceTests.m; sourceTree = "<group>"; };
 		96E691CA1B409B37003D4D21 /* PNPresenceTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNPresenceTests.bundle; sourceTree = "<group>"; };
 		96F519841B3869A900053FB7 /* PNPublishCompressedTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNPublishCompressedTests.m; sourceTree = "<group>"; };
@@ -205,6 +208,8 @@
 		969714371B32F08E001DECD1 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				962C06291B41EE4E00922282 /* NSDictionary+PNTest.h */,
+				962C062A1B41EE4E00922282 /* NSDictionary+PNTest.m */,
 				96F5198F1B39CB1E00053FB7 /* NSString+PNTest.h */,
 				96F519901B39CB1E00053FB7 /* NSString+PNTest.m */,
 			);
@@ -354,6 +359,7 @@
 				96D55D7E1B3D97BE00B6680F /* PNPresenceTests.m in Sources */,
 				178251251B30BF29006BC234 /* PNUnsubscribeTests.m in Sources */,
 				97ACC3731B40F3360030D5CB /* PNChannelGroupSubscribeTests.m in Sources */,
+				962C062B1B41EE4E00922282 /* NSDictionary+PNTest.m in Sources */,
 				1721D3B61B39F57D0018CF00 /* PNHistoryTests.m in Sources */,
 				178251231B30AE3D006BC234 /* PNBasicSubscribeTestCase.m in Sources */,
 				97A8620C1B41448100C07193 /* PNClientConfigurationTests.m in Sources */,

@@ -107,7 +107,7 @@
 					<key>Content-Type</key>
 					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
-					<string>Mon, 29 Jun 2015 06:13:00 GMT</string>
+					<string>Mon, 29 Jun 2015 20:44:22 GMT</string>
 					<key>Server</key>
 					<string>Pubnub Presence</string>
 				</dict>
@@ -129,11 +129,11 @@
 		<dict>
 			<key>data</key>
 			<data>
-			WzE0MzU1NTgzODAxMzA0MjE4XQ==
+			WzE0MzU2MTA2NjI5NzUxNDg3XQ==
 			</data>
 			<key>json</key>
 			<array>
-				<integer>14355583801304218</integer>
+				<integer>14356106629751487</integer>
 			</array>
 		</dict>
 		<key>request</key>
@@ -206,7 +206,7 @@
 					<key>Content-Type</key>
 					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
-					<string>Mon, 29 Jun 2015 06:13:00 GMT</string>
+					<string>Mon, 29 Jun 2015 20:44:22 GMT</string>
 				</dict>
 				<key>expectedContentLength</key>
 				<integer>19</integer>
@@ -226,11 +226,11 @@
 		<dict>
 			<key>data</key>
 			<data>
-			WzE0MzU1NTgzNzk4MDc5NDkzXQ==
+			WzE0MzU2MTA2NjI2ODM2MTU3XQ==
 			</data>
 			<key>json</key>
 			<array>
-				<integer>14355583798079493</integer>
+				<integer>14356106626836157</integer>
 			</array>
 		</dict>
 		<key>request</key>
@@ -303,7 +303,7 @@
 					<key>Content-Type</key>
 					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
-					<string>Mon, 29 Jun 2015 06:12:59 GMT</string>
+					<string>Mon, 29 Jun 2015 20:44:22 GMT</string>
 				</dict>
 				<key>expectedContentLength</key>
 				<integer>19</integer>

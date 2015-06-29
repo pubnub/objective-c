@@ -9,25 +9,113 @@
 		<dict>
 			<key>data</key>
 			<data>
+			WzE0MzU2MTA2NjcyMDUwODIyXQ==
+			</data>
+			<key>json</key>
+			<array>
+				<integer>14356106672050822</integer>
+			</array>
+		</dict>
+		<key>request</key>
+		<dict>
+			<key>currentRequest</key>
+			<dict>
+				<key>HTTPMethod</key>
+				<string>GET</string>
+				<key>HTTPShouldHandleCookies</key>
+				<true/>
+				<key>URL</key>
+				<string>https://pubsub.pubnub.com/time/0?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<key>allHTTPHeaderFields</key>
+				<dict>
+					<key>Accept</key>
+					<string>*/*</string>
+					<key>Accept-Encoding</key>
+					<string>gzip, deflate</string>
+					<key>Accept-Language</key>
+					<string>en;q=1, fr;q=0.9, de;q=0.8, zh-Hans;q=0.7, zh-Hant;q=0.6, ja;q=0.5</string>
+					<key>User-Agent</key>
+					<string>(null)/(null) (iPhone Simulator; iOS 8.3; Scale/2.00)</string>
+				</dict>
+				<key>allowsCellularAccess</key>
+				<true/>
+				<key>timeoutInterval</key>
+				<real>60</real>
+			</dict>
+			<key>originalRequest</key>
+			<dict>
+				<key>HTTPMethod</key>
+				<string>GET</string>
+				<key>HTTPShouldHandleCookies</key>
+				<true/>
+				<key>URL</key>
+				<string>https://pubsub.pubnub.com/time/0?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<key>allHTTPHeaderFields</key>
+				<dict>
+					<key>Accept-Language</key>
+					<string>en;q=1, fr;q=0.9, de;q=0.8, zh-Hans;q=0.7, zh-Hant;q=0.6, ja;q=0.5</string>
+					<key>User-Agent</key>
+					<string>(null)/(null) (iPhone Simulator; iOS 8.3; Scale/2.00)</string>
+				</dict>
+				<key>allowsCellularAccess</key>
+				<true/>
+				<key>timeoutInterval</key>
+				<real>60</real>
+			</dict>
+		</dict>
+		<key>response</key>
+		<dict>
+			<key>response</key>
+			<dict>
+				<key>MIMEType</key>
+				<string>text/javascript</string>
+				<key>URL</key>
+				<string>https://pubsub.pubnub.com/time/0?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<key>allHeaderFields</key>
+				<dict>
+					<key>Access-Control-Allow-Methods</key>
+					<string>GET</string>
+					<key>Access-Control-Allow-Origin</key>
+					<string>*</string>
+					<key>Cache-Control</key>
+					<string>no-cache</string>
+					<key>Connection</key>
+					<string>keep-alive</string>
+					<key>Content-Length</key>
+					<string>19</string>
+					<key>Content-Type</key>
+					<string>text/javascript; charset="UTF-8"</string>
+					<key>Date</key>
+					<string>Mon, 29 Jun 2015 20:44:27 GMT</string>
+				</dict>
+				<key>expectedContentLength</key>
+				<integer>19</integer>
+				<key>statusCode</key>
+				<integer>200</integer>
+				<key>suggestedFileName</key>
+				<string>0.js</string>
+				<key>textEncodingName</key>
+				<string>"utf-8"</string>
+			</dict>
+		</dict>
+	</dict>
+	<dict>
+		<key>cancelled</key>
+		<false/>
+		<key>data</key>
+		<dict>
+			<key>data</key>
+			<data>
 			eyJzdGF0dXMiOiAyMDAsICJtZXNzYWdlIjogIk9LIiwgInBheWxv
-			YWQiOiB7ImNoYW5uZWxzIjogeyJhIjogeyJ1dWlkcyI6IFt7InV1
-			aWQiOiAiMzIyQTcwQjMtRjBFQS00OENELTlCQjAtRDNGMEY1REU5
-			OTZDIn0sIHsidXVpZCI6ICIzMjJBNzBCMy1GMEVBLTQ4Q0QtOUJC
-			MC1EM0YxRjVERTAwNkMifV0sICJvY2N1cGFuY3kiOiAyfSwgIjBf
-			NTc0Mzg2MTc2MjYyMTQ0MCI6IHsidXVpZHMiOiBbeyJ1dWlkIjog
-			IkZ1bi1Zb3UtLTg4ODg4In1dLCAib2NjdXBhbmN5IjogMX0sICIw
-			XzU2NTA2NjExMDY1MTU5NjgiOiB7InV1aWRzIjogW3sidXVpZCI6
-			ICJGdW4tWW91LS04ODg4OCJ9XSwgIm9jY3VwYW5jeSI6IDF9LCAi
-			MF81NjYxMzc3NTg2NzkwNDAwIjogeyJ1dWlkcyI6IFt7InV1aWQi
-			OiAiRnVuLVlvdS0tODg4ODgifV0sICJvY2N1cGFuY3kiOiAxfSwg
-			IjBfNTA5ODQyNzYzMzM2OTA4OCI6IHsidXVpZHMiOiBbeyJ1dWlk
-			IjogIkZ1bi1Zb3UtLTg4ODg4In1dLCAib2NjdXBhbmN5IjogMX0s
-			ICJhbGxfYWN0aXZpdHkiOiB7InV1aWRzIjogW3sidXVpZCI6ICJG
-			dW4tWW91LS04ODg4OCJ9XSwgIm9jY3VwYW5jeSI6IDF9LCAiMl91
-			cyI6IHsidXVpZHMiOiBbeyJ1dWlkIjogIkZ1bi1Zb3UtLTg4ODg4
-			In1dLCAib2NjdXBhbmN5IjogMX19LCAidG90YWxfY2hhbm5lbHMi
-			OiA3LCAidG90YWxfb2NjdXBhbmN5IjogOH0sICJzZXJ2aWNlIjog
-			IlByZXNlbmNlIn0=
+			YWQiOiB7ImNoYW5uZWxzIjogeyIwXzU2NTA2NjExMDY1MTU5Njgi
+			OiB7InV1aWRzIjogW3sidXVpZCI6ICJKZWp1RmFuLS03OTAwMSJ9
+			XSwgIm9jY3VwYW5jeSI6IDF9LCAiMF81MDk4NDI3NjMzMzY5MDg4
+			IjogeyJ1dWlkcyI6IFt7InV1aWQiOiAiSmVqdUZhbi0tNzkwMDEi
+			fV0sICJvY2N1cGFuY3kiOiAxfSwgImFsbF9hY3Rpdml0eSI6IHsi
+			dXVpZHMiOiBbeyJ1dWlkIjogIkplanVGYW4tLTc5MDAxIn1dLCAi
+			b2NjdXBhbmN5IjogMX19LCAidG90YWxfY2hhbm5lbHMiOiAzLCAi
+			dG90YWxfb2NjdXBhbmN5IjogM30sICJzZXJ2aWNlIjogIlByZXNl
+			bmNlIn0=
 			</data>
 			<key>json</key>
 			<dict>
@@ -45,7 +133,7 @@
 							<array>
 								<dict>
 									<key>uuid</key>
-									<string>Fun-You--88888</string>
+									<string>JejuFan--79001</string>
 								</dict>
 							</array>
 						</dict>
@@ -57,59 +145,7 @@
 							<array>
 								<dict>
 									<key>uuid</key>
-									<string>Fun-You--88888</string>
-								</dict>
-							</array>
-						</dict>
-						<key>0_5661377586790400</key>
-						<dict>
-							<key>occupancy</key>
-							<integer>1</integer>
-							<key>uuids</key>
-							<array>
-								<dict>
-									<key>uuid</key>
-									<string>Fun-You--88888</string>
-								</dict>
-							</array>
-						</dict>
-						<key>0_5743861762621440</key>
-						<dict>
-							<key>occupancy</key>
-							<integer>1</integer>
-							<key>uuids</key>
-							<array>
-								<dict>
-									<key>uuid</key>
-									<string>Fun-You--88888</string>
-								</dict>
-							</array>
-						</dict>
-						<key>2_us</key>
-						<dict>
-							<key>occupancy</key>
-							<integer>1</integer>
-							<key>uuids</key>
-							<array>
-								<dict>
-									<key>uuid</key>
-									<string>Fun-You--88888</string>
-								</dict>
-							</array>
-						</dict>
-						<key>a</key>
-						<dict>
-							<key>occupancy</key>
-							<integer>2</integer>
-							<key>uuids</key>
-							<array>
-								<dict>
-									<key>uuid</key>
-									<string>322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
-								</dict>
-								<dict>
-									<key>uuid</key>
-									<string>322A70B3-F0EA-48CD-9BB0-D3F1F5DE006C</string>
+									<string>JejuFan--79001</string>
 								</dict>
 							</array>
 						</dict>
@@ -121,15 +157,15 @@
 							<array>
 								<dict>
 									<key>uuid</key>
-									<string>Fun-You--88888</string>
+									<string>JejuFan--79001</string>
 								</dict>
 							</array>
 						</dict>
 					</dict>
 					<key>total_channels</key>
-					<integer>7</integer>
+					<integer>3</integer>
 					<key>total_occupancy</key>
-					<integer>8</integer>
+					<integer>3</integer>
 				</dict>
 				<key>service</key>
 				<string>Presence</string>
@@ -207,16 +243,16 @@
 					<key>Connection</key>
 					<string>keep-alive</string>
 					<key>Content-Length</key>
-					<string>713</string>
+					<string>356</string>
 					<key>Content-Type</key>
 					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
-					<string>Mon, 29 Jun 2015 06:13:03 GMT</string>
+					<string>Mon, 29 Jun 2015 20:44:27 GMT</string>
 					<key>Server</key>
 					<string>Pubnub Presence</string>
 				</dict>
 				<key>expectedContentLength</key>
-				<integer>713</integer>
+				<integer>356</integer>
 				<key>statusCode</key>
 				<integer>200</integer>
 				<key>suggestedFileName</key>

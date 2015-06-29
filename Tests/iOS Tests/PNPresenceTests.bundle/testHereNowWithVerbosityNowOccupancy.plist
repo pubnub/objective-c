@@ -10,15 +10,12 @@
 			<key>data</key>
 			<data>
 			eyJzdGF0dXMiOiAyMDAsICJtZXNzYWdlIjogIk9LIiwgInBheWxv
-			YWQiOiB7ImNoYW5uZWxzIjogeyJhIjogeyJvY2N1cGFuY3kiOiAy
-			fSwgIjBfNTc0Mzg2MTc2MjYyMTQ0MCI6IHsib2NjdXBhbmN5Ijog
-			MX0sICIwXzU2NTA2NjExMDY1MTU5NjgiOiB7Im9jY3VwYW5jeSI6
-			IDF9LCAiMF81NjYxMzc3NTg2NzkwNDAwIjogeyJvY2N1cGFuY3ki
-			OiAxfSwgIjBfNTA5ODQyNzYzMzM2OTA4OCI6IHsib2NjdXBhbmN5
-			IjogMX0sICJhbGxfYWN0aXZpdHkiOiB7Im9jY3VwYW5jeSI6IDF9
-			LCAiMl91cyI6IHsib2NjdXBhbmN5IjogMX19LCAidG90YWxfY2hh
-			bm5lbHMiOiA3LCAidG90YWxfb2NjdXBhbmN5IjogOH0sICJzZXJ2
-			aWNlIjogIlByZXNlbmNlIn0=
+			YWQiOiB7ImNoYW5uZWxzIjogeyIwXzU2NTA2NjExMDY1MTU5Njgi
+			OiB7Im9jY3VwYW5jeSI6IDF9LCAiMF81MDk4NDI3NjMzMzY5MDg4
+			IjogeyJvY2N1cGFuY3kiOiAxfSwgImFsbF9hY3Rpdml0eSI6IHsi
+			b2NjdXBhbmN5IjogMX19LCAidG90YWxfY2hhbm5lbHMiOiAzLCAi
+			dG90YWxfb2NjdXBhbmN5IjogM30sICJzZXJ2aWNlIjogIlByZXNl
+			bmNlIn0=
 			</data>
 			<key>json</key>
 			<dict>
@@ -38,26 +35,6 @@
 							<key>occupancy</key>
 							<integer>1</integer>
 						</dict>
-						<key>0_5661377586790400</key>
-						<dict>
-							<key>occupancy</key>
-							<integer>1</integer>
-						</dict>
-						<key>0_5743861762621440</key>
-						<dict>
-							<key>occupancy</key>
-							<integer>1</integer>
-						</dict>
-						<key>2_us</key>
-						<dict>
-							<key>occupancy</key>
-							<integer>1</integer>
-						</dict>
-						<key>a</key>
-						<dict>
-							<key>occupancy</key>
-							<integer>2</integer>
-						</dict>
 						<key>all_activity</key>
 						<dict>
 							<key>occupancy</key>
@@ -65,9 +42,9 @@
 						</dict>
 					</dict>
 					<key>total_channels</key>
-					<integer>7</integer>
+					<integer>3</integer>
 					<key>total_occupancy</key>
-					<integer>8</integer>
+					<integer>3</integer>
 				</dict>
 				<key>service</key>
 				<string>Presence</string>
@@ -139,22 +116,22 @@
 					<key>Access-Control-Allow-Origin</key>
 					<string>*</string>
 					<key>Age</key>
-					<string>1</string>
+					<string>0</string>
 					<key>Cache-Control</key>
 					<string>no-cache</string>
 					<key>Connection</key>
 					<string>keep-alive</string>
 					<key>Content-Length</key>
-					<string>368</string>
+					<string>239</string>
 					<key>Content-Type</key>
 					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
-					<string>Mon, 29 Jun 2015 06:13:07 GMT</string>
+					<string>Mon, 29 Jun 2015 20:44:30 GMT</string>
 					<key>Server</key>
 					<string>Pubnub Presence</string>
 				</dict>
 				<key>expectedContentLength</key>
-				<integer>368</integer>
+				<integer>239</integer>
 				<key>statusCode</key>
 				<integer>200</integer>
 				<key>suggestedFileName</key>
