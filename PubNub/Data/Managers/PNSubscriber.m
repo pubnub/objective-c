@@ -771,7 +771,14 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         [self.client processOperation:PNUnsubscribeOperation withParameters:parameters
                       completionBlock:^(__unused PNStatus *status1){
                           
-            [weakSelf subscribe:YES withState:nil completion:^(PNSubscribeStatus *status2) {
+            [weakSelf updateStateTo:PNDisconnectedSubscriberState
+                         withStatus:(PNSubscribeStatus *)successStatus];
+            [weakSelf.client callBlock:nil status:YES withResult:nil andStatus:successStatus];
+            if ([[weakSelf allObjects] count]) {
+                
+                [weakSelf subscribe:YES withState:nil completion:nil];
+            }
+            else {
                 
                 if (block) {
                     
@@ -780,10 +787,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                         block((PNSubscribeStatus *)successStatus);
                     });
                 }
-                [weakSelf updateStateTo:PNDisconnectedSubscriberState
-                             withStatus:(PNSubscribeStatus *)successStatus];
-                [weakSelf.client callBlock:nil status:YES withResult:nil andStatus:successStatus];
-            }];
+            }
         }];
     }
     else {

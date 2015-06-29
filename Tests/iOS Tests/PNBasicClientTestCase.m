@@ -17,9 +17,9 @@
 
 - (void)setUp {
     [super setUp];
-    PNConfiguration *config = [PNConfiguration configurationWithPublishKey:@"demo-36" subscribeKey:@"demo-36"];
-    config.uuid = @"322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C";
-    self.client = [PubNub clientWithConfiguration:config];
+    self.configuration = [PNConfiguration configurationWithPublishKey:@"demo-36" subscribeKey:@"demo-36"];
+    self.configuration.uuid = @"322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C";
+    self.client = [PubNub clientWithConfiguration:self.configuration];
 }
 
 - (void)tearDown {

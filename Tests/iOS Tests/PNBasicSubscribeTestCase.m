@@ -25,7 +25,7 @@
 
 - (void)PNTest_subscribeToChannels:(NSArray *)channels withPresence:(BOOL)shouldObservePresence {
     self.subscribeExpectation = [self expectationWithDescription:@"subscribe"];
-    [self.client subscribeToChannels:channels withPresence:YES];
+    [self.client subscribeToChannels:channels withPresence:shouldObservePresence];
     [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
         XCTAssertNil(error);
     }];
