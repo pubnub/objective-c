@@ -89,7 +89,6 @@
         [copyExpectation fulfill];
     }];
     [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
-        [copyExpectation fulfill];
         XCTAssertNil(error);
     }];
 }
@@ -106,7 +105,6 @@
         [copyExpectation fulfill];
     }];
     [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
-        [copyExpectation fulfill];
         XCTAssertNil(error);
     }];
 }
