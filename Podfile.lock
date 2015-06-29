@@ -43,7 +43,7 @@ PODS:
     - CocoaLumberjack/Core
   - CocoaLumberjack/Extensions (2.0.0):
     - CocoaLumberjack/Default
-  - JSZVCR (0.5.6):
+  - JSZVCR (0.5.7):
     - BlocksKit (~> 2.2.5)
     - OHHTTPStubs (~> 4.0.2)
   - OHHTTPStubs (4.0.2)
@@ -63,7 +63,7 @@ SPEC CHECKSUMS:
   AFNetworking: 05edc0ac4c4c8cf57bcf4b84be5b0744b6d8e71e
   BlocksKit: 7f422b971407001178d181a43b99014ea2591fe6
   CocoaLumberjack: a6f77d987d65dc7ba86b0f84db7d0b9084f77bcb
-  JSZVCR: f3bec1b4c3789ed3fe171a7cf73047c3148064c8
+  JSZVCR: 01019441734f8ad6d597dd54f2a4f368225dbde3
   OHHTTPStubs: dbd1957d414659783e07b49c961940b7564c23d9
   PubNub: 9044ccad072dea39c0b8423ec405c5692bc8cf87
 
