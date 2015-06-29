@@ -9,11 +9,11 @@
 		<dict>
 			<key>data</key>
 			<data>
-			WzE0MzUzNTI0ODIzODIyNTYyXQ==
+			WzE0MzU1MjQxNDcxMTEyNDk4XQ==
 			</data>
 			<key>json</key>
 			<array>
-				<integer>14353524823822562</integer>
+				<integer>14355241471112498</integer>
 			</array>
 		</dict>
 		<key>request</key>
@@ -86,7 +86,7 @@
 					<key>Content-Type</key>
 					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
-					<string>Fri, 26 Jun 2015 21:01:22 GMT</string>
+					<string>Sun, 28 Jun 2015 20:42:27 GMT</string>
 				</dict>
 				<key>expectedContentLength</key>
 				<integer>19</integer>
@@ -106,11 +106,11 @@
 		<dict>
 			<key>data</key>
 			<data>
-			WzE0MzUzNTI0ODI0MDQ3MTkxXQ==
+			WzE0MzU1MjQxNDcwMjE3NDc5XQ==
 			</data>
 			<key>json</key>
 			<array>
-				<integer>14353524824047191</integer>
+				<integer>14355241470217479</integer>
 			</array>
 		</dict>
 		<key>request</key>
@@ -183,7 +183,7 @@
 					<key>Content-Type</key>
 					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
-					<string>Fri, 26 Jun 2015 21:01:22 GMT</string>
+					<string>Sun, 28 Jun 2015 20:42:27 GMT</string>
 				</dict>
 				<key>expectedContentLength</key>
 				<integer>19</integer>
@@ -203,13 +203,13 @@
 		<dict>
 			<key>data</key>
 			<data>
-			WzEsIlNlbnQiLCIxNDM1MzUyNDgyNDEyMTk2MiJd
+			WzEsIlNlbnQiLCIxNDM1NTI0MTQ3MjE1MDUzOSJd
 			</data>
 			<key>json</key>
 			<array>
 				<integer>1</integer>
 				<string>Sent</string>
-				<string>14353524824121962</string>
+				<string>14355241472150539</string>
 			</array>
 		</dict>
 		<key>request</key>
@@ -221,7 +221,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/12F80694-1C84-466A-A4FC-784B5E4722C8/0/%22%21%40%23%24%25%5E%26%2A%28%29_%2B%7C%22?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/EC1DFE5D-D6AD-4D18-9B1E-E5E1F973E9B5/0/%22%21%40%23%24%25%5E%26%2A%28%29_%2B%7C%22?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -245,7 +245,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/12F80694-1C84-466A-A4FC-784B5E4722C8/0/%22%21%40%23%24%25%5E%26%2A%28%29_%2B%7C%22?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/EC1DFE5D-D6AD-4D18-9B1E-E5E1F973E9B5/0/%22%21%40%23%24%25%5E%26%2A%28%29_%2B%7C%22?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept-Language</key>
@@ -266,7 +266,7 @@
 				<key>MIMEType</key>
 				<string>text/javascript</string>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/12F80694-1C84-466A-A4FC-784B5E4722C8/0/%22%21%40%23%24%25%5E%26%2A%28%29_%2B%7C%22?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/EC1DFE5D-D6AD-4D18-9B1E-E5E1F973E9B5/0/%22%21%40%23%24%25%5E%26%2A%28%29_%2B%7C%22?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHeaderFields</key>
 				<dict>
 					<key>Access-Control-Allow-Methods</key>
@@ -282,7 +282,7 @@
 					<key>Content-Type</key>
 					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
-					<string>Fri, 26 Jun 2015 21:01:22 GMT</string>
+					<string>Sun, 28 Jun 2015 20:42:27 GMT</string>
 				</dict>
 				<key>expectedContentLength</key>
 				<integer>30</integer>

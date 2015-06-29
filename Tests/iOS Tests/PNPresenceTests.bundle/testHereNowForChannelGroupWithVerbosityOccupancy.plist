@@ -9,14 +9,29 @@
 		<dict>
 			<key>data</key>
 			<data>
-			WzEsIlNlbnQiLCIxNDM1NTI0MTQ1Nzk0MzA4OCJd
+			eyJzdGF0dXMiOiAyMDAsICJtZXNzYWdlIjogIk9LIiwgInBheWxv
+			YWQiOiB7ImNoYW5uZWxzIjoge30sICJ0b3RhbF9jaGFubmVscyI6
+			IDAsICJ0b3RhbF9vY2N1cGFuY3kiOiAwfSwgInNlcnZpY2UiOiAi
+			UHJlc2VuY2UifQ==
 			</data>
 			<key>json</key>
-			<array>
-				<integer>1</integer>
-				<string>Sent</string>
-				<string>14355241457943088</string>
-			</array>
+			<dict>
+				<key>message</key>
+				<string>OK</string>
+				<key>payload</key>
+				<dict>
+					<key>channels</key>
+					<dict/>
+					<key>total_channels</key>
+					<integer>0</integer>
+					<key>total_occupancy</key>
+					<integer>0</integer>
+				</dict>
+				<key>service</key>
+				<string>Presence</string>
+				<key>status</key>
+				<integer>200</integer>
+			</dict>
 		</dict>
 		<key>request</key>
 		<dict>
@@ -27,7 +42,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/7CA6116E-D19D-4A42-B40E-A0F50F8C7E03/0/%5B%221%22%2C%222%22%2C%223%22%2C%224%22%5D?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/v2/presence/sub-key/demo-36/channel/,?channel-group=2EC925F0-B996-47A4-AF54-A605E1A9AEBA&amp;pnsdk=PubNub-ObjC-iOS%2F4.0&amp;state=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;disable_uuids=1&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -51,7 +66,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/7CA6116E-D19D-4A42-B40E-A0F50F8C7E03/0/%5B%221%22%2C%222%22%2C%223%22%2C%224%22%5D?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/v2/presence/sub-key/demo-36/channel/,?channel-group=2EC925F0-B996-47A4-AF54-A605E1A9AEBA&amp;pnsdk=PubNub-ObjC-iOS%2F4.0&amp;state=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;disable_uuids=1&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept-Language</key>
@@ -72,30 +87,36 @@
 				<key>MIMEType</key>
 				<string>text/javascript</string>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/7CA6116E-D19D-4A42-B40E-A0F50F8C7E03/0/%5B%221%22%2C%222%22%2C%223%22%2C%224%22%5D?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/v2/presence/sub-key/demo-36/channel/,?channel-group=2EC925F0-B996-47A4-AF54-A605E1A9AEBA&amp;pnsdk=PubNub-ObjC-iOS%2F4.0&amp;state=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;disable_uuids=1&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHeaderFields</key>
 				<dict>
+					<key>Accept-Ranges</key>
+					<string>bytes</string>
 					<key>Access-Control-Allow-Methods</key>
 					<string>GET</string>
 					<key>Access-Control-Allow-Origin</key>
 					<string>*</string>
+					<key>Age</key>
+					<string>0</string>
 					<key>Cache-Control</key>
 					<string>no-cache</string>
 					<key>Connection</key>
 					<string>keep-alive</string>
 					<key>Content-Length</key>
-					<string>30</string>
+					<string>127</string>
 					<key>Content-Type</key>
 					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
-					<string>Sun, 28 Jun 2015 20:42:25 GMT</string>
+					<string>Mon, 29 Jun 2015 06:13:00 GMT</string>
+					<key>Server</key>
+					<string>Pubnub Presence</string>
 				</dict>
 				<key>expectedContentLength</key>
-				<integer>30</integer>
+				<integer>127</integer>
 				<key>statusCode</key>
 				<integer>200</integer>
 				<key>suggestedFileName</key>
-				<string>["1","2","3","4"].js</string>
+				<string>,.js</string>
 				<key>textEncodingName</key>
 				<string>"utf-8"</string>
 			</dict>

@@ -20,7 +20,7 @@
 @implementation PNPublishTests
 
 - (BOOL)isRecording{
-    return YES;
+    return NO;
 }
 
 - (void)testSimplePublish {
@@ -35,7 +35,7 @@
         NSLog(@"status.data.information: %@", status.data.information);
         NSLog(@"status.data.timeToken: %@", status.data.timetoken);
         XCTAssertEqualObjects(status.data.information, @"Sent");
-        XCTAssertEqualObjects(status.data.timetoken, @"14353524826349936");
+        XCTAssertEqualObjects(status.data.timetoken, @"14355241475579877");
     }];
 }
 
@@ -67,7 +67,7 @@
         NSLog(@"status.data.information: %@", status.data.information);
         NSLog(@"status.data.timeToken: %@", status.data.timetoken);
         XCTAssertEqualObjects(status.data.information, @"Sent");
-        XCTAssertEqualObjects(status.data.timetoken, @"14353524819870037");
+        XCTAssertEqualObjects(status.data.timetoken, @"14355241464580222");
     }];
 }
 
@@ -95,7 +95,7 @@
         NSLog(@"status.data.information: %@", status.data.information);
         NSLog(@"status.data.timeToken: %@", status.data.timetoken);
         XCTAssertEqualObjects(status.data.information, @"Sent");
-        XCTAssertEqualObjects(status.data.timetoken, @"14353524819870037");
+        XCTAssertEqualObjects(status.data.timetoken, @"14355246934826904");
     }];
 }
 
@@ -149,7 +149,7 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @"14347265638751945");
+                      XCTAssertEqualObjects(status.data.timetoken, @"14355247095584045");
                   }];
 }
 
@@ -176,11 +176,13 @@
 
 - (void)testPublish1kCharactersString {
     
+    NSString *uniqueChannel = @"2EC925F0-B996-47A4-AF54-A605E1A9AEBA";
+    
     // generate long string
     NSString *testString = [NSString randomAlphanumericStringWithLength:1000];
     
     [self performVerifiedPublish:testString
-                       onChannel:[NSUUID UUID].UUIDString
+                       onChannel:uniqueChannel
                   withAssertions:^(PNPublishStatus *status) {
                       XCTAssertNotNil(status);
                       XCTAssertEqual(status.category, PNAcknowledgmentCategory);
@@ -190,17 +192,19 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @"14347265638751945");
+                      XCTAssertEqualObjects(status.data.timetoken, @"14355247437244272");
                   }];
 }
 
 - (void)testPublish10kCharactersString {
     
+    NSString *uniqueChannel = @"2EC925F0-B996-47A4-AF54-A605E1A9AEBA";
+    
     // generate long string
     NSString *testString = [NSString randomAlphanumericStringWithLength:10000];
     
     [self performVerifiedPublish:testString
-                       onChannel:[NSUUID UUID].UUIDString
+                       onChannel:uniqueChannel
                   withAssertions:^(PNPublishStatus *status) {
                       XCTAssertNotNil(status);
                       XCTAssertEqual(status.category, PNAcknowledgmentCategory);
@@ -210,12 +214,14 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @"14347265638751945");
+                      XCTAssertEqualObjects(status.data.timetoken, @"14355247660878170");
                   }];
 }
 
 
 - (void)testPublishStringWithSpecialSymbols {
+    
+    NSString *uniqueChannel = @"2EC925F0-B996-47A4-AF54-A605E1A9AEBA";
     
     NSString *stringWithSpecialSymbols = @"!@#$%^&*()_+|";
     
@@ -230,7 +236,7 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @"14347265638751945");
+                      XCTAssertEqualObjects(status.data.timetoken, @"14355248009326064");
                   }];
 }
 

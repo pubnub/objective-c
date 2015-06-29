@@ -16,15 +16,23 @@
 
 @property (nonatomic) XCTestExpectation *testExpectation;
 
+@property (nonatomic) NSString *uniqueName;
+
 @end
 
 @implementation PNPresenceTests
 
-- (BOOL)isRecording{
-    return YES;
+- (void)setUp {
+    [super setUp];
+    
+    self.uniqueName = @"2EC925F0-B996-47A4-AF54-A605E1A9AEBA";
 }
 
-// Test without preparing steps
+- (BOOL)isRecording{
+    return NO;
+}
+
+#pragma mark - Simple tests without preparing steps
 
 - (void)testHereNow {
     self.testExpectation = [self expectationWithDescription:@"network"];
@@ -104,7 +112,7 @@
 
 - (void)testHereNowForChannel {
     self.testExpectation = [self expectationWithDescription:@"network"];
-    NSString *channelName = [[NSUUID UUID] UUIDString];
+    NSString *channelName = self.uniqueName;
     [self.client hereNowForChannel:channelName
                     withCompletion:^(PNPresenceChannelHereNowResult *result, PNErrorStatus *status) {
                                XCTAssertNil(status);
@@ -144,7 +152,7 @@
 
 - (void)testHereNowForChannelWithVerbosityOccupancy {
     self.testExpectation = [self expectationWithDescription:@"network"];
-    NSString *channelName = [[NSUUID UUID] UUIDString];
+    NSString *channelName = self.uniqueName;
     [self.client hereNowForChannel:channelName
                      withVerbosity:PNHereNowOccupancy
                         completion:^(PNPresenceChannelHereNowResult *result, PNErrorStatus *status) {
@@ -186,7 +194,7 @@
 
 - (void)testHereNowForChannelWithVerbosityState {
     self.testExpectation = [self expectationWithDescription:@"network"];
-    NSString *channelName = [[NSUUID UUID] UUIDString];
+    NSString *channelName = self.uniqueName;
     [self.client hereNowForChannel:channelName
                      withVerbosity:PNHereNowState
                         completion:^(PNPresenceChannelHereNowResult *result, PNErrorStatus *status) {
@@ -228,7 +236,7 @@
 
 - (void)testHereNowForChannelWithVerbosityUUID {
     self.testExpectation = [self expectationWithDescription:@"network"];
-    NSString *channelName = [[NSUUID UUID] UUIDString];
+    NSString *channelName = self.uniqueName;
     [self.client hereNowForChannel:channelName
                      withVerbosity:PNHereNowUUID
                         completion:^(PNPresenceChannelHereNowResult *result, PNErrorStatus *status) {
@@ -270,7 +278,7 @@
 
 - (void)testHereNowForChannelGroup {
     self.testExpectation = [self expectationWithDescription:@"network"];
-    NSString *channelGroupName = [[NSUUID UUID] UUIDString];
+    NSString *channelGroupName = self.uniqueName;
     [self.client hereNowForChannelGroup:channelGroupName
                          withCompletion:^(PNPresenceChannelGroupHereNowResult *result, PNErrorStatus *status) {
                             XCTAssertNil(status);
@@ -308,7 +316,7 @@
 
 - (void)testHereNowForChannelGroupWithVerbosityOccupancy {
     self.testExpectation = [self expectationWithDescription:@"network"];
-    NSString *channelGroupName = [[NSUUID UUID] UUIDString];
+    NSString *channelGroupName = self.uniqueName;
     [self.client hereNowForChannelGroup:channelGroupName
                           withVerbosity:PNHereNowOccupancy
                              completion:^(PNPresenceChannelGroupHereNowResult *result, PNErrorStatus *status) {
@@ -348,7 +356,7 @@
 
 - (void)testHereNowForChannelGroupWithVerbosityState {
     self.testExpectation = [self expectationWithDescription:@"network"];
-    NSString *channelGroupName = [[NSUUID UUID] UUIDString];
+    NSString *channelGroupName = self.uniqueName;
     [self.client hereNowForChannelGroup:channelGroupName
                           withVerbosity:PNHereNowState
                              completion:^(PNPresenceChannelGroupHereNowResult *result, PNErrorStatus *status) {
@@ -388,7 +396,7 @@
 
 - (void)testHereNowForChannelGroupWithVerbosityUUID {
     self.testExpectation = [self expectationWithDescription:@"network"];
-    NSString *channelGroupName = [[NSUUID UUID] UUIDString];
+    NSString *channelGroupName = self.uniqueName;
     [self.client hereNowForChannelGroup:channelGroupName
                           withVerbosity:PNHereNowUUID
                              completion:^(PNPresenceChannelGroupHereNowResult *result, PNErrorStatus *status) {
