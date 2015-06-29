@@ -778,6 +778,16 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                 
                 [weakSelf subscribe:YES withState:nil completion:nil];
             }
+            else {
+                
+                if (block) {
+                    
+                    pn_dispatch_async(weakSelf.client.callbackQueue, ^{
+                        
+                        block((PNSubscribeStatus *)successStatus);
+                    });
+                }
+            }
         }];
     }
     else {
