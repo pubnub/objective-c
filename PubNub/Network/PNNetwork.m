@@ -189,14 +189,12 @@ static DDLogLevel ddLogLevel;
  @param data       Reference on data which has been received from \b PubNub network in response for
                    operation.
  @param parser     Reference on class which should be used to parse data.
- @param parseError Stores reference to boolean which allow to identify whether parsing switched to
-                   error parser to handle data or not.
  @param block      Reference on block which should be called back at the end of parsing process.
  
  @since 4.0
  */
-- (void)parseData:(id)data withParser:(Class <PNParser>)parser error:(BOOL *)parseError
-       completion:(void(^)(NSDictionary *parsedData))block;
+- (void)parseData:(id)data withParser:(Class <PNParser>)parser
+       completion:(void(^)(NSDictionary *parsedData, BOOL parseError))block;
 
 
 #pragma mark - Session constructor
@@ -562,19 +560,15 @@ static DDLogLevel ddLogLevel;
     #pragma clang diagnostic pop
 }
 
-- (void)parseData:(id)data withParser:(Class <PNParser>)parser error:(BOOL *)parseError
-       completion:(void(^)(NSDictionary *parsedData))block {
-    
-    if (parseError != NULL) {
-        
-        *parseError = (parser == [PNErrorParser class]);
-    }
+- (void)parseData:(id)data withParser:(Class <PNParser>)parser
+       completion:(void(^)(NSDictionary *parsedData, BOOL parseError))block {
+
     __weak __typeof(self) weakSelf = self;
     void(^parseCompletion)(NSDictionary *) = ^(NSDictionary *processedData){
         
         if (processedData || parser == [PNErrorParser class]) {
             
-            block(processedData);
+            block(processedData, (parser == [PNErrorParser class]));
         }
         else {
             
@@ -584,8 +578,7 @@ static DDLogLevel ddLogLevel;
             // it and probably whole client instance has been deallocated.
             #pragma clang diagnostic push
             #pragma clang diagnostic ignored "-Wreceiver-is-weak"
-            [weakSelf parseData:data withParser:[PNErrorParser class] error:parseError
-                     completion:[block copy]];
+            [weakSelf parseData:data withParser:[PNErrorParser class] completion:[block copy]];
             #pragma clang diagnostic pop
         }
     };
@@ -616,7 +609,7 @@ static DDLogLevel ddLogLevel;
 }
 
 - (void)cancelAllRequests {
-    
+
     [[self.session tasks] makeObjectsPerformSelector:@selector(cancel)];
 }
 
@@ -688,10 +681,9 @@ static DDLogLevel ddLogLevel;
 - (void)handleOperation:(PNOperationType)operation taskDidComplete:(NSURLSessionDataTask *)task
                withData:(id)responseObject completionBlock:(id)block {
     
-    __block BOOL parseError = NO;
     __weak __typeof(self) weakSelf = self;
-    [self parseData:responseObject withParser:[self parserForOperation:operation] error:&parseError
-         completion:^(NSDictionary *parsedData) {
+    [self parseData:responseObject withParser:[self parserForOperation:operation]
+         completion:^(NSDictionary *parsedData, BOOL parseError) {
 
              [weakSelf handleParsedData:parsedData loadedWithTask:task forOperation:operation
                           parsedAsError:parseError processingError:task.error
@@ -708,7 +700,6 @@ static DDLogLevel ddLogLevel;
     }
     else {
         
-        __block BOOL parseError = NO;
         id errorDetails = nil;
         NSData *errorData = (error?: task.error).userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
         if (errorData) {
@@ -716,8 +707,8 @@ static DDLogLevel ddLogLevel;
             errorDetails = [NSJSONSerialization JSONObjectWithData:errorData
                                                            options:(NSJSONReadingOptions)0 error:NULL];
         }
-        [self parseData:errorDetails withParser:[PNErrorParser class] error:&parseError
-             completion:^(NSDictionary *parsedData) {
+        [self parseData:errorDetails withParser:[PNErrorParser class]
+             completion:^(NSDictionary *parsedData, BOOL parseError) {
 
                  [self handleParsedData:parsedData loadedWithTask:task forOperation:operation
                           parsedAsError:YES processingError:(error?: task.error)
@@ -732,6 +723,15 @@ static DDLogLevel ddLogLevel;
     
     PNResult *result = nil;
     PNStatus *status = nil;
+    
+    // Check whether request potentially has been cancelled prior actual sending to the network or
+    // not
+    if (task && ((NSHTTPURLResponse *)task.response).statusCode == 0) {
+        
+        isError = YES;
+        error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorCancelled
+                                userInfo:error.userInfo];
+    }
     if ([self operationExpectResult:operation] && !isError) {
         
         result = [[self resultClassForOperation:operation] objectForOperation:operation
@@ -746,6 +746,7 @@ static DDLogLevel ddLogLevel;
         status = (PNStatus *)[statusClass objectForOperation:operation completedWithTaks:task
                                                processedData:data processingError:error];
     }
+    
     if (result || status) {
 
         [self handleOperation:operation processingCompletedWithResult:result
