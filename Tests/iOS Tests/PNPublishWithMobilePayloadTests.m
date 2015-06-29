@@ -21,7 +21,11 @@
 @implementation PNPublishWithMobilePayloadTests
 
 - (BOOL)isRecording{
-    return YES;
+    return NO;
+}
+
+- (NSString *)publishChannelName {
+    return @"02290046-2F36-43DD-97F0-2F51D925451A";
 }
 
 - (void)testSimplePublishSimpleMobilePushPayload {
@@ -33,7 +37,7 @@
                               @"acme 1" : @(42)};
     
     [self performVerifiedPublish:@"test"
-                       onChannel:[NSUUID UUID].UUIDString
+                       onChannel:[self publishChannelName]
                mobilePushPayload:payload
                   storeInHistory:YES
                       compressed:YES
@@ -46,13 +50,13 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @"14347265638751945");
+                      XCTAssertEqualObjects(status.data.timetoken, @"14355754276876191");
                   }];
 }
 
 - (void)testSimplePublishNilMobilePushPayload {
     [self performVerifiedPublish:@"test"
-                       onChannel:[NSUUID UUID].UUIDString
+                       onChannel:[self publishChannelName]
                mobilePushPayload:nil
                   storeInHistory:YES
                       compressed:YES
@@ -65,7 +69,7 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @"14347265638751945");
+                      XCTAssertEqualObjects(status.data.timetoken, @"14355754270174148");
                   }];
 }
 
@@ -78,7 +82,7 @@
                               @"acme 1" : @(42)};
     
     [self performVerifiedPublish:@"test"
-                       onChannel:[NSUUID UUID].UUIDString
+                       onChannel:[self publishChannelName]
                mobilePushPayload:payload
                   storeInHistory:NO
                       compressed:YES
@@ -91,7 +95,7 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @"14347265638751945");
+                      XCTAssertEqualObjects(status.data.timetoken, @"14355754263748721");
                   }];
 }
 
@@ -104,7 +108,7 @@
                               @"acme 1" : @(42)};
     
     [self performVerifiedPublish:@"test"
-                       onChannel:[NSUUID UUID].UUIDString
+                       onChannel:[self publishChannelName]
                mobilePushPayload:payload
                   storeInHistory:NO
                       compressed:NO
@@ -117,7 +121,7 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @"14347265638751945");
+                      XCTAssertEqualObjects(status.data.timetoken, @"14355754266900644");
                   }];
 }
 
@@ -142,8 +146,8 @@
                       XCTAssertTrue(status.isError);
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
-                      XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @"14347265638751945");
+                      XCTAssertNil(status.data.information);
+                      XCTAssertNil(status.data.timetoken);
                   }];
 }
 

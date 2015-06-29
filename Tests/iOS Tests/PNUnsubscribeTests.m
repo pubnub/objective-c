@@ -12,9 +12,7 @@
 
 #import "PNBasicSubscribeTestCase.h"
 
-@interface PNUnsubscribeTests : PNBasicSubscribeTestCase <PNObjectEventListener>
-@property (nonatomic, getter=isSettingUp) BOOL settingUp;
-@property (nonatomic) XCTestExpectation *unsubscribeExpectation;
+@interface PNUnsubscribeTests : PNBasicSubscribeTestCase
 @end
 
 @implementation PNUnsubscribeTests
@@ -25,66 +23,53 @@
 
 - (void)setUp {
     [super setUp];
-    self.settingUp = YES;
-    self.subscribeExpectation = [self expectationWithDescription:@"subscribe"];
-    [self.client subscribeToChannels:@[@"a"] withPresence:YES];
-    [self waitForExpectationsWithTimeout:15 handler:^(NSError *error) {
-        NSLog(@"error: %@", error);
-    }];
-    
-}
-
-- (void)tearDown {
-    self.unsubscribeExpectation = nil;
-    [super tearDown];
-}
-
-- (void)DISABLED_testUnsubscribe {
-    self.unsubscribeExpectation = [self expectationWithDescription:@"unsubscribe"];
-    [self.client unsubscribeFromChannels:@[@"a"] withPresence:YES];
-    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
-        NSLog(@"error: %@", error);
-    }];
-}
-
-- (void)client:(PubNub *)client didReceiveMessage:(PNMessageResult *)message {
-    NSLog(@"message: %@", message);
-}
-
-- (void)client:(PubNub *)client didReceivePresenceEvent:(PNPresenceEventResult *)event {
-    NSLog(@"event: %@", event);
-}
-
-- (void)client:(PubNub *)client didReceiveStatus:(PNSubscribeStatus *)status {
-    
-    NSLog(@"status: %@", [status debugDescription]);
-    if (self.isSettingUp) {
+    PNWeakify(self);
+    self.didReceiveStatusAssertions = ^void (PubNub *client, PNSubscribeStatus *status) {
+        PNStrongify(self);
+        XCTAssertEqualObjects(self.client, client);
         XCTAssertNotNil(status);
-        XCTAssertEqual(status.category, PNConnectedCategory);
-        XCTAssertEqual(status.operation, PNSubscribeOperation);
-        NSArray *expectedChannels = @[@"a", @"a-pnpres"];
-        XCTAssertEqualObjects(status.subscribedChannels, expectedChannels);
-        XCTAssertEqual(status.subscribedChannelGroups.count, 0);
         XCTAssertFalse(status.isError);
-        self.settingUp = NO;
+        XCTAssertEqual(status.category, PNConnectedCategory);
+        NSArray *expectedPresenceSubscriptions = @[@"a", @"a-pnpres"];
+        XCTAssertEqualObjects(status.subscribedChannels, expectedPresenceSubscriptions);
+        XCTAssertEqual(status.operation, PNSubscribeOperation);
+        NSLog(@"timeToken: %@", status.currentTimetoken);
+        XCTAssertEqualObjects(status.currentTimetoken, @14355436534569417);
+        XCTAssertEqualObjects(status.currentTimetoken, status.data.timetoken);
+        
+    };
+    self.didReceiveMessageAssertions = ^void (PubNub *client, PNMessageResult *message) {
+        PNStrongify(self);
+        XCTAssertEqualObjects(self.client, client);
+        XCTAssertEqualObjects(client.uuid, message.uuid);
+        XCTAssertNotNil(message.uuid);
+        XCTAssertNil(message.authKey);
+        XCTAssertEqual(message.statusCode, 200);
+        XCTAssertTrue(message.TLSEnabled);
+        XCTAssertEqual(message.operation, PNSubscribeOperation);
+        NSLog(@"message:");
+        NSLog(@"%@", message.data.message);
+        XCTAssertEqualObjects(message.data.message, @"*************** 5657 - 2015-06-28 19:07:34");
         [self.subscribeExpectation fulfill];
-        return;
-    }
-    NSLog(@"status: %@", [status debugDescription]);
-    XCTAssertNotNil(status);
-    XCTAssertFalse(status.isError);
-    XCTAssertEqual(status.operation, PNSubscribeOperation);
-    XCTAssertNotNil(status.subscribedChannels);
-    XCTAssertEqual(status.subscribedChannels.count, 0);
-    XCTAssertNotNil(status.subscribedChannelGroups);
-    XCTAssertEqual(status.subscribedChannelGroups.count, 0);
-    XCTAssertTrue((status.category == PNDisconnectedCategory) ||
-                  (status.category == PNUnexpectedDisconnectCategory));
-//    XCTAssertEqual(status.category, PNDisconnectedCategory);
-    XCTAssertTrue((status.statusCode == 200) ||
-                  (status.statusCode == 0));
-//    XCTAssertEqual(status.statusCode, 200);
-    [self.unsubscribeExpectation fulfill];
+    };
+    [self PNTest_subscribeToChannels:@[@"a"] withPresence:YES];
+    
+}
+
+- (void)testUnsubscribeWithPresence {
+    PNWeakify(self);
+    self.didReceiveStatusAssertions = ^void (PubNub *client, PNSubscribeStatus *status) {
+        PNStrongify(self);
+        XCTAssertNotNil(client);
+        XCTAssertNotNil(status);
+        XCTAssertEqualObjects(self.client, client);
+        XCTAssertEqual(status.category, PNDisconnectedCategory);
+        XCTAssertFalse(status.isError);
+        XCTAssertEqual(status.statusCode, 200);
+        XCTAssertEqual(status.operation, PNUnsubscribeOperation);
+        [self.unsubscribeExpectation fulfill];
+    };
+    [self PNTest_unsubscribeFromChannels:@[@"a"] withPresence:YES];
 }
 
 @end

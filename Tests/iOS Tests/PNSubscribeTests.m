@@ -12,7 +12,7 @@
 
 #import "PNBasicSubscribeTestCase.h"
 
-@interface PNSubscribeTests : PNBasicSubscribeTestCase <PNObjectEventListener>
+@interface PNSubscribeTests : PNBasicSubscribeTestCase
 @end
 
 @implementation PNSubscribeTests
@@ -21,39 +21,44 @@
     return NO;
 }
 
-- (void)testSimpleSubscribe {
-    self.subscribeExpectation = [self expectationWithDescription:@"network"];
-    [self.client subscribeToChannels:@[@"a"] withPresence:NO];
-    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
-        if (error) {
-            NSLog(@"error: %@", error);
-            XCTFail(@"what went wrong?");
-        }
-    }];
+- (NSArray *)subscriptionChannels {
+    return @[
+             @"a"
+             ];
 }
 
-#pragma mark - PNObjectEventListener
-
-- (void)client:(PubNub *)client didReceiveMessage:(PNMessageResult *)message {
-    XCTAssertEqualObjects(self.client, client);
-    XCTAssertEqualObjects(client.uuid, message.uuid);
-    XCTAssertNotNil(message.uuid);
-    XCTAssertNil(message.authKey);
-    XCTAssertEqual(message.statusCode, 200);
-    XCTAssertTrue(message.TLSEnabled);
-    XCTAssertEqual(message.operation, PNSubscribeOperation);
-    NSLog(@"message:");
-    NSLog(@"%@", message.data.message);
-    XCTAssertEqualObjects(message.data.message, @"*************** 5849 - 2015-06-17 15:19:49");
-    [self.subscribeExpectation fulfill];
-}
-
-- (void)client:(PubNub *)client didReceivePresenceEvent:(PNPresenceEventResult *)event {
-    NSLog(@"%s", __PRETTY_FUNCTION__);
-}
-
-- (void)client:(PubNub *)client didReceiveStatus:(PNSubscribeStatus *)status {
-    NSLog(@"%s", __PRETTY_FUNCTION__);
+- (void)testSimpleSubscribeWithPresence {
+    PNWeakify(self);
+    self.didReceiveStatusAssertions = ^void (PubNub *client, PNSubscribeStatus *status) {
+        PNStrongify(self);
+        XCTAssertEqualObjects(self.client, client);
+        XCTAssertNotNil(status);
+        XCTAssertFalse(status.isError);
+        XCTAssertEqual(status.category, PNConnectedCategory);
+        XCTAssertEqual(status.subscribedChannelGroups.count, 0);
+        NSArray *expectedPresenceSubscriptions = @[@"a", @"a-pnpres"];
+        XCTAssertEqualObjects(status.subscribedChannels, expectedPresenceSubscriptions);
+        XCTAssertEqual(status.operation, PNSubscribeOperation);
+        NSLog(@"timeToken: %@", status.currentTimetoken);
+        XCTAssertEqualObjects(status.currentTimetoken, @14355377127740789);
+        XCTAssertEqualObjects(status.currentTimetoken, status.data.timetoken);
+        
+    };
+    self.didReceiveMessageAssertions = ^void (PubNub *client, PNMessageResult *message) {
+        PNStrongify(self);
+        XCTAssertEqualObjects(self.client, client);
+        XCTAssertEqualObjects(client.uuid, message.uuid);
+        XCTAssertNotNil(message.uuid);
+        XCTAssertNil(message.authKey);
+        XCTAssertEqual(message.statusCode, 200);
+        XCTAssertTrue(message.TLSEnabled);
+        XCTAssertEqual(message.operation, PNSubscribeOperation);
+        NSLog(@"message:");
+        NSLog(@"%@", message.data.message);
+        XCTAssertEqualObjects(message.data.message, @"*.............. 2703 - 2015-06-28 17:28:33");
+        [self.subscribeExpectation fulfill];
+    };
+    [self PNTest_subscribeToChannels:[self subscriptionChannels] withPresence:YES];
 }
 
 @end

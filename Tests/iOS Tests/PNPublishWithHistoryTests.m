@@ -25,25 +25,28 @@
     
 }
 
+- (NSString *)publishChannelString {
+    return @"9BA810C6-985D-4797-926F-CC81749CC774";
+}
+
 - (void)testSimplePublishWithHistory {
-    [self performVerifiedPublish:@"test" onChannel:[NSUUID UUID].UUIDString
+    [self performVerifiedPublish:@"test" onChannel:[self publishChannelString]
                   storeInHistory:YES
                   withAssertions:^(PNPublishStatus *status) {
-        XCTAssertNotNil(status);
-        XCTAssertEqual(status.category, PNAcknowledgmentCategory);
-        XCTAssertEqual(status.operation, PNPublishOperation);
-        XCTAssertEqual(status.statusCode, 200);
-        XCTAssertFalse(status.isError);
-        NSLog(@"status.data.information: %@", status.data.information);
-        NSLog(@"status.data.timeToken: %@", status.data.timetoken);
-        XCTAssertEqualObjects(status.data.information, @"Sent");
-        XCTAssertEqualObjects(status.data.timetoken, @"14347265638751945");
-
+                      XCTAssertNotNil(status);
+                      XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+                      XCTAssertEqual(status.operation, PNPublishOperation);
+                      XCTAssertEqual(status.statusCode, 200);
+                      XCTAssertFalse(status.isError);
+                      NSLog(@"status.data.information: %@", status.data.information);
+                      NSLog(@"status.data.timeToken: %@", status.data.timetoken);
+                      XCTAssertEqualObjects(status.data.information, @"Sent");
+                      XCTAssertEqualObjects(status.data.timetoken, @"14355338601176506");
     }];
 }
 
 - (void)testSimplePublishWithoutHistory {
-    [self performVerifiedPublish:@"test" onChannel:[NSUUID UUID].UUIDString
+    [self performVerifiedPublish:@"test" onChannel:[self publishChannelString]
                   storeInHistory:NO
                   withAssertions:^(PNPublishStatus *status) {
                       XCTAssertNotNil(status);
@@ -54,13 +57,13 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @"14347265638751945");
+                      XCTAssertEqualObjects(status.data.timetoken, @"14355338601978693");
                   }];
 }
 
 - (void)testPublishWithHistoryNilMessage {
     [self performVerifiedPublish:nil
-                       onChannel:[NSUUID UUID].UUIDString
+                       onChannel:[self publishChannelString]
                   storeInHistory:YES
                   withAssertions:^(PNPublishStatus *status) {
         XCTAssertNotNil(status);
@@ -77,7 +80,7 @@
 
 - (void)testPublishWithoutHistoryNilMessage {
     [self performVerifiedPublish:nil
-                       onChannel:[NSUUID UUID].UUIDString
+                       onChannel:[self publishChannelString]
                   storeInHistory:NO
                   withAssertions:^(PNPublishStatus *status) {
                       XCTAssertNotNil(status);
@@ -94,24 +97,24 @@
 
 - (void)testPublishDictionaryWithHistory {
     [self performVerifiedPublish:@{@"test" : @"test"}
-                       onChannel:[NSUUID UUID].UUIDString
+                       onChannel:[self publishChannelString]
                   storeInHistory:YES
                   withAssertions:^(PNPublishStatus *status) {
-        XCTAssertNotNil(status);
-        XCTAssertEqual(status.category, PNAcknowledgmentCategory);
-        XCTAssertEqual(status.operation, PNPublishOperation);
-        XCTAssertEqual(status.statusCode, 200);
-        XCTAssertFalse(status.isError);
-        NSLog(@"status.data.information: %@", status.data.information);
-        NSLog(@"status.data.timeToken: %@", status.data.timetoken);
-       XCTAssertEqualObjects(status.data.information, @"Sent");
-       XCTAssertEqualObjects(status.data.timetoken, @"14347265638751945");
+                      XCTAssertNotNil(status);
+                      XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+                      XCTAssertEqual(status.operation, PNPublishOperation);
+                      XCTAssertEqual(status.statusCode, 200);
+                      XCTAssertFalse(status.isError);
+                      NSLog(@"status.data.information: %@", status.data.information);
+                      NSLog(@"status.data.timeToken: %@", status.data.timetoken);
+                      XCTAssertEqualObjects(status.data.information, @"Sent");
+                      XCTAssertEqualObjects(status.data.timetoken, @"14355338598726743");
     }];
 }
 
 - (void)testPublishDictionaryWithoutHistory {
     [self performVerifiedPublish:@{@"test" : @"test"}
-                       onChannel:[NSUUID UUID].UUIDString
+                       onChannel:[self publishChannelString]
                   storeInHistory:NO
                   withAssertions:^(PNPublishStatus *status) {
                       XCTAssertNotNil(status);
@@ -122,7 +125,7 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @"14347265638751945");
+                      XCTAssertEqualObjects(status.data.timetoken, @"14355338599684259");
                   }];
 }
 
