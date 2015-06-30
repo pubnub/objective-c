@@ -88,7 +88,7 @@ typedef void(^PNChannelGroupStateCompletionBlock)(PNChannelGroupClientStateResul
          // Handle client state modification error. Check 'category' property to find out possible
          // issue because of which request did fail.
          //
-         // Request can be resend using: [status retry];
+         // Request can be resent using: [status retry];
      }
  }];
  @endcode
@@ -131,7 +131,7 @@ typedef void(^PNChannelGroupStateCompletionBlock)(PNChannelGroupClientStateResul
          // Handle client state modification error. Check 'category' property to find out possible
          // issue because of which request did fail.
          //
-         // Request can be resend using: [status retry];
+         // Request can be resent using: [status retry];
      }
  }];
  @endcode
@@ -179,7 +179,7 @@ typedef void(^PNChannelGroupStateCompletionBlock)(PNChannelGroupClientStateResul
          // Handle client state audit error. Check 'category' property to find out possible
          // issue because of which request did fail.
          //
-         // Request can be resend using: [status retry];
+         // Request can be resent using: [status retry];
      }
  }];
  @endcode
@@ -223,7 +223,7 @@ typedef void(^PNChannelGroupStateCompletionBlock)(PNChannelGroupClientStateResul
          // Handle client state audit error. Check 'category' property to find out possible
          // issue because of which request did fail.
          //
-         // Request can be resend using: [status retry];
+         // Request can be resent using: [status retry];
      }
  }];
  @endcode

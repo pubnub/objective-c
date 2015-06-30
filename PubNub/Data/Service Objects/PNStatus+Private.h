@@ -29,7 +29,7 @@
 @property (nonatomic, assign, getter = isError) BOOL error;
 
 /**
- @brief      Stores whether client will try to resend request associated with status or not.
+ @brief      Stores whether client will try to resent request associated with status or not.
  @discussion In most cases client will keep retry request sending till it won't be successful or
              canceled with \c -cancelAutomaticRetry method.
 

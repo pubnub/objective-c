@@ -59,12 +59,15 @@
         _statusCode = (task ? ((NSHTTPURLResponse *)task.response).statusCode : 200);
         _operation = operation;
         _clientRequest = [task.currentRequest copy];
-        _serviceData = [processedData copy];
-        if ([_serviceData[@"status"] isKindOfClass:[NSNumber class]] &&
-            [(NSNumber *)_serviceData[@"status"] integerValue] > 200) {
+        if ([processedData[@"status"] isKindOfClass:[NSNumber class]]) {
             
-            _statusCode = [(NSNumber *)_serviceData[@"status"] integerValue];
+            NSMutableDictionary *dataForUpdate = [processedData mutableCopy];
+            NSNumber *statusCode = [dataForUpdate[@"status"] copy];
+            [dataForUpdate removeObjectForKey:@"status"];
+            processedData = [dataForUpdate copy];
+            _statusCode = (([statusCode integerValue] > 200) ? [statusCode integerValue] : _statusCode);
         }
+        _serviceData = [processedData copy];
     }
     
     return self;

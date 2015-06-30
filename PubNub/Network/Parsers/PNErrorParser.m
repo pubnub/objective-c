@@ -60,6 +60,10 @@
                 errorData[@"data"] = response[@"payload"];
             }
         }
+        if ([response[@"status"] isKindOfClass:[NSNumber class]]) {
+            
+            errorData[@"status"] = response[@"status"];
+        }
         processedResponse = errorData;
     }
     

@@ -160,7 +160,7 @@
                         processingError:error])) {
         
         _error = (error != nil || self.statusCode != 200);
-        if (_error && ![processedData count]) {
+        if (_error && ![self.serviceData count]) {
             
             [self updateData:[self dataFromError:error]];
         }
@@ -176,10 +176,9 @@
             _category = [self categoryTypeFromStatusCode:self.statusCode];
             
             // Extract status category from passed error object.
-            if (_category == PNUnknownCategory) {
-                
-                _category = [self categoryTypeFromError:error];
-            }
+            _category = (_category == PNUnknownCategory ? [self categoryTypeFromError:error] : _category);
+            _category = (_category == PNUnknownCategory && self.statusCode == 400 ?
+                         PNBadRequestCategory : _category);
         }
         
         if (_category == PNCancelledCategory) {

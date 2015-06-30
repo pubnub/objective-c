@@ -84,7 +84,7 @@ typedef void(^PNChannelGroupChangeCompletionBlock)(PNAcknowledgmentStatus *statu
         // Handle channel group audition error. Check 'category' property to find out possible issue 
         // because of which request did fail.
         //
-        // Request can be resend using: [status retry];
+        // Request can be resent using: [status retry];
      }
  }];
  @endcode
@@ -126,7 +126,7 @@ typedef void(^PNChannelGroupChangeCompletionBlock)(PNAcknowledgmentStatus *statu
         // Handle channels for group audition error. Check 'category' property to find out possible 
         // issue because of which request did fail.
         //
-        // Request can be resend using: [status retry];
+        // Request can be resent using: [status retry];
      }
  }];
  @endcode
@@ -174,7 +174,7 @@ typedef void(^PNChannelGroupChangeCompletionBlock)(PNAcknowledgmentStatus *statu
         // Handle channels list modification for group error. Check 'category' property to find out
         // possible issue because of which request did fail.
         //
-        // Request can be resend using: [status retry];
+        // Request can be resent using: [status retry];
      }
  }];
  @endcode
@@ -220,7 +220,7 @@ typedef void(^PNChannelGroupChangeCompletionBlock)(PNAcknowledgmentStatus *statu
         // Handle channels list modification for group error. Check 'category' property to find out
         // possible issue because of which request did fail.
         //
-        // Request can be resend using: [status retry];
+        // Request can be resent using: [status retry];
      }
  }];
  @endcode
@@ -262,7 +262,7 @@ typedef void(^PNChannelGroupChangeCompletionBlock)(PNAcknowledgmentStatus *statu
         // Handle channel group removal error. Check 'category' property to find out possible issue
         // because of which request did fail.
         //
-        // Request can be resend using: [status retry];
+        // Request can be resent using: [status retry];
      }
  }];
  @endcode

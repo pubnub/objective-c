@@ -55,7 +55,7 @@
 ///------------------------------------------------
 
 /**
- @brief      Try to resend request associated with processing status object.
+ @brief      Try to resent request associated with processing status object.
  @discussion Some operations which perform automatic retry attempts will ignore method call.
 
  @since 4.0
@@ -63,7 +63,7 @@
 - (void)retry;
 
 /**
- @brief  For some requests client try to resend them to \b PubNub for processing.
+ @brief  For some requests client try to resent them to \b PubNub for processing.
  @discussion This method can be performed only on operations which respond with \c YES on
              \c willAutomaticallyRetry property. Other operation types will ignore method call.
 
