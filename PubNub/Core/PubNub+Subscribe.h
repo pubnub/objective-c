@@ -220,7 +220,7 @@
  PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
                                                                   subscribeKey:@"demo"];
  self.client = [PubNub clientWithConfiguration:configuration];
- [self.client subscribeToPresenceChannels:@[@"swift-pnpres"]];
+ [self.client subscribeToPresenceChannels:@[@"swift"]];
  @endcode
  
  @param channels List of channel names for which client should try to subscribe on presence 
@@ -297,7 +297,7 @@
  PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
                                                                   subscribeKey:@"demo"];
  self.client = [PubNub clientWithConfiguration:configuration];
- [self.client unsubscribeFromPresenceChannels:@[@"swifty-pnpres"]];
+ [self.client unsubscribeFromPresenceChannels:@[@"swifty"]];
  @endcode
  
  @param channels List of channel names for which client should try to unsubscribe from presence 
