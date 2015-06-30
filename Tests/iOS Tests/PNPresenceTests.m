@@ -607,8 +607,6 @@
     }];
 }
 
-// TODO: Started from here we need to update tests with result.data checks.
-
 - (void)testHereNowForNilChannelGroupWithVerbosityOccupancy {
     self.testExpectation = [self expectationWithDescription:@"network"];
     NSString *channelGroupName = nil;
@@ -619,6 +617,22 @@
                                  XCTAssertEqual([result operation], PNHereNowGlobalOperation, @"Wrong operation");
                                  XCTAssertNotNil([result data]);
                                  XCTAssertEqual([result statusCode], 200);
+                                 
+                                 NSDictionary *expectedChannels = @{
+                                                                    @"0_5098427633369088" : @{
+                                                                            @"occupancy" : @1
+                                                                            },
+                                                                    @"0_5650661106515968" : @{
+                                                                            @"occupancy" : @1
+                                                                            },
+                                                                    @"all_activity" : @{
+                                                                            @"occupancy" : @1
+                                                                            }
+                                                                    };
+                                 NSLog(@"%@", [result.data.channels codeFormatDescription]);
+                                 
+                                 XCTAssertEqualObjects(result.data.channels, expectedChannels, @"Result and expected channels are not equal.");
+                                 
                                  [self.testExpectation fulfill];
                              }];
     [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
@@ -639,6 +653,12 @@
                                  XCTAssertEqual([result operation], PNHereNowForChannelGroupOperation, @"Wrong operation");
                                  XCTAssertNotNil([result data]);
                                  XCTAssertEqual([result statusCode], 200);
+                                 
+                                 NSDictionary *expectedChannels = @{};
+                                 NSLog(@"%@", [result.data.channels codeFormatDescription]);
+                                 
+                                 XCTAssertEqualObjects(result.data.channels, expectedChannels, @"Result and expected channels are not equal.");
+                                 
                                  [self.testExpectation fulfill];
                              }];
     [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
@@ -659,6 +679,37 @@
                                  XCTAssertEqual([result operation], PNHereNowGlobalOperation, @"Wrong operation");
                                  XCTAssertNotNil([result data]);
                                  XCTAssertEqual([result statusCode], 200);
+                                 
+                                 NSDictionary *expectedChannels = @{
+                                     @"0_5098427633369088" : @{
+                                                               @"uuids" : @[
+                                                                       @{
+                                                                           @"uuid" : @"JejuFan--79001"
+                                                                           }
+                                                                       ],
+                                                               @"occupancy" : @1
+                                                               },
+                                     @"0_5650661106515968" : @{
+                                                               @"uuids" : @[
+                                                                       @{
+                                                                           @"uuid" : @"JejuFan--79001"
+                                                                           }
+                                                                       ],
+                                                               @"occupancy" : @1
+                                                               },
+                                     @"all_activity" : @{
+                                                         @"uuids" : @[
+                                                                 @{
+                                                                     @"uuid" : @"JejuFan--79001"
+                                                                     }
+                                                                 ],
+                                                         @"occupancy" : @1
+                                                         }
+                                 };
+                                 NSLog(@"%@", [result.data.channels codeFormatDescription]);
+                                 
+                                 XCTAssertEqualObjects(result.data.channels, expectedChannels, @"Result and expected channels are not equal.");
+                                 
                                  [self.testExpectation fulfill];
                              }];
     [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
@@ -679,6 +730,12 @@
                                  XCTAssertEqual([result operation], PNHereNowForChannelGroupOperation, @"Wrong operation");
                                  XCTAssertNotNil([result data]);
                                  XCTAssertEqual([result statusCode], 200);
+                                 
+                                 NSDictionary *expectedChannels = @{};
+                                 NSLog(@"%@", [result.data.channels codeFormatDescription]);
+                                 
+                                 XCTAssertEqualObjects(result.data.channels, expectedChannels, @"Result and expected channels are not equal.");
+                                 
                                  [self.testExpectation fulfill];
                              }];
     [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
@@ -699,6 +756,29 @@
                                  XCTAssertEqual([result operation], PNHereNowGlobalOperation, @"Wrong operation");
                                  XCTAssertNotNil([result data]);
                                  XCTAssertEqual([result statusCode], 200);
+                                 
+                                 NSDictionary *expectedChannels = @{@"0_5098427633369088" : @{
+                                                                            @"uuids" : @[
+                                                                                    @"JejuFan--79001"
+                                                                                    ],
+                                                                            @"occupancy" : @1
+                                                                            },
+                                                                    @"0_5650661106515968" : @{
+                                                                            @"uuids" : @[
+                                                                                    @"JejuFan--79001"
+                                                                                    ],
+                                                                            @"occupancy" : @1
+                                                                            },
+                                                                    @"all_activity" : @{
+                                                                            @"uuids" : @[
+                                                                                    @"JejuFan--79001"
+                                                                                    ],
+                                                                            @"occupancy" : @1
+                                                                            }};
+                                 NSLog(@"%@", [result.data.channels codeFormatDescription]);
+                                 
+                                 XCTAssertEqualObjects(result.data.channels, expectedChannels, @"Result and expected channels are not equal.");
+                                 
                                  [self.testExpectation fulfill];
                              }];
     [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
@@ -718,6 +798,12 @@
                  XCTAssertEqual([result operation], PNWhereNowOperation, @"Wrong operation");
                  XCTAssertNotNil([result data]);
                  XCTAssertEqual([result statusCode], 200);
+                   
+                   NSArray *expectedChannels = @[];
+                   NSLog(@"%@", result.data.channels);
+                   
+                   XCTAssertEqualObjects(result.data.channels, expectedChannels, @"Result and expected channels are not equal.");
+                   
                  [self.testExpectation fulfill];
              }];
     [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
@@ -734,8 +820,10 @@
     [self.client whereNowUUID:uuid
                withCompletion:^(PNPresenceWhereNowResult *result, PNErrorStatus *status) {
                    XCTAssertNotNil(status);
+                   XCTAssertNil(result, @"Result is not nil");
                    XCTAssertEqual([status category], PNBadRequestCategory, @"Should be wrong in current logic");
                    XCTAssertEqual([status statusCode], 400);
+
                    [self.testExpectation fulfill];
                }];
     [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
