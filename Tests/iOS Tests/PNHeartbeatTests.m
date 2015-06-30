@@ -16,7 +16,7 @@
 @implementation PNHeartbeatTests
 
 - (BOOL)isRecording{
-    return YES;
+    return NO;
 }
 
 - (void)testSimpleHeartbeat {
