@@ -21,7 +21,7 @@ static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupUnsubscribeTe
 @implementation PNChannelGroupUnsubscribeTests
 
 - (BOOL)isRecording{
-    return NO;
+    return YES;
 }
 
 - (NSArray *)channelGroups {
