@@ -28,6 +28,8 @@
 		96F519931B3B508000053FB7 /* PNPublishSizeOfMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 96F519921B3B508000053FB7 /* PNPublishSizeOfMessage.m */; };
 		976E8BD21B427DAD00C6DA3C /* PNHeartbeatTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 976E8BD11B427DAD00C6DA3C /* PNHeartbeatTests.m */; };
 		976E8BD61B42830900C6DA3C /* PNHeartbeatTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 976E8BD51B42830900C6DA3C /* PNHeartbeatTests.bundle */; };
+		976E8BD81B4293D100C6DA3C /* PNSubscribeToPresenceChannelsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 976E8BD71B4293D100C6DA3C /* PNSubscribeToPresenceChannelsTests.m */; };
+		976E8BDA1B4295FD00C6DA3C /* PNSubscribeToPresenceChannelsTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 976E8BD91B4295FD00C6DA3C /* PNSubscribeToPresenceChannelsTests.bundle */; };
 		97A861FF1B41036B00C07193 /* PNChannelGroupUnsubscribeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 97A861FE1B41036B00C07193 /* PNChannelGroupUnsubscribeTests.m */; };
 		97A862011B41063200C07193 /* PNChannelGroupUnsubscribeTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 97A862001B41063200C07193 /* PNChannelGroupUnsubscribeTests.bundle */; };
 		97A862031B410CB700C07193 /* PNTimeTokenTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 97A862021B410CB700C07193 /* PNTimeTokenTests.m */; };
@@ -74,6 +76,8 @@
 		96F519921B3B508000053FB7 /* PNPublishSizeOfMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNPublishSizeOfMessage.m; sourceTree = "<group>"; };
 		976E8BD11B427DAD00C6DA3C /* PNHeartbeatTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNHeartbeatTests.m; sourceTree = "<group>"; };
 		976E8BD51B42830900C6DA3C /* PNHeartbeatTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNHeartbeatTests.bundle; sourceTree = "<group>"; };
+		976E8BD71B4293D100C6DA3C /* PNSubscribeToPresenceChannelsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNSubscribeToPresenceChannelsTests.m; sourceTree = "<group>"; };
+		976E8BD91B4295FD00C6DA3C /* PNSubscribeToPresenceChannelsTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNSubscribeToPresenceChannelsTests.bundle; sourceTree = "<group>"; };
 		97A861FE1B41036B00C07193 /* PNChannelGroupUnsubscribeTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannelGroupUnsubscribeTests.m; sourceTree = "<group>"; };
 		97A862001B41063200C07193 /* PNChannelGroupUnsubscribeTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNChannelGroupUnsubscribeTests.bundle; sourceTree = "<group>"; };
 		97A862021B410CB700C07193 /* PNTimeTokenTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNTimeTokenTests.m; sourceTree = "<group>"; };
@@ -140,6 +144,7 @@
 			isa = PBXGroup;
 			children = (
 				1774814F1B30A82600544130 /* PNSubscribeTests.m */,
+				976E8BD71B4293D100C6DA3C /* PNSubscribeToPresenceChannelsTests.m */,
 				97A862111B415A5B00C07193 /* PNClientStateChannelTests.m */,
 				97A862151B415C1B00C07193 /* PNClientStateChannelGroupTests.m */,
 				97A862021B410CB700C07193 /* PNTimeTokenTests.m */,
@@ -173,6 +178,7 @@
 		51F7AAC11B27AD7400BEDA1F /* Fixtures */ = {
 			isa = PBXGroup;
 			children = (
+				976E8BD91B4295FD00C6DA3C /* PNSubscribeToPresenceChannelsTests.bundle */,
 				976E8BD51B42830900C6DA3C /* PNHeartbeatTests.bundle */,
 				97A862171B4161F700C07193 /* PNClientStateChannelGroupTests.bundle */,
 				97A862131B415B8200C07193 /* PNClientStateChannelTests.bundle */,
@@ -289,6 +295,7 @@
 				97FA41F51B2FFB61003B9B57 /* PNPublishTests.bundle in Resources */,
 				9604EEA11B34953B009EB15C /* PNPublishWithHistoryTests.bundle in Resources */,
 				97A862141B415B8200C07193 /* PNClientStateChannelTests.bundle in Resources */,
+				976E8BDA1B4295FD00C6DA3C /* PNSubscribeToPresenceChannelsTests.bundle in Resources */,
 				96F5198E1B39C6B800053FB7 /* PNPublishWithMobilePayloadTests.bundle in Resources */,
 				97A862051B410DC100C07193 /* PNTimeTokenTests.bundle in Resources */,
 				96F519871B3878AB00053FB7 /* PNPublishCompressedTests.bundle in Resources */,
@@ -364,6 +371,7 @@
 				96F519911B39CB1E00053FB7 /* NSString+PNTest.m in Sources */,
 				96F519891B387F4E00053FB7 /* PNPublishWithMobilePayloadTests.m in Sources */,
 				1782511F1B30AAE3006BC234 /* PNBasicClientTestCase.m in Sources */,
+				976E8BD81B4293D100C6DA3C /* PNSubscribeToPresenceChannelsTests.m in Sources */,
 				97A862031B410CB700C07193 /* PNTimeTokenTests.m in Sources */,
 				9604EE9F1B346CD9009EB15C /* PNPublishWithHistoryTests.m in Sources */,
 				177481501B30A82600544130 /* PNSubscribeTests.m in Sources */,
