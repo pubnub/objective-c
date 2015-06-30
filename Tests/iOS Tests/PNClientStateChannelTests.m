@@ -27,7 +27,7 @@
 }
 
 - (NSString *)unsubscribedChannel {
-    return @"42";
+    return @"21";
 }
 
 - (void)setUp {
@@ -45,11 +45,11 @@
                               [NSSet setWithArray:expectedPresenceSubscriptions]);
         XCTAssertEqual(status.operation, PNSubscribeOperation);
         NSLog(@"timeToken: %@", status.currentTimetoken);
-        if (self.invocation.selector == @selector(testSetClientStateOnNotSubscribedChannel)) {
-            XCTAssertEqualObjects(status.currentTimetoken, @14355750743453296);
-        } else if (self.invocation.selector == @selector(testSetClientStateOnSubscribedChannel)) {
-            XCTAssertEqualObjects(status.currentTimetoken, @14355750743453296);
-        }
+//        if (self.invocation.selector == @selector(testSetClientStateOnNotSubscribedChannel)) {
+//            XCTAssertEqualObjects(status.currentTimetoken, @14356520332796570);
+//        } else if (self.invocation.selector == @selector(testSetClientStateOnSubscribedChannel)) {
+//            XCTAssertEqualObjects(status.currentTimetoken, @14356520332796570);
+//        }
         XCTAssertEqualObjects(status.currentTimetoken, status.data.timetoken);
         [self.subscribeExpectation fulfill];
         
@@ -107,7 +107,7 @@
     NSDictionary *state = @{
                             @"test" : @"test"
                             };
-    [self.client setState:state forUUID:self.client.uuid onChannel:@"42" withCompletion:^(PNClientStateUpdateStatus *status) {
+    [self.client setState:state forUUID:self.client.uuid onChannel:[self unsubscribedChannel] withCompletion:^(PNClientStateUpdateStatus *status) {
         PNStrongify(self);
         XCTAssertNotNil(status);
         XCTAssertFalse(status.isError);
@@ -115,6 +115,45 @@
         XCTAssertEqual(status.category, PNAcknowledgmentCategory);
         XCTAssertEqual(status.statusCode, 200);
         XCTAssertEqualObjects(status.data.state, state);
+        [stateExpectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
+        XCTAssertNil(error);
+    }];
+}
+
+- (void)testStateForUUIDOnSubscribedChannel {
+    PNWeakify(self);
+    XCTestExpectation *stateExpectation = [self expectationWithDescription:@"clientState"];
+    NSDictionary *state = @{
+                            };
+    [self.client stateForUUID:self.client.uuid onChannel:[self subscriptionChannels].firstObject withCompletion:^(PNChannelClientStateResult *result, PNErrorStatus *status) {
+        PNStrongify(self);
+        XCTAssertNil(status);
+        XCTAssertNotNil(result);
+        XCTAssertEqual(result.operation, PNStateForChannelOperation);
+        XCTAssertEqualObjects(result.data.state, state);
+        XCTAssertEqual(result.statusCode, 200);
+        [stateExpectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
+        XCTAssertNil(error);
+    }];
+}
+
+- (void)testStateForUUIDOnUnsubscribedChannel {
+    PNWeakify(self);
+    XCTestExpectation *stateExpectation = [self expectationWithDescription:@"clientState"];
+    NSDictionary *state = @{
+                            @"test" : @"test"
+                            };
+    [self.client stateForUUID:self.client.uuid onChannel:[self unsubscribedChannel] withCompletion:^(PNChannelClientStateResult *result, PNErrorStatus *status) {
+        PNStrongify(self);
+        XCTAssertNil(status);
+        XCTAssertNotNil(result);
+        XCTAssertEqual(result.operation, PNStateForChannelOperation);
+        XCTAssertEqualObjects(result.data.state, state);
+        XCTAssertEqual(result.statusCode, 200);
         [stateExpectation fulfill];
     }];
     [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
