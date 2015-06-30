@@ -38,7 +38,7 @@ Pod::Spec.new do |s|
   ]
 
   s.library   = 'z'
-  s.dependency 'AFNetworking', '~> 2.5'
+  s.dependency 'AFNetworking', '~> 2.5.4'
   s.dependency 'CocoaLumberjack', '2.0.0'
 
 
