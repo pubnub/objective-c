@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>PNConfiguration Class Reference</title>
+
+	<link rel="stylesheet" href="../css/style.css">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1.4">
+	<meta name="generator" content="appledoc 2.2.1 (build 1333)">
+</head>
+<body class="appledoc">
+	<header>
+		<div class="container" class="hide-in-xcode">
+			
+			<h1 id="library-title">
+				<a href="../index.html">PubNub 4.0b3 for iOS </a>
+			</h1>
+
+			<p id="developer-home">
+				<a href="../index.html">PubNub</a>
+			</p>
+			
+		</div>
+	</header>
+
+	<aside>
+		<div class="container">
+			<nav>
+				<ul id="header-buttons" role="toolbar">
+					<li><a href="../index.html">Index</a></li>
+<li><a href="../hierarchy.html">Hierarchy</a></li>
+
+					<li id="on-this-page" role="navigation">
+						<label>
+							On This Page
+
+							<div class="chevron">
+								<div class="chevy chevron-left"></div>
+								<div class="chevy chevron-right"></div>
+							</div>
+
+							<select id="jump-to">
+	<option value="top">Jump To&#133;</option>
+	
+	<option value="overview">Overview</option>
+	
+
+	
+	
+	<option value="tasks">Tasks</option>
+	
+	
+
+	
+	
+	<optgroup label="Properties">
+		
+		<option value="//api/name/TLSEnabled">TLSEnabled</option>
+		
+		<option value="//api/name/authKey">authKey</option>
+		
+		<option value="//api/name/catchUpOnSubscriptionRestore">catchUpOnSubscriptionRestore</option>
+		
+		<option value="//api/name/cipherKey">cipherKey</option>
+		
+		<option value="//api/name/deviceID">deviceID</option>
+		
+		<option value="//api/name/keepTimeTokenOnListChange">keepTimeTokenOnListChange</option>
+		
+		<option value="//api/name/nonSubscribeRequestTimeout">nonSubscribeRequestTimeout</option>
+		
+		<option value="//api/name/origin">origin</option>
+		
+		<option value="//api/name/presenceHeartbeatInterval">presenceHeartbeatInterval</option>
+		
+		<option value="//api/name/presenceHeartbeatValue">presenceHeartbeatValue</option>
+		
+		<option value="//api/name/publishKey">publishKey</option>
+		
+		<option value="//api/name/restoreSubscription">restoreSubscription</option>
+		
+		<option value="//api/name/subscribeKey">subscribeKey</option>
+		
+		<option value="//api/name/subscribeMaximumIdleTime">subscribeMaximumIdleTime</option>
+		
+		<option value="//api/name/uuid">uuid</option>
+		
+	</optgroup>
+	
+
+	
+	<optgroup label="Class Methods">
+		
+		<option value="//api/name/configurationWithPublishKey:subscribeKey:">+ configurationWithPublishKey:subscribeKey:</option>
+		
+	</optgroup>
+	
+
+	
+	<optgroup label="Instance Methods">
+		
+		<option value="//api/name/initWithPublishKey:subscribeKey:">- initWithPublishKey:subscribeKey:</option>
+		
+	</optgroup>
+	
+	
+</select>
+						</label>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</aside>
+
+	<article>
+		<div id="overview_contents" class="container">
+			<div id="content">
+				<main role="main">
+					<h1 class="title">PNConfiguration Class Reference</h1>
+
+					
+					<div class="section section-specification"><table cellspacing="0"><tbody>
+						<tr>
+	<th>Inherits from</th>
+	<td>NSObject</td>
+</tr><tr>
+	<th>Declared in</th>
+	<td>PNConfiguration.h</td>
+</tr>
+						</tbody></table></div>
+					
+
+                    
+					
+					<div class="section section-overview">
+						<a title="Overview" name="overview"></a>
+						<h2 class="subtitle subtitle-overview">Overview</h2>
+						<p>Uset this instance to provide values which should be by client to communicate with
+             \b PubNub netwrok.</p>
+
+<p>@author Sergey Mamontov</p>
+					</div>
+					
+					
+
+					
+					
+					<div class="section section-tasks">
+						<a title="Tasks" name="tasks"></a>
+						
+
+						<a title="Initialization and Configuration" name="task_Initialization and Configuration"></a>
+						<h2 class="task-title">Initialization and Configuration</h2>
+
+						<div class="task-list">
+							<div class="section-method">
+	<a name="//api/name/origin" title="origin"></a>
+	<h3 class="method-title"><code><a href="#//api/name/origin">&nbsp;&nbsp;origin</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Reference on host name or IP address which should be used by client to get access to
+          \b PubNub services.</p>
+
+<p>@default Client will use it&rsquo;s own constant (\b pubsub.pubnub.com) value if origin not
+          specified.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, copy) NSString *origin</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNConfiguration.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/publishKey" title="publishKey"></a>
+	<h3 class="method-title"><code><a href="#//api/name/publishKey">&nbsp;&nbsp;publishKey</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Reference on key which is used to push data/state to \b PubNub service.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, copy) NSString *publishKey</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<div class="note"><p><strong>Note:</strong> This key can be obtained on PubNub&rsquo;s administration portal after free registration
+          <a href="https://admin.pubnub.com">https://admin.pubnub.com</a></p></div><div class="warning"><p><strong>Warning:</strong> Can&rsquo;t be \c nil and in attempt to set \c nil will throw \b UnacceptableValue exception.</p></div>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNConfiguration.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/subscribeKey" title="subscribeKey"></a>
+	<h3 class="method-title"><code><a href="#//api/name/subscribeKey">&nbsp;&nbsp;subscribeKey</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Reference on key which is used to fetch data/state from \b PubNub service.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, copy) NSString *subscribeKey</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<div class="note"><p><strong>Note:</strong> This key can be obtained on PubNub&rsquo;s administration portal after free registration
+          <a href="https://admin.pubnub.com">https://admin.pubnub.com</a></p></div><div class="warning"><p><strong>Warning:</strong> Can&rsquo;t be \c nil and in attempt to set \c nil will throw \b UnacceptableValue exception.</p>
+
+<p>@default Client will use it&rsquo;s own constant (\b demo) value if <a href="#//api/name/origin">origin</a> not specified.</p></div>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNConfiguration.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/authKey" title="authKey"></a>
+	<h3 class="method-title"><code><a href="#//api/name/authKey">&nbsp;&nbsp;authKey</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Reference on key which is used along with every request to \b PubNub service to
+             identify client user.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, copy) NSString *authKey</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>\b PubNub service provide \b PAM (PubNub Access Manager) functionality which allow
+             to specify access rights to access \b PubNub services with provided \c <a href="#//api/name/publishKey">publishKey</a>
+             and \c <a href="#//api/name/subscribeKey">subscribeKey</a> keys. Access can be limited to concrete users. \b PAM system
+             use this key to check whether client user has rights to access to required service
+             or not.</p>
+
+<p>@default    By default this value set to \b nil.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNConfiguration.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/uuid" title="uuid"></a>
+	<h3 class="method-title"><code><a href="#//api/name/uuid">&nbsp;&nbsp;uuid</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Reference on unique client identifier used to identify concrete client user from
+             another which currently use \b PubNub services.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, copy, setter=setUUID:) NSString *uuid</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>This value is different from \c <a href="#//api/name/authKey">authKey</a> (which is used only by \b PAM) and
+             represent concrete client across server. This identifier is used for presence events
+             to tell what some client joined or leaved live feed.</p><div class="warning"><p><strong>Warning:</strong> There can&rsquo;t be two same client identifiers online at the same time.</p>
+
+<p>@default    Client will use it&rsquo;s own-generated value if won&rsquo;t be specified by user.</p></div>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNConfiguration.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/cipherKey" title="cipherKey"></a>
+	<h3 class="method-title"><code><a href="#//api/name/cipherKey">&nbsp;&nbsp;cipherKey</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Reference on encryption key.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, copy) NSString *cipherKey</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Key which is used to encrypt messages pushed to \b PubNub service and decrypt messages
+              received from live feeds on which client subscribed at this moment.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNConfiguration.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/subscribeMaximumIdleTime" title="subscribeMaximumIdleTime"></a>
+	<h3 class="method-title"><code><a href="#//api/name/subscribeMaximumIdleTime">&nbsp;&nbsp;subscribeMaximumIdleTime</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Stores reference on maximum number of seconds which client should wait for events from
+             live feed.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, assign) NSTimeInterval subscribeMaximumIdleTime</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>By default value is set to \b 310 seconds. If in specified time frame \b PubNub service
+             won&rsquo;t push any events into live feed client will re-subscribe on remote data objects
+             with same time token (if configured).</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNConfiguration.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/nonSubscribeRequestTimeout" title="nonSubscribeRequestTimeout"></a>
+	<h3 class="method-title"><code><a href="#//api/name/nonSubscribeRequestTimeout">&nbsp;&nbsp;nonSubscribeRequestTimeout</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Reference on number of seconds which is used by client during non-subscription
+             operations to check whether response potentially failed with &lsquo;timeout&rsquo; or not.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, assign) NSTimeInterval nonSubscribeRequestTimeout</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>This is maximum time which client should wait fore response from \b PubNub service
+             before reporting reuest error.</p>
+
+<p>@default    Client will use it&rsquo;s own constant (\b 10 seconds) value if <a href="#//api/name/origin">origin</a> not specified.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNConfiguration.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/presenceHeartbeatValue" title="presenceHeartbeatValue"></a>
+	<h3 class="method-title"><code><a href="#//api/name/presenceHeartbeatValue">&nbsp;&nbsp;presenceHeartbeatValue</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Reference on number of seconds which is used by server to track whether client still
+             subscribed on remote data objects live feed or not.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, assign) NSInteger presenceHeartbeatValue</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>This is time within which \b PubNub service expect to receive heartbeat request from
+             this client. If heartbeat request won&rsquo;t be called in time \b PubNub service will
+             send to other subscribers \c &lsquo;timeout&rsquo; presence event for this client.</p><div class="note"><p><strong>Note:</strong> This value can&rsquo;t be smaller then \b 5 seconds and larget then \b 300 seconds and
+             will be reset to it automatically.</p>
+
+<p>@default    By default heartbeat functionality disabled.</p></div>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNConfiguration.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/presenceHeartbeatInterval" title="presenceHeartbeatInterval"></a>
+	<h3 class="method-title"><code><a href="#//api/name/presenceHeartbeatInterval">&nbsp;&nbsp;presenceHeartbeatInterval</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Reference on number of seconds which is used by client to issue heartbeat requests to
+          \b PubNub service.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, assign) NSInteger presenceHeartbeatInterval</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<div class="note"><p><strong>Note:</strong> This vlaue should be smaller then \c presenceHeartbeatTimeout for better presence
+          control.</p>
+
+<p>@default By default heartbeat functionality disabled.</p></div>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNConfiguration.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/TLSEnabled" title="TLSEnabled"></a>
+	<h3 class="method-title"><code><a href="#//api/name/TLSEnabled">&nbsp;&nbsp;TLSEnabled</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Stores whether client should communicate with \b PubNub services using secured
+          connection or not.</p>
+
+<p>@default By default client use \b YES to secure communication with \b PubNub services.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, assign, getter=isTLSEnabled) BOOL TLSEnabled</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNConfiguration.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/keepTimeTokenOnListChange" title="keepTimeTokenOnListChange"></a>
+	<h3 class="method-title"><code><a href="#//api/name/keepTimeTokenOnListChange">&nbsp;&nbsp;keepTimeTokenOnListChange</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Stores whether client should keep previous time token when subscribe on new set of remote
+         data objects live feeds.</p>
+
+<p>@default By default client use \b YES to and previous time token will be used during subscription
+          on new data objects.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, assign, getter=shouldKeepTimeTokenOnListChange) BOOL keepTimeTokenOnListChange</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNConfiguration.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/restoreSubscription" title="restoreSubscription"></a>
+	<h3 class="method-title"><code><a href="#//api/name/restoreSubscription">&nbsp;&nbsp;restoreSubscription</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Stores whether client should restore subscription on remote data objects live feed
+             after network connection restoring or not.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, assign, getter=shouldRestoreSubscription) BOOL restoreSubscription</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>If set to \c YES as soon as network connection will be restored client will restore
+             subscription to previously subscribed remote data objects live feeds.</p>
+
+<p>@default    By default client use \b YES to restore subscription on remote data objects live
+             feeds.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNConfiguration.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/catchUpOnSubscriptionRestore" title="catchUpOnSubscriptionRestore"></a>
+	<h3 class="method-title"><code><a href="#//api/name/catchUpOnSubscriptionRestore">&nbsp;&nbsp;catchUpOnSubscriptionRestore</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Stores whether client should try to catch up for events which occurred on previously
+             subscribed remote data objects feed while client was off-line.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, assign, getter=shouldTryCatchUpOnSubscriptionRestore) BOOL catchUpOnSubscriptionRestore</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Live feeds return in response with events so called &lsquo;time token&rsquo; which allow client
+             to specify target time from which it should expect new events. If property is set to
+             \c YES then client will re-use previously received &lsquo;time token&rsquo; and try to receive
+             messages from the past.</p><div class="warning"><p><strong>Warning:</strong> If there history/storage feature has been activated for \b PubNub account, some
+             messages can be pushed to it after some period of time and catch up won&rsquo;t be able to
+             receive them.</p></div>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNConfiguration.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/configurationWithPublishKey:subscribeKey:" title="configurationWithPublishKey:subscribeKey:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/configurationWithPublishKey:subscribeKey:">+&nbsp;configurationWithPublishKey:subscribeKey:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Construct configuration instance using minimal required data.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>+ (instancetype)configurationWithPublishKey:(NSString *)<em>publishKey</em> subscribeKey:(NSString *)<em>subscribeKey</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>publishKey</code></th>
+						<td><p>Key which allow client to use data push API.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>subscribeKey</code></th>
+						<td><p>Key which allow client to subscribe on live feeds pushed from \b PubNub
+                     service.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>Configured and ready to se configuration instance.</p>
+			</div>
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNConfiguration.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div>
+						</div>
+						
+
+						<a title="Extension Methods" name="task_Extension Methods"></a>
+						<h2 class="task-title">Extension Methods</h2>
+
+						<div class="task-list">
+							<div class="section-method">
+	<a name="//api/name/deviceID" title="deviceID"></a>
+	<h3 class="method-title"><code><a href="#//api/name/deviceID">&nbsp;&nbsp;deviceID</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Stores reference on unique device identifier based on bundle identifier used by software
+        vendor.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, copy) NSString *deviceID</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNConfiguration+Private.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/initWithPublishKey:subscribeKey:" title="initWithPublishKey:subscribeKey:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/initWithPublishKey:subscribeKey:">&ndash;&nbsp;initWithPublishKey:subscribeKey:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Initialize configuration instance using minimal required data.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (instancetype)initWithPublishKey:(NSString *)<em>publishKey</em> subscribeKey:(NSString *)<em>subscribeKey</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>publishKey</code></th>
+						<td><p>Key which allow client to use data push API.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>subscribeKey</code></th>
+						<td><p>Key which allow client to subscribe on live feeds pushed from \b PubNub
+                     service.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>Configured and ready to se configuration instance.</p>
+			</div>
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNConfiguration.m</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div>
+						</div>
+						
+					</div>
+					
+					
+
+                    
+                    
+          
+				</main>
+
+				<footer>
+					<div class="footer-copyright">
+						
+						<p class="copyright">Copyright &copy; 2015 PubNub. All rights reserved. Updated: 2015-06-24</p>
+						
+						
+						<p class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2.1 (build 1333)</a>.</p>
+						
+					</div>
+				</footer>
+			</div>
+		</div>
+	</article>
+
+	<script src="../js/script.js"></script>
+</body>
+</html>

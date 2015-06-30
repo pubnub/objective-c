@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>cancelled</key>
+		<false/>
+		<key>data</key>
+		<dict>
+			<key>data</key>
+			<data>
+			eyJzdGF0dXMiOiAyMDAsICJtZXNzYWdlIjogIk9LIiwgInBheWxv
+			YWQiOiB7ImNoYW5uZWxzIjogeyIwXzU2NTA2NjExMDY1MTU5Njgi
+			OiB7Im9jY3VwYW5jeSI6IDF9LCAiMF81MDk4NDI3NjMzMzY5MDg4
+			IjogeyJvY2N1cGFuY3kiOiAxfSwgImFsbF9hY3Rpdml0eSI6IHsi
+			b2NjdXBhbmN5IjogMX19LCAidG90YWxfY2hhbm5lbHMiOiAzLCAi
+			dG90YWxfb2NjdXBhbmN5IjogM30sICJzZXJ2aWNlIjogIlByZXNl
+			bmNlIn0=
+			</data>
+			<key>json</key>
+			<dict>
+				<key>message</key>
+				<string>OK</string>
+				<key>payload</key>
+				<dict>
+					<key>channels</key>
+					<dict>
+						<key>0_5098427633369088</key>
+						<dict>
+							<key>occupancy</key>
+							<integer>1</integer>
+						</dict>
+						<key>0_5650661106515968</key>
+						<dict>
+							<key>occupancy</key>
+							<integer>1</integer>
+						</dict>
+						<key>all_activity</key>
+						<dict>
+							<key>occupancy</key>
+							<integer>1</integer>
+						</dict>
+					</dict>
+					<key>total_channels</key>
+					<integer>3</integer>
+					<key>total_occupancy</key>
+					<integer>3</integer>
+				</dict>
+				<key>service</key>
+				<string>Presence</string>
+				<key>status</key>
+				<integer>200</integer>
+			</dict>
+		</dict>
+		<key>request</key>
+		<dict>
+			<key>currentRequest</key>
+			<dict>
+				<key>HTTPMethod</key>
+				<string>GET</string>
+				<key>HTTPShouldHandleCookies</key>
+				<true/>
+				<key>URL</key>
+				<string>https://pubsub.pubnub.com/v2/presence/sub-key/demo-36?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;state=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;disable_uuids=1&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<key>allHTTPHeaderFields</key>
+				<dict>
+					<key>Accept</key>
+					<string>*/*</string>
+					<key>Accept-Encoding</key>
+					<string>gzip, deflate</string>
+					<key>Accept-Language</key>
+					<string>en;q=1, fr;q=0.9, de;q=0.8, zh-Hans;q=0.7, zh-Hant;q=0.6, ja;q=0.5</string>
+					<key>User-Agent</key>
+					<string>(null)/(null) (iPhone Simulator; iOS 8.3; Scale/2.00)</string>
+				</dict>
+				<key>allowsCellularAccess</key>
+				<true/>
+				<key>timeoutInterval</key>
+				<real>60</real>
+			</dict>
+			<key>originalRequest</key>
+			<dict>
+				<key>HTTPMethod</key>
+				<string>GET</string>
+				<key>HTTPShouldHandleCookies</key>
+				<true/>
+				<key>URL</key>
+				<string>https://pubsub.pubnub.com/v2/presence/sub-key/demo-36?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;state=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;disable_uuids=1&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<key>allHTTPHeaderFields</key>
+				<dict>
+					<key>Accept-Language</key>
+					<string>en;q=1, fr;q=0.9, de;q=0.8, zh-Hans;q=0.7, zh-Hant;q=0.6, ja;q=0.5</string>
+					<key>User-Agent</key>
+					<string>(null)/(null) (iPhone Simulator; iOS 8.3; Scale/2.00)</string>
+				</dict>
+				<key>allowsCellularAccess</key>
+				<true/>
+				<key>timeoutInterval</key>
+				<real>60</real>
+			</dict>
+		</dict>
+		<key>response</key>
+		<dict>
+			<key>response</key>
+			<dict>
+				<key>MIMEType</key>
+				<string>text/javascript</string>
+				<key>URL</key>
+				<string>https://pubsub.pubnub.com/v2/presence/sub-key/demo-36?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;state=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;disable_uuids=1&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<key>allHeaderFields</key>
+				<dict>
+					<key>Accept-Ranges</key>
+					<string>bytes</string>
+					<key>Access-Control-Allow-Methods</key>
+					<string>GET</string>
+					<key>Access-Control-Allow-Origin</key>
+					<string>*</string>
+					<key>Age</key>
+					<string>1</string>
+					<key>Cache-Control</key>
+					<string>no-cache</string>
+					<key>Connection</key>
+					<string>keep-alive</string>
+					<key>Content-Length</key>
+					<string>239</string>
+					<key>Content-Type</key>
+					<string>text/javascript; charset="UTF-8"</string>
+					<key>Date</key>
+					<string>Mon, 29 Jun 2015 20:44:29 GMT</string>
+					<key>Server</key>
+					<string>Pubnub Presence</string>
+				</dict>
+				<key>expectedContentLength</key>
+				<integer>239</integer>
+				<key>statusCode</key>
+				<integer>200</integer>
+				<key>suggestedFileName</key>
+				<string>demo-36.js</string>
+				<key>textEncodingName</key>
+				<string>"utf-8"</string>
+			</dict>
+		</dict>
+	</dict>
+</array>
+</plist>

@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>PNResult Class Reference</title>
+
+	<link rel="stylesheet" href="../css/style.css">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1.4">
+	<meta name="generator" content="appledoc 2.2.1 (build 1333)">
+</head>
+<body class="appledoc">
+	<header>
+		<div class="container" class="hide-in-xcode">
+			
+			<h1 id="library-title">
+				<a href="../index.html">PubNub 4.0b3 for iOS </a>
+			</h1>
+
+			<p id="developer-home">
+				<a href="../index.html">PubNub</a>
+			</p>
+			
+		</div>
+	</header>
+
+	<aside>
+		<div class="container">
+			<nav>
+				<ul id="header-buttons" role="toolbar">
+					<li><a href="../index.html">Index</a></li>
+<li><a href="../hierarchy.html">Hierarchy</a></li>
+
+					<li id="on-this-page" role="navigation">
+						<label>
+							On This Page
+
+							<div class="chevron">
+								<div class="chevy chevron-left"></div>
+								<div class="chevy chevron-right"></div>
+							</div>
+
+							<select id="jump-to">
+	<option value="top">Jump To&#133;</option>
+	
+	<option value="overview">Overview</option>
+	
+
+	
+	
+	<option value="tasks">Tasks</option>
+	
+	
+
+	
+	
+	<optgroup label="Properties">
+		
+		<option value="//api/name/TLSEnabled">TLSEnabled</option>
+		
+		<option value="//api/name/authKey">authKey</option>
+		
+		<option value="//api/name/clientRequest">clientRequest</option>
+		
+		<option value="//api/name/operation">operation</option>
+		
+		<option value="//api/name/origin">origin</option>
+		
+		<option value="//api/name/serviceData">serviceData</option>
+		
+		<option value="//api/name/statusCode">statusCode</option>
+		
+		<option value="//api/name/uuid">uuid</option>
+		
+	</optgroup>
+	
+
+	
+	<optgroup label="Class Methods">
+		
+		<option value="//api/name/objectForOperation:completedWithTaks:processedData:">+ objectForOperation:completedWithTaks:processedData:</option>
+		
+	</optgroup>
+	
+
+	
+	<optgroup label="Instance Methods">
+		
+		<option value="//api/name/copyWithMutatedData:">- copyWithMutatedData:</option>
+		
+		<option value="//api/name/dictionaryRepresentation">- dictionaryRepresentation</option>
+		
+		<option value="//api/name/initForOperation:completedWithTaks:processedData:">- initForOperation:completedWithTaks:processedData:</option>
+		
+		<option value="//api/name/stringifiedRepresentation">- stringifiedRepresentation</option>
+		
+		<option value="//api/name/updateData:">- updateData:</option>
+		
+	</optgroup>
+	
+	
+</select>
+						</label>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</aside>
+
+	<article>
+		<div id="overview_contents" class="container">
+			<div id="content">
+				<main role="main">
+					<h1 class="title">PNResult Class Reference</h1>
+
+					
+					<div class="section section-specification"><table cellspacing="0"><tbody>
+						<tr>
+	<th>Inherits from</th>
+	<td>NSObject</td>
+</tr><tr>
+	<th>Declared in</th>
+	<td>PNResult.h</td>
+</tr>
+						</tbody></table></div>
+					
+
+                    
+					
+					<div class="section section-overview">
+						<a title="Overview" name="overview"></a>
+						<h2 class="subtitle subtitle-overview">Overview</h2>
+						<p>This object contains response itself and also set of data which has been used to
+             communicate with \b PubNub service to get this response.</p>
+
+<p>@author Sergey Mamontov</p>
+					</div>
+					
+					
+
+					
+					
+					<div class="section section-tasks">
+						<a title="Tasks" name="tasks"></a>
+						
+
+						<a title="Information" name="task_Information"></a>
+						<h2 class="task-title">Information</h2>
+
+						<div class="task-list">
+							<div class="section-method">
+	<a name="//api/name/statusCode" title="statusCode"></a>
+	<h3 class="method-title"><code><a href="#//api/name/statusCode">&nbsp;&nbsp;statusCode</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Stores HTTP status code with which \c request completed processing with \b PubNub
+        service.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, assign) NSInteger statusCode</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNResult.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/operation" title="operation"></a>
+	<h3 class="method-title"><code><a href="#//api/name/operation">&nbsp;&nbsp;operation</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Represent type of operation which has been issued to \b PubNub service and received
+        response stored in \c response and processed response in \c data.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, assign) PNOperationType operation</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNResult.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/TLSEnabled" title="TLSEnabled"></a>
+	<h3 class="method-title"><code><a href="#//api/name/TLSEnabled">&nbsp;&nbsp;TLSEnabled</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Stores whether secured connection has been used to send request or not.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, assign, getter=isTLSEnabled) BOOL TLSEnabled</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNResult.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/uuid" title="uuid"></a>
+	<h3 class="method-title"><code><a href="#//api/name/uuid">&nbsp;&nbsp;uuid</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>UUID which is currently used by client to identify user on \b PubNub service.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, copy) NSString *uuid</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNResult.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/authKey" title="authKey"></a>
+	<h3 class="method-title"><code><a href="#//api/name/authKey">&nbsp;&nbsp;authKey</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Authorization which is used to get access to protected remote resources.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, copy) NSString *authKey</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Some resources can be protected by \b PAM functionality and access done using this
+             authorization key.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNResult.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/origin" title="origin"></a>
+	<h3 class="method-title"><code><a href="#//api/name/origin">&nbsp;&nbsp;origin</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Stores reference on \b PubNub service host name or IP address against which \c request
+        has been called.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, copy) NSString *origin</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNResult.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/clientRequest" title="clientRequest"></a>
+	<h3 class="method-title"><code><a href="#//api/name/clientRequest">&nbsp;&nbsp;clientRequest</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Stores reference on copy of original request which has been used to fetch or push data
+        to \b PubNub service.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, readonly, copy) NSURLRequest *clientRequest</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNResult.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div>
+						</div>
+						
+
+						<a title="Extension Methods" name="task_Extension Methods"></a>
+						<h2 class="task-title">Extension Methods</h2>
+
+						<div class="task-list">
+							<div class="section-method">
+	<a name="//api/name/serviceData" title="serviceData"></a>
+	<h3 class="method-title"><code><a href="#//api/name/serviceData">&nbsp;&nbsp;serviceData</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Stores reference on processed \c response which is ready to use by user.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, copy) NSDictionary *serviceData</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Content and format for this property different for API. Each method has description
+             about expected fields and data stored inside.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNResult+Private.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/copyWithMutatedData:" title="copyWithMutatedData:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/copyWithMutatedData:">&ndash;&nbsp;copyWithMutatedData:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Make copy of current result object with mutated data which should be stored in it.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (instancetype)copyWithMutatedData:(id)<em>data</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>data</code></th>
+						<td><p>Reference on data which should be stored within new instance.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>Copy of receiver with modified data.</p>
+			</div>
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Method can be used to create sub-events (for example one for each message or presence
+             event).</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNResult+Private.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/updateData:" title="updateData:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/updateData:">&ndash;&nbsp;updateData:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Update data stored for result object.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)updateData:(id)<em>data</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>data</code></th>
+						<td><p>New data which should be placed into result object.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNResult+Private.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/stringifiedRepresentation" title="stringifiedRepresentation"></a>
+	<h3 class="method-title"><code><a href="#//api/name/stringifiedRepresentation">&ndash;&nbsp;stringifiedRepresentation</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Convert result object to string which can be used to print out data</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (NSString *)stringifiedRepresentation</code></div>
+
+		    
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>Stringified object representation.</p>
+			</div>
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNResult+Private.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div>
+						</div>
+						
+
+						<a title="Private Methods" name="task_Private Methods"></a>
+						<h2 class="task-title">Private Methods</h2>
+
+						<div class="task-list">
+							<div class="section-method">
+	<a name="//api/name/objectForOperation:completedWithTaks:processedData:" title="objectForOperation:completedWithTaks:processedData:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/objectForOperation:completedWithTaks:processedData:">+&nbsp;objectForOperation:completedWithTaks:processedData:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Consntruct result instance in response to successful task completion.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>+ (instancetype)objectForOperation:(PNOperationType)<em>operation</em> completedWithTaks:(NSURLSessionDataTask *)<em>task</em> processedData:(NSDictionary *)<em>processedData</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>operation</code></th>
+						<td><p>One of \b PNOperationType enum fields to describe what kind of <a href="#//api/name/operation">operation</a> has
+                      been processed.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>task</code></th>
+						<td><p>Reference on data task which has been used to communicate with \b PubNub
+                      network.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>processedData</code></th>
+						<td><p>Reference on data which has been loaded and pre-processed by corresponding
+                      parser.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>Constructed and ready to use result instance.</p>
+			</div>
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNResult+Private.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/initForOperation:completedWithTaks:processedData:" title="initForOperation:completedWithTaks:processedData:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/initForOperation:completedWithTaks:processedData:">&ndash;&nbsp;initForOperation:completedWithTaks:processedData:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Initialize result instance in response to successful task completion.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (instancetype)initForOperation:(PNOperationType)<em>operation</em> completedWithTaks:(NSURLSessionDataTask *)<em>task</em> processedData:(NSDictionary *)<em>processedData</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>operation</code></th>
+						<td><p>One of \b PNOperationType enum fields to describe what kind of <a href="#//api/name/operation">operation</a> has
+                      been processed.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>task</code></th>
+						<td><p>Reference on data task which has been used to communicate with \b PubNub
+                      network.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>processedData</code></th>
+						<td><p>Reference on data which has been loaded and pre-processed by corresponding
+                      parser.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>Initialized and ready to use result instance.</p>
+			</div>
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNResult+Private.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/dictionaryRepresentation" title="dictionaryRepresentation"></a>
+	<h3 class="method-title"><code><a href="#//api/name/dictionaryRepresentation">&ndash;&nbsp;dictionaryRepresentation</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Convert result object to dictionary which can be used to print out structured data</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (NSDictionary *)dictionaryRepresentation</code></div>
+
+		    
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>Object in dictionary representation.</p>
+			</div>
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNResult+Private.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div>
+						</div>
+						
+					</div>
+					
+					
+
+                    
+                    
+          
+				</main>
+
+				<footer>
+					<div class="footer-copyright">
+						
+						<p class="copyright">Copyright &copy; 2015 PubNub. All rights reserved. Updated: 2015-06-24</p>
+						
+						
+						<p class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2.1 (build 1333)</a>.</p>
+						
+					</div>
+				</footer>
+			</div>
+		</div>
+	</article>
+
+	<script src="../js/script.js"></script>
+</body>
+</html>

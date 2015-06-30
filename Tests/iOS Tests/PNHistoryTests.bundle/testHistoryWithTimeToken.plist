@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>cancelled</key>
+		<false/>
+		<key>error</key>
+		<dict>
+			<key>code</key>
+			<integer>-1001</integer>
+			<key>description</key>
+			<string>The operation couldn’t be completed. (kCFErrorDomainCFNetwork error -1001.)</string>
+			<key>domain</key>
+			<string>kCFErrorDomainCFNetwork</string>
+			<key>userInfo</key>
+			<dict/>
+		</dict>
+		<key>request</key>
+		<dict>
+			<key>currentRequest</key>
+			<dict>
+				<key>HTTPMethod</key>
+				<string>GET</string>
+				<key>HTTPShouldHandleCookies</key>
+				<true/>
+				<key>URL</key>
+				<string>https://pubsub.pubnub.com/time/0?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<key>allHTTPHeaderFields</key>
+				<dict>
+					<key>Accept</key>
+					<string>*/*</string>
+					<key>Accept-Encoding</key>
+					<string>gzip, deflate</string>
+					<key>Accept-Language</key>
+					<string>en;q=1, fr;q=0.9, de;q=0.8, zh-Hans;q=0.7, zh-Hant;q=0.6, ja;q=0.5</string>
+					<key>User-Agent</key>
+					<string>(null)/(null) (iPhone Simulator; iOS 8.2; Scale/2.00)</string>
+				</dict>
+				<key>allowsCellularAccess</key>
+				<true/>
+				<key>timeoutInterval</key>
+				<real>60</real>
+			</dict>
+			<key>originalRequest</key>
+			<dict>
+				<key>HTTPMethod</key>
+				<string>GET</string>
+				<key>HTTPShouldHandleCookies</key>
+				<true/>
+				<key>URL</key>
+				<string>https://pubsub.pubnub.com/time/0?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<key>allHTTPHeaderFields</key>
+				<dict>
+					<key>Accept-Language</key>
+					<string>en;q=1, fr;q=0.9, de;q=0.8, zh-Hans;q=0.7, zh-Hant;q=0.6, ja;q=0.5</string>
+					<key>User-Agent</key>
+					<string>(null)/(null) (iPhone Simulator; iOS 8.2; Scale/2.00)</string>
+				</dict>
+				<key>allowsCellularAccess</key>
+				<true/>
+				<key>timeoutInterval</key>
+				<real>60</real>
+			</dict>
+		</dict>
+	</dict>
+	<dict>
+		<key>cancelled</key>
+		<false/>
+		<key>data</key>
+		<dict>
+			<key>data</key>
+			<data>
+			W1t7Im1lc3NhZ2UiOiIqKioqKioqKiouLi4uLi4gMTI0NCAtIDIw
+			MTUtMDYtMzAgMTM6MzA6MzUiLCJ0aW1ldG9rZW4iOjE0MzU2OTYy
+			MzY0NDkwODg4fSx7Im1lc3NhZ2UiOiIqKioqKioqKioqLi4uLi4g
+			MTI0NSAtIDIwMTUtMDYtMzAgMTM6MzA6MzciLCJ0aW1ldG9rZW4i
+			OjE0MzU2OTYyMzg0ODk4NzUzfSx7Im1lc3NhZ2UiOiIqKioqKioq
+			KioqKi4uLi4gMTI0NiAtIDIwMTUtMDYtMzAgMTM6MzA6MzkiLCJ0
+			aW1ldG9rZW4iOjE0MzU2OTYyNDA1Mjk0MzA1fSx7Im1lc3NhZ2Ui
+			OiIqKioqKioqKioqKiouLi4gMTI0NyAtIDIwMTUtMDYtMzAgMTM6
+			MzA6NDEiLCJ0aW1ldG9rZW4iOjE0MzU2OTYyNDI1NzA0ODYzfSx7
+			Im1lc3NhZ2UiOiIqKioqKioqKioqKioqLi4gMTI0OCAtIDIwMTUt
+			MDYtMzAgMTM6MzA6NDMiLCJ0aW1ldG9rZW4iOjE0MzU2OTYyNDQ2
+			MTI2Nzg4fSx7Im1lc3NhZ2UiOiIqKioqKioqKioqKioqKi4gMTI0
+			OSAtIDIwMTUtMDYtMzAgMTM6MzA6NDUiLCJ0aW1ldG9rZW4iOjE0
+			MzU2OTYyNDY2NTQyMjQ4fSx7Im1lc3NhZ2UiOiIqKioqKioqKioq
+			KioqKiogMTI1MCAtIDIwMTUtMDYtMzAgMTM6MzA6NDciLCJ0aW1l
+			dG9rZW4iOjE0MzU2OTYyNDg2OTg3ODE4fSx7Im1lc3NhZ2UiOiIq
+			Li4uLi4uLi4uLi4uLi4gMTI1MSAtIDIwMTUtMDYtMzAgMTM6MzA6
+			NDkiLCJ0aW1ldG9rZW4iOjE0MzU2OTYyNTA3NDc4Njk0fSx7Im1l
+			c3NhZ2UiOiIqKi4uLi4uLi4uLi4uLi4gMTI1MiAtIDIwMTUtMDYt
+			MzAgMTM6MzA6NTEiLCJ0aW1ldG9rZW4iOjE0MzU2OTYyNTI3ODg1
+			MTc5fSx7Im1lc3NhZ2UiOiIqKiouLi4uLi4uLi4uLi4gMTI1MyAt
+			IDIwMTUtMDYtMzAgMTM6MzA6NTMiLCJ0aW1ldG9rZW4iOjE0MzU2
+			OTYyNTQ4MjgxNDk5fSx7Im1lc3NhZ2UiOiIqKioqLi4uLi4uLi4u
+			Li4gMTI1NCAtIDIwMTUtMDYtMzAgMTM6MzA6NTUiLCJ0aW1ldG9r
+			ZW4iOjE0MzU2OTYyNTY4NzA4NjYwfSx7Im1lc3NhZ2UiOiIqKioq
+			Ki4uLi4uLi4uLi4gMTI1NSAtIDIwMTUtMDYtMzAgMTM6MzA6NTgi
+			LCJ0aW1ldG9rZW4iOjE0MzU2OTYyNTg5MTAxNzIyfSx7Im1lc3Nh
+			Z2UiOiIqKioqKiouLi4uLi4uLi4gMTI1NiAtIDIwMTUtMDYtMzAg
+			MTM6MzE6MDAiLCJ0aW1ldG9rZW4iOjE0MzU2OTYyNjA5NTIxNDU1
+			fV0sMTQzNTY5NjIzNjQ0OTA4ODgsMTQzNTY5NjI2MDk1MjE0NTVd
+			</data>
+			<key>json</key>
+			<array>
+				<array>
+					<dict>
+						<key>message</key>
+						<string>*********...... 1244 - 2015-06-30 13:30:35</string>
+						<key>timetoken</key>
+						<integer>14356962364490888</integer>
+					</dict>
+					<dict>
+						<key>message</key>
+						<string>**********..... 1245 - 2015-06-30 13:30:37</string>
+						<key>timetoken</key>
+						<integer>14356962384898753</integer>
+					</dict>
+					<dict>
+						<key>message</key>
+						<string>***********.... 1246 - 2015-06-30 13:30:39</string>
+						<key>timetoken</key>
+						<integer>14356962405294305</integer>
+					</dict>
+					<dict>
+						<key>message</key>
+						<string>************... 1247 - 2015-06-30 13:30:41</string>
+						<key>timetoken</key>
+						<integer>14356962425704863</integer>
+					</dict>
+					<dict>
+						<key>message</key>
+						<string>*************.. 1248 - 2015-06-30 13:30:43</string>
+						<key>timetoken</key>
+						<integer>14356962446126788</integer>
+					</dict>
+					<dict>
+						<key>message</key>
+						<string>**************. 1249 - 2015-06-30 13:30:45</string>
+						<key>timetoken</key>
+						<integer>14356962466542248</integer>
+					</dict>
+					<dict>
+						<key>message</key>
+						<string>*************** 1250 - 2015-06-30 13:30:47</string>
+						<key>timetoken</key>
+						<integer>14356962486987818</integer>
+					</dict>
+					<dict>
+						<key>message</key>
+						<string>*.............. 1251 - 2015-06-30 13:30:49</string>
+						<key>timetoken</key>
+						<integer>14356962507478694</integer>
+					</dict>
+					<dict>
+						<key>message</key>
+						<string>**............. 1252 - 2015-06-30 13:30:51</string>
+						<key>timetoken</key>
+						<integer>14356962527885179</integer>
+					</dict>
+					<dict>
+						<key>message</key>
+						<string>***............ 1253 - 2015-06-30 13:30:53</string>
+						<key>timetoken</key>
+						<integer>14356962548281499</integer>
+					</dict>
+					<dict>
+						<key>message</key>
+						<string>****........... 1254 - 2015-06-30 13:30:55</string>
+						<key>timetoken</key>
+						<integer>14356962568708660</integer>
+					</dict>
+					<dict>
+						<key>message</key>
+						<string>*****.......... 1255 - 2015-06-30 13:30:58</string>
+						<key>timetoken</key>
+						<integer>14356962589101722</integer>
+					</dict>
+					<dict>
+						<key>message</key>
+						<string>******......... 1256 - 2015-06-30 13:31:00</string>
+						<key>timetoken</key>
+						<integer>14356962609521455</integer>
+					</dict>
+				</array>
+				<integer>14356962364490888</integer>
+				<integer>14356962609521455</integer>
+			</array>
+		</dict>
+		<key>request</key>
+		<dict>
+			<key>currentRequest</key>
+			<dict>
+				<key>HTTPMethod</key>
+				<string>GET</string>
+				<key>HTTPShouldHandleCookies</key>
+				<true/>
+				<key>URL</key>
+				<string>https://pubsub.pubnub.com/v2/history/sub-key/demo-36/channel/a?end=14356962619609342&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;start=14356962344283504&amp;reverse=false&amp;count=100&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.0&amp;include_token=true</string>
+				<key>allHTTPHeaderFields</key>
+				<dict>
+					<key>Accept</key>
+					<string>*/*</string>
+					<key>Accept-Encoding</key>
+					<string>gzip, deflate</string>
+					<key>Accept-Language</key>
+					<string>en;q=1, fr;q=0.9, de;q=0.8, zh-Hans;q=0.7, zh-Hant;q=0.6, ja;q=0.5</string>
+					<key>User-Agent</key>
+					<string>(null)/(null) (iPhone Simulator; iOS 8.2; Scale/2.00)</string>
+				</dict>
+				<key>allowsCellularAccess</key>
+				<true/>
+				<key>timeoutInterval</key>
+				<real>60</real>
+			</dict>
+			<key>originalRequest</key>
+			<dict>
+				<key>HTTPMethod</key>
+				<string>GET</string>
+				<key>HTTPShouldHandleCookies</key>
+				<true/>
+				<key>URL</key>
+				<string>https://pubsub.pubnub.com/v2/history/sub-key/demo-36/channel/a?end=14356962619609342&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;start=14356962344283504&amp;reverse=false&amp;count=100&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.0&amp;include_token=true</string>
+				<key>allHTTPHeaderFields</key>
+				<dict>
+					<key>Accept-Language</key>
+					<string>en;q=1, fr;q=0.9, de;q=0.8, zh-Hans;q=0.7, zh-Hant;q=0.6, ja;q=0.5</string>
+					<key>User-Agent</key>
+					<string>(null)/(null) (iPhone Simulator; iOS 8.2; Scale/2.00)</string>
+				</dict>
+				<key>allowsCellularAccess</key>
+				<true/>
+				<key>timeoutInterval</key>
+				<real>60</real>
+			</dict>
+		</dict>
+		<key>response</key>
+		<dict>
+			<key>response</key>
+			<dict>
+				<key>MIMEType</key>
+				<string>text/javascript</string>
+				<key>URL</key>
+				<string>https://pubsub.pubnub.com/v2/history/sub-key/demo-36/channel/a?end=14356962619609342&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;start=14356962344283504&amp;reverse=false&amp;count=100&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.0&amp;include_token=true</string>
+				<key>allHeaderFields</key>
+				<dict>
+					<key>Access-Control-Allow-Methods</key>
+					<string>GET</string>
+					<key>Access-Control-Allow-Origin</key>
+					<string>*</string>
+					<key>Age</key>
+					<string>0</string>
+					<key>Cache-Control</key>
+					<string>no-cache</string>
+					<key>Connection</key>
+					<string>keep-alive</string>
+					<key>Content-Encoding</key>
+					<string>gzip</string>
+					<key>Content-Type</key>
+					<string>text/javascript; charset="UTF-8"</string>
+					<key>Date</key>
+					<string>Tue, 30 Jun 2015 21:05:18 GMT</string>
+					<key>Server</key>
+					<string>Pubnub</string>
+					<key>Transfer-Encoding</key>
+					<string>Identity</string>
+				</dict>
+				<key>expectedContentLength</key>
+				<integer>1170</integer>
+				<key>statusCode</key>
+				<integer>200</integer>
+				<key>suggestedFileName</key>
+				<string>a.js</string>
+				<key>textEncodingName</key>
+				<string>"utf-8"</string>
+			</dict>
+		</dict>
+	</dict>
+</array>
+</plist>

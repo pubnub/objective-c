@@ -1,0 +1,2478 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>PNSubscriber Class Reference</title>
+
+	<link rel="stylesheet" href="../css/style.css">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1.4">
+	<meta name="generator" content="appledoc 2.2.1 (build 1333)">
+</head>
+<body class="appledoc">
+	<header>
+		<div class="container" class="hide-in-xcode">
+			
+			<h1 id="library-title">
+				<a href="../index.html">PubNub 4.0b3 for iOS </a>
+			</h1>
+
+			<p id="developer-home">
+				<a href="../index.html">PubNub</a>
+			</p>
+			
+		</div>
+	</header>
+
+	<aside>
+		<div class="container">
+			<nav>
+				<ul id="header-buttons" role="toolbar">
+					<li><a href="../index.html">Index</a></li>
+<li><a href="../hierarchy.html">Hierarchy</a></li>
+
+					<li id="on-this-page" role="navigation">
+						<label>
+							On This Page
+
+							<div class="chevron">
+								<div class="chevy chevron-left"></div>
+								<div class="chevy chevron-right"></div>
+							</div>
+
+							<select id="jump-to">
+	<option value="top">Jump To&#133;</option>
+	
+	<option value="overview">Overview</option>
+	
+
+	
+	
+	<option value="tasks">Tasks</option>
+	
+	
+
+	
+	
+	<optgroup label="Properties">
+		
+		<option value="//api/name/channelGroupsSet">channelGroupsSet</option>
+		
+		<option value="//api/name/channelsSet">channelsSet</option>
+		
+		<option value="//api/name/client">client</option>
+		
+		<option value="//api/name/currentState">currentState</option>
+		
+		<option value="//api/name/currentTimeToken">currentTimeToken</option>
+		
+		<option value="//api/name/lastTimeToken">lastTimeToken</option>
+		
+		<option value="//api/name/mayRequireSubscriptionRestore">mayRequireSubscriptionRestore</option>
+		
+		<option value="//api/name/presenceChannelsSet">presenceChannelsSet</option>
+		
+		<option value="//api/name/resourceAccessQueue">resourceAccessQueue</option>
+		
+		<option value="//api/name/retryTimer">retryTimer</option>
+		
+	</optgroup>
+	
+
+	
+	<optgroup label="Class Methods">
+		
+		<option value="//api/name/subscriberForClient:">+ subscriberForClient:</option>
+		
+	</optgroup>
+	
+
+	
+	<optgroup label="Instance Methods">
+		
+		<option value="//api/name/addChannelGroups:">- addChannelGroups:</option>
+		
+		<option value="//api/name/addChannels:">- addChannels:</option>
+		
+		<option value="//api/name/addPresenceChannels:">- addPresenceChannels:</option>
+		
+		<option value="//api/name/allObjects">- allObjects</option>
+		
+		<option value="//api/name/appendSubscriberInformation:">- appendSubscriberInformation:</option>
+		
+		<option value="//api/name/channelGroups">- channelGroups</option>
+		
+		<option value="//api/name/channels">- channels</option>
+		
+		<option value="//api/name/continueSubscriptionCycleIfRequiredWithCompletion:">- continueSubscriptionCycleIfRequiredWithCompletion:</option>
+		
+		<option value="//api/name/handleFailedSubscriptionStatus:">- handleFailedSubscriptionStatus:</option>
+		
+		<option value="//api/name/handleLiveFeedEvents:">- handleLiveFeedEvents:</option>
+		
+		<option value="//api/name/handleNewMessage:">- handleNewMessage:</option>
+		
+		<option value="//api/name/handleNewPresenceEvent:">- handleNewPresenceEvent:</option>
+		
+		<option value="//api/name/handleSubscription:timeToken:">- handleSubscription:timeToken:</option>
+		
+		<option value="//api/name/handleSubscriptionStatus:">- handleSubscriptionStatus:</option>
+		
+		<option value="//api/name/handleSuccessSubscriptionStatus:">- handleSuccessSubscriptionStatus:</option>
+		
+		<option value="//api/name/inheritStateFromSubscriber:">- inheritStateFromSubscriber:</option>
+		
+		<option value="//api/name/initForClient:">- initForClient:</option>
+		
+		<option value="//api/name/presenceChannels">- presenceChannels</option>
+		
+		<option value="//api/name/removeChannelGroups:">- removeChannelGroups:</option>
+		
+		<option value="//api/name/removeChannels:">- removeChannels:</option>
+		
+		<option value="//api/name/removePresenceChannels:">- removePresenceChannels:</option>
+		
+		<option value="//api/name/restoreSubscriptionCycleIfRequiredWithCompletion:">- restoreSubscriptionCycleIfRequiredWithCompletion:</option>
+		
+		<option value="//api/name/startRetryTimer">- startRetryTimer</option>
+		
+		<option value="//api/name/stopRetryTimer">- stopRetryTimer</option>
+		
+		<option value="//api/name/subscribe:withState:completion:">- subscribe:withState:completion:</option>
+		
+		<option value="//api/name/subscribeRequestParametersWithState:">- subscribeRequestParametersWithState:</option>
+		
+		<option value="//api/name/unsubscribeFrom:objects:completion:">- unsubscribeFrom:objects:completion:</option>
+		
+		<option value="//api/name/updateStateTo:withStatus:">- updateStateTo:withStatus:</option>
+		
+	</optgroup>
+	
+	
+</select>
+						</label>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</aside>
+
+	<article>
+		<div id="overview_contents" class="container">
+			<div id="content">
+				<main role="main">
+					<h1 class="title">PNSubscriber Class Reference</h1>
+
+					
+					<div class="section section-specification"><table cellspacing="0"><tbody>
+						<tr>
+	<th>Inherits from</th>
+	<td>NSObject</td>
+</tr><tr>
+	<th>Declared in</th>
+	<td>PNSubscriber.h</td>
+</tr>
+						</tbody></table></div>
+					
+
+                    
+					
+					<div class="section section-overview">
+						<a title="Overview" name="overview"></a>
+						<h2 class="subtitle subtitle-overview">Overview</h2>
+						<p>Track subscription and time token information. Subscriber manage recovery as well.</p>
+
+<p>@author Sergey Mamontov</p>
+					</div>
+					
+					
+
+					
+					
+					<div class="section section-tasks">
+						<a title="Tasks" name="tasks"></a>
+						
+
+						<a title="State Information and Manipulation" name="task_State Information and Manipulation"></a>
+						<h2 class="task-title">State Information and Manipulation</h2>
+
+						<div class="task-list">
+							<div class="section-method">
+	<a name="//api/name/allObjects" title="allObjects"></a>
+	<h3 class="method-title"><code><a href="#//api/name/allObjects">&ndash;&nbsp;allObjects</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Retrieve list of all remote data objects names to which <a href="#//api/name/client">client</a> subscriber at this moment.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (NSArray *)allObjects</code></div>
+
+		    
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>Object names list.</p>
+			</div>
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/channels" title="channels"></a>
+	<h3 class="method-title"><code><a href="#//api/name/channels">&ndash;&nbsp;channels</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>List of channels.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (NSArray *)channels</code></div>
+
+		    
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>Return list of channels on which <a href="#//api/name/client">client</a> subscribed at this moment.</p>
+			</div>
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/channelGroups" title="channelGroups"></a>
+	<h3 class="method-title"><code><a href="#//api/name/channelGroups">&ndash;&nbsp;channelGroups</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>List of channel groups.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (NSArray *)channelGroups</code></div>
+
+		    
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>Return list of channel groups on which <a href="#//api/name/client">client</a> subscribed at this moment.</p>
+			</div>
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/presenceChannels" title="presenceChannels"></a>
+	<h3 class="method-title"><code><a href="#//api/name/presenceChannels">&ndash;&nbsp;presenceChannels</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>List of presence <a href="#//api/name/channels">channels</a>.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (NSArray *)presenceChannels</code></div>
+
+		    
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>Return list of presence <a href="#//api/name/channels">channels</a> for which <a href="#//api/name/client">client</a> observing for presence events.</p>
+			</div>
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div>
+						</div>
+						
+
+						<a title="Initialization and Configuration" name="task_Initialization and Configuration"></a>
+						<h2 class="task-title">Initialization and Configuration</h2>
+
+						<div class="task-list">
+							<div class="section-method">
+	<a name="//api/name/subscriberForClient:" title="subscriberForClient:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/subscriberForClient:">+&nbsp;subscriberForClient:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Construct subscribe loop manager for concrete \b PubNub <a href="#//api/name/client">client</a>.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>+ (instancetype)subscriberForClient:(PubNub *)<em>client</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>client</code></th>
+						<td><p>Reference on <a href="#//api/name/client">client</a> which will be weakly stored in subscriber.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>Configured and ready to use subscribe manager instance.</p>
+			</div>
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/inheritStateFromSubscriber:" title="inheritStateFromSubscriber:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/inheritStateFromSubscriber:">&ndash;&nbsp;inheritStateFromSubscriber:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Copy specified subscriber&rsquo;s state information.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)inheritStateFromSubscriber:(PNSubscriber *)<em>subscriber</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>subscriber</code></th>
+						<td><p>Reference on subscriber whose information should be copied into receiver&rsquo;s state
+                   objects.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div>
+						</div>
+						
+
+						<a title="Subscription information modification" name="task_Subscription information modification"></a>
+						<h2 class="task-title">Subscription information modification</h2>
+
+						<div class="task-list">
+							<div class="section-method">
+	<a name="//api/name/addChannels:" title="addChannels:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/addChannels:">&ndash;&nbsp;addChannels:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Add new <a href="#//api/name/channels">channels</a> to the list at which <a href="#//api/name/client">client</a> subscribed.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)addChannels:(NSArray *)<em>channels</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>channels</code></th>
+						<td><p>List of <a href="#//api/name/channels">channels</a> which should be added to the list.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/removeChannels:" title="removeChannels:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/removeChannels:">&ndash;&nbsp;removeChannels:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Remove <a href="#//api/name/channels">channels</a> from the list on which <a href="#//api/name/client">client</a> subscribed.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)removeChannels:(NSArray *)<em>channels</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>channels</code></th>
+						<td><p>List of <a href="#//api/name/channels">channels</a> which should be removed from the list.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/addChannelGroups:" title="addChannelGroups:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/addChannelGroups:">&ndash;&nbsp;addChannelGroups:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Add new channel groups to the list at which <a href="#//api/name/client">client</a> subscribed.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)addChannelGroups:(NSArray *)<em>groups</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>groups</code></th>
+						<td><p>List of channel groups which should be added to the list.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/removeChannelGroups:" title="removeChannelGroups:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/removeChannelGroups:">&ndash;&nbsp;removeChannelGroups:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Remove channel groups from the list on which <a href="#//api/name/client">client</a> subscribed.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)removeChannelGroups:(NSArray *)<em>groups</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>groups</code></th>
+						<td><p>List of channel groups which should be removed from the list.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/addPresenceChannels:" title="addPresenceChannels:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/addPresenceChannels:">&ndash;&nbsp;addPresenceChannels:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Add new presence <a href="#//api/name/channels">channels</a> to the list at which <a href="#//api/name/client">client</a> subscribed.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)addPresenceChannels:(NSArray *)<em>presenceChannels</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>presenceChannels</code></th>
+						<td><p>List of presence <a href="#//api/name/channels">channels</a> which should be added to the list.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/removePresenceChannels:" title="removePresenceChannels:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/removePresenceChannels:">&ndash;&nbsp;removePresenceChannels:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Remove presence <a href="#//api/name/channels">channels</a> from the list on which <a href="#//api/name/client">client</a> subscribed.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)removePresenceChannels:(NSArray *)<em>presenceChannels</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>presenceChannels</code></th>
+						<td><p>List of presence <a href="#//api/name/channels">channels</a> which should be removed from the list.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div>
+						</div>
+						
+
+						<a title="Subscription" name="task_Subscription"></a>
+						<h2 class="task-title">Subscription</h2>
+
+						<div class="task-list">
+							<div class="section-method">
+	<a name="//api/name/subscribe:withState:completion:" title="subscribe:withState:completion:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/subscribe:withState:completion:">&ndash;&nbsp;subscribe:withState:completion:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Perform initial subscription with \b 0 timetoken.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)subscribe:(BOOL)<em>initialSubscribe</em> withState:(NSDictionary *)<em>state</em> completion:(PNSubscriberCompletionBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>initialSubscribe</code></th>
+						<td><p>Stores whether <a href="#//api/name/client">client</a> trying to subscriber using \b 0 time token and
+                         trigger all required presence notifications or  not.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>state</code></th>
+						<td><p>Reference on <a href="#//api/name/client">client</a> state which should be bound to <a href="#//api/name/channels">channels</a> on which
+                         <a href="#//api/name/client">client</a> has been subscribed or will subscribe now.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>Reference on subscription completion block which is used to notify code.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Subscription with \b 0 timetoken &ldquo;register&rdquo; <a href="#//api/name/client">client</a> in \b PubNub network and allow to
+             receive live updates from remote data objects live feed.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/restoreSubscriptionCycleIfRequiredWithCompletion:" title="restoreSubscriptionCycleIfRequiredWithCompletion:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/restoreSubscriptionCycleIfRequiredWithCompletion:">&ndash;&nbsp;restoreSubscriptionCycleIfRequiredWithCompletion:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Try restore subscription cycle by using \b 0 time token and if required try to catch up on
+         previous subscribe time token (basing on user configuration).</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)restoreSubscriptionCycleIfRequiredWithCompletion:(PNSubscriberCompletionBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>Reference on unsubscription completion block which is used to notify code.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/continueSubscriptionCycleIfRequiredWithCompletion:" title="continueSubscriptionCycleIfRequiredWithCompletion:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/continueSubscriptionCycleIfRequiredWithCompletion:">&ndash;&nbsp;continueSubscriptionCycleIfRequiredWithCompletion:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Continue subscription cycle using \c <a href="#//api/name/currentTimeToken">currentTimeToken</a> value and <a href="#//api/name/channels">channels</a>, stored in cache.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)continueSubscriptionCycleIfRequiredWithCompletion:(PNSubscriberCompletionBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>Reference on unsubscription completion block which is used to notify code.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/unsubscribeFrom:objects:completion:" title="unsubscribeFrom:objects:completion:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/unsubscribeFrom:objects:completion:">&ndash;&nbsp;unsubscribeFrom:objects:completion:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Perform unsubscription operation.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)unsubscribeFrom:(BOOL)<em>channels</em> objects:(NSArray *)<em>objects</em> completion:(PNSubscriberCompletionBlock)<em>block</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>channels</code></th>
+						<td><p>Whether unsubscribing from list of <a href="#//api/name/channels">channels</a> or channel groups.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>objects</code></th>
+						<td><p>List of objects from which <a href="#//api/name/client">client</a> should unsubscribe.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>block</code></th>
+						<td><p>Reference on unsubscription completion block which is used to notify code.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>If suitable objects has been passed, then <a href="#//api/name/client">client</a> will ask \b PubNub presence service to
+             trigger \c &lsquo;leave&rsquo; presence events on passed objects.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.h</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div>
+						</div>
+						
+
+						<a title="Extension Methods" name="task_Extension Methods"></a>
+						<h2 class="task-title">Extension Methods</h2>
+
+						<div class="task-list">
+							<div class="section-method">
+	<a name="//api/name/client" title="client"></a>
+	<h3 class="method-title"><code><a href="#//api/name/client">&nbsp;&nbsp;client</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Weak reference on client for which subscribe manager manage subscribe loop.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, weak) PubNub *client</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.m</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/currentState" title="currentState"></a>
+	<h3 class="method-title"><code><a href="#//api/name/currentState">&nbsp;&nbsp;currentState</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Stores reference on current subscriber state.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, assign) PNSubscriberState currentState</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.m</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/mayRequireSubscriptionRestore" title="mayRequireSubscriptionRestore"></a>
+	<h3 class="method-title"><code><a href="#//api/name/mayRequireSubscriptionRestore">&nbsp;&nbsp;mayRequireSubscriptionRestore</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Stores whether subscriber potentially should expect for subscription restore call or not.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, assign) BOOL mayRequireSubscriptionRestore</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>In case if <a href="#//api/name/client">client</a> tried to connect and failed or disconnected because of network issues
+             this flag should be set to \c YES</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.m</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/channelsSet" title="channelsSet"></a>
+	<h3 class="method-title"><code><a href="#//api/name/channelsSet">&nbsp;&nbsp;channelsSet</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Actual storage for list of <a href="#//api/name/channels">channels</a> on which <a href="#//api/name/client">client</a> subscribed at this moment and listen
+         for updates from live feeds.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, strong) NSMutableSet *channelsSet</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.m</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/channelGroupsSet" title="channelGroupsSet"></a>
+	<h3 class="method-title"><code><a href="#//api/name/channelGroupsSet">&nbsp;&nbsp;channelGroupsSet</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Actual storage for list of channel groups on which <a href="#//api/name/client">client</a> subscribed at this moment and
+         listen for updates from live feeds.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, strong) NSMutableSet *channelGroupsSet</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.m</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/presenceChannelsSet" title="presenceChannelsSet"></a>
+	<h3 class="method-title"><code><a href="#//api/name/presenceChannelsSet">&nbsp;&nbsp;presenceChannelsSet</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Actual storage for list of presence <a href="#//api/name/channels">channels</a> on which <a href="#//api/name/client">client</a> subscribed at this moment and
+         listen for presence updates.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, strong) NSMutableSet *presenceChannelsSet</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.m</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/currentTimeToken" title="currentTimeToken"></a>
+	<h3 class="method-title"><code><a href="#//api/name/currentTimeToken">&nbsp;&nbsp;currentTimeToken</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Reference on time token which is used for current subscribe loop iteration.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, strong) NSNumber *currentTimeToken</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>\b 0 for initial subscription loop and non-zero for long-poll requests.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.m</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/lastTimeToken" title="lastTimeToken"></a>
+	<h3 class="method-title"><code><a href="#//api/name/lastTimeToken">&nbsp;&nbsp;lastTimeToken</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Reference on time token which has been used for previous subscribe loop iteration.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, strong) NSNumber *lastTimeToken</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>\b 0 for initial subscription loop and non-zero for long-poll requests.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.m</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/resourceAccessQueue" title="resourceAccessQueue"></a>
+	<h3 class="method-title"><code><a href="#//api/name/resourceAccessQueue">&nbsp;&nbsp;resourceAccessQueue</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Stores reference on queue which is used to serialize access to shared subscriber
+         information.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, strong) dispatch_queue_t resourceAccessQueue</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.m</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/retryTimer" title="retryTimer"></a>
+	<h3 class="method-title"><code><a href="#//api/name/retryTimer">&nbsp;&nbsp;retryTimer</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Stores reference on GCD timer used to re-issue subscrbibe request.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>@property (nonatomic, strong) dispatch_source_t retryTimer</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Timer activated in cases if previous subscribe loop failed with category type which
+             can be temporary.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.m</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/initForClient:" title="initForClient:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/initForClient:">&ndash;&nbsp;initForClient:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Initialize subscribe loop manager for concrete \b PubNub <a href="#//api/name/client">client</a>.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (instancetype)initForClient:(PubNub *)<em>client</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>client</code></th>
+						<td><p>Reference on <a href="#//api/name/client">client</a> which will be weakly stored in subscriber.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>Initialized and ready to use subscribe manager instance.</p>
+			</div>
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.m</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/updateStateTo:withStatus:" title="updateStateTo:withStatus:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/updateStateTo:withStatus:">&ndash;&nbsp;updateStateTo:withStatus:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Update current subscriber state.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)updateStateTo:(PNSubscriberState)<em>state</em> withStatus:(PNSubscribeStatus *)<em>status</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>state</code></th>
+						<td><p>New state from \b <a href="../Constants/PNSubscriberState.html">PNSubscriberState</a> enum fields.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>status</code></th>
+						<td><p>Reference on status object which should be passed along to listeners.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>If possible, state transition will be reported to the listeners.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.m</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/startRetryTimer" title="startRetryTimer"></a>
+	<h3 class="method-title"><code><a href="#//api/name/startRetryTimer">&ndash;&nbsp;startRetryTimer</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Launch subscription retry timer.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)startRetryTimer</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Launch timer with default 1 second interval after each subscribe attempt. In most of
+             cases timer used to retry subscription after PubNub Access Manager denial because of
+             <a href="#//api/name/client">client</a> doesn&rsquo;t has enough rights.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.m</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/stopRetryTimer" title="stopRetryTimer"></a>
+	<h3 class="method-title"><code><a href="#//api/name/stopRetryTimer">&ndash;&nbsp;stopRetryTimer</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Terminate previously launched subscription retry counter.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)stopRetryTimer</code></div>
+
+		    
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>In case if another subscribe request from user <a href="#//api/name/client">client</a> better to stop retry timer to
+             eliminate race of conditions.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.m</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/handleSubscriptionStatus:" title="handleSubscriptionStatus:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/handleSubscriptionStatus:">&ndash;&nbsp;handleSubscriptionStatus:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Handle subscription status update.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)handleSubscriptionStatus:(PNSubscribeStatus *)<em>status</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>status</code></th>
+						<td><p>Reference on status object which has been received from \b PubNub network.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Depending on passed status category and whether it is error it will be sent for
+             processing to corresponding methods.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.m</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/handleSuccessSubscriptionStatus:" title="handleSuccessSubscriptionStatus:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/handleSuccessSubscriptionStatus:">&ndash;&nbsp;handleSuccessSubscriptionStatus:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Process successful subscription status.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)handleSuccessSubscriptionStatus:(PNSubscribeStatus *)<em>status</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>status</code></th>
+						<td><p>Reference on status object which has been received from \b PubNub network.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Success can be called as result of initial subscription successful ACK response as well
+             as long-poll response with events from remote data objects live feed.</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.m</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/handleFailedSubscriptionStatus:" title="handleFailedSubscriptionStatus:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/handleFailedSubscriptionStatus:">&ndash;&nbsp;handleFailedSubscriptionStatus:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Process failed subscription status.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)handleFailedSubscriptionStatus:(PNSubscribeStatus *)<em>status</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>status</code></th>
+						<td><p>Reference on status object which has been received from \b PubNub network.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">Discussion</h4>
+				<p>Failure can be cause by Access Denied error, network issues or called when last
+             subscribe request has been canceled (to execute new subscription for example).</p>
+			</div>
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.m</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/handleSubscription:timeToken:" title="handleSubscription:timeToken:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/handleSubscription:timeToken:">&ndash;&nbsp;handleSubscription:timeToken:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Handle subscription time token received from \b PubNub network.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)handleSubscription:(BOOL)<em>initialSubscription</em> timeToken:(NSNumber *)<em>timeToken</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>initialSubscription</code></th>
+						<td><p>Whether subscription is initial or received time token on long-poll
+                            request.</p></td>
+					</tr>
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>timeToken</code></th>
+						<td><p>Reference on time token which has been received from \b PubNub nrtwork.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.m</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/handleLiveFeedEvents:" title="handleLiveFeedEvents:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/handleLiveFeedEvents:">&ndash;&nbsp;handleLiveFeedEvents:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Handle long-poll service response and deliver events to listeners if required.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)handleLiveFeedEvents:(PNSubscribeStatus *)<em>status</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>status</code></th>
+						<td><p>Reference on status object which has been received from \b PubNub network.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.m</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/handleNewMessage:" title="handleNewMessage:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/handleNewMessage:">&ndash;&nbsp;handleNewMessage:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Process message which just has been received from \b PubNub service through live feed on
+         which <a href="#//api/name/client">client</a> subscribed at this moment.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)handleNewMessage:(PNMessageResult *)<em>data</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>data</code></th>
+						<td><p>Reference on result data which hold information about request on which this
+                  response has been received and message itself.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.m</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/handleNewPresenceEvent:" title="handleNewPresenceEvent:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/handleNewPresenceEvent:">&ndash;&nbsp;handleNewPresenceEvent:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Process presence event which just has been receoved from \b PubNub service through presence
+         live feeds on which <a href="#//api/name/client">client</a> subscribed at this moment.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)handleNewPresenceEvent:(PNPresenceEventResult *)<em>data</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>data</code></th>
+						<td><p>Reference on result data which hold information about request on which this
+                  response has been received and presence event itself.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.m</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/subscribeRequestParametersWithState:" title="subscribeRequestParametersWithState:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/subscribeRequestParametersWithState:">&ndash;&nbsp;subscribeRequestParametersWithState:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Compose request parameterts instance basing on current subscriber state.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (PNRequestParameters *)subscribeRequestParametersWithState:(NSDictionary *)<em>state</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>state</code></th>
+						<td><p>Reference on merged <a href="#//api/name/client">client</a> state which should be used in request.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">Return Value</h4>
+				<p>Configured and ready to use parameters instance.</p>
+			</div>
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.m</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div><div class="section-method">
+	<a name="//api/name/appendSubscriberInformation:" title="appendSubscriberInformation:"></a>
+	<h3 class="method-title"><code><a href="#//api/name/appendSubscriberInformation:">&ndash;&nbsp;appendSubscriberInformation:</a></code>
+</h3>
+
+	<div class="method-info">
+		<div class="pointy-thing"></div>
+
+		<div class="method-info-container">
+			
+			
+			<div class="method-subsection brief-description">
+				<p>Append subscriber information to status object.</p>
+			</div>
+			
+		    
+
+			<div class="method-subsection method-declaration"><code>- (void)appendSubscriberInformation:(PNStatus *)<em>status</em></code></div>
+
+		    
+			
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">Parameters</h4>
+				<table class="argument-def parameter-def">
+				
+					<tr>
+						<th scope="row" class="argument-name"><code>status</code></th>
+						<td><p>Reference on status object which should be updated with subscriber information.</p></td>
+					</tr>
+				
+				</table>
+			</div>
+			
+
+			
+
+			
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">Availability</h4>
+				<p>4.0</p>
+			</div>
+			
+
+			
+
+			
+
+			
+
+			
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">Declared In</h4>
+				<p><code class="declared-in-ref">PNSubscriber.m</code></p>
+			</div>
+			
+			
+		</div>
+	</div>
+</div>
+						</div>
+						
+					</div>
+					
+					
+
+                    
+                    
+          
+				</main>
+
+				<footer>
+					<div class="footer-copyright">
+						
+						<p class="copyright">Copyright &copy; 2015 PubNub. All rights reserved. Updated: 2015-06-24</p>
+						
+						
+						<p class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.2.1 (build 1333)</a>.</p>
+						
+					</div>
+				</footer>
+			</div>
+		</div>
+	</article>
+
+	<script src="../js/script.js"></script>
+</body>
+</html>
