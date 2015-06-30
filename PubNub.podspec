@@ -9,7 +9,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "PubNub"
-  s.version          = "4.0"
+  s.version          = "4.0.1"
   s.summary          = "The PubNub Real-Time Network. Build real-time apps quickly and scale them globally."
   s.homepage         = "https://github.com/pubnub/objective-c"
 
@@ -18,7 +18,7 @@ Pod::Spec.new do |s|
   }
   s.source = {
     :git => 'https://github.com/pubnub/objective-c.git',
-    :tag => 'v4.0'
+    :tag => 'v4.0.1'
     }
   s.social_media_url = 'https://twitter.com/pubnub'
 
