@@ -60,11 +60,12 @@ static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupTestsName";
     XCTestExpectation *channelsForGroup = [self expectationWithDescription:@"channelsForGroup"];
     [self.client channelsForGroup:kPNChannelGroupTestsName withCompletion:^(PNChannelGroupChannelsResult *result, PNErrorStatus *status) {
         PNStrongify(self);
-        XCTAssertNil(status);
+        XCTAssertNil(status.errorData.information);
         XCTAssertNotNil(result);
         XCTAssertEqual(result.statusCode, 200);
         XCTAssertEqual(result.operation, PNChannelsForGroupOperation);
-        XCTAssertEqualObjects(result.data.channels, channelGroups);
+        XCTAssertEqualObjects([NSSet setWithArray:result.data.channels],
+                              [NSSet setWithArray:channelGroups]);
         [channelsForGroup fulfill];
     }];
     [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
@@ -121,7 +122,7 @@ static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupTestsName";
     [self.client channelGroupsWithCompletion:^(PNChannelGroupsResult *result, PNErrorStatus *status) {
         PNStrongify(self);
         XCTAssertNotNil(result);
-        XCTAssertNil(status);
+        XCTAssertNil(status.errorData.information);
         XCTAssertEqual(result.operation, PNChannelGroupsOperation);
         XCTAssertEqual(result.statusCode, 200);
         // TODO: assert on actual groups, for now just do count

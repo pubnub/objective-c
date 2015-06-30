@@ -129,7 +129,7 @@
 /**
  @brief   Reference on number of seconds which is used by client to issue heartbeat requests to
           \b PubNub service.
- @note    This vlaue should be smaller then \c presenceHeartbeatTimeout for better presence
+ @note    This value should be smaller then \c presenceHeartbeatTimeout for better presence
           control.
  
  @default By default heartbeat functionality disabled.

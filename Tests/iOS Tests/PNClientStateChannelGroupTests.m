@@ -27,6 +27,10 @@ static NSString * const kPNChannelGroupTestsName = @"PNClientStateChannelGroupTe
              ];
 }
 
+- (NSString *)nonExistentChannelGroup {
+    return @"42";
+}
+
 - (void)setUp {
     [super setUp];
     [self performVerifiedRemoveAllChannelsFromGroup:kPNChannelGroupTestsName withAssertions:nil];
@@ -50,11 +54,11 @@ static NSString * const kPNChannelGroupTestsName = @"PNClientStateChannelGroupTe
         XCTAssertEqual(status.category, PNConnectedCategory);
 //        XCTAssertEqual(status.subscribedChannelGroups.count, 0);
 //        NSArray *expectedPresenceSubscriptions = @[@"a"];
-//        XCTAssertEqualObjects(status.subscribedChannels, expectedPresenceSubscriptions);
+//        XCTAssertEqualObjects([NSSet setWithArray:status.subscribedChannels], [NSSet setWithArray:expectedPresenceSubscriptions]);
         XCTAssertEqual(status.operation, PNSubscribeOperation);
         NSLog(@"timeToken: %@", status.currentTimetoken);
         if (self.invocation.selector == @selector(testSetClientStateOnSubscribedChannelGroup)) {
-            XCTAssertEqualObjects(status.currentTimetoken, @14355768305464885);
+//            XCTAssertEqualObjects(status.currentTimetoken, @14356532752506231);
         } else if (self.invocation.selector == @selector(testSetClientStateOnNotExistingChannelGroup)) {
             XCTAssertEqualObjects(status.currentTimetoken, @14355750743453296);
         }
@@ -63,6 +67,11 @@ static NSString * const kPNChannelGroupTestsName = @"PNClientStateChannelGroupTe
         
     };
     [self PNTest_subscribeToChannelGroups:[self channelGroups] withPresence:YES];
+}
+
+- (void)tearDown {
+    [self performVerifiedRemoveAllChannelsFromGroup:kPNChannelGroupTestsName withAssertions:nil];
+    [super tearDown];
 }
 
 - (void)testSetClientStateOnSubscribedChannelGroup {
@@ -94,7 +103,7 @@ static NSString * const kPNChannelGroupTestsName = @"PNClientStateChannelGroupTe
                             @"test" : @"test"
                             };
     PNWeakify(self);
-    [self.client setState:state forUUID:self.client.uuid onChannelGroup:@"42"
+    [self.client setState:state forUUID:self.client.uuid onChannelGroup:[self nonExistentChannelGroup]
            withCompletion:^(PNClientStateUpdateStatus *status) {
         PNStrongify(self);
         XCTAssertNotNil(status);
@@ -106,6 +115,50 @@ static NSString * const kPNChannelGroupTestsName = @"PNClientStateChannelGroupTe
         // TOOD: there should be a property for this?
 //        XCTAssertEqualObjects(status.data, @"No valid channels specified");
         NSLog(@"Information %@", status.errorData.information);
+        [stateExpectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
+        XCTAssertNil(error);
+    }];
+}
+
+- (void)testStateForUUIDOnSubscribedChannelGroup {
+    PNWeakify(self);
+    XCTestExpectation *stateExpectation = [self expectationWithDescription:@"clientState"];
+    NSDictionary *channels = @{
+                            @"a" : @{
+                                    @"test" : @"test"
+                                    },
+                            @"b" : @{
+                                    @"test" : @"test"
+                                    }
+                            };
+    [self.client stateForUUID:self.client.uuid onChannelGroup:[self channelGroups].firstObject withCompletion:^(PNChannelGroupClientStateResult *result, PNErrorStatus *status) {
+        PNStrongify(self);
+        XCTAssertNil(status);
+        XCTAssertNotNil(result);
+        XCTAssertEqual(result.operation, PNStateForChannelGroupOperation);
+        XCTAssertEqual(result.statusCode, 200);
+        XCTAssertEqualObjects(result.data.channels, channels, @"result.data.channels: %@", result.data.channels);
+        [stateExpectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
+        XCTAssertNil(error);
+    }];
+}
+
+- (void)testStateForUUIDOnNonExistentChannelGroup {
+    PNWeakify(self);
+    XCTestExpectation *stateExpectation = [self expectationWithDescription:@"clientState"];
+    [self.client stateForUUID:self.client.uuid onChannelGroup:[self nonExistentChannelGroup] withCompletion:^(PNChannelGroupClientStateResult *result, PNErrorStatus *status) {
+        PNStrongify(self);
+        XCTAssertNil(result);
+        XCTAssertNotNil(status);
+        XCTAssertTrue(status.isError);
+        XCTAssertEqual(status.category, PNBadRequestCategory);
+        XCTAssertEqual(status.operation, PNStateForChannelGroupOperation);
+        XCTAssertEqual(status.statusCode, 400);
+        XCTAssertEqualObjects(status.errorData.information, @"No valid channels specified");
         [stateExpectation fulfill];
     }];
     [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {

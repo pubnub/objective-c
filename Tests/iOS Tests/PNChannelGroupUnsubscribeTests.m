@@ -73,7 +73,8 @@ static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupUnsubscribeTe
         XCTAssertFalse(status.isError);
         XCTAssertEqual(status.category, PNConnectedCategory);
         XCTAssertEqual(status.subscribedChannels.count, 0);
-        XCTAssertEqualObjects(status.subscribedChannelGroups, expectedChannelGroups);
+        XCTAssertEqualObjects([NSSet setWithArray:status.subscribedChannelGroups],
+                              [NSSet setWithArray:expectedChannelGroups]);
         XCTAssertEqual(status.operation, PNSubscribeOperation);
         NSLog(@"timeToken: %@", status.currentTimetoken);
 //        XCTAssertEqualObjects(status.currentTimetoken, expectedTimeToken);

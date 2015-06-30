@@ -726,7 +726,8 @@ static DDLogLevel ddLogLevel;
     
     // Check whether request potentially has been cancelled prior actual sending to the network or
     // not
-    if (task && ((NSHTTPURLResponse *)task.response).statusCode == 0) {
+    if (task && ((NSHTTPURLResponse *)task.response).statusCode == 0 &&
+        error && error.code == NSURLErrorBadServerResponse) {
         
         isError = YES;
         error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorCancelled

@@ -42,19 +42,21 @@
         XCTAssertEqual(status.category, PNConnectedCategory);
         XCTAssertEqual(status.subscribedChannelGroups.count, 0);
         NSArray *expectedPresenceSubscriptions = @[@"a"];
-        XCTAssertEqualObjects(status.subscribedChannels, expectedPresenceSubscriptions);
+        XCTAssertEqualObjects([NSSet setWithArray:status.subscribedChannels],
+                              [NSSet setWithArray:expectedPresenceSubscriptions]);
         XCTAssertEqual(status.operation, PNSubscribeOperation);
         NSLog(@"timeToken: %@", status.currentTimetoken);
         if (self.invocation.selector == @selector(testCopyConfigurationWithSubscribedChannels)) {
-            XCTAssertEqualObjects(status.currentTimetoken, @14355727758338695);
+            XCTAssertEqualObjects(status.currentTimetoken, @14356469969431090);
         } else if (self.invocation.selector == @selector(testCopyConfigurationWithSubscribedChannelsAndCallbackQueue)) {
-            XCTAssertEqualObjects(status.currentTimetoken, @14355727778778212);
+            XCTAssertEqualObjects(status.currentTimetoken, @14356469989837945);
         }
         XCTAssertEqualObjects(status.currentTimetoken, status.data.timetoken);
         [self.subscribeExpectation fulfill];
         
     };
     [self PNTest_subscribeToChannels:[self subscriptionChannels] withPresence:NO];
+    self.didReceiveStatusAssertions = nil;
 }
 
 - (void)testCreateClientWithBasicConfiguration {

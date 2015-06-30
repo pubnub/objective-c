@@ -25,7 +25,7 @@
 - (void)testTimeToken {
     XCTestExpectation *timeTokenExpectation = [self expectationWithDescription:@"timeToken"];
     [self.client timeWithCompletion:^(PNTimeResult *result, PNErrorStatus *status) {
-        XCTAssertNil(status);
+        XCTAssertNil(status.errorData.information);
         XCTAssertNotNil(result);
         XCTAssertEqual(result.operation, PNTimeOperation);
         XCTAssertEqual(result.statusCode, 200);

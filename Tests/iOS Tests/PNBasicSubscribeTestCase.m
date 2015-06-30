@@ -31,9 +31,25 @@
     }];
 }
 
+- (void)PNTest_subscribeToPresenceChannels:(NSArray *)channels {
+    self.subscribeExpectation = [self expectationWithDescription:@"subscribe"];
+    [self.client subscribeToPresenceChannels:channels];
+    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
+        XCTAssertNil(error);
+    }];
+}
+
 - (void)PNTest_unsubscribeFromChannels:(NSArray *)channels withPresence:(BOOL)shouldObservePresence {
     self.unsubscribeExpectation = [self expectationWithDescription:@"unsubscribe"];
     [self.client unsubscribeFromChannels:channels withPresence:shouldObservePresence];
+    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
+        XCTAssertNil(error);
+    }];
+}
+
+- (void)PNTest_unsubscribeFromPresenceChannels:(NSArray *)channels {
+    self.subscribeExpectation = [self expectationWithDescription:@"subscribe"];
+    [self.client unsubscribeFromPresenceChannels:channels];
     [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
         XCTAssertNil(error);
     }];

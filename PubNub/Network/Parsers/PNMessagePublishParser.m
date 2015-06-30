@@ -52,7 +52,6 @@
             }
         }
         else {
-            
             timeToken = @((unsigned long long)([[NSDate date] timeIntervalSince1970] * 10000000));
         }
         

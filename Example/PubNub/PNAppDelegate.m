@@ -210,8 +210,11 @@
 
 - (void)pubNubSetState {
     
+    __weak __typeof(self) weakSelf = self;
     [self.client setState:@{[self randomString] : @{[self randomString] : [self randomString]}} forUUID:_myConfig.uuid onChannel:_channel1 withCompletion:^(PNClientStateUpdateStatus *status) {
-        [self handleStatus:status];
+        
+        __strong __typeof(self) strongSelf = weakSelf;
+        [strongSelf handleStatus:status];
     }];
 }
 
@@ -322,12 +325,19 @@
 - (void)pubNubCGAdd {
 
     __weak __typeof(self) weakSelf = self;
-    [self.client addChannels:@[_channel1, _channel2] toGroup:_channelGroup1 withCompletion:^(PNAcknowledgmentStatus *status) {
+    [self.client addChannels:@[_channel1, _channel2] toGroup:_channelGroup1
+              withCompletion:^(PNAcknowledgmentStatus *status) {
+        
+        __strong __typeof(self) strongSelf = weakSelf;
+                  
         if (!status.isError) {
+            
             NSLog(@"^^^^CGAdd request succeeded");
-        } else {
+        }
+        else {
+            
             NSLog(@"^^^^CGAdd Subscribe request did not succeed. All subscribe operations will autoretry when possible.");
-            [weakSelf handleStatus:status];
+            [strongSelf handleStatus:status];
         }
     }];
 
@@ -492,9 +502,7 @@
 #pragma mark - Streaming Data didReceiveMessage Listener
 
 - (void)client:(PubNub *)client didReceiveMessage:(PNMessageResult *)message {
-
-    BOOL isSubbed= [self.client isSubscribedOn:@"foo"];
-
+    
     if (message) {
         
         NSLog(@"Received message: %@ on channel %@ at %@", message.data.message,
