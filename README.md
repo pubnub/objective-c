@@ -126,8 +126,27 @@ Across all PubNub SDK client platforms, we are introducing the Result/Status mod
 
 For any PubNub operation you call, you will be returned either a Result, or a Status, but never both at the same time.  A generic example of a history call being made in the Result/Status pattern looks like this:
 
-```
-pubnub.history("myChannel", myResultHandler, myStatusHandler);
+```objc
+[self.client historyForChannel:@"my_channel" start:nil end:nil limit:100
+                withCompletion:^(PNHistoryResult *result, PNErrorStatus *status) {
+ 
+    // Check whether request successfully completed or not.
+    if (!status.isError) {
+ 
+       // Handle downloaded history using: 
+       //   result.data.start - oldest message time stamp in response
+       //   result.data.end - newest message time stamp in response
+       //   result.data.messages - list of messages
+    }
+    // Request processing failed.
+    else {
+ 
+       // Handle message history download error. Check 'category' property to find
+       // out possible issue because of which request did fail.
+       //
+       // Request can be resent using: [status retry];
+    }
+}];
 ```
 
 Where **myResultHandler** is a callback with history results, and **myStatusHandler** is callback for **everything else**. 
