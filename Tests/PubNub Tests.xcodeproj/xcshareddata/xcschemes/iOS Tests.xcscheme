@@ -44,6 +44,9 @@
                <Test
                   Identifier = "PNBasicSubscribeTestCase">
                </Test>
+               <Test
+                  Identifier = "PNClientConfigurationTests">
+               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>

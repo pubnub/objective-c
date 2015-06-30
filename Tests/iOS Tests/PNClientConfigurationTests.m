@@ -56,6 +56,7 @@
         
     };
     [self PNTest_subscribeToChannels:[self subscriptionChannels] withPresence:NO];
+    self.didReceiveStatusAssertions = nil;
 }
 
 - (void)testCreateClientWithBasicConfiguration {
