@@ -64,7 +64,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   JSZVCR:
-    :commit: d11183ad955bf4a1388b323852c43f8b6d3c59f2
+    :commit: 76f408651ebc40e2cabeda2bfdaf95178d1fa83b
     :git: https://github.com/jzucker2/JSZVCR.git
 
 SPEC CHECKSUMS:
