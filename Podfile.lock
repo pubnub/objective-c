@@ -52,12 +52,20 @@ PODS:
     - CocoaLumberjack (= 2.0.0)
 
 DEPENDENCIES:
-  - JSZVCR (~> 0.5)
+  - JSZVCR (from `https://github.com/jzucker2/JSZVCR.git`, branch `fix_concurrency`)
   - PubNub (from `.`)
 
 EXTERNAL SOURCES:
+  JSZVCR:
+    :branch: fix_concurrency
+    :git: https://github.com/jzucker2/JSZVCR.git
   PubNub:
     :path: .
+
+CHECKOUT OPTIONS:
+  JSZVCR:
+    :commit: a2ee00875b60895b3f628dac6eb589bcf08646df
+    :git: https://github.com/jzucker2/JSZVCR.git
 
 SPEC CHECKSUMS:
   AFNetworking: 05edc0ac4c4c8cf57bcf4b84be5b0744b6d8e71e

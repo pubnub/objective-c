@@ -14,7 +14,8 @@ end
 target 'iOS Tests', :exclusive => true do
   platform :ios, "7.0"
   xcodeproj 'Tests/PubNub Tests.xcodeproj'
-  pod "JSZVCR", "~> 0.5"
+  #pod "JSZVCR", "~> 0.5"
+  pod "JSZVCR", :git => "https://github.com/jzucker2/JSZVCR.git", :branch => "fix_concurrency"
   pod "PubNub", :path => "."
 end
 
