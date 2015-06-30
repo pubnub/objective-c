@@ -9,11 +9,13 @@
 		<dict>
 			<key>data</key>
 			<data>
-			WzE0MzU1NzU0MjYxNDE5OTU1XQ==
+			WzEsIlNlbnQiLCIxNDM1NTQ0OTM5Mzk2MjYyMCJd
 			</data>
 			<key>json</key>
 			<array>
-				<integer>14355754261419955</integer>
+				<integer>1</integer>
+				<string>Sent</string>
+				<string>14355449393962620</string>
 			</array>
 		</dict>
 		<key>request</key>
@@ -21,11 +23,11 @@
 			<key>currentRequest</key>
 			<dict>
 				<key>HTTPMethod</key>
-				<string>GET</string>
+				<string>POST</string>
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/time/0?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/02290046-2F36-43DD-97F0-2F51D925451A/0?store=0&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -34,8 +36,14 @@
 					<string>gzip, deflate</string>
 					<key>Accept-Language</key>
 					<string>en;q=1, fr;q=0.9, de;q=0.8, zh-Hans;q=0.7, zh-Hant;q=0.6, ja;q=0.5</string>
+					<key>Content-Encoding</key>
+					<string>gzip</string>
+					<key>Content-Length</key>
+					<string>122</string>
+					<key>Content-Type</key>
+					<string>application/json;charset=UTF-8</string>
 					<key>User-Agent</key>
-					<string>(null)/(null) (iPhone Simulator; iOS 8.3; Scale/2.00)</string>
+					<string>(null)/(null) (iPhone Simulator; iOS 8.1; Scale/2.00)</string>
 				</dict>
 				<key>allowsCellularAccess</key>
 				<true/>
@@ -44,18 +52,31 @@
 			</dict>
 			<key>originalRequest</key>
 			<dict>
+				<key>HTTPBody</key>
+				<data>
+				H4sIAAAAAAAAAx3MQQqDMBBG4auEfx2Eihuz6jUKQpno
+				mAY0I8lkIeLd1W4/Hu/Alr60FbgDnqbAcL1FkZomOPiY
+				gpcUGorzDAtaOOvtH6kmiJpdaja8UlxK88Zpn5noj/Pd
+				DFAuOgB/pXFl84Lr2vMCJChbY3MAAAA=
+				</data>
 				<key>HTTPMethod</key>
-				<string>GET</string>
+				<string>POST</string>
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/time/0?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/02290046-2F36-43DD-97F0-2F51D925451A/0?store=0&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept-Language</key>
 					<string>en;q=1, fr;q=0.9, de;q=0.8, zh-Hans;q=0.7, zh-Hant;q=0.6, ja;q=0.5</string>
+					<key>Content-Encoding</key>
+					<string>gzip</string>
+					<key>Content-Length</key>
+					<string>122</string>
+					<key>Content-Type</key>
+					<string>application/json;charset=UTF-8</string>
 					<key>User-Agent</key>
-					<string>(null)/(null) (iPhone Simulator; iOS 8.3; Scale/2.00)</string>
+					<string>(null)/(null) (iPhone Simulator; iOS 8.1; Scale/2.00)</string>
 				</dict>
 				<key>allowsCellularAccess</key>
 				<true/>
@@ -70,7 +91,7 @@
 				<key>MIMEType</key>
 				<string>text/javascript</string>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/time/0?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/02290046-2F36-43DD-97F0-2F51D925451A/0?store=0&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHeaderFields</key>
 				<dict>
 					<key>Access-Control-Allow-Methods</key>
@@ -82,14 +103,14 @@
 					<key>Connection</key>
 					<string>keep-alive</string>
 					<key>Content-Length</key>
-					<string>19</string>
+					<string>30</string>
 					<key>Content-Type</key>
 					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
-					<string>Mon, 29 Jun 2015 10:57:06 GMT</string>
+					<string>Mon, 29 Jun 2015 02:28:59 GMT</string>
 				</dict>
 				<key>expectedContentLength</key>
-				<integer>19</integer>
+				<integer>30</integer>
 				<key>statusCode</key>
 				<integer>200</integer>
 				<key>suggestedFileName</key>
@@ -106,13 +127,11 @@
 		<dict>
 			<key>data</key>
 			<data>
-			WzEsIlNlbnQiLCIxNDM1NTc1NDI2Mzc0ODcyMSJd
+			WzE0MzU1NDQ5MzkzODM0Nzc4XQ==
 			</data>
 			<key>json</key>
 			<array>
-				<integer>1</integer>
-				<string>Sent</string>
-				<string>14355754263748721</string>
+				<integer>14355449393834778</integer>
 			</array>
 		</dict>
 		<key>request</key>
@@ -120,11 +139,11 @@
 			<key>currentRequest</key>
 			<dict>
 				<key>HTTPMethod</key>
-				<string>POST</string>
+				<string>GET</string>
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/02290046-2F36-43DD-97F0-2F51D925451A/0?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;store=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/time/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -133,14 +152,8 @@
 					<string>gzip, deflate</string>
 					<key>Accept-Language</key>
 					<string>en;q=1, fr;q=0.9, de;q=0.8, zh-Hans;q=0.7, zh-Hant;q=0.6, ja;q=0.5</string>
-					<key>Content-Encoding</key>
-					<string>gzip</string>
-					<key>Content-Length</key>
-					<string>121</string>
-					<key>Content-Type</key>
-					<string>application/json;charset=UTF-8</string>
 					<key>User-Agent</key>
-					<string>(null)/(null) (iPhone Simulator; iOS 8.3; Scale/2.00)</string>
+					<string>(null)/(null) (iPhone Simulator; iOS 8.1; Scale/2.00)</string>
 				</dict>
 				<key>allowsCellularAccess</key>
 				<true/>
@@ -149,31 +162,18 @@
 			</dict>
 			<key>originalRequest</key>
 			<dict>
-				<key>HTTPBody</key>
-				<data>
-				H4sIAAAAAAAAAyWMwQqDMBAFfyW8swgtvZhTf6MglI2u
-				MaBZSTYHEf/diNeZYQ5s8S86c4JFD+WsPdDclLYMe4AW
-				TlrlT4rxomaXkgyvFJbcfmvpaPQM2zXIUuJYSxeidxJ9
-				S2GacD6zYWXzgv28zwsz3T1rcwAAAA==
-				</data>
 				<key>HTTPMethod</key>
-				<string>POST</string>
+				<string>GET</string>
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/02290046-2F36-43DD-97F0-2F51D925451A/0?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;store=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/time/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept-Language</key>
 					<string>en;q=1, fr;q=0.9, de;q=0.8, zh-Hans;q=0.7, zh-Hant;q=0.6, ja;q=0.5</string>
-					<key>Content-Encoding</key>
-					<string>gzip</string>
-					<key>Content-Length</key>
-					<string>121</string>
-					<key>Content-Type</key>
-					<string>application/json;charset=UTF-8</string>
 					<key>User-Agent</key>
-					<string>(null)/(null) (iPhone Simulator; iOS 8.3; Scale/2.00)</string>
+					<string>(null)/(null) (iPhone Simulator; iOS 8.1; Scale/2.00)</string>
 				</dict>
 				<key>allowsCellularAccess</key>
 				<true/>
@@ -188,7 +188,7 @@
 				<key>MIMEType</key>
 				<string>text/javascript</string>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/02290046-2F36-43DD-97F0-2F51D925451A/0?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;store=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/time/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHeaderFields</key>
 				<dict>
 					<key>Access-Control-Allow-Methods</key>
@@ -200,14 +200,14 @@
 					<key>Connection</key>
 					<string>keep-alive</string>
 					<key>Content-Length</key>
-					<string>30</string>
+					<string>19</string>
 					<key>Content-Type</key>
 					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
-					<string>Mon, 29 Jun 2015 10:57:06 GMT</string>
+					<string>Mon, 29 Jun 2015 02:28:59 GMT</string>
 				</dict>
 				<key>expectedContentLength</key>
-				<integer>30</integer>
+				<integer>19</integer>
 				<key>statusCode</key>
 				<integer>200</integer>
 				<key>suggestedFileName</key>
