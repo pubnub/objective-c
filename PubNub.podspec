@@ -29,12 +29,12 @@ Pod::Spec.new do |s|
   s.private_header_files = [
     'PubNub/Core/*Private.h',
     'PubNub/Data/*Private.h',
-    'PubNub/Data/Managers/**/*',
+    'PubNub/Data/Managers/**/*.h',
     'PubNub/Misc/PNPrivateStructures.h',
     'PubNub/Misc/Helpers/*.h',
     'PubNub/Misc/Logger/PNLogFileManager.h',
     'PubNub/Misc/Protocols/PNParser.h',
-    'PubNub/Network/**/*',
+    'PubNub/Network/**/*.h',
   ]
 
   s.library   = 'z'
