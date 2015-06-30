@@ -52,8 +52,6 @@
             }
         }
         else {
-            
-            NSLog(@"\n=====================Message publish response: %@\n=====================\n", response);
             timeToken = @((unsigned long long)([[NSDate date] timeIntervalSince1970] * 10000000));
         }
         
