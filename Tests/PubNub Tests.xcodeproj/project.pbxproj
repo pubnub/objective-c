@@ -26,6 +26,7 @@
 		96F5198E1B39C6B800053FB7 /* PNPublishWithMobilePayloadTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 96F5198D1B39C6B800053FB7 /* PNPublishWithMobilePayloadTests.bundle */; };
 		96F519911B39CB1E00053FB7 /* NSString+PNTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96F519901B39CB1E00053FB7 /* NSString+PNTest.m */; };
 		96F519931B3B508000053FB7 /* PNPublishSizeOfMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 96F519921B3B508000053FB7 /* PNPublishSizeOfMessage.m */; };
+		976E8BD21B427DAD00C6DA3C /* PNHeartbeatTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 976E8BD11B427DAD00C6DA3C /* PNHeartbeatTests.m */; };
 		97A861FF1B41036B00C07193 /* PNChannelGroupUnsubscribeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 97A861FE1B41036B00C07193 /* PNChannelGroupUnsubscribeTests.m */; };
 		97A862011B41063200C07193 /* PNChannelGroupUnsubscribeTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 97A862001B41063200C07193 /* PNChannelGroupUnsubscribeTests.bundle */; };
 		97A862031B410CB700C07193 /* PNTimeTokenTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 97A862021B410CB700C07193 /* PNTimeTokenTests.m */; };
@@ -70,6 +71,7 @@
 		96F5198F1B39CB1E00053FB7 /* NSString+PNTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+PNTest.h"; path = "iOS Tests/NSString+PNTest.h"; sourceTree = "<group>"; };
 		96F519901B39CB1E00053FB7 /* NSString+PNTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+PNTest.m"; path = "iOS Tests/NSString+PNTest.m"; sourceTree = "<group>"; };
 		96F519921B3B508000053FB7 /* PNPublishSizeOfMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNPublishSizeOfMessage.m; sourceTree = "<group>"; };
+		976E8BD11B427DAD00C6DA3C /* PNHeartbeatTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNHeartbeatTests.m; sourceTree = "<group>"; };
 		97A861FE1B41036B00C07193 /* PNChannelGroupUnsubscribeTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannelGroupUnsubscribeTests.m; sourceTree = "<group>"; };
 		97A862001B41063200C07193 /* PNChannelGroupUnsubscribeTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNChannelGroupUnsubscribeTests.bundle; sourceTree = "<group>"; };
 		97A862021B410CB700C07193 /* PNTimeTokenTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNTimeTokenTests.m; sourceTree = "<group>"; };
@@ -150,6 +152,7 @@
 				96F519921B3B508000053FB7 /* PNPublishSizeOfMessage.m */,
 				1721D3B51B39F57D0018CF00 /* PNHistoryTests.m */,
 				97A8620B1B41448100C07193 /* PNClientConfigurationTests.m */,
+				976E8BD11B427DAD00C6DA3C /* PNHeartbeatTests.m */,
 				178251201B30AAE6006BC234 /* Base Test Classes */,
 				51F7AAC11B27AD7400BEDA1F /* Fixtures */,
 				519C32801B20C11500FAC283 /* Supporting Files */,
@@ -348,6 +351,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				96F519851B3869A900053FB7 /* PNPublishCompressedTests.m in Sources */,
+				976E8BD21B427DAD00C6DA3C /* PNHeartbeatTests.m in Sources */,
 				97FA41F31B2FF518003B9B57 /* PNPublishTests.m in Sources */,
 				1736E1A41B30F2C00077B2E7 /* PNChannelGroupTests.m in Sources */,
 				96F519931B3B508000053FB7 /* PNPublishSizeOfMessage.m in Sources */,
