@@ -1,9 +1,6 @@
 source 'https://github.com/CocoaPods/Specs.git'
 workspace 'PubNub.xcworkspace'
 xcodeproj 'Example/PubNub.xcodeproj'
-use_frameworks!
-
-plugin 'slather'
 
 target 'PubNub_Example', :exclusive => true do
   platform :ios, '7.0'
@@ -14,6 +11,7 @@ end
 target 'iOS Tests', :exclusive => true do
   platform :ios, "7.0"
   xcodeproj 'Tests/PubNub Tests.xcodeproj'
+  plugin 'slather'
   pod "JSZVCR", "~> 0.5"
   pod "PubNub", :path => "."
 end
