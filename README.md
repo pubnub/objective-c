@@ -11,7 +11,7 @@
   - [Method Names and Overall Operation have changed](#method-names-and-overall-operation-have-changed)
   - [Removed support for iOS 6 and earlier](#removed-support-for-ios-6-and-earlier)
   - [Removed support for JSONKit](#removed-support-for-jsonkit)
-  - [Removed support for blocking, syncronous calls (all calls are now async)](#removed-support-for-blocking-syncronous-calls-all-calls-are-now-async)
+  - [Removed support for blocking, synchronous calls (all calls are now async)](#removed-support-for-blocking-synchronous-calls-all-calls-are-now-async)
   - [Removed support for Singleton, Delegate, Observer, Notifications response patterns](#removed-support-for-singleton-delegate-observer-notifications-response-patterns)
   - [New Configuration Class](#new-configuration-class)
   - [New Logger and Logging Options](#new-logger-and-logging-options)
@@ -34,7 +34,7 @@
 * Removed support for JSONKit
 * Removed custom connection, request, logging, and reachability logic, replacing with NSURLSession, DDLog, and AFNetworking libraries
 * Simplified serialization/deserialization threading logic
-* Removed support for blocking, syncronous calls (all calls are now async)
+* Removed support for blocking, synchronous calls (all calls are now async)
 * Simplified usability by enforcing completion block pattern -- client no longer supports Singleton, Delegate, Observer, Notifications response patterns
 * Consolidated instance method namesv
 
@@ -61,9 +61,9 @@ PubNub 4.0 for iOS supports iOS 7+. If you regard this as an issue, please conta
 
 This should only be an issue for you if you are supporting very old iOS versions. If you regard this as an issue, please contact us at support@pubnub.com.
 
-### Removed support for blocking, syncronous calls (all calls are now async)
+### Removed support for blocking, synchronous calls (all calls are now async)
 
-In the 3.x version of the client, the developer had the option to call a method blocking, or asyncronously. In the new version, asyncronously is the only option. Be sure that any blocking-dependent code is refactored to take the new 100% async behavior into account.
+In the 3.x version of the client, the developer had the option to call a method blocking, or asynchronously. In the new version, asynchronously is the only option. Be sure that any blocking-dependent code is refactored to take the new 100% async behavior into account.
 
 ### Removed support for Singleton, Delegate, Observer, Notifications response patterns
 
