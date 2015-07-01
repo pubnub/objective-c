@@ -18,7 +18,7 @@ static NSString * const kPNLibraryVersion = @"4.0.2";
 
 // Stores information about SDK codebase
 static NSString * const kPNBranchName = @"master";
-static NSString * const kPNCommit = @"bb6a0016c4ec61a7815da5ca00bde6860d92a56e";
+static NSString * const kPNCommit = @"9fd27ee6050eaead672e21cbdf56d2789357d403";
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 static NSString * const kPNClientName = @"ObjC-iOS";
