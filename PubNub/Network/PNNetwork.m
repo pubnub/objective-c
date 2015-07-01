@@ -684,10 +684,12 @@ static DDLogLevel ddLogLevel;
     __weak __typeof(self) weakSelf = self;
     [self parseData:responseObject withParser:[self parserForOperation:operation]
          completion:^(NSDictionary *parsedData, BOOL parseError) {
-
+             #pragma clang diagnostic push
+             #pragma clang diagnostic ignored "-Wreceiver-is-weak"
              [weakSelf handleParsedData:parsedData loadedWithTask:task forOperation:operation
                           parsedAsError:parseError processingError:task.error
                         completionBlock:[block copy]];
+             #pragma clang diagnostic pop
          }];
 }
 
@@ -708,7 +710,7 @@ static DDLogLevel ddLogLevel;
                                                            options:(NSJSONReadingOptions)0 error:NULL];
         }
         [self parseData:errorDetails withParser:[PNErrorParser class]
-             completion:^(NSDictionary *parsedData, BOOL parseError) {
+             completion:^(NSDictionary *parsedData, __unused BOOL parseError) {
 
                  [self handleParsedData:parsedData loadedWithTask:task forOperation:operation
                           parsedAsError:YES processingError:(error?: task.error)

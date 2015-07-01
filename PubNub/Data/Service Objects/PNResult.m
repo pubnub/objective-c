@@ -104,15 +104,17 @@
 
 #pragma mark - Misc
 
-- (NSMethodSignature *)methodSignatureForSelector:(SEL)sel {
+- (NSMethodSignature *)methodSignatureForSelector:(SEL)__unused selector {
     
     return [[self class] instanceMethodSignatureForSelector:@selector(doNothing)];
 }
 
-- (void)forwardInvocation:(NSInvocation *)inv {
+- (void)forwardInvocation:(NSInvocation *)__unused invocation {
+    
 }
 
 - (void)doNothing {
+    
 }
 
 - (NSDictionary *)dictionaryRepresentation {

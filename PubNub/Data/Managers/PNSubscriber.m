@@ -794,7 +794,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         
         self.lastTimeToken = @(0);
         self.currentTimeToken = @(0);
-        [self subscribe:YES withState:nil completion:^(PNSubscribeStatus *status) {
+        [self subscribe:YES withState:nil completion:^(__unused PNSubscribeStatus *status) {
             
             if (block) {
                 
@@ -1119,6 +1119,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     // it and probably whole client instance has been deallocated.
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wreceiver-is-weak"
+    #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
     [self.client.listenersManager notifyMessage:data];
     if (status) {
         

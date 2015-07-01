@@ -32,7 +32,7 @@ typedef NS_OPTIONS(NSUInteger, PNLogLevel){
     PNSilentLogLevel = (~(NSUIntegerMax >> 1)),
     
     /**
-     @brief  \b PNLog level which allow to print out client information data.
+     @brief      \b PNLog level which allow to print out client information data.
      @discussion Log events like: transition between foreground/background, configuration 
                  modification
      
