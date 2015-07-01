@@ -39,7 +39,7 @@
 * Consolidated instance method namesv
 
 ## Setup and Hello World
-To setup and get started immediately with a Hello World demo, check out our (offical docs page)[http://www.pubnub.com/docs/ios-objective-c/pubnub-objective-c-sdk-v4].
+To setup and get started immediately with a Hello World demo, check out our [offical docs page](http://www.pubnub.com/docs/ios-objective-c/pubnub-objective-c-sdk-v4).
 
 ## Migrating from 3.x
 
@@ -191,9 +191,9 @@ With PubNub, operations can be grouped into two groups: Streamed (Subscribed Mes
 
 Streamed operation method calls return Results and Statuses via listeners. For example:
 
-1. [Calling a subscribe operation](Example/PubNub/PNAppDelegate.m#L260) will return Result objects (received messages) to the (didReceiveMessage listener)[Example/PubNub/PNAppDelegate.m#L504] and Status objects  (such as PAM errors, Connect, Disconnect state changes) to the (didReceiveStatus listener)[Example/PubNub/PNAppDelegate.m#L533]
+1. (Calling a subscribe operation)[Example/PubNub/PNAppDelegate.m#L260] will return Result objects (received messages) to the (didReceiveMessage listener)[Example/PubNub/PNAppDelegate.m#L504] and Status objects  (such as PAM errors, Connect, Disconnect state changes) to the (didReceiveStatus listener)[Example/PubNub/PNAppDelegate.m#L533]
 
-2. [Calling a presence operation](Example/PubNub/PNAppDelegate.m#L250) will return Result objects (Such as Join, Leave Presence Events) to the (didReceivePresenceEvents listener)[Example/PubNub/PNAppDelegate.m#L513] and Status objects to the (didReceiveStatus listener)[Example/PubNub/PNAppDelegate.m#L533]
+2. (Calling a presence operation)[Example/PubNub/PNAppDelegate.m#L250] will return Result objects (Such as Join, Leave Presence Events) to the (didReceivePresenceEvents listener)[Example/PubNub/PNAppDelegate.m#L513] and Status objects to the (didReceiveStatus listener)[Example/PubNub/PNAppDelegate.m#L533]
 
 Non-Streamed operation method calls use completion blocks which return either a result or status object. An example of this can be seen in the [history call example](Example/PubNub/PNAppDelegate.m#L432).
 
