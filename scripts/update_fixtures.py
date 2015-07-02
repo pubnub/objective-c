@@ -64,17 +64,16 @@ class Recording(object):
 	def update_specific_request(self, request, sdk_version):
 		return self.replace_sdk_version_in_URL(request['URL'], sdk_version)
 	def updated_requests(self, requests, sdk_version):
-		updated_requests = {}
 		# pnsdk=PubNub-ObjC-iOS%2F4.0
 		if 'currentRequest' in requests:
 			updated_request = self.update_specific_request(requests['currentRequest'], sdk_version)
 			# print updatedRequest
-			updated_requests['currentRequest']['URL'] = updated_request
+			requests['currentRequest']['URL'] = updated_request
 		if 'originalRequest' in requests:
 			updated_request = self.update_specific_request(requests['originalRequest'], sdk_version)
 			# print updatedRequest
-			updated_requests['originalRequest']['URL'] = updated_request
-		return updated_requests
+			requests['originalRequest']['URL'] = updated_request
+		return requests
 	def replace_requests(self, sdk_version):
 		original_requests = self.get_requests()
 		updated_requests = self.updated_requests(original_requests, sdk_version)
