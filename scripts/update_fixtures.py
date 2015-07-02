@@ -62,8 +62,7 @@ class Recording(object):
 		URLString = urlparse.urlunparse(urlparse.ParseResult(url_components.scheme, url_components.netloc, url_components.path, url_components.params, final_query_string, url_components.fragment))
 		return URLString
 	def update_specific_request(self, request, sdk_version):
-		self.replace_sdk_version_in_URL(request['URL'], sdk_version)
-		return request
+		return self.replace_sdk_version_in_URL(request['URL'], sdk_version)
 	def updated_requests(self, requests, sdk_version):
 		updated_requests = {}
 		# pnsdk=PubNub-ObjC-iOS%2F4.0
