@@ -7,98 +7,97 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1721D3B61B39F57D0018CF00 /* PNHistoryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1721D3B51B39F57D0018CF00 /* PNHistoryTests.m */; };
-		172EC56C1B39F7E3002FF303 /* PNHistoryTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 172EC56B1B39F7E3002FF303 /* PNHistoryTests.bundle */; };
-		1736E1A41B30F2C00077B2E7 /* PNChannelGroupTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1736E1A31B30F2C00077B2E7 /* PNChannelGroupTests.m */; };
-		1736E1A81B30F5E00077B2E7 /* PNChannelGroupTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 1736E1A71B30F5E00077B2E7 /* PNChannelGroupTests.bundle */; };
-		177481501B30A82600544130 /* PNSubscribeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1774814F1B30A82600544130 /* PNSubscribeTests.m */; };
-		1782511F1B30AAE3006BC234 /* PNBasicClientTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 1782511E1B30AAE3006BC234 /* PNBasicClientTestCase.m */; };
-		178251231B30AE3D006BC234 /* PNBasicSubscribeTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 178251221B30AE3D006BC234 /* PNBasicSubscribeTestCase.m */; };
-		178251251B30BF29006BC234 /* PNUnsubscribeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 178251241B30BF29006BC234 /* PNUnsubscribeTests.m */; };
-		178251271B30D5F7006BC234 /* PNUnsubscribeTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 178251261B30D5F7006BC234 /* PNUnsubscribeTests.bundle */; };
-		51F7AAC91B28B3E200BEDA1F /* PNSubscribeTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 51F7AAC81B28B3E200BEDA1F /* PNSubscribeTests.bundle */; };
-		9604EE9F1B346CD9009EB15C /* PNPublishWithHistoryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9604EE9E1B346CD9009EB15C /* PNPublishWithHistoryTests.m */; };
-		9604EEA11B34953B009EB15C /* PNPublishWithHistoryTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 9604EEA01B34953A009EB15C /* PNPublishWithHistoryTests.bundle */; };
-		962C062B1B41EE4E00922282 /* NSDictionary+PNTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 962C062A1B41EE4E00922282 /* NSDictionary+PNTest.m */; };
-		96D55D7E1B3D97BE00B6680F /* PNPresenceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 96D55D7D1B3D97BE00B6680F /* PNPresenceTests.m */; };
-		96E691CB1B409B37003D4D21 /* PNPresenceTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 96E691CA1B409B37003D4D21 /* PNPresenceTests.bundle */; };
-		96F519851B3869A900053FB7 /* PNPublishCompressedTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 96F519841B3869A900053FB7 /* PNPublishCompressedTests.m */; };
-		96F519871B3878AB00053FB7 /* PNPublishCompressedTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 96F519861B3878AB00053FB7 /* PNPublishCompressedTests.bundle */; };
-		96F519891B387F4E00053FB7 /* PNPublishWithMobilePayloadTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 96F519881B387F4E00053FB7 /* PNPublishWithMobilePayloadTests.m */; };
-		96F5198E1B39C6B800053FB7 /* PNPublishWithMobilePayloadTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 96F5198D1B39C6B800053FB7 /* PNPublishWithMobilePayloadTests.bundle */; };
-		96F519911B39CB1E00053FB7 /* NSString+PNTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96F519901B39CB1E00053FB7 /* NSString+PNTest.m */; };
-		96F519931B3B508000053FB7 /* PNPublishSizeOfMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 96F519921B3B508000053FB7 /* PNPublishSizeOfMessage.m */; };
-		976E8BD21B427DAD00C6DA3C /* PNHeartbeatTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 976E8BD11B427DAD00C6DA3C /* PNHeartbeatTests.m */; };
-		976E8BD61B42830900C6DA3C /* PNHeartbeatTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 976E8BD51B42830900C6DA3C /* PNHeartbeatTests.bundle */; };
-		976E8BD81B4293D100C6DA3C /* PNSubscribeToPresenceChannelsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 976E8BD71B4293D100C6DA3C /* PNSubscribeToPresenceChannelsTests.m */; };
-		976E8BDA1B4295FD00C6DA3C /* PNSubscribeToPresenceChannelsTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 976E8BD91B4295FD00C6DA3C /* PNSubscribeToPresenceChannelsTests.bundle */; };
-		97789ED41B432AD500457BE6 /* PNClientStateChannelTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 97789ED31B432AD500457BE6 /* PNClientStateChannelTests.bundle */; };
-		97A861FF1B41036B00C07193 /* PNChannelGroupUnsubscribeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 97A861FE1B41036B00C07193 /* PNChannelGroupUnsubscribeTests.m */; };
-		97A862011B41063200C07193 /* PNChannelGroupUnsubscribeTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 97A862001B41063200C07193 /* PNChannelGroupUnsubscribeTests.bundle */; };
-		97A862031B410CB700C07193 /* PNTimeTokenTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 97A862021B410CB700C07193 /* PNTimeTokenTests.m */; };
-		97A862051B410DC100C07193 /* PNTimeTokenTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 97A862041B410DC100C07193 /* PNTimeTokenTests.bundle */; };
-		97A8620C1B41448100C07193 /* PNClientConfigurationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 97A8620B1B41448100C07193 /* PNClientConfigurationTests.m */; };
-		97A8620E1B4146B200C07193 /* PNClientConfigurationTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 97A8620D1B4146B200C07193 /* PNClientConfigurationTests.bundle */; };
-		97A862121B415A5B00C07193 /* PNClientStateChannelTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 97A862111B415A5B00C07193 /* PNClientStateChannelTests.m */; };
-		97A862161B415C1B00C07193 /* PNClientStateChannelGroupTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 97A862151B415C1B00C07193 /* PNClientStateChannelGroupTests.m */; };
-		97A862181B4161F700C07193 /* PNClientStateChannelGroupTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 97A862171B4161F700C07193 /* PNClientStateChannelGroupTests.bundle */; };
-		97ACC3731B40F3360030D5CB /* PNChannelGroupSubscribeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 97ACC3721B40F3360030D5CB /* PNChannelGroupSubscribeTests.m */; };
-		97ACC3751B40FAB80030D5CB /* PNChannelGroupSubscribeTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 97ACC3741B40FAB80030D5CB /* PNChannelGroupSubscribeTests.bundle */; };
-		97FA41F31B2FF518003B9B57 /* PNPublishTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 97FA41F21B2FF518003B9B57 /* PNPublishTests.m */; };
-		97FA41F51B2FFB61003B9B57 /* PNPublishTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 97FA41F41B2FFB61003B9B57 /* PNPublishTests.bundle */; };
+		171F4DA51B45B8D2006ACB7E /* PNChannelGroupSubscribeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 171F4D931B45B8D2006ACB7E /* PNChannelGroupSubscribeTests.m */; };
+		171F4DA61B45B8D2006ACB7E /* PNChannelGroupTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 171F4D941B45B8D2006ACB7E /* PNChannelGroupTests.m */; };
+		171F4DA71B45B8D2006ACB7E /* PNChannelGroupUnsubscribeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 171F4D951B45B8D2006ACB7E /* PNChannelGroupUnsubscribeTests.m */; };
+		171F4DA81B45B8D2006ACB7E /* PNClientConfigurationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 171F4D961B45B8D2006ACB7E /* PNClientConfigurationTests.m */; };
+		171F4DA91B45B8D2006ACB7E /* PNClientStateChannelGroupTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 171F4D971B45B8D2006ACB7E /* PNClientStateChannelGroupTests.m */; };
+		171F4DAA1B45B8D2006ACB7E /* PNClientStateChannelTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 171F4D981B45B8D2006ACB7E /* PNClientStateChannelTests.m */; };
+		171F4DAB1B45B8D2006ACB7E /* PNHeartbeatTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 171F4D991B45B8D2006ACB7E /* PNHeartbeatTests.m */; };
+		171F4DAC1B45B8D2006ACB7E /* PNHistoryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 171F4D9A1B45B8D2006ACB7E /* PNHistoryTests.m */; };
+		171F4DAD1B45B8D2006ACB7E /* PNPresenceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 171F4D9B1B45B8D2006ACB7E /* PNPresenceTests.m */; };
+		171F4DAE1B45B8D2006ACB7E /* PNPublishCompressedTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 171F4D9C1B45B8D2006ACB7E /* PNPublishCompressedTests.m */; };
+		171F4DAF1B45B8D2006ACB7E /* PNPublishSizeOfMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 171F4D9D1B45B8D2006ACB7E /* PNPublishSizeOfMessage.m */; };
+		171F4DB01B45B8D2006ACB7E /* PNPublishTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 171F4D9E1B45B8D2006ACB7E /* PNPublishTests.m */; };
+		171F4DB11B45B8D2006ACB7E /* PNPublishWithHistoryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 171F4D9F1B45B8D2006ACB7E /* PNPublishWithHistoryTests.m */; };
+		171F4DB21B45B8D2006ACB7E /* PNPublishWithMobilePayloadTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 171F4DA01B45B8D2006ACB7E /* PNPublishWithMobilePayloadTests.m */; };
+		171F4DB31B45B8D2006ACB7E /* PNSubscribeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 171F4DA11B45B8D2006ACB7E /* PNSubscribeTests.m */; };
+		171F4DB41B45B8D2006ACB7E /* PNSubscribeToPresenceChannelsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 171F4DA21B45B8D2006ACB7E /* PNSubscribeToPresenceChannelsTests.m */; };
+		171F4DB51B45B8D2006ACB7E /* PNTimeTokenTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 171F4DA31B45B8D2006ACB7E /* PNTimeTokenTests.m */; };
+		171F4DB61B45B8D2006ACB7E /* PNUnsubscribeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 171F4DA41B45B8D2006ACB7E /* PNUnsubscribeTests.m */; };
+		171F4DC01B45B8DC006ACB7E /* NSDictionary+PNTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 171F4DB91B45B8DC006ACB7E /* NSDictionary+PNTest.m */; };
+		171F4DC11B45B8DC006ACB7E /* NSString+PNTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 171F4DBB1B45B8DC006ACB7E /* NSString+PNTest.m */; };
+		171F4DC21B45B8DC006ACB7E /* PNBasicClientTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 171F4DBD1B45B8DC006ACB7E /* PNBasicClientTestCase.m */; };
+		171F4DC31B45B8DC006ACB7E /* PNBasicSubscribeTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 171F4DBF1B45B8DC006ACB7E /* PNBasicSubscribeTestCase.m */; };
+		171F4DD61B45B8E5006ACB7E /* PNChannelGroupSubscribeTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 171F4DC51B45B8E5006ACB7E /* PNChannelGroupSubscribeTests.bundle */; };
+		171F4DD71B45B8E5006ACB7E /* PNChannelGroupTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 171F4DC61B45B8E5006ACB7E /* PNChannelGroupTests.bundle */; };
+		171F4DD81B45B8E5006ACB7E /* PNChannelGroupUnsubscribeTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 171F4DC71B45B8E5006ACB7E /* PNChannelGroupUnsubscribeTests.bundle */; };
+		171F4DD91B45B8E5006ACB7E /* PNClientConfigurationTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 171F4DC81B45B8E5006ACB7E /* PNClientConfigurationTests.bundle */; };
+		171F4DDA1B45B8E5006ACB7E /* PNClientStateChannelGroupTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 171F4DC91B45B8E5006ACB7E /* PNClientStateChannelGroupTests.bundle */; };
+		171F4DDB1B45B8E5006ACB7E /* PNClientStateChannelTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 171F4DCA1B45B8E5006ACB7E /* PNClientStateChannelTests.bundle */; };
+		171F4DDC1B45B8E5006ACB7E /* PNHeartbeatTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 171F4DCB1B45B8E5006ACB7E /* PNHeartbeatTests.bundle */; };
+		171F4DDD1B45B8E5006ACB7E /* PNHistoryTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 171F4DCC1B45B8E5006ACB7E /* PNHistoryTests.bundle */; };
+		171F4DDE1B45B8E5006ACB7E /* PNPresenceTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 171F4DCD1B45B8E5006ACB7E /* PNPresenceTests.bundle */; };
+		171F4DDF1B45B8E5006ACB7E /* PNPublishCompressedTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 171F4DCE1B45B8E5006ACB7E /* PNPublishCompressedTests.bundle */; };
+		171F4DE01B45B8E5006ACB7E /* PNPublishTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 171F4DCF1B45B8E5006ACB7E /* PNPublishTests.bundle */; };
+		171F4DE11B45B8E5006ACB7E /* PNPublishWithHistoryTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 171F4DD01B45B8E5006ACB7E /* PNPublishWithHistoryTests.bundle */; };
+		171F4DE21B45B8E5006ACB7E /* PNPublishWithMobilePayloadTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 171F4DD11B45B8E5006ACB7E /* PNPublishWithMobilePayloadTests.bundle */; };
+		171F4DE31B45B8E5006ACB7E /* PNSubscribeTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 171F4DD21B45B8E5006ACB7E /* PNSubscribeTests.bundle */; };
+		171F4DE41B45B8E5006ACB7E /* PNSubscribeToPresenceChannelsTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 171F4DD31B45B8E5006ACB7E /* PNSubscribeToPresenceChannelsTests.bundle */; };
+		171F4DE51B45B8E5006ACB7E /* PNTimeTokenTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 171F4DD41B45B8E5006ACB7E /* PNTimeTokenTests.bundle */; };
+		171F4DE61B45B8E5006ACB7E /* PNUnsubscribeTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 171F4DD51B45B8E5006ACB7E /* PNUnsubscribeTests.bundle */; };
 		F40DA5990F903449C2FF7B6F /* libPods-iOS Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 42ED7FB4F04D04B60E014BE0 /* libPods-iOS Tests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1721D3B51B39F57D0018CF00 /* PNHistoryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNHistoryTests.m; sourceTree = "<group>"; };
-		172EC56B1B39F7E3002FF303 /* PNHistoryTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNHistoryTests.bundle; sourceTree = "<group>"; };
-		1736E1A31B30F2C00077B2E7 /* PNChannelGroupTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannelGroupTests.m; sourceTree = "<group>"; };
-		1736E1A71B30F5E00077B2E7 /* PNChannelGroupTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNChannelGroupTests.bundle; sourceTree = "<group>"; };
-		1774814F1B30A82600544130 /* PNSubscribeTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNSubscribeTests.m; sourceTree = "<group>"; };
-		1782511D1B30AAE3006BC234 /* PNBasicClientTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNBasicClientTestCase.h; sourceTree = "<group>"; };
-		1782511E1B30AAE3006BC234 /* PNBasicClientTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNBasicClientTestCase.m; sourceTree = "<group>"; };
-		178251211B30AE3D006BC234 /* PNBasicSubscribeTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNBasicSubscribeTestCase.h; sourceTree = "<group>"; };
-		178251221B30AE3D006BC234 /* PNBasicSubscribeTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNBasicSubscribeTestCase.m; sourceTree = "<group>"; };
-		178251241B30BF29006BC234 /* PNUnsubscribeTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNUnsubscribeTests.m; sourceTree = "<group>"; };
-		178251261B30D5F7006BC234 /* PNUnsubscribeTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNUnsubscribeTests.bundle; sourceTree = "<group>"; };
+		171F4D931B45B8D2006ACB7E /* PNChannelGroupSubscribeTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannelGroupSubscribeTests.m; sourceTree = "<group>"; };
+		171F4D941B45B8D2006ACB7E /* PNChannelGroupTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannelGroupTests.m; sourceTree = "<group>"; };
+		171F4D951B45B8D2006ACB7E /* PNChannelGroupUnsubscribeTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannelGroupUnsubscribeTests.m; sourceTree = "<group>"; };
+		171F4D961B45B8D2006ACB7E /* PNClientConfigurationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNClientConfigurationTests.m; sourceTree = "<group>"; };
+		171F4D971B45B8D2006ACB7E /* PNClientStateChannelGroupTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNClientStateChannelGroupTests.m; sourceTree = "<group>"; };
+		171F4D981B45B8D2006ACB7E /* PNClientStateChannelTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNClientStateChannelTests.m; sourceTree = "<group>"; };
+		171F4D991B45B8D2006ACB7E /* PNHeartbeatTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNHeartbeatTests.m; sourceTree = "<group>"; };
+		171F4D9A1B45B8D2006ACB7E /* PNHistoryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNHistoryTests.m; sourceTree = "<group>"; };
+		171F4D9B1B45B8D2006ACB7E /* PNPresenceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNPresenceTests.m; sourceTree = "<group>"; };
+		171F4D9C1B45B8D2006ACB7E /* PNPublishCompressedTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNPublishCompressedTests.m; sourceTree = "<group>"; };
+		171F4D9D1B45B8D2006ACB7E /* PNPublishSizeOfMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNPublishSizeOfMessage.m; sourceTree = "<group>"; };
+		171F4D9E1B45B8D2006ACB7E /* PNPublishTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNPublishTests.m; sourceTree = "<group>"; };
+		171F4D9F1B45B8D2006ACB7E /* PNPublishWithHistoryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNPublishWithHistoryTests.m; sourceTree = "<group>"; };
+		171F4DA01B45B8D2006ACB7E /* PNPublishWithMobilePayloadTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNPublishWithMobilePayloadTests.m; sourceTree = "<group>"; };
+		171F4DA11B45B8D2006ACB7E /* PNSubscribeTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNSubscribeTests.m; sourceTree = "<group>"; };
+		171F4DA21B45B8D2006ACB7E /* PNSubscribeToPresenceChannelsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNSubscribeToPresenceChannelsTests.m; sourceTree = "<group>"; };
+		171F4DA31B45B8D2006ACB7E /* PNTimeTokenTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNTimeTokenTests.m; sourceTree = "<group>"; };
+		171F4DA41B45B8D2006ACB7E /* PNUnsubscribeTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNUnsubscribeTests.m; sourceTree = "<group>"; };
+		171F4DB81B45B8DC006ACB7E /* NSDictionary+PNTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+PNTest.h"; sourceTree = "<group>"; };
+		171F4DB91B45B8DC006ACB7E /* NSDictionary+PNTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+PNTest.m"; sourceTree = "<group>"; };
+		171F4DBA1B45B8DC006ACB7E /* NSString+PNTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+PNTest.h"; sourceTree = "<group>"; };
+		171F4DBB1B45B8DC006ACB7E /* NSString+PNTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+PNTest.m"; sourceTree = "<group>"; };
+		171F4DBC1B45B8DC006ACB7E /* PNBasicClientTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNBasicClientTestCase.h; sourceTree = "<group>"; };
+		171F4DBD1B45B8DC006ACB7E /* PNBasicClientTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNBasicClientTestCase.m; sourceTree = "<group>"; };
+		171F4DBE1B45B8DC006ACB7E /* PNBasicSubscribeTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNBasicSubscribeTestCase.h; sourceTree = "<group>"; };
+		171F4DBF1B45B8DC006ACB7E /* PNBasicSubscribeTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNBasicSubscribeTestCase.m; sourceTree = "<group>"; };
+		171F4DC51B45B8E5006ACB7E /* PNChannelGroupSubscribeTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNChannelGroupSubscribeTests.bundle; sourceTree = "<group>"; };
+		171F4DC61B45B8E5006ACB7E /* PNChannelGroupTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNChannelGroupTests.bundle; sourceTree = "<group>"; };
+		171F4DC71B45B8E5006ACB7E /* PNChannelGroupUnsubscribeTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNChannelGroupUnsubscribeTests.bundle; sourceTree = "<group>"; };
+		171F4DC81B45B8E5006ACB7E /* PNClientConfigurationTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNClientConfigurationTests.bundle; sourceTree = "<group>"; };
+		171F4DC91B45B8E5006ACB7E /* PNClientStateChannelGroupTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNClientStateChannelGroupTests.bundle; sourceTree = "<group>"; };
+		171F4DCA1B45B8E5006ACB7E /* PNClientStateChannelTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNClientStateChannelTests.bundle; sourceTree = "<group>"; };
+		171F4DCB1B45B8E5006ACB7E /* PNHeartbeatTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNHeartbeatTests.bundle; sourceTree = "<group>"; };
+		171F4DCC1B45B8E5006ACB7E /* PNHistoryTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNHistoryTests.bundle; sourceTree = "<group>"; };
+		171F4DCD1B45B8E5006ACB7E /* PNPresenceTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNPresenceTests.bundle; sourceTree = "<group>"; };
+		171F4DCE1B45B8E5006ACB7E /* PNPublishCompressedTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNPublishCompressedTests.bundle; sourceTree = "<group>"; };
+		171F4DCF1B45B8E5006ACB7E /* PNPublishTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNPublishTests.bundle; sourceTree = "<group>"; };
+		171F4DD01B45B8E5006ACB7E /* PNPublishWithHistoryTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNPublishWithHistoryTests.bundle; sourceTree = "<group>"; };
+		171F4DD11B45B8E5006ACB7E /* PNPublishWithMobilePayloadTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNPublishWithMobilePayloadTests.bundle; sourceTree = "<group>"; };
+		171F4DD21B45B8E5006ACB7E /* PNSubscribeTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNSubscribeTests.bundle; sourceTree = "<group>"; };
+		171F4DD31B45B8E5006ACB7E /* PNSubscribeToPresenceChannelsTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNSubscribeToPresenceChannelsTests.bundle; sourceTree = "<group>"; };
+		171F4DD41B45B8E5006ACB7E /* PNTimeTokenTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNTimeTokenTests.bundle; sourceTree = "<group>"; };
+		171F4DD51B45B8E5006ACB7E /* PNUnsubscribeTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNUnsubscribeTests.bundle; sourceTree = "<group>"; };
 		295C238D9CE86582FADE7640 /* Pods-iOS Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS Tests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-iOS Tests/Pods-iOS Tests.release.xcconfig"; sourceTree = "<group>"; };
 		42ED7FB4F04D04B60E014BE0 /* libPods-iOS Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-iOS Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		519C327D1B20C11500FAC283 /* iOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "iOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		519C32811B20C11500FAC283 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		51F7AAC81B28B3E200BEDA1F /* PNSubscribeTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNSubscribeTests.bundle; sourceTree = "<group>"; };
 		5ACDABA811F4B25CD768FB4E /* Pods-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ios/Pods-ios.debug.xcconfig"; sourceTree = "<group>"; };
 		6F1E7CCB0F5454CF57A04DA9 /* Pods-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios.release.xcconfig"; path = "Pods/Target Support Files/Pods-ios/Pods-ios.release.xcconfig"; sourceTree = "<group>"; };
-		9604EE9E1B346CD9009EB15C /* PNPublishWithHistoryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNPublishWithHistoryTests.m; sourceTree = "<group>"; };
-		9604EEA01B34953A009EB15C /* PNPublishWithHistoryTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNPublishWithHistoryTests.bundle; sourceTree = "<group>"; };
-		962C06291B41EE4E00922282 /* NSDictionary+PNTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSDictionary+PNTest.h"; path = "iOS Tests/NSDictionary+PNTest.h"; sourceTree = "<group>"; };
-		962C062A1B41EE4E00922282 /* NSDictionary+PNTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSDictionary+PNTest.m"; path = "iOS Tests/NSDictionary+PNTest.m"; sourceTree = "<group>"; };
-		96D55D7D1B3D97BE00B6680F /* PNPresenceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNPresenceTests.m; sourceTree = "<group>"; };
-		96E691CA1B409B37003D4D21 /* PNPresenceTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNPresenceTests.bundle; sourceTree = "<group>"; };
-		96F519841B3869A900053FB7 /* PNPublishCompressedTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNPublishCompressedTests.m; sourceTree = "<group>"; };
-		96F519861B3878AB00053FB7 /* PNPublishCompressedTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNPublishCompressedTests.bundle; sourceTree = "<group>"; };
-		96F519881B387F4E00053FB7 /* PNPublishWithMobilePayloadTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNPublishWithMobilePayloadTests.m; sourceTree = "<group>"; };
-		96F5198D1B39C6B800053FB7 /* PNPublishWithMobilePayloadTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNPublishWithMobilePayloadTests.bundle; sourceTree = "<group>"; };
-		96F5198F1B39CB1E00053FB7 /* NSString+PNTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+PNTest.h"; path = "iOS Tests/NSString+PNTest.h"; sourceTree = "<group>"; };
-		96F519901B39CB1E00053FB7 /* NSString+PNTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+PNTest.m"; path = "iOS Tests/NSString+PNTest.m"; sourceTree = "<group>"; };
-		96F519921B3B508000053FB7 /* PNPublishSizeOfMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNPublishSizeOfMessage.m; sourceTree = "<group>"; };
-		976E8BD11B427DAD00C6DA3C /* PNHeartbeatTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNHeartbeatTests.m; sourceTree = "<group>"; };
-		976E8BD51B42830900C6DA3C /* PNHeartbeatTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNHeartbeatTests.bundle; sourceTree = "<group>"; };
-		976E8BD71B4293D100C6DA3C /* PNSubscribeToPresenceChannelsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNSubscribeToPresenceChannelsTests.m; sourceTree = "<group>"; };
-		976E8BD91B4295FD00C6DA3C /* PNSubscribeToPresenceChannelsTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNSubscribeToPresenceChannelsTests.bundle; sourceTree = "<group>"; };
-		97789ED31B432AD500457BE6 /* PNClientStateChannelTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNClientStateChannelTests.bundle; sourceTree = "<group>"; };
-		97A861FE1B41036B00C07193 /* PNChannelGroupUnsubscribeTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannelGroupUnsubscribeTests.m; sourceTree = "<group>"; };
-		97A862001B41063200C07193 /* PNChannelGroupUnsubscribeTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNChannelGroupUnsubscribeTests.bundle; sourceTree = "<group>"; };
-		97A862021B410CB700C07193 /* PNTimeTokenTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNTimeTokenTests.m; sourceTree = "<group>"; };
-		97A862041B410DC100C07193 /* PNTimeTokenTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNTimeTokenTests.bundle; sourceTree = "<group>"; };
-		97A8620B1B41448100C07193 /* PNClientConfigurationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNClientConfigurationTests.m; sourceTree = "<group>"; };
-		97A8620D1B4146B200C07193 /* PNClientConfigurationTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNClientConfigurationTests.bundle; sourceTree = "<group>"; };
-		97A862111B415A5B00C07193 /* PNClientStateChannelTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNClientStateChannelTests.m; sourceTree = "<group>"; };
-		97A862151B415C1B00C07193 /* PNClientStateChannelGroupTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNClientStateChannelGroupTests.m; sourceTree = "<group>"; };
-		97A862171B4161F700C07193 /* PNClientStateChannelGroupTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNClientStateChannelGroupTests.bundle; sourceTree = "<group>"; };
-		97ACC3721B40F3360030D5CB /* PNChannelGroupSubscribeTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannelGroupSubscribeTests.m; sourceTree = "<group>"; };
-		97ACC3741B40FAB80030D5CB /* PNChannelGroupSubscribeTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNChannelGroupSubscribeTests.bundle; sourceTree = "<group>"; };
-		97FA41F21B2FF518003B9B57 /* PNPublishTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNPublishTests.m; sourceTree = "<group>"; };
-		97FA41F41B2FFB61003B9B57 /* PNPublishTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PNPublishTests.bundle; sourceTree = "<group>"; };
 		C081D126B561273617A72F85 /* Pods-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios.release.xcconfig"; path = "../Pods/Target Support Files/Pods-ios/Pods-ios.release.xcconfig"; sourceTree = "<group>"; };
 		CD15C44CC052DC9814F15D3D /* Pods_ios.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ios.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CFFADA50AB5B50723C657F93 /* Pods-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-ios/Pods-ios.debug.xcconfig"; sourceTree = "<group>"; };
@@ -117,22 +116,79 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		178251201B30AAE6006BC234 /* Base Test Classes */ = {
+		171F4D921B45B8D2006ACB7E /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				1782511D1B30AAE3006BC234 /* PNBasicClientTestCase.h */,
-				1782511E1B30AAE3006BC234 /* PNBasicClientTestCase.m */,
-				178251211B30AE3D006BC234 /* PNBasicSubscribeTestCase.h */,
-				178251221B30AE3D006BC234 /* PNBasicSubscribeTestCase.m */,
+				171F4D931B45B8D2006ACB7E /* PNChannelGroupSubscribeTests.m */,
+				171F4D941B45B8D2006ACB7E /* PNChannelGroupTests.m */,
+				171F4D951B45B8D2006ACB7E /* PNChannelGroupUnsubscribeTests.m */,
+				171F4D961B45B8D2006ACB7E /* PNClientConfigurationTests.m */,
+				171F4D971B45B8D2006ACB7E /* PNClientStateChannelGroupTests.m */,
+				171F4D981B45B8D2006ACB7E /* PNClientStateChannelTests.m */,
+				171F4D991B45B8D2006ACB7E /* PNHeartbeatTests.m */,
+				171F4D9A1B45B8D2006ACB7E /* PNHistoryTests.m */,
+				171F4D9B1B45B8D2006ACB7E /* PNPresenceTests.m */,
+				171F4D9C1B45B8D2006ACB7E /* PNPublishCompressedTests.m */,
+				171F4D9D1B45B8D2006ACB7E /* PNPublishSizeOfMessage.m */,
+				171F4D9E1B45B8D2006ACB7E /* PNPublishTests.m */,
+				171F4D9F1B45B8D2006ACB7E /* PNPublishWithHistoryTests.m */,
+				171F4DA01B45B8D2006ACB7E /* PNPublishWithMobilePayloadTests.m */,
+				171F4DA11B45B8D2006ACB7E /* PNSubscribeTests.m */,
+				171F4DA21B45B8D2006ACB7E /* PNSubscribeToPresenceChannelsTests.m */,
+				171F4DA31B45B8D2006ACB7E /* PNTimeTokenTests.m */,
+				171F4DA41B45B8D2006ACB7E /* PNUnsubscribeTests.m */,
 			);
-			name = "Base Test Classes";
+			name = Tests;
+			path = "iOS Tests/Tests";
+			sourceTree = "<group>";
+		};
+		171F4DB71B45B8DC006ACB7E /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				171F4DB81B45B8DC006ACB7E /* NSDictionary+PNTest.h */,
+				171F4DB91B45B8DC006ACB7E /* NSDictionary+PNTest.m */,
+				171F4DBA1B45B8DC006ACB7E /* NSString+PNTest.h */,
+				171F4DBB1B45B8DC006ACB7E /* NSString+PNTest.m */,
+				171F4DBC1B45B8DC006ACB7E /* PNBasicClientTestCase.h */,
+				171F4DBD1B45B8DC006ACB7E /* PNBasicClientTestCase.m */,
+				171F4DBE1B45B8DC006ACB7E /* PNBasicSubscribeTestCase.h */,
+				171F4DBF1B45B8DC006ACB7E /* PNBasicSubscribeTestCase.m */,
+			);
+			name = Helpers;
+			path = "iOS Tests/Helpers";
+			sourceTree = "<group>";
+		};
+		171F4DC41B45B8E5006ACB7E /* Fixtures */ = {
+			isa = PBXGroup;
+			children = (
+				171F4DC51B45B8E5006ACB7E /* PNChannelGroupSubscribeTests.bundle */,
+				171F4DC61B45B8E5006ACB7E /* PNChannelGroupTests.bundle */,
+				171F4DC71B45B8E5006ACB7E /* PNChannelGroupUnsubscribeTests.bundle */,
+				171F4DC81B45B8E5006ACB7E /* PNClientConfigurationTests.bundle */,
+				171F4DC91B45B8E5006ACB7E /* PNClientStateChannelGroupTests.bundle */,
+				171F4DCA1B45B8E5006ACB7E /* PNClientStateChannelTests.bundle */,
+				171F4DCB1B45B8E5006ACB7E /* PNHeartbeatTests.bundle */,
+				171F4DCC1B45B8E5006ACB7E /* PNHistoryTests.bundle */,
+				171F4DCD1B45B8E5006ACB7E /* PNPresenceTests.bundle */,
+				171F4DCE1B45B8E5006ACB7E /* PNPublishCompressedTests.bundle */,
+				171F4DCF1B45B8E5006ACB7E /* PNPublishTests.bundle */,
+				171F4DD01B45B8E5006ACB7E /* PNPublishWithHistoryTests.bundle */,
+				171F4DD11B45B8E5006ACB7E /* PNPublishWithMobilePayloadTests.bundle */,
+				171F4DD21B45B8E5006ACB7E /* PNSubscribeTests.bundle */,
+				171F4DD31B45B8E5006ACB7E /* PNSubscribeToPresenceChannelsTests.bundle */,
+				171F4DD41B45B8E5006ACB7E /* PNTimeTokenTests.bundle */,
+				171F4DD51B45B8E5006ACB7E /* PNUnsubscribeTests.bundle */,
+			);
+			name = Fixtures;
+			path = "iOS Tests/Fixtures";
 			sourceTree = "<group>";
 		};
 		519C32721B20BF4D00FAC283 = {
 			isa = PBXGroup;
 			children = (
-				969714371B32F08E001DECD1 /* Categories */,
-				519C327F1B20C11500FAC283 /* iOS Tests */,
+				171F4D921B45B8D2006ACB7E /* Tests */,
+				171F4DB71B45B8DC006ACB7E /* Helpers */,
+				171F4DC41B45B8E5006ACB7E /* Fixtures */,
 				519C327E1B20C11500FAC283 /* Products */,
 				6A027B24426654F78826ED2D /* Pods */,
 				83ACC540822861D2423E0887 /* Frameworks */,
@@ -145,66 +201,6 @@
 				519C327D1B20C11500FAC283 /* iOS Tests.xctest */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		519C327F1B20C11500FAC283 /* iOS Tests */ = {
-			isa = PBXGroup;
-			children = (
-				1774814F1B30A82600544130 /* PNSubscribeTests.m */,
-				976E8BD71B4293D100C6DA3C /* PNSubscribeToPresenceChannelsTests.m */,
-				97A862111B415A5B00C07193 /* PNClientStateChannelTests.m */,
-				97A862151B415C1B00C07193 /* PNClientStateChannelGroupTests.m */,
-				97A862021B410CB700C07193 /* PNTimeTokenTests.m */,
-				1736E1A31B30F2C00077B2E7 /* PNChannelGroupTests.m */,
-				97FA41F21B2FF518003B9B57 /* PNPublishTests.m */,
-				9604EE9E1B346CD9009EB15C /* PNPublishWithHistoryTests.m */,
-				96F519841B3869A900053FB7 /* PNPublishCompressedTests.m */,
-				96F519881B387F4E00053FB7 /* PNPublishWithMobilePayloadTests.m */,
-				178251241B30BF29006BC234 /* PNUnsubscribeTests.m */,
-				97ACC3721B40F3360030D5CB /* PNChannelGroupSubscribeTests.m */,
-				97A861FE1B41036B00C07193 /* PNChannelGroupUnsubscribeTests.m */,
-				96F519921B3B508000053FB7 /* PNPublishSizeOfMessage.m */,
-				1721D3B51B39F57D0018CF00 /* PNHistoryTests.m */,
-				96D55D7D1B3D97BE00B6680F /* PNPresenceTests.m */,
-				97A8620B1B41448100C07193 /* PNClientConfigurationTests.m */,
-				976E8BD11B427DAD00C6DA3C /* PNHeartbeatTests.m */,
-				178251201B30AAE6006BC234 /* Base Test Classes */,
-				51F7AAC11B27AD7400BEDA1F /* Fixtures */,
-				519C32801B20C11500FAC283 /* Supporting Files */,
-			);
-			path = "iOS Tests";
-			sourceTree = "<group>";
-		};
-		519C32801B20C11500FAC283 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				519C32811B20C11500FAC283 /* Info.plist */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		51F7AAC11B27AD7400BEDA1F /* Fixtures */ = {
-			isa = PBXGroup;
-			children = (
-				97789ED31B432AD500457BE6 /* PNClientStateChannelTests.bundle */,
-				96E691CA1B409B37003D4D21 /* PNPresenceTests.bundle */,
-				976E8BD91B4295FD00C6DA3C /* PNSubscribeToPresenceChannelsTests.bundle */,
-				976E8BD51B42830900C6DA3C /* PNHeartbeatTests.bundle */,
-				97A862171B4161F700C07193 /* PNClientStateChannelGroupTests.bundle */,
-				97A8620D1B4146B200C07193 /* PNClientConfigurationTests.bundle */,
-				97A862041B410DC100C07193 /* PNTimeTokenTests.bundle */,
-				97A862001B41063200C07193 /* PNChannelGroupUnsubscribeTests.bundle */,
-				97ACC3741B40FAB80030D5CB /* PNChannelGroupSubscribeTests.bundle */,
-				96F5198D1B39C6B800053FB7 /* PNPublishWithMobilePayloadTests.bundle */,
-				96F519861B3878AB00053FB7 /* PNPublishCompressedTests.bundle */,
-				9604EEA01B34953A009EB15C /* PNPublishWithHistoryTests.bundle */,
-				172EC56B1B39F7E3002FF303 /* PNHistoryTests.bundle */,
-				1736E1A71B30F5E00077B2E7 /* PNChannelGroupTests.bundle */,
-				178251261B30D5F7006BC234 /* PNUnsubscribeTests.bundle */,
-				97FA41F41B2FFB61003B9B57 /* PNPublishTests.bundle */,
-				51F7AAC81B28B3E200BEDA1F /* PNSubscribeTests.bundle */,
-			);
-			name = Fixtures;
 			sourceTree = "<group>";
 		};
 		6A027B24426654F78826ED2D /* Pods */ = {
@@ -227,17 +223,6 @@
 				42ED7FB4F04D04B60E014BE0 /* libPods-iOS Tests.a */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		969714371B32F08E001DECD1 /* Categories */ = {
-			isa = PBXGroup;
-			children = (
-				962C06291B41EE4E00922282 /* NSDictionary+PNTest.h */,
-				962C062A1B41EE4E00922282 /* NSDictionary+PNTest.m */,
-				96F5198F1B39CB1E00053FB7 /* NSString+PNTest.h */,
-				96F519901B39CB1E00053FB7 /* NSString+PNTest.m */,
-			);
-			name = Categories;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -297,23 +282,23 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				51F7AAC91B28B3E200BEDA1F /* PNSubscribeTests.bundle in Resources */,
-				1736E1A81B30F5E00077B2E7 /* PNChannelGroupTests.bundle in Resources */,
-				97A862181B4161F700C07193 /* PNClientStateChannelGroupTests.bundle in Resources */,
-				172EC56C1B39F7E3002FF303 /* PNHistoryTests.bundle in Resources */,
-				96E691CB1B409B37003D4D21 /* PNPresenceTests.bundle in Resources */,
-				97A8620E1B4146B200C07193 /* PNClientConfigurationTests.bundle in Resources */,
-				97FA41F51B2FFB61003B9B57 /* PNPublishTests.bundle in Resources */,
-				9604EEA11B34953B009EB15C /* PNPublishWithHistoryTests.bundle in Resources */,
-				976E8BDA1B4295FD00C6DA3C /* PNSubscribeToPresenceChannelsTests.bundle in Resources */,
-				96F5198E1B39C6B800053FB7 /* PNPublishWithMobilePayloadTests.bundle in Resources */,
-				97A862051B410DC100C07193 /* PNTimeTokenTests.bundle in Resources */,
-				96F519871B3878AB00053FB7 /* PNPublishCompressedTests.bundle in Resources */,
-				97A862011B41063200C07193 /* PNChannelGroupUnsubscribeTests.bundle in Resources */,
-				976E8BD61B42830900C6DA3C /* PNHeartbeatTests.bundle in Resources */,
-				178251271B30D5F7006BC234 /* PNUnsubscribeTests.bundle in Resources */,
-				97ACC3751B40FAB80030D5CB /* PNChannelGroupSubscribeTests.bundle in Resources */,
-				97789ED41B432AD500457BE6 /* PNClientStateChannelTests.bundle in Resources */,
+				171F4DE51B45B8E5006ACB7E /* PNTimeTokenTests.bundle in Resources */,
+				171F4DDF1B45B8E5006ACB7E /* PNPublishCompressedTests.bundle in Resources */,
+				171F4DE61B45B8E5006ACB7E /* PNUnsubscribeTests.bundle in Resources */,
+				171F4DDD1B45B8E5006ACB7E /* PNHistoryTests.bundle in Resources */,
+				171F4DDC1B45B8E5006ACB7E /* PNHeartbeatTests.bundle in Resources */,
+				171F4DD61B45B8E5006ACB7E /* PNChannelGroupSubscribeTests.bundle in Resources */,
+				171F4DE11B45B8E5006ACB7E /* PNPublishWithHistoryTests.bundle in Resources */,
+				171F4DE21B45B8E5006ACB7E /* PNPublishWithMobilePayloadTests.bundle in Resources */,
+				171F4DE41B45B8E5006ACB7E /* PNSubscribeToPresenceChannelsTests.bundle in Resources */,
+				171F4DDE1B45B8E5006ACB7E /* PNPresenceTests.bundle in Resources */,
+				171F4DE01B45B8E5006ACB7E /* PNPublishTests.bundle in Resources */,
+				171F4DE31B45B8E5006ACB7E /* PNSubscribeTests.bundle in Resources */,
+				171F4DD81B45B8E5006ACB7E /* PNChannelGroupUnsubscribeTests.bundle in Resources */,
+				171F4DDB1B45B8E5006ACB7E /* PNClientStateChannelTests.bundle in Resources */,
+				171F4DD71B45B8E5006ACB7E /* PNChannelGroupTests.bundle in Resources */,
+				171F4DD91B45B8E5006ACB7E /* PNClientConfigurationTests.bundle in Resources */,
+				171F4DDA1B45B8E5006ACB7E /* PNClientStateChannelGroupTests.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -357,28 +342,28 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				96F519851B3869A900053FB7 /* PNPublishCompressedTests.m in Sources */,
-				976E8BD21B427DAD00C6DA3C /* PNHeartbeatTests.m in Sources */,
-				97FA41F31B2FF518003B9B57 /* PNPublishTests.m in Sources */,
-				1736E1A41B30F2C00077B2E7 /* PNChannelGroupTests.m in Sources */,
-				96F519931B3B508000053FB7 /* PNPublishSizeOfMessage.m in Sources */,
-				97A862121B415A5B00C07193 /* PNClientStateChannelTests.m in Sources */,
-				97A861FF1B41036B00C07193 /* PNChannelGroupUnsubscribeTests.m in Sources */,
-				96F519911B39CB1E00053FB7 /* NSString+PNTest.m in Sources */,
-				96F519891B387F4E00053FB7 /* PNPublishWithMobilePayloadTests.m in Sources */,
-				1782511F1B30AAE3006BC234 /* PNBasicClientTestCase.m in Sources */,
-				976E8BD81B4293D100C6DA3C /* PNSubscribeToPresenceChannelsTests.m in Sources */,
-				97A862031B410CB700C07193 /* PNTimeTokenTests.m in Sources */,
-				9604EE9F1B346CD9009EB15C /* PNPublishWithHistoryTests.m in Sources */,
-				177481501B30A82600544130 /* PNSubscribeTests.m in Sources */,
-				96D55D7E1B3D97BE00B6680F /* PNPresenceTests.m in Sources */,
-				178251251B30BF29006BC234 /* PNUnsubscribeTests.m in Sources */,
-				97ACC3731B40F3360030D5CB /* PNChannelGroupSubscribeTests.m in Sources */,
-				962C062B1B41EE4E00922282 /* NSDictionary+PNTest.m in Sources */,
-				97A862161B415C1B00C07193 /* PNClientStateChannelGroupTests.m in Sources */,
-				1721D3B61B39F57D0018CF00 /* PNHistoryTests.m in Sources */,
-				178251231B30AE3D006BC234 /* PNBasicSubscribeTestCase.m in Sources */,
-				97A8620C1B41448100C07193 /* PNClientConfigurationTests.m in Sources */,
+				171F4DAB1B45B8D2006ACB7E /* PNHeartbeatTests.m in Sources */,
+				171F4DA71B45B8D2006ACB7E /* PNChannelGroupUnsubscribeTests.m in Sources */,
+				171F4DA91B45B8D2006ACB7E /* PNClientStateChannelGroupTests.m in Sources */,
+				171F4DB61B45B8D2006ACB7E /* PNUnsubscribeTests.m in Sources */,
+				171F4DC21B45B8DC006ACB7E /* PNBasicClientTestCase.m in Sources */,
+				171F4DAF1B45B8D2006ACB7E /* PNPublishSizeOfMessage.m in Sources */,
+				171F4DA51B45B8D2006ACB7E /* PNChannelGroupSubscribeTests.m in Sources */,
+				171F4DAD1B45B8D2006ACB7E /* PNPresenceTests.m in Sources */,
+				171F4DB51B45B8D2006ACB7E /* PNTimeTokenTests.m in Sources */,
+				171F4DB41B45B8D2006ACB7E /* PNSubscribeToPresenceChannelsTests.m in Sources */,
+				171F4DB21B45B8D2006ACB7E /* PNPublishWithMobilePayloadTests.m in Sources */,
+				171F4DA61B45B8D2006ACB7E /* PNChannelGroupTests.m in Sources */,
+				171F4DB31B45B8D2006ACB7E /* PNSubscribeTests.m in Sources */,
+				171F4DC31B45B8DC006ACB7E /* PNBasicSubscribeTestCase.m in Sources */,
+				171F4DC01B45B8DC006ACB7E /* NSDictionary+PNTest.m in Sources */,
+				171F4DC11B45B8DC006ACB7E /* NSString+PNTest.m in Sources */,
+				171F4DB01B45B8D2006ACB7E /* PNPublishTests.m in Sources */,
+				171F4DB11B45B8D2006ACB7E /* PNPublishWithHistoryTests.m in Sources */,
+				171F4DAA1B45B8D2006ACB7E /* PNClientStateChannelTests.m in Sources */,
+				171F4DAC1B45B8D2006ACB7E /* PNHistoryTests.m in Sources */,
+				171F4DAE1B45B8D2006ACB7E /* PNPublishCompressedTests.m in Sources */,
+				171F4DA81B45B8D2006ACB7E /* PNClientConfigurationTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
