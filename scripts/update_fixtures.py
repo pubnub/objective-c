@@ -69,11 +69,11 @@ class Recording(object):
 		if 'currentRequest' in requests:
 			updated_request = self.update_specific_request(requests['currentRequest'], sdk_version)
 			# print updatedRequest
-			updated_requests['currentRequest'] = updated_request
+			updated_requests['currentRequest']['URL'] = updated_request
 		if 'originalRequest' in requests:
 			updated_request = self.update_specific_request(requests['originalRequest'], sdk_version)
 			# print updatedRequest
-			updated_requests['originalRequest'] = updated_request
+			updated_requests['originalRequest']['URL'] = updated_request
 		return updated_requests
 	def replace_requests(self, sdk_version):
 		original_requests = self.get_requests()
@@ -101,6 +101,7 @@ def main():
 			for plist_item in recordings:
 				recording = Recording(plist_item)
 				recording.replace_requests(args.updatesdk)
+			plistlib.writePlist(recordings, plist)
 
 
 
