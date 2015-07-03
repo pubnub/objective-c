@@ -11,7 +11,7 @@
   - [Method Names and Overall Operation have changed](#method-names-and-overall-operation-have-changed)
   - [Removed support for iOS 6 and earlier](#removed-support-for-ios-6-and-earlier)
   - [Removed support for JSONKit](#removed-support-for-jsonkit)
-  - [Removed support for blocking, syncronous calls (all calls are now async)](#removed-support-for-blocking-syncronous-calls-all-calls-are-now-async)
+  - [Removed support for blocking, synchronous calls (all calls are now async)](#removed-support-for-blocking-synchronous-calls-all-calls-are-now-async)
   - [Removed support for Singleton, Delegate, Observer, Notifications response patterns](#removed-support-for-singleton-delegate-observer-notifications-response-patterns)
   - [New Configuration Class](#new-configuration-class)
   - [New Logger and Logging Options](#new-logger-and-logging-options)
@@ -34,12 +34,12 @@
 * Removed support for JSONKit
 * Removed custom connection, request, logging, and reachability logic, replacing with NSURLSession, DDLog, and AFNetworking libraries
 * Simplified serialization/deserialization threading logic
-* Removed support for blocking, syncronous calls (all calls are now async)
+* Removed support for blocking, synchronous calls (all calls are now async)
 * Simplified usability by enforcing completion block pattern -- client no longer supports Singleton, Delegate, Observer, Notifications response patterns
 * Consolidated instance method namesv
 
 ## Setup and Hello World
-To setup and get started immediately with a Hello World demo, check out our (offical docs page)[http://www.pubnub.com/docs/ios-objective-c/pubnub-objective-c-sdk-v4].
+To setup and get started immediately with a Hello World demo, check out our [offical docs page](http://www.pubnub.com/docs/ios-objective-c/pubnub-objective-c-sdk-v4).
 
 ## Migrating from 3.x
 
@@ -61,9 +61,9 @@ PubNub 4.0 for iOS supports iOS 7+. If you regard this as an issue, please conta
 
 This should only be an issue for you if you are supporting very old iOS versions. If you regard this as an issue, please contact us at support@pubnub.com.
 
-### Removed support for blocking, syncronous calls (all calls are now async)
+### Removed support for blocking, synchronous calls (all calls are now async)
 
-In the 3.x version of the client, the developer had the option to call a method blocking, or asyncronously. In the new version, asyncronously is the only option. Be sure that any blocking-dependent code is refactored to take the new 100% async behavior into account.
+In the 3.x version of the client, the developer had the option to call a method blocking, or asynchronously. In the new version, asynchronously is the only option. Be sure that any blocking-dependent code is refactored to take the new 100% async behavior into account.
 
 ### Removed support for Singleton, Delegate, Observer, Notifications response patterns
 
@@ -191,11 +191,11 @@ With PubNub, operations can be grouped into two groups: Streamed (Subscribed Mes
 
 Streamed operation method calls return Results and Statuses via listeners. For example:
 
-1. [Calling a subscribe operation](Example/PubNub/PNAppDelegate.m#L96) will return Result objects (received messages) to the (didReceiveMessage listener)[Example/PubNub/PNAppDelegate.m#L275] and Status objects  (such as PAM errors, Connect, Disconnect state changes) to the (didReceiveStatus listener)[Example/PubNub/PNAppDelegate.m#L296]
+1. [Calling a subscribe operation](Example/PubNub/PNAppDelegate.m#L260) will return Result objects (received messages) to the [didReceiveMessage listener](Example/PubNub/PNAppDelegate.m#L504) and Status objects  (such as PAM errors, Connect, Disconnect state changes) to the [didReceiveStatus listener](Example/PubNub/PNAppDelegate.m#L533)
 
-2. [Calling a presence operation](Example/PubNub/PNAppDelegate.m#L111) will return Result objects (Such as Join, Leave Presence Events) to the (didReceivePresenceEvents listener)[Example/PubNub/PNAppDelegate.m#L286] and Status objects to the (didReceiveStatus listener)[Example/PubNub/PNAppDelegate.m#L296]
+2. [Calling a presence operation](Example/PubNub/PNAppDelegate.m#L250) will return Result objects (Such as Join, Leave Presence Events) to the [didReceivePresenceEvents listener](Example/PubNub/PNAppDelegate.m#L513) and Status objects to the [didReceiveStatus listener](Example/PubNub/PNAppDelegate.m#L533)
 
-Non-Streamed operation method calls use completion blocks which return either a result or status object. An example of this can be seen in the [history call example](Example/PubNub/PNAppDelegate.m#L228).
+Non-Streamed operation method calls use completion blocks which return either a result or status object. An example of this can be seen in the [history call example](Example/PubNub/PNAppDelegate.m#L432).
 
 If you have questions about how the Result and Status objects work in the meantime, feel free to contact support@pubnub.com and cc: geremy@pubnub.com, and we'll be happy to assist.
 
@@ -206,6 +206,6 @@ In 4.0, [we provide Example](Example) as a generic reference on how to set confi
 The Example app is used as a simple reference app. It will evolve over time, along with other example apps -- stay tuned for that!
 
 ## Complete Docs
-Check out our (offical docs page)[http://www.pubnub.com/docs/ios-objective-c/pubnub-objective-c-sdk-v4].
+Check out our [official docs page](http://www.pubnub.com/docs/ios-objective-c/pubnub-objective-c-sdk-v4).
 
 Email us at support@pubnub.com with any questions.
