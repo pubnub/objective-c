@@ -79,6 +79,9 @@ There is a new configuration class which is not backwards compatible with the co
 
 In 4.x we use DDLog (Lumberjack) for our logging, and therefore, logging configuration has changed. Please see "Logging" below for more information on how to use the new logger.
 
+Example
+[DDLog addLogger:[DDTTYLogger sharedInstance]];
+
 ### Optimized / Consolidated instance method names
 
 Method names have been optimized. Be sure to consult with the API reference below for more info on the available method names.
