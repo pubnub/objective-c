@@ -227,7 +227,7 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNReachabilityLogLevel;
         #pragma clang diagnostic ignored "-Wreceiver-is-weak"
         #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
         // Try to request 'time' API to ensure what network really available.
-        [self.client timeWithCompletion:^(PNTimeResult *result, PNErrorStatus *status) {
+        [self.client timeWithCompletion:^(PNTimeResult *result, __unused PNErrorStatus *status) {
             
             self.pingCompleteBlock(result.data != nil);
             if (self.pingingRemoteService) {

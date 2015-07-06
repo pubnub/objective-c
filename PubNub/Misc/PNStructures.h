@@ -29,23 +29,23 @@ typedef NS_OPTIONS(NSUInteger, PNLogLevel){
      
      @since 4.0
      */
-    PNSilentLogLevel = (~(NSUIntegerMax >> 1)),
+    PNSilentLogLevel = (NSUIntegerMax ^ (NSUIntegerMax >> 1)),
     
     /**
-     @brief  \b PNLog level which allow to print out client information data.
+     @brief      \b PNLog level which allow to print out client information data.
      @discussion Log events like: transition between foreground/background, configuration 
                  modification
      
      @since 4.0
      */
-    PNInfoLogLevel = (~(NSUIntegerMax >> 2)),
+    PNInfoLogLevel = (NSUIntegerMax ^ (NSUIntegerMax >> 2 | PNSilentLogLevel)),
     
     /**
      @brief  \b PNLog level which allow to print out all reachability events.
      
      @since 4.0
      */
-    PNReachabilityLogLevel = (~(NSUIntegerMax >> 3)),
+    PNReachabilityLogLevel = (NSUIntegerMax ^ (NSUIntegerMax >> 3 | (NSUIntegerMax ^ (NSUIntegerMax >> 2)))),
     
     /**
      @brief  \b PNLog level which allow to print out all API call request URI which has been passed
@@ -53,14 +53,14 @@ typedef NS_OPTIONS(NSUInteger, PNLogLevel){
      
      @since 4.0
      */
-    PNRequestLogLevel = (~(NSUIntegerMax >> 4)),
+    PNRequestLogLevel = (NSUIntegerMax ^ (NSUIntegerMax >> 4 | (NSUIntegerMax ^ (NSUIntegerMax >> 3)))),
     
     /**
      @brief  \b PNLog level which allow to print out API execution results.
      
      @since 4.0
      */
-    PNResultLogLevel = (~(NSUIntegerMax >> 5)),
+    PNResultLogLevel = (NSUIntegerMax ^ (NSUIntegerMax >> 5 | (NSUIntegerMax ^ (NSUIntegerMax >> 4)))),
     
     /**
      @brief  \b PNLog level which allow to print out client state change status information and 
@@ -68,7 +68,7 @@ typedef NS_OPTIONS(NSUInteger, PNLogLevel){
      
      @since 4.0
      */
-    PNStatusLogLevel = (~(NSUIntegerMax >> 6)),
+    PNStatusLogLevel = (NSUIntegerMax ^ (NSUIntegerMax >> 6 | (NSUIntegerMax ^ (NSUIntegerMax >> 5)))),
     
     /**
      @brief      \b PNLog level which allow to print out every failure status information.
@@ -77,7 +77,7 @@ typedef NS_OPTIONS(NSUInteger, PNLogLevel){
      
      @since 4.0
      */
-    PNFailureStatusLogLevel = (~(NSUIntegerMax >> 7)),
+    PNFailureStatusLogLevel = (NSUIntegerMax ^ (NSUIntegerMax >> 7 | (NSUIntegerMax ^ (NSUIntegerMax >> 6)))),
     
     /**
      @brief      \b PNLog level which allow to print out all API calls with passed parameters.
@@ -86,14 +86,14 @@ typedef NS_OPTIONS(NSUInteger, PNLogLevel){
      
      @since 4.0
      */
-    PNAPICallLogLevel = (~(NSUIntegerMax >> 8)),
+    PNAPICallLogLevel = (NSUIntegerMax ^ (NSUIntegerMax >> 8 | (NSUIntegerMax ^ (NSUIntegerMax >> 7)))),
     
     /**
      @brief  \b PNLog level which allow to print out all AES errors.
      
      @since 4.0
      */
-    PNAESErrorLogLevel = (~(NSUIntegerMax >> 9)),
+    PNAESErrorLogLevel = (NSUIntegerMax ^ (NSUIntegerMax >> 9 | (NSUIntegerMax ^ (NSUIntegerMax >> 8)))),
     
     /**
      @brief  Log every message from \b PubNub client.

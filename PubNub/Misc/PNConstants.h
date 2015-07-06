@@ -14,7 +14,11 @@
 #pragma mark General information constants
 
 // Stores client library version number
-static NSString * const kPNLibraryVersion = @"4.0";
+static NSString * const kPNLibraryVersion = @"4.0.2";
+
+// Stores information about SDK codebase
+static NSString * const kPNBranchName = @"master";
+static NSString * const kPNCommit = @"85b2d745598968c4e5834424f129b837b7b70dba";
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 static NSString * const kPNClientName = @"ObjC-iOS";

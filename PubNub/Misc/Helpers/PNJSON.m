@@ -30,7 +30,7 @@
         }
         else if ([self isJSONString:object]){
 
-            JSONString = object;
+            JSONString = [[NSString alloc] initWithFormat:@"%@", object];
         }
         else {
 

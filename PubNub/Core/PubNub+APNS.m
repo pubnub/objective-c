@@ -91,6 +91,10 @@
             [parameters addQueryParameter:[PNChannel namesForRequest:channels]
                              forFieldName:(shouldEnabled ? @"add":@"remove")];
         }
+        else if (operationType == PNAddPushNotificationsOnChannelsOperation) {
+            
+            [parameters removePathComponentForPlaceholder:@"{token}"];
+        }
 
         DDLogAPICall([[self class] ddLogLevel], @"<PubNub> %@ push notifications for device '%@': %@.",
                 (shouldEnabled ? @"Enable" : @"Disable"),

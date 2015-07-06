@@ -12,6 +12,7 @@
 #import "PNStatus+Private.h"
 #import "PNConfiguration.h"
 #import "PNReachability.h"
+#import "PNConstants.h"
 #import "PNNetwork.h"
 #import "PNHelpers.h"
 
@@ -186,12 +187,15 @@ void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
     
     // Check whether initialization has been successful or not
     if ((self = [super init])) {
-        
 #if DEBUG
         [PNLog dumpToFile:YES];
 #else
         [PNLog dumpToFile:NO];
 #endif
+        
+        DDLogClientInfo([[self class] ddLogLevel], @"<PubNub> PubNub SDK %@ (%@ %@)",
+                        kPNLibraryVersion, kPNBranchName, kPNCommit);
+        
         _configuration = [configuration copy];
         _callbackQueue = callbackQueue;
         [self prepareNetworkManagers];
@@ -232,7 +236,7 @@ void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
     
     dispatch_block_t subscriptionRestoreBlock = ^{
         
-        [client.subscriberManager continueSubscriptionCycleIfRequiredWithCompletion:^(PNSubscribeStatus *status) {
+        [client.subscriberManager continueSubscriptionCycleIfRequiredWithCompletion:^(__unused PNSubscribeStatus *status) {
             
             if (block) {
                 
@@ -249,12 +253,12 @@ void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
             ![configuration.authKey isEqualToString:self.configuration.authKey]) {
             __weak __typeof(self) weakSelf = self;
             [self unsubscribeFromChannels:self.subscriberManager.channels withPresence:YES
-                               completion:^(PNSubscribeStatus *status1) {
+                               completion:^(__unused PNSubscribeStatus *status1) {
                    
                  __strong __typeof(self) strongSelf = weakSelf;
                 [strongSelf unsubscribeFromChannelGroups:strongSelf.subscriberManager.channelGroups
                                             withPresence:YES
-                                              completion:^(PNSubscribeStatus *status2) {
+                                              completion:^(__unused PNSubscribeStatus *status2) {
                                           
                     subscriptionRestoreBlock();
                 }];
@@ -414,7 +418,7 @@ void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
         andStatus:(PNStatus *)status {
     
     if (result) {
-            
+
         DDLogResult([[self class] ddLogLevel], @"<PubNub> %@", [result stringifiedRepresentation]);
     }
     

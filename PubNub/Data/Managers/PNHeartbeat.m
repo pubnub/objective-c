@@ -101,7 +101,7 @@
     __block dispatch_source_t timer = nil;
     dispatch_sync(self.resourceAccessQueue, ^{
         
-        timer = _heartbeatTimer;
+        timer = self->_heartbeatTimer;
     });
     
     return timer;
