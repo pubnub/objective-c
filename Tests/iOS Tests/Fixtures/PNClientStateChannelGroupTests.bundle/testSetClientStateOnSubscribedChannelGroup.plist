@@ -37,7 +37,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/presence/sub-key/demo-36/channel/,/uuid/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/data?channel-group=PNClientStateChannelGroupTests&amp;pnsdk=PubNub-ObjC-iOS%2F4.0&amp;state=%7B%22test%22%3A%22test%22%7D&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/v2/presence/sub-key/demo-36/channel/,/uuid/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/data?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;channel-group=PNClientStateChannelGroupTests&amp;pnsdk=PubNub-ObjC-iOS%252F4.0.2&amp;state=%7B%22test%22%3A%22test%22%7D&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -52,7 +52,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 			<key>originalRequest</key>
 			<dict>
@@ -61,7 +61,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/presence/sub-key/demo-36/channel/,/uuid/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/data?channel-group=PNClientStateChannelGroupTests&amp;pnsdk=PubNub-ObjC-iOS%2F4.0&amp;state=%7B%22test%22%3A%22test%22%7D&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/v2/presence/sub-key/demo-36/channel/,/uuid/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/data?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;channel-group=PNClientStateChannelGroupTests&amp;pnsdk=PubNub-ObjC-iOS%252F4.0.2&amp;state=%7B%22test%22%3A%22test%22%7D&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept-Language</key>
@@ -72,7 +72,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 		</dict>
 		<key>response</key>
@@ -149,7 +149,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNClientStateChannelGroupTests/remove?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNClientStateChannelGroupTests/remove?pnsdk=PubNub-ObjC-iOS%252F4.0.2&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -164,7 +164,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 			<key>originalRequest</key>
 			<dict>
@@ -173,7 +173,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNClientStateChannelGroupTests/remove?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNClientStateChannelGroupTests/remove?pnsdk=PubNub-ObjC-iOS%252F4.0.2&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept-Language</key>
@@ -184,7 +184,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 		</dict>
 		<key>response</key>
@@ -261,7 +261,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNClientStateChannelGroupTests/remove?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNClientStateChannelGroupTests/remove?pnsdk=PubNub-ObjC-iOS%252F4.0.2&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -276,7 +276,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 			<key>originalRequest</key>
 			<dict>
@@ -285,7 +285,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNClientStateChannelGroupTests/remove?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNClientStateChannelGroupTests/remove?pnsdk=PubNub-ObjC-iOS%252F4.0.2&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept-Language</key>
@@ -296,7 +296,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 		</dict>
 		<key>response</key>
@@ -373,7 +373,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNClientStateChannelGroupTests?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;add=a,b&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNClientStateChannelGroupTests?add=a%2Cb&amp;pnsdk=PubNub-ObjC-iOS%252F4.0.2&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -388,7 +388,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 			<key>originalRequest</key>
 			<dict>
@@ -397,7 +397,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNClientStateChannelGroupTests?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;add=a,b&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNClientStateChannelGroupTests?add=a%2Cb&amp;pnsdk=PubNub-ObjC-iOS%252F4.0.2&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept-Language</key>
@@ -408,7 +408,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 		</dict>
 		<key>response</key>
@@ -476,7 +476,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/time/0?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/time/0?pnsdk=PubNub-ObjC-iOS%252F4.0.2&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -491,7 +491,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 			<key>originalRequest</key>
 			<dict>
@@ -500,7 +500,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/time/0?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/time/0?pnsdk=PubNub-ObjC-iOS%252F4.0.2&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept-Language</key>
@@ -511,7 +511,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 		</dict>
 		<key>response</key>
@@ -561,7 +561,8 @@
 			</data>
 			<key>json</key>
 			<array>
-				<array/>
+				<array>
+				</array>
 				<string>14356954400894751</string>
 				<string></string>
 			</array>
@@ -575,7 +576,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/subscribe/demo-36/,/0/0?channel-group=PNClientStateChannelGroupTests,PNClientStateChannelGroupTests-pnpres&amp;pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/subscribe/demo-36/,/0/0?channel-group=PNClientStateChannelGroupTests%2CPNClientStateChannelGroupTests-pnpres&amp;pnsdk=PubNub-ObjC-iOS%252F4.0.2&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -590,7 +591,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 			<key>originalRequest</key>
 			<dict>
@@ -599,7 +600,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/subscribe/demo-36/,/0/0?channel-group=PNClientStateChannelGroupTests,PNClientStateChannelGroupTests-pnpres&amp;pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/subscribe/demo-36/,/0/0?channel-group=PNClientStateChannelGroupTests%2CPNClientStateChannelGroupTests-pnpres&amp;pnsdk=PubNub-ObjC-iOS%252F4.0.2&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept-Language</key>
@@ -610,7 +611,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 		</dict>
 		<key>response</key>
