@@ -513,7 +513,7 @@ static DDLogLevel ddLogLevel;
     #pragma clang diagnostic ignored "-Wreceiver-is-weak"
     NSURL *requestURL = [PNURLBuilder URLForOperation:operationType withParameters:parameters];
     if (requestURL) {
-    
+        
         DDLogRequest([[self class] ddLogLevel], @"<PubNub> %@ %@", ([data length] ? @"POST" : @"GET"),
                      [requestURL absoluteString]);
         

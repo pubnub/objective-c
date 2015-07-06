@@ -418,7 +418,7 @@ void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
         andStatus:(PNStatus *)status {
     
     if (result) {
-            
+
         DDLogResult([[self class] ddLogLevel], @"<PubNub> %@", [result stringifiedRepresentation]);
     }
     

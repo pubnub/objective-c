@@ -96,12 +96,16 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNAESErrorLogLevel;
             }
             
             // Try decrypt message if possible.
-            if ([message isKindOfClass:[NSString class]] &&
-                [(NSString *)additionalData[@"cipherKey"] length]){
+            if ([(NSString *)additionalData[@"cipherKey"] length]){
                 
                 NSError *decryptionError;
-                NSData *eventData = [PNAES decrypt:message withKey:additionalData[@"cipherKey"]
-                                          andError:&decryptionError];
+                NSData *eventData = nil;
+                if ([message isKindOfClass:[NSString class]]) {
+                    
+                    eventData = [PNAES decrypt:message withKey:additionalData[@"cipherKey"]
+                                      andError:&decryptionError];
+                }
+                
                 if (!decryptionError) {
                     
                     message = [[NSString alloc] initWithData:eventData
@@ -114,7 +118,8 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNAESErrorLogLevel;
                         message = [PNJSON JSONObjectFrom:message withError:nil];
                     }
                 }
-                else {
+                
+                if (decryptionError || ![message isKindOfClass:[NSString class]]) {
                     
                     DDLogAESError([self ddLogLevel], @"<PubNub> History entry decryption error: %@",
                                   decryptionError);

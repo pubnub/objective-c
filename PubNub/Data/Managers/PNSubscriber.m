@@ -4,6 +4,8 @@
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "PNSubscriber.h"
+#import "PNServiceData+Private.h"
+#import "PNErrorStatus+Private.h"
 #import "PNSubscriberResults.h"
 #import "PNRequestParameters.h"
 #import "PubNub+CorePrivate.h"
@@ -535,7 +537,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
             
             // Check whether client transit from 'disconnected' -> 'connected' state.
             shouldHandleTransition = (currentState == PNInitializedSubscriberState ||
-                                      currentState == PNDisconnectedSubscriberState);
+                                      currentState == PNDisconnectedSubscriberState ||
+                                      currentState == PNConnectedSubscriberState);
             
             // Check whether client transit from 'access denied' -> 'connected' state.
             if (!shouldHandleTransition) {
@@ -1105,11 +1108,13 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         DDLogResult([[self class] ddLogLevel], @"<PubNub> %@", [(PNResult *)data stringifiedRepresentation]);
         if ([(data.serviceData)[@"decryptError"] boolValue]) {
             
-            status = (PNErrorStatus *)[PNStatus statusForOperation:PNSubscribeOperation
-                                                          category:PNDecryptionErrorCategory
-                                               withProcessingError:nil];
+            status = [PNErrorStatus statusForOperation:PNSubscribeOperation
+                                              category:PNDecryptionErrorCategory
+                                   withProcessingError:nil];
+
             NSMutableDictionary *updatedData = [data.serviceData mutableCopy];
             [updatedData removeObjectForKey:@"decryptError"];
+            status.associatedObject = [PNMessageData dataWithServiceResponse:updatedData];
             [status updateData:updatedData];
         }
     }
@@ -1120,10 +1125,13 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wreceiver-is-weak"
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
-    [self.client.listenersManager notifyMessage:data];
     if (status) {
         
         [self.client.listenersManager notifyStatusChange:(id)status];
+    }
+    else if (data) {
+        
+        [self.client.listenersManager notifyMessage:data];
     }
     #pragma clang diagnostic pop
 }
