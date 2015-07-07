@@ -12,4 +12,6 @@
 
 + (NSString *)randomAlphanumericStringWithLength:(NSInteger)length;
 
+- (NSData *)dataFromHexString:(NSString *)string;
+
 @end
