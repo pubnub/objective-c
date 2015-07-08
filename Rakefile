@@ -6,7 +6,8 @@ namespace :test do
 
   desc "Run the PubNub Integration Tests for iOS"
   task :ios => :prepare do
-    puts 'test!!!'
+    puts 'test!!!!'
+    puts ENV['GIT_BRANCH']
     simulators = get_ios_simulators
     destinations = Array.new
     # collect all sims except for "Resizable sims"
