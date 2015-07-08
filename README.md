@@ -105,22 +105,22 @@ To setup a custom configuration:
 * Once you have the configuration variable, the following configuration options are available:
 
 ```objective-c
-    self.myConfig.TLSEnabled = YES; # Secure Connection
-    self.myConfig.uuid = [self randomString]; # Setup a UUID
-    self.myConfig.origin = @"pubsub.pubnub.com"; # Setup a custom origin. Don't do this unless support requests.
-    self.myConfig.authKey = _authKey; # For PAM, an auth key for authorization
+    self.myConfig.TLSEnabled = YES; // Secure Connection
+    self.myConfig.uuid = [self randomString]; // Setup a UUID
+    self.myConfig.origin = @"pubsub.pubnub.com"; // Setup a custom origin. Don't do this unless support requests.
+    self.myConfig.authKey = _authKey; // For PAM, an auth key for authorization
 
     // Presence Settings
-    self.myConfig.presenceHeartbeatValue = 120; # Tell the server that the hearbeat timeout is 120s
-    self.myConfig.presenceHeartbeatInterval = 60; # Send the heartbeat to the server every 60 seconds
+    self.myConfig.presenceHeartbeatValue = 120; // Tell the server that the hearbeat timeout is 120s
+    self.myConfig.presenceHeartbeatInterval = 60; // Send the heartbeat to the server every 60 seconds
 
     // Cipher Key Settings
-    //self.client.cipherKey = @"enigma"; # Set this to enable PN AES encryption
+    //self.client.cipherKey = @"enigma"; // Set this to enable PN AES encryption
 
     // Time Token Handling Settings
-    self.myConfig.keepTimeTokenOnListChange = YES; # When changing channels, 'catchup' ?
-    self.myConfig.restoreSubscription = YES; # If you lose the connection, should you resubscribe when it comes back?
-    self.myConfig.catchUpOnSubscriptionRestore = YES; # If restoreSubscription == YES, catchup ? Or start at 'now' ?
+    self.myConfig.keepTimeTokenOnListChange = YES; // When changing channels, 'catchup' ?
+    self.myConfig.restoreSubscription = YES; // If you lose the connection, should you resubscribe when it comes back?
+    self.myConfig.catchUpOnSubscriptionRestore = YES; // If restoreSubscription == YES, catchup ? Or start at 'now' ?
 ```
 
 ## New for 4.0
