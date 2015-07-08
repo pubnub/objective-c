@@ -6,6 +6,8 @@ namespace :test do
 
   desc "Run the PubNub Integration Tests for iOS"
   task :ios => :prepare do
+    puts 'test!!!!!!!!'
+    puts ENV['GIT_BRANCH']
     simulators = get_ios_simulators
     destinations = Array.new
     # collect all sims except for "Resizable sims"
@@ -35,6 +37,7 @@ namespace :test do
       end
     }
     kill_sim()
+    puts final_exit_status
     exit final_exit_status
   end
 
@@ -58,10 +61,6 @@ private
 def run_tests(scheme, sdk, destination)
     sim_destination = "-destination \'#{destination}\'"
     sh("xcodebuild -workspace PubNub.xcworkspace -scheme '#{scheme}' -sdk '#{sdk}' #{sim_destination} -configuration 'Debug' clean test | xcpretty -c; exit ${PIPESTATUS[0]}") rescue nil
-end
-
-def update_exit_status()
-  return $?.exitstatus
 end
 
 def kill_sim()
