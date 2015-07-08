@@ -35,6 +35,7 @@ namespace :test do
       end
     }
     kill_sim()
+    puts final_exit_status
     exit final_exit_status
   end
 
