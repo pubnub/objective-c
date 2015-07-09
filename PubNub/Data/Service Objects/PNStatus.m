@@ -4,7 +4,7 @@
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "PNStatus+Private.h"
-#import <AFURLResponseSerialization.h>
+#import "PNNetworkResponseSerializer.h"
 #import "PNPrivateStructures.h"
 #import "PNStatus+Private.h"
 #import "PNResult+Private.h"
@@ -294,18 +294,6 @@
                 break;
         }
     }
-    else if ([error.domain isEqualToString:AFURLResponseSerializationErrorDomain]) {
-        
-        switch (error.code) {
-            case NSURLErrorBadServerResponse:
-                
-                category = PNMalformedResponseCategory;
-                break;
-                
-            default:
-                break;
-        }
-    }
     
     return category;
 }
@@ -314,11 +302,11 @@
     
     // Try to fetch server response if available.
     id errorDetails = nil;
-    if (error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey]) {
+    if (error.userInfo[kPNNetworkErrorResponseDataKey]) {
         
         // In most cases service provide JSON error response. Try de-serialize it.
         NSError *deSerializationError;
-        NSData *errorData = error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
+        NSData *errorData = error.userInfo[kPNNetworkErrorResponseDataKey];
         errorDetails = [NSJSONSerialization JSONObjectWithData:errorData
                                                        options:(NSJSONReadingOptions)0
                                                          error:&deSerializationError];
@@ -333,10 +321,6 @@
             
             error = deSerializationError;
         }
-    }
-    else if (error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey]) {
-        
-        errorDetails = error.userInfo[AFNetworkingOperationFailingURLResponseErrorKey];
     }
     
     if (!errorDetails) {

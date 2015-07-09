@@ -4,13 +4,14 @@
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "PNNetwork.h"
-#import <AFNetworking/AFNetworking.h>
+#import "PNNetworkResponseSerializer.h"
 #import "PNConfiguration+Private.h"
 #import "PNRequestParameters.h"
 #import "PNPrivateStructures.h"
 #import "PubNub+CorePrivate.h"
 #import "PNResult+Private.h"
 #import "PNStatus+Private.h"
+#import <libkern/OSAtomic.h>
 #import "PNErrorStatus.h"
 #import "PNErrorParser.h"
 #import "PNURLBuilder.h"
@@ -28,9 +29,46 @@
 static DDLogLevel ddLogLevel;
 
 
+#pragma mark - Types
+
+/**
+ @brief  Definition for block which is used as NSURLSessionDataTask completion handler (passed 
+         during task creation.
+ 
+ @param data     Actual raw data which has been received from \b PubNub service in response.
+ @param response HTTP response instance which hold metadata about response.
+ @param error    Reference on error instance in case of any processing issues.
+ 
+ @since 4.0.2
+ */
+typedef void(^NSURLSessionDataTaskCompletion)(NSData *data, NSURLResponse *response, NSError *error);
+
+/**
+ @brief  Definition for block which is used by \b PubNub SDK to process successfully completed 
+         request with pre-processed response.
+ 
+ @param task           Reference on data load task which has been used to communicate with \b PubNub
+                       network.
+ @param responseObject Serialized \b PubNub service response.
+ 
+ @since 4.0.2
+ */
+typedef void(^NSURLSessionDataTaskSuccess)(NSURLSessionDataTask *task, id responseObject);
+
+/**
+ @brief  Definition for block which is used by \b PubNub SDK to process failed request.
+ 
+ @param task  Reference on data load task which has been used to communicate with \b PubNub network.
+ @param error Reference on error instance in case of any processing issues.
+ 
+ @since 4.0.2
+ */
+typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *error);
+
+
 #pragma mark - Protected interface declaration
 
-@interface PNNetwork ()
+@interface PNNetwork () <NSURLSessionDelegate>
 
 
 #pragma mark - Information
@@ -51,8 +89,8 @@ static DDLogLevel ddLogLevel;
 @property (nonatomic, readonly) PNConfiguration *configuration;
 
 /**
- @brief  Stores whether \b PubNub network manager configured for long-poll request processing or
-         not.
+ @brief      Stores whether \b PubNub network manager configured for long-poll request processing or
+             not.
  @discussion This property taken into account when manager need to invalidate underlying 
              \a NSURLSession and dictate whether all scheduled requests should be completed or 
              terminated.
@@ -62,11 +100,78 @@ static DDLogLevel ddLogLevel;
 @property (nonatomic, assign) BOOL forLongPollRequests;
 
 /**
- @brief  Stores reference on session manager instance which is used to send network requests.
+ @brief      Stores value which should be as timeout interval for request.
+ @discussion This property also used when session instance should be re-created.
  
- @since 4.0
+ @since 4.0.2
  */
-@property (nonatomic, strong) AFHTTPSessionManager *session;
+@property (nonatomic, assign) NSTimeInterval requestTimeout;
+
+/**
+ @brief      Stores value which should be as maximum simultaneous requests.
+ @discussion This property also used when session instance should be re-created.
+ 
+ @since 4.0.2
+ */
+@property (nonatomic, assign) NSInteger maximumConnections;
+
+
+/**
+ @brief  Stores reference on session instance which is used to send network requests.
+ 
+ @since 4.0.2
+ */
+@property (nonatomic) NSURLSession *session;
+
+/**
+ @brief  Stores dictionary with headers which should be appended to every request.
+ 
+ @since 4.0.2
+ */
+@property (nonatomic) NSDictionary *additionalHeaders;
+
+/**
+ @brief  Stores reference on base URL which should be appeanded with reasource path to perform 
+         network request.
+ 
+ @since 4.0.2
+ */
+@property (nonatomic) NSURL *baseURL;
+
+/**
+ @brief  Stores reference on serializer used to pre-process service responses.
+ 
+ @since 4.0.2
+ */
+@property (nonatomic) PNNetworkResponseSerializer *serializer;
+
+/**
+ @brief  Stores reference on queue which should be used by session to call callbacks and completion
+         blocks on \c PNNetwork instance.
+ 
+ @since 4.0.2
+ */
+@property (nonatomic) NSOperationQueue *delegateQueue;
+
+/**
+ @brief      Stores reference on queue which is used to call \b PNNetwork response processing on
+             another queue.
+ @discussion Response processing involves data parsing which is most time consuming operation. 
+             Dispatching response processing on side queue allow to keep requests sending unaffected 
+             by processing delays.
+ 
+ @since 4.0.2
+ */
+@property (nonatomic) dispatch_queue_t processingQueue;
+
+/**
+ @brief  Stores reference on spin-lock which is used to protect access to session instance which can
+         be changed at any moment (invalidated instances can't be used and SDK should instantiate 
+         new instance).
+ 
+ @since 4.0.2
+ */
+@property (nonatomic, assign) OSSpinLock lock;
 
 
 #pragma mark - Initialization and Configuration
@@ -130,8 +235,8 @@ static DDLogLevel ddLogLevel;
  @since 4.0
  */
 - (NSURLSessionDataTask *)dataTaskWithRequest:(NSURLRequest *)request
-                          success:(void(^)(NSURLSessionDataTask *task, id responseObject))success
-                          failure:(void(^)(NSURLSessionDataTask *task, id error))failure;
+                                      success:(NSURLSessionDataTaskSuccess)success
+                                      failure:(NSURLSessionDataTaskFailure)failure;
 
 
 #pragma mark - Request processing
@@ -204,14 +309,11 @@ static DDLogLevel ddLogLevel;
  
  @param timeout            Maximum time which manager should wait for response on request.
  @param maximumConnections Maximum simultaneously connections (requests) which can be opened.
- @param queue              Reference on GCD queue which should be used for callbacks and as working
-                           queue for underlying logic.
  
  @since 4.0
  */
 - (void)prepareSessionWithRequesrTimeout:(NSTimeInterval)timeout
-                      maximumConnections:(NSInteger)maximumConnections
-                            workingQueue:(dispatch_queue_t)queue;
+                      maximumConnections:(NSInteger)maximumConnections;
 
 /**
  @brief  Construct base NSURL session configuration.
@@ -227,24 +329,67 @@ static DDLogLevel ddLogLevel;
                                             maximumConnections:(NSInteger)maximumConnections;
 
 /**
+ @brief  Construct qaueue on which session will call delegate callbacks and completion blocks.
+ 
+ @param configuration Reference on session configuration instance which should be used to complete
+                      queue configuration.
+ 
+ @return Initialized and ready to use operaiton queue.
+ 
+ @since 4.0.2
+ */
+- (NSOperationQueue *)operationQueueWithConfiguration:(NSURLSessionConfiguration *)configuration;
+
+/**
  @brief  Construct NSURL session manager used to communicate with \b PubNub network.
  
- @param origin        Reference on \b PubNub service host name which should be used to get access to
-                      \b PubNub network.
  @param configuration Reference on complete configuration which should be applied to NSURL session.
- @param queue         Reference on GCD queue which should be used for callbacks and as working queue
- for underlying logic.
  
  @return Constructed and ready to use NSURL session manager instance.
  
  @since 4.0
  */
-- (AFHTTPSessionManager *)managerForOrigin:(NSURL *)origin
-                         withConfiguration:(NSURLSessionConfiguration *)configuration
-                              workingQueue:(dispatch_queue_t)queue;
+- (NSURLSession *)sessionWithConfiguration:(NSURLSessionConfiguration *)configuration;
+
+/**
+ @brief  Allow to construct base URL basing on network configuraiton.
+ 
+ @return Ready to use service URL.
+ 
+ @since 4.0.2
+ */
+- (NSURL *)requestBaseURL;
+
+/**
+ @brief  Allow to construct set of headers which should be used for network requests.
+ 
+ @return Dictionary with headers which should be added to each request.
+ 
+ @since 4.0.2
+ */
+- (NSDictionary *)defaultHeaders;
 
 
 #pragma mark - Handlers
+
+/**
+ @brief      Serialize service response or handle error.
+ @discussion Depending on received metadata and data code will call passed success or failure blocks
+             after serialization process completion on secondary queue.
+ 
+ @param data    Reference on RAW data received from service.
+ @param task    Reference on data task which has been used to communicate with \b PubNub network.
+ @param error   Reference on data/request processing error.
+ @param success Reference on data task success handling block which will be called by network
+                manager.
+ @param failure Reference on data task processing failure handling block which will be called by
+                network manager.
+ 
+ @since 4.0
+ */
+- (void)handleData:(NSData *)data loadedWithTask:(NSURLSessionDataTask *)task
+             error:(NSError *)requestError usingSuccess:(NSURLSessionDataTaskSuccess)success
+           failure:(NSURLSessionDataTaskFailure)failure;
 
 /**
  @brief      Handle successful operation processing completion.
@@ -376,8 +521,12 @@ static DDLogLevel ddLogLevel;
         _client = client;
         _configuration = client.configuration;
         _forLongPollRequests = longPollEnabled;
-        [self prepareSessionWithRequesrTimeout:timeout maximumConnections:maximumConnections
-                                  workingQueue:queue];
+        _processingQueue = queue;
+        _serializer = [PNNetworkResponseSerializer new];
+        _baseURL = [self requestBaseURL];
+        _additionalHeaders = [self defaultHeaders];
+        _lock = OS_SPINLOCK_INIT;
+        [self prepareSessionWithRequesrTimeout:timeout maximumConnections:maximumConnections];
     }
     
     return self;
@@ -402,16 +551,19 @@ static DDLogLevel ddLogLevel;
 
 - (NSURLRequest *)requestWithURL:(NSURL *)requestURL data:(NSData *)postData {
     
-    NSURL *fullURL = [NSURL URLWithString:[requestURL absoluteString] relativeToURL:self.session.baseURL];
-    NSString *httpMethod = ([postData length] ? @"POST" : @"GET");
-    NSMutableURLRequest *httpRequest = [self.session.requestSerializer requestWithMethod:httpMethod
-                                        URLString:[fullURL absoluteString] parameters:nil error:nil];
+    NSURL *fullURL = [NSURL URLWithString:[requestURL absoluteString] relativeToURL:self.baseURL];
+    NSMutableURLRequest *httpRequest = [NSMutableURLRequest requestWithURL:fullURL];
+    httpRequest.HTTPMethod = ([postData length] ? @"POST" : @"GET");
+    httpRequest.cachePolicy = NSURLRequestReloadIgnoringCacheData;
+    httpRequest.allHTTPHeaderFields = self.additionalHeaders;
     if (postData) {
         
-        httpRequest.allHTTPHeaderFields = @{@"Content-Encoding":@"gzip",
-                                            @"Content-Type":@"application/json;charset=UTF-8",
-                                            @"Content-Length":[NSString stringWithFormat:@"%@",
-                                                               @([postData length])]};
+        NSMutableDictionary *allHeaders = [httpRequest.allHTTPHeaderFields mutableCopy];
+        [allHeaders addEntriesFromDictionary:@{@"Content-Encoding":@"gzip",
+                                               @"Content-Type":@"application/json;charset=UTF-8",
+                                               @"Content-Length":[NSString stringWithFormat:@"%@",
+                                                                  @([postData length])]}];
+        httpRequest.allHTTPHeaderFields = allHeaders;
         [httpRequest setHTTPBody:postData];
     }
     
@@ -419,15 +571,26 @@ static DDLogLevel ddLogLevel;
 }
 
 - (NSURLSessionDataTask *)dataTaskWithRequest:(NSURLRequest *)request
-                          success:(void(^)(NSURLSessionDataTask *task, id responseObject))success
-                          failure:(void(^)(NSURLSessionDataTask *task, id error))failure {
+                                      success:(NSURLSessionDataTaskSuccess)success
+                                      failure:(NSURLSessionDataTaskFailure)failure {
     
-    __block NSURLSessionDataTask *task = [self.session dataTaskWithRequest:request
-                                          completionHandler:^(__unused NSURLResponse *response,
-                                                              id responseObject, NSError *error) {
+    __block NSURLSessionDataTask *task = nil;
+    __weak __typeof(self) weakSelf = self;
+    NSURLSessionDataTaskCompletion handler = ^(NSData *data, NSURLResponse *response, NSError *error) {
         
-        (!error ? success : failure)(task, (error?: responseObject));
-    }];
+        // Silence static analyzer warnings.
+        // Code is aware about this case and at the end will simply call on 'nil' object method.
+        // In most cases if referenced object become 'nil' it mean what there is no more need in
+        // it and probably whole client instance has been deallocated.
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wreceiver-is-weak"
+        [weakSelf handleData:data loadedWithTask:task error:(error?: task.error)
+                usingSuccess:success failure:failure];
+        #pragma clang diagnostic pop
+    };
+    OSSpinLockLock(&_lock);
+    task = [self.session dataTaskWithRequest:request completionHandler:[handler copy]];
+    OSSpinLockUnlock(&_lock);
     
     return task;
 }
@@ -518,26 +681,17 @@ static DDLogLevel ddLogLevel;
                      [requestURL absoluteString]);
         
         __weak __typeof(self) weakSelf = self;
-        void(^success)(id,id) = ^(NSURLSessionDataTask *task, id responseObject) {
-            
-            [weakSelf handleOperation:operationType taskDidComplete:task withData:responseObject
-                      completionBlock:block];
-        };
-        void(^failure)(id, id) = ^(NSURLSessionDataTask *task, id error) {
-            
-            [weakSelf handleOperation:operationType taskDidFail:task withError:error
-                      completionBlock:block];
-        };
-        if (!data) {
-            
-            [self.session GET:[requestURL absoluteString] parameters:nil success:success
-                      failure:failure];
-        }
-        else {
-            
-            [[self dataTaskWithRequest:[self requestWithURL:requestURL data:data] success:success
-                               failure:failure] resume];
-        }
+        [[self dataTaskWithRequest:[self requestWithURL:requestURL data:data]
+                           success:^(NSURLSessionDataTask *task, id responseObject) {
+                               
+               [weakSelf handleOperation:operationType taskDidComplete:task withData:responseObject
+                         completionBlock:block];
+           }
+           failure:^(NSURLSessionDataTask *task, id error) {
+               
+               [weakSelf handleOperation:operationType taskDidFail:task withError:error
+                         completionBlock:block];
+           }] resume];
     }
     else {
         
@@ -600,7 +754,7 @@ static DDLogLevel ddLogLevel;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 
             NSDictionary *parsedData = [parser parsedServiceResponse:data withData:additionalData];
-            pn_dispatch_async(self.session.completionQueue, ^{
+            pn_dispatch_async(self.processingQueue, ^{
                 
                 parseCompletion(parsedData);
             });
@@ -610,7 +764,15 @@ static DDLogLevel ddLogLevel;
 
 - (void)cancelAllRequests {
 
-    [[self.session tasks] makeObjectsPerformSelector:@selector(cancel)];
+    OSSpinLockLock(&_lock);
+    [self.session getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks,
+                                                  NSArray *downloadTasks) {
+        
+        [dataTasks makeObjectsPerformSelector:@selector(cancel)];
+        [uploadTasks makeObjectsPerformSelector:@selector(cancel)];
+        [downloadTasks makeObjectsPerformSelector:@selector(cancel)];
+        OSSpinLockUnlock(&self->_lock);
+    }];
 }
 
 
@@ -634,15 +796,14 @@ static DDLogLevel ddLogLevel;
 #pragma mark - Session constructor
 
 - (void)prepareSessionWithRequesrTimeout:(NSTimeInterval)timeout
-                      maximumConnections:(NSInteger)maximumConnections
-                            workingQueue:(dispatch_queue_t)queue {
+                      maximumConnections:(NSInteger)maximumConnections {
     
-    NSURL *origin = [NSURL URLWithString:[NSString stringWithFormat:@"http%@://%@",
-                                          (_configuration.TLSEnabled ? @"s" : @""),
-                                          _configuration.origin]];
+    _requestTimeout = timeout;
+    _maximumConnections = maximumConnections;
     NSURLSessionConfiguration *config = [self configurationWithRequestTimeout:timeout
                                                            maximumConnections:maximumConnections];
-    _session = [self managerForOrigin:origin withConfiguration:config workingQueue:queue];
+    _delegateQueue = [self operationQueueWithConfiguration:config];
+    _session = [self sessionWithConfiguration:config];
     
 }
 
@@ -654,29 +815,69 @@ static DDLogLevel ddLogLevel;
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration ephemeralSessionConfiguration];
     configuration.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
     configuration.HTTPShouldUsePipelining = !self.forLongPollRequests;
-    configuration.HTTPAdditionalHeaders = @{@"Accept":@"*/*", @"Accept-Encoding":@"gzip,deflate",
-                                            @"Connection":@"keep-alive"};
+    configuration.HTTPAdditionalHeaders = _additionalHeaders;
     configuration.timeoutIntervalForRequest = timeout;
     configuration.HTTPMaximumConnectionsPerHost = maximumConnections;
     
     return configuration;
 }
 
-- (AFHTTPSessionManager *)managerForOrigin:(NSURL *)origin
-                         withConfiguration:(NSURLSessionConfiguration *)configuration
-                              workingQueue:(dispatch_queue_t)queue; {
+- (NSOperationQueue *)operationQueueWithConfiguration:(NSURLSessionConfiguration *)configuration {
     
-    // Construct AFNetworking sessions to process requests which should be sent to PubNub network.
-    AFHTTPSessionManager *sessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:origin
-                                                                    sessionConfiguration:configuration];
-    sessionManager.completionQueue = queue;
-    sessionManager.operationQueue.maxConcurrentOperationCount = configuration.HTTPMaximumConnectionsPerHost;
+    NSOperationQueue *queue = [NSOperationQueue new];
+    queue.maxConcurrentOperationCount = configuration.HTTPMaximumConnectionsPerHost;
     
-    return sessionManager;
+    return queue;
+}
+
+- (NSURLSession *)sessionWithConfiguration:(NSURLSessionConfiguration *)configuration {
+    
+    // Construct sessions to process requests which should be sent to PubNub network.
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration delegate:self
+                                                     delegateQueue:_delegateQueue];
+    
+    return session;
+}
+
+- (NSURL *)requestBaseURL {
+    
+    return [NSURL URLWithString:[NSString stringWithFormat:@"http%@://%@",
+                                 (_configuration.TLSEnabled ? @"s" : @""), _configuration.origin]];
+}
+
+- (NSDictionary *)defaultHeaders {
+    
+    NSString *agent = [NSString stringWithFormat:@"PubNub-%@/%@", kPNClientName, kPNLibraryVersion];
+    
+    return @{@"Accept":@"*/*", @"Accept-Encoding":@"gzip,deflate", @"User-Agent":agent,
+             @"Connection":@"keep-alive"};
 }
 
 
 #pragma mark - Handlers
+
+-(void)URLSession:(NSURLSession *)session didBecomeInvalidWithError:(NSError *)error {
+    
+    OSSpinLockLock(&_lock);
+    // Replace invalidated session with new one which can be used for next requests.
+    [self prepareSessionWithRequesrTimeout:self.requestTimeout
+                        maximumConnections:self.maximumConnections];
+    OSSpinLockUnlock(&_lock);
+}
+
+- (void)handleData:(NSData *)data loadedWithTask:(NSURLSessionDataTask *)task
+             error:(NSError *)requestError usingSuccess:(NSURLSessionDataTaskSuccess)success
+           failure:(NSURLSessionDataTaskFailure)failure {
+    
+    dispatch_async(self.processingQueue, ^{
+        
+        NSError *serializationError = nil;
+        id processedObject = [self.serializer serializedResponse:(NSHTTPURLResponse *)task.response
+                                                        withData:data error:&serializationError];
+        NSError *error = (requestError?: serializationError);
+        (!error ? success : failure)(task, (error?: processedObject));
+    });
+}
 
 - (void)handleOperation:(PNOperationType)operation taskDidComplete:(NSURLSessionDataTask *)task
                withData:(id)responseObject completionBlock:(id)block {
@@ -684,6 +885,11 @@ static DDLogLevel ddLogLevel;
     __weak __typeof(self) weakSelf = self;
     [self parseData:responseObject withParser:[self parserForOperation:operation]
          completion:^(NSDictionary *parsedData, BOOL parseError) {
+             
+             // Silence static analyzer warnings.
+             // Code is aware about this case and at the end will simply call on 'nil' object method.
+             // In most cases if referenced object become 'nil' it mean what there is no more need in
+             // it and probably whole client instance has been deallocated.
              #pragma clang diagnostic push
              #pragma clang diagnostic ignored "-Wreceiver-is-weak"
              [weakSelf handleParsedData:parsedData loadedWithTask:task forOperation:operation
@@ -703,7 +909,7 @@ static DDLogLevel ddLogLevel;
     else {
         
         id errorDetails = nil;
-        NSData *errorData = (error?: task.error).userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey];
+        NSData *errorData = (error?: task.error).userInfo[kPNNetworkErrorResponseDataKey];
         if (errorData) {
             
             errorDetails = [NSJSONSerialization JSONObjectWithData:errorData
