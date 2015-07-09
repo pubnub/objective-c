@@ -15,6 +15,8 @@
 		6003F59E195388D20070C39A /* PNAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6003F59D195388D20070C39A /* PNAppDelegate.m */; };
 		6003F5A7195388D20070C39A /* PNViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6003F5A6195388D20070C39A /* PNViewController.m */; };
 		6003F5A9195388D20070C39A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6003F5A8195388D20070C39A /* Images.xcassets */; };
+		793D26AD1B44048900509447 /* CHANGELOG in Resources */ = {isa = PBXBuildFile; fileRef = 793D26AC1B44048900509447 /* CHANGELOG */; };
+		793D26AF1B44049400509447 /* VERSION in Resources */ = {isa = PBXBuildFile; fileRef = 793D26AE1B44049400509447 /* VERSION */; };
 		873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 873B8AEA1B1F5CCA007FD442 /* Main.storyboard */; };
 		97FB4DB91B36266800CA7C91 /* Rakefile in Resources */ = {isa = PBXBuildFile; fileRef = 97FB4DB81B36266800CA7C91 /* Rakefile */; };
 		D14C620EAE6ED7F793175040 /* libPods-PubNub_Example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 976A1943FCC7DA8BF70AEA62 /* libPods-PubNub_Example.a */; };
@@ -36,6 +38,8 @@
 		6003F5A6195388D20070C39A /* PNViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNViewController.m; sourceTree = "<group>"; };
 		6003F5A8195388D20070C39A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		78D5FDD94AEDFE48ED24E6A4 /* PubNub.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = PubNub.podspec; path = ../PubNub.podspec; sourceTree = "<group>"; };
+		793D26AC1B44048900509447 /* CHANGELOG */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CHANGELOG; path = ../CHANGELOG; sourceTree = "<group>"; };
+		793D26AE1B44049400509447 /* VERSION */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = VERSION; path = ../VERSION; sourceTree = "<group>"; };
 		7A9945019D33BCC2C3B3B7C1 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		873B8AEA1B1F5CCA007FD442 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		976A1943FCC7DA8BF70AEA62 /* libPods-PubNub_Example.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-PubNub_Example.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -128,8 +132,10 @@
 			isa = PBXGroup;
 			children = (
 				78D5FDD94AEDFE48ED24E6A4 /* PubNub.podspec */,
+				793D26AC1B44048900509447 /* CHANGELOG */,
 				7A9945019D33BCC2C3B3B7C1 /* README.md */,
 				C4C1ED79724D56B45766CFFA /* LICENSE */,
+				793D26AE1B44049400509447 /* VERSION */,
 				97FB4DB81B36266800CA7C91 /* Rakefile */,
 			);
 			name = "Podspec Metadata";
@@ -193,7 +199,9 @@
 				873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */,
 				6003F5A9195388D20070C39A /* Images.xcassets in Resources */,
 				6003F598195388D20070C39A /* InfoPlist.strings in Resources */,
+				793D26AF1B44049400509447 /* VERSION in Resources */,
 				97FB4DB91B36266800CA7C91 /* Rakefile in Resources */,
+				793D26AD1B44048900509447 /* CHANGELOG in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

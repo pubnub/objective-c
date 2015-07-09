@@ -15,7 +15,7 @@
 
 - (void)logMessage:(DDLogMessage *)logMessage {
     
-    if ([logMessage->_fileName hasPrefix:@"PN"]) {
+    if ([logMessage->_fileName hasPrefix:@"PN"] || [logMessage->_fileName hasPrefix:@"PubNub"]) {
         
         [[DDTTYLogger sharedInstance] logMessage:logMessage];
     }

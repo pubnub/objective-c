@@ -86,7 +86,7 @@
  @discussion As soon as file will exceed specified \c size it will be reotated and depending on 
              configuration can be removed.
  
- @param size Maximum single log dump file size.
+ @param size Maximum single log dump file size in bytes.
  
  @since 4.0
  */

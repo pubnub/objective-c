@@ -77,7 +77,7 @@
 - (void)pubNubInit {
 
     [PNLog enabled:YES];
-    [PNLog setMaximumLogFileSize:10];
+    [PNLog setMaximumLogFileSize:(10 * 1024 * 1024)];
     [PNLog setMaximumNumberOfLogFiles:10];
 
     // Initialize PubNub client.
@@ -560,7 +560,12 @@
     else if (status.category == PNDecryptionErrorCategory) {
 
         NSLog(@"Decryption error. Be sure the data is encrypted and/or encrypted with the correct cipher key.");
-        NSLog(@"You can find the raw data returned from the server in the status.data attribute: %@", status.errorData);
+        NSLog(@"You can find the raw data returned from the server in the status.data attribute: %@", status.associatedObject);
+        if (status.operation == PNSubscribeOperation) {
+            
+            NSLog(@"Decryption failed for message from channel: %@",
+                  ((PNMessageData *)status.associatedObject).subscribedChannel);
+        }
     }
     else if (status.category == PNMalformedResponseCategory) {
 
@@ -719,7 +724,7 @@
     self.myConfig.presenceHeartbeatInterval = 60;
 
     // Cipher Key Settings
-    //self.client.cipherKey = @"enigma";
+//    self.myConfig.cipherKey = @"enigma";
 
     // Time Token Handling Settings
     self.myConfig.keepTimeTokenOnListChange = YES;

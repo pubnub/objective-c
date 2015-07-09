@@ -4,6 +4,8 @@
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "PNSubscriber.h"
+#import "PNServiceData+Private.h"
+#import "PNErrorStatus+Private.h"
 #import "PNSubscriberResults.h"
 #import "PNRequestParameters.h"
 #import "PubNub+CorePrivate.h"
@@ -535,7 +537,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
             
             // Check whether client transit from 'disconnected' -> 'connected' state.
             shouldHandleTransition = (currentState == PNInitializedSubscriberState ||
-                                      currentState == PNDisconnectedSubscriberState);
+                                      currentState == PNDisconnectedSubscriberState ||
+                                      currentState == PNConnectedSubscriberState);
             
             // Check whether client transit from 'access denied' -> 'connected' state.
             if (!shouldHandleTransition) {
@@ -563,11 +566,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                                       currentState == PNConnectedSubscriberState);
             category = ((targetState == PNDisconnectedSubscriberState) ? PNDisconnectedCategory :
                         PNUnexpectedDisconnectCategory);
-
-            if (currentState == PNInitializedSubscriberState) {
-                
-                targetState = PNInitializedSubscriberState;
-            }
+            self.mayRequireSubscriptionRestore = shouldHandleTransition;
         }
         // Check whether transit to 'access denied' state.
         else if (targetState == PNAccessRightsErrorSubscriberState) {
@@ -670,7 +669,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
             
             self.mayRequireSubscriptionRestore = NO;
             NSNumber *currentTimeToken = self.currentTimeToken;
-            if ([currentTimeToken compare:@0] != NSOrderedSame) {
+            if (currentTimeToken && [currentTimeToken compare:@0] != NSOrderedSame) {
                 
                 self.lastTimeToken = currentTimeToken;
             }
@@ -794,7 +793,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         
         self.lastTimeToken = @(0);
         self.currentTimeToken = @(0);
-        [self subscribe:YES withState:nil completion:^(PNSubscribeStatus *status) {
+        [self subscribe:YES withState:nil completion:^(__unused PNSubscribeStatus *status) {
             
             if (block) {
                 
@@ -865,7 +864,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     
     // Try fetch time token from passed result/status objects.
     NSNumber *timeToken = @([[status.clientRequest.URL lastPathComponent] longLongValue]);
-    BOOL isInitialSubscription = ([timeToken compare:@0] == NSOrderedSame);
+    BOOL isInitialSubscription = (timeToken && [timeToken compare:@0] == NSOrderedSame);
     
     // Silence static analyzer warnings.
     // Code is aware about this case and at the end will simply call on 'nil' object method.
@@ -952,7 +951,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                 if (self.client.configuration.shouldTryCatchUpOnSubscriptionRestore) {
                     
                     NSNumber *currentTimeToken = self.currentTimeToken;
-                    if ([currentTimeToken compare:@0] != NSOrderedSame) {
+                    if (currentTimeToken && [currentTimeToken compare:@0] != NSOrderedSame) {
                         
                         self.lastTimeToken = currentTimeToken;
                         self.currentTimeToken = @(0);
@@ -1012,7 +1011,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         // Ensure what we already don't use value from previous time token assigned during
         // previous sessions.
         NSNumber *lastTimeToken = self.lastTimeToken;
-        if (shouldUselastTimeToken && [lastTimeToken compare:@0] != NSOrderedSame) {
+        if (shouldUselastTimeToken && lastTimeToken && [lastTimeToken compare:@0] != NSOrderedSame) {
             
             shouldAcceptNewTimeToken = NO;
             
@@ -1026,14 +1025,14 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     NSNumber *currentTimeToken = self.currentTimeToken;
     // Ensure what client won't handle delayed requests.It is impossible to have non-initial
     // subscription while current time token report 0.
-    if (!initialSubscription && [currentTimeToken compare:@0] == NSOrderedSame) {
+    if (!initialSubscription && currentTimeToken && [currentTimeToken compare:@0] == NSOrderedSame) {
         
         shouldAcceptNewTimeToken = NO;
     }
     
     if (shouldAcceptNewTimeToken) {
         
-        if ([currentTimeToken compare:@0] != NSOrderedSame) {
+        if (currentTimeToken && [currentTimeToken compare:@0] != NSOrderedSame) {
             
             self.lastTimeToken = currentTimeToken;
         }
@@ -1105,11 +1104,13 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         DDLogResult([[self class] ddLogLevel], @"<PubNub> %@", [(PNResult *)data stringifiedRepresentation]);
         if ([(data.serviceData)[@"decryptError"] boolValue]) {
             
-            status = (PNErrorStatus *)[PNStatus statusForOperation:PNSubscribeOperation
-                                                          category:PNDecryptionErrorCategory
-                                               withProcessingError:nil];
+            status = [PNErrorStatus statusForOperation:PNSubscribeOperation
+                                              category:PNDecryptionErrorCategory
+                                   withProcessingError:nil];
+
             NSMutableDictionary *updatedData = [data.serviceData mutableCopy];
             [updatedData removeObjectForKey:@"decryptError"];
+            status.associatedObject = [PNMessageData dataWithServiceResponse:updatedData];
             [status updateData:updatedData];
         }
     }
@@ -1119,10 +1120,14 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     // it and probably whole client instance has been deallocated.
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wreceiver-is-weak"
-    [self.client.listenersManager notifyMessage:data];
+    #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
     if (status) {
         
         [self.client.listenersManager notifyStatusChange:(id)status];
+    }
+    else if (data) {
+        
+        [self.client.listenersManager notifyMessage:data];
     }
     #pragma clang diagnostic pop
 }

@@ -3,7 +3,7 @@
  @since 4.0
  @copyright © 2009-2015 PubNub, Inc.
  */
-#import "PNErrorStatus.h"
+#import "PNErrorStatus+Private.h"
 #import "PNServiceData+Private.h"
 #import "PNResult+Private.h"
 
@@ -42,6 +42,14 @@
 
 
 #pragma mark - Information
+
+- (id)copyWithZone:(NSZone *)zone {
+    
+    PNErrorStatus *status = [super copyWithZone:zone];
+    status.associatedObject = self.associatedObject;
+    
+    return status;
+}
 
 - (PNErrorData *)errorData {
     
