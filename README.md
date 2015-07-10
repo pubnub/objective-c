@@ -1,4 +1,7 @@
 # PubNub 4.0.1 for iOS 7+
+## Please direct all Support Questions and Concerns to Support@PubNub.com
+## Complete Docs
+Check out our [official docs page](http://www.pubnub.com/docs/ios-objective-c/pubnub-objective-c-sdk-v4)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -213,4 +216,4 @@ The Example app is used as a simple reference app. It will evolve over time, alo
 ## Complete Docs
 Check out our [official docs page](http://www.pubnub.com/docs/ios-objective-c/pubnub-objective-c-sdk-v4).
 
-Email us at support@pubnub.com with any questions.
+# Please direct all Support Questions and Concerns to Support@PubNub.com

@@ -90,10 +90,6 @@ def xcpretty(reports, output_destination)
   end
 end
 
-def update_exit_status()
-  return $?.exitstatus
-end
-
 def kill_sim()
   sh('killall -9 "iOS Simulator" || echo "No matching processes belonging to sim were found"')
 end
