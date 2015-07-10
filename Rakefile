@@ -15,38 +15,23 @@ namespace :test do
 
   desc "Run the PubNub Integration Tests for iOS"
   task :ios => :prepare do
-    simulators = get_ios_simulators
-    destinations = Array.new
-    # collect all sims except for "Resizable sims"
-    simulators.each { |version, available_simulators|
-      # sims for 7.0.3 exist on Travis CI but not on local machines, so remove
-      # because we can't reproduce results locally
-      if available_simulators[:runtime] != '7.0.3'
-        available_simulators[:device_names].each { |device|
-          if !device.match(/^Resizable/)
-            destinations.push("platform=iOS Simulator,OS=#{available_simulators[:runtime]},name=#{device}")
-            puts "Will run tests for iOS Simulator on iOS #{available_simulators[:runtime]} using #{device}"
-          end
-        }
-      end
-    }
+    destinations = get_sims_for_run
     final_exit_status = 0
     destinations.each { |destination|
       puts '**********************************'
       puts destination
       puts '**********************************'
-      kill_sim()
+      kill_sim
       sleep(5)
-      run_tests('iOS Tests', 'iphonesimulator', destination)
+      run_tests('iOS Tests', 'iphonesimulator', destination, false)
       current_exit_status = $?.exitstatus
       if current_exit_status != 0
         final_exit_status = current_exit_status
       end
     }
-    kill_sim()
+    kill_sim
     exit final_exit_status
   end
-
 end
 
 desc "Run the PubNub Integration Tests for iOS"
@@ -56,7 +41,16 @@ end
 
 desc 'Print test coverage of the last test run'
 task :coverage do
-  sh("slather")
+  begin
+      gem "slather"
+    rescue Gem::LoadError
+      # not installed
+      puts 'slather is not installed, code coverage is not possible, enable code coverage by running "sudo gem install slather"'
+    else
+      # installed! run slather setup
+      puts 'slather installed, code coverage can be generated from this run'
+      sh("slather")
+    end
 end
 
 task :default => 'test'
@@ -64,9 +58,36 @@ task :default => 'test'
 
 private
 
-def run_tests(scheme, sdk, destination)
-    sim_destination = "-destination \'#{destination}\'"
-    sh("xcodebuild -workspace PubNub.xcworkspace -scheme '#{scheme}' -sdk '#{sdk}' #{sim_destination} -configuration 'Debug' clean test | xcpretty -c; exit ${PIPESTATUS[0]}") rescue nil
+def get_sims_for_run
+  simulators = get_ios_simulators
+  destinations = Array.new
+  # collect all sims except for "Resizable sims"
+  simulators.each { |version, available_simulators|
+    # sims for 7.0.3 exist on Travis CI but not on local machines, so remove
+    # because we can't reproduce results locally
+    if available_simulators[:runtime] != '7.0.3'
+      available_simulators[:device_names].each { |device|
+        if !device.match(/^Resizable/)
+          destinations.push("platform=iOS Simulator,OS=#{available_simulators[:runtime]},name=#{device}")
+          puts "Will run tests for iOS Simulator on iOS #{available_simulators[:runtime]} using #{device}"
+        end
+      }
+    end
+  }
+  return destinations
+end
+
+def run_tests(scheme, sdk, destination, reports)
+  sim_destination = "-destination \'#{destination}\'"
+  sh("xcodebuild -workspace PubNub.xcworkspace -scheme '#{scheme}' -sdk '#{sdk}' #{sim_destination} -configuration 'Debug' clean test | " + xcpretty(reports, destination) + "; exit ${PIPESTATUS[0]}") rescue nil
+end
+
+def xcpretty(reports, output_destination)
+  if reports == true
+    xcpretty_command = 'xcpretty -c -r junit -o ${output_destination}'
+  else
+    xcpretty_command = 'xcpretty -c'
+  end
 end
 
 def update_exit_status()
