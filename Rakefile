@@ -32,11 +32,26 @@ namespace :test do
     kill_sim
     exit final_exit_status
   end
+
 end
 
-desc "Run the PubNub Integration Tests for iOS"
-task :test do
-  Rake::Task['test:ios'].invoke
+desc 'Generate test report'
+task :report do
+  destinations = get_sims_for_run
+  final_exit_status = 0
+  destination = destinations[0]
+  puts '**********************************'
+  puts destination
+  puts '**********************************'
+  kill_sim
+  sleep(5)
+  run_tests('iOS Tests', 'iphonesimulator', destination, true)
+  current_exit_status = $?.exitstatus
+  if current_exit_status != 0
+    final_exit_status = current_exit_status
+  end
+  kill_sim
+  exit final_exit_status
 end
 
 desc 'Print test coverage of the last test run'
@@ -51,6 +66,11 @@ task :coverage do
     puts 'slather installed, code coverage will be generated'
     sh("slather")
   end
+end
+
+desc "Run the PubNub Integration Tests for iOS"
+task :test do
+  Rake::Task['test:ios'].invoke
 end
 
 task :default => 'test'
@@ -90,7 +110,7 @@ def xcpretty(reports, output_destination)
   end
 end
 
-def kill_sim()
+def kill_sim
   sh('killall -9 "iOS Simulator" || echo "No matching processes belonging to sim were found"')
 end
 
