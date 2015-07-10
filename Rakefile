@@ -1,7 +1,16 @@
 namespace :test do
 
   task :prepare do
-    sh("slather setup 'Tests/PubNub\ Tests.xcodeproj/'")
+    begin
+      gem "slather"
+    rescue Gem::LoadError
+      # not installed
+      puts 'slather is not installed, code coverage is not possible, enable code coverage by running "sudo gem install slather"'
+    else
+      # installed! run slather setup
+      puts 'slather installed, code coverage can be generated from this run'
+      sh("slather setup 'Tests/PubNub\ Tests.xcodeproj/'")
+    end
   end
 
   desc "Run the PubNub Integration Tests for iOS"
