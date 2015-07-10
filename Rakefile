@@ -48,7 +48,7 @@ task :coverage do
       puts 'slather is not installed, code coverage is not possible, enable code coverage by running "sudo gem install slather"'
     else
       # installed! run slather setup
-      puts 'slather installed, code coverage can be generated from this run'
+      puts 'slather installed, code coverage will be generated'
       sh("slather")
     end
 end
