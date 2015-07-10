@@ -42,15 +42,15 @@ end
 desc 'Print test coverage of the last test run'
 task :coverage do
   begin
-      gem "slather"
-    rescue Gem::LoadError
-      # not installed
-      puts 'slather is not installed, code coverage is not possible, enable code coverage by running "sudo gem install slather"'
-    else
-      # installed! run slather setup
-      puts 'slather installed, code coverage will be generated'
-      sh("slather")
-    end
+    gem "slather"
+  rescue Gem::LoadError
+    # not installed
+    puts 'slather is not installed, code coverage is not possible, enable code coverage by running "sudo gem install slather"'
+  else
+    # installed! run slather setup
+    puts 'slather installed, code coverage will be generated'
+    sh("slather")
+  end
 end
 
 task :default => 'test'
