@@ -302,11 +302,9 @@
 
     // Convert passed message to mutable dictionary into which required by push notification
     // delivery service provider data will be added.
-    NSDictionary *originalMessage = ([message isKindOfClass:[NSDictionary class]] ?
-                                     message : @{@"pn_other":message});
+    NSDictionary *originalMessage =  (!message ? @{} : ([message isKindOfClass:[NSDictionary class]] ?
+                                                        message : @{@"pn_other":message}));
     NSMutableDictionary *mergedMessage = [originalMessage mutableCopy];
-    
-
     for (NSString *pushProviderType in payloads) {
 
         id payload = payloads[pushProviderType];
