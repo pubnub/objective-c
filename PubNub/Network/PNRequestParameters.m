@@ -75,10 +75,22 @@
     [self.resourcePathComponents setValue:component forKey:componentPlaceholder];
 }
 
+- (void)removePathComponentForPlaceholder:(NSString *)componentPlaceholder {
+    
+    NSParameterAssert(componentPlaceholder);
+    [self.resourcePathComponents removeObjectForKey:componentPlaceholder];
+}
+
 - (void)addPathComponents:(NSDictionary *)components {
     
     NSParameterAssert(components);
     [self.resourcePathComponents addEntriesFromDictionary:components];
+}
+
+- (void)removePathComponents:(NSArray *)components {
+    
+    NSParameterAssert(components);
+    [self.resourcePathComponents removeObjectsForKeys:components];
 }
 
 
@@ -91,10 +103,22 @@
     [self.queryFields setValue:parameter forKey:parameterFieldName];
 }
 
+- (void)removeQueryParameterWithFieldName:(NSString *)parameterFieldName {
+    
+    NSParameterAssert(parameterFieldName);
+    [self.queryFields removeObjectForKey:parameterFieldName];
+}
+
 - (void)addQueryParameters:(NSDictionary *)parameters {
     
     NSParameterAssert(parameters);
     [self.queryFields addEntriesFromDictionary:parameters];
+}
+
+- (void)removeQueryParameters:(NSArray *)parameters {
+    
+    NSParameterAssert(parameters);
+    [self.queryFields removeObjectsForKeys:parameters];
 }
 
 #pragma mark - 

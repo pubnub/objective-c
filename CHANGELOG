@@ -1,4 +1,20 @@
-06-30-2015 - 4.0
+07-13-2015 - a9c8c46 - 4.0.2
+. replaced AFNetworking with native NSURLSession wrapper
+. fixed podspec to suppress warnings which appeared because private headers has been exposed to public
+. fixed code which had warnings from clang
+. fixed issues with composed message publish (with mobile push payloads)
+. fixed demo application which provided wrong logger configuration for log file size
+. fixed issue with number publishing
+. if empty array of channels passed to enable push notifications SDK will report error
+. added 'associatedObject' field to PNErrorStatus (for now only for decryption error on live feed)
+. in case of decryption error only status object will arrive to lisetner (-client:didReceiveMessage: won't be called)
+. fixed logger levels manipulation
+. fixed inability to publish mobile gateway payloads only
+
+06-30-2015 - bb6a001 - 4.0.1
+. updated documentation hosted by CocoaPods
+
+06-30-2015 - 8a76beb - 4.0
 . The new, refactored PN 4.0 for iOS is Here!
 
 06-09-2015 - c76f36e - 3.7.11

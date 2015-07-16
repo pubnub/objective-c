@@ -12,6 +12,7 @@
 #import "PNStatus+Private.h"
 #import "PNConfiguration.h"
 #import "PNReachability.h"
+#import "PNConstants.h"
 #import "PNNetwork.h"
 #import "PNHelpers.h"
 
@@ -186,12 +187,15 @@ void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
     
     // Check whether initialization has been successful or not
     if ((self = [super init])) {
-        
 #if DEBUG
         [PNLog dumpToFile:YES];
 #else
         [PNLog dumpToFile:NO];
 #endif
+        
+        DDLogClientInfo([[self class] ddLogLevel], @"<PubNub> PubNub SDK %@ (%@ %@)",
+                        kPNLibraryVersion, kPNBranchName, kPNCommit);
+        
         _configuration = [configuration copy];
         _callbackQueue = callbackQueue;
         [self prepareNetworkManagers];
@@ -202,12 +206,23 @@ void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
         _heartbeatManager = [PNHeartbeat heartbeatForClient:self];
         [self addListener:self];
         [self prepareReachability];
-        
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
         NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
         [notificationCenter addObserver:self selector:@selector(handleContextTransition:)
                                    name:UIApplicationWillEnterForegroundNotification object:nil];
         [notificationCenter addObserver:self selector:@selector(handleContextTransition:)
                                    name:UIApplicationDidEnterBackgroundNotification object:nil];
+#elif __MAC_OS_X_VERSION_MIN_REQUIRED
+        NSNotificationCenter *notificationCenter = [[NSWorkspace sharedWorkspace] notificationCenter];
+        [notificationCenter addObserver:self selector:@selector(handleContextTransition:)
+                                   name:NSWorkspaceWillSleepNotification object:nil];
+        [notificationCenter addObserver:self selector:@selector(handleContextTransition:)
+                                   name:NSWorkspaceSessionDidResignActiveNotification object:nil];
+        [notificationCenter addObserver:self selector:@selector(handleContextTransition:)
+                                   name:NSWorkspaceDidWakeNotification object:nil];
+        [notificationCenter addObserver:self selector:@selector(handleContextTransition:)
+                                   name:NSWorkspaceSessionDidBecomeActiveNotification object:nil];
+#endif
     }
     
     return self;
@@ -232,7 +247,7 @@ void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
     
     dispatch_block_t subscriptionRestoreBlock = ^{
         
-        [client.subscriberManager continueSubscriptionCycleIfRequiredWithCompletion:^(PNSubscribeStatus *status) {
+        [client.subscriberManager continueSubscriptionCycleIfRequiredWithCompletion:^(__unused PNSubscribeStatus *status) {
             
             if (block) {
                 
@@ -249,12 +264,12 @@ void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
             ![configuration.authKey isEqualToString:self.configuration.authKey]) {
             __weak __typeof(self) weakSelf = self;
             [self unsubscribeFromChannels:self.subscriberManager.channels withPresence:YES
-                               completion:^(PNSubscribeStatus *status1) {
+                               completion:^(__unused PNSubscribeStatus *status1) {
                    
                  __strong __typeof(self) strongSelf = weakSelf;
                 [strongSelf unsubscribeFromChannelGroups:strongSelf.subscriberManager.channelGroups
                                             withPresence:YES
-                                              completion:^(PNSubscribeStatus *status2) {
+                                              completion:^(__unused PNSubscribeStatus *status2) {
                                           
                     subscriptionRestoreBlock();
                 }];
@@ -294,7 +309,7 @@ void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
     if (currentState == PNUnexpectedDisconnectCategory) {
         
         // Check whether client unexpectedly disconnected while tried to subscribe or not.
-        if (previousState != PNUnknownCategory && previousState != PNDisconnectedCategory) {
+        if (previousState != PNDisconnectedCategory) {
             
             // Dispatching check block with small delay, which will allow to fire reachability
             // change event.
@@ -414,7 +429,7 @@ void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
         andStatus:(PNStatus *)status {
     
     if (result) {
-            
+
         DDLogResult([[self class] ddLogLevel], @"<PubNub> %@", [result stringifiedRepresentation]);
     }
     
@@ -460,6 +475,7 @@ void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
 
 - (void)handleContextTransition:(NSNotification *)notification {
     
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
     if ([notification.name isEqualToString:UIApplicationDidEnterBackgroundNotification]) {
         
         DDLogClientInfo([[self class] ddLogLevel], @"<PubNub> Did enter background execution context.");
@@ -468,6 +484,18 @@ void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
         
         DDLogClientInfo([[self class] ddLogLevel], @"<PubNub> Will enter foreground execution context.");
     }
+#elif __MAC_OS_X_VERSION_MIN_REQUIRED
+    if ([notification.name isEqualToString:NSWorkspaceWillSleepNotification] ||
+        [notification.name isEqualToString:NSWorkspaceSessionDidResignActiveNotification]) {
+        
+        DDLogClientInfo([[self class] ddLogLevel], @"<PubNub> Workspace became inactive.");
+    }
+    else if ([notification.name isEqualToString:NSWorkspaceDidWakeNotification] ||
+             [notification.name isEqualToString:NSWorkspaceSessionDidBecomeActiveNotification]) {
+        
+        DDLogClientInfo([[self class] ddLogLevel], @"<PubNub> Workspace became active.");
+    }
+#endif
 }
 
 
@@ -475,11 +503,21 @@ void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
 
 - (void)dealloc {
     
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
     [notificationCenter removeObserver:self name:UIApplicationWillEnterForegroundNotification
                                 object:nil];
     [notificationCenter removeObserver:self name:UIApplicationDidEnterBackgroundNotification
                                 object:nil];
+#elif __MAC_OS_X_VERSION_MIN_REQUIRED
+    NSNotificationCenter *notificationCenter = [[NSWorkspace sharedWorkspace] notificationCenter];
+    [notificationCenter removeObserver:self name:NSWorkspaceWillSleepNotification object:nil];
+    [notificationCenter removeObserver:self name:NSWorkspaceSessionDidResignActiveNotification
+                                object:nil];
+    [notificationCenter removeObserver:self name:NSWorkspaceDidWakeNotification object:nil];
+    [notificationCenter removeObserver:self name:NSWorkspaceSessionDidBecomeActiveNotification
+                                object:nil];
+#endif
 }
 
 #pragma mark -

@@ -51,7 +51,7 @@
  
  @since 4.0
  */
-- (NSDictionary *)mergedMessage:(NSString *)message withMobilePushPayload:(NSDictionary *)payloads;
+- (NSDictionary *)mergedMessage:(id)message withMobilePushPayload:(NSDictionary *)payloads;
 
 /**
  @brief  Try perform encryption of data which should be pushed to \b PubNub services.
@@ -142,6 +142,7 @@
     __weak __typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 
+        BOOL encrypted = NO;
         NSError *publishError = nil;
         NSString *messageForPublish = [PNJSON JSONStringFrom:message withError:&publishError];
 
@@ -149,15 +150,17 @@
         if (!publishError) {
 
             // Try perform user message encryption.
-            messageForPublish = [self encryptedMessage:messageForPublish
-                                         withCipherKey:self.configuration.cipherKey
-                                                 error:&publishError];
+            NSString *encryptedMessage = [self encryptedMessage:messageForPublish
+                                                  withCipherKey:self.configuration.cipherKey
+                                                          error:&publishError];
+            encrypted = ![messageForPublish isEqualToString:encryptedMessage];
+            messageForPublish = [encryptedMessage copy];
         }
 
         // Merge user message with push notification payloads (if provided).
         if (!publishError && [payloads count]) {
 
-            NSDictionary *mergedData = [self mergedMessage:messageForPublish
+            NSDictionary *mergedData = [self mergedMessage:(encrypted ? messageForPublish : message)
                                      withMobilePushPayload:payloads];
             messageForPublish = [PNJSON JSONStringFrom:mergedData withError:&publishError];
         }
@@ -295,21 +298,27 @@
     return parameters;
 }
 
-- (NSDictionary *)mergedMessage:(NSString *)message withMobilePushPayload:(NSDictionary *)payloads {
+- (NSDictionary *)mergedMessage:(id)message withMobilePushPayload:(NSDictionary *)payloads {
 
     // Convert passed message to mutable dictionary into which required by push notification
     // delivery service provider data will be added.
-    NSMutableDictionary *mergedMessage = [@{@"pn_other":message} mutableCopy];
-
+    NSDictionary *originalMessage =  (!message ? @{} : ([message isKindOfClass:[NSDictionary class]] ?
+                                                        message : @{@"pn_other":message}));
+    NSMutableDictionary *mergedMessage = [originalMessage mutableCopy];
     for (NSString *pushProviderType in payloads) {
 
         id payload = payloads[pushProviderType];
-        if ([pushProviderType isEqualToString:@"apns"] && payload[@"aps"] == nil) {
-
-            payload = @{@"aps":payload};
+        NSString *providerKey = pushProviderType;
+        if (![pushProviderType hasPrefix:@"pn_"]) {
+            
+            providerKey = [NSString stringWithFormat:@"pn_%@", pushProviderType];
+            if ([pushProviderType isEqualToString:@"aps"]) {
+                
+                payload = @{pushProviderType:payload};
+                providerKey = @"pn_apns";
+            }
         }
-        NSString *provideKey = [NSString stringWithFormat:@"pn_%@", pushProviderType];
-        [mergedMessage setValue:payload forKey:provideKey];
+        [mergedMessage setValue:payload forKey:providerKey];
     }
     
     return [mergedMessage copy];
