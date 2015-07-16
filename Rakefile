@@ -60,10 +60,6 @@ def run_tests(scheme, sdk, destination)
     sh("xcodebuild -workspace PubNub.xcworkspace -scheme '#{scheme}' -sdk '#{sdk}' #{sim_destination} -configuration 'Debug' clean test | xcpretty -c; exit ${PIPESTATUS[0]}") rescue nil
 end
 
-def update_exit_status()
-  return $?.exitstatus
-end
-
 def kill_sim()
   sh('killall -9 "iOS Simulator" || echo "No matching processes belonging to sim were found"')
 end
