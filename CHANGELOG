@@ -1,4 +1,4 @@
-07-13-2015 - ec54ca5 - 4.0.2
+07-13-2015 - a9c8c46 - 4.0.2
 . replaced AFNetworking with native NSURLSession wrapper
 . fixed podspec to suppress warnings which appeared because private headers has been exposed to public
 . fixed code which had warnings from clang
