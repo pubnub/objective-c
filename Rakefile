@@ -99,12 +99,12 @@ end
 
 def run_tests(scheme, sdk, destination, reports)
   sim_destination = "-destination \'#{destination}\'"
-  sh("xcodebuild -workspace PubNub.xcworkspace -scheme '#{scheme}' -sdk '#{sdk}' #{sim_destination} -configuration 'Debug' clean test | " + xcpretty(reports, destination) + "; exit ${PIPESTATUS[0]}") rescue nil
+  sh("xcodebuild -workspace PubNub.xcworkspace -scheme '#{scheme}' -sdk '#{sdk}' #{sim_destination} -configuration 'Debug' clean test | " + xcpretty(reports, 'reports/report.xml') + "; exit ${PIPESTATUS[0]}") rescue nil
 end
 
 def xcpretty(reports, output_destination)
   if reports == true
-    xcpretty_command = 'xcpretty -c -r junit -o ${output_destination}'
+    xcpretty_command = "xcpretty -c -r junit -o #{output_destination}"
   else
     xcpretty_command = 'xcpretty -c'
   end
