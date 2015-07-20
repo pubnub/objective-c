@@ -231,26 +231,29 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
     
     NSMutableDictionary *message = [@{@"message":data} mutableCopy];
     // Try decrypt message body if possible.
-    if ([data isKindOfClass:[NSString class]] && [(NSString *)additionalData[@"cipherKey"] length]){
+    if ([(NSString *)additionalData[@"cipherKey"] length]){
         
         NSError *decryptionError;
-        NSData *eventData = [PNAES decrypt:data withKey:additionalData[@"cipherKey"]
-                                  andError:&decryptionError];
-        NSString *encryptedEventData = nil;
-        if (eventData) {
+        if ([data isKindOfClass:[NSString class]]) {
             
-            encryptedEventData = [[NSString alloc] initWithData:eventData
-                                                       encoding:NSUTF8StringEncoding];
+            NSData *eventData = [PNAES decrypt:data withKey:additionalData[@"cipherKey"]
+                                      andError:&decryptionError];
+            NSString *encryptedEventData = nil;
+            if (eventData) {
+                
+                encryptedEventData = [[NSString alloc] initWithData:eventData
+                                                           encoding:NSUTF8StringEncoding];
+            }
+            
+            // In case if after encryption another object has been received client
+            // should try to de-serialize it again as JSON object.
+            if (encryptedEventData && ![encryptedEventData isEqualToString:data]) {
+                
+                message[@"message"] = [PNJSON JSONObjectFrom:encryptedEventData withError:nil];
+            }
         }
         
-        // In case if after encryption another object has been received client
-        // should try to de-serialize it again as JSON object.
-        if (encryptedEventData && ![encryptedEventData isEqualToString:data]) {
-            
-            message[@"message"] = [PNJSON JSONObjectFrom:encryptedEventData withError:nil];
-        }
-        
-        if (decryptionError) {
+        if (decryptionError || ![data isKindOfClass:[NSString class]]) {
             
             DDLogAESError([self ddLogLevel], @"<PubNub> Message decryption error: %@",
                           decryptionError);

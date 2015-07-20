@@ -77,6 +77,13 @@
  */
 @property (nonatomic, readonly, strong) PNErrorData *errorData;
 
+/**
+ @brief  Reference on data object which hold additional informatino about error and why it happened.
+ 
+ @since 4.0.2
+ */
+@property (nonatomic, readonly, strong) id associatedObject;
+
 #pragma mark - 
 
 

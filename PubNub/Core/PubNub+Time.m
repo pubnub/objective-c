@@ -8,13 +8,8 @@
 #import "PubNub+CorePrivate.h"
 #import "PNStatus.h"
 
-#pragma mark CocoaLumberjack logging support
 
-DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNFailureStatusLogLevel|
-                                            PNAPICallLogLevel);
-
-
-#pragma mark - Interface implementation
+#pragma mark Interface implementation
 
 @implementation PubNub (Time)
 

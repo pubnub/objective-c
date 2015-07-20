@@ -175,7 +175,7 @@ static DDLogLevel ddLogLevel = DDLogLevelInfo;
     }
     else {
         
-        logLevel |= DDLogLevelInfo;
+        logLevel |= PNInfoLogLevel;
     }
     
     for (Class class in [self logEnabledClasses]) {
@@ -208,13 +208,13 @@ static DDLogLevel ddLogLevel = DDLogLevelInfo;
         
         if (!shouldDumpToFile) {
             
-            DDLogInfo(@"<PubNub> File logger disabled");
+            DDLogClientInfo([[self class] ddLogLevel], @"<PubNub> File logger disabled");
             [DDLog removeLogger:self.fileLogger];
         }
         else {
             
-            DDLogInfo(@"<PubNub> File logger enabnled");
-            DDLogInfo(@"<PubNub> Log files stored in: %@",
+            DDLogClientInfo([[self class] ddLogLevel],@"<PubNub> File logger enabnled");
+            DDLogClientInfo([[self class] ddLogLevel],@"<PubNub> Log files stored in: %@",
                       [self.fileLogger.logFileManager logsDirectory]);
             [DDLog addLogger:self.fileLogger withLevel:(DDLogLevel)PNVerboseLogLevel];
         }

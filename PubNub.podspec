@@ -9,42 +9,42 @@
 
 Pod::Spec.new do |s|
   s.name             = "PubNub"
-  s.version          = "4.0.1"
+  s.version          = "4.0.2"
   s.summary          = "The PubNub Real-Time Network. Build real-time apps quickly and scale them globally."
   s.homepage         = "https://github.com/pubnub/objective-c"
 
   s.authors = {
-    'PubNub, Inc.' => 'support@pubnub.com'
+    "PubNub, Inc." => "support@pubnub.com"
   }
   s.source = {
-    :git => 'https://github.com/pubnub/objective-c.git',
-    :tag => 'v4.0.1'
+    :git => "https://github.com/pubnub/objective-c.git",
+    :tag => "v#{s.version}"
     }
-  s.social_media_url = 'https://twitter.com/pubnub'
+  s.social_media_url = "https://twitter.com/pubnub"
 
-  s.platform     = :ios, '7.0'
+  s.ios.deployment_target = '7.0'
+  s.osx.deployment_target = '10.9'
   s.requires_arc = true
 
-  s.source_files = 'PubNub/**/*'
+  s.source_files = "PubNub/**/*"
   s.private_header_files = [
-    'PubNub/Core/*Private.h',
-    'PubNub/Data/*Private.h',
-    'PubNub/Data/Managers/**/*.h',
-    'PubNub/Misc/PNPrivateStructures.h',
-    'PubNub/Misc/Helpers/*.h',
-    'PubNub/Misc/Logger/PNLogFileManager.h',
-    'PubNub/Misc/Protocols/PNParser.h',
-    'PubNub/Network/**/*.h',
+    "PubNub/Core/*Private.h",
+    "PubNub/Data/*Private.h",
+    "PubNub/Data/Managers/**/*.h",
+    "PubNub/Data/Service Objects/*Private.h",
+    "PubNub/Misc/PNConstants.h",
+    "PubNub/Misc/PNPrivateStructures.h",
+    "PubNub/Misc/Helpers/*.h",
+    "PubNub/Misc/Logger/PNLogFileManager.h",
+    "PubNub/Misc/Protocols/PNParser.h",
+    "PubNub/Network/**/*.h",
   ]
 
-  s.library   = 'z'
-  s.dependency 'AFNetworking', '~> 2.5.4'
-  s.dependency 'CocoaLumberjack', '2.0.0'
+  s.library   = "z"
+  s.dependency "CocoaLumberjack", "2.0.0"
 
 
-s.license = %{
-:type => 'MIT',
-:text => <<-LICENSE'
+s.license = %{ :type => "MIT", :text => <<-LICENSE'
 PubNub Real-time Cloud-Hosted Push API and Push Notification Client Frameworks
 Copyright (c) 2013 PubNub Inc.
 http://www.pubnub.com/
