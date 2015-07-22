@@ -21,7 +21,7 @@
  
  @since 4.0
  */
-@property (nonatomic, readonly, strong) NSDictionary *channels;
+@property (nonatomic, readonly, strong) NSArray *channels;
 
 #pragma mark -
 
