@@ -847,9 +847,23 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
 
 - (NSDictionary *)defaultHeaders {
     
-    NSString *agent = [NSString stringWithFormat:@"PubNub-%@/%@", kPNClientName, kPNLibraryVersion];
+    NSString *device = @"iPhone";
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+    device = [[UIDevice currentDevice] model];
+    NSString *osVersion = [[UIDevice currentDevice] systemVersion];
+#elif __MAC_OS_X_VERSION_MIN_REQUIRED
+    NSOperatingSystemVersion version = [[NSProcessInfo processInfo]operatingSystemVersion];
+    NSMutableString *osVersion = [NSMutableString stringWithFormat:@"%@.%@",
+                                  @(version.majorVersion), @(version.minorVersion)];
+    if (version.patchVersion > 0) {
+        
+        [osVersion appendFormat:@".%@", @(version.patchVersion)];
+    }
+#endif
+    NSString *userAgent = [NSString stringWithFormat:@"iPhone; CPU %@ OS %@ Version",
+                           device, osVersion];
     
-    return @{@"Accept":@"*/*", @"Accept-Encoding":@"gzip,deflate", @"User-Agent":agent,
+    return @{@"Accept":@"*/*", @"Accept-Encoding":@"gzip,deflate", @"User-Agent":userAgent,
              @"Connection":@"keep-alive"};
 }
 
