@@ -22,9 +22,8 @@ target 'iOS Tests', :exclusive => true do
   pod "PubNub", :path => "."
 end
 
-
-post_install do |installer_representation|
-    installer_representation.project.targets.each do |target|
+post_install do |installer|
+    installer.pods_project.targets.each do |target|
     	if target.name == 'Pods-iOS Tests-PubNub'
         	target.build_configurations.each do |config|
             	if config.name == 'Debug'
