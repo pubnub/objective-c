@@ -99,7 +99,7 @@
     // Check whether initialization successful or not.
     if ((self = [super init])) {
         
-#if TEST
+#if DEMO
         _deviceID = @"3650F534-FC54-4EE8-884C-EF1B83188BB7";
 #else
         _deviceID = [[self uniqueDeviceIdentifier] copy];
