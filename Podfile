@@ -21,18 +21,3 @@ target 'iOS Tests', :exclusive => true do
   pod "JSZVCR", "~> 0.5"
   pod "PubNub", :path => "."
 end
-
-# as of cocoapods 0.38, it seems like there is no way to override individual Pod
-# settings for different targets. This will enable DEMO everywhere that PubNub is
-# installed (including PubNub-Example
-post_install do |installer|
-    installer.pods_project.targets.each do |target|
-        if target.name == 'PubNub'
-            target.build_configurations.each do |config|
-                if config.name == 'Debug'
-                    config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)', 'DEBUG=1', 'DEMO=1']
-                end
-            end
-        end
-    end
-end
