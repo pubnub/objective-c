@@ -15,7 +15,7 @@
 
 #pragma mark - Information
 
-- (id)channels {
+- (NSDictionary *)channels {
     
     return self.serviceData[@"channels"];
 }

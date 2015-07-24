@@ -1,3 +1,11 @@
+07-24-2015 - 661d857 - 4.0.3
+. fixed and changed data types for few data objects (which caused crash in swift environment)
+. added custom 'User-Agent' header field
+. fixed size tests to handle updated packet size during tests
+. Fixed Podfile
+. removed CocoaPods post-install script from Podfile
+. changed test environment check
+
 07-13-2015 - a9c8c46 - 4.0.2
 . replaced AFNetworking with native NSURLSession wrapper
 . fixed podspec to suppress warnings which appeared because private headers has been exposed to public

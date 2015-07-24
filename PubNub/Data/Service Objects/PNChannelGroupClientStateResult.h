@@ -21,7 +21,7 @@
  
  @since 4.0
  */
-@property (nonatomic, readonly, strong) id channels;
+@property (nonatomic, readonly, strong) NSDictionary *channels;
 
 #pragma mark -
 
