@@ -21,3 +21,10 @@ target 'iOS Tests', :exclusive => true do
   pod "JSZVCR", "~> 0.5"
   pod "PubNub", :path => "."
 end
+
+target 'iOS Tests-Swift', :exclusive => true do
+    platform :ios, "7.0"
+    xcodeproj 'Tests/PubNub Tests.xcodeproj'
+    pod "JSZVCR", "~> 0.5"
+    pod "PubNub", :path => "."
+end
