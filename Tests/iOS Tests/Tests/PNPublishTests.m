@@ -30,46 +30,46 @@
 - (void)testSimplePublish {
     [self performVerifiedPublish:@"test" onChannel:[self publishTestsChannelName]
                   withAssertions:^(PNPublishStatus *status) {
-        XCTAssertNotNil(status);
-        XCTAssertEqual(status.category, PNAcknowledgmentCategory);
-        XCTAssertEqual(status.operation, PNPublishOperation);
-        XCTAssertEqual(status.statusCode, 200);
-        XCTAssertFalse(status.isError);
-        NSLog(@"status.data.information: %@", status.data.information);
-        NSLog(@"status.data.timeToken: %@", status.data.timetoken);
-        XCTAssertEqualObjects(status.data.information, @"Sent");
-        XCTAssertEqualObjects(status.data.timetoken, @14355311066264140);
-    }];
+                      XCTAssertNotNil(status);
+                      XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+                      XCTAssertEqual(status.operation, PNPublishOperation);
+                      XCTAssertEqual(status.statusCode, 200);
+                      XCTAssertFalse(status.isError);
+                      NSLog(@"status.data.information: %@", status.data.information);
+                      NSLog(@"status.data.timeToken: %@", status.data.timetoken);
+                      XCTAssertEqualObjects(status.data.information, @"Sent");
+                      XCTAssertEqualObjects(status.data.timetoken, @14355311066264140);
+                  }];
 }
 
 - (void)testPublishNilMessage {
     [self performVerifiedPublish:nil onChannel:[self publishTestsChannelName]
                   withAssertions:^(PNPublishStatus *status) {
-        XCTAssertNotNil(status);
-        XCTAssertEqual(status.category, PNBadRequestCategory);
-        XCTAssertEqual(status.operation, PNPublishOperation);
-        XCTAssertEqual(status.statusCode, 400);
-        XCTAssertTrue(status.isError);
-        NSLog(@"status.data.information: %@", status.data.information);
-        NSLog(@"status.data.timeToken: %@", status.data.timetoken);
-        XCTAssertNil(status.data.information);
-        XCTAssertNil(status.data.timetoken);
-    }];
+                      XCTAssertNotNil(status);
+                      XCTAssertEqual(status.category, PNBadRequestCategory);
+                      XCTAssertEqual(status.operation, PNPublishOperation);
+                      XCTAssertEqual(status.statusCode, 400);
+                      XCTAssertTrue(status.isError);
+                      NSLog(@"status.data.information: %@", status.data.information);
+                      NSLog(@"status.data.timeToken: %@", status.data.timetoken);
+                      XCTAssertNil(status.data.information);
+                      XCTAssertNil(status.data.timetoken);
+                  }];
 }
 
 - (void)testPublishDictionary {
     [self performVerifiedPublish:@{@"test" : @"test"} onChannel:[self publishTestsChannelName]
                   withAssertions:^(PNPublishStatus *status) {
-        XCTAssertNotNil(status);
-        XCTAssertEqual(status.category, PNAcknowledgmentCategory);
-        XCTAssertEqual(status.operation, PNPublishOperation);
-        XCTAssertEqual(status.statusCode, 200);
-        XCTAssertFalse(status.isError);
-        NSLog(@"status.data.information: %@", status.data.information);
-        NSLog(@"status.data.timeToken: %@", status.data.timetoken);
-        XCTAssertEqualObjects(status.data.information, @"Sent");
-        XCTAssertEqualObjects(status.data.timetoken, @14355311062532489);
-    }];
+                      XCTAssertNotNil(status);
+                      XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+                      XCTAssertEqual(status.operation, PNPublishOperation);
+                      XCTAssertEqual(status.statusCode, 200);
+                      XCTAssertFalse(status.isError);
+                      NSLog(@"status.data.information: %@", status.data.information);
+                      NSLog(@"status.data.timeToken: %@", status.data.timetoken);
+                      XCTAssertEqualObjects(status.data.information, @"Sent");
+                      XCTAssertEqualObjects(status.data.timetoken, @14355311062532489);
+                  }];
 }
 
 - (void)testPublishToNilChannel {
@@ -119,7 +119,7 @@
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
                       XCTAssertEqualObjects(status.data.timetoken, @14355311064365833);
-    }];
+                  }];
 }
 
 - (void)testPublishArray {
@@ -135,7 +135,7 @@
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
                       XCTAssertEqualObjects(status.data.timetoken, @14355311060753687);
-    }];
+                  }];
 }
 
 - (void)testPublishComplexArray {
@@ -156,23 +156,23 @@
 
 /* FIXME: investigate it more
  
- NSSet is not among our allowed object to send, according to documentation, 
- but it seems we missed isValidJSONObject check before we try to serialize 
-  some object.
+ NSSet is not among our allowed object to send, according to documentation,
+ but it seems we missed isValidJSONObject check before we try to serialize
+ some object.
  */
- - (void)DISABLE_testPublishSet {
+- (void)DISABLE_testPublishSet {
     [self performVerifiedPublish:[NSSet setWithObjects:@"1", @(5), @"3", nil]
                        onChannel:[self publishTestsChannelName]
                   withAssertions:^(PNPublishStatus *status) {
-        XCTAssertNotNil(status);
-        XCTAssertEqual(status.category, PNAcknowledgmentCategory);
-        XCTAssertEqual(status.operation, PNPublishOperation);
-        XCTAssertEqual(status.statusCode, 200);
-        XCTAssertFalse(status.isError);
-        NSLog(@"status.data.information: %@", status.data.information);
-        NSLog(@"status.data.timeToken: %@", status.data.timetoken);
-        XCTAssertEqualObjects(status.data.information, @"Sent");
-    }];
+                      XCTAssertNotNil(status);
+                      XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+                      XCTAssertEqual(status.operation, PNPublishOperation);
+                      XCTAssertEqual(status.statusCode, 200);
+                      XCTAssertFalse(status.isError);
+                      NSLog(@"status.data.information: %@", status.data.information);
+                      NSLog(@"status.data.timeToken: %@", status.data.timetoken);
+                      XCTAssertEqualObjects(status.data.information, @"Sent");
+                  }];
 }
 
 - (void)DISABLE_testPublish1kCharactersString {
@@ -234,15 +234,545 @@
                   }];
 }
 
+#pragma mark - 4.0.2 Regression
+
+- (void)testPublishWithMobilePushPayload {
+    XCTestExpectation *networkExpectation = [self expectationWithDescription:@"network"];
+    
+    NSDictionary *message = @{@"Hello":@"world"};
+    NSDictionary *mobilePayload = @{@"apns":@{@"alert":@"Hello from PubNub"}};
+    
+    [self.client publish:message
+               toChannel:[self publishTestsChannelName]
+       mobilePushPayload:mobilePayload
+          withCompletion:^(PNPublishStatus *status) {
+              
+              XCTAssertNotNil(status);
+              XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+              XCTAssertEqual(status.operation, PNPublishOperation);
+              XCTAssertEqual(status.statusCode, 200);
+              XCTAssertFalse(status.isError);
+              NSLog(@"status.data.information: %@", status.data.information);
+              NSLog(@"status.data.timeToken: %@", status.data.timetoken);
+              XCTAssertEqualObjects(status.data.information, @"Sent");
+              XCTAssertEqualObjects(status.data.timetoken, @14371442800390842);
+              
+              [networkExpectation fulfill];
+          }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
+        if (error) {
+            NSLog(@"error: %@", error);
+            XCTFail(@"what went wrong?");
+        }
+    }];
+}
+
+- (void)testPublishWithNilMobilePushPayload {
+    XCTestExpectation *networkExpectation = [self expectationWithDescription:@"network"];
+    
+    NSDictionary *message = @{@"Hello":@"world"};
+    NSDictionary *mobilePayload = nil;
+    
+    [self.client publish:message
+               toChannel:[self publishTestsChannelName]
+       mobilePushPayload:mobilePayload
+          withCompletion:^(PNPublishStatus *status) {
+              
+              XCTAssertNotNil(status);
+              XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+              XCTAssertEqual(status.operation, PNPublishOperation);
+              XCTAssertEqual(status.statusCode, 200);
+              XCTAssertFalse(status.isError);
+              NSLog(@"status.data.information: %@", status.data.information);
+              NSLog(@"status.data.timeToken: %@", status.data.timetoken);
+              XCTAssertEqualObjects(status.data.information, @"Sent");
+              XCTAssertEqualObjects(status.data.timetoken, @14371446971491185);
+              
+              [networkExpectation fulfill];
+          }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
+        if (error) {
+            NSLog(@"error: %@", error);
+            XCTFail(@"what went wrong?");
+        }
+    }];
+}
+
+- (void)testNilPublishWithMobilePushPayload {
+    XCTestExpectation *networkExpectation = [self expectationWithDescription:@"network"];
+    
+    NSDictionary *message = nil;
+    NSDictionary *mobilePayload = @{@"apns":@{@"alert":@"Hello from PubNub"}};
+    
+    [self.client publish:message
+               toChannel:[self publishTestsChannelName]
+       mobilePushPayload:mobilePayload
+          withCompletion:^(PNPublishStatus *status) {
+              
+              XCTAssertNotNil(status);
+              XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+              XCTAssertEqual(status.operation, PNPublishOperation);
+              XCTAssertEqual(status.statusCode, 200);
+              XCTAssertFalse(status.isError);
+              NSLog(@"status.data.information: %@", status.data.information);
+              NSLog(@"status.data.timeToken: %@", status.data.timetoken);
+              XCTAssertEqualObjects(status.data.information, @"Sent");
+              XCTAssertEqualObjects(status.data.timetoken, @14371457321434714);
+              
+              [networkExpectation fulfill];
+          }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
+        if (error) {
+            NSLog(@"error: %@", error);
+            XCTFail(@"what went wrong?");
+        }
+    }];
+}
+
+- (void)testNilPublishWithNilMobilePushPayload {
+    XCTestExpectation *networkExpectation = [self expectationWithDescription:@"network"];
+    
+    NSDictionary *message = nil;
+    NSDictionary *mobilePayload = nil;
+    
+    [self.client publish:message
+               toChannel:[self publishTestsChannelName]
+       mobilePushPayload:mobilePayload
+          withCompletion:^(PNPublishStatus *status) {
+              
+              XCTAssertNotNil(status);
+              XCTAssertEqual(status.category, PNBadRequestCategory);
+              XCTAssertEqual(status.operation, PNPublishOperation);
+              XCTAssertEqual(status.statusCode, 400);
+              XCTAssertTrue(status.isError);
+              NSLog(@"status.data.information: %@", status.data.information);
+              NSLog(@"status.data.timeToken: %@", status.data.timetoken);
+              XCTAssertNil(status.data.information);
+              XCTAssertNil(status.data.timetoken);
+              
+              [networkExpectation fulfill];
+          }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
+        if (error) {
+            NSLog(@"error: %@", error);
+            XCTFail(@"what went wrong?");
+        }
+    }];
+}
+
+- (void)testPublishWithMobilePushPayloadCompressed {
+    XCTestExpectation *networkExpectation = [self expectationWithDescription:@"network"];
+    
+    NSDictionary *message = @{@"Hello":@"world"};
+    NSDictionary *mobilePayload = @{@"apns":@{@"alert":@"Hello from PubNub"}};
+    
+    [self.client publish:message
+               toChannel:[self publishTestsChannelName]
+       mobilePushPayload:mobilePayload
+              compressed:YES
+          withCompletion:^(PNPublishStatus *status) {
+              
+              XCTAssertNotNil(status);
+              XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+              XCTAssertEqual(status.operation, PNPublishOperation);
+              XCTAssertEqual(status.statusCode, 200);
+              XCTAssertFalse(status.isError);
+              NSLog(@"status.data.information: %@", status.data.information);
+              NSLog(@"status.data.timeToken: %@", status.data.timetoken);
+              XCTAssertEqualObjects(status.data.information, @"Sent");
+              XCTAssertEqualObjects(status.data.timetoken, @14371463879074307);
+              
+              [networkExpectation fulfill];
+          }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
+        if (error) {
+            NSLog(@"error: %@", error);
+            XCTFail(@"what went wrong?");
+        }
+    }];
+}
+
+- (void)testPublishWithNilMobilePushPayloadCompressed {
+    XCTestExpectation *networkExpectation = [self expectationWithDescription:@"network"];
+    
+    NSDictionary *message = @{@"Hello":@"world"};
+    NSDictionary *mobilePayload = nil;
+    
+    [self.client publish:message
+               toChannel:[self publishTestsChannelName]
+       mobilePushPayload:mobilePayload
+              compressed:YES
+          withCompletion:^(PNPublishStatus *status) {
+              
+              XCTAssertNotNil(status);
+              XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+              XCTAssertEqual(status.operation, PNPublishOperation);
+              XCTAssertEqual(status.statusCode, 200);
+              XCTAssertFalse(status.isError);
+              NSLog(@"status.data.information: %@", status.data.information);
+              NSLog(@"status.data.timeToken: %@", status.data.timetoken);
+              XCTAssertEqualObjects(status.data.information, @"Sent");
+              XCTAssertEqualObjects(status.data.timetoken, @14371463951386741);
+              
+              [networkExpectation fulfill];
+          }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
+        if (error) {
+            NSLog(@"error: %@", error);
+            XCTFail(@"what went wrong?");
+        }
+    }];
+}
+
+- (void)testNilPublishWithMobilePushPayloadCompressed {
+    XCTestExpectation *networkExpectation = [self expectationWithDescription:@"network"];
+    
+    NSDictionary *message = nil;
+    NSDictionary *mobilePayload = @{@"apns":@{@"alert":@"Hello from PubNub"}};
+    
+    [self.client publish:message
+               toChannel:[self publishTestsChannelName]
+       mobilePushPayload:mobilePayload
+              compressed:YES
+          withCompletion:^(PNPublishStatus *status) {
+              
+              XCTAssertNotNil(status);
+              XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+              XCTAssertEqual(status.operation, PNPublishOperation);
+              XCTAssertEqual(status.statusCode, 200);
+              XCTAssertFalse(status.isError);
+              NSLog(@"status.data.information: %@", status.data.information);
+              NSLog(@"status.data.timeToken: %@", status.data.timetoken);
+              XCTAssertEqualObjects(status.data.information, @"Sent");
+              XCTAssertEqualObjects(status.data.timetoken, @14371463989135612);
+              
+              [networkExpectation fulfill];
+          }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
+        if (error) {
+            NSLog(@"error: %@", error);
+            XCTFail(@"what went wrong?");
+        }
+    }];
+}
+
+- (void)testNilPublishWithNilMobilePushPayloadCompressed {
+    XCTestExpectation *networkExpectation = [self expectationWithDescription:@"network"];
+    
+    NSDictionary *message = nil;
+    NSDictionary *mobilePayload = nil;
+    
+    [self.client publish:message
+               toChannel:[self publishTestsChannelName]
+       mobilePushPayload:mobilePayload
+              compressed:YES
+          withCompletion:^(PNPublishStatus *status) {
+              
+              XCTAssertNotNil(status);
+              XCTAssertEqual(status.category, PNBadRequestCategory);
+              XCTAssertEqual(status.operation, PNPublishOperation);
+              XCTAssertEqual(status.statusCode, 400);
+              XCTAssertTrue(status.isError);
+              NSLog(@"status.data.information: %@", status.data.information);
+              NSLog(@"status.data.timeToken: %@", status.data.timetoken);
+              XCTAssertNil(status.data.information);
+              XCTAssertNil(status.data.timetoken);
+              
+              [networkExpectation fulfill];
+          }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
+        if (error) {
+            NSLog(@"error: %@", error);
+            XCTFail(@"what went wrong?");
+        }
+    }];
+}
+
+- (void)testPublishWithMobilePushPayloadStoredInHistory {
+    XCTestExpectation *networkExpectation = [self expectationWithDescription:@"network"];
+    
+    NSDictionary *message = @{@"Hello":@"world"};
+    NSDictionary *mobilePayload = @{@"apns":@{@"alert":@"Hello from PubNub"}};
+    
+    [self.client publish:message
+               toChannel:[self publishTestsChannelName]
+       mobilePushPayload:mobilePayload
+              storeInHistory:NO
+          withCompletion:^(PNPublishStatus *status) {
+              
+              XCTAssertNotNil(status);
+              XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+              XCTAssertEqual(status.operation, PNPublishOperation);
+              XCTAssertEqual(status.statusCode, 200);
+              XCTAssertFalse(status.isError);
+              NSLog(@"status.data.information: %@", status.data.information);
+              NSLog(@"status.data.timeToken: %@", status.data.timetoken);
+              XCTAssertEqualObjects(status.data.information, @"Sent");
+              XCTAssertEqualObjects(status.data.timetoken, @14371496138044862);
+              
+              [networkExpectation fulfill];
+          }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
+        if (error) {
+            NSLog(@"error: %@", error);
+            XCTFail(@"what went wrong?");
+        }
+    }];
+}
+
+- (void)testPublishWithNilMobilePushPayloadStoredInHistory {
+    XCTestExpectation *networkExpectation = [self expectationWithDescription:@"network"];
+    
+    NSDictionary *message = @{@"Hello":@"world"};
+    NSDictionary *mobilePayload = nil;
+    
+    [self.client publish:message
+               toChannel:[self publishTestsChannelName]
+       mobilePushPayload:mobilePayload
+              storeInHistory:NO
+          withCompletion:^(PNPublishStatus *status) {
+              
+              XCTAssertNotNil(status);
+              XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+              XCTAssertEqual(status.operation, PNPublishOperation);
+              XCTAssertEqual(status.statusCode, 200);
+              XCTAssertFalse(status.isError);
+              NSLog(@"status.data.information: %@", status.data.information);
+              NSLog(@"status.data.timeToken: %@", status.data.timetoken);
+              XCTAssertEqualObjects(status.data.information, @"Sent");
+              XCTAssertEqualObjects(status.data.timetoken, @14371497421394301);
+              
+              [networkExpectation fulfill];
+          }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
+        if (error) {
+            NSLog(@"error: %@", error);
+            XCTFail(@"what went wrong?");
+        }
+    }];
+}
+
+- (void)testNilPublishWithMobilePushPayloadStoredInHistory {
+    XCTestExpectation *networkExpectation = [self expectationWithDescription:@"network"];
+    
+    NSDictionary *message = nil;
+    NSDictionary *mobilePayload = @{@"apns":@{@"alert":@"Hello from PubNub"}};
+    
+    [self.client publish:message
+               toChannel:[self publishTestsChannelName]
+       mobilePushPayload:mobilePayload
+              storeInHistory:NO
+          withCompletion:^(PNPublishStatus *status) {
+              
+              XCTAssertNotNil(status);
+              XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+              XCTAssertEqual(status.operation, PNPublishOperation);
+              XCTAssertEqual(status.statusCode, 200);
+              XCTAssertFalse(status.isError);
+              NSLog(@"status.data.information: %@", status.data.information);
+              NSLog(@"status.data.timeToken: %@", status.data.timetoken);
+              XCTAssertEqualObjects(status.data.information, @"Sent");
+              XCTAssertEqualObjects(status.data.timetoken, @14371497515229634);
+              
+              [networkExpectation fulfill];
+          }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
+        if (error) {
+            NSLog(@"error: %@", error);
+            XCTFail(@"what went wrong?");
+        }
+    }];
+}
+
+- (void)testNilPublishWithNilMobilePushPayloadStoredInHistory {
+    XCTestExpectation *networkExpectation = [self expectationWithDescription:@"network"];
+    
+    NSDictionary *message = nil;
+    NSDictionary *mobilePayload = nil;
+    
+    [self.client publish:message
+               toChannel:[self publishTestsChannelName]
+       mobilePushPayload:mobilePayload
+              storeInHistory:NO
+          withCompletion:^(PNPublishStatus *status) {
+              
+              XCTAssertNotNil(status);
+              XCTAssertEqual(status.category, PNBadRequestCategory);
+              XCTAssertEqual(status.operation, PNPublishOperation);
+              XCTAssertEqual(status.statusCode, 400);
+              XCTAssertTrue(status.isError);
+              NSLog(@"status.data.information: %@", status.data.information);
+              NSLog(@"status.data.timeToken: %@", status.data.timetoken);
+              XCTAssertNil(status.data.information);
+              XCTAssertNil(status.data.timetoken);
+              
+              [networkExpectation fulfill];
+          }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
+        if (error) {
+            NSLog(@"error: %@", error);
+            XCTFail(@"what went wrong?");
+        }
+    }];
+}
+
+- (void)testPublishWithMobilePushPayloadStoredInHistoryCompressed {
+    XCTestExpectation *networkExpectation = [self expectationWithDescription:@"network"];
+    
+    NSDictionary *message = @{@"Hello":@"world"};
+    NSDictionary *mobilePayload = @{@"apns":@{@"alert":@"Hello from PubNub"}};
+    
+    [self.client publish:message
+               toChannel:[self publishTestsChannelName]
+       mobilePushPayload:mobilePayload
+          storeInHistory:NO
+     compressed:YES
+          withCompletion:^(PNPublishStatus *status) {
+              
+              XCTAssertNotNil(status);
+              XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+              XCTAssertEqual(status.operation, PNPublishOperation);
+              XCTAssertEqual(status.statusCode, 200);
+              XCTAssertFalse(status.isError);
+              NSLog(@"status.data.information: %@", status.data.information);
+              NSLog(@"status.data.timeToken: %@", status.data.timetoken);
+              XCTAssertEqualObjects(status.data.information, @"Sent");
+              XCTAssertEqualObjects(status.data.timetoken, @14371507370857331);
+              
+              [networkExpectation fulfill];
+          }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
+        if (error) {
+            NSLog(@"error: %@", error);
+            XCTFail(@"what went wrong?");
+        }
+    }];
+}
+
+- (void)testPublishWithNilMobilePushPayloadStoredInHistoryCompressed {
+    XCTestExpectation *networkExpectation = [self expectationWithDescription:@"network"];
+    
+    NSDictionary *message = @{@"Hello":@"world"};
+    NSDictionary *mobilePayload = nil;
+    
+    [self.client publish:message
+               toChannel:[self publishTestsChannelName]
+       mobilePushPayload:mobilePayload
+          storeInHistory:NO
+     compressed:YES
+          withCompletion:^(PNPublishStatus *status) {
+              
+              XCTAssertNotNil(status);
+              XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+              XCTAssertEqual(status.operation, PNPublishOperation);
+              XCTAssertEqual(status.statusCode, 200);
+              XCTAssertFalse(status.isError);
+              NSLog(@"status.data.information: %@", status.data.information);
+              NSLog(@"status.data.timeToken: %@", status.data.timetoken);
+              XCTAssertEqualObjects(status.data.information, @"Sent");
+              XCTAssertEqualObjects(status.data.timetoken, @14371509145706320);
+              
+              [networkExpectation fulfill];
+          }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
+        if (error) {
+            NSLog(@"error: %@", error);
+            XCTFail(@"what went wrong?");
+        }
+    }];
+}
+
+- (void)testNilPublishWithMobilePushPayloadStoredInHistoryCompressed {
+    XCTestExpectation *networkExpectation = [self expectationWithDescription:@"network"];
+    
+    NSDictionary *message = nil;
+    NSDictionary *mobilePayload = @{@"apns":@{@"alert":@"Hello from PubNub"}};
+    
+    [self.client publish:message
+               toChannel:[self publishTestsChannelName]
+       mobilePushPayload:mobilePayload
+          storeInHistory:NO
+     compressed:YES
+          withCompletion:^(PNPublishStatus *status) {
+              
+              XCTAssertNotNil(status);
+              XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+              XCTAssertEqual(status.operation, PNPublishOperation);
+              XCTAssertEqual(status.statusCode, 200);
+              XCTAssertFalse(status.isError);
+              NSLog(@"status.data.information: %@", status.data.information);
+              NSLog(@"status.data.timeToken: %@", status.data.timetoken);
+              XCTAssertEqualObjects(status.data.information, @"Sent");
+              XCTAssertEqualObjects(status.data.timetoken, @14371509238551357);
+              
+              [networkExpectation fulfill];
+          }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
+        if (error) {
+            NSLog(@"error: %@", error);
+            XCTFail(@"what went wrong?");
+        }
+    }];
+}
+
+- (void)testNilPublishWithNilMobilePushPayloadStoredInHistoryCompressed {
+    XCTestExpectation *networkExpectation = [self expectationWithDescription:@"network"];
+    
+    NSDictionary *message = nil;
+    NSDictionary *mobilePayload = nil;
+    
+    [self.client publish:message
+               toChannel:[self publishTestsChannelName]
+       mobilePushPayload:mobilePayload
+          storeInHistory:NO
+     compressed:YES
+          withCompletion:^(PNPublishStatus *status) {
+              
+              XCTAssertNotNil(status);
+              XCTAssertEqual(status.category, PNBadRequestCategory);
+              XCTAssertEqual(status.operation, PNPublishOperation);
+              XCTAssertEqual(status.statusCode, 400);
+              XCTAssertTrue(status.isError);
+              NSLog(@"status.data.information: %@", status.data.information);
+              NSLog(@"status.data.timeToken: %@", status.data.timetoken);
+              XCTAssertNil(status.data.information);
+              XCTAssertNil(status.data.timetoken);
+              
+              [networkExpectation fulfill];
+          }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
+        if (error) {
+            NSLog(@"error: %@", error);
+            XCTFail(@"what went wrong?");
+        }
+    }];
+}
+
 #pragma mark - Main flow
 
 - (void)performVerifiedPublish:(id)message onChannel:(NSString *)channel withAssertions:(PNPublishCompletionBlock)verificationBlock {
     XCTestExpectation *networkExpectation = [self expectationWithDescription:@"network"];
     [self.client publish:message toChannel:channel
           withCompletion:^(PNPublishStatus *status) {
-        verificationBlock(status);
-        [networkExpectation fulfill];
-    }];
+              verificationBlock(status);
+              [networkExpectation fulfill];
+          }];
     [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
         if (error) {
             NSLog(@"error: %@", error);

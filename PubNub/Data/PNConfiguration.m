@@ -99,11 +99,13 @@
     // Check whether initialization successful or not.
     if ((self = [super init])) {
         
-#if TEST
-        _deviceID = @"3650F534-FC54-4EE8-884C-EF1B83188BB7";
-#else
         _deviceID = [[self uniqueDeviceIdentifier] copy];
-#endif
+        // In case if we client used from tests environment configuration should use specified
+        // device identifier.
+        if (NSClassFromString(@"XCTestExpectation")) {
+            
+            _deviceID = @"3650F534-FC54-4EE8-884C-EF1B83188BB7";
+        }
         _origin = [kPNDefaultOrigin copy];
         _publishKey = [publishKey copy];
         _subscribeKey = [subscribeKey copy];
