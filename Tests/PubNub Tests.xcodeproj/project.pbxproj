@@ -138,8 +138,7 @@
 		519C32721B20BF4D00FAC283 = {
 			isa = PBXGroup;
 			children = (
-				969714371B32F08E001DECD1 /* Categories */,
-				519C327F1B20C11500FAC283 /* iOS Tests */,
+				51D889CE1B66DF99009127D0 /* Objective-C */,
 				519C327E1B20C11500FAC283 /* Products */,
 				6A027B24426654F78826ED2D /* Pods */,
 				83ACC540822861D2423E0887 /* Frameworks */,
@@ -189,6 +188,15 @@
 				519C32811B20C11500FAC283 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		51D889CE1B66DF99009127D0 /* Objective-C */ = {
+			isa = PBXGroup;
+			children = (
+				969714371B32F08E001DECD1 /* Categories */,
+				519C327F1B20C11500FAC283 /* iOS Tests */,
+			);
+			name = "Objective-C";
 			sourceTree = "<group>";
 		};
 		51F7AAC11B27AD7400BEDA1F /* Fixtures */ = {
