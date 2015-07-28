@@ -207,7 +207,7 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
  
  @since 4.0
  */
-- (void)appendRequierdParametersTo:(PNRequestParameters *)parameters;
+- (void)appendRequiredParametersTo:(PNRequestParameters *)parameters;
 
 /**
  @brief  Construct URL request suitable to send POST request (if required).
@@ -535,7 +535,7 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
 
 #pragma mark - Request helper
 
-- (void)appendRequierdParametersTo:(PNRequestParameters *)parameters {
+- (void)appendRequiredParametersTo:(PNRequestParameters *)parameters {
     
     [parameters addPathComponents:@{@"{sub-key}": (self.configuration.subscribeKey?: @""),
                                     @"{pub-key}": (self.configuration.publishKey?: @"")}];
@@ -667,7 +667,7 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
         [self cancelAllRequests];
     }
     
-    [self appendRequierdParametersTo:parameters];
+    [self appendRequiredParametersTo:parameters];
     // Silence static analyzer warnings.
     // Code is aware about this case and at the end will simply call on 'nil' object method.
     // In most cases if referenced object become 'nil' it mean what there is no more need in
@@ -782,7 +782,7 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
                      withParameters:(PNRequestParameters *)parameters data:(NSData *)data {
     
     NSInteger size = -1;
-    [self appendRequierdParametersTo:parameters];
+    [self appendRequiredParametersTo:parameters];
     NSURL *requestURL = [PNURLBuilder URLForOperation:operationType withParameters:parameters];
     if (requestURL) {
         
