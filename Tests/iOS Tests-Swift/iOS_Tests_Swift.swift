@@ -9,7 +9,7 @@
 import UIKit
 import XCTest
 
-class iOS_Tests_Swift: XCTestCase {
+class iOS_Tests_Swift: PNBasicClientTestCase {
     
     override func setUp() {
         super.setUp()
@@ -24,7 +24,6 @@ class iOS_Tests_Swift: XCTestCase {
     func testExample() {
         // This is an example of a functional test case.
         XCTAssert(true, "Pass")
-        let client = PubNub.clientWithConfiguration(PNConfiguration(publishKey: "demo-36", subscribeKey: "demo-36"))
     }
     
     func testPerformanceExample() {

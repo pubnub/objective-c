@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		51D889E61B66E0F8009127D0 /* iOS_Tests_Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D889E51B66E0F8009127D0 /* iOS_Tests_Swift.swift */; };
-		51D889EE1B66E207009127D0 /* SimplePubNubSwiftTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D889ED1B66E207009127D0 /* SimplePubNubSwiftTest.swift */; };
+		51D889F21B66F49E009127D0 /* PNBasicClientTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D889F11B66F49E009127D0 /* PNBasicClientTestCase.swift */; };
 		79EF04A41B4EAAB7007478CB /* PNAPNSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04911B4EAAB7007478CB /* PNAPNSTests.m */; };
 		79EF04A51B4EAAB7007478CB /* PNChannelGroupSubscribeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04921B4EAAB7007478CB /* PNChannelGroupSubscribeTests.m */; };
 		79EF04A61B4EAAB7007478CB /* PNChannelGroupTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04931B4EAAB7007478CB /* PNChannelGroupTests.m */; };
@@ -63,8 +63,8 @@
 		51D889E11B66E0F8009127D0 /* iOS Tests-Swift.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "iOS Tests-Swift.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		51D889E41B66E0F8009127D0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		51D889E51B66E0F8009127D0 /* iOS_Tests_Swift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOS_Tests_Swift.swift; sourceTree = "<group>"; };
-		51D889EA1B66E1D9009127D0 /* iOS Tests-Swift-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "iOS Tests-Swift-Bridging-Header.h"; sourceTree = "<group>"; };
-		51D889ED1B66E207009127D0 /* SimplePubNubSwiftTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SimplePubNubSwiftTest.swift; path = "iOS Tests-Swift/SimplePubNubSwiftTest.swift"; sourceTree = "<group>"; };
+		51D889EA1B66E1D9009127D0 /* iOS Tests-Swift-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "iOS Tests-Swift-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
+		51D889F11B66F49E009127D0 /* PNBasicClientTestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNBasicClientTestCase.swift; sourceTree = "<group>"; };
 		5ACDABA811F4B25CD768FB4E /* Pods-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ios/Pods-ios.debug.xcconfig"; sourceTree = "<group>"; };
 		6F1E7CCB0F5454CF57A04DA9 /* Pods-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios.release.xcconfig"; path = "Pods/Target Support Files/Pods-ios/Pods-ios.release.xcconfig"; sourceTree = "<group>"; };
 		749B025FBB1B87E42EF4AD00 /* Pods-iOS Tests-Swift.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS Tests-Swift.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-iOS Tests-Swift/Pods-iOS Tests-Swift.debug.xcconfig"; sourceTree = "<group>"; };
@@ -174,7 +174,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		519C327F1B20C11500FAC283 /* iOS Tests */ = {
+		519C327F1B20C11500FAC283 /* iOS Tests (Objective-C) */ = {
 			isa = PBXGroup;
 			children = (
 				79EF04911B4EAAB7007478CB /* PNAPNSTests.m */,
@@ -200,6 +200,7 @@
 				51F7AAC11B27AD7400BEDA1F /* Fixtures */,
 				519C32801B20C11500FAC283 /* Supporting Files */,
 			);
+			name = "iOS Tests (Objective-C)";
 			path = "iOS Tests";
 			sourceTree = "<group>";
 		};
@@ -215,7 +216,7 @@
 			isa = PBXGroup;
 			children = (
 				969714371B32F08E001DECD1 /* Categories */,
-				519C327F1B20C11500FAC283 /* iOS Tests */,
+				519C327F1B20C11500FAC283 /* iOS Tests (Objective-C) */,
 			);
 			name = "Objective-C";
 			sourceTree = "<group>";
@@ -223,28 +224,45 @@
 		51D889DC1B66E0D6009127D0 /* Swift */ = {
 			isa = PBXGroup;
 			children = (
-				51D889E21B66E0F8009127D0 /* iOS Tests-Swift */,
-				51D889EA1B66E1D9009127D0 /* iOS Tests-Swift-Bridging-Header.h */,
-				51D889ED1B66E207009127D0 /* SimplePubNubSwiftTest.swift */,
+				51D889EF1B66E624009127D0 /* Helpers */,
+				51D889E21B66E0F8009127D0 /* iOS Tests (Swift) */,
 			);
 			name = Swift;
 			sourceTree = "<group>";
 		};
-		51D889E21B66E0F8009127D0 /* iOS Tests-Swift */ = {
+		51D889E21B66E0F8009127D0 /* iOS Tests (Swift) */ = {
 			isa = PBXGroup;
 			children = (
 				51D889E51B66E0F8009127D0 /* iOS_Tests_Swift.swift */,
+				51D889F01B66E7F9009127D0 /* Base Test Classes */,
 				51D889E31B66E0F8009127D0 /* Supporting Files */,
 			);
+			name = "iOS Tests (Swift)";
 			path = "iOS Tests-Swift";
 			sourceTree = "<group>";
 		};
 		51D889E31B66E0F8009127D0 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				51D889EA1B66E1D9009127D0 /* iOS Tests-Swift-Bridging-Header.h */,
 				51D889E41B66E0F8009127D0 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		51D889EF1B66E624009127D0 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Helpers;
+			sourceTree = "<group>";
+		};
+		51D889F01B66E7F9009127D0 /* Base Test Classes */ = {
+			isa = PBXGroup;
+			children = (
+				51D889F11B66F49E009127D0 /* PNBasicClientTestCase.swift */,
+			);
+			name = "Base Test Classes";
 			sourceTree = "<group>";
 		};
 		51F7AAC11B27AD7400BEDA1F /* Fixtures */ = {
@@ -520,7 +538,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				51D889E61B66E0F8009127D0 /* iOS_Tests_Swift.swift in Sources */,
-				51D889EE1B66E207009127D0 /* SimplePubNubSwiftTest.swift in Sources */,
+				51D889F21B66F49E009127D0 /* PNBasicClientTestCase.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

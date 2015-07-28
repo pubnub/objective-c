@@ -3,3 +3,4 @@
 //
 
 #import <PubNub/PubNub.h>
+#import <JSZVCR/JSZVCR.h>
