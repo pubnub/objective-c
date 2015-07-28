@@ -7,7 +7,26 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		51D889E61B66E0F8009127D0 /* iOS_Tests_Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D889E51B66E0F8009127D0 /* iOS_Tests_Swift.swift */; };
+		51BB25401B6814EF00A9F154 /* PNBasicSubscribeTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BB253F1B6814EF00A9F154 /* PNBasicSubscribeTestCase.swift */; };
+		51BB25421B6815F300A9F154 /* PNTimeTokenTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BB25411B6815F300A9F154 /* PNTimeTokenTests.swift */; };
+		51BB25431B68176C00A9F154 /* PNAPNSTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 79EF04C31B4EAB1A007478CB /* PNAPNSTests.bundle */; };
+		51BB25441B68176C00A9F154 /* PNChannelGroupSubscribeTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 79EF04C41B4EAB1A007478CB /* PNChannelGroupSubscribeTests.bundle */; };
+		51BB25451B68176C00A9F154 /* PNChannelGroupTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 79EF04C51B4EAB1A007478CB /* PNChannelGroupTests.bundle */; };
+		51BB25461B68176C00A9F154 /* PNChannelGroupUnsubscribeTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 79EF04C61B4EAB1A007478CB /* PNChannelGroupUnsubscribeTests.bundle */; };
+		51BB25471B68176C00A9F154 /* PNClientConfigurationTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 79EF04C71B4EAB1A007478CB /* PNClientConfigurationTests.bundle */; };
+		51BB25481B68176C00A9F154 /* PNClientStateChannelGroupTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 79EF04C81B4EAB1A007478CB /* PNClientStateChannelGroupTests.bundle */; };
+		51BB25491B68176C00A9F154 /* PNClientStateChannelTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 79EF04C91B4EAB1A007478CB /* PNClientStateChannelTests.bundle */; };
+		51BB254A1B68176C00A9F154 /* PNHeartbeatTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 79EF04CA1B4EAB1A007478CB /* PNHeartbeatTests.bundle */; };
+		51BB254B1B68176C00A9F154 /* PNHistoryTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 79EF04CB1B4EAB1A007478CB /* PNHistoryTests.bundle */; };
+		51BB254C1B68176C00A9F154 /* PNPresenceTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 79EF04CC1B4EAB1A007478CB /* PNPresenceTests.bundle */; };
+		51BB254D1B68176C00A9F154 /* PNPublishCompressedTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 79EF04CD1B4EAB1A007478CB /* PNPublishCompressedTests.bundle */; };
+		51BB254E1B68176C00A9F154 /* PNPublishTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 79EF04CE1B4EAB1A007478CB /* PNPublishTests.bundle */; };
+		51BB254F1B68176C00A9F154 /* PNPublishWithHistoryTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 79EF04CF1B4EAB1A007478CB /* PNPublishWithHistoryTests.bundle */; };
+		51BB25501B68176C00A9F154 /* PNPublishWithMobilePayloadTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 79EF04D01B4EAB1A007478CB /* PNPublishWithMobilePayloadTests.bundle */; };
+		51BB25511B68176C00A9F154 /* PNSubscribeTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 79EF04D11B4EAB1A007478CB /* PNSubscribeTests.bundle */; };
+		51BB25521B68176C00A9F154 /* PNSubscribeToPresenceChannelsTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 79EF04D21B4EAB1A007478CB /* PNSubscribeToPresenceChannelsTests.bundle */; };
+		51BB25531B68176C00A9F154 /* PNTimeTokenTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 79EF04D31B4EAB1A007478CB /* PNTimeTokenTests.bundle */; };
+		51BB25541B68176C00A9F154 /* PNUnsubscribeTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 79EF04D41B4EAB1A007478CB /* PNUnsubscribeTests.bundle */; };
 		51D889F21B66F49E009127D0 /* PNBasicClientTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D889F11B66F49E009127D0 /* PNBasicClientTestCase.swift */; };
 		79EF04A41B4EAAB7007478CB /* PNAPNSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04911B4EAAB7007478CB /* PNAPNSTests.m */; };
 		79EF04A51B4EAAB7007478CB /* PNChannelGroupSubscribeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04921B4EAAB7007478CB /* PNChannelGroupSubscribeTests.m */; };
@@ -60,9 +79,10 @@
 		42ED7FB4F04D04B60E014BE0 /* libPods-iOS Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-iOS Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		519C327D1B20C11500FAC283 /* iOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "iOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		519C32811B20C11500FAC283 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		51BB253F1B6814EF00A9F154 /* PNBasicSubscribeTestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNBasicSubscribeTestCase.swift; sourceTree = "<group>"; };
+		51BB25411B6815F300A9F154 /* PNTimeTokenTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNTimeTokenTests.swift; sourceTree = "<group>"; };
 		51D889E11B66E0F8009127D0 /* iOS Tests-Swift.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "iOS Tests-Swift.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		51D889E41B66E0F8009127D0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		51D889E51B66E0F8009127D0 /* iOS_Tests_Swift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOS_Tests_Swift.swift; sourceTree = "<group>"; };
 		51D889EA1B66E1D9009127D0 /* iOS Tests-Swift-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "iOS Tests-Swift-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
 		51D889F11B66F49E009127D0 /* PNBasicClientTestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNBasicClientTestCase.swift; sourceTree = "<group>"; };
 		5ACDABA811F4B25CD768FB4E /* Pods-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ios/Pods-ios.debug.xcconfig"; sourceTree = "<group>"; };
@@ -233,7 +253,7 @@
 		51D889E21B66E0F8009127D0 /* iOS Tests (Swift) */ = {
 			isa = PBXGroup;
 			children = (
-				51D889E51B66E0F8009127D0 /* iOS_Tests_Swift.swift */,
+				51BB25411B6815F300A9F154 /* PNTimeTokenTests.swift */,
 				51D889F01B66E7F9009127D0 /* Base Test Classes */,
 				51D889E31B66E0F8009127D0 /* Supporting Files */,
 			);
@@ -261,6 +281,7 @@
 			isa = PBXGroup;
 			children = (
 				51D889F11B66F49E009127D0 /* PNBasicClientTestCase.swift */,
+				51BB253F1B6814EF00A9F154 /* PNBasicSubscribeTestCase.swift */,
 			);
 			name = "Base Test Classes";
 			sourceTree = "<group>";
@@ -433,6 +454,24 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				51BB254F1B68176C00A9F154 /* PNPublishWithHistoryTests.bundle in Resources */,
+				51BB254B1B68176C00A9F154 /* PNHistoryTests.bundle in Resources */,
+				51BB254E1B68176C00A9F154 /* PNPublishTests.bundle in Resources */,
+				51BB25531B68176C00A9F154 /* PNTimeTokenTests.bundle in Resources */,
+				51BB254A1B68176C00A9F154 /* PNHeartbeatTests.bundle in Resources */,
+				51BB25501B68176C00A9F154 /* PNPublishWithMobilePayloadTests.bundle in Resources */,
+				51BB25481B68176C00A9F154 /* PNClientStateChannelGroupTests.bundle in Resources */,
+				51BB25491B68176C00A9F154 /* PNClientStateChannelTests.bundle in Resources */,
+				51BB25441B68176C00A9F154 /* PNChannelGroupSubscribeTests.bundle in Resources */,
+				51BB25521B68176C00A9F154 /* PNSubscribeToPresenceChannelsTests.bundle in Resources */,
+				51BB25511B68176C00A9F154 /* PNSubscribeTests.bundle in Resources */,
+				51BB25461B68176C00A9F154 /* PNChannelGroupUnsubscribeTests.bundle in Resources */,
+				51BB25471B68176C00A9F154 /* PNClientConfigurationTests.bundle in Resources */,
+				51BB25451B68176C00A9F154 /* PNChannelGroupTests.bundle in Resources */,
+				51BB254C1B68176C00A9F154 /* PNPresenceTests.bundle in Resources */,
+				51BB25431B68176C00A9F154 /* PNAPNSTests.bundle in Resources */,
+				51BB254D1B68176C00A9F154 /* PNPublishCompressedTests.bundle in Resources */,
+				51BB25541B68176C00A9F154 /* PNUnsubscribeTests.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -537,8 +576,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				51D889E61B66E0F8009127D0 /* iOS_Tests_Swift.swift in Sources */,
 				51D889F21B66F49E009127D0 /* PNBasicClientTestCase.swift in Sources */,
+				51BB25421B6815F300A9F154 /* PNTimeTokenTests.swift in Sources */,
+				51BB25401B6814EF00A9F154 /* PNBasicSubscribeTestCase.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
