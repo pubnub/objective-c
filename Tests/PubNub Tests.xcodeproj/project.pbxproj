@@ -172,6 +172,7 @@
 				79EF04BA1B4EAAE4007478CB /* PNBasicSubscribeTestCase.m */,
 			);
 			name = "Base Test Classes";
+			path = "iOS Tests";
 			sourceTree = "<group>";
 		};
 		519C32721B20BF4D00FAC283 = {
@@ -179,6 +180,7 @@
 			children = (
 				51D889CE1B66DF99009127D0 /* Objective-C */,
 				51D889DC1B66E0D6009127D0 /* Swift */,
+				51F7AAC11B27AD7400BEDA1F /* Fixtures */,
 				519C327E1B20C11500FAC283 /* Products */,
 				6A027B24426654F78826ED2D /* Pods */,
 				83ACC540822861D2423E0887 /* Frameworks */,
@@ -216,9 +218,6 @@
 				79EF04A11B4EAAB7007478CB /* PNSubscribeToPresenceChannelsTests.m */,
 				79EF04A21B4EAAB7007478CB /* PNTimeTokenTests.m */,
 				79EF04A31B4EAAB7007478CB /* PNUnsubscribeTests.m */,
-				178251201B30AAE6006BC234 /* Base Test Classes */,
-				51F7AAC11B27AD7400BEDA1F /* Fixtures */,
-				519C32801B20C11500FAC283 /* Supporting Files */,
 			);
 			name = "iOS Tests (Objective-C)";
 			path = "iOS Tests";
@@ -230,13 +229,15 @@
 				519C32811B20C11500FAC283 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			path = "iOS Tests";
 			sourceTree = "<group>";
 		};
 		51D889CE1B66DF99009127D0 /* Objective-C */ = {
 			isa = PBXGroup;
 			children = (
-				969714371B32F08E001DECD1 /* Categories */,
 				519C327F1B20C11500FAC283 /* iOS Tests (Objective-C) */,
+				969714371B32F08E001DECD1 /* Helpers */,
+				519C32801B20C11500FAC283 /* Supporting Files */,
 			);
 			name = "Objective-C";
 			sourceTree = "<group>";
@@ -244,8 +245,9 @@
 		51D889DC1B66E0D6009127D0 /* Swift */ = {
 			isa = PBXGroup;
 			children = (
-				51D889EF1B66E624009127D0 /* Helpers */,
 				51D889E21B66E0F8009127D0 /* iOS Tests (Swift) */,
+				51D889F01B66E7F9009127D0 /* Helpers */,
+				51D889E31B66E0F8009127D0 /* Supporting Files */,
 			);
 			name = Swift;
 			sourceTree = "<group>";
@@ -254,8 +256,6 @@
 			isa = PBXGroup;
 			children = (
 				51BB25411B6815F300A9F154 /* PNTimeTokenTests.swift */,
-				51D889F01B66E7F9009127D0 /* Base Test Classes */,
-				51D889E31B66E0F8009127D0 /* Supporting Files */,
 			);
 			name = "iOS Tests (Swift)";
 			path = "iOS Tests-Swift";
@@ -268,22 +268,17 @@
 				51D889E41B66E0F8009127D0 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			path = "iOS Tests-Swift";
 			sourceTree = "<group>";
 		};
-		51D889EF1B66E624009127D0 /* Helpers */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Helpers;
-			sourceTree = "<group>";
-		};
-		51D889F01B66E7F9009127D0 /* Base Test Classes */ = {
+		51D889F01B66E7F9009127D0 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
 				51D889F11B66F49E009127D0 /* PNBasicClientTestCase.swift */,
 				51BB253F1B6814EF00A9F154 /* PNBasicSubscribeTestCase.swift */,
 			);
-			name = "Base Test Classes";
+			name = Helpers;
+			path = "iOS Tests-Swift";
 			sourceTree = "<group>";
 		};
 		51F7AAC11B27AD7400BEDA1F /* Fixtures */ = {
@@ -309,6 +304,7 @@
 				79EF04D41B4EAB1A007478CB /* PNUnsubscribeTests.bundle */,
 			);
 			name = Fixtures;
+			path = "iOS Tests";
 			sourceTree = "<group>";
 		};
 		6A027B24426654F78826ED2D /* Pods */ = {
@@ -336,7 +332,16 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		969714371B32F08E001DECD1 /* Categories */ = {
+		969714371B32F08E001DECD1 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				178251201B30AAE6006BC234 /* Base Test Classes */,
+				9722C2741B68A0F200A7CB44 /* Categories */,
+			);
+			name = Helpers;
+			sourceTree = "<group>";
+		};
+		9722C2741B68A0F200A7CB44 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
 				79EF04BD1B4EAB01007478CB /* NSDictionary+PNTest.h */,
