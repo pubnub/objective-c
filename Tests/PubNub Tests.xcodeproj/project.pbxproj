@@ -70,6 +70,7 @@
 		79EF04E51B4EAB1A007478CB /* PNTimeTokenTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 79EF04D31B4EAB1A007478CB /* PNTimeTokenTests.bundle */; };
 		79EF04E61B4EAB1A007478CB /* PNUnsubscribeTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 79EF04D41B4EAB1A007478CB /* PNUnsubscribeTests.bundle */; };
 		96F0239E1B580D0000C4A581 /* NSArray+PNTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96F0239D1B580D0000C4A581 /* NSArray+PNTest.m */; };
+		9722C2761B68A24C00A7CB44 /* PNPublishTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9722C2751B68A24C00A7CB44 /* PNPublishTests.swift */; };
 		BAF3D57EE54835C533EC9033 /* libPods-iOS Tests-Swift.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 86731617DF5CE7DB44DD3AF8 /* libPods-iOS Tests-Swift.a */; };
 		F40DA5990F903449C2FF7B6F /* libPods-iOS Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 42ED7FB4F04D04B60E014BE0 /* libPods-iOS Tests.a */; };
 /* End PBXBuildFile section */
@@ -137,6 +138,7 @@
 		86731617DF5CE7DB44DD3AF8 /* libPods-iOS Tests-Swift.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-iOS Tests-Swift.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		96F0239C1B580D0000C4A581 /* NSArray+PNTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSArray+PNTest.h"; path = "iOS Tests/Helpers/NSArray+PNTest.h"; sourceTree = "<group>"; };
 		96F0239D1B580D0000C4A581 /* NSArray+PNTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSArray+PNTest.m"; path = "iOS Tests/Helpers/NSArray+PNTest.m"; sourceTree = "<group>"; };
+		9722C2751B68A24C00A7CB44 /* PNPublishTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNPublishTests.swift; sourceTree = "<group>"; };
 		C081D126B561273617A72F85 /* Pods-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios.release.xcconfig"; path = "../Pods/Target Support Files/Pods-ios/Pods-ios.release.xcconfig"; sourceTree = "<group>"; };
 		CD15C44CC052DC9814F15D3D /* Pods_ios.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ios.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CFFADA50AB5B50723C657F93 /* Pods-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-ios/Pods-ios.debug.xcconfig"; sourceTree = "<group>"; };
@@ -256,6 +258,7 @@
 			isa = PBXGroup;
 			children = (
 				51BB25411B6815F300A9F154 /* PNTimeTokenTests.swift */,
+				9722C2751B68A24C00A7CB44 /* PNPublishTests.swift */,
 			);
 			name = "iOS Tests (Swift)";
 			path = "iOS Tests-Swift";
@@ -584,6 +587,7 @@
 				51D889F21B66F49E009127D0 /* PNBasicClientTestCase.swift in Sources */,
 				51BB25421B6815F300A9F154 /* PNTimeTokenTests.swift in Sources */,
 				51BB25401B6814EF00A9F154 /* PNBasicSubscribeTestCase.swift in Sources */,
+				9722C2761B68A24C00A7CB44 /* PNPublishTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
