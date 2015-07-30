@@ -13,7 +13,7 @@ namespace :test do
     end
   end
 
-  desc "Run the PubNub Integration Tests for iOS"
+  desc "Run the PubNub Integration Tests for iOS (Objective-C)"
   task :ios => :prepare do
     destinations = get_sims_for_run
     final_exit_status = 0
@@ -24,6 +24,26 @@ namespace :test do
       kill_sim
       sleep(5)
       run_tests('iOS Tests', 'iphonesimulator', destination, false)
+      current_exit_status = $?.exitstatus
+      if current_exit_status != 0
+        final_exit_status = current_exit_status
+      end
+    }
+    kill_sim
+    exit final_exit_status
+  end
+
+  desc "Run PubNub integration tests for iOS on Swift"
+  task :ios_swift => :prepare do
+    destinations = get_sims_for_run
+    final_exit_status = 0
+    destinations.each { |destination|
+      puts '**********************************'
+      puts destination
+      puts '**********************************'
+      kill_sim
+      sleep(5)
+      run_tests('iOS Tests-Swift', 'iphonesimulator', destination, false)
       current_exit_status = $?.exitstatus
       if current_exit_status != 0
         final_exit_status = current_exit_status
@@ -68,12 +88,23 @@ task :coverage do
   end
 end
 
-desc "Run the PubNub Integration Tests for iOS"
+desc "Run the PubNub Integration Tests for iOS (Objective-C)"
 task :test do
   Rake::Task['test:ios'].invoke
 end
 
-task :default => 'test'
+desc "Run PubNub Integration Tests for iOS (Swift)"
+task :test_swift do
+  Rake::Task['test:ios_swift'].invoke
+end
+
+desc "Run all available tests (Objective-C and Swift)"
+task :jenkins do
+  Rake::Task['test:ios'].invoke
+  Rake::Task['test:ios_swift'].invoke
+end
+
+task :default => 'jenkins'
 
 
 private
