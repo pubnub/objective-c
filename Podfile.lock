@@ -14,20 +14,20 @@ PODS:
   - BlocksKit/UIKit (2.2.5):
     - BlocksKit/Core
     - BlocksKit/DynamicDelegate
-  - CocoaLumberjack (2.0.0):
-    - CocoaLumberjack/Default (= 2.0.0)
-    - CocoaLumberjack/Extensions (= 2.0.0)
-  - CocoaLumberjack/Core (2.0.0)
-  - CocoaLumberjack/Default (2.0.0):
+  - CocoaLumberjack (2.0.1):
+    - CocoaLumberjack/Default (= 2.0.1)
+    - CocoaLumberjack/Extensions (= 2.0.1)
+  - CocoaLumberjack/Core (2.0.1)
+  - CocoaLumberjack/Default (2.0.1):
     - CocoaLumberjack/Core
-  - CocoaLumberjack/Extensions (2.0.0):
+  - CocoaLumberjack/Extensions (2.0.1):
     - CocoaLumberjack/Default
   - JSZVCR (0.6.0):
     - BlocksKit (~> 2.2.5)
     - OHHTTPStubs (~> 4.0.2)
   - OHHTTPStubs (4.0.2)
   - PubNub (4.0.2):
-    - CocoaLumberjack (= 2.0.0)
+    - CocoaLumberjack (~> 2.0.0)
 
 DEPENDENCIES:
   - JSZVCR (~> 0.6)
@@ -39,9 +39,9 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   BlocksKit: 7f422b971407001178d181a43b99014ea2591fe6
-  CocoaLumberjack: a6f77d987d65dc7ba86b0f84db7d0b9084f77bcb
+  CocoaLumberjack: 019d1361244274a6138c788c6cb80baabc13fb8f
   JSZVCR: 11cea7f38d3f6bc56f86796453dc185828862bcf
   OHHTTPStubs: dbd1957d414659783e07b49c961940b7564c23d9
-  PubNub: ebf9d7329cb19d40a0a08b2ce24de569afebde1b
+  PubNub: f600d873cbb3000c41dcb0cad54a7115a95c2000
 
 COCOAPODS: 0.38.2
