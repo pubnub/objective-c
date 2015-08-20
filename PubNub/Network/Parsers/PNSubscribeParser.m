@@ -269,7 +269,9 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
     NSMutableDictionary *presence = [NSMutableDictionary new];
     
     // Processing common for all presence events data.
-    presence[@"presenceEvent"] = data[@"action"];
+    if (data[@"action"]) {
+        presence[@"presenceEvent"] = data[@"action"];
+    }
     presence[@"presence"] = [NSMutableDictionary new];
     presence[@"presence"][@"timetoken"] = data[@"timestamp"];
     if (data[@"uuid"]) {
