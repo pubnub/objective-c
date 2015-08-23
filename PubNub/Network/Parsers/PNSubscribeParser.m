@@ -211,7 +211,8 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
     BOOL isPresenceEvent = [PNChannel isPresenceObject:channel];
     if (![channel length] && [data isKindOfClass:[NSDictionary class]]) {
         
-        isPresenceEvent = (data[@"action"] != nil && data[@"timestamp"] != nil);
+        isPresenceEvent = (data[@"timestamp"] != nil &&
+                           (data[@"action"] != nil || data[@"occupancy"] != nil));
     }
     
     if (isPresenceEvent) {
@@ -270,7 +271,7 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
     NSMutableDictionary *presence = [NSMutableDictionary new];
     
     // Processing common for all presence events data.
-    presence[@"presenceEvent"] = data[@"action"];
+    presence[@"presenceEvent"] = (data[@"action"]?: @"interval");
     presence[@"presence"] = [NSMutableDictionary new];
     presence[@"presence"][@"timetoken"] = data[@"timestamp"];
     if (data[@"uuid"]) {
@@ -281,7 +282,7 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
     // Check whether this is not state modification event.
     if (![presence[@"presenceEvent"] isEqualToString:@"state-change"]) {
         
-        presence[@"presence"][@"occupancy"] = data[@"occupancy"];
+        presence[@"presence"][@"occupancy"] = (data[@"occupancy"]?: @0);
     }
     if (data[@"data"]) {
      
