@@ -32,9 +32,18 @@
 }
 
 - (void)PNTest_subscribeToPresenceChannels:(NSArray *)channels {
-    self.subscribeExpectation = [self expectationWithDescription:@"subscribe"];
+    [self PNTest_subscribeToPresenceChannels:channels withEventExpectation:NO];
+}
+
+- (void)PNTest_subscribeToPresenceChannels:(NSArray *)channels withEventExpectation:(BOOL)shouldExpectEvent {
+    if (shouldExpectEvent) {
+        self.presenceEventExpectation = [self expectationWithDescription:@"subscribeEvent"];
+    } else {
+        self.subscribeExpectation = [self expectationWithDescription:@"subscribe"];
+    }
+    
     [self.client subscribeToPresenceChannels:channels];
-    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:460 handler:^(NSError *error) {
         XCTAssertNil(error);
     }];
 }
@@ -82,6 +91,10 @@
 - (void)client:(PubNub *)client didReceivePresenceEvent:(PNPresenceEventResult *)event {
     if (self.didReceivePresenceEventAssertions) {
         self.didReceivePresenceEventAssertions(client, event);
+        
+        if (self.presenceEventExpectation) {
+            [self.presenceEventExpectation fulfill];
+        }
     }
 }
 
