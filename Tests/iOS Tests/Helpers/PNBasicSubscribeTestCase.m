@@ -43,7 +43,7 @@
     }
     
     [self.client subscribeToPresenceChannels:channels];
-    [self waitForExpectationsWithTimeout:460 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
         XCTAssertNil(error);
     }];
 }
