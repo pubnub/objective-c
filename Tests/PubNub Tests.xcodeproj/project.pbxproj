@@ -69,6 +69,10 @@
 		79EF04E41B4EAB1A007478CB /* PNSubscribeToPresenceChannelsTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 79EF04D21B4EAB1A007478CB /* PNSubscribeToPresenceChannelsTests.bundle */; };
 		79EF04E51B4EAB1A007478CB /* PNTimeTokenTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 79EF04D31B4EAB1A007478CB /* PNTimeTokenTests.bundle */; };
 		79EF04E61B4EAB1A007478CB /* PNUnsubscribeTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 79EF04D41B4EAB1A007478CB /* PNUnsubscribeTests.bundle */; };
+		960354F61B90629C0047EE04 /* PNPresenceEventTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 960354F51B90629C0047EE04 /* PNPresenceEventTests.bundle */; };
+		960354F71B90629C0047EE04 /* PNPresenceEventTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 960354F51B90629C0047EE04 /* PNPresenceEventTests.bundle */; };
+		960354F91B9100120047EE04 /* PNPresenceEventTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960354F81B9100120047EE04 /* PNPresenceEventTests.swift */; };
+		967707F71B8F4A80002B8E84 /* PNPresenceEventTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 967707F61B8F4A80002B8E84 /* PNPresenceEventTests.m */; };
 		96B222BC1B84868C002549D5 /* PNPresenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B222BB1B84868C002549D5 /* PNPresenceTests.swift */; };
 		96F0239E1B580D0000C4A581 /* NSArray+PNTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96F0239D1B580D0000C4A581 /* NSArray+PNTest.m */; };
 		9722C2761B68A24C00A7CB44 /* PNPublishTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9722C2751B68A24C00A7CB44 /* PNPublishTests.swift */; };
@@ -137,6 +141,9 @@
 		79EF04D41B4EAB1A007478CB /* PNUnsubscribeTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = PNUnsubscribeTests.bundle; path = Fixtures/PNUnsubscribeTests.bundle; sourceTree = "<group>"; };
 		80559EE484F42089750D4F31 /* Pods-iOS Tests-Swift.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS Tests-Swift.release.xcconfig"; path = "../Pods/Target Support Files/Pods-iOS Tests-Swift/Pods-iOS Tests-Swift.release.xcconfig"; sourceTree = "<group>"; };
 		86731617DF5CE7DB44DD3AF8 /* libPods-iOS Tests-Swift.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-iOS Tests-Swift.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		960354F51B90629C0047EE04 /* PNPresenceEventTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = PNPresenceEventTests.bundle; path = Fixtures/PNPresenceEventTests.bundle; sourceTree = "<group>"; };
+		960354F81B9100120047EE04 /* PNPresenceEventTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNPresenceEventTests.swift; sourceTree = "<group>"; };
+		967707F61B8F4A80002B8E84 /* PNPresenceEventTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNPresenceEventTests.m; path = Tests/PNPresenceEventTests.m; sourceTree = "<group>"; };
 		96B222BB1B84868C002549D5 /* PNPresenceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNPresenceTests.swift; sourceTree = "<group>"; };
 		96F0239C1B580D0000C4A581 /* NSArray+PNTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSArray+PNTest.h"; path = "iOS Tests/Helpers/NSArray+PNTest.h"; sourceTree = "<group>"; };
 		96F0239D1B580D0000C4A581 /* NSArray+PNTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSArray+PNTest.m"; path = "iOS Tests/Helpers/NSArray+PNTest.m"; sourceTree = "<group>"; };
@@ -213,6 +220,7 @@
 				79EF04981B4EAAB7007478CB /* PNHeartbeatTests.m */,
 				79EF04991B4EAAB7007478CB /* PNHistoryTests.m */,
 				79EF049A1B4EAAB7007478CB /* PNPresenceTests.m */,
+				967707F61B8F4A80002B8E84 /* PNPresenceEventTests.m */,
 				79EF049B1B4EAAB7007478CB /* PNPublishCompressedTests.m */,
 				79EF049C1B4EAAB7007478CB /* PNPublishSizeOfMessage.m */,
 				79EF049D1B4EAAB7007478CB /* PNPublishTests.m */,
@@ -262,6 +270,7 @@
 				51BB25411B6815F300A9F154 /* PNTimeTokenTests.swift */,
 				9722C2751B68A24C00A7CB44 /* PNPublishTests.swift */,
 				96B222BB1B84868C002549D5 /* PNPresenceTests.swift */,
+				960354F81B9100120047EE04 /* PNPresenceEventTests.swift */,
 			);
 			name = "iOS Tests (Swift)";
 			path = "iOS Tests-Swift";
@@ -290,6 +299,7 @@
 		51F7AAC11B27AD7400BEDA1F /* Fixtures */ = {
 			isa = PBXGroup;
 			children = (
+				960354F51B90629C0047EE04 /* PNPresenceEventTests.bundle */,
 				79EF04C31B4EAB1A007478CB /* PNAPNSTests.bundle */,
 				79EF04C41B4EAB1A007478CB /* PNChannelGroupSubscribeTests.bundle */,
 				79EF04C51B4EAB1A007478CB /* PNChannelGroupTests.bundle */,
@@ -440,6 +450,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				960354F61B90629C0047EE04 /* PNPresenceEventTests.bundle in Resources */,
 				79EF04E11B4EAB1A007478CB /* PNPublishWithHistoryTests.bundle in Resources */,
 				79EF04DD1B4EAB1A007478CB /* PNHistoryTests.bundle in Resources */,
 				79EF04E01B4EAB1A007478CB /* PNPublishTests.bundle in Resources */,
@@ -465,6 +476,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				960354F71B90629C0047EE04 /* PNPresenceEventTests.bundle in Resources */,
 				51BB254F1B68176C00A9F154 /* PNPublishWithHistoryTests.bundle in Resources */,
 				51BB254B1B68176C00A9F154 /* PNHistoryTests.bundle in Resources */,
 				51BB254E1B68176C00A9F154 /* PNPublishTests.bundle in Resources */,
@@ -570,6 +582,7 @@
 				79EF04A51B4EAAB7007478CB /* PNChannelGroupSubscribeTests.m in Sources */,
 				79EF04A91B4EAAB7007478CB /* PNClientStateChannelGroupTests.m in Sources */,
 				79EF04A71B4EAAB7007478CB /* PNChannelGroupUnsubscribeTests.m in Sources */,
+				967707F71B8F4A80002B8E84 /* PNPresenceEventTests.m in Sources */,
 				79EF04AA1B4EAAB7007478CB /* PNClientStateChannelTests.m in Sources */,
 				79EF04BB1B4EAAE4007478CB /* PNBasicClientTestCase.m in Sources */,
 				79EF04C21B4EAB01007478CB /* NSString+PNTest.m in Sources */,
@@ -592,6 +605,7 @@
 				51BB25421B6815F300A9F154 /* PNTimeTokenTests.swift in Sources */,
 				51BB25401B6814EF00A9F154 /* PNBasicSubscribeTestCase.swift in Sources */,
 				9722C2761B68A24C00A7CB44 /* PNPublishTests.swift in Sources */,
+				960354F91B9100120047EE04 /* PNPresenceEventTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
