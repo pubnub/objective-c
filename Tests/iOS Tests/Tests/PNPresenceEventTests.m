@@ -120,4 +120,26 @@
     [self PNTest_subscribeToPresenceChannels:@[self.uniqueName] withEventExpectation:YES];
 }
 
+- (void)testIntervalEvent {
+    PNWeakify(self);
+
+    self.didReceivePresenceEventAssertions = ^void (PubNub *client, PNPresenceEventResult *event) {
+        
+        PNStrongify(self);
+        XCTAssertEqualObjects(self.client, client);
+        XCTAssertNotNil(event);
+        XCTAssertTrue(event.statusCode == 200, @"Status code is not right");
+        
+        XCTAssertEqual(event.operation, PNSubscribeOperation);
+        
+        XCTAssertNil(event.data.presence.uuid, @"UUID should be nil");
+        XCTAssertNil(event.data.presenceEvent, @"Presence event should be nil");
+        XCTAssertEqualObjects(event.data.subscribedChannel, @"2EC925F0-B996-47A4-AF54-A605E1A9AEBA", @"Subscribed channel are not equal.");
+        
+        XCTAssertEqualObjects(event.data.timetoken, @14411068884747343, @"Timetoken is not the same.");
+    };
+    
+    [self PNTest_subscribeToPresenceChannels:@[self.uniqueName] withEventExpectation:YES];
+}
+
 @end
