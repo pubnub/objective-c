@@ -3,6 +3,7 @@
  @since 4.0
  @copyright © 2009-2015 PubNub, Inc.
  */
+#import <Foundation/Foundation.h>
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 #import <UIKit/UIKit.h>
 #elif __MAC_OS_X_VERSION_MIN_REQUIRED
