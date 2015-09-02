@@ -111,7 +111,7 @@ class PNPresenceEventTests: PNBasicSubscribeTestCase {
             XCTAssertEqual(didReceivePresenceEvent.operation, PNOperationType.SubscribeOperation)
             
             XCTAssertNil(didReceivePresenceEvent.data.presence.uuid, "UUI should be nil")
-            XCTAssertNil(didReceivePresenceEvent.data.presenceEvent, "UUI should be nil")
+            XCTAssertEqual(didReceivePresenceEvent.data.presenceEvent, "interval");
             XCTAssertEqual(didReceivePresenceEvent.data.subscribedChannel, "2EC925F0-B996-47A4-AF54-A605E1A9AEBA", "Subscribed channel are not equal.")
             
             XCTAssertEqual(didReceivePresenceEvent.data.timetoken, NSDecimalNumber(string: "14411068884747343"), "Timetoken is not the same.")
