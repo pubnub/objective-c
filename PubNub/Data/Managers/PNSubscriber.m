@@ -1053,13 +1053,22 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         #pragma clang diagnostic ignored "-Wreceiver-is-weak"
         [self.client.listenersManager notifyWithBlock:^{
             
+            NSArray *listOfActiveChannels = [self allObjects];
+            
             // Iterate through array with notifications and report back using callback blocks to the
             // user.
             for (NSMutableDictionary *event in events) {
                 
                 if (!event[@"subscribedChannel"]) {
                     
-                    event[@"subscribedChannel"] = [self allObjects][0];
+                    if ([listOfActiveChannels count]) {
+                        
+                        event[@"subscribedChannel"] = listOfActiveChannels[0];
+                    }
+                    else {
+                        
+                        continue;
+                    }
                 }
                 
                 // Check whether event has been triggered on presence channel or channel group.

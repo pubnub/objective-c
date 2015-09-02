@@ -57,7 +57,7 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
  
  @param data           Reference on service-provided data about event.
  @param channel        Reference on channel for which event has been received.
- @param channelGroup   Reference on channel group for which event has been received.
+ @param group          Reference on channel group for which event has been received.
  @param additionalData Additional information provided by client to complete parsing.
  
  @return Pre-processed event information (depending on stored data).
@@ -65,7 +65,7 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
  @since 4.0
  */
 + (NSMutableDictionary *)eventFromData:(id)data forChannel:(NSString *)channel
-                                 group:(NSString *)channelGroup
+                                 group:(NSString *)group
               withAdditionalParserData:(NSDictionary *)additionalData;
 
 /**
@@ -174,10 +174,11 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
             for (NSUInteger eventIdx = 0; eventIdx < [feedEvents count]; eventIdx++) {
                 
                 // Fetching remote data object name on which event fired.
-                NSString *objectName = (eventIdx < [channels count] ? channels[eventIdx] : channels[0]);
-                NSString *groupName = ([groups count] > eventIdx ? groups[eventIdx] : nil);
+                NSString *objectOrGroupName = (eventIdx < [channels count] ? channels[eventIdx] : channels[0]);
+                NSString *objectName = ([groups count] > eventIdx ? groups[eventIdx] : nil);
                 NSMutableDictionary *event = [self eventFromData:feedEvents[eventIdx]
-                                                      forChannel:objectName group:groupName
+                                                      forChannel:(objectName?: objectOrGroupName)
+                                                           group:(objectName? objectOrGroupName: nil)
                                         withAdditionalParserData:additionalData];
                 event[@"timetoken"] = timeToken;
                 [events addObject:event];
@@ -194,23 +195,24 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
 #pragma mark - Events processing
 
 + (NSMutableDictionary *)eventFromData:(id)data forChannel:(NSString *)channel
-                                 group:(NSString *)channelGroup
+                                 group:(NSString *)group
               withAdditionalParserData:(NSDictionary *)additionalData {
     
     NSMutableDictionary *event = [NSMutableDictionary new];
     if ([channel length]) {
         
-        event[(![channelGroup length] ? @"subscribedChannel": @"actualChannel")] = channel;
+        event[(![group length] ? @"subscribedChannel": @"actualChannel")] = channel;
     }
-    if ([channelGroup length]) {
+    if ([group length]) {
         
-        event[@"subscribedChannel"] = channelGroup;
+        event[@"subscribedChannel"] = group;
     }
     
     BOOL isPresenceEvent = [PNChannel isPresenceObject:channel];
     if (![channel length] && [data isKindOfClass:[NSDictionary class]]) {
         
-        isPresenceEvent = (data[@"action"] != nil && data[@"timestamp"] != nil);
+        isPresenceEvent = (data[@"timestamp"] != nil &&
+                           (data[@"action"] != nil || data[@"occupancy"] != nil));
     }
     
     if (isPresenceEvent) {
@@ -269,7 +271,7 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
     NSMutableDictionary *presence = [NSMutableDictionary new];
     
     // Processing common for all presence events data.
-    presence[@"presenceEvent"] = data[@"action"];
+    presence[@"presenceEvent"] = (data[@"action"]?: @"interval");
     presence[@"presence"] = [NSMutableDictionary new];
     presence[@"presence"][@"timetoken"] = data[@"timestamp"];
     if (data[@"uuid"]) {
@@ -280,7 +282,7 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
     // Check whether this is not state modification event.
     if (![presence[@"presenceEvent"] isEqualToString:@"state-change"]) {
         
-        presence[@"presence"][@"occupancy"] = data[@"occupancy"];
+        presence[@"presence"][@"occupancy"] = (data[@"occupancy"]?: @0);
     }
     if (data[@"data"]) {
      

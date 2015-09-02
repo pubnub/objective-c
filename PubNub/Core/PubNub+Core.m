@@ -4,6 +4,9 @@
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "PubNub+CorePrivate.h"
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+    #import <UIKit/UIKit.h>
+#endif // __IPHONE_OS_VERSION_MIN_REQUIRED
 #import "PubNub+SubscribePrivate.h"
 #import "PNObjectEventListener.h"
 #import "PNRequestParameters.h"
