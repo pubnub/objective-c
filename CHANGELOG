@@ -1,3 +1,10 @@
+09-02-2015 - 82b22f5 - 4.0.4
+. fixed issue with missing presence event handling
+. fixed subscriber parser issue because of which channel group name and actual channel changed their places in
+status object for presence event.
+. fixed non-multiplexing subscription issue
+. added additional presence events tests
+
 07-24-2015 - 661d857 - 4.0.3
 . fixed and changed data types for few data objects (which caused crash in swift environment)
 . added custom 'User-Agent' header field
