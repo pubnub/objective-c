@@ -4,6 +4,9 @@
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "PNNetwork.h"
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+    #import <UIKit/UIKit.h>
+#endif // __IPHONE_OS_VERSION_MIN_REQUIRED
 #import "PNNetworkResponseSerializer.h"
 #import "PNConfiguration+Private.h"
 #import "PNRequestParameters.h"

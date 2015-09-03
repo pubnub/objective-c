@@ -25,7 +25,7 @@ class PNPublishTests: PNBasicClientTestCase {
             XCTAssertEqual(status.statusCode, 200)
             XCTAssertFalse(status.error)
             XCTAssertEqual(status.data.information, "Sent")
-            XCTAssertEqual(status.data.timetoken, NSNumber(longLong: 14355311066264140))
+            XCTAssertEqual(status.data.timetoken, NSDecimalNumber(string: "14355311066264140"))
         }
     }
     
@@ -37,7 +37,7 @@ class PNPublishTests: PNBasicClientTestCase {
             XCTAssertEqual(status.statusCode, 200)
             XCTAssertFalse(status.error)
             XCTAssertEqual(status.data.information, "Sent")
-            XCTAssertEqual(status.data.timetoken, NSNumber(longLong: 14355311062532489))
+            XCTAssertEqual(status.data.timetoken, NSDecimalNumber(string: "14355311062532489"))
         }
     }
 

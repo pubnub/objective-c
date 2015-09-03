@@ -23,6 +23,8 @@ class PNBasicSubscribeTestCase: PNBasicClientTestCase, PNObjectEventListener {
     var channelGroupSubscribeExpectation: XCTestExpectation!;
     var channelGroupUnsubscribeExpectation: XCTestExpectation!;
     
+    var assertDidReceivePresenceEvent: PNClientDidReceivePresenceEventAssertions?
+    
     override func setUp() {
         super.setUp()
         self.client.addListener(self)
@@ -82,6 +84,20 @@ class PNBasicSubscribeTestCase: PNBasicClientTestCase, PNObjectEventListener {
         })
     }
     
+    func PNTest_subscribeToChannels(channels: [String]!, presence: Bool!) {
+        if (presence == true) {
+            self.presenceEventExpectation = self.expectationWithDescription("subscribeEvent");
+        } else {
+            self.testExpectation = self.expectationWithDescription("network")
+        }
+        
+        self.client.subscribeToPresenceChannels(channels)
+        
+        waitForExpectationsWithTimeout(10, handler: { (error) -> Void in
+            XCTAssertNil(error, "Encountered error with subscribe call")
+        })
+    }
+    
 // MARK: PNDelegateListener
     
     func client(client: PubNub!, didReceiveMessage message: PNMessageResult!) {
@@ -95,10 +111,11 @@ class PNBasicSubscribeTestCase: PNBasicClientTestCase, PNObjectEventListener {
             didReceiveStatusAssertions!(client: client, status: status)
         }
     }
-
+    
     func client(client: PubNub!, didReceivePresenceEvent event: PNPresenceEventResult!) {
-        if didReceivePresenceEventAssertions != nil {
-            didReceivePresenceEventAssertions!(client: client, event: event)
+        if self.assertDidReceivePresenceEvent != nil {
+            self.assertDidReceivePresenceEvent!(client: self.client, event: event)
+            self.presenceEventExpectation?.fulfill()
         }
     }
 }
