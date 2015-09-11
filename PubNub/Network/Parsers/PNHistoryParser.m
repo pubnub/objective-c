@@ -93,37 +93,45 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNAESErrorLogLevel;
                 
                 timeToken = messageObject[@"timetoken"];
                 message = messageObject[@"message"];
+                messageObject = message;
             }
             
             // Try decrypt message if possible.
             if ([(NSString *)additionalData[@"cipherKey"] length]){
                 
                 NSError *decryptionError;
-                NSData *eventData = nil;
+                id decryptedMessage = nil;
                 if ([message isKindOfClass:[NSString class]]) {
                     
-                    eventData = [PNAES decrypt:message withKey:additionalData[@"cipherKey"]
-                                      andError:&decryptionError];
-                }
-                
-                if (!decryptionError) {
-                    
-                    message = [[NSString alloc] initWithData:eventData
-                                                    encoding:NSUTF8StringEncoding];
+                    NSData *eventData = [PNAES decrypt:message withKey:additionalData[@"cipherKey"]
+                                              andError:&decryptionError];
+                    NSString *decryptedMessageString = nil;
+                    if (eventData) {
+                        
+                        decryptedMessageString = [[NSString alloc] initWithData:eventData
+                                                                       encoding:NSUTF8StringEncoding];
+                    }
                     
                     // In case if decrypted message (because of error suppression) is equal to
                     // original message, there is no need to retry JSON de-serialization.
-                    if (![message isEqualToString:messageObject]) {
+                    if (decryptedMessageString && ![decryptedMessageString isEqualToString:message]) {
                         
-                        message = [PNJSON JSONObjectFrom:message withError:nil];
+                        decryptedMessage = [PNJSON JSONObjectFrom:decryptedMessageString withError:nil];
                     }
                 }
                 
-                if (decryptionError || ![message isKindOfClass:[NSString class]]) {
+                if (decryptionError || !decryptedMessage) {
                     
                     DDLogAESError([self ddLogLevel], @"<PubNub> History entry decryption error: %@",
                                   decryptionError);
                     data[@"decryptError"] = @YES;
+                    
+                    // Restore message to original form.
+                    message = messageObject;
+                }
+                else {
+                    
+                    message = decryptedMessage;
                 }
             }
             
