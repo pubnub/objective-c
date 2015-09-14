@@ -72,6 +72,9 @@
 		960354F61B90629C0047EE04 /* PNPresenceEventTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 960354F51B90629C0047EE04 /* PNPresenceEventTests.bundle */; };
 		960354F71B90629C0047EE04 /* PNPresenceEventTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 960354F51B90629C0047EE04 /* PNPresenceEventTests.bundle */; };
 		960354F91B9100120047EE04 /* PNPresenceEventTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960354F81B9100120047EE04 /* PNPresenceEventTests.swift */; };
+		9652F3E21BA31D9A001E940A /* PNBasicClientCryptTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 9652F3E11BA31D9A001E940A /* PNBasicClientCryptTestCase.m */; };
+		9652F3E51BA31F7D001E940A /* PNConfigurationChiperKeyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9652F3E41BA31F7D001E940A /* PNConfigurationChiperKeyTests.m */; };
+		9652F3E71BA6E90B001E940A /* PNConfigurationChiperKeyTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 9652F3E61BA6E90B001E940A /* PNConfigurationChiperKeyTests.bundle */; };
 		967707F71B8F4A80002B8E84 /* PNPresenceEventTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 967707F61B8F4A80002B8E84 /* PNPresenceEventTests.m */; };
 		96B222BC1B84868C002549D5 /* PNPresenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B222BB1B84868C002549D5 /* PNPresenceTests.swift */; };
 		96F0239E1B580D0000C4A581 /* NSArray+PNTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96F0239D1B580D0000C4A581 /* NSArray+PNTest.m */; };
@@ -143,6 +146,11 @@
 		86731617DF5CE7DB44DD3AF8 /* libPods-iOS Tests-Swift.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-iOS Tests-Swift.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		960354F51B90629C0047EE04 /* PNPresenceEventTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = PNPresenceEventTests.bundle; path = Fixtures/PNPresenceEventTests.bundle; sourceTree = "<group>"; };
 		960354F81B9100120047EE04 /* PNPresenceEventTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNPresenceEventTests.swift; sourceTree = "<group>"; };
+		9652F3E01BA31D9A001E940A /* PNBasicClientCryptTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PNBasicClientCryptTestCase.h; path = Helpers/PNBasicClientCryptTestCase.h; sourceTree = "<group>"; };
+		9652F3E11BA31D9A001E940A /* PNBasicClientCryptTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNBasicClientCryptTestCase.m; path = Helpers/PNBasicClientCryptTestCase.m; sourceTree = "<group>"; };
+		9652F3E31BA31F7D001E940A /* PNConfigurationChiperKeyTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PNConfigurationChiperKeyTests.h; path = Tests/PNConfigurationChiperKeyTests.h; sourceTree = "<group>"; };
+		9652F3E41BA31F7D001E940A /* PNConfigurationChiperKeyTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNConfigurationChiperKeyTests.m; path = Tests/PNConfigurationChiperKeyTests.m; sourceTree = "<group>"; };
+		9652F3E61BA6E90B001E940A /* PNConfigurationChiperKeyTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = PNConfigurationChiperKeyTests.bundle; path = Fixtures/PNConfigurationChiperKeyTests.bundle; sourceTree = "<group>"; };
 		967707F61B8F4A80002B8E84 /* PNPresenceEventTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNPresenceEventTests.m; path = Tests/PNPresenceEventTests.m; sourceTree = "<group>"; };
 		96B222BB1B84868C002549D5 /* PNPresenceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNPresenceTests.swift; sourceTree = "<group>"; };
 		96F0239C1B580D0000C4A581 /* NSArray+PNTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSArray+PNTest.h"; path = "iOS Tests/Helpers/NSArray+PNTest.h"; sourceTree = "<group>"; };
@@ -181,6 +189,8 @@
 				79EF04B81B4EAAE4007478CB /* PNBasicClientTestCase.m */,
 				79EF04B91B4EAAE4007478CB /* PNBasicSubscribeTestCase.h */,
 				79EF04BA1B4EAAE4007478CB /* PNBasicSubscribeTestCase.m */,
+				9652F3E01BA31D9A001E940A /* PNBasicClientCryptTestCase.h */,
+				9652F3E11BA31D9A001E940A /* PNBasicClientCryptTestCase.m */,
 			);
 			name = "Base Test Classes";
 			path = "iOS Tests";
@@ -230,6 +240,8 @@
 				79EF04A11B4EAAB7007478CB /* PNSubscribeToPresenceChannelsTests.m */,
 				79EF04A21B4EAAB7007478CB /* PNTimeTokenTests.m */,
 				79EF04A31B4EAAB7007478CB /* PNUnsubscribeTests.m */,
+				9652F3E31BA31F7D001E940A /* PNConfigurationChiperKeyTests.h */,
+				9652F3E41BA31F7D001E940A /* PNConfigurationChiperKeyTests.m */,
 			);
 			name = "iOS Tests (Objective-C)";
 			path = "iOS Tests";
@@ -299,6 +311,7 @@
 		51F7AAC11B27AD7400BEDA1F /* Fixtures */ = {
 			isa = PBXGroup;
 			children = (
+				9652F3E61BA6E90B001E940A /* PNConfigurationChiperKeyTests.bundle */,
 				960354F51B90629C0047EE04 /* PNPresenceEventTests.bundle */,
 				79EF04C31B4EAB1A007478CB /* PNAPNSTests.bundle */,
 				79EF04C41B4EAB1A007478CB /* PNChannelGroupSubscribeTests.bundle */,
@@ -417,6 +430,7 @@
 		519C32731B20BF4D00FAC283 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0710;
 				LastUpgradeCheck = 0630;
 				TargetAttributes = {
 					519C327C1B20C11500FAC283 = {
@@ -451,6 +465,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				960354F61B90629C0047EE04 /* PNPresenceEventTests.bundle in Resources */,
+				9652F3E71BA6E90B001E940A /* PNConfigurationChiperKeyTests.bundle in Resources */,
 				79EF04E11B4EAB1A007478CB /* PNPublishWithHistoryTests.bundle in Resources */,
 				79EF04DD1B4EAB1A007478CB /* PNHistoryTests.bundle in Resources */,
 				79EF04E01B4EAB1A007478CB /* PNPublishTests.bundle in Resources */,
@@ -569,6 +584,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				79EF04B21B4EAAB7007478CB /* PNPublishWithMobilePayloadTests.m in Sources */,
+				9652F3E51BA31F7D001E940A /* PNConfigurationChiperKeyTests.m in Sources */,
 				79EF04B01B4EAAB7007478CB /* PNPublishTests.m in Sources */,
 				79EF04B51B4EAAB7007478CB /* PNTimeTokenTests.m in Sources */,
 				79EF04B61B4EAAB7007478CB /* PNUnsubscribeTests.m in Sources */,
@@ -580,6 +596,7 @@
 				79EF04B31B4EAAB7007478CB /* PNSubscribeTests.m in Sources */,
 				79EF04BC1B4EAAE4007478CB /* PNBasicSubscribeTestCase.m in Sources */,
 				79EF04A51B4EAAB7007478CB /* PNChannelGroupSubscribeTests.m in Sources */,
+				9652F3E21BA31D9A001E940A /* PNBasicClientCryptTestCase.m in Sources */,
 				79EF04A91B4EAAB7007478CB /* PNClientStateChannelGroupTests.m in Sources */,
 				79EF04A71B4EAAB7007478CB /* PNChannelGroupUnsubscribeTests.m in Sources */,
 				967707F71B8F4A80002B8E84 /* PNPresenceEventTests.m in Sources */,
