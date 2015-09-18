@@ -75,8 +75,11 @@
 		9652F3E21BA31D9A001E940A /* PNBasicClientCryptTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 9652F3E11BA31D9A001E940A /* PNBasicClientCryptTestCase.m */; };
 		9652F3E51BA31F7D001E940A /* PNConfigurationChiperKeyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9652F3E41BA31F7D001E940A /* PNConfigurationChiperKeyTests.m */; };
 		9652F3E71BA6E90B001E940A /* PNConfigurationChiperKeyTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 9652F3E61BA6E90B001E940A /* PNConfigurationChiperKeyTests.bundle */; };
+		9652F3E91BA97AA5001E940A /* PNBasicClientCryptTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9652F3E81BA97AA5001E940A /* PNBasicClientCryptTestCase.swift */; };
+		9652F3EB1BA98706001E940A /* PNConfigurationChiperKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9652F3EA1BA98706001E940A /* PNConfigurationChiperKeyTests.swift */; };
 		967707F71B8F4A80002B8E84 /* PNPresenceEventTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 967707F61B8F4A80002B8E84 /* PNPresenceEventTests.m */; };
 		96B222BC1B84868C002549D5 /* PNPresenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B222BB1B84868C002549D5 /* PNPresenceTests.swift */; };
+		96E383931BAAC12F00560991 /* PNConfigurationChiperKeyTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 9652F3E61BA6E90B001E940A /* PNConfigurationChiperKeyTests.bundle */; };
 		96F0239E1B580D0000C4A581 /* NSArray+PNTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96F0239D1B580D0000C4A581 /* NSArray+PNTest.m */; };
 		9722C2761B68A24C00A7CB44 /* PNPublishTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9722C2751B68A24C00A7CB44 /* PNPublishTests.swift */; };
 		BAF3D57EE54835C533EC9033 /* libPods-iOS Tests-Swift.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 86731617DF5CE7DB44DD3AF8 /* libPods-iOS Tests-Swift.a */; };
@@ -151,6 +154,8 @@
 		9652F3E31BA31F7D001E940A /* PNConfigurationChiperKeyTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PNConfigurationChiperKeyTests.h; path = Tests/PNConfigurationChiperKeyTests.h; sourceTree = "<group>"; };
 		9652F3E41BA31F7D001E940A /* PNConfigurationChiperKeyTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNConfigurationChiperKeyTests.m; path = Tests/PNConfigurationChiperKeyTests.m; sourceTree = "<group>"; };
 		9652F3E61BA6E90B001E940A /* PNConfigurationChiperKeyTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = PNConfigurationChiperKeyTests.bundle; path = Fixtures/PNConfigurationChiperKeyTests.bundle; sourceTree = "<group>"; };
+		9652F3E81BA97AA5001E940A /* PNBasicClientCryptTestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNBasicClientCryptTestCase.swift; sourceTree = "<group>"; };
+		9652F3EA1BA98706001E940A /* PNConfigurationChiperKeyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNConfigurationChiperKeyTests.swift; sourceTree = "<group>"; };
 		967707F61B8F4A80002B8E84 /* PNPresenceEventTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNPresenceEventTests.m; path = Tests/PNPresenceEventTests.m; sourceTree = "<group>"; };
 		96B222BB1B84868C002549D5 /* PNPresenceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNPresenceTests.swift; sourceTree = "<group>"; };
 		96F0239C1B580D0000C4A581 /* NSArray+PNTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSArray+PNTest.h"; path = "iOS Tests/Helpers/NSArray+PNTest.h"; sourceTree = "<group>"; };
@@ -283,6 +288,7 @@
 				9722C2751B68A24C00A7CB44 /* PNPublishTests.swift */,
 				96B222BB1B84868C002549D5 /* PNPresenceTests.swift */,
 				960354F81B9100120047EE04 /* PNPresenceEventTests.swift */,
+				9652F3EA1BA98706001E940A /* PNConfigurationChiperKeyTests.swift */,
 			);
 			name = "iOS Tests (Swift)";
 			path = "iOS Tests-Swift";
@@ -303,6 +309,7 @@
 			children = (
 				51D889F11B66F49E009127D0 /* PNBasicClientTestCase.swift */,
 				51BB253F1B6814EF00A9F154 /* PNBasicSubscribeTestCase.swift */,
+				9652F3E81BA97AA5001E940A /* PNBasicClientCryptTestCase.swift */,
 			);
 			name = Helpers;
 			path = "iOS Tests-Swift";
@@ -492,6 +499,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				960354F71B90629C0047EE04 /* PNPresenceEventTests.bundle in Resources */,
+				96E383931BAAC12F00560991 /* PNConfigurationChiperKeyTests.bundle in Resources */,
 				51BB254F1B68176C00A9F154 /* PNPublishWithHistoryTests.bundle in Resources */,
 				51BB254B1B68176C00A9F154 /* PNHistoryTests.bundle in Resources */,
 				51BB254E1B68176C00A9F154 /* PNPublishTests.bundle in Resources */,
@@ -620,7 +628,9 @@
 				51D889F21B66F49E009127D0 /* PNBasicClientTestCase.swift in Sources */,
 				96B222BC1B84868C002549D5 /* PNPresenceTests.swift in Sources */,
 				51BB25421B6815F300A9F154 /* PNTimeTokenTests.swift in Sources */,
+				9652F3EB1BA98706001E940A /* PNConfigurationChiperKeyTests.swift in Sources */,
 				51BB25401B6814EF00A9F154 /* PNBasicSubscribeTestCase.swift in Sources */,
+				9652F3E91BA97AA5001E940A /* PNBasicClientCryptTestCase.swift in Sources */,
 				9722C2761B68A24C00A7CB44 /* PNPublishTests.swift in Sources */,
 				960354F91B9100120047EE04 /* PNPresenceEventTests.swift in Sources */,
 			);

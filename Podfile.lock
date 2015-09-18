@@ -35,7 +35,7 @@ DEPENDENCIES:
 
 EXTERNAL SOURCES:
   PubNub:
-    :path: "."
+    :path: .
 
 SPEC CHECKSUMS:
   BlocksKit: 7f422b971407001178d181a43b99014ea2591fe6
