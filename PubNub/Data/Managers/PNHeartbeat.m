@@ -51,7 +51,7 @@
  
  @since 4.0
  */
-- (instancetype)initForClient:(PubNub *)client NS_DESIGNATED_INITIALIZER;
+- (instancetype)initForClient:(PubNub *)client;
 
 
 #pragma mark - Handlers

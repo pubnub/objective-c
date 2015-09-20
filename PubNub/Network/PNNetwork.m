@@ -89,7 +89,7 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
  
  @since 4.0
  */
-@property (nonatomic, readonly) PNConfiguration *configuration;
+@property (nonatomic, strong) PNConfiguration *configuration;
 
 /**
  @brief      Stores whether \b PubNub network manager configured for long-poll request processing or
@@ -197,7 +197,7 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
  */
 - (instancetype)initForClient:(PubNub *)client requestTimeout:(NSTimeInterval)timeout
            maximumConnections:(NSInteger)maximumConnections longPoll:(BOOL)longPollEnabled
-                 workingQueue:(dispatch_queue_t)queue NS_DESIGNATED_INITIALIZER;
+                 workingQueue:(dispatch_queue_t)queue;
 
 
 #pragma mark - Request helper
@@ -543,7 +543,7 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
     [parameters addPathComponents:@{@"{sub-key}": (self.configuration.subscribeKey?: @""),
                                     @"{pub-key}": (self.configuration.publishKey?: @"")}];
     [parameters addQueryParameters:@{@"uuid": (self.configuration.uuid?: @""),
-                                     @"deviceid": self.configuration.deviceID,
+                                     @"deviceid": (self.configuration.deviceID?: @""),
                                      @"pnsdk":[NSString stringWithFormat:@"PubNub-%@%%2F%@",
                                                kPNClientName, kPNLibraryVersion]}];
     if ([self.configuration.authKey length]) {
