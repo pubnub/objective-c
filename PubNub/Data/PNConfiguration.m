@@ -38,7 +38,7 @@
  @since 4.0
  */
 - (instancetype)initWithPublishKey:(NSString *)publishKey
-                      subscribeKey:(NSString *)subscribeKey NS_DESIGNATED_INITIALIZER;
+                      subscribeKey:(NSString *)subscribeKey;
 
 
 #pragma mark - Misc
@@ -105,7 +105,7 @@
         // device identifier.
         if (NSClassFromString(@"XCTestExpectation")) {
             
-            _deviceID = @"3650F534-FC54-4EE8-884C-EF1B83188BB7";
+            _deviceID = [@"3650F534-FC54-4EE8-884C-EF1B83188BB7" copy];
         }
         _origin = [kPNDefaultOrigin copy];
         _publishKey = [publishKey copy];

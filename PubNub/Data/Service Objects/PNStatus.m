@@ -33,7 +33,7 @@
  */
 - (instancetype)initForOperation:(PNOperationType)operation
                         category:(PNStatusCategory)category
-             withProcessingError:(NSError *)error NS_DESIGNATED_INITIALIZER;
+             withProcessingError:(NSError *)error;
 
 /**
  @brief  Initialize result instance in response to successful task completion.
@@ -53,7 +53,7 @@
 - (instancetype)initForOperation:(PNOperationType)operation
                completedWithTaks:(NSURLSessionDataTask *)task
                    processedData:(NSDictionary *)processedData
-                 processingError:(NSError *)error NS_DESIGNATED_INITIALIZER;
+                 processingError:(NSError *)error;
 
 
 #pragma mark - Interpretation

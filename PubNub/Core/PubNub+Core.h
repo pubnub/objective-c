@@ -4,7 +4,7 @@
 
 #pragma mark Class forward
 
-@class PNConfiguration;
+@class PNClientInformation, PNConfiguration;
 
 
 /**
@@ -23,6 +23,13 @@
 ///------------------------------------------------
 /// @name Information
 ///------------------------------------------------
+
+/**
+ @brief  Retrive basic information about \b PubNub client.
+ 
+ @return Instance which hold information about \b PubNub client.
+ */
++ (PNClientInformation *)information __attribute__((const));
 
 /**
  @brief  Retrieve reference on current client's configuration.

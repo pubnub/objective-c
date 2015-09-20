@@ -9,6 +9,7 @@
 #endif // __IPHONE_OS_VERSION_MIN_REQUIRED
 #import "PubNub+SubscribePrivate.h"
 #import "PNObjectEventListener.h"
+#import "PNClientInformation.h"
 #import "PNRequestParameters.h"
 #import "PNSubscribeStatus.h"
 #import "PNResult+Private.h"
@@ -100,7 +101,7 @@ void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
  @since 4.0
 */
 - (instancetype)initWithConfiguration:(PNConfiguration *)configuration
-                        callbackQueue:(dispatch_queue_t)callbackQueue NS_DESIGNATED_INITIALIZER;
+                        callbackQueue:(dispatch_queue_t)callbackQueue;
 
 
 #pragma mark - Reachability
@@ -160,6 +161,18 @@ void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
 
 #pragma mark - Information
 
++ (PNClientInformation *)information {
+    
+    static PNClientInformation *_sharedClientInformation;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        
+        _sharedClientInformation = [PNClientInformation new];
+    });
+    
+    return _sharedClientInformation;
+}
+
 - (PNConfiguration *)currentConfiguration {
     
     return [self.configuration copy];
@@ -175,14 +188,14 @@ void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
 
 + (instancetype)clientWithConfiguration:(PNConfiguration *)configuration {
     
-    return [[self alloc] initWithConfiguration:configuration
-                                 callbackQueue:dispatch_get_main_queue()];
+    return [self clientWithConfiguration:configuration callbackQueue:nil];
 }
 
 + (instancetype)clientWithConfiguration:(PNConfiguration *)configuration
                           callbackQueue:(dispatch_queue_t)callbackQueue {
     
-    return [[self alloc] initWithConfiguration:configuration callbackQueue:callbackQueue];
+    return [[self alloc] initWithConfiguration:configuration
+                                 callbackQueue:(callbackQueue?: dispatch_get_main_queue())];
 }
 
 - (instancetype)initWithConfiguration:(PNConfiguration *)configuration
@@ -196,8 +209,8 @@ void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
         [PNLog dumpToFile:NO];
 #endif
         
-        DDLogClientInfo([[self class] ddLogLevel], @"<PubNub> PubNub SDK %@ (%@ %@)",
-                        kPNLibraryVersion, kPNBranchName, kPNCommit);
+        DDLogClientInfo([[self class] ddLogLevel], @"<PubNub> PubNub SDK %@ (%@)",
+                        kPNLibraryVersion, kPNCommit);
         
         _configuration = [configuration copy];
         _callbackQueue = callbackQueue;

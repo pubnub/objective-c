@@ -79,7 +79,7 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNReachabilityLogLevel;
  @since 4.0
  */
 - (instancetype)initForClient:(PubNub *)client
-               withPingStatus:(void(^)(BOOL pingSuccessful))block NS_DESIGNATED_INITIALIZER;
+               withPingStatus:(void(^)(BOOL pingSuccessful))block;
 
 #pragma mark -
 
