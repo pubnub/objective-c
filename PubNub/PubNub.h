@@ -16,6 +16,7 @@
 #import "PNPresenceWhereNowResult.h"
 #import "PNAcknowledgmentStatus.h"
 #import "PNChannelGroupsResult.h"
+#import "PNClientInformation.h"
 #import "PNSubscriberResults.h"
 #import "PNSubscribeStatus.h"
 #import "PNPublishStatus.h"

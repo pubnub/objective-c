@@ -178,7 +178,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
  
  @since 4.0
  */
-- (instancetype)initForClient:(PubNub *)client NS_DESIGNATED_INITIALIZER;
+- (instancetype)initForClient:(PubNub *)client;
 
 
 #pragma mark - Subscription information modification

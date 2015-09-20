@@ -552,9 +552,11 @@
 - (void)handleErrorStatus:(PNErrorStatus *)status {
 
     NSLog(@"^^^^ Debug: %@", status.debugDescription);
-    NSLog(@"^^^^ handleErrorStatus: PAM Error: for resource Will Auto Retry?: %@", status.willAutomaticallyRetry ? @"YES" : @"NO");
 
     if (status.category == PNAccessDeniedCategory) {
+        
+        NSLog(@"^^^^ handleErrorStatus: PAM Error: for resource Will Auto Retry?: %@", status.willAutomaticallyRetry ? @"YES" : @"NO");
+        
         [self handlePAMError:status];
     }
     else if (status.category == PNDecryptionErrorCategory) {

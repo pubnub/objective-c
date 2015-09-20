@@ -4,6 +4,8 @@
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "PubNub+History.h"
+#import "PNServiceData+Private.h"
+#import "PNErrorStatus+Private.h"
 #import "PNRequestParameters.h"
 #import "PubNub+CorePrivate.h"
 #import "PNSubscribeStatus.h"
@@ -155,15 +157,16 @@
                  completion:(PNHistoryCompletionBlock)block {
 
     if (result && (result.serviceData)[@"decryptError"]) {
-
-        status = (PNErrorStatus *) [PNStatus statusForOperation:PNHistoryOperation
-                                                       category:PNDecryptionErrorCategory
-                                            withProcessingError:nil];
+        
+        status = [PNErrorStatus statusForOperation:PNHistoryOperation
+                                          category:PNDecryptionErrorCategory
+                               withProcessingError:nil];
         NSMutableDictionary *updatedData = [result.serviceData mutableCopy];
         [updatedData removeObjectForKey:@"decryptError"];
+        status.associatedObject = [PNHistoryData dataWithServiceResponse:updatedData];
         [status updateData:updatedData];
     }
-    [self callBlock:block status:NO withResult:result andStatus:status];
+    [self callBlock:block status:NO withResult:(status ? nil : result) andStatus:status];
 }
 
 #pragma mark -
