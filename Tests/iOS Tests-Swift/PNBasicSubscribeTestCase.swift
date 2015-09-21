@@ -23,6 +23,9 @@ class PNBasicSubscribeTestCase: PNBasicClientTestCase, PNObjectEventListener {
     var channelGroupSubscribeExpectation: XCTestExpectation!;
     var channelGroupUnsubscribeExpectation: XCTestExpectation!;
     
+    var presenceEventExpectation: XCTestExpectation!;
+    var testExpectation: XCTestExpectation!;
+    
     var assertDidReceivePresenceEvent: PNClientDidReceivePresenceEventAssertions?
     
     override func setUp() {

@@ -48,7 +48,7 @@ class PNSubscribeTests: PNBasicSubscribeTestCase {
             let expectedPresenceSubscriptions: Set<String> = ["a", "a-pnpres"]
             XCTAssertEqual(status.operation, PNOperationType.SubscribeOperation)
             
-            XCTAssertEqual(status.currentTimetoken, 14356472220766752)
+            XCTAssertEqual(status.currentTimetoken, NSDecimalNumber(string : "14356472220766752"))
             XCTAssertEqual(status.currentTimetoken, status.data.timetoken)
         }
         
@@ -81,7 +81,7 @@ class PNSubscribeTests: PNBasicSubscribeTestCase {
             let expectedPresenceSubscriptions: Set<String> = ["a"]
             XCTAssertEqual(status.operation, PNOperationType.SubscribeOperation)
             
-            XCTAssertEqual(status.currentTimetoken, 14356472196232226)
+            XCTAssertEqual(status.currentTimetoken, NSDecimalNumber(string: "14356472196232226"))
             XCTAssertEqual(status.currentTimetoken, status.data.timetoken)
         }
         
