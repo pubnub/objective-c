@@ -116,7 +116,7 @@ def get_sims_for_run
   simulators.each { |version, available_simulators|
     # sims for 7.0.3 exist on Travis CI but not on local machines, so remove
     # because we can't reproduce results locally
-    if available_simulators[:runtime] != '7.0.3'
+    if available_simulators[:runtime] != '7.1' && available_simulators[:runtime] != '7.1.0'
       available_simulators[:device_names].each { |device|
         if !device.match(/^Resizable/)
           destinations.push("platform=iOS Simulator,OS=#{available_simulators[:runtime]},name=#{device}")

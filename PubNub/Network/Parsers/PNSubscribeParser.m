@@ -236,30 +236,35 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
     if ([(NSString *)additionalData[@"cipherKey"] length]){
         
         NSError *decryptionError;
+        id decryptedEvent = nil;
         if ([data isKindOfClass:[NSString class]]) {
             
             NSData *eventData = [PNAES decrypt:data withKey:additionalData[@"cipherKey"]
                                       andError:&decryptionError];
-            NSString *encryptedEventData = nil;
+            NSString *decryptedEventData = nil;
             if (eventData) {
                 
-                encryptedEventData = [[NSString alloc] initWithData:eventData
+                decryptedEventData = [[NSString alloc] initWithData:eventData
                                                            encoding:NSUTF8StringEncoding];
             }
             
             // In case if after encryption another object has been received client
             // should try to de-serialize it again as JSON object.
-            if (encryptedEventData && ![encryptedEventData isEqualToString:data]) {
+            if (decryptedEventData && ![decryptedEventData isEqualToString:data]) {
                 
-                message[@"message"] = [PNJSON JSONObjectFrom:encryptedEventData withError:nil];
+                decryptedEvent = [PNJSON JSONObjectFrom:decryptedEventData withError:nil];
             }
         }
         
-        if (decryptionError || ![data isKindOfClass:[NSString class]]) {
+        if (decryptionError || !decryptedEvent) {
             
             DDLogAESError([self ddLogLevel], @"<PubNub> Message decryption error: %@",
                           decryptionError);
             message[@"decryptError"] = @YES;
+        }
+        else {
+            
+            message[@"message"] = decryptedEvent;
         }
     }
     

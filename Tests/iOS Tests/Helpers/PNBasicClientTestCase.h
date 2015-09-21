@@ -8,6 +8,8 @@
 
 #import <JSZVCR/JSZVCR.h>
 
+#import "PubNub/PubNub.h"
+
 #define PNWeakify(__var) \
 __weak __typeof__(__var) __var ## _weak_ = (__var)
 

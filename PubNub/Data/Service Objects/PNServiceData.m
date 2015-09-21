@@ -28,7 +28,7 @@
  
  @since 4.0
  */
-- (instancetype)initWithServiceResponse:(NSDictionary *)response NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithServiceResponse:(NSDictionary *)response;
 
 #pragma mark -
 
