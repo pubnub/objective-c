@@ -1,3 +1,10 @@
+09-20-2015 - 1587492 - 4.0.5
+. suppressed designated initializer warnings
+. added client information class
+. added conditional device ID specification in request constructor
+. added ObjC/Swift test for crypto issue
+. fixed issue with messages decryption in history and real-time messaging API
+
 09-02-2015 - 82b22f5 - 4.0.4
 . fixed issue with missing presence event handling
 . fixed subscriber parser issue because of which channel group name and actual channel changed their places in
