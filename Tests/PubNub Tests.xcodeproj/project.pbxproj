@@ -72,6 +72,8 @@
 		960354F61B90629C0047EE04 /* PNPresenceEventTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 960354F51B90629C0047EE04 /* PNPresenceEventTests.bundle */; };
 		960354F71B90629C0047EE04 /* PNPresenceEventTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 960354F51B90629C0047EE04 /* PNPresenceEventTests.bundle */; };
 		960354F91B9100120047EE04 /* PNPresenceEventTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960354F81B9100120047EE04 /* PNPresenceEventTests.swift */; };
+		963365421B81FAC40005E4B9 /* PNSubscribeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 963365411B81FAC40005E4B9 /* PNSubscribeTests.swift */; };
+		9668151E1B73A69600191661 /* PNHistoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9668151D1B73A69600191661 /* PNHistoryTests.swift */; };
 		9652F3E21BA31D9A001E940A /* PNBasicClientCryptTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 9652F3E11BA31D9A001E940A /* PNBasicClientCryptTestCase.m */; };
 		9652F3E51BA31F7D001E940A /* PNConfigurationChiperKeyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9652F3E41BA31F7D001E940A /* PNConfigurationChiperKeyTests.m */; };
 		9652F3E71BA6E90B001E940A /* PNConfigurationChiperKeyTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 9652F3E61BA6E90B001E940A /* PNConfigurationChiperKeyTests.bundle */; };
@@ -149,6 +151,8 @@
 		86731617DF5CE7DB44DD3AF8 /* libPods-iOS Tests-Swift.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-iOS Tests-Swift.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		960354F51B90629C0047EE04 /* PNPresenceEventTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = PNPresenceEventTests.bundle; path = Fixtures/PNPresenceEventTests.bundle; sourceTree = "<group>"; };
 		960354F81B9100120047EE04 /* PNPresenceEventTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNPresenceEventTests.swift; sourceTree = "<group>"; };
+		963365411B81FAC40005E4B9 /* PNSubscribeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNSubscribeTests.swift; sourceTree = "<group>"; };
+		9668151D1B73A69600191661 /* PNHistoryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNHistoryTests.swift; sourceTree = "<group>"; };
 		9652F3E01BA31D9A001E940A /* PNBasicClientCryptTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PNBasicClientCryptTestCase.h; path = Helpers/PNBasicClientCryptTestCase.h; sourceTree = "<group>"; };
 		9652F3E11BA31D9A001E940A /* PNBasicClientCryptTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNBasicClientCryptTestCase.m; path = Helpers/PNBasicClientCryptTestCase.m; sourceTree = "<group>"; };
 		9652F3E31BA31F7D001E940A /* PNConfigurationChiperKeyTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PNConfigurationChiperKeyTests.h; path = Tests/PNConfigurationChiperKeyTests.h; sourceTree = "<group>"; };
@@ -286,6 +290,8 @@
 			children = (
 				51BB25411B6815F300A9F154 /* PNTimeTokenTests.swift */,
 				9722C2751B68A24C00A7CB44 /* PNPublishTests.swift */,
+				9668151D1B73A69600191661 /* PNHistoryTests.swift */,
+				963365411B81FAC40005E4B9 /* PNSubscribeTests.swift */,
 				96B222BB1B84868C002549D5 /* PNPresenceTests.swift */,
 				960354F81B9100120047EE04 /* PNPresenceEventTests.swift */,
 				9652F3EA1BA98706001E940A /* PNConfigurationChiperKeyTests.swift */,
@@ -625,9 +631,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				963365421B81FAC40005E4B9 /* PNSubscribeTests.swift in Sources */,
 				51D889F21B66F49E009127D0 /* PNBasicClientTestCase.swift in Sources */,
 				96B222BC1B84868C002549D5 /* PNPresenceTests.swift in Sources */,
 				51BB25421B6815F300A9F154 /* PNTimeTokenTests.swift in Sources */,
+				9668151E1B73A69600191661 /* PNHistoryTests.swift in Sources */,
 				9652F3EB1BA98706001E940A /* PNConfigurationChiperKeyTests.swift in Sources */,
 				51BB25401B6814EF00A9F154 /* PNBasicSubscribeTestCase.swift in Sources */,
 				9652F3E91BA97AA5001E940A /* PNBasicClientCryptTestCase.swift in Sources */,
