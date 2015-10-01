@@ -5,6 +5,7 @@
  */
 #import "PNHistoryParser.h"
 #import "PubNub+CorePrivate.h"
+#import "PNLogMacro.h"
 #import "PNHelpers.h"
 #import "PNAES.h"
 #import "PNLog.h"

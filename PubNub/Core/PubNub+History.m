@@ -12,6 +12,7 @@
 #import "PNResult+Private.h"
 #import "PNStatus+Private.h"
 #import "PNHistoryResult.h"
+#import "PNLogMacro.h"
 #import "PNHelpers.h"
 
 

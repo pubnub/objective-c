@@ -6,6 +6,7 @@
 #import "PubNub+Time.h"
 #import "PNRequestParameters.h"
 #import "PubNub+CorePrivate.h"
+#import "PNLogMacro.h"
 #import "PNStatus.h"
 
 
