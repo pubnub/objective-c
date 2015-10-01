@@ -19,6 +19,7 @@
 #import "PNErrorParser.h"
 #import "PNURLBuilder.h"
 #import "PNConstants.h"
+#import "PNLogMacro.h"
 #import "PNHelpers.h"
 
 

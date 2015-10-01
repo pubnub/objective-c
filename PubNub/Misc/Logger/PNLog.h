@@ -1,26 +1,4 @@
-#import <CocoaLumberjack/CocoaLumberjack.h>
 #import "PNStructures.h"
-
-
-#pragma mark Log macro declaration
-
-#define DDLogClientInfo(pnll, frmt, ...) LOG_MAYBE(NO, pnll, (DDLogFlag)PNInfoLogLevel, 0, nil, \
-                                                   __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
-#define DDLogReachability(pnll, frmt, ...) LOG_MAYBE(NO, pnll, (DDLogFlag)PNReachabilityLogLevel, 0, \
-                                                     nil, __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
-#define DDLogRequest(pnll, frmt, ...) LOG_MAYBE(NO, pnll, (DDLogFlag)PNRequestLogLevel, 0, nil, \
-                                                __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
-#define DDLogResult(pnll, frmt, ...) LOG_MAYBE(NO, pnll, (DDLogFlag)PNResultLogLevel, 0, nil, \
-                                               __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
-#define DDLogStatus(pnll, frmt, ...) LOG_MAYBE(NO, pnll, (DDLogFlag)PNStatusLogLevel, 0, nil, \
-                                               __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
-#define DDLogFailureStatus(pnll, frmt, ...) LOG_MAYBE(NO, pnll, (DDLogFlag)PNFailureStatusLogLevel, \
-                                                      0, nil, __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
-#define DDLogAESError(pnll, frmt, ...) LOG_MAYBE(NO, pnll, (DDLogFlag)PNAESErrorLogLevel, 0, nil, \
-                                                 __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
-#define DDLogAPICall(pnll, frmt, ...) LOG_MAYBE(NO, pnll, (DDLogFlag)PNAPICallLogLevel, 0, nil, \
-                                                __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
-
 
 
 /**

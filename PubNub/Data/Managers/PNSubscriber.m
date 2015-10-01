@@ -13,6 +13,7 @@
 #import "PNResult+Private.h"
 #import "PNConfiguration.h"
 #import <objc/runtime.h>
+#import "PNLogMacro.h"
 #import "PNHelpers.h"
 
 

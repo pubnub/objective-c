@@ -3,6 +3,7 @@
 #import "PNClientState.h"
 #import "PNSubscriber.h"
 #import "PNHeartbeat.h"
+#import "PNLogMacro.h"
 #import "PNLog.h"
 
 
