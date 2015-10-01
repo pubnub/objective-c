@@ -1,3 +1,8 @@
+10-01-2015 - ca7cc55 - 4.0.6
+. updated logger macro usage
+. updated Podspec file organization
+. downgraded deployment target in Podspec file from 8.0 to 7.0
+
 09-20-2015 - 1587492 - 4.0.5
 . suppressed designated initializer warnings
 . added client information class
