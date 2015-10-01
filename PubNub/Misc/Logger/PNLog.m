@@ -5,6 +5,7 @@
  */
 #import "PNLog.h"
 #import "PNLogFileManager.h"
+#import "PNLogMacro.h"
 #import "PNHelpers.h"
 #import "PNLogger.h"
 
