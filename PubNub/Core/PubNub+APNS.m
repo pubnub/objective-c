@@ -7,6 +7,7 @@
 #import "PNRequestParameters.h"
 #import "PubNub+CorePrivate.h"
 #import "PNStatus+Private.h"
+#import "PNLogMacro.h"
 #import "PNHelpers.h"
 
 

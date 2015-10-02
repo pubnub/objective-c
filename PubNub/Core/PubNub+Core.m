@@ -17,6 +17,7 @@
 #import "PNConfiguration.h"
 #import "PNReachability.h"
 #import "PNConstants.h"
+#import "PNLogMacro.h"
 #import "PNNetwork.h"
 #import "PNHelpers.h"
 
@@ -162,7 +163,7 @@ void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
 #pragma mark - Information
 
 + (PNClientInformation *)information {
-    
+
     static PNClientInformation *_sharedClientInformation;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -343,7 +344,7 @@ void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
                 #pragma clang diagnostic pop
             });
         }
-    }
+}
 }
 
 

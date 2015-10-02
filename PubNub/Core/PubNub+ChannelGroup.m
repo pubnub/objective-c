@@ -6,6 +6,7 @@
 #import "PubNub+ChannelGroup.h"
 #import "PNRequestParameters.h"
 #import "PubNub+CorePrivate.h"
+#import "PNLogMacro.h"
 #import "PNHelpers.h"
 
 
