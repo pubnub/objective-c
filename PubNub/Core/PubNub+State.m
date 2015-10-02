@@ -153,6 +153,14 @@
            // it and probably whole client instance has been deallocated.
            #pragma clang diagnostic push
            #pragma clang diagnostic ignored "-Wreceiver-is-weak"
+           if (status.isError) {
+                
+               status.retryBlock = ^{
+                   
+                   [weakSelf setState:state forUUID:uuid onChannel:onChannel withName:object
+                       withCompletion:block];
+               };
+           }
            [weakSelf handleSetStateStatus:(PNClientStateUpdateStatus *)status
                                   forUUID:uuid atObject:object withCompletion:block];
            #pragma clang diagnostic pop
@@ -205,6 +213,14 @@
         // it and probably whole client instance has been deallocated.
         #pragma clang diagnostic push
         #pragma clang diagnostic ignored "-Wreceiver-is-weak"
+        if (status.isError) {
+            
+            status.retryBlock = ^{
+                
+                [weakSelf stateForUUID:uuid onChannel:onChannel withName:object
+                        withCompletion:block];
+            };
+        }
         [weakSelf handleStateResult:(PNChannelClientStateResult *)result withStatus:status
                             forUUID:uuid atChannel:onChannel object:object withCompletion:block];
         #pragma clang diagnostic pop
