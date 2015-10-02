@@ -6,6 +6,7 @@
 #import "PubNub+ChannelGroup.h"
 #import "PNRequestParameters.h"
 #import "PubNub+CorePrivate.h"
+#import "PNStatus+Private.h"
 #import "PNLogMacro.h"
 #import "PNHelpers.h"
 
@@ -70,7 +71,7 @@
 
     __weak __typeof(self) weakSelf = self;
     [self processOperation:operationType withParameters:parameters
-           completionBlock:^(PNResult *result, PNStatus *status){
+           completionBlock:^(PNResult *result, PNStatus *status) {
                
                // Silence static analyzer warnings.
                // Code is aware about this case and at the end will simply call on 'nil' object
@@ -78,6 +79,13 @@
                // more need in it and probably whole client instance has been deallocated.
                #pragma clang diagnostic push
                #pragma clang diagnostic ignored "-Wreceiver-is-weak"
+               if (status.isError) {
+                    
+                   status.retryBlock = ^{
+                        
+                       [weakSelf channelsForGroup:group withCompletion:block];
+                   };
+               }
                [weakSelf callBlock:block status:NO withResult:result andStatus:status];
                #pragma clang diagnostic pop
            }];
@@ -146,6 +154,14 @@
                // more need in it and probably whole client instance has been deallocated.
                #pragma clang diagnostic push
                #pragma clang diagnostic ignored "-Wreceiver-is-weak"
+               if (status.isError) {
+                    
+                   status.retryBlock = ^{
+                        
+                       [weakSelf add:shouldAdd channels:channels toGroup:group
+                      withCompletion:block];
+                   };
+               }
                [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
                #pragma clang diagnostic pop
            }];
