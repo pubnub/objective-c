@@ -6,6 +6,7 @@
 #import "PubNub+Time.h"
 #import "PNRequestParameters.h"
 #import "PubNub+CorePrivate.h"
+#import "PNStatus+Private.h"
 #import "PNLogMacro.h"
 #import "PNStatus.h"
 
@@ -30,6 +31,13 @@
         // it and probably whole client instance has been deallocated.
         #pragma clang diagnostic push
         #pragma clang diagnostic ignored "-Wreceiver-is-weak"
+        if (status.isError) {
+            
+            status.retryBlock = ^{
+               
+                [weakSelf timeWithCompletion:block];
+            };
+        }
         [weakSelf callBlock:block status:NO withResult:result andStatus:status];
         #pragma clang diagnostic pop
     }];

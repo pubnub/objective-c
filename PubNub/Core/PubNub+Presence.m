@@ -7,6 +7,7 @@
 #import "PNPrivateStructures.h"
 #import "PNRequestParameters.h"
 #import "PubNub+CorePrivate.h"
+#import "PNStatus+Private.h"
 #import "PNConfiguration.h"
 #import "PNLogMacro.h"
 #import "PNHelpers.h"
@@ -141,6 +142,14 @@
            // more need in it and probably whole client instance has been deallocated.
            #pragma clang diagnostic push
            #pragma clang diagnostic ignored "-Wreceiver-is-weak"
+           if (status.isError) {
+                
+               status.retryBlock = ^{
+                   
+                   [weakSelf hereNowWithVerbosity:level forChannel:forChannel withName:object
+                                   withCompletion:block];
+               };
+           }
            [weakSelf callBlock:block status:NO withResult:result andStatus:status];
            #pragma clang diagnostic pop
        }];
@@ -169,6 +178,13 @@
                // more need in it and probably whole client instance has been deallocated.
                #pragma clang diagnostic push
                #pragma clang diagnostic ignored "-Wreceiver-is-weak"
+               if (status.isError) {
+                    
+                   status.retryBlock = ^{
+                       
+                       [weakSelf whereNowUUID:uuid withCompletion:block];
+                   };
+               }
                [weakSelf callBlock:block status:NO withResult:result andStatus:status];
                #pragma clang diagnostic pop
            }];

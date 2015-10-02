@@ -9,7 +9,7 @@
          <BuildActionEntry
             buildForTesting = "YES"
             buildForRunning = "YES"
-            buildForProfiling = "NO"
+            buildForProfiling = "YES"
             buildForArchiving = "YES"
             buildForAnalyzing = "YES">
             <BuildableReference
@@ -85,6 +85,16 @@
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES"
       enableTestabilityWhenProfilingTests = "No">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "6003F589195388D20070C39A"
+            BuildableName = "PubNub_Example.app"
+            BlueprintName = "PubNub_Example"
+            ReferencedContainer = "container:PubNub.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
