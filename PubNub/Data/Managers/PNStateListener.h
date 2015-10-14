@@ -131,6 +131,15 @@
  */
 - (void)notifyStatusChange:(PNSubscribeStatus *)status;
 
+/**
+ @brief   Notify all state change listeners about hearbeat processing results.
+ @warning Method should be called within \b -notifyWithBlock: block to shift execution to private
+          protected queue.
+ 
+ @param status Reference on state object which describe operation and category.
+ */
+- (void)notifyHeartbeatStatus:(PNStatus *)status;
+
 #pragma mark -
 
 
