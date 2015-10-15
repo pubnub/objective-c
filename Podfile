@@ -1,14 +1,14 @@
 source 'https://github.com/CocoaPods/Specs.git'
 workspace 'PubNub.xcworkspace'
-xcodeproj 'Example/PubNub.xcodeproj'
+xcodeproj 'Example/PubNub Example.xcodeproj'
 
 target 'PubNub_Example', :exclusive => true do
   platform :ios, '8.0'
-  xcodeproj 'Example/PubNub.xcodeproj'
+  xcodeproj 'Example/PubNub Example.xcodeproj'
   pod "PubNub", :path => "."
 end
 
-target 'iOS Tests', :exclusive => true do
+target 'iOS ObjC Tests', :exclusive => true do
   platform :ios, "8.0"
   xcodeproj 'Tests/PubNub Tests.xcodeproj'
   begin  
@@ -22,7 +22,7 @@ target 'iOS Tests', :exclusive => true do
   pod "PubNub", :path => "."
 end
 
-target 'iOS Tests-Swift', :exclusive => true do
+target 'iOS Swift Tests', :exclusive => true do
     platform :ios, "8.0"
     xcodeproj 'Tests/PubNub Tests.xcodeproj'
     pod "JSZVCR", '~> 0.6'
