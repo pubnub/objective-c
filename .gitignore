@@ -8,6 +8,7 @@ reports/
 ## Build generated
 build/
 DerivedData
+Framework/Products
 
 ## Various settings
 *.pbxuser

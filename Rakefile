@@ -23,7 +23,7 @@ namespace :test do
       puts '**********************************'
       kill_sim
       sleep(5)
-      run_tests('iOS Tests', 'iphonesimulator', destination, false)
+      run_tests('iOS Tests (ObjC)', 'iphonesimulator', destination, false)
       current_exit_status = $?.exitstatus
       if current_exit_status != 0
         final_exit_status = current_exit_status
@@ -45,7 +45,7 @@ task :report do
   puts '**********************************'
   kill_sim
   sleep(5)
-  run_tests('iOS Tests', 'iphonesimulator', destination, true)
+  run_tests('iOS Tests (ObjC)', 'iphonesimulator', destination, true)
   current_exit_status = $?.exitstatus
   if current_exit_status != 0
     final_exit_status = current_exit_status
