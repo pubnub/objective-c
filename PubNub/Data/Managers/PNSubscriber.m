@@ -565,6 +565,12 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
             // state.
             shouldHandleTransition = (currentState == PNInitializedSubscriberState ||
                                       currentState == PNConnectedSubscriberState);
+            
+            // In case if subscription restore failed after precious unexpected disconnect we should
+            // handle it.
+            shouldHandleTransition = (shouldHandleTransition ||
+                                      (targetState == PNDisconnectedUnexpectedlySubscriberState &&
+                                       targetState == currentState));
             category = ((targetState == PNDisconnectedSubscriberState) ? PNDisconnectedCategory :
                         PNUnexpectedDisconnectCategory);
             self.mayRequireSubscriptionRestore = shouldHandleTransition;

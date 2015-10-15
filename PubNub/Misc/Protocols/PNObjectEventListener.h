@@ -63,7 +63,7 @@
  
  @since 4.0
  */
-- (void)client:(PubNub *)client didReceiveStatus:(PNSubscribeStatus *)status;
+- (void)client:(PubNub *)client didReceiveStatus:(PNStatus *)status;
 
 #pragma mark -
 

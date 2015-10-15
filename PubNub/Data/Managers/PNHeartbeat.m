@@ -8,6 +8,7 @@
 #import "PubNub+CorePrivate.h"
 #import "PNConfiguration.h"
 #import "PNHelpers.h"
+#import "PNStatus.h"
 
 
 #pragma mark Protected interface declaration
@@ -172,7 +173,14 @@
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
     if ([[PNChannel objectsWithOutPresenceFrom:[self.client.subscriberManager allObjects]] count]) {
         
-        [self.client heartbeatWithCompletion:NULL];
+        __weak __typeof(self) weakSelf = self;
+        [self.client heartbeatWithCompletion:^(PNStatus *status) {
+            
+            if (status.isError) {
+                
+                [weakSelf.client.listenersManager notifyHeartbeatStatus:status];
+            }
+        }];
     }
     else {
         

@@ -27,7 +27,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/02290046-2F36-43DD-97F0-2F51D925451A/0/%7B%22pn_aps%22%3A%7B%22badge%22%3A9%2C%22sound%22%3A%22bingbong.aiff%22%2C%22alert%22%3A%22You%20got%20your%20emails.%40%22%7D%2C%22pn_other%22%3A%22%5C%22test%5C%22%22%2C%22pn_acme%201%22%3A42%7D?pnsdk=PubNub-ObjC-iOS%2F4.0.7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;store=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
+				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/02290046-2F36-43DD-97F0-2F51D925451A/0/%7B%22pn_aps%22%3A%7B%22badge%22%3A9%2C%22sound%22%3A%22bingbong.aiff%22%2C%22alert%22%3A%22You%20got%20your%20emails.%40%22%7D%2C%22pn_other%22%3A%22%5C%22test%5C%22%22%2C%22pn_acme%201%22%3A42%7D?pnsdk=PubNub-ObjC-iOS%2F4.0.8&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;store=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -51,7 +51,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/02290046-2F36-43DD-97F0-2F51D925451A/0/%7B%22pn_aps%22%3A%7B%22badge%22%3A9%2C%22sound%22%3A%22bingbong.aiff%22%2C%22alert%22%3A%22You%20got%20your%20emails.%40%22%7D%2C%22pn_other%22%3A%22%5C%22test%5C%22%22%2C%22pn_acme%201%22%3A42%7D?pnsdk=PubNub-ObjC-iOS%2F4.0.7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;store=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
+				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/02290046-2F36-43DD-97F0-2F51D925451A/0/%7B%22pn_aps%22%3A%7B%22badge%22%3A9%2C%22sound%22%3A%22bingbong.aiff%22%2C%22alert%22%3A%22You%20got%20your%20emails.%40%22%7D%2C%22pn_other%22%3A%22%5C%22test%5C%22%22%2C%22pn_acme%201%22%3A42%7D?pnsdk=PubNub-ObjC-iOS%2F4.0.8&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;store=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept-Language</key>
