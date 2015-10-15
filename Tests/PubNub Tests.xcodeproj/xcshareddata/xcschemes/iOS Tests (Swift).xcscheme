@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "519C327C1B20C11500FAC283"
-               BuildableName = "iOS Tests.xctest"
-               BlueprintName = "iOS Tests"
+               BlueprintIdentifier = "51D889E01B66E0F8009127D0"
+               BuildableName = "iOS Swift Tests.xctest"
+               BlueprintName = "iOS Swift Tests"
                ReferencedContainer = "container:PubNub Tests.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -32,9 +32,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "519C327C1B20C11500FAC283"
-               BuildableName = "iOS Tests.xctest"
-               BlueprintName = "iOS Tests"
+               BlueprintIdentifier = "51D889E01B66E0F8009127D0"
+               BuildableName = "iOS Swift Tests.xctest"
+               BlueprintName = "iOS Swift Tests"
                ReferencedContainer = "container:PubNub Tests.xcodeproj">
             </BuildableReference>
             <SkippedTests>
@@ -50,9 +50,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "519C327C1B20C11500FAC283"
-            BuildableName = "iOS Tests.xctest"
-            BlueprintName = "iOS Tests"
+            BlueprintIdentifier = "51D889E01B66E0F8009127D0"
+            BuildableName = "iOS Swift Tests.xctest"
+            BlueprintName = "iOS Swift Tests"
             ReferencedContainer = "container:PubNub Tests.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -72,9 +72,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "519C327C1B20C11500FAC283"
-            BuildableName = "iOS Tests.xctest"
-            BlueprintName = "iOS Tests"
+            BlueprintIdentifier = "51D889E01B66E0F8009127D0"
+            BuildableName = "iOS Swift Tests.xctest"
+            BlueprintName = "iOS Swift Tests"
             ReferencedContainer = "container:PubNub Tests.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -88,15 +88,6 @@
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES"
       enableTestabilityWhenProfilingTests = "No">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "519C327C1B20C11500FAC283"
-            BuildableName = "iOS Tests.xctest"
-            BlueprintName = "iOS Tests"
-            ReferencedContainer = "container:PubNub Tests.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

@@ -1,3 +1,7 @@
+10-15-2015 - 75dd61c - 4.1.0
+. version bump because of backward compatible changes in public interface
+. added ability to build dynamic frameworks for iOS 8.0+
+
 10-14-2015 - 3fbb92d - 4.0.8
 . exposed heartbeat error to -client:didReceiveStatus:
 . fixed ping triggering logic after corner case with network issues

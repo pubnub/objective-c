@@ -19,19 +19,19 @@
 		793D26AF1B44049400509447 /* VERSION in Resources */ = {isa = PBXBuildFile; fileRef = 793D26AE1B44049400509447 /* VERSION */; };
 		873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 873B8AEA1B1F5CCA007FD442 /* Main.storyboard */; };
 		97FB4DB91B36266800CA7C91 /* Rakefile in Resources */ = {isa = PBXBuildFile; fileRef = 97FB4DB81B36266800CA7C91 /* Rakefile */; };
-		D14C620EAE6ED7F793175040 /* libPods-PubNub_Example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 976A1943FCC7DA8BF70AEA62 /* libPods-PubNub_Example.a */; };
+		FB0ABBB61D0DD4E92AA8732C /* libPods-PubNub_Example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 86E9B5BCC499C2D8CDB97CAD /* libPods-PubNub_Example.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		41E82151EAC254A4FBFC54D2 /* Pods-PubNub_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PubNub_Example.release.xcconfig"; path = "../Pods/Target Support Files/Pods-PubNub_Example/Pods-PubNub_Example.release.xcconfig"; sourceTree = "<group>"; };
+		2F43D99DA7A03DC3BD0A85CE /* Pods-PubNub_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PubNub_Example.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-PubNub_Example/Pods-PubNub_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		6003F58A195388D20070C39A /* PubNub_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PubNub_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F58D195388D20070C39A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6003F58F195388D20070C39A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		6003F591195388D20070C39A /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		6003F595195388D20070C39A /* PubNub-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PubNub-Info.plist"; sourceTree = "<group>"; };
+		6003F595195388D20070C39A /* PubNub Example-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PubNub Example-Info.plist"; sourceTree = "<group>"; };
 		6003F597195388D20070C39A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		6003F599195388D20070C39A /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		6003F59B195388D20070C39A /* PubNub-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PubNub-Prefix.pch"; sourceTree = "<group>"; };
+		6003F59B195388D20070C39A /* PubNub Example-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PubNub Example-Prefix.pch"; sourceTree = "<group>"; };
 		6003F59C195388D20070C39A /* PNAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNAppDelegate.h; sourceTree = "<group>"; };
 		6003F59D195388D20070C39A /* PNAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNAppDelegate.m; sourceTree = "<group>"; };
 		6003F5A5195388D20070C39A /* PNViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNViewController.h; sourceTree = "<group>"; };
@@ -41,11 +41,11 @@
 		793D26AC1B44048900509447 /* CHANGELOG */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CHANGELOG; path = ../CHANGELOG; sourceTree = "<group>"; };
 		793D26AE1B44049400509447 /* VERSION */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = VERSION; path = ../VERSION; sourceTree = "<group>"; };
 		7A9945019D33BCC2C3B3B7C1 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		86E9B5BCC499C2D8CDB97CAD /* libPods-PubNub_Example.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-PubNub_Example.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		873B8AEA1B1F5CCA007FD442 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
-		976A1943FCC7DA8BF70AEA62 /* libPods-PubNub_Example.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-PubNub_Example.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		97FB4DB81B36266800CA7C91 /* Rakefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Rakefile; path = ../Rakefile; sourceTree = "<group>"; };
 		C4C1ED79724D56B45766CFFA /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
-		DE41521E09640AAFE40A9FD5 /* Pods-PubNub_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PubNub_Example.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-PubNub_Example/Pods-PubNub_Example.debug.xcconfig"; sourceTree = "<group>"; };
+		CC2AF9245F86FA0BA5A0A266 /* Pods-PubNub_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PubNub_Example.release.xcconfig"; path = "../Pods/Target Support Files/Pods-PubNub_Example/Pods-PubNub_Example.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,18 +56,18 @@
 				6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */,
 				6003F592195388D20070C39A /* UIKit.framework in Frameworks */,
 				6003F58E195388D20070C39A /* Foundation.framework in Frameworks */,
-				D14C620EAE6ED7F793175040 /* libPods-PubNub_Example.a in Frameworks */,
+				FB0ABBB61D0DD4E92AA8732C /* libPods-PubNub_Example.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		2884FCE43A5658B61C7C943D /* Pods */ = {
+		43691E0D2B4205A7D095403C /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				DE41521E09640AAFE40A9FD5 /* Pods-PubNub_Example.debug.xcconfig */,
-				41E82151EAC254A4FBFC54D2 /* Pods-PubNub_Example.release.xcconfig */,
+				2F43D99DA7A03DC3BD0A85CE /* Pods-PubNub_Example.debug.xcconfig */,
+				CC2AF9245F86FA0BA5A0A266 /* Pods-PubNub_Example.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -79,7 +79,7 @@
 				6003F593195388D20070C39A /* Example for PubNub */,
 				6003F58C195388D20070C39A /* Frameworks */,
 				6003F58B195388D20070C39A /* Products */,
-				2884FCE43A5658B61C7C943D /* Pods */,
+				43691E0D2B4205A7D095403C /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -97,7 +97,7 @@
 				6003F58D195388D20070C39A /* Foundation.framework */,
 				6003F58F195388D20070C39A /* CoreGraphics.framework */,
 				6003F591195388D20070C39A /* UIKit.framework */,
-				976A1943FCC7DA8BF70AEA62 /* libPods-PubNub_Example.a */,
+				86E9B5BCC499C2D8CDB97CAD /* libPods-PubNub_Example.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -120,10 +120,10 @@
 		6003F594195388D20070C39A /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				6003F595195388D20070C39A /* PubNub-Info.plist */,
+				6003F595195388D20070C39A /* PubNub Example-Info.plist */,
 				6003F596195388D20070C39A /* InfoPlist.strings */,
 				6003F599195388D20070C39A /* main.m */,
-				6003F59B195388D20070C39A /* PubNub-Prefix.pch */,
+				6003F59B195388D20070C39A /* PubNub Example-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -148,11 +148,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6003F5BF195388D20070C39A /* Build configuration list for PBXNativeTarget "PubNub_Example" */;
 			buildPhases = (
-				5C8137442E4D092CDDF17BD0 /* Check Pods Manifest.lock */,
+				D4EC85EF91C21900A979511C /* Check Pods Manifest.lock */,
 				6003F586195388D20070C39A /* Sources */,
 				6003F587195388D20070C39A /* Frameworks */,
 				6003F588195388D20070C39A /* Resources */,
-				5AD5A39E94E634BBC2823800 /* Copy Pods Resources */,
+				4C77E9B6CFAD6B6E866859BF /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -173,7 +173,7 @@
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Jordan Zucker";
 			};
-			buildConfigurationList = 6003F585195388D10070C39A /* Build configuration list for PBXProject "PubNub" */;
+			buildConfigurationList = 6003F585195388D10070C39A /* Build configuration list for PBXProject "PubNub Example" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -208,7 +208,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		5AD5A39E94E634BBC2823800 /* Copy Pods Resources */ = {
+		4C77E9B6CFAD6B6E866859BF /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -223,7 +223,7 @@
 			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-PubNub_Example/Pods-PubNub_Example-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		5C8137442E4D092CDDF17BD0 /* Check Pods Manifest.lock */ = {
+		D4EC85EF91C21900A979511C /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -380,7 +380,7 @@
 		};
 		6003F5C0195388D20070C39A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DE41521E09640AAFE40A9FD5 /* Pods-PubNub_Example.debug.xcconfig */;
+			baseConfigurationReference = 2F43D99DA7A03DC3BD0A85CE /* Pods-PubNub_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -396,11 +396,11 @@
 				ENABLE_BITCODE = NO;
 				GCC_INSTRUMENT_PROGRAM_FLOW_ARCS = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "PubNub/PubNub-Prefix.pch";
+				GCC_PREFIX_HEADER = "PubNub/PubNub Example-Prefix.pch";
 				GCC_WARN_MULTIPLE_DEFINITION_TYPES_FOR_SELECTOR = YES;
 				GCC_WARN_SIGN_COMPARE = YES;
 				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
-				INFOPLIST_FILE = "PubNub/PubNub-Info.plist";
+				INFOPLIST_FILE = "PubNub/PubNub Example-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.${PRODUCT_NAME:rfc1034identifier}";
@@ -411,7 +411,7 @@
 		};
 		6003F5C1195388D20070C39A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 41E82151EAC254A4FBFC54D2 /* Pods-PubNub_Example.release.xcconfig */;
+			baseConfigurationReference = CC2AF9245F86FA0BA5A0A266 /* Pods-PubNub_Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -427,11 +427,11 @@
 				ENABLE_BITCODE = NO;
 				GCC_INSTRUMENT_PROGRAM_FLOW_ARCS = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "PubNub/PubNub-Prefix.pch";
+				GCC_PREFIX_HEADER = "PubNub/PubNub Example-Prefix.pch";
 				GCC_WARN_MULTIPLE_DEFINITION_TYPES_FOR_SELECTOR = YES;
 				GCC_WARN_SIGN_COMPARE = YES;
 				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
-				INFOPLIST_FILE = "PubNub/PubNub-Info.plist";
+				INFOPLIST_FILE = "PubNub/PubNub Example-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.${PRODUCT_NAME:rfc1034identifier}";
@@ -443,7 +443,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		6003F585195388D10070C39A /* Build configuration list for PBXProject "PubNub" */ = {
+		6003F585195388D10070C39A /* Build configuration list for PBXProject "PubNub Example" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6003F5BD195388D20070C39A /* Debug */,
