@@ -20,6 +20,7 @@
     [PNLog enabled:YES];
     self.configuration = [PNConfiguration configurationWithPublishKey:@"demo-36" subscribeKey:@"demo-36"];
     self.configuration.uuid = @"322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C";
+    self.configuration = [self overrideClientConfiguration:self.configuration];
     self.client = [PubNub clientWithConfiguration:self.configuration];
 }
 
@@ -30,6 +31,14 @@
 
 - (Class<JSZVCRMatching>)matcherClass {
     return [JSZVCRUnorderedQueryMatcher class];
+}
+
+
+#pragma mark - Configuration override
+
+- (PNConfiguration *)overrideClientConfiguration:(PNConfiguration *)configuration {
+    
+    return configuration;
 }
 
 #pragma mark - Channel Group Helpers
