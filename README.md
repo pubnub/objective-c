@@ -1,4 +1,4 @@
-# PubNub 4.0.8 for iOS 7+
+# PubNub 4.1.0 for iOS 7+
 ## Please direct all Support Questions and Concerns to Support@PubNub.com
 ## Complete Docs
 Check out our [official docs page](http://www.pubnub.com/docs/ios-objective-c/pubnub-objective-c-sdk-v4)
@@ -8,6 +8,7 @@ Check out our [official docs page](http://www.pubnub.com/docs/ios-objective-c/pu
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Changes from 3.x](#changes-from-3x)
+- [Changes from 4.0.7](#changes-from-407)
 - [Setup and Hello World](#setup-and-hello-world)
 - [Migrating from 3.x](#migrating-from-3x)
   - [Project Setup](#project-setup)
@@ -41,6 +42,12 @@ Check out our [official docs page](http://www.pubnub.com/docs/ios-objective-c/pu
 * Simplified usability by enforcing completion block pattern -- client no longer supports Singleton, Delegate, Observer, Notifications response patterns
 * Consolidated instance method namesv
 
+## Changes from 4.0.7
+* Added ability to build dynamic frameworks for iOS 8.0+
+* Changed data type in -client:didReceiveStatus: callback from **PNSubscribeStatus** to **PNStatus**  
+  This callback can accept at least three operation types: **PNSubscribeOperation**, **PNUnsubscribeOperation** and **PNHeartbeatOperation**.  
+  **WARNING:** Ensure what you deal with expected status by checking _operation_ property for received status object.
+
 ## Setup and Hello World
 To setup and get started immediately with a Hello World demo, check out our [offical docs page](http://www.pubnub.com/docs/ios-objective-c/pubnub-objective-c-sdk-v4).
 
@@ -70,13 +77,13 @@ In the 3.x version of the client, the developer had the option to call a method 
 
 ### Removed support for Singleton, Delegate, Observer, Notifications response patterns
 
-We've removed the Singleton, Delegate, Observer, Notifications pattern support in 4.0, and instead provide you with one of two versitle alternatives on a per-method basis -- Completion Blocks, or Listeners. 
+We've removed the Singleton, Delegate, Observer, Notifications pattern support in 4.0, and instead provide you with one of two versitle alternatives on a per-method basis -- Completion Blocks, or Listeners.
 
 Please checkout the "New for 4.0" section below for a general overview of the major changes in the usage pattern introduced in 4.0, as well as the Example app for more information.
 
 ### New Configuration Class
 
-There is a new configuration class which is not backwards compatible with the configuration class introduced in 3.x. Be sure to examine the "Configuration" section below, or the Example app for proper usage. 
+There is a new configuration class which is not backwards compatible with the configuration class introduced in 3.x. Be sure to examine the "Configuration" section below, or the Example app for proper usage.
 
 ### New Logger and Logging Options
 
@@ -137,18 +144,18 @@ For any PubNub operation you call, you will be returned either a Result, or a St
 ```objc
 [self.client historyForChannel:@"my_channel" start:nil end:nil limit:100
                 withCompletion:^(PNHistoryResult *result, PNErrorStatus *status) {
- 
+
     // Check whether request successfully completed or not.
     if (!status.isError) {
- 
-       // Handle downloaded history using: 
+
+       // Handle downloaded history using:
        //   result.data.start - oldest message time stamp in response
        //   result.data.end - newest message time stamp in response
        //   result.data.messages - list of messages
     }
     // Request processing failed.
     else {
- 
+
        // Handle message history download error. Check 'category' property to find
        // out possible issue because of which request did fail.
        //
@@ -157,7 +164,7 @@ For any PubNub operation you call, you will be returned either a Result, or a St
 }];
 ```
 
-Where **myResultHandler** is a callback with history results, and **myStatusHandler** is callback for **everything else**. 
+Where **myResultHandler** is a callback with history results, and **myStatusHandler** is callback for **everything else**.
 
 When a result comes in, we can inspect the data attribute on the result object for the messages, start, and end attributes.
 
