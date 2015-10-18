@@ -56,7 +56,7 @@ class PNBasicSubscribeTestCase: PNBasicClientTestCase, PNObjectEventListener {
     
     func PNTest_unsubscribeFromChannels(channels: [String]!, presense: Bool) {
         unsubscribeExpectation = self.expectationWithDescription("unsubscribe")
-        self.client.subscribeToChannelGroups(channels, withPresence: presense)
+        self.client.unsubscribeFromChannels(channels, withPresence: presense)
         waitForExpectationsWithTimeout(10, handler: { (error) -> Void in
             XCTAssertNil(error, "Encountered error with publish call")
         })
@@ -78,7 +78,6 @@ class PNBasicSubscribeTestCase: PNBasicClientTestCase, PNObjectEventListener {
         })
     }
 
-    
     func PNTest_unsubscribeFromChannelGroups(groups: [String]!, presense: Bool) {
         channelGroupUnsubscribeExpectation = self.expectationWithDescription("channel group unsubscribe")
         self.client.subscribeToChannelGroups(groups, withPresence: presense)
@@ -101,7 +100,7 @@ class PNBasicSubscribeTestCase: PNBasicClientTestCase, PNObjectEventListener {
         })
     }
     
-// MARK: PNDelegateListener
+// MARK: - PNDelegateListener
     
     func client(client: PubNub!, didReceiveMessage message: PNMessageResult!) {
         if didReceiveMessageAssertions != nil {

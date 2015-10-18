@@ -26,10 +26,6 @@ Pod::Spec.new do |spec|
     spec.osx.deployment_target = '10.9'
     spec.requires_arc = true
 
-<<<<<<< HEAD
-  s.library   = "z"
-  s.dependency "CocoaLumberjack", "~> 2.0.0"
-=======
     spec.subspec 'Core' do |core|
         core.source_files = 'PubNub/{Core,Data,Misc,Network}/**/*', 'PubNub/PubNub.h'
         core.private_header_files = [
@@ -44,7 +40,6 @@ Pod::Spec.new do |spec|
             'PubNub/Network/**/*.h',
         ]
     end
->>>>>>> origin/develop
 
     spec.library   = 'z'
     spec.dependency 'CocoaLumberjack', '2.0.0'
