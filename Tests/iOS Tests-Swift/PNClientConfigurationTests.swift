@@ -78,26 +78,31 @@ class PNClientConfigurationTests: PNBasicSubscribeTestCase {
     
     func prepareForSubscribedPartOfTest() {
         
-        self.didReceiveStatusAssertions = {(client: PubNub, status: PNSubscribeStatus) -> (Void) in
+        self.didReceiveStatusAssertions = {(client: PubNub, status: PNStatus) -> (Void) in
             
             XCTAssertEqual(self.client, client)
             XCTAssertNotNil(status)
             XCTAssertFalse(status.error)
             
 //            XCTAssertEqual(status.category, PNStatusCategory.PNConnectedCategory)
-            XCTAssertEqual(status.subscribedChannelGroups.count, 1)
             
-            let expectedPresenceSubscriptions: [String] = ["a"]
+            let subscribedStatus = status as? PNSubscribeStatus
             
-            var resultSet: Set<String> = []
-            for element in (status.subscribedChannelGroups as? [String])! {
-                resultSet.insert(element)
+            if (subscribedStatus != nil) {
+                XCTAssertEqual(subscribedStatus?.subscribedChannelGroups.count, 1)
+                
+                let expectedPresenceSubscriptions: [String] = ["a"]
+                
+                var resultSet: Set<String> = []
+                for element in (subscribedStatus?.subscribedChannelGroups as? [String])! {
+                    resultSet.insert(element)
+                }
+                
+                let expectedPresenceSubscriptionsSet: Set<String> = Set(expectedPresenceSubscriptions)
+                
+                XCTAssertTrue(resultSet == expectedPresenceSubscriptionsSet, "Subscribed channel groups list are not equal")
             }
             
-            let expectedPresenceSubscriptionsSet: Set<String> = Set(expectedPresenceSubscriptions)
-            
-            XCTAssertTrue(resultSet == expectedPresenceSubscriptionsSet, "Subscribed channel groups list are not equal")
-        
             self.channelGroupSubscribeExpectation.fulfill()
         }
     

@@ -10,7 +10,7 @@ import Foundation
 
 typealias PNClientDidReceiveMessageAssertions = (client: PubNub!, message: PNMessageResult!) -> (Void)
 typealias PNClientDidReceivePresenceEventAssertions = (client: PubNub, event: PNPresenceEventResult) -> (Void)
-typealias PNClientDidReceiveStatusAssertions = (client: PubNub, status: PNSubscribeStatus) -> (Void)
+typealias PNClientDidReceiveStatusAssertions = (client: PubNub, status: PNStatus) -> (Void)
 
 class PNBasicSubscribeTestCase: PNBasicClientTestCase, PNObjectEventListener {
     
@@ -108,12 +108,6 @@ class PNBasicSubscribeTestCase: PNBasicClientTestCase, PNObjectEventListener {
         }
     }
     
-//    func client(client: PubNub!, didReceiveStatus status: PNSubscribeStatus!) {
-//        if didReceiveStatusAssertions != nil {
-//            didReceiveStatusAssertions!(client: client, status: status)
-//        }
-//    }
-    
     func client(client: PubNub!, didReceivePresenceEvent event: PNPresenceEventResult!) {
         
         if self.assertDidReceivePresenceEvent != nil {
@@ -126,15 +120,7 @@ class PNBasicSubscribeTestCase: PNBasicClientTestCase, PNObjectEventListener {
     func client(client: PubNub!, didReceiveStatus status: PNStatus!) {
         
         if self.didReceiveStatusAssertions != nil {
-            
-            let subscribedStatus = status as? PNSubscribeStatus
-            let subscribedStatusError = status as? PNErrorStatus
-            
-            if subscribedStatus != nil {
-                 self.didReceiveStatusAssertions!(client: client, status: subscribedStatus!)
-            } else if (subscribedStatusError != nil) {
-                XCTFail("Received PNErrorStatus, expected PNSubscribeStatus")
-            }
+            self.didReceiveStatusAssertions?(client: client, status: status)
         }
     }
 }

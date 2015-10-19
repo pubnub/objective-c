@@ -96,30 +96,32 @@ class PNClientStateChannelGroupTests: PNBasicSubscribeTestCase {
             XCTAssertEqual(status.statusCode, 200)
         }
     
-        self.didReceiveStatusAssertions = {(client: PubNub, status: PNSubscribeStatus) -> (Void) in
+        self.didReceiveStatusAssertions = {(client: PubNub, status: PNStatus) -> (Void) in
             XCTAssertEqual(self.client, client)
             XCTAssertNotNil(status)
             XCTAssertFalse(status.error)
-//            XCTAssertEqual(status.category, PNConnectedCategory);
+            XCTAssertTrue(status.category == .PNConnectedCategory)
             
             let expectedChannelGroups: [String] = [self.kPNChannelGroupTestsName, self.kPNChannelGroupTestsName + "-pnpres"]
             
-            XCTAssertEqual(status.subscribedChannelGroups.count, expectedChannelGroups.count);
+            let subscribedStatus = status as? PNSubscribeStatus
             
-            var resultSet: Set<String> = []
-            for element in (status.subscribedChannelGroups as? [String])! {
-                resultSet.insert(element)
+            if (subscribedStatus != nil) {
+                XCTAssertEqual(subscribedStatus?.subscribedChannelGroups.count, expectedChannelGroups.count);
+                
+                var resultSet: Set<String> = []
+                for element in (subscribedStatus?.subscribedChannelGroups as? [String])! {
+                    resultSet.insert(element)
+                }
+                
+                let expectedChannelGroupsSet: Set<String> = Set(expectedChannelGroups)
+                
+                XCTAssertTrue(resultSet == expectedChannelGroupsSet, "Channel groups are not equal")
+                
+                XCTAssertEqual(subscribedStatus?.currentTimetoken, 14356954400894751)
+                XCTAssertEqual(subscribedStatus?.currentTimetoken, subscribedStatus?.data.timetoken)
             }
             
-            let expectedChannelGroupsSet: Set<String> = Set(expectedChannelGroups)
-            
-            XCTAssertTrue(resultSet == expectedChannelGroupsSet, "Channel groups are not equal")
-            
-            XCTAssertEqual(status.currentTimetoken, 14356954400894751)
-            
-//            if (self.invocation.selector == @selector(testSetClientStateOnSubscribedChannelGroup)) {
-//                XCTAssertEqualObjects(status.currentTimetoken, @14356954400894751);
-            XCTAssertEqual(status.currentTimetoken, status.data.timetoken)
             self.channelGroupSubscribeExpectation.fulfill()
         }
         

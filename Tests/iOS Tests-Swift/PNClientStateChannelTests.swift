@@ -21,7 +21,7 @@ class PNClientStateChannelTests: PNBasicSubscribeTestCase {
     override func setUp() {
         super.setUp()
         
-        self.didReceiveStatusAssertions = {(client: PubNub, status: PNSubscribeStatus) -> (Void) in
+        self.didReceiveStatusAssertions = {(client: PubNub, status: PNStatus) -> (Void) in
             
             XCTAssertEqual(self.client, client)
             XCTAssertNotNil(status)
@@ -32,25 +32,28 @@ class PNClientStateChannelTests: PNBasicSubscribeTestCase {
         
         self.PNTest_subscribeToChannels(self.subscriptionChannels, presense: false)
         self.didReceiveStatusAssertions = nil;
-
     }
     
     override func tearDown() {
         
         
         let channelsToRemove = self.subscriptionChannels + self.unsubscribedChannels
-        /*
-        self.didReceiveStatusAssertions = {(client: PubNub, status: PNSubscribeStatus) -> (Void) in
+        
+        self.didReceiveStatusAssertions = {(client: PubNub, status: PNStatus) -> (Void) in
             
             XCTAssertEqual(self.client, client)
             XCTAssertNotNil(status)
             XCTAssertFalse(status.error)
             
-            XCTAssertEqual(status.subscribedChannelGroups.count, 0)
+            let subscribedStatus = status as? PNSubscribeStatus
+            
+            if (subscribedStatus != nil) {
+                XCTAssertEqual(subscribedStatus?.subscribedChannelGroups.count, 0)
+            }
             
             self.unsubscribeExpectation.fulfill()
         }
-        */
+        
         
         self.PNTest_unsubscribeFromChannels(channelsToRemove, presense: true)
         
@@ -106,8 +109,8 @@ class PNClientStateChannelTests: PNBasicSubscribeTestCase {
         
         self.client.stateForUUID(self.client.uuid(), onChannel: self.subscriptionChannels.first) { (result: PNChannelClientStateResult!, status: PNErrorStatus!) -> Void in
             
-            XCTAssertNotNil(status)
-            XCTAssertFalse(status.error)
+            XCTAssertNotNil(result)
+            XCTAssertNil(status)
             let expectedState: [String: String]! = ["test" : "test"]
             let dataState: [String: String]! = result.data.state as? [String: String]
             
@@ -126,8 +129,8 @@ class PNClientStateChannelTests: PNBasicSubscribeTestCase {
         
         self.client.stateForUUID(self.client.uuid(), onChannel: self.unsubscribedChannels.first) { (result: PNChannelClientStateResult!, status: PNErrorStatus!) -> Void in
             
-            XCTAssertNotNil(status)
-            XCTAssertFalse(status.error)
+            XCTAssertNotNil(result)
+            XCTAssertNil(status)
             let expectedState: [String: String]! = ["test" : "test"]
             let dataState: [String: String]! = result.data.state as? [String: String]
             

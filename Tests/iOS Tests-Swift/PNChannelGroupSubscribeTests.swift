@@ -37,42 +37,41 @@ class PNChannelGroupSubscribeTests: PNBasicSubscribeTestCase {
     }
     
     func testSimpleSubscribeWithPresence() {
-        self.didReceiveStatusAssertions = {(client: PubNub, status: PNSubscribeStatus) -> (Void) in
+        self.didReceiveStatusAssertions = {(client: PubNub, status: PNStatus) -> (Void) in
             
             XCTAssertEqual(self.client, client)
             XCTAssertNotNil(status)
             XCTAssertFalse(status.error)
-            XCTAssertEqual(status.category, PNStatusCategory.PNConnectedCategory)
+            XCTAssertTrue(status.category == .PNConnectedCategory)
             
             let expectedChannelGroups: [String] = [self.groupName, self.groupName + "-pnpres"]
             
-            XCTAssertEqual(status.subscribedChannels.count, 0)
+            let subscribedStatus = status as? PNSubscribeStatus
             
-            var resultSet: Set<String> = []
-            for element in (status.subscribedChannelGroups as? [String])! {
-                resultSet.insert(element)
+            if (subscribedStatus != nil) {
+                XCTAssertEqual(subscribedStatus?.subscribedChannels.count, 0)
+                
+                var resultSet: Set<String> = []
+                for element in (subscribedStatus?.subscribedChannelGroups as? [String])! {
+                    resultSet.insert(element)
+                }
+                
+                let expectedChannelGroupsSet: Set<String> = Set(expectedChannelGroups)
+                
+                XCTAssertTrue(resultSet == expectedChannelGroupsSet, "Subscribed channel groups list are not equal");
+                
+                XCTAssertEqual(subscribedStatus?.currentTimetoken, 14355524859273802)
+                XCTAssertEqual(subscribedStatus?.currentTimetoken, subscribedStatus?.data.timetoken)
             }
             
-            let expectedChannelGroupsSet: Set<String> = Set(expectedChannelGroups)
-            
-            XCTAssertTrue(resultSet == expectedChannelGroupsSet, "Subscribed channel groups list are not equal");
-            
-            XCTAssertEqual(status.operation, PNOperationType.SubscribeOperation)
-            XCTAssertEqual(status.currentTimetoken, 14355524859273802)
-            XCTAssertEqual(status.currentTimetoken, status.data.timetoken)
+            XCTAssertTrue(status.operation == .SubscribeOperation)
             
             XCTAssertNotNil(status)
             XCTAssertEqual(self.client, client, "Incorrect client")
             XCTAssertFalse(status.error)
-            XCTAssertEqual(status.category, PNStatusCategory.PNConnectedCategory)
-            
-            // TODO: investigate fail reason
-            //            XCTAssertEqualObjects(status.currentTimetoken, @14356472196232226);
-            //            XCTAssertEqual(status.currentTimetoken, NSDecimalNumber(string: "14356472196232226"))
-            XCTAssertEqual(status.currentTimetoken, status.data.timetoken)
+            XCTAssertTrue(status.category == .PNConnectedCategory)
         }
     
-
         self.didReceiveMessageAssertions = {(client: PubNub!, message: PNMessageResult!) -> (Void) in
             
             XCTAssertEqual(self.client, client)
@@ -95,18 +94,23 @@ class PNChannelGroupSubscribeTests: PNBasicSubscribeTestCase {
     }
     
     func testSimpleSubscribeWithNoPresence() {
-        self.didReceiveStatusAssertions = {(client: PubNub, status: PNSubscribeStatus) -> (Void) in
+        self.didReceiveStatusAssertions = {(client: PubNub, status: PNStatus) -> (Void) in
             
             XCTAssertEqual(self.client, client)
             XCTAssertNotNil(status)
             XCTAssertFalse(status.error)
             XCTAssertEqual(status.category, PNStatusCategory.PNConnectedCategory)
-            XCTAssertEqual(status.subscribedChannels.count, 0)
-            XCTAssertEqual((status.subscribedChannelGroups as? [String])!, self.channelGroups);
             
-            XCTAssertEqual(status.operation, PNOperationType.SubscribeOperation)
-            XCTAssertEqual(status.currentTimetoken, 14355524847292283)
-            XCTAssertEqual(status.currentTimetoken, status.data.timetoken)
+            let subscribedStatus = status as? PNSubscribeStatus
+            
+            if (subscribedStatus != nil) {
+                XCTAssertEqual(subscribedStatus?.subscribedChannels.count, 0)
+                XCTAssertEqual((subscribedStatus?.subscribedChannelGroups as? [String])!, self.channelGroups);
+                XCTAssertEqual(subscribedStatus?.currentTimetoken, 14355524847292283)
+                XCTAssertEqual(subscribedStatus?.currentTimetoken, subscribedStatus?.data.timetoken)
+            }
+            
+            XCTAssertTrue(status.operation == .SubscribeOperation)
         }
         
         self.didReceiveMessageAssertions = {(client: PubNub!, message: PNMessageResult!) -> (Void) in

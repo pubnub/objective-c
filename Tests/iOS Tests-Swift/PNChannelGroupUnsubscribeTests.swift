@@ -34,61 +34,24 @@ class PNChannelGroupUnsubscribeTests: PNBasicSubscribeTestCase {
             XCTAssertEqual(status.category, PNStatusCategory.PNAcknowledgmentCategory)
             XCTAssertEqual(status.statusCode, 200)
         }
-        
-        // TODO: investigate me
-        
-//        self.didReceiveStatusAssertions = {(client: PubNub, status: PNSubscribeStatus) -> (Void) in
-//            
-//            XCTAssertEqualObjects(self.client, client)
-//            XCTAssertNotNil(status)
-//            XCTAssertFalse(status.error)
-//            XCTAssertEqual(status.category, PNStatusCategory.PNConnectedCategory)
-//            XCTAssertEqual(status.subscribedChannels.count, 0)
-//            XCTAssertTrue(status.subscribedChannelGroups ==expectedChannelGroups, "Channel groups are not equal")
-//            XCTAssertEqual(status.operation, PNSubscribeOperation)
-//            
-//            XCTAssertEqual(status.currentTimetoken, status.data.timetoken)
-//        }
-        
-//        self.didReceiveMessageAssertions = {(client: PubNub!, message: PNMessageResult!) -> (Void) in
-//            
-//            XCTAssertEqualObjects(self.client, client);
-//            XCTAssertEqualObjects(client.uuid, message.uuid);
-//            XCTAssertNotNil(message.uuid);
-//            XCTAssertNil(message.authKey);
-//            XCTAssertEqual(message.statusCode, 200);
-//            XCTAssertTrue(message.TLSEnabled);
-//            XCTAssertEqual(message.operation, PNSubscribeOperation);
-//            NSLog(@"message:");
-//            NSLog(@"%@", message.data.message);
-//            
-//            self.channelGroupSubscribeExpectation.fulfill();
-//        }
     }
     
     func testSimpleUnsubscribeWithPresence() {
         
         let shouldObservePresence = true
-        let expectedMessage = "*****.......... 583 - 2015-06-28 21:52:31"
-        let expectedTimeToken = 14355535508745522
-        let expectedChannelGroups = ["PNChannelGroupUnsubscribeTests", "PNChannelGroupUnsubscribeTests-pnpres"]
-        
-        self.didReceiveStatusAssertions = {(client: PubNub, status: PNSubscribeStatus) -> (Void) in
+        self.didReceiveStatusAssertions = {(client: PubNub, status: PNStatus) -> (Void) in
             
             XCTAssertEqual(self.client, client)
             XCTAssertNotNil(status)
             XCTAssertFalse(status.error)
             XCTAssertEqual(status.category, PNStatusCategory.PNConnectedCategory)
-            XCTAssertEqual(status.subscribedChannels.count, 0)
             
-            // TODO: investigate
-//            XCTAssertEqualObjects([NSSet setWithArray:status.subscribedChannelGroups],
-//                [NSSet setWithArray:expectedChannelGroups]);
-//            XCTAssertEqual(status.operation, PNSubscribeOperation);
+            let subscribedStatus = status as? PNSubscribeStatus
             
-            //        XCTAssertEqualObjects(status.currentTimetoken, expectedTimeToken);
-            XCTAssertEqual(status.currentTimetoken, status.data.timetoken)
-            
+            if (subscribedStatus != nil) {
+                XCTAssertEqual(subscribedStatus?.subscribedChannels.count, 0)
+                XCTAssertEqual(subscribedStatus?.currentTimetoken, subscribedStatus?.data.timetoken)
+            }
         };
         self.didReceiveMessageAssertions = {(client: PubNub!, message: PNMessageResult!) -> (Void) in
             
@@ -107,15 +70,14 @@ class PNChannelGroupUnsubscribeTests: PNBasicSubscribeTestCase {
         
         self.PNTest_subscribeToChannelGroups(self.channelGroups, presense:shouldObservePresence)
         
-        self.didReceiveStatusAssertions = {(client: PubNub, status: PNSubscribeStatus) -> (Void) in
+        self.didReceiveStatusAssertions = {(client: PubNub, status: PNStatus) -> (Void) in
             
             XCTAssertNotNil(client)
             XCTAssertNotNil(status)
             XCTAssertEqual(self.client, client)
-//            XCTAssertEqual(status.category, PNStatusCategory.PNDisconnectedCategory)
+//            XCTAssertTrue(status.operation == .UnsubscribeOperation)
             XCTAssertFalse(status.error)
             XCTAssertEqual(status.statusCode, 200)
-//            XCTAssertEqual(status.operation, PNOperationType.UnsubscribeOperation)
             
             self.channelGroupUnsubscribeExpectation.fulfill();
         }
@@ -126,10 +88,6 @@ class PNChannelGroupUnsubscribeTests: PNBasicSubscribeTestCase {
     func testSimpleUnsubscribeWithNoPresence() {
         
         let shouldObservePresence = false
-        let expectedMessage = "*****.......... 583 - 2015-06-28 21:52:31"
-        let expectedTimeToken = 14355535508745522
-        let expectedChannelGroups = ["PNChannelGroupUnsubscribeTests"]
-        
         
         self.didReceiveMessageAssertions = {(client: PubNub!, message: PNMessageResult!) -> (Void) in
             
@@ -148,19 +106,17 @@ class PNChannelGroupUnsubscribeTests: PNBasicSubscribeTestCase {
         
         self.PNTest_subscribeToChannelGroups(self.channelGroups, presense:shouldObservePresence)
         
-        self.didReceiveStatusAssertions = {(client: PubNub, status: PNSubscribeStatus) -> (Void) in
+        self.didReceiveStatusAssertions = {(client: PubNub, status: PNStatus) -> (Void) in
             
             XCTAssertNotNil(client)
             XCTAssertNotNil(status)
             XCTAssertEqual(self.client, client)
             
-            // TODO: try to investigate it
-            
-//            XCTAssertEqual(status.category, PNStatusCategory.PNDisconnectedCategory)
+//            XCTAssertTrue(status.category == .PNDisconnectedCategory)
             XCTAssertFalse(status.error)
             
             XCTAssertEqual(status.statusCode, 200)
-//            XCTAssertEqual(status.operation, PNOperationType.UnsubscribeOperation)
+//            XCTAssertTrue(status.operation == .UnsubscribeOperation)
             
             self.channelGroupUnsubscribeExpectation.fulfill();
         }
