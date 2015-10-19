@@ -73,6 +73,8 @@
 		960354F61B90629C0047EE04 /* PNPresenceEventTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 960354F51B90629C0047EE04 /* PNPresenceEventTests.bundle */; };
 		960354F71B90629C0047EE04 /* PNPresenceEventTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 960354F51B90629C0047EE04 /* PNPresenceEventTests.bundle */; };
 		960354F91B9100120047EE04 /* PNPresenceEventTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960354F81B9100120047EE04 /* PNPresenceEventTests.swift */; };
+		9605678C1BD5167300726FC5 /* PNPublishSizeOfMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9605678B1BD5167300726FC5 /* PNPublishSizeOfMessage.swift */; settings = {ASSET_TAGS = (); }; };
+		9605678E1BD516A400726FC5 /* PNPublishWithHistoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9605678D1BD516A400726FC5 /* PNPublishWithHistoryTests.swift */; settings = {ASSET_TAGS = (); }; };
 		960E5D881BD2987D00F69434 /* NSData+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960E5D871BD2987D00F69434 /* NSData+Hex.swift */; settings = {ASSET_TAGS = (); }; };
 		960E5D891BD29E8F00F69434 /* PNChannelGroupSubscribeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9663E9E31BCF6B0700315982 /* PNChannelGroupSubscribeTests.swift */; settings = {ASSET_TAGS = (); }; };
 		964A6C471BD4C23A00DF27B8 /* PNClientConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9663E9E91BCF6CAD00315982 /* PNClientConfigurationTests.swift */; settings = {ASSET_TAGS = (); }; };
@@ -159,6 +161,8 @@
 		8EE873C66EC30E212D782E8F /* Pods-iOS Swift Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS Swift Tests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-iOS Swift Tests/Pods-iOS Swift Tests.release.xcconfig"; sourceTree = "<group>"; };
 		960354F51B90629C0047EE04 /* PNPresenceEventTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = PNPresenceEventTests.bundle; path = Fixtures/PNPresenceEventTests.bundle; sourceTree = "<group>"; };
 		960354F81B9100120047EE04 /* PNPresenceEventTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNPresenceEventTests.swift; sourceTree = "<group>"; };
+		9605678B1BD5167300726FC5 /* PNPublishSizeOfMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNPublishSizeOfMessage.swift; sourceTree = "<group>"; };
+		9605678D1BD516A400726FC5 /* PNPublishWithHistoryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNPublishWithHistoryTests.swift; sourceTree = "<group>"; };
 		960E5D871BD2987D00F69434 /* NSData+Hex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSData+Hex.swift"; sourceTree = "<group>"; };
 		960E5D8B1BD4086E00F69434 /* PNPublishCompressedTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNPublishCompressedTests.swift; sourceTree = "<group>"; };
 		963365411B81FAC40005E4B9 /* PNSubscribeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNSubscribeTests.swift; sourceTree = "<group>"; };
@@ -310,15 +314,17 @@
 				9663E9E91BCF6CAD00315982 /* PNClientConfigurationTests.swift */,
 				9663E9EB1BCF6CC800315982 /* PNClientStateChannelGroupTests.swift */,
 				9663E9ED1BCF6CE700315982 /* PNClientStateChannelTests.swift */,
+				795CED091BCF002900D421BB /* PNHeartbeatTests.swift */,
 				9668151D1B73A69600191661 /* PNHistoryTests.swift */,
 				96B222BB1B84868C002549D5 /* PNPresenceTests.swift */,
 				960354F81B9100120047EE04 /* PNPresenceEventTests.swift */,
 				960E5D8B1BD4086E00F69434 /* PNPublishCompressedTests.swift */,
-				51BB25411B6815F300A9F154 /* PNTimeTokenTests.swift */,
+				9605678B1BD5167300726FC5 /* PNPublishSizeOfMessage.swift */,
 				9722C2751B68A24C00A7CB44 /* PNPublishTests.swift */,
+				9605678D1BD516A400726FC5 /* PNPublishWithHistoryTests.swift */,
 				963365411B81FAC40005E4B9 /* PNSubscribeTests.swift */,
+				51BB25411B6815F300A9F154 /* PNTimeTokenTests.swift */,
 				9652F3EA1BA98706001E940A /* PNConfigurationChiperKeyTests.swift */,
-				795CED091BCF002900D421BB /* PNHeartbeatTests.swift */,
 			);
 			name = "iOS Tests (Swift)";
 			path = "iOS Tests-Swift";
@@ -653,6 +659,8 @@
 			files = (
 				964A6C491BD4C57600DF27B8 /* PNSubscribeTests.swift in Sources */,
 				96DC80181BD42A0B00710E4B /* PNPublishCompressedTests.swift in Sources */,
+				9605678E1BD516A400726FC5 /* PNPublishWithHistoryTests.swift in Sources */,
+				9605678C1BD5167300726FC5 /* PNPublishSizeOfMessage.swift in Sources */,
 				51D889F21B66F49E009127D0 /* PNBasicClientTestCase.swift in Sources */,
 				96B222BC1B84868C002549D5 /* PNPresenceTests.swift in Sources */,
 				9663E9E61BCF6C8000315982 /* PNChannelGroupTests.swift in Sources */,
