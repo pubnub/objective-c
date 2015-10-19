@@ -15,6 +15,18 @@ class PNHeartbeatTests: PNBasicSubscribeTestCase {
         return false
     }
     
+    func testSimpleHeartbeat() {
+        let config = PNConfiguration(publishKey: "demo-36", subscribeKey: "demo-36")
+        XCTAssertNotNil(config)
+        
+        let simpleClient = PubNub.clientWithConfiguration(config);
+        XCTAssertNotNil(simpleClient)
+        
+        configuration.presenceHeartbeatInterval = 5
+        let heartbeatClient = PubNub.clientWithConfiguration(configuration)
+        XCTAssertNotNil(heartbeatClient)
+    }
+    
     override func overrideClientConfiguration(configuration: PNConfiguration) -> PNConfiguration! {
         
         configuration.presenceHeartbeatInterval = 5
@@ -41,3 +53,4 @@ class PNHeartbeatTests: PNBasicSubscribeTestCase {
         self.PNTest_subscribeToChannels(["heartbeat-test"], presence: false)
     }
 }
+
