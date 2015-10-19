@@ -33,7 +33,9 @@
     NSDictionary *processedResponse = nil;
     
     // Dictionary is valid response type for heartbeat request.
-    if ([response isKindOfClass:[NSDictionary class]]) {
+    if ([response isKindOfClass:[NSDictionary class]] && [response objectForKey:@"status"] &&
+        [response objectForKey:@"service"] && [[response objectForKey:@"status"] isEqual: @200] &&
+        [[response objectForKey:@"service"] isEqualToString:@"Presence"]) {
         
         processedResponse = @{};
     }

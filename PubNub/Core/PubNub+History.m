@@ -146,6 +146,15 @@
                // more need in it and probably whole client instance has been deallocated.
                #pragma clang diagnostic push
                #pragma clang diagnostic ignored "-Wreceiver-is-weak"
+               if (status.isError) {
+                    
+                   status.retryBlock = ^{
+                       
+                       [weakSelf historyForChannel:channel start:startDate end:endDate limit:limit
+                                           reverse:shouldReverseOrder
+                                  includeTimeToken:shouldIncludeTimeToken withCompletion:block];
+                   };
+               }
                [weakSelf handleHistoryResult:result withStatus:status completion:block];
                #pragma clang diagnostic pop
            }];

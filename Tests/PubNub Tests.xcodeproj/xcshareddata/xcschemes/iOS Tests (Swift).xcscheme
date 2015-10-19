@@ -10,28 +10,14 @@
             buildForTesting = "YES"
             buildForRunning = "YES"
             buildForProfiling = "NO"
-            buildForArchiving = "YES"
+            buildForArchiving = "NO"
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6003F589195388D20070C39A"
-               BuildableName = "PubNub_Example.app"
-               BlueprintName = "PubNub_Example"
-               ReferencedContainer = "container:PubNub.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "NO"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6003F5AD195388D20070C39A"
-               BuildableName = "PubNub_Tests.xctest"
-               BlueprintName = "PubNub_Tests"
-               ReferencedContainer = "container:PubNub.xcodeproj">
+               BlueprintIdentifier = "51D889E01B66E0F8009127D0"
+               BuildableName = "iOS Swift Tests.xctest"
+               BlueprintName = "iOS Swift Tests"
+               ReferencedContainer = "container:PubNub Tests.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -42,14 +28,32 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "51D889E01B66E0F8009127D0"
+               BuildableName = "iOS Swift Tests.xctest"
+               BlueprintName = "iOS Swift Tests"
+               ReferencedContainer = "container:PubNub Tests.xcodeproj">
+            </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "PNBasicClientTestCase">
+               </Test>
+               <Test
+                  Identifier = "PNBasicSubscribeTestCase">
+               </Test>
+            </SkippedTests>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "6003F589195388D20070C39A"
-            BuildableName = "PubNub_Example.app"
-            BlueprintName = "PubNub_Example"
-            ReferencedContainer = "container:PubNub.xcodeproj">
+            BlueprintIdentifier = "51D889E01B66E0F8009127D0"
+            BuildableName = "iOS Swift Tests.xctest"
+            BlueprintName = "iOS Swift Tests"
+            ReferencedContainer = "container:PubNub Tests.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -65,16 +69,15 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "6003F589195388D20070C39A"
-            BuildableName = "PubNub_Example.app"
-            BlueprintName = "PubNub_Example"
-            ReferencedContainer = "container:PubNub.xcodeproj">
+            BlueprintIdentifier = "51D889E01B66E0F8009127D0"
+            BuildableName = "iOS Swift Tests.xctest"
+            BlueprintName = "iOS Swift Tests"
+            ReferencedContainer = "container:PubNub Tests.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>

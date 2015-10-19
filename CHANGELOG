@@ -1,3 +1,14 @@
+10-15-2015 - 75dd61c - 4.1.0
+. version bump because of backward compatible changes in public interface
+. added ability to build dynamic frameworks for iOS 8.0+
+
+10-14-2015 - 3fbb92d - 4.0.8
+. exposed heartbeat error to -client:didReceiveStatus:
+. fixed ping triggering logic after corner case with network issues
+
+10.03-2015 - b7a8ff3 - 4.0.7
+. fixed issue which prevented proper -retry execution.
+
 10-01-2015 - ca7cc55 - 4.0.6
 . updated logger macro usage
 . updated Podspec file organization

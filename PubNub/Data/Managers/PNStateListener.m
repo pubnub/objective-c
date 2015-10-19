@@ -6,6 +6,7 @@
 #import "PNStateListener.h"
 #import "PNObjectEventListener.h"
 #import "PubNub+CorePrivate.h"
+#import "PNSubscribeStatus.h"
 #import "PNHelpers.h"
 
 
@@ -74,7 +75,18 @@
  */
 - (instancetype)initForClient:(PubNub *)client;
 
+
+#pragma mark - Notification
+
+/**
+ @brief  Notify all status event change subscriber about new event.
+ 
+ @param status Reference on state object which describe operation and category.
+ */
+- (void)notifyStatusObservers:(PNStatus *)status;
+
 #pragma mark -
+
 
 @end
 
@@ -205,7 +217,20 @@
 }
 
 - (void)notifyStatusChange:(PNSubscribeStatus *)status {
+    
+    [self notifyStatusObservers:status];
+}
 
+- (void)notifyHeartbeatStatus:(PNStatus *)status {
+    
+    [self notifyStatusObservers:status];
+}
+
+
+#pragma mark - Notification
+
+- (void)notifyStatusObservers:(PNStatus *)status {
+    
     NSArray *listeners = [self.stateListeners allObjects];
     // Silence static analyzer warnings.
     // Code is aware about this case and at the end will simply call on 'nil' object method.

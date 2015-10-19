@@ -519,8 +519,8 @@
 
 #pragma mark - Streaming Data didReceiveStatus Listener
 
-- (void)client:(PubNub *)client didReceiveStatus:(PNSubscribeStatus *)status {
-
+- (void)client:(PubNub *)client didReceiveStatus:(PNStatus *)status {
+    
     // This is where we'll find ongoing status events from our subscribe loop
     // Results (messages) from our subscribe loop will be found in didReceiveMessage
     // Results (presence events) from our subscribe loop will be found in didReceiveStatus
@@ -580,13 +580,20 @@
 
         NSLog(@"For whatever reason, the request timed out. Temporary connectivity issues, etc.");
     }
-
+    else if (status.category == PNNetworkIssuesCategory) {
+        
+        NSLog(@"Request can't be processed because of network issues.");
+    }
     else {
         // Aside from checking for PAM, this is a generic catch-all if you just want to handle any error, regardless of reason
         // status.debugDescription will shed light on exactly whats going on
 
         NSLog(@"Request failed... if this is an issue that is consistently interrupting the performance of your app,");
         NSLog(@"email the output of debugDescription to support along with all available log info: %@", [status debugDescription]);
+    }
+    if (status.operation == PNHeartbeatOperation) {
+        
+        NSLog(@"Heartbeat operation failed.");
     }
 }
 
@@ -706,7 +713,6 @@
                     subscriberStatus.subscribedChannels);
 
         }
-
     }
 
 }
@@ -723,7 +729,7 @@
 
     // Presence Settings
     self.myConfig.presenceHeartbeatValue = 120;
-    self.myConfig.presenceHeartbeatInterval = 60;
+    self.myConfig.presenceHeartbeatInterval = 5;
 
     // Cipher Key Settings
 //    self.myConfig.cipherKey = @"enigma";

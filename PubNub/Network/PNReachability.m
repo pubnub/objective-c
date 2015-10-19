@@ -82,6 +82,18 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNReachabilityLogLevel;
 - (instancetype)initForClient:(PubNub *)client
                withPingStatus:(void(^)(BOOL pingSuccessful))block;
 
+
+#pragma mark - Handlers
+
+/**
+ @brief  Process service response.
+ @note   In case if there is no response object or it's content malformed reachability will be set 
+         to 'not available'.
+ 
+ @param result Time API calling result object.
+ */
+- (void)handleServicePingResult:(PNTimeResult *)result;
+
 #pragma mark -
 
 
@@ -171,45 +183,12 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNReachabilityLogLevel;
     if (!self.pingingRemoteService) {
         
         self.pingRemoteService = YES;
-        
-        // Silence static analyzer warnings.
-        // Code is aware about this case and at the end will simply call on 'nil' object method.
-        // In most cases if referenced object become 'nil' it mean what there is no more need in
-        // it and probably whole client instance has been deallocated.
-        #pragma clang diagnostic push
-        #pragma clang diagnostic ignored "-Wreceiver-is-weak"
-        #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
         // Try to request 'time' API to ensure what network really available.
         __weak __typeof(self) weakSelf = self;
         [self.client timeWithCompletion:^(PNTimeResult *result, __unused PNErrorStatus *status) {
             
-            __strong __typeof(self) strongSelf = weakSelf;
-            BOOL successfulPing = (result.data != nil);
-            if (strongSelf.reachable && !successfulPing) {
-                
-                DDLogReachability([[strongSelf class] ddLogLevel], @"<PubNub> Connection went down.");
-            }
-            if (!strongSelf.reachable && successfulPing) {
-                
-                DDLogReachability([[strongSelf class] ddLogLevel], @"<PubNub> Connection restored.");
-            }
-            if (strongSelf.pingCompleteBlock) {
-                
-                strongSelf.pingCompleteBlock(successfulPing);
-            }
-            if (strongSelf.pingingRemoteService) {
-                
-                NSTimeInterval delay = ((strongSelf.reachable && !successfulPing) ? 1.f : 10.0f);
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)),
-                               dispatch_get_main_queue(), ^{
-                                   
-                                   strongSelf.pingRemoteService = NO;
-                                   [strongSelf startServicePing];
-                               });
-            }
-            strongSelf.reachable = successfulPing;
+            [weakSelf handleServicePingResult:result];
         }];
-        #pragma clang diagnostic pop
     }
 }
 
@@ -218,6 +197,38 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNReachabilityLogLevel;
     self.pingRemoteService = NO;
 }
 
+
+#pragma mark - Handlers
+
+- (void)handleServicePingResult:(PNTimeResult *)result {
+    
+    BOOL successfulPing = (result.data != nil);
+    if (self.reachable && !successfulPing) {
+        
+        DDLogReachability([[self class] ddLogLevel], @"<PubNub> Connection went down.");
+    }
+    if (!self.reachable && successfulPing) {
+        
+        DDLogReachability([[self class] ddLogLevel], @"<PubNub> Connection restored.");
+    }
+    if (self.pingCompleteBlock) {
+        
+        self.pingCompleteBlock(successfulPing);
+    }
+    if (self.pingingRemoteService) {
+        
+        NSTimeInterval delay = ((self.reachable && !successfulPing) ? 1.f : 10.0f);
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)),
+                       dispatch_get_main_queue(), ^{
+
+           self.pingRemoteService = NO;
+           [self startServicePing];
+       });
+    }
+    self.reachable = successfulPing;
+}
+
 #pragma mark -
+
 
 @end

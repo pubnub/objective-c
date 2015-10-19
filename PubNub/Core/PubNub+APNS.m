@@ -72,7 +72,8 @@
 }
 
 - (void)enablePushNotification:(BOOL)shouldEnabled onChannels:(NSArray *)channels
-           withDevicePushToken:(NSData *)pushToken andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block {
+           withDevicePushToken:(NSData *)pushToken
+                 andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block {
 
     BOOL removeAllChannels = (!shouldEnabled && channels == nil);
     PNOperationType operationType = PNRemoveAllPushNotificationsOperation;
@@ -118,6 +119,14 @@
         // it and probably whole client instance has been deallocated.
         #pragma clang diagnostic push
         #pragma clang diagnostic ignored "-Wreceiver-is-weak"
+        if (status.isError) {
+            
+            status.retryBlock = ^{
+                
+                [weakSelf enablePushNotification:shouldEnabled onChannels:channels
+                             withDevicePushToken:pushToken andCompletion:block];
+            };
+        }
         [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
         #pragma clang diagnostic pop
     }];
@@ -149,6 +158,14 @@
                // more need in it and probably whole client instance has been deallocated.
                #pragma clang diagnostic push
                #pragma clang diagnostic ignored "-Wreceiver-is-weak"
+               if (status.isError) {
+                    
+                   status.retryBlock = ^{
+                        
+                       [weakSelf pushNotificationEnabledChannelsForDeviceWithPushToken:pushToken
+                                                                         andCompletion:block];
+                   };
+               }
                [weakSelf callBlock:block status:NO withResult:result andStatus:status];
                #pragma clang diagnostic pop
            }];
