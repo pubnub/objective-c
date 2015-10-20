@@ -1223,6 +1223,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.pubnub.PubNub;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
 			name = Debug;
 		};
@@ -1240,6 +1241,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.pubnub.PubNub;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
 			name = Release;
 		};
@@ -1258,6 +1260,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.deusty.CocoaLumberjack;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
 			name = Debug;
 		};
@@ -1276,6 +1279,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.deusty.CocoaLumberjack;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
 			name = Release;
 		};
@@ -1283,6 +1287,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
 			name = Debug;
 		};
@@ -1290,6 +1295,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
 			name = Release;
 		};
@@ -1321,6 +1327,7 @@
 				79CBB19C1BD03EB8001FC34D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		79CBB1D41BD042FB001FC34D /* Build configuration list for PBXAggregateTarget "Universal Framework" */ = {
 			isa = XCConfigurationList;
@@ -1329,6 +1336,7 @@
 				79CBB1D61BD042FB001FC34D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
