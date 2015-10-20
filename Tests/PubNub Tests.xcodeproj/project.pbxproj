@@ -93,6 +93,9 @@
 		966E55ED1BD4BC5100D46C0C /* PNHeartbeatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 795CED091BCF002900D421BB /* PNHeartbeatTests.swift */; settings = {ASSET_TAGS = (); }; };
 		967707F71B8F4A80002B8E84 /* PNPresenceEventTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 967707F61B8F4A80002B8E84 /* PNPresenceEventTests.m */; };
 		96B222BC1B84868C002549D5 /* PNPresenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B222BB1B84868C002549D5 /* PNPresenceTests.swift */; };
+		96BB09E11BD67F3C00FDFFDC /* PNPublishWithMobilePayloadTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96BB09E01BD67F3C00FDFFDC /* PNPublishWithMobilePayloadTests.swift */; settings = {ASSET_TAGS = (); }; };
+		96BB09E31BD6976F00FDFFDC /* PNSubscribeToPresenceChannelsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96BB09E21BD6976F00FDFFDC /* PNSubscribeToPresenceChannelsTests.swift */; settings = {ASSET_TAGS = (); }; };
+		96BB09E51BD69CD900FDFFDC /* PNUnsubscribeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96BB09E41BD69CD900FDFFDC /* PNUnsubscribeTests.swift */; settings = {ASSET_TAGS = (); }; };
 		96DC80181BD42A0B00710E4B /* PNPublishCompressedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960E5D8B1BD4086E00F69434 /* PNPublishCompressedTests.swift */; settings = {ASSET_TAGS = (); }; };
 		96E383931BAAC12F00560991 /* PNConfigurationChiperKeyTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 9652F3E61BA6E90B001E940A /* PNConfigurationChiperKeyTests.bundle */; };
 		96F0239E1B580D0000C4A581 /* NSArray+PNTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96F0239D1B580D0000C4A581 /* NSArray+PNTest.m */; };
@@ -183,6 +186,9 @@
 		9668151D1B73A69600191661 /* PNHistoryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNHistoryTests.swift; sourceTree = "<group>"; };
 		967707F61B8F4A80002B8E84 /* PNPresenceEventTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNPresenceEventTests.m; path = Tests/PNPresenceEventTests.m; sourceTree = "<group>"; };
 		96B222BB1B84868C002549D5 /* PNPresenceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNPresenceTests.swift; sourceTree = "<group>"; };
+		96BB09E01BD67F3C00FDFFDC /* PNPublishWithMobilePayloadTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNPublishWithMobilePayloadTests.swift; sourceTree = "<group>"; };
+		96BB09E21BD6976F00FDFFDC /* PNSubscribeToPresenceChannelsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNSubscribeToPresenceChannelsTests.swift; sourceTree = "<group>"; };
+		96BB09E41BD69CD900FDFFDC /* PNUnsubscribeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNUnsubscribeTests.swift; sourceTree = "<group>"; };
 		96F0239C1B580D0000C4A581 /* NSArray+PNTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSArray+PNTest.h"; path = "iOS Tests/Helpers/NSArray+PNTest.h"; sourceTree = "<group>"; };
 		96F0239D1B580D0000C4A581 /* NSArray+PNTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSArray+PNTest.m"; path = "iOS Tests/Helpers/NSArray+PNTest.m"; sourceTree = "<group>"; };
 		9722C2751B68A24C00A7CB44 /* PNPublishTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNPublishTests.swift; sourceTree = "<group>"; };
@@ -322,8 +328,11 @@
 				9605678B1BD5167300726FC5 /* PNPublishSizeOfMessage.swift */,
 				9722C2751B68A24C00A7CB44 /* PNPublishTests.swift */,
 				9605678D1BD516A400726FC5 /* PNPublishWithHistoryTests.swift */,
+				96BB09E01BD67F3C00FDFFDC /* PNPublishWithMobilePayloadTests.swift */,
 				963365411B81FAC40005E4B9 /* PNSubscribeTests.swift */,
+				96BB09E21BD6976F00FDFFDC /* PNSubscribeToPresenceChannelsTests.swift */,
 				51BB25411B6815F300A9F154 /* PNTimeTokenTests.swift */,
+				96BB09E41BD69CD900FDFFDC /* PNUnsubscribeTests.swift */,
 				9652F3EA1BA98706001E940A /* PNConfigurationChiperKeyTests.swift */,
 			);
 			name = "iOS Tests (Swift)";
@@ -659,7 +668,10 @@
 			files = (
 				964A6C491BD4C57600DF27B8 /* PNSubscribeTests.swift in Sources */,
 				96DC80181BD42A0B00710E4B /* PNPublishCompressedTests.swift in Sources */,
+				96BB09E31BD6976F00FDFFDC /* PNSubscribeToPresenceChannelsTests.swift in Sources */,
+				96BB09E11BD67F3C00FDFFDC /* PNPublishWithMobilePayloadTests.swift in Sources */,
 				9605678E1BD516A400726FC5 /* PNPublishWithHistoryTests.swift in Sources */,
+				96BB09E51BD69CD900FDFFDC /* PNUnsubscribeTests.swift in Sources */,
 				9605678C1BD5167300726FC5 /* PNPublishSizeOfMessage.swift in Sources */,
 				51D889F21B66F49E009127D0 /* PNBasicClientTestCase.swift in Sources */,
 				96B222BC1B84868C002549D5 /* PNPresenceTests.swift in Sources */,
