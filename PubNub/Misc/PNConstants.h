@@ -19,10 +19,12 @@ static NSString * const kPNLibraryVersion = @"4.1.0";
 // Stores information about SDK codebase
 static NSString * const kPNCommit = @"75dd61c6066e70c8de9b36a572dc3224cb7d4aee";
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-static NSString * const kPNClientName = @"ObjC-iOS";
+#if TARGET_OS_WATCH
+    static NSString * const kPNClientName = @"ObjC-watchOS";
+#elif __IPHONE_OS_VERSION_MIN_REQUIRED
+    static NSString * const kPNClientName = @"ObjC-iOS";
 #elif __MAC_OS_X_VERSION_MIN_REQUIRED
-static NSString * const kPNClientName = @"ObjC-MacOS";
+    static NSString * const kPNClientName = @"ObjC-MacOS";
 #endif // __MAC_OS_X_VERSION_MIN_REQUIRED
 
 

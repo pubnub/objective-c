@@ -14,16 +14,16 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "79CBB03D1BD03D3F001FC34D"
+               BlueprintIdentifier = "791582051BD709C60084FC70"
                BuildableName = "PubNub.framework"
-               BlueprintName = "PubNub"
+               BlueprintName = "PubNub (iOS)"
                ReferencedContainer = "container:PubNub Framework.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
-      buildConfiguration = "Release"
+      buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
@@ -33,7 +33,7 @@
       </AdditionalOptions>
    </TestAction>
    <LaunchAction
-      buildConfiguration = "Release"
+      buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
@@ -45,9 +45,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "79CBB03D1BD03D3F001FC34D"
+            BlueprintIdentifier = "791582051BD709C60084FC70"
             BuildableName = "PubNub.framework"
-            BlueprintName = "PubNub"
+            BlueprintName = "PubNub (iOS)"
             ReferencedContainer = "container:PubNub Framework.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -63,15 +63,15 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "79CBB03D1BD03D3F001FC34D"
+            BlueprintIdentifier = "791582051BD709C60084FC70"
             BuildableName = "PubNub.framework"
-            BlueprintName = "PubNub"
+            BlueprintName = "PubNub (iOS)"
             ReferencedContainer = "container:PubNub Framework.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
-      buildConfiguration = "Release">
+      buildConfiguration = "Debug">
    </AnalyzeAction>
    <ArchiveAction
       buildConfiguration = "Release"

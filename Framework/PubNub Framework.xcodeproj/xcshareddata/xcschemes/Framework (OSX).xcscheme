@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "79CBB1D31BD042FB001FC34D"
-               BuildableName = "Universal Framework"
-               BlueprintName = "Universal Framework"
+               BlueprintIdentifier = "79CBB03D1BD03D3F001FC34D"
+               BuildableName = "PubNub.framework"
+               BlueprintName = "PubNub (OSX)"
                ReferencedContainer = "container:PubNub Framework.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,19 +45,12 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "79CBB1D31BD042FB001FC34D"
-            BuildableName = "Universal Framework"
-            BlueprintName = "Universal Framework"
+            BlueprintIdentifier = "79CBB03D1BD03D3F001FC34D"
+            BuildableName = "PubNub.framework"
+            BlueprintName = "PubNub (OSX)"
             ReferencedContainer = "container:PubNub Framework.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
-      <EnvironmentVariables>
-         <EnvironmentVariable
-            key = "BUILDING_UNIVERSAL_FRAMEWORK"
-            value = "1"
-            isEnabled = "YES">
-         </EnvironmentVariable>
-      </EnvironmentVariables>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -70,9 +63,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "79CBB1D31BD042FB001FC34D"
-            BuildableName = "Universal Framework"
-            BlueprintName = "Universal Framework"
+            BlueprintIdentifier = "79CBB03D1BD03D3F001FC34D"
+            BuildableName = "PubNub.framework"
+            BlueprintName = "PubNub (OSX)"
             ReferencedContainer = "container:PubNub Framework.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

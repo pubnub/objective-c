@@ -4,7 +4,9 @@
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "PNNetwork.h"
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
+#if TARGET_OS_WATCH
+    #import <WatchKit/WatchKit.h>
+#elif __IPHONE_OS_VERSION_MIN_REQUIRED
     #import <UIKit/UIKit.h>
 #endif // __IPHONE_OS_VERSION_MIN_REQUIRED
 #import "PNNetworkResponseSerializer.h"
@@ -779,6 +781,14 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
     }];
 }
 
+- (void)invalidate {
+    
+    OSSpinLockLock(&_lock);
+    [_session invalidateAndCancel];
+    _session = nil;
+    OSSpinLockUnlock(&self->_lock);
+}
+
 
 #pragma mark - Operation information
 
@@ -852,8 +862,9 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
 - (NSDictionary *)defaultHeaders {
     
     NSString *device = @"iPhone";
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
-    device = [[UIDevice currentDevice] model];
+#if TARGET_OS_WATCH
+    NSString *osVersion = [[WKInterfaceDevice currentDevice] systemVersion];
+#elif __IPHONE_OS_VERSION_MIN_REQUIRED
     NSString *osVersion = [[UIDevice currentDevice] systemVersion];
 #elif __MAC_OS_X_VERSION_MIN_REQUIRED
     NSOperatingSystemVersion version = [[NSProcessInfo processInfo]operatingSystemVersion];
@@ -876,11 +887,14 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
 
 -(void)URLSession:(NSURLSession *)session didBecomeInvalidWithError:(NSError *)error {
     
-    OSSpinLockLock(&_lock);
-    // Replace invalidated session with new one which can be used for next requests.
-    [self prepareSessionWithRequesrTimeout:self.requestTimeout
-                        maximumConnections:self.maximumConnections];
-    OSSpinLockUnlock(&_lock);
+    if (error) {
+        
+        OSSpinLockLock(&_lock);
+        // Replace invalidated session with new one which can be used for next requests.
+        [self prepareSessionWithRequesrTimeout:self.requestTimeout
+                            maximumConnections:self.maximumConnections];
+        OSSpinLockUnlock(&_lock);
+    }
 }
 
 - (void)handleData:(NSData *)data loadedWithTask:(NSURLSessionDataTask *)task

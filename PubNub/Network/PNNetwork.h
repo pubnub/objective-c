@@ -70,6 +70,12 @@
  */
 - (void)cancelAllRequests;
 
+/**
+ @brief  Invalidate network communication layer.
+ 
+ @since 4.1.1
+ */
+- (void)invalidate;
 
 ///------------------------------------------------
 /// @name Operation information

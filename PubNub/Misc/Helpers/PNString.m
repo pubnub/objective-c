@@ -17,6 +17,12 @@
 
 + (NSString *)percentEscapedString:(NSString *)string {
     
+    static NSCharacterSet *allowedCharacters;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        allowedCharacters = [NSCharacterSet characterSetWithCharactersInString:@":/?#[]@!$&’()*+,;="];
+    });
+    
     // Wrapping non-string object (it can be passed from dictionary and compiler at run-time won't
     // notify about different data types.
     if (![string respondsToSelector:@selector(length)]) {
@@ -25,10 +31,7 @@
     }
 
     // Escape unallowed characters
-    NSString *escapedString = CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(NULL,
-                                                (__bridge CFStringRef)string, NULL,
-                                                (__bridge CFStringRef)@":/?#[]@!$&’()*+,;=",
-                                                kCFStringEncodingUTF8));
+    NSString *escapedString = [string stringByAddingPercentEncodingWithAllowedCharacters:allowedCharacters];
     NSString *newlineEscapedString = [escapedString stringByReplacingOccurrencesOfString:@"%0A"
                                                                     withString:@"%5Cn"];
     newlineEscapedString = [newlineEscapedString stringByReplacingOccurrencesOfString:@"%0D"

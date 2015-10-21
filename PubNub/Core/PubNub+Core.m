@@ -4,7 +4,7 @@
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "PubNub+CorePrivate.h"
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
+#if __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
     #import <UIKit/UIKit.h>
 #endif // __IPHONE_OS_VERSION_MIN_REQUIRED
 #import "PubNub+SubscribePrivate.h"
@@ -223,7 +223,13 @@ void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
         _heartbeatManager = [PNHeartbeat heartbeatForClient:self];
         [self addListener:self];
         [self prepareReachability];
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
+#if TARGET_OS_WATCH
+        NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+        [notificationCenter addObserver:self selector:@selector(handleContextTransition:)
+                                   name:NSExtensionHostWillEnterForegroundNotification object:nil];
+        [notificationCenter addObserver:self selector:@selector(handleContextTransition:)
+                                   name:NSExtensionHostDidEnterBackgroundNotification object:nil];
+#elif __IPHONE_OS_VERSION_MIN_REQUIRED
         NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
         [notificationCenter addObserver:self selector:@selector(handleContextTransition:)
                                    name:UIApplicationWillEnterForegroundNotification object:nil];
@@ -495,8 +501,17 @@ void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
 #pragma mark - Handlers
 
 - (void)handleContextTransition:(NSNotification *)notification {
-    
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
+
+#if TARGET_OS_WATCH
+    if ([notification.name isEqualToString:NSExtensionHostDidEnterBackgroundNotification]) {
+        
+        DDLogClientInfo([[self class] ddLogLevel], @"<PubNub> Did enter background execution context.");
+    }
+    else if ([notification.name isEqualToString:NSExtensionHostWillEnterForegroundNotification]) {
+        
+        DDLogClientInfo([[self class] ddLogLevel], @"<PubNub> Will enter foreground execution context.");
+    }
+#elif __IPHONE_OS_VERSION_MIN_REQUIRED
     if ([notification.name isEqualToString:UIApplicationDidEnterBackgroundNotification]) {
         
         DDLogClientInfo([[self class] ddLogLevel], @"<PubNub> Did enter background execution context.");
@@ -524,7 +539,13 @@ void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
 
 - (void)dealloc {
     
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
+#if TARGET_OS_WATCH
+    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+    [notificationCenter removeObserver:self name:NSExtensionHostDidEnterBackgroundNotification
+                                object:nil];
+    [notificationCenter removeObserver:self name:NSExtensionHostWillEnterForegroundNotification
+                                object:nil];
+#elif __IPHONE_OS_VERSION_MIN_REQUIRED
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
     [notificationCenter removeObserver:self name:UIApplicationWillEnterForegroundNotification
                                 object:nil];
@@ -539,6 +560,10 @@ void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
     [notificationCenter removeObserver:self name:NSWorkspaceSessionDidBecomeActiveNotification
                                 object:nil];
 #endif
+    [_subscriptionNetwork invalidate];
+    _subscriptionNetwork = nil;
+    [_serviceNetwork invalidate];
+    _serviceNetwork = nil;
 }
 
 #pragma mark -
