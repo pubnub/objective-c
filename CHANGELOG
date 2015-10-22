@@ -1,3 +1,7 @@
+10-22-2015 - 0fbec04 - 4.1.1
+. fixed memory issues with PNNetwork instance
+. removed reprecated string encoding methods
+
 10-15-2015 - 75dd61c - 4.1.0
 . version bump because of backward compatible changes in public interface
 . added ability to build dynamic frameworks for iOS 8.0+

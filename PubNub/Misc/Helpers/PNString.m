@@ -35,11 +35,7 @@
         string = [NSString stringWithFormat:@"%@", string];
     }
     // Escape unallowed characters
-//    NSString *escapedString = [string stringByAddingPercentEncodingWithAllowedCharacters:allowedCharacters];
-    NSString *escapedString = CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(NULL,
-                                                                                        (__bridge CFStringRef)string, NULL,
-                                                                                        (__bridge CFStringRef)@":/?#[]@!$&’()*+,;=",
-                                                                                        kCFStringEncodingUTF8));
+    NSString *escapedString = [string stringByAddingPercentEncodingWithAllowedCharacters:allowedCharacters];
     NSString *newlineEscapedString = [escapedString stringByReplacingOccurrencesOfString:@"%0A"
                                                                     withString:@"%5Cn"];
     newlineEscapedString = [newlineEscapedString stringByReplacingOccurrencesOfString:@"%0D"

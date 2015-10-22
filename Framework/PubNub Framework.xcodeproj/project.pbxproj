@@ -1155,6 +1155,7 @@
 				79CBB1A71BD041F6001FC34D /* DDAbstractDatabaseLogger.m */,
 				79CBB1A81BD041F6001FC34D /* DDASLLogCapture.h */,
 				79CBB1A91BD041F6001FC34D /* DDASLLogCapture.m */,
+				79CBB1AF1BD041F6001FC34D /* DDLegacyMacros.h */,
 				79CBB1AC1BD041F6001FC34D /* DDAssertMacros.h */,
 				79CBB1B31BD041F6001FC34D /* DDLogMacros.h */,
 				79CBB1AA1BD041F6001FC34D /* DDASLLogger.h */,
@@ -1164,7 +1165,6 @@
 				79CBB1AD1BD041F6001FC34D /* DDFileLogger.h */,
 				79CBB1AE1BD041F6001FC34D /* DDFileLogger.m */,
 				79CBB1B21BD041F6001FC34D /* DDLog+LOGV.h */,
-				79CBB1AF1BD041F6001FC34D /* DDLegacyMacros.h */,
 				79CBB1B01BD041F6001FC34D /* DDLog.h */,
 				79CBB1B11BD041F6001FC34D /* DDLog.m */,
 			);
@@ -1672,7 +1672,7 @@
 		79CBB0351BD03D3F001FC34D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0700;
+				LastUpgradeCheck = 0710;
 				ORGANIZATIONNAME = PubNub;
 				TargetAttributes = {
 					79CBB03D1BD03D3F001FC34D = {
@@ -2386,6 +2386,7 @@
 		79CBB0471BD03D3F001FC34D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -2405,6 +2406,7 @@
 		79CBB0481BD03D3F001FC34D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -2424,6 +2426,7 @@
 		79CBB19B1BD03EB8001FC34D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -2444,6 +2447,7 @@
 		79CBB19C1BD03EB8001FC34D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
