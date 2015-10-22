@@ -9,58 +9,31 @@
          <BuildActionEntry
             buildForTesting = "YES"
             buildForRunning = "YES"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "51D889E01B66E0F8009127D0"
-               BuildableName = "iOS Swift Tests.xctest"
-               BlueprintName = "iOS Swift Tests"
-               ReferencedContainer = "container:PubNub Tests.xcodeproj">
+               BlueprintIdentifier = "791583571BD70E970084FC70"
+               BuildableName = "CocoaLumberjack.framework"
+               BlueprintName = "CocoaLumberjack (iOS)"
+               ReferencedContainer = "container:PubNub Framework.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
-      buildConfiguration = "Release"
+      buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "51D889E01B66E0F8009127D0"
-               BuildableName = "iOS Swift Tests.xctest"
-               BlueprintName = "iOS Swift Tests"
-               ReferencedContainer = "container:PubNub Tests.xcodeproj">
-            </BuildableReference>
-            <SkippedTests>
-               <Test
-                  Identifier = "PNBasicClientTestCase">
-               </Test>
-               <Test
-                  Identifier = "PNBasicSubscribeTestCase">
-               </Test>
-            </SkippedTests>
-         </TestableReference>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "51D889E01B66E0F8009127D0"
-            BuildableName = "iOS Swift Tests.xctest"
-            BlueprintName = "iOS Swift Tests"
-            ReferencedContainer = "container:PubNub Tests.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
    <LaunchAction
-      buildConfiguration = "Release"
+      buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
@@ -72,10 +45,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "51D889E01B66E0F8009127D0"
-            BuildableName = "iOS Swift Tests.xctest"
-            BlueprintName = "iOS Swift Tests"
-            ReferencedContainer = "container:PubNub Tests.xcodeproj">
+            BlueprintIdentifier = "791583571BD70E970084FC70"
+            BuildableName = "CocoaLumberjack.framework"
+            BlueprintName = "CocoaLumberjack (iOS)"
+            ReferencedContainer = "container:PubNub Framework.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -86,11 +59,19 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
-      debugDocumentVersioning = "YES"
-      enableTestabilityWhenProfilingTests = "No">
+      debugDocumentVersioning = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "791583571BD70E970084FC70"
+            BuildableName = "CocoaLumberjack.framework"
+            BlueprintName = "CocoaLumberjack (iOS)"
+            ReferencedContainer = "container:PubNub Framework.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
-      buildConfiguration = "Release">
+      buildConfiguration = "Debug">
    </AnalyzeAction>
    <ArchiveAction
       buildConfiguration = "Release"

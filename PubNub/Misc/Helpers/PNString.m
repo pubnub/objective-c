@@ -17,18 +17,29 @@
 
 + (NSString *)percentEscapedString:(NSString *)string {
     
+    static NSCharacterSet *allowedCharacters;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSMutableCharacterSet *chars = [[NSMutableCharacterSet URLPathAllowedCharacterSet] mutableCopy];
+        [chars formUnionWithCharacterSet:[NSCharacterSet URLQueryAllowedCharacterSet]];
+        [chars formUnionWithCharacterSet:[NSCharacterSet URLFragmentAllowedCharacterSet]];
+        [chars removeCharactersInString:@":/?#[]@!$&’()*+,;="];
+        
+        allowedCharacters = [chars copy];
+    });
+    
     // Wrapping non-string object (it can be passed from dictionary and compiler at run-time won't
     // notify about different data types.
     if (![string respondsToSelector:@selector(length)]) {
         
         string = [NSString stringWithFormat:@"%@", string];
     }
-
     // Escape unallowed characters
+//    NSString *escapedString = [string stringByAddingPercentEncodingWithAllowedCharacters:allowedCharacters];
     NSString *escapedString = CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(NULL,
-                                                (__bridge CFStringRef)string, NULL,
-                                                (__bridge CFStringRef)@":/?#[]@!$&’()*+,;=",
-                                                kCFStringEncodingUTF8));
+                                                                                        (__bridge CFStringRef)string, NULL,
+                                                                                        (__bridge CFStringRef)@":/?#[]@!$&’()*+,;=",
+                                                                                        kCFStringEncodingUTF8));
     NSString *newlineEscapedString = [escapedString stringByReplacingOccurrencesOfString:@"%0A"
                                                                     withString:@"%5Cn"];
     newlineEscapedString = [newlineEscapedString stringByReplacingOccurrencesOfString:@"%0D"

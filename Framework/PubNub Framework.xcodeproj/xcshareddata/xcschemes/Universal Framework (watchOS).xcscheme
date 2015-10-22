@@ -9,15 +9,15 @@
          <BuildActionEntry
             buildForTesting = "YES"
             buildForRunning = "YES"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "51D889E01B66E0F8009127D0"
-               BuildableName = "iOS Swift Tests.xctest"
-               BlueprintName = "iOS Swift Tests"
-               ReferencedContainer = "container:PubNub Tests.xcodeproj">
+               BlueprintIdentifier = "791582001BD705130084FC70"
+               BuildableName = "Universal Framework (watchOS)"
+               BlueprintName = "Universal Framework (watchOS)"
+               ReferencedContainer = "container:PubNub Framework.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -28,34 +28,7 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "51D889E01B66E0F8009127D0"
-               BuildableName = "iOS Swift Tests.xctest"
-               BlueprintName = "iOS Swift Tests"
-               ReferencedContainer = "container:PubNub Tests.xcodeproj">
-            </BuildableReference>
-            <SkippedTests>
-               <Test
-                  Identifier = "PNBasicClientTestCase">
-               </Test>
-               <Test
-                  Identifier = "PNBasicSubscribeTestCase">
-               </Test>
-            </SkippedTests>
-         </TestableReference>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "51D889E01B66E0F8009127D0"
-            BuildableName = "iOS Swift Tests.xctest"
-            BlueprintName = "iOS Swift Tests"
-            ReferencedContainer = "container:PubNub Tests.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -72,12 +45,19 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "51D889E01B66E0F8009127D0"
-            BuildableName = "iOS Swift Tests.xctest"
-            BlueprintName = "iOS Swift Tests"
-            ReferencedContainer = "container:PubNub Tests.xcodeproj">
+            BlueprintIdentifier = "791582001BD705130084FC70"
+            BuildableName = "Universal Framework (watchOS)"
+            BlueprintName = "Universal Framework (watchOS)"
+            ReferencedContainer = "container:PubNub Framework.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
+      <EnvironmentVariables>
+         <EnvironmentVariable
+            key = "BUILDING_UNIVERSAL_FRAMEWORK"
+            value = "1"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+      </EnvironmentVariables>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -86,8 +66,16 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
-      debugDocumentVersioning = "YES"
-      enableTestabilityWhenProfilingTests = "No">
+      debugDocumentVersioning = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "791582001BD705130084FC70"
+            BuildableName = "Universal Framework (watchOS)"
+            BlueprintName = "Universal Framework (watchOS)"
+            ReferencedContainer = "container:PubNub Framework.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Release">
