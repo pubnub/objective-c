@@ -46,7 +46,7 @@
                 withCompletion:^(NSInteger size) {
                     NSLog(@"%@", @(size));
                     
-                    XCTAssertEqualWithAccuracy(size, 386, 20, @"Size is different than expected %@ <> %@ +-20", @(size), @(386));
+                    XCTAssertEqualWithAccuracy(size, 376, 20, @"Size is different than expected %@ <> %@ +-20", @(size), @(376));
                     
                     [completionBlockExpectation fulfill];
                 }];
@@ -121,7 +121,7 @@
                 withCompletion:^(NSInteger size) {
                     NSLog(@"%@", @(size));
                     
-                    XCTAssertEqualWithAccuracy(size, 496, 20, @"Size is different than expected %@ <> %@ +- 20", @(size), @(496));
+                    XCTAssertEqualWithAccuracy(size, 486, 20, @"Size is different than expected %@ <> %@ +- 20", @(size), @(486));
                     
                     [completionBlockExpectation fulfill];
                 }];
@@ -148,7 +148,7 @@
                 withCompletion:^(NSInteger size) {
                     NSLog(@"%@", @(size));
                     
-                    XCTAssertEqualWithAccuracy(size, 496, 20, @"Size is different than expected %@ <> %@ +- 20", @(size), @(496));
+                    XCTAssertEqualWithAccuracy(size, 486, 20, @"Size is different than expected %@ <> %@ +- 20", @(size), @(486));
                     
                     [completionBlockExpectation fulfill];
                 }];
@@ -175,7 +175,7 @@
                 withCompletion:^(NSInteger size) {
                     NSLog(@"%@", @(size));
                     
-                    XCTAssertEqualWithAccuracy(size, 386, 20, @"Size is different than expected %@ <> %@ +-20", @(size), @(386));
+                    XCTAssertEqualWithAccuracy(size, 376, 20, @"Size is different than expected %@ <> %@ +-20", @(size), @(376));
                     
                     [completionBlockExpectation fulfill];
                 }];
@@ -202,7 +202,7 @@
                 withCompletion:^(NSInteger size) {
                     NSLog(@"%@", @(size));
                     
-                    XCTAssertEqualWithAccuracy(size, 386, 20, @"Size is different than expected %@ <> %@ +-20", @(size), @(386));
+                    XCTAssertEqualWithAccuracy(size, 376, 20, @"Size is different than expected %@ <> %@ +-20", @(size), @(376));
                     
                     [completionBlockExpectation fulfill];
                 }];
@@ -229,7 +229,7 @@
                 withCompletion:^(NSInteger size) {
                     NSLog(@"%@", @(size));
                     
-                    XCTAssertEqualWithAccuracy(size, 504, 20, @"Size is different than expected %@ <> %@ +- 20", @(size), @(504));
+                    XCTAssertEqualWithAccuracy(size, 494, 20, @"Size is different than expected %@ <> %@ +- 20", @(size), @(494));
                     
                     [completionBlockExpectation fulfill];
                 }];
@@ -257,7 +257,7 @@
                 withCompletion:^(NSInteger size) {
                     NSLog(@"%@", @(size));
                     
-                    XCTAssertEqualWithAccuracy(size, 8000, 500, @"Size is different than expected %@ <> %@ +-500", @(size), @(8000));
+                    XCTAssertEqualWithAccuracy(size, 8004, 500, @"Size is different than expected %@ <> %@ +-500", @(size), @(8004));
                     
                     [completionBlockExpectation fulfill];
                 }];
@@ -275,7 +275,6 @@
     NSString *channelName = [[NSUUID UUID] UUIDString];
     NSString *message = [NSString randomAlphanumericStringWithLength:100000];
     
-    
     XCTestExpectation *completionBlockExpectation = [self expectationWithDescription:@"Completion"];
     
     [self.client sizeOfMessage:message
@@ -285,7 +284,7 @@
                 withCompletion:^(NSInteger size) {
                     NSLog(@"%@", @(size));
                     
-                    XCTAssertEqualWithAccuracy(size, 75000, 5000, @"Size is different than expected %@ <> %@ +- 5000", @(size), @(75000));
+                    XCTAssertEqualWithAccuracy(size, 75684, 5000, @"Size is different than expected %@ <> %@ +- 5000", @(size), @(75684));
                     
                     [completionBlockExpectation fulfill];
                 }];
@@ -313,7 +312,7 @@
                 withCompletion:^(NSInteger size) {
                     NSLog(@"%@", @(size));
                     
-                    XCTAssertEqualWithAccuracy(size, 503, 20,@"Size is different than expected %@ <> %@ +-528", @(size), @(503));
+                    XCTAssertEqualWithAccuracy(size, 493, 20,@"Size is different than expected %@ <> %@ +-528", @(size), @(493));
                     
                     [completionBlockExpectation fulfill];
                 }];
@@ -340,7 +339,7 @@
                 withCompletion:^(NSInteger size) {
                     NSLog(@"%@", @(size));
                     
-                    XCTAssertEqualWithAccuracy(size, 513, 20, @"Size is different than expected %@ <> %@", @(size), @(513));
+                    XCTAssertEqualWithAccuracy(size, 503, 20, @"Size is different than expected %@ <> %@", @(size), @(503));
                     
                     [completionBlockExpectation fulfill];
                 }];
@@ -367,7 +366,7 @@
                 withCompletion:^(NSInteger size) {
                     NSLog(@"%@", @(size));
                     
-                    XCTAssertEqualWithAccuracy(size, 504, 20, @"Size is different than expected %@ <> %@ +- 20", @(size), @(504));
+                    XCTAssertEqualWithAccuracy(size, 494, 20, @"Size is different than expected %@ <> %@ +- 20", @(size), @(494));
                     
                     [completionBlockExpectation fulfill];
                 }];
@@ -394,7 +393,7 @@
                 withCompletion:^(NSInteger size) {
                     NSLog(@"%@", @(size));
                     
-                    XCTAssertEqualWithAccuracy(size, 519, 20, @"Size is different than expected %@ <> %@ +-20", @(size), @(519));
+                    XCTAssertEqualWithAccuracy(size, 509, 20, @"Size is different than expected %@ <> %@ +-20", @(size), @(509));
                     
                     [completionBlockExpectation fulfill];
                 }];

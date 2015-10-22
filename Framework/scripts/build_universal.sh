@@ -1,8 +1,9 @@
 #!/bin/sh
 
 set -e
+
 FRAMEWORKS_PATH="${BUILD_DIR}/Frameworks"
-FRAMEWORK_NAME="PubNub"
+[[ "${TARGET_NAME}" =~ (iOS|watchOS) ]] && FRAMEWORK_NAME="PubNub (${BASH_REMATCH[1]})"
 PRODUCTS_PATH="${SRCROOT}/Products"
 
 # Clean up from previous builds
@@ -13,22 +14,27 @@ if [[ -d "${PRODUCTS_PATH}" ]]; then
     rm -R "${PRODUCTS_PATH}"
 fi
 
-# Build library with dependencies for iPhoneOS (ARM binary slice)
-echo "Building ${FRAMEWORK_NAME} for iPhoneOS..."
-xcrun --no-cache xcodebuild -project "${PROJECT_FILE_PATH}" -target "${FRAMEWORK_NAME}" -configuration "${CONFIGURATION}" -sdk iphoneos BUILD_DIR="${BUILD_DIR}" OBJROOT="${OBJROOT}" BUILD_ROOT="${BUILD_ROOT}" SYMROOT="${SYMROOT}" ONLY_ACTIVE_ARCH=NO $ACTION > /dev/null
-echo "Built ${FRAMEWORK_NAME} for iPhoneOS"
-
-# Build library with dependencies for Simulator (x86 binary slice)
-echo "Building ${FRAMEWORK_NAME} for Simulator..."
-xcrun --no-cache xcodebuild -project "${PROJECT_FILE_PATH}" -target "${FRAMEWORK_NAME}" -configuration "${CONFIGURATION}" -sdk iphonesimulator BUILD_DIR="${BUILD_DIR}" OBJROOT="${OBJROOT}" BUILD_ROOT="${BUILD_ROOT}" SYMROOT="${SYMROOT}" ONLY_ACTIVE_ARCH=NO $ACTION > /dev/null
-echo "Built ${FRAMEWORK_NAME} for Simulator..."
+PLATFORMS=($SUPPORTED_PLATFORMS)
+# Compile framework for all required platforms.
+for sdk in "${PLATFORMS[@]}"
+do
+    echo "Building ${FRAMEWORK_NAME} for ${sdk}..."
+    xcrun --no-cache xcodebuild -project "${PROJECT_FILE_PATH}" -target "${FRAMEWORK_NAME}" -configuration "${CONFIGURATION}" -sdk "${sdk}" BUILD_DIR="${BUILD_DIR}" OBJROOT="${OBJROOT}" BUILD_ROOT="${BUILD_ROOT}" SYMROOT="${SYMROOT}" ONLY_ACTIVE_ARCH=NO $ACTION > /dev/null
+    echo "Built ${FRAMEWORK_NAME} for ${sdk}"
+done
 
 # Building universal binary
 echo "Building universal framework..."
 echo "Artifacts stored in: ${BUILD_DIR}"
 BUILT_FRAMEWORKS=("CocoaLumberjack" "PubNub")
-IPHONE_OS_ARTIFACTS_PATH="${BUILD_DIR}/${CONFIGURATION}-iphoneos"
-SIMULATOR_ARTIFACTS_PATH="${BUILD_DIR}/${CONFIGURATION}-iphonesimulator"
+for sdk in "${PLATFORMS[@]}"
+do
+    if [[ $sdk =~ (simulator) ]]; then
+        SIMULATOR_ARTIFACTS_PATH="${BUILD_DIR}/${CONFIGURATION}-${sdk}"
+    else
+        OS_ARTIFACTS_PATH="${BUILD_DIR}/${CONFIGURATION}-${sdk}"
+    fi
+done
 
 ## Prepare folders
 mkdir -p "${FRAMEWORKS_PATH}"
@@ -38,7 +44,7 @@ mkdir -p "${PRODUCTS_PATH}"
 for frameworkName in "${BUILT_FRAMEWORKS[@]}"
 do
     FRAMEWORK_BUNDLE_NAME="${frameworkName}.framework"
-    FRAMEWORK_ARM_BUILD_PATH="${IPHONE_OS_ARTIFACTS_PATH}/${FRAMEWORK_BUNDLE_NAME}"
+    FRAMEWORK_ARM_BUILD_PATH="${OS_ARTIFACTS_PATH}/${FRAMEWORK_BUNDLE_NAME}"
     FRAMEWORK_SIM_BUILD_PATH="${SIMULATOR_ARTIFACTS_PATH}/${FRAMEWORK_BUNDLE_NAME}"
     FRAMEWORK_DESTINATION_PATH="${FRAMEWORKS_PATH}/${FRAMEWORK_BUNDLE_NAME}"
     cp -r "${FRAMEWORK_ARM_BUILD_PATH}" "${FRAMEWORK_DESTINATION_PATH}"
