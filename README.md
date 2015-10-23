@@ -164,8 +164,6 @@ For any PubNub operation you call, you will be returned either a Result, or a St
 }];
 ```
 
-Where **myResultHandler** is a callback with history results, and **myStatusHandler** is callback for **everything else**.
-
 When a result comes in, we can inspect the data attribute on the result object for the messages, start, and end attributes.
 
 When a status comes in, to determine what everything else can be, we inspect attributes on the status object, including:
