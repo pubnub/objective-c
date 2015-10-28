@@ -228,6 +228,301 @@ class PNPublishTests: PNBasicClientTestCase {
             XCTAssertNil(error, "Encountered error with publish call")
         })
     }
+    
+    func testPublishWithMobilePushPayloadCompressed() {
+        let expectation = self.expectationWithDescription("network")
+        
+        let message = ["Hello":"world"]
+        let mobilePayload = ["apns":["alert":"Hello from PubNub"]]
+        
+        self.client.publish(message,
+            toChannel: self.publishTestsChannelName,
+            mobilePushPayload: mobilePayload,
+            compressed: true) { (status: PNPublishStatus!) -> Void in
+                XCTAssertNotNil(status)
+                XCTAssertEqual(status.category, PNStatusCategory.PNAcknowledgmentCategory)
+                XCTAssertEqual(status.operation, PNOperationType.PublishOperation)
+                XCTAssertEqual(status.statusCode, 200)
+                XCTAssertFalse(status.error)
+                XCTAssertEqual(status.data.information, "Sent")
+                XCTAssertEqual(status.data.timetoken, NSDecimalNumber(string: "14371463879074307"))
+                
+                expectation.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(5, handler: { (error) -> Void in
+            XCTAssertNil(error, "Encountered error with publish call")
+        })
+    }
+    
+    func testPublishWithNilMobilePushPayloadCompressed() {
+        let expectation = self.expectationWithDescription("network")
+        
+        let message = ["Hello":"world"]
+        
+        self.client.publish(message,
+            toChannel: self.publishTestsChannelName,
+            mobilePushPayload: nil,
+            compressed: true) { (status: PNPublishStatus!) -> Void in
+                XCTAssertNotNil(status)
+                XCTAssertEqual(status.category, PNStatusCategory.PNAcknowledgmentCategory)
+                XCTAssertEqual(status.operation, PNOperationType.PublishOperation)
+                XCTAssertEqual(status.statusCode, 200)
+                XCTAssertFalse(status.error)
+                XCTAssertEqual(status.data.information, "Sent")
+                XCTAssertEqual(status.data.timetoken, NSDecimalNumber(string: "14371463951386741"))
+                
+                expectation.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(5, handler: { (error) -> Void in
+            XCTAssertNil(error, "Encountered error with publish call")
+        })
+    }
+
+    func testNilPublishWithMobilePushPayloadCompressed() {
+        let expectation = self.expectationWithDescription("network")
+        
+        let mobilePayload = ["apns":["alert":"Hello from PubNub"]]
+        
+        self.client.publish(nil,
+            toChannel: self.publishTestsChannelName,
+            mobilePushPayload: mobilePayload,
+            compressed: true) { (status: PNPublishStatus!) -> Void in
+                XCTAssertNotNil(status)
+                XCTAssertEqual(status.category, PNStatusCategory.PNAcknowledgmentCategory)
+                XCTAssertEqual(status.operation, PNOperationType.PublishOperation)
+                XCTAssertEqual(status.statusCode, 200)
+                XCTAssertFalse(status.error)
+                XCTAssertEqual(status.data.information, "Sent")
+                XCTAssertEqual(status.data.timetoken, NSDecimalNumber(string: "14371463989135612"))
+                
+                expectation.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(5, handler: { (error) -> Void in
+            XCTAssertNil(error, "Encountered error with publish call")
+        })
+    }
+    
+    func testNilPublishWithNilMobilePushPayloadCompressed() {
+        let expectation = self.expectationWithDescription("network")
+        
+        self.client.publish(nil,
+            toChannel: self.publishTestsChannelName,
+            mobilePushPayload: nil,
+            compressed: true) { (status: PNPublishStatus!) -> Void in
+                XCTAssertNotNil(status)
+                XCTAssertTrue(status.category == .PNBadRequestCategory)
+                XCTAssertTrue(status.operation == .PublishOperation)
+                XCTAssertEqual(status.statusCode, 400)
+                XCTAssertTrue(status.error)
+                XCTAssertNil(status.data)
+                
+                expectation.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(5, handler: { (error) -> Void in
+            XCTAssertNil(error, "Encountered error with publish call")
+        })
+    }
+    
+    func testPublishWithMobilePushPayloadStoredInHistory() {
+        let expectation = self.expectationWithDescription("network")
+        
+        let message = ["Hello":"world"]
+        let mobilePayload = ["apns":["alert":"Hello from PubNub"]]
+        
+        self.client.publish(message,
+            toChannel: self.publishTestsChannelName,
+            mobilePushPayload: mobilePayload,
+            storeInHistory: false) { (status: PNPublishStatus!) -> Void in
+                XCTAssertNotNil(status)
+                XCTAssertEqual(status.category, PNStatusCategory.PNAcknowledgmentCategory)
+                XCTAssertEqual(status.operation, PNOperationType.PublishOperation)
+                XCTAssertEqual(status.statusCode, 200)
+                XCTAssertFalse(status.error)
+                XCTAssertEqual(status.data.information, "Sent")
+                XCTAssertEqual(status.data.timetoken, NSDecimalNumber(string: "14371496138044862"))
+                
+                expectation.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(5, handler: { (error) -> Void in
+            XCTAssertNil(error, "Encountered error with publish call")
+        })
+    }
+    
+    func testPublishWithNilMobilePushPayloadStoredInHistory() {
+        let expectation = self.expectationWithDescription("network")
+        
+        let message = ["Hello":"world"]
+        
+        self.client.publish(message,
+            toChannel: self.publishTestsChannelName,
+            mobilePushPayload: nil,
+            storeInHistory: false) { (status: PNPublishStatus!) -> Void in
+                XCTAssertNotNil(status)
+                XCTAssertEqual(status.category, PNStatusCategory.PNAcknowledgmentCategory)
+                XCTAssertEqual(status.operation, PNOperationType.PublishOperation)
+                XCTAssertEqual(status.statusCode, 200)
+                XCTAssertFalse(status.error)
+                XCTAssertEqual(status.data.information, "Sent")
+                XCTAssertEqual(status.data.timetoken, NSDecimalNumber(string: "14371497421394301"))
+                
+                expectation.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(5, handler: { (error) -> Void in
+            XCTAssertNil(error, "Encountered error with publish call")
+        })
+    }
+    
+    func testNilPublishWithMobilePushPayloadStoredInHistory() {
+        let expectation = self.expectationWithDescription("network")
+        
+        let mobilePayload = ["apns":["alert":"Hello from PubNub"]]
+        
+        self.client.publish(nil,
+            toChannel: self.publishTestsChannelName,
+            mobilePushPayload: mobilePayload,
+            storeInHistory: false) { (status: PNPublishStatus!) -> Void in
+                XCTAssertNotNil(status)
+                XCTAssertEqual(status.category, PNStatusCategory.PNAcknowledgmentCategory)
+                XCTAssertEqual(status.operation, PNOperationType.PublishOperation)
+                XCTAssertEqual(status.statusCode, 200)
+                XCTAssertFalse(status.error)
+                XCTAssertEqual(status.data.information, "Sent")
+                XCTAssertEqual(status.data.timetoken, NSDecimalNumber(string: "14371497515229634"))
+                
+                expectation.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(5, handler: { (error) -> Void in
+            XCTAssertNil(error, "Encountered error with publish call")
+        })
+    }
+    
+    func testNilPublishWithNilMobilePushPayloadStoredInHistory() {
+        let expectation = self.expectationWithDescription("network")
+        
+        self.client.publish(nil,
+            toChannel: self.publishTestsChannelName,
+            mobilePushPayload: nil,
+            storeInHistory: false) { (status: PNPublishStatus!) -> Void in
+                XCTAssertNotNil(status)
+                XCTAssertTrue(status.category == .PNBadRequestCategory)
+                XCTAssertTrue(status.operation == .PublishOperation)
+                XCTAssertEqual(status.statusCode, 400)
+                XCTAssertTrue(status.error)
+                XCTAssertNil(status.data)
+                
+                expectation.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(5, handler: { (error) -> Void in
+            XCTAssertNil(error, "Encountered error with publish call")
+        })
+    }
+
+    func testPublishWithMobilePushPayloadStoredInHistoryCompressed() {
+        let expectation = self.expectationWithDescription("network")
+        
+        let message = ["Hello":"world"]
+        let mobilePayload = ["apns":["alert":"Hello from PubNub"]]
+        
+        self.client.publish(message,
+            toChannel: self.publishTestsChannelName,
+            mobilePushPayload: mobilePayload,
+            storeInHistory: false, compressed: true) { (status: PNPublishStatus!) -> Void in
+                XCTAssertNotNil(status)
+                XCTAssertEqual(status.category, PNStatusCategory.PNAcknowledgmentCategory)
+                XCTAssertEqual(status.operation, PNOperationType.PublishOperation)
+                XCTAssertEqual(status.statusCode, 200)
+                XCTAssertFalse(status.error)
+                XCTAssertEqual(status.data.information, "Sent")
+                XCTAssertEqual(status.data.timetoken, NSDecimalNumber(string: "14371507370857331"))
+                
+                expectation.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(5, handler: { (error) -> Void in
+            XCTAssertNil(error, "Encountered error with publish call")
+        })
+    }
+    
+    func testPublishWithNilMobilePushPayloadStoredInHistoryCompressed() {
+        let expectation = self.expectationWithDescription("network")
+        
+        let message = ["Hello":"world"]
+        
+        self.client.publish(message,
+            toChannel: self.publishTestsChannelName,
+            mobilePushPayload: nil,
+            storeInHistory: false, compressed: true) { (status: PNPublishStatus!) -> Void in
+                XCTAssertNotNil(status)
+                XCTAssertEqual(status.category, PNStatusCategory.PNAcknowledgmentCategory)
+                XCTAssertEqual(status.operation, PNOperationType.PublishOperation)
+                XCTAssertEqual(status.statusCode, 200)
+                XCTAssertFalse(status.error)
+                XCTAssertEqual(status.data.information, "Sent")
+                XCTAssertEqual(status.data.timetoken, NSDecimalNumber(string: "14371509145706320"))
+                
+                expectation.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(5, handler: { (error) -> Void in
+            XCTAssertNil(error, "Encountered error with publish call")
+        })
+    }
+
+    func testNilPublishWithMobilePushPayloadStoredInHistoryCompressed() {
+        let expectation = self.expectationWithDescription("network")
+        
+        let mobilePayload = ["apns":["alert":"Hello from PubNub"]]
+        
+        self.client.publish(nil,
+            toChannel: self.publishTestsChannelName,
+            mobilePushPayload: mobilePayload,
+            storeInHistory: false, compressed: true) { (status: PNPublishStatus!) -> Void in
+                XCTAssertNotNil(status)
+                XCTAssertEqual(status.category, PNStatusCategory.PNAcknowledgmentCategory)
+                XCTAssertEqual(status.operation, PNOperationType.PublishOperation)
+                XCTAssertEqual(status.statusCode, 200)
+                XCTAssertFalse(status.error)
+                XCTAssertEqual(status.data.information, "Sent")
+                XCTAssertEqual(status.data.timetoken, NSDecimalNumber(string: "14371509238551357"))
+                
+                expectation.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(5, handler: { (error) -> Void in
+            XCTAssertNil(error, "Encountered error with publish call")
+        })
+    }
+    
+    func testNilPublishWithNilMobilePushPayloadStoredInHistoryCompressed() {
+        let expectation = self.expectationWithDescription("network")
+        
+        self.client.publish(nil,
+            toChannel: self.publishTestsChannelName,
+            mobilePushPayload: nil,
+            storeInHistory: false, compressed: true) { (status: PNPublishStatus!) -> Void in
+                XCTAssertNotNil(status)
+                XCTAssertTrue(status.category == .PNBadRequestCategory)
+                XCTAssertTrue(status.operation == .PublishOperation)
+                XCTAssertEqual(status.statusCode, 400)
+                XCTAssertTrue(status.error)
+                XCTAssertNil(status.data)
+                
+                expectation.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(5, handler: { (error) -> Void in
+            XCTAssertNil(error, "Encountered error with publish call")
+        })
+    }
+
 }
 
 extension PNPublishTests {
