@@ -6,8 +6,6 @@
 //
 //
 
-#import <UIKit/UIKit.h>
-#import <XCTest/XCTest.h>
 #import <PubNub/PubNub.h>
 
 #import "PNBasicSubscribeTestCase.h"
