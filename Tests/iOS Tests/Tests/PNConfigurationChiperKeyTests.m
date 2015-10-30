@@ -8,7 +8,6 @@
 #import <PubNub/PubNub.h>
 
 #import "PNConfigurationChiperKeyTests.h"
-#import <XCTest/XCTest.h>
 #import "PNBasicClientTestCase.h"
 
 #import "NSArray+PNTest.h"
