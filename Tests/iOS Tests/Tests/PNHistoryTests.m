@@ -51,9 +51,7 @@
                                       @"*****.......... 1255 - 2015-06-30 13:30:58",
                                       @"******......... 1256 - 2015-06-30 13:31:00"
                                       ];
-        NSLog(@"result: %@", result.data.messages);
         XCTAssertEqualObjects(result.data.messages, expectedMessages);
-        NSLog(@"status: %@", status);
         [historyExpectation fulfill];
     }];
     [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
@@ -128,9 +126,7 @@
                                         @"timetoken" : @14356962609521455
                                         }
                                       ];
-        NSLog(@"result: %@", result.data.messages);
         XCTAssertEqualObjects(result.data.messages, expectedMessages);
-        NSLog(@"status: %@", status);
         [historyExpectation fulfill];
     }];
     [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
@@ -155,9 +151,7 @@
                                       @"**********..... 1245 - 2015-06-30 13:30:37",
                                       @"***********.... 1246 - 2015-06-30 13:30:39"
                                       ];
-        NSLog(@"result: %@", result.data.messages);
         XCTAssertEqualObjects(result.data.messages, expectedMessages);
-        NSLog(@"status: %@", status);
         [historyExpectation fulfill];
     }];
     [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {

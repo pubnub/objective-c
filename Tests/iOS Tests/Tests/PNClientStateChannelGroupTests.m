@@ -126,10 +126,8 @@ static NSString * const kPNChannelGroupTestsName = @"PNClientStateChannelGroupTe
         XCTAssertEqual(status.operation, PNSetStateOperation);
         XCTAssertEqual(status.category, PNBadRequestCategory);
         XCTAssertEqual(status.statusCode, 400);
-//        XCTAssertNil(status.data.state);
-        // TOOD: there should be a property for this?
-//        XCTAssertEqualObjects(status.data, @"No valid channels specified");
-        NSLog(@"Information %@", status.errorData.information);
+        XCTAssertNil(status.data.state);
+        XCTAssertEqualObjects(status.errorData.information, @"No valid channels specified");
         [stateExpectation fulfill];
     }];
     [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
