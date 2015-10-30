@@ -24,7 +24,7 @@ target 'iOS ObjC Tests', :exclusive => true do
 end
 
 target 'OSX ObjC Tests', :exclusive => true do
-  platform :osx, '10.8'
+  platform :osx, '10.9'
   xcodeproj 'Tests/PubNub Tests.xcodeproj'
   begin  
     gem 'slather'

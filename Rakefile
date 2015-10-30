@@ -45,7 +45,7 @@ end
 
 def is_mavericks_or_above
   osx_version = `sw_vers -productVersion`.chomp
-  Gem::Version.new(osx_version) >= Gem::Version.new('10.8')
+  Gem::Version.new(osx_version) >= Gem::Version.new('10.9')
 end
 
 def tests_failed(platform)

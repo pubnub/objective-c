@@ -23,7 +23,7 @@ Pod::Spec.new do |spec|
     }
 
     spec.ios.deployment_target = '7.0'
-    spec.osx.deployment_target = '10.8'
+    spec.osx.deployment_target = '10.9'
     spec.requires_arc = true
 
     spec.subspec 'Core' do |core|
