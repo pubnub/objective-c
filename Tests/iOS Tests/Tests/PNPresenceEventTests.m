@@ -5,8 +5,6 @@
 //  Created by Vadim Osovets on 8/27/15.
 //
 //
-#import <UIKit/UIKit.h>
-#import <XCTest/XCTest.h>
 
 #import "PNBasicSubscribeTestCase.h"
 
