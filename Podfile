@@ -18,6 +18,7 @@ target 'iOS ObjC Tests', :exclusive => true do
   else
     plugin 'slather'
   end
+  pod 'BlocksKit', '~> 2.2.5'
   pod "JSZVCR", :git => 'https://github.com/jzucker2/JSZVCR.git', :branch => 'mac-osx'
   pod "PubNub", :path => "."
 end
@@ -32,6 +33,7 @@ target 'OSX ObjC Tests', :exclusive => true do
   else
     plugin 'slather'
   end
+  pod 'BlocksKit', '~> 2.2.5'
   pod "JSZVCR", :git => 'https://github.com/jzucker2/JSZVCR.git', :branch => 'mac-osx'
   pod "PubNub", :path => "."
 end

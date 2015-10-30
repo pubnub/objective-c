@@ -7,6 +7,7 @@
 //
 #import <PubNub/PubNub.h>
 
+#import "PNDeviceIndependentMatcher.h"
 #import "PNBasicClientTestCase.h"
 
 @implementation PNBasicClientTestCase
@@ -30,7 +31,7 @@
 }
 
 - (Class<JSZVCRMatching>)matcherClass {
-    return [JSZVCRUnorderedQueryMatcher class];
+    return [PNDeviceIndependentMatcher class];
 }
 
 
