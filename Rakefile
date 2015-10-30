@@ -22,14 +22,14 @@ namespace :test do
 
   desc "Run the PubNub Tests for Mac OS X"
   task :osx => :prepare do
-    run_tests('OSX Tests (ObjC)', 'macosx', ['platform=OS X,arch=x86_64'])
+    run_tests('OSX Tests (ObjC)', 'macosx', 'platform=OS X,arch=x86_64')
     tests_failed('OSX') unless $?.success?
   end
 end
 
 desc "Run the PubNub Tests for iOS & Mac OS X"
 task :test do
-  #Rake::Task['test:ios'].invoke
+  # Rake::Task['test:ios'].invoke
   Rake::Task['test:osx'].invoke if is_mavericks_or_above
 end
 
