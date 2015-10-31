@@ -43,7 +43,7 @@ Pod::Spec.new do |spec|
     end
 
     spec.library   = 'z'
-    spec.dependency 'CocoaLumberjack', '2.0.0'
+    spec.dependency 'CocoaLumberjack', '2.2.0'
     spec.default_subspec = 'Core'
 
     spec.license = { 
