@@ -40,8 +40,6 @@
 		511725DF1BE92F7B008F069E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		511725E21BE92F7B008F069E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		511725E41BE92F7B008F069E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		511725ED1BE92F7B008F069E /* PubNub_Mac_ExampleTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PubNub_Mac_ExampleTests.m; sourceTree = "<group>"; };
-		511725EF1BE92F7B008F069E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6003F58A195388D20070C39A /* PubNub_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PubNub_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F58D195388D20070C39A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6003F58F195388D20070C39A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -125,22 +123,12 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		511725EC1BE92F7B008F069E /* PubNub Mac ExampleTests */ = {
-			isa = PBXGroup;
-			children = (
-				511725ED1BE92F7B008F069E /* PubNub_Mac_ExampleTests.m */,
-				511725EF1BE92F7B008F069E /* Info.plist */,
-			);
-			path = "PubNub Mac ExampleTests";
-			sourceTree = "<group>";
-		};
 		6003F581195388D10070C39A = {
 			isa = PBXGroup;
 			children = (
 				60FF7A9C1954A5C5007DD14C /* Podspec Metadata */,
 				6003F593195388D20070C39A /* Example for PubNub */,
 				511725D51BE92F7B008F069E /* PubNub Mac Example */,
-				511725EC1BE92F7B008F069E /* PubNub Mac ExampleTests */,
 				6003F58C195388D20070C39A /* Frameworks */,
 				6003F58B195388D20070C39A /* Products */,
 				43691E0D2B4205A7D095403C /* Pods */,
