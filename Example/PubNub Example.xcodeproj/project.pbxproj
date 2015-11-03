@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		511725D81BE92F7B008F069E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 511725D71BE92F7B008F069E /* AppDelegate.m */; };
+		511725DB1BE92F7B008F069E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 511725DA1BE92F7B008F069E /* main.m */; };
+		511725DE1BE92F7B008F069E /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 511725DD1BE92F7B008F069E /* ViewController.m */; };
+		511725E01BE92F7B008F069E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 511725DF1BE92F7B008F069E /* Assets.xcassets */; };
+		511725E31BE92F7B008F069E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 511725E11BE92F7B008F069E /* Main.storyboard */; };
+		511725EE1BE92F7B008F069E /* PubNub_Mac_ExampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 511725ED1BE92F7B008F069E /* PubNub_Mac_ExampleTests.m */; };
 		6003F58E195388D20070C39A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58D195388D20070C39A /* Foundation.framework */; };
 		6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58F195388D20070C39A /* CoreGraphics.framework */; };
 		6003F592195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
@@ -22,8 +28,30 @@
 		FB0ABBB61D0DD4E92AA8732C /* libPods-PubNub_Example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 86E9B5BCC499C2D8CDB97CAD /* libPods-PubNub_Example.a */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		511725EA1BE92F7B008F069E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6003F582195388D10070C39A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 511725D31BE92F7B008F069E;
+			remoteInfo = "PubNub Mac Example";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		2F43D99DA7A03DC3BD0A85CE /* Pods-PubNub_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PubNub_Example.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-PubNub_Example/Pods-PubNub_Example.debug.xcconfig"; sourceTree = "<group>"; };
+		511725D41BE92F7B008F069E /* PubNub Mac Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "PubNub Mac Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		511725D61BE92F7B008F069E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		511725D71BE92F7B008F069E /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		511725DA1BE92F7B008F069E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		511725DC1BE92F7B008F069E /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		511725DD1BE92F7B008F069E /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		511725DF1BE92F7B008F069E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		511725E21BE92F7B008F069E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		511725E41BE92F7B008F069E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		511725E91BE92F7B008F069E /* PubNub Mac ExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "PubNub Mac ExampleTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		511725ED1BE92F7B008F069E /* PubNub_Mac_ExampleTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PubNub_Mac_ExampleTests.m; sourceTree = "<group>"; };
+		511725EF1BE92F7B008F069E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6003F58A195388D20070C39A /* PubNub_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PubNub_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F58D195388D20070C39A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6003F58F195388D20070C39A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -49,6 +77,20 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		511725D11BE92F7B008F069E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		511725E61BE92F7B008F069E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6003F587195388D20070C39A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -72,11 +114,45 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		511725D51BE92F7B008F069E /* PubNub Mac Example */ = {
+			isa = PBXGroup;
+			children = (
+				511725D61BE92F7B008F069E /* AppDelegate.h */,
+				511725D71BE92F7B008F069E /* AppDelegate.m */,
+				511725DC1BE92F7B008F069E /* ViewController.h */,
+				511725DD1BE92F7B008F069E /* ViewController.m */,
+				511725DF1BE92F7B008F069E /* Assets.xcassets */,
+				511725E11BE92F7B008F069E /* Main.storyboard */,
+				511725E41BE92F7B008F069E /* Info.plist */,
+				511725D91BE92F7B008F069E /* Supporting Files */,
+			);
+			path = "PubNub Mac Example";
+			sourceTree = "<group>";
+		};
+		511725D91BE92F7B008F069E /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				511725DA1BE92F7B008F069E /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		511725EC1BE92F7B008F069E /* PubNub Mac ExampleTests */ = {
+			isa = PBXGroup;
+			children = (
+				511725ED1BE92F7B008F069E /* PubNub_Mac_ExampleTests.m */,
+				511725EF1BE92F7B008F069E /* Info.plist */,
+			);
+			path = "PubNub Mac ExampleTests";
+			sourceTree = "<group>";
+		};
 		6003F581195388D10070C39A = {
 			isa = PBXGroup;
 			children = (
 				60FF7A9C1954A5C5007DD14C /* Podspec Metadata */,
 				6003F593195388D20070C39A /* Example for PubNub */,
+				511725D51BE92F7B008F069E /* PubNub Mac Example */,
+				511725EC1BE92F7B008F069E /* PubNub Mac ExampleTests */,
 				6003F58C195388D20070C39A /* Frameworks */,
 				6003F58B195388D20070C39A /* Products */,
 				43691E0D2B4205A7D095403C /* Pods */,
@@ -87,6 +163,8 @@
 			isa = PBXGroup;
 			children = (
 				6003F58A195388D20070C39A /* PubNub_Example.app */,
+				511725D41BE92F7B008F069E /* PubNub Mac Example.app */,
+				511725E91BE92F7B008F069E /* PubNub Mac ExampleTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -144,6 +222,41 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		511725D31BE92F7B008F069E /* PubNub Mac Example */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 511725F41BE92F7B008F069E /* Build configuration list for PBXNativeTarget "PubNub Mac Example" */;
+			buildPhases = (
+				511725D01BE92F7B008F069E /* Sources */,
+				511725D11BE92F7B008F069E /* Frameworks */,
+				511725D21BE92F7B008F069E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "PubNub Mac Example";
+			productName = "PubNub Mac Example";
+			productReference = 511725D41BE92F7B008F069E /* PubNub Mac Example.app */;
+			productType = "com.apple.product-type.application";
+		};
+		511725E81BE92F7B008F069E /* PubNub Mac ExampleTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 511725F51BE92F7B008F069E /* Build configuration list for PBXNativeTarget "PubNub Mac ExampleTests" */;
+			buildPhases = (
+				511725E51BE92F7B008F069E /* Sources */,
+				511725E61BE92F7B008F069E /* Frameworks */,
+				511725E71BE92F7B008F069E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				511725EB1BE92F7B008F069E /* PBXTargetDependency */,
+			);
+			name = "PubNub Mac ExampleTests";
+			productName = "PubNub Mac ExampleTests";
+			productReference = 511725E91BE92F7B008F069E /* PubNub Mac ExampleTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		6003F589195388D20070C39A /* PubNub_Example */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6003F5BF195388D20070C39A /* Build configuration list for PBXNativeTarget "PubNub_Example" */;
@@ -173,6 +286,15 @@
 				CLASSPREFIX = PN;
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Jordan Zucker";
+				TargetAttributes = {
+					511725D31BE92F7B008F069E = {
+						CreatedOnToolsVersion = 7.1;
+					};
+					511725E81BE92F7B008F069E = {
+						CreatedOnToolsVersion = 7.1;
+						TestTargetID = 511725D31BE92F7B008F069E;
+					};
+				};
 			};
 			buildConfigurationList = 6003F585195388D10070C39A /* Build configuration list for PBXProject "PubNub Example" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -188,11 +310,29 @@
 			projectRoot = "";
 			targets = (
 				6003F589195388D20070C39A /* PubNub_Example */,
+				511725D31BE92F7B008F069E /* PubNub Mac Example */,
+				511725E81BE92F7B008F069E /* PubNub Mac ExampleTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		511725D21BE92F7B008F069E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				511725E01BE92F7B008F069E /* Assets.xcassets in Resources */,
+				511725E31BE92F7B008F069E /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		511725E71BE92F7B008F069E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6003F588195388D20070C39A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -257,6 +397,24 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		511725D01BE92F7B008F069E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				511725DE1BE92F7B008F069E /* ViewController.m in Sources */,
+				511725DB1BE92F7B008F069E /* main.m in Sources */,
+				511725D81BE92F7B008F069E /* AppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		511725E51BE92F7B008F069E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				511725EE1BE92F7B008F069E /* PubNub_Mac_ExampleTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6003F586195388D20070C39A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -269,7 +427,23 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		511725EB1BE92F7B008F069E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 511725D31BE92F7B008F069E /* PubNub Mac Example */;
+			targetProxy = 511725EA1BE92F7B008F069E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
+		511725E11BE92F7B008F069E /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				511725E21BE92F7B008F069E /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
 		6003F596195388D20070C39A /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -281,6 +455,92 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		511725F01BE92F7B008F069E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = "PubNub Mac Example/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.pubnub.PubNub-Mac-Example";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		511725F11BE92F7B008F069E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = "PubNub Mac Example/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.pubnub.PubNub-Mac-Example";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		511725F21BE92F7B008F069E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = "PubNub Mac ExampleTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.pubnub.PubNub-Mac-ExampleTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PubNub Mac Example.app/Contents/MacOS/PubNub Mac Example";
+			};
+			name = Debug;
+		};
+		511725F31BE92F7B008F069E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = "PubNub Mac ExampleTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.pubnub.PubNub-Mac-ExampleTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PubNub Mac Example.app/Contents/MacOS/PubNub Mac Example";
+			};
+			name = Release;
+		};
 		6003F5BD195388D20070C39A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -459,6 +719,22 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		511725F41BE92F7B008F069E /* Build configuration list for PBXNativeTarget "PubNub Mac Example" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				511725F01BE92F7B008F069E /* Debug */,
+				511725F11BE92F7B008F069E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		511725F51BE92F7B008F069E /* Build configuration list for PBXNativeTarget "PubNub Mac ExampleTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				511725F21BE92F7B008F069E /* Debug */,
+				511725F31BE92F7B008F069E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		6003F585195388D10070C39A /* Build configuration list for PBXProject "PubNub Example" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
