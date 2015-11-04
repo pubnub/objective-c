@@ -8,6 +8,12 @@ target 'PubNub_Example', :exclusive => true do
   pod "PubNub", :path => "."
 end
 
+target 'PubNub Mac Example', :exclusive => true do
+  platform :osx, '10.9'
+  xcodeproj 'Example/PubNub Example.xcodeproj'
+  pod "PubNub", :path => "."
+end
+
 target 'iOS ObjC Tests', :exclusive => true do
   platform :ios, "8.0"
   xcodeproj 'Tests/PubNub Tests.xcodeproj'
