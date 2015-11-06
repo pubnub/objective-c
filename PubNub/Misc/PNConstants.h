@@ -14,13 +14,15 @@
 #pragma mark General information constants
 
 // Stores client library version number
-static NSString * const kPNLibraryVersion = @"4.1.1";
+static NSString * const kPNLibraryVersion = @"4.1.2";
 
 // Stores information about SDK codebase
-static NSString * const kPNCommit = @"0fbec044577bf9d309b7c048fc8c64f66fde1e48";
+static NSString * const kPNCommit = @"b6e785582c236dbb9bc02bc2617eff7c9adc4e7a";
 
 #if TARGET_OS_WATCH
     static NSString * const kPNClientName = @"ObjC-watchOS";
+#elif TARGET_OS_TV
+    static NSString * const kPNClientName = @"ObjC-tvOS";
 #elif __IPHONE_OS_VERSION_MIN_REQUIRED
     static NSString * const kPNClientName = @"ObjC-iOS";
 #elif __MAC_OS_X_VERSION_MIN_REQUIRED
