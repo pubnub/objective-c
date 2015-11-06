@@ -14,7 +14,7 @@
 #pragma mark General information constants
 
 // Stores client library version number
-static NSString * const kPNLibraryVersion = @"4.1.1";
+static NSString * const kPNLibraryVersion = @"4.2.0";
 
 // Stores information about SDK codebase
 static NSString * const kPNCommit = @"0fbec044577bf9d309b7c048fc8c64f66fde1e48";

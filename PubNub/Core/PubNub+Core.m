@@ -43,6 +43,22 @@ void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
     }
 }
 
+void pn_safe_property_read(dispatch_queue_t queue, dispatch_block_t block) {
+    
+    if (queue && block) {
+        
+        dispatch_sync(queue, block);
+    }
+}
+
+void pn_safe_property_write(dispatch_queue_t queue, dispatch_block_t block) {
+    
+    if (queue && block) {
+        
+        dispatch_barrier_async(queue, block);
+    }
+}
+
 
 #pragma mark - Protected interface declaration
 

@@ -143,6 +143,17 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 @property (nonatomic, strong) NSNumber *currentTimeToken;
 
 /**
+ @brief      Reference on time token which should be used after initial subscription with \b 0
+             timetoken.
+ @discussion Override token used by subscribe API which allow to subscribe on arbitrarily time token
+             and will be used in logic which decide which time token should be used for next 
+             subscription cycle.
+ 
+ @since 4.2.0
+ */
+@property (nonatomic) NSNumber *overrideTimeToken;
+
+/**
  @brief      Reference on time token which has been used for previous subscribe loop iteration.
  @discussion \b 0 for initial subscription loop and non-zero for long-poll requests.
  
@@ -329,6 +340,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 @implementation PNSubscriber
 
 @synthesize retryTimer = _retryTimer;
+@synthesize overrideTimeToken = _overrideTimeToken;
 @synthesize currentTimeToken = _currentTimeToken;
 @synthesize lastTimeToken = _lastTimeToken;
 
@@ -365,20 +377,14 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 - (dispatch_source_t)retryTimer {
     
     __block dispatch_source_t retryTimer = nil;
-    dispatch_sync(self.resourceAccessQueue, ^{
-        
-        retryTimer = self->_retryTimer;
-    });
+    pn_safe_property_read(self.resourceAccessQueue, ^{ retryTimer = self->_retryTimer; });
     
     return retryTimer;
 }
 
 - (void)setRetryTimer:(dispatch_source_t)retryTimer {
     
-    dispatch_barrier_async(self.resourceAccessQueue, ^{
-        
-        self->_retryTimer = retryTimer;
-    });
+    pn_safe_property_write(self.resourceAccessQueue, ^{ self->_retryTimer = retryTimer; });
 }
 
 
@@ -393,18 +399,14 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 - (NSArray *)channels {
     
     __block NSArray *channels = nil;
-    dispatch_sync(self.resourceAccessQueue, ^{
-        
-        channels = [self.channelsSet allObjects];
-    });
+    pn_safe_property_read(self.resourceAccessQueue, ^{ channels = [self.channelsSet allObjects]; });
     
     return channels;
 }
 
 - (void)addChannels:(NSArray *)channels {
     
-    // Check whether channels list combined with presence channels or not.
-    dispatch_barrier_async(self.resourceAccessQueue, ^{
+    pn_safe_property_write(self.resourceAccessQueue, ^{
         
         NSArray *channelsOnly = [PNChannel objectsWithOutPresenceFrom:channels];
         if ([channelsOnly count] != [channels count]) {
@@ -420,8 +422,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 
 - (void)removeChannels:(NSArray *)channels {
     
-    // Check whether channels list combined with presence channels or not.
-    dispatch_barrier_async(self.resourceAccessQueue, ^{
+    pn_safe_property_write(self.resourceAccessQueue, ^{
         
         NSSet *channelsSet = [NSSet setWithArray:channels];
         [self.presenceChannelsSet minusSet:channelsSet];
@@ -432,7 +433,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 - (NSArray *)channelGroups {
     
     __block NSArray *channelGroups = nil;
-    dispatch_sync(self.resourceAccessQueue, ^{
+    pn_safe_property_read(self.resourceAccessQueue, ^{
         
         channelGroups = [self.channelGroupsSet allObjects];
     });
@@ -442,7 +443,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 
 - (void)addChannelGroups:(NSArray *)groups {
     
-    dispatch_barrier_async(self.resourceAccessQueue, ^{
+    pn_safe_property_write(self.resourceAccessQueue, ^{
         
         [self.channelGroupsSet addObjectsFromArray:groups];
     });
@@ -450,7 +451,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 
 - (void)removeChannelGroups:(NSArray *)groups {
     
-    dispatch_barrier_async(self.resourceAccessQueue, ^{
+    pn_safe_property_write(self.resourceAccessQueue, ^{
         
         [self.channelGroupsSet minusSet:[NSSet setWithArray:groups]];
     });
@@ -459,7 +460,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 - (NSArray *)presenceChannels {
     
     __block NSArray *presenceChannels = nil;
-    dispatch_sync(self.resourceAccessQueue, ^{
+    pn_safe_property_read(self.resourceAccessQueue, ^{
         
         presenceChannels = [self.presenceChannelsSet allObjects];
     });
@@ -469,7 +470,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 
 - (void)addPresenceChannels:(NSArray *)presenceChannels {
     
-    dispatch_barrier_async(self.resourceAccessQueue, ^{
+    pn_safe_property_write(self.resourceAccessQueue, ^{
         
         [self.presenceChannelsSet addObjectsFromArray:presenceChannels];
     });
@@ -477,7 +478,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 
 - (void)removePresenceChannels:(NSArray *)presenceChannels {
     
-    dispatch_barrier_async(self.resourceAccessQueue, ^{
+    pn_safe_property_write(self.resourceAccessQueue, ^{
         
         [self.presenceChannelsSet minusSet:[NSSet setWithArray:presenceChannels]];
     });
@@ -486,7 +487,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 - (NSNumber *)currentTimeToken {
     
     __block NSNumber *currentTimeToken = nil;
-    dispatch_sync(self.resourceAccessQueue, ^{
+    pn_safe_property_read(self.resourceAccessQueue, ^{
         
         currentTimeToken = self->_currentTimeToken;
     });
@@ -496,7 +497,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 
 - (void)setCurrentTimeToken:(NSNumber *)currentTimeToken {
     
-    dispatch_barrier_async(self.resourceAccessQueue, ^{
+    pn_safe_property_write(self.resourceAccessQueue, ^{
         
         self->_currentTimeToken = currentTimeToken;
     });
@@ -505,25 +506,38 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 - (NSNumber *)lastTimeToken {
     
     __block NSNumber *lastTimeToken = nil;
-    dispatch_sync(self.resourceAccessQueue, ^{
-        
-        lastTimeToken = self->_lastTimeToken;
-    });
+    pn_safe_property_read(self.resourceAccessQueue, ^{ lastTimeToken = self->_lastTimeToken; });
     
     return lastTimeToken;
 }
 
 - (void)setLastTimeToken:(NSNumber *)lastTimeToken {
     
-    dispatch_barrier_async(self.resourceAccessQueue, ^{
+    pn_safe_property_write(self.resourceAccessQueue, ^{ self->_lastTimeToken = lastTimeToken; });
+}
+
+- (NSNumber *)overrideTimeToken {
+    
+    __block NSNumber *overrideTimeToken = nil;
+    pn_safe_property_read(self.resourceAccessQueue, ^{
         
-        self->_lastTimeToken = lastTimeToken;
+        overrideTimeToken = self->_overrideTimeToken;
+    });
+    
+    return overrideTimeToken;
+}
+
+- (void)setOverrideTimeToken:(NSNumber *)overrideTimeToken {
+    
+    pn_safe_property_write(self.resourceAccessQueue, ^{
+        
+        self->_overrideTimeToken = [PNNumber timeTokenFromNumber:overrideTimeToken];
     });
 }
 
 - (void)updateStateTo:(PNSubscriberState)state withStatus:(PNSubscribeStatus *)status {
 
-    dispatch_barrier_async(self.resourceAccessQueue, ^{
+    pn_safe_property_write(self.resourceAccessQueue, ^{
         
         // Compose status object to report state change to listeners.
         PNStatusCategory category = PNUnknownCategory;
@@ -656,8 +670,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 
 #pragma mark - Subscription
 
-- (void)subscribe:(BOOL)initialSubscribe withState:(NSDictionary *)state
-       completion:(PNSubscriberCompletionBlock)block {
+- (void)subscribe:(BOOL)initialSubscribe usingTimeToken:(NSNumber *)timeToken
+        withState:(NSDictionary *)state completion:(PNSubscriberCompletionBlock)block {
     
     [self stopRetryTimer];
 
@@ -670,17 +684,22 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
     if ([[self allObjects] count]) {
         
+        // Storing time tomen override
+        self.overrideTimeToken = timeToken;
+        
         // In case if block is passed, it mean what subscription has been requested by user or
         // internal logic (like unsubscribe and re-subscribe on the rest of the channels/groups).
         if (initialSubscribe) {
             
             self.mayRequireSubscriptionRestore = NO;
-            NSNumber *currentTimeToken = self.currentTimeToken;
-            if (currentTimeToken && [currentTimeToken compare:@0] != NSOrderedSame) {
+            pn_safe_property_write(self.resourceAccessQueue, ^{
                 
-                self.lastTimeToken = currentTimeToken;
-            }
-            self.currentTimeToken = @(0);
+                if (self->_currentTimeToken && [self->_currentTimeToken compare:@0] != NSOrderedSame) {
+                    
+                    self->_lastTimeToken = self->_currentTimeToken;
+                }
+                self->_currentTimeToken = @(0);
+            });
         }
         
         PNRequestParameters *parameters = [self subscribeRequestParametersWithState:state];
@@ -705,8 +724,11 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                                                category:PNDisconnectedCategory
                                     withProcessingError:nil];
         [self.client appendClientInformation:status];
-        self.lastTimeToken = @(0);
-        self.currentTimeToken = @(0);
+        pn_safe_property_write(self.resourceAccessQueue, ^{
+            
+            self->_lastTimeToken = @(0);
+            self->_currentTimeToken = @(0);
+        });
         if (block) {
             
             pn_dispatch_async(self.client.callbackQueue, ^{
@@ -725,7 +747,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     
     __block BOOL shouldRestore;
     __block BOOL ableToRestore;
-    dispatch_sync(self.resourceAccessQueue, ^{
+    pn_safe_property_read(self.resourceAccessQueue, ^{
         
         shouldRestore = (self.currentState == PNDisconnectedUnexpectedlySubscriberState &&
                          self.mayRequireSubscriptionRestore);
@@ -734,7 +756,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     });
     if (shouldRestore && ableToRestore) {
         
-        [self subscribe:YES withState:nil completion:block];
+        [self subscribe:YES usingTimeToken:nil withState:nil completion:block];
     }
     else if (block) {
             
@@ -744,7 +766,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 
 - (void)continueSubscriptionCycleIfRequiredWithCompletion:(PNSubscriberCompletionBlock)block {
 
-    [self subscribe:NO withState:nil completion:block];
+    [self subscribe:NO usingTimeToken:nil withState:nil completion:block];
 }
 
 - (void)unsubscribeFrom:(BOOL)channels objects:(NSArray *)objects
@@ -782,17 +804,14 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
             [weakSelf.client callBlock:nil status:YES withResult:nil andStatus:successStatus];
             if ([[weakSelf allObjects] count]) {
                 
-                [weakSelf subscribe:YES withState:nil completion:nil];
+                [weakSelf subscribe:YES usingTimeToken:nil withState:nil completion:nil];
             }
-            else {
-                
-                if (block) {
+            else if (block) {
                     
-                    pn_dispatch_async(weakSelf.client.callbackQueue, ^{
-                        
-                        block((PNSubscribeStatus *)successStatus);
-                    });
-                }
+                pn_dispatch_async(weakSelf.client.callbackQueue, ^{
+                    
+                    block((PNSubscribeStatus *)successStatus);
+                });
             }
         }];
     }
@@ -800,7 +819,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         
         self.lastTimeToken = @(0);
         self.currentTimeToken = @(0);
-        [self subscribe:YES withState:nil completion:^(__unused PNSubscribeStatus *status) {
+        [self subscribe:YES usingTimeToken:nil withState:nil
+             completion:^(__unused PNSubscribeStatus *status) {
             
             if (block) {
                 
@@ -953,33 +973,40 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                 
                 ((PNStatus *)status).automaticallyRetry = YES;
                 ((PNStatus *)status).retryCancelBlock = ^{
-                    /* Do nothing, because we can't stop auto-retry in case of network issues.
-                     It handled by client configuration. */ };
-                if (self.client.configuration.shouldTryCatchUpOnSubscriptionRestore) {
+                /* Do nothing, because we can't stop auto-retry in case of network issues.
+                 It handled by client configuration. */ };
+                
+                pn_safe_property_write(self.resourceAccessQueue, ^{
                     
-                    NSNumber *currentTimeToken = self.currentTimeToken;
-                    if (currentTimeToken && [currentTimeToken compare:@0] != NSOrderedSame) {
-                        
-                        self.lastTimeToken = currentTimeToken;
-                        self.currentTimeToken = @(0);
+                    if (self.client.configuration.shouldTryCatchUpOnSubscriptionRestore) {
+                            
+                        if (self->_currentTimeToken &&
+                            [self->_currentTimeToken compare:@0] != NSOrderedSame) {
+                            
+                            self->_lastTimeToken = self->_currentTimeToken;
+                            self->_currentTimeToken = @(0);
+                        }
                     }
-                }
-                else {
-                    
-                    self.currentTimeToken = @(0);
-                    self.lastTimeToken = @(0);
-                }
+                    else {
+                            
+                        self->_currentTimeToken = @(0);
+                        self->_lastTimeToken = @(0);
+                    }
+                });
             }
             else {
                 
                 // Ask to clean up cache associated with objects
                 [self.client.clientStateManager removeStateForObjects:[self.channelsSet allObjects]];
                 [self.client.clientStateManager removeStateForObjects:[self.channelGroupsSet allObjects]];
-                self.channelsSet = [NSMutableSet new];
-                self.channelGroupsSet = [NSMutableSet new];
-                self.presenceChannelsSet = [NSMutableSet new];
-                self.currentTimeToken = @(0);
-                self.lastTimeToken = @(0);
+                pn_safe_property_write(self.resourceAccessQueue, ^{
+                    
+                    self.channelsSet = [NSMutableSet new];
+                    self.channelGroupsSet = [NSMutableSet new];
+                    self.presenceChannelsSet = [NSMutableSet new];
+                    self->_currentTimeToken = @(0);
+                    self->_lastTimeToken = @(0);
+                });
             }
             [(PNStatus *)status updateCategory:PNUnexpectedDisconnectCategory];
             
@@ -993,58 +1020,67 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 
 - (void)handleSubscription:(BOOL)initialSubscription timeToken:(NSNumber *)timeToken {
     
-    // Whether new time token from response should be applied for next subscription cycle or
-    // not.
-    BOOL shouldAcceptNewTimeToken = YES;
-    
-    // Silence static analyzer warnings.
-    // Code is aware about this case and at the end will simply call on 'nil' object method.
-    // In most cases if referenced object become 'nil' it mean what there is no more need in
-    // it and probably whole client instance has been deallocated.
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wreceiver-is-weak"
-    #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
-    if (initialSubscription) {
+    pn_safe_property_write(self.resourceAccessQueue, ^{
         
-        // 'shouldKeepTimeTokenOnListChange' property should never allow to reset time tokens in
-        // case if there is a few more subscribe requests is waiting for their turn to be sent.
-        BOOL shouldUselastTimeToken = self.client.configuration.shouldKeepTimeTokenOnListChange;
-        if (!shouldUselastTimeToken) {
+        // Whether new time token from response should be applied for next subscription cycle or
+        // not.
+        BOOL shouldAcceptNewTimeToken = YES;
+        
+        // Whether time token should be overridden despite subscription behaviour configuration.
+        BOOL shouldOverrideTimeToken = (initialSubscription && self->_overrideTimeToken &&
+                                        [self->_overrideTimeToken compare:@0] != NSOrderedSame);
+        
+        // Silence static analyzer warnings.
+        // Code is aware about this case and at the end will simply call on 'nil' object method.
+        // In most cases if referenced object become 'nil' it mean what there is no more need in
+        // it and probably whole client instance has been deallocated.
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wreceiver-is-weak"
+        #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
+        if (initialSubscription) {
             
-            shouldUselastTimeToken = (self.client.configuration.shouldRestoreSubscription &&
-                                      self.client.configuration.shouldTryCatchUpOnSubscriptionRestore);
+            // 'shouldKeepTimeTokenOnListChange' property should never allow to reset time tokens in
+            // case if there is a few more subscribe requests is waiting for their turn to be sent.
+            BOOL shouldUseLastTimeToken = self.client.configuration.shouldKeepTimeTokenOnListChange;
+            if (!shouldUseLastTimeToken) {
+                
+                shouldUseLastTimeToken = (self.client.configuration.shouldRestoreSubscription &&
+                                          self.client.configuration.shouldTryCatchUpOnSubscriptionRestore);
+            }
+            shouldUseLastTimeToken = (shouldUseLastTimeToken && !shouldOverrideTimeToken);
+            
+            // Ensure what we already don't use value from previous time token assigned during
+            // previous sessions.
+            if (shouldUseLastTimeToken && self->_lastTimeToken &&
+                [self->_lastTimeToken compare:@0] != NSOrderedSame) {
+                
+                shouldAcceptNewTimeToken = NO;
+                
+                // Swap time tokens to catch up on events which happened while client changed
+                // channels and groups list configuration.
+                self->_currentTimeToken = self->_lastTimeToken;
+                self->_lastTimeToken = @(0);
+            }
         }
-        
-        // Ensure what we already don't use value from previous time token assigned during
-        // previous sessions.
-        NSNumber *lastTimeToken = self.lastTimeToken;
-        if (shouldUselastTimeToken && lastTimeToken && [lastTimeToken compare:@0] != NSOrderedSame) {
+        #pragma clang diagnostic pop
+        // Ensure what client won't handle delayed requests. It is impossible to have non-initial
+        // subscription while current time token report 0.
+        if (!initialSubscription && self->_currentTimeToken &&
+            [self->_currentTimeToken compare:@0] == NSOrderedSame) {
             
             shouldAcceptNewTimeToken = NO;
-            
-            // Swap time tokens to catch up on events which happened while client changed
-            // channels and groups list configuration.
-            self.currentTimeToken = lastTimeToken;
-            self.lastTimeToken = @(0);
         }
-    }
-    #pragma clang diagnostic pop
-    NSNumber *currentTimeToken = self.currentTimeToken;
-    // Ensure what client won't handle delayed requests.It is impossible to have non-initial
-    // subscription while current time token report 0.
-    if (!initialSubscription && currentTimeToken && [currentTimeToken compare:@0] == NSOrderedSame) {
         
-        shouldAcceptNewTimeToken = NO;
-    }
-    
-    if (shouldAcceptNewTimeToken) {
-        
-        if (currentTimeToken && [currentTimeToken compare:@0] != NSOrderedSame) {
+        if (shouldAcceptNewTimeToken) {
             
-            self.lastTimeToken = currentTimeToken;
+            if (self->_currentTimeToken && [self->_currentTimeToken compare:@0] != NSOrderedSame) {
+                
+                self->_lastTimeToken = self->_currentTimeToken;
+            }
+            self->_currentTimeToken = (shouldOverrideTimeToken ? self->_overrideTimeToken : timeToken);
         }
-        self.currentTimeToken = timeToken;
-    }
+        self->_overrideTimeToken = nil;
+    });
 }
 
 - (void)handleLiveFeedEvents:(PNSubscribeStatus *)status {
