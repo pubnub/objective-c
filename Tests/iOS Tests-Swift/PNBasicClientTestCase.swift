@@ -10,6 +10,8 @@ import Foundation
 import UIKit
 import XCTest
 
+typealias PNChannelGroupAssertions = (status: PNAcknowledgmentStatus!) -> (Void)
+
 class PNBasicClientTestCase: JSZVCRTestCase {
     
     lazy var configuration: PNConfiguration = {
@@ -43,4 +45,59 @@ class PNBasicClientTestCase: JSZVCRTestCase {
         super.tearDown()
     }
 
+    // MARK: - Channel Group Helpers
+    
+    func performVerifiedAddChannels(channels: [String], channelGroup: String, assertions: PNChannelGroupAssertions?) {
+        let addChannelsToGroupExpectation = self.expectationWithDescription("addChannels")
+        
+        self.client.addChannels(channels, toGroup: channelGroup) { (status: PNAcknowledgmentStatus!) -> Void in
+            
+            // FIXME :
+//            if (assertions) {
+//                assertions(status)
+//            }
+            
+            addChannelsToGroupExpectation.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(10, handler: { (error) -> Void in
+            XCTAssertNil(error, "Timeout addPushNotificationsOnChannels")
+        })
+    }
+
+    func performVerifiedRemoveAllChannelsFromGroup(channelGroup: String, assertions: PNChannelGroupAssertions?) {
+        let removeChannelsToGroupExpectation = self.expectationWithDescription("removeChannels")
+        
+        self.client.removeChannelsFromGroup(channelGroup) { (status: PNAcknowledgmentStatus!) -> Void in
+            
+            // FIXME :
+//            if (assertions) {
+//                assertions(status)
+//            }
+            
+            removeChannelsToGroupExpectation.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(10, handler: { (error) -> Void in
+            XCTAssertNil(error, "Timeout addPushNotificationsOnChannels")
+        })
+    }
+    
+    func performVerifiedRemoveChannels(channels: [String], channelGroup: String, assertions: PNChannelGroupAssertions?) {
+        let removeSpecificChannelsExpectation = self.expectationWithDescription("removeSpecificChannels")
+        
+        self.client.removeChannels(channels, fromGroup: channelGroup) { (status: PNAcknowledgmentStatus!) -> Void in
+            
+            // FIXME :
+//            if (assertions) {
+//                assertions(status)
+//            }
+            
+            removeSpecificChannelsExpectation.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(10, handler: { (error) -> Void in
+            XCTAssertNil(error, "Timeout addPushNotificationsOnChannels")
+        })
+    }
 }
