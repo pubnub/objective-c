@@ -69,6 +69,17 @@ static DDLogLevel ddLogLevel = DDLogLevelInfo;
 
 - (void)dumpToFile:(BOOL)shouldDumpToFile;
 
+
+#pragma mark - Misc
+
+/**
+ @brief  Put in pubnub client log information about enabled verbose level using \c DDLogClientInfo
+         macro and \c PNInfoLogLevel verbose level to print it out.
+ 
+ @param verbosityFlags Currently specified logger verbosity configuration.
+ */
+- (void)logVerboseLevelInformation:(DDLogLevel)verbosityFlags;
+
 #pragma mark -
 
 
@@ -183,6 +194,7 @@ static DDLogLevel ddLogLevel = DDLogLevelInfo;
         
         [DDLog setLevel:(DDLogLevel)logLevel forClass:class];
     }
+    [[self sharedInstance] logVerboseLevelInformation:[self ddLogLevel]];
 }
 
 
@@ -209,13 +221,13 @@ static DDLogLevel ddLogLevel = DDLogLevelInfo;
         
         if (!shouldDumpToFile) {
             
-            DDLogClientInfo([[self class] ddLogLevel], @"<PubNub> File logger disabled");
+            DDLogClientInfo([[self class] ddLogLevel], @"<PubNub::Logger> File logger disabled");
             [DDLog removeLogger:self.fileLogger];
         }
         else {
             
-            DDLogClientInfo([[self class] ddLogLevel],@"<PubNub> File logger enabnled");
-            DDLogClientInfo([[self class] ddLogLevel],@"<PubNub> Log files stored in: %@",
+            DDLogClientInfo([[self class] ddLogLevel],@"<PubNub::Logger> File logger enabnled");
+            DDLogClientInfo([[self class] ddLogLevel],@"<PubNub::Logger> Log files stored in: %@",
                       [self.fileLogger.logFileManager logsDirectory]);
             [DDLog addLogger:self.fileLogger withLevel:(DDLogLevel)PNVerboseLogLevel];
         }
@@ -226,6 +238,24 @@ static DDLogLevel ddLogLevel = DDLogLevelInfo;
 + (BOOL)isDumpingToFile {
     
     return [self sharedInstance].isFileLoggerActive;
+}
+
+
+#pragma mark - Misc
+
+- (void)logVerboseLevelInformation:(DDLogLevel)verbosityFlags {
+    
+    NSMutableArray *enabledFlags = [NSMutableArray new];
+    if (verbosityFlags & PNReachabilityLogLevel) { [enabledFlags addObject:@"Reachability"]; }
+    if (verbosityFlags & PNRequestLogLevel) { [enabledFlags addObject:@"Network Request"]; }
+    if (verbosityFlags & PNResultLogLevel) { [enabledFlags addObject:@"Result instance"]; }
+    if (verbosityFlags & PNStatusLogLevel) { [enabledFlags addObject:@"Status instance"]; }
+    if (verbosityFlags & PNFailureStatusLogLevel) { [enabledFlags addObject:@"Failed status instance"]; }
+    if (verbosityFlags & PNAESErrorLogLevel) { [enabledFlags addObject:@"AES error"]; }
+    if (verbosityFlags & PNAPICallLogLevel) { [enabledFlags addObject:@"API Call"]; }
+    
+    DDLogClientInfo([self.class ddLogLevel], @"<PubNub::Logger> Enabled verbosity level flags: "
+                    "%@", [enabledFlags componentsJoinedByString:@", "]);
 }
 
 #pragma mark -

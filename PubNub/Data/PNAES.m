@@ -160,7 +160,7 @@ static const void * kPNAESInitializationVector = "0123456789012345";
         }
         else {
             
-            DDLogAESError([self ddLogLevel], @"<PubNub> Encryption error: %@", encryptionError);
+            DDLogAESError([self ddLogLevel], @"<PubNub::AES> Encryption error: %@", encryptionError);
         }
     }
     
@@ -238,7 +238,7 @@ static const void * kPNAESInitializationVector = "0123456789012345";
         }
         else {
             
-            DDLogAESError([self ddLogLevel], @"<PubNub> Decryption error: %@", decryptionError);
+            DDLogAESError([self ddLogLevel], @"<PubNub::AES> Decryption error: %@", decryptionError);
         }
     }
     

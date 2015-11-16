@@ -61,12 +61,12 @@
 
         [parameters addPathComponent:[PNString percentEscapedString:group]
                       forPlaceholder:@"{channel-group}"];
-        DDLogAPICall([[self class] ddLogLevel], @"<PubNub> Request channels for '%@' channel group.",
+        DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> Request channels for '%@' channel group.",
                      group);
     }
     else {
 
-        DDLogAPICall([[self class] ddLogLevel], @"<PubNub> Request channel groups list.");
+        DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> Request channel groups list.");
     }
 
     __weak __typeof(self) weakSelf = self;
@@ -134,13 +134,13 @@
                              forFieldName:(shouldAdd ? @"add":@"remove")];
         }
 
-        DDLogAPICall([[self class] ddLogLevel], @"<PubNub> %@ channels %@ '%@' channel group: %@",
+        DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> %@ channels %@ '%@' channel group: %@",
                 (shouldAdd ? @"Add" : @"Remove"), (shouldAdd ? @"to" : @"from"),
                 (group?: @"<error>"), ([PNChannel namesForRequest:channels]?: @"<error>"));
     }
     else {
 
-        DDLogAPICall([[self class] ddLogLevel], @"<PubNub> Remove '%@' channel group",
+        DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> Remove '%@' channel group",
                      (group?: @"<error>"));
     }
 

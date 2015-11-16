@@ -123,7 +123,7 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNAESErrorLogLevel;
                 
                 if (decryptionError || !decryptedMessage) {
                     
-                    DDLogAESError([self ddLogLevel], @"<PubNub> History entry decryption error: %@",
+                    DDLogAESError([self ddLogLevel], @"<PubNub::AES> History entry decryption error: %@",
                                   decryptionError);
                     data[@"decryptError"] = @YES;
                     

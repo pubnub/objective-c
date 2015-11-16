@@ -336,6 +336,11 @@
             errorDetails = @{@"information":information};
         }
     }
+    // Check whether error details represented with expected format or not.
+    else if (![errorDetails isKindOfClass:NSDictionary.class]) {
+        
+        errorDetails = @{@"information": errorDetails};
+    }
     
     return errorDetails;
 }
