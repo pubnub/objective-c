@@ -259,7 +259,7 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
         
         if (decryptionError || !decryptedEvent) {
             
-            DDLogAESError([self ddLogLevel], @"<PubNub> Message decryption error: %@",
+            DDLogAESError([self ddLogLevel], @"<PubNub::AES> Message decryption error: %@",
                           decryptionError);
             message[@"decryptError"] = @YES;
         }

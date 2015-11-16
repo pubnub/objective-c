@@ -98,14 +98,14 @@
             [parameters removePathComponentForPlaceholder:@"{token}"];
         }
 
-        DDLogAPICall([[self class] ddLogLevel], @"<PubNub> %@ push notifications for device '%@': %@.",
+        DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> %@ push notifications for device '%@': %@.",
                 (shouldEnabled ? @"Enable" : @"Disable"),
                 [[PNData HEXFromDevicePushToken:pushToken] lowercaseString],
                 [PNChannel namesForRequest:channels]);
     }
     else {
 
-        DDLogAPICall([[self class] ddLogLevel], @"<PubNub> Disable push notifications for device '%@'.",
+        DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> Disable push notifications for device '%@'.",
                 [[PNData HEXFromDevicePushToken:pushToken] lowercaseString]);
     }
 
@@ -145,7 +145,7 @@
                       forPlaceholder:@"{token}"];
     }
 
-    DDLogAPICall([[self class] ddLogLevel], @"<PubNub> Push notification enabled channels for device '%@'.",
+    DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> Push notification enabled channels for device '%@'.",
             [[PNData HEXFromDevicePushToken:pushToken] lowercaseString]);
 
     __weak __typeof(self) weakSelf = self;

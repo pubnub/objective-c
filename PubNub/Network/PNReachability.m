@@ -205,11 +205,11 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNReachabilityLogLevel;
     BOOL successfulPing = (result.data != nil);
     if (self.reachable && !successfulPing) {
         
-        DDLogReachability([[self class] ddLogLevel], @"<PubNub> Connection went down.");
+        DDLogReachability([[self class] ddLogLevel], @"<PubNub::Reachability> Connection went down.");
     }
     if (!self.reachable && successfulPing) {
         
-        DDLogReachability([[self class] ddLogLevel], @"<PubNub> Connection restored.");
+        DDLogReachability([[self class] ddLogLevel], @"<PubNub::Reachability> Connection restored.");
     }
     if (self.pingCompleteBlock) {
         
