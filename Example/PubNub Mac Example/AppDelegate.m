@@ -676,15 +676,7 @@
         // on the long-running subscribe loop listener didReceiveStatus
         
         // Connection events are never defined as errors via status.isError
-        
-        if (status.category == PNDisconnectedCategory) {
-            // PNDisconnect happens as part of our regular operation
-            // No need to monitor for this unless requested by support
-            NSLog(@"^^^^ Non-error status: Expected Disconnect, Channel Info: %@",
-                  subscriberStatus.subscribedChannels);
-        }
-        
-        else if (status.category == PNUnexpectedDisconnectCategory) {
+        if (status.category == PNUnexpectedDisconnectCategory) {
             // PNUnexpectedDisconnect happens as part of our regular operation
             // This event happens when radio / connectivity is lost
             
@@ -713,7 +705,15 @@
             
         }
     }
-    
+    else if (status.operation == PNUnsubscribeOperation) {
+        
+        PNSubscribeStatus *subscriberStatus = (PNSubscribeStatus *)status;
+        if (status.category == PNDisconnectedCategory) {
+            // PNDisconnect happens as part of our regular operation
+            // No need to monitor for this unless requested by support
+            NSLog(@"^^^^ Non-error status: Expected Disconnect");
+        }
+    }
 }
 
 #pragma mark - Configuration

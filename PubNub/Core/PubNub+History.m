@@ -130,7 +130,7 @@
                       forPlaceholder:@"{channel}"];
     }
     
-    DDLogAPICall([[self class] ddLogLevel], @"<PubNub> %@ for '%@' channel%@%@ with %@ limit%@.",
+    DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> %@ for '%@' channel%@%@ with %@ limit%@.",
                  (shouldReverseOrder ? @"Reversed history" : @"History"), (channel?: @"<error>"),
                  (startDate ? [NSString stringWithFormat:@" from %@", startDate] : @""),
                  (endDate ? [NSString stringWithFormat:@" to %@", endDate] : @""), @(limit),
