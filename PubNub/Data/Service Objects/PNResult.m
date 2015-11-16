@@ -21,11 +21,37 @@
 @property (nonatomic, assign) NSInteger statusCode;
 @property (nonatomic, assign) PNOperationType operation;
 @property (nonatomic, assign, getter = isTLSEnabled) BOOL TLSEnabled;
+@property (nonatomic, assign, getter = isUnexpectedServiceData) BOOL unexpectedServiceData;
 @property (nonatomic, copy) NSString *uuid;
 @property (nonatomic, copy) NSString *authKey;
 @property (nonatomic, copy) NSString *origin;
 @property (nonatomic, copy) NSURLRequest *clientRequest;
 @property (nonatomic, copy) NSDictionary *serviceData;
+
+
+#pragma mark - Misc
+
+/**
+ @brief  Create instance copy with additional adjustments on whether service data information should
+         be copied or not.
+ 
+ @param shouldCopyServiceData Whether service data should be passed to new copy or not.
+ 
+ @param Receiver's new copy.
+ */
+- (id)copyWithServiceData:(BOOL)shouldCopyServiceData;
+
+/**
+ @brief      Ensure what passed \c serviceData has required data type (dictionary). 
+             If \c serviceData has different data type, it will be wrapped into dictionary.
+ @discussion If unexpected data type will be passes, object will set corresponding flag, so it will
+             be processed and printed out to log file for further investigation.
+ 
+ @param serviceData Reference on data which should be verified and used for resulting object.
+ 
+ @return \c Normalized service data dictionary.
+ */
+- (NSDictionary *)normalizedServiceData:(id)serviceData;
 
 #pragma mark -
 
@@ -67,6 +93,12 @@
             processedData = [dataForUpdate copy];
             _statusCode = (([statusCode integerValue] > 200) ? [statusCode integerValue] : _statusCode);
         }
+        // Received unknown response from service.
+        else if (processedData && ![processedData isKindOfClass:NSDictionary.class]){
+            
+            _unexpectedServiceData = YES;
+            processedData = [self normalizedServiceData:processedData];
+        }
         _serviceData = [processedData copy];
     }
     
@@ -75,7 +107,29 @@
 
 - (id)copyWithZone:(NSZone *)zone {
     
-    PNResult *result = [[[self class] allocWithZone:zone] init];
+    return [self copyWithServiceData:YES];
+}
+
+- (instancetype)copyWithMutatedData:(id)data {
+    
+    PNResult *result = [self copyWithServiceData:NO];
+    [result updateData:data];
+    
+    return result;
+}
+
+- (void)updateData:(id)data {
+    
+    _serviceData = [[self normalizedServiceData:data] copy];
+    _unexpectedServiceData = ![_serviceData isEqual:data];
+}
+
+
+#pragma mark - Misc
+
+- (id)copyWithServiceData:(BOOL)shouldCopyServiceData {
+    
+    PNResult *result = [self.class new];
     result.statusCode = self.statusCode;
     result.operation = self.operation;
     result.TLSEnabled = self.isTLSEnabled;
@@ -83,26 +137,24 @@
     result.authKey = self.authKey;
     result.origin = self.origin;
     result.clientRequest = self.clientRequest;
-    result.serviceData = self.serviceData;
+    if (shouldCopyServiceData) {
+        
+        [result updateData:self.serviceData];
+    }
     
     return result;
 }
 
-- (instancetype)copyWithMutatedData:(id)data {
+- (NSDictionary *)normalizedServiceData:(id)serviceData {
     
-    PNResult *result = [self copy];
-    result->_serviceData = [data copy];
+    NSDictionary *normalizedServiceData = serviceData;
+    if (serviceData && ![serviceData isKindOfClass:NSDictionary.class]) {
+        
+        normalizedServiceData = @{@"information": serviceData};
+    }
     
-    return result;
+    return normalizedServiceData;
 }
-
-- (void)updateData:(id)data {
-    
-    _serviceData = [data copy];
-}
-
-
-#pragma mark - Misc
 
 - (NSMethodSignature *)methodSignatureForSelector:(SEL)__unused selector {
     
@@ -119,6 +171,13 @@
 
 - (NSDictionary *)dictionaryRepresentation {
     
+    NSMutableDictionary *response = [@{@"Status code": @(self.statusCode),
+                                       @"Processed data": (self.serviceData?: @"no data")} mutableCopy];
+    if (_unexpectedServiceData) {
+        
+        response[@"Unexpected"] = @(YES);
+    }
+    
     return @{@"Operation": PNOperationTypeStrings[[self operation]],
              @"Request": @{@"Method": (self.clientRequest.HTTPMethod?: @"GET"),
                            @"URL": ([self.clientRequest.URL absoluteString]?: @"null"),
@@ -127,8 +186,7 @@
                            @"UUID": (self.uuid?: @"uknonwn"),
                            @"Authorization": (self.authKey?: @"not set"),
                            @"Origin": (self.origin?: @"unknown")},
-             @"Response": @{@"Status code": @(self.statusCode),
-                            @"Processed data": (self.serviceData?: @"no data")}};
+             @"Response": response};
 }
 
 - (NSString *)stringifiedRepresentation {

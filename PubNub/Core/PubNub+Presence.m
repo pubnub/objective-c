@@ -122,13 +122,13 @@
     
     if (![object length]) {
         
-        DDLogAPICall([[self class] ddLogLevel], @"<PubNub> Global 'here now' information with %@ data.",
-                     PNHereNowDataStrings[level]);
+        DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> Global 'here now' information with "
+                     "%@ data.", PNHereNowDataStrings[level]);
     }
     else {
         
-        DDLogAPICall([[self class] ddLogLevel], @"<PubNub> Channel%@ 'here now' information for %@ with %@ data.",
-                     (!forChannel ? @" group" : @""), (object?: @"<error>"),
+        DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> Channel%@ 'here now' information "
+                     "for %@ with %@ data.", (!forChannel ? @" group" : @""), (object?: @"<error>"),
                      PNHereNowDataStrings[level]);
     }
     
@@ -165,8 +165,8 @@
         
         [parameters addPathComponent:[PNString percentEscapedString:uuid] forPlaceholder:@"{uuid}"];
     }
-    DDLogAPICall([[self class] ddLogLevel], @"<PubNub> 'Where now' presence information for %@.",
-                 (uuid?: @"<error>"));
+    DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> 'Where now' presence information for "
+                 "%@.", (uuid?: @"<error>"));
 
     __weak __typeof(self) weakSelf = self;
     [self processOperation:PNWhereNowOperation withParameters:parameters
@@ -222,8 +222,8 @@
                                      forFieldName:@"state"];
                 }
             }
-            DDLogAPICall([[self class] ddLogLevel], @"<PubNub> Heartbeat for channels %@ and groups %@.",
-                         [channels componentsJoinedByString:@", "],
+            DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> Heartbeat for channels %@ and "
+                         "groups %@.", [channels componentsJoinedByString:@", "],
                          [groups componentsJoinedByString:@", "]);
             
             [self processOperation:PNHeartbeatOperation withParameters:parameters

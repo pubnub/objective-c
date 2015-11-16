@@ -683,8 +683,8 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
     NSURL *requestURL = [PNURLBuilder URLForOperation:operationType withParameters:parameters];
     if (requestURL) {
         
-        DDLogRequest([[self class] ddLogLevel], @"<PubNub> %@ %@", ([data length] ? @"POST" : @"GET"),
-                     [requestURL absoluteString]);
+        DDLogRequest([[self class] ddLogLevel], @"<PubNub::Network> %@ %@",
+                     ([data length] ? @"POST" : @"GET"), [requestURL absoluteString]);
         
         __weak __typeof(self) weakSelf = self;
         [[self dataTaskWithRequest:[self requestWithURL:requestURL data:data]

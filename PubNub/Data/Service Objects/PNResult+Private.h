@@ -19,6 +19,11 @@
 @property (nonatomic, assign) NSInteger statusCode;
 @property (nonatomic, assign) PNOperationType operation;
 @property (nonatomic, assign, getter = isTLSEnabled) BOOL TLSEnabled;
+
+/**
+ @brief  Stores whether unexpected service data has been passed from parsers.
+ */
+@property (nonatomic, assign, getter = isUnexpectedServiceData) BOOL unexpectedServiceData;
 @property (nonatomic, copy) NSString *uuid;
 @property (nonatomic, copy) NSString *authKey;
 @property (nonatomic, copy) NSString *origin;

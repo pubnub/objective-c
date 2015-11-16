@@ -140,9 +140,9 @@
                              forFieldName:@"channel-group"];
         }
         
-        DDLogAPICall([[self class] ddLogLevel], @"<PubNub> Set %@'s state on '%@' channel%@: %@.",
-                     (uuid?: @"<error>"), (object?: @"<error>"), (!onChannel ? @" group" : @""),
-                     parameters.query[@"state"]);
+        DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> Set %@'s state on '%@' channel%@: "
+                     "%@.", (uuid?: @"<error>"), (object?: @"<error>"),
+                     (!onChannel ? @" group" : @""), parameters.query[@"state"]);
         
         [self processOperation:PNSetStateOperation withParameters:parameters
                completionBlock:^(PNStatus *status) {
@@ -200,7 +200,7 @@
                          forFieldName:@"channel-group"];
     }
     
-    DDLogAPICall([[self class] ddLogLevel], @"<PubNub> State request on '%@' channel%@: %@.",
+    DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> State request on '%@' channel%@: %@.",
                  (uuid?: @"<error>"), (object?: @"<error>"), (!onChannel ? @" group" : @""));
     
     __weak __typeof(self) weakSelf = self;
