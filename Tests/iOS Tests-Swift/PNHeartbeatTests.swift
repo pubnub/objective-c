@@ -53,4 +53,3 @@ class PNHeartbeatTests: PNBasicSubscribeTestCase {
         self.PNTest_subscribeToChannels(["heartbeat-test"], presence: false)
     }
 }
-

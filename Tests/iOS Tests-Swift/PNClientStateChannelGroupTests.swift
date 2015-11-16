@@ -171,4 +171,3 @@ class PNClientStateChannelGroupTests: PNBasicSubscribeTestCase {
     }
     
 }
-
