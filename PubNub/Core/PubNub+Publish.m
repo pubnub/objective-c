@@ -179,7 +179,7 @@
         
         DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> Publish%@ message to '%@' "
                      "channel%@%@", (compressed ? @" compressed" : @""), (channel?: @"<error>"),
-                     (!shouldStore ? @" which won't be saved in hisotry" : @""),
+                     (!shouldStore ? @" which won't be saved in history" : @""),
                      (!compressed ? [NSString stringWithFormat:@": %@",
                                      (messageForPublish?: @"<error>")] : @"."));
 

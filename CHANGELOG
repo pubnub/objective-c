@@ -1,3 +1,11 @@
+11-16-2015 - 151de6e - 4.1.2
+. fixed listener 'disconnect' status handling after client stumbled on network issues and reported 'unexpected disconnect' [#108187608]
+. fixed issue because of which string has been stored inside of serviceData for PNErrorStatus created from NSError [#107813234]
+. logger will print out current verbosity level information every time when it will be changed [#108186490]
+. all components (except core components) will add information about component to log output in format <PubNub::{component}>
+. changed 'build configuration' from Debug to Release for framework building targets.
+. updated demo projects to correctly handle disconnection event (which happen for unsubscribe operation not for subscribe)
+
 10-22-2015 - 0fbec04 - 4.1.1
 . fixed memory issues with PNNetwork instance
 . removed reprecated string encoding methods

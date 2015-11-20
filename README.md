@@ -1,4 +1,4 @@
-# PubNub 4.1.1 for iOS 7+
+# PubNub 4.1.2 for iOS 7+
 ## Please direct all Support Questions and Concerns to Support@PubNub.com
 ## Complete Docs
 Check out our [official docs page](http://www.pubnub.com/docs/ios-objective-c/pubnub-objective-c-sdk-v4)
