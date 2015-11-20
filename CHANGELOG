@@ -1,7 +1,10 @@
+11-20-2015 - 17b4417 - 4.1.3
+. adjusted Base64 decoding settings which will allow to decode encrypted messages from some clients which changed base64 encoding algorithms
+
 11-16-2015 - 151de6e - 4.1.2
-. fixed listener 'disconnect' status handling after client stumbled on network issues and reported 'unexpected disconnect' [#108187608]
-. fixed issue because of which string has been stored inside of serviceData for PNErrorStatus created from NSError [#107813234]
-. logger will print out current verbosity level information every time when it will be changed [#108186490]
+. fixed listener 'disconnect' status handling after client stumbled on network issues and reported 'unexpected disconnect'
+. fixed issue because of which string has been stored inside of serviceData for PNErrorStatus created from NSError
+. logger will print out current verbosity level information every time when it will be changed
 . all components (except core components) will add information about component to log output in format <PubNub::{component}>
 . changed 'build configuration' from Debug to Release for framework building targets.
 . updated demo projects to correctly handle disconnection event (which happen for unsubscribe operation not for subscribe)
