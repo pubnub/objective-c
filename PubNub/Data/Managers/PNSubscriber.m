@@ -1216,7 +1216,10 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     
     PNRequestParameters *parameters = [PNRequestParameters new];
     [parameters addPathComponent:channelsList forPlaceholder:@"{channels}"];
-    [parameters addPathComponent:[self.currentTimeToken stringValue] forPlaceholder:@"{tt}"];
+    // Subscribe v2 requires time token to be appended as a query parameter
+    if (self.currentTimeToken.floatValue != 0) {
+        [parameters addQueryParameter:self.currentTimeToken.stringValue forFieldName:@"t"];
+    }
     if (self.client.configuration.presenceHeartbeatValue > 0 ) {
         
         [parameters addQueryParameter:[@(self.client.configuration.presenceHeartbeatValue) stringValue]
