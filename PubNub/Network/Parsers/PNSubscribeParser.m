@@ -28,6 +28,10 @@ static NSString * const kPNEventsMessageElementKey = @"m";
 
 static NSString * const kPNEventsTimeTokenElementKey = @"t";
 
+static NSString * const kPNMessagePayloadDataKey = @"d";
+static NSString * const kPNMessageSubscriptionMatchKey = @"b";
+static NSString * const kPNMessageChannelKey = @"c";
+
 /**
  Stores reference on time token element index in response for events.
  */
@@ -228,31 +232,41 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
 //        
 //        event[@"subscribedChannel"] = group;
 //    }
-//    
-//    BOOL isPresenceEvent = [PNChannel isPresenceObject:channel];
+//
+    NSString *channel = data[kPNMessageChannelKey];
+    NSString *subscriptionMatch = data[kPNMessageSubscriptionMatchKey];
+    event[@"subscribedChannel"] = subscriptionMatch;
+    if (![subscriptionMatch isEqualToString:channel]) {
+        event[@"actualChannel"] = channel;
+    }
+    BOOL isPresenceEvent = [PNChannel isPresenceObject:channel];
+//    if ([channelGroup isEqualToString:channel]) {
+//        isPresenceEvent = (data[@"timestamp"] != nil &&
+//                           (data[@"action"] != nil || data[@"occupancy"] != nil));
+//    }
 //    if (![channel length] && [data isKindOfClass:[NSDictionary class]]) {
 //        
 //        isPresenceEvent = (data[@"timestamp"] != nil &&
 //                           (data[@"action"] != nil || data[@"occupancy"] != nil));
 //    }
 //    
-//    if (isPresenceEvent) {
-//        
-//        [event addEntriesFromDictionary:[self presenceFromData:data]];
-//    }
-//    else {
-//        
-//        [event addEntriesFromDictionary:[self messageFromData:data
-//                                     withAdditionalParserData:additionalData]];
-//    }
-//    
+    if (isPresenceEvent) {
+        
+        [event addEntriesFromDictionary:[self presenceFromData:data]];
+    }
+    else {
+        
+        [event addEntriesFromDictionary:[self messageFromData:data
+                                     withAdditionalParserData:additionalData]];
+    }
+//
     return event;
 }
 
 + (NSMutableDictionary *)messageFromData:(id)data
                 withAdditionalParserData:(NSDictionary *)additionalData {
     
-    NSMutableDictionary *message = [@{@"message":data} mutableCopy];
+    NSMutableDictionary *message = [@{@"message":data[kPNMessagePayloadDataKey]} mutableCopy];
     // Try decrypt message body if possible.
     if ([(NSString *)additionalData[@"cipherKey"] length]){
         
