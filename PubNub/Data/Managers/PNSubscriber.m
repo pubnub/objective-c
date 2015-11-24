@@ -1216,9 +1216,18 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     
     PNRequestParameters *parameters = [PNRequestParameters new];
     [parameters addPathComponent:channelsList forPlaceholder:@"{channels}"];
-    // Subscribe v2 requires time token to be appended as a query parameter
-    if (self.currentTimeToken.floatValue != 0) {
-        [parameters addQueryParameter:self.currentTimeToken.stringValue forFieldName:@"t"];
+    // Subscribe v2 requires time token to be appended as a query parameter,
+    // not necessary for initial subscribe
+    if ([self.currentTimeToken compare:@0] != NSOrderedSame) {
+        // Including timetoken object because time token number doesn't work
+        NSDictionary *timeTokenDict = @{
+                                        @"t": self.currentTimeToken.stringValue,
+                                        @"r": @0
+                                        };
+        NSString *timeTokenObjectString = [PNJSON JSONStringFrom:timeTokenDict withError:nil];
+        [parameters addQueryParameter:[PNString percentEscapedString:timeTokenObjectString] forFieldName:@"t"];
+        // This doesn't work
+//        [parameters addQueryParameter:self.currentTimeToken.stringValue forFieldName:@"t"];
     }
     if (self.client.configuration.presenceHeartbeatValue > 0 ) {
         

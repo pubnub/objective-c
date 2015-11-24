@@ -24,6 +24,10 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNAESErrorLogLevel;
  */
 static NSUInteger const kPNEventsListElementIndex = 0;
 
+static NSString * const kPNEventsMessageElementKey = @"m";
+
+static NSString * const kPNEventsTimeTokenElementKey = @"t";
+
 /**
  Stores reference on time token element index in response for events.
  */
@@ -152,35 +156,17 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
     // through 'nil' initialized local variable.
     NSDictionary *processedResponse = nil;
     
-    // Array will arrive in case of subscription event
-    if ([response isKindOfClass:[NSArray class]]) {
-        
-        NSArray *feedEvents = response[kPNEventsListElementIndex];
-        NSNumber *timeToken = @([response[kPNEventTimeTokenElement] longLongValue]);
-        NSArray *channels = nil;
-        NSArray *groups = nil;
-        if ([(NSArray *)response count] > kPNEventChannelsElementIndex) {
-            
-            channels = [PNChannel namesFromRequest:response[kPNEventChannelsElementIndex]];
-        }
-        if ([(NSArray *)response count] > kPNEventChannelsDetailsElementIndex) {
-            
-            groups = [PNChannel namesFromRequest:response[kPNEventChannelsDetailsElementIndex]];
-        }
-        
-        // Checking whether at least one event arrived or not.
+    // response is subscription
+    if ([response isKindOfClass:[NSDictionary class]]) {
+        NSLog(@"response: %@", response);
+        NSNumber *timeToken = @([response[kPNEventsTimeTokenElementKey][kPNEventsTimeTokenElementKey] longLongValue]);
+        NSArray *feedEvents = response[kPNEventsMessageElementKey];
         if ([feedEvents count]) {
-            
             NSMutableArray *events = [[NSMutableArray alloc] initWithCapacity:[feedEvents count]];
             for (NSUInteger eventIdx = 0; eventIdx < [feedEvents count]; eventIdx++) {
                 
                 // Fetching remote data object name on which event fired.
-                NSString *objectOrGroupName = (eventIdx < [channels count] ? channels[eventIdx] : channels[0]);
-                NSString *objectName = ([groups count] > eventIdx ? groups[eventIdx] : nil);
-                NSMutableDictionary *event = [self eventFromData:feedEvents[eventIdx]
-                                                      forChannel:(objectName?: objectOrGroupName)
-                                                           group:(objectName? objectOrGroupName: nil)
-                                        withAdditionalParserData:additionalData];
+                NSMutableDictionary *event = [self eventFromData:feedEvents[eventIdx] withAdditionalParserData:additionalData];
                 event[@"timetoken"] = timeToken;
                 [events addObject:event];
             }
@@ -188,44 +174,78 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
         }
         processedResponse = @{@"events":feedEvents,@"timetoken":timeToken};
     }
-    
+//    // Array will arrive in case of presence event
+//    if ([response isKindOfClass:[NSArray class]]) {
+//        
+//        NSArray *feedEvents = response[kPNEventsListElementIndex];
+//        NSNumber *timeToken = @([response[kPNEventTimeTokenElement] longLongValue]);
+//        NSArray *channels = nil;
+//        NSArray *groups = nil;
+//        if ([(NSArray *)response count] > kPNEventChannelsElementIndex) {
+//            
+//            channels = [PNChannel namesFromRequest:response[kPNEventChannelsElementIndex]];
+//        }
+//        if ([(NSArray *)response count] > kPNEventChannelsDetailsElementIndex) {
+//            
+//            groups = [PNChannel namesFromRequest:response[kPNEventChannelsDetailsElementIndex]];
+//        }
+//        
+//        // Checking whether at least one event arrived or not.
+//        if ([feedEvents count]) {
+//            
+//            NSMutableArray *events = [[NSMutableArray alloc] initWithCapacity:[feedEvents count]];
+//            for (NSUInteger eventIdx = 0; eventIdx < [feedEvents count]; eventIdx++) {
+//                
+//                // Fetching remote data object name on which event fired.
+//                NSString *objectOrGroupName = (eventIdx < [channels count] ? channels[eventIdx] : channels[0]);
+//                NSString *objectName = ([groups count] > eventIdx ? groups[eventIdx] : nil);
+//                NSMutableDictionary *event = [self eventFromData:feedEvents[eventIdx]
+//                                                      forChannel:(objectName?: objectOrGroupName)
+//                                                           group:(objectName? objectOrGroupName: nil)
+//                                        withAdditionalParserData:additionalData];
+//                event[@"timetoken"] = timeToken;
+//                [events addObject:event];
+//            }
+//            feedEvents = [events copy];
+//        }
+//        processedResponse = @{@"events":feedEvents,@"timetoken":timeToken};
+//    }
+
     return processedResponse;
 }
 
 
 #pragma mark - Events processing
 
-+ (NSMutableDictionary *)eventFromData:(id)data forChannel:(NSString *)channel
-                                 group:(NSString *)group
-              withAdditionalParserData:(NSDictionary *)additionalData {
++ (NSMutableDictionary *)eventFromData:(id)data withAdditionalParserData:(NSDictionary *)additionalData {
     
     NSMutableDictionary *event = [NSMutableDictionary new];
-    if ([channel length]) {
-        
-        event[(![group length] ? @"subscribedChannel": @"actualChannel")] = channel;
-    }
-    if ([group length]) {
-        
-        event[@"subscribedChannel"] = group;
-    }
-    
-    BOOL isPresenceEvent = [PNChannel isPresenceObject:channel];
-    if (![channel length] && [data isKindOfClass:[NSDictionary class]]) {
-        
-        isPresenceEvent = (data[@"timestamp"] != nil &&
-                           (data[@"action"] != nil || data[@"occupancy"] != nil));
-    }
-    
-    if (isPresenceEvent) {
-        
-        [event addEntriesFromDictionary:[self presenceFromData:data]];
-    }
-    else {
-        
-        [event addEntriesFromDictionary:[self messageFromData:data
-                                     withAdditionalParserData:additionalData]];
-    }
-    
+//    if ([channel length]) {
+//        
+//        event[(![group length] ? @"subscribedChannel": @"actualChannel")] = channel;
+//    }
+//    if ([group length]) {
+//        
+//        event[@"subscribedChannel"] = group;
+//    }
+//    
+//    BOOL isPresenceEvent = [PNChannel isPresenceObject:channel];
+//    if (![channel length] && [data isKindOfClass:[NSDictionary class]]) {
+//        
+//        isPresenceEvent = (data[@"timestamp"] != nil &&
+//                           (data[@"action"] != nil || data[@"occupancy"] != nil));
+//    }
+//    
+//    if (isPresenceEvent) {
+//        
+//        [event addEntriesFromDictionary:[self presenceFromData:data]];
+//    }
+//    else {
+//        
+//        [event addEntriesFromDictionary:[self messageFromData:data
+//                                     withAdditionalParserData:additionalData]];
+//    }
+//    
     return event;
 }
 
