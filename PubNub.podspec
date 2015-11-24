@@ -23,6 +23,7 @@ Pod::Spec.new do |spec|
     }
 
     spec.ios.deployment_target = '7.0'
+    sepc.watchos.deployment_target = '2.0'
     spec.osx.deployment_target = '10.9'
     spec.requires_arc = true
 
