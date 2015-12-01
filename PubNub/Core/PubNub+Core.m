@@ -220,11 +220,6 @@ void pn_safe_property_write(dispatch_queue_t queue, dispatch_block_t block) {
     
     // Check whether initialization has been successful or not
     if ((self = [super init])) {
-#if DEBUG
-        [PNLog dumpToFile:YES];
-#else
-        [PNLog dumpToFile:NO];
-#endif
         
         DDLogClientInfo([[self class] ddLogLevel], @"<PubNub> PubNub SDK %@ (%@)",
                         kPNLibraryVersion, kPNCommit);
