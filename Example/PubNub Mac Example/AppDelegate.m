@@ -76,6 +76,7 @@
 - (void)pubNubInit {
     
     [PNLog enabled:YES];
+    [PNLog dumpToFile:YES];
     [PNLog setMaximumLogFileSize:(10 * 1024 * 1024)];
     [PNLog setMaximumNumberOfLogFiles:10];
     
