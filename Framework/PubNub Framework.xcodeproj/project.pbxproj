@@ -390,6 +390,12 @@
 		791583901BD70EA40084FC70 /* DDASLLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB1AA1BD041F6001FC34D /* DDASLLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		791583911BD70EA40084FC70 /* DDLog.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB1B01BD041F6001FC34D /* DDLog.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		791583921BD70EA40084FC70 /* DDLog+LOGV.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB1B21BD041F6001FC34D /* DDLog+LOGV.h */; };
+		793887041BEAD49100DCC662 /* PNNumber.h in Headers */ = {isa = PBXBuildFile; fileRef = 793887021BEAD49100DCC662 /* PNNumber.h */; };
+		793887051BEAD49100DCC662 /* PNNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = 793887031BEAD49100DCC662 /* PNNumber.m */; };
+		793887061BEAD4A700DCC662 /* PNNumber.h in Headers */ = {isa = PBXBuildFile; fileRef = 793887021BEAD49100DCC662 /* PNNumber.h */; };
+		793887071BEAD4A800DCC662 /* PNNumber.h in Headers */ = {isa = PBXBuildFile; fileRef = 793887021BEAD49100DCC662 /* PNNumber.h */; };
+		793887081BEAD4DE00DCC662 /* PNNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = 793887031BEAD49100DCC662 /* PNNumber.m */; };
+		793887091BEAD4E100DCC662 /* PNNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = 793887031BEAD49100DCC662 /* PNNumber.m */; };
 		79CBB0421BD03D3F001FC34D /* PubNub.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0411BD03D3F001FC34D /* PubNub.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		79CBB0F81BD03DE4001FC34D /* PubNub+APNS.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0561BD03DE4001FC34D /* PubNub+APNS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		79CBB0F91BD03DE4001FC34D /* PubNub+APNS.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0571BD03DE4001FC34D /* PubNub+APNS.m */; };
@@ -545,7 +551,6 @@
 		79CBB18F1BD03DE4001FC34D /* PNURLBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0F71BD03DE4001FC34D /* PNURLBuilder.m */; };
 		79CBB1981BD03EB8001FC34D /* CocoaLumberjack.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB1971BD03EB8001FC34D /* CocoaLumberjack.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		79CBB19D1BD03EDF001FC34D /* CocoaLumberjack.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79CBB1951BD03EB8001FC34D /* CocoaLumberjack.framework */; };
-		79CBB19F1BD03EE4001FC34D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79CBB19E1BD03EE4001FC34D /* UIKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		79CBB1A11BD03EEA001FC34D /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 79CBB1A01BD03EEA001FC34D /* libz.tbd */; };
 		79CBB1B61BD041F6001FC34D /* DDAbstractDatabaseLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB1A61BD041F6001FC34D /* DDAbstractDatabaseLogger.h */; };
 		79CBB1B71BD041F6001FC34D /* DDAbstractDatabaseLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB1A71BD041F6001FC34D /* DDAbstractDatabaseLogger.m */; };
@@ -604,6 +609,8 @@
 		7915839E1BD7119E0084FC70 /* PubNub-watchOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PubNub-watchOS-Info.plist"; sourceTree = "<group>"; };
 		7915839F1BD712BE0084FC70 /* CocoaLumberjack-iOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CocoaLumberjack-iOS-Info.plist"; sourceTree = "<group>"; };
 		791583A01BD712BE0084FC70 /* CocoaLumberjack-watchOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CocoaLumberjack-watchOS-Info.plist"; sourceTree = "<group>"; };
+		793887021BEAD49100DCC662 /* PNNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNNumber.h; sourceTree = "<group>"; };
+		793887031BEAD49100DCC662 /* PNNumber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNNumber.m; sourceTree = "<group>"; };
 		79CBB03E1BD03D3F001FC34D /* PubNub.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PubNub.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		79CBB0411BD03D3F001FC34D /* PubNub.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PubNub.h; sourceTree = "<group>"; };
 		79CBB0431BD03D3F001FC34D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -830,7 +837,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				79CBB19D1BD03EDF001FC34D /* CocoaLumberjack.framework in Frameworks */,
-				79CBB19F1BD03EE4001FC34D /* UIKit.framework in Frameworks */,
 				79CBB1A11BD03EEA001FC34D /* libz.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1022,6 +1028,8 @@
 		79CBB0AB1BD03DE4001FC34D /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				793887021BEAD49100DCC662 /* PNNumber.h */,
+				793887031BEAD49100DCC662 /* PNNumber.m */,
 				79CBB0AC1BD03DE4001FC34D /* PNArray.h */,
 				79CBB0AD1BD03DE4001FC34D /* PNArray.m */,
 				79CBB0AE1BD03DE4001FC34D /* PNChannel.h */,
@@ -1283,6 +1291,7 @@
 				791582941BD709C60084FC70 /* PNSubscriber.h in Headers */,
 				791582951BD709C60084FC70 /* PubNub+PresencePrivate.h in Headers */,
 				791582961BD709C60084FC70 /* PNPresenceWhereNowParser.h in Headers */,
+				793887041BEAD49100DCC662 /* PNNumber.h in Headers */,
 				791582971BD709C60084FC70 /* PNDictionary.h in Headers */,
 				791582981BD709C60084FC70 /* PNLogFileManager.h in Headers */,
 				791582991BD709C60084FC70 /* PNNetwork.h in Headers */,
@@ -1375,6 +1384,7 @@
 				7915833D1BD709D10084FC70 /* PNSubscriber.h in Headers */,
 				7915833E1BD709D10084FC70 /* PubNub+PresencePrivate.h in Headers */,
 				7915833F1BD709D10084FC70 /* PNPresenceWhereNowParser.h in Headers */,
+				793887061BEAD4A700DCC662 /* PNNumber.h in Headers */,
 				791583401BD709D10084FC70 /* PNDictionary.h in Headers */,
 				791583411BD709D10084FC70 /* PNLogFileManager.h in Headers */,
 				791583421BD709D10084FC70 /* PNNetwork.h in Headers */,
@@ -1509,6 +1519,7 @@
 				79CBB1131BD03DE4001FC34D /* PNSubscriber.h in Headers */,
 				79CBB1031BD03DE4001FC34D /* PubNub+PresencePrivate.h in Headers */,
 				79CBB17A1BD03DE4001FC34D /* PNPresenceWhereNowParser.h in Headers */,
+				793887071BEAD4A800DCC662 /* PNNumber.h in Headers */,
 				79CBB1501BD03DE4001FC34D /* PNDictionary.h in Headers */,
 				79CBB15D1BD03DE4001FC34D /* PNLogFileManager.h in Headers */,
 				79CBB1861BD03DE4001FC34D /* PNNetwork.h in Headers */,
@@ -1884,6 +1895,7 @@
 				791582391BD709C60084FC70 /* PNNetwork.m in Sources */,
 				7915823A1BD709C60084FC70 /* PNLogger.m in Sources */,
 				7915823B1BD709C60084FC70 /* PNPublishStatus.m in Sources */,
+				793887051BEAD49100DCC662 /* PNNumber.m in Sources */,
 				7915823C1BD709C60084FC70 /* PubNub+Presence.m in Sources */,
 				7915823D1BD709C60084FC70 /* PNSubscriber.m in Sources */,
 				7915823E1BD709C60084FC70 /* PNURLBuilder.m in Sources */,
@@ -1913,6 +1925,7 @@
 				791582B41BD709D10084FC70 /* PNString.m in Sources */,
 				791582B51BD709D10084FC70 /* PubNub+Core.m in Sources */,
 				791582B61BD709D10084FC70 /* PNReachability.m in Sources */,
+				793887081BEAD4DE00DCC662 /* PNNumber.m in Sources */,
 				791582B71BD709D10084FC70 /* PNData.m in Sources */,
 				791582B81BD709D10084FC70 /* PNLogFileManager.m in Sources */,
 				791582B91BD709D10084FC70 /* PNDictionary.m in Sources */,
@@ -2021,6 +2034,7 @@
 				79CBB0FD1BD03DE4001FC34D /* PubNub+Core.m in Sources */,
 				79CBB18B1BD03DE4001FC34D /* PNReachability.m in Sources */,
 				79CBB14F1BD03DE4001FC34D /* PNData.m in Sources */,
+				793887091BEAD4E100DCC662 /* PNNumber.m in Sources */,
 				79CBB15E1BD03DE4001FC34D /* PNLogFileManager.m in Sources */,
 				79CBB1511BD03DE4001FC34D /* PNDictionary.m in Sources */,
 				79CBB1451BD03DE4001FC34D /* PNSubscribeStatus.m in Sources */,
