@@ -55,7 +55,7 @@
 + (NSData *)bas64DataFrom:(NSString *)string {
     
     return [[NSData alloc] initWithBase64EncodedString:string
-                                               options:(NSDataBase64DecodingOptions)0];
+                                               options:NSDataBase64DecodingIgnoreUnknownCharacters];
 }
 
 

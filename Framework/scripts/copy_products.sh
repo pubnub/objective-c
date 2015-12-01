@@ -25,6 +25,14 @@ if [[ ${BUILDING_UNIVERSAL_FRAMEWORK:=0} == 0 ]]; then
     do
         FRAMEWORK_BUNDLE_NAME="${frameworkName}.framework"
         FRAMEWORK_BUILD_PATH="${ARTIFACTS_PATH}/${FRAMEWORK_BUNDLE_NAME}"
-        cp -RP "${FRAMEWORK_BUILD_PATH}" "${PRODUCTS_PATH}/${FRAMEWORK_BUNDLE_NAME}"
+        FRAMEWORK_TARGET_PATH="${PRODUCTS_PATH}/${FRAMEWORK_BUNDLE_NAME}"
+        cp -RP "${FRAMEWORK_BUILD_PATH}" "${FRAMEWORK_TARGET_PATH}"
+
+        if [ ! -f "${FRAMEWORK_TARGET_PATH}/Modules/module.modulemap" ]; then
+            if [[ ! -d "${FRAMEWORK_TARGET_PATH}/Modules" ]]; then
+                mkdir -p "${FRAMEWORK_TARGET_PATH}/Modules"
+            fi
+            cp -r "${TARGET_TEMP_DIR}/module.modulemap" "${FRAMEWORK_TARGET_PATH}/Modules/module.modulemap"
+        fi
     done
 fi

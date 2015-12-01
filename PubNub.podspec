@@ -9,7 +9,7 @@
 
 Pod::Spec.new do |spec|
     spec.name     = 'PubNub'
-    spec.version  = '4.1.1'
+    spec.version  = '4.1.4'
     spec.summary  = 'The PubNub Real-Time Network. Build real-time apps quickly and scale them globally.'
     spec.homepage = 'https://github.com/pubnub/objective-c'
 
@@ -23,6 +23,7 @@ Pod::Spec.new do |spec|
     }
 
     spec.ios.deployment_target = '7.0'
+    spec.watchos.deployment_target = '2.0'
     spec.osx.deployment_target = '10.9'
     spec.requires_arc = true
 

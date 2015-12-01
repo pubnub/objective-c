@@ -46,7 +46,7 @@
 /**
  @brief      Convert provided base64-encoded \c string to \a NSData.
  @dicsuccion This is shortcut to [[NSData alloc] initWithBase64EncodedString:object
-                                                             options:(NSDataBase64DecodingOptions)0]
+                                  ptions:NSDataBase64DecodingIgnoreUnknownCharacters]
              method.
  
  @param string Reference on base64-encoded string which should be converted.

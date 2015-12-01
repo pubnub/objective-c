@@ -473,18 +473,21 @@ void pn_safe_property_write(dispatch_queue_t queue, dispatch_block_t block) {
     
     if (result) {
 
-        DDLogResult([[self class] ddLogLevel], @"<PubNub> %@", [result stringifiedRepresentation]);
+        DDLogResult([[self class] ddLogLevel], @"<PubNub> %@",
+                    [result stringifiedRepresentation]);
     }
     
     if (status) {
         
         if (status.isError) {
             
-            DDLogFailureStatus([[self class] ddLogLevel], @"<PubNub> %@", [status stringifiedRepresentation]);
+            DDLogFailureStatus([[self class] ddLogLevel], @"<PubNub> %@",
+                               [status stringifiedRepresentation]);
         }
         else {
             
-            DDLogStatus([[self class] ddLogLevel], @"<PubNub> %@", [status stringifiedRepresentation]);
+            DDLogStatus([[self class] ddLogLevel], @"<PubNub> %@",
+                        [status stringifiedRepresentation]);
         }
     }
 

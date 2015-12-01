@@ -577,8 +577,11 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
             
             // Check whether client transit from 'connected' -> 'disconnected'/'unexpected disconnect'
             // state.
+            // Also 'unexpected disconnect' -> 'disconnected' transition should be allowed for cases
+            // when used want to unsubscribe from channel(s) after network went down.
             shouldHandleTransition = (currentState == PNInitializedSubscriberState ||
-                                      currentState == PNConnectedSubscriberState);
+                                      currentState == PNConnectedSubscriberState ||
+                                      currentState == PNDisconnectedUnexpectedlySubscriberState);
             
             // In case if subscription restore failed after precious unexpected disconnect we should
             // handle it.
@@ -703,6 +706,13 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         }
         
         PNRequestParameters *parameters = [self subscribeRequestParametersWithState:state];
+        
+        if (initialSubscribe) {
+            
+            DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> Subscribe (channels: %@; groups: %@)",
+                         parameters.pathComponents[@"{channels}"], parameters.query[@"channel-group"]);
+        }
+        
         __weak __typeof(self) weakSelf = self;
         [self.client processOperation:PNSubscribeOperation withParameters:parameters
                       completionBlock:^(PNStatus *status){
@@ -786,6 +796,9 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                                        withProcessingError:nil];
     [self.client appendClientInformation:successStatus];
     __weak __typeof(self) weakSelf = self;
+    
+    DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> Unsubscribe (channels: %@; groups: %@)",
+                 (channels ? objectWithOutPresence : nil), (!channels ? objectWithOutPresence : nil));
     
     if ([objectWithOutPresence count]) {
         
@@ -951,7 +964,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
             ((PNStatus *)status).automaticallyRetry = YES;
             ((PNStatus *)status).retryCancelBlock = ^{
                 
-                DDLogAPICall([[weakSelf class] ddLogLevel], @"<PubNub> Cancel retry");
+                DDLogAPICall([[weakSelf class] ddLogLevel], @"<PubNub::API> Cancel retry");
                 [weakSelf stopRetryTimer];
             };
             [self startRetryTimer];
@@ -1153,7 +1166,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     PNErrorStatus *status = nil;
     if (data) {
         
-        DDLogResult([[self class] ddLogLevel], @"<PubNub> %@", [(PNResult *)data stringifiedRepresentation]);
+        DDLogResult([[self class] ddLogLevel], @"<PubNub> %@",
+                    [(PNResult *)data stringifiedRepresentation]);
         if ([(data.serviceData)[@"decryptError"] boolValue]) {
             
             status = [PNErrorStatus statusForOperation:PNSubscribeOperation
@@ -1185,6 +1199,12 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 }
 
 - (void)handleNewPresenceEvent:(PNPresenceEventResult *)data {
+    
+    if (data) {
+        
+        DDLogResult([[self class] ddLogLevel], @"<PubNub> %@",
+                    [(PNResult *)data stringifiedRepresentation]);
+    }
     
     // Silence static analyzer warnings.
     // Code is aware about this case and at the end will simply call on 'nil' object method.
