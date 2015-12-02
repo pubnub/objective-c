@@ -20,38 +20,29 @@
 static DDLogLevel ddLogLevel = (DDLogLevel)PNAESErrorLogLevel;
 
 /**
- Stores reference on index under which events list is stored.
+ Stores reference to key for array of messages returned in subscribe v2 response object
  */
-static NSUInteger const kPNEventsListElementIndex = 0;
-
 static NSString * const kPNEventsMessageElementKey = @"m";
 
+/**
+ Stores reference to key for timetoken in subscribe v2 response object
+ */
 static NSString * const kPNEventsTimeTokenElementKey = @"t";
 
+/**
+ Stores reference to key for payload data in subscribe v2 message object
+ */
 static NSString * const kPNMessagePayloadDataKey = @"d";
+
+/**
+ Stores reference to key for subscription match value in subscribe v2 message object
+ */
 static NSString * const kPNMessageSubscriptionMatchKey = @"b";
+
+/**
+ Stores reference to key for channel value in subscribe v2 message object
+ */
 static NSString * const kPNMessageChannelKey = @"c";
-
-/**
- Stores reference on time token element index in response for events.
- */
-static NSUInteger const kPNEventTimeTokenElement = 1;
-
-/**
- Stores reference on index under which channels list is stored.
- */
-static NSUInteger const kPNEventChannelsElementIndex = 2;
-
-/**
- @brief Stores reference on index under which channels detalization is stored
- 
- @discussion In case if under \c kPNEventChannelsElementIndex stored list of channel groups, under 
-             this index will be stored list of actual channels from channel group at which event
-             fired.
- 
- @since 3.7.0
- */
-static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
 
 
 #pragma mark - Protected interface
@@ -73,8 +64,7 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
  
  @since 4.0
  */
-+ (NSMutableDictionary *)eventFromData:(id)data forChannel:(NSString *)channel
-                                 group:(NSString *)group
++ (NSMutableDictionary *)eventFromData:(id)data
               withAdditionalParserData:(NSDictionary *)additionalData;
 
 /**
