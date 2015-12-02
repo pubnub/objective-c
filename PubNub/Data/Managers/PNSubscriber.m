@@ -229,6 +229,28 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 - (void)stopRetryTimer;
 
 
+#pragma mark - Unsubscription
+
+/**
+ @brief      Perform unsubscription operation.
+ @discussion If suitable objects has been passed, then client will ask \b PubNub presence service to
+             trigger \c 'leave' presence events on passed objects.
+ 
+ @param channels                Whether unsubscribing from list of channels or channel groups.
+ @param objects                 List of objects from which client should unsubscribe.
+ @param shouldInformListener    Whether listener should be informed at the end of operation or not.
+ @param subscribeOnRestChannels Whether client should try to subscribe on channels which may be left
+                                after unsubscription.
+ @param block                   Reference on unsubscription completion block which is used to notify
+                                code.
+ 
+ @since 4.2.0
+ */
+- (void)unsubscribeFrom:(BOOL)channels objects:(NSArray *)objects
+      informingListener:(BOOL)shouldInformListener subscribeOnRest:(BOOL)subscribeOnRestChannels
+             completion:(PNSubscriberCompletionBlock)block;
+
+
 #pragma mark - Handlers
 
 /**
@@ -612,15 +634,15 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
             PNStatus *targetStatus = (PNStatus *)status;
             if (!targetStatus) {
                 
-                targetStatus = [PNStatus statusForOperation:PNSubscribeOperation category:category
-                                        withProcessingError:nil];
+                targetStatus = [PNStatus statusForOperation:PNSubscribeOperation
+                                                   category:category withProcessingError:nil];
             }
             [targetStatus updateCategory:category];
             [self appendSubscriberInformation:targetStatus];
             // Silence static analyzer warnings.
-            // Code is aware about this case and at the end will simply call on 'nil' object method.
-            // In most cases if referenced object become 'nil' it mean what there is no more need in
-            // it and probably whole client instance has been deallocated.
+            // Code is aware about this case and at the end will simply call on 'nil' object
+            // method. In most cases if referenced object become 'nil' it mean what there is no
+            // more need in it and probably whole client instance has been deallocated.
             #pragma clang diagnostic push
             #pragma clang diagnostic ignored "-Wreceiver-is-weak"
             #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
@@ -779,7 +801,35 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     [self subscribe:NO usingTimeToken:nil withState:nil completion:block];
 }
 
+- (void)unsubscribeFromAll {
+    
+    BOOL hasChannels = (self.channels.count > 0);
+    BOOL hasChannelGroups = (self.channelGroups.count > 0);
+    BOOL informListener = (!hasChannels || !hasChannelGroups);
+    
+    if (hasChannels || hasChannelGroups) {
+        
+        NSArray *objects = (hasChannels ? [self.channels copy] : [self.channelGroups copy]);
+        if (hasChannels) { [self removeChannels:[self allObjects]]; }
+        else { [self removeChannelGroups:self.channelGroups]; }
+        __weak __typeof(self) weakSelf = self;
+        [self unsubscribeFrom:hasChannels objects:objects informingListener:informListener
+              subscribeOnRest:informListener completion:^(PNSubscribeStatus *status) {
+                  
+            [weakSelf unsubscribeFromAll];
+        }];
+    }
+}
+
 - (void)unsubscribeFrom:(BOOL)channels objects:(NSArray *)objects
+             completion:(PNSubscriberCompletionBlock)block {
+    
+    [self unsubscribeFrom:channels objects:objects informingListener:YES subscribeOnRest:YES
+               completion:block];
+}
+
+- (void)unsubscribeFrom:(BOOL)channels objects:(NSArray *)objects
+      informingListener:(BOOL)shouldInformListener subscribeOnRest:(BOOL)subscribeOnRestChannels
              completion:(PNSubscriberCompletionBlock)block {
     
     // Silence static analyzer warnings.
@@ -812,10 +862,13 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         [self.client processOperation:PNUnsubscribeOperation withParameters:parameters
                       completionBlock:^(__unused PNStatus *status1){
                           
-            [weakSelf updateStateTo:PNDisconnectedSubscriberState
-                         withStatus:(PNSubscribeStatus *)successStatus];
+            if (shouldInformListener) {
+                
+                [weakSelf updateStateTo:PNDisconnectedSubscriberState
+                             withStatus:(PNSubscribeStatus *)successStatus];
+            }
             [weakSelf.client callBlock:nil status:YES withResult:nil andStatus:successStatus];
-            if ([[weakSelf allObjects] count]) {
+            if ([weakSelf allObjects].count && subscribeOnRestChannels) {
                 
                 [weakSelf subscribe:YES usingTimeToken:nil withState:nil completion:nil];
             }
@@ -842,8 +895,11 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                     block((PNSubscribeStatus *)successStatus);
                 });
             }
-            [weakSelf updateStateTo:PNDisconnectedSubscriberState
-                         withStatus:(PNSubscribeStatus *)successStatus];
+            if (shouldInformListener) {
+                
+                [weakSelf updateStateTo:PNDisconnectedSubscriberState
+                             withStatus:(PNSubscribeStatus *)successStatus];
+            }
             [weakSelf.client callBlock:nil status:YES withResult:nil andStatus:successStatus];
         }];
     }

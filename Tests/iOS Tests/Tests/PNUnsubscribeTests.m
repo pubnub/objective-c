@@ -11,7 +11,24 @@
 #import "PNBasicSubscribeTestCase.h"
 
 @interface PNUnsubscribeTests : PNBasicSubscribeTestCase
+
+/**
+ @brief  Setup test environment for test which perform regular unsubscription test.
+ */
+- (void)setupForUnsubscriptionFromChannelsTest;
+
+/**
+ @brief  Setup test environment for test which perform unsubscription from all channels and groups.
+ */
+- (void)setupForUnsubscriptionFromAllTest;
+
+/**
+ @brief  Setup channel group for one of tests.
+ */
+- (void)setupChannelGroup;
+
 @end
+
 
 @implementation PNUnsubscribeTests
 
@@ -21,6 +38,16 @@
 
 - (void)setUp {
     [super setUp];
+    
+    if ([NSStringFromSelector(self.invocation.selector) isEqualToString:@"testUnsubscribeWithPresence"]) {
+        
+        [self setupForUnsubscriptionFromChannelsTest];
+    }
+    else { [self setupForUnsubscriptionFromAllTest]; }
+}
+
+- (void)setupForUnsubscriptionFromChannelsTest {
+    
     PNWeakify(self);
     self.didReceiveStatusAssertions = ^void (PubNub *client, PNSubscribeStatus *status) {
         PNStrongify(self);
@@ -52,7 +79,58 @@
         [self.subscribeExpectation fulfill];
     };
     [self PNTest_subscribeToChannels:@[@"a"] withPresence:YES];
+}
+
+- (void)setupForUnsubscriptionFromAllTest {
     
+    [self setupChannelGroup];
+    PNWeakify(self);
+    self.subscribeExpectation = [self expectationWithDescription:@"subscribe"];
+    self.didReceiveStatusAssertions = ^void (PubNub *client, PNSubscribeStatus *status) {
+        PNStrongify(self);
+        XCTAssertNotNil(status);
+        XCTAssertEqualObjects(self.client, client);
+        XCTAssertFalse(status.isError);
+        XCTAssertEqual(status.category, PNConnectedCategory);
+        XCTAssertFalse(status.isError);
+        XCTAssertEqual(status.statusCode, 200);
+        XCTAssertEqual(status.operation, PNSubscribeOperation);
+        NSArray *expectedChannels = @[@"unsubscribe-channel-test", @"unsubscribe-channel-test-pnpres"];
+        NSArray *expectedGroups = @[@"unsubscribe-group-test", @"unsubscribe-group-test-pnpres"];
+        XCTAssertEqualObjects([NSSet setWithArray:status.subscribedChannels],
+                              [NSSet setWithArray:expectedChannels]);
+        XCTAssertEqualObjects([NSSet setWithArray:status.subscribedChannelGroups],
+                              [NSSet setWithArray:expectedGroups]);
+        NSLog(@"timeToken: %@", status.currentTimetoken);
+        XCTAssertEqualObjects(status.currentTimetoken, @14490623876224521);
+        XCTAssertEqualObjects(status.currentTimetoken, status.data.timetoken);
+        [self.subscribeExpectation fulfill];
+    };
+    [self.client subscribeToChannels:@[@"unsubscribe-channel-test"] withPresence:YES];
+    [self.client subscribeToChannelGroups:@[@"unsubscribe-group-test"] withPresence:YES];
+    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
+        XCTAssertNil(error);
+    }];
+}
+
+- (void)setupChannelGroup {
+    
+    PNWeakify(self);
+    XCTestExpectation *channelGroupExpecation = [self expectationWithDescription:@"addChannelsToGroup"];
+    [self.client addChannels:@[@"test-channel"] toGroup:@"unsubscribe-group-test"
+              withCompletion:^(PNAcknowledgmentStatus *status) {
+                  
+        PNStrongify(self);
+        XCTAssertNotNil(status);
+        XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+        XCTAssertFalse(status.isError);
+        XCTAssertEqual(status.statusCode, 200);
+        XCTAssertEqual(status.operation, PNAddChannelsToGroupOperation);
+        [channelGroupExpecation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
+        XCTAssertNil(error);
+    }];
 }
 
 - (void)testUnsubscribeWithPresence {
@@ -69,6 +147,32 @@
         [self.unsubscribeExpectation fulfill];
     };
     [self PNTest_unsubscribeFromChannels:@[@"a"] withPresence:YES];
+}
+
+- (void)testUnsubscribeFromAll {
+    
+    PNWeakify(self);
+    self.unsubscribeExpectation = [self expectationWithDescription:@"unsubscribe"];
+    self.didReceiveStatusAssertions = ^void (PubNub *client, PNSubscribeStatus *status) {
+        
+        PNStrongify(self);
+        XCTAssertNotNil(client);
+        XCTAssertNotNil(status);
+        XCTAssertEqualObjects(self.client, client);
+        XCTAssertEqual(status.category, PNDisconnectedCategory);
+        XCTAssertFalse(status.isError);
+        XCTAssertEqual(status.statusCode, 200);
+        XCTAssertEqual(status.operation, PNUnsubscribeOperation);
+        XCTAssertEqual(status.subscribedChannels.count, 0,
+                       @"There should be no channels after complete unsubscribe");
+        XCTAssertEqual(status.subscribedChannelGroups.count, 0,
+                       @"There should be no channel groups after complete unsubscribe");
+        [self.unsubscribeExpectation fulfill];
+    };
+    [self.client unsubscribeFromAll];
+    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
+        XCTAssertNil(error);
+    }];
 }
 
 @end

@@ -169,6 +169,11 @@
     [self.subscriberManager unsubscribeFrom:YES objects:channels completion:nil];
 }
 
+- (void)unsubscribeFromAll {
+    
+    [self.subscriberManager unsubscribeFromAll];
+}
+
 #pragma mark -
 
 
