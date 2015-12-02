@@ -24,8 +24,15 @@
 #pragma mark - Helpers
 
 - (void)PNTest_subscribeToChannels:(NSArray *)channels withPresence:(BOOL)shouldObservePresence {
+    
+    [self PNTest_subscribeToChannels:channels withPresence:shouldObservePresence usingTimeToken:nil];
+}
+
+- (void)PNTest_subscribeToChannels:(NSArray *)channels withPresence:(BOOL)shouldObservePresence
+                    usingTimeToken:(NSNumber *)timeToken {
+    
     self.subscribeExpectation = [self expectationWithDescription:@"subscribe"];
-    [self.client subscribeToChannels:channels withPresence:shouldObservePresence];
+    [self.client subscribeToChannels:channels withPresence:shouldObservePresence usingTimeToken:timeToken];
     [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
         XCTAssertNil(error);
     }];

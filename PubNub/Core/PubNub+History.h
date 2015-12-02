@@ -101,8 +101,8 @@ typedef void(^PNHistoryCompletionBlock)(PNHistoryResult *result, PNErrorStatus *
  PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
                                                                   subscribeKey:@"demo"];
  self.client = [PubNub clientWithConfiguration:configuration];
- NSNumber *startDate = @((unsigned long long)([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]*10000000));
- NSNumber *endDate = @((unsigned long long)([[NSDate date] timeIntervalSince1970]*10000000));
+ NSNumber *startDate = @([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]);
+ NSNumber *endDate = @([[NSDate date] timeIntervalSince1970]);
  [self.client historyForChannel:@"storage" start:startDate end:endDate
                  withCompletion:^(PNHistoryResult *result, PNErrorStatus *status) {
  
@@ -127,8 +127,9 @@ typedef void(^PNHistoryCompletionBlock)(PNHistoryResult *result, PNErrorStatus *
  
  @param channel   Name of the channel for which events should be pulled out from storage.
  @param startDate Reference on time token for oldest event starting from which next should be 
-                  returned events.
+                  returned events. Value will be converted to required precision internally.
  @param endDate   Reference on time token for latest event till which events should be pulled out.
+                  Value will be converted to required precision internally.
  @param block     History pull processing completion block which pass two arguments: \c result - in
                   case of successful request processing \c data field will contain results of 
                   history request operation; \c status - in case if error occurred during request 
@@ -159,8 +160,8 @@ typedef void(^PNHistoryCompletionBlock)(PNHistoryResult *result, PNErrorStatus *
  PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
                                                                   subscribeKey:@"demo"];
  self.client = [PubNub clientWithConfiguration:configuration];
- NSNumber *startDate = @((unsigned long long)([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]*10000000));
- NSNumber *endDate = @((unsigned long long)([[NSDate date] timeIntervalSince1970]*10000000));
+ NSNumber *startDate = @([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]);
+ NSNumber *endDate = @([[NSDate date] timeIntervalSince1970]);
  [self.client historyForChannel:@"storage" start:startDate end:endDate limit:50
                  withCompletion:^(PNHistoryResult *result, PNErrorStatus *status) {
  
@@ -185,8 +186,9 @@ typedef void(^PNHistoryCompletionBlock)(PNHistoryResult *result, PNErrorStatus *
  
  @param channel   Name of the channel for which events should be pulled out from storage.
  @param startDate Reference on time token for oldest event starting from which next should be 
-                  returned events.
+                  returned events. Value will be converted to required precision internally.
  @param endDate   Reference on time token for latest event till which events should be pulled out.
+                  Value will be converted to required precision internally.
  @param limit     Maximum number of events which should be returned in response (not more then 
                   \b 100).
  @param block     History pull processing completion block which pass two arguments: \c result - in
@@ -224,8 +226,8 @@ typedef void(^PNHistoryCompletionBlock)(PNHistoryResult *result, PNErrorStatus *
  PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
                                                                   subscribeKey:@"demo"];
  self.client = [PubNub clientWithConfiguration:configuration];
- NSNumber *startDate = @((unsigned long long)([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]*10000000));
- NSNumber *endDate = @((unsigned long long)([[NSDate date] timeIntervalSince1970]*10000000));
+ NSNumber *startDate = @([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]);
+ NSNumber *endDate = @([[NSDate date] timeIntervalSince1970]);
  [self.client historyForChannel:@"storage" start:startDate end:endDate includeTimeToken:YES
                  withCompletion:^(PNHistoryResult *result, PNErrorStatus *status) {
  
@@ -253,9 +255,10 @@ typedef void(^PNHistoryCompletionBlock)(PNHistoryResult *result, PNErrorStatus *
  @param channel                Name of the channel for which events should be pulled out from
                                storage.
  @param startDate              Reference on time token for oldest event starting from which next 
-                               should be returned events.
+                               should be returned events. Value will be converted to required 
+                               precision internally.
  @param endDate                Reference on time token for latest event till which events should be 
-                               pulled out.
+                               pulled out. Value will be converted to required precision internally.
  @param shouldIncludeTimeToken Whether event dates (time tokens) should be included in response or 
                                not.
  @param block                  History pull processing completion block which pass two arguments:
@@ -288,8 +291,8 @@ typedef void(^PNHistoryCompletionBlock)(PNHistoryResult *result, PNErrorStatus *
  PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
                                                                   subscribeKey:@"demo"];
  self.client = [PubNub clientWithConfiguration:configuration];
- NSNumber *startDate = @((unsigned long long)([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]*10000000));
- NSNumber *endDate = @((unsigned long long)([[NSDate date] timeIntervalSince1970]*10000000));
+ NSNumber *startDate = @([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]);
+ NSNumber *endDate = @([[NSDate date] timeIntervalSince1970]);
  [self.client historyForChannel:@"storage" start:startDate end:endDate limit:35 includeTimeToken:YES
                  withCompletion:^(PNHistoryResult *result, PNErrorStatus *status) {
  
@@ -317,9 +320,10 @@ typedef void(^PNHistoryCompletionBlock)(PNHistoryResult *result, PNErrorStatus *
  @param channel                Name of the channel for which events should be pulled out from
                                storage.
  @param startDate              Reference on time token for oldest event starting from which next 
-                               should be returned events.
+                               should be returned events. Value will be converted to required
+                               precision internally.
  @param endDate                Reference on time token for latest event till which events should be 
-                               pulled out.
+                               pulled out. Value will be converted to required precision internally.
  @param limit                  Maximum number of events which should be returned in response (not 
                                more then \b 100).
  @param shouldIncludeTimeToken Whether event dates (time tokens) should be included in response or 
@@ -355,8 +359,8 @@ typedef void(^PNHistoryCompletionBlock)(PNHistoryResult *result, PNErrorStatus *
  PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
                                                                   subscribeKey:@"demo"];
  self.client = [PubNub clientWithConfiguration:configuration];
- NSNumber *startDate = @((unsigned long long)([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]*10000000));
- NSNumber *endDate = @((unsigned long long)([[NSDate date] timeIntervalSince1970]*10000000));
+ NSNumber *startDate = @([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]);
+ NSNumber *endDate = @([[NSDate date] timeIntervalSince1970]);
  [self.client historyForChannel:@"storage" start:startDate end:endDate limit:35 reverse:YES
                  withCompletion:^(PNHistoryResult *result, PNErrorStatus *status) {
  
@@ -381,9 +385,10 @@ typedef void(^PNHistoryCompletionBlock)(PNHistoryResult *result, PNErrorStatus *
  
  @param channel            Name of the channel for which events should be pulled out from storage.
  @param startDate          Reference on time token for oldest event starting from which next should
-                           be returned events.
+                           be returned events. Value will be converted to required precision 
+                           internally.
  @param endDate            Reference on time token for latest event till which events should be
-                           pulled out.
+                           pulled out. Value will be converted to required precision internally.
  @param limit              Maximum number of events which should be returned in response (not more 
                            then \b 100).
  @param shouldReverseOrder Whether events order in response should be reversed or not.
@@ -418,8 +423,8 @@ typedef void(^PNHistoryCompletionBlock)(PNHistoryResult *result, PNErrorStatus *
  PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
                                                                   subscribeKey:@"demo"];
  self.client = [PubNub clientWithConfiguration:configuration];
- NSNumber *startDate = @((unsigned long long)([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]*10000000));
- NSNumber *endDate = @((unsigned long long)([[NSDate date] timeIntervalSince1970]*10000000));
+ NSNumber *startDate = @([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]);
+ NSNumber *endDate = @([[NSDate date] timeIntervalSince1970]);
  [self.client historyForChannel:@"storage" start:startDate end:endDate limit:35 reverse:YES 
                includeTimeToken:YES withCompletion:^(PNHistoryResult *result, PNErrorStatus *status) {
  
@@ -447,9 +452,10 @@ typedef void(^PNHistoryCompletionBlock)(PNHistoryResult *result, PNErrorStatus *
  @param channel                Name of the channel for which events should be pulled out from
                                storage.
  @param startDate              Reference on time token for oldest event starting from which next 
-                               should be returned events.
+                               should be returned events. Value will be converted to required
+                               precision internally.
  @param endDate                Reference on time token for latest event till which events should be 
-                               pulled out.
+                               pulled out. Value will be converted to required precision internally.
  @param limit                  Maximum number of events which should be returned in response (not 
                                more then \b 100).
  @param shouldReverseOrder     Whether events order in response should be reversed or not.

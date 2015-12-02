@@ -10,6 +10,7 @@
 #import "PNDictionary.h"
 #import "PNChannel.h"
 #import "PNString.h"
+#import "PNNumber.h"
 #import "PNArray.h"
 #import "PNClass.h"
 #import "PNData.h"
@@ -28,5 +29,17 @@
  @since 4.0
  */
 extern void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block);
+
+/**
+ @brief      GCD helper for thread-safe access to instance properties/variables.
+ @discussion Wrapper take care on passed queue and block validation before trying to access data.
+ 
+ @param queue Queue on which \c block should be called.
+ @param block Reference on user-provided block in which access will de done.
+ 
+ @since 4.2.0
+ */
+extern void pn_safe_property_read(dispatch_queue_t queue, dispatch_block_t block);
+extern void pn_safe_property_write(dispatch_queue_t queue, dispatch_block_t block);
 
 #endif // PNHelpers_h

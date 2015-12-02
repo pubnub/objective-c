@@ -1,12 +1,10 @@
-//
-//  PubNub.h
-//  PubNub
-//
-//  Created by Sergey Mamontov on 10/15/15.
-//  Copyright © 2015 PubNub. All rights reserved.
-//
+/**
+ @author Sergey Mamontov
+ @version 4.2.0
+ @copyright © 2009-2015 PubNub, Inc.
+ */
+#import <Foundation/Foundation.h>
 
-#import <UIKit/UIKit.h>
 
 //! Project version number for PubNub.
 FOUNDATION_EXPORT double PubNubVersionNumber;

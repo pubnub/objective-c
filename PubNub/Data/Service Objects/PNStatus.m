@@ -98,6 +98,11 @@
 
 #pragma mark - Information
 
+- (NSString *)stringifiedCategory {
+    
+    return PNStatusCategoryStrings[self.category];
+}
+
 - (void)updateCategory:(PNStatusCategory)category; {
 
     self.category = category;
