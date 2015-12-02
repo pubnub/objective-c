@@ -16,7 +16,7 @@
  @since 4.0
  */
 static NSString * const PNOperationRequestTemplate[22] = {
-    [PNSubscribeOperation] = @"/v2/subscribe/{sub-key}/{channels}/0",
+    [PNSubscribeOperation] = @"/v2/subscribe/{sub-key}/{channels}/0/{tt}",
     [PNUnsubscribeOperation] = @"/v2/presence/sub_key/{sub-key}/channel/{channels}/leave",
     [PNPublishOperation] = @"/publish/{pub-key}/{sub-key}/0/{channel}/0/{message}",
     [PNHistoryOperation] = @"/v2/history/sub-key/{sub-key}/channel/{channel}",
