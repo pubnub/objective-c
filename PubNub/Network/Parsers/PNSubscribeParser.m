@@ -152,7 +152,6 @@ static NSString * const kPNMessageChannelKey = @"c";
     
     // response is subscription
     if ([response isKindOfClass:[NSDictionary class]]) {
-        NSLog(@"response: %@", response);
         NSNumber *timeToken = @([response[kPNEventsTimeTokenElementKey][kPNEventsTimeTokenElementKey] longLongValue]);
         NSArray *feedEvents = response[kPNEventsMessageElementKey];
         if ([feedEvents count]) {
