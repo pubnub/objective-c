@@ -167,15 +167,16 @@ typedef void(^PNSubscriberCompletionBlock)(PNSubscribeStatus *status);
              receive live updates from remote data objects live feed.
  
  @param initialSubscribe Stores whether client trying to subscriber using \b 0 time token and
-                         trigger all required presence notifications or  not.
+                         trigger all required presence notifications or not.
+ @param timeToken        Time from which client should try to catch up on messages.
  @param state            Reference on client state which should be bound to channels on which
                          client has been subscribed or will subscribe now.
  @param block            Reference on subscription completion block which is used to notify code.
  
  @since 4.0
  */
-- (void)subscribe:(BOOL)initialSubscribe withState:(NSDictionary *)state
-       completion:(PNSubscriberCompletionBlock)block;
+- (void)subscribe:(BOOL)initialSubscribe usingTimeToken:(NSNumber *)timeToken
+        withState:(NSDictionary *)state completion:(PNSubscriberCompletionBlock)block;
 
 /**
  @brief  Try restore subscription cycle by using \b 0 time token and if required try to catch up on
@@ -195,6 +196,15 @@ typedef void(^PNSubscriberCompletionBlock)(PNSubscribeStatus *status);
  @since 4.0
  */
 - (void)continueSubscriptionCycleIfRequiredWithCompletion:(PNSubscriberCompletionBlock)block;
+
+/**
+ @brief      Perform unsubscription operation.
+ @discussion Client will as \b PubNub presence service to trigger \c 'leave' for all channels and 
+             groups (except presence) on which client was subscribed earlier.
+ 
+ @since 4.2.0
+ */
+- (void)unsubscribeFromAll;
 
 /**
  @brief      Perform unsubscription operation.

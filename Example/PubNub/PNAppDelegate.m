@@ -77,6 +77,7 @@
 - (void)pubNubInit {
 
     [PNLog enabled:YES];
+    [PNLog dumpToFile:YES];
     [PNLog setMaximumLogFileSize:(10 * 1024 * 1024)];
     [PNLog setMaximumNumberOfLogFiles:10];
 
@@ -708,8 +709,8 @@
     }
     else if (status.operation == PNUnsubscribeOperation) {
         
-        PNSubscribeStatus *subscriberStatus = (PNSubscribeStatus *)status;
         if (status.category == PNDisconnectedCategory) {
+            
             // PNDisconnect happens as part of our regular operation
             // No need to monitor for this unless requested by support
             NSLog(@"^^^^ Non-error status: Expected Disconnect");

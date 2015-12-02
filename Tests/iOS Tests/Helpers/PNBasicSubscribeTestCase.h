@@ -29,6 +29,7 @@ typedef void (^PNClientDidReceiveStatusAssertions)(PubNub *client, PNSubscribeSt
 @property (nonatomic, copy) PNClientDidReceiveStatusAssertions didReceiveStatusAssertions;
 
 - (void)PNTest_subscribeToChannels:(NSArray *)channels withPresence:(BOOL)shouldObservePresence;
+- (void)PNTest_subscribeToChannels:(NSArray *)channels withPresence:(BOOL)shouldObservePresence usingTimeToken:(NSNumber *)timeToken;
 - (void)PNTest_subscribeToPresenceChannels:(NSArray *)channels;
 - (void)PNTest_subscribeToPresenceChannels:(NSArray *)channels withEventExpectation:(BOOL)shouldExpectEvent;
 

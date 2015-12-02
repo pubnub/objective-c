@@ -28,7 +28,7 @@ class PNBasicClientTestCase: JSZVCRTestCase {
     }
     
     override func matcherClass() -> AnyObject.Type! {
-        return JSZVCRUnorderedQueryMatcher.self
+        return PNDeviceIndependentMatcher.self
     }
     
     override func setUp() {

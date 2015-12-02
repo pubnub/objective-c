@@ -118,11 +118,13 @@
                                      @"include_token": (shouldIncludeTimeToken ? @"true" : @"false")}];
     if (startDate) {
         
-        [parameters addQueryParameter:[startDate stringValue] forFieldName:@"start"];
+        [parameters addQueryParameter:[[PNNumber timeTokenFromNumber:startDate] stringValue]
+                         forFieldName:@"start"];
     }
     if (endDate) {
         
-        [parameters addQueryParameter:[endDate stringValue] forFieldName:@"end"];
+        [parameters addQueryParameter:[[PNNumber timeTokenFromNumber:endDate] stringValue]
+                         forFieldName:@"end"];
     }
     if ([channel length]) {
         

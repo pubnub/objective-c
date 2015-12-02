@@ -79,6 +79,7 @@
 		51BB25541B68176C00A9F154 /* PNUnsubscribeTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 79EF04D41B4EAB1A007478CB /* PNUnsubscribeTests.bundle */; };
 		51D889F21B66F49E009127D0 /* PNBasicClientTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D889F11B66F49E009127D0 /* PNBasicClientTestCase.swift */; };
 		795CED0A1BCF002900D421BB /* PNHeartbeatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 795CED091BCF002900D421BB /* PNHeartbeatTests.swift */; };
+		796502F31C0E3709001F7782 /* PNDeviceIndependentMatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A6E5FF1BE421DC00C20B77 /* PNDeviceIndependentMatcher.m */; };
 		79EF04A41B4EAAB7007478CB /* PNAPNSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04911B4EAAB7007478CB /* PNAPNSTests.m */; };
 		79EF04A51B4EAAB7007478CB /* PNChannelGroupSubscribeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04921B4EAAB7007478CB /* PNChannelGroupSubscribeTests.m */; };
 		79EF04A61B4EAAB7007478CB /* PNChannelGroupTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04931B4EAAB7007478CB /* PNChannelGroupTests.m */; };
@@ -876,6 +877,7 @@
 				51BB25421B6815F300A9F154 /* PNTimeTokenTests.swift in Sources */,
 				9652F3EB1BA98706001E940A /* PNConfigurationChiperKeyTests.swift in Sources */,
 				51BB25401B6814EF00A9F154 /* PNBasicSubscribeTestCase.swift in Sources */,
+				796502F31C0E3709001F7782 /* PNDeviceIndependentMatcher.m in Sources */,
 				9652F3E91BA97AA5001E940A /* PNBasicClientCryptTestCase.swift in Sources */,
 				9722C2761B68A24C00A7CB44 /* PNPublishTests.swift in Sources */,
 				960354F91B9100120047EE04 /* PNPresenceEventTests.swift in Sources */,

@@ -73,6 +73,14 @@
  */
 @property (nonatomic, readonly, copy) NSURLRequest *clientRequest;
 
+/**
+ @brief  Stringified \c operation value.
+ 
+ @return Stringified representation for \c operation property which store value from 
+         \b PNOperationType.
+ */
+- (NSString *)stringifiedOperation;
+
 #pragma mark -
 
 

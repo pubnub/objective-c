@@ -64,6 +64,14 @@
 @implementation PNResult
 
 
+#pragma mark - Information
+
+- (NSString *)stringifiedOperation {
+    
+    return (self.operation >= PNSubscribeOperation ? PNOperationTypeStrings[self.operation] : @"Unknown");
+}
+
+
 #pragma mark - Initialization and Configuration
 
 + (instancetype)objectForOperation:(PNOperationType)operation

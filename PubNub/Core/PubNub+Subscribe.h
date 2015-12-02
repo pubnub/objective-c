@@ -126,6 +126,37 @@
  @brief      Try subscribe on specified set of channels.
  @discussion Using subscribe API client is able to subscribe of remote data objects live feed and 
              listen for new events from them.
+ 
+ @code
+ @endcode
+ Extension to \c -subscribeToChannels:withPresence: and allow to specify arbitrarily which should be
+ used during subscription.
+ 
+ @code
+ @endcode
+ \b Example:
+ 
+ @code
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ NSNumber *timeToken = @([[NSDate dateWithTimeIntervalSinceNow:-2.0] timeIntervalSince1970]);
+ [self.client subscribeToChannels:@[@"swift"] withPresence:YES usingTimeToken:timeToken];
+ @endcode
+ 
+ @param channels              List of channel names on which client should try to subscribe.
+ @param shouldObservePresence Whether presence observation should be enabled for \c channels or not.
+ @param timeToken             Time from which client should try to catch up on messages.
+ 
+ @since 4.2.0
+ */
+- (void)subscribeToChannels:(NSArray *)channels withPresence:(BOOL)shouldObservePresence
+             usingTimeToken:(NSNumber *)timeToken;
+
+/**
+ @brief      Try subscribe on specified set of channels.
+ @discussion Using subscribe API client is able to subscribe of remote data objects live feed and 
+             listen for new events from them.
  @code
  @endcode
  Extension to \c -subscribeToChannels:withPresence: and allow to specify client state information 
@@ -154,6 +185,39 @@
                 clientState:(NSDictionary *)state;
 
 /**
+ @brief      Try subscribe on specified set of channels.
+ @discussion Using subscribe API client is able to subscribe of remote data objects live feed and 
+             listen for new events from them.
+ @code
+ @endcode
+ Extension to \c -subscribeToChannels:withPresence:usingTimeToken: and allow to specify client state
+ information which should be passed to \b PubNub service along with subscription.
+ 
+ @code
+ @endcode
+ \b Example:
+ 
+ @code
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ NSNumber *timeToken = @([[NSDate dateWithTimeIntervalSinceNow:-2.0] timeIntervalSince1970]);
+ [self.client subscribeToChannels:@[@"swift"] withPresence:YES usingTimeToken:timeToken
+                 clientState:@{@"swift": @{@"Type": @"Developer"}}];
+ @endcode
+ 
+ @param channels              List of channel names on which client should try to subscribe.
+ @param shouldObservePresence Whether presence observation should be enabled for \c channels or not.
+ @param timeToken             Time from which client should try to catch up on messages.
+ @param state                 Reference on dictionary which stores key-value pairs based on channel
+                              name and value which should be assigned to it.
+ 
+ @since 4.2.0
+ */
+- (void)subscribeToChannels:(NSArray *)channels withPresence:(BOOL)shouldObservePresence
+             usingTimeToken:(NSNumber *)timeToken clientState:(NSDictionary *)state;
+
+/**
  @brief      Try subscribe on specified set of channel groups.
  @discussion Using subscribe API client is able to subscribe of remote data objects live feed and 
              listen for new events from them.
@@ -175,6 +239,37 @@
  @since 4.0
  */
 - (void)subscribeToChannelGroups:(NSArray *)groups withPresence:(BOOL)shouldObservePresence;
+
+/**
+ @brief      Try subscribe on specified set of channel groups.
+ @discussion Using subscribe API client is able to subscribe of remote data objects live feed and 
+             listen for new events from them.
+ 
+ @code
+ @endcode
+ Extension to \c -subscribeToChannelGroups:withPresence: and allow to specify arbitrarily which 
+ should be used during subscription.
+ 
+ @code
+ @endcode
+ \b Example:
+ 
+ @code
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ NSNumber *timeToken = @([[NSDate dateWithTimeIntervalSinceNow:-2.0] timeIntervalSince1970]);
+ [self.client subscribeToChannelGroups:@[@"developers"] withPresence:YES usingTimeToken:timeToken];
+ @endcode
+ 
+ @param groups                List of channel group names on which client should try to subscribe.
+ @param shouldObservePresence Whether presence observation should be enabled for \c groups or not.
+ @param timeToken             Time from which client should try to catch up on messages.
+ 
+ @since 4.2.0
+ */
+- (void)subscribeToChannelGroups:(NSArray *)groups withPresence:(BOOL)shouldObservePresence
+                  usingTimeToken:(NSNumber *)timeToken;
 
 /**
  @brief      Try subscribe on specified set of channel groups.
@@ -206,6 +301,39 @@
  */
 - (void)subscribeToChannelGroups:(NSArray *)groups withPresence:(BOOL)shouldObservePresence
                      clientState:(NSDictionary *)state;
+
+/**
+ @brief      Try subscribe on specified set of channel groups.
+ @discussion Using subscribe API client is able to subscribe of remote data objects live feed and 
+             listen for new events from them.
+ @code
+ @endcode
+ Extension to \c -subscribeToChannelGroups:withPresence:usingTimeToken: and allow to specify client
+ state information which should be passed to \b PubNub service along with subscription.
+ 
+ @code
+ @endcode
+ \b Example:
+ 
+ @code
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ NSNumber *timeToken = @([[NSDate dateWithTimeIntervalSinceNow:-2.0] timeIntervalSince1970]);
+ [self.client subscribeToChannelGroups:@[@"developers"] withPresence:YES usingTimeToken:timeToken
+                      clientState:@{@"developers": @{@"Name": @"Bob"}}];
+ @endcode
+ 
+ @param groups                List of channel group names on which client should try to subscribe.
+ @param shouldObservePresence Whether presence observation should be enabled for \c groups or not.
+ @param timeToken             Time from which client should try to catch up on messages.
+ @param state                 Reference on dictionary which stores key-value pairs based on channel
+                              group name and value which should be assigned to it.
+ 
+ @since 4.2.0
+ */
+- (void)subscribeToChannelGroups:(NSArray *)groups withPresence:(BOOL)shouldObservePresence
+                  usingTimeToken:(NSNumber *)timeToken clientState:(NSDictionary *)state;
 
 /**
  @brief      Enable presence observation on specified \c channels.
@@ -306,6 +434,26 @@
  @since 4.0
  */
 - (void)unsubscribeFromPresenceChannels:(NSArray *)channels;
+
+/**
+ @brief      Unsubscribe from all channels and groups on which client has been subscrbed so far.
+ @discussion This API will remove all channels, presence channels and channel groups from subscribe
+             cycle and as result will stop it.
+ 
+ @code
+ @endcode
+ \b Example:
+ 
+ @code
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client unsubscribeFromAll];
+ @endcode
+ 
+ @since 4.2.0
+ */
+- (void)unsubscribeFromAll;
 
 #pragma mark -
 
