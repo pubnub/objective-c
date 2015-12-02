@@ -199,6 +199,15 @@ typedef void(^PNSubscriberCompletionBlock)(PNSubscribeStatus *status);
 
 /**
  @brief      Perform unsubscription operation.
+ @discussion Client will as \b PubNub presence service to trigger \c 'leave' for all channels and 
+             groups (except presence) on which client was subscribed earlier.
+ 
+ @since 4.2.0
+ */
+- (void)unsubscribeFromAll;
+
+/**
+ @brief      Perform unsubscription operation.
  @discussion If suitable objects has been passed, then client will ask \b PubNub presence service to
              trigger \c 'leave' presence events on passed objects.
  

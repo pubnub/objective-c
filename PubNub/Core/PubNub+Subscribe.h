@@ -435,6 +435,26 @@
  */
 - (void)unsubscribeFromPresenceChannels:(NSArray *)channels;
 
+/**
+ @brief      Unsubscribe from all channels and groups on which client has been subscrbed so far.
+ @discussion This API will remove all channels, presence channels and channel groups from subscribe
+             cycle and as result will stop it.
+ 
+ @code
+ @endcode
+ \b Example:
+ 
+ @code
+ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+                                                                  subscribeKey:@"demo"];
+ self.client = [PubNub clientWithConfiguration:configuration];
+ [self.client unsubscribeFromAll];
+ @endcode
+ 
+ @since 4.2.0
+ */
+- (void)unsubscribeFromAll;
+
 #pragma mark -
 
 
