@@ -17,7 +17,7 @@
 static NSString * const kPNLibraryVersion = @"4.2.0";
 
 // Stores information about SDK codebase
-static NSString * const kPNCommit = @"0fbec044577bf9d309b7c048fc8c64f66fde1e48";
+static NSString * const kPNCommit = @"f77cd7d8e58fdea7315167987f4cb56ee71c800e";
 
 #if TARGET_OS_WATCH
     static NSString * const kPNClientName = @"ObjC-watchOS";
