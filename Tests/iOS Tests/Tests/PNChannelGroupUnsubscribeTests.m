@@ -47,15 +47,15 @@ static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupUnsubscribeTe
     NSArray *expectedChannelGroups;
     if (self.invocation.selector == @selector(testSimpleUnsubscribeWithNoPresence)) {
         shouldObservePresence = NO;
-        expectedMessage = @"*****.......... 583 - 2015-06-28 21:52:31";
-        expectedTimeToken = @14355535508745522;
+        expectedMessage = @"**************. 682 - 2015-12-02 15:00:53";
+        expectedTimeToken = @14490972520732825;
         expectedChannelGroups = @[
                                   kPNChannelGroupTestsName
                                   ];
     } else if (self.invocation.selector == @selector(testSimpleUnsubscribeWithPresence)) {
         shouldObservePresence = YES;
-        expectedMessage =  @"*****.......... 583 - 2015-06-28 21:52:31";
-        expectedTimeToken = @14355535508745522;
+        expectedMessage =  @"*************** 683 - 2015-12-02 15:00:54";
+        expectedTimeToken = @14490972538580829;
         expectedChannelGroups = @[
                                   kPNChannelGroupTestsName,
                                   [kPNChannelGroupTestsName stringByAppendingString:@"-pnpres"]
@@ -75,7 +75,7 @@ static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupUnsubscribeTe
                               [NSSet setWithArray:expectedChannelGroups]);
         XCTAssertEqual(status.operation, PNSubscribeOperation);
         NSLog(@"timeToken: %@", status.currentTimetoken);
-//        XCTAssertEqualObjects(status.currentTimetoken, expectedTimeToken);
+        XCTAssertEqualObjects(status.currentTimetoken, expectedTimeToken);
         XCTAssertEqualObjects(status.currentTimetoken, status.data.timetoken);
         
     };
@@ -90,7 +90,7 @@ static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupUnsubscribeTe
         XCTAssertEqual(message.operation, PNSubscribeOperation);
         NSLog(@"message:");
         NSLog(@"%@", message.data.message);
-//        XCTAssertEqualObjects(message.data.message, expectedMessage);
+        XCTAssertEqualObjects(message.data.message, expectedMessage);
         [self.channelGroupSubscribeExpectation fulfill];
     };
     

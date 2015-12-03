@@ -29,7 +29,7 @@
 }
 
 - (BOOL)isRecording{
-    return NO;
+    return YES;
 }
 
 #pragma mark - Simple tests without preparing steps

@@ -29,11 +29,14 @@
 #pragma mark - Simple tests without preparing steps
 
 /**
- All testes according to events we have in: https://github.com/pubnub/pubnub-docs/blob/master/components/presence/design/overview.asciidoc
+ All tests according to events we have in: https://github.com/pubnub/pubnub-docs/blob/master/components/presence/design/overview.asciidoc
  */
 
 - (void)testJoinEvent {
     PNWeakify(self);
+    self.didReceiveStatusAssertions = ^void (PubNub *client, PNSubscribeStatus *status) {
+        
+    };
     self.didReceivePresenceEventAssertions = ^void (PubNub *client, PNPresenceEventResult *event) {
         PNStrongify(self);
         XCTAssertEqualObjects(self.client, client);
@@ -50,7 +53,7 @@
         XCTAssertEqualObjects(event.data.timetoken, @14407549482844872, @"Timetoken is not the same.");
     };
     
-    [self PNTest_subscribeToPresenceChannels:@[self.uniqueName] withEventExpectation:YES];
+    [self PNTest_subscribeToPresenceChannels:@[self.uniqueName]];
 }
 
 - (void)testLeaveEvent {
@@ -71,7 +74,7 @@
         XCTAssertEqualObjects(event.data.timetoken, @14407734890045162, @"Timetoken is not the same.");
     };
     
-    [self PNTest_subscribeToPresenceChannels:@[self.uniqueName] withEventExpectation:YES];
+    [self PNTest_subscribeToPresenceChannels:@[self.uniqueName]];
 }
 
 - (void)testTimeoutEvent {
@@ -92,7 +95,7 @@
         XCTAssertEqualObjects(event.data.timetoken, @14407767410944227, @"Timetoken is not the same.");
     };
     
-    [self PNTest_subscribeToPresenceChannels:@[self.uniqueName] withEventExpectation:YES];
+    [self PNTest_subscribeToPresenceChannels:@[self.uniqueName]];
 }
 
 - (void)testStateChangeEvent {
@@ -115,7 +118,7 @@
         XCTAssertEqualObjects(event.data.timetoken, @14407784131674496, @"Timetoken is not the same.");
     };
     
-    [self PNTest_subscribeToPresenceChannels:@[self.uniqueName] withEventExpectation:YES];
+    [self PNTest_subscribeToPresenceChannels:@[self.uniqueName]];
 }
 
 - (void)testIntervalEvent {
@@ -137,7 +140,7 @@
         XCTAssertEqualObjects(event.data.timetoken, @14411068884747343, @"Timetoken is not the same.");
     };
     
-    [self PNTest_subscribeToPresenceChannels:@[self.uniqueName] withEventExpectation:YES];
+    [self PNTest_subscribeToPresenceChannels:@[self.uniqueName]];
 }
 
 @end

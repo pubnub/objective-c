@@ -59,7 +59,7 @@ static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupSubscribeTest
         
         XCTAssertEqual(status.operation, PNSubscribeOperation);
         NSLog(@"timeToken: %@", status.currentTimetoken);
-        XCTAssertEqualObjects(status.currentTimetoken, @14355524859273802);
+        XCTAssertEqualObjects(status.currentTimetoken, @14490969656951470);
         XCTAssertEqualObjects(status.currentTimetoken, status.data.timetoken);
         
     };
@@ -75,10 +75,10 @@ static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupSubscribeTest
         NSLog(@"message:");
         NSLog(@"%@", message.data.message);
         XCTAssertNotNil(message.data);
-        XCTAssertEqualObjects(message.data.message, @"**************. 52 - 2015-06-28 21:34:46");
+        XCTAssertEqualObjects(message.data.message, @"***********.... 439 - 2015-12-02 14:56:06");
         XCTAssertEqualObjects(message.data.actualChannel, @"a");
         XCTAssertEqualObjects(message.data.subscribedChannel, kPNChannelGroupTestsName);
-        XCTAssertEqualObjects(message.data.timetoken, @14355524878034000);
+        XCTAssertEqualObjects(message.data.timetoken, @14490969668672102);
         [self.channelGroupSubscribeExpectation fulfill];
     };
     [self PNTest_subscribeToChannelGroups:[self channelGroups] withPresence:YES];
@@ -101,7 +101,7 @@ static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupSubscribeTest
         
         XCTAssertEqual(status.operation, PNSubscribeOperation);
         NSLog(@"timeToken: %@", status.currentTimetoken);
-        XCTAssertEqualObjects(status.currentTimetoken, @14355524847292283);
+        XCTAssertEqualObjects(status.currentTimetoken, @14490969645210810);
         XCTAssertEqualObjects(status.currentTimetoken, status.data.timetoken);
         
     };
@@ -120,10 +120,10 @@ static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupSubscribeTest
         // the string from this channel is absurd, should simplify at some point, but want to just keep cranking for now
         // cast to NSData to compare
         
-        XCTAssertEqualObjects(message.data.message, @"*************.. 51 - 2015-06-28 21:34:44");
+        XCTAssertEqualObjects(message.data.message, @"**********..... 438 - 2015-12-02 14:56:05");
         XCTAssertEqualObjects(message.data.actualChannel, @"a");
         XCTAssertEqualObjects(message.data.subscribedChannel, kPNChannelGroupTestsName);
-        XCTAssertEqualObjects(message.data.timetoken, @14355524857638372);
+        XCTAssertEqualObjects(message.data.timetoken, @14490969656951470);
         [self.channelGroupSubscribeExpectation fulfill];
     };
     [self PNTest_subscribeToChannelGroups:[self channelGroups] withPresence:NO];
