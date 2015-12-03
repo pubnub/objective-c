@@ -77,6 +77,8 @@
 		51BB25521B68176C00A9F154 /* PNSubscribeToPresenceChannelsTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 79EF04D21B4EAB1A007478CB /* PNSubscribeToPresenceChannelsTests.bundle */; };
 		51BB25531B68176C00A9F154 /* PNTimeTokenTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 79EF04D31B4EAB1A007478CB /* PNTimeTokenTests.bundle */; };
 		51BB25541B68176C00A9F154 /* PNUnsubscribeTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 79EF04D41B4EAB1A007478CB /* PNUnsubscribeTests.bundle */; };
+		51D154871C10D84500AECD05 /* PNPresenceChannelGroupTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 51D154861C10D84500AECD05 /* PNPresenceChannelGroupTests.m */; };
+		51D154881C10D84500AECD05 /* PNPresenceChannelGroupTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 51D154861C10D84500AECD05 /* PNPresenceChannelGroupTests.m */; };
 		51D889F21B66F49E009127D0 /* PNBasicClientTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D889F11B66F49E009127D0 /* PNBasicClientTestCase.swift */; };
 		795CED0A1BCF002900D421BB /* PNHeartbeatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 795CED091BCF002900D421BB /* PNHeartbeatTests.swift */; };
 		796502F31C0E3709001F7782 /* PNDeviceIndependentMatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A6E5FF1BE421DC00C20B77 /* PNDeviceIndependentMatcher.m */; };
@@ -150,6 +152,7 @@
 		51A6E5FF1BE421DC00C20B77 /* PNDeviceIndependentMatcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNDeviceIndependentMatcher.m; sourceTree = "<group>"; };
 		51BB253F1B6814EF00A9F154 /* PNBasicSubscribeTestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNBasicSubscribeTestCase.swift; sourceTree = "<group>"; };
 		51BB25411B6815F300A9F154 /* PNTimeTokenTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNTimeTokenTests.swift; sourceTree = "<group>"; };
+		51D154861C10D84500AECD05 /* PNPresenceChannelGroupTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNPresenceChannelGroupTests.m; path = Tests/PNPresenceChannelGroupTests.m; sourceTree = "<group>"; };
 		51D889E11B66E0F8009127D0 /* iOS Swift Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "iOS Swift Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		51D889E41B66E0F8009127D0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		51D889EA1B66E1D9009127D0 /* iOS Tests-Swift-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "iOS Tests-Swift-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
@@ -308,6 +311,7 @@
 				79EF04981B4EAAB7007478CB /* PNHeartbeatTests.m */,
 				79EF04991B4EAAB7007478CB /* PNHistoryTests.m */,
 				79EF049A1B4EAAB7007478CB /* PNPresenceTests.m */,
+				51D154861C10D84500AECD05 /* PNPresenceChannelGroupTests.m */,
 				967707F61B8F4A80002B8E84 /* PNPresenceEventTests.m */,
 				79EF049B1B4EAAB7007478CB /* PNPublishCompressedTests.m */,
 				79EF049C1B4EAAB7007478CB /* PNPublishSizeOfMessage.m */,
@@ -810,6 +814,7 @@
 				517A9EF01BE3189300FAA43A /* PNBasicClientTestCase.m in Sources */,
 				517A9EE01BE3185800FAA43A /* PNClientStateChannelGroupTests.m in Sources */,
 				517A9EF51BE318B900FAA43A /* NSArray+PNTest.m in Sources */,
+				51D154881C10D84500AECD05 /* PNPresenceChannelGroupTests.m in Sources */,
 				517A9EEC1BE3185800FAA43A /* PNSubscribeToPresenceChannelsTests.m in Sources */,
 				517A9EF31BE318B400FAA43A /* NSDictionary+PNTest.m in Sources */,
 				517A9EDC1BE3185800FAA43A /* PNChannelGroupSubscribeTests.m in Sources */,
@@ -845,6 +850,7 @@
 				79EF04B41B4EAAB7007478CB /* PNSubscribeToPresenceChannelsTests.m in Sources */,
 				79EF04C11B4EAB01007478CB /* NSDictionary+PNTest.m in Sources */,
 				79EF04A41B4EAAB7007478CB /* PNAPNSTests.m in Sources */,
+				51D154871C10D84500AECD05 /* PNPresenceChannelGroupTests.m in Sources */,
 				79EF04AC1B4EAAB7007478CB /* PNHistoryTests.m in Sources */,
 				79EF04B31B4EAAB7007478CB /* PNSubscribeTests.m in Sources */,
 				79EF04BC1B4EAAE4007478CB /* PNBasicSubscribeTestCase.m in Sources */,

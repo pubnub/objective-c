@@ -11,6 +11,6 @@
 @interface NSDictionary (PNTest)
 
 - (NSString *)jsonDescription;
-- (NSString *)codeFormatDescription;
+- (NSString *)testAssertionFormat;
 
 @end
