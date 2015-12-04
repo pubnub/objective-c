@@ -18,6 +18,17 @@
 			name = "Universal Framework (watchOS)";
 			productName = "Universal Framework";
 		};
+		79ACC4911C11BC620056523A /* Universal Framework (Fabric) */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 79ACC4931C11BC620056523A /* Build configuration list for PBXAggregateTarget "Universal Framework (Fabric)" */;
+			buildPhases = (
+				79ACC4921C11BC620056523A /* Build Universal Binary */,
+			);
+			dependencies = (
+			);
+			name = "Universal Framework (Fabric)";
+			productName = "Universal Framework";
+		};
 		79CBB1D31BD042FB001FC34D /* Universal Framework (iOS) */ = {
 			isa = PBXAggregateTarget;
 			buildConfigurationList = 79CBB1D41BD042FB001FC34D /* Build configuration list for PBXAggregateTarget "Universal Framework (iOS)" */;
@@ -396,6 +407,166 @@
 		793887071BEAD4A800DCC662 /* PNNumber.h in Headers */ = {isa = PBXBuildFile; fileRef = 793887021BEAD49100DCC662 /* PNNumber.h */; };
 		793887081BEAD4DE00DCC662 /* PNNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = 793887031BEAD49100DCC662 /* PNNumber.m */; };
 		793887091BEAD4E100DCC662 /* PNNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = 793887031BEAD49100DCC662 /* PNNumber.m */; };
+		795158621C11EA5500A9D3AE /* PubNub.h in Headers */ = {isa = PBXBuildFile; fileRef = 795158611C11EA5500A9D3AE /* PubNub.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79AAC15B1C11BE71008D94A8 /* PubNub+FAB.h in Headers */ = {isa = PBXBuildFile; fileRef = 79ACC3D91C11BB420056523A /* PubNub+FAB.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79AAC15C1C11BE77008D94A8 /* PubNub+FAB.m in Sources */ = {isa = PBXBuildFile; fileRef = 79ACC3DA1C11BB420056523A /* PubNub+FAB.m */; };
+		79ACC3EA1C11BC4D0056523A /* PubNub+History.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB05E1BD03DE4001FC34D /* PubNub+History.m */; };
+		79ACC3EB1C11BC4D0056523A /* PNPresenceGlobalHereNowResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0951BD03DE4001FC34D /* PNPresenceGlobalHereNowResult.m */; };
+		79ACC3EC1C11BC4D0056523A /* PNString.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0BC1BD03DE4001FC34D /* PNString.m */; };
+		79ACC3ED1C11BC4D0056523A /* PubNub+Core.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB05B1BD03DE4001FC34D /* PubNub+Core.m */; };
+		79ACC3EE1C11BC4D0056523A /* PNReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0F31BD03DE4001FC34D /* PNReachability.m */; };
+		79ACC3EF1C11BC4D0056523A /* PNData.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0B31BD03DE4001FC34D /* PNData.m */; };
+		79ACC3F01C11BC4D0056523A /* PNLogFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0C31BD03DE4001FC34D /* PNLogFileManager.m */; };
+		79ACC3F11C11BC4D0056523A /* PNDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0B51BD03DE4001FC34D /* PNDictionary.m */; };
+		79ACC3F21C11BC4D0056523A /* PNSubscribeStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0A61BD03DE4001FC34D /* PNSubscribeStatus.m */; };
+		79ACC3F31C11BC4D0056523A /* PNConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB07B1BD03DE4001FC34D /* PNConfiguration.m */; };
+		79ACC3F41C11BC4D0056523A /* PNHistoryParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0DB1BD03DE4001FC34D /* PNHistoryParser.m */; };
+		79ACC3F51C11BC4D0056523A /* PNGZIP.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0B71BD03DE4001FC34D /* PNGZIP.m */; };
+		79ACC3F61C11BC4D0056523A /* PNPushNotificationsStateModificationParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0E71BD03DE4001FC34D /* PNPushNotificationsStateModificationParser.m */; };
+		79ACC3F71C11BC4D0056523A /* PNJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0BA1BD03DE4001FC34D /* PNJSON.m */; };
+		79ACC3F81C11BC4D0056523A /* PNPresenceWhereNowResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0971BD03DE4001FC34D /* PNPresenceWhereNowResult.m */; };
+		79ACC3F91C11BC4D0056523A /* PubNub+APNS.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0571BD03DE4001FC34D /* PubNub+APNS.m */; };
+		79ACC3FA1C11BC4D0056523A /* PNChannelGroupAuditionParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0D11BD03DE4001FC34D /* PNChannelGroupAuditionParser.m */; };
+		79ACC3FB1C11BC4D0056523A /* PNChannelGroupsResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0881BD03DE4001FC34D /* PNChannelGroupsResult.m */; };
+		79ACC3FC1C11BC4D0056523A /* PubNub+Time.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB06A1BD03DE4001FC34D /* PubNub+Time.m */; };
+		79ACC3FD1C11BC4D0056523A /* PNErrorStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB08D1BD03DE4001FC34D /* PNErrorStatus.m */; };
+		79ACC3FE1C11BC4D0056523A /* PubNub+State.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0651BD03DE4001FC34D /* PubNub+State.m */; };
+		79ACC3FF1C11BC4D0056523A /* PNPushNotificationsAuditParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0E51BD03DE4001FC34D /* PNPushNotificationsAuditParser.m */; };
+		79ACC4001C11BC4D0056523A /* PNStateListener.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0721BD03DE4001FC34D /* PNStateListener.m */; };
+		79ACC4011C11BC4D0056523A /* PNHeartbeat.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0701BD03DE4001FC34D /* PNHeartbeat.m */; };
+		79ACC4021C11BC4D0056523A /* PNAcknowledgmentStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB07E1BD03DE4001FC34D /* PNAcknowledgmentStatus.m */; };
+		79ACC4031C11BC4D0056523A /* PubNub+ChannelGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0591BD03DE4001FC34D /* PubNub+ChannelGroup.m */; };
+		79ACC4041C11BC4D0056523A /* PNRequestParameters.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0F51BD03DE4001FC34D /* PNRequestParameters.m */; };
+		79ACC4051C11BC4D0056523A /* PNHistoryResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB08F1BD03DE4001FC34D /* PNHistoryResult.m */; };
+		79ACC4061C11BC4D0056523A /* PNErrorParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0D71BD03DE4001FC34D /* PNErrorParser.m */; };
+		79ACC4071C11BC4D0056523A /* PNChannelClientStateResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0821BD03DE4001FC34D /* PNChannelClientStateResult.m */; };
+		79ACC4081C11BC4D0056523A /* PNPresenceWhereNowParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0E31BD03DE4001FC34D /* PNPresenceWhereNowParser.m */; };
+		79ACC4091C11BC4D0056523A /* PNChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0AF1BD03DE4001FC34D /* PNChannel.m */; };
+		79ACC40A1C11BC4D0056523A /* PNSubscriberResults.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0A41BD03DE4001FC34D /* PNSubscriberResults.m */; };
+		79ACC40B1C11BC4D0056523A /* PNChannelGroupModificationParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0D31BD03DE4001FC34D /* PNChannelGroupModificationParser.m */; };
+		79ACC40C1C11BC4D0056523A /* PNClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0B11BD03DE4001FC34D /* PNClass.m */; };
+		79ACC40D1C11BC4D0056523A /* PNClientInformation.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0781BD03DE4001FC34D /* PNClientInformation.m */; };
+		79ACC40E1C11BC4D0056523A /* PNChannelGroupChannelsResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0841BD03DE4001FC34D /* PNChannelGroupChannelsResult.m */; };
+		79ACC40F1C11BC4D0056523A /* PNLeaveParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0DD1BD03DE4001FC34D /* PNLeaveParser.m */; };
+		79ACC4101C11BC4D0056523A /* PNClientState.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB06E1BD03DE4001FC34D /* PNClientState.m */; };
+		79ACC4111C11BC4D0056523A /* PNSubscribeParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0EB1BD03DE4001FC34D /* PNSubscribeParser.m */; };
+		79ACC4121C11BC4D0056523A /* PNMessagePublishParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0DF1BD03DE4001FC34D /* PNMessagePublishParser.m */; };
+		79ACC4131C11BC4D0056523A /* PNURLRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0BE1BD03DE4001FC34D /* PNURLRequest.m */; };
+		79ACC4141C11BC4D0056523A /* PNTimeParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0ED1BD03DE4001FC34D /* PNTimeParser.m */; };
+		79ACC4151C11BC4D0056523A /* PNTimeResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0A81BD03DE4001FC34D /* PNTimeResult.m */; };
+		79ACC4161C11BC4D0056523A /* PNLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0C11BD03DE4001FC34D /* PNLog.m */; };
+		79ACC4171C11BC4D0056523A /* PNServiceData.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB09F1BD03DE4001FC34D /* PNServiceData.m */; };
+		79ACC4181C11BC4D0056523A /* PNClientStateUpdateStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB08A1BD03DE4001FC34D /* PNClientStateUpdateStatus.m */; };
+		79ACC4191C11BC4D0056523A /* PNAES.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0761BD03DE4001FC34D /* PNAES.m */; };
+		79ACC41A1C11BC4D0056523A /* PNNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0EF1BD03DE4001FC34D /* PNNetwork.m */; };
+		79ACC41B1C11BC4D0056523A /* PNLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0C51BD03DE4001FC34D /* PNLogger.m */; };
+		79ACC41C1C11BC4D0056523A /* PNPublishStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0991BD03DE4001FC34D /* PNPublishStatus.m */; };
+		79ACC41D1C11BC4D0056523A /* PNNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = 793887031BEAD49100DCC662 /* PNNumber.m */; };
+		79ACC41E1C11BC4D0056523A /* PubNub+Presence.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0601BD03DE4001FC34D /* PubNub+Presence.m */; };
+		79ACC41F1C11BC4D0056523A /* PNSubscriber.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0741BD03DE4001FC34D /* PNSubscriber.m */; };
+		79ACC4201C11BC4D0056523A /* PNURLBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0F71BD03DE4001FC34D /* PNURLBuilder.m */; };
+		79ACC4211C11BC4D0056523A /* PNChannelGroupClientStateResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0861BD03DE4001FC34D /* PNChannelGroupClientStateResult.m */; };
+		79ACC4221C11BC4D0056523A /* PNRemoveDeviceFromAPNSResponseParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0E91BD03DE4001FC34D /* PNRemoveDeviceFromAPNSResponseParser.m */; };
+		79ACC4231C11BC4D0056523A /* PNPresenceChannelGroupHereNowResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0911BD03DE4001FC34D /* PNPresenceChannelGroupHereNowResult.m */; };
+		79ACC4241C11BC4D0056523A /* PNHeartbeatParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0D91BD03DE4001FC34D /* PNHeartbeatParser.m */; };
+		79ACC4251C11BC4D0056523A /* PNStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0A21BD03DE4001FC34D /* PNStatus.m */; };
+		79ACC4261C11BC4D0056523A /* PNArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0AD1BD03DE4001FC34D /* PNArray.m */; };
+		79ACC4271C11BC4D0056523A /* PNNetworkResponseSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0F11BD03DE4001FC34D /* PNNetworkResponseSerializer.m */; };
+		79ACC4281C11BC4D0056523A /* PubNub+Subscribe.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0671BD03DE4001FC34D /* PubNub+Subscribe.m */; };
+		79ACC4291C11BC4D0056523A /* PNAPNSEnabledChannelsResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0801BD03DE4001FC34D /* PNAPNSEnabledChannelsResult.m */; };
+		79ACC42A1C11BC4D0056523A /* PNResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB09C1BD03DE4001FC34D /* PNResult.m */; };
+		79ACC42B1C11BC4D0056523A /* PNPresenceChannelHereNowResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0931BD03DE4001FC34D /* PNPresenceChannelHereNowResult.m */; };
+		79ACC42C1C11BC4D0056523A /* PNClientStateParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0D51BD03DE4001FC34D /* PNClientStateParser.m */; };
+		79ACC42D1C11BC4D0056523A /* PubNub+Publish.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0631BD03DE4001FC34D /* PubNub+Publish.m */; };
+		79ACC42E1C11BC4D0056523A /* PNPresenceHereNowParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0E11BD03DE4001FC34D /* PNPresenceHereNowParser.m */; };
+		79ACC4301C11BC4D0056523A /* CocoaLumberjack.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79CBB1951BD03EB8001FC34D /* CocoaLumberjack.framework */; };
+		79ACC4311C11BC4D0056523A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79CBB19E1BD03EE4001FC34D /* UIKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		79ACC4321C11BC4D0056523A /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 79CBB1A01BD03EEA001FC34D /* libz.tbd */; };
+		79ACC4341C11BC4D0056523A /* PNPresenceChannelGroupHereNowResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0901BD03DE4001FC34D /* PNPresenceChannelGroupHereNowResult.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79ACC4351C11BC4D0056523A /* PNPresenceChannelHereNowResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0921BD03DE4001FC34D /* PNPresenceChannelHereNowResult.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79ACC4361C11BC4D0056523A /* PNChannelGroupClientStateResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0851BD03DE4001FC34D /* PNChannelGroupClientStateResult.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79ACC4371C11BC4D0056523A /* PNPresenceGlobalHereNowResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0941BD03DE4001FC34D /* PNPresenceGlobalHereNowResult.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79ACC4381C11BC4D0056523A /* PNChannelGroupChannelsResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0831BD03DE4001FC34D /* PNChannelGroupChannelsResult.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79ACC4391C11BC4D0056523A /* PNAPNSEnabledChannelsResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB07F1BD03DE4001FC34D /* PNAPNSEnabledChannelsResult.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79ACC43A1C11BC4D0056523A /* PNPresenceWhereNowResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0961BD03DE4001FC34D /* PNPresenceWhereNowResult.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79ACC43B1C11BC4D0056523A /* PNChannelClientStateResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0811BD03DE4001FC34D /* PNChannelClientStateResult.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79ACC43C1C11BC4D0056523A /* PNClientStateUpdateStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0891BD03DE4001FC34D /* PNClientStateUpdateStatus.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79ACC43D1C11BC4D0056523A /* PNAcknowledgmentStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB07D1BD03DE4001FC34D /* PNAcknowledgmentStatus.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79ACC43E1C11BC4D0056523A /* PNChannelGroupsResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0871BD03DE4001FC34D /* PNChannelGroupsResult.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79ACC43F1C11BC4D0056523A /* PubNub+ChannelGroup.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0581BD03DE4001FC34D /* PubNub+ChannelGroup.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79ACC4401C11BC4D0056523A /* PNObjectEventListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0CC1BD03DE4001FC34D /* PNObjectEventListener.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79ACC4411C11BC4D0056523A /* PNSubscriberResults.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0A31BD03DE4001FC34D /* PNSubscriberResults.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79ACC4421C11BC4D0056523A /* PNClientInformation.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0771BD03DE4001FC34D /* PNClientInformation.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79ACC4431C11BC4D0056523A /* PNPushNotificationsAuditParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0E41BD03DE4001FC34D /* PNPushNotificationsAuditParser.h */; };
+		79ACC4441C11BC4D0056523A /* PubNub+Subscribe.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0661BD03DE4001FC34D /* PubNub+Subscribe.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79ACC4451C11BC4D0056523A /* PNSubscribeStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0A51BD03DE4001FC34D /* PNSubscribeStatus.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79ACC4461C11BC4D0056523A /* PubNub+Presence.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB05F1BD03DE4001FC34D /* PubNub+Presence.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79ACC4471C11BC4D0056523A /* PubNub+Publish.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0621BD03DE4001FC34D /* PubNub+Publish.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79ACC4481C11BC4D0056523A /* PNPublishStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0981BD03DE4001FC34D /* PNPublishStatus.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79ACC4491C11BC4D0056523A /* PNConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB07A1BD03DE4001FC34D /* PNConfiguration.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79ACC44A1C11BC4D0056523A /* PNHistoryResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB08E1BD03DE4001FC34D /* PNHistoryResult.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79ACC44B1C11BC4D0056523A /* PubNub+History.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB05D1BD03DE4001FC34D /* PubNub+History.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79ACC44C1C11BC4D0056523A /* PNServiceData.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB09E1BD03DE4001FC34D /* PNServiceData.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79ACC44D1C11BC4D0056523A /* PubNub+APNS.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0561BD03DE4001FC34D /* PubNub+APNS.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79ACC44E1C11BC4D0056523A /* PubNub+State.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0641BD03DE4001FC34D /* PubNub+State.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79ACC44F1C11BC4D0056523A /* PNErrorCodes.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0C81BD03DE4001FC34D /* PNErrorCodes.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79ACC4501C11BC4D0056523A /* PubNub+Time.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0691BD03DE4001FC34D /* PubNub+Time.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79ACC4511C11BC4D0056523A /* PubNub+Core.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB05A1BD03DE4001FC34D /* PubNub+Core.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79ACC4521C11BC4D0056523A /* PNTimeResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0A71BD03DE4001FC34D /* PNTimeResult.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79ACC4531C11BC4D0056523A /* PNErrorStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB08C1BD03DE4001FC34D /* PNErrorStatus.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79ACC4541C11BC4D0056523A /* PNStructures.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0CA1BD03DE4001FC34D /* PNStructures.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79ACC4551C11BC4D0056523A /* PNStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0A11BD03DE4001FC34D /* PNStatus.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79ACC4561C11BC4D0056523A /* PNResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB09B1BD03DE4001FC34D /* PNResult.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79ACC4581C11BC4D0056523A /* PNAES.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0751BD03DE4001FC34D /* PNAES.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79ACC4591C11BC4D0056523A /* PNPushNotificationsStateModificationParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0E61BD03DE4001FC34D /* PNPushNotificationsStateModificationParser.h */; };
+		79ACC45A1C11BC4D0056523A /* PNHeartbeat.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB06F1BD03DE4001FC34D /* PNHeartbeat.h */; };
+		79ACC45B1C11BC4D0056523A /* PNErrorParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0D61BD03DE4001FC34D /* PNErrorParser.h */; };
+		79ACC45C1C11BC4D0056523A /* PNPrivateStructures.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0C91BD03DE4001FC34D /* PNPrivateStructures.h */; };
+		79ACC45D1C11BC4D0056523A /* PNJSON.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0B91BD03DE4001FC34D /* PNJSON.h */; };
+		79ACC45E1C11BC4D0056523A /* PNTimeParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0EC1BD03DE4001FC34D /* PNTimeParser.h */; };
+		79ACC45F1C11BC4D0056523A /* PNGZIP.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0B61BD03DE4001FC34D /* PNGZIP.h */; };
+		79ACC4601C11BC4D0056523A /* PNURLBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0F61BD03DE4001FC34D /* PNURLBuilder.h */; };
+		79ACC4611C11BC4D0056523A /* PNHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0B81BD03DE4001FC34D /* PNHelpers.h */; };
+		79ACC4621C11BC4D0056523A /* PNLog.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0C01BD03DE4001FC34D /* PNLog.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79ACC4631C11BC4D0056523A /* PNReachability.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0F21BD03DE4001FC34D /* PNReachability.h */; };
+		79ACC4641C11BC4D0056523A /* PNSubscribeParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0EA1BD03DE4001FC34D /* PNSubscribeParser.h */; };
+		79ACC4651C11BC4D0056523A /* PNURLRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0BD1BD03DE4001FC34D /* PNURLRequest.h */; };
+		79ACC4661C11BC4D0056523A /* PNStatus+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0A01BD03DE4001FC34D /* PNStatus+Private.h */; };
+		79ACC4671C11BC4D0056523A /* PNLogMacro.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0C61BD03DE4001FC34D /* PNLogMacro.h */; };
+		79ACC4681C11BC4D0056523A /* PNHeartbeatParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0D81BD03DE4001FC34D /* PNHeartbeatParser.h */; };
+		79ACC4691C11BC4D0056523A /* PNServiceData+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB09D1BD03DE4001FC34D /* PNServiceData+Private.h */; };
+		79ACC46A1C11BC4D0056523A /* PNNetworkResponseSerializer.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0F01BD03DE4001FC34D /* PNNetworkResponseSerializer.h */; };
+		79ACC46B1C11BC4D0056523A /* PNClientState.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB06D1BD03DE4001FC34D /* PNClientState.h */; };
+		79ACC46C1C11BC4D0056523A /* PNClass.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0B01BD03DE4001FC34D /* PNClass.h */; };
+		79ACC46D1C11BC4D0056523A /* PNString.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0BB1BD03DE4001FC34D /* PNString.h */; };
+		79ACC46E1C11BC4D0056523A /* PNParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0CD1BD03DE4001FC34D /* PNParser.h */; };
+		79ACC46F1C11BC4D0056523A /* PNLeaveParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0DC1BD03DE4001FC34D /* PNLeaveParser.h */; };
+		79ACC4701C11BC4D0056523A /* PNData.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0B21BD03DE4001FC34D /* PNData.h */; };
+		79ACC4711C11BC4D0056523A /* PNArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0AC1BD03DE4001FC34D /* PNArray.h */; };
+		79ACC4721C11BC4D0056523A /* PNRequestParameters.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0F41BD03DE4001FC34D /* PNRequestParameters.h */; };
+		79ACC4731C11BC4D0056523A /* PNHistoryParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0DA1BD03DE4001FC34D /* PNHistoryParser.h */; };
+		79ACC4741C11BC4D0056523A /* PNMessagePublishParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0DE1BD03DE4001FC34D /* PNMessagePublishParser.h */; };
+		79ACC4751C11BC4D0056523A /* PNChannel.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0AE1BD03DE4001FC34D /* PNChannel.h */; };
+		79ACC4761C11BC4D0056523A /* PNSubscriber.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0731BD03DE4001FC34D /* PNSubscriber.h */; };
+		79ACC4771C11BC4D0056523A /* PubNub+PresencePrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0611BD03DE4001FC34D /* PubNub+PresencePrivate.h */; };
+		79ACC4781C11BC4D0056523A /* PNPresenceWhereNowParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0E21BD03DE4001FC34D /* PNPresenceWhereNowParser.h */; };
+		79ACC4791C11BC4D0056523A /* PNNumber.h in Headers */ = {isa = PBXBuildFile; fileRef = 793887021BEAD49100DCC662 /* PNNumber.h */; };
+		79ACC47A1C11BC4D0056523A /* PNDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0B41BD03DE4001FC34D /* PNDictionary.h */; };
+		79ACC47B1C11BC4D0056523A /* PNLogFileManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0C21BD03DE4001FC34D /* PNLogFileManager.h */; };
+		79ACC47C1C11BC4D0056523A /* PNNetwork.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0EE1BD03DE4001FC34D /* PNNetwork.h */; };
+		79ACC47D1C11BC4D0056523A /* PNConfiguration+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0791BD03DE4001FC34D /* PNConfiguration+Private.h */; };
+		79ACC47E1C11BC4D0056523A /* PNClientStateParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0D41BD03DE4001FC34D /* PNClientStateParser.h */; };
+		79ACC47F1C11BC4D0056523A /* PNConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0C71BD03DE4001FC34D /* PNConstants.h */; };
+		79ACC4801C11BC4D0056523A /* PNStateListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0711BD03DE4001FC34D /* PNStateListener.h */; };
+		79ACC4811C11BC4D0056523A /* PNResult+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB09A1BD03DE4001FC34D /* PNResult+Private.h */; };
+		79ACC4821C11BC4D0056523A /* PubNub+CorePrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB05C1BD03DE4001FC34D /* PubNub+CorePrivate.h */; };
+		79ACC4831C11BC4D0056523A /* PNChannelGroupAuditionParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0D01BD03DE4001FC34D /* PNChannelGroupAuditionParser.h */; };
+		79ACC4841C11BC4D0056523A /* PubNub+SubscribePrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0681BD03DE4001FC34D /* PubNub+SubscribePrivate.h */; };
+		79ACC4851C11BC4D0056523A /* PNChannelGroupModificationParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0D21BD03DE4001FC34D /* PNChannelGroupModificationParser.h */; };
+		79ACC4861C11BC4D0056523A /* PNRemoveDeviceFromAPNSResponseParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0E81BD03DE4001FC34D /* PNRemoveDeviceFromAPNSResponseParser.h */; };
+		79ACC4871C11BC4D0056523A /* PNPresenceHereNowParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0E01BD03DE4001FC34D /* PNPresenceHereNowParser.h */; };
+		79ACC4881C11BC4D0056523A /* PNLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0C41BD03DE4001FC34D /* PNLogger.h */; };
+		79ACC4891C11BC4D0056523A /* PNErrorStatus+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB08B1BD03DE4001FC34D /* PNErrorStatus+Private.h */; };
 		79CBB0421BD03D3F001FC34D /* PubNub.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0411BD03D3F001FC34D /* PubNub.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		79CBB0F81BD03DE4001FC34D /* PubNub+APNS.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0561BD03DE4001FC34D /* PubNub+APNS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		79CBB0F91BD03DE4001FC34D /* PubNub+APNS.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0571BD03DE4001FC34D /* PubNub+APNS.m */; };
@@ -591,6 +762,13 @@
 			remoteGlobalIDString = 791583781BD70EA40084FC70;
 			remoteInfo = "CocoaLumberjack (watchOS)";
 		};
+		79ACC3E81C11BC4D0056523A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 79CBB0351BD03D3F001FC34D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 791583571BD70E970084FC70;
+			remoteInfo = "CocoaLumberjack (iOS)";
+		};
 		79CBB1A21BD03F7E001FC34D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 79CBB0351BD03D3F001FC34D /* Project object */;
@@ -611,6 +789,15 @@
 		791583A01BD712BE0084FC70 /* CocoaLumberjack-watchOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CocoaLumberjack-watchOS-Info.plist"; sourceTree = "<group>"; };
 		793887021BEAD49100DCC662 /* PNNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNNumber.h; sourceTree = "<group>"; };
 		793887031BEAD49100DCC662 /* PNNumber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNNumber.m; sourceTree = "<group>"; };
+		795158591C11C88500A9D3AE /* FABAttributes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FABAttributes.h; sourceTree = "<group>"; };
+		7951585A1C11C88500A9D3AE /* FABKitProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FABKitProtocol.h; sourceTree = "<group>"; };
+		7951585B1C11C88500A9D3AE /* Fabric+FABKits.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Fabric+FABKits.h"; sourceTree = "<group>"; };
+		7951585C1C11C88500A9D3AE /* Fabric.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Fabric.h; sourceTree = "<group>"; };
+		795158611C11EA5500A9D3AE /* PubNub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PubNub.h; sourceTree = "<group>"; };
+		79ACC3D91C11BB420056523A /* PubNub+FAB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PubNub+FAB.h"; sourceTree = "<group>"; };
+		79ACC3DA1C11BB420056523A /* PubNub+FAB.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "PubNub+FAB.m"; sourceTree = "<group>"; };
+		79ACC48F1C11BC4D0056523A /* PubNub.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PubNub.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		79ACC4961C11BD720056523A /* PubNub-Fabric-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PubNub-Fabric-Info.plist"; sourceTree = "<group>"; };
 		79CBB03E1BD03D3F001FC34D /* PubNub.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PubNub.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		79CBB0411BD03D3F001FC34D /* PubNub.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PubNub.h; sourceTree = "<group>"; };
 		79CBB0431BD03D3F001FC34D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -832,6 +1019,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		79ACC42F1C11BC4D0056523A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				79ACC4301C11BC4D0056523A /* CocoaLumberjack.framework in Frameworks */,
+				79ACC4311C11BC4D0056523A /* UIKit.framework in Frameworks */,
+				79ACC4321C11BC4D0056523A /* libz.tbd in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		79CBB03A1BD03D3F001FC34D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -851,6 +1048,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		795158581C11C88500A9D3AE /* Fabric */ = {
+			isa = PBXGroup;
+			children = (
+				795158611C11EA5500A9D3AE /* PubNub.h */,
+				795158591C11C88500A9D3AE /* FABAttributes.h */,
+				7951585A1C11C88500A9D3AE /* FABKitProtocol.h */,
+				7951585B1C11C88500A9D3AE /* Fabric+FABKits.h */,
+				7951585C1C11C88500A9D3AE /* Fabric.h */,
+			);
+			name = Fabric;
+			path = ../../Support/Fabric/Headers;
+			sourceTree = "<group>";
+		};
 		79CBB0341BD03D3F001FC34D = {
 			isa = PBXGroup;
 			children = (
@@ -871,6 +1081,7 @@
 				791583551BD709D10084FC70 /* PubNub.framework */,
 				791583761BD70E970084FC70 /* CocoaLumberjack.framework */,
 				791583971BD70EA40084FC70 /* CocoaLumberjack.framework */,
+				79ACC48F1C11BC4D0056523A /* PubNub.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -891,9 +1102,11 @@
 		79CBB04F1BD03D93001FC34D /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
+				795158581C11C88500A9D3AE /* Fabric */,
 				79CBB0431BD03D3F001FC34D /* Info.plist */,
 				7915839D1BD7119E0084FC70 /* PubNub-iOS-Info.plist */,
 				7915839E1BD7119E0084FC70 /* PubNub-watchOS-Info.plist */,
+				79ACC4961C11BD720056523A /* PubNub-Fabric-Info.plist */,
 			);
 			name = "Support Files";
 			sourceTree = "<group>";
@@ -922,6 +1135,8 @@
 				79CBB0681BD03DE4001FC34D /* PubNub+SubscribePrivate.h */,
 				79CBB0691BD03DE4001FC34D /* PubNub+Time.h */,
 				79CBB06A1BD03DE4001FC34D /* PubNub+Time.m */,
+				79ACC3D91C11BB420056523A /* PubNub+FAB.h */,
+				79ACC3DA1C11BB420056523A /* PubNub+FAB.m */,
 			);
 			name = Core;
 			path = ../../PubNub/Core;
@@ -1446,6 +1661,100 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		79ACC4331C11BC4D0056523A /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				79ACC4341C11BC4D0056523A /* PNPresenceChannelGroupHereNowResult.h in Headers */,
+				79ACC4351C11BC4D0056523A /* PNPresenceChannelHereNowResult.h in Headers */,
+				79ACC4361C11BC4D0056523A /* PNChannelGroupClientStateResult.h in Headers */,
+				79ACC4371C11BC4D0056523A /* PNPresenceGlobalHereNowResult.h in Headers */,
+				79ACC4381C11BC4D0056523A /* PNChannelGroupChannelsResult.h in Headers */,
+				79ACC4391C11BC4D0056523A /* PNAPNSEnabledChannelsResult.h in Headers */,
+				79ACC43A1C11BC4D0056523A /* PNPresenceWhereNowResult.h in Headers */,
+				79ACC43B1C11BC4D0056523A /* PNChannelClientStateResult.h in Headers */,
+				79ACC43C1C11BC4D0056523A /* PNClientStateUpdateStatus.h in Headers */,
+				79ACC43D1C11BC4D0056523A /* PNAcknowledgmentStatus.h in Headers */,
+				79ACC43E1C11BC4D0056523A /* PNChannelGroupsResult.h in Headers */,
+				79ACC43F1C11BC4D0056523A /* PubNub+ChannelGroup.h in Headers */,
+				79ACC4401C11BC4D0056523A /* PNObjectEventListener.h in Headers */,
+				79ACC4411C11BC4D0056523A /* PNSubscriberResults.h in Headers */,
+				79ACC4421C11BC4D0056523A /* PNClientInformation.h in Headers */,
+				79ACC4431C11BC4D0056523A /* PNPushNotificationsAuditParser.h in Headers */,
+				79ACC4441C11BC4D0056523A /* PubNub+Subscribe.h in Headers */,
+				79ACC4451C11BC4D0056523A /* PNSubscribeStatus.h in Headers */,
+				79ACC4461C11BC4D0056523A /* PubNub+Presence.h in Headers */,
+				79ACC4471C11BC4D0056523A /* PubNub+Publish.h in Headers */,
+				79ACC4481C11BC4D0056523A /* PNPublishStatus.h in Headers */,
+				79ACC4491C11BC4D0056523A /* PNConfiguration.h in Headers */,
+				79ACC44A1C11BC4D0056523A /* PNHistoryResult.h in Headers */,
+				79ACC44B1C11BC4D0056523A /* PubNub+History.h in Headers */,
+				79ACC44C1C11BC4D0056523A /* PNServiceData.h in Headers */,
+				79ACC44D1C11BC4D0056523A /* PubNub+APNS.h in Headers */,
+				79ACC44E1C11BC4D0056523A /* PubNub+State.h in Headers */,
+				79ACC44F1C11BC4D0056523A /* PNErrorCodes.h in Headers */,
+				79ACC4501C11BC4D0056523A /* PubNub+Time.h in Headers */,
+				79ACC4511C11BC4D0056523A /* PubNub+Core.h in Headers */,
+				79AAC15B1C11BE71008D94A8 /* PubNub+FAB.h in Headers */,
+				79ACC4521C11BC4D0056523A /* PNTimeResult.h in Headers */,
+				79ACC4531C11BC4D0056523A /* PNErrorStatus.h in Headers */,
+				79ACC4541C11BC4D0056523A /* PNStructures.h in Headers */,
+				79ACC4551C11BC4D0056523A /* PNStatus.h in Headers */,
+				79ACC4561C11BC4D0056523A /* PNResult.h in Headers */,
+				79ACC4581C11BC4D0056523A /* PNAES.h in Headers */,
+				79ACC4591C11BC4D0056523A /* PNPushNotificationsStateModificationParser.h in Headers */,
+				79ACC45A1C11BC4D0056523A /* PNHeartbeat.h in Headers */,
+				79ACC45B1C11BC4D0056523A /* PNErrorParser.h in Headers */,
+				79ACC45C1C11BC4D0056523A /* PNPrivateStructures.h in Headers */,
+				795158621C11EA5500A9D3AE /* PubNub.h in Headers */,
+				79ACC45D1C11BC4D0056523A /* PNJSON.h in Headers */,
+				79ACC45E1C11BC4D0056523A /* PNTimeParser.h in Headers */,
+				79ACC45F1C11BC4D0056523A /* PNGZIP.h in Headers */,
+				79ACC4601C11BC4D0056523A /* PNURLBuilder.h in Headers */,
+				79ACC4611C11BC4D0056523A /* PNHelpers.h in Headers */,
+				79ACC4621C11BC4D0056523A /* PNLog.h in Headers */,
+				79ACC4631C11BC4D0056523A /* PNReachability.h in Headers */,
+				79ACC4641C11BC4D0056523A /* PNSubscribeParser.h in Headers */,
+				79ACC4651C11BC4D0056523A /* PNURLRequest.h in Headers */,
+				79ACC4661C11BC4D0056523A /* PNStatus+Private.h in Headers */,
+				79ACC4671C11BC4D0056523A /* PNLogMacro.h in Headers */,
+				79ACC4681C11BC4D0056523A /* PNHeartbeatParser.h in Headers */,
+				79ACC4691C11BC4D0056523A /* PNServiceData+Private.h in Headers */,
+				79ACC46A1C11BC4D0056523A /* PNNetworkResponseSerializer.h in Headers */,
+				79ACC46B1C11BC4D0056523A /* PNClientState.h in Headers */,
+				79ACC46C1C11BC4D0056523A /* PNClass.h in Headers */,
+				79ACC46D1C11BC4D0056523A /* PNString.h in Headers */,
+				79ACC46E1C11BC4D0056523A /* PNParser.h in Headers */,
+				79ACC46F1C11BC4D0056523A /* PNLeaveParser.h in Headers */,
+				79ACC4701C11BC4D0056523A /* PNData.h in Headers */,
+				79ACC4711C11BC4D0056523A /* PNArray.h in Headers */,
+				79ACC4721C11BC4D0056523A /* PNRequestParameters.h in Headers */,
+				79ACC4731C11BC4D0056523A /* PNHistoryParser.h in Headers */,
+				79ACC4741C11BC4D0056523A /* PNMessagePublishParser.h in Headers */,
+				79ACC4751C11BC4D0056523A /* PNChannel.h in Headers */,
+				79ACC4761C11BC4D0056523A /* PNSubscriber.h in Headers */,
+				79ACC4771C11BC4D0056523A /* PubNub+PresencePrivate.h in Headers */,
+				79ACC4781C11BC4D0056523A /* PNPresenceWhereNowParser.h in Headers */,
+				79ACC4791C11BC4D0056523A /* PNNumber.h in Headers */,
+				79ACC47A1C11BC4D0056523A /* PNDictionary.h in Headers */,
+				79ACC47B1C11BC4D0056523A /* PNLogFileManager.h in Headers */,
+				79ACC47C1C11BC4D0056523A /* PNNetwork.h in Headers */,
+				79ACC47D1C11BC4D0056523A /* PNConfiguration+Private.h in Headers */,
+				79ACC47E1C11BC4D0056523A /* PNClientStateParser.h in Headers */,
+				79ACC47F1C11BC4D0056523A /* PNConstants.h in Headers */,
+				79ACC4801C11BC4D0056523A /* PNStateListener.h in Headers */,
+				79ACC4811C11BC4D0056523A /* PNResult+Private.h in Headers */,
+				79ACC4821C11BC4D0056523A /* PubNub+CorePrivate.h in Headers */,
+				79ACC4831C11BC4D0056523A /* PNChannelGroupAuditionParser.h in Headers */,
+				79ACC4841C11BC4D0056523A /* PubNub+SubscribePrivate.h in Headers */,
+				79ACC4851C11BC4D0056523A /* PNChannelGroupModificationParser.h in Headers */,
+				79ACC4861C11BC4D0056523A /* PNRemoveDeviceFromAPNSResponseParser.h in Headers */,
+				79ACC4871C11BC4D0056523A /* PNPresenceHereNowParser.h in Headers */,
+				79ACC4881C11BC4D0056523A /* PNLogger.h in Headers */,
+				79ACC4891C11BC4D0056523A /* PNErrorStatus+Private.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		79CBB03B1BD03D3F001FC34D /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -1639,6 +1948,26 @@
 			productReference = 791583971BD70EA40084FC70 /* CocoaLumberjack.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		79ACC3E61C11BC4D0056523A /* PubNub (Fabric) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 79ACC48C1C11BC4D0056523A /* Build configuration list for PBXNativeTarget "PubNub (Fabric)" */;
+			buildPhases = (
+				79ACC3E91C11BC4D0056523A /* Sources */,
+				79ACC42F1C11BC4D0056523A /* Frameworks */,
+				79ACC4331C11BC4D0056523A /* Headers */,
+				79ACC48A1C11BC4D0056523A /* Resources */,
+				79ACC48B1C11BC4D0056523A /* Copy Products */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				79ACC3E71C11BC4D0056523A /* PBXTargetDependency */,
+			);
+			name = "PubNub (Fabric)";
+			productName = PubNub;
+			productReference = 79ACC48F1C11BC4D0056523A /* PubNub.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 		79CBB03D1BD03D3F001FC34D /* PubNub (OSX) */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 79CBB0461BD03D3F001FC34D /* Build configuration list for PBXNativeTarget "PubNub (OSX)" */;
@@ -1712,11 +2041,13 @@
 				791582051BD709C60084FC70 /* PubNub (iOS) */,
 				791582AE1BD709D10084FC70 /* PubNub (watchOS) */,
 				79CBB03D1BD03D3F001FC34D /* PubNub (OSX) */,
+				79ACC3E61C11BC4D0056523A /* PubNub (Fabric) */,
 				791583571BD70E970084FC70 /* CocoaLumberjack (iOS) */,
 				791583781BD70EA40084FC70 /* CocoaLumberjack (watchOS) */,
 				79CBB1941BD03EB8001FC34D /* CocoaLumberjack (OSX) */,
 				79CBB1D31BD042FB001FC34D /* Universal Framework (iOS) */,
 				791582001BD705130084FC70 /* Universal Framework (watchOS) */,
+				79ACC4911C11BC620056523A /* Universal Framework (Fabric) */,
 			);
 		};
 /* End PBXProject section */
@@ -1744,6 +2075,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		791583931BD70EA40084FC70 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		79ACC48A1C11BC4D0056523A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1808,6 +2146,34 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"${SRCROOT}/scripts/copy_products.sh\"";
+		};
+		79ACC48B1C11BC4D0056523A /* Copy Products */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Products";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/bin/sh \"${SRCROOT}/scripts/copy_products.sh\"";
+		};
+		79ACC4921C11BC620056523A /* Build Universal Binary */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Build Universal Binary";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Make all scripts aware what universal binary is built.\nexport BUILDING_UNIVERSAL_FRAMEWORK=1\n\n/bin/sh \"${SRCROOT}/scripts/build_universal.sh\"";
 		};
 		79CBB1D21BD04299001FC34D /* Copy Products */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2024,6 +2390,83 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		79ACC3E91C11BC4D0056523A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				79ACC3EA1C11BC4D0056523A /* PubNub+History.m in Sources */,
+				79ACC3EB1C11BC4D0056523A /* PNPresenceGlobalHereNowResult.m in Sources */,
+				79ACC3EC1C11BC4D0056523A /* PNString.m in Sources */,
+				79ACC3ED1C11BC4D0056523A /* PubNub+Core.m in Sources */,
+				79ACC3EE1C11BC4D0056523A /* PNReachability.m in Sources */,
+				79ACC3EF1C11BC4D0056523A /* PNData.m in Sources */,
+				79ACC3F01C11BC4D0056523A /* PNLogFileManager.m in Sources */,
+				79ACC3F11C11BC4D0056523A /* PNDictionary.m in Sources */,
+				79ACC3F21C11BC4D0056523A /* PNSubscribeStatus.m in Sources */,
+				79ACC3F31C11BC4D0056523A /* PNConfiguration.m in Sources */,
+				79ACC3F41C11BC4D0056523A /* PNHistoryParser.m in Sources */,
+				79ACC3F51C11BC4D0056523A /* PNGZIP.m in Sources */,
+				79ACC3F61C11BC4D0056523A /* PNPushNotificationsStateModificationParser.m in Sources */,
+				79ACC3F71C11BC4D0056523A /* PNJSON.m in Sources */,
+				79ACC3F81C11BC4D0056523A /* PNPresenceWhereNowResult.m in Sources */,
+				79ACC3F91C11BC4D0056523A /* PubNub+APNS.m in Sources */,
+				79ACC3FA1C11BC4D0056523A /* PNChannelGroupAuditionParser.m in Sources */,
+				79ACC3FB1C11BC4D0056523A /* PNChannelGroupsResult.m in Sources */,
+				79ACC3FC1C11BC4D0056523A /* PubNub+Time.m in Sources */,
+				79ACC3FD1C11BC4D0056523A /* PNErrorStatus.m in Sources */,
+				79ACC3FE1C11BC4D0056523A /* PubNub+State.m in Sources */,
+				79ACC3FF1C11BC4D0056523A /* PNPushNotificationsAuditParser.m in Sources */,
+				79ACC4001C11BC4D0056523A /* PNStateListener.m in Sources */,
+				79ACC4011C11BC4D0056523A /* PNHeartbeat.m in Sources */,
+				79ACC4021C11BC4D0056523A /* PNAcknowledgmentStatus.m in Sources */,
+				79ACC4031C11BC4D0056523A /* PubNub+ChannelGroup.m in Sources */,
+				79ACC4041C11BC4D0056523A /* PNRequestParameters.m in Sources */,
+				79ACC4051C11BC4D0056523A /* PNHistoryResult.m in Sources */,
+				79ACC4061C11BC4D0056523A /* PNErrorParser.m in Sources */,
+				79ACC4071C11BC4D0056523A /* PNChannelClientStateResult.m in Sources */,
+				79ACC4081C11BC4D0056523A /* PNPresenceWhereNowParser.m in Sources */,
+				79ACC4091C11BC4D0056523A /* PNChannel.m in Sources */,
+				79ACC40A1C11BC4D0056523A /* PNSubscriberResults.m in Sources */,
+				79ACC40B1C11BC4D0056523A /* PNChannelGroupModificationParser.m in Sources */,
+				79ACC40C1C11BC4D0056523A /* PNClass.m in Sources */,
+				79ACC40D1C11BC4D0056523A /* PNClientInformation.m in Sources */,
+				79ACC40E1C11BC4D0056523A /* PNChannelGroupChannelsResult.m in Sources */,
+				79ACC40F1C11BC4D0056523A /* PNLeaveParser.m in Sources */,
+				79ACC4101C11BC4D0056523A /* PNClientState.m in Sources */,
+				79ACC4111C11BC4D0056523A /* PNSubscribeParser.m in Sources */,
+				79ACC4121C11BC4D0056523A /* PNMessagePublishParser.m in Sources */,
+				79ACC4131C11BC4D0056523A /* PNURLRequest.m in Sources */,
+				79ACC4141C11BC4D0056523A /* PNTimeParser.m in Sources */,
+				79ACC4151C11BC4D0056523A /* PNTimeResult.m in Sources */,
+				79ACC4161C11BC4D0056523A /* PNLog.m in Sources */,
+				79ACC4171C11BC4D0056523A /* PNServiceData.m in Sources */,
+				79ACC4181C11BC4D0056523A /* PNClientStateUpdateStatus.m in Sources */,
+				79ACC4191C11BC4D0056523A /* PNAES.m in Sources */,
+				79ACC41A1C11BC4D0056523A /* PNNetwork.m in Sources */,
+				79ACC41B1C11BC4D0056523A /* PNLogger.m in Sources */,
+				79ACC41C1C11BC4D0056523A /* PNPublishStatus.m in Sources */,
+				79ACC41D1C11BC4D0056523A /* PNNumber.m in Sources */,
+				79ACC41E1C11BC4D0056523A /* PubNub+Presence.m in Sources */,
+				79ACC41F1C11BC4D0056523A /* PNSubscriber.m in Sources */,
+				79ACC4201C11BC4D0056523A /* PNURLBuilder.m in Sources */,
+				79ACC4211C11BC4D0056523A /* PNChannelGroupClientStateResult.m in Sources */,
+				79ACC4221C11BC4D0056523A /* PNRemoveDeviceFromAPNSResponseParser.m in Sources */,
+				79ACC4231C11BC4D0056523A /* PNPresenceChannelGroupHereNowResult.m in Sources */,
+				79ACC4241C11BC4D0056523A /* PNHeartbeatParser.m in Sources */,
+				79ACC4251C11BC4D0056523A /* PNStatus.m in Sources */,
+				79ACC4261C11BC4D0056523A /* PNArray.m in Sources */,
+				79ACC4271C11BC4D0056523A /* PNNetworkResponseSerializer.m in Sources */,
+				79ACC4281C11BC4D0056523A /* PubNub+Subscribe.m in Sources */,
+				79ACC4291C11BC4D0056523A /* PNAPNSEnabledChannelsResult.m in Sources */,
+				79ACC42A1C11BC4D0056523A /* PNResult.m in Sources */,
+				79AAC15C1C11BE77008D94A8 /* PubNub+FAB.m in Sources */,
+				79ACC42B1C11BC4D0056523A /* PNPresenceChannelHereNowResult.m in Sources */,
+				79ACC42C1C11BC4D0056523A /* PNClientStateParser.m in Sources */,
+				79ACC42D1C11BC4D0056523A /* PubNub+Publish.m in Sources */,
+				79ACC42E1C11BC4D0056523A /* PNPresenceHereNowParser.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		79CBB0391BD03D3F001FC34D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2129,6 +2572,11 @@
 			target = 791583781BD70EA40084FC70 /* CocoaLumberjack (watchOS) */;
 			targetProxy = 7915839B1BD70EF60084FC70 /* PBXContainerItemProxy */;
 		};
+		79ACC3E71C11BC4D0056523A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 791583571BD70E970084FC70 /* CocoaLumberjack (iOS) */;
+			targetProxy = 79ACC3E81C11BC4D0056523A /* PBXContainerItemProxy */;
+		};
 		79CBB1A31BD03F7E001FC34D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 79CBB1941BD03EB8001FC34D /* CocoaLumberjack (OSX) */;
@@ -2158,6 +2606,10 @@
 		791582AA1BD709C60084FC70 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					armv7s,
+				);
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -2176,6 +2628,10 @@
 		791582AB1BD709C60084FC70 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					armv7s,
+				);
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -2232,6 +2688,10 @@
 		791583741BD70E970084FC70 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					armv7s,
+				);
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -2252,6 +2712,10 @@
 		791583751BD70E970084FC70 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					armv7s,
+				);
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -2306,6 +2770,81 @@
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "watchsimulator watchos";
+			};
+			name = Release;
+		};
+		79ACC48D1C11BC4D0056523A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"FABRIC_SUPPORT=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "PubNub/PubNub-Fabric-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.pubnub.PubNub;
+				PRODUCT_NAME = PubNub;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+			};
+			name = Debug;
+		};
+		79ACC48E1C11BC4D0056523A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREPROCESSOR_DEFINITIONS = "FABRIC_SUPPORT=1";
+				INFOPLIST_FILE = "PubNub/PubNub-Fabric-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.pubnub.PubNub;
+				PRODUCT_NAME = PubNub;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+			};
+			name = Release;
+		};
+		79ACC4941C11BC620056523A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					armv7s,
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"FABRIC_SUPPORT=1",
+					"$(inherited)",
+				);
+				PRODUCT_NAME = "Universal Framework";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+			};
+			name = Debug;
+		};
+		79ACC4951C11BC620056523A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					armv7s,
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = "FABRIC_SUPPORT=1";
+				PRODUCT_NAME = "Universal Framework";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
 			name = Release;
 		};
@@ -2482,6 +3021,10 @@
 		79CBB1D51BD042FB001FC34D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					armv7s,
+				);
 				PRODUCT_NAME = "Universal Framework";
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
@@ -2490,6 +3033,10 @@
 		79CBB1D61BD042FB001FC34D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					armv7s,
+				);
 				PRODUCT_NAME = "Universal Framework";
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
@@ -2539,6 +3086,24 @@
 			buildConfigurations = (
 				791583951BD70EA40084FC70 /* Debug */,
 				791583961BD70EA40084FC70 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		79ACC48C1C11BC4D0056523A /* Build configuration list for PBXNativeTarget "PubNub (Fabric)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				79ACC48D1C11BC4D0056523A /* Debug */,
+				79ACC48E1C11BC4D0056523A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		79ACC4931C11BC620056523A /* Build configuration list for PBXAggregateTarget "Universal Framework (Fabric)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				79ACC4941C11BC620056523A /* Debug */,
+				79ACC4951C11BC620056523A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

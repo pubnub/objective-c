@@ -2,8 +2,10 @@
 
 set -e
 
+FRAMEWORKS_BUILD_CONFIGURATION="Release"
 FRAMEWORKS_PATH="${BUILD_DIR}/Frameworks"
-[[ "${TARGET_NAME}" =~ (iOS|watchOS) ]] && FRAMEWORK_NAME="PubNub (${BASH_REMATCH[1]})"
+FRAMEWORKS_TARGET_ARCHITECTURES='i386 x86_64'
+[[ "${TARGET_NAME}" =~ (iOS|watchOS|Fabric) ]] && FRAMEWORK_NAME="PubNub (${BASH_REMATCH[1]})"
 PRODUCTS_PATH="${SRCROOT}/Products"
 
 # Clean up from previous builds
@@ -19,7 +21,15 @@ PLATFORMS=($SUPPORTED_PLATFORMS)
 for sdk in "${PLATFORMS[@]}"
 do
     echo "Building ${FRAMEWORK_NAME} for ${sdk}..."
-    xcrun --no-cache xcodebuild -project "${PROJECT_FILE_PATH}" -target "${FRAMEWORK_NAME}" -configuration "${CONFIGURATION}" -sdk "${sdk}" BUILD_DIR="${BUILD_DIR}" OBJROOT="${OBJROOT}" BUILD_ROOT="${BUILD_ROOT}" SYMROOT="${SYMROOT}" ONLY_ACTIVE_ARCH=NO $ACTION > /dev/null
+    if [[ $sdk =~ (simulator) ]]; then
+        [[ "${sdk}" =~ (iphone) ]] && FRAMEWORKS_TARGET_ARCHITECTURES="i386 x86_64"
+        [[ "${sdk}" =~ (watch) ]] && FRAMEWORKS_TARGET_ARCHITECTURES="i386"
+    else
+        [[ "${sdk}" =~ (iphone) ]] && FRAMEWORKS_TARGET_ARCHITECTURES="armv7 armv7s arm64"
+        [[ "${sdk}" =~ (watch) ]] && FRAMEWORKS_TARGET_ARCHITECTURES="armv7k"
+    fi
+
+xcrun --no-cache xcodebuild -project "${PROJECT_FILE_PATH}" -target "${FRAMEWORK_NAME}" -configuration "${FRAMEWORKS_BUILD_CONFIGURATION}" -sdk "${sdk}" BUILD_DIR="${BUILD_DIR}" OBJROOT="${OBJROOT}" BUILD_ROOT="${BUILD_ROOT}" SYMROOT="${SYMROOT}" ARCHS="${FRAMEWORKS_TARGET_ARCHITECTURES}" VALID_ARCHS="${FRAMEWORKS_TARGET_ARCHITECTURES}"  ONLY_ACTIVE_ARCH=NO $ACTION > /dev/null
     echo "Built ${FRAMEWORK_NAME} for ${sdk}"
 done
 
@@ -30,9 +40,9 @@ BUILT_FRAMEWORKS=("CocoaLumberjack" "PubNub")
 for sdk in "${PLATFORMS[@]}"
 do
     if [[ $sdk =~ (simulator) ]]; then
-        SIMULATOR_ARTIFACTS_PATH="${BUILD_DIR}/${CONFIGURATION}-${sdk}"
+        SIMULATOR_ARTIFACTS_PATH="${BUILD_DIR}/${FRAMEWORKS_BUILD_CONFIGURATION}-${sdk}"
     else
-        OS_ARTIFACTS_PATH="${BUILD_DIR}/${CONFIGURATION}-${sdk}"
+        OS_ARTIFACTS_PATH="${BUILD_DIR}/${FRAMEWORKS_BUILD_CONFIGURATION}-${sdk}"
     fi
 done
 
