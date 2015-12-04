@@ -559,7 +559,6 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
     
     NSURL *fullURL = [NSURL URLWithString:[requestURL absoluteString] relativeToURL:self.baseURL];
     NSMutableURLRequest *httpRequest = [NSMutableURLRequest requestWithURL:fullURL];
-    httpRequest.networkServiceType = NSURLNetworkServiceTypeVoIP;
     httpRequest.HTTPMethod = ([postData length] ? @"POST" : @"GET");
     httpRequest.cachePolicy = NSURLRequestReloadIgnoringCacheData;
     httpRequest.allHTTPHeaderFields = self.additionalHeaders;
@@ -830,6 +829,9 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration ephemeralSessionConfiguration];
     configuration.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
     configuration.HTTPShouldUsePipelining = !self.forLongPollRequests;
+    if (_configuration.isVoIPEnabled && self.forLongPollRequests) {
+        configuration.networkServiceType = NSURLNetworkServiceTypeVoIP;
+    }
     configuration.HTTPAdditionalHeaders = _additionalHeaders;
     configuration.timeoutIntervalForRequest = timeout;
     configuration.HTTPMaximumConnectionsPerHost = maximumConnections;

@@ -749,6 +749,7 @@
 - (void)printClientConfiguration {
 
     // Get PubNub Options
+    NSLog(@"VoIPEnabled: %@", (self.myConfig.isVoIPEnabled ? @"YES" : @"NO"));
     NSLog(@"TLSEnabled: %@", (self.myConfig.isTLSEnabled ? @"YES" : @"NO"));
     NSLog(@"Origin: %@", self.myConfig.origin);
     NSLog(@"authKey: %@", self.myConfig.authKey);

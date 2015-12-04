@@ -149,6 +149,15 @@
 @property (nonatomic, assign, getter = isTLSEnabled) BOOL TLSEnabled;
 
 /**
+ @brief Stores whether client should use VOIP sockets for subscription loop.
+ 
+ @default By defaul client uses \b NO so that subscription loop requests are standard network requests.
+ 
+ @since 4.2.1
+ */
+@property (nonatomic, assign, getter = isVoIPEnabled) BOOL VoIPEnabled;
+
+/**
  @brief  Stores whether client should keep previous time token when subscribe on new set of remote
          data objects live feeds.
  
