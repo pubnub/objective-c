@@ -9,13 +9,133 @@
 		<dict>
 			<key>data</key>
 			<data>
+			eyJ0Ijp7InQiOiIxNDQ5MTg1NDUyOTMyMzM5NSIsInIiOjF9LCJt
+			IjpbXX0=
+			</data>
+			<key>json</key>
+			<dict>
+				<key>m</key>
+				<array/>
+				<key>t</key>
+				<dict>
+					<key>r</key>
+					<integer>1</integer>
+					<key>t</key>
+					<string>14491854529323395</string>
+				</dict>
+			</dict>
+		</dict>
+		<key>request</key>
+		<dict>
+			<key>currentRequest</key>
+			<dict>
+				<key>HTTPMethod</key>
+				<string>GET</string>
+				<key>HTTPShouldHandleCookies</key>
+				<true/>
+				<key>URL</key>
+				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/2EC925F0-B996-47A4-AF54-A605E1A9AEBA,2EC925F0-B996-47A4-AF54-A605E1A9AEBA-pnpres/0/0?pnsdk=PubNub-ObjC-iOS%2F4.2.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=d063790a-5fac-4c7b-9038-b511b61eb23d</string>
+				<key>allHTTPHeaderFields</key>
+				<dict>
+					<key>Accept</key>
+					<string>*/*</string>
+					<key>Accept-Encoding</key>
+					<string>gzip,deflate</string>
+					<key>Accept-Language</key>
+					<string>en-us</string>
+					<key>Connection</key>
+					<string>keep-alive</string>
+					<key>User-Agent</key>
+					<string>iPhone; CPU iPhone OS 8.4 Version</string>
+				</dict>
+				<key>allowsCellularAccess</key>
+				<true/>
+				<key>timeoutInterval</key>
+				<real>60</real>
+			</dict>
+			<key>originalRequest</key>
+			<dict>
+				<key>HTTPMethod</key>
+				<string>GET</string>
+				<key>HTTPShouldHandleCookies</key>
+				<true/>
+				<key>URL</key>
+				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/2EC925F0-B996-47A4-AF54-A605E1A9AEBA,2EC925F0-B996-47A4-AF54-A605E1A9AEBA-pnpres/0/0?pnsdk=PubNub-ObjC-iOS%2F4.2.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=d063790a-5fac-4c7b-9038-b511b61eb23d</string>
+				<key>allHTTPHeaderFields</key>
+				<dict>
+					<key>Accept</key>
+					<string>*/*</string>
+					<key>Accept-Encoding</key>
+					<string>gzip,deflate</string>
+					<key>Connection</key>
+					<string>keep-alive</string>
+					<key>User-Agent</key>
+					<string>iPhone; CPU iPhone OS 8.4 Version</string>
+				</dict>
+				<key>allowsCellularAccess</key>
+				<true/>
+				<key>timeoutInterval</key>
+				<real>60</real>
+			</dict>
+		</dict>
+		<key>response</key>
+		<dict>
+			<key>response</key>
+			<dict>
+				<key>MIMEType</key>
+				<string>text/javascript</string>
+				<key>URL</key>
+				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/2EC925F0-B996-47A4-AF54-A605E1A9AEBA,2EC925F0-B996-47A4-AF54-A605E1A9AEBA-pnpres/0/0?pnsdk=PubNub-ObjC-iOS%2F4.2.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=d063790a-5fac-4c7b-9038-b511b61eb23d</string>
+				<key>allHeaderFields</key>
+				<dict>
+					<key>Access-Control-Allow-Methods</key>
+					<string>GET</string>
+					<key>Access-Control-Allow-Origin</key>
+					<string>*</string>
+					<key>Cache-Control</key>
+					<string>no-cache</string>
+					<key>Connection</key>
+					<string>keep-alive</string>
+					<key>Content-Length</key>
+					<string>44</string>
+					<key>Content-Type</key>
+					<string>text/javascript; charset="UTF-8"</string>
+					<key>Date</key>
+					<string>Thu, 03 Dec 2015 23:40:03 GMT</string>
+				</dict>
+				<key>expectedContentLength</key>
+				<integer>44</integer>
+				<key>statusCode</key>
+				<integer>200</integer>
+				<key>suggestedFileName</key>
+				<string>0.js</string>
+				<key>textEncodingName</key>
+				<string>"utf-8"</string>
+			</dict>
+		</dict>
+	</dict>
+	<dict>
+		<key>cancelled</key>
+		<false/>
+		<key>data</key>
+		<dict>
+			<key>data</key>
+			<data>
 			eyJzdGF0dXMiOiAyMDAsICJtZXNzYWdlIjogIk9LIiwgInBheWxv
-			YWQiOiB7ImNoYW5uZWxzIjogeyJhIjogeyJvY2N1cGFuY3kiOiAx
-			fSwgIjJFQzkyNUYwLUI5OTYtNDdBNC1BRjU0LUE2MDVFMUE5QUVC
-			QSI6IHsib2NjdXBhbmN5IjogMX0sICJmdXR1cmVDaGFubmVsIjog
-			eyJvY2N1cGFuY3kiOiAxfX0sICJ0b3RhbF9jaGFubmVscyI6IDMs
-			ICJ0b3RhbF9vY2N1cGFuY3kiOiAzfSwgInNlcnZpY2UiOiAiUHJl
-			c2VuY2UifQ==
+			YWQiOiB7ImNoYW5uZWxzIjogeyIyRUM5MjVGMC1COTk2LTQ3QTQt
+			QUY1NC1BNjA1RTFBOUFFQkEiOiB7Im9jY3VwYW5jeSI6IDF9LCAi
+			cHVibnViLXNlbnNvci1uZXR3b3JrIjogeyJvY2N1cGFuY3kiOiAx
+			fSwgImJvdCI6IHsib2NjdXBhbmN5IjogMn0sICJvdXRwdXQtMC4x
+			MTQ4NzQxNzQzNTI3MzUyOC1pbmZvIjogeyJvY2N1cGFuY3kiOiAx
+			fSwgIm91dHB1dC0wLjExNDg3NDE3NDM1MjczNTI4LXN0YXRzIjog
+			eyJvY2N1cGFuY3kiOiAxfSwgImZ1dHVyZUNoYW5uZWwiOiB7Im9j
+			Y3VwYW5jeSI6IDF9LCAib3V0cHV0LTAuMTE0ODc0MTc0MzUyNzM1
+			Mjgtb25lIjogeyJvY2N1cGFuY3kiOiAxfSwgIm91dHB1dC0wLjEx
+			NDg3NDE3NDM1MjczNTI4IjogeyJvY2N1cGFuY3kiOiAxfSwgIm91
+			dHB1dC0wLjExNDg3NDE3NDM1MjczNTI4LWVycm9yIjogeyJvY2N1
+			cGFuY3kiOiAxfX0sICJ0b3RhbF9jaGFubmVscyI6IDksICJ0b3Rh
+			bF9vY2N1cGFuY3kiOiAxMH0sICJzZXJ2aWNlIjogIlByZXNlbmNl
+			In0=
 			</data>
 			<key>json</key>
 			<dict>
@@ -30,21 +150,51 @@
 							<key>occupancy</key>
 							<integer>1</integer>
 						</dict>
-						<key>a</key>
+						<key>bot</key>
 						<dict>
 							<key>occupancy</key>
-							<integer>1</integer>
+							<integer>2</integer>
 						</dict>
 						<key>futureChannel</key>
 						<dict>
 							<key>occupancy</key>
 							<integer>1</integer>
 						</dict>
+						<key>output-0.11487417435273528</key>
+						<dict>
+							<key>occupancy</key>
+							<integer>1</integer>
+						</dict>
+						<key>output-0.11487417435273528-error</key>
+						<dict>
+							<key>occupancy</key>
+							<integer>1</integer>
+						</dict>
+						<key>output-0.11487417435273528-info</key>
+						<dict>
+							<key>occupancy</key>
+							<integer>1</integer>
+						</dict>
+						<key>output-0.11487417435273528-one</key>
+						<dict>
+							<key>occupancy</key>
+							<integer>1</integer>
+						</dict>
+						<key>output-0.11487417435273528-stats</key>
+						<dict>
+							<key>occupancy</key>
+							<integer>1</integer>
+						</dict>
+						<key>pubnub-sensor-network</key>
+						<dict>
+							<key>occupancy</key>
+							<integer>1</integer>
+						</dict>
 					</dict>
 					<key>total_channels</key>
-					<integer>3</integer>
+					<integer>9</integer>
 					<key>total_occupancy</key>
-					<integer>3</integer>
+					<integer>10</integer>
 				</dict>
 				<key>service</key>
 				<string>Presence</string>
@@ -118,7 +268,7 @@
 					<key>Accept-Ranges</key>
 					<string>bytes</string>
 					<key>Access-Control-Allow-Methods</key>
-					<string>OPTIONS, GET, POST</string>
+					<string>GET</string>
 					<key>Access-Control-Allow-Origin</key>
 					<string>*</string>
 					<key>Age</key>
@@ -128,16 +278,16 @@
 					<key>Connection</key>
 					<string>keep-alive</string>
 					<key>Content-Length</key>
-					<string>241</string>
+					<string>548</string>
 					<key>Content-Type</key>
 					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
-					<string>Thu, 03 Dec 2015 20:02:58 GMT</string>
+					<string>Thu, 03 Dec 2015 23:40:03 GMT</string>
 					<key>Server</key>
 					<string>Pubnub Presence</string>
 				</dict>
 				<key>expectedContentLength</key>
-				<integer>241</integer>
+				<integer>548</integer>
 				<key>statusCode</key>
 				<integer>200</integer>
 				<key>suggestedFileName</key>

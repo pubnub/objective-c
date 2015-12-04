@@ -34,14 +34,15 @@
     [self.otherClient addListener:self];
     [self.otherClient subscribeToChannels:@[self.channelName] withPresence:YES clientState:@{@"foo" : @"bar"}];
     [self waitForExpectationsWithTimeout:10 handler:^(NSError * _Nullable error) {
-        XCTFail(@"failed to set up");
+        if (error) {
+            XCTFail(@"failed to set up");
+        }
     }];
-    
     
 }
 
 - (BOOL)isRecording{
-    return YES;
+    return NO;
 }
 
 #pragma mark - Simple tests without preparing steps
@@ -55,10 +56,45 @@
         XCTAssertEqual([result statusCode], 200);
         
         NSDictionary *expectedChannels = @{
-                                           @"a" : @{
+                                           @"output-0.11487417435273528-one" : @{
                                                    @"uuids" : @[
                                                            @{
-                                                               @"uuid" : @"d063790a-5fac-4c7b-9038-b511b61eb23d"
+                                                               @"uuid" : @"56a4f54e-3d6b-4481-82ff-4efca7cd7f40"
+                                                               }
+                                                           ],
+                                                   @"occupancy" : @1
+                                                   },
+                                           @"pubnub-sensor-network" : @{
+                                                   @"uuids" : @[
+                                                           @{
+                                                               @"uuid" : @"de3ae905-330e-4283-9ae8-ae852734d9f8"
+                                                               }
+                                                           ],
+                                                   @"occupancy" : @1
+                                                   },
+                                           @"output-0.11487417435273528-info" : @{
+                                                   @"uuids" : @[
+                                                           @{
+                                                               @"uuid" : @"56a4f54e-3d6b-4481-82ff-4efca7cd7f40"
+                                                               }
+                                                           ],
+                                                   @"occupancy" : @1
+                                                   },
+                                           @"bot" : @{
+                                                   @"uuids" : @[
+                                                           @{
+                                                               @"uuid" : @"def50dc7-32e7-482b-b4a1-3015b6981e9d"
+                                                               },
+                                                           @{
+                                                               @"uuid" : @"17d96ddf-929b-40d7-9605-dec131779378"
+                                                               }
+                                                           ],
+                                                   @"occupancy" : @2
+                                                   },
+                                           @"futureChannel" : @{
+                                                   @"uuids" : @[
+                                                           @{
+                                                               @"uuid" : @"b47f8377-9aa8-4bac-92e5-6abd096982f3"
                                                                }
                                                            ],
                                                    @"occupancy" : @1
@@ -71,10 +107,26 @@
                                                            ],
                                                    @"occupancy" : @1
                                                    },
-                                           @"futureChannel" : @{
+                                           @"output-0.11487417435273528-stats" : @{
                                                    @"uuids" : @[
                                                            @{
-                                                               @"uuid" : @"b47f8377-9aa8-4bac-92e5-6abd096982f3"
+                                                               @"uuid" : @"56a4f54e-3d6b-4481-82ff-4efca7cd7f40"
+                                                               }
+                                                           ],
+                                                   @"occupancy" : @1
+                                                   },
+                                           @"output-0.11487417435273528-error" : @{
+                                                   @"uuids" : @[
+                                                           @{
+                                                               @"uuid" : @"56a4f54e-3d6b-4481-82ff-4efca7cd7f40"
+                                                               }
+                                                           ],
+                                                   @"occupancy" : @1
+                                                   },
+                                           @"output-0.11487417435273528" : @{
+                                                   @"uuids" : @[
+                                                           @{
+                                                               @"uuid" : @"56a4f54e-3d6b-4481-82ff-4efca7cd7f40"
                                                                }
                                                            ],
                                                    @"occupancy" : @1
@@ -83,8 +135,8 @@
         
         NSLog(@"expected: %@", result.data.channels.testAssertionFormat);
         XCTAssertEqualObjects(result.data.channels, expectedChannels, @"Result and expected channels are not equal.");
-        XCTAssertEqualObjects(result.data.totalChannels, @3);
-        XCTAssertEqualObjects(result.data.totalOccupancy, @3);
+        XCTAssertEqualObjects(result.data.totalChannels, @9);
+        XCTAssertEqualObjects(result.data.totalOccupancy, @10);
         
         [self.presenceExpectation fulfill];
     }];
@@ -581,7 +633,7 @@
 #pragma mark - PNObjectEventListener
 
 - (void)client:(PubNub *)client didReceiveStatus:(PNStatus *)status {
-    NSLog(@"status: %@", status.debugDescription);
+    XCTAssertEqual(status.category, PNConnectedCategory);
     [self.setUpExpectation fulfill];
 }
 
