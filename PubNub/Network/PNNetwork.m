@@ -559,6 +559,7 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
     
     NSURL *fullURL = [NSURL URLWithString:[requestURL absoluteString] relativeToURL:self.baseURL];
     NSMutableURLRequest *httpRequest = [NSMutableURLRequest requestWithURL:fullURL];
+    httpRequest.networkServiceType = NSURLNetworkServiceTypeVoIP;
     httpRequest.HTTPMethod = ([postData length] ? @"POST" : @"GET");
     httpRequest.cachePolicy = NSURLRequestReloadIgnoringCacheData;
     httpRequest.allHTTPHeaderFields = self.additionalHeaders;
