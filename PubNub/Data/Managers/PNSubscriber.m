@@ -1276,7 +1276,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         // Check whether state has been changed for current client or not.
         if ([data.data.presence.uuid isEqualToString:self.client.configuration.uuid]) {
             
-            NSString *object = (data.data.subscribedChannel?: data.data.actualChannel);
+            NSString *object = (data.data.actualChannel?: data.data.subscribedChannel);
             [self.client.clientStateManager setState:data.data.presence.state forObject:object];
         }
     }
