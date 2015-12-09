@@ -12,6 +12,7 @@
 			buildConfigurationList = 791582021BD705130084FC70 /* Build configuration list for PBXAggregateTarget "Universal Framework (watchOS)" */;
 			buildPhases = (
 				791582011BD705130084FC70 /* Build Universal Binary */,
+				798842151C18B26D003E8948 /* Add dynamic libraries to module map */,
 			);
 			dependencies = (
 			);
@@ -23,6 +24,7 @@
 			buildConfigurationList = 79ACC4931C11BC620056523A /* Build configuration list for PBXAggregateTarget "Universal Framework (Fabric)" */;
 			buildPhases = (
 				79ACC4921C11BC620056523A /* Build Universal Binary */,
+				798842161C18B272003E8948 /* Add dynamic libraries to module map */,
 			);
 			dependencies = (
 			);
@@ -34,6 +36,7 @@
 			buildConfigurationList = 79CBB1D41BD042FB001FC34D /* Build configuration list for PBXAggregateTarget "Universal Framework (iOS)" */;
 			buildPhases = (
 				79CBB1D71BD04308001FC34D /* Build Universal Binary */,
+				798842141C18B265003E8948 /* Add dynamic libraries to module map */,
 			);
 			dependencies = (
 			);
@@ -794,6 +797,7 @@
 		7951585B1C11C88500A9D3AE /* Fabric+FABKits.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Fabric+FABKits.h"; sourceTree = "<group>"; };
 		7951585C1C11C88500A9D3AE /* Fabric.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Fabric.h; sourceTree = "<group>"; };
 		795158611C11EA5500A9D3AE /* PubNub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PubNub.h; sourceTree = "<group>"; };
+		798842101C18AFE0003E8948 /* modify_modulemap.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = modify_modulemap.sh; sourceTree = "<group>"; };
 		79ACC3D91C11BB420056523A /* PubNub+FAB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PubNub+FAB.h"; sourceTree = "<group>"; };
 		79ACC3DA1C11BB420056523A /* PubNub+FAB.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "PubNub+FAB.m"; sourceTree = "<group>"; };
 		79ACC48F1C11BC4D0056523A /* PubNub.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PubNub.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1426,6 +1430,7 @@
 			children = (
 				79CBB1DC1BD043BD001FC34D /* build_universal.sh */,
 				79CBB1DD1BD043BD001FC34D /* copy_products.sh */,
+				798842101C18AFE0003E8948 /* modify_modulemap.sh */,
 			);
 			path = scripts;
 			sourceTree = "<group>";
@@ -1881,6 +1886,7 @@
 				791582511BD709C60084FC70 /* Headers */,
 				791582A71BD709C60084FC70 /* Resources */,
 				791582A81BD709C60084FC70 /* Copy Products */,
+				7988420F1C18AF98003E8948 /* Add dynamic libraries to module map */,
 			);
 			buildRules = (
 			);
@@ -1901,6 +1907,7 @@
 				791582FA1BD709D10084FC70 /* Headers */,
 				791583501BD709D10084FC70 /* Resources */,
 				791583511BD709D10084FC70 /* Copy Products */,
+				798842111C18B236003E8948 /* Add dynamic libraries to module map */,
 			);
 			buildRules = (
 			);
@@ -1957,6 +1964,7 @@
 				79ACC4331C11BC4D0056523A /* Headers */,
 				79ACC48A1C11BC4D0056523A /* Resources */,
 				79ACC48B1C11BC4D0056523A /* Copy Products */,
+				798842131C18B24B003E8948 /* Add dynamic libraries to module map */,
 			);
 			buildRules = (
 			);
@@ -1977,6 +1985,7 @@
 				79CBB03B1BD03D3F001FC34D /* Headers */,
 				79CBB03C1BD03D3F001FC34D /* Resources */,
 				79CBB1D21BD04299001FC34D /* Copy Products */,
+				798842121C18B23F003E8948 /* Add dynamic libraries to module map */,
 			);
 			buildRules = (
 			);
@@ -2146,6 +2155,104 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"${SRCROOT}/scripts/copy_products.sh\"";
+		};
+		7988420F1C18AF98003E8948 /* Add dynamic libraries to module map */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Add dynamic libraries to module map";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/bin/sh \"${SRCROOT}/scripts/modify_modulemap.sh\"";
+		};
+		798842111C18B236003E8948 /* Add dynamic libraries to module map */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Add dynamic libraries to module map";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/bin/sh \"${SRCROOT}/scripts/modify_modulemap.sh\"";
+		};
+		798842121C18B23F003E8948 /* Add dynamic libraries to module map */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Add dynamic libraries to module map";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/bin/sh \"${SRCROOT}/scripts/modify_modulemap.sh\"";
+		};
+		798842131C18B24B003E8948 /* Add dynamic libraries to module map */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Add dynamic libraries to module map";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/bin/sh \"${SRCROOT}/scripts/modify_modulemap.sh\"";
+		};
+		798842141C18B265003E8948 /* Add dynamic libraries to module map */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Add dynamic libraries to module map";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/bin/sh \"${SRCROOT}/scripts/modify_modulemap.sh\"";
+		};
+		798842151C18B26D003E8948 /* Add dynamic libraries to module map */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Add dynamic libraries to module map";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/bin/sh \"${SRCROOT}/scripts/modify_modulemap.sh\"";
+		};
+		798842161C18B272003E8948 /* Add dynamic libraries to module map */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Add dynamic libraries to module map";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/bin/sh \"${SRCROOT}/scripts/modify_modulemap.sh\"";
 		};
 		79ACC48B1C11BC4D0056523A /* Copy Products */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2618,6 +2725,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.pubnub.PubNub;
 				PRODUCT_NAME = PubNub;
 				SKIP_INSTALL = YES;
@@ -2640,6 +2748,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.pubnub.PubNub;
 				PRODUCT_NAME = PubNub;
 				SKIP_INSTALL = YES;
