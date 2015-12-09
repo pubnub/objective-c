@@ -1,3 +1,6 @@
+12-10-2015 - 0e6027c - 4.2.1
+. fixed cient state cache issue because of which channel group state itself get updated even if state has been changed for one of channels from this group.
+
 12-02-2015 - f77cd7d - 4.2.0
 . extended subscribe API with ability to specify arbitrarily time token to catch up from
 . added ability to specify time tokens not only as 17 digit, but time interval from NSDate acceptable too
