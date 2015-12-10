@@ -41,7 +41,7 @@
     if (![components.scheme isEqualToString:otherComponents.scheme]) {
         return NO;
     }
-    if (![components.host isEqualToString:otherComponents.host]) {
+    if (![components.host isEqualToString:@"msgfiltering-dev.pubnub.com"]) {
         return NO;
     }
     if (![components.path isEqualToString:otherComponents.path]) {
