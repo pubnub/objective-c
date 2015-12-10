@@ -4,7 +4,6 @@
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "PubNub+FAB.h"
-#import <objc/runtime.h>
 #import "PNConfiguration.h"
 #import "Fabric+FABKits.h"
 

@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "79ACC4911C11BC620056523A"
-               BuildableName = "Universal Framework (Fabric)"
-               BlueprintName = "Universal Framework (Fabric)"
+               BlueprintIdentifier = "798842F81C191579003E8948"
+               BuildableName = "PubNub.a"
+               BlueprintName = "Static PubNub (Fabric)"
                ReferencedContainer = "container:PubNub Framework.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,9 +45,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "79ACC4911C11BC620056523A"
-            BuildableName = "Universal Framework (Fabric)"
-            BlueprintName = "Universal Framework (Fabric)"
+            BlueprintIdentifier = "798842F81C191579003E8948"
+            BuildableName = "PubNub.a"
+            BlueprintName = "Static PubNub (Fabric)"
             ReferencedContainer = "container:PubNub Framework.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -63,9 +63,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "79ACC4911C11BC620056523A"
-            BuildableName = "Universal Framework (Fabric)"
-            BlueprintName = "Universal Framework (Fabric)"
+            BlueprintIdentifier = "798842F81C191579003E8948"
+            BuildableName = "PubNub.a"
+            BlueprintName = "Static PubNub (Fabric)"
             ReferencedContainer = "container:PubNub Framework.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

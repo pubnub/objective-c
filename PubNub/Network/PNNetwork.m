@@ -742,7 +742,7 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
             #pragma clang diagnostic pop
         }
     };
-
+    
     if (![parser requireAdditionalData]) {
         
         parseCompletion([parser parsedServiceResponse:data]);
