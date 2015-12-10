@@ -10,35 +10,11 @@
 			<key>data</key>
 			<data>
 			eyJzdGF0dXMiOiAyMDAsICJtZXNzYWdlIjogIk9LIiwgInBheWxv
-			YWQiOiB7ImNoYW5uZWxzIjogeyIyRUM5MjVGMC1COTk2LTQ3QTQt
-			QUY1NC1BNjA1RTFBOUFFQkEiOiB7InV1aWRzIjogW3sidXVpZCI6
-			ICJkMDYzNzkwYS01ZmFjLTRjN2ItOTAzOC1iNTExYjYxZWIyM2Qi
-			fV0sICJvY2N1cGFuY3kiOiAxfSwgInB1Ym51Yi1zZW5zb3ItbmV0
-			d29yayI6IHsidXVpZHMiOiBbeyJ1dWlkIjogImRlM2FlOTA1LTMz
-			MGUtNDI4My05YWU4LWFlODUyNzM0ZDlmOCJ9XSwgIm9jY3VwYW5j
-			eSI6IDF9LCAiYm90IjogeyJ1dWlkcyI6IFt7InV1aWQiOiAiZGVm
-			NTBkYzctMzJlNy00ODJiLWI0YTEtMzAxNWI2OTgxZTlkIn0sIHsi
-			dXVpZCI6ICIxN2Q5NmRkZi05MjliLTQwZDctOTYwNS1kZWMxMzE3
-			NzkzNzgifV0sICJvY2N1cGFuY3kiOiAyfSwgIm91dHB1dC0wLjEx
-			NDg3NDE3NDM1MjczNTI4LWluZm8iOiB7InV1aWRzIjogW3sidXVp
-			ZCI6ICI1NmE0ZjU0ZS0zZDZiLTQ0ODEtODJmZi00ZWZjYTdjZDdm
-			NDAifV0sICJvY2N1cGFuY3kiOiAxfSwgIm91dHB1dC0wLjExNDg3
-			NDE3NDM1MjczNTI4LXN0YXRzIjogeyJ1dWlkcyI6IFt7InV1aWQi
-			OiAiNTZhNGY1NGUtM2Q2Yi00NDgxLTgyZmYtNGVmY2E3Y2Q3ZjQw
-			In1dLCAib2NjdXBhbmN5IjogMX0sICJmdXR1cmVDaGFubmVsIjog
-			eyJ1dWlkcyI6IFt7InV1aWQiOiAiYjQ3ZjgzNzctOWFhOC00YmFj
-			LTkyZTUtNmFiZDA5Njk4MmYzIn1dLCAib2NjdXBhbmN5IjogMX0s
-			ICJvdXRwdXQtMC4xMTQ4NzQxNzQzNTI3MzUyOC1vbmUiOiB7InV1
-			aWRzIjogW3sidXVpZCI6ICI1NmE0ZjU0ZS0zZDZiLTQ0ODEtODJm
-			Zi00ZWZjYTdjZDdmNDAifV0sICJvY2N1cGFuY3kiOiAxfSwgIm91
-			dHB1dC0wLjExNDg3NDE3NDM1MjczNTI4IjogeyJ1dWlkcyI6IFt7
-			InV1aWQiOiAiNTZhNGY1NGUtM2Q2Yi00NDgxLTgyZmYtNGVmY2E3
-			Y2Q3ZjQwIn1dLCAib2NjdXBhbmN5IjogMX0sICJvdXRwdXQtMC4x
-			MTQ4NzQxNzQzNTI3MzUyOC1lcnJvciI6IHsidXVpZHMiOiBbeyJ1
-			dWlkIjogIjU2YTRmNTRlLTNkNmItNDQ4MS04MmZmLTRlZmNhN2Nk
-			N2Y0MCJ9XSwgIm9jY3VwYW5jeSI6IDF9fSwgInRvdGFsX2NoYW5u
-			ZWxzIjogOSwgInRvdGFsX29jY3VwYW5jeSI6IDEwfSwgInNlcnZp
-			Y2UiOiAiUHJlc2VuY2UifQ==
+			YWQiOiB7ImNoYW5uZWxzIjogeyJhIjogeyJ1dWlkcyI6IFt7InV1
+			aWQiOiAiZDA2Mzc5MGEtNWZhYy00YzdiLTkwMzgtYjUxMWI2MWVi
+			MjNkIn1dLCAib2NjdXBhbmN5IjogMX19LCAidG90YWxfY2hhbm5l
+			bHMiOiAxLCAidG90YWxfb2NjdXBhbmN5IjogMX0sICJzZXJ2aWNl
+			IjogIlByZXNlbmNlIn0=
 			</data>
 			<key>json</key>
 			<dict>
@@ -48,7 +24,7 @@
 				<dict>
 					<key>channels</key>
 					<dict>
-						<key>2EC925F0-B996-47A4-AF54-A605E1A9AEBA</key>
+						<key>a</key>
 						<dict>
 							<key>occupancy</key>
 							<integer>1</integer>
@@ -60,111 +36,11 @@
 								</dict>
 							</array>
 						</dict>
-						<key>bot</key>
-						<dict>
-							<key>occupancy</key>
-							<integer>2</integer>
-							<key>uuids</key>
-							<array>
-								<dict>
-									<key>uuid</key>
-									<string>def50dc7-32e7-482b-b4a1-3015b6981e9d</string>
-								</dict>
-								<dict>
-									<key>uuid</key>
-									<string>17d96ddf-929b-40d7-9605-dec131779378</string>
-								</dict>
-							</array>
-						</dict>
-						<key>futureChannel</key>
-						<dict>
-							<key>occupancy</key>
-							<integer>1</integer>
-							<key>uuids</key>
-							<array>
-								<dict>
-									<key>uuid</key>
-									<string>b47f8377-9aa8-4bac-92e5-6abd096982f3</string>
-								</dict>
-							</array>
-						</dict>
-						<key>output-0.11487417435273528</key>
-						<dict>
-							<key>occupancy</key>
-							<integer>1</integer>
-							<key>uuids</key>
-							<array>
-								<dict>
-									<key>uuid</key>
-									<string>56a4f54e-3d6b-4481-82ff-4efca7cd7f40</string>
-								</dict>
-							</array>
-						</dict>
-						<key>output-0.11487417435273528-error</key>
-						<dict>
-							<key>occupancy</key>
-							<integer>1</integer>
-							<key>uuids</key>
-							<array>
-								<dict>
-									<key>uuid</key>
-									<string>56a4f54e-3d6b-4481-82ff-4efca7cd7f40</string>
-								</dict>
-							</array>
-						</dict>
-						<key>output-0.11487417435273528-info</key>
-						<dict>
-							<key>occupancy</key>
-							<integer>1</integer>
-							<key>uuids</key>
-							<array>
-								<dict>
-									<key>uuid</key>
-									<string>56a4f54e-3d6b-4481-82ff-4efca7cd7f40</string>
-								</dict>
-							</array>
-						</dict>
-						<key>output-0.11487417435273528-one</key>
-						<dict>
-							<key>occupancy</key>
-							<integer>1</integer>
-							<key>uuids</key>
-							<array>
-								<dict>
-									<key>uuid</key>
-									<string>56a4f54e-3d6b-4481-82ff-4efca7cd7f40</string>
-								</dict>
-							</array>
-						</dict>
-						<key>output-0.11487417435273528-stats</key>
-						<dict>
-							<key>occupancy</key>
-							<integer>1</integer>
-							<key>uuids</key>
-							<array>
-								<dict>
-									<key>uuid</key>
-									<string>56a4f54e-3d6b-4481-82ff-4efca7cd7f40</string>
-								</dict>
-							</array>
-						</dict>
-						<key>pubnub-sensor-network</key>
-						<dict>
-							<key>occupancy</key>
-							<integer>1</integer>
-							<key>uuids</key>
-							<array>
-								<dict>
-									<key>uuid</key>
-									<string>de3ae905-330e-4283-9ae8-ae852734d9f8</string>
-								</dict>
-							</array>
-						</dict>
 					</dict>
 					<key>total_channels</key>
-					<integer>9</integer>
+					<integer>1</integer>
 					<key>total_occupancy</key>
-					<integer>10</integer>
+					<integer>1</integer>
 				</dict>
 				<key>service</key>
 				<string>Presence</string>
@@ -181,7 +57,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/presence/sub-key/demo-36?pnsdk=PubNub-ObjC-iOS%2F4.2.0&amp;state=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;disable_uuids=0&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://msgfiltering-dev.pubnub.com/v2/presence/sub-key/demo-36?pnsdk=PubNub-ObjC-iOS%2F4.2.0&amp;state=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;disable_uuids=0&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -207,7 +83,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/presence/sub-key/demo-36?pnsdk=PubNub-ObjC-iOS%2F4.2.0&amp;state=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;disable_uuids=0&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://msgfiltering-dev.pubnub.com/v2/presence/sub-key/demo-36?pnsdk=PubNub-ObjC-iOS%2F4.2.0&amp;state=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;disable_uuids=0&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -232,32 +108,32 @@
 				<key>MIMEType</key>
 				<string>text/javascript</string>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/presence/sub-key/demo-36?pnsdk=PubNub-ObjC-iOS%2F4.2.0&amp;state=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;disable_uuids=0&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://msgfiltering-dev.pubnub.com/v2/presence/sub-key/demo-36?pnsdk=PubNub-ObjC-iOS%2F4.2.0&amp;state=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;disable_uuids=0&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHeaderFields</key>
 				<dict>
+					<key>Accept-Ranges</key>
+					<string>bytes</string>
 					<key>Access-Control-Allow-Methods</key>
-					<string>OPTIONS, GET, POST</string>
+					<string>GET</string>
 					<key>Access-Control-Allow-Origin</key>
 					<string>*</string>
 					<key>Age</key>
-					<string>0</string>
+					<string>2</string>
 					<key>Cache-Control</key>
 					<string>no-cache</string>
 					<key>Connection</key>
 					<string>keep-alive</string>
-					<key>Content-Encoding</key>
-					<string>gzip</string>
+					<key>Content-Length</key>
+					<string>209</string>
 					<key>Content-Type</key>
 					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
-					<string>Thu, 03 Dec 2015 23:40:04 GMT</string>
+					<string>Thu, 10 Dec 2015 22:42:45 GMT</string>
 					<key>Server</key>
 					<string>Pubnub Presence</string>
-					<key>Transfer-Encoding</key>
-					<string>Identity</string>
 				</dict>
 				<key>expectedContentLength</key>
-				<integer>1147</integer>
+				<integer>209</integer>
 				<key>statusCode</key>
 				<integer>200</integer>
 				<key>suggestedFileName</key>
@@ -274,8 +150,8 @@
 		<dict>
 			<key>data</key>
 			<data>
-			eyJ0Ijp7InQiOiIxNDQ5MTg1NDUyOTMyMzM5NSIsInIiOjF9LCJt
-			IjpbXX0=
+			eyJ0Ijp7InQiOiIxNDQ5Nzg3MzYyOTc3MDE2MCIsInIiOjU2fSwi
+			bSI6W119
 			</data>
 			<key>json</key>
 			<dict>
@@ -284,9 +160,9 @@
 				<key>t</key>
 				<dict>
 					<key>r</key>
-					<integer>1</integer>
+					<integer>56</integer>
 					<key>t</key>
-					<string>14491854529323395</string>
+					<string>14497873629770160</string>
 				</dict>
 			</dict>
 		</dict>
@@ -299,7 +175,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/2EC925F0-B996-47A4-AF54-A605E1A9AEBA,2EC925F0-B996-47A4-AF54-A605E1A9AEBA-pnpres/0/0?pnsdk=PubNub-ObjC-iOS%2F4.2.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=d063790a-5fac-4c7b-9038-b511b61eb23d</string>
+				<string>https://msgfiltering-dev.pubnub.com/v2/subscribe/demo-36/2EC925F0-B996-47A4-AF54-A605E1A9AEBA,2EC925F0-B996-47A4-AF54-A605E1A9AEBA-pnpres/0/0?pnsdk=PubNub-ObjC-iOS%2F4.2.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=d063790a-5fac-4c7b-9038-b511b61eb23d</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -325,7 +201,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/2EC925F0-B996-47A4-AF54-A605E1A9AEBA,2EC925F0-B996-47A4-AF54-A605E1A9AEBA-pnpres/0/0?pnsdk=PubNub-ObjC-iOS%2F4.2.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=d063790a-5fac-4c7b-9038-b511b61eb23d</string>
+				<string>https://msgfiltering-dev.pubnub.com/v2/subscribe/demo-36/2EC925F0-B996-47A4-AF54-A605E1A9AEBA,2EC925F0-B996-47A4-AF54-A605E1A9AEBA-pnpres/0/0?pnsdk=PubNub-ObjC-iOS%2F4.2.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=d063790a-5fac-4c7b-9038-b511b61eb23d</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -350,7 +226,7 @@
 				<key>MIMEType</key>
 				<string>text/javascript</string>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/2EC925F0-B996-47A4-AF54-A605E1A9AEBA,2EC925F0-B996-47A4-AF54-A605E1A9AEBA-pnpres/0/0?pnsdk=PubNub-ObjC-iOS%2F4.2.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=d063790a-5fac-4c7b-9038-b511b61eb23d</string>
+				<string>https://msgfiltering-dev.pubnub.com/v2/subscribe/demo-36/2EC925F0-B996-47A4-AF54-A605E1A9AEBA,2EC925F0-B996-47A4-AF54-A605E1A9AEBA-pnpres/0/0?pnsdk=PubNub-ObjC-iOS%2F4.2.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=d063790a-5fac-4c7b-9038-b511b61eb23d</string>
 				<key>allHeaderFields</key>
 				<dict>
 					<key>Access-Control-Allow-Methods</key>
@@ -362,14 +238,14 @@
 					<key>Connection</key>
 					<string>keep-alive</string>
 					<key>Content-Length</key>
-					<string>44</string>
+					<string>45</string>
 					<key>Content-Type</key>
 					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
-					<string>Thu, 03 Dec 2015 23:40:03 GMT</string>
+					<string>Thu, 10 Dec 2015 22:42:45 GMT</string>
 				</dict>
 				<key>expectedContentLength</key>
-				<integer>44</integer>
+				<integer>45</integer>
 				<key>statusCode</key>
 				<integer>200</integer>
 				<key>suggestedFileName</key>

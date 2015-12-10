@@ -39,6 +39,9 @@
             </BuildableReference>
             <SkippedTests>
                <Test
+                  Identifier = "PNBasicClientCryptTestCase">
+               </Test>
+               <Test
                   Identifier = "PNBasicClientTestCase">
                </Test>
                <Test
@@ -48,13 +51,10 @@
                   Identifier = "PNConfigurationChiperKeyTests">
                </Test>
                <Test
-                  Identifier = "PNPresenceChannelGroupTests">
-               </Test>
-               <Test
                   Identifier = "PNPresenceEventTests">
                </Test>
                <Test
-                  Identifier = "PNPresenceTests">
+                  Identifier = "PNPresenceTestCase">
                </Test>
             </SkippedTests>
          </TestableReference>

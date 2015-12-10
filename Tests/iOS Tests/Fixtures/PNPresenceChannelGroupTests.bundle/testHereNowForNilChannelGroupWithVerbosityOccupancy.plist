@@ -9,7 +9,7 @@
 		<dict>
 			<key>data</key>
 			<data>
-			eyJ0Ijp7InQiOiIxNDQ5Nzg3MzYyOTc3MDE2MCIsInIiOjU2fSwi
+			eyJ0Ijp7InQiOiIxNDQ5Nzg5Nzk0MzcxMDMwNiIsInIiOjU2fSwi
 			bSI6W119
 			</data>
 			<key>json</key>
@@ -21,7 +21,7 @@
 					<key>r</key>
 					<integer>56</integer>
 					<key>t</key>
-					<string>14497873629770160</string>
+					<string>14497897943710306</string>
 				</dict>
 			</dict>
 		</dict>
@@ -101,7 +101,7 @@
 					<key>Content-Type</key>
 					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
-					<string>Thu, 10 Dec 2015 22:42:43 GMT</string>
+					<string>Thu, 10 Dec 2015 23:28:10 GMT</string>
 				</dict>
 				<key>expectedContentLength</key>
 				<integer>45</integer>
@@ -122,16 +122,17 @@
 			<key>data</key>
 			<data>
 			eyJzdGF0dXMiOiAyMDAsICJtZXNzYWdlIjogIk9LIiwgInNlcnZp
-			Y2UiOiAiUHJlc2VuY2UiLCAib2NjdXBhbmN5IjogMX0=
+			Y2UiOiAiY2hhbm5lbC1yZWdpc3RyeSIsICJlcnJvciI6IGZhbHNl
+			fQ==
 			</data>
 			<key>json</key>
 			<dict>
+				<key>error</key>
+				<false/>
 				<key>message</key>
 				<string>OK</string>
-				<key>occupancy</key>
-				<integer>1</integer>
 				<key>service</key>
-				<string>Presence</string>
+				<string>channel-registry</string>
 				<key>status</key>
 				<integer>200</integer>
 			</dict>
@@ -145,7 +146,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://msgfiltering-dev.pubnub.com/v2/presence/sub-key/demo-36/channel/2EC925F0-B996-47A4-AF54-A605E1A9AEBA?pnsdk=PubNub-ObjC-iOS%2F4.2.0&amp;state=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;disable_uuids=1&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://msgfiltering-dev.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/testGroup?pnsdk=PubNub-ObjC-iOS%2F4.2.0&amp;add=2EC925F0-B996-47A4-AF54-A605E1A9AEBA,a&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -171,7 +172,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://msgfiltering-dev.pubnub.com/v2/presence/sub-key/demo-36/channel/2EC925F0-B996-47A4-AF54-A605E1A9AEBA?pnsdk=PubNub-ObjC-iOS%2F4.2.0&amp;state=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;disable_uuids=1&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://msgfiltering-dev.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/testGroup?pnsdk=PubNub-ObjC-iOS%2F4.2.0&amp;add=2EC925F0-B996-47A4-AF54-A605E1A9AEBA,a&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -196,7 +197,146 @@
 				<key>MIMEType</key>
 				<string>text/javascript</string>
 				<key>URL</key>
-				<string>https://msgfiltering-dev.pubnub.com/v2/presence/sub-key/demo-36/channel/2EC925F0-B996-47A4-AF54-A605E1A9AEBA?pnsdk=PubNub-ObjC-iOS%2F4.2.0&amp;state=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;disable_uuids=1&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://msgfiltering-dev.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/testGroup?pnsdk=PubNub-ObjC-iOS%2F4.2.0&amp;add=2EC925F0-B996-47A4-AF54-A605E1A9AEBA,a&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<key>allHeaderFields</key>
+				<dict>
+					<key>Accept-Ranges</key>
+					<string>bytes</string>
+					<key>Access-Control-Allow-Methods</key>
+					<string>GET</string>
+					<key>Access-Control-Allow-Origin</key>
+					<string>*</string>
+					<key>Age</key>
+					<string>1</string>
+					<key>Cache-Control</key>
+					<string>no-cache</string>
+					<key>Connection</key>
+					<string>keep-alive</string>
+					<key>Content-Length</key>
+					<string>79</string>
+					<key>Content-Type</key>
+					<string>text/javascript; charset="UTF-8"</string>
+					<key>Date</key>
+					<string>Thu, 10 Dec 2015 23:28:10 GMT</string>
+					<key>Server</key>
+					<string>Pubnub</string>
+				</dict>
+				<key>expectedContentLength</key>
+				<integer>79</integer>
+				<key>statusCode</key>
+				<integer>200</integer>
+				<key>suggestedFileName</key>
+				<string>testGroup.js</string>
+				<key>textEncodingName</key>
+				<string>"utf-8"</string>
+			</dict>
+		</dict>
+	</dict>
+	<dict>
+		<key>cancelled</key>
+		<false/>
+		<key>data</key>
+		<dict>
+			<key>data</key>
+			<data>
+			eyJzdGF0dXMiOiAyMDAsICJtZXNzYWdlIjogIk9LIiwgInBheWxv
+			YWQiOiB7ImNoYW5uZWxzIjogeyJhIjogeyJvY2N1cGFuY3kiOiAx
+			fSwgIjJFQzkyNUYwLUI5OTYtNDdBNC1BRjU0LUE2MDVFMUE5QUVC
+			QSI6IHsib2NjdXBhbmN5IjogMX19LCAidG90YWxfY2hhbm5lbHMi
+			OiAyLCAidG90YWxfb2NjdXBhbmN5IjogMn0sICJzZXJ2aWNlIjog
+			IlByZXNlbmNlIn0=
+			</data>
+			<key>json</key>
+			<dict>
+				<key>message</key>
+				<string>OK</string>
+				<key>payload</key>
+				<dict>
+					<key>channels</key>
+					<dict>
+						<key>2EC925F0-B996-47A4-AF54-A605E1A9AEBA</key>
+						<dict>
+							<key>occupancy</key>
+							<integer>1</integer>
+						</dict>
+						<key>a</key>
+						<dict>
+							<key>occupancy</key>
+							<integer>1</integer>
+						</dict>
+					</dict>
+					<key>total_channels</key>
+					<integer>2</integer>
+					<key>total_occupancy</key>
+					<integer>2</integer>
+				</dict>
+				<key>service</key>
+				<string>Presence</string>
+				<key>status</key>
+				<integer>200</integer>
+			</dict>
+		</dict>
+		<key>request</key>
+		<dict>
+			<key>currentRequest</key>
+			<dict>
+				<key>HTTPMethod</key>
+				<string>GET</string>
+				<key>HTTPShouldHandleCookies</key>
+				<true/>
+				<key>URL</key>
+				<string>https://msgfiltering-dev.pubnub.com/v2/presence/sub-key/demo-36?pnsdk=PubNub-ObjC-iOS%2F4.2.0&amp;state=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;disable_uuids=1&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<key>allHTTPHeaderFields</key>
+				<dict>
+					<key>Accept</key>
+					<string>*/*</string>
+					<key>Accept-Encoding</key>
+					<string>gzip,deflate</string>
+					<key>Accept-Language</key>
+					<string>en-us</string>
+					<key>Connection</key>
+					<string>keep-alive</string>
+					<key>User-Agent</key>
+					<string>iPhone; CPU iPhone OS 8.4 Version</string>
+				</dict>
+				<key>allowsCellularAccess</key>
+				<true/>
+				<key>timeoutInterval</key>
+				<real>60</real>
+			</dict>
+			<key>originalRequest</key>
+			<dict>
+				<key>HTTPMethod</key>
+				<string>GET</string>
+				<key>HTTPShouldHandleCookies</key>
+				<true/>
+				<key>URL</key>
+				<string>https://msgfiltering-dev.pubnub.com/v2/presence/sub-key/demo-36?pnsdk=PubNub-ObjC-iOS%2F4.2.0&amp;state=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;disable_uuids=1&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<key>allHTTPHeaderFields</key>
+				<dict>
+					<key>Accept</key>
+					<string>*/*</string>
+					<key>Accept-Encoding</key>
+					<string>gzip,deflate</string>
+					<key>Connection</key>
+					<string>keep-alive</string>
+					<key>User-Agent</key>
+					<string>iPhone; CPU iPhone OS 8.4 Version</string>
+				</dict>
+				<key>allowsCellularAccess</key>
+				<true/>
+				<key>timeoutInterval</key>
+				<real>60</real>
+			</dict>
+		</dict>
+		<key>response</key>
+		<dict>
+			<key>response</key>
+			<dict>
+				<key>MIMEType</key>
+				<string>text/javascript</string>
+				<key>URL</key>
+				<string>https://msgfiltering-dev.pubnub.com/v2/presence/sub-key/demo-36?pnsdk=PubNub-ObjC-iOS%2F4.2.0&amp;state=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;disable_uuids=1&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHeaderFields</key>
 				<dict>
 					<key>Accept-Ranges</key>
@@ -212,20 +352,20 @@
 					<key>Connection</key>
 					<string>keep-alive</string>
 					<key>Content-Length</key>
-					<string>71</string>
+					<string>206</string>
 					<key>Content-Type</key>
 					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
-					<string>Thu, 10 Dec 2015 22:42:43 GMT</string>
+					<string>Thu, 10 Dec 2015 23:28:10 GMT</string>
 					<key>Server</key>
 					<string>Pubnub Presence</string>
 				</dict>
 				<key>expectedContentLength</key>
-				<integer>71</integer>
+				<integer>206</integer>
 				<key>statusCode</key>
 				<integer>200</integer>
 				<key>suggestedFileName</key>
-				<string>2EC925F0-B996-47A4-AF54-A605E1A9AEBA.js</string>
+				<string>demo-36.js</string>
 				<key>textEncodingName</key>
 				<string>"utf-8"</string>
 			</dict>

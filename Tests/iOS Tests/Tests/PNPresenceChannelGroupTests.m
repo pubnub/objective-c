@@ -7,10 +7,10 @@
 //
 
 #import <PubNub/PubNub.h>
-#import "PNBasicClientTestCase.h"
+#import "PNPresenceTestCase.h"
 #import "NSDictionary+PNTest.h"
 
-@interface PNPresenceChannelGroupTests : PNBasicClientTestCase
+@interface PNPresenceChannelGroupTests : PNPresenceTestCase
 @property (nonatomic, strong) XCTestExpectation *presenceExpectation;
 @property (nonatomic, strong) NSString *channelGroupName;
 @end
@@ -18,7 +18,11 @@
 @implementation PNPresenceChannelGroupTests
 
 - (BOOL)isRecording {
-    return YES;
+    return NO;
+}
+
+- (NSString *)otherClientChannelName {
+    return @"2EC925F0-B996-47A4-AF54-A605E1A9AEBA";
 }
 
 - (void)setUp {
@@ -27,12 +31,14 @@
     XCTestExpectation *setUpExpectation = [self expectationWithDescription:@"setUp"];
     self.channelGroupName = @"testGroup";
     
-    [self.client addChannels:@[@"a", @"futureChannel"] toGroup:self.channelGroupName withCompletion:^(PNAcknowledgmentStatus *status) {
+    [self.client addChannels:@[@"a", self.otherClientChannelName] toGroup:self.channelGroupName withCompletion:^(PNAcknowledgmentStatus *status) {
         NSLog(@"status: %@", status);
         [setUpExpectation fulfill];
     }];
     [self waitForExpectationsWithTimeout:10 handler:^(NSError * _Nullable error) {
-        XCTFail(@"failed to set up");
+        if (error) {
+            XCTFail(@"failed to set up");
+        }
     }];
 }
 
@@ -50,8 +56,28 @@
                              XCTAssertNotNil([result data]);
                              XCTAssertEqual([result statusCode], 200);
                              
-                             NSDictionary *expectedChannels = @{};
+                             NSDictionary *expectedChannels = @{
+                                                                @"a" : @{
+                                                                        @"uuids" : @[
+                                                                                @{
+                                                                                    @"uuid" : @"d063790a-5fac-4c7b-9038-b511b61eb23d"
+                                                                                    }
+                                                                                ],
+                                                                        @"occupancy" : @1
+                                                                        },
+                                                                @"2EC925F0-B996-47A4-AF54-A605E1A9AEBA" : @{
+                                                                        @"uuids" : @[
+                                                                                @{
+                                                                                    @"uuid" : @"d063790a-5fac-4c7b-9038-b511b61eb23d"
+                                                                                    }
+                                                                                ],
+                                                                        @"occupancy" : @1
+                                                                        }
+                                                                };
                              
+                             NSLog(@"expected: %@", result.data.channels.testAssertionFormat);
+                             XCTAssertEqualObjects(result.data.totalChannels, @2);
+                             XCTAssertEqualObjects(result.data.totalOccupancy, @2);
                              XCTAssertEqualObjects(result.data.channels, expectedChannels, @"Result and expected channels are not equal.");
                              
                              [self.presenceExpectation fulfill];
@@ -64,6 +90,7 @@
     }];
 }
 
+#warning fix test, server or sdk
 - (void)testHereNowForNilChannelGroup {
     self.presenceExpectation = [self expectationWithDescription:@"network"];
     [self.client hereNowForChannelGroup:self.channelGroupName
@@ -73,6 +100,7 @@
                              XCTAssertNotNil([result data]);
                              XCTAssertEqual([result statusCode], 200);
                              
+                             NSLog(@"expected: %@", result.data.channels.testAssertionFormat);
                              NSDictionary *expectedChannels = @{
                                                                 @"0_5098427633369088" : @{
                                                                         @"uuids" : @[
@@ -122,9 +150,19 @@
                                  XCTAssertNotNil([result data]);
                                  XCTAssertEqual([result statusCode], 200);
                                  
-                                 NSDictionary *expectedChannels = @{};
+                                 NSDictionary *expectedChannels = @{
+                                                                    @"a" : @{
+                                                                            @"occupancy" : @1
+                                                                            },
+                                                                    @"2EC925F0-B996-47A4-AF54-A605E1A9AEBA" : @{
+                                                                            @"occupancy" : @1
+                                                                            }
+                                                                    };
                                  
+                                 NSLog(@"expected: %@", result.data.channels.testAssertionFormat);
                                  XCTAssertEqualObjects(result.data.channels, expectedChannels, @"Result and expected channels are not equal.");
+                                 XCTAssertEqualObjects(result.data.totalOccupancy, @2);
+                                 XCTAssertEqualObjects(result.data.totalChannels, @2);
                                  
                                  
                                  [self.presenceExpectation fulfill];
@@ -137,6 +175,7 @@
     }];
 }
 
+#warning fix test, server or sdk
 - (void)testHereNowForNilChannelGroupWithVerbosityOccupancy {
     self.presenceExpectation = [self expectationWithDescription:@"network"];
     [self.client hereNowForChannelGroup:nil
@@ -147,6 +186,7 @@
                                  XCTAssertNotNil([result data]);
                                  XCTAssertEqual([result statusCode], 200);
                                  
+                                 NSLog(@"expected: %@", result.data.channels.testAssertionFormat);
                                  NSDictionary *expectedChannels = @{
                                                                     @"0_5098427633369088" : @{
                                                                             @"occupancy" : @1
@@ -181,9 +221,29 @@
                                  XCTAssertNotNil([result data]);
                                  XCTAssertEqual([result statusCode], 200);
                                  
-                                 NSDictionary *expectedChannels = @{};
+                                 NSDictionary *expectedChannels = @{
+                                                                    @"a" : @{
+                                                                            @"uuids" : @[
+                                                                                    @{
+                                                                                        @"uuid" : @"d063790a-5fac-4c7b-9038-b511b61eb23d"
+                                                                                        }
+                                                                                    ],
+                                                                            @"occupancy" : @1
+                                                                            },
+                                                                    @"2EC925F0-B996-47A4-AF54-A605E1A9AEBA" : @{
+                                                                            @"uuids" : @[
+                                                                                    @{
+                                                                                        @"uuid" : @"d063790a-5fac-4c7b-9038-b511b61eb23d"
+                                                                                        }
+                                                                                    ],
+                                                                            @"occupancy" : @1
+                                                                            }
+                                                                    };
                                  
+                                 NSLog(@"expected: %@", result.data.channels.testAssertionFormat);
                                  XCTAssertEqualObjects(result.data.channels, expectedChannels, @"Result and expected channels are not equal.");
+                                 XCTAssertEqualObjects(result.data.totalChannels, @2);
+                                 XCTAssertEqualObjects(result.data.totalOccupancy, @2);
                                  
                                  [self.presenceExpectation fulfill];
                              }];
@@ -195,6 +255,7 @@
     }];
 }
 
+#warning fix test, server or sdk
 - (void)testHereNowForNilChannelGroupWithVerbosityState {
     self.presenceExpectation = [self expectationWithDescription:@"network"];
     [self.client hereNowForChannelGroup:nil
@@ -205,6 +266,7 @@
                                  XCTAssertNotNil([result data]);
                                  XCTAssertEqual([result statusCode], 200);
                                  
+                                 NSLog(@"expected: %@", result.data.channels.testAssertionFormat);
                                  NSDictionary *expectedChannels = @{
                                                                     @"0_5098427633369088" : @{
                                                                             @"uuids" : @[
@@ -254,9 +316,25 @@
                                  XCTAssertNotNil([result data]);
                                  XCTAssertEqual([result statusCode], 200);
                                  
-                                 NSDictionary *expectedChannels = @{};
+                                 NSLog(@"expected: %@", result.data.channels.testAssertionFormat);
+                                 NSDictionary *expectedChannels = @{
+                                                                    @"a" : @{
+                                                                            @"uuids" : @[
+                                                                                    @"d063790a-5fac-4c7b-9038-b511b61eb23d"
+                                                                                    ],
+                                                                            @"occupancy" : @1
+                                                                            },
+                                                                    @"2EC925F0-B996-47A4-AF54-A605E1A9AEBA" : @{
+                                                                            @"uuids" : @[
+                                                                                    @"d063790a-5fac-4c7b-9038-b511b61eb23d"
+                                                                                    ],
+                                                                            @"occupancy" : @1
+                                                                            }
+                                                                    };
                                  
                                  XCTAssertEqualObjects(result.data.channels, expectedChannels, @"Result and expected channels are not equal.");
+                                 XCTAssertEqualObjects(result.data.totalOccupancy, @2);
+                                 XCTAssertEqualObjects(result.data.totalChannels, @2);
                                  
                                  [self.presenceExpectation fulfill];
                              }];
@@ -268,6 +346,7 @@
     }];
 }
 
+#warning fix test, server or sdk
 - (void)testHereNowForNilChannelGroupWithVerbosityUUID {
     self.presenceExpectation = [self expectationWithDescription:@"network"];
     [self.client hereNowForChannelGroup:nil
