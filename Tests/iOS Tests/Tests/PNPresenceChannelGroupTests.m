@@ -7,10 +7,10 @@
 //
 
 #import <PubNub/PubNub.h>
-#import "PNPresenceTestCase.h"
+#import "PNBasicPresenceTestCase.h"
 #import "NSDictionary+PNTest.h"
 
-@interface PNPresenceChannelGroupTests : PNPresenceTestCase
+@interface PNPresenceChannelGroupTests : PNBasicPresenceTestCase
 @property (nonatomic, strong) XCTestExpectation *presenceExpectation;
 @property (nonatomic, strong) NSString *channelGroupName;
 @end

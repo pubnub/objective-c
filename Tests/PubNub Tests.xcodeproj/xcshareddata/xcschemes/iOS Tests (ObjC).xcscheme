@@ -45,6 +45,9 @@
                   Identifier = "PNBasicClientTestCase">
                </Test>
                <Test
+                  Identifier = "PNBasicPresenceTestCase">
+               </Test>
+               <Test
                   Identifier = "PNBasicSubscribeTestCase">
                </Test>
                <Test

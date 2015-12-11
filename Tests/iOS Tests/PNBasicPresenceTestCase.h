@@ -1,16 +1,14 @@
 //
-//  PNPresenceTestCase.h
+//  PNBasicPresenceTestCase.h
 //  PubNub Tests
 //
 //  Created by Jordan Zucker on 12/10/15.
 //
 //
 
-#import "PNBasicClientTestCase.h"
+#import "PNBasicSubscribeTestCase.h"
 
-@interface PNPresenceTestCase : PNBasicClientTestCase
-
+@interface PNBasicPresenceTestCase : PNBasicSubscribeTestCase
 @property (nonatomic) PubNub *otherClient;
 - (NSString *)otherClientChannelName;
-
 @end

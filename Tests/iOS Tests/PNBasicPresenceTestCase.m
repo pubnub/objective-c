@@ -1,19 +1,19 @@
 //
-//  PNPresenceTestCase.m
+//  PNBasicPresenceTestCase.m
 //  PubNub Tests
 //
 //  Created by Jordan Zucker on 12/10/15.
 //
 //
 
-#import "PNPresenceTestCase.h"
+#import <PubNub/PubNub.h>
+#import "PNBasicPresenceTestCase.h"
 
-@interface PNPresenceTestCase () <PNObjectEventListener>
+@interface PNBasicPresenceTestCase () <PNObjectEventListener>
 @property (nonatomic) XCTestExpectation *setUpExpectation;
 
 @end
-
-@implementation PNPresenceTestCase
+@implementation PNBasicPresenceTestCase
 
 - (NSString *)otherClientChannelName {
     return @"2EC925F0-B996-47A4-AF54-A605E1A9AEBA";

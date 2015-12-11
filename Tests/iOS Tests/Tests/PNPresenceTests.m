@@ -8,11 +8,11 @@
 
 #import <PubNub/PubNub.h>
 
-#import "PNPresenceTestCase.h"
+#import "PNBasicPresenceTestCase.h"
 
 #import "NSDictionary+PNTest.h"
 
-@interface PNPresenceTests : PNPresenceTestCase <PNObjectEventListener>
+@interface PNPresenceTests : PNBasicPresenceTestCase
 
 @property (nonatomic) XCTestExpectation *presenceExpectation;
 @property (nonatomic, strong) NSString *channelName;
