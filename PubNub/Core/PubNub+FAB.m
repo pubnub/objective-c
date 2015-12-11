@@ -24,15 +24,15 @@
         NSDictionary *clientConfiguration = [fabric configurationDictionaryForKitClass:self];
         
         // Check whether required information passed to kit configuration property list or not.
-        if (clientConfiguration[@"pub-key"] && clientConfiguration[@"sub-key"]) {
+        if (clientConfiguration[@"publish-key"] && clientConfiguration[@"subscribe-key"]) {
             
-            configuration = [PNConfiguration configurationWithPublishKey:clientConfiguration[@"pub-key"]
-                                                            subscribeKey:clientConfiguration[@"sub-key"]];
+            configuration = [PNConfiguration configurationWithPublishKey:clientConfiguration[@"publish-key"]
+                                                            subscribeKey:clientConfiguration[@"subscribe-key"]];
         }
         else {
             
             [NSException raise:@"PubNubIntegration"
-                        format:@"Make sure 'pub-key' and 'sub-key' specified for PubNub kit in Info.plist."];
+                        format:@"Make sure 'publish-key' and 'subscribe-key' specified for PubNub kit in Info.plist."];
         }
     }
     else {
