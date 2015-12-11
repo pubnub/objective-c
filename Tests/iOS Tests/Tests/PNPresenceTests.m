@@ -25,10 +25,6 @@
     self.channelName = [self otherClientChannelName];
 }
 
-- (NSString *)otherClientChannelName {
-    return @"2EC925F0-B996-47A4-AF54-A605E1A9AEBA";
-}
-
 - (BOOL)isRecording{
     return NO;
 }

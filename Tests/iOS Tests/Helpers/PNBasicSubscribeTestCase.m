@@ -17,6 +17,7 @@
 
 - (void)tearDown {
     self.subscribeExpectation = nil;
+    self.unsubscribeExpectation = nil;
     [self.client removeListener:self];
     [super tearDown];
 }
@@ -33,7 +34,7 @@
     
     self.subscribeExpectation = [self expectationWithDescription:@"subscribe"];
     [self.client subscribeToChannels:channels withPresence:shouldObservePresence usingTimeToken:timeToken];
-    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:20 handler:^(NSError *error) {
         XCTAssertNil(error);
     }];
 }

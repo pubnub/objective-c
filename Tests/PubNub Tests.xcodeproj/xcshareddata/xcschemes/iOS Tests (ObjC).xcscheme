@@ -54,9 +54,6 @@
                   Identifier = "PNConfigurationChiperKeyTests">
                </Test>
                <Test
-                  Identifier = "PNPresenceEventTests">
-               </Test>
-               <Test
                   Identifier = "PNPresenceTestCase">
                </Test>
             </SkippedTests>

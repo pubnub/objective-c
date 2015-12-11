@@ -6,12 +6,14 @@
 //
 //
 
-#import "PNBasicSubscribeTestCase.h"
+#import "PNBasicPresenceTestCase.h"
 
-@interface PNPresenceEventTests : PNBasicSubscribeTestCase
+
+
+@interface PNPresenceEventTests : PNBasicPresenceTestCase
 
 @property (nonatomic) NSString *uniqueName;
-
+@property (nonatomic, copy) PNClientDidReceivePresenceEventAssertions otherClientPresenceEventAssertions;
 @end
 
 @implementation PNPresenceEventTests
@@ -19,14 +21,13 @@
 - (void)setUp {
     [super setUp];
     
-    self.uniqueName = @"2EC925F0-B996-47A4-AF54-A605E1A9AEBA";
+    self.uniqueName = [self otherClientChannelName];
+    [self.otherClient addListener:self];
 }
 
 - (BOOL)isRecording{
-    return NO;
+    return YES;
 }
-
-#pragma mark - Simple tests without preparing steps
 
 /**
  All tests according to events we have in: https://github.com/pubnub/pubnub-docs/blob/master/components/presence/design/overview.asciidoc
@@ -35,9 +36,15 @@
 - (void)testJoinEvent {
     PNWeakify(self);
     self.didReceiveStatusAssertions = ^void (PubNub *client, PNSubscribeStatus *status) {
-        
+        PNStrongify(self);
+        XCTAssertEqualObjects(self.client, client);
+        XCTAssertNotNil(status);
+        XCTAssertFalse(status.isError);
+        XCTAssertEqual(status.operation, PNSubscribeOperation);
+        XCTAssertEqual(status.category, PNConnectedCategory);
+//        [self.subscribeExpectation fulfill];
     };
-    self.didReceivePresenceEventAssertions = ^void (PubNub *client, PNPresenceEventResult *event) {
+    self.otherClientPresenceEventAssertions = ^void (PubNub *client, PNPresenceEventResult *event) {
         PNStrongify(self);
         XCTAssertEqualObjects(self.client, client);
         XCTAssertNotNil(event);
@@ -51,9 +58,10 @@
         XCTAssertEqualObjects(event.data.presenceEvent, @"join");
         XCTAssertEqualObjects(event.data.subscribedChannel, @"2EC925F0-B996-47A4-AF54-A605E1A9AEBA", @"Subscribed channel are not equal.");
         XCTAssertEqualObjects(event.data.timetoken, @14407549482844872, @"Timetoken is not the same.");
+        [self.subscribeExpectation fulfill];
     };
     
-    [self PNTest_subscribeToPresenceChannels:@[self.uniqueName]];
+    [self PNTest_subscribeToChannels:@[[self otherClientChannelName]] withPresence:YES];
 }
 
 - (void)testLeaveEvent {
@@ -142,5 +150,26 @@
     
     [self PNTest_subscribeToPresenceChannels:@[self.uniqueName]];
 }
+
+//#pragma mark - PNObjectEventListener
+//
+//- (void)client:(PubNub *)client didReceiveMessage:(PNMessageResult *)message {
+//    if (self.didReceiveMessageAssertions) {
+//        self.didReceiveMessageAssertions(client, message);
+//    }
+//}
+
+- (void)client:(PubNub *)client didReceivePresenceEvent:(PNPresenceEventResult *)event {
+    [super client:client didReceivePresenceEvent:event];
+    if (self.otherClientPresenceEventAssertions) {
+        self.otherClientPresenceEventAssertions(client, event);
+    }
+}
+
+//- (void)client:(PubNub *)client didReceiveStatus:(PNSubscribeStatus *)status {
+//    if (self.didReceiveStatusAssertions) {
+//        self.didReceiveStatusAssertions(client, status);
+//    }
+//}
 
 @end

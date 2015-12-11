@@ -6,9 +6,10 @@
 //
 //
 
+#import <PubNub/PubNub.h>
 #import "PNBasicSubscribeTestCase.h"
 
-@interface PNBasicPresenceTestCase : PNBasicSubscribeTestCase
+@interface PNBasicPresenceTestCase : PNBasicSubscribeTestCase <PNObjectEventListener>
 @property (nonatomic) PubNub *otherClient;
 - (NSString *)otherClientChannelName;
 @end

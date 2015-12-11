@@ -6,10 +6,10 @@
 //
 //
 
-#import <PubNub/PubNub.h>
+//#import <PubNub/PubNub.h>
 #import "PNBasicPresenceTestCase.h"
 
-@interface PNBasicPresenceTestCase () <PNObjectEventListener>
+@interface PNBasicPresenceTestCase ()
 @property (nonatomic) XCTestExpectation *setUpExpectation;
 
 @end
@@ -39,13 +39,16 @@
 #pragma mark - PNObjectEventListener
 
 - (void)client:(PubNub *)client didReceiveStatus:(PNStatus *)status {
-    XCTAssertEqualObjects(self.otherClient, client);
-    XCTAssertEqual(status.category, PNConnectedCategory);
-    [self.setUpExpectation fulfill];
+    [super client:client didReceiveStatus:status];
+    // just verifying self.otherClient is properly configured during set up
+    if ([client isEqual:self.otherClient]) {
+        XCTAssertEqual(status.category, PNConnectedCategory);
+        [self.setUpExpectation fulfill];
+    }
 }
 
-- (void)client:(PubNub *)client didReceivePresenceEvent:(PNPresenceEventResult *)event {
-    NSLog(@"event: %@", event.debugDescription);
-}
+//- (void)client:(PubNub *)client didReceivePresenceEvent:(PNPresenceEventResult *)event {
+//    NSLog(@"event: %@", event.debugDescription);
+//}
 
 @end
