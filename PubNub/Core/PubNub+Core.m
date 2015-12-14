@@ -4,6 +4,15 @@
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "PubNub+CorePrivate.h"
+#define PN_CORE_PROTOCOLS PNObjectEventListener
+
+// Fabric
+#ifdef FABRIC_SUPPORT
+    #import "FABKitProtocol.h"
+    #undef PN_CORE_PROTOCOLS
+    #define PN_CORE_PROTOCOLS PNObjectEventListener, FABKit
+#endif
+
 #if __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
     #import <UIKit/UIKit.h>
 #endif // __IPHONE_OS_VERSION_MIN_REQUIRED
@@ -62,7 +71,7 @@ void pn_safe_property_write(dispatch_queue_t queue, dispatch_block_t block) {
 
 #pragma mark - Protected interface declaration
 
-@interface PubNub () <PNObjectEventListener>
+@interface PubNub () <PN_CORE_PROTOCOLS>
 
 
 #pragma mark - Properties
@@ -365,8 +374,22 @@ void pn_safe_property_write(dispatch_queue_t queue, dispatch_block_t block) {
                 #pragma clang diagnostic pop
             });
         }
+    }
 }
+
+
+#pragma mark - Fabric support
+#ifdef FABRIC_SUPPORT
++ (NSString *)bundleIdentifier {
+    
+    return @"com.pubnub.pubnub-objc";
 }
+
++ (NSString *)kitDisplayVersion {
+    
+    return [self information].version;
+}
+#endif
 
 
 #pragma mark - Reachability

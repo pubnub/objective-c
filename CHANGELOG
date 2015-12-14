@@ -1,3 +1,9 @@
+12-14-2015 - defff35 - 4.2.2
+. added ability to build static library based frameworks (universal as well)
+. added Fabric support
+
+
+
 12-10-2015 - 0e6027c - 4.2.1
 . fixed cient state cache issue because of which channel group state itself get updated even if state has been changed for one of channels from this group.
 
