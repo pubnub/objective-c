@@ -2734,10 +2734,10 @@
 				791583571BD70E970084FC70 /* CocoaLumberjack (iOS) */,
 				791583781BD70EA40084FC70 /* CocoaLumberjack (watchOS) */,
 				79CBB1941BD03EB8001FC34D /* CocoaLumberjack (OSX) */,
-				798842C71C18F369003E8948 /* Static CocoaLumberjack (iOS) */,
 				79CBB1D31BD042FB001FC34D /* Universal Framework (iOS) */,
-				791582001BD705130084FC70 /* Universal Framework (watchOS) */,
 				79ACC4911C11BC620056523A /* Universal Framework (Fabric) */,
+				791582001BD705130084FC70 /* Universal Framework (watchOS) */,
+				798842C71C18F369003E8948 /* Static CocoaLumberjack (iOS) */,
 				798842EF1C190DF5003E8948 /* Universal Static Framework (iOS) */,
 			);
 		};
@@ -3972,6 +3972,7 @@
 					"$(ARCHS_STANDARD)",
 					armv7s,
 				);
+				GENERATE_MASTER_OBJECT_FILE = YES;
 				PRODUCT_NAME = "Universal Static Framework";
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
@@ -3984,6 +3985,7 @@
 					"$(ARCHS_STANDARD)",
 					armv7s,
 				);
+				GENERATE_MASTER_OBJECT_FILE = YES;
 				PRODUCT_NAME = "Universal Static Framework";
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
