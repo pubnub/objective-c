@@ -22,7 +22,7 @@ typedef void (^PNClientDidReceiveStatusAssertions)(PubNub *client, PNSubscribeSt
 @property (nonatomic) XCTestExpectation *channelGroupSubscribeExpectation;
 @property (nonatomic) XCTestExpectation *channelGroupUnsubscribeExpectation;
 
-@property (nonatomic) XCTestExpectation *presenceEventExpectation;
+//@property (nonatomic) XCTestExpectation *presenceEventExpectation;
 
 @property (nonatomic, copy) PNClientDidReceiveMessageAssertions didReceiveMessageAssertions;
 @property (nonatomic, copy) PNClientDidReceivePresenceEventAssertions didReceivePresenceEventAssertions;

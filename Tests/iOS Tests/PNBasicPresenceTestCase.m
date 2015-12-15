@@ -23,7 +23,8 @@
     [super setUp];
     self.setUpExpectation = [self expectationWithDescription:@"setUp"];
     PNConfiguration *config = [PNConfiguration configurationWithPublishKey:@"demo-36" subscribeKey:@"demo-36"];
-    config.uuid = @"d063790a-5fac-4c7b-9038-b511b61eb23d";
+//    config.uuid = @"d063790a-5fac-4c7b-9038-b511b61eb23d";
+    config.uuid = @"58A6FB32-4323-45BE-97BF-2D070A3F8912";
     config.origin = @"msgfiltering-dev.pubnub.com";
     self.otherClient = [PubNub clientWithConfiguration:config];
     [self.otherClient addListener:self];
@@ -47,8 +48,8 @@
     }
 }
 
-//- (void)client:(PubNub *)client didReceivePresenceEvent:(PNPresenceEventResult *)event {
-//    NSLog(@"event: %@", event.debugDescription);
-//}
+- (void)client:(PubNub *)client didReceivePresenceEvent:(PNPresenceEventResult *)event {
+    NSLog(@"event: %@", event.debugDescription);
+}
 
 @end
