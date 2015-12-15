@@ -2,7 +2,7 @@
 //  PNPresenceEventTests.m
 //  PubNub Tests
 //
-//  Created by Vadim Osovets on 8/27/15.
+//  Created by Jordan Zucker on 12/5/2015.
 //
 //
 
@@ -13,8 +13,7 @@
 @interface PNPresenceEventTests : PNBasicPresenceTestCase
 
 @property (nonatomic) NSString *uniqueName;
-@property (nonatomic, copy) PNClientDidReceivePresenceEventAssertions otherClientPresenceEventAssertions;
-@property (nonatomic, strong) XCTestExpectation *presenceEventExpectation;
+
 @end
 
 @implementation PNPresenceEventTests
@@ -46,7 +45,7 @@
         [self.unsubscribeExpectation fulfill];
     };
     [self PNTest_unsubscribeFromChannels:@[[self otherClientChannelName]] withPresence:YES];
-    self.presenceEventExpectation = nil;
+    
     [super tearDown];
 }
 
@@ -79,18 +78,18 @@
         
         XCTAssertEqual(event.operation, PNSubscribeOperation);
         
-        XCTAssertEqualObjects(event.data.presence.occupancy, @1, @"Occupancy is not equal");
-        XCTAssertEqualObjects(event.data.presence.uuid, @"affcb408-f5c1-4e97-923a-143701f3b083", @"Occupancy is not equal");
-        XCTAssertEqualObjects(event.data.presence.timetoken, @1440754948, @"Timetoken is not the same.");
+        XCTAssertEqualObjects(event.data.presence.occupancy, @3, @"Occupancy is not equal");
+        XCTAssertEqualObjects(event.data.presence.uuid, @"322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C", @"Occupancy is not equal");
+        XCTAssertEqualObjects(event.data.presence.timetoken, @1450138038, @"Timetoken is not the same.");
         XCTAssertEqualObjects(event.data.presenceEvent, @"join");
         XCTAssertEqualObjects(event.data.subscribedChannel, @"2EC925F0-B996-47A4-AF54-A605E1A9AEBA", @"Subscribed channel are not equal.");
-        XCTAssertEqualObjects(event.data.timetoken, @14407549482844872, @"Timetoken is not the same.");
+        XCTAssertEqualObjects(event.data.timetoken, @14501380388803916, @"Timetoken is not the same.");
 //        [self.subscribeExpectation fulfill];
         NSLog(@"------------------------");
-//        [self.presenceEventExpectation fulfill];
+        [self.presenceEventExpectation fulfill];
     };
 //    self.presenceEventExpectation = [self expectationWithDescription:@"presenceEvent"];
-    sleep(2);
+//    sleep(2);
     [self PNTest_subscribeToChannels:@[[self otherClientChannelName]] withPresence:YES];
 }
 
@@ -188,13 +187,6 @@
 //        self.didReceiveMessageAssertions(client, message);
 //    }
 //}
-
-- (void)client:(PubNub *)client didReceivePresenceEvent:(PNPresenceEventResult *)event {
-    [super client:client didReceivePresenceEvent:event];
-    if (self.otherClientPresenceEventAssertions) {
-        self.otherClientPresenceEventAssertions(client, event);
-    }
-}
 
 - (void)client:(PubNub *)client didReceiveStatus:(PNSubscribeStatus *)status {
     [super client:client didReceiveStatus:status];

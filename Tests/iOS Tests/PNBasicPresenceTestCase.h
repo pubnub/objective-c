@@ -12,4 +12,6 @@
 @interface PNBasicPresenceTestCase : PNBasicSubscribeTestCase <PNObjectEventListener>
 @property (nonatomic) PubNub *otherClient;
 - (NSString *)otherClientChannelName;
+@property (nonatomic, copy) PNClientDidReceivePresenceEventAssertions otherClientPresenceEventAssertions;
+@property (nonatomic, strong) XCTestExpectation *presenceEventExpectation;
 @end

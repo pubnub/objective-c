@@ -37,6 +37,11 @@
     
 }
 
+- (void)tearDown {
+    self.presenceEventExpectation = nil;
+    [super tearDown];
+}
+
 #pragma mark - PNObjectEventListener
 
 - (void)client:(PubNub *)client didReceiveStatus:(PNStatus *)status {
@@ -49,7 +54,10 @@
 }
 
 - (void)client:(PubNub *)client didReceivePresenceEvent:(PNPresenceEventResult *)event {
-    NSLog(@"event: %@", event.debugDescription);
+    [super client:client didReceivePresenceEvent:event];
+    if (self.otherClientPresenceEventAssertions) {
+        self.otherClientPresenceEventAssertions(client, event);
+    }
 }
 
 @end

@@ -238,9 +238,14 @@ static NSString * const kPNMessageChannelKey = @"c";
 //        isPresenceEvent = (data[@"timestamp"] != nil &&
 //                           (data[@"action"] != nil || data[@"occupancy"] != nil));
 //    }
-//    
+//
+    if ([data[@"d"] isKindOfClass:[NSDictionary class]]) {
+        NSDictionary *payload = data[@"d"];
+        isPresenceEvent = (payload[@"timestamp"] != nil &&
+                           (payload[@"action"] != nil || payload[@"occupancy"] != nil));
+    }
     if (isPresenceEvent) {
-        
+//        event[kPNEventsIsPresenceEventKey] = @(YES);
         [event addEntriesFromDictionary:[self presenceFromData:data]];
     }
     else {
@@ -297,25 +302,28 @@ static NSString * const kPNMessageChannelKey = @"c";
 
 + (NSMutableDictionary *)presenceFromData:(NSDictionary *)data {
     
+#warning ask about how this is affected
+    NSDictionary *payload = data[@"d"];
+    
     NSMutableDictionary *presence = [NSMutableDictionary new];
     
     // Processing common for all presence events data.
-    presence[@"presenceEvent"] = (data[@"action"]?: @"interval");
+    presence[@"presenceEvent"] = (payload[@"action"]?: @"interval");
     presence[@"presence"] = [NSMutableDictionary new];
-    presence[@"presence"][@"timetoken"] = data[@"timestamp"];
-    if (data[@"uuid"]) {
+    presence[@"presence"][@"timetoken"] = payload[@"timestamp"];
+    if (payload[@"uuid"]) {
         
-        presence[@"presence"][@"uuid"] = data[@"uuid"];
+        presence[@"presence"][@"uuid"] = payload[@"uuid"];
     }
     
     // Check whether this is not state modification event.
     if (![presence[@"presenceEvent"] isEqualToString:@"state-change"]) {
         
-        presence[@"presence"][@"occupancy"] = (data[@"occupancy"]?: @0);
+        presence[@"presence"][@"occupancy"] = (payload[@"occupancy"]?: @0);
     }
-    if (data[@"data"]) {
+    if (payload[@"data"]) {
      
-        presence[@"presence"][@"state"] = data[@"data"];
+        presence[@"presence"][@"state"] = payload[@"data"];
     }
     
     return presence;
