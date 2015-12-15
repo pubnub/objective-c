@@ -39,6 +39,14 @@
     }];
 }
 
+- (void)PNTest_subscribeToChannels:(NSArray *)channels withPresence:(BOOL)shouldObservePresence withClientState:(NSDictionary *)clientState {
+    self.subscribeExpectation = [self expectationWithDescription:@"subscribe"];
+    [self.client subscribeToChannels:channels withPresence:shouldObservePresence clientState:clientState];
+    [self waitForExpectationsWithTimeout:20 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+}
+
 - (void)PNTest_subscribeToPresenceChannels:(NSArray *)channels {
     self.subscribeExpectation = [self expectationWithDescription:@"subscribe"];
     [self.client subscribeToPresenceChannels:channels];
@@ -50,7 +58,7 @@
 - (void)PNTest_unsubscribeFromChannels:(NSArray *)channels withPresence:(BOOL)shouldObservePresence {
     self.unsubscribeExpectation = [self expectationWithDescription:@"unsubscribe"];
     [self.client unsubscribeFromChannels:channels withPresence:shouldObservePresence];
-    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:15 handler:^(NSError *error) {
         XCTAssertNil(error);
     }];
 }
