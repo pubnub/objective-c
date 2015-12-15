@@ -117,7 +117,7 @@
  @discussion This is time within which \b PubNub service expect to receive heartbeat request from
              this client. If heartbeat request won't be called in time \b PubNub service will 
              send to other subscribers \c 'timeout' presence event for this client.
- @note       This value can't be smaller then \b 5 seconds and larget then \b 300 seconds and 
+ @note       This value can't be smaller then \b 5 seconds or larger than \b 300 seconds and
              will be reset to it automatically.
  
  @default    By default heartbeat functionality disabled.
@@ -129,7 +129,7 @@
 /**
  @brief   Reference on number of seconds which is used by client to issue heartbeat requests to
           \b PubNub service.
- @note    This value should be smaller then \c presenceHeartbeatTimeout for better presence
+ @note    This value should be smaller then \c presenceHeartbeatValue for better presence
           control.
  
  @default By default heartbeat functionality disabled.

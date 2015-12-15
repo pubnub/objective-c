@@ -28,6 +28,8 @@ typedef void (^PNChannelGroupAssertions)(PNAcknowledgmentStatus *status);
 @property (nonatomic) PNConfiguration *configuration;
 @property (nonatomic) PubNub *client;
 
+- (PNConfiguration *)overrideClientConfiguration:(PNConfiguration *)configuration;
+
 - (void)performVerifiedAddChannels:(NSArray *)channels toGroup:(NSString *)channelGroup withAssertions:(PNChannelGroupAssertions)assertions;
 
 - (void)performVerifiedRemoveAllChannelsFromGroup:(NSString *)channelGroup withAssertions:(PNChannelGroupAssertions)assertions;
