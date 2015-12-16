@@ -11,19 +11,13 @@
 
 
 @interface PNPresenceEventTests : PNBasicPresenceTestCase
-
-@property (nonatomic) NSString *uniqueName;
-
 @end
 
 @implementation PNPresenceEventTests
 
 - (void)setUp {
     [super setUp];
-    
-    self.uniqueName = [self otherClientChannelName];
     [self.otherClient addListener:self];
-//    sleep(2);
     if (
         (self.invocation.selector == @selector(testLeaveEvent)) &&
         (self.invocation.selector == @selector(testTimeoutEvent)) &&
@@ -141,7 +135,7 @@
         XCTAssertEqualObjects(event.data.subscribedChannel, @"2EC925F0-B996-47A4-AF54-A605E1A9AEBA", @"Subscribed channel are not equal.");
         XCTAssertEqual(event.data.presence.actualChannel, @"");
         XCTAssertEqualObjects(event.data.presence.subscribedChannel, @"");
-        XCTAssertEqualObjects(event.data.timetoken, @14502194102447028, @"Timetoken is not the same.");
+        XCTAssertEqualObjects(event.data.timetoken, @14502183393768722, @"Timetoken is not the same.");
         NSLog(@"------------------------");
         [self.presenceEventExpectation fulfill];
         self.presenceEventExpectation = nil;
@@ -178,15 +172,15 @@
         
         XCTAssertEqual(event.operation, PNSubscribeOperation);
         
-        XCTAssertEqualObjects(event.data.presence.occupancy, @1, @"Occupancy is not equal");
+        XCTAssertEqualObjects(event.data.presence.occupancy, @2, @"Occupancy is not equal");
         XCTAssertEqualObjects(event.data.presence.uuid, @"322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C", @"Occupancy is not equal");
-        XCTAssertEqualObjects(event.data.presence.timetoken, @1450192206, @"Timetoken is not the same.");
+        XCTAssertEqualObjects(event.data.presence.timetoken, @1450216568, @"Timetoken is not the same.");
         XCTAssertEqualObjects(event.data.presenceEvent, @"leave");
         XCTAssertEqualObjects(event.data.presence.actualChannel, @"");
         XCTAssertEqualObjects(event.data.presence.subscribedChannel, @"");
         XCTAssertEqualObjects(event.data.subscribedChannel, @"");
         XCTAssertEqualObjects(event.data.subscribedChannel, [self otherClientChannelName], @"Subscribed channel are not equal.");
-        XCTAssertEqualObjects(event.data.timetoken, @14501923950307194, @"Timetoken is not the same.");
+        XCTAssertEqualObjects(event.data.timetoken, @14502165689422518, @"Timetoken is not the same.");
         NSLog(@"------------------------");
         [self.presenceEventExpectation fulfill];
         self.presenceEventExpectation = nil;
@@ -240,6 +234,7 @@
     [self PNTest_subscribeToChannels:@[[self otherClientChannelName]] withPresence:YES];
 }
 
+#warning should PNPresenceEventResult have a null occupancy field?
 - (void)testStateChangeEvent {
     NSDictionary *expectedState = @{@"foo" : @"bar"};
     PNWeakify(self);
@@ -260,16 +255,16 @@
         
         XCTAssertEqual(event.operation, PNSubscribeOperation);
         
-        XCTAssertEqualObjects(event.data.presence.occupancy, @2, @"Occupancy is not equal");
-        XCTAssertEqualObjects(event.data.presence.uuid, @"322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C", @"Occupancy is not equal");
-        XCTAssertEqualObjects(event.data.presence.timetoken, @1450194732, @"Timetoken is not the same.");
+//        XCTAssertEqualObjects(event.data.presence.occupancy, @2, @"Occupancy is not equal");
+        XCTAssertEqualObjects(event.data.presence.uuid, @"322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C", @"UUID is not equal");
+        XCTAssertEqualObjects(event.data.presence.timetoken, @1450219410, @"Timetoken is not the same.");
         XCTAssertEqualObjects(event.data.presence.subscribedChannel, @"");
         XCTAssertEqualObjects(event.data.presence.actualChannel, @"");
-        XCTAssertEqualObjects(event.data.presenceEvent, @"timeout");
+        XCTAssertEqualObjects(event.data.presenceEvent, @"state-change");
         XCTAssertEqualObjects(event.data.actualChannel, @"");
         XCTAssertEqualObjects(event.data.subscribedChannel, @"2EC925F0-B996-47A4-AF54-A605E1A9AEBA", @"Subscribed channel are not equal.");
         XCTAssertEqualObjects(event.data.presence.state, expectedState, @"State are not equal");
-        XCTAssertEqualObjects(event.data.timetoken, @14501947328057316, @"Timetoken is not the same.");
+        XCTAssertEqualObjects(event.data.timetoken, @14502194102447028, @"Timetoken is not the same.");
         NSLog(@"------------------------");
         [self.presenceEventExpectation fulfill];
     };
@@ -277,6 +272,14 @@
     XCTestExpectation *stateExpectation = [self expectationWithDescription:@"stateExpectation"];
     [self.client setState:expectedState forUUID:self.client.uuid onChannel:[self otherClientChannelName] withCompletion:^(PNClientStateUpdateStatus *status) {
         NSLog(@"state status: %@", status.debugDescription);
+        PNStrongify(self);
+        XCTAssertNotNil(status);
+        XCTAssertFalse(status.isError);
+        XCTAssertEqual(status.operation, PNSetStateOperation);
+        XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+        XCTAssertEqual(status.statusCode, 200);
+        XCTAssertNotNil(status.data.state);
+        XCTAssertEqualObjects(status.data.state, expectedState);
         [stateExpectation fulfill];
     }];
     [self waitForExpectationsWithTimeout:10 handler:^(NSError * _Nullable error) {
