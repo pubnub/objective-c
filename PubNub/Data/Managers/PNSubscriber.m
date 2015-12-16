@@ -178,6 +178,15 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
  */
 @property (nonatomic, strong) dispatch_source_t retryTimer;
 
+/**
+ @brief     Region for subscriber to filter with
+ 
+ @discussion    This comes from the subscribe response
+ 
+ @since 4.3
+ */
+@property (nonatomic, strong) NSNumber *region;
+
 
 #pragma mark - Initialization and Configuration
 
@@ -365,6 +374,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 @synthesize overrideTimeToken = _overrideTimeToken;
 @synthesize currentTimeToken = _currentTimeToken;
 @synthesize lastTimeToken = _lastTimeToken;
+@synthesize region = _region;
 
 
 #pragma mark - Logger
@@ -557,6 +567,20 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     });
 }
 
+- (NSNumber *)region {
+    __block NSNumber *currentRegion = nil;
+    pn_safe_property_read(self.resourceAccessQueue, ^{
+        currentRegion = self->_region;
+    });
+    return currentRegion;
+}
+
+- (void)setRegion:(NSNumber *)region {
+    pn_safe_property_write(self.resourceAccessQueue, ^{
+        self->_region = region;
+    });
+}
+
 - (void)updateStateTo:(PNSubscriberState)state withStatus:(PNSubscribeStatus *)status {
 
     pn_safe_property_write(self.resourceAccessQueue, ^{
@@ -690,6 +714,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     }
     _currentTimeToken = subscriber.currentTimeToken;
     _lastTimeToken = subscriber.lastTimeToken;
+    _region = subscriber.region;
 }
 
 
@@ -709,7 +734,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
     if ([[self allObjects] count]) {
         
-        // Storing time tomen override
+        // Storing time token override
         self.overrideTimeToken = timeToken;
         
         // In case if block is passed, it mean what subscription has been requested by user or
@@ -1304,7 +1329,6 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     NSDictionary *mergedState = [self.client.clientStateManager stateMergedWith:state
                                                                      forObjects:fullObjectsList];
     [self.client.clientStateManager mergeWithState:mergedState];
-    
     PNRequestParameters *parameters = [PNRequestParameters new];
     [parameters addPathComponent:channelsList forPlaceholder:@"{channels}"];
     [parameters addPathComponent:self.currentTimeToken.stringValue forPlaceholder:@"{tt}"];

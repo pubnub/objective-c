@@ -188,6 +188,16 @@
 @property (nonatomic, assign, getter = shouldTryCatchUpOnSubscriptionRestore) BOOL catchUpOnSubscriptionRestore;
 
 /**
+ @brief     Stores a filter expression for the subscribe loop to use for filtering received messages
+ @discussion    Live feed events will be filtered according to this string. It cannot be changed once set, but will be copied using `copyWithConfiguration` helper method
+ 
+ @warning   If your filter expression is malformed, it will return a status to any instance of PNObjectEventListener but that client instance will not be valid.
+ 
+ @since 4.3
+ */
+@property (nonatomic, copy) NSString *filterExpression;
+
+/**
  @brief  Construct configuration instance using minimal required data.
  
  @param publishKey   Key which allow client to use data push API.
