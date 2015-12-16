@@ -12,7 +12,7 @@
 
 @interface PNPresenceChannelGroupTests : PNBasicPresenceTestCase
 @property (nonatomic, strong) XCTestExpectation *presenceExpectation;
-@property (nonatomic, strong) NSString *channelGroupName;
+//@property (nonatomic, strong) NSString *channelGroupName;
 @end
 
 @implementation PNPresenceChannelGroupTests
@@ -24,9 +24,9 @@
 - (void)setUp {
     [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
-    self.channelGroupName = @"testGroup";
     PNWeakify(self);
-    [self performVerifiedAddChannels:@[@"a", self.otherClientChannelName] toGroup:self.channelGroupName withAssertions:^(PNAcknowledgmentStatus *status) {
+    [self setUpChannelSubscription];
+    [self performVerifiedAddChannels:@[@"a", self.otherClientChannelName] toGroup:[self channelGroupName] withAssertions:^(PNAcknowledgmentStatus *status) {
         PNStrongify(self);
         XCTAssertNotNil(status);
         XCTAssertFalse(status.isError);

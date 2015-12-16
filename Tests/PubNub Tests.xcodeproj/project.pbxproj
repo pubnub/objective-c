@@ -86,6 +86,8 @@
 		51DA001A1C1A49590020C34E /* PNBasicPresenceTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51DA00191C1A49590020C34E /* PNBasicPresenceTestCase.m */; };
 		51DA001B1C1A49590020C34E /* PNBasicPresenceTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51DA00191C1A49590020C34E /* PNBasicPresenceTestCase.m */; };
 		51DA001C1C1A49590020C34E /* PNBasicPresenceTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51DA00191C1A49590020C34E /* PNBasicPresenceTestCase.m */; };
+		51DC51921C21FA0000BC2D9F /* PNChannelGroupPresenceEventTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 51DC51911C21FA0000BC2D9F /* PNChannelGroupPresenceEventTests.m */; };
+		51DC51941C22039200BC2D9F /* PNChannelGroupPresenceEventTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 51DC51931C22039200BC2D9F /* PNChannelGroupPresenceEventTests.bundle */; };
 		795CED0A1BCF002900D421BB /* PNHeartbeatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 795CED091BCF002900D421BB /* PNHeartbeatTests.swift */; };
 		796502F31C0E3709001F7782 /* PNDeviceIndependentMatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A6E5FF1BE421DC00C20B77 /* PNDeviceIndependentMatcher.m */; };
 		79EF04A41B4EAAB7007478CB /* PNAPNSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04911B4EAAB7007478CB /* PNAPNSTests.m */; };
@@ -166,6 +168,8 @@
 		51DA00141C1A418F0020C34E /* PNPresenceChannelGroupTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = PNPresenceChannelGroupTests.bundle; path = Fixtures/PNPresenceChannelGroupTests.bundle; sourceTree = "<group>"; };
 		51DA00181C1A49590020C34E /* PNBasicPresenceTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNBasicPresenceTestCase.h; sourceTree = "<group>"; };
 		51DA00191C1A49590020C34E /* PNBasicPresenceTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNBasicPresenceTestCase.m; sourceTree = "<group>"; };
+		51DC51911C21FA0000BC2D9F /* PNChannelGroupPresenceEventTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNChannelGroupPresenceEventTests.m; path = Helpers/PNChannelGroupPresenceEventTests.m; sourceTree = "<group>"; };
+		51DC51931C22039200BC2D9F /* PNChannelGroupPresenceEventTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = PNChannelGroupPresenceEventTests.bundle; path = Fixtures/PNChannelGroupPresenceEventTests.bundle; sourceTree = "<group>"; };
 		772246126C9F27401F65F4BF /* libPods-iOS Swift Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-iOS Swift Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		795CED091BCF002900D421BB /* PNHeartbeatTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNHeartbeatTests.swift; sourceTree = "<group>"; };
 		79EF04911B4EAAB7007478CB /* PNAPNSTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNAPNSTests.m; path = Tests/PNAPNSTests.m; sourceTree = "<group>"; };
@@ -324,6 +328,7 @@
 				79EF049A1B4EAAB7007478CB /* PNPresenceTests.m */,
 				51D154861C10D84500AECD05 /* PNPresenceChannelGroupTests.m */,
 				967707F61B8F4A80002B8E84 /* PNPresenceEventTests.m */,
+				51DC51911C21FA0000BC2D9F /* PNChannelGroupPresenceEventTests.m */,
 				79EF049B1B4EAAB7007478CB /* PNPublishCompressedTests.m */,
 				79EF049C1B4EAAB7007478CB /* PNPublishSizeOfMessage.m */,
 				79EF049D1B4EAAB7007478CB /* PNPublishTests.m */,
@@ -416,6 +421,7 @@
 		51F7AAC11B27AD7400BEDA1F /* Fixtures */ = {
 			isa = PBXGroup;
 			children = (
+				51DC51931C22039200BC2D9F /* PNChannelGroupPresenceEventTests.bundle */,
 				51DA00141C1A418F0020C34E /* PNPresenceChannelGroupTests.bundle */,
 				9652F3E61BA6E90B001E940A /* PNConfigurationChiperKeyTests.bundle */,
 				960354F51B90629C0047EE04 /* PNPresenceEventTests.bundle */,
@@ -644,6 +650,7 @@
 				79EF04D51B4EAB1A007478CB /* PNAPNSTests.bundle in Resources */,
 				79EF04DF1B4EAB1A007478CB /* PNPublishCompressedTests.bundle in Resources */,
 				79EF04E61B4EAB1A007478CB /* PNUnsubscribeTests.bundle in Resources */,
+				51DC51941C22039200BC2D9F /* PNChannelGroupPresenceEventTests.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -857,6 +864,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				51DC51921C21FA0000BC2D9F /* PNChannelGroupPresenceEventTests.m in Sources */,
 				79EF04B21B4EAAB7007478CB /* PNPublishWithMobilePayloadTests.m in Sources */,
 				9652F3E51BA31F7D001E940A /* PNConfigurationChiperKeyTests.m in Sources */,
 				79EF04B01B4EAAB7007478CB /* PNPublishTests.m in Sources */,

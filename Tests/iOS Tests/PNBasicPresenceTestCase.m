@@ -11,7 +11,6 @@
 
 @interface PNBasicPresenceTestCase ()
 @property (nonatomic) XCTestExpectation *setUpExpectation;
-
 @end
 @implementation PNBasicPresenceTestCase
 
@@ -19,9 +18,12 @@
     return @"2EC925F0-B996-47A4-AF54-A605E1A9AEBA";
 }
 
+- (NSString *)channelGroupName {
+    return @"testGroup";
+}
+
 - (void)setUp {
     [super setUp];
-    self.setUpExpectation = [self expectationWithDescription:@"setUp"];
     PNConfiguration *config = [PNConfiguration configurationWithPublishKey:@"demo-36" subscribeKey:@"demo-36"];
 //    config.uuid = @"d063790a-5fac-4c7b-9038-b511b61eb23d";
     config.uuid = @"58A6FB32-4323-45BE-97BF-2D070A3F8912";
@@ -29,17 +31,38 @@
     config.presenceHeartbeatValue = 0;
     self.otherClient = [PubNub clientWithConfiguration:config];
     [self.otherClient addListener:self];
+//    [self.otherClient subscribeToChannels:@[[self otherClientChannelName]] withPresence:YES clientState:@{@"foo" : @"bar"}];
+//    [self waitForExpectationsWithTimeout:60 handler:^(NSError * _Nullable error) {
+//        if (error) {
+//            XCTFail(@"failed to set up");
+//        }
+//    }];
+    
+}
+
+- (void)setUpChannelSubscription {
+    self.setUpExpectation = [self expectationWithDescription:@"setUp"];
     [self.otherClient subscribeToChannels:@[[self otherClientChannelName]] withPresence:YES clientState:@{@"foo" : @"bar"}];
     [self waitForExpectationsWithTimeout:60 handler:^(NSError * _Nullable error) {
         if (error) {
             XCTFail(@"failed to set up");
         }
     }];
-    
+}
+
+- (void)setUpChannelGroupSubscription {
+    self.setUpExpectation = [self expectationWithDescription:@"setUp"];
+    [self.otherClient subscribeToChannelGroups:@[[self channelGroupName]] withPresence:YES];
+    [self waitForExpectationsWithTimeout:20 handler:^(NSError * _Nullable error) {
+        if (error) {
+            XCTFail(@"failed to set up channel group subscription");
+        }
+    }];
 }
 
 - (void)tearDown {
     self.presenceEventExpectation = nil;
+    self.otherClient = nil;
     [super tearDown];
 }
 
