@@ -2,7 +2,7 @@
 //  PNPresenceTests.m
 //  PubNub Tests
 //
-//  Created by Vadim Osovets on 6/26/15.
+//  Created by Jordan Zucker on 11/20/15.
 //
 //
 
