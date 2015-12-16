@@ -24,17 +24,15 @@
 - (void)setUp {
     [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
-    XCTestExpectation *setUpExpectation = [self expectationWithDescription:@"setUp"];
     self.channelGroupName = @"testGroup";
-    
-    [self.client addChannels:@[@"a", self.otherClientChannelName] toGroup:self.channelGroupName withCompletion:^(PNAcknowledgmentStatus *status) {
-        NSLog(@"status: %@", status);
-        [setUpExpectation fulfill];
-    }];
-    [self waitForExpectationsWithTimeout:10 handler:^(NSError * _Nullable error) {
-        if (error) {
-            XCTFail(@"failed to set up");
-        }
+    PNWeakify(self);
+    [self performVerifiedAddChannels:@[@"a", self.otherClientChannelName] toGroup:self.channelGroupName withAssertions:^(PNAcknowledgmentStatus *status) {
+        PNStrongify(self);
+        XCTAssertNotNil(status);
+        XCTAssertFalse(status.isError);
+        XCTAssertEqual(status.operation, PNAddChannelsToGroupOperation);
+        XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+        XCTAssertEqual(status.statusCode, 200);
     }];
 }
 
