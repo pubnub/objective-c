@@ -20,27 +20,37 @@
 static DDLogLevel ddLogLevel = (DDLogLevel)PNAESErrorLogLevel;
 
 /**
- Stores reference to key for array of messages returned in subscribe v2 response object
+ @brief Stores reference to key for array of messages returned in subscribe v2 response object
+ 
+ @since 4.3
  */
 static NSString * const kPNEventsMessageElementKey = @"m";
 
 /**
- Stores reference to key for timetoken in subscribe v2 response object
+ @brief Stores reference to key for timetoken in subscribe v2 response object
+ 
+ @since 4.3
  */
 static NSString * const kPNEventsTimeTokenElementKey = @"t";
 
 /**
- Stores reference to key for payload data in subscribe v2 message object
+ @brief Stores reference to key for payload data in subscribe v2 message object
+ 
+ @since 4.3
  */
 static NSString * const kPNMessagePayloadDataKey = @"d";
 
 /**
- Stores reference to key for subscription match value in subscribe v2 message object
+ @brief Stores reference to key for subscription match value in subscribe v2 message object
+ 
+ @since 4.3
  */
 static NSString * const kPNMessageSubscriptionMatchKey = @"b";
 
 /**
- Stores reference to key for channel value in subscribe v2 message object
+ @brief Stores reference to key for channel value in subscribe v2 message object
+ 
+ @since 4.3
  */
 static NSString * const kPNMessageChannelKey = @"c";
 
@@ -167,42 +177,6 @@ static NSString * const kPNMessageChannelKey = @"c";
         }
         processedResponse = @{@"events":feedEvents,@"timetoken":timeToken};
     }
-//    // Array will arrive in case of presence event
-//    if ([response isKindOfClass:[NSArray class]]) {
-//        
-//        NSArray *feedEvents = response[kPNEventsListElementIndex];
-//        NSNumber *timeToken = @([response[kPNEventTimeTokenElement] longLongValue]);
-//        NSArray *channels = nil;
-//        NSArray *groups = nil;
-//        if ([(NSArray *)response count] > kPNEventChannelsElementIndex) {
-//            
-//            channels = [PNChannel namesFromRequest:response[kPNEventChannelsElementIndex]];
-//        }
-//        if ([(NSArray *)response count] > kPNEventChannelsDetailsElementIndex) {
-//            
-//            groups = [PNChannel namesFromRequest:response[kPNEventChannelsDetailsElementIndex]];
-//        }
-//        
-//        // Checking whether at least one event arrived or not.
-//        if ([feedEvents count]) {
-//            
-//            NSMutableArray *events = [[NSMutableArray alloc] initWithCapacity:[feedEvents count]];
-//            for (NSUInteger eventIdx = 0; eventIdx < [feedEvents count]; eventIdx++) {
-//                
-//                // Fetching remote data object name on which event fired.
-//                NSString *objectOrGroupName = (eventIdx < [channels count] ? channels[eventIdx] : channels[0]);
-//                NSString *objectName = ([groups count] > eventIdx ? groups[eventIdx] : nil);
-//                NSMutableDictionary *event = [self eventFromData:feedEvents[eventIdx]
-//                                                      forChannel:(objectName?: objectOrGroupName)
-//                                                           group:(objectName? objectOrGroupName: nil)
-//                                        withAdditionalParserData:additionalData];
-//                event[@"timetoken"] = timeToken;
-//                [events addObject:event];
-//            }
-//            feedEvents = [events copy];
-//        }
-//        processedResponse = @{@"events":feedEvents,@"timetoken":timeToken};
-//    }
 
     return processedResponse;
 }
@@ -213,39 +187,17 @@ static NSString * const kPNMessageChannelKey = @"c";
 + (NSMutableDictionary *)eventFromData:(id)data withAdditionalParserData:(NSDictionary *)additionalData {
     
     NSMutableDictionary *event = [NSMutableDictionary new];
-//    if ([channel length]) {
-//        
-//        event[(![group length] ? @"subscribedChannel": @"actualChannel")] = channel;
-//    }
-//    if ([group length]) {
-//        
-//        event[@"subscribedChannel"] = group;
-//    }
-//
     NSString *channel = data[kPNMessageChannelKey];
     NSString *subscriptionMatch = data[kPNMessageSubscriptionMatchKey];
     event[@"subscribedChannel"] = subscriptionMatch;
-    if (![subscriptionMatch isEqualToString:channel]) {
-        event[@"actualChannel"] = channel;
-    }
+    event[@"actualChannel"] = channel;
     BOOL isPresenceEvent = [PNChannel isPresenceObject:channel];
-//    if ([channelGroup isEqualToString:channel]) {
-//        isPresenceEvent = (data[@"timestamp"] != nil &&
-//                           (data[@"action"] != nil || data[@"occupancy"] != nil));
-//    }
-//    if (![channel length] && [data isKindOfClass:[NSDictionary class]]) {
-//        
-//        isPresenceEvent = (data[@"timestamp"] != nil &&
-//                           (data[@"action"] != nil || data[@"occupancy"] != nil));
-//    }
-//
     if ([data[@"d"] isKindOfClass:[NSDictionary class]]) {
         NSDictionary *payload = data[@"d"];
         isPresenceEvent = (payload[@"timestamp"] != nil &&
                            (payload[@"action"] != nil || payload[@"occupancy"] != nil));
     }
     if (isPresenceEvent) {
-//        event[kPNEventsIsPresenceEventKey] = @(YES);
         [event addEntriesFromDictionary:[self presenceFromData:data]];
     }
     else {

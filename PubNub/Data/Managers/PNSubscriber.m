@@ -1185,22 +1185,18 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                 
                 // Check whether event has been triggered on presence channel or channel group.
                 // In case if check will return YES this is presence event.
-//                BOOL isPresenceEvent = (event[kP])
                 BOOL isPresenceEvent = (event[@"presenceEvent"] ? YES : NO);
-//                BOOL isPresenceEvent = (event[@"PNIsPresenceEventKey"] && [[event objectForKey:@"PNIsPresenceEventKey"] boolValue]);
-//                BOOL isPresenceEvent = ([PNChannel isPresenceObject:event[@"actualChannel"]] ||
-//                                        [PNChannel isPresenceObject:event[@"subscribedChannel"]]);
-//                if (isPresenceEvent) {
-//                    
-//                    if (event[@"subscribedChannel"]) {
-//                        
-//                        event[@"subscribedChannel"] = [PNChannel channelForPresence:event[@"subscribedChannel"]];
-//                    }
-//                    if (event[@"actualChannel"]) {
-//                        
-//                        event[@"actualChannel"] = [PNChannel channelForPresence:event[@"actualChannel"]];
-//                    }
-//                }
+                if (isPresenceEvent) {
+                    
+                    if (event[@"subscribedChannel"]) {
+                        
+                        event[@"presence"][@"subscribedChannel"] = [PNChannel channelForPresence:event[@"subscribedChannel"]];
+                    }
+                    if (event[@"actualChannel"]) {
+                        
+                        event[@"presence"][@"actualChannel"] = [PNChannel channelForPresence:event[@"actualChannel"]];
+                    }
+                }
                 
                 id eventResultObject = [status copyWithMutatedData:event];
                 if (isPresenceEvent) {

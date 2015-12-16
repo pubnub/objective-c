@@ -19,4 +19,6 @@
 // should call one or the other of these, result of calling both is unexpected
 - (void)setUpChannelSubscription;
 - (void)setUpChannelGroupSubscription;
+
+- (NSString *)presenceSubscribableFromString:(NSString *)subscribable;
 @end

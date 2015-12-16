@@ -22,22 +22,21 @@
     return @"testGroup";
 }
 
+- (NSString *)presenceSubscribableFromString:(NSString *)subscribable {
+    if ([subscribable hasSuffix:@"-pnpres"]) {
+        return subscribable;
+    }
+    return [subscribable stringByAppendingString:@"-pnpres"];
+}
+
 - (void)setUp {
     [super setUp];
     PNConfiguration *config = [PNConfiguration configurationWithPublishKey:@"demo-36" subscribeKey:@"demo-36"];
-//    config.uuid = @"d063790a-5fac-4c7b-9038-b511b61eb23d";
     config.uuid = @"58A6FB32-4323-45BE-97BF-2D070A3F8912";
     config.origin = @"msgfiltering-dev.pubnub.com";
     config.presenceHeartbeatValue = 0;
     self.otherClient = [PubNub clientWithConfiguration:config];
     [self.otherClient addListener:self];
-//    [self.otherClient subscribeToChannels:@[[self otherClientChannelName]] withPresence:YES clientState:@{@"foo" : @"bar"}];
-//    [self waitForExpectationsWithTimeout:60 handler:^(NSError * _Nullable error) {
-//        if (error) {
-//            XCTFail(@"failed to set up");
-//        }
-//    }];
-    
 }
 
 - (void)setUpChannelSubscription {

@@ -75,6 +75,8 @@
         XCTAssertEqual(message.operation, PNSubscribeOperation);
         NSLog(@"message:");
         NSLog(@"%@", message.data.message);
+        XCTAssertEqualObjects(message.data.actualChannel, @"a");
+        XCTAssertEqualObjects(message.data.subscribedChannel, @"a");
         XCTAssertEqualObjects(message.data.message, @"*******........ 4545 - 2015-12-02 16:16:50");
         [self.subscribeExpectation fulfill];
     };

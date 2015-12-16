@@ -90,6 +90,8 @@ static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupUnsubscribeTe
         XCTAssertEqual(message.operation, PNSubscribeOperation);
         NSLog(@"message:");
         NSLog(@"%@", message.data.message);
+        XCTAssertEqualObjects(message.data.actualChannel, @"a");
+        XCTAssertEqualObjects(message.data.subscribedChannel, kPNChannelGroupTestsName);
         XCTAssertEqualObjects(message.data.message, expectedMessage);
         [self.channelGroupSubscribeExpectation fulfill];
     };
