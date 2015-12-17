@@ -185,7 +185,7 @@ typedef void(^PNSubscriberCompletionBlock)(PNSubscribeStatus *status);
  @since 4.0
  */
 - (void)subscribe:(BOOL)initialSubscribe usingTimeToken:(NSNumber *)timeToken
-        withState:(NSDictionary *)state completion:(PNSubscriberCompletionBlock)block;
+        withState:(NSDictionary *)state region:(NSNumber *)region completion:(PNSubscriberCompletionBlock)block;
 
 /**
  @brief  Try restore subscription cycle by using \b 0 time token and if required try to catch up on

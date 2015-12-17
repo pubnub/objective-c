@@ -185,9 +185,10 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
  
  @since 4.3
  */
-@property (nonatomic, strong) NSNumber *region;
+@property (nonatomic, strong) NSNumber *currentRegion;
 
 /**
+ @brief Escaped filter expression to add as parameter for subscribe
  
  @since 4.3
  */
@@ -310,7 +311,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
  
  @since 4.0
  */
-- (void)handleSubscription:(BOOL)initialSubscription timeToken:(NSNumber *)timeToken;
+- (void)handleSubscription:(BOOL)initialSubscription timeToken:(NSNumber *)timeToken region:(NSNumber *)region;
 
 /**
  @brief  Handle long-poll service response and deliver events to listeners if required.
@@ -380,7 +381,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 @synthesize overrideTimeToken = _overrideTimeToken;
 @synthesize currentTimeToken = _currentTimeToken;
 @synthesize lastTimeToken = _lastTimeToken;
-@synthesize region = _region;
+@synthesize currentRegion = _currentRegion;
 @synthesize escapedFilterExpression = _escapedFilterExpression;
 
 
@@ -469,6 +470,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     });
 }
 
+#warning only need to escape filter expression once
 - (NSString *)escapedFilterExpression {
     __block NSString *filteredExpression = nil;
     pn_safe_property_read(self.resourceAccessQueue, ^{
@@ -583,17 +585,17 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     });
 }
 
-- (NSNumber *)region {
-    __block NSNumber *currentRegion = nil;
+- (NSNumber *)currentRegion {
+    __block NSNumber *region = nil;
     pn_safe_property_read(self.resourceAccessQueue, ^{
-        currentRegion = self->_region;
+        region = self->_currentRegion;
     });
-    return currentRegion;
+    return region;
 }
 
-- (void)setRegion:(NSNumber *)region {
+- (void)setCurrentRegion:(NSNumber *)region {
     pn_safe_property_write(self.resourceAccessQueue, ^{
-        self->_region = region;
+        self->_currentRegion = region;
     });
 }
 
@@ -730,14 +732,14 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     }
     _currentTimeToken = subscriber.currentTimeToken;
     _lastTimeToken = subscriber.lastTimeToken;
-    _region = subscriber.region;
+    _currentRegion = subscriber.currentRegion;
 }
 
 
 #pragma mark - Subscription
 
 - (void)subscribe:(BOOL)initialSubscribe usingTimeToken:(NSNumber *)timeToken
-        withState:(NSDictionary *)state completion:(PNSubscriberCompletionBlock)block {
+        withState:(NSDictionary *)state region:(NSNumber *)region completion:(PNSubscriberCompletionBlock)block {
     
     [self stopRetryTimer];
 
@@ -765,6 +767,10 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                     self->_lastTimeToken = self->_currentTimeToken;
                 }
                 self->_currentTimeToken = @(0);
+                
+                if (!(self->_currentRegion)) {
+                    self->_currentRegion = @(0);
+                }
             });
         }
         
@@ -801,6 +807,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
             
             self->_lastTimeToken = @(0);
             self->_currentTimeToken = @(0);
+            self->_currentRegion = @(0);
         });
         if (block) {
             
@@ -829,7 +836,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     });
     if (shouldRestore && ableToRestore) {
         
-        [self subscribe:YES usingTimeToken:nil withState:nil completion:block];
+        [self subscribe:YES usingTimeToken:nil withState:nil region:nil completion:block];
     }
     else if (block) {
             
@@ -839,7 +846,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 
 - (void)continueSubscriptionCycleIfRequiredWithCompletion:(PNSubscriberCompletionBlock)block {
 
-    [self subscribe:NO usingTimeToken:nil withState:nil completion:block];
+    [self subscribe:NO usingTimeToken:nil withState:nil region:nil completion:block];
 }
 
 - (void)unsubscribeFromAll {
@@ -911,7 +918,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
             [weakSelf.client callBlock:nil status:YES withResult:nil andStatus:successStatus];
             if ([weakSelf allObjects].count && subscribeOnRestChannels) {
                 
-                [weakSelf subscribe:YES usingTimeToken:nil withState:nil completion:nil];
+                [weakSelf subscribe:YES usingTimeToken:nil withState:nil region:nil completion:nil];
             }
             else if (block) {
                     
@@ -926,7 +933,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         
         self.lastTimeToken = @(0);
         self.currentTimeToken = @(0);
-        [self subscribe:YES usingTimeToken:nil withState:nil
+        self.currentRegion = @(0);
+        [self subscribe:YES usingTimeToken:nil withState:nil region:nil
              completion:^(__unused PNSubscribeStatus *status) {
             
             if (block) {
@@ -1010,9 +1018,9 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wreceiver-is-weak"
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
-    if (status.data.timetoken != nil && status.clientRequest.URL != nil) {
+    if (status.data.timetoken != nil && status.clientRequest.URL != nil && status.data.region != nil) {
         
-        [self handleSubscription:isInitialSubscription timeToken:status.data.timetoken];
+        [self handleSubscription:isInitialSubscription timeToken:status.data.timetoken region:status.data.region];
     }
     
     [self handleLiveFeedEvents:status];
@@ -1095,12 +1103,14 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                             
                             self->_lastTimeToken = self->_currentTimeToken;
                             self->_currentTimeToken = @(0);
+                            self->_currentRegion = @(0);
                         }
                     }
                     else {
                             
                         self->_currentTimeToken = @(0);
                         self->_lastTimeToken = @(0);
+                        self->_currentRegion = @(0);
                     }
                 });
             }
@@ -1116,6 +1126,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                     self.presenceChannelsSet = [NSMutableSet new];
                     self->_currentTimeToken = @(0);
                     self->_lastTimeToken = @(0);
+                    self->_currentRegion = @(0);
                 });
             }
             [(PNStatus *)status updateCategory:PNUnexpectedDisconnectCategory];
@@ -1128,9 +1139,12 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     #pragma clang diagnostic pop
 }
 
-- (void)handleSubscription:(BOOL)initialSubscription timeToken:(NSNumber *)timeToken {
+- (void)handleSubscription:(BOOL)initialSubscription timeToken:(NSNumber *)timeToken region:(NSNumber *)region {
     
     pn_safe_property_write(self.resourceAccessQueue, ^{
+        if (region && [region compare:self->_currentRegion] != NSOrderedSame) {
+            self->_currentRegion = region;
+        }
         
         // Whether new time token from response should be applied for next subscription cycle or
         // not.
@@ -1254,7 +1268,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         }];
         #pragma clang diagnostic pop
     }
-    [status updateData:[status.serviceData dictionaryWithValuesForKeys:@[@"timetoken"]]];
+    [status updateData:[status.serviceData dictionaryWithValuesForKeys:@[@"timetoken", @"region"]]];
 }
 
 - (void)handleNewMessage:(PNMessageResult *)data {
@@ -1347,7 +1361,14 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     [self.client.clientStateManager mergeWithState:mergedState];
     PNRequestParameters *parameters = [PNRequestParameters new];
     [parameters addPathComponent:channelsList forPlaceholder:@"{channels}"];
-    [parameters addPathComponent:self.currentTimeToken.stringValue forPlaceholder:@"{tt}"];
+//    [parameters addQueryParameter:self.currentRegion.stringValue forFieldName:@"tr"];
+//    [parameters addQueryParameter:self.currentTimeToken.stringValue forFieldName:@"tt"];
+//    [parameters addPathComponent:self.currentTimeToken.stringValue forPlaceholder:@"{tt}"];
+    [parameters addQueryParameter:self.currentTimeToken.stringValue forFieldName:@"tt"];
+    if ([self.currentRegion compare:@0] != NSOrderedSame) {
+        [parameters addQueryParameter:self.currentRegion.stringValue forFieldName:@"tr"];
+    }
+//    [parameters addPathComponent:self.currentRegion.stringValue forPlaceholder:@"{tr}"];
     if (self.client.configuration.presenceHeartbeatValue > 0 ) {
         
         [parameters addQueryParameter:[@(self.client.configuration.presenceHeartbeatValue) stringValue]

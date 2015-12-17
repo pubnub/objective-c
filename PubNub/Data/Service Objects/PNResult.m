@@ -145,7 +145,7 @@
     result.authKey = self.authKey;
     result.origin = self.origin;
     result.clientRequest = self.clientRequest;
-    result.region = self.region;
+//    result.region = self.region;
     if (shouldCopyServiceData) {
         
         [result updateData:self.serviceData];

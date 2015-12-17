@@ -73,7 +73,7 @@
  */
 @property (nonatomic, readonly, copy) NSURLRequest *clientRequest;
 
-@property (nonatomic, readonly, strong) NSNumber *region;
+//@property (nonatomic, readonly, strong) NSNumber *region;
 
 /**
  @brief  Stringified \c operation value.

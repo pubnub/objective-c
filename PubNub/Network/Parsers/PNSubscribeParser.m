@@ -166,8 +166,8 @@ static NSString * const kPNMessageChannelKey = @"c";
     if ([response isKindOfClass:[NSDictionary class]]) {
         NSAssert(response[kPNEventsTimeTokenElementKey], @"There should always be a time token object for this key value");
         NSDictionary *timeTokenDictionary = response[kPNEventsTimeTokenElementKey];
-        NSNumber *timeToken = timeTokenDictionary[kPNEventsTimeTokenElementKey];
-        NSNumber *region = timeTokenDictionary[kPNEventsTimeTokenRegionElementKey];
+        NSNumber *timeToken = @([timeTokenDictionary[kPNEventsTimeTokenElementKey] longLongValue]);
+        NSNumber *region = @([timeTokenDictionary[kPNEventsTimeTokenRegionElementKey] integerValue]);
         NSArray *feedEvents = response[kPNEventsMessageElementKey];
         if ([feedEvents count]) {
             NSMutableArray *events = [[NSMutableArray alloc] initWithCapacity:[feedEvents count]];

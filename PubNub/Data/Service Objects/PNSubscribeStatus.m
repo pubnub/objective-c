@@ -30,6 +30,10 @@
     return self.serviceData[@"timetoken"];
 }
 
+- (NSNumber *)region {
+    return self.serviceData[@"region"];
+}
+
 #pragma mark -
 
 
