@@ -71,6 +71,15 @@ typedef void(^PNSubscriberCompletionBlock)(PNSubscribeStatus *status);
  */
 - (NSArray *)presenceChannels;
 
+/**
+ @brief Filter expression used in subscribe
+ 
+ @return String representing filter expression used in subscribe loop
+ 
+ @since 4.3
+ */
+- (NSString *)escapedFilterExpression;
+
 
 ///------------------------------------------------
 /// @name Initialization and Configuration

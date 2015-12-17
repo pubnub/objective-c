@@ -135,7 +135,7 @@
              withProcessingError:(NSError *)error {
     
     // Check whether initialization was successful or not.
-    if ((self = [super initForOperation:operation completedWithTaks:nil processedData:nil
+    if ((self = [super initForOperation:operation completedWithTask:nil processedData:nil
                         processingError:error])) {
         
         _category = category;
@@ -161,7 +161,7 @@
                    processedData:(NSDictionary *)processedData processingError:(NSError *)error {
     
     // Check whether initialization was successful or not.
-    if ((self = [super initForOperation:operation completedWithTaks:task processedData:processedData
+    if ((self = [super initForOperation:operation completedWithTask:task processedData:processedData
                         processingError:error])) {
         
         _error = (error != nil || self.statusCode != 200);
@@ -207,7 +207,6 @@
     status.automaticallyRetry = self.willAutomaticallyRetry;
     status.retryBlock = self.retryBlock;
     status.retryCancelBlock = self.retryCancelBlock;
-    
     return status;
 }
 

@@ -26,6 +26,8 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNAESErrorLogLevel;
  */
 static NSString * const kPNEventsMessageElementKey = @"m";
 
+static NSString * const kPNEventsTimeTokenRegionElementKey = @"r";
+
 /**
  @brief Stores reference to key for timetoken in subscribe v2 response object
  
@@ -162,7 +164,10 @@ static NSString * const kPNMessageChannelKey = @"c";
     
     // response is subscription
     if ([response isKindOfClass:[NSDictionary class]]) {
-        NSNumber *timeToken = @([response[kPNEventsTimeTokenElementKey][kPNEventsTimeTokenElementKey] longLongValue]);
+        NSAssert(response[kPNEventsTimeTokenElementKey], @"There should always be a time token object for this key value");
+        NSDictionary *timeTokenDictionary = response[kPNEventsTimeTokenElementKey];
+        NSNumber *timeToken = timeTokenDictionary[kPNEventsTimeTokenElementKey];
+        NSNumber *region = timeTokenDictionary[kPNEventsTimeTokenRegionElementKey];
         NSArray *feedEvents = response[kPNEventsMessageElementKey];
         if ([feedEvents count]) {
             NSMutableArray *events = [[NSMutableArray alloc] initWithCapacity:[feedEvents count]];
@@ -171,11 +176,12 @@ static NSString * const kPNMessageChannelKey = @"c";
                 // Fetching remote data object name on which event fired.
                 NSMutableDictionary *event = [self eventFromData:feedEvents[eventIdx] withAdditionalParserData:additionalData];
                 event[@"timetoken"] = timeToken;
+                event[@"region"] = region;
                 [events addObject:event];
             }
             feedEvents = [events copy];
         }
-        processedResponse = @{@"events":feedEvents,@"timetoken":timeToken};
+        processedResponse = @{@"events":feedEvents,@"timetoken":timeToken,@"region":region};
     }
 
     return processedResponse;

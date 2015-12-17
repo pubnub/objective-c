@@ -187,6 +187,12 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
  */
 @property (nonatomic, strong) NSNumber *region;
 
+/**
+ 
+ @since 4.3
+ */
+@property (nonatomic, copy) NSString *escapedFilterExpression;
+
 
 #pragma mark - Initialization and Configuration
 
@@ -375,6 +381,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 @synthesize currentTimeToken = _currentTimeToken;
 @synthesize lastTimeToken = _lastTimeToken;
 @synthesize region = _region;
+@synthesize escapedFilterExpression = _escapedFilterExpression;
 
 
 #pragma mark - Logger
@@ -460,6 +467,15 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         [self.presenceChannelsSet minusSet:channelsSet];
         [self.channelsSet minusSet:channelsSet];
     });
+}
+
+- (NSString *)escapedFilterExpression {
+    __block NSString *filteredExpression = nil;
+    pn_safe_property_read(self.resourceAccessQueue, ^{
+        filteredExpression = [PNString percentEscapedString:self.client.filterExpression];
+    });
+    
+    return filteredExpression;
 }
 
 - (NSArray *)channelGroups {
@@ -1349,6 +1365,9 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
             [parameters addQueryParameter:[PNString percentEscapedString:mergedStateString]
                              forFieldName:@"state"];
         }
+    }
+    if (self.client.configuration.filterExpression) {
+        [parameters addQueryParameter:[self escapedFilterExpression] forFieldName:@"filter-expr"];
     }
     #pragma clang diagnostic pop
     
