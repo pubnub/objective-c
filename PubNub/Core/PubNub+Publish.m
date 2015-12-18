@@ -34,6 +34,7 @@
  */
 - (PNRequestParameters *)requestParametersForMessage:(NSString *)message
                                            toChannel:(NSString *)channel
+                                        withMetadata:(NSString *)metadata
                                           compressed:(BOOL)compressMessage
                                       storeInHistory:(BOOL)shouldStore;
 
@@ -88,6 +89,10 @@
     [self publish:message toChannel:channel compressed:NO withCompletion:block];
 }
 
+- (void)publish:(id)message toChannel:(NSString *)channel withMetadata:(NSDictionary *)metadata withCompletion:(PNPublishCompletionBlock)block {
+    [self publish:message toChannel:channel mobilePushPayload:nil storeInHistory:YES compressed:NO withMetadata:metadata withCompletion:block];
+}
+
 - (void)  publish:(id)message toChannel:(NSString *)channel compressed:(BOOL)compressed
    withCompletion:(PNPublishCompletionBlock)block {
 
@@ -137,19 +142,24 @@
 - (void)    publish:(id)message toChannel:(NSString *)channel
   mobilePushPayload:(NSDictionary *)payloads storeInHistory:(BOOL)shouldStore
          compressed:(BOOL)compressed withCompletion:(PNPublishCompletionBlock)block {
+    [self publish:message toChannel:channel mobilePushPayload:payloads storeInHistory:shouldStore compressed:compressed withMetadata:nil withCompletion:block];
+}
 
+- (void)    publish:(id)message toChannel:(NSString *)channel
+  mobilePushPayload:(NSDictionary *)payloads storeInHistory:(BOOL)shouldStore
+         compressed:(BOOL)compressed withMetadata:(NSDictionary *)metadata withCompletion:(PNPublishCompletionBlock)block {
     // Push further code execution on secondary queue to make service queue responsive during
     // JSON serialization and encryption process.
     __weak __typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-
+        
         BOOL encrypted = NO;
         NSError *publishError = nil;
         NSString *messageForPublish = [PNJSON JSONStringFrom:message withError:&publishError];
-
+        
         // Encrypt message in case if serialization to JSON was successful.
         if (!publishError) {
-
+            
             // Try perform user message encryption.
             NSString *encryptedMessage = [self encryptedMessage:messageForPublish
                                                   withCipherKey:self.configuration.cipherKey
@@ -157,21 +167,27 @@
             encrypted = ![messageForPublish isEqualToString:encryptedMessage];
             messageForPublish = [encryptedMessage copy];
         }
-
+        
+        NSString *metadataForPublish = nil;
+        if (metadata) {
+            metadataForPublish = [PNJSON JSONStringFrom:metadata withError:&publishError];
+        }
+        
         // Merge user message with push notification payloads (if provided).
         if (!publishError && [payloads count]) {
-
+            
             NSDictionary *mergedData = [self mergedMessage:(encrypted ? messageForPublish : message)
                                      withMobilePushPayload:payloads];
             messageForPublish = [PNJSON JSONStringFrom:mergedData withError:&publishError];
         }
         PNRequestParameters *parameters = [self requestParametersForMessage:messageForPublish
                                                                   toChannel:channel
+                                                               withMetadata:metadataForPublish
                                                                  compressed:compressed
                                                              storeInHistory:shouldStore];
         NSData *publishData = nil;
         if (compressed) {
-
+            
             NSData *messageData = [messageForPublish dataUsingEncoding:NSUTF8StringEncoding];
             NSData *compressedBody = [PNGZIP GZIPDeflatedData:messageData];
             publishData = (compressedBody?: [@"" dataUsingEncoding:NSUTF8StringEncoding]);
@@ -182,30 +198,29 @@
                      (!shouldStore ? @" which won't be saved in history" : @""),
                      (!compressed ? [NSString stringWithFormat:@": %@",
                                      (messageForPublish?: @"<error>")] : @"."));
-
+        
         [self processOperation:PNPublishOperation withParameters:parameters data:publishData
                completionBlock:^(PNStatus *status) {
                    
-           // Silence static analyzer warnings.
-           // Code is aware about this case and at the end will simply call on 'nil' object method.
-           // In most cases if referenced object become 'nil' it mean what there is no more need in
-           // it and probably whole client instance has been deallocated.
-           #pragma clang diagnostic push
-           #pragma clang diagnostic ignored "-Wreceiver-is-weak"
-           if (status.isError) {
-                
-               status.retryBlock = ^{
-                   
-                   [weakSelf publish:message toChannel:channel mobilePushPayload:payloads
-                      storeInHistory:shouldStore compressed:compressed withCompletion:block];
-               };
-           }
-           [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
-           #pragma clang diagnostic pop
-       }];
+                   // Silence static analyzer warnings.
+                   // Code is aware about this case and at the end will simply call on 'nil' object method.
+                   // In most cases if referenced object become 'nil' it mean what there is no more need in
+                   // it and probably whole client instance has been deallocated.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreceiver-is-weak"
+                   if (status.isError) {
+                       
+                       status.retryBlock = ^{
+                           [weakSelf publish:message toChannel:channel mobilePushPayload:payloads
+                              storeInHistory:shouldStore compressed:compressed withMetadata:metadata
+                              withCompletion:block];
+                       };
+                   }
+                   [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
+#pragma clang diagnostic pop
+               }];
     });
 }
-
 
 #pragma mark - Message helper
 
@@ -259,6 +274,7 @@
             }
             PNRequestParameters *parameters = [self requestParametersForMessage:messageForPublish
                                                                       toChannel:channel
+                                                                   withMetadata:nil
                                                                      compressed:compressMessage
                                                                  storeInHistory:shouldStore];
             NSData *publishData = nil;
@@ -284,6 +300,7 @@
 
 - (PNRequestParameters *)requestParametersForMessage:(NSString *)message
                                            toChannel:(NSString *)channel
+                                        withMetadata:(NSString *)metadata
                                           compressed:(BOOL)compressMessage
                                       storeInHistory:(BOOL)shouldStore {
     
@@ -302,6 +319,9 @@
         [parameters addPathComponent:(!compressMessage ? [PNString percentEscapedString:message] :
                                       @"")
                       forPlaceholder:@"{message}"];
+    }
+    if ([metadata isKindOfClass:[NSString class]] && [metadata length]) {
+        [parameters addQueryParameter:[PNString percentEscapedString:metadata] forFieldName:@"meta"];
     }
     
     return parameters;

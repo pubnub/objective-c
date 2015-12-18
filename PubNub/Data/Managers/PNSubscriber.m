@@ -767,10 +767,6 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                     self->_lastTimeToken = self->_currentTimeToken;
                 }
                 self->_currentTimeToken = @(0);
-                
-                if (!(self->_currentRegion)) {
-                    self->_currentRegion = @(0);
-                }
             });
         }
         
@@ -807,7 +803,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
             
             self->_lastTimeToken = @(0);
             self->_currentTimeToken = @(0);
-            self->_currentRegion = @(0);
+            self->_currentRegion = nil;
         });
         if (block) {
             
@@ -1103,14 +1099,13 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                             
                             self->_lastTimeToken = self->_currentTimeToken;
                             self->_currentTimeToken = @(0);
-                            self->_currentRegion = @(0);
                         }
                     }
                     else {
                             
                         self->_currentTimeToken = @(0);
                         self->_lastTimeToken = @(0);
-                        self->_currentRegion = @(0);
+                        self->_currentRegion = nil;
                     }
                 });
             }
@@ -1126,7 +1121,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                     self.presenceChannelsSet = [NSMutableSet new];
                     self->_currentTimeToken = @(0);
                     self->_lastTimeToken = @(0);
-                    self->_currentRegion = @(0);
+                    self->_currentRegion = nil;
                 });
             }
             [(PNStatus *)status updateCategory:PNUnexpectedDisconnectCategory];
@@ -1142,7 +1137,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 - (void)handleSubscription:(BOOL)initialSubscription timeToken:(NSNumber *)timeToken region:(NSNumber *)region {
     
     pn_safe_property_write(self.resourceAccessQueue, ^{
-        if (region && [region compare:self->_currentRegion] != NSOrderedSame) {
+        if (region && ([region compare:self->_currentRegion] != NSOrderedSame)) {
             self->_currentRegion = region;
         }
         
@@ -1365,7 +1360,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 //    [parameters addQueryParameter:self.currentTimeToken.stringValue forFieldName:@"tt"];
 //    [parameters addPathComponent:self.currentTimeToken.stringValue forPlaceholder:@"{tt}"];
     [parameters addQueryParameter:self.currentTimeToken.stringValue forFieldName:@"tt"];
-    if ([self.currentRegion compare:@0] != NSOrderedSame) {
+    if (self.currentRegion) {
         [parameters addQueryParameter:self.currentRegion.stringValue forFieldName:@"tr"];
     }
 //    [parameters addPathComponent:self.currentRegion.stringValue forPlaceholder:@"{tr}"];
