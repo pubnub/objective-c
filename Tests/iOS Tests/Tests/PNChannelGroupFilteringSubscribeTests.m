@@ -1,20 +1,22 @@
 //
-//  PNFilteringSubscribeTests.m
+//  PNChannelGroupFilteringSubscribeTests.m
 //  PubNub Tests
 //
-//  Created by Jordan Zucker on 12/16/15.
+//  Created by Jordan Zucker on 12/19/15.
 //
 //
 
 #import "PNBasicSubscribeTestCase.h"
 
 static NSString * const kPNChannelTestName = @"PNFilterSubscribeTests";
+static NSString * const kPNOtherTestChannelName = @"PNOtherTestChannelName";
+static NSString * const kPNChannelGroupTestName = @"PNChannelGroupFilterSubscribeTests";
 
-@interface PNFilteringSubscribeTests : PNBasicSubscribeTestCase
+@interface PNChannelGroupFilteringSubscribeTests : PNBasicSubscribeTestCase
 @property (nonatomic, assign) BOOL hasPublished;
 @end
 
-@implementation PNFilteringSubscribeTests
+@implementation PNChannelGroupFilteringSubscribeTests
 
 - (BOOL)isRecording{
     return YES;
@@ -36,7 +38,19 @@ static NSString * const kPNChannelTestName = @"PNFilterSubscribeTests";
 - (void)setUp {
     [super setUp];
     self.hasPublished = NO;
+    self.subscribeExpectation = nil;
+    self.channelGroupSubscribeExpectation = nil;
+    self.channelGroupUnsubscribeExpectation = nil;
     // Put setup code here. This method is called before the invocation of each test method in the class.
+    PNWeakify(self);
+    [self performVerifiedAddChannels:@[kPNChannelTestName, kPNOtherTestChannelName] toGroup:kPNChannelGroupTestName withAssertions:^(PNAcknowledgmentStatus *status) {
+        PNStrongify(self);
+        XCTAssertNotNil(status);
+        XCTAssertFalse(status.isError);
+        XCTAssertEqual(status.operation, PNAddChannelsToGroupOperation);
+        XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+        XCTAssertEqual(status.statusCode, 200);
+    }];
 }
 
 - (void)tearDown {
@@ -55,20 +69,20 @@ static NSString * const kPNChannelTestName = @"PNFilterSubscribeTests";
         XCTAssertFalse(status.isError);
         //        XCTAssertEqual(status.operation, PNUnsubscribeOperation);
         //        XCTAssertEqual(status.category, PNDisconnectedCategory);
-//        /   `/        XCTAssertEqual(status.subscribedChannels.count, 0);
+        //        /   `/        XCTAssertEqual(status.subscribedChannels.count, 0);
         XCTAssertEqual(status.subscribedChannelGroups.count, 0);
         XCTAssertEqual(status.subscribedChannels.count, 0);
         XCTAssertEqual(status.operation, PNUnsubscribeOperation);
         XCTAssertEqual(status.category, PNDisconnectedCategory);
-//        XCTAssertEqual(status.operation, PNUnsubscribeOperation);
+        //        XCTAssertEqual(status.operation, PNUnsubscribeOperation);
         NSLog(@"tearDown status: %@", status.debugDescription);
         NSLog(@"timeToken: %@", status.currentTimetoken);
         //        XCTAssertEqualObjects(status.currentTimetoken, @14355626738514132);
         //        XCTAssertEqualObjects(status.currentTimetoken, status.data.timetoken);
-        [self.unsubscribeExpectation fulfill];
+        [self.channelGroupUnsubscribeExpectation fulfill];
         
     };
-    [self PNTest_unsubscribeFromChannels:@[kPNChannelTestName] withPresence:NO];
+    [self PNTest_unsubscribeFromChannelGroups:@[kPNChannelGroupTestName] withPresence:NO];
     [super tearDown];
 }
 
@@ -80,7 +94,8 @@ static NSString * const kPNChannelTestName = @"PNFilterSubscribeTests";
         XCTAssertNotNil(status);
         XCTAssertFalse(status.isError);
         XCTAssertEqual(status.category, PNConnectedCategory);
-        XCTAssertEqualObjects(status.subscribedChannels, @[kPNChannelTestName]);
+        XCTAssertEqual(status.subscribedChannels.count, 0);
+        XCTAssertEqualObjects(status.subscribedChannelGroups, @[kPNChannelGroupTestName]);
         
         XCTAssertEqual(status.operation, PNSubscribeOperation);
         NSLog(@"timeToken: %@", status.currentTimetoken);
@@ -101,10 +116,10 @@ static NSString * const kPNChannelTestName = @"PNFilterSubscribeTests";
         PNStrongify(self);
         NSLog(@"message: %@", message.data.message);
         XCTFail(@"Should not receive a message");
-        [self.subscribeExpectation fulfill];
+        [self.channelGroupSubscribeExpectation fulfill];
     };
     self.publishExpectation = [self expectationWithDescription:@"publish"];
-    [self PNTest_subscribeToChannels:@[kPNChannelTestName] withPresence:NO];
+    [self PNTest_subscribeToChannelGroups:@[kPNChannelGroupTestName] withPresence:NO];
 }
 
 - (void)testPublishWithMetadataAndNoReceivedMessageForSubscribeWithFilteringWithSameKeyAndDifferentValue {
@@ -137,10 +152,10 @@ static NSString * const kPNChannelTestName = @"PNFilterSubscribeTests";
         PNStrongify(self);
         NSLog(@"message: %@", message.data.message);
         XCTFail(@"Should not receive a message");
-        [self.subscribeExpectation fulfill];
+        [self.channelGroupSubscribeExpectation fulfill];
     };
     self.publishExpectation = [self expectationWithDescription:@"publish"];
-    [self PNTest_subscribeToChannels:@[kPNChannelTestName] withPresence:NO];
+    [self PNTest_subscribeToChannelGroups:@[kPNChannelGroupTestName] withPresence:NO];
 }
 
 - (void)testPublishWithNoMetadataAndNoReceivedMessageForSubscribeWithFiltering {
@@ -174,10 +189,10 @@ static NSString * const kPNChannelTestName = @"PNFilterSubscribeTests";
         PNStrongify(self);
         NSLog(@"message: %@", message.data.message);
         XCTFail(@"Should not receive a message");
-        [self.subscribeExpectation fulfill];
+        [self.channelGroupSubscribeExpectation fulfill];
     };
     self.publishExpectation = [self expectationWithDescription:@"publish"];
-    [self PNTest_subscribeToChannels:@[kPNChannelTestName] withPresence:NO];
+    [self PNTest_subscribeToChannelGroups:@[kPNChannelGroupTestName] withPresence:NO];
 }
 
 - (void)testPublishWithMetadataAndNoReceivedMessageForSubscribeWithFilteringWithSwitchedKeysAndValues {
@@ -210,10 +225,10 @@ static NSString * const kPNChannelTestName = @"PNFilterSubscribeTests";
         PNStrongify(self);
         NSLog(@"message: %@", message.data.message);
         XCTFail(@"Should not receive a message");
-        [self.subscribeExpectation fulfill];
+        [self.channelGroupSubscribeExpectation fulfill];
     };
     self.publishExpectation = [self expectationWithDescription:@"publish"];
-    [self PNTest_subscribeToChannels:@[kPNChannelTestName] withPresence:NO];
+    [self PNTest_subscribeToChannelGroups:@[kPNChannelGroupTestName] withPresence:NO];
 }
 
 - (void)testPublishWithMetadataAndReceiveMessageForSubscribeWithMatchingFiltering {
@@ -259,10 +274,10 @@ static NSString * const kPNChannelTestName = @"PNFilterSubscribeTests";
         XCTAssertEqualObjects(message.data.subscribedChannel, kPNChannelTestName);
         XCTAssertEqualObjects(message.data.timetoken, @14490969668672102);
         XCTAssertEqualObjects(message.data.region, @56);
-        [self.subscribeExpectation fulfill];
+        [self.channelGroupSubscribeExpectation fulfill];
     };
     self.publishExpectation = [self expectationWithDescription:@"publish"];
-    [self PNTest_subscribeToChannels:@[kPNChannelTestName] withPresence:NO];
+    [self PNTest_subscribeToChannelGroups:@[kPNChannelGroupTestName] withPresence:NO];
 }
 
 @end

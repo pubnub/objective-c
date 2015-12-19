@@ -78,7 +78,7 @@
 - (void)PNTest_subscribeToChannelGroups:(NSArray *)groups withPresence:(BOOL)shouldObservePresence {
     self.channelGroupSubscribeExpectation = [self expectationWithDescription:@"channelGroupSubscribe"];
     [self.client subscribeToChannelGroups:groups withPresence:shouldObservePresence];
-    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:15 handler:^(NSError *error) {
         XCTAssertNil(error);
     }];
 }
@@ -97,6 +97,7 @@
     PNWeakify(self);
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         PNStrongify(self);
+        [self.channelGroupSubscribeExpectation fulfill];
         [self.subscribeExpectation fulfill];
     });
 }
