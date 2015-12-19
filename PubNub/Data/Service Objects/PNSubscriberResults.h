@@ -55,6 +55,8 @@
  */
 @property (nonatomic, readonly, strong) NSDictionary *state;
 
+@property (nonatomic, readonly, strong) NSDictionary *userMetadata;
+
 #pragma mark -
 
 

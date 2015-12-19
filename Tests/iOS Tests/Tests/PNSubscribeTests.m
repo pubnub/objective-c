@@ -74,7 +74,7 @@
 
 - (BOOL)isRecording{
     
-    return NO;
+    return YES;
 }
 
 - (NSArray *)subscriptionChannels {

@@ -28,6 +28,10 @@ static NSString * const kPNEventsMessageElementKey = @"m";
 
 static NSString * const kPNEventsTimeTokenRegionElementKey = @"r";
 
+static NSString * const kPNEventsPublishTimeTokenElementKey = @"p";
+
+static NSString * const kPNEventsUserMetadataElementKey = @"u";
+
 /**
  @brief Stores reference to key for timetoken in subscribe v2 response object
  
@@ -197,6 +201,12 @@ static NSString * const kPNMessageChannelKey = @"c";
     NSString *subscriptionMatch = data[kPNMessageSubscriptionMatchKey];
     event[@"subscribedChannel"] = subscriptionMatch;
     event[@"actualChannel"] = channel;
+    if (data[kPNEventsPublishTimeTokenElementKey] && [data[kPNEventsPublishTimeTokenElementKey] isKindOfClass:[NSDictionary class]]) {
+        event[@"publishTimetoken"] = data[kPNEventsPublishTimeTokenElementKey];
+    }
+    if (data[kPNEventsUserMetadataElementKey] && [data[kPNEventsUserMetadataElementKey] isKindOfClass:[NSDictionary class]]) {
+        event[@"userMetadata"] = data[kPNEventsUserMetadataElementKey];
+    }
     BOOL isPresenceEvent = [PNChannel isPresenceObject:channel];
     if ([data[@"d"] isKindOfClass:[NSDictionary class]]) {
         NSDictionary *payload = data[@"d"];

@@ -1137,7 +1137,9 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 - (void)handleSubscription:(BOOL)initialSubscription timeToken:(NSNumber *)timeToken region:(NSNumber *)region {
     
     pn_safe_property_write(self.resourceAccessQueue, ^{
-        if (region && ([region compare:self->_currentRegion] != NSOrderedSame)) {
+        if (!self->_currentRegion) {
+            self->_currentRegion = region;
+        } else if (region && ([region compare:self->_currentRegion] != NSOrderedSame)) {
             self->_currentRegion = region;
         }
         

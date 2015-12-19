@@ -13,6 +13,8 @@
 - (void)setUp {
     [super setUp];
     [self.client addListener:self];
+    self.subscribeExpectation = nil;
+    self.unsubscribeExpectation = nil;
 }
 
 - (void)tearDown {
@@ -34,8 +36,10 @@
     
     self.subscribeExpectation = [self expectationWithDescription:@"subscribe"];
     [self.client subscribeToChannels:channels withPresence:shouldObservePresence usingTimeToken:timeToken];
-    [self waitForExpectationsWithTimeout:20 handler:^(NSError *error) {
-        XCTAssertNil(error);
+    [self waitForExpectationsWithTimeout:25 handler:^(NSError *error) {
+        if (error) {
+            XCTAssertNotNil(error);
+        }
     }];
 }
 

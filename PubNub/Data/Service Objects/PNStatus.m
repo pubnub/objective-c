@@ -207,6 +207,7 @@
     status.automaticallyRetry = self.willAutomaticallyRetry;
     status.retryBlock = self.retryBlock;
     status.retryCancelBlock = self.retryCancelBlock;
+    status.currentRegion = self.currentRegion;
     return status;
 }
 

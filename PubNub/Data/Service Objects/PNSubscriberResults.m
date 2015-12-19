@@ -35,6 +35,10 @@
     return self.serviceData[@"state"];
 }
 
+- (NSDictionary *)userMetadata {
+    return self.serviceData[@"userMetadata"];
+}
+
 #pragma mark -
 
 
