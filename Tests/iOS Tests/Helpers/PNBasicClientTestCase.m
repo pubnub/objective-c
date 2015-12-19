@@ -43,6 +43,18 @@
     return configuration;
 }
 
+#pragma mark - Publish Helpers
+
+- (void)PNTest_publish:(id)message toChannel:(NSString *)channel withMetadata:(NSDictionary *)metadata withCompletion:(PNPublishCompletionBlock)block {
+    self.publishExpectation = [self expectationWithDescription:@"publish"];
+    [self.client publish:message toChannel:channel withMetadata:metadata withCompletion:^(PNPublishStatus *status) {
+        if (block) {
+            block(status);
+        }
+        [self.publishExpectation fulfill];
+    }];
+}
+
 #pragma mark - Channel Group Helpers
 
 - (void)performVerifiedAddChannels:(NSArray *)channels toGroup:(NSString *)channelGroup withAssertions:(PNChannelGroupAssertions)assertions {

@@ -11,7 +11,7 @@
 static NSString * const kPNChannelTestName = @"PNFilterSubscribeTests";
 
 @interface PNFilteringSubscribeTests : PNBasicSubscribeTestCase
-@property (nonatomic, strong) XCTestExpectation *publishExpectation;
+//@property (nonatomic, strong) XCTestExpectation *publishExpectation;
 @property (nonatomic, assign) BOOL hasPublished;
 @end
 
@@ -97,7 +97,6 @@ static NSString * const kPNChannelTestName = @"PNFilterSubscribeTests";
             [self fulfillSubscribeExpectationAfterDelay:10];
             [self.publishExpectation fulfill];
         }];
-        
     };
     self.didReceiveMessageAssertions = ^void (PubNub *client, PNMessageResult *message) {
         PNStrongify(self);
@@ -261,14 +260,6 @@ static NSString * const kPNChannelTestName = @"PNFilterSubscribeTests";
     };
     self.publishExpectation = [self expectationWithDescription:@"publish"];
     [self PNTest_subscribeToChannels:@[kPNChannelTestName] withPresence:NO];
-}
-
-- (void)fulfillSubscribeExpectationAfterDelay:(NSTimeInterval)delay {
-    PNWeakify(self);
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        PNStrongify(self);
-        [self.subscribeExpectation fulfill];
-    });
 }
 
 @end
