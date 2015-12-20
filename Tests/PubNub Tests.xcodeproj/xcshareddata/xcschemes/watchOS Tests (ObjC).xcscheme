@@ -9,31 +9,41 @@
          <BuildActionEntry
             buildForTesting = "YES"
             buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "79CBB1941BD03EB8001FC34D"
-               BuildableName = "CocoaLumberjack.framework"
-               BlueprintName = "CocoaLumberjack (OSX)"
-               ReferencedContainer = "container:PubNub Framework.xcodeproj">
+               BlueprintIdentifier = "797BDCC71C1F5091006EF006"
+               BuildableName = "watchOS ObjC Tests.xctest"
+               BlueprintName = "watchOS ObjC Tests"
+               ReferencedContainer = "container:PubNub Tests.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
-      buildConfiguration = "Debug"
+      buildConfiguration = "Release"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "797BDCC71C1F5091006EF006"
+               BuildableName = "watchOS ObjC Tests.xctest"
+               BlueprintName = "watchOS ObjC Tests"
+               ReferencedContainer = "container:PubNub Tests.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
    <LaunchAction
-      buildConfiguration = "Debug"
+      buildConfiguration = "Release"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
@@ -45,10 +55,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "79CBB1941BD03EB8001FC34D"
-            BuildableName = "CocoaLumberjack.framework"
-            BlueprintName = "CocoaLumberjack (OSX)"
-            ReferencedContainer = "container:PubNub Framework.xcodeproj">
+            BlueprintIdentifier = "797BDCC71C1F5091006EF006"
+            BuildableName = "watchOS ObjC Tests.xctest"
+            BlueprintName = "watchOS ObjC Tests"
+            ReferencedContainer = "container:PubNub Tests.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -63,15 +73,15 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "79CBB1941BD03EB8001FC34D"
-            BuildableName = "CocoaLumberjack.framework"
-            BlueprintName = "CocoaLumberjack (OSX)"
-            ReferencedContainer = "container:PubNub Framework.xcodeproj">
+            BlueprintIdentifier = "797BDCC71C1F5091006EF006"
+            BuildableName = "watchOS ObjC Tests.xctest"
+            BlueprintName = "watchOS ObjC Tests"
+            ReferencedContainer = "container:PubNub Tests.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
-      buildConfiguration = "Debug">
+      buildConfiguration = "Release">
    </AnalyzeAction>
    <ArchiveAction
       buildConfiguration = "Release"
