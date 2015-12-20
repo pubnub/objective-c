@@ -44,6 +44,12 @@
                <Test
                   Identifier = "PNBasicSubscribeTestCase">
                </Test>
+               <Test
+                  Identifier = "PNSubscribeTests/testTimeTokenResetBetweenSubscriptionsWithUnsubscribe">
+               </Test>
+               <Test
+                  Identifier = "PNSubscribeTests/testTimeTokenResetBetweenSubscriptionsWithUnsubscribeAll">
+               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>

@@ -803,22 +803,26 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 
 - (void)unsubscribeFromAll {
     
-    BOOL hasChannels = (self.channels.count > 0);
-    BOOL hasChannelGroups = (self.channelGroups.count > 0);
-    BOOL informListener = (!hasChannels || !hasChannelGroups);
-    
-    if (hasChannels || hasChannelGroups) {
+    __weak __typeof(self) weakSelf = self;
+    NSArray *channelGroups = [self.channelGroups copy];
+    PNSubscriberCompletionBlock channelUnsubscribeBlock = ^(PNSubscribeStatus *status) {
         
-        NSArray *objects = (hasChannels ? [self.channels copy] : [self.channelGroups copy]);
-        if (hasChannels) { [self removeChannels:[self allObjects]]; }
-        else { [self removeChannelGroups:self.channelGroups]; }
-        __weak __typeof(self) weakSelf = self;
-        [self unsubscribeFrom:hasChannels objects:objects informingListener:informListener
-              subscribeOnRest:informListener completion:^(PNSubscribeStatus *status) {
-                  
-            [weakSelf unsubscribeFromAll];
-        }];
+        __strong __typeof(self) strongSelf = weakSelf;
+        [strongSelf removeChannelGroups:channelGroups];
+        [strongSelf unsubscribeFrom:NO objects:channelGroups informingListener:YES
+                    subscribeOnRest:NO completion:nil];
+    };
+    
+    if (self.channels.count > 0) {
+        
+        BOOL hasChannelGroups = (channelGroups.count > 0);
+        NSArray *objects = [self.channels copy];
+        [self removeChannels:objects];
+        [self removePresenceChannels:self.presenceChannels];
+        [self unsubscribeFrom:YES objects:objects informingListener:!hasChannelGroups
+              subscribeOnRest:NO completion:(hasChannelGroups ? channelUnsubscribeBlock : nil)];
     }
+    else if (channelGroups.count > 0) { channelUnsubscribeBlock(nil); }
 }
 
 - (void)unsubscribeFrom:(BOOL)channels objects:(NSArray *)objects
@@ -850,6 +854,12 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> Unsubscribe (channels: %@; groups: %@)",
                  (channels ? objectWithOutPresence : nil), (!channels ? objectWithOutPresence : nil));
     
+    NSSet *subscriptionObjects = [NSSet setWithArray:[self allObjects]];
+    if (subscriptionObjects.count == 0) {
+        
+        self.lastTimeToken = @(0);
+        self.currentTimeToken = @(0);
+    }
     if ([objectWithOutPresence count]) {
         
         NSString *objectsList = [PNChannel namesForRequest:objectWithOutPresence defaultString:@","];
@@ -868,7 +878,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                              withStatus:(PNSubscribeStatus *)successStatus];
             }
             [weakSelf.client callBlock:nil status:YES withResult:nil andStatus:successStatus];
-            if ([weakSelf allObjects].count && subscribeOnRestChannels) {
+            BOOL listChanged = ![[NSSet setWithArray:[weakSelf allObjects]] isEqualToSet:subscriptionObjects];
+            if (subscribeOnRestChannels && (subscriptionObjects.count > 0 && listChanged)) {
                 
                 [weakSelf subscribe:YES usingTimeToken:nil withState:nil completion:nil];
             }
