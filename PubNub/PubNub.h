@@ -45,4 +45,9 @@
 #import "PNAES.h"
 #import "PNLog.h"
 
+// Fabric
+#ifdef FABRIC_SUPPORT
+    #import "PubNub+FAB.h"
+#endif
+
 #endif

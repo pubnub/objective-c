@@ -33,6 +33,8 @@ typedef void (^PNClientDidReceiveStatusAssertions)(PubNub *client, PNSubscribeSt
 - (void)PNTest_subscribeToPresenceChannels:(NSArray *)channels;
 - (void)PNTest_subscribeToChannels:(NSArray *)channels withPresence:(BOOL)shouldObservePresence withClientState:(NSDictionary *)clientState;
 
+- (void)PNTest_unsubscribeFromAll;
+- (void)PNTest_unsubscribeFromChannels:(NSArray *)channels;
 - (void)PNTest_unsubscribeFromChannels:(NSArray *)channels withPresence:(BOOL)shouldObservePresence;
 - (void)PNTest_unsubscribeFromPresenceChannels:(NSArray *)channels;
 

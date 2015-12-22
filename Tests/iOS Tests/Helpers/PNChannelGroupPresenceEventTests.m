@@ -44,6 +44,7 @@
             XCTAssertTrue([client.channels containsObject:[self otherClientChannelName]]);
             XCTAssertEqual(status.operation, PNSubscribeOperation);
             [self.subscribeExpectation fulfill];
+            self.subscribeExpectation = nil;
         };
         [self PNTest_subscribeToChannels:@[[self otherClientChannelName]] withPresence:YES];
     } else if (self.invocation.selector == @selector(testJoinEvent)) {
@@ -60,6 +61,7 @@
             XCTAssertFalse([status.subscribedChannels containsObject:[self otherClientChannelName]]);
             XCTAssertFalse([client.channels containsObject:[self otherClientChannelName]]);
             [self.unsubscribeExpectation fulfill];
+            self.unsubscribeExpectation = nil;
         };
         [self PNTest_unsubscribeFromChannels:@[[self otherClientChannelName]] withPresence:YES];
     }
@@ -73,7 +75,7 @@
 }
 
 - (BOOL)isRecording{
-    return NO;
+    return YES;
 }
 
 - (void)tearDown {

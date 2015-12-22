@@ -742,7 +742,7 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
             #pragma clang diagnostic pop
         }
     };
-
+    
     if (![parser requireAdditionalData]) {
         
         parseCompletion([parser parsedServiceResponse:data]);
@@ -828,6 +828,7 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
     // to same host (basically how many requests can be handled at once).
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration ephemeralSessionConfiguration];
     configuration.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
+    configuration.URLCache = nil;
     configuration.HTTPShouldUsePipelining = !self.forLongPollRequests;
     configuration.HTTPAdditionalHeaders = _additionalHeaders;
     configuration.timeoutIntervalForRequest = timeout;

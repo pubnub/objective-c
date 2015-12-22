@@ -47,15 +47,15 @@ static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupUnsubscribeTe
     NSArray *expectedChannelGroups;
     if (self.invocation.selector == @selector(testSimpleUnsubscribeWithNoPresence)) {
         shouldObservePresence = NO;
-        expectedMessage = @"**************. 682 - 2015-12-02 15:00:53";
-        expectedTimeToken = @14490972520732825;
+        expectedMessage = @"******......... 2882 - 2015-12-22 11:38:58";
+        expectedTimeToken = @14508131386140783;
         expectedChannelGroups = @[
                                   kPNChannelGroupTestsName
                                   ];
     } else if (self.invocation.selector == @selector(testSimpleUnsubscribeWithPresence)) {
         shouldObservePresence = YES;
-        expectedMessage =  @"*************** 683 - 2015-12-02 15:00:54";
-        expectedTimeToken = @14490972538580829;
+        expectedMessage =  @"*******........ 2883 - 2015-12-22 11:39:00";
+        expectedTimeToken = @14508131398862164;
         expectedChannelGroups = @[
                                   kPNChannelGroupTestsName,
                                   [kPNChannelGroupTestsName stringByAppendingString:@"-pnpres"]
@@ -106,6 +106,14 @@ static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupUnsubscribeTe
         XCTAssertNotNil(client);
         XCTAssertNotNil(status);
         XCTAssertEqualObjects(self.client, client);
+        if (
+            !(
+              (status.category == PNDisconnectedCategory) ||
+              (status.category == PNCancelledCategory)
+              )
+            ) {
+            return;
+        }
         XCTAssertEqual(status.category, PNDisconnectedCategory);
         XCTAssertFalse(status.isError);
         XCTAssertEqual(status.statusCode, 200);
@@ -122,6 +130,14 @@ static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupUnsubscribeTe
         XCTAssertNotNil(client);
         XCTAssertNotNil(status);
         XCTAssertEqualObjects(self.client, client);
+        if (
+            !(
+              (status.category == PNDisconnectedCategory) ||
+              (status.category == PNCancelledCategory)
+              )
+            ) {
+            return;
+        }
         XCTAssertEqual(status.category, PNDisconnectedCategory);
         XCTAssertFalse(status.isError);
         XCTAssertEqual(status.statusCode, 200);

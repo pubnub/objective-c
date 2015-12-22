@@ -18,7 +18,6 @@
 @implementation PNHistoryTests
 
 - (BOOL)isRecording {
-    // TODO: find out why this fails when replaying
     return NO;
 }
 
