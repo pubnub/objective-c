@@ -847,22 +847,26 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 
 - (void)unsubscribeFromAll {
     
-    BOOL hasChannels = (self.channels.count > 0);
-    BOOL hasChannelGroups = (self.channelGroups.count > 0);
-    BOOL informListener = (!hasChannels || !hasChannelGroups);
-    
-    if (hasChannels || hasChannelGroups) {
+    __weak __typeof(self) weakSelf = self;
+    NSArray *channelGroups = [self.channelGroups copy];
+    PNSubscriberCompletionBlock channelUnsubscribeBlock = ^(PNSubscribeStatus *status) {
         
-        NSArray *objects = (hasChannels ? [self.channels copy] : [self.channelGroups copy]);
-        if (hasChannels) { [self removeChannels:[self allObjects]]; }
-        else { [self removeChannelGroups:self.channelGroups]; }
-        __weak __typeof(self) weakSelf = self;
-        [self unsubscribeFrom:hasChannels objects:objects informingListener:informListener
-              subscribeOnRest:informListener completion:^(PNSubscribeStatus *status) {
-                  
-            [weakSelf unsubscribeFromAll];
-        }];
+        __strong __typeof(self) strongSelf = weakSelf;
+        [strongSelf removeChannelGroups:channelGroups];
+        [strongSelf unsubscribeFrom:NO objects:channelGroups informingListener:YES
+                    subscribeOnRest:NO completion:nil];
+    };
+    
+    if (self.channels.count > 0) {
+        
+        BOOL hasChannelGroups = (channelGroups.count > 0);
+        NSArray *objects = [self.channels copy];
+        [self removeChannels:objects];
+        [self removePresenceChannels:self.presenceChannels];
+        [self unsubscribeFrom:YES objects:objects informingListener:!hasChannelGroups
+              subscribeOnRest:NO completion:(hasChannelGroups ? channelUnsubscribeBlock : nil)];
     }
+    else if (channelGroups.count > 0) { channelUnsubscribeBlock(nil); }
 }
 
 - (void)unsubscribeFrom:(BOOL)channels objects:(NSArray *)objects
@@ -894,6 +898,12 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> Unsubscribe (channels: %@; groups: %@)",
                  (channels ? objectWithOutPresence : nil), (!channels ? objectWithOutPresence : nil));
     
+    NSSet *subscriptionObjects = [NSSet setWithArray:[self allObjects]];
+    if (subscriptionObjects.count == 0) {
+        
+        self.lastTimeToken = @(0);
+        self.currentTimeToken = @(0);
+    }
     if ([objectWithOutPresence count]) {
         
         NSString *objectsList = [PNChannel namesForRequest:objectWithOutPresence defaultString:@","];
@@ -912,7 +922,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                              withStatus:(PNSubscribeStatus *)successStatus];
             }
             [weakSelf.client callBlock:nil status:YES withResult:nil andStatus:successStatus];
-            if ([weakSelf allObjects].count && subscribeOnRestChannels) {
+            BOOL listChanged = ![[NSSet setWithArray:[weakSelf allObjects]] isEqualToSet:subscriptionObjects];
+            if (subscribeOnRestChannels && (subscriptionObjects.count > 0 && listChanged)) {
                 
                 [weakSelf subscribe:YES usingTimeToken:nil withState:nil region:nil completion:nil];
             }
@@ -1327,7 +1338,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         // Check whether state has been changed for current client or not.
         if ([data.data.presence.uuid isEqualToString:self.client.configuration.uuid]) {
             
-            NSString *object = (data.data.subscribedChannel?: data.data.actualChannel);
+            NSString *object = (data.data.actualChannel?: data.data.subscribedChannel);
             [self.client.clientStateManager setState:data.data.presence.state forObject:object];
         }
     }
@@ -1365,7 +1376,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     if (self.currentRegion) {
         [parameters addQueryParameter:self.currentRegion.stringValue forFieldName:@"tr"];
     }
-//    [parameters addPathComponent:self.currentRegion.stringValue forPlaceholder:@"{tr}"];
+
     if (self.client.configuration.presenceHeartbeatValue > 0 ) {
         
         [parameters addQueryParameter:[@(self.client.configuration.presenceHeartbeatValue) stringValue]

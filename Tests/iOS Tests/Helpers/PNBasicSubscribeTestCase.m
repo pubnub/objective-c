@@ -59,6 +59,20 @@
     }];
 }
 
+- (void)PNTest_unsubscribeFromAll {
+    
+    self.unsubscribeExpectation = [self expectationWithDescription:@"unsubscribe"];
+    [self.client unsubscribeFromAll];
+    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
+        XCTAssertNil(error);
+    }];
+}
+
+- (void)PNTest_unsubscribeFromChannels:(NSArray *)channels {
+    
+    [self PNTest_unsubscribeFromChannels:channels withPresence:NO];
+}
+
 - (void)PNTest_unsubscribeFromChannels:(NSArray *)channels withPresence:(BOOL)shouldObservePresence {
     self.unsubscribeExpectation = [self expectationWithDescription:@"unsubscribe"];
     [self.client unsubscribeFromChannels:channels withPresence:shouldObservePresence];

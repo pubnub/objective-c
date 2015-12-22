@@ -73,6 +73,7 @@
     if ([client isEqual:self.otherClient]) {
         XCTAssertEqual(status.category, PNConnectedCategory);
         [self.setUpExpectation fulfill];
+        self.setUpExpectation = nil;
     }
 }
 

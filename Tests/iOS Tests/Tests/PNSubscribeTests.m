@@ -80,9 +80,16 @@
 - (NSArray *)subscriptionChannels {
     
     NSArray *channels = @[@"a"];
-    if ([NSStringFromSelector(self.invocation.selector) isEqualToString:@"testSimpleSubscribeWithTimeToken"]) {
+    NSString *caseSelector = NSStringFromSelector(self.invocation.selector);
+    if ([caseSelector isEqualToString:@"testSimpleSubscribeWithTimeToken"]) {
         
         channels = @[@"322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C"];
+    }
+    else if ([caseSelector isEqualToString:@"testTimeTokenResetBetweenSubscriptionsWithUnsubscribe"] ||
+             [caseSelector isEqualToString:@"testTimeTokenResetBetweenSubscriptionsWithUnsubscribeAll"]){
+        
+        channels = @[@"5ABCEBF2-A887-491E-9D8C-52957BEDBCCA",
+                     @"343D8550-B5E3-48A5-9564-3220EA50A500"];
     }
     
     return channels;
@@ -136,6 +143,9 @@
         PNStrongify(self);
         XCTAssertEqualObjects(self.client, client);
         XCTAssertNotNil(status);
+        if (status.operation == PNSubscribeOperation) {
+            return;
+        }
         XCTAssertFalse(status.isError);
 //        XCTAssertEqual(status.operation, PNUnsubscribeOperation);
 //        XCTAssertEqual(status.category, PNDisconnectedCategory);
@@ -239,6 +249,7 @@
         XCTAssertEqualObjects(self.client, client);
         XCTAssertNotNil(status);
         XCTAssertFalse(status.isError);
+        XCTAssertEqual(status.statusCode, 200);
         XCTAssertEqual(status.operation, PNSubscribeOperation);
         XCTAssertEqual(status.category, PNConnectedCategory);
         XCTAssertEqualObjects(status.currentTimetoken, self.catchUpTimeToken);
@@ -265,6 +276,90 @@
     };
     [self PNTest_subscribeToChannels:[self subscriptionChannels] withPresence:NO
                       usingTimeToken:self.catchUpTimeToken];
+}
+
+/**
+ @brief      Make sure what used token will be reset in scenario:
+             subscribed - unsuubscribed - subscribed.
+ @discussion When client unsubscribed from all channels, time token should be reset to \b 0 to 
+             prevent unwanted catch up.
+ */
+- (void)testTimeTokenResetBetweenSubscriptionsWithUnsubscribe {
+    
+    [self performTimeTokenResetBetweenSubscriptionsUsingUnsubscribeAll:NO];
+}
+
+- (void)testTimeTokenResetBetweenSubscriptionsWithUnsubscribeAll {
+    
+    [self performTimeTokenResetBetweenSubscriptionsUsingUnsubscribeAll:YES];
+}
+
+- (void)performTimeTokenResetBetweenSubscriptionsUsingUnsubscribeAll:(BOOL)useUnsubscribeAllSelector {
+    
+    PNWeakify(self);
+    __block NSNumber *lastTimeToken = nil;
+    __block PNOperationType expectedOperation = PNSubscribeOperation;
+    __block PNStatusCategory expectedCategory = PNConnectedCategory;
+    __block BOOL shouldUnsubscribe = YES;
+    __block BOOL shouldSubscribe = NO;
+    XCTestExpectation *finalSubscribeExpecation = [self expectationWithDescription:@"verificationSubscribe"];
+    XCTestExpectation *unsubscribeExpectation = [self expectationWithDescription:@"unsubscribe"];
+    self.didReceiveStatusAssertions = ^void (PubNub *client, PNSubscribeStatus *status) {
+        
+        PNStrongify(self);
+        BOOL isVerificationSubscribe = (!shouldUnsubscribe && !shouldSubscribe);
+        XCTAssertEqualObjects(self.client, client);
+        XCTAssertNotNil(status);
+        XCTAssertFalse(status.isError);
+        XCTAssertEqual(status.statusCode, 200);
+        
+        // Check whether this is initial subscription or not.
+        if(lastTimeToken == nil) { lastTimeToken = status.currentTimetoken; }
+        
+        XCTAssertEqual(status.operation, expectedOperation);
+        XCTAssertEqual(status.category, expectedCategory);
+        if (expectedOperation == PNSubscribeOperation) {
+            
+            XCTAssertEqual(status.subscribedChannelGroups.count, 0);
+            XCTAssertEqualObjects([NSSet setWithArray:status.subscribedChannels],
+                                  [NSSet setWithArray:[self subscriptionChannels]]);
+            if (!isVerificationSubscribe) { [self.subscribeExpectation fulfill]; }
+            else {
+                
+                XCTAssertEqualObjects(status.lastTimeToken, @0);
+                XCTAssertEqualObjects(status.currentTimetoken, status.data.timetoken);
+                XCTAssertNotEqualObjects(status.currentTimetoken, lastTimeToken);
+                [finalSubscribeExpecation fulfill];
+            }
+        }
+        else {
+            
+            XCTAssertEqual(status.subscribedChannelGroups.count, 0);
+            XCTAssertEqual(status.subscribedChannels.count, 0);
+            [unsubscribeExpectation fulfill];
+        }
+        
+        if (shouldUnsubscribe) {
+            
+            shouldUnsubscribe = NO;
+            shouldSubscribe = YES;
+            expectedOperation = PNUnsubscribeOperation;
+            expectedCategory = PNDisconnectedCategory;
+            if (useUnsubscribeAllSelector) { [self.client unsubscribeFromAll]; }
+            else {
+                
+                [self.client unsubscribeFromChannels:[self subscriptionChannels] withPresence:NO];
+            }
+        }
+        else if (shouldSubscribe) {
+            
+            shouldSubscribe = NO;
+            expectedOperation = PNSubscribeOperation;
+            expectedCategory = PNConnectedCategory;
+            [self.client subscribeToChannels:[self subscriptionChannels] withPresence:NO];
+        }
+    };
+    [self PNTest_subscribeToChannels:[self subscriptionChannels] withPresence:NO];
 }
 
 @end
