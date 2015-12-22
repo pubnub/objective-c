@@ -51,7 +51,7 @@
  @since 4.0
  */
 - (instancetype)initForOperation:(PNOperationType)operation
-               completedWithTaks:(NSURLSessionDataTask *)task
+               completedWithTask:(NSURLSessionDataTask *)task
                    processedData:(NSDictionary *)processedData
                  processingError:(NSError *)error;
 
@@ -157,7 +157,7 @@
 }
 
 - (instancetype)initForOperation:(PNOperationType)operation
-               completedWithTaks:(NSURLSessionDataTask *)task
+               completedWithTask:(NSURLSessionDataTask *)task
                    processedData:(NSDictionary *)processedData processingError:(NSError *)error {
     
     // Check whether initialization was successful or not.
