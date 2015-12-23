@@ -47,15 +47,15 @@ static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupUnsubscribeTe
     NSArray *expectedChannelGroups;
     if (self.invocation.selector == @selector(testSimpleUnsubscribeWithNoPresence)) {
         shouldObservePresence = NO;
-        expectedMessage = @"******......... 2882 - 2015-12-22 11:38:58";
-        expectedTimeToken = @14508131386140783;
+        expectedMessage = @"********....... 8449 - 2015-12-22 13:28:00";
+        expectedTimeToken = @14508196796692323;
         expectedChannelGroups = @[
                                   kPNChannelGroupTestsName
                                   ];
     } else if (self.invocation.selector == @selector(testSimpleUnsubscribeWithPresence)) {
         shouldObservePresence = YES;
-        expectedMessage =  @"*******........ 2883 - 2015-12-22 11:39:00";
-        expectedTimeToken = @14508131398862164;
+        expectedMessage =  @"*********...... 8450 - 2015-12-22 13:28:01";
+        expectedTimeToken = @14508196810395526;
         expectedChannelGroups = @[
                                   kPNChannelGroupTestsName,
                                   [kPNChannelGroupTestsName stringByAppendingString:@"-pnpres"]
@@ -94,6 +94,7 @@ static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupUnsubscribeTe
         XCTAssertEqualObjects(message.data.subscribedChannel, kPNChannelGroupTestsName);
         XCTAssertEqualObjects(message.data.message, expectedMessage);
         [self.channelGroupSubscribeExpectation fulfill];
+        self.channelGroupSubscribeExpectation = nil;
     };
     
     [self PNTest_subscribeToChannelGroups:[self channelGroups] withPresence:shouldObservePresence];
