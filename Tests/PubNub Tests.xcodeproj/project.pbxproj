@@ -7,8 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		42F8FE362B4351BDED6E253D /* libPods-iOS ObjC Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EFC9673832BC8E827EA358F0 /* libPods-iOS ObjC Tests.a */; };
-		502DF4A859E9AF78796673F1 /* libPods-OSX ObjC Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1131D3D9D943448C30AAC12D /* libPods-OSX ObjC Tests.a */; };
+		1054E54A141D052E39D49D22 /* libPods-OSX ObjC Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E60662F9B0604A4961D2BA5 /* libPods-OSX ObjC Tests.a */; };
+		4F3F3D1D99A7DA9E9EBC18F5 /* libPods-iOS ObjC Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EFC9673832BC8E827EA358F0 /* libPods-iOS ObjC Tests.a */; };
+		51775E5B1C2562F000DE660D /* PNFilteringSubscribeTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 51775E5A1C2562F000DE660D /* PNFilteringSubscribeTests.bundle */; };
+		51775E5C1C2562F000DE660D /* PNFilteringSubscribeTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 51775E5A1C2562F000DE660D /* PNFilteringSubscribeTests.bundle */; };
+		51775E5D1C2562F000DE660D /* PNFilteringSubscribeTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 51775E5A1C2562F000DE660D /* PNFilteringSubscribeTests.bundle */; };
+		51775E5F1C2563D800DE660D /* PNChannelGroupFilteringSubscribeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 51775E5E1C2563D800DE660D /* PNChannelGroupFilteringSubscribeTests.m */; };
+		51775E601C2563D800DE660D /* PNChannelGroupFilteringSubscribeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 51775E5E1C2563D800DE660D /* PNChannelGroupFilteringSubscribeTests.m */; };
+		51775E621C256BFB00DE660D /* PNChannelGroupFilteringSubscribeTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 51775E611C256BFB00DE660D /* PNChannelGroupFilteringSubscribeTests.bundle */; };
+		51775E631C256BFB00DE660D /* PNChannelGroupFilteringSubscribeTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 51775E611C256BFB00DE660D /* PNChannelGroupFilteringSubscribeTests.bundle */; };
+		51775E641C256BFB00DE660D /* PNChannelGroupFilteringSubscribeTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 51775E611C256BFB00DE660D /* PNChannelGroupFilteringSubscribeTests.bundle */; };
 		517A9EDB1BE3185800FAA43A /* PNAPNSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04911B4EAAB7007478CB /* PNAPNSTests.m */; };
 		517A9EDC1BE3185800FAA43A /* PNChannelGroupSubscribeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04921B4EAAB7007478CB /* PNChannelGroupSubscribeTests.m */; };
 		517A9EDD1BE3185800FAA43A /* PNChannelGroupTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04931B4EAAB7007478CB /* PNChannelGroupTests.m */; };
@@ -89,6 +97,7 @@
 		51DA001C1C1A49590020C34E /* PNBasicPresenceTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51DA00191C1A49590020C34E /* PNBasicPresenceTestCase.m */; };
 		51DC51921C21FA0000BC2D9F /* PNChannelGroupPresenceEventTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 51DC51911C21FA0000BC2D9F /* PNChannelGroupPresenceEventTests.m */; };
 		51DC51941C22039200BC2D9F /* PNChannelGroupPresenceEventTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 51DC51931C22039200BC2D9F /* PNChannelGroupPresenceEventTests.bundle */; };
+		51DC51961C22523900BC2D9F /* PNFilteringSubscribeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 51DC51951C22523900BC2D9F /* PNFilteringSubscribeTests.m */; };
 		795CED0A1BCF002900D421BB /* PNHeartbeatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 795CED091BCF002900D421BB /* PNHeartbeatTests.swift */; };
 		796502F31C0E3709001F7782 /* PNDeviceIndependentMatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A6E5FF1BE421DC00C20B77 /* PNDeviceIndependentMatcher.m */; };
 		797BDCCA1C1F5091006EF006 /* PNPublishWithMobilePayloadTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF049F1B4EAAB7007478CB /* PNPublishWithMobilePayloadTests.m */; };
@@ -245,9 +254,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		017DFB45E3CD6C5EB5FA1164 /* Pods-iOS ObjC Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS ObjC Tests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-iOS ObjC Tests/Pods-iOS ObjC Tests.release.xcconfig"; sourceTree = "<group>"; };
-		1131D3D9D943448C30AAC12D /* libPods-OSX ObjC Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OSX ObjC Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		4D1A1D5D049AC1123C7098EF /* Pods-iOS Swift Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS Swift Tests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-iOS Swift Tests/Pods-iOS Swift Tests.release.xcconfig"; sourceTree = "<group>"; };
+		1E60662F9B0604A4961D2BA5 /* libPods-OSX ObjC Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OSX ObjC Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		51775E5A1C2562F000DE660D /* PNFilteringSubscribeTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = PNFilteringSubscribeTests.bundle; path = Fixtures/PNFilteringSubscribeTests.bundle; sourceTree = "<group>"; };
+		51775E5E1C2563D800DE660D /* PNChannelGroupFilteringSubscribeTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNChannelGroupFilteringSubscribeTests.m; path = Tests/PNChannelGroupFilteringSubscribeTests.m; sourceTree = "<group>"; };
+		51775E611C256BFB00DE660D /* PNChannelGroupFilteringSubscribeTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = PNChannelGroupFilteringSubscribeTests.bundle; path = Fixtures/PNChannelGroupFilteringSubscribeTests.bundle; sourceTree = "<group>"; };
 		517A9ED31BE3181700FAA43A /* OSX ObjC Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "OSX ObjC Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		517A9ED71BE3181700FAA43A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		519C327D1B20C11500FAC283 /* iOS ObjC Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "iOS ObjC Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -266,7 +276,7 @@
 		51DA00191C1A49590020C34E /* PNBasicPresenceTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNBasicPresenceTestCase.m; sourceTree = "<group>"; };
 		51DC51911C21FA0000BC2D9F /* PNChannelGroupPresenceEventTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNChannelGroupPresenceEventTests.m; path = Helpers/PNChannelGroupPresenceEventTests.m; sourceTree = "<group>"; };
 		51DC51931C22039200BC2D9F /* PNChannelGroupPresenceEventTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = PNChannelGroupPresenceEventTests.bundle; path = Fixtures/PNChannelGroupPresenceEventTests.bundle; sourceTree = "<group>"; };
-		772246126C9F27401F65F4BF /* libPods-iOS Swift Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-iOS Swift Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		51DC51951C22523900BC2D9F /* PNFilteringSubscribeTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNFilteringSubscribeTests.m; path = Tests/PNFilteringSubscribeTests.m; sourceTree = "<group>"; };
 		5F9DC94933DA055BB09FBDBB /* Pods-iOS ObjC Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS ObjC Tests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-iOS ObjC Tests/Pods-iOS ObjC Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		62886BA97D4E6BEF7A776C89 /* Pods-iOS Swift Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS Swift Tests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-iOS Swift Tests/Pods-iOS Swift Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		795CED091BCF002900D421BB /* PNHeartbeatTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNHeartbeatTests.swift; sourceTree = "<group>"; };
@@ -331,8 +341,10 @@
 		96F0239C1B580D0000C4A581 /* NSArray+PNTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSArray+PNTest.h"; path = "iOS Tests/Helpers/NSArray+PNTest.h"; sourceTree = "<group>"; };
 		96F0239D1B580D0000C4A581 /* NSArray+PNTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSArray+PNTest.m"; path = "iOS Tests/Helpers/NSArray+PNTest.m"; sourceTree = "<group>"; };
 		9722C2751B68A24C00A7CB44 /* PNPublishTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNPublishTests.swift; sourceTree = "<group>"; };
+		9883A76859DD1B91FCA1EA90 /* Pods-iOS ObjC Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS ObjC Tests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-iOS ObjC Tests/Pods-iOS ObjC Tests.release.xcconfig"; sourceTree = "<group>"; };
 		996F8FCE58B78A9BFF3256B0 /* Pods-OSX ObjC Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OSX ObjC Tests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-OSX ObjC Tests/Pods-OSX ObjC Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		DF42C171DEF20421F4588965 /* libPods-iOS Swift Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-iOS Swift Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E1F64749F5A4E73DF31FC98E /* Pods-iOS Swift Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS Swift Tests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-iOS Swift Tests/Pods-iOS Swift Tests.release.xcconfig"; sourceTree = "<group>"; };
 		EFC9673832BC8E827EA358F0 /* libPods-iOS ObjC Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-iOS ObjC Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5F294DB501CD7FE3D2BFFA9 /* Pods-OSX ObjC Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OSX ObjC Tests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-OSX ObjC Tests/Pods-OSX ObjC Tests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -342,7 +354,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				502DF4A859E9AF78796673F1 /* libPods-OSX ObjC Tests.a in Frameworks */,
+				1054E54A141D052E39D49D22 /* libPods-OSX ObjC Tests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -350,7 +362,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				42F8FE362B4351BDED6E253D /* libPods-iOS ObjC Tests.a in Frameworks */,
+				4F3F3D1D99A7DA9E9EBC18F5 /* libPods-iOS ObjC Tests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -450,6 +462,8 @@
 				79EF049E1B4EAAB7007478CB /* PNPublishWithHistoryTests.m */,
 				79EF049F1B4EAAB7007478CB /* PNPublishWithMobilePayloadTests.m */,
 				79EF04A01B4EAAB7007478CB /* PNSubscribeTests.m */,
+				51DC51951C22523900BC2D9F /* PNFilteringSubscribeTests.m */,
+				51775E5E1C2563D800DE660D /* PNChannelGroupFilteringSubscribeTests.m */,
 				79EF04A11B4EAAB7007478CB /* PNSubscribeToPresenceChannelsTests.m */,
 				79EF04A21B4EAAB7007478CB /* PNTimeTokenTests.m */,
 				79EF04A31B4EAAB7007478CB /* PNUnsubscribeTests.m */,
@@ -536,6 +550,8 @@
 		51F7AAC11B27AD7400BEDA1F /* Fixtures */ = {
 			isa = PBXGroup;
 			children = (
+				51775E611C256BFB00DE660D /* PNChannelGroupFilteringSubscribeTests.bundle */,
+				51775E5A1C2562F000DE660D /* PNFilteringSubscribeTests.bundle */,
 				51DC51931C22039200BC2D9F /* PNChannelGroupPresenceEventTests.bundle */,
 				51DA00141C1A418F0020C34E /* PNPresenceChannelGroupTests.bundle */,
 				9652F3E61BA6E90B001E940A /* PNConfigurationChiperKeyTests.bundle */,
@@ -589,9 +605,9 @@
 		E45F35288316A7CFF78024F3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				1131D3D9D943448C30AAC12D /* libPods-OSX ObjC Tests.a */,
 				EFC9673832BC8E827EA358F0 /* libPods-iOS ObjC Tests.a */,
 				DF42C171DEF20421F4588965 /* libPods-iOS Swift Tests.a */,
+				1E60662F9B0604A4961D2BA5 /* libPods-OSX ObjC Tests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -602,9 +618,9 @@
 				996F8FCE58B78A9BFF3256B0 /* Pods-OSX ObjC Tests.debug.xcconfig */,
 				F5F294DB501CD7FE3D2BFFA9 /* Pods-OSX ObjC Tests.release.xcconfig */,
 				5F9DC94933DA055BB09FBDBB /* Pods-iOS ObjC Tests.debug.xcconfig */,
-				017DFB45E3CD6C5EB5FA1164 /* Pods-iOS ObjC Tests.release.xcconfig */,
 				62886BA97D4E6BEF7A776C89 /* Pods-iOS Swift Tests.debug.xcconfig */,
-				4D1A1D5D049AC1123C7098EF /* Pods-iOS Swift Tests.release.xcconfig */,
+				9883A76859DD1B91FCA1EA90 /* Pods-iOS ObjC Tests.release.xcconfig */,
+				E1F64749F5A4E73DF31FC98E /* Pods-iOS Swift Tests.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -756,12 +772,14 @@
 				517A9F011BE31ADB00FAA43A /* PNPresenceTests.bundle in Resources */,
 				517A9EF91BE31ADB00FAA43A /* PNChannelGroupSubscribeTests.bundle in Resources */,
 				517A9EFC1BE31ADB00FAA43A /* PNClientConfigurationTests.bundle in Resources */,
+				51775E641C256BFB00DE660D /* PNChannelGroupFilteringSubscribeTests.bundle in Resources */,
 				517A9EFF1BE31ADB00FAA43A /* PNHeartbeatTests.bundle in Resources */,
 				517A9F051BE31ADB00FAA43A /* PNPublishWithMobilePayloadTests.bundle in Resources */,
 				517A9F021BE31ADB00FAA43A /* PNPublishCompressedTests.bundle in Resources */,
 				517A9EFB1BE31ADB00FAA43A /* PNChannelGroupUnsubscribeTests.bundle in Resources */,
 				517A9F061BE31ADB00FAA43A /* PNSubscribeTests.bundle in Resources */,
 				51DA00171C1A418F0020C34E /* PNPresenceChannelGroupTests.bundle in Resources */,
+				51775E5D1C2562F000DE660D /* PNFilteringSubscribeTests.bundle in Resources */,
 				517A9EF81BE31ADB00FAA43A /* PNAPNSTests.bundle in Resources */,
 				517A9EFD1BE31ADB00FAA43A /* PNClientStateChannelGroupTests.bundle in Resources */,
 				517A9F091BE31ADB00FAA43A /* PNUnsubscribeTests.bundle in Resources */,
@@ -789,6 +807,7 @@
 				79EF04DC1B4EAB1A007478CB /* PNHeartbeatTests.bundle in Resources */,
 				79EF04E21B4EAB1A007478CB /* PNPublishWithMobilePayloadTests.bundle in Resources */,
 				79EF04DA1B4EAB1A007478CB /* PNClientStateChannelGroupTests.bundle in Resources */,
+				51775E621C256BFB00DE660D /* PNChannelGroupFilteringSubscribeTests.bundle in Resources */,
 				51DA00151C1A418F0020C34E /* PNPresenceChannelGroupTests.bundle in Resources */,
 				79EF04DB1B4EAB1A007478CB /* PNClientStateChannelTests.bundle in Resources */,
 				79EF04D61B4EAB1A007478CB /* PNChannelGroupSubscribeTests.bundle in Resources */,
@@ -798,6 +817,7 @@
 				79EF04D91B4EAB1A007478CB /* PNClientConfigurationTests.bundle in Resources */,
 				79EF04D71B4EAB1A007478CB /* PNChannelGroupTests.bundle in Resources */,
 				79EF04DE1B4EAB1A007478CB /* PNPresenceTests.bundle in Resources */,
+				51775E5B1C2562F000DE660D /* PNFilteringSubscribeTests.bundle in Resources */,
 				79EF04D51B4EAB1A007478CB /* PNAPNSTests.bundle in Resources */,
 				79EF04DF1B4EAB1A007478CB /* PNPublishCompressedTests.bundle in Resources */,
 				79EF04E61B4EAB1A007478CB /* PNUnsubscribeTests.bundle in Resources */,
@@ -813,12 +833,14 @@
 				96E383931BAAC12F00560991 /* PNConfigurationChiperKeyTests.bundle in Resources */,
 				51BB254F1B68176C00A9F154 /* PNPublishWithHistoryTests.bundle in Resources */,
 				51BB254B1B68176C00A9F154 /* PNHistoryTests.bundle in Resources */,
+				51775E631C256BFB00DE660D /* PNChannelGroupFilteringSubscribeTests.bundle in Resources */,
 				51BB254E1B68176C00A9F154 /* PNPublishTests.bundle in Resources */,
 				51BB25531B68176C00A9F154 /* PNTimeTokenTests.bundle in Resources */,
 				51BB254A1B68176C00A9F154 /* PNHeartbeatTests.bundle in Resources */,
 				51BB25501B68176C00A9F154 /* PNPublishWithMobilePayloadTests.bundle in Resources */,
 				51BB25481B68176C00A9F154 /* PNClientStateChannelGroupTests.bundle in Resources */,
 				51DA00161C1A418F0020C34E /* PNPresenceChannelGroupTests.bundle in Resources */,
+				51775E5C1C2562F000DE660D /* PNFilteringSubscribeTests.bundle in Resources */,
 				51BB25491B68176C00A9F154 /* PNClientStateChannelTests.bundle in Resources */,
 				51BB25441B68176C00A9F154 /* PNChannelGroupSubscribeTests.bundle in Resources */,
 				51BB25521B68176C00A9F154 /* PNSubscribeToPresenceChannelsTests.bundle in Resources */,
@@ -1050,6 +1072,7 @@
 				517A9EDB1BE3185800FAA43A /* PNAPNSTests.m in Sources */,
 				51A6E6011BE421DC00C20B77 /* PNDeviceIndependentMatcher.m in Sources */,
 				517A9EEB1BE3185800FAA43A /* PNSubscribeTests.m in Sources */,
+				51775E601C2563D800DE660D /* PNChannelGroupFilteringSubscribeTests.m in Sources */,
 				517A9EE81BE3185800FAA43A /* PNPublishTests.m in Sources */,
 				51DA001C1C1A49590020C34E /* PNBasicPresenceTestCase.m in Sources */,
 				517A9EE31BE3185800FAA43A /* PNHistoryTests.m in Sources */,
@@ -1080,8 +1103,10 @@
 				79EF04C11B4EAB01007478CB /* NSDictionary+PNTest.m in Sources */,
 				79EF04A41B4EAAB7007478CB /* PNAPNSTests.m in Sources */,
 				51D154871C10D84500AECD05 /* PNPresenceChannelGroupTests.m in Sources */,
+				51775E5F1C2563D800DE660D /* PNChannelGroupFilteringSubscribeTests.m in Sources */,
 				79EF04AC1B4EAAB7007478CB /* PNHistoryTests.m in Sources */,
 				79EF04B31B4EAAB7007478CB /* PNSubscribeTests.m in Sources */,
+				51DC51961C22523900BC2D9F /* PNFilteringSubscribeTests.m in Sources */,
 				79EF04BC1B4EAAE4007478CB /* PNBasicSubscribeTestCase.m in Sources */,
 				79EF04A51B4EAAB7007478CB /* PNChannelGroupSubscribeTests.m in Sources */,
 				9652F3E21BA31D9A001E940A /* PNBasicClientCryptTestCase.m in Sources */,
@@ -1357,7 +1382,7 @@
 		};
 		519C32851B20C11500FAC283 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 017DFB45E3CD6C5EB5FA1164 /* Pods-iOS ObjC Tests.release.xcconfig */;
+			baseConfigurationReference = 9883A76859DD1B91FCA1EA90 /* Pods-iOS ObjC Tests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -1454,7 +1479,7 @@
 		};
 		51D889E91B66E0F8009127D0 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4D1A1D5D049AC1123C7098EF /* Pods-iOS Swift Tests.release.xcconfig */;
+			baseConfigurationReference = E1F64749F5A4E73DF31FC98E /* Pods-iOS Swift Tests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";

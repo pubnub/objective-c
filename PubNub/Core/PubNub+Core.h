@@ -50,6 +50,15 @@
  */
 - (NSString *)uuid;
 
+/**
+ @brief     Retrieve subscribe loop filter expression set during client initialization
+ 
+ @return User provided filter expression or nil if none set
+ 
+ @since 4.3
+ */
+- (NSString *)filterExpression;
+
 
 ///------------------------------------------------
 /// @name Initialization

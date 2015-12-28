@@ -75,15 +75,15 @@
 #pragma mark - Initialization and Configuration
 
 + (instancetype)objectForOperation:(PNOperationType)operation
-                 completedWithTaks:(NSURLSessionDataTask *)task
+                 completedWithTask:(NSURLSessionDataTask *)task
                      processedData:(NSDictionary *)processedData processingError:(NSError *)error {
     
-    return [[self alloc] initForOperation:operation completedWithTaks:task
+    return [[self alloc] initForOperation:operation completedWithTask:task
                             processedData:processedData processingError:error];
 }
 
 - (instancetype)initForOperation:(PNOperationType)operation
-               completedWithTaks:(NSURLSessionDataTask *)task
+               completedWithTask:(NSURLSessionDataTask *)task
                    processedData:(NSDictionary *)processedData
                  processingError:(NSError *)__unused error {
     
@@ -103,7 +103,7 @@
         }
         // Received unknown response from service.
         else if (processedData && ![processedData isKindOfClass:NSDictionary.class]){
-            
+#warning should there be a log here?
             _unexpectedServiceData = YES;
             processedData = [self normalizedServiceData:processedData];
         }
@@ -157,7 +157,7 @@
     
     NSDictionary *normalizedServiceData = serviceData;
     if (serviceData && ![serviceData isKindOfClass:NSDictionary.class]) {
-        
+#warning information can be two things?
         normalizedServiceData = @{@"information": serviceData};
     }
     
@@ -191,7 +191,7 @@
                            @"URL": ([self.clientRequest.URL absoluteString]?: @"null"),
                            @"POST Body size": @([self.clientRequest.HTTPBody length]),
                            @"Secure": (self.isTLSEnabled ? @"YES" : @"NO"),
-                           @"UUID": (self.uuid?: @"uknonwn"),
+                           @"UUID": (self.uuid?: @"unknown"),
                            @"Authorization": (self.authKey?: @"not set"),
                            @"Origin": (self.origin?: @"unknown")},
              @"Response": response};

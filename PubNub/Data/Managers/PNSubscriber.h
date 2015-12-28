@@ -71,6 +71,15 @@ typedef void(^PNSubscriberCompletionBlock)(PNSubscribeStatus *status);
  */
 - (NSArray *)presenceChannels;
 
+/**
+ @brief Filter expression used in subscribe
+ 
+ @return String representing filter expression used in subscribe loop
+ 
+ @since 4.3
+ */
+- (NSString *)escapedFilterExpression;
+
 
 ///------------------------------------------------
 /// @name Initialization and Configuration
@@ -176,7 +185,7 @@ typedef void(^PNSubscriberCompletionBlock)(PNSubscribeStatus *status);
  @since 4.0
  */
 - (void)subscribe:(BOOL)initialSubscribe usingTimeToken:(NSNumber *)timeToken
-        withState:(NSDictionary *)state completion:(PNSubscriberCompletionBlock)block;
+        withState:(NSDictionary *)state region:(NSNumber *)region completion:(PNSubscriberCompletionBlock)block;
 
 /**
  @brief  Try restore subscription cycle by using \b 0 time token and if required try to catch up on
