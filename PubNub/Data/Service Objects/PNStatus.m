@@ -208,6 +208,7 @@
     status.retryBlock = self.retryBlock;
     status.retryCancelBlock = self.retryCancelBlock;
     status.currentRegion = self.currentRegion;
+    status.lastRegion = self.lastRegion;
     return status;
 }
 

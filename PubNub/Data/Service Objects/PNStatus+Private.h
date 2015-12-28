@@ -52,7 +52,8 @@
  */
 @property (nonatomic, strong) NSNumber *lastTimeToken;
 
-@property (nonatomic, strong) NSDictionary *currentRegion;
+@property (nonatomic, strong) NSNumber *currentRegion;
+@property (nonatomic, strong) NSNumber *lastRegion;
 
 /**
  @brief  Stores reference on list of channels on which client currently subscribed.

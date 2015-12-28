@@ -74,6 +74,9 @@
  */
 @property (nonatomic, readonly, strong) NSNumber *lastTimeToken;
 
+@property (nonatomic, readonly, strong) NSNumber *lastRegion;
+@property (nonatomic, readonly, strong) NSNumber *currentRegion;
+
 /**
  @brief  List of channels on which client currently subscribed.
  

@@ -43,7 +43,7 @@
 
 @implementation PNSubscribeStatus
 
-@dynamic currentTimetoken, lastTimeToken, subscribedChannels, subscribedChannelGroups;
+@dynamic currentTimetoken, lastTimeToken, subscribedChannels, subscribedChannelGroups, currentRegion, lastRegion;
 
 
 #pragma mark - Information

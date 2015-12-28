@@ -20,6 +20,10 @@
     return self.serviceData[@"timetoken"];
 }
 
+- (NSNumber *)region {
+    return self.serviceData[@"region"];
+}
+
 - (NSString *)uuid {
     
     return self.serviceData[@"uuid"];

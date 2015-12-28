@@ -23,7 +23,9 @@ static NSString * const kPNChannelGroupTestName = @"PNChannelGroupFilterSubscrib
 }
 
 - (PNConfiguration *)overrideClientConfiguration:(PNConfiguration *)configuration {
-    if (self.invocation.selector == @selector(testPublishWithMetadataAndNoReceivedMessageForSubscribeWithDifferentFiltering)) {
+    if (self.invocation.selector == @selector(testPublishWithNoMetadataAndReceivedMessageForSubscribeWithNoFiltering)) {
+        // No filter expression
+    } else if (self.invocation.selector == @selector(testPublishWithMetadataAndNoReceivedMessageForSubscribeWithDifferentFiltering)) {
         configuration.filterExpression = @"(a == 'b')";
     } else if (self.invocation.selector == @selector(testPublishWithMetadataAndNoReceivedMessageForSubscribeWithFilteringWithSameKeyAndDifferentValue)) {
         configuration.filterExpression = @"(foo == 'b')";
@@ -85,6 +87,57 @@ static NSString * const kPNChannelGroupTestName = @"PNChannelGroupFilterSubscrib
     };
     [self PNTest_unsubscribeFromChannelGroups:@[kPNChannelGroupTestName] withPresence:NO];
     [super tearDown];
+}
+
+- (void)testPublishWithNoMetadataAndReceivedMessageForSubscribeWithNoFiltering {
+    PNWeakify(self);
+    self.didReceiveStatusAssertions = ^void (PubNub *client, PNSubscribeStatus *status) {
+        PNStrongify(self);
+        XCTAssertEqualObjects(self.client, client);
+        XCTAssertNotNil(status);
+        XCTAssertFalse(status.isError);
+        XCTAssertEqual(status.category, PNConnectedCategory);
+        XCTAssertEqual(status.subscribedChannels.count, 0);
+        XCTAssertEqualObjects(status.subscribedChannelGroups, @[kPNChannelGroupTestName]);
+        
+        XCTAssertEqual(status.operation, PNSubscribeOperation);
+        NSLog(@"timeToken: %@", status.currentTimetoken);
+        //        XCTAssertEqualObjects(status.currentTimetoken, @14490969656951470);
+        XCTAssertEqualObjects(status.currentTimetoken, status.data.timetoken);
+        XCTAssertEqualObjects(status.data.region, @56);
+        if (self.hasPublished) {
+            return;
+        }
+        self.hasPublished = YES;
+        [self.client publish:@"message" toChannel:kPNChannelTestName withMetadata:nil withCompletion:^(PNPublishStatus *status) {
+            NSLog(@"status: %@", status.debugDescription);
+            [self fulfillSubscribeExpectationAfterDelay:10];
+            [self.publishExpectation fulfill];
+        }];
+        
+    };
+    self.didReceiveMessageAssertions = ^void (PubNub *client, PNMessageResult *message) {
+        PNStrongify(self);
+        XCTAssertEqualObjects(self.client, client);
+        XCTAssertEqualObjects(client.uuid, message.uuid);
+        XCTAssertNotNil(message.uuid);
+        XCTAssertNil(message.authKey);
+        XCTAssertEqual(message.statusCode, 200);
+        XCTAssertTrue(message.TLSEnabled);
+        XCTAssertEqual(message.operation, PNSubscribeOperation);
+        NSLog(@"message:");
+        NSLog(@"%@", message.data.message);
+        XCTAssertNotNil(message.data);
+        XCTAssertEqualObjects(message.data.message, @"message");
+        XCTAssertEqualObjects(message.data.actualChannel, kPNChannelTestName);
+        XCTAssertEqualObjects(message.data.subscribedChannel, kPNChannelGroupTestName);
+        XCTAssertEqualObjects(message.data.timetoken, @14513349814152676);
+        XCTAssertEqualObjects(message.data.region, @56);
+        [self.channelGroupSubscribeExpectation fulfill];
+        self.channelGroupSubscribeExpectation = nil;
+    };
+    self.publishExpectation = [self expectationWithDescription:@"publish"];
+    [self PNTest_subscribeToChannelGroups:@[kPNChannelGroupTestName] withPresence:NO];
 }
 
 - (void)testPublishWithMetadataAndNoReceivedMessageForSubscribeWithDifferentFiltering {

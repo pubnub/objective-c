@@ -187,6 +187,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
  */
 @property (nonatomic, strong) NSNumber *currentRegion;
 
+@property (nonatomic, strong) NSNumber *lastRegion;
+
 /**
  @brief Escaped filter expression to add as parameter for subscribe
  
@@ -382,6 +384,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 @synthesize currentTimeToken = _currentTimeToken;
 @synthesize lastTimeToken = _lastTimeToken;
 @synthesize currentRegion = _currentRegion;
+@synthesize lastRegion = _lastRegion;
 @synthesize escapedFilterExpression = _escapedFilterExpression;
 
 
@@ -599,6 +602,20 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     });
 }
 
+- (NSNumber *)lastRegion {
+    __block NSNumber *region = nil;
+    pn_safe_property_read(self.resourceAccessQueue, ^{
+        region = self->_lastRegion;
+    });
+    return region;
+}
+
+- (void)setLastRegion:(NSNumber *)lastRegion {
+    pn_safe_property_write(self.resourceAccessQueue, ^{
+        self->_lastRegion = lastRegion;
+    });
+}
+
 - (void)updateStateTo:(PNSubscriberState)state withStatus:(PNSubscribeStatus *)status {
 
     pn_safe_property_write(self.resourceAccessQueue, ^{
@@ -733,6 +750,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     _currentTimeToken = subscriber.currentTimeToken;
     _lastTimeToken = subscriber.lastTimeToken;
     _currentRegion = subscriber.currentRegion;
+    _lastRegion = subscriber.lastRegion;
 }
 
 
@@ -803,6 +821,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
             
             self->_lastTimeToken = @(0);
             self->_currentTimeToken = @(0);
+            self->_lastRegion = nil;
             self->_currentRegion = nil;
         });
         if (block) {
@@ -903,6 +922,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         
         self.lastTimeToken = @(0);
         self.currentTimeToken = @(0);
+        self.currentRegion = @(0);
+        self.lastRegion = @(0);
     }
     if ([objectWithOutPresence count]) {
         
@@ -941,6 +962,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         self.lastTimeToken = @(0);
         self.currentTimeToken = @(0);
         self.currentRegion = @(0);
+        self.lastRegion = @(0);
         [self subscribe:YES usingTimeToken:nil withState:nil region:nil
              completion:^(__unused PNSubscribeStatus *status) {
             
@@ -1117,6 +1139,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                         self->_currentTimeToken = @(0);
                         self->_lastTimeToken = @(0);
                         self->_currentRegion = nil;
+                        self->_lastRegion = nil;
                     }
                 });
             }
@@ -1133,6 +1156,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                     self->_currentTimeToken = @(0);
                     self->_lastTimeToken = @(0);
                     self->_currentRegion = nil;
+                    self->_lastRegion = nil;
                 });
             }
             [(PNStatus *)status updateCategory:PNUnexpectedDisconnectCategory];
@@ -1151,6 +1175,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         if (!self->_currentRegion) {
             self->_currentRegion = region;
         } else if (region && ([region compare:self->_currentRegion] != NSOrderedSame)) {
+            self->_lastRegion = self->_currentRegion;
             self->_currentRegion = region;
         }
         
@@ -1404,7 +1429,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 }
 
 - (void)appendSubscriberInformation:(PNStatus *)status {
-    
+    status.currentRegion = _currentRegion;
+    status.lastRegion = _lastRegion;
     status.currentTimetoken = _currentTimeToken;
     status.lastTimeToken = _lastTimeToken;
     status.subscribedChannels = [[_channelsSet setByAddingObjectsFromSet:_presenceChannelsSet] allObjects];

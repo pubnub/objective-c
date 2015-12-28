@@ -19,13 +19,15 @@
 ///------------------------------------------------
 
 /**
- @brief  Time when presence event has been tirggered.
+ @brief  Time when presence event has been triggered.
  
  @return Number with unsugned long long timestamp.
  
  @since 4.0
  */
 @property (nonatomic, readonly, strong) NSNumber *timetoken;
+
+@property (nonatomic, readonly, strong) NSNumber *region;
 
 /**
  @brief  Reference on unique user identifier for which event has been triggered.
