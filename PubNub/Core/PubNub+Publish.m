@@ -152,14 +152,11 @@
     // JSON serialization and encryption process.
     __weak __typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        
         BOOL encrypted = NO;
         NSError *publishError = nil;
         NSString *messageForPublish = [PNJSON JSONStringFrom:message withError:&publishError];
-        
         // Encrypt message in case if serialization to JSON was successful.
         if (!publishError) {
-            
             // Try perform user message encryption.
             NSString *encryptedMessage = [self encryptedMessage:messageForPublish
                                                   withCipherKey:self.configuration.cipherKey
@@ -167,7 +164,6 @@
             encrypted = ![messageForPublish isEqualToString:encryptedMessage];
             messageForPublish = [encryptedMessage copy];
         }
-        
         NSString *metadataForPublish = nil;
         if (metadata) {
             metadataForPublish = [PNJSON JSONStringFrom:metadata withError:&publishError];
@@ -175,7 +171,6 @@
         
         // Merge user message with push notification payloads (if provided).
         if (!publishError && [payloads count]) {
-            
             NSDictionary *mergedData = [self mergedMessage:(encrypted ? messageForPublish : message)
                                      withMobilePushPayload:payloads];
             messageForPublish = [PNJSON JSONStringFrom:mergedData withError:&publishError];
@@ -187,38 +182,36 @@
                                                              storeInHistory:shouldStore];
         NSData *publishData = nil;
         if (compressed) {
-            
             NSData *messageData = [messageForPublish dataUsingEncoding:NSUTF8StringEncoding];
             NSData *compressedBody = [PNGZIP GZIPDeflatedData:messageData];
             publishData = (compressedBody?: [@"" dataUsingEncoding:NSUTF8StringEncoding]);
         }
-        
         DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> Publish%@ message to '%@' "
-                     "channel%@%@", (compressed ? @" compressed" : @""), (channel?: @"<error>"),
+                     "channel%@%@%@", (compressed ? @" compressed" : @""), (channel?: @"<error>"),
                      (!shouldStore ? @" which won't be saved in history" : @""),
                      (!compressed ? [NSString stringWithFormat:@": %@",
-                                     (messageForPublish?: @"<error>")] : @"."));
-        
-        [self processOperation:PNPublishOperation withParameters:parameters data:publishData
-               completionBlock:^(PNStatus *status) {
+                                     (messageForPublish?: @"<error>")] : @"."),
+                     (metadata ? [NSString stringWithFormat:@" with metadata: %@", metadata]:@"")
+                    );
+        [self processOperation:PNPublishOperation withParameters:parameters
+                          data:publishData completionBlock:^(PNStatus *status) {
                    
-                   // Silence static analyzer warnings.
-                   // Code is aware about this case and at the end will simply call on 'nil' object method.
-                   // In most cases if referenced object become 'nil' it mean what there is no more need in
-                   // it and probably whole client instance has been deallocated.
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wreceiver-is-weak"
-                   if (status.isError) {
-                       
-                       status.retryBlock = ^{
-                           [weakSelf publish:message toChannel:channel mobilePushPayload:payloads
-                              storeInHistory:shouldStore compressed:compressed withMetadata:metadata
-                              withCompletion:block];
-                       };
-                   }
-                   [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
-#pragma clang diagnostic pop
-               }];
+            // Silence static analyzer warnings.
+            // Code is aware about this case and at the end will simply call on 'nil' object method.
+            // In most cases if referenced object become 'nil' it mean what there is no more need in
+            // it and probably whole client instance has been deallocated.
+            #pragma clang diagnostic push
+            #pragma clang diagnostic ignored "-Wreceiver-is-weak"
+            if (status.isError) {
+                status.retryBlock = ^{
+                    [weakSelf publish:message toChannel:channel mobilePushPayload:payloads
+                       storeInHistory:shouldStore compressed:compressed withMetadata:metadata
+                       withCompletion:block];
+                    };
+                }
+            [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
+            #pragma clang diagnostic pop
+        }];
     });
 }
 
