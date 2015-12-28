@@ -477,7 +477,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 - (NSString *)escapedFilterExpression {
     __block NSString *filteredExpression = nil;
     pn_safe_property_read(self.resourceAccessQueue, ^{
-        filteredExpression = [PNString percentEscapedString:self.client.filterExpression];
+        filteredExpression = _escapedFilterExpression;
     });
     
     return filteredExpression;
@@ -733,6 +733,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         _presenceChannelsSet = [NSMutableSet new];
         _resourceAccessQueue = dispatch_queue_create("com.pubnub.subscriber",
                                                      DISPATCH_QUEUE_CONCURRENT);
+        _escapedFilterExpression = [PNString percentEscapedString:client.filterExpression];
     }
     
     return self;
@@ -751,6 +752,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     _lastTimeToken = subscriber.lastTimeToken;
     _currentRegion = subscriber.currentRegion;
     _lastRegion = subscriber.lastRegion;
+    _escapedFilterExpression = subscriber.escapedFilterExpression;
 }
 
 
