@@ -214,7 +214,6 @@
     }];
 }
 
-#warning Fix test, SDK, or server
 - (void)testHereNowForNilChannel {
     self.presenceExpectation = [self expectationWithDescription:@"network"];
     [self.client hereNowForChannel:nil
@@ -260,7 +259,6 @@
     }];
 }
 
-#warning fix test, sdk or server
 - (void)testHereNowForNilChannelWithVerbosityOccupancy {
     self.presenceExpectation = [self expectationWithDescription:@"network"];
     [self.client hereNowForChannel:nil
@@ -312,7 +310,6 @@
     }];
 }
 
-#warning fix test, sdk, or server
 - (void)testHereNowForNilChannelWithVerbosityState {
     self.presenceExpectation = [self expectationWithDescription:@"network"];
     [self.client hereNowForChannel:nil
@@ -359,7 +356,6 @@
     }];
 }
 
-#warning fix test, sdk or server
 - (void)testHereNowForNilChannelWithVerbosityUUID {
     self.presenceExpectation = [self expectationWithDescription:@"network"];
     [self.client hereNowForChannel:nil

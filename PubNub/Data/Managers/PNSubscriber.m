@@ -473,7 +473,6 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     });
 }
 
-#warning only need to escape filter expression once
 - (NSString *)escapedFilterExpression {
     __block NSString *filteredExpression = nil;
     pn_safe_property_read(self.resourceAccessQueue, ^{
