@@ -27,17 +27,17 @@
  
  @param level      Reference on one of \b PNHereNowVerbosityLevel fields to instruct what exactly data it
                    expected in response.
- @param forChannel Whether 'here now' information should be pulled for channel or group.
- @param object     Reference on remote data object for which here now information should be 
+ @param object     Reference on remote data object for which here now information should be
                    received.
+ @param operation  Type of presence operation to perform
  @param block      Here now processing completion block which pass two arguments: \c result - in 
                    case of successful request processing \c data field will contain results of here 
                    now operation; \c status - in case if error occurred during request processing.
  
  @since 4.0
  */
-- (void)hereNowWithVerbosity:(PNHereNowVerbosityLevel)level forChannel:(BOOL)forChannel
-                    withName:(NSString *)object withCompletion:(id)block;
+- (void)hereNowWithVerbosity:(PNHereNowVerbosityLevel)level forChannelOrGroup:(NSString *)object
+                    forOperation:(PNOperationType)operation withCompletion:(id)block;
 
 #pragma mark -
 
@@ -60,7 +60,7 @@
 - (void)hereNowWithVerbosity:(PNHereNowVerbosityLevel)level
                   completion:(PNGlobalHereNowCompletionBlock)block {
 
-    [self hereNowForChannel:nil withVerbosity:level completion:(id)block];
+    [self hereNowWithVerbosity:level forChannelOrGroup:nil forOperation:PNHereNowGlobalOperation withCompletion:block];
 }
 
 
@@ -74,7 +74,7 @@
 - (void)hereNowForChannel:(NSString *)channel withVerbosity:(PNHereNowVerbosityLevel)level
                completion:(PNHereNowCompletionBlock)block {
 
-    [self hereNowWithVerbosity:level forChannel:YES withName:channel withCompletion:block];
+    [self hereNowWithVerbosity:level forChannelOrGroup:channel forOperation:PNHereNowForChannelOperation withCompletion:block];
 }
 
 
@@ -83,19 +83,18 @@
 - (void)hereNowForChannelGroup:(NSString *)group
                 withCompletion:(PNChannelGroupHereNowCompletionBlock)block {
 
-    [self hereNowWithVerbosity:PNHereNowState forChannel:NO withName:group withCompletion:block];
+    [self hereNowForChannelGroup:group withVerbosity:PNHereNowState completion:block];
 }
 
 - (void)hereNowForChannelGroup:(NSString *)group withVerbosity:(PNHereNowVerbosityLevel)level
                     completion:(PNChannelGroupHereNowCompletionBlock)block {
 
-    [self hereNowWithVerbosity:level forChannel:NO withName:group withCompletion:block];
+    [self hereNowWithVerbosity:level forChannelOrGroup:group forOperation:PNHereNowForChannelGroupOperation withCompletion:block];
 }
 
-- (void)hereNowWithVerbosity:(PNHereNowVerbosityLevel)level forChannel:(BOOL)forChannel
-                    withName:(NSString *)object withCompletion:(id)block {
+- (void)hereNowWithVerbosity:(PNHereNowVerbosityLevel)level forChannelOrGroup:(NSString *)object
+                forOperation:(PNOperationType)operation withCompletion:(id)block {
 
-    PNOperationType operation = PNHereNowGlobalOperation;
     PNRequestParameters *parameters = [PNRequestParameters new];
     [parameters addQueryParameter:@"1" forFieldName:@"disable_uuids"];
     [parameters addQueryParameter:@"0" forFieldName:@"state"];
@@ -107,29 +106,23 @@
             [parameters addQueryParameter:@"1" forFieldName:@"state"];
         }
     }
-    if ([object length]) {
-        
-        operation = PNHereNowForChannelOperation;
-        [parameters addPathComponent:(forChannel ? [PNString percentEscapedString:object] : @",")
-                      forPlaceholder:@"{channel}"];
-        if (!forChannel) {
-            
-            operation = PNHereNowForChannelGroupOperation;
-            [parameters addQueryParameter:[PNString percentEscapedString:object]
-                             forFieldName:@"channel-group"];
-        }
-    }
-    
-    if (![object length]) {
-        
+
+    if (operation == PNHereNowGlobalOperation) {
         DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> Global 'here now' information with "
                      "%@ data.", PNHereNowDataStrings[level]);
-    }
-    else {
-        
-        DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> Channel%@ 'here now' information "
-                     "for %@ with %@ data.", (!forChannel ? @" group" : @""), (object?: @"<error>"),
-                     PNHereNowDataStrings[level]);
+    } else if (operation == PNHereNowForChannelOperation) {
+        if ([object length]) {
+            [parameters addPathComponent:[PNString percentEscapedString:object] forPlaceholder:@"{channel}"];
+        }
+        DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> Channel 'here now' information "
+                     "for %@ with %@ data.%@", (object?: @"<error>"), PNHereNowDataStrings[level], (object?: @" Must provide a channel string in order to attempt this call."));
+    } else if (operation == PNHereNowForChannelGroupOperation) {
+        if ([object length]) {
+            [parameters addPathComponent:@"," forPlaceholder:@"{channel}"];
+            [parameters addQueryParameter:[PNString percentEscapedString:object] forFieldName:@"channel-group"];
+        }
+        DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> Channel group 'here now' information "
+                     "for %@ with %@ data.%@", (object?: @"<error>"), PNHereNowDataStrings[level], (object?: @" Must provide a channel group string in order to attempt this call."));
     }
     
     __weak __typeof(self) weakSelf = self;
@@ -146,8 +139,8 @@
                 
                status.retryBlock = ^{
                    
-                   [weakSelf hereNowWithVerbosity:level forChannel:forChannel withName:object
-                                   withCompletion:block];
+                   [weakSelf hereNowWithVerbosity:level forChannelOrGroup:object
+                                     forOperation:operation withCompletion:block];
                };
            }
            [weakSelf callBlock:block status:NO withResult:result andStatus:status];

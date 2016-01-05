@@ -12,7 +12,6 @@
 
 @interface PNPresenceChannelGroupTests : PNBasicPresenceTestCase
 @property (nonatomic, strong) XCTestExpectation *presenceExpectation;
-//@property (nonatomic, strong) NSString *channelGroupName;
 @end
 
 @implementation PNPresenceChannelGroupTests
@@ -84,46 +83,15 @@
     }];
 }
 
-#warning fix test, server or sdk
 - (void)testHereNowForNilChannelGroup {
     self.presenceExpectation = [self expectationWithDescription:@"network"];
-    [self.client hereNowForChannelGroup:self.channelGroupName
+    [self.client hereNowForChannelGroup:nil
                          withCompletion:^(PNPresenceChannelGroupHereNowResult *result, PNErrorStatus *status) {
-                             XCTAssertNil(status);
-                             XCTAssertEqual([result operation], PNHereNowGlobalOperation, @"Wrong operation");
-                             XCTAssertNotNil([result data]);
-                             XCTAssertEqual([result statusCode], 200);
-                             
-                             NSLog(@"expected: %@", result.data.channels.testAssertionFormat);
-                             NSDictionary *expectedChannels = @{
-                                                                @"0_5098427633369088" : @{
-                                                                        @"uuids" : @[
-                                                                                @{
-                                                                                    @"uuid" : @"JejuFan--79001"
-                                                                                    }
-                                                                                ],
-                                                                        @"occupancy" : @1
-                                                                        },
-                                                                @"0_5650661106515968" : @{
-                                                                        @"uuids" : @[
-                                                                                @{
-                                                                                    @"uuid" : @"JejuFan--79001"
-                                                                                    }
-                                                                                ],
-                                                                        @"occupancy" : @1
-                                                                        },
-                                                                @"all_activity" : @{
-                                                                        @"uuids" : @[
-                                                                                @{
-                                                                                    @"uuid" : @"JejuFan--79001"
-                                                                                    }
-                                                                                ],
-                                                                        @"occupancy" : @1
-                                                                        }
-                                                                };
-                             
-                             XCTAssertEqualObjects(result.data.channels, expectedChannels, @"Result and expected channels are not equal.");
-                             
+                             XCTAssertNotNil(status);
+                             XCTAssertNil(result, @"Result is not nil");
+                             XCTAssertEqual([status category], PNBadRequestCategory, @"Should be wrong in current logic");
+                             XCTAssertEqual([status statusCode], 400);
+                             XCTAssertTrue(status.isError);
                              [self.presenceExpectation fulfill];
                          }];
     [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
@@ -169,31 +137,16 @@
     }];
 }
 
-#warning fix test, server or sdk
 - (void)testHereNowForNilChannelGroupWithVerbosityOccupancy {
     self.presenceExpectation = [self expectationWithDescription:@"network"];
     [self.client hereNowForChannelGroup:nil
                           withVerbosity:PNHereNowOccupancy
                              completion:^(PNPresenceChannelGroupHereNowResult *result, PNErrorStatus *status) {
-                                 XCTAssertNil(status);
-                                 XCTAssertEqual([result operation], PNHereNowGlobalOperation, @"Wrong operation");
-                                 XCTAssertNotNil([result data]);
-                                 XCTAssertEqual([result statusCode], 200);
-                                 
-                                 NSLog(@"expected: %@", result.data.channels.testAssertionFormat);
-                                 NSDictionary *expectedChannels = @{
-                                                                    @"0_5098427633369088" : @{
-                                                                            @"occupancy" : @1
-                                                                            },
-                                                                    @"0_5650661106515968" : @{
-                                                                            @"occupancy" : @1
-                                                                            },
-                                                                    @"all_activity" : @{
-                                                                            @"occupancy" : @1
-                                                                            }
-                                                                    };
-                                 
-                                 XCTAssertEqualObjects(result.data.channels, expectedChannels, @"Result and expected channels are not equal.");
+                                 XCTAssertNotNil(status);
+                                 XCTAssertNil(result, @"Result is not nil");
+                                 XCTAssertEqual([status category], PNBadRequestCategory, @"Should be wrong in current logic");
+                                 XCTAssertEqual([status statusCode], 400);
+                                 XCTAssertTrue(status.isError);
                                  
                                  [self.presenceExpectation fulfill];
                              }];
@@ -249,46 +202,16 @@
     }];
 }
 
-#warning fix test, server or sdk
 - (void)testHereNowForNilChannelGroupWithVerbosityState {
     self.presenceExpectation = [self expectationWithDescription:@"network"];
     [self.client hereNowForChannelGroup:nil
                           withVerbosity:PNHereNowState
                              completion:^(PNPresenceChannelGroupHereNowResult *result, PNErrorStatus *status) {
-                                 XCTAssertNil(status);
-                                 XCTAssertEqual([result operation], PNHereNowGlobalOperation, @"Wrong operation");
-                                 XCTAssertNotNil([result data]);
-                                 XCTAssertEqual([result statusCode], 200);
-                                 
-                                 NSLog(@"expected: %@", result.data.channels.testAssertionFormat);
-                                 NSDictionary *expectedChannels = @{
-                                                                    @"0_5098427633369088" : @{
-                                                                            @"uuids" : @[
-                                                                                    @{
-                                                                                        @"uuid" : @"JejuFan--79001"
-                                                                                        }
-                                                                                    ],
-                                                                            @"occupancy" : @1
-                                                                            },
-                                                                    @"0_5650661106515968" : @{
-                                                                            @"uuids" : @[
-                                                                                    @{
-                                                                                        @"uuid" : @"JejuFan--79001"
-                                                                                        }
-                                                                                    ],
-                                                                            @"occupancy" : @1
-                                                                            },
-                                                                    @"all_activity" : @{
-                                                                            @"uuids" : @[
-                                                                                    @{
-                                                                                        @"uuid" : @"JejuFan--79001"
-                                                                                        }
-                                                                                    ],
-                                                                            @"occupancy" : @1
-                                                                            }
-                                                                    };
-                                 
-                                 XCTAssertEqualObjects(result.data.channels, expectedChannels, @"Result and expected channels are not equal.");
+                                 XCTAssertNotNil(status);
+                                 XCTAssertNil(result, @"Result is not nil");
+                                 XCTAssertEqual([status category], PNBadRequestCategory, @"Should be wrong in current logic");
+                                 XCTAssertEqual([status statusCode], 400);
+                                 XCTAssertTrue(status.isError);
                                  
                                  [self.presenceExpectation fulfill];
                              }];
@@ -340,38 +263,16 @@
     }];
 }
 
-#warning fix test, server or sdk
 - (void)testHereNowForNilChannelGroupWithVerbosityUUID {
     self.presenceExpectation = [self expectationWithDescription:@"network"];
     [self.client hereNowForChannelGroup:nil
                           withVerbosity:PNHereNowUUID
                              completion:^(PNPresenceChannelGroupHereNowResult *result, PNErrorStatus *status) {
-                                 XCTAssertNil(status);
-                                 XCTAssertEqual([result operation], PNHereNowGlobalOperation, @"Wrong operation");
-                                 XCTAssertNotNil([result data]);
-                                 XCTAssertEqual([result statusCode], 200);
-                                 
-                                 NSDictionary *expectedChannels = @{@"0_5098427633369088" : @{
-                                                                            @"uuids" : @[
-                                                                                    @"JejuFan--79001"
-                                                                                    ],
-                                                                            @"occupancy" : @1
-                                                                            },
-                                                                    @"0_5650661106515968" : @{
-                                                                            @"uuids" : @[
-                                                                                    @"JejuFan--79001"
-                                                                                    ],
-                                                                            @"occupancy" : @1
-                                                                            },
-                                                                    @"all_activity" : @{
-                                                                            @"uuids" : @[
-                                                                                    @"JejuFan--79001"
-                                                                                    ],
-                                                                            @"occupancy" : @1
-                                                                            }};
-                                 
-                                 XCTAssertEqualObjects(result.data.channels, expectedChannels, @"Result and expected channels are not equal.");
-                                 
+                                 XCTAssertNotNil(status);
+                                 XCTAssertNil(result, @"Result is not nil");
+                                 XCTAssertEqual([status category], PNBadRequestCategory, @"Should be wrong in current logic");
+                                 XCTAssertEqual([status statusCode], 400);
+                                 XCTAssertTrue(status.isError);
                                  [self.presenceExpectation fulfill];
                              }];
     [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
