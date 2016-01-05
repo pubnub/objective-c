@@ -209,10 +209,6 @@ void pn_safe_property_write(dispatch_queue_t queue, dispatch_block_t block) {
     return self.configuration.uuid;
 }
 
-- (NSString *)filterExpression {
-    return self.configuration.filterExpression;
-}
-
 
 #pragma mark - Initialization
 
