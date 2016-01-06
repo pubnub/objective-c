@@ -732,7 +732,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         _presenceChannelsSet = [NSMutableSet new];
         _resourceAccessQueue = dispatch_queue_create("com.pubnub.subscriber",
                                                      DISPATCH_QUEUE_CONCURRENT);
-        _escapedFilterExpression = [PNString percentEscapedString:client.filterExpression];
+        _escapedFilterExpression = [PNString percentEscapedString:client.currentConfiguration.filterExpression];
     }
     
     return self;
