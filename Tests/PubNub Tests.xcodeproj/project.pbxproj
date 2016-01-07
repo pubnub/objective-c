@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1054E54A141D052E39D49D22 /* libPods-OSX ObjC Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E60662F9B0604A4961D2BA5 /* libPods-OSX ObjC Tests.a */; };
 		4F3F3D1D99A7DA9E9EBC18F5 /* libPods-iOS ObjC Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EFC9673832BC8E827EA358F0 /* libPods-iOS ObjC Tests.a */; };
+		5134E56A1C3EED5B0073F9C9 /* PNExtendedFilteringSubscribeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5134E5691C3EED5B0073F9C9 /* PNExtendedFilteringSubscribeTests.m */; };
 		51775E5B1C2562F000DE660D /* PNFilteringSubscribeTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 51775E5A1C2562F000DE660D /* PNFilteringSubscribeTests.bundle */; };
 		51775E5C1C2562F000DE660D /* PNFilteringSubscribeTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 51775E5A1C2562F000DE660D /* PNFilteringSubscribeTests.bundle */; };
 		51775E5D1C2562F000DE660D /* PNFilteringSubscribeTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 51775E5A1C2562F000DE660D /* PNFilteringSubscribeTests.bundle */; };
@@ -255,6 +256,7 @@
 
 /* Begin PBXFileReference section */
 		1E60662F9B0604A4961D2BA5 /* libPods-OSX ObjC Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OSX ObjC Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		5134E5691C3EED5B0073F9C9 /* PNExtendedFilteringSubscribeTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNExtendedFilteringSubscribeTests.m; path = Tests/PNExtendedFilteringSubscribeTests.m; sourceTree = "<group>"; };
 		51775E5A1C2562F000DE660D /* PNFilteringSubscribeTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = PNFilteringSubscribeTests.bundle; path = Fixtures/PNFilteringSubscribeTests.bundle; sourceTree = "<group>"; };
 		51775E5E1C2563D800DE660D /* PNChannelGroupFilteringSubscribeTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNChannelGroupFilteringSubscribeTests.m; path = Tests/PNChannelGroupFilteringSubscribeTests.m; sourceTree = "<group>"; };
 		51775E611C256BFB00DE660D /* PNChannelGroupFilteringSubscribeTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = PNChannelGroupFilteringSubscribeTests.bundle; path = Fixtures/PNChannelGroupFilteringSubscribeTests.bundle; sourceTree = "<group>"; };
@@ -463,6 +465,7 @@
 				79EF049F1B4EAAB7007478CB /* PNPublishWithMobilePayloadTests.m */,
 				79EF04A01B4EAAB7007478CB /* PNSubscribeTests.m */,
 				51DC51951C22523900BC2D9F /* PNFilteringSubscribeTests.m */,
+				5134E5691C3EED5B0073F9C9 /* PNExtendedFilteringSubscribeTests.m */,
 				51775E5E1C2563D800DE660D /* PNChannelGroupFilteringSubscribeTests.m */,
 				79EF04A11B4EAAB7007478CB /* PNSubscribeToPresenceChannelsTests.m */,
 				79EF04A21B4EAAB7007478CB /* PNTimeTokenTests.m */,
@@ -1102,6 +1105,7 @@
 				79EF04B41B4EAAB7007478CB /* PNSubscribeToPresenceChannelsTests.m in Sources */,
 				79EF04C11B4EAB01007478CB /* NSDictionary+PNTest.m in Sources */,
 				79EF04A41B4EAAB7007478CB /* PNAPNSTests.m in Sources */,
+				5134E56A1C3EED5B0073F9C9 /* PNExtendedFilteringSubscribeTests.m in Sources */,
 				51D154871C10D84500AECD05 /* PNPresenceChannelGroupTests.m in Sources */,
 				51775E5F1C2563D800DE660D /* PNChannelGroupFilteringSubscribeTests.m in Sources */,
 				79EF04AC1B4EAAB7007478CB /* PNHistoryTests.m in Sources */,
