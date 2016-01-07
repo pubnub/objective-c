@@ -8,6 +8,18 @@
 
 #import "PNBasicSubscribeTestCase.h"
 
+@implementation PNSubscribeTestData
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _shouldReceiveMessage = YES;
+    }
+    return self;
+}
+
+@end
+
 @implementation PNBasicSubscribeTestCase
 
 - (void)setUp {
@@ -110,6 +122,76 @@
     [self.client unsubscribeFromChannelGroups:groups withPresence:shouldObservePresence];
     [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
         XCTAssertNil(error);
+    }];
+}
+
+- (void)PNTest_sendAndReceiveMessageWithTestData:(PNSubscribeTestData *)testData {
+    PNWeakify(self);
+    __block BOOL hasPublishedMessage = NO;
+    self.didReceiveStatusAssertions = ^void (PubNub *client, PNSubscribeStatus *status) {
+        PNStrongify(self);
+        XCTAssertEqualObjects(self.client, client);
+        XCTAssertNotNil(status);
+        XCTAssertFalse(status.isError);
+        XCTAssertEqual(status.category, PNConnectedCategory);
+//        XCTAssertEqualObjects(status.subscribedChannels, @[kPNChannelTestName]);
+        XCTAssertEqualObjects([NSSet setWithArray:status.subscribedChannels], [NSSet setWithArray:testData.subscribedChannels]);
+        XCTAssertEqualObjects([NSSet setWithArray:status.subscribedChannelGroups], [NSSet setWithArray:testData.subscribedChannelGroups]);
+        
+        XCTAssertEqual(status.operation, PNSubscribeOperation);
+        NSLog(@"timeToken: %@", status.currentTimetoken);
+        //        XCTAssertEqualObjects(status.currentTimetoken, @14490969656951470);
+        XCTAssertEqualObjects(status.currentTimetoken, status.data.timetoken);
+        XCTAssertEqualObjects(status.data.region, testData.expectedStatusRegion);
+        if (hasPublishedMessage) {
+            return;
+        }
+        hasPublishedMessage = YES;
+        [self.client publish:testData.publishMessage toChannel:testData.publishChannel withMetadata:testData.publishMetadata withCompletion:^(PNPublishStatus *status) {
+            NSLog(@"status: %@", status.debugDescription);
+            XCTAssertNotNil(status);
+            XCTAssertFalse(status.isError);
+            XCTAssertEqualObjects(status.data.timetoken, testData.expectedPublishTimetoken);
+            XCTAssertEqualObjects(status.data.information, testData.expectedPublishInformation);
+            [self fulfillSubscribeExpectationAfterDelay:10];
+            [self.publishExpectation fulfill];
+        }];
+        
+    };
+    self.didReceiveMessageAssertions = ^void (PubNub *client, PNMessageResult *message) {
+        PNStrongify(self);
+        if (testData.shouldReceiveMessage) {
+            XCTAssertEqualObjects(self.client, client);
+            XCTAssertEqualObjects(client.uuid, message.uuid);
+            XCTAssertNotNil(message.uuid);
+            XCTAssertNil(message.authKey);
+            XCTAssertEqual(message.statusCode, 200);
+            XCTAssertTrue(message.TLSEnabled);
+            XCTAssertEqual(message.operation, PNSubscribeOperation);
+            NSLog(@"message:");
+            NSLog(@"%@", message.data.message);
+            XCTAssertNotNil(message.data);
+            XCTAssertEqualObjects(message.data.message, testData.publishMessage);
+            XCTAssertEqualObjects(message.data.actualChannel, testData.expectedMessageActualChannel);
+            XCTAssertEqualObjects(message.data.subscribedChannel, testData.expectedMessageSubscribedChannel);
+            XCTAssertEqualObjects(message.data.timetoken, testData.expectedMessageTimetoken);
+            XCTAssertEqualObjects(message.data.region, testData.expectedMessageRegion);
+        } else {
+            XCTFail(@"Should not receive a message, received: %@", message.debugDescription);
+        }
+        [self.subscribeExpectation fulfill];
+    };
+    self.publishExpectation = [self expectationWithDescription:@"publish"];
+    if (testData.subscribedChannels.count) {
+        self.subscribeExpectation = [self expectationWithDescription:@"subscribe"];
+        [self.client subscribeToChannels:testData.subscribedChannels withPresence:NO];
+    }
+    if (testData.subscribedChannelGroups.count) {
+        self.channelGroupSubscribeExpectation = [self expectationWithDescription:@"channelGroupSubscribe"];
+        [self.client subscribeToChannelGroups:testData.subscribedChannelGroups withPresence:NO];
+    }
+    [self waitForExpectationsWithTimeout:15 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error, @"error is %@", error.localizedDescription);
     }];
 }
 

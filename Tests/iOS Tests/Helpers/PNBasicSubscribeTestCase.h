@@ -15,6 +15,22 @@ typedef void (^PNClientDidReceiveStatusAssertions)(PubNub *client, PNSubscribeSt
 
 @class XCTestExpectation;
 
+@interface PNSubscribeTestData : NSObject
+@property (nonatomic, strong) id publishMessage;
+@property (nonatomic, assign) BOOL shouldReceiveMessage; // YES by default
+@property (nonatomic, strong) NSDictionary *publishMetadata;
+@property (nonatomic, strong) NSString *publishChannel;
+@property (nonatomic, strong) NSNumber *expectedPublishTimetoken;
+@property (nonatomic, strong) NSString *expectedPublishInformation;
+@property (nonatomic, strong) NSArray *subscribedChannels;
+@property (nonatomic, strong) NSArray *subscribedChannelGroups;
+@property (nonatomic, strong) NSNumber *expectedStatusRegion;
+@property (nonatomic, strong) NSString *expectedMessageActualChannel;
+@property (nonatomic, strong) NSString *expectedMessageSubscribedChannel;
+@property (nonatomic, strong) NSNumber *expectedMessageTimetoken;
+@property (nonatomic, strong) NSNumber *expectedMessageRegion;
+@end
+
 @interface PNBasicSubscribeTestCase : PNBasicClientTestCase <PNObjectEventListener>
 
 @property (nonatomic) XCTestExpectation *subscribeExpectation;
@@ -43,5 +59,7 @@ typedef void (^PNClientDidReceiveStatusAssertions)(PubNub *client, PNSubscribeSt
 - (void)PNTest_unsubscribeFromChannelGroups:(NSArray *)groups withPresence:(BOOL)shouldObservePresence;
 
 - (void)fulfillSubscribeExpectationAfterDelay:(NSTimeInterval)delay;
+
+- (void)PNTest_sendAndReceiveMessageWithTestData:(PNSubscribeTestData *)testData;
 
 @end
