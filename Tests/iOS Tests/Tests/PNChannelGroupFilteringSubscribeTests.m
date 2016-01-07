@@ -146,6 +146,7 @@ static NSString * const kPNChannelGroupTestName = @"PNChannelGroupFilterSubscrib
 - (void)testPublishWithNoMetadataAndReceiveMultipleMessagesForSubscribeWithNoFiltering {
     PNWeakify(self);
     __block XCTestExpectation *secondPublishExpectation = [self expectationWithDescription:@"secondPublishExpectation"];
+    __block NSInteger messageNumber = 0;
     self.didReceiveStatusAssertions = ^void (PubNub *client, PNSubscribeStatus *status) {
         PNStrongify(self);
         XCTAssertEqualObjects(self.client, client);
@@ -173,13 +174,34 @@ static NSString * const kPNChannelGroupTestName = @"PNChannelGroupFilterSubscrib
         NSLog(@"message:");
         NSLog(@"%@", message.data.message);
         XCTAssertNotNil(message.data);
-        XCTAssertEqualObjects(message.data.message, @"message");
-        XCTAssertEqualObjects(message.data.actualChannel, kPNChannelTestName);
-        XCTAssertEqualObjects(message.data.subscribedChannel, kPNChannelGroupTestName);
-        XCTAssertEqualObjects(message.data.timetoken, @14513349814152676);
-        XCTAssertEqualObjects(message.data.region, @56);
-        [self.channelGroupSubscribeExpectation fulfill];
-        self.channelGroupSubscribeExpectation = nil;
+        switch (messageNumber) {
+            case 0:
+            {
+                XCTAssertEqualObjects(message.data.message, @"message");
+                XCTAssertEqualObjects(message.data.actualChannel, kPNChannelTestName);
+                XCTAssertEqualObjects(message.data.subscribedChannel, kPNChannelGroupTestName);
+                XCTAssertEqualObjects(message.data.timetoken, @14521913714605350);
+                XCTAssertEqualObjects(message.data.region, @56);
+            }
+                break;
+            case 1:
+            {
+                XCTAssertEqualObjects(message.data.message, @"message1");
+                XCTAssertEqualObjects(message.data.actualChannel, kPNChannelTestName);
+                XCTAssertEqualObjects(message.data.subscribedChannel, kPNChannelGroupTestName);
+                XCTAssertEqualObjects(message.data.timetoken, @14521913714605350);
+                XCTAssertEqualObjects(message.data.region, @56);
+                [self.channelGroupSubscribeExpectation fulfill];
+                self.channelGroupSubscribeExpectation = nil;
+            }
+                break;
+            default:
+            {
+                XCTFail(@"shouldn't be here!. Should only receive two messages.");
+            }
+                break;
+        }
+        messageNumber++;
     };
     self.publishExpectation = [self expectationWithDescription:@"publish"];
     __block NSNumber *firstPublishTimeToken = nil;
