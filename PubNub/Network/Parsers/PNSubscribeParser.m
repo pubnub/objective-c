@@ -218,7 +218,7 @@ static NSString * const kPNMessageChannelKey = @"c";
     }
     else {
         
-        [event addEntriesFromDictionary:[self messageFromData:data
+        [event addEntriesFromDictionary:[self messageFromData:data[kPNMessagePayloadDataKey]
                                      withAdditionalParserData:additionalData]];
     }
     return event;
@@ -227,7 +227,7 @@ static NSString * const kPNMessageChannelKey = @"c";
 + (NSMutableDictionary *)messageFromData:(id)data
                 withAdditionalParserData:(NSDictionary *)additionalData {
     
-    NSMutableDictionary *message = [@{@"message":data[kPNMessagePayloadDataKey]} mutableCopy];
+    NSMutableDictionary *message = [@{@"message":data} mutableCopy];
     // Try decrypt message body if possible.
     if ([(NSString *)additionalData[@"cipherKey"] length]){
         
