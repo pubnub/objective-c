@@ -22,15 +22,6 @@ static NSString * const kPNChannelTestName = @"PNExtendedFilteringSubscribeTests
 }
 
 - (PNConfiguration *)overrideClientConfiguration:(PNConfiguration *)configuration {
-//    if (self.invocation.selector == @selector(testPublishWithMetadataAndNoReceivedMessageForSubscribeWithDifferentFiltering)) {
-//        configuration.filterExpression = @"(a == 'b')";
-//    } else if (self.invocation.selector == @selector(testPublishWithMetadataAndNoReceivedMessageForSubscribeWithFilteringWithSameKeyAndDifferentValue)) {
-//        configuration.filterExpression = @"(foo == 'b')";
-//    } else if (self.invocation.selector == @selector(testPublishWithMetadataAndNoReceivedMessageForSubscribeWithFilteringWithSwitchedKeysAndValues)) {
-//        configuration.filterExpression = @"(bar == 'foo')";
-//    } else {
-//        configuration.filterExpression = @"(foo=='bar')";
-//    }
     NSString *filterExpression = nil;
     SEL testSelector = self.invocation.selector;
     if (testSelector == @selector(testPublishAndReceiveMessageWithLargerThanOrEqualMatch)) {
@@ -114,125 +105,185 @@ static NSString * const kPNChannelTestName = @"PNExtendedFilteringSubscribeTests
 }
 
 - (void)testPublishAndReceiveMessageWithExactNumberMatch {
-    
+    self.testData.shouldReceiveMessage = YES;
+    self.testData.publishMetadata = @{@"count":@42};
+    self.testData.expectedMessageActualChannel = kPNChannelTestName;
+    self.testData.expectedMessageSubscribedChannel = kPNChannelTestName;
+    self.testData.expectedMessageRegion = @56;
+    self.testData.expectedMessageTimetoken = @14513346572990987;
+    self.testData.expectedPublishTimetoken = @14513346572989885;
+    [self PNTest_sendAndReceiveMessageWithTestData:self.testData];
 }
 
 - (void)testPublishAndReceiveMessageWithAttributesArithmetic {
-    
+    self.testData.shouldReceiveMessage = YES;
+    self.testData.publishMetadata = @{@"attributes":@{@"var1":@10, @"var2":@20}};
+    self.testData.expectedMessageActualChannel = kPNChannelTestName;
+    self.testData.expectedMessageSubscribedChannel = kPNChannelTestName;
+    self.testData.expectedMessageRegion = @56;
+    self.testData.expectedMessageTimetoken = @14513346572990987;
+    self.testData.expectedPublishTimetoken = @14513346572989885;
+    [self PNTest_sendAndReceiveMessageWithTestData:self.testData];
 }
 
 - (void)testPublishAndReceiveMessageWithMetaArithmetic {
-    
+    self.testData.shouldReceiveMessage = YES;
+    self.testData.publishMetadata = @{@"count":@42};
+    self.testData.expectedMessageActualChannel = kPNChannelTestName;
+    self.testData.expectedMessageSubscribedChannel = kPNChannelTestName;
+    self.testData.expectedMessageRegion = @56;
+    self.testData.expectedMessageTimetoken = @14513346572990987;
+    self.testData.expectedPublishTimetoken = @14513346572989885;
+    [self PNTest_sendAndReceiveMessageWithTestData:self.testData];
 }
 
 - (void)testPublishAndReceiveMessageWithDataArithmetic {
-    
+    self.testData.shouldReceiveMessage = YES;
+    self.testData.publishMetadata = @{@"count":@42};
+    self.testData.expectedMessageActualChannel = kPNChannelTestName;
+    self.testData.expectedMessageSubscribedChannel = kPNChannelTestName;
+    self.testData.expectedMessageRegion = @56;
+    self.testData.expectedMessageTimetoken = @14513346572990987;
+    self.testData.expectedPublishTimetoken = @14513346572989885;
+    [self PNTest_sendAndReceiveMessageWithTestData:self.testData];
 }
 
 - (void)testPublishAndReceiveMessageWithLargerThanOrEqualMatch {
-    
+    self.testData.shouldReceiveMessage = YES;
+    self.testData.publishMetadata = @{@"count":@42};
+    self.testData.expectedMessageActualChannel = kPNChannelTestName;
+    self.testData.expectedMessageSubscribedChannel = kPNChannelTestName;
+    self.testData.expectedMessageRegion = @56;
+    self.testData.expectedMessageTimetoken = @14513346572990987;
+    self.testData.expectedPublishTimetoken = @14513346572989885;
+    [self PNTest_sendAndReceiveMessageWithTestData:self.testData];
 }
 
 - (void)testPublishAndNoReceivedMessageWithSmallerThanMismatch {
-    
+    self.testData.shouldReceiveMessage = NO;
+    self.testData.publishMetadata = @{@"foo":@"bar"};
+    self.testData.expectedPublishTimetoken = @14508292456923915;
+    [self PNTest_sendAndReceiveMessageWithTestData:self.testData];
 }
 
 - (void)testPublishAndNoReceivedMessageWithMissingVariableMismatch {
-    
+    self.testData.shouldReceiveMessage = NO;
+    self.testData.publishMetadata = @{@"foo":@"bar"};
+    self.testData.expectedPublishTimetoken = @14508292456923915;
+    [self PNTest_sendAndReceiveMessageWithTestData:self.testData];
 }
 
 - (void)testPublishAndReceiveMessageWithExactStringMatch {
-    
+    self.testData.shouldReceiveMessage = YES;
+    self.testData.publishMetadata = @{@"count":@42};
+    self.testData.expectedMessageActualChannel = kPNChannelTestName;
+    self.testData.expectedMessageSubscribedChannel = kPNChannelTestName;
+    self.testData.expectedMessageRegion = @56;
+    self.testData.expectedMessageTimetoken = @14513346572990987;
+    self.testData.expectedPublishTimetoken = @14513346572989885;
+    [self PNTest_sendAndReceiveMessageWithTestData:self.testData];
 }
 
 - (void)testPublishAndNoReceivedMessageForStringMismatchWithEqualEquals {
-    
+    self.testData.shouldReceiveMessage = NO;
+    self.testData.publishMetadata = @{@"foo":@"bar"};
+    self.testData.expectedPublishTimetoken = @14508292456923915;
+    [self PNTest_sendAndReceiveMessageWithTestData:self.testData];
 }
 
 - (void)testPublishAndReceiveMessageWithStringMatchAgainstListOfMatches {
-    
+    self.testData.shouldReceiveMessage = YES;
+    self.testData.publishMetadata = @{@"count":@42};
+    self.testData.expectedMessageActualChannel = kPNChannelTestName;
+    self.testData.expectedMessageSubscribedChannel = kPNChannelTestName;
+    self.testData.expectedMessageRegion = @56;
+    self.testData.expectedMessageTimetoken = @14513346572990987;
+    self.testData.expectedPublishTimetoken = @14513346572989885;
+    [self PNTest_sendAndReceiveMessageWithTestData:self.testData];
 }
 
 - (void)testPublishAndReceiveMessageWithArrayMatchAgainstString {
-    
+    self.testData.shouldReceiveMessage = YES;
+    self.testData.publishMetadata = @{@"count":@42};
+    self.testData.expectedMessageActualChannel = kPNChannelTestName;
+    self.testData.expectedMessageSubscribedChannel = kPNChannelTestName;
+    self.testData.expectedMessageRegion = @56;
+    self.testData.expectedMessageTimetoken = @14513346572990987;
+    self.testData.expectedPublishTimetoken = @14513346572989885;
+    [self PNTest_sendAndReceiveMessageWithTestData:self.testData];
 }
 
 - (void)testPublishAndReceiveMessageWithNegatedArrayMismatchAgainstString {
-    
+    self.testData.shouldReceiveMessage = YES;
+    self.testData.publishMetadata = @{@"count":@42};
+    self.testData.expectedMessageActualChannel = kPNChannelTestName;
+    self.testData.expectedMessageSubscribedChannel = kPNChannelTestName;
+    self.testData.expectedMessageRegion = @56;
+    self.testData.expectedMessageTimetoken = @14513346572990987;
+    self.testData.expectedPublishTimetoken = @14513346572989885;
+    [self PNTest_sendAndReceiveMessageWithTestData:self.testData];
 }
 
 - (void)testPublishAndNoReceivedMessageForCaseMismatchInArrayMatch {
-    
+    self.testData.shouldReceiveMessage = NO;
+    self.testData.publishMetadata = @{@"foo":@"bar"};
+    self.testData.expectedPublishTimetoken = @14508292456923915;
+    [self PNTest_sendAndReceiveMessageWithTestData:self.testData];
 }
 
 - (void)testPublishAndReceiveMessageWithArrayLIKEMatch {
-    
+    self.testData.shouldReceiveMessage = YES;
+    self.testData.publishMetadata = @{@"count":@42};
+    self.testData.expectedMessageActualChannel = kPNChannelTestName;
+    self.testData.expectedMessageSubscribedChannel = kPNChannelTestName;
+    self.testData.expectedMessageRegion = @56;
+    self.testData.expectedMessageTimetoken = @14513346572990987;
+    self.testData.expectedPublishTimetoken = @14513346572989885;
+    [self PNTest_sendAndReceiveMessageWithTestData:self.testData];
 }
 
 - (void)testPublishAndReceiveMessageWithSimpleArrayLIKEMatchWithWildcard {
-    
+    self.testData.shouldReceiveMessage = YES;
+    self.testData.publishMetadata = @{@"count":@42};
+    self.testData.expectedMessageActualChannel = kPNChannelTestName;
+    self.testData.expectedMessageSubscribedChannel = kPNChannelTestName;
+    self.testData.expectedMessageRegion = @56;
+    self.testData.expectedMessageTimetoken = @14513346572990987;
+    self.testData.expectedPublishTimetoken = @14513346572989885;
+    [self PNTest_sendAndReceiveMessageWithTestData:self.testData];
 }
 
 - (void)testPublishAndReceiveMessageWithArrayLIKEMatchWithWildcardAtEnd {
-    
+    self.testData.shouldReceiveMessage = YES;
+    self.testData.publishMetadata = @{@"count":@42};
+    self.testData.expectedMessageActualChannel = kPNChannelTestName;
+    self.testData.expectedMessageSubscribedChannel = kPNChannelTestName;
+    self.testData.expectedMessageRegion = @56;
+    self.testData.expectedMessageTimetoken = @14513346572990987;
+    self.testData.expectedPublishTimetoken = @14513346572989885;
+    [self PNTest_sendAndReceiveMessageWithTestData:self.testData];
 }
 
 - (void)testPublishAndReceiveMessageWithArrayLIKEMatchWithWildcardAtBeginning {
-    
+    self.testData.shouldReceiveMessage = YES;
+    self.testData.publishMetadata = @{@"count":@42};
+    self.testData.expectedMessageActualChannel = kPNChannelTestName;
+    self.testData.expectedMessageSubscribedChannel = kPNChannelTestName;
+    self.testData.expectedMessageRegion = @56;
+    self.testData.expectedMessageTimetoken = @14513346572990987;
+    self.testData.expectedPublishTimetoken = @14513346572989885;
+    [self PNTest_sendAndReceiveMessageWithTestData:self.testData];
 }
 
 - (void)testPublishAndReceiveMessageWithArrayLIKEMatchWithWildcardAtBeginningAndEnd {
-    
+    self.testData.shouldReceiveMessage = YES;
+    self.testData.publishMetadata = @{@"count":@42};
+    self.testData.expectedMessageActualChannel = kPNChannelTestName;
+    self.testData.expectedMessageSubscribedChannel = kPNChannelTestName;
+    self.testData.expectedMessageRegion = @56;
+    self.testData.expectedMessageTimetoken = @14513346572990987;
+    self.testData.expectedPublishTimetoken = @14513346572989885;
+    [self PNTest_sendAndReceiveMessageWithTestData:self.testData];
 }
-
-//- (void)testPublishWithNoMetadataAndReceivedMessageForSubscribeWithNoFiltering {
-//    self.testData.shouldReceiveMessage = YES;
-//    self.testData.publishMetadata = nil;
-//    self.testData.expectedMessageActualChannel = kPNChannelTestName;
-//    self.testData.expectedMessageSubscribedChannel = kPNChannelTestName;
-//    self.testData.expectedMessageRegion = @56;
-//    self.testData.expectedMessageTimetoken = @14513346572990987;
-//    self.testData.expectedPublishTimetoken = @14513346572989885;
-//    [self PNTest_sendAndReceiveMessageWithTestData:self.testData];
-//}
-//
-//- (void)testPublishWithMetadataAndNoReceivedMessageForSubscribeWithDifferentFiltering {
-//    self.testData.shouldReceiveMessage = NO;
-//    self.testData.publishMetadata = @{@"foo":@"bar"};
-//    self.testData.expectedPublishTimetoken = @14508292456923915;
-//    [self PNTest_sendAndReceiveMessageWithTestData:self.testData];
-//}
-//
-//- (void)testPublishWithMetadataAndNoReceivedMessageForSubscribeWithFilteringWithSameKeyAndDifferentValue {
-//    self.testData.shouldReceiveMessage = NO;
-//    self.testData.publishMetadata = @{@"foo":@"bar"};
-//    self.testData.expectedPublishTimetoken = @14508292569630117;
-//    [self PNTest_sendAndReceiveMessageWithTestData:self.testData];
-//}
-//
-//- (void)testPublishWithNoMetadataAndNoReceivedMessageForSubscribeWithFiltering {
-//    self.testData.shouldReceiveMessage = NO;
-//    self.testData.publishMetadata = nil;
-//    self.testData.expectedPublishTimetoken = @14508292796804876;
-//    [self PNTest_sendAndReceiveMessageWithTestData:self.testData];
-//}
-//
-//- (void)testPublishWithMetadataAndNoReceivedMessageForSubscribeWithFilteringWithSwitchedKeysAndValues {
-//    self.testData.shouldReceiveMessage = NO;
-//    self.testData.publishMetadata = @{@"foo":@"bar"};
-//    self.testData.expectedPublishTimetoken = @14508292679788748;
-//    [self PNTest_sendAndReceiveMessageWithTestData:self.testData];
-//}
-//
-//- (void)testPublishWithMetadataAndReceiveMessageForSubscribeWithMatchingFiltering {
-//    self.testData.shouldReceiveMessage = YES;
-//    self.testData.publishMetadata = @{@"foo":@"bar"};
-//    self.testData.expectedMessageActualChannel = kPNChannelTestName;
-//    self.testData.expectedMessageSubscribedChannel = kPNChannelTestName;
-//    self.testData.expectedMessageRegion = @56;
-//    self.testData.expectedMessageTimetoken = @14508292791981634;
-//    self.testData.expectedPublishTimetoken = @14508292791980402;
-//    [self PNTest_sendAndReceiveMessageWithTestData:self.testData];
-//}
 
 @end
