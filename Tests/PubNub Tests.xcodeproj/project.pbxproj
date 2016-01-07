@@ -10,6 +10,7 @@
 		1054E54A141D052E39D49D22 /* libPods-OSX ObjC Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E60662F9B0604A4961D2BA5 /* libPods-OSX ObjC Tests.a */; };
 		4F3F3D1D99A7DA9E9EBC18F5 /* libPods-iOS ObjC Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EFC9673832BC8E827EA358F0 /* libPods-iOS ObjC Tests.a */; };
 		5134E56A1C3EED5B0073F9C9 /* PNExtendedFilteringSubscribeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5134E5691C3EED5B0073F9C9 /* PNExtendedFilteringSubscribeTests.m */; };
+		5134E56C1C3F299F0073F9C9 /* PNExtendedFilteringSubscribeTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 5134E56B1C3F299F0073F9C9 /* PNExtendedFilteringSubscribeTests.bundle */; };
 		51775E5B1C2562F000DE660D /* PNFilteringSubscribeTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 51775E5A1C2562F000DE660D /* PNFilteringSubscribeTests.bundle */; };
 		51775E5C1C2562F000DE660D /* PNFilteringSubscribeTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 51775E5A1C2562F000DE660D /* PNFilteringSubscribeTests.bundle */; };
 		51775E5D1C2562F000DE660D /* PNFilteringSubscribeTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 51775E5A1C2562F000DE660D /* PNFilteringSubscribeTests.bundle */; };
@@ -257,6 +258,7 @@
 /* Begin PBXFileReference section */
 		1E60662F9B0604A4961D2BA5 /* libPods-OSX ObjC Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OSX ObjC Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5134E5691C3EED5B0073F9C9 /* PNExtendedFilteringSubscribeTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNExtendedFilteringSubscribeTests.m; path = Tests/PNExtendedFilteringSubscribeTests.m; sourceTree = "<group>"; };
+		5134E56B1C3F299F0073F9C9 /* PNExtendedFilteringSubscribeTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = PNExtendedFilteringSubscribeTests.bundle; path = Fixtures/PNExtendedFilteringSubscribeTests.bundle; sourceTree = "<group>"; };
 		51775E5A1C2562F000DE660D /* PNFilteringSubscribeTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = PNFilteringSubscribeTests.bundle; path = Fixtures/PNFilteringSubscribeTests.bundle; sourceTree = "<group>"; };
 		51775E5E1C2563D800DE660D /* PNChannelGroupFilteringSubscribeTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNChannelGroupFilteringSubscribeTests.m; path = Tests/PNChannelGroupFilteringSubscribeTests.m; sourceTree = "<group>"; };
 		51775E611C256BFB00DE660D /* PNChannelGroupFilteringSubscribeTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = PNChannelGroupFilteringSubscribeTests.bundle; path = Fixtures/PNChannelGroupFilteringSubscribeTests.bundle; sourceTree = "<group>"; };
@@ -553,6 +555,7 @@
 		51F7AAC11B27AD7400BEDA1F /* Fixtures */ = {
 			isa = PBXGroup;
 			children = (
+				5134E56B1C3F299F0073F9C9 /* PNExtendedFilteringSubscribeTests.bundle */,
 				51775E611C256BFB00DE660D /* PNChannelGroupFilteringSubscribeTests.bundle */,
 				51775E5A1C2562F000DE660D /* PNFilteringSubscribeTests.bundle */,
 				51DC51931C22039200BC2D9F /* PNChannelGroupPresenceEventTests.bundle */,
@@ -818,6 +821,7 @@
 				79EF04E31B4EAB1A007478CB /* PNSubscribeTests.bundle in Resources */,
 				79EF04D81B4EAB1A007478CB /* PNChannelGroupUnsubscribeTests.bundle in Resources */,
 				79EF04D91B4EAB1A007478CB /* PNClientConfigurationTests.bundle in Resources */,
+				5134E56C1C3F299F0073F9C9 /* PNExtendedFilteringSubscribeTests.bundle in Resources */,
 				79EF04D71B4EAB1A007478CB /* PNChannelGroupTests.bundle in Resources */,
 				79EF04DE1B4EAB1A007478CB /* PNPresenceTests.bundle in Resources */,
 				51775E5B1C2562F000DE660D /* PNFilteringSubscribeTests.bundle in Resources */,

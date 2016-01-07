@@ -128,7 +128,7 @@ static NSString * const kPNChannelTestName = @"PNExtendedFilteringSubscribeTests
 
 - (void)testPublishAndReceiveMessageWithMetaArithmetic {
     self.testData.shouldReceiveMessage = YES;
-    self.testData.publishMetadata = @{@"count":@42};
+    self.testData.publishMetadata = @{@"data":@{@"var1":@10, @"var2":@20}};
     self.testData.expectedMessageActualChannel = kPNChannelTestName;
     self.testData.expectedMessageSubscribedChannel = kPNChannelTestName;
     self.testData.expectedMessageRegion = @56;
@@ -139,7 +139,7 @@ static NSString * const kPNChannelTestName = @"PNExtendedFilteringSubscribeTests
 
 - (void)testPublishAndReceiveMessageWithDataArithmetic {
     self.testData.shouldReceiveMessage = YES;
-    self.testData.publishMetadata = @{@"count":@42};
+    self.testData.publishMetadata = @{@"regions":@{@"east":@{@"count":@42, @"other":@"something"}}};
     self.testData.expectedMessageActualChannel = kPNChannelTestName;
     self.testData.expectedMessageSubscribedChannel = kPNChannelTestName;
     self.testData.expectedMessageRegion = @56;
@@ -150,7 +150,7 @@ static NSString * const kPNChannelTestName = @"PNExtendedFilteringSubscribeTests
 
 - (void)testPublishAndReceiveMessageWithLargerThanOrEqualMatch {
     self.testData.shouldReceiveMessage = YES;
-    self.testData.publishMetadata = @{@"count":@42};
+    self.testData.publishMetadata = @{@"regions":@{@"east":@{@"count":@42, @"other":@"something"}}};
     self.testData.expectedMessageActualChannel = kPNChannelTestName;
     self.testData.expectedMessageSubscribedChannel = kPNChannelTestName;
     self.testData.expectedMessageRegion = @56;
@@ -161,21 +161,21 @@ static NSString * const kPNChannelTestName = @"PNExtendedFilteringSubscribeTests
 
 - (void)testPublishAndNoReceivedMessageWithSmallerThanMismatch {
     self.testData.shouldReceiveMessage = NO;
-    self.testData.publishMetadata = @{@"foo":@"bar"};
+    self.testData.publishMetadata = @{@"regions":@{@"east":@{@"count":@42, @"other":@"something"}}};
     self.testData.expectedPublishTimetoken = @14508292456923915;
     [self PNTest_sendAndReceiveMessageWithTestData:self.testData];
 }
 
 - (void)testPublishAndNoReceivedMessageWithMissingVariableMismatch {
     self.testData.shouldReceiveMessage = NO;
-    self.testData.publishMetadata = @{@"foo":@"bar"};
+    self.testData.publishMetadata = @{@"regions":@{@"east":@{@"count":@42, @"other":@"something"}}};
     self.testData.expectedPublishTimetoken = @14508292456923915;
     [self PNTest_sendAndReceiveMessageWithTestData:self.testData];
 }
 
 - (void)testPublishAndReceiveMessageWithExactStringMatch {
     self.testData.shouldReceiveMessage = YES;
-    self.testData.publishMetadata = @{@"count":@42};
+    self.testData.publishMetadata = @{@"region":@"east"};
     self.testData.expectedMessageActualChannel = kPNChannelTestName;
     self.testData.expectedMessageSubscribedChannel = kPNChannelTestName;
     self.testData.expectedMessageRegion = @56;
@@ -186,14 +186,14 @@ static NSString * const kPNChannelTestName = @"PNExtendedFilteringSubscribeTests
 
 - (void)testPublishAndNoReceivedMessageForStringMismatchWithEqualEquals {
     self.testData.shouldReceiveMessage = NO;
-    self.testData.publishMetadata = @{@"foo":@"bar"};
+    self.testData.publishMetadata = @{@"region":@"east"};
     self.testData.expectedPublishTimetoken = @14508292456923915;
     [self PNTest_sendAndReceiveMessageWithTestData:self.testData];
 }
 
 - (void)testPublishAndReceiveMessageWithStringMatchAgainstListOfMatches {
     self.testData.shouldReceiveMessage = YES;
-    self.testData.publishMetadata = @{@"count":@42};
+    self.testData.publishMetadata = @{@"region": @"east"};
     self.testData.expectedMessageActualChannel = kPNChannelTestName;
     self.testData.expectedMessageSubscribedChannel = kPNChannelTestName;
     self.testData.expectedMessageRegion = @56;
@@ -204,7 +204,7 @@ static NSString * const kPNChannelTestName = @"PNExtendedFilteringSubscribeTests
 
 - (void)testPublishAndReceiveMessageWithArrayMatchAgainstString {
     self.testData.shouldReceiveMessage = YES;
-    self.testData.publishMetadata = @{@"count":@42};
+    self.testData.publishMetadata = @{@"region": @[@"east", @"west"]};
     self.testData.expectedMessageActualChannel = kPNChannelTestName;
     self.testData.expectedMessageSubscribedChannel = kPNChannelTestName;
     self.testData.expectedMessageRegion = @56;
@@ -215,7 +215,7 @@ static NSString * const kPNChannelTestName = @"PNExtendedFilteringSubscribeTests
 
 - (void)testPublishAndReceiveMessageWithNegatedArrayMismatchAgainstString {
     self.testData.shouldReceiveMessage = YES;
-    self.testData.publishMetadata = @{@"count":@42};
+    self.testData.publishMetadata = @{@"region": @[@"east", @"west"]};
     self.testData.expectedMessageActualChannel = kPNChannelTestName;
     self.testData.expectedMessageSubscribedChannel = kPNChannelTestName;
     self.testData.expectedMessageRegion = @56;
@@ -226,14 +226,14 @@ static NSString * const kPNChannelTestName = @"PNExtendedFilteringSubscribeTests
 
 - (void)testPublishAndNoReceivedMessageForCaseMismatchInArrayMatch {
     self.testData.shouldReceiveMessage = NO;
-    self.testData.publishMetadata = @{@"foo":@"bar"};
+    self.testData.publishMetadata = @{@"region": @[@"east", @"west"]};
     self.testData.expectedPublishTimetoken = @14508292456923915;
     [self PNTest_sendAndReceiveMessageWithTestData:self.testData];
 }
 
 - (void)testPublishAndReceiveMessageWithArrayLIKEMatch {
     self.testData.shouldReceiveMessage = YES;
-    self.testData.publishMetadata = @{@"count":@42};
+    self.testData.publishMetadata = @{@"region": @[@"east", @"west"]};
     self.testData.expectedMessageActualChannel = kPNChannelTestName;
     self.testData.expectedMessageSubscribedChannel = kPNChannelTestName;
     self.testData.expectedMessageRegion = @56;
@@ -244,7 +244,7 @@ static NSString * const kPNChannelTestName = @"PNExtendedFilteringSubscribeTests
 
 - (void)testPublishAndReceiveMessageWithSimpleArrayLIKEMatchWithWildcard {
     self.testData.shouldReceiveMessage = YES;
-    self.testData.publishMetadata = @{@"count":@42};
+    self.testData.publishMetadata = @{@"region": @[@"east", @"west"]};
     self.testData.expectedMessageActualChannel = kPNChannelTestName;
     self.testData.expectedMessageSubscribedChannel = kPNChannelTestName;
     self.testData.expectedMessageRegion = @56;
@@ -255,7 +255,7 @@ static NSString * const kPNChannelTestName = @"PNExtendedFilteringSubscribeTests
 
 - (void)testPublishAndReceiveMessageWithArrayLIKEMatchWithWildcardAtEnd {
     self.testData.shouldReceiveMessage = YES;
-    self.testData.publishMetadata = @{@"count":@42};
+    self.testData.publishMetadata = @{@"region": @[@"east coast", @"west coast"]};
     self.testData.expectedMessageActualChannel = kPNChannelTestName;
     self.testData.expectedMessageSubscribedChannel = kPNChannelTestName;
     self.testData.expectedMessageRegion = @56;
@@ -266,7 +266,7 @@ static NSString * const kPNChannelTestName = @"PNExtendedFilteringSubscribeTests
 
 - (void)testPublishAndReceiveMessageWithArrayLIKEMatchWithWildcardAtBeginning {
     self.testData.shouldReceiveMessage = YES;
-    self.testData.publishMetadata = @{@"count":@42};
+    self.testData.publishMetadata = @{@"region": @[@"north east", @"west"]};
     self.testData.expectedMessageActualChannel = kPNChannelTestName;
     self.testData.expectedMessageSubscribedChannel = kPNChannelTestName;
     self.testData.expectedMessageRegion = @56;
@@ -277,7 +277,7 @@ static NSString * const kPNChannelTestName = @"PNExtendedFilteringSubscribeTests
 
 - (void)testPublishAndReceiveMessageWithArrayLIKEMatchWithWildcardAtBeginningAndEnd {
     self.testData.shouldReceiveMessage = YES;
-    self.testData.publishMetadata = @{@"count":@42};
+    self.testData.publishMetadata = @{@"region": @[@"east coast", @"west coast"]};
     self.testData.expectedMessageActualChannel = kPNChannelTestName;
     self.testData.expectedMessageSubscribedChannel = kPNChannelTestName;
     self.testData.expectedMessageRegion = @56;
