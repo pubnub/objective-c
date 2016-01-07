@@ -39,6 +39,7 @@ typedef void (^PNClientDidReceiveStatusAssertions)(PubNub *client, PNSubscribeSt
 - (void)PNTest_unsubscribeFromPresenceChannels:(NSArray *)channels;
 
 - (void)PNTest_subscribeToChannelGroups:(NSArray *)groups withPresence:(BOOL)shouldObservePresence;
+- (void)PNTest_subscribeToChannelGroups:(NSArray *)groups withPresence:(BOOL)shouldObservePresence usingTimeToken:(NSNumber *)timeToken;
 - (void)PNTest_unsubscribeFromChannelGroups:(NSArray *)groups withPresence:(BOOL)shouldObservePresence;
 
 - (void)fulfillSubscribeExpectationAfterDelay:(NSTimeInterval)delay;

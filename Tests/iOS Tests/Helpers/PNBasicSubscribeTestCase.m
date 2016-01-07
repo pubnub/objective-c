@@ -97,6 +97,14 @@
     }];
 }
 
+- (void)PNTest_subscribeToChannelGroups:(NSArray *)groups withPresence:(BOOL)shouldObservePresence usingTimeToken:(NSNumber *)timeToken {
+    self.channelGroupSubscribeExpectation = [self expectationWithDescription:@"channelGroupSubscribe"];
+    [self.client subscribeToChannelGroups:groups withPresence:shouldObservePresence usingTimeToken:timeToken];
+    [self waitForExpectationsWithTimeout:15 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+}
+
 - (void)PNTest_unsubscribeFromChannelGroups:(NSArray *)groups withPresence:(BOOL)shouldObservePresence {
     self.channelGroupUnsubscribeExpectation = [self expectationWithDescription:@"channelGroupUnsubscribe"];
     [self.client unsubscribeFromChannelGroups:groups withPresence:shouldObservePresence];
