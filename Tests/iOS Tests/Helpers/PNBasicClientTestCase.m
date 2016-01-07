@@ -21,6 +21,7 @@
     [PNLog enabled:YES];
     self.configuration = [PNConfiguration configurationWithPublishKey:@"demo-36" subscribeKey:@"demo-36"];
     self.configuration.uuid = @"322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C";
+    self.configuration.origin = @"msgfiltering-dev.pubnub.com";
     self.configuration = [self overrideClientConfiguration:self.configuration];
     self.client = [PubNub clientWithConfiguration:self.configuration];
 }
@@ -40,6 +41,18 @@
 - (PNConfiguration *)overrideClientConfiguration:(PNConfiguration *)configuration {
     
     return configuration;
+}
+
+#pragma mark - Publish Helpers
+
+- (void)PNTest_publish:(id)message toChannel:(NSString *)channel withMetadata:(NSDictionary *)metadata withCompletion:(PNPublishCompletionBlock)block {
+    self.publishExpectation = [self expectationWithDescription:@"publish"];
+    [self.client publish:message toChannel:channel withMetadata:metadata withCompletion:^(PNPublishStatus *status) {
+        if (block) {
+            block(status);
+        }
+        [self.publishExpectation fulfill];
+    }];
 }
 
 #pragma mark - Channel Group Helpers

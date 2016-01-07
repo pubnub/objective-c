@@ -30,6 +30,10 @@
     return self.serviceData[@"timetoken"];
 }
 
+- (NSNumber *)region {
+    return self.serviceData[@"region"];
+}
+
 #pragma mark -
 
 
@@ -39,7 +43,7 @@
 
 @implementation PNSubscribeStatus
 
-@dynamic currentTimetoken, lastTimeToken, subscribedChannels, subscribedChannelGroups;
+@dynamic currentTimetoken, lastTimeToken, subscribedChannels, subscribedChannelGroups, currentRegion, lastRegion;
 
 
 #pragma mark - Information

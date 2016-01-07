@@ -15,7 +15,6 @@
 ///------------------------------------------------
 /// @name Information
 ///------------------------------------------------
-
 @property (nonatomic, assign) NSInteger statusCode;
 @property (nonatomic, assign) PNOperationType operation;
 @property (nonatomic, assign, getter = isTLSEnabled) BOOL TLSEnabled;
@@ -59,7 +58,7 @@
  @since 4.0
  */
 + (instancetype)objectForOperation:(PNOperationType)operation
-                 completedWithTaks:(NSURLSessionDataTask *)task
+                 completedWithTask:(NSURLSessionDataTask *)task
                      processedData:(NSDictionary *)processedData processingError:(NSError *)error;
 
 /**
@@ -78,7 +77,7 @@
  @since 4.0
  */
 - (instancetype)initForOperation:(PNOperationType)operation
-               completedWithTaks:(NSURLSessionDataTask *)task
+               completedWithTask:(NSURLSessionDataTask *)task
                    processedData:(NSDictionary *)processedData
                  processingError:(NSError *)error;
 
