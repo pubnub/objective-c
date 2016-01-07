@@ -67,9 +67,9 @@ static NSString * const kPNChannelGroupTestsName = @"PNClientStateChannelGroupTe
         XCTAssertEqual(status.operation, PNSubscribeOperation);
         NSLog(@"timeToken: %@", status.currentTimetoken);
         if (self.invocation.selector == @selector(testSetClientStateOnSubscribedChannelGroup)) {
-            XCTAssertEqualObjects(status.currentTimetoken, @14356954400894751);
+            XCTAssertEqualObjects(status.currentTimetoken, @14508134350376968);
         } else if (self.invocation.selector == @selector(testStateForUUIDOnSubscribedChannelGroup)) {
-            XCTAssertEqualObjects(status.currentTimetoken, @14356954400894751);
+            XCTAssertEqualObjects(status.currentTimetoken, @14508134362087936);
         } else {
             XCTFail(@"not supposed to be handling this tests");
         }

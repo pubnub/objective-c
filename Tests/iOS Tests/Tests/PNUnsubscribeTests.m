@@ -60,7 +60,7 @@
                               [NSSet setWithArray:expectedPresenceSubscriptions]);
         XCTAssertEqual(status.operation, PNSubscribeOperation);
         NSLog(@"timeToken: %@", status.currentTimetoken);
-        XCTAssertEqualObjects(status.currentTimetoken, @14356475647691168);
+        XCTAssertEqualObjects(status.currentTimetoken, @14508182967922033);
         XCTAssertEqualObjects(status.currentTimetoken, status.data.timetoken);
         
     };
@@ -75,7 +75,9 @@
         XCTAssertEqual(message.operation, PNSubscribeOperation);
         NSLog(@"message:");
         NSLog(@"%@", message.data.message);
-        XCTAssertEqualObjects(message.data.message, @"****........... 7161 - 2015-06-29 23:59:25");
+        XCTAssertEqualObjects(message.data.actualChannel, @"a");
+        XCTAssertEqualObjects(message.data.subscribedChannel, @"a");
+        XCTAssertEqualObjects(message.data.message, @"*.............. 7272 - 2015-12-22 13:04:57");
         [self.subscribeExpectation fulfill];
     };
     [self PNTest_subscribeToChannels:@[@"a"] withPresence:YES];
@@ -102,7 +104,7 @@
         XCTAssertEqualObjects([NSSet setWithArray:status.subscribedChannelGroups],
                               [NSSet setWithArray:expectedGroups]);
         NSLog(@"timeToken: %@", status.currentTimetoken);
-        XCTAssertEqualObjects(status.currentTimetoken, @14490623876224521);
+        XCTAssertEqualObjects(status.currentTimetoken, @14508182922093871);
         XCTAssertEqualObjects(status.currentTimetoken, status.data.timetoken);
         [self.subscribeExpectation fulfill];
     };
@@ -140,10 +142,20 @@
         XCTAssertNotNil(client);
         XCTAssertNotNil(status);
         XCTAssertEqualObjects(self.client, client);
+        if (
+            !(
+            (status.category == PNDisconnectedCategory) ||
+            (status.category == PNCancelledCategory)
+            )
+            ) {
+            return;
+        }
         XCTAssertEqual(status.category, PNDisconnectedCategory);
         XCTAssertFalse(status.isError);
         XCTAssertEqual(status.statusCode, 200);
         XCTAssertEqual(status.operation, PNUnsubscribeOperation);
+        NSLog(@"category: %@", status.stringifiedCategory);
+        NSLog(@"operation: %@", status.stringifiedOperation);
         [self.unsubscribeExpectation fulfill];
     };
     [self PNTest_unsubscribeFromChannels:@[@"a"] withPresence:YES];

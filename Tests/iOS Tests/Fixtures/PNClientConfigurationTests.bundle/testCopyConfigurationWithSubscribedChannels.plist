@@ -9,6 +9,253 @@
 		<dict>
 			<key>data</key>
 			<data>
+			eyJ0Ijp7InQiOiIxNDUwODEwNTM1NTY3MjQxMyIsInIiOjU2fSwi
+			bSI6W119
+			</data>
+			<key>json</key>
+			<dict>
+				<key>m</key>
+				<array/>
+				<key>t</key>
+				<dict>
+					<key>r</key>
+					<integer>56</integer>
+					<key>t</key>
+					<string>14508105355672413</string>
+				</dict>
+			</dict>
+		</dict>
+		<key>request</key>
+		<dict>
+			<key>currentRequest</key>
+			<dict>
+				<key>HTTPMethod</key>
+				<string>GET</string>
+				<key>HTTPShouldHandleCookies</key>
+				<true/>
+				<key>URL</key>
+				<string>https://msgfiltering-dev.pubnub.com/v2/subscribe/demo-36/a/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=0</string>
+				<key>allHTTPHeaderFields</key>
+				<dict>
+					<key>Accept</key>
+					<string>*/*</string>
+					<key>Accept-Encoding</key>
+					<string>gzip,deflate</string>
+					<key>Accept-Language</key>
+					<string>en-us</string>
+					<key>Connection</key>
+					<string>keep-alive</string>
+					<key>User-Agent</key>
+					<string>iPhone; CPU iPhone OS 8.4 Version</string>
+				</dict>
+				<key>allowsCellularAccess</key>
+				<true/>
+				<key>timeoutInterval</key>
+				<real>60</real>
+			</dict>
+			<key>originalRequest</key>
+			<dict>
+				<key>HTTPMethod</key>
+				<string>GET</string>
+				<key>HTTPShouldHandleCookies</key>
+				<true/>
+				<key>URL</key>
+				<string>https://msgfiltering-dev.pubnub.com/v2/subscribe/demo-36/a/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=0</string>
+				<key>allHTTPHeaderFields</key>
+				<dict>
+					<key>Accept</key>
+					<string>*/*</string>
+					<key>Accept-Encoding</key>
+					<string>gzip,deflate</string>
+					<key>Connection</key>
+					<string>keep-alive</string>
+					<key>User-Agent</key>
+					<string>iPhone; CPU iPhone OS 8.4 Version</string>
+				</dict>
+				<key>allowsCellularAccess</key>
+				<true/>
+				<key>timeoutInterval</key>
+				<real>60</real>
+			</dict>
+		</dict>
+		<key>response</key>
+		<dict>
+			<key>response</key>
+			<dict>
+				<key>MIMEType</key>
+				<string>text/javascript</string>
+				<key>URL</key>
+				<string>https://msgfiltering-dev.pubnub.com/v2/subscribe/demo-36/a/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=0</string>
+				<key>allHeaderFields</key>
+				<dict>
+					<key>Access-Control-Allow-Methods</key>
+					<string>GET</string>
+					<key>Access-Control-Allow-Origin</key>
+					<string>*</string>
+					<key>Cache-Control</key>
+					<string>no-cache</string>
+					<key>Connection</key>
+					<string>keep-alive</string>
+					<key>Content-Length</key>
+					<string>45</string>
+					<key>Content-Type</key>
+					<string>text/javascript; charset="UTF-8"</string>
+					<key>Date</key>
+					<string>Tue, 22 Dec 2015 18:55:36 GMT</string>
+				</dict>
+				<key>expectedContentLength</key>
+				<integer>45</integer>
+				<key>statusCode</key>
+				<integer>200</integer>
+				<key>suggestedFileName</key>
+				<string>0.js</string>
+				<key>textEncodingName</key>
+				<string>"utf-8"</string>
+			</dict>
+		</dict>
+	</dict>
+	<dict>
+		<key>cancelled</key>
+		<false/>
+		<key>data</key>
+		<dict>
+			<key>data</key>
+			<data>
+			eyJ0Ijp7InQiOiIxNDUwODEwNTM2NzM2MjEzMiIsInIiOjU2fSwi
+			bSI6W3siYSI6IjQiLCJmIjo1MTIsInAiOnsidCI6IjE0NTA4MTA1
+			MzY3MzYxMjU4IiwiciI6NTZ9LCJrIjoiZGVtby0zNiIsImMiOiJh
+			IiwiZCI6IioqKioqKioqKioqKi4uLiA2NjggLSAyMDE1LTEyLTIy
+			IDEwOjU1OjM2In1dfQ==
+			</data>
+			<key>json</key>
+			<dict>
+				<key>m</key>
+				<array>
+					<dict>
+						<key>a</key>
+						<string>4</string>
+						<key>c</key>
+						<string>a</string>
+						<key>d</key>
+						<string>************... 668 - 2015-12-22 10:55:36</string>
+						<key>f</key>
+						<integer>512</integer>
+						<key>k</key>
+						<string>demo-36</string>
+						<key>p</key>
+						<dict>
+							<key>r</key>
+							<integer>56</integer>
+							<key>t</key>
+							<string>14508105367361258</string>
+						</dict>
+					</dict>
+				</array>
+				<key>t</key>
+				<dict>
+					<key>r</key>
+					<integer>56</integer>
+					<key>t</key>
+					<string>14508105367362132</string>
+				</dict>
+			</dict>
+		</dict>
+		<key>request</key>
+		<dict>
+			<key>currentRequest</key>
+			<dict>
+				<key>HTTPMethod</key>
+				<string>GET</string>
+				<key>HTTPShouldHandleCookies</key>
+				<true/>
+				<key>URL</key>
+				<string>https://msgfiltering-dev.pubnub.com/v2/subscribe/demo-36/a/0?uuid=changed&amp;pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=14508105355672413</string>
+				<key>allHTTPHeaderFields</key>
+				<dict>
+					<key>Accept</key>
+					<string>*/*</string>
+					<key>Accept-Encoding</key>
+					<string>gzip,deflate</string>
+					<key>Accept-Language</key>
+					<string>en-us</string>
+					<key>Connection</key>
+					<string>keep-alive</string>
+					<key>User-Agent</key>
+					<string>iPhone; CPU iPhone OS 8.4 Version</string>
+				</dict>
+				<key>allowsCellularAccess</key>
+				<true/>
+				<key>timeoutInterval</key>
+				<real>60</real>
+			</dict>
+			<key>originalRequest</key>
+			<dict>
+				<key>HTTPMethod</key>
+				<string>GET</string>
+				<key>HTTPShouldHandleCookies</key>
+				<true/>
+				<key>URL</key>
+				<string>https://msgfiltering-dev.pubnub.com/v2/subscribe/demo-36/a/0?uuid=changed&amp;pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=14508105355672413</string>
+				<key>allHTTPHeaderFields</key>
+				<dict>
+					<key>Accept</key>
+					<string>*/*</string>
+					<key>Accept-Encoding</key>
+					<string>gzip,deflate</string>
+					<key>Connection</key>
+					<string>keep-alive</string>
+					<key>User-Agent</key>
+					<string>iPhone; CPU iPhone OS 8.4 Version</string>
+				</dict>
+				<key>allowsCellularAccess</key>
+				<true/>
+				<key>timeoutInterval</key>
+				<real>60</real>
+			</dict>
+		</dict>
+		<key>response</key>
+		<dict>
+			<key>response</key>
+			<dict>
+				<key>MIMEType</key>
+				<string>text/javascript</string>
+				<key>URL</key>
+				<string>https://msgfiltering-dev.pubnub.com/v2/subscribe/demo-36/a/0?uuid=changed&amp;pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=14508105355672413</string>
+				<key>allHeaderFields</key>
+				<dict>
+					<key>Access-Control-Allow-Methods</key>
+					<string>GET</string>
+					<key>Access-Control-Allow-Origin</key>
+					<string>*</string>
+					<key>Cache-Control</key>
+					<string>no-cache</string>
+					<key>Connection</key>
+					<string>keep-alive</string>
+					<key>Content-Length</key>
+					<string>169</string>
+					<key>Content-Type</key>
+					<string>text/javascript; charset="UTF-8"</string>
+					<key>Date</key>
+					<string>Tue, 22 Dec 2015 18:55:36 GMT</string>
+				</dict>
+				<key>expectedContentLength</key>
+				<integer>169</integer>
+				<key>statusCode</key>
+				<integer>200</integer>
+				<key>suggestedFileName</key>
+				<string>0.js</string>
+				<key>textEncodingName</key>
+				<string>"utf-8"</string>
+			</dict>
+		</dict>
+	</dict>
+	<dict>
+		<key>cancelled</key>
+		<false/>
+		<key>data</key>
+		<dict>
+			<key>data</key>
+			<data>
 			eyJzdGF0dXMiOiAyMDAsICJhY3Rpb24iOiAibGVhdmUiLCAibWVz
 			c2FnZSI6ICJPSyIsICJzZXJ2aWNlIjogIlByZXNlbmNlIn0=
 			</data>
@@ -33,22 +280,24 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/presence/sub_key/demo-36/channel/a/leave?pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://msgfiltering-dev.pubnub.com/v2/presence/sub_key/demo-36/channel/a/leave?pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
 					<string>*/*</string>
 					<key>Accept-Encoding</key>
-					<string>gzip, deflate</string>
+					<string>gzip,deflate</string>
 					<key>Accept-Language</key>
-					<string>en;q=1, fr;q=0.9, de;q=0.8, zh-Hans;q=0.7, zh-Hant;q=0.6, ja;q=0.5</string>
+					<string>en-us</string>
+					<key>Connection</key>
+					<string>keep-alive</string>
 					<key>User-Agent</key>
-					<string>(null)/(null) (iPhone Simulator; iOS 8.2; Scale/2.00)</string>
+					<string>iPhone; CPU iPhone OS 8.4 Version</string>
 				</dict>
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60.0</real>
+				<real>60</real>
 			</dict>
 			<key>originalRequest</key>
 			<dict>
@@ -57,18 +306,22 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/presence/sub_key/demo-36/channel/a/leave?pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://msgfiltering-dev.pubnub.com/v2/presence/sub_key/demo-36/channel/a/leave?pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
-					<key>Accept-Language</key>
-					<string>en;q=1, fr;q=0.9, de;q=0.8, zh-Hans;q=0.7, zh-Hant;q=0.6, ja;q=0.5</string>
+					<key>Accept</key>
+					<string>*/*</string>
+					<key>Accept-Encoding</key>
+					<string>gzip,deflate</string>
+					<key>Connection</key>
+					<string>keep-alive</string>
 					<key>User-Agent</key>
-					<string>(null)/(null) (iPhone Simulator; iOS 8.2; Scale/2.00)</string>
+					<string>iPhone; CPU iPhone OS 8.4 Version</string>
 				</dict>
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60.0</real>
+				<real>60</real>
 			</dict>
 		</dict>
 		<key>response</key>
@@ -78,7 +331,7 @@
 				<key>MIMEType</key>
 				<string>text/javascript</string>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/presence/sub_key/demo-36/channel/a/leave?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://msgfiltering-dev.pubnub.com/v2/presence/sub_key/demo-36/channel/a/leave?pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHeaderFields</key>
 				<dict>
 					<key>Accept-Ranges</key>
@@ -98,7 +351,7 @@
 					<key>Content-Type</key>
 					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
-					<string>Tue, 30 Jun 2015 06:49:57 GMT</string>
+					<string>Tue, 22 Dec 2015 18:55:36 GMT</string>
 					<key>Server</key>
 					<string>Pubnub Presence</string>
 				</dict>
@@ -108,202 +361,6 @@
 				<integer>200</integer>
 				<key>suggestedFileName</key>
 				<string>leave.js</string>
-				<key>textEncodingName</key>
-				<string>"utf-8"</string>
-			</dict>
-		</dict>
-	</dict>
-	<dict>
-		<key>cancelled</key>
-		<false/>
-		<key>data</key>
-		<dict>
-			<key>data</key>
-			<data>
-			WzE0MzU2NDY5OTc0ODU4MjgzXQ==
-			</data>
-			<key>json</key>
-			<array>
-				<integer>14356469974858283</integer>
-			</array>
-		</dict>
-		<key>request</key>
-		<dict>
-			<key>currentRequest</key>
-			<dict>
-				<key>HTTPMethod</key>
-				<string>GET</string>
-				<key>HTTPShouldHandleCookies</key>
-				<true/>
-				<key>URL</key>
-				<string>https://pubsub.pubnub.com/time/0?pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
-				<key>allHTTPHeaderFields</key>
-				<dict>
-					<key>Accept</key>
-					<string>*/*</string>
-					<key>Accept-Encoding</key>
-					<string>gzip, deflate</string>
-					<key>Accept-Language</key>
-					<string>en;q=1, fr;q=0.9, de;q=0.8, zh-Hans;q=0.7, zh-Hant;q=0.6, ja;q=0.5</string>
-					<key>User-Agent</key>
-					<string>(null)/(null) (iPhone Simulator; iOS 8.2; Scale/2.00)</string>
-				</dict>
-				<key>allowsCellularAccess</key>
-				<true/>
-				<key>timeoutInterval</key>
-				<real>60.0</real>
-			</dict>
-			<key>originalRequest</key>
-			<dict>
-				<key>HTTPMethod</key>
-				<string>GET</string>
-				<key>HTTPShouldHandleCookies</key>
-				<true/>
-				<key>URL</key>
-				<string>https://pubsub.pubnub.com/time/0?pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
-				<key>allHTTPHeaderFields</key>
-				<dict>
-					<key>Accept-Language</key>
-					<string>en;q=1, fr;q=0.9, de;q=0.8, zh-Hans;q=0.7, zh-Hant;q=0.6, ja;q=0.5</string>
-					<key>User-Agent</key>
-					<string>(null)/(null) (iPhone Simulator; iOS 8.2; Scale/2.00)</string>
-				</dict>
-				<key>allowsCellularAccess</key>
-				<true/>
-				<key>timeoutInterval</key>
-				<real>60.0</real>
-			</dict>
-		</dict>
-		<key>response</key>
-		<dict>
-			<key>response</key>
-			<dict>
-				<key>MIMEType</key>
-				<string>text/javascript</string>
-				<key>URL</key>
-				<string>https://pubsub.pubnub.com/time/0?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
-				<key>allHeaderFields</key>
-				<dict>
-					<key>Access-Control-Allow-Methods</key>
-					<string>GET</string>
-					<key>Access-Control-Allow-Origin</key>
-					<string>*</string>
-					<key>Cache-Control</key>
-					<string>no-cache</string>
-					<key>Connection</key>
-					<string>keep-alive</string>
-					<key>Content-Length</key>
-					<string>19</string>
-					<key>Content-Type</key>
-					<string>text/javascript; charset="UTF-8"</string>
-					<key>Date</key>
-					<string>Tue, 30 Jun 2015 06:49:57 GMT</string>
-				</dict>
-				<key>expectedContentLength</key>
-				<integer>19</integer>
-				<key>statusCode</key>
-				<integer>200</integer>
-				<key>suggestedFileName</key>
-				<string>0.js</string>
-				<key>textEncodingName</key>
-				<string>"utf-8"</string>
-			</dict>
-		</dict>
-	</dict>
-	<dict>
-		<key>cancelled</key>
-		<false/>
-		<key>data</key>
-		<dict>
-			<key>data</key>
-			<data>
-			W1tdLCIxNDM1NjQ2OTk2OTQzMTA5MCJd
-			</data>
-			<key>json</key>
-			<array>
-				<array>
-				</array>
-				<string>14356469969431090</string>
-			</array>
-		</dict>
-		<key>request</key>
-		<dict>
-			<key>currentRequest</key>
-			<dict>
-				<key>HTTPMethod</key>
-				<string>GET</string>
-				<key>HTTPShouldHandleCookies</key>
-				<true/>
-				<key>URL</key>
-				<string>https://pubsub.pubnub.com/subscribe/demo-36/a/0/0?pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
-				<key>allHTTPHeaderFields</key>
-				<dict>
-					<key>Accept</key>
-					<string>*/*</string>
-					<key>Accept-Encoding</key>
-					<string>gzip, deflate</string>
-					<key>Accept-Language</key>
-					<string>en;q=1, fr;q=0.9, de;q=0.8, zh-Hans;q=0.7, zh-Hant;q=0.6, ja;q=0.5</string>
-					<key>User-Agent</key>
-					<string>(null)/(null) (iPhone Simulator; iOS 8.2; Scale/2.00)</string>
-				</dict>
-				<key>allowsCellularAccess</key>
-				<true/>
-				<key>timeoutInterval</key>
-				<real>60.0</real>
-			</dict>
-			<key>originalRequest</key>
-			<dict>
-				<key>HTTPMethod</key>
-				<string>GET</string>
-				<key>HTTPShouldHandleCookies</key>
-				<true/>
-				<key>URL</key>
-				<string>https://pubsub.pubnub.com/subscribe/demo-36/a/0/0?pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
-				<key>allHTTPHeaderFields</key>
-				<dict>
-					<key>Accept-Language</key>
-					<string>en;q=1, fr;q=0.9, de;q=0.8, zh-Hans;q=0.7, zh-Hant;q=0.6, ja;q=0.5</string>
-					<key>User-Agent</key>
-					<string>(null)/(null) (iPhone Simulator; iOS 8.2; Scale/2.00)</string>
-				</dict>
-				<key>allowsCellularAccess</key>
-				<true/>
-				<key>timeoutInterval</key>
-				<real>60.0</real>
-			</dict>
-		</dict>
-		<key>response</key>
-		<dict>
-			<key>response</key>
-			<dict>
-				<key>MIMEType</key>
-				<string>text/javascript</string>
-				<key>URL</key>
-				<string>https://pubsub.pubnub.com/subscribe/demo-36/a/0/0?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
-				<key>allHeaderFields</key>
-				<dict>
-					<key>Access-Control-Allow-Methods</key>
-					<string>GET</string>
-					<key>Access-Control-Allow-Origin</key>
-					<string>*</string>
-					<key>Cache-Control</key>
-					<string>no-cache</string>
-					<key>Connection</key>
-					<string>keep-alive</string>
-					<key>Content-Length</key>
-					<string>24</string>
-					<key>Content-Type</key>
-					<string>text/javascript; charset="UTF-8"</string>
-					<key>Date</key>
-					<string>Tue, 30 Jun 2015 06:49:57 GMT</string>
-				</dict>
-				<key>expectedContentLength</key>
-				<integer>24</integer>
-				<key>statusCode</key>
-				<integer>200</integer>
-				<key>suggestedFileName</key>
-				<string>0.js</string>
 				<key>textEncodingName</key>
 				<string>"utf-8"</string>
 			</dict>
@@ -321,8 +378,7 @@
 			<key>domain</key>
 			<string>NSURLErrorDomain</string>
 			<key>userInfo</key>
-			<dict>
-			</dict>
+			<dict/>
 		</dict>
 		<key>request</key>
 		<dict>
@@ -333,185 +389,24 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/subscribe/demo-36/a/0/14356469969431090?pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://msgfiltering-dev.pubnub.com/v2/subscribe/demo-36/a/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=14508105355672413</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
 					<string>*/*</string>
 					<key>Accept-Encoding</key>
-					<string>gzip, deflate</string>
+					<string>gzip,deflate</string>
 					<key>Accept-Language</key>
-					<string>en;q=1, fr;q=0.9, de;q=0.8, zh-Hans;q=0.7, zh-Hant;q=0.6, ja;q=0.5</string>
-					<key>User-Agent</key>
-					<string>(null)/(null) (iPhone Simulator; iOS 8.2; Scale/2.00)</string>
-				</dict>
-				<key>allowsCellularAccess</key>
-				<true/>
-				<key>timeoutInterval</key>
-				<real>60.0</real>
-			</dict>
-			<key>originalRequest</key>
-			<dict>
-				<key>HTTPMethod</key>
-				<string>GET</string>
-				<key>HTTPShouldHandleCookies</key>
-				<true/>
-				<key>URL</key>
-				<string>https://pubsub.pubnub.com/subscribe/demo-36/a/0/14356469969431090?pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
-				<key>allHTTPHeaderFields</key>
-				<dict>
-					<key>Accept-Language</key>
-					<string>en;q=1, fr;q=0.9, de;q=0.8, zh-Hans;q=0.7, zh-Hant;q=0.6, ja;q=0.5</string>
-					<key>User-Agent</key>
-					<string>(null)/(null) (iPhone Simulator; iOS 8.2; Scale/2.00)</string>
-				</dict>
-				<key>allowsCellularAccess</key>
-				<true/>
-				<key>timeoutInterval</key>
-				<real>60.0</real>
-			</dict>
-		</dict>
-	</dict>
-	<dict>
-		<key>cancelled</key>
-		<false/>
-		<key>data</key>
-		<dict>
-			<key>data</key>
-			<data>
-			W1siKioqKioqLi4uLi4uLi4uIDY4NzggLSAyMDE1LTA2LTI5IDIz
-			OjQ5OjU4Il0sIjE0MzU2NDY5OTg5ODM3OTQ1Il0=
-			</data>
-			<key>json</key>
-			<array>
-				<array>
-					<string>******......... 6878 - 2015-06-29 23:49:58</string>
-				</array>
-				<string>14356469989837945</string>
-			</array>
-		</dict>
-		<key>request</key>
-		<dict>
-			<key>currentRequest</key>
-			<dict>
-				<key>HTTPMethod</key>
-				<string>GET</string>
-				<key>HTTPShouldHandleCookies</key>
-				<true/>
-				<key>URL</key>
-				<string>https://pubsub.pubnub.com/subscribe/demo-36/a/0/14356469969431090?pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=changed</string>
-				<key>allHTTPHeaderFields</key>
-				<dict>
-					<key>Accept</key>
-					<string>*/*</string>
-					<key>Accept-Encoding</key>
-					<string>gzip, deflate</string>
-					<key>Accept-Language</key>
-					<string>en;q=1, fr;q=0.9, de;q=0.8, zh-Hans;q=0.7, zh-Hant;q=0.6, ja;q=0.5</string>
-					<key>User-Agent</key>
-					<string>(null)/(null) (iPhone Simulator; iOS 8.2; Scale/2.00)</string>
-				</dict>
-				<key>allowsCellularAccess</key>
-				<true/>
-				<key>timeoutInterval</key>
-				<real>60.0</real>
-			</dict>
-			<key>originalRequest</key>
-			<dict>
-				<key>HTTPMethod</key>
-				<string>GET</string>
-				<key>HTTPShouldHandleCookies</key>
-				<true/>
-				<key>URL</key>
-				<string>https://pubsub.pubnub.com/subscribe/demo-36/a/0/14356469969431090?pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=changed</string>
-				<key>allHTTPHeaderFields</key>
-				<dict>
-					<key>Accept-Language</key>
-					<string>en;q=1, fr;q=0.9, de;q=0.8, zh-Hans;q=0.7, zh-Hant;q=0.6, ja;q=0.5</string>
-					<key>User-Agent</key>
-					<string>(null)/(null) (iPhone Simulator; iOS 8.2; Scale/2.00)</string>
-				</dict>
-				<key>allowsCellularAccess</key>
-				<true/>
-				<key>timeoutInterval</key>
-				<real>60.0</real>
-			</dict>
-		</dict>
-		<key>response</key>
-		<dict>
-			<key>response</key>
-			<dict>
-				<key>MIMEType</key>
-				<string>text/javascript</string>
-				<key>URL</key>
-				<string>https://pubsub.pubnub.com/subscribe/demo-36/a/0/14356469969431090?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=changed</string>
-				<key>allHeaderFields</key>
-				<dict>
-					<key>Access-Control-Allow-Methods</key>
-					<string>GET</string>
-					<key>Access-Control-Allow-Origin</key>
-					<string>*</string>
-					<key>Cache-Control</key>
-					<string>no-cache</string>
+					<string>en-us</string>
 					<key>Connection</key>
 					<string>keep-alive</string>
-					<key>Content-Length</key>
-					<string>68</string>
-					<key>Content-Type</key>
-					<string>text/javascript; charset="UTF-8"</string>
-					<key>Date</key>
-					<string>Tue, 30 Jun 2015 06:49:59 GMT</string>
-				</dict>
-				<key>expectedContentLength</key>
-				<integer>68</integer>
-				<key>statusCode</key>
-				<integer>200</integer>
-				<key>suggestedFileName</key>
-				<string>14356469969431090.js</string>
-				<key>textEncodingName</key>
-				<string>"utf-8"</string>
-			</dict>
-		</dict>
-	</dict>
-	<dict>
-		<key>cancelled</key>
-		<false/>
-		<key>data</key>
-		<dict>
-			<key>data</key>
-			<data>
-			WzE0MzU2NDY5OTc1OTIxMDU1XQ==
-			</data>
-			<key>json</key>
-			<array>
-				<integer>14356469975921055</integer>
-			</array>
-		</dict>
-		<key>request</key>
-		<dict>
-			<key>currentRequest</key>
-			<dict>
-				<key>HTTPMethod</key>
-				<string>GET</string>
-				<key>HTTPShouldHandleCookies</key>
-				<true/>
-				<key>URL</key>
-				<string>https://pubsub.pubnub.com/time/0?pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=changed</string>
-				<key>allHTTPHeaderFields</key>
-				<dict>
-					<key>Accept</key>
-					<string>*/*</string>
-					<key>Accept-Encoding</key>
-					<string>gzip, deflate</string>
-					<key>Accept-Language</key>
-					<string>en;q=1, fr;q=0.9, de;q=0.8, zh-Hans;q=0.7, zh-Hant;q=0.6, ja;q=0.5</string>
 					<key>User-Agent</key>
-					<string>(null)/(null) (iPhone Simulator; iOS 8.2; Scale/2.00)</string>
+					<string>iPhone; CPU iPhone OS 8.4 Version</string>
 				</dict>
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60.0</real>
+				<real>60</real>
 			</dict>
 			<key>originalRequest</key>
 			<dict>
@@ -520,53 +415,22 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/time/0?pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=changed</string>
+				<string>https://msgfiltering-dev.pubnub.com/v2/subscribe/demo-36/a/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=14508105355672413</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
-					<key>Accept-Language</key>
-					<string>en;q=1, fr;q=0.9, de;q=0.8, zh-Hans;q=0.7, zh-Hant;q=0.6, ja;q=0.5</string>
+					<key>Accept</key>
+					<string>*/*</string>
+					<key>Accept-Encoding</key>
+					<string>gzip,deflate</string>
+					<key>Connection</key>
+					<string>keep-alive</string>
 					<key>User-Agent</key>
-					<string>(null)/(null) (iPhone Simulator; iOS 8.2; Scale/2.00)</string>
+					<string>iPhone; CPU iPhone OS 8.4 Version</string>
 				</dict>
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60.0</real>
-			</dict>
-		</dict>
-		<key>response</key>
-		<dict>
-			<key>response</key>
-			<dict>
-				<key>MIMEType</key>
-				<string>text/javascript</string>
-				<key>URL</key>
-				<string>https://pubsub.pubnub.com/time/0?pnsdk=PubNub-ObjC-iOS%2F4.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=changed</string>
-				<key>allHeaderFields</key>
-				<dict>
-					<key>Access-Control-Allow-Methods</key>
-					<string>GET</string>
-					<key>Access-Control-Allow-Origin</key>
-					<string>*</string>
-					<key>Cache-Control</key>
-					<string>no-cache</string>
-					<key>Connection</key>
-					<string>keep-alive</string>
-					<key>Content-Length</key>
-					<string>19</string>
-					<key>Content-Type</key>
-					<string>text/javascript; charset="UTF-8"</string>
-					<key>Date</key>
-					<string>Tue, 30 Jun 2015 06:49:57 GMT</string>
-				</dict>
-				<key>expectedContentLength</key>
-				<integer>19</integer>
-				<key>statusCode</key>
-				<integer>200</integer>
-				<key>suggestedFileName</key>
-				<string>0.js</string>
-				<key>textEncodingName</key>
-				<string>"utf-8"</string>
+				<real>60</real>
 			</dict>
 		</dict>
 	</dict>

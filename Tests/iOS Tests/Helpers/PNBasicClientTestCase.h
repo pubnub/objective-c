@@ -27,6 +27,11 @@ typedef void (^PNChannelGroupAssertions)(PNAcknowledgmentStatus *status);
 
 @property (nonatomic) PNConfiguration *configuration;
 @property (nonatomic) PubNub *client;
+@property (nonatomic, strong) XCTestExpectation *publishExpectation;
+
+- (PNConfiguration *)overrideClientConfiguration:(PNConfiguration *)configuration;
+
+- (void)PNTest_publish:(id)message toChannel:(NSString *)channel withMetadata:(NSDictionary *)metadata withCompletion:(PNPublishCompletionBlock)block;
 
 - (void)performVerifiedAddChannels:(NSArray *)channels toGroup:(NSString *)channelGroup withAssertions:(PNChannelGroupAssertions)assertions;
 

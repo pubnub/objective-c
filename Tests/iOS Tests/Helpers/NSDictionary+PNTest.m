@@ -15,13 +15,12 @@
     return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
 }
 
-- (NSString *)codeFormatDescription {
+- (NSString *)testAssertionFormat {
     NSString *res = [self jsonDescription];
 
     res = [res stringByReplacingOccurrencesOfString:@" \"" withString:@" @\""];
     res = [res stringByReplacingOccurrencesOfString:@" [" withString:@" @["];
     res = [res stringByReplacingOccurrencesOfString:@" {" withString:@" @{"];
-
     return res;
 }
 

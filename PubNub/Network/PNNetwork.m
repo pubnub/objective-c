@@ -756,7 +756,7 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
         }
         
         // If additional data required client should assume what potentially additional calculations
-        // may be required and should temporary shift to background queue.
+        // may be required and should temporarily shift to background queue.
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 
             NSDictionary *parsedData = [parser parsedServiceResponse:data withData:additionalData];
@@ -977,7 +977,7 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
     if ([self operationExpectResult:operation] && !isError) {
         
         result = [[self resultClassForOperation:operation] objectForOperation:operation
-                                                           completedWithTaks:task
+                                                           completedWithTask:task
                                                                processedData:data
                                                              processingError:error];
     }
@@ -985,7 +985,7 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
     if (isError || !data || ![self operationExpectResult:operation]){
         
         Class statusClass = (isError ? [PNErrorStatus class] : [self statusClassForOperation:operation]);
-        status = (PNStatus *)[statusClass objectForOperation:operation completedWithTaks:task
+        status = (PNStatus *)[statusClass objectForOperation:operation completedWithTask:task
                                                processedData:data processingError:error];
     }
     

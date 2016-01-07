@@ -92,6 +92,8 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
 - (void)  publish:(id)message toChannel:(NSString *)channel
    withCompletion:(PNPublishCompletionBlock)block;
 
+- (void)publish:(id)message toChannel:(NSString *)channel withMetadata:(NSDictionary *)metadata withCompletion:(PNPublishCompletionBlock)block;
+
 /**
  @brief      Send provided Foundation object to \b PubNub service.
  @discussion Provided object will be serialized into JSON string before pushing to \b PubNub
@@ -483,6 +485,9 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
   mobilePushPayload:(NSDictionary *)payloads storeInHistory:(BOOL)shouldStore
          compressed:(BOOL)compressed withCompletion:(PNPublishCompletionBlock)block;
 
+- (void)    publish:(id)message toChannel:(NSString *)channel
+  mobilePushPayload:(NSDictionary *)payloads storeInHistory:(BOOL)shouldStore
+         compressed:(BOOL)compressed withMetadata:(NSDictionary *)metadata withCompletion:(PNPublishCompletionBlock)block;
 
 ///------------------------------------------------
 /// @name Message helper

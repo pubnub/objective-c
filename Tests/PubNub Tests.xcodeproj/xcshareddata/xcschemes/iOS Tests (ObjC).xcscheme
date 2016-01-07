@@ -23,7 +23,7 @@
       </BuildActionEntries>
    </BuildAction>
    <TestAction
-      buildConfiguration = "Release"
+      buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
@@ -39,16 +39,22 @@
             </BuildableReference>
             <SkippedTests>
                <Test
+                  Identifier = "PNBasicClientCryptTestCase">
+               </Test>
+               <Test
                   Identifier = "PNBasicClientTestCase">
+               </Test>
+               <Test
+                  Identifier = "PNBasicPresenceTestCase">
                </Test>
                <Test
                   Identifier = "PNBasicSubscribeTestCase">
                </Test>
                <Test
-                  Identifier = "PNSubscribeTests/testTimeTokenResetBetweenSubscriptionsWithUnsubscribe">
+                  Identifier = "PNConfigurationChiperKeyTests">
                </Test>
                <Test
-                  Identifier = "PNSubscribeTests/testTimeTokenResetBetweenSubscriptionsWithUnsubscribeAll">
+                  Identifier = "PNPresenceTestCase">
                </Test>
             </SkippedTests>
          </TestableReference>
