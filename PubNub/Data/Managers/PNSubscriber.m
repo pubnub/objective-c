@@ -1395,9 +1395,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     [self.client.clientStateManager mergeWithState:mergedState];
     PNRequestParameters *parameters = [PNRequestParameters new];
     [parameters addPathComponent:channelsList forPlaceholder:@"{channels}"];
-//    [parameters addQueryParameter:self.currentRegion.stringValue forFieldName:@"tr"];
-//    [parameters addQueryParameter:self.currentTimeToken.stringValue forFieldName:@"tt"];
-//    [parameters addPathComponent:self.currentTimeToken.stringValue forPlaceholder:@"{tt}"];
+    // always append timetoken, it'll either be 0 for initial or a stored value
     [parameters addQueryParameter:self.currentTimeToken.stringValue forFieldName:@"tt"];
     if (self.currentRegion) {
         [parameters addQueryParameter:self.currentRegion.stringValue forFieldName:@"tr"];
