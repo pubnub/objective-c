@@ -221,7 +221,6 @@ static NSString * const kPNMessageChannelKey = @"c";
         [event addEntriesFromDictionary:[self messageFromData:data
                                      withAdditionalParserData:additionalData]];
     }
-//
     return event;
 }
 
