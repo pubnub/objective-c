@@ -214,7 +214,7 @@ static NSString * const kPNMessageChannelKey = @"c";
                            (payload[@"action"] != nil || payload[@"occupancy"] != nil));
     }
     if (isPresenceEvent) {
-        [event addEntriesFromDictionary:[self presenceFromData:data]];
+        [event addEntriesFromDictionary:[self presenceFromData:data[kPNMessagePayloadDataKey]]];
     }
     else {
         
@@ -269,28 +269,25 @@ static NSString * const kPNMessageChannelKey = @"c";
 
 + (NSMutableDictionary *)presenceFromData:(NSDictionary *)data {
     
-#warning ask about how this is affected
-    NSDictionary *payload = data[@"d"];
-    
     NSMutableDictionary *presence = [NSMutableDictionary new];
     
     // Processing common for all presence events data.
-    presence[@"presenceEvent"] = (payload[@"action"]?: @"interval");
+    presence[@"presenceEvent"] = (data[@"action"]?: @"interval");
     presence[@"presence"] = [NSMutableDictionary new];
-    presence[@"presence"][@"timetoken"] = payload[@"timestamp"];
-    if (payload[@"uuid"]) {
+    presence[@"presence"][@"timetoken"] = data[@"timestamp"];
+    if (data[@"uuid"]) {
         
-        presence[@"presence"][@"uuid"] = payload[@"uuid"];
+        presence[@"presence"][@"uuid"] = data[@"uuid"];
     }
     
     // Check whether this is not state modification event.
     if (![presence[@"presenceEvent"] isEqualToString:@"state-change"]) {
         
-        presence[@"presence"][@"occupancy"] = (payload[@"occupancy"]?: @0);
+        presence[@"presence"][@"occupancy"] = (data[@"occupancy"]?: @0);
     }
-    if (payload[@"data"]) {
+    if (data[@"data"]) {
      
-        presence[@"presence"][@"state"] = payload[@"data"];
+        presence[@"presence"][@"state"] = data[@"data"];
     }
     
     return presence;
