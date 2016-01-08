@@ -14,6 +14,7 @@
     self = [super init];
     if (self) {
         _shouldReceiveMessage = YES;
+        _shouldFulfillSubscribeExpectationAfterDelay = YES;
     }
     return self;
 }
@@ -153,7 +154,9 @@
             XCTAssertFalse(status.isError);
             XCTAssertEqualObjects(status.data.timetoken, testData.expectedPublishTimetoken);
             XCTAssertEqualObjects(status.data.information, testData.expectedPublishInformation);
-            [self fulfillSubscribeExpectationAfterDelay:10];
+            if (testData.shouldFulfillSubscribeExpectationAfterDelay) {
+                [self fulfillSubscribeExpectationAfterDelay:10];
+            }
             [self.publishExpectation fulfill];
         }];
         

@@ -29,6 +29,7 @@ typedef void (^PNClientDidReceiveStatusAssertions)(PubNub *client, PNSubscribeSt
 @property (nonatomic, strong) NSString *expectedMessageSubscribedChannel;
 @property (nonatomic, strong) NSNumber *expectedMessageTimetoken;
 @property (nonatomic, strong) NSNumber *expectedMessageRegion;
+@property (nonatomic, assign) BOOL shouldFulfillSubscribeExpectationAfterDelay;
 @end
 
 @interface PNBasicSubscribeTestCase : PNBasicClientTestCase <PNObjectEventListener>

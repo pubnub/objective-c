@@ -24,7 +24,7 @@ static NSString * const kPNChannelTestName = @"PNExtendedFilteringSubscribeTests
 - (PNConfiguration *)overrideClientConfiguration:(PNConfiguration *)configuration {
     NSString *filterExpression = nil;
     SEL testSelector = self.invocation.selector;
-    if (testSelector == @selector(testPublishAndReceiveMessageWithLargerThanOrEqualMatch)) {
+    if (testSelector == @selector(testPublishAndReceiveMessageWithExactNumberMatch)) {
         filterExpression = @"(count == 42)";
     } else if (testSelector == @selector(testPublishAndReceiveMessageWithAttributesArithmetic)) {
         filterExpression = @"(attributes.var1 + attributes['var2'] == 30)";
@@ -110,8 +110,8 @@ static NSString * const kPNChannelTestName = @"PNExtendedFilteringSubscribeTests
     self.testData.expectedMessageActualChannel = kPNChannelTestName;
     self.testData.expectedMessageSubscribedChannel = kPNChannelTestName;
     self.testData.expectedMessageRegion = @56;
-    self.testData.expectedMessageTimetoken = @14522085423440590;
-    self.testData.expectedPublishTimetoken = @14522085423439474;
+    self.testData.expectedMessageTimetoken = @14522926369542294;
+    self.testData.expectedPublishTimetoken = @14522926369541176;
     [self PNTest_sendAndReceiveMessageWithTestData:self.testData];
 }
 
@@ -138,33 +138,33 @@ static NSString * const kPNChannelTestName = @"PNExtendedFilteringSubscribeTests
 }
 
 #warning this is off
-- (void)testPublishAndReceiveMessageWithDataArithmetic {
+- (void)DISABLE_testPublishAndReceiveMessageWithDataArithmetic {
     self.testData.shouldReceiveMessage = YES;
     self.testData.publishMetadata = @{@"regions": @{@"east": @{@"count": @42, @"other": @"something"}}};
     self.testData.expectedMessageActualChannel = kPNChannelTestName;
     self.testData.expectedMessageSubscribedChannel = kPNChannelTestName;
     self.testData.expectedMessageRegion = @56;
-    self.testData.expectedMessageTimetoken = @14513346572990987;
-    self.testData.expectedPublishTimetoken = @14513346572989885;
+    self.testData.expectedMessageTimetoken = @14522085573901120;
+    self.testData.expectedPublishTimetoken = @14522085573900383;
     [self PNTest_sendAndReceiveMessageWithTestData:self.testData];
 }
 
-#warning this is off
 - (void)testPublishAndReceiveMessageWithLargerThanOrEqualMatch {
     self.testData.shouldReceiveMessage = YES;
-    self.testData.publishMetadata = @{@"regions":@{@"east":@{@"count":@42, @"other":@"something"}}};
+    self.testData.shouldFulfillSubscribeExpectationAfterDelay = NO;
+    self.testData.publishMetadata = @{@"regions":@{@"east":@{@"count":@42, @"other": @"something"}}};
     self.testData.expectedMessageActualChannel = kPNChannelTestName;
     self.testData.expectedMessageSubscribedChannel = kPNChannelTestName;
     self.testData.expectedMessageRegion = @56;
-    self.testData.expectedMessageTimetoken = @0;
-    self.testData.expectedPublishTimetoken = @14522085447346767;
+    self.testData.expectedMessageTimetoken = @14522926648695518;
+    self.testData.expectedPublishTimetoken = @14522926648694702;
     [self PNTest_sendAndReceiveMessageWithTestData:self.testData];
 }
 
 - (void)testPublishAndNoReceivedMessageWithSmallerThanMismatch {
     self.testData.shouldReceiveMessage = NO;
     self.testData.publishMetadata = @{@"regions":@{@"east":@{@"count":@42, @"other":@"something"}}};
-    self.testData.expectedPublishTimetoken = @14522085447346767;
+    self.testData.expectedPublishTimetoken = @14522085141153996;
     [self PNTest_sendAndReceiveMessageWithTestData:self.testData];
 }
 
@@ -250,8 +250,8 @@ static NSString * const kPNChannelTestName = @"PNExtendedFilteringSubscribeTests
     self.testData.expectedMessageActualChannel = kPNChannelTestName;
     self.testData.expectedMessageSubscribedChannel = kPNChannelTestName;
     self.testData.expectedMessageRegion = @56;
-    self.testData.expectedMessageTimetoken = @14513346572990987;
-    self.testData.expectedPublishTimetoken = @14513346572989885;
+    self.testData.expectedMessageTimetoken = @14522085573901120;
+    self.testData.expectedPublishTimetoken = @14522085573900383;
     [self PNTest_sendAndReceiveMessageWithTestData:self.testData];
 }
 
@@ -261,8 +261,8 @@ static NSString * const kPNChannelTestName = @"PNExtendedFilteringSubscribeTests
     self.testData.expectedMessageActualChannel = kPNChannelTestName;
     self.testData.expectedMessageSubscribedChannel = kPNChannelTestName;
     self.testData.expectedMessageRegion = @56;
-    self.testData.expectedMessageTimetoken = @14513346572990987;
-    self.testData.expectedPublishTimetoken = @14513346572989885;
+    self.testData.expectedMessageTimetoken = @14522085290712418;
+    self.testData.expectedPublishTimetoken = @14522085290711277;
     [self PNTest_sendAndReceiveMessageWithTestData:self.testData];
 }
 
@@ -272,8 +272,8 @@ static NSString * const kPNChannelTestName = @"PNExtendedFilteringSubscribeTests
     self.testData.expectedMessageActualChannel = kPNChannelTestName;
     self.testData.expectedMessageSubscribedChannel = kPNChannelTestName;
     self.testData.expectedMessageRegion = @56;
-    self.testData.expectedMessageTimetoken = @14513346572990987;
-    self.testData.expectedPublishTimetoken = @14513346572989885;
+    self.testData.expectedMessageTimetoken = @14522085265524827;
+    self.testData.expectedPublishTimetoken = @14522085265523594;
     [self PNTest_sendAndReceiveMessageWithTestData:self.testData];
 }
 
@@ -283,8 +283,8 @@ static NSString * const kPNChannelTestName = @"PNExtendedFilteringSubscribeTests
     self.testData.expectedMessageActualChannel = kPNChannelTestName;
     self.testData.expectedMessageSubscribedChannel = kPNChannelTestName;
     self.testData.expectedMessageRegion = @56;
-    self.testData.expectedMessageTimetoken = @14513346572990987;
-    self.testData.expectedPublishTimetoken = @14513346572989885;
+    self.testData.expectedMessageTimetoken = @14522085282009074;
+    self.testData.expectedPublishTimetoken = @14522085282007930;
     [self PNTest_sendAndReceiveMessageWithTestData:self.testData];
 }
 

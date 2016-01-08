@@ -75,30 +75,33 @@
 
 - (NSArray *)_queryItemsForComponents:(NSURLComponents *)components {
     // transforming all queryItems into dicts so this works on iOS 7 and iOS 8
-#ifdef __IPHONE_7_0
-    // http://stackoverflow.com/questions/3997976/parse-nsurl-query-property
-    if ([components.query length]==0) {
-        return nil;
-    }
-    NSMutableArray *parameters = [NSMutableArray array];
-    for(NSString* parameter in [components.query componentsSeparatedByString:@"&"]) {
-        NSRange range = [parameter rangeOfString:@"="];
-        if(range.location!=NSNotFound) {
-            NSDictionary *item = @{
-                                   @"name" : [[parameter substringToIndex:range.location] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding],
-                                   @"value" : [[parameter substringFromIndex:range.location+range.length] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]
-                                   };
-            [parameters addObject:item];
-        } else {
-            NSDictionary *item = @{
-                                   @"name" : [parameter stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding],
-                                   @"value" : @""
-                                   };
-            [parameters addObject:item];
-        }
-    }
-    return [parameters copy];
-#endif
+//#ifdef __IPHONE_7_0
+//    // http://stackoverflow.com/questions/3997976/parse-nsurl-query-property
+//    if ([components.query length]==0) {
+//        return nil;
+//    }
+//    NSMutableArray *parameters = [NSMutableArray array];
+//    for(NSString* parameter in [components.query componentsSeparatedByString:@"&"]) {
+//        NSRange range = [parameter rangeOfString:@"="];
+//        if(range.location!=NSNotFound) {
+//            NSLog(@"name: %@", [[parameter substringToIndex:range.location] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]);
+//            NSLog(@"value: %@", [[parameter substringFromIndex:range.location+range.length] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]);
+//            NSLog(@"value2: %@", [[parameter substringFromIndex:range.location+range.length] stringByRemovingPercentEncoding]);
+//            NSDictionary *item = @{
+//                                   @"name" : [[parameter substringToIndex:range.location] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding],
+//                                   @"value" : [[parameter substringFromIndex:range.location+range.length] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]
+//                                   };
+//            [parameters addObject:item];
+//        } else {
+//            NSDictionary *item = @{
+//                                   @"name" : [parameter stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding],
+//                                   @"value" : @""
+//                                   };
+//            [parameters addObject:item];
+//        }
+//    }
+//    return [parameters copy];
+//#endif
     return [components.queryItems bk_map:^id(id obj) {
         NSURLQueryItem *item = (NSURLQueryItem *)obj;
         NSMutableDictionary *itemDict = [@{
