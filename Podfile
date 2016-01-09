@@ -35,6 +35,13 @@ target 'OSX ObjC Tests', :exclusive => true do
   pod "PubNub", :path => "."
 end
 
+target 'tvOS ObjC Tests', :exclusive => true do
+    platform :tvos, '9.0'
+    xcodeproj 'Tests/PubNub Tests.xcodeproj'
+    pod "JSZVCR", '~>0.7'
+    pod "PubNub", :path => "."
+end
+
 post_install do |installer_representation|
     installer_representation.pods_project.targets.each do |target|
         target.build_configurations.each do |config|
