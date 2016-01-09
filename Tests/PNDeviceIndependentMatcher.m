@@ -83,16 +83,6 @@
 - (NSArray *)rejectDictionaryQueryItemWithValue:(NSString *)value fromArray:(NSArray *)array {
     NSMutableArray *rejectedArray = [NSMutableArray array];
     [array enumerateObjectsUsingBlock:^(NSURLQueryItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-//        NSURLQueryItem *item = (NSURLQueryItem *)obj;
-//        NSMutableDictionary *itemDict = [@{
-//                                           @"name" : item.name
-//                                           } mutableCopy];
-//        // in case the query doesn't have a value
-//        if (item.value) {
-//            [itemDict setObject:item.value forKey:@"value"];
-//        }
-//        [rejectedArray addObject:[itemDict copy]];
-        // ignore non dictionary items
         if (![obj isKindOfClass:[NSDictionary class]]) {
             return;
         }
