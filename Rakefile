@@ -60,7 +60,7 @@ desc "Run the PubNub Tests for iOS & Mac OS X"
 task :test do
   Rake::Task['test:ios'].invoke
   # Rake::Task['test:watchos'].invoke
-  # Rake::Task['test:tvos'].invoke
+  Rake::Task['test:tvos'].invoke
   Rake::Task['test:osx'].invoke if is_mavericks_or_above
 end
 
