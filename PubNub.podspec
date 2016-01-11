@@ -25,6 +25,7 @@ Pod::Spec.new do |spec|
     spec.ios.deployment_target = '7.0'
     spec.watchos.deployment_target = '2.0'
     spec.osx.deployment_target = '10.9'
+    spec.tvos.deployment_target = '9.0'
     spec.requires_arc = true
 
     spec.subspec 'Core' do |core|
