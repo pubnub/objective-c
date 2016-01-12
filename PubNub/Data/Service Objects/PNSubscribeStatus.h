@@ -31,7 +31,7 @@
 @property (nonatomic, readonly, strong) NSString *actualChannel;
 
 /**
- @brief  Time at which even arrived.
+ @brief  Time at which event arrived.
  
  @since 4.0
  */

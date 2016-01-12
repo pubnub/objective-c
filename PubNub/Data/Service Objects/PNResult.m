@@ -75,15 +75,15 @@
 #pragma mark - Initialization and Configuration
 
 + (instancetype)objectForOperation:(PNOperationType)operation
-                 completedWithTaks:(NSURLSessionDataTask *)task
+                 completedWithTask:(NSURLSessionDataTask *)task
                      processedData:(NSDictionary *)processedData processingError:(NSError *)error {
     
-    return [[self alloc] initForOperation:operation completedWithTaks:task
+    return [[self alloc] initForOperation:operation completedWithTask:task
                             processedData:processedData processingError:error];
 }
 
 - (instancetype)initForOperation:(PNOperationType)operation
-               completedWithTaks:(NSURLSessionDataTask *)task
+               completedWithTask:(NSURLSessionDataTask *)task
                    processedData:(NSDictionary *)processedData
                  processingError:(NSError *)__unused error {
     
@@ -191,7 +191,7 @@
                            @"URL": ([self.clientRequest.URL absoluteString]?: @"null"),
                            @"POST Body size": @([self.clientRequest.HTTPBody length]),
                            @"Secure": (self.isTLSEnabled ? @"YES" : @"NO"),
-                           @"UUID": (self.uuid?: @"uknonwn"),
+                           @"UUID": (self.uuid?: @"unknown"),
                            @"Authorization": (self.authKey?: @"not set"),
                            @"Origin": (self.origin?: @"unknown")},
              @"Response": response};

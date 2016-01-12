@@ -520,8 +520,6 @@
 		51F7AAC11B27AD7400BEDA1F /* Fixtures */ = {
 			isa = PBXGroup;
 			children = (
-				9652F3E61BA6E90B001E940A /* PNConfigurationChiperKeyTests.bundle */,
-				960354F51B90629C0047EE04 /* PNPresenceEventTests.bundle */,
 				79EF04C31B4EAB1A007478CB /* PNAPNSTests.bundle */,
 				79EF04C41B4EAB1A007478CB /* PNChannelGroupSubscribeTests.bundle */,
 				79EF04C51B4EAB1A007478CB /* PNChannelGroupTests.bundle */,
@@ -529,8 +527,10 @@
 				79EF04C71B4EAB1A007478CB /* PNClientConfigurationTests.bundle */,
 				79EF04C81B4EAB1A007478CB /* PNClientStateChannelGroupTests.bundle */,
 				79EF04C91B4EAB1A007478CB /* PNClientStateChannelTests.bundle */,
+				9652F3E61BA6E90B001E940A /* PNConfigurationChiperKeyTests.bundle */,
 				79EF04CA1B4EAB1A007478CB /* PNHeartbeatTests.bundle */,
 				79EF04CB1B4EAB1A007478CB /* PNHistoryTests.bundle */,
+				960354F51B90629C0047EE04 /* PNPresenceEventTests.bundle */,
 				79EF04CC1B4EAB1A007478CB /* PNPresenceTests.bundle */,
 				79EF04CD1B4EAB1A007478CB /* PNPublishCompressedTests.bundle */,
 				79EF04CE1B4EAB1A007478CB /* PNPublishTests.bundle */,
@@ -767,6 +767,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				79EF04D51B4EAB1A007478CB /* PNAPNSTests.bundle in Resources */,
 				960354F61B90629C0047EE04 /* PNPresenceEventTests.bundle in Resources */,
 				9652F3E71BA6E90B001E940A /* PNConfigurationChiperKeyTests.bundle in Resources */,
 				79EF04E11B4EAB1A007478CB /* PNPublishWithHistoryTests.bundle in Resources */,
@@ -784,7 +785,6 @@
 				79EF04D91B4EAB1A007478CB /* PNClientConfigurationTests.bundle in Resources */,
 				79EF04D71B4EAB1A007478CB /* PNChannelGroupTests.bundle in Resources */,
 				79EF04DE1B4EAB1A007478CB /* PNPresenceTests.bundle in Resources */,
-				79EF04D51B4EAB1A007478CB /* PNAPNSTests.bundle in Resources */,
 				79EF04DF1B4EAB1A007478CB /* PNPublishCompressedTests.bundle in Resources */,
 				79EF04E61B4EAB1A007478CB /* PNUnsubscribeTests.bundle in Resources */,
 			);

@@ -19,7 +19,7 @@
 ///------------------------------------------------
 
 /**
- @brief  Time when presence event has been tirggered.
+ @brief  Time when presence event has been triggered.
  
  @return Number with unsugned long long timestamp.
  

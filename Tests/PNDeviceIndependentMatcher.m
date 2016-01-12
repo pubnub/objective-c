@@ -39,9 +39,6 @@
     if (![components.scheme isEqualToString:otherComponents.scheme]) {
         return NO;
     }
-    if (![components.host isEqualToString:otherComponents.host]) {
-        return NO;
-    }
     if (![components.path isEqualToString:otherComponents.path]) {
         return NO;
     }

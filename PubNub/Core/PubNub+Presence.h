@@ -183,9 +183,9 @@ typedef void(^PNWhereNowCompletionBlock)(PNPresenceWhereNowResult *result, PNErr
 ///------------------------------------------------
 
 /**
- @brief  Request information about subscribers on specific channel live feeds.
- @note   This API will retrieve only list of UUIDs along with their state for each remote data
-         object and number of subscribers in total for objects and overall.
+ @brief   Request information about subscribers on specific channel live feeds.
+ @note    This API will retrieve only list of UUIDs along with their state for each remote data
+          object and number of subscribers in total for objects and overall. 
  
  @code
  @endcode
@@ -218,7 +218,8 @@ typedef void(^PNWhereNowCompletionBlock)(PNPresenceWhereNowResult *result, PNErr
  }];
  @endcode
  
- @param channel Reference on channel for which here now information should be received.
+ @param channel Reference on channel for which here now information should be received (\b Required).
+                Error status will rerurn if \c nil passed.
  @param block   Here now processing completion block which pass two arguments: \c result - in case 
                 of successful request processing \c data field will contain results of here now 
                 operation; \c status - in case if error occurred during request processing.
@@ -228,7 +229,7 @@ typedef void(^PNWhereNowCompletionBlock)(PNPresenceWhereNowResult *result, PNErr
 - (void)hereNowForChannel:(NSString *)channel withCompletion:(PNHereNowCompletionBlock)block;
 
 /**
- @brief  Request information about subscribers on specific channel live feeds.
+ @brief   Request information about subscribers on specific channel live feeds.
 
  @code
  @endcode
@@ -266,7 +267,8 @@ typedef void(^PNWhereNowCompletionBlock)(PNPresenceWhereNowResult *result, PNErr
  }];
  @endcode
  
- @param channel Reference on channel for which here now information should be received.
+ @param channel Reference on channel for which here now information should be received (\b Required). 
+                Error status will rerurn if \c nil passed.
  @param level   Reference on one of \b PNHereNowVerbosityLevel fields to instruct what exactly data
                 it expected in response.
  @param block   Here now processing completion block which pass two arguments: \c result - in case 
@@ -284,9 +286,9 @@ typedef void(^PNWhereNowCompletionBlock)(PNPresenceWhereNowResult *result, PNErr
 ///------------------------------------------------
 
 /**
- @brief  Request information about subscribers on specific channel group live feeds.
- @note   This API will retrieve only list of UUIDs along with their state for each remote data
-         object and number of subscribers in total for objects and overall.
+ @brief   Request information about subscribers on specific channel group live feeds.
+ @note    This API will retrieve only list of UUIDs along with their state for each remote data
+          object and number of subscribers in total for objects and overall.
  
  @code
  @endcode
@@ -324,7 +326,8 @@ typedef void(^PNWhereNowCompletionBlock)(PNPresenceWhereNowResult *result, PNErr
  }];
  @endcode
  
- @param group Reference on channel group name for which here now information should be received.
+ @param group Reference on channel group name for which here now information should be received. 
+              (\b Required). Error status will rerurn if \c nil passed.
  @param block Here now processing completion block which pass two arguments: \c result - in case of 
               successful request processing \c data field will contain results of here now 
               operation; \c status - in case if error occurred during request processing.
@@ -378,9 +381,10 @@ typedef void(^PNWhereNowCompletionBlock)(PNPresenceWhereNowResult *result, PNErr
  }];
  @endcode
  
+ @param group Reference on channel group for which here now information should be received (\b Required).
+              Error status will rerurn if \c nil passed.
  @param level Reference on one of \b PNHereNowVerbosityLevel fields to instruct what exactly data it
               expected in response.
- @param group Reference on channel group for which here now information should be received.
  @param block Here now processing completion block which pass two arguments: \c result - in case of 
               successful request processing \c data field will contain results of here now 
               operation; \c status - in case if error occurred during request processing.

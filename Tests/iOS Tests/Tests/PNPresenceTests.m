@@ -236,43 +236,10 @@
     NSString *channelName = nil;
     [self.client hereNowForChannel:channelName
                     withCompletion:^(PNPresenceChannelHereNowResult *result, PNErrorStatus *status) {
-                        XCTAssertNil(status);
-                        XCTAssertEqual([result operation], PNHereNowGlobalOperation, @"Wrong operation");
-                        XCTAssertNotNil([result data]);
-                        XCTAssertEqual([result statusCode], 200);
+                        XCTAssertNil(result);
+                        XCTAssertEqual(status.operation, PNHereNowForChannelOperation, @"Wrong operation");
+                        XCTAssertEqual(status.statusCode, 400);
                         
-                        PNPresenceGlobalHereNowResult *globalResult = (PNPresenceGlobalHereNowResult *)result;
-                        
-                        NSDictionary *expectedChannels = @{
-                                                           @"0_5098427633369088" : @{
-                                                                   @"uuids" : @[
-                                                                           @{
-                                                                               @"uuid" : @"JejuFan--79001"
-                                                                               }
-                                                                           ],
-                                                                   @"occupancy" : @1
-                                                                   },
-                                                           @"0_5650661106515968" : @{
-                                                                   @"uuids" : @[
-                                                                           @{
-                                                                               @"uuid" : @"JejuFan--79001"
-                                                                               }
-                                                                           ],
-                                                                   @"occupancy" : @1
-                                                                   },
-                                                           @"all_activity" : @{
-                                                                   @"uuids" : @[
-                                                                           @{
-                                                                               @"uuid" : @"JejuFan--79001"
-                                                                               }
-                                                                           ],
-                                                                   @"occupancy" : @1
-                                                                   }
-                                                           };
-                        
-                        NSLog(@"%@", [globalResult.data.channels codeFormatDescription]);
-                        
-                        XCTAssertEqualObjects(globalResult.data.channels, expectedChannels, @"Result and expected channels are not equal.");
                         [self.testExpectation fulfill];
                     }];
     
@@ -316,28 +283,9 @@
     [self.client hereNowForChannel:channelName
                      withVerbosity:PNHereNowOccupancy
                         completion:^(PNPresenceChannelHereNowResult *result, PNErrorStatus *status) {
-                            XCTAssertNil(status);
-                            XCTAssertEqual([result operation], PNHereNowGlobalOperation, @"Wrong operation");
-                            XCTAssertNotNil([result data]);
-                            XCTAssertEqual([result statusCode], 200);
-                            
-                            PNPresenceGlobalHereNowResult *globalResult = (PNPresenceGlobalHereNowResult *)result;
-                            
-                            NSDictionary *expectedChannels = @{
-                                                               @"0_5098427633369088" : @{
-                                                                       @"occupancy" : @1
-                                                                       },
-                                                               @"0_5650661106515968" : @{
-                                                                       @"occupancy" : @1
-                                                                       },
-                                                               @"all_activity" : @{
-                                                                       @"occupancy" : @1
-                                                                       }
-                                                               };
-                            
-                            NSLog(@"%@", [globalResult.data.channels codeFormatDescription]);
-                            
-                            XCTAssertEqualObjects(globalResult.data.channels, expectedChannels, @"Result and expected channels are not equal.");
+                            XCTAssertNil(result);
+                            XCTAssertEqual(status.operation, PNHereNowForChannelOperation, @"Wrong operation");
+                            XCTAssertEqual(status.statusCode, 400);
                             
                             [self.testExpectation fulfill];
                         }];
@@ -381,41 +329,9 @@
     [self.client hereNowForChannel:channelName
                      withVerbosity:PNHereNowState
                         completion:^(PNPresenceChannelHereNowResult *result, PNErrorStatus *status) {
-                            XCTAssertNil(status);
-                            XCTAssertEqual([result operation], PNHereNowGlobalOperation, @"Wrong operation");
-                            XCTAssertNotNil([result data]);
-                            XCTAssertEqual([result statusCode], 200);
-                            
-                            PNPresenceGlobalHereNowResult *globalResult = (PNPresenceGlobalHereNowResult *)result;
-                            
-                            NSDictionary *expectedChannels = @{@"0_5098427633369088" : @{
-                                                                                       @"uuids" : @[
-                                                                                               @{
-                                                                                                   @"uuid" : @"JejuFan--79001"
-                                                                                                   }
-                                                                                               ],
-                                                                                       @"occupancy" : @1
-                                                                                       },
-                            @"0_5650661106515968" : @{
-                                                      @"uuids" : @[
-                                                              @{
-                                                                  @"uuid" : @"JejuFan--79001"
-                                                                  }
-                                                              ],
-                                                      @"occupancy" : @1
-                                                      },
-                            @"all_activity" : @{
-                                                @"uuids" : @[
-                                                        @{
-                                                            @"uuid" : @"JejuFan--79001"
-                                                            }
-                                                        ],
-                                                @"occupancy" : @1
-                                                }};
-                            
-                            NSLog(@"%@", [globalResult.data.channels codeFormatDescription]);
-                            
-                            XCTAssertEqualObjects(globalResult.data.channels, expectedChannels, @"Result and expected channels are not equal.");
+                            XCTAssertNil(result);
+                            XCTAssertEqual(status.operation, PNHereNowForChannelOperation, @"Wrong operation");
+                            XCTAssertEqual(status.statusCode, 400);
 
                             
                             [self.testExpectation fulfill];
@@ -460,37 +376,9 @@
     [self.client hereNowForChannel:channelName
                      withVerbosity:PNHereNowUUID
                         completion:^(PNPresenceChannelHereNowResult *result, PNErrorStatus *status) {
-                            XCTAssertNil(status);
-                            XCTAssertEqual([result operation], PNHereNowGlobalOperation, @"Wrong operation");
-                            XCTAssertNotNil([result data]);
-                            XCTAssertEqual([result statusCode], 200);
-                            
-                            PNPresenceGlobalHereNowResult *globalResult = (PNPresenceGlobalHereNowResult *)result;
-                            
-                            NSDictionary *expectedChannels = @{
-                                                               @"0_5098427633369088" : @{
-                                                                       @"uuids" : @[
-                                                                               @"JejuFan--79001"
-                                                                               ],
-                                                                       @"occupancy" : @1
-                                                                       },
-                                                               @"0_5650661106515968" : @{
-                                                                       @"uuids" : @[
-                                                                               @"JejuFan--79001"
-                                                                               ],
-                                                                       @"occupancy" : @1
-                                                                       },
-                                                               @"all_activity" : @{
-                                                                       @"uuids" : @[
-                                                                               @"JejuFan--79001"
-                                                                               ],
-                                                                       @"occupancy" : @1
-                                                                       }
-                                                               };
-                            
-                            NSLog(@"%@", [globalResult.data.channels codeFormatDescription]);
-                            
-                            XCTAssertEqualObjects(globalResult.data.channels, expectedChannels, @"Result and expected channels are not equal.");
+                            XCTAssertNil(result);
+                            XCTAssertEqual(status.operation, PNHereNowForChannelOperation, @"Wrong operation");
+                            XCTAssertEqual(status.statusCode, 400);
                             
                             [self.testExpectation fulfill];
                         }];
@@ -533,40 +421,9 @@
     NSString *channelGroupName = nil;
     [self.client hereNowForChannelGroup:channelGroupName
                          withCompletion:^(PNPresenceChannelGroupHereNowResult *result, PNErrorStatus *status) {
-                             XCTAssertNil(status);
-                             XCTAssertEqual([result operation], PNHereNowGlobalOperation, @"Wrong operation");
-                             XCTAssertNotNil([result data]);
-                             XCTAssertEqual([result statusCode], 200);
-                             
-                             NSDictionary *expectedChannels = @{
-                                                                @"0_5098427633369088" : @{
-                                                                        @"uuids" : @[
-                                                                                @{
-                                                                                    @"uuid" : @"JejuFan--79001"
-                                                                                    }
-                                                                                ],
-                                                                        @"occupancy" : @1
-                                                                        },
-                                                                @"0_5650661106515968" : @{
-                                                                        @"uuids" : @[
-                                                                                @{
-                                                                                    @"uuid" : @"JejuFan--79001"
-                                                                                    }
-                                                                                ],
-                                                                        @"occupancy" : @1
-                                                                        },
-                                                                @"all_activity" : @{
-                                                                        @"uuids" : @[
-                                                                                @{
-                                                                                    @"uuid" : @"JejuFan--79001"
-                                                                                    }
-                                                                                ],
-                                                                        @"occupancy" : @1
-                                                                        }
-                                                                };
-                             NSLog(@"%@", [result.data.channels codeFormatDescription]);
-                             
-                             XCTAssertEqualObjects(result.data.channels, expectedChannels, @"Result and expected channels are not equal.");
+                             XCTAssertNil(result);
+                             XCTAssertEqual(status.operation, PNHereNowForChannelGroupOperation, @"Wrong operation");
+                             XCTAssertEqual(status.statusCode, 400);
                              
                              [self.testExpectation fulfill];
                          }];
@@ -611,25 +468,9 @@
     [self.client hereNowForChannelGroup:channelGroupName
                           withVerbosity:PNHereNowOccupancy
                              completion:^(PNPresenceChannelGroupHereNowResult *result, PNErrorStatus *status) {
-                                 XCTAssertNil(status);
-                                 XCTAssertEqual([result operation], PNHereNowGlobalOperation, @"Wrong operation");
-                                 XCTAssertNotNil([result data]);
-                                 XCTAssertEqual([result statusCode], 200);
-                                 
-                                 NSDictionary *expectedChannels = @{
-                                                                    @"0_5098427633369088" : @{
-                                                                            @"occupancy" : @1
-                                                                            },
-                                                                    @"0_5650661106515968" : @{
-                                                                            @"occupancy" : @1
-                                                                            },
-                                                                    @"all_activity" : @{
-                                                                            @"occupancy" : @1
-                                                                            }
-                                                                    };
-                                 NSLog(@"%@", [result.data.channels codeFormatDescription]);
-                                 
-                                 XCTAssertEqualObjects(result.data.channels, expectedChannels, @"Result and expected channels are not equal.");
+                                 XCTAssertNil(result);
+                                 XCTAssertEqual(status.operation, PNHereNowForChannelGroupOperation, @"Wrong operation");
+                                 XCTAssertEqual(status.statusCode, 400);
                                  
                                  [self.testExpectation fulfill];
                              }];
@@ -673,40 +514,9 @@
     [self.client hereNowForChannelGroup:channelGroupName
                           withVerbosity:PNHereNowState
                              completion:^(PNPresenceChannelGroupHereNowResult *result, PNErrorStatus *status) {
-                                 XCTAssertNil(status);
-                                 XCTAssertEqual([result operation], PNHereNowGlobalOperation, @"Wrong operation");
-                                 XCTAssertNotNil([result data]);
-                                 XCTAssertEqual([result statusCode], 200);
-                                 
-                                 NSDictionary *expectedChannels = @{
-                                     @"0_5098427633369088" : @{
-                                                               @"uuids" : @[
-                                                                       @{
-                                                                           @"uuid" : @"JejuFan--79001"
-                                                                           }
-                                                                       ],
-                                                               @"occupancy" : @1
-                                                               },
-                                     @"0_5650661106515968" : @{
-                                                               @"uuids" : @[
-                                                                       @{
-                                                                           @"uuid" : @"JejuFan--79001"
-                                                                           }
-                                                                       ],
-                                                               @"occupancy" : @1
-                                                               },
-                                     @"all_activity" : @{
-                                                         @"uuids" : @[
-                                                                 @{
-                                                                     @"uuid" : @"JejuFan--79001"
-                                                                     }
-                                                                 ],
-                                                         @"occupancy" : @1
-                                                         }
-                                 };
-                                 NSLog(@"%@", [result.data.channels codeFormatDescription]);
-                                 
-                                 XCTAssertEqualObjects(result.data.channels, expectedChannels, @"Result and expected channels are not equal.");
+                                 XCTAssertNil(result);
+                                 XCTAssertEqual(status.operation, PNHereNowForChannelGroupOperation, @"Wrong operation");
+                                 XCTAssertEqual(status.statusCode, 400);
                                  
                                  [self.testExpectation fulfill];
                              }];
@@ -750,32 +560,9 @@
     [self.client hereNowForChannelGroup:channelGroupName
                           withVerbosity:PNHereNowUUID
                              completion:^(PNPresenceChannelGroupHereNowResult *result, PNErrorStatus *status) {
-                                 XCTAssertNil(status);
-                                 XCTAssertEqual([result operation], PNHereNowGlobalOperation, @"Wrong operation");
-                                 XCTAssertNotNil([result data]);
-                                 XCTAssertEqual([result statusCode], 200);
-                                 
-                                 NSDictionary *expectedChannels = @{@"0_5098427633369088" : @{
-                                                                            @"uuids" : @[
-                                                                                    @"JejuFan--79001"
-                                                                                    ],
-                                                                            @"occupancy" : @1
-                                                                            },
-                                                                    @"0_5650661106515968" : @{
-                                                                            @"uuids" : @[
-                                                                                    @"JejuFan--79001"
-                                                                                    ],
-                                                                            @"occupancy" : @1
-                                                                            },
-                                                                    @"all_activity" : @{
-                                                                            @"uuids" : @[
-                                                                                    @"JejuFan--79001"
-                                                                                    ],
-                                                                            @"occupancy" : @1
-                                                                            }};
-                                 NSLog(@"%@", [result.data.channels codeFormatDescription]);
-                                 
-                                 XCTAssertEqualObjects(result.data.channels, expectedChannels, @"Result and expected channels are not equal.");
+                                 XCTAssertNil(result);
+                                 XCTAssertEqual(status.operation, PNHereNowForChannelGroupOperation, @"Wrong operation");
+                                 XCTAssertEqual(status.statusCode, 400);
                                  
                                  [self.testExpectation fulfill];
                              }];
