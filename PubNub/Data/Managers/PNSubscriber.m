@@ -879,7 +879,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
             }
             [weakSelf.client callBlock:nil status:YES withResult:nil andStatus:successStatus];
             BOOL listChanged = ![[NSSet setWithArray:[weakSelf allObjects]] isEqualToSet:subscriptionObjects];
-            if (subscribeOnRestChannels && (subscriptionObjects.count > 0 && listChanged)) {
+            if (subscribeOnRestChannels && (subscriptionObjects.count > 0 && !listChanged)) {
                 
                 [weakSelf subscribe:YES usingTimeToken:nil withState:nil completion:nil];
             }
