@@ -26,6 +26,21 @@
 @end
 
 
+#pragma mark - Private interface declaration
+
+@interface PNPresenceWhereNowResult ()
+
+
+#pragma mark - Properties
+
+@property (nonatomic, strong) PNPresenceWhereNowData *data;
+
+#pragma mark -
+
+
+@end
+
+
 #pragma mark - Interface implementation
 
 @implementation PNPresenceWhereNowResult
@@ -35,7 +50,8 @@
 
 - (PNPresenceWhereNowData *)data {
     
-    return [PNPresenceWhereNowData dataWithServiceResponse:self.serviceData];
+    if (!_data) { _data = [PNPresenceWhereNowData dataWithServiceResponse:self.serviceData]; }
+    return _data;
 }
 
 #pragma mark -

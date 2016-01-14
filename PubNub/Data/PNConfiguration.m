@@ -149,6 +149,7 @@ static NSString * const kPNConfigurationDeviceIDKey = @"PNConfigurationDeviceID"
     configuration.authKey = self.authKey;
     configuration.uuid = self.uuid;
     configuration.cipherKey = self.cipherKey;
+    configuration.filterExpression = self.filterExpression;
     configuration.subscribeMaximumIdleTime = self.subscribeMaximumIdleTime;
     configuration.nonSubscribeRequestTimeout = self.nonSubscribeRequestTimeout;
     configuration.presenceHeartbeatValue = self.presenceHeartbeatValue;

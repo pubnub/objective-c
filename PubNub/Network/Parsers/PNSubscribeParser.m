@@ -4,6 +4,7 @@
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "PNSubscribeParser.h"
+#import "PNEnvelopeInformation.h"
 #import "PubNub+CorePrivate.h"
 #import "PNLogMacro.h"
 #import "PNHelpers.h"
@@ -20,30 +21,144 @@
 static DDLogLevel ddLogLevel = (DDLogLevel)PNAESErrorLogLevel;
 
 /**
- Stores reference on index under which events list is stored.
+ @brief  Stores reference on key under which request status is stored.
  */
-static NSUInteger const kPNEventsListElementIndex = 0;
+static NSString * const kPNResponseStatusKey = @"s";
 
 /**
- Stores reference on time token element index in response for events.
+ @brief  Stores reference on key under which service advisory information stored.
  */
-static NSUInteger const kPNEventTimeTokenElement = 1;
+static NSString * const kPNResponseAdvisoryKey = @"a";
 
 /**
- Stores reference on index under which channels list is stored.
+ @brief  Stores reference on key under which stored information about when event has been triggered
+ by server and from which region.
  */
-static NSUInteger const kPNEventChannelsElementIndex = 2;
+static NSString * const kPNResponseEventTimeKey = @"t";
 
 /**
- @brief Stores reference on index under which channels detalization is stored
- 
- @discussion In case if under \c kPNEventChannelsElementIndex stored list of channel groups, under 
-             this index will be stored list of actual channels from channel group at which event
-             fired.
- 
- @since 3.7.0
+ @brief  Stores reference on key under which list of events is stored.
  */
-static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
+static NSString * const kPNResponseEvenetsListKey = @"m";
+
+
+#pragma mark - Structures
+
+/**
+ @brief  Describe structure with keys under which sotred information about when event has been
+ triggered and in which region (to which region client subscribed at this moment).
+ */
+struct PNEventTimeTokenStructure {
+    
+    /**
+     @brief  Stores reference on key under which stored high precision time token (on linuxtimestamp
+     in case of presence events) on when event has been triggered.
+     */
+    __unsafe_unretained NSString *timeToken;
+    
+    /**
+     @brief  Stores reference on key under which stored numeric region identier.
+     */
+    __unsafe_unretained NSString *region;
+} PNEventTimeToken = { .timeToken = @"t", .region = @"r" };
+
+/**
+ @brief  Describes overall real-time event format.
+ */
+struct PNEventEnvelopeStructure {
+    
+    /**
+     @brief  Describes structure to represent local time token (unixtimestamp casted to high
+     precision).
+     */
+    struct {
+        
+        /**
+         @brief  Stores reference on key under which sender time token information is stored.
+         */
+        __unsafe_unretained NSString *key;
+        
+        /**
+         @brief  Describes time token information.
+         */
+        struct PNEventTimeTokenStructure token;
+    } senderTimeToken;
+    
+    /**
+     @brief  Describes structure to represent represent time when message has been received by
+     \b PubNub service and passed to subscribers.
+     */
+    struct {
+        
+        /**
+         @brief  Stores reference on key under which publish time token information is stored.
+         */
+        __unsafe_unretained NSString *key;
+        
+        /**
+         @brief  Describes time token information.
+         */
+        struct PNEventTimeTokenStructure token;
+    } publishTimeToken;
+    
+    /**
+     @brief  Stores reference on key under which actual channel name on which event has been
+     triggered.
+     */
+    __unsafe_unretained NSString *actualChannel;
+    
+    /**
+     @brief  Stores reference on key under which stored name of the object on which client
+     subscribed at this moment (can be: \c channel, \c group or \c wildcard).
+     */
+    __unsafe_unretained NSString *subscribedChannel;
+    
+    /**
+     @brief  Stores reference on key under which stored event object data (can be user message for
+     publish message or presence dictionary with information about event).
+     */
+    __unsafe_unretained NSString *payload;
+    
+    struct {
+        
+        /**
+         @brief  Stores reference on key under which stored information about presence event type.
+         */
+        __unsafe_unretained NSString *action;
+        
+        /**
+         @brief  Stores reference on key under which stores information about client state on
+         channel which triggered presence event.
+         */
+        __unsafe_unretained NSString *data;
+        
+        /**
+         @brief  Stores reference on key under which stored information about occupancy in channel
+         which triggered event.
+         */
+        __unsafe_unretained NSString *occupancy;
+        
+        /**
+         @brief  Stores reference on key under which stored event triggering time token
+         (unixtimestamp).
+         */
+        __unsafe_unretained NSString *timestamp;
+        
+        /**
+         @brief  Stores reference on unique client identifier which caused presence event
+         triggering.
+         */
+        __unsafe_unretained NSString *uuid;
+    } presence;
+} PNEventEnvelope = {
+    .senderTimeToken = { .key = @"o" },
+    .publishTimeToken = { .key = @"p" },
+    .actualChannel = @"c",
+    .subscribedChannel = @"b",
+    .payload = @"d",
+    .presence = { .action = @"action", .data = @"data", .occupancy = @"occupancy",
+        .timestamp = @"timestamp", .uuid = @"uuid" }
+};
 
 
 #pragma mark - Protected interface
@@ -57,16 +172,13 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
  @brief  Parse real-time event received from data object live feed.
  
  @param data           Reference on service-provided data about event.
- @param channel        Reference on channel for which event has been received.
- @param group          Reference on channel group for which event has been received.
  @param additionalData Additional information provided by client to complete parsing.
  
  @return Pre-processed event information (depending on stored data).
  
- @since 4.0
+ @since 4.4.0
  */
-+ (NSMutableDictionary *)eventFromData:(id)data forChannel:(NSString *)channel
-                                 group:(NSString *)group
++ (NSMutableDictionary *)eventFromData:(id)data
               withAdditionalParserData:(NSDictionary *)additionalData;
 
 /**
@@ -153,40 +265,28 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
     NSDictionary *processedResponse = nil;
     
     // Array will arrive in case of subscription event
-    if ([response isKindOfClass:[NSArray class]]) {
+    if ([response isKindOfClass:NSDictionary.class]) {
         
-        NSArray *feedEvents = response[kPNEventsListElementIndex];
-        NSNumber *timeToken = @([response[kPNEventTimeTokenElement] longLongValue]);
-        NSArray *channels = nil;
-        NSArray *groups = nil;
-        if ([(NSArray *)response count] > kPNEventChannelsElementIndex) {
-            
-            channels = [PNChannel namesFromRequest:response[kPNEventChannelsElementIndex]];
-        }
-        if ([(NSArray *)response count] > kPNEventChannelsDetailsElementIndex) {
-            
-            groups = [PNChannel namesFromRequest:response[kPNEventChannelsDetailsElementIndex]];
-        }
+        NSDictionary *timeTokenDictionary = response[kPNResponseEventTimeKey];
+        NSNumber *timeToken = @([timeTokenDictionary[PNEventTimeToken.timeToken] longLongValue]);
+        NSNumber *region = @([timeTokenDictionary[PNEventTimeToken.region] longLongValue]);
         
         // Checking whether at least one event arrived or not.
+        NSArray *feedEvents = response[kPNResponseEvenetsListKey];
         if ([feedEvents count]) {
             
             NSMutableArray *events = [[NSMutableArray alloc] initWithCapacity:[feedEvents count]];
             for (NSUInteger eventIdx = 0; eventIdx < [feedEvents count]; eventIdx++) {
                 
                 // Fetching remote data object name on which event fired.
-                NSString *objectOrGroupName = (eventIdx < [channels count] ? channels[eventIdx] : channels[0]);
-                NSString *objectName = ([groups count] > eventIdx ? groups[eventIdx] : nil);
                 NSMutableDictionary *event = [self eventFromData:feedEvents[eventIdx]
-                                                      forChannel:(objectName?: objectOrGroupName)
-                                                           group:(objectName? objectOrGroupName: nil)
                                         withAdditionalParserData:additionalData];
-                event[@"timetoken"] = timeToken;
+                if (!event[@"timetoken"]) { event[@"timetoken"] = timeToken; }
                 [events addObject:event];
             }
             feedEvents = [events copy];
         }
-        processedResponse = @{@"events":feedEvents,@"timetoken":timeToken};
+        processedResponse = @{@"events":feedEvents, @"timetoken":timeToken, @"region":region};
     }
     
     return processedResponse;
@@ -195,34 +295,32 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
 
 #pragma mark - Events processing
 
-+ (NSMutableDictionary *)eventFromData:(id)data forChannel:(NSString *)channel
-                                 group:(NSString *)group
++ (NSMutableDictionary *)eventFromData:(id)data
               withAdditionalParserData:(NSDictionary *)additionalData {
     
     NSMutableDictionary *event = [NSMutableDictionary new];
-    if ([channel length]) {
+    NSString *channel = data[PNEventEnvelope.actualChannel];
+    NSString *subscriptionMatch = data[PNEventEnvelope.subscribedChannel];
+    if ([channel isEqualToString:subscriptionMatch]) { subscriptionMatch = nil; }
+    event[@"envelope"] = [PNEnvelopeInformation envelopeInformationWithPayload:data];
+    event[@"subscribedChannel"] = (subscriptionMatch?: channel);
+    event[@"actualChannel"] = (subscriptionMatch ? channel : nil);
+
+    id timeTokenData = (data[PNEventEnvelope.senderTimeToken.key]?:
+                        data[PNEventEnvelope.publishTimeToken.key]);
+    if ([timeTokenData isKindOfClass:NSDictionary.class]) {
         
-        event[(![group length] ? @"subscribedChannel": @"actualChannel")] = channel;
-    }
-    if ([group length]) {
-        
-        event[@"subscribedChannel"] = group;
+        event[@"timetoken"] = @([((NSDictionary *)timeTokenData)[PNEventTimeToken.timeToken] longLongValue]);
+        event[@"region"] = @([((NSDictionary *)timeTokenData)[PNEventTimeToken.region] longLongValue]);
     }
     
-    BOOL isPresenceEvent = [PNChannel isPresenceObject:channel];
-    if (![channel length] && [data isKindOfClass:[NSDictionary class]]) {
+    if ([PNChannel isPresenceObject:event[@"subscribedChannel"]]) {
         
-        isPresenceEvent = (data[@"timestamp"] != nil &&
-                           (data[@"action"] != nil || data[@"occupancy"] != nil));
-    }
-    
-    if (isPresenceEvent) {
-        
-        [event addEntriesFromDictionary:[self presenceFromData:data]];
+        [event addEntriesFromDictionary:[self presenceFromData:data[PNEventEnvelope.payload]]];
     }
     else {
         
-        [event addEntriesFromDictionary:[self messageFromData:data
+        [event addEntriesFromDictionary:[self messageFromData:data[PNEventEnvelope.payload]
                                      withAdditionalParserData:additionalData]];
     }
     
@@ -277,22 +375,19 @@ static NSUInteger const kPNEventChannelsDetailsElementIndex = 3;
     NSMutableDictionary *presence = [NSMutableDictionary new];
     
     // Processing common for all presence events data.
-    presence[@"presenceEvent"] = (data[@"action"]?: @"interval");
+    presence[@"presenceEvent"] = (data[PNEventEnvelope.presence.action]?: @"interval");
     presence[@"presence"] = [NSMutableDictionary new];
-    presence[@"presence"][@"timetoken"] = data[@"timestamp"];
+    presence[@"presence"][@"timetoken"] = data[PNEventEnvelope.presence.timestamp];
     if (data[@"uuid"]) {
         
-        presence[@"presence"][@"uuid"] = data[@"uuid"];
+        presence[@"presence"][@"uuid"] = data[PNEventEnvelope.presence.uuid];
     }
     
     // Check whether this is not state modification event.
-    if (![presence[@"presenceEvent"] isEqualToString:@"state-change"]) {
-        
-        presence[@"presence"][@"occupancy"] = (data[@"occupancy"]?: @0);
-    }
+    presence[@"presence"][@"occupancy"] = (data[PNEventEnvelope.presence.occupancy]?: @0);
     if (data[@"data"]) {
      
-        presence[@"presence"][@"state"] = data[@"data"];
+        presence[@"presence"][@"state"] = data[PNEventEnvelope.presence.data];
     }
     
     return presence;

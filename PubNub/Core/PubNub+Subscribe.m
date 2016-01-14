@@ -83,7 +83,7 @@
         presenceChannelsList = [PNChannel presenceChannelsFrom:channels];
     }
     [self.subscriberManager addChannels:[channels arrayByAddingObjectsFromArray:presenceChannelsList]];
-    [self.subscriberManager subscribe:YES usingTimeToken:timeToken withState:state completion:nil];
+    [self.subscriberManager subscribeUsingTimeToken:timeToken withState:state completion:nil];
 }
 
 - (void)subscribeToChannelGroups:(NSArray *)groups withPresence:(BOOL)shouldObservePresence {
@@ -114,14 +114,14 @@
         groupsList = [groups arrayByAddingObjectsFromArray:[PNChannel presenceChannelsFrom:groups]];
     }
     [self.subscriberManager addChannelGroups:groupsList];
-    [self.subscriberManager subscribe:YES usingTimeToken:timeToken withState:state completion:nil];
+    [self.subscriberManager subscribeUsingTimeToken:timeToken withState:state completion:nil];
 }
 
 - (void)subscribeToPresenceChannels:(NSArray *)channels {
     
     channels = [PNChannel presenceChannelsFrom:channels];
     [self.subscriberManager addPresenceChannels:channels];
-    [self.subscriberManager subscribe:YES usingTimeToken:nil withState:nil completion:nil];
+    [self.subscriberManager subscribeUsingTimeToken:nil withState:nil completion:nil];
 }
 
 

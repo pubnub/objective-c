@@ -15,6 +15,8 @@
 
 @property (nonatomic, strong) id associatedObject;
 
+@property (nonatomic, strong) PNErrorData *errorData;
+
 #pragma mark -
 
 

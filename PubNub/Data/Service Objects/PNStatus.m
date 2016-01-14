@@ -204,6 +204,8 @@
     status.error = self.isError;
     status.currentTimetoken = self.currentTimetoken;
     status.lastTimeToken = self.lastTimeToken;
+    status.currentTimeTokenRegion = self.currentTimeTokenRegion;
+    status.lastTimeTokenRegion = self.lastTimeTokenRegion;
     status.automaticallyRetry = self.willAutomaticallyRetry;
     status.retryBlock = self.retryBlock;
     status.retryCancelBlock = self.retryCancelBlock;
@@ -362,6 +364,8 @@
         
         status[@"Time"] = @{@"Current": (self.currentTimetoken?: @(0)),
                             @"Previous": (self.lastTimeToken?: @(0))};
+        status[@"Region"] = @{@"Current": (self.currentTimeTokenRegion?: @"<empty>"),
+                            @"Previous": (self.lastTimeTokenRegion?: @"<empty>")};
         status[@"Objects"] = [NSMutableDictionary new];
         if ([self.subscribedChannels count]) {
             

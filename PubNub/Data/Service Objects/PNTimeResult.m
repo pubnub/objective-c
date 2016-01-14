@@ -8,7 +8,7 @@
 #import "PNResult+Private.h"
 
 
-#pragma mark Interface implementation
+#pragma mark - Interface implementation
 
 @implementation PNTimeData
 
@@ -26,6 +26,21 @@
 @end
 
 
+#pragma mark - Private interface declaration
+
+@interface PNTimeResult ()
+
+
+#pragma mark - Properties
+
+@property (nonatomic, strong) PNTimeData *data;
+
+#pragma mark -
+
+
+@end
+
+
 #pragma mark - Interface implementation
 
 @implementation PNTimeResult
@@ -35,7 +50,8 @@
 
 - (PNTimeData *)data {
     
-    return [PNTimeData dataWithServiceResponse:self.serviceData];
+    if (!_data) { _data = [PNTimeData dataWithServiceResponse:self.serviceData]; }
+    return _data;
 }
 
 #pragma mark -

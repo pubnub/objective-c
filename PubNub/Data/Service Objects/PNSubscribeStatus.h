@@ -37,6 +37,13 @@
  */
 @property (nonatomic, readonly, strong) NSNumber *timetoken;
 
+/**
+ @brief  Stores reference on metadata information which has been passed along with received event.
+ 
+ @since 4.4.0
+ */
+@property (nonatomic, readonly, strong) NSDictionary *userMetadata;
+
 #pragma mark -
 
 
@@ -91,7 +98,7 @@
  
  @since 4.0
  */
-@property (nonatomic, readonly, copy) PNSubscriberData *data;
+@property (nonatomic, readonly, strong) PNSubscriberData *data;
 
 #pragma mark -
 

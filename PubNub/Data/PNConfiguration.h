@@ -89,6 +89,18 @@
 @property (nonatomic, copy) NSString *cipherKey;
 
 /**
+ @brief      Stores a filter expression for the subscribe loop to use for filtering received messages
+ @discussion Live feed events will be filtered according to this string. It cannot be changed once set,
+             but will be copied using \c -copyWithConfiguration:completion: or 
+             \c -copyWithConfiguration:callbackQueue:completion: helper methods.
+ @warning    If your filter expression is malformed, it will return a status to any instance of
+             \b PNObjectEventListener but that client instance will not be valid.
+
+ @since 4.4.0
+ */
+@property (nonatomic, copy) NSString *filterExpression;
+
+/**
  @brief      Stores reference on maximum number of seconds which client should wait for events from
              live feed.
  @discussion By default value is set to \b 310 seconds. If in specified time frame \b PubNub service

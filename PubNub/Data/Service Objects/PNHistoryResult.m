@@ -36,6 +36,21 @@
 @end
 
 
+#pragma mark - Private interface declaration
+
+@interface PNHistoryResult ()
+
+
+#pragma mark - Properties
+
+@property (nonatomic, strong) PNHistoryData *data;
+
+#pragma mark -
+
+
+@end
+
+
 #pragma mark - Interface implementation
 
 @implementation PNHistoryResult
@@ -45,7 +60,8 @@
 
 - (PNHistoryData *)data {
     
-    return [PNHistoryData dataWithServiceResponse:self.serviceData];
+    if (!_data) { _data = [PNHistoryData dataWithServiceResponse:self.serviceData]; }
+    return _data;
 }
 
 #pragma mark -

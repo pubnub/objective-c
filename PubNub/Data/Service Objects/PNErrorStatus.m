@@ -8,7 +8,7 @@
 #import "PNResult+Private.h"
 
 
-#pragma mark - Interface implementation
+#pragma mark Interface implementation
 
 @implementation PNErrorData
 
@@ -53,7 +53,8 @@
 
 - (PNErrorData *)errorData {
     
-    return [PNErrorData dataWithServiceResponse:self.serviceData];
+    if (!_errorData) { _errorData = [PNErrorData dataWithServiceResponse:self.serviceData]; }
+    return _errorData;
 }
 
 #pragma mark -

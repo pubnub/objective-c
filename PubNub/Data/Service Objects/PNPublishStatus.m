@@ -25,6 +25,22 @@
 @end
 
 
+
+#pragma mark - Private interface declaration
+
+@interface PNPublishStatus ()
+
+
+#pragma mark - Properties
+
+@property (nonatomic, strong) PNPublishData *data;
+
+#pragma mark -
+
+
+@end
+
+
 #pragma mark - Interface implementation
 
 @implementation PNPublishStatus
@@ -34,7 +50,8 @@
 
 - (PNPublishData *)data {
     
-    return [PNPublishData dataWithServiceResponse:self.serviceData];
+    if (!_data) { _data = [PNPublishData dataWithServiceResponse:self.serviceData]; }
+    return _data;
 }
 
 #pragma mark -

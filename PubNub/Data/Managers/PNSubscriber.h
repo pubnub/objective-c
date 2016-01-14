@@ -166,17 +166,15 @@ typedef void(^PNSubscriberCompletionBlock)(PNSubscribeStatus *status);
  @discussion Subscription with \b 0 timetoken "register" client in \b PubNub network and allow to
              receive live updates from remote data objects live feed.
  
- @param initialSubscribe Stores whether client trying to subscriber using \b 0 time token and
-                         trigger all required presence notifications or not.
- @param timeToken        Time from which client should try to catch up on messages.
- @param state            Reference on client state which should be bound to channels on which
-                         client has been subscribed or will subscribe now.
- @param block            Reference on subscription completion block which is used to notify code.
+ @param timeToken Time from which client should try to catch up on messages.
+ @param state     Reference on client state which should be bound to channels on which client has 
+                  been subscribed or will subscribe now.
+ @param block     Reference on subscription completion block which is used to notify code.
  
  @since 4.0
  */
-- (void)subscribe:(BOOL)initialSubscribe usingTimeToken:(NSNumber *)timeToken
-        withState:(NSDictionary *)state completion:(PNSubscriberCompletionBlock)block;
+- (void)subscribeUsingTimeToken:(NSNumber *)timeToken withState:(NSDictionary *)state 
+                     completion:(PNSubscriberCompletionBlock)block;
 
 /**
  @brief  Try restore subscription cycle by using \b 0 time token and if required try to catch up on

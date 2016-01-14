@@ -82,6 +82,21 @@
 @end
 
 
+#pragma mark - Private interface declaration
+
+@interface PNMessageResult ()
+
+
+#pragma mark - Properties
+
+@property (nonatomic, strong) PNMessageData *data;
+
+#pragma mark -
+
+
+@end
+
+
 #pragma mark - Interface implementation
 
 @implementation PNMessageResult
@@ -91,8 +106,24 @@
 
 - (PNMessageData *)data {
     
-    return [PNMessageData dataWithServiceResponse:self.serviceData];
+    if (!_data) { _data = [PNMessageData dataWithServiceResponse:self.serviceData]; }
+    return _data;
 }
+
+#pragma mark -
+
+
+@end
+
+
+#pragma mark - Private interface declaration
+
+@interface PNPresenceEventResult ()
+
+
+#pragma mark - Properties
+
+@property (nonatomic, strong) PNPresenceEventData *data;
 
 #pragma mark -
 
@@ -109,7 +140,8 @@
 
 - (PNPresenceEventData *)data {
     
-    return [PNPresenceEventData dataWithServiceResponse:self.serviceData];
+    if (!_data) { _data = [PNPresenceEventData dataWithServiceResponse:self.serviceData]; }
+    return _data;
 }
 
 #pragma mark -

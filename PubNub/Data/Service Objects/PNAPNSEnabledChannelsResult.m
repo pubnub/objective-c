@@ -25,6 +25,21 @@
 @end
 
 
+#pragma mark - Private interface declaration
+
+@interface PNAPNSEnabledChannelsResult ()
+
+
+#pragma mark - Properties
+
+@property (nonatomic, strong) PNAPNSEnabledChannelsData *data;
+
+#pragma mark -
+
+
+@end
+
+
 #pragma mark - Interface implementation
 
 @implementation PNAPNSEnabledChannelsResult
@@ -34,7 +49,8 @@
 
 - (PNAPNSEnabledChannelsData *)data {
     
-    return [PNAPNSEnabledChannelsData dataWithServiceResponse:self.serviceData];
+    if (!_data) { _data = [PNAPNSEnabledChannelsData dataWithServiceResponse:self.serviceData]; }
+    return _data;
 }
 
 #pragma mark - 

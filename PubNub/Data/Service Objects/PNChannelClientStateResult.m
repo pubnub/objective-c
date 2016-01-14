@@ -8,7 +8,7 @@
 #import "PNResult+Private.h"
 
 
-#pragma mark Interface implementation
+#pragma mark - Interface implementation
 
 @implementation PNChannelClientStateData
 
@@ -26,6 +26,21 @@
 @end
 
 
+#pragma mark - Private interface declaration
+
+@interface PNChannelClientStateResult ()
+
+
+#pragma mark - Properties
+
+@property (nonatomic, strong) PNChannelClientStateData *data;
+
+#pragma mark -
+
+
+@end
+
+
 #pragma mark - Interface implementation
 
 @implementation PNChannelClientStateResult
@@ -35,7 +50,8 @@
 
 - (PNChannelClientStateData *)data {
     
-    return [PNChannelClientStateData dataWithServiceResponse:self.serviceData];
+    if (!_data) { _data = [PNChannelClientStateData dataWithServiceResponse:self.serviceData]; }
+    return _data;
 }
 
 #pragma mark -

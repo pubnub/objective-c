@@ -45,12 +45,27 @@
 @property (nonatomic, strong) NSNumber *currentTimetoken;
 
 /**
- @brief  Stores reference on previous key which has been used in subscription cycle to receive
+ @brief  Stores reference on previous time token which has been used in subscription cycle to receive
          \c currentTimetoken along with other events.
  
  @since 4.0
  */
 @property (nonatomic, strong) NSNumber *lastTimeToken;
+
+/**
+ @brief      Stores reference on \b PubNub server region identifier (which generated \c currentTimetoken value).
+ 
+ @since 4.4.0
+ */
+@property (nonatomic, strong) NSNumber *currentTimeTokenRegion;
+
+/**
+ @brief  Stores reference on previous time token region which has been used in subscription cycle to receive
+         \c currentTimeTokenRegion along with other events.
+
+ @since 4.4.0
+ */
+@property (nonatomic, strong) NSNumber *lastTimeTokenRegion;
 
 /**
  @brief  Stores reference on list of channels on which client currently subscribed.

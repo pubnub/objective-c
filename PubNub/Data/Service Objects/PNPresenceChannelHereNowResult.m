@@ -31,6 +31,20 @@
 @end
 
 
+#pragma mark - Private interface declaration
+
+@interface PNPresenceChannelHereNowResult ()
+
+
+#pragma mark - Properties
+
+@property (nonatomic, strong) PNPresenceChannelHereNowData *data;
+
+#pragma mark -
+
+
+@end
+
 
 #pragma mark - Interface implementation
 
@@ -41,7 +55,8 @@
 
 - (PNPresenceChannelHereNowData *)data {
     
-    return [PNPresenceChannelHereNowData dataWithServiceResponse:self.serviceData];
+    if (!_data) { _data = [PNPresenceChannelHereNowData dataWithServiceResponse:self.serviceData]; }
+    return _data;
 }
 
 #pragma mark -

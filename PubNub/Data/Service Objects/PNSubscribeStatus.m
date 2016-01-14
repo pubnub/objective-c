@@ -4,6 +4,8 @@
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import "PNSubscribeStatus.h"
+#import "PNSubscribeStatus+Private.h"
+#import "PNEnvelopeInformation.h"
 #import "PNServiceData+Private.h"
 #import "PNResult+Private.h"
 
@@ -30,6 +32,21 @@
     return self.serviceData[@"timetoken"];
 }
 
+- (NSNumber *)region {
+    
+    return self.serviceData[@"region"];
+}
+
+- (NSDictionary *)userMetadata {
+    
+    return self.envelope.metadata;
+}
+
+- (PNEnvelopeInformation *)envelope {
+    
+    return self.serviceData[@"envelope"];
+}
+
 #pragma mark -
 
 
@@ -46,7 +63,8 @@
 
 - (PNSubscriberData *)data {
     
-    return [PNSubscriberData dataWithServiceResponse:self.serviceData];
+    if (!_data) { _data = [PNSubscriberData dataWithServiceResponse:self.serviceData]; }
+    return _data;
 }
 
 #pragma mark -

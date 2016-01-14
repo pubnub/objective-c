@@ -35,6 +35,22 @@
 
 @end
 
+
+#pragma mark - Private interface declaration
+
+@interface PNPresenceGlobalHereNowResult ()
+
+
+#pragma mark - Properties
+
+@property (nonatomic, strong) PNPresenceGlobalHereNowData *data;
+
+#pragma mark -
+
+
+@end
+
+
 #pragma mark - Interface implementation
 
 @implementation PNPresenceGlobalHereNowResult
@@ -44,7 +60,8 @@
 
 - (PNPresenceGlobalHereNowData *)data {
     
-    return [PNPresenceGlobalHereNowData dataWithServiceResponse:self.serviceData];
+    if (!_data) { _data = [PNPresenceGlobalHereNowData dataWithServiceResponse:self.serviceData]; }
+    return _data;
 }
 
 #pragma mark -

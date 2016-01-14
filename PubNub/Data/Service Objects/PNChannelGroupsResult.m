@@ -3,7 +3,7 @@
 #import "PNResult+Private.h"
 
 
-#pragma mark Interface implementation
+#pragma mark - Interface implementation
 
 @implementation PNChannelGroupsData
 
@@ -21,6 +21,21 @@
 @end
 
 
+#pragma mark - Private interface declaration
+
+@interface PNChannelGroupsResult ()
+
+
+#pragma mark - Properties
+
+@property (nonatomic, strong) PNChannelGroupsData *data;
+
+#pragma mark -
+
+
+@end
+
+
 #pragma mark - Interface implementation
 
 @implementation PNChannelGroupsResult
@@ -30,7 +45,8 @@
 
 - (PNChannelGroupsData *)data {
     
-    return [PNChannelGroupsData dataWithServiceResponse:self.serviceData];
+    if (!_data) { _data = [PNChannelGroupsData dataWithServiceResponse:self.serviceData]; }
+    return _data;
 }
 
 #pragma mark -
