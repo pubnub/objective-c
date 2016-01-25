@@ -15,6 +15,7 @@
 #endif // __MAC_OS_X_VERSION_MIN_REQUIRED
 #import "PNConfiguration+Private.h"
 #import "PNConstants.h"
+#import "PNKeychain.h"
 
 
 #pragma mark Static
@@ -166,14 +167,17 @@ static NSString * const kPNConfigurationDeviceIDKey = @"PNConfigurationDeviceID"
 
 - (NSString *)uniqueDeviceIdentifier {
     
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *identifier = [defaults stringForKey:kPNConfigurationDeviceIDKey];
-    if (!identifier) {
+    __block NSString *identifier = nil;
+    [PNKeychain valueForKey:kPNConfigurationDeviceIDKey withCompletionBlock:^(id value) {
         
-        identifier = [self generateUniqueDeviceIdentifier];
-        [defaults setObject:identifier forKey:kPNConfigurationDeviceIDKey];
-        [defaults synchronize];
-    }
+        if (!value) {
+            
+            identifier = [self generateUniqueDeviceIdentifier];
+            [PNKeychain storeValue:identifier forKey:kPNConfigurationDeviceIDKey
+               withCompletionBlock:NULL];
+        }
+        else { identifier = value; }
+    }];
     
     return identifier;
 }
