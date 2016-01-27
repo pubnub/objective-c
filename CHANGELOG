@@ -1,3 +1,6 @@
+01-12-2016 - 8cfef05 - 4.2.4
+. fixed issue because of which client may not restore subscription on list of channels which has been left after previous unsubscription request
+
 12-20-2015 - 4210650 - 4.2.3
 . fixed unsubscription issue because of which time token didn't get reset if there is no more channels on which client may continue subscription
 . fixed issue with -unsubscribeFromAll which may issue unwanted subscribe requests in case if method call followed by subscribe method call
