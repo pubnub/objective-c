@@ -100,7 +100,7 @@ def get_sims_for_run(platform)
 end
 
 def get_simulators(platform)
-  minimum_runtime_versions = {'iOS' => '8.0', 'watchOS' => '2.0', 'tvOS' => '9.0'}
+  minimum_runtime_versions = {'iOS' => '8.0', 'watchOS' => '2.0', 'tvOS' => '9.1'}
   return get_simulators_by_platform(platform, minimum_runtime_versions[platform])
 end
 

@@ -73,7 +73,7 @@ static NSUInteger const kPNRequiredTimeTokenPrecision = 17;
     if (number) {
         
         NSNumber *value = [self normalizeValue:number];
-        timeToken = @([number unsignedLongLongValue] * [self correctionForPrecision:[self numberPrecision:value]]);
+        timeToken = @([value unsignedLongLongValue] * [self correctionForPrecision:[self numberPrecision:value]]);
     }
     
     return timeToken;
