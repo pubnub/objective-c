@@ -9,49 +9,31 @@
          <BuildActionEntry
             buildForTesting = "YES"
             buildForRunning = "YES"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "797BDD041C1F5176006EF006"
-               BuildableName = "tvOS ObjC Tests.xctest"
-               BlueprintName = "tvOS ObjC Tests"
-               ReferencedContainer = "container:PubNub Tests.xcodeproj">
+               BlueprintIdentifier = "79A8BDB71C58FC2E00015BDE"
+               BuildableName = "Universal Framework (tvOS)"
+               BlueprintName = "Universal Framework (tvOS)"
+               ReferencedContainer = "container:PubNub Framework.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
-      buildConfiguration = "Release"
+      buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "797BDD041C1F5176006EF006"
-               BuildableName = "tvOS ObjC Tests.xctest"
-               BlueprintName = "tvOS ObjC Tests"
-               ReferencedContainer = "container:PubNub Tests.xcodeproj">
-            </BuildableReference>
-            <SkippedTests>
-               <Test
-                  Identifier = "PNSubscribeTests/testTimeTokenResetBetweenSubscriptionsWithUnsubscribe">
-               </Test>
-               <Test
-                  Identifier = "PNSubscribeTests/testTimeTokenResetBetweenSubscriptionsWithUnsubscribeAll">
-               </Test>
-            </SkippedTests>
-         </TestableReference>
       </Testables>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
    <LaunchAction
-      buildConfiguration = "Release"
+      buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
@@ -63,10 +45,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "797BDD041C1F5176006EF006"
-            BuildableName = "tvOS ObjC Tests.xctest"
-            BlueprintName = "tvOS ObjC Tests"
-            ReferencedContainer = "container:PubNub Tests.xcodeproj">
+            BlueprintIdentifier = "79A8BDB71C58FC2E00015BDE"
+            BuildableName = "Universal Framework (tvOS)"
+            BlueprintName = "Universal Framework (tvOS)"
+            ReferencedContainer = "container:PubNub Framework.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -81,15 +63,15 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "797BDD041C1F5176006EF006"
-            BuildableName = "tvOS ObjC Tests.xctest"
-            BlueprintName = "tvOS ObjC Tests"
-            ReferencedContainer = "container:PubNub Tests.xcodeproj">
+            BlueprintIdentifier = "79A8BDB71C58FC2E00015BDE"
+            BuildableName = "Universal Framework (tvOS)"
+            BlueprintName = "Universal Framework (tvOS)"
+            ReferencedContainer = "container:PubNub Framework.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
-      buildConfiguration = "Release">
+      buildConfiguration = "Debug">
    </AnalyzeAction>
    <ArchiveAction
       buildConfiguration = "Release"
