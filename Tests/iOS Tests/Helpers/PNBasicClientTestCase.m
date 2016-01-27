@@ -12,8 +12,8 @@
 
 @implementation PNBasicClientTestCase
 
-- (JSZVCRTestingStrictness)matchingFailStrictness {
-    return JSZVCRTestingStrictnessNone;
+- (JSZVCRMatchingStrictness)matchingFailStrictness {
+    return JSZVCRMatchingStrictnessNone;
 }
 
 - (void)setUp {
