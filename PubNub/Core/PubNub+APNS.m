@@ -8,10 +8,22 @@
 #import "PubNub+CorePrivate.h"
 #import "PNStatus+Private.h"
 #import "PNLogMacro.h"
+#import "PNKeychain.h"
 #import "PNHelpers.h"
 
 
-#pragma mark Protected interface declaration
+#pragma mark Static
+
+/**
+ @brief  Stores reference on key under which previous device push token is stored
+         in persistent storage.
+ 
+ @since 4.x.1
+ */
+static NSString * const kPNAPNSDevicePushTokenStoreKey = @"PNAPNSDevicePushToken";
+
+
+#pragma mark - Protected interface declaration
 
 @interface PubNub (APNSProtected)
 
@@ -35,6 +47,18 @@
 - (void)enablePushNotification:(BOOL)shouldEnabled onChannels:(NSArray *)channels
            withDevicePushToken:(NSData *)pushToken
                  andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block;
+
+
+#pragma mark - Misc
+
+/**
+ @brief      Receive device push token stored in persistent storage.
+ @discussion Try to receive device push token which has been during previous channels registration
+             from Keychain storage.
+ 
+ @since 4.x.1
+ */
+- (NSData *)storedDevicePushToken;
 
 #pragma mark - 
 
@@ -92,6 +116,17 @@
 
             [parameters addQueryParameter:[PNChannel namesForRequest:channels]
                              forFieldName:(shouldEnabled ? @"add":@"remove")];
+            if (operationType == PNAddPushNotificationsOnChannelsOperation) {
+                
+                NSData *previousPushToken = [self storedDevicePushToken];
+                NSLog(@"Previous device token: %@", previousPushToken);
+                if (previousPushToken && ![pushToken isEqual:previousPushToken]) {
+                    
+                    NSLog(@"Old device push token should be removed");
+                    [parameters addQueryParameter:[[PNData HEXFromDevicePushToken:previousPushToken] lowercaseString]
+                                     forFieldName:@"old_token"];
+                }
+            }
         }
         else if (operationType == PNAddPushNotificationsOnChannelsOperation) {
             
@@ -126,6 +161,11 @@
                 [weakSelf enablePushNotification:shouldEnabled onChannels:channels
                              withDevicePushToken:pushToken andCompletion:block];
             };
+        }
+        else if (operationType == PNAddPushNotificationsOnChannelsOperation) {
+            
+            [PNKeychain storeValue:pushToken forKey:kPNAPNSDevicePushTokenStoreKey
+               withCompletionBlock:NULL];
         }
         [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
         #pragma clang diagnostic pop
@@ -169,6 +209,25 @@
                [weakSelf callBlock:block status:NO withResult:result andStatus:status];
                #pragma clang diagnostic pop
            }];
+}
+
+
+#pragma mark - Misc
+
+- (NSData *)storedDevicePushToken {
+    
+    __block NSData *token = nil;
+    [PNKeychain valueForKey:kPNAPNSDevicePushTokenStoreKey withCompletionBlock:^(id value) {
+        
+        if ([value isKindOfClass:NSString.class]) {
+            
+            token = [(NSString *)value dataUsingEncoding:NSUTF8StringEncoding];
+        }
+        else if ([value isKindOfClass:NSData.class]){ token = value; }
+    }];
+    NSLog(@"Return");
+    
+    return token;
 }
 
 #pragma mark -
