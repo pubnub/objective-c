@@ -1,5 +1,6 @@
 01-27-2016 - a5dd54a - 4.2.5
 . added private persistent storage which allow to keep crucial data safe on device.
+. added new target to build dynamic framework for tvOS 
 . fixed issue with time token precision verification in case if non-PubNub's time token value has been passe. 
 
 01-12-2016 - 8cfef05 - 4.2.4
