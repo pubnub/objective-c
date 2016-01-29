@@ -232,6 +232,10 @@
 		96B222BC1B84868C002549D5 /* PNPresenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B222BB1B84868C002549D5 /* PNPresenceTests.swift */; };
 		96E383931BAAC12F00560991 /* PNConfigurationChiperKeyTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 9652F3E61BA6E90B001E940A /* PNConfigurationChiperKeyTests.bundle */; };
 		96F0239E1B580D0000C4A581 /* NSArray+PNTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96F0239D1B580D0000C4A581 /* NSArray+PNTest.m */; };
+		96F584711C0F3B54007DFC9D /* PNSubscribeNetworkIssueTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 96F584701C0F3B54007DFC9D /* PNSubscribeNetworkIssueTests.m */; };
+		96F584731C0F4837007DFC9D /* PNSubscribeNetworkIssueTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 96F584721C0F4837007DFC9D /* PNSubscribeNetworkIssueTests.bundle */; };
+		96F584741C0F4837007DFC9D /* PNSubscribeNetworkIssueTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 96F584721C0F4837007DFC9D /* PNSubscribeNetworkIssueTests.bundle */; };
+		96F584751C0F4837007DFC9D /* PNSubscribeNetworkIssueTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 96F584721C0F4837007DFC9D /* PNSubscribeNetworkIssueTests.bundle */; };
 		9722C2761B68A24C00A7CB44 /* PNPublishTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9722C2751B68A24C00A7CB44 /* PNPublishTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -315,6 +319,8 @@
 		96B222BB1B84868C002549D5 /* PNPresenceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNPresenceTests.swift; sourceTree = "<group>"; };
 		96F0239C1B580D0000C4A581 /* NSArray+PNTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSArray+PNTest.h"; path = "iOS Tests/Helpers/NSArray+PNTest.h"; sourceTree = "<group>"; };
 		96F0239D1B580D0000C4A581 /* NSArray+PNTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSArray+PNTest.m"; path = "iOS Tests/Helpers/NSArray+PNTest.m"; sourceTree = "<group>"; };
+		96F584701C0F3B54007DFC9D /* PNSubscribeNetworkIssueTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNSubscribeNetworkIssueTests.m; path = Tests/PNSubscribeNetworkIssueTests.m; sourceTree = "<group>"; };
+		96F584721C0F4837007DFC9D /* PNSubscribeNetworkIssueTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = PNSubscribeNetworkIssueTests.bundle; path = Fixtures/PNSubscribeNetworkIssueTests.bundle; sourceTree = "<group>"; };
 		9722C2751B68A24C00A7CB44 /* PNPublishTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNPublishTests.swift; sourceTree = "<group>"; };
 		996F8FCE58B78A9BFF3256B0 /* Pods-OSX ObjC Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OSX ObjC Tests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-OSX ObjC Tests/Pods-OSX ObjC Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		C4D27A99EFA39B0795EF017E /* Pods-tvOS ObjC Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-tvOS ObjC Tests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-tvOS ObjC Tests/Pods-tvOS ObjC Tests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -439,6 +445,7 @@
 				79EF04A31B4EAAB7007478CB /* PNUnsubscribeTests.m */,
 				9652F3E31BA31F7D001E940A /* PNConfigurationChiperKeyTests.h */,
 				9652F3E41BA31F7D001E940A /* PNConfigurationChiperKeyTests.m */,
+				96F584701C0F3B54007DFC9D /* PNSubscribeNetworkIssueTests.m */,
 			);
 			name = Tests;
 			path = "iOS Tests";
@@ -520,6 +527,7 @@
 		51F7AAC11B27AD7400BEDA1F /* Fixtures */ = {
 			isa = PBXGroup;
 			children = (
+				96F584721C0F4837007DFC9D /* PNSubscribeNetworkIssueTests.bundle */,
 				9652F3E61BA6E90B001E940A /* PNConfigurationChiperKeyTests.bundle */,
 				960354F51B90629C0047EE04 /* PNPresenceEventTests.bundle */,
 				79EF04C31B4EAB1A007478CB /* PNAPNSTests.bundle */,
@@ -751,6 +759,7 @@
 				517A9F061BE31ADB00FAA43A /* PNSubscribeTests.bundle in Resources */,
 				517A9EF81BE31ADB00FAA43A /* PNAPNSTests.bundle in Resources */,
 				517A9EFD1BE31ADB00FAA43A /* PNClientStateChannelGroupTests.bundle in Resources */,
+				96F584751C0F4837007DFC9D /* PNSubscribeNetworkIssueTests.bundle in Resources */,
 				517A9F091BE31ADB00FAA43A /* PNUnsubscribeTests.bundle in Resources */,
 				517A9EF61BE31ADB00FAA43A /* PNConfigurationChiperKeyTests.bundle in Resources */,
 				517A9F031BE31ADB00FAA43A /* PNPublishTests.bundle in Resources */,
@@ -778,6 +787,7 @@
 				79EF04DA1B4EAB1A007478CB /* PNClientStateChannelGroupTests.bundle in Resources */,
 				79EF04DB1B4EAB1A007478CB /* PNClientStateChannelTests.bundle in Resources */,
 				79EF04D61B4EAB1A007478CB /* PNChannelGroupSubscribeTests.bundle in Resources */,
+				96F584731C0F4837007DFC9D /* PNSubscribeNetworkIssueTests.bundle in Resources */,
 				79EF04E41B4EAB1A007478CB /* PNSubscribeToPresenceChannelsTests.bundle in Resources */,
 				79EF04E31B4EAB1A007478CB /* PNSubscribeTests.bundle in Resources */,
 				79EF04D81B4EAB1A007478CB /* PNChannelGroupUnsubscribeTests.bundle in Resources */,
@@ -805,6 +815,7 @@
 				51BB25481B68176C00A9F154 /* PNClientStateChannelGroupTests.bundle in Resources */,
 				51BB25491B68176C00A9F154 /* PNClientStateChannelTests.bundle in Resources */,
 				51BB25441B68176C00A9F154 /* PNChannelGroupSubscribeTests.bundle in Resources */,
+				96F584741C0F4837007DFC9D /* PNSubscribeNetworkIssueTests.bundle in Resources */,
 				51BB25521B68176C00A9F154 /* PNSubscribeToPresenceChannelsTests.bundle in Resources */,
 				51BB25511B68176C00A9F154 /* PNSubscribeTests.bundle in Resources */,
 				51BB25461B68176C00A9F154 /* PNChannelGroupUnsubscribeTests.bundle in Resources */,
@@ -1096,6 +1107,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				96F584711C0F3B54007DFC9D /* PNSubscribeNetworkIssueTests.m in Sources */,
 				79EF04B21B4EAAB7007478CB /* PNPublishWithMobilePayloadTests.m in Sources */,
 				9652F3E51BA31F7D001E940A /* PNConfigurationChiperKeyTests.m in Sources */,
 				79EF04B01B4EAAB7007478CB /* PNPublishTests.m in Sources */,
