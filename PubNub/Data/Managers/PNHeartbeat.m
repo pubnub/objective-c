@@ -176,7 +176,7 @@
         __weak __typeof(self) weakSelf = self;
         [self.client heartbeatWithCompletion:^(PNStatus *status) {
             
-            if (status.isError) {
+            if (status.isError || !weakSelf.client.configuration.shouldNotifyAboutFailedHeartbeatsOnly) {
                 
                 [weakSelf.client.listenersManager notifyHeartbeatStatus:status];
             }
