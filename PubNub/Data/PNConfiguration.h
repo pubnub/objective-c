@@ -149,6 +149,16 @@
 @property (nonatomic, assign, getter = isTLSEnabled) BOOL TLSEnabled;
 
 /**
+ @brief  Stores whether delegate should be notified only about failed heartbeat requests or about
+         success as well.
+ 
+ @default By default client use \c YES to notify only about failed requests.
+ 
+ @since 4.2.6
+ */
+@property (nonatomic, assign, getter = shouldNotifyAboutFailedHeartbeatsOnly) BOOL notifyAboutFailedHeartbeatsOnly;
+
+/**
  @brief  Stores whether client should keep previous time token when subscribe on new set of remote
          data objects live feeds.
  
