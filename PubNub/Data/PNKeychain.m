@@ -129,6 +129,7 @@
 
 + (void)debugKeychainQueryStatus:(OSStatus)status {
     
+#ifdef DEBUG
     switch (status) {
         case errSecParam:
         case errSecBadReq:
@@ -143,6 +144,7 @@
         default:
             break;
     }
+#endif
 }
 
 + (void)checkExistingDataWithQuery:(NSMutableDictionary *)query completionBlock:(void(^)(BOOL))block {
