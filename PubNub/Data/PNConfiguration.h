@@ -1,4 +1,5 @@
 #import <Foundation/Foundation.h>
+#import "PNStructures.h"
 
 
 /**
@@ -139,6 +140,16 @@
 @property (nonatomic, assign) NSInteger presenceHeartbeatInterval;
 
 /**
+ @brief  Stores bitfield which describe client's behavior on which heartbeat request processing states 
+         delegate should be notified.
+ 
+ @default By default client use \c PNHeartbeatNotifyFailure to notify only about failed requests.
+ 
+ @since 4.2.7
+ */
+@property (nonatomic, assign) PNHeartbeatNotificationOptions heartbeatNotificationOptions;
+
+/**
  @brief   Stores whether client should communicate with \b PubNub services using secured
           connection or not.
  
@@ -147,16 +158,6 @@
  @since 4.0
  */
 @property (nonatomic, assign, getter = isTLSEnabled) BOOL TLSEnabled;
-
-/**
- @brief  Stores whether delegate should be notified only about failed heartbeat requests or about
-         success as well.
- 
- @default By default client use \c YES to notify only about failed requests.
- 
- @since 4.2.6
- */
-@property (nonatomic, assign, getter = shouldNotifyAboutFailedHeartbeatsOnly) BOOL notifyAboutFailedHeartbeatsOnly;
 
 /**
  @brief  Stores whether client should keep previous time token when subscribe on new set of remote

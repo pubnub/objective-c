@@ -7,6 +7,7 @@
 #import "PubNub+PresencePrivate.h"
 #import "PubNub+CorePrivate.h"
 #import "PNConfiguration.h"
+#import "PNStructures.h"
 #import "PNHelpers.h"
 #import "PNStatus.h"
 
@@ -63,6 +64,17 @@
  @since 4.0
  */
 - (void)handleHeartbeatTimer;
+
+
+#pragma mark - Misc
+
+/**
+ @brief  Check whether current configuration require inform about heartbeat request processing \c status or 
+         not.
+ 
+ @return \c YES in case if delegate should be notified.
+ */
+- (BOOL)shouldNotifyAboutHeartbeatWithStatus:(PNStatus *)status;
 
 #pragma mark -
 
@@ -176,7 +188,7 @@
         __weak __typeof(self) weakSelf = self;
         [self.client heartbeatWithCompletion:^(PNStatus *status) {
             
-            if (status.isError || !weakSelf.client.configuration.shouldNotifyAboutFailedHeartbeatsOnly) {
+            if ([weakSelf shouldNotifyAboutHeartbeatWithStatus:status]) {
                 
                 [weakSelf.client.listenersManager notifyHeartbeatStatus:status];
             }
@@ -187,6 +199,31 @@
         [self stopHeartbeatIfPossible];
     }
     #pragma clang diagnostic pop
+}
+
+
+#pragma mark - Misc
+
+- (BOOL)shouldNotifyAboutHeartbeatWithStatus:(PNStatus *)status {
+    
+    PNHeartbeatNotificationOptions heartbeatOptions = self.client.configuration.heartbeatNotificationOptions;
+    BOOL shouldNotify = !((heartbeatOptions & PNHeartbeatNotifyNone) == PNHeartbeatNotifyNone);
+    if (shouldNotify) {
+        
+        if (!((heartbeatOptions & PNHeartbeatNotifyAll) == PNHeartbeatNotifyAll)) {
+            
+            if (status.isError) { 
+                
+                shouldNotify = ((heartbeatOptions & PNHeartbeatNotifyFailure) == PNHeartbeatNotifyFailure);
+            }
+            else { 
+                
+                shouldNotify = ((heartbeatOptions & PNHeartbeatNotifySuccess) == PNHeartbeatNotifySuccess);
+            }
+        }
+    }
+    
+    return shouldNotify;
 }
 
 #pragma mark -
