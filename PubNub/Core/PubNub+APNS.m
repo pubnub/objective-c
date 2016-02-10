@@ -119,10 +119,8 @@ static NSString * const kPNAPNSDevicePushTokenStoreKey = @"PNAPNSDevicePushToken
             if (operationType == PNAddPushNotificationsOnChannelsOperation) {
                 
                 NSData *previousPushToken = [self storedDevicePushToken];
-                NSLog(@"Previous device token: %@", previousPushToken);
                 if (previousPushToken && ![pushToken isEqual:previousPushToken]) {
                     
-                    NSLog(@"Old device push token should be removed");
                     [parameters addQueryParameter:[[PNData HEXFromDevicePushToken:previousPushToken] lowercaseString]
                                      forFieldName:@"old_token"];
                 }
@@ -225,7 +223,6 @@ static NSString * const kPNAPNSDevicePushTokenStoreKey = @"PNAPNSDevicePushToken
         }
         else if ([value isKindOfClass:NSData.class]){ token = value; }
     }];
-    NSLog(@"Return");
     
     return token;
 }

@@ -1,3 +1,6 @@
+02-09-2016 - ad5d8a3 - 4.2.7
+. changed way how heartbeat state notification is set. Now it can be specified in heartbeatNotificationOptions bitfield property using PNHeartbeatNotificationOptions options.
+
 02-09-2016 - 161f2e8 - 4.2.6
 . added new property to PNConfiguration class called notifyAboutFailedHeartbeatsOnly which allow to configure client to notify not only about failed heartbeat statuses but for success as well.
 
