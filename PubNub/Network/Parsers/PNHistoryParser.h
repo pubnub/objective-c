@@ -2,19 +2,15 @@
 #import "PNParser.h"
 
 /**
- @brief      Class suitable to handle and process \b PubNub service response on channel history
-             request.
+ @brief      Class suitable to handle and process \b PubNub service response on channel history request.
  @discussion Handle and pre-process provided server data to fetch operation result from it.
+ @discussion Expected input:
  
  @code
- @endcode
- Expected output:
- 
- @code
- {
+{
   "status": @BOOL,
   "state": NSDictionary
- }
+}
  @endcode
  
  @author Sergey Mamontov

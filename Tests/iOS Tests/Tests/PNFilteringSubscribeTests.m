@@ -21,26 +21,9 @@ static NSString * const kPNChannelTestName = @"PNFilterSubscribeTests";
     return NO;
 }
 
-- (PNConfiguration *)overrideClientConfiguration:(PNConfiguration *)configuration {
-    if (
-        (self.invocation.selector == @selector(testPublishWithNoMetadataAndReceivedMessageForSubscribeWithNoFiltering)) ||
-        (self.invocation.selector == @selector(testPublishWithNoMetadataAndReceiveMultipleMessagesForSubscribeWithNoFiltering))
-        ) {
-        // don't set a filter expression
-    } else if (self.invocation.selector == @selector(testPublishWithMetadataAndNoReceivedMessageForSubscribeWithDifferentFiltering)) {
-        configuration.filterExpression = @"(a == 'b')";
-    } else if (self.invocation.selector == @selector(testPublishWithMetadataAndNoReceivedMessageForSubscribeWithFilteringWithSameKeyAndDifferentValue)) {
-        configuration.filterExpression = @"(foo == 'b')";
-    } else if (self.invocation.selector == @selector(testPublishWithMetadataAndNoReceivedMessageForSubscribeWithFilteringWithSwitchedKeysAndValues)) {
-        configuration.filterExpression = @"(bar == 'foo')";
-    } else {
-        configuration.filterExpression = @"(foo=='bar')";
-    }
-    return configuration;
-}
-
 - (void)setUp {
     [super setUp];
+    [self setupMessageFiltering];
     self.hasPublished = NO;
     // Put setup code here. This method is called before the invocation of each test method in the class.
     self.testData = [[PNSubscribeTestData alloc] init];
@@ -76,6 +59,25 @@ static NSString * const kPNChannelTestName = @"PNFilterSubscribeTests";
     };
     [self PNTest_unsubscribeFromChannels:@[kPNChannelTestName] withPresence:NO];
     [super tearDown];
+}
+
+- (void)setupMessageFiltering {
+    
+    if (
+        (self.invocation.selector == @selector(testPublishWithNoMetadataAndReceivedMessageForSubscribeWithNoFiltering)) ||
+        (self.invocation.selector == @selector(testPublishWithNoMetadataAndReceiveMultipleMessagesForSubscribeWithNoFiltering))
+        ) {
+        // No filter expression
+    } else if (self.invocation.selector == @selector(testPublishWithMetadataAndNoReceivedMessageForSubscribeWithDifferentFiltering)) {
+        [self.client setFilterExpression:@"(a == 'b')"];
+    } else if (self.invocation.selector == @selector(testPublishWithMetadataAndNoReceivedMessageForSubscribeWithFilteringWithSameKeyAndDifferentValue)) {
+        [self.client setFilterExpression:@"(foo == 'b')"];
+    } else if (self.invocation.selector == @selector(testPublishWithMetadataAndNoReceivedMessageForSubscribeWithFilteringWithSwitchedKeysAndValues)) {
+        [self.client setFilterExpression:@"(bar == 'foo')"];
+    } else {
+        
+        [self.client setFilterExpression:@"(foo=='bar')"];
+    }
 }
 
 - (void)testPublishWithNoMetadataAndReceiveMultipleMessagesForSubscribeWithNoFiltering {

@@ -28,25 +28,11 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNAESErrorLogLevel;
 
 #pragma mark - Logger
 
-/**
- @brief  Called by Cocoa Lumberjack during initialization.
- 
- @return Desired logger level for \b PubNub client main class.
- 
- @since 4.0
- */
 + (DDLogLevel)ddLogLevel {
     
     return ddLogLevel;
 }
 
-/**
- @brief  Allow modify logger level used by Cocoa Lumberjack with logging macros.
- 
- @param logLevel New log level which should be used by logger.
- 
- @since 4.0
- */
 + (void)ddSetLogLevel:(DDLogLevel)logLevel {
     
     ddLogLevel = logLevel;
@@ -55,7 +41,7 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNAESErrorLogLevel;
 
 #pragma mark - Identification
 
-+ (NSArray *)operations {
++ (NSArray<NSNumber *> *)operations {
     
     return @[@(PNHistoryOperation)];
 }
@@ -68,29 +54,28 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNAESErrorLogLevel;
 
 #pragma mark - Parsing
 
-+ (NSDictionary *)parsedServiceResponse:(id)response withData:(NSDictionary *)additionalData {
++ (nullable NSDictionary<NSString *, id> *)parsedServiceResponse:(id)response 
+   withData:(nullable NSDictionary<NSString *, id> *)additionalData {
     
-    // To handle case when response is unexpected for this type of operation processed value sent
-    // through 'nil' initialized local variable.
+    // To handle case when response is unexpected for this type of operation processed value sent through 
+    // 'nil' initialized local variable.
     NSDictionary *processedResponse = nil;
     
     // Array is valid response type for history request.
-    if ([response isKindOfClass:[NSArray class]] && [(NSArray *)response count] == 3) {
+    if ([response isKindOfClass:[NSArray class]] && ((NSArray *)response).count == 3) {
         
-        NSMutableDictionary *data = [@{@"start": (NSArray *)response[1],
-                                       @"end": (NSArray *)response[2],
+        NSMutableDictionary *data = [@{@"start": (NSArray *)response[1], @"end": (NSArray *)response[2],
                                        @"messages": [NSMutableArray new]} mutableCopy];
         NSArray *messages = (NSArray *)response[0];
-        [messages enumerateObjectsUsingBlock:^(id messageObject,
-                                               __unused NSUInteger messageObjectIdx,
+        [messages enumerateObjectsUsingBlock:^(id messageObject, __unused NSUInteger messageObjectIdx,
                                                __unused BOOL *messageObjectEnumeratorStop) {
             
             NSNumber *timeToken = nil;
             id message = messageObject;
             
             // Check whether history response returned with 'timetoken' or not.
-            if ([messageObject isKindOfClass:[NSDictionary class]] &&
-                messageObject[@"message"] && messageObject[@"timetoken"]) {
+            if ([messageObject isKindOfClass:[NSDictionary class]] &&messageObject[@"message"] && 
+                messageObject[@"timetoken"]) {
                 
                 timeToken = messageObject[@"timetoken"];
                 message = messageObject[@"message"];
@@ -98,7 +83,7 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNAESErrorLogLevel;
             }
             
             // Try decrypt message if possible.
-            if ([(NSString *)additionalData[@"cipherKey"] length]){
+            if (((NSString *)additionalData[@"cipherKey"]).length){
                 
                 NSError *decryptionError;
                 id decryptedMessage = nil;
@@ -113,8 +98,8 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNAESErrorLogLevel;
                                                                        encoding:NSUTF8StringEncoding];
                     }
                     
-                    // In case if decrypted message (because of error suppression) is equal to
-                    // original message, there is no need to retry JSON de-serialization.
+                    // In case if decrypted message (because of error suppression) is equal to original 
+                    // message, there is no need to retry JSON de-serialization.
                     if (decryptedMessageString && ![decryptedMessageString isEqualToString:message]) {
                         
                         decryptedMessage = [PNJSON JSONObjectFrom:decryptedMessageString withError:nil];
@@ -130,10 +115,7 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNAESErrorLogLevel;
                     // Restore message to original form.
                     message = messageObject;
                 }
-                else {
-                    
-                    message = decryptedMessage;
-                }
+                else { message = decryptedMessage; }
             }
             
             if (message) {

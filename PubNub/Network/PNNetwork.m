@@ -38,8 +38,8 @@ static DDLogLevel ddLogLevel;
 #pragma mark - Types
 
 /**
- @brief  Definition for block which is used as NSURLSessionDataTask completion handler (passed 
-         during task creation.
+ @brief  Definition for block which is used as NSURLSessionDataTask completion handler (passed during task 
+         creation.
  
  @param data     Actual raw data which has been received from \b PubNub service in response.
  @param response HTTP response instance which hold metadata about response.
@@ -47,19 +47,19 @@ static DDLogLevel ddLogLevel;
  
  @since 4.0.2
  */
-typedef void(^NSURLSessionDataTaskCompletion)(NSData *data, NSURLResponse *response, NSError *error);
+typedef void(^NSURLSessionDataTaskCompletion)(NSData * _Nullable data, NSURLResponse * _Nullable response, 
+                                              NSError * _Nullable error);
 
 /**
- @brief  Definition for block which is used by \b PubNub SDK to process successfully completed 
-         request with pre-processed response.
+ @brief  Definition for block which is used by \b PubNub SDK to process successfully completed request with
+         pre-processed response.
  
- @param task           Reference on data load task which has been used to communicate with \b PubNub
-                       network.
+ @param task           Reference on data load task which has been used to communicate with \b PubNub network.
  @param responseObject Serialized \b PubNub service response.
  
  @since 4.0.2
  */
-typedef void(^NSURLSessionDataTaskSuccess)(NSURLSessionDataTask *task, id responseObject);
+typedef void(^NSURLSessionDataTaskSuccess)(NSURLSessionDataTask * _Nullable task, id _Nullable responseObject);
 
 /**
  @brief  Definition for block which is used by \b PubNub SDK to process failed request.
@@ -69,8 +69,10 @@ typedef void(^NSURLSessionDataTaskSuccess)(NSURLSessionDataTask *task, id respon
  
  @since 4.0.2
  */
-typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *error);
+typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask * _Nullable task, NSError * _Nullable error);
 
+
+NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Protected interface declaration
 
@@ -87,19 +89,16 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
 @property (nonatomic, weak) PubNub *client;
 
 /**
- @brief  Stores reference on \b PubNub client configuration which define network manager behavior as
-         well.
+ @brief  Stores reference on \b PubNub client configuration which define network manager behavior as well.
  
  @since 4.0
  */
 @property (nonatomic, strong) PNConfiguration *configuration;
 
 /**
- @brief      Stores whether \b PubNub network manager configured for long-poll request processing or
-             not.
- @discussion This property taken into account when manager need to invalidate underlying 
-             \a NSURLSession and dictate whether all scheduled requests should be completed or 
-             terminated.
+ @brief      Stores whether \b PubNub network manager configured for long-poll request processing or not.
+ @discussion This property taken into account when manager need to invalidate underlying \a NSURLSession and 
+             dictate whether all scheduled requests should be completed or terminated.
  
  @since 4.0
  */
@@ -127,53 +126,51 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
  
  @since 4.0.2
  */
-@property (nonatomic) NSURLSession *session;
+@property (nonatomic, strong) NSURLSession *session;
 
 /**
  @brief  Stores dictionary with headers which should be appended to every request.
  
  @since 4.0.2
  */
-@property (nonatomic) NSDictionary *additionalHeaders;
+@property (nonatomic, strong) NSDictionary *additionalHeaders;
 
 /**
- @brief  Stores reference on base URL which should be appeanded with reasource path to perform 
-         network request.
+ @brief  Stores reference on base URL which should be appeanded with reasource path to perform network
+         request.
  
  @since 4.0.2
  */
-@property (nonatomic) NSURL *baseURL;
+@property (nonatomic, strong) NSURL *baseURL;
 
 /**
  @brief  Stores reference on serializer used to pre-process service responses.
  
  @since 4.0.2
  */
-@property (nonatomic) PNNetworkResponseSerializer *serializer;
+@property (nonatomic, strong) PNNetworkResponseSerializer *serializer;
 
 /**
- @brief  Stores reference on queue which should be used by session to call callbacks and completion
-         blocks on \c PNNetwork instance.
+ @brief  Stores reference on queue which should be used by session to call callbacks and completion blocks on
+         \c PNNetwork instance.
  
  @since 4.0.2
  */
-@property (nonatomic) NSOperationQueue *delegateQueue;
+@property (nonatomic, strong) NSOperationQueue *delegateQueue;
 
 /**
- @brief      Stores reference on queue which is used to call \b PNNetwork response processing on
-             another queue.
- @discussion Response processing involves data parsing which is most time consuming operation. 
-             Dispatching response processing on side queue allow to keep requests sending unaffected 
-             by processing delays.
+ @brief      Stores reference on queue which is used to call \b PNNetwork response processing on another 
+             queue.
+ @discussion Response processing involves data parsing which is most time consuming operation. Dispatching 
+             response processing on side queue allow to keep requests sending unaffected by processing delays.
  
  @since 4.0.2
  */
-@property (nonatomic) dispatch_queue_t processingQueue;
+@property (nonatomic, strong) dispatch_queue_t processingQueue;
 
 /**
- @brief  Stores reference on spin-lock which is used to protect access to session instance which can
-         be changed at any moment (invalidated instances can't be used and SDK should instantiate 
-         new instance).
+ @brief  Stores reference on spin-lock which is used to protect access to session instance which can be 
+         changed at any moment (invalidated instances can't be used and SDK should instantiate new instance).
  
  @since 4.0.2
  */
@@ -188,11 +185,10 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
  @param client             Reference on client for which this network manager is creating.
  @param timeout            Maximum time which manager should wait for response on request.
  @param maximumConnections Maximum simultaneously connections (requests) which can be opened.
- @param longPollEnabled    Whether \b PubNub network manager should be configured for long-poll
-                           requests or not. This option affect the way how network manager handle
-                           reset.
- @param queue              Reference on GCD queue which should be used for callbacks and as working
-                           queue for underlying logic.
+ @param longPollEnabled    Whether \b PubNub network manager should be configured for long-poll requests or 
+                           not. This option affect the way how network manager handle reset.
+ @param queue              Reference on GCD queue which should be used for callbacks and as working queue for 
+                           underlying logic.
  
  @return 4.0
  
@@ -208,8 +204,8 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
 /**
  @brief  Append additional parameters general for all requests.
  
- @param parameters Reference on request parameters instance which should be updated with required
-                   set of parameters.
+ @param parameters Reference on request parameters instance which should be updated with required set of 
+                   parameters.
  
  @since 4.0
  */
@@ -231,10 +227,9 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
  @brief  Construct data task which should be used to process provided request.
  
  @param request Reference on request which should be issued with data task to NSURL session.
- @param success Reference on data task success handling block which will be called by network 
+ @param success Reference on data task success handling block which will be called by network manager.
+ @param failure Reference on data task processing failure handling block which will be called by network 
                 manager.
- @param failure Reference on data task processing failure handling block which will be called by 
-                network manager.
  
  @return Constructed and ready to use data task.
  
@@ -259,8 +254,7 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
 - (BOOL)operationExpectResult:(PNOperationType)operation;
 
 /**
- @brief  Retrieve reference on parser class which can be used to process received data for 
-         \c operation
+ @brief  Retrieve reference on parser class which can be used to process received data for \c operation
  
  @param operation Operation type for which suitable parser should be found.
  
@@ -268,15 +262,14 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
  
  @since 4.0
  */
-- (Class <PNParser>)parserForOperation:(PNOperationType)operation;
+- (nullable Class <PNParser>)parserForOperation:(PNOperationType)operation;
 
 /**
  @brief  Retrieve reference on class which can be used to represent request processing results.
  
  @param operation Type of operation which is expecting response from \b PubNub network.
  
- @return Target class which should be used instead of \b PNResult (if non will be found 
-         \b PNResult).
+ @return Target class which should be used instead of \b PNResult (if non will be found \b PNResult).
  
  @since 4.0
  */
@@ -287,8 +280,7 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
  
  @param operation Type of operation which is expecting status from \b PubNub network.
  
- @return Target class which should be used instead of \b PNStatus (if non will be found
-         \b PNStatus).
+ @return Target class which should be used instead of \b PNStatus (if non will be found \b PNStatus).
  
  @since 4.0
  */
@@ -297,15 +289,14 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
 /**
  @brief  Try process \c data using parser suitable for operation for which data has been received.
  
- @param data       Reference on data which has been received from \b PubNub network in response for
-                   operation.
+ @param data       Reference on data which has been received from \b PubNub network in response for operation.
  @param parser     Reference on class which should be used to parse data.
  @param block      Reference on block which should be called back at the end of parsing process.
  
  @since 4.0
  */
-- (void)parseData:(id)data withParser:(Class <PNParser>)parser
-       completion:(void(^)(NSDictionary *parsedData, BOOL parseError))block;
+- (void)parseData:(nullable id)data withParser:(Class <PNParser>)parser
+       completion:(void(^)(NSDictionary * _Nullable parsedData, BOOL parseError))block;
 
 
 #pragma mark - Session constructor
@@ -337,8 +328,8 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
 /**
  @brief  Construct qaueue on which session will call delegate callbacks and completion blocks.
  
- @param configuration Reference on session configuration instance which should be used to complete
-                      queue configuration.
+ @param configuration Reference on session configuration instance which should be used to complete queue 
+                      configuration.
  
  @return Initialized and ready to use operaiton queue.
  
@@ -380,98 +371,93 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
 
 /**
  @brief      Serialize service response or handle error.
- @discussion Depending on received metadata and data code will call passed success or failure blocks
-             after serialization process completion on secondary queue.
+ @discussion Depending on received metadata and data code will call passed success or failure blocks after 
+             serialization process completion on secondary queue.
  
  @param data    Reference on RAW data received from service.
  @param task    Reference on data task which has been used to communicate with \b PubNub network.
  @param error   Reference on data/request processing error.
- @param success Reference on data task success handling block which will be called by network
+ @param success Reference on data task success handling block which will be called by network manager.
+ @param failure Reference on data task processing failure handling block which will be called by network 
                 manager.
- @param failure Reference on data task processing failure handling block which will be called by
-                network manager.
  
  @since 4.0
  */
-- (void)handleData:(NSData *)data loadedWithTask:(NSURLSessionDataTask *)task
-             error:(NSError *)requestError usingSuccess:(NSURLSessionDataTaskSuccess)success
+- (void)handleData:(nullable NSData *)data loadedWithTask:(nullable NSURLSessionDataTask *)task
+             error:(nullable NSError *)requestError usingSuccess:(NSURLSessionDataTaskSuccess)success
            failure:(NSURLSessionDataTaskFailure)failure;
 
 /**
  @brief      Handle successful operation processing completion.
  @discussion Called when request for \b PubNub network successfully completed processing.
  
- @param operation      Reference on operation type for which actual network request has been sent to
-                       \b PubNub network.
- @param task           Reference on data task which has been used to deliver operation to \b PubNub
+ @param operation      Reference on operation type for which actual network request has been sent to \b PubNub
                        network.
+ @param task           Reference on data task which has been used to deliver operation to \b PubNub network.
  @param responseObject Reference on pre-processed \b PubNub network response (de-serialized JSON).
  @param block          Depending on operation type it can be \b PNResultBlock, \b PNStatusBlock or
                        \b PNCompletionBlock blocks.`
  
  @since 4.0
  */
-- (void)handleOperation:(PNOperationType)operation taskDidComplete:(NSURLSessionDataTask *)task
-               withData:(id)responseObject completionBlock:(id)block;
+- (void)handleOperation:(PNOperationType)operation taskDidComplete:(nullable NSURLSessionDataTask *)task
+               withData:(nullable id)responseObject completionBlock:(id)block;
 
 /**
  @brief      Handle operation failure.
- @discussion Called when request for \b PubNub network did fail to process or service respond with
-             error.
+ @discussion Called when request for \b PubNub network did fail to process or service respond with error.
  
- @param operation Reference on operation type for which actual network request has been sent to
-                  \b PubNub network.
- @param task      Reference on data task which has been used to deliver operation to \b PubNub
+ @param operation Reference on operation type for which actual network request has been sent to \b PubNub 
                   network.
- @param error     Reference on \a NSError instance which describe what exactly went wrong during 
-                  operation processing.
+ @param task      Reference on data task which has been used to deliver operation to \b PubNub network.
+ @param error     Reference on \a NSError instance which describe what exactly went wrong during operation 
+                  processing.
  @param block     Depending on operation type it can be \b PNResultBlock, \b PNStatusBlock or
                   \b PNCompletionBlock blocks.
  
  @since 4.0
  */
-- (void)handleOperation:(PNOperationType)operation taskDidFail:(NSURLSessionDataTask *)task
-              withError:(NSError *)error completionBlock:(id)block;
+- (void)handleOperation:(PNOperationType)operation taskDidFail:(nullable NSURLSessionDataTask *)task
+              withError:(nullable NSError *)error completionBlock:(id)block;
 
 /**
- @brief  Pre-processed service response handler.
- @discussion This method actually build result and status objects basing on pre-processed service 
-             response.
+ @brief      Pre-processed service response handler.
+ @discussion This method actually build result and status objects basing on pre-processed service response.
  
  @param data      Pre-processed data, using parser.
  @param task      Reference on data task which has been used to communicate with \b PubNub network.
- @param operation One of \b PNOperationType enum fields which clarify what kind of request has been
-                  done to \b PubNub network and for which response has been processed.
+ @param operation One of \b PNOperationType enum fields which clarify what kind of request has been done to
+                  \b PubNub network and for which response has been processed.
  @param isError   Whether pre-processed data represent error or not.
  @param error     Reference on data/request processing error.
- @param block     Block which should be called at the end of pre-processed data wrapping into
-                  objects.
+ @param block     Block which should be called at the end of pre-processed data wrapping into objects.
  
  @since 4.0
  */
-- (void)handleParsedData:(NSDictionary *)data loadedWithTask:(NSURLSessionDataTask *)task
+- (void)handleParsedData:(nullable NSDictionary *)data loadedWithTask:(nullable NSURLSessionDataTask *)task
             forOperation:(PNOperationType)operation parsedAsError:(BOOL)isError
-         processingError:(NSError *)error completionBlock:(id)block;
+         processingError:(nullable NSError *)error completionBlock:(id)block;
 
 /**
  @brief  Used to handle prepared objects and pass them to the code.
  
- @param operation One of \b PNOperationType enum fields which clarify for what kind of operation 
-                  objects has been created.
+ @param operation One of \b PNOperationType enum fields which clarify for what kind of operation objects has
+                  been created.
  @param result    Reference on object which stores useful server response.
  @param status    Reference on request processing result (can be error or ACK response).
- @param block     Block which should be called at the end of pre-processed data wrapping into 
-                  objects.
+ @param block     Block which should be called at the end of pre-processed data wrapping into objects.
  
  @since 4.0
  */
-- (void)handleOperation:(PNOperationType)operation processingCompletedWithResult:(PNResult *)result
-                 status:(PNStatus *)status completionBlock:(id)block;
+- (void)handleOperation:(PNOperationType)operation processingCompletedWithResult:(nullable PNResult *)result
+                 status:(nullable PNStatus *)status completionBlock:(id)block;
 
 #pragma mark -
 
 
 @end
+
+NS_ASSUME_NONNULL_END
 
 
 #pragma mark - Interface implementation
@@ -481,25 +467,11 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
 
 #pragma mark - Logger
 
-/**
- @brief  Called by Cocoa Lumberjack during initialization.
- 
- @return Desired logger level for \b PubNub client main class.
- 
- @since 4.0
- */
 + (DDLogLevel)ddLogLevel {
     
     return ddLogLevel;
 }
 
-/**
- @brief  Allow modify logger level used by Cocoa Lumberjack with logging macros.
- 
- @param logLevel New log level which should be used by logger.
- 
- @since 4.0
- */
 + (void)ddSetLogLevel:(DDLogLevel)logLevel {
     
     ddLogLevel = logLevel;
@@ -549,7 +521,7 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
                                      @"deviceid": (self.configuration.deviceID?: @""),
                                      @"pnsdk":[NSString stringWithFormat:@"PubNub-%@%%2F%@",
                                                kPNClientName, kPNLibraryVersion]}];
-    if ([self.configuration.authKey length]) {
+    if (self.configuration.authKey.length) {
         
         [parameters addQueryParameter:self.configuration.authKey forFieldName:@"auth"];
     }
@@ -557,7 +529,7 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
 
 - (NSURLRequest *)requestWithURL:(NSURL *)requestURL data:(NSData *)postData {
     
-    NSURL *fullURL = [NSURL URLWithString:[requestURL absoluteString] relativeToURL:self.baseURL];
+    NSURL *fullURL = [NSURL URLWithString:requestURL.absoluteString relativeToURL:self.baseURL];
     NSMutableURLRequest *httpRequest = [NSMutableURLRequest requestWithURL:fullURL];
     httpRequest.HTTPMethod = ([postData length] ? @"POST" : @"GET");
     httpRequest.cachePolicy = NSURLRequestReloadIgnoringCacheData;
@@ -568,7 +540,7 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
         [allHeaders addEntriesFromDictionary:@{@"Content-Encoding":@"gzip",
                                                @"Content-Type":@"application/json;charset=UTF-8",
                                                @"Content-Length":[NSString stringWithFormat:@"%@",
-                                                                  @([postData length])]}];
+                                                                  @(postData.length)]}];
         httpRequest.allHTTPHeaderFields = allHeaders;
         [httpRequest setHTTPBody:postData];
     }
@@ -582,7 +554,8 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
     
     __block NSURLSessionDataTask *task = nil;
     __weak __typeof(self) weakSelf = self;
-    NSURLSessionDataTaskCompletion handler = ^(NSData *data, NSURLResponse *response, NSError *error) {
+    NSURLSessionDataTaskCompletion handler = ^(NSData * _Nullable data, NSURLResponse * _Nullable response,
+                                               NSError * _Nullable error) {
         
         // Silence static analyzer warnings.
         // Code is aware about this case and at the end will simply call on 'nil' object method.
@@ -621,7 +594,7 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
     return [_resultExpectingOperations containsObject:@(operation)];
 }
 
-- (Class <PNParser>)parserForOperation:(PNOperationType)operation {
+- (nullable Class <PNParser>)parserForOperation:(PNOperationType)operation {
     
     static NSDictionary *_parsers;
     static dispatch_once_t onceToken;
@@ -630,11 +603,8 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
         NSMutableDictionary *parsers = [NSMutableDictionary new];
         for (Class class in [PNClass classesConformingToProtocol:@protocol(PNParser)]) {
             
-            NSArray *operations = [(Class<PNParser>)class operations];
-            for (NSNumber *operationType in operations) {
-                
-                parsers[operationType] = class;
-            }
+            NSArray<NSNumber *> *operations = [(Class<PNParser>)class operations];
+            for (NSNumber *operationType in operations) { parsers[operationType] = class; }
         }
         _parsers = [parsers copy];
     });
@@ -665,8 +635,8 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
 }
 
 - (void)processOperation:(PNOperationType)operationType
-          withParameters:(PNRequestParameters *)parameters data:(NSData *)data
-         completionBlock:(id)block {
+          withParameters:(nullable PNRequestParameters *)parameters data:(nullable NSData *)data
+         completionBlock:(nullable id)block {
 
     if (operationType == PNSubscribeOperation || operationType == PNUnsubscribeOperation) {
         
@@ -683,8 +653,8 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
     NSURL *requestURL = [PNURLBuilder URLForOperation:operationType withParameters:parameters];
     if (requestURL) {
         
-        DDLogRequest([[self class] ddLogLevel], @"<PubNub::Network> %@ %@",
-                     ([data length] ? @"POST" : @"GET"), [requestURL absoluteString]);
+        DDLogRequest([[self class] ddLogLevel], @"<PubNub::Network> %@ %@", (data.length ? @"POST" : @"GET"), 
+                     requestURL.absoluteString);
         
         __weak __typeof(self) weakSelf = self;
         [[self dataTaskWithRequest:[self requestWithURL:requestURL data:data]
@@ -711,17 +681,14 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
                 
                 ((PNCompletionBlock)block)(nil, badRequestStatus);
             }
-            else {
-                
-                ((PNStatusBlock)block)(badRequestStatus);
-            }
+            else { ((PNStatusBlock)block)(badRequestStatus); }
         }
     }
     #pragma clang diagnostic pop
 }
 
-- (void)parseData:(id)data withParser:(Class <PNParser>)parser
-       completion:(void(^)(NSDictionary *parsedData, BOOL parseError))block {
+- (void)parseData:(nullable id)data withParser:(Class <PNParser>)parser
+       completion:(void(^)(NSDictionary * _Nullable parsedData, BOOL parseError))block {
 
     __weak __typeof(self) weakSelf = self;
     void(^parseCompletion)(NSDictionary *) = ^(NSDictionary *processedData){
@@ -898,8 +865,8 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
     }
 }
 
-- (void)handleData:(NSData *)data loadedWithTask:(NSURLSessionDataTask *)task
-             error:(NSError *)requestError usingSuccess:(NSURLSessionDataTaskSuccess)success
+- (void)handleData:(nullable NSData *)data loadedWithTask:(nullable NSURLSessionDataTask *)task
+             error:(nullable NSError *)requestError usingSuccess:(NSURLSessionDataTaskSuccess)success
            failure:(NSURLSessionDataTaskFailure)failure {
     
     dispatch_async(self.processingQueue, ^{
@@ -912,13 +879,13 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
     });
 }
 
-- (void)handleOperation:(PNOperationType)operation taskDidComplete:(NSURLSessionDataTask *)task
-               withData:(id)responseObject completionBlock:(id)block {
+- (void)handleOperation:(PNOperationType)operation taskDidComplete:(nullable NSURLSessionDataTask *)task
+               withData:(nullable id)responseObject completionBlock:(id)block {
     
     __weak __typeof(self) weakSelf = self;
     [self parseData:responseObject withParser:[self parserForOperation:operation]
          completion:^(NSDictionary *parsedData, BOOL parseError) {
-             
+
              // Silence static analyzer warnings.
              // Code is aware about this case and at the end will simply call on 'nil' object method.
              // In most cases if referenced object become 'nil' it mean what there is no more need in
@@ -932,8 +899,8 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
          }];
 }
 
-- (void)handleOperation:(PNOperationType)operation taskDidFail:(NSURLSessionDataTask *)task
-              withError:(NSError *)error completionBlock:(id)block {
+- (void)handleOperation:(PNOperationType)operation taskDidFail:(nullable NSURLSessionDataTask *)task
+              withError:(nullable NSError *)error completionBlock:(id)block {
     
     if (error.code == NSURLErrorCancelled) {
         
@@ -958,9 +925,9 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
     }
 }
 
-- (void)handleParsedData:(NSDictionary *)data loadedWithTask:(NSURLSessionDataTask *)task
+- (void)handleParsedData:(nullable NSDictionary *)data loadedWithTask:(nullable NSURLSessionDataTask *)task
             forOperation:(PNOperationType)operation parsedAsError:(BOOL)isError
-         processingError:(NSError *)error completionBlock:(id)block {
+         processingError:(nullable NSError *)error completionBlock:(id)block {
     
     PNResult *result = nil;
     PNStatus *status = nil;
@@ -996,8 +963,8 @@ typedef void(^NSURLSessionDataTaskFailure)(NSURLSessionDataTask *task, NSError *
     }
 }
 
-- (void)handleOperation:(PNOperationType)operation processingCompletedWithResult:(PNResult *)result
-                 status:(PNStatus *)status completionBlock:(id)block {
+- (void)handleOperation:(PNOperationType)operation processingCompletedWithResult:(nullable PNResult *)result
+                 status:(nullable PNStatus *)status completionBlock:(id)block {
     
     // Silence static analyzer warnings.
     // Code is aware about this case and at the end will simply call on 'nil' object method.

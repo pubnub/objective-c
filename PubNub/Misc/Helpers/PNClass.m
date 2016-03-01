@@ -21,7 +21,7 @@
  
  @since 4.0
  */
-+ (NSArray *)classes;
++ (NSArray<Class> *)classes;
 
 #pragma mark -
 
@@ -36,21 +36,18 @@
 
 #pragma mark - Class filtering
 
-+ (NSArray *)classesConformingToProtocol:(Protocol *)protocol {
++ (nullable NSArray<Class> *)classesConformingToProtocol:(Protocol *)protocol {
     
     NSMutableArray *classesList = [NSMutableArray new];
     for (Class class in [self classes]) {
         
-        if (class_conformsToProtocol(class, protocol)) {
-            
-            [classesList addObject:class];
-        }
+        if (class_conformsToProtocol(class, protocol)) { [classesList addObject:class]; }
     }
     
-    return ([classesList count] ? [classesList copy] : nil);
+    return (classesList.count ? [classesList copy] : nil);
 }
 
-+ (NSArray *)classesRespondingToSelector:(SEL)selector {
++ (nullable NSArray<Class> *)classesRespondingToSelector:(SEL)selector {
     
     NSMutableArray *classesList = [NSMutableArray new];
     for (Class class in [self classes]) {
@@ -61,28 +58,28 @@
         }
     }
     
-    return ([classesList count] ? [classesList copy] : nil);
+    return (classesList.count ? [classesList copy] : nil);
 }
 
 
 #pragma mark - Misc
 
-+ (NSArray *)classes {
++ (nullable NSArray<Class> *)classes {
     
     NSMutableArray *classesList = [NSMutableArray new];
     unsigned int visibleClassesCount;
     Class *classes = objc_copyClassList(&visibleClassesCount);
     for (unsigned int classIdx = 0; classIdx < visibleClassesCount; classIdx++) {
         
-        if ([NSStringFromClass(classes[classIdx]) hasPrefix:@"PN"] ||
-            [NSStringFromClass(classes[classIdx]) isEqualToString:@"PubNub"]) {
+        NSString *className = NSStringFromClass(classes[classIdx]);
+        if ([className hasPrefix:@"PN"] || [className isEqualToString:@"PubNub"]) {
             
             [classesList addObject:classes[classIdx]];
         }
     }
     free(classes);
     
-    return ([classesList count] ? [classesList copy] : nil);
+    return (classesList.count ? [classesList copy] : nil);
 }
 
 #pragma mark -

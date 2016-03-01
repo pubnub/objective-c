@@ -3,21 +3,18 @@
 
 
 /**
- @brief      Class suitable to handle and process \b PubNub service response on push notification
-             enabled channgels list audit request.
+ @brief      Class suitable to handle and process \b PubNub service response on push notification enabled 
+             channgels list audit request.
  @discussion Handle and pre-process provided server data to fetch operation result from it.
+ @discussion Expected input:
  
  @code
- @endcode
- Expected output:
- 
- @code
- {
+{
   "channels": [
-               NSString,
-               ...
-              ]
- }
+    NSString,
+    ...
+  ]
+}
  @endcode
  
  @author Sergey Mamontov

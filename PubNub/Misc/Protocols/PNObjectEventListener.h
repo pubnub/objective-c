@@ -7,6 +7,8 @@
 @class PNPresenceEventResult, PNSubscribeStatus, PNMessageResult, PNErrorStatus;
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  @brief  Interface description for classes which would like to be registered for events from data
          object live feed.
@@ -68,3 +70,5 @@
 #pragma mark -
 
 @end
+
+NS_ASSUME_NONNULL_END

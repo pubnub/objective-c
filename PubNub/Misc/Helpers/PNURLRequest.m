@@ -10,6 +10,9 @@
 
 @implementation PNURLRequest
 
+
+#pragma mark - Helper
+
 + (NSInteger)packetSizeForRequest:(NSURLRequest *)request {
     
     NSMutableString *packet = [NSMutableString stringWithFormat:@"%@ %@ HTTP/1.1\r\n",

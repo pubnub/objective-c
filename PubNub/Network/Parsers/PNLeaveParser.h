@@ -2,8 +2,7 @@
 #import "PNParser.h"
 
 /**
- @brief      Class suitable to handle and process \b PubNub service response on presence leave
-             request.
+ @brief      Class suitable to handle and process \b PubNub service response on presence leave request.
  @discussion Handle and pre-process provided server data to fetch operation result from it.
  
  @author Sergey Mamontov

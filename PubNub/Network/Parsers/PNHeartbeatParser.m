@@ -13,7 +13,7 @@
 
 #pragma mark - Identification
 
-+ (NSArray *)operations {
++ (NSArray<NSNumber *> *)operations {
     
     return @[@(PNHeartbeatOperation)];
 }
@@ -26,16 +26,15 @@
 
 #pragma mark - Parsing
 
-+ (NSDictionary *)parsedServiceResponse:(id)response {
++ (nullable NSDictionary<NSString *, id> *)parsedServiceResponse:(id)response {
     
-    // To handle case when response is unexpected for this type of operation processed value sent
-    // through 'nil' initialized local variable.
+    // To handle case when response is unexpected for this type of operation processed value sent through 
+    // 'nil' initialized local variable.
     NSDictionary *processedResponse = nil;
     
     // Dictionary is valid response type for heartbeat request.
-    if ([response isKindOfClass:[NSDictionary class]] && [response objectForKey:@"status"] &&
-        [response objectForKey:@"service"] && [[response objectForKey:@"status"] isEqual: @200] &&
-        [[response objectForKey:@"service"] isEqualToString:@"Presence"]) {
+    if ([response isKindOfClass:[NSDictionary class]] && response[@"status"] && response[@"service"] && 
+        [response[@"status"] isEqual: @200] && [response[@"service"] isEqualToString:@"Presence"]) {
         
         processedResponse = @{};
     }

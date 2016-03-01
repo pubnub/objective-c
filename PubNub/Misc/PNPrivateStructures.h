@@ -85,7 +85,7 @@ static NSString * const PNOperationStatusClasses[22] = {
 
  @since 4.0
  */
-static NSString * const PNStatusCategoryStrings[15] = {
+static NSString * const PNStatusCategoryStrings[16] = {
     [PNUnknownCategory] = @"Unknown",
     [PNAcknowledgmentCategory] = @"Acknowledgment",
     [PNAccessDeniedCategory] = @"Access Denied",
@@ -97,6 +97,7 @@ static NSString * const PNStatusCategoryStrings[15] = {
     [PNUnexpectedDisconnectCategory] = @"Unexpected Disconnect",
     [PNCancelledCategory] = @"Cancelled",
     [PNBadRequestCategory] = @"Bad Request",
+    [PNMalformedFilterExpressionCategory] = @"Malformed Filter Expression",
     [PNMalformedResponseCategory] = @"Malformed Response",
     [PNDecryptionErrorCategory] = @"Decryption Error",
     [PNTLSConnectionFailedCategory] = @"TLS Connection Failed",

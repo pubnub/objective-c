@@ -11,12 +11,12 @@
 
 - (NSNumber *)timetoken {
     
-    return self.serviceData[@"timetoken"];
+    return (self.serviceData[@"timetoken"]?: @0);
 }
 
 - (NSString *)information {
     
-    return self.serviceData[@"information"];
+    return (self.serviceData[@"information"]?: @"No Information");
 }
 
 #pragma mark -
@@ -33,7 +33,7 @@
 
 #pragma mark - Properties
 
-@property (nonatomic, strong) PNPublishData *data;
+@property (nonatomic, nonnull, strong) PNPublishData *data;
 
 #pragma mark -
 

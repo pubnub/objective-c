@@ -13,11 +13,13 @@
        PNHeartbeat, PNResult, PNStatus;
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
- @brief      \b PubNub client core extension which expose private fields and methods to support 
-             other extensions.
- @discussion Core class manage client configuration as well as access to networking layer through 
-             which passed request will be sent to \b PubNub service.
+ @brief      \b PubNub client core extension which expose private fields and methods to support other 
+             extensions.
+ @discussion Core class manage client configuration as well as access to networking layer through which passed
+             request will be sent to \b PubNub service.
  
  @author Sergey Mamontov
  @since 4.0
@@ -38,8 +40,8 @@
 @property (nonatomic, readonly, copy) PNConfiguration *configuration;
 
 /**
- @brief  Stores reference on instance which manage all subscribe loop logic and help to deliver
-         updates from remote data objects live feed to the client.
+ @brief  Stores reference on instance which manage all subscribe loop logic and help to deliver updates from 
+         remote data objects live feed to the client.
  
  @since 4.0
  */
@@ -75,11 +77,9 @@
 
 /**
  @brief      Reference on queue on which completion/processing blocks will be called.
- @discussion At the end of each operation completion blocks will be called asynchronously on
-             provided queue.
+ @discussion At the end of each operation completion blocks will be called asynchronously on provided queue.
  
- @default    By default all callback blocks will be called on main queue 
-             (\c dispatch_get_main_queue()).
+ @default    By default all callback blocks will be called on main queue (\c dispatch_get_main_queue()).
  
  @since 4.0
  */
@@ -116,31 +116,29 @@
 /**
  @brief  Compose request to \b PubNub network basing on operation type and passed \c parameters.
 
- @param operationType One of \b PNOperationType enum fields which represent type of operation which
-                      should be issued to \b PubNub network.
+ @param operationType One of \b PNOperationType enum fields which represent type of operation which should be 
+                      issued to \b PubNub network.
  @param parameters    Resource and query path fields wrapped into object.
  @param block         Reference on operation processing completion block.
 
  @since 4.0
  */
-- (void)processOperation:(PNOperationType)operationType
-          withParameters:(PNRequestParameters *)parameters
-         completionBlock:(id)block;
+- (void)processOperation:(PNOperationType)operationType withParameters:(PNRequestParameters *)parameters
+         completionBlock:(nullable id)block;
 
 /**
  @brief  Compose request to \b PubNub network basing on operation type and passed \c parameters.
 
- @param operationType One of \b PNOperationType enum fields which represent type of operation which
-                      should be issued to \b PubNub network.
+ @param operationType One of \b PNOperationType enum fields which represent type of operation which be issued 
+                      to \b PubNub network.
  @param parameters    Resource and query path fields wrapped into object.
  @param data          Reference on data which should be pushed to \b PubNub network.
  @param block         Reference on operation processing completion block.
 
  @since 4.0
  */
-- (void)processOperation:(PNOperationType)operationType
-          withParameters:(PNRequestParameters *)parameters data:(NSData *)data
-         completionBlock:(id)block;
+- (void)processOperation:(PNOperationType)operationType withParameters:(PNRequestParameters *)parameters 
+                    data:(nullable NSData *)data completionBlock:(nullable id)block;
 
 /**
  @brief  Cancel any active long-polling operations scheduled for processing.
@@ -155,11 +153,10 @@
 ///------------------------------------------------
 
 /**
- @brief  Calculate actual size of packet for passed \c operationType which will be sent to \b PubNub
-         network.
+ @brief  Calculate actual size of packet for passed \c operationType which will be sent to \b PubNub network.
  
- @param operationType One of \b PNOperationType enum fields which specify for what kind of operation
-                      packet size should be calculated.
+ @param operationType One of \b PNOperationType enum fields which specify for what kind of operation packet 
+                      size should be calculated.
  @param parameters    List of passed parameters which should be passed to URL builder.
  @param data          Data which can be pushed along with request to \b PubNub network if required.
  
@@ -171,8 +168,7 @@
                      withParameters:(PNRequestParameters *)parameters data:(NSData *)data;
 
 /**
- @brief  Add available client information to object instance subclassed from \b PNResult 
-         (\b PNStatus)
+ @brief  Add available client information to object instance subclassed from \b PNResult (\b PNStatus)
  
  @param result Reference on object which should be updated with client information.
  
@@ -186,8 +182,8 @@
 ///------------------------------------------------
 
 /**
- @brief  Notify user about processing results by calling completion block with specified result and
-         status on callback queue.
+ @brief  Notify user about processing results by calling completion block with specified result and status on 
+         callback queue.
 
  @param block  Reference on completion block which has been passed by user during API call.
  @param result Reference on API request processing results.
@@ -195,10 +191,12 @@
 
  @since 4.0
  */
-- (void)callBlock:(id)block status:(BOOL)callingStatusBlock withResult:(PNResult *)result
-        andStatus:(PNStatus *)status;
+- (void)callBlock:(nullable id)block status:(BOOL)callingStatusBlock withResult:(nullable PNResult *)result
+        andStatus:(nullable PNStatus *)status;
 
 #pragma mark -
 
 
 @end
+
+NS_ASSUME_NONNULL_END

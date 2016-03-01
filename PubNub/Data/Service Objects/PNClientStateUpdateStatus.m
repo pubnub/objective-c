@@ -26,7 +26,7 @@
 
 #pragma mark - Properties
 
-@property (nonatomic, strong) PNClientStateUpdateData *data;
+@property (nonatomic, nonnull, strong) PNClientStateUpdateData *data;
 
 #pragma mark -
 

@@ -6,15 +6,12 @@
  @brief      Class suitable to handle and process \b PubNub service error response for one of
              operation requests.
  @discussion Handle and pre-process provided server data to fetch time token from it.
+ @discussion Expected input:
  
  @code
- @endcode
- Expected output:
- 
- @code
- {
- "tt": NSNumber
- }
+{
+  "tt": NSNumber
+}
  @endcode
  
  @author Sergey Mamontov

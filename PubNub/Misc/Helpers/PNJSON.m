@@ -20,8 +20,7 @@
 
         if ([object respondsToSelector:@selector(count)]) {
 
-            NSData *JSONData = [NSJSONSerialization dataWithJSONObject:object
-                                                               options:(NSJSONWritingOptions)0
+            NSData *JSONData = [NSJSONSerialization dataWithJSONObject:object options:(NSJSONWritingOptions)0
                                                                  error:error];
             if (JSONData) {
 
@@ -32,10 +31,7 @@
 
             JSONString = [[NSString alloc] initWithFormat:@"%@", object];
         }
-        else {
-
-            JSONString = [[NSString alloc] initWithFormat:@"\"%@\"", object];
-        }
+        else { JSONString = [[NSString alloc] initWithFormat:@"\"%@\"", object]; }
     }
     
     return JSONString;
@@ -54,7 +50,7 @@
         // This route required because NSJSONSerialization unable to parse JSON strings where root
         // object is NSString.
         if ([object characterAtIndex:0] == '"' &&
-                [object characterAtIndex:0] == [object characterAtIndex:([object length] -1 )]) {
+            [object characterAtIndex:0] == [object characterAtIndex:(object.length -1 )]) {
 
             NSCharacterSet *trimCharSet = [NSCharacterSet characterSetWithCharactersInString:@"\""];
             JSONObject = [object stringByTrimmingCharactersInSet:trimCharSet];
@@ -67,10 +63,7 @@
                                                            error:&parsingError];
         }
 
-        if (parsingError && error) {
-
-            *error = parsingError;
-        }
+        if (parsingError && error) { *error = parsingError; }
     }
     
     return JSONObject;
@@ -82,15 +75,15 @@
 + (BOOL)isJSONString:(id)object {
     
     BOOL isJSONString = [object isKindOfClass:[NSNumber class]];
-    if ([object isKindOfClass:[NSString class]] && [(NSString *)object length] > 0) {
+    if ([object isKindOfClass:[NSString class]] && ((NSString *)object).length > 0) {
         
         unichar expectedClosingChar;
         unichar nodeStartChar = [(NSString *)object characterAtIndex:0];
-        unichar nodeClosingChar = [(NSString *)object characterAtIndex:([(NSString *)object length] - 1)];
+        unichar nodeClosingChar = [(NSString *)object characterAtIndex:(((NSString *)object).length - 1)];
         isJSONString = (nodeStartChar == '"' || nodeStartChar == '[' || nodeStartChar == '{');
         if (isJSONString) {
 
-            expectedClosingChar = (unichar)(nodeStartChar=='"'?'"':(nodeStartChar=='['?']':'}'));
+            expectedClosingChar = (unichar)(nodeStartChar == '"' ? '"' : (nodeStartChar == '[' ? ']' : '}'));
             isJSONString = (nodeClosingChar == expectedClosingChar);
         }
     }

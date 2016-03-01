@@ -216,6 +216,8 @@
 
 - (void)testHereNowForNilChannel {
     self.presenceExpectation = [self expectationWithDescription:@"network"];
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wnonnull"
     [self.client hereNowForChannel:nil
                     withCompletion:^(PNPresenceChannelHereNowResult *result, PNErrorStatus *status) {
                         XCTAssertNotNil(status);
@@ -225,6 +227,7 @@
                         XCTAssertTrue(status.isError);
                         [self.presenceExpectation fulfill];
                     }];
+    #pragma clang diagnostic pop
     
     [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
         if (error) {
@@ -261,6 +264,8 @@
 
 - (void)testHereNowForNilChannelWithVerbosityOccupancy {
     self.presenceExpectation = [self expectationWithDescription:@"network"];
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wnonnull"
     [self.client hereNowForChannel:nil
                      withVerbosity:PNHereNowOccupancy
                         completion:^(PNPresenceChannelHereNowResult *result, PNErrorStatus *status) {
@@ -271,6 +276,7 @@
                             XCTAssertTrue(status.isError);
                             [self.presenceExpectation fulfill];
                         }];
+    #pragma clang diagnostic pop
     
     [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
         if (error) {
@@ -312,6 +318,8 @@
 
 - (void)testHereNowForNilChannelWithVerbosityState {
     self.presenceExpectation = [self expectationWithDescription:@"network"];
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wnonnull"
     [self.client hereNowForChannel:nil
                      withVerbosity:PNHereNowState
                         completion:^(PNPresenceChannelHereNowResult *result, PNErrorStatus *status) {
@@ -323,6 +331,7 @@
                             
                             [self.presenceExpectation fulfill];
                         }];
+    #pragma clang diagnostic pop
     
     [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
         if (error) {
@@ -358,6 +367,8 @@
 
 - (void)testHereNowForNilChannelWithVerbosityUUID {
     self.presenceExpectation = [self expectationWithDescription:@"network"];
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wnonnull"
     [self.client hereNowForChannel:nil
                      withVerbosity:PNHereNowUUID
                         completion:^(PNPresenceChannelHereNowResult *result, PNErrorStatus *status) {
@@ -368,6 +379,7 @@
                             XCTAssertTrue(status.isError);
                             [self.presenceExpectation fulfill];
                         }];
+    #pragma clang diagnostic pop
     
     [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
         if (error) {
@@ -404,6 +416,8 @@
 
 - (void)testWhereNowNilUDID {
     self.presenceExpectation = [self expectationWithDescription:@"network"];
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wnonnull"
     [self.client whereNowUUID:nil
                withCompletion:^(PNPresenceWhereNowResult *result, PNErrorStatus *status) {
                    XCTAssertNotNil(status);
@@ -414,6 +428,8 @@
                    
                    [self.presenceExpectation fulfill];
                }];
+    #pragma clang diagnostic pop
+    
     [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
         if (error) {
             NSLog(@"error: %@", error);

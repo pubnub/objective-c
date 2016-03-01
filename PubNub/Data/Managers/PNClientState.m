@@ -7,6 +7,8 @@
 #import "PubNub+CorePrivate.h"
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 #pragma mark Protected interface declaration
 
 @interface  PNClientState ()
@@ -27,7 +29,7 @@
  
  @since 4.0
  */
-@property (nonatomic, strong) NSMutableDictionary *stateCache;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, id> *stateCache;
 
 /**
  @brief  Stores reference on queue which is used to serialize access to shared client state
@@ -55,6 +57,8 @@
 
 
 @end
+
+NS_ASSUME_NONNULL_END
 
 
 #pragma mark - Interface implementation
@@ -96,17 +100,17 @@
     __block NSDictionary *state = nil;
     dispatch_sync(self.resourceAccessQueue, ^{
         
-        state = [([self->_stateCache count] ? self->_stateCache : nil) copy];
+        state = [(self->_stateCache.count ? self->_stateCache : nil) copy];
     });
     
     return state;
 }
 
-- (NSDictionary *)stateMergedWith:(NSDictionary *)state forObjects:(NSArray *)objects {
+- (NSDictionary *)stateMergedWith:(nullable NSDictionary<NSString *, id> *)state 
+                       forObjects:(NSArray<NSString *> *)objects {
     
     NSMutableDictionary *mutableState = [([self state]?: @{}) mutableCopy];
-    [state enumerateKeysAndObjectsUsingBlock:^(NSString *objectName,
-                                               NSDictionary *stateForObject,
+    [state enumerateKeysAndObjectsUsingBlock:^(NSString *objectName, NSDictionary *stateForObject,
                                                __unused BOOL *stateEnumeratorStop) {
         
         mutableState[objectName] = stateForObject;
@@ -115,24 +119,22 @@
     [[mutableState allKeys] enumerateObjectsUsingBlock:^(NSString *objectName,
                                                          __unused NSUInteger objectNameIdx,
                                                          __unused BOOL *objectNamesEnumeratorStop) {
-        if (![objects containsObject:objectName]) {
-            
-            [mutableState removeObjectForKey:objectName];
-        }
+        
+        if (![objects containsObject:objectName]) { [mutableState removeObjectForKey:objectName]; }
     }];
     
-    return [([mutableState count] ? mutableState : nil) copy];
+    return [(mutableState.count ? mutableState : nil) copy];
 }
 
-- (void)mergeWithState:(NSDictionary *)state {
+- (void)mergeWithState:(nullable NSDictionary<NSString *, id> *)state {
 
-    if ([state count]) {
+    if (state.count) {
 
         dispatch_barrier_async(self.resourceAccessQueue, ^{
             
-            [state enumerateKeysAndObjectsUsingBlock:^(NSString *objectName,
-                                                       NSDictionary *stateForObject,
+            [state enumerateKeysAndObjectsUsingBlock:^(NSString *objectName, NSDictionary *stateForObject,
                                                        __unused BOOL *stateEnumeratorStop) {
+                
                 self.stateCache[objectName] = stateForObject;
             }];
             
@@ -151,29 +153,20 @@
     }
 }
 
-- (void)setState:(NSDictionary *)state forObject:(NSString *)object {
+- (void)setState:(nullable NSDictionary<NSString *, id> *)state forObject:(NSString *)object {
 
     dispatch_barrier_async(self.resourceAccessQueue, ^{
         
-        if ([state count]) {
-
-            self.stateCache[object] = state;
-        }
-        else {
-
-            [self.stateCache removeObjectForKey:object];
-        }
+        if (state.count) { self.stateCache[object] = state; }
+        else { [self.stateCache removeObjectForKey:object]; }
     });
 }
 
-- (void)removeStateForObjects:(NSArray *)objects {
+- (void)removeStateForObjects:(NSArray<NSString *> *)objects {
     
     dispatch_barrier_async(self.resourceAccessQueue, ^{
         
-        if ([objects count]) {
-            
-            [self.stateCache removeObjectsForKeys:objects];
-        }
+        if (objects.count) { [self.stateCache removeObjectsForKeys:objects]; }
     });
 }
 

@@ -6,6 +6,8 @@
 #import "PubNub+Presence.h"
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 #pragma mark Private interface declaration
 
 @interface PubNub (PresencePrivate)
@@ -24,3 +26,5 @@
 
 
 @end
+
+NS_ASSUME_NONNULL_END

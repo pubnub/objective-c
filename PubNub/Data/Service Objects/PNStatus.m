@@ -20,8 +20,7 @@
 #pragma mark - Initialization and configuration
 
 /**
- @brief  Initializr minimal object to describe state using operation type and status category
-         information.
+ @brief  Initializr minimal object to describe state using operation type and status category information.
  
  @param operation Type of operation for which this status report.
  @param category  Operation processing status category.
@@ -31,28 +30,24 @@
  
  @since 4.0
  */
-- (instancetype)initForOperation:(PNOperationType)operation
-                        category:(PNStatusCategory)category
+- (instancetype)initForOperation:(PNOperationType)operation category:(PNStatusCategory)category
              withProcessingError:(NSError *)error;
 
 /**
  @brief  Initialize result instance in response to successful task completion.
  
- @param operation     One of \b PNOperationType enum fields to describe what kind of operation has
-                      been processed.
- @param task          Reference on data task which has been used to communicate with \b PubNub
-                      network.
- @param processedData Reference on data which has been loaded and pre-processed by corresponding
-                      parser.
+ @param operation     One of \b PNOperationType enum fields to describe what kind of operation has been 
+                      processed.
+ @param task          Reference on data task which has been used to communicate with \b PubNub network.
+ @param processedData Reference on data which has been loaded and pre-processed by corresponding parser.
  @param error         Reference on processing error.
  
  @return Initialized and ready to use result instance.
  
  @since 4.0
  */
-- (instancetype)initForOperation:(PNOperationType)operation
-               completedWithTask:(NSURLSessionDataTask *)task
-                   processedData:(NSDictionary *)processedData
+- (instancetype)initForOperation:(PNOperationType)operation completedWithTask:(NSURLSessionDataTask *)task
+                   processedData:(NSDictionary<NSString *, id> *)processedData 
                  processingError:(NSError *)error;
 
 
@@ -83,7 +78,7 @@
 
  @since 4.0
  */
-- (NSDictionary *)dataFromError:(NSError *)error;
+- (NSDictionary<NSString *, id> *)dataFromError:(NSError *)error;
 
 #pragma mark -
 
@@ -111,10 +106,7 @@
 - (void)setCategory:(PNStatusCategory)category {
     
     _category = category;
-    if (_category == PNDecryptionErrorCategory) {
-        
-        self.error = YES;
-    }
+    if (_category == PNDecryptionErrorCategory) { self.error = YES; }
     else if (_category == PNConnectedCategory || _category == PNReconnectedCategory ||
              _category == PNDisconnectedCategory || _category == PNUnexpectedDisconnectCategory) {
         
@@ -156,9 +148,10 @@
     return self;
 }
 
-- (instancetype)initForOperation:(PNOperationType)operation
-               completedWithTask:(NSURLSessionDataTask *)task
-                   processedData:(NSDictionary *)processedData processingError:(NSError *)error {
+- (instancetype)initForOperation:(PNOperationType)operation 
+               completedWithTask:(nullable NSURLSessionDataTask *)task
+                   processedData:(nullable NSDictionary<NSString *, id> *)processedData 
+                 processingError:(nullable NSError *)error {
     
     // Check whether initialization was successful or not.
     if ((self = [super initForOperation:operation completedWithTask:task processedData:processedData
@@ -218,18 +211,12 @@
 
 - (void)retry {
 
-    if (self.retryBlock) {
-
-        self.retryBlock();
-    }
+    if (self.retryBlock) { self.retryBlock(); }
 }
 
 - (void)cancelAutomaticRetry {
 
-    if (self.retryCancelBlock) {
-
-        self.retryCancelBlock();
-    }
+    if (self.retryCancelBlock) { self.retryCancelBlock(); }
 }
 
 
@@ -238,15 +225,13 @@
 - (PNStatusCategory)categoryTypeFromStatusCode:(NSInteger)statusCode {
     
     PNStatusCategory category = PNUnknownCategory;
-    if (statusCode == 403) {
-        
-        category = PNAccessDeniedCategory;
-    }
+    if (statusCode == 403) { category = PNAccessDeniedCategory; }
+    else if (statusCode == 481) { category = PNMalformedFilterExpressionCategory; }
     
     return category;
 }
 
-- (PNStatusCategory)categoryTypeFromError:(NSError *)error {
+- (PNStatusCategory)categoryTypeFromError:(nullable NSError *)error {
 
     PNStatusCategory category = PNUnknownCategory;
     if ([error.domain isEqualToString:NSURLErrorDomain]) {
@@ -305,7 +290,7 @@
     return category;
 }
 
-- (NSDictionary *)dataFromError:(NSError *)error {
+- (nullable NSDictionary<NSString *, id> *)dataFromError:(nullable NSError *)error {
     
     // Try to fetch server response if available.
     id errorDetails = nil;
@@ -318,33 +303,22 @@
                                                        options:(NSJSONReadingOptions)0
                                                          error:&deSerializationError];
         
-        // Check whether JSON de-serialization failed and try to pull regular string
-        // from response.
+        // Check whether JSON de-serialization failed and try to pull regular string from response.
         if (!errorDetails) {
             
             errorDetails = [[NSString alloc] initWithData:errorData encoding:NSUTF8StringEncoding];
         }
-        if (deSerializationError) {
-            
-            error = deSerializationError;
-        }
+        if (deSerializationError) { error = deSerializationError; }
     }
     
     if (!errorDetails) {
         
         NSString *information = error.userInfo[NSLocalizedDescriptionKey];
-        if (!information) {
-            
-            information = error.userInfo[@"NSDebugDescription"];
-        }
-        
-        if (information) {
-            
-            errorDetails = @{@"information":information};
-        }
+        if (!information) { information = error.userInfo[@"NSDebugDescription"]; }
+        if (information) { errorDetails = @{@"information": information}; }
     }
     // Check whether error details represented with expected format or not.
-    else if (![errorDetails isKindOfClass:NSDictionary.class]) {
+    else if (![errorDetails isKindOfClass:[NSDictionary class]]) {
         
         errorDetails = @{@"information": errorDetails};
     }
@@ -379,5 +353,8 @@
     
     return [status copy];
 }
+
+#pragma mark -
+
 
 @end

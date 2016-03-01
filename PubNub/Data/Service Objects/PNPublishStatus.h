@@ -2,6 +2,8 @@
 #import "PNServiceData.h"
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  @brief  Class which is used to provide access to additional data available to describe publish 
          status.
@@ -18,8 +20,7 @@
 ///------------------------------------------------
 
 /**
- @brief  Service-provided time stamp at which message has been pushed to remote data object live
-         feed.
+ @brief  Service-provided time stamp at which message has been pushed to remote data object live feed.
  
  @since 4.0
  */
@@ -63,3 +64,5 @@
 
 
 @end
+
+NS_ASSUME_NONNULL_END

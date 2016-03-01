@@ -569,6 +569,11 @@
                   ((PNMessageData *)status.associatedObject).subscribedChannel);
         }
     }
+    else if (status.category == PNMalformedFilterExpressionCategory) {
+        
+        NSLog(@"Value which has been passed to -setFilterExpression: malformed.");
+        NSLog(@"Please verify specified value with declared filtering expression syntax.");
+    }
     else if (status.category == PNMalformedResponseCategory) {
         
         NSLog(@"We were expecting JSON from the server, but we got HTML, or otherwise not legal JSON.");

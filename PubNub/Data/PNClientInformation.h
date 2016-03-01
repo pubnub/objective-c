@@ -1,6 +1,8 @@
 #import <Foundation/Foundation.h>
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  @brief      \b PubNub client information wrapper.
  @discussion This instance provide base information about \b PubNub client.
@@ -10,6 +12,7 @@
  @copyright © 2009-2015 PubNub, Inc.
  */
 @interface PNClientInformation : NSObject
+
 
 ///------------------------------------------------
 /// @name Information
@@ -33,3 +36,5 @@
 
 
 @end
+
+NS_ASSUME_NONNULL_END

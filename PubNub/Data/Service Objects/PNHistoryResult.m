@@ -17,17 +17,17 @@
 
 - (NSArray *)messages {
     
-    return self.serviceData[@"messages"];
+    return (self.serviceData[@"messages"]?: @[]);
 }
 
 - (NSNumber *)start {
     
-    return self.serviceData[@"start"];
+    return (self.serviceData[@"start"]?: @0);
 }
 
 - (NSNumber *)end {
     
-    return self.serviceData[@"end"];
+    return (self.serviceData[@"end"]?: @0);
 }
 
 #pragma mark -
@@ -43,7 +43,7 @@
 
 #pragma mark - Properties
 
-@property (nonatomic, strong) PNHistoryData *data;
+@property (nonatomic, nonnull, strong) PNHistoryData *data;
 
 #pragma mark -
 

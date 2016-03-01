@@ -1,14 +1,13 @@
 /**
  @author Sergey Mamontov
- @since 4.4.0
+ @since 4.3.0
  @copyright © 2009-15 PubNub Inc.
  */
 #import "PNEnvelopeInformation.h"
 #import "PNJSON.h"
 
+
 #pragma mark Structures
-
-
 
 /**
  @brief  Describes overall real-time event format.
@@ -104,9 +103,9 @@ struct PNEventDebugEnvelopeStructure {
  
  @return Initialized and ready to use event envelope information instance.
  
- @since 4.4.0
+ @since 4.3.0
  */
-- (instancetype)initWithPayload:(NSDictionary *)payload;
+- (nonnull instancetype)initWithPayload:(nonnull NSDictionary *)payload;
 
 #pragma mark -
 
@@ -121,12 +120,12 @@ struct PNEventDebugEnvelopeStructure {
 
 #pragma mark - Initialization and Configuration
 
-+ (instancetype)envelopeInformationWithPayload:(NSDictionary *)payload {
++ (nonnull instancetype)envelopeInformationWithPayload:(nonnull NSDictionary *)payload {
     
     return [[self alloc] initWithPayload:payload];
 }
 
-- (instancetype)initWithPayload:(NSDictionary *)payload {
+- (nonnull instancetype)initWithPayload:(nonnull NSDictionary *)payload {
     
     // Check whether initialization was successful or not.
     if ((self = [super init])) {

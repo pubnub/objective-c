@@ -12,22 +12,22 @@
 
 @implementation PNErrorData
 
-- (NSArray *)channels {
+- (NSArray<NSString *> *)channels {
     
-    return self.serviceData[@"channels"];
+    return (self.serviceData[@"channels"]?: @[]);
 }
 
-- (NSArray *)channelGroups {
+- (NSArray<NSString *> *)channelGroups {
     
-    return self.serviceData[@"channelGroups"];
+    return (self.serviceData[@"channelGroups"]?: @[]);
 }
 
 - (NSString *)information {
     
-    return self.serviceData[@"information"];
+    return (self.serviceData[@"information"]?: @"No Error Information");
 }
 
-- (id)data {
+- (nullable id)data {
     
     return self.serviceData[@"data"];
 }

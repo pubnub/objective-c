@@ -16,8 +16,8 @@
 ///------------------------------------------------
 
 /**
- @brief  Construct time token object which has higher precision and can be used inside of \b PubNub
-         service during requests.
+ @brief  Construct time token object which has higher precision and can be used inside of \b PubNub service 
+         during requests.
  
  @param number Reference on original number which should be normalized and returned with new object.
  

@@ -20,14 +20,12 @@
 
 - (NSString *)newLogFileName {
     
-    return [[super newLogFileName] stringByReplacingOccurrencesOfString:@".log"
-                                                             withString:@".txt"];
+    return [[super newLogFileName] stringByReplacingOccurrencesOfString:@".log" withString:@".txt"];
 }
 
 - (BOOL)isLogFile:(NSString *)fileName {
     
-    NSString *originalName = [fileName stringByReplacingOccurrencesOfString:@".txt"
-                                                                 withString:@".log"];
+    NSString *originalName = [fileName stringByReplacingOccurrencesOfString:@".txt" withString:@".log"];
     
     return [super isLogFile:originalName];
 }

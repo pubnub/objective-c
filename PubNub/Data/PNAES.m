@@ -33,6 +33,8 @@ static DDLogLevel ddLogLevel = (NSUInteger)PNAESErrorLogLevel;
 static const void * kPNAESInitializationVector = "0123456789012345";
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 #pragma mark - Private interface declaration
 
 @interface PNAES ()
@@ -40,16 +42,19 @@ static const void * kPNAESInitializationVector = "0123456789012345";
 
 #pragma mark - Data processing
 
+/**
+ @brief  Translate provided cipher key into SHA256 hex string.
+ 
+ @return HEX string from cipher key.
+ */
 + (NSData *)SHA256HexFromKey:(NSString *)cipherKey;
 
 /**
- @brief Data processing method which basing on configuration able to encrypt or decrypt provided
-        \c data.
+ @brief Data processing method which basing on configuration able to encrypt or decrypt provided \c data.
  
- @param data      Reference on initial data which depending from \c operation will be encrypted or
-                  decrypted.
- @param cipherKey Reference on key which should be used during encryption/decryption process to get
-                  expected results.
+ @param data      Reference on initial data which depending from \c operation will be encrypted or decrypted.
+ @param cipherKey Reference on key which should be used during encryption/decryption process to get expected 
+                  results.
  @param operation Encryption (\c kCCEncrypt) or decryption (\c kCCDecrypt) operation type.
  @param status    Data processing resulting status (one of \c CCCryptorStatus fields).
  
@@ -57,8 +62,8 @@ static const void * kPNAESInitializationVector = "0123456789012345";
  
  @since 4.0
  */
-+ (NSData *)processedDataFrom:(NSData *)data withKey:(NSString *)cipherKey
-                 forOperation:(CCOperation)operation andStatus:(CCCryptorStatus *)status;
++ (nullable NSData *)processedDataFrom:(NSData *)data withKey:(NSString *)cipherKey
+                          forOperation:(CCOperation)operation andStatus:(CCCryptorStatus *)status;
 
 
 #pragma mark - Misc
@@ -79,6 +84,8 @@ static const void * kPNAESInitializationVector = "0123456789012345";
 
 
 @end
+
+NS_ASSUME_NONNULL_END
 
 
 #pragma mark - Interface implementation
@@ -115,13 +122,13 @@ static const void * kPNAESInitializationVector = "0123456789012345";
 
 #pragma mark - Data encryption
 
-+ (NSString *)encrypt:(NSData *)data withKey:(NSString *)key {
++ (nullable NSString *)encrypt:(NSData *)data withKey:(NSString *)key {
     
     return [self encrypt:data withKey:key andError:NULL];
 }
 
-+ (NSString *)encrypt:(NSData *)data withKey:(NSString *)key
-             andError:(NSError *__autoreleasing *)error {
++ (nullable NSString *)encrypt:(NSData *)data withKey:(NSString *)key
+                      andError:(NSError *__autoreleasing *)error {
     
     NSData *processedData = nil;
     NSError *encryptionError = nil;
@@ -131,10 +138,7 @@ static const void * kPNAESInitializationVector = "0123456789012345";
         CCCryptorStatus status;
         processedData = [self processedDataFrom:data withKey:key forOperation:kCCEncrypt
                                       andStatus:&status];
-        if (status != kCCSuccess) {
-            
-            encryptionError = [self errorFor:status];
-        }
+        if (status != kCCSuccess) { encryptionError = [self errorFor:status]; }
     }
     // AES can't complete w/o actual data or encryption key. Construct processing error instance
     // which will be passed to the user.
@@ -154,16 +158,9 @@ static const void * kPNAESInitializationVector = "0123456789012345";
     
     if (encryptionError) {
         
-        if (error != NULL) {
-            
-            *error = encryptionError;
-        }
-        else {
-            
-            DDLogAESError([self ddLogLevel], @"<PubNub::AES> Encryption error: %@", encryptionError);
-        }
+        if (error != NULL) { *error = encryptionError; }
+        else { DDLogAESError([self ddLogLevel], @"<PubNub::AES> Encryption error: %@", encryptionError); }
     }
-    
     
     return [PNData base64StringFrom:processedData];
 }
@@ -171,13 +168,13 @@ static const void * kPNAESInitializationVector = "0123456789012345";
 
 #pragma mark - Data decryption
 
-+ (NSData *)decrypt:(NSString *)object withKey:(NSString *)key {
++ (nullable NSData *)decrypt:(NSString *)object withKey:(NSString *)key {
     
     return [self decrypt:object withKey:key andError:NULL];
 }
 
-+ (NSData *)decrypt:(NSString *)object withKey:(NSString *)key
-           andError:(NSError *__autoreleasing *)error {
++ (nullable NSData *)decrypt:(NSString *)object withKey:(NSString *)key
+                    andError:(NSError *__autoreleasing *)error {
     
     NSError *decryptionError = nil;
     id decryptedObject = nil;
@@ -188,7 +185,7 @@ static const void * kPNAESInitializationVector = "0123456789012345";
     if ([object length] && [key length]) {
         
         // Extract NSData which was encoded into Base64 string.
-        NSData *JSONData = [PNString bas64DataFrom:object];
+        NSData *JSONData = [PNString base64DataFrom:object];
         
         if ([JSONData length]) {
             
@@ -232,16 +229,9 @@ static const void * kPNAESInitializationVector = "0123456789012345";
     
     if (decryptionError) {
         
-        if (error != NULL) {
-            
-            *error = decryptionError;
-        }
-        else {
-            
-            DDLogAESError([self ddLogLevel], @"<PubNub::AES> Decryption error: %@", decryptionError);
-        }
+        if (error != NULL) { *error = decryptionError; }
+        else { DDLogAESError([self ddLogLevel], @"<PubNub::AES> Decryption error: %@", decryptionError); }
     }
-    
     
     return decryptedObject;
 }
@@ -273,8 +263,8 @@ static const void * kPNAESInitializationVector = "0123456789012345";
     return key;
 }
 
-+ (NSData *)processedDataFrom:(NSData *)data withKey:(NSString *)cipherKey
-                 forOperation:(CCOperation)operation andStatus:(CCCryptorStatus *)status {
++ (nullable  NSData *)processedDataFrom:(NSData *)data withKey:(NSString *)cipherKey
+                           forOperation:(CCOperation)operation andStatus:(CCCryptorStatus *)status {
     
     NSData *cryptorKeyData = [self SHA256HexFromKey:cipherKey];
     NSMutableData *processedData = nil;

@@ -37,7 +37,7 @@
  
  @since 4.0
  */
-@property (nonatomic, readonly, strong) PNClientStateUpdateData *data;
+@property (nonatomic, nonnull, readonly, strong) PNClientStateUpdateData *data;
 
 #pragma mark -
 

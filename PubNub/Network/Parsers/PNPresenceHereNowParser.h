@@ -3,16 +3,13 @@
 
 
 /**
- @brief      Class suitable to handle and process \b PubNub service response on here now global
-             and here now channel request.
+ @brief      Class suitable to handle and process \b PubNub service response on here now global and here now 
+             channel request.
  @discussion Handle and pre-process provided server data to fetch operation result from it.
+ @discussion Expected input for channel group and global here now with client identifier only:
  
  @code
- @endcode
- Expected output for channel group and global here now with client identifier only:
- 
- @code
- {
+{
   "total_channels": NSNumber,
   "total_occupancy": NSNumber,
   "channels": {
@@ -25,12 +22,12 @@
     },
     ...
   }
- }
+}
  @endcode
- Expected output for channel group and global here now with client state information:
+ @discussion Expected input for channel group and global here now with client state information:
  
  @code
- {
+{
   "total_channels": NSNumber,
   "total_occupancy": NSNumber,
   "channels": {
@@ -46,23 +43,23 @@
     },
     ...
   }
- }
+}
  @endcode
- Expected output for channel here now with client identifier only:
+ @discussion Expected input for channel here now with client identifier only:
  
  @code
- {
+{
   "occupancy": NSNumber,
   "uuids": [
     NSString,
     ...
   ]
- }
+}
  @endcode
- Expected output for channel here now with client state information:
+ @discussion Expected input for channel here now with client state information:
  
  @code
- {
+{
   "occupancy": NSNumber,
   "uuids": [
     NSString: {
@@ -71,14 +68,14 @@
     },
     ...
   ]
- }
+}
  @endcode
- Expected output for occupancy only:
+ @discussion Expected input for occupancy only:
  
  @code
- {
+{
   "occupancy": NSNumber
- }
+}
  @endcode
  
  @author Sergey Mamontov

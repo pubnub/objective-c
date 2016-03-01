@@ -80,7 +80,7 @@ NSString * const kPNNetworkErrorResponseDataKey = @"PNNetworkErrorResponseDataKe
     if (![self getProcessingError:&unexpectedResponseError ifUnableToHandleResponse:response
                          withData:data]) {
         
-        if ([data length]) {
+        if (data.length) {
             
             @autoreleasepool {
                 
@@ -91,10 +91,7 @@ NSString * const kPNNetworkErrorResponseDataKey = @"PNNetworkErrorResponseDataKe
             }
         }
     }
-    else {
-        
-        *serializationError = unexpectedResponseError;
-    }
+    else { *serializationError = unexpectedResponseError; }
     
     return serializedResponse;
 }
@@ -129,27 +126,14 @@ NSString * const kPNNetworkErrorResponseDataKey = @"PNNetworkErrorResponseDataKe
             statusCode = NSURLErrorBadServerResponse;
         }
         
-        if (description) {
-            
-            userInfo[NSLocalizedDescriptionKey] = description;
-        }
+        if (description) { userInfo[NSLocalizedDescriptionKey] = description; }
     }
     
     if ([userInfo count]) {
         
-        if ([response URL]) {
-            
-            userInfo[NSURLErrorFailingURLErrorKey] = [response URL];
-        }
-        if ([responseData length]) {
-            
-            userInfo[kPNNetworkErrorResponseDataKey] = responseData;
-        }
-        
-        if (error) {
-            
-            *error = [NSError errorWithDomain:NSURLErrorDomain code:statusCode userInfo:userInfo];
-        }
+        if ([response URL]) { userInfo[NSURLErrorFailingURLErrorKey] = [response URL]; }
+        if ([responseData length]) { userInfo[kPNNetworkErrorResponseDataKey] = responseData; }
+        if (error) { *error = [NSError errorWithDomain:NSURLErrorDomain code:statusCode userInfo:userInfo]; }
     }
     
     return (statusCode != NSURLErrorUnknown);

@@ -240,6 +240,14 @@ typedef NS_ENUM(NSInteger, PNStatusCategory) {
     PNBadRequestCategory,
 
     /**
+     @brief      Status is used to notify what client has been configured with malformed filtering expression.
+     @discussion In case if this status arrive, check syntax used for \c -setFilterExpression: method.
+
+     @since 4.0
+     */
+    PNMalformedFilterExpressionCategory,
+
+    /**
      @brief      \b PubNub because of some issues sent malformed response.
      @discussion In case if this status arrive, it is better to print out status object debug
                  description and contact support@pubnub.com

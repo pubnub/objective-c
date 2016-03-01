@@ -3,19 +3,16 @@
 
 
 /**
- @brief      Class suitable to handle and process \b PubNub service response on push notifications
-             state manipulation request.
+ @brief      Class suitable to handle and process \b PubNub service response on push notifications state 
+             manipulation request.
  @discussion Handle and pre-process provided server data to fetch operation status from it.
+ @discussion Expected input:
  
  @code
- @endcode
- Expected output:
- 
- @code
- {
+{
   "status": @BOOL,
   "information": NSString
- }
+}
  @endcode
  
  @author Sergey Mamontov

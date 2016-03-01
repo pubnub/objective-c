@@ -20,6 +20,8 @@
 static DDLogLevel ddLogLevel = DDLogLevelInfo;
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 #pragma mark - Protected interface declaration
 
 @interface PNLog ()
@@ -84,6 +86,8 @@ static DDLogLevel ddLogLevel = DDLogLevelInfo;
 
 
 @end
+
+NS_ASSUME_NONNULL_END
 
 
 #pragma mark - Interface implementation
@@ -228,7 +232,7 @@ static DDLogLevel ddLogLevel = DDLogLevelInfo;
             
             DDLogClientInfo([[self class] ddLogLevel],@"<PubNub::Logger> File logger enabnled");
             DDLogClientInfo([[self class] ddLogLevel],@"<PubNub::Logger> Log files stored in: %@",
-                      [self.fileLogger.logFileManager logsDirectory]);
+                            [self.fileLogger.logFileManager logsDirectory]);
             [DDLog addLogger:self.fileLogger withLevel:(DDLogLevel)PNVerboseLogLevel];
         }
         self.fileLoggerActive = shouldDumpToFile;
@@ -254,7 +258,7 @@ static DDLogLevel ddLogLevel = DDLogLevelInfo;
     if (verbosityFlags & PNAESErrorLogLevel) { [enabledFlags addObject:@"AES error"]; }
     if (verbosityFlags & PNAPICallLogLevel) { [enabledFlags addObject:@"API Call"]; }
     
-    DDLogClientInfo([self.class ddLogLevel], @"<PubNub::Logger> Enabled verbosity level flags: "
+    DDLogClientInfo([[self class] ddLogLevel], @"<PubNub::Logger> Enabled verbosity level flags: "
                     "%@", [enabledFlags componentsJoinedByString:@", "]);
 }
 

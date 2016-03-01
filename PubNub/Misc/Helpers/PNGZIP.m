@@ -18,7 +18,7 @@
 
     NSMutableData *processedDataStorage = nil;
     NSUInteger window = 31;
-    if ([data length] > 0) {
+    if (data.length > 0) {
 
         BOOL done = NO;
         int status;
@@ -27,11 +27,10 @@
         stream.zalloc = Z_NULL;
         stream.zfree = Z_NULL;
         stream.opaque = Z_NULL;
-        stream.next_in = (Bytef *)[data bytes];
-        stream.avail_in = (uint)[data length];
+        stream.next_in = (Bytef *)data.bytes;
+        stream.avail_in = (uint)data.length;
         stream.total_out = 0;
-        status = deflateInit2(&stream, Z_DEFAULT_COMPRESSION, Z_DEFLATED, window, 8,
-                              Z_DEFAULT_STRATEGY);
+        status = deflateInit2(&stream, Z_DEFAULT_COMPRESSION, Z_DEFLATED, window, 8, Z_DEFAULT_STRATEGY);
 
         if (status == Z_OK) {
 
@@ -41,12 +40,12 @@
             while (!isOperationCompleted) {
 
                 // Make sure we have enough room and reset the lengths.
-                if ((status == Z_BUF_ERROR)  || stream.total_out >= [processedDataStorage length]) {
+                if ((status == Z_BUF_ERROR)  || stream.total_out >= processedDataStorage.length) {
 
                     [processedDataStorage increaseLengthBy:1024];
                 }
-                stream.next_out = (Bytef*)[processedDataStorage mutableBytes] + stream.total_out;
-                stream.avail_out = (uInt)([processedDataStorage length] - stream.total_out);
+                stream.next_out = (Bytef*)processedDataStorage.mutableBytes + stream.total_out;
+                stream.avail_out = (uInt)(processedDataStorage.length - stream.total_out);
 
                 // Deflate another chunk
                 status = deflate(&stream, Z_FINISH);
@@ -59,15 +58,12 @@
             if (status == Z_OK) {
 
                 // Set real length.
-                if (done) {
-
-                    [processedDataStorage setLength:stream.total_out];
-                }
+                if (done) { [processedDataStorage setLength:stream.total_out]; }
             }
         }
     }
 
-    return ([processedDataStorage length] ? processedDataStorage : nil);
+    return (processedDataStorage.length ? processedDataStorage : nil);
 }
 
 

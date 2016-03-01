@@ -1,6 +1,8 @@
 #import <Foundation/Foundation.h>
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  @brief  Useful methods collection to work with data compression/uncompression.
  
@@ -24,9 +26,11 @@
 
  @since 4.0
  */
-+ (NSData *)GZIPDeflatedData:(NSData *)data;
++ (nullable NSData *)GZIPDeflatedData:(NSData *)data;
 
 #pragma mark -
 
 
 @end
+
+NS_ASSUME_NONNULL_END

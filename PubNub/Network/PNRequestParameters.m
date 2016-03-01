@@ -18,14 +18,14 @@
  
  @since 4.0
  */
-@property (nonatomic, strong) NSMutableDictionary *resourcePathComponents;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, NSString *> *resourcePathComponents;
 
 /**
  @brief  Stores reference on key/value pairs which should be expanded in query string.
  
  @since 4.0
  */
-@property (nonatomic, strong) NSMutableDictionary *queryFields;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, NSString *> *queryFields;
 
 #pragma mark -
 
@@ -40,14 +40,14 @@
 
 #pragma mark - Information
 
-- (NSDictionary *)pathComponents {
+- (nullable NSDictionary<NSString *, NSString *> *)pathComponents {
     
-    return ([self.resourcePathComponents count] ? [self.resourcePathComponents copy] : nil);
+    return (self.resourcePathComponents.count ? [self.resourcePathComponents copy] : nil);
 }
 
-- (NSDictionary *)query {
+- (nullable NSDictionary<NSString *, NSString *> *)query {
     
-    return ([self.queryFields count] ? [self.queryFields copy] : nil);
+    return (self.queryFields.count ? [self.queryFields copy] : nil);
 }
 
 

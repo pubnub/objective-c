@@ -6,6 +6,8 @@
 #import "PNConfiguration.h"
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 #pragma mark Private interface declaration
 
 @interface PNConfiguration (Protected)
@@ -14,8 +16,7 @@
 #pragma mark - Configuration
 
 /**
- @brief Stores reference on unique device identifier based on bundle identifier used by software
-        vendor.
+ @brief Stores reference on unique device identifier based on bundle identifier used by software vendor.
 
  @since 4.0
  */
@@ -25,3 +26,5 @@
 
 
 @end
+
+NS_ASSUME_NONNULL_END

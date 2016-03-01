@@ -6,6 +6,8 @@
 #import "PNSubscribeStatus.h"
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 #pragma mark Private interface declaration
 
 @interface PNSubscriberData ()
@@ -16,7 +18,7 @@
 /**
  @brief Stores reference on \b PubNub server region identifier (which generated \c timetoken value).
  
- @since 4.4.0
+ @since 4.3.0
  */
 @property (nonatomic, readonly) NSNumber *region;
 
@@ -26,8 +28,15 @@
 @end
 
 
+#pragma mark Private interface declaration
+
 @interface PNSubscribeStatus ()
 
 @property (nonatomic, strong) PNSubscriberData *data;
 
+#pragma mark -
+
+
 @end
+
+NS_ASSUME_NONNULL_END

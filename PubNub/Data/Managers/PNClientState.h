@@ -6,11 +6,13 @@
 @class PubNub;
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  @brief      Current client state cache manager.
- @discussion When client use \b state API which allow to pull and push client state, this manager
-             stores all information locally. Locally cached data used by \b PubNub subscriber and
-             presence modules to deliver actual client state information to \b PubNub network.
+ @discussion When client use \b state API which allow to pull and push client state, this manager stores all 
+             information locally. Locally cached data used by \b PubNub subscriber and presence modules to 
+             deliver actual client state information to \b PubNub network.
  
  @author Sergey Mamontov
  @since 4.0
@@ -37,8 +39,8 @@
 /**
  @brief  Copy specified client's state information.
  
- @param state Reference on client state manager whose information should be copied into receiver's
-              state objects.
+ @param state Reference on client state manager whose information should be copied into receiver's state
+              objects.
  
  @since 4.0
  */
@@ -51,19 +53,19 @@
 
 /**
  @brief      Retrieve state information stored in cache.
- @discussion State cache updated every time when client successfully subscribe on remote data object
-             feeds with pre-defined state or modify state using corresponding API group.
+ @discussion State cache updated every time when client successfully subscribe on remote data object feeds 
+             with pre-defined state or modify state using corresponding API group.
  
- @return Cached dictionary which store reference between remote data object names and values bound
-         for client. \c nil will be returned in case if state cache is empty.
+ @return Cached dictionary which store reference between remote data object names and values bound for client.
+         \c nil will be returned in case if state cache is empty.
  
  @since 4.0
  */
-- (NSDictionary *)state;
+- (nullable NSDictionary *)state;
 
 /**
- @brief  Provide merged client state using new \c state information which should be bound to remote
-         data \c object.
+ @brief  Provide merged client state using new \c state information which should be bound to remote data 
+         \c object.
  
  @param state   State which should be merged into client state stored in cache.
  @param objects List of object names for which merged data is composed. In case if merged state will
@@ -73,7 +75,8 @@
  
  @since 4.0
  */
-- (NSDictionary *)stateMergedWith:(NSDictionary *)state forObjects:(NSArray *)objects;
+- (nullable NSDictionary *)stateMergedWith:(nullable NSDictionary<NSString *, id> *)state 
+                                forObjects:(NSArray<NSString *> *)objects;
 
 /**
  @brief  Merge cached client state information with the one which has been passed.
@@ -82,7 +85,7 @@
  
  @since 4.0
  */
-- (void)mergeWithState:(NSDictionary *)state;
+- (void)mergeWithState:(nullable NSDictionary<NSString *, id> *)state;
 
 /**
  @brief  Overwrite client state information bound to specified \c object.
@@ -92,7 +95,7 @@
 
  @since 4.0
  */
-- (void)setState:(NSDictionary *)state forObject:(NSString *)object;
+- (void)setState:(nullable NSDictionary<NSString *, id> *)state forObject:(NSString *)object;
 
 /**
  @brief  Clear client state cache from specified objects data.
@@ -101,9 +104,11 @@
  
  @since 4.0
  */
-- (void)removeStateForObjects:(NSArray *)objects;
+- (void)removeStateForObjects:(NSArray<NSString *> *)objects;
 
 #pragma mark - 
 
 
 @end
+
+NS_ASSUME_NONNULL_END

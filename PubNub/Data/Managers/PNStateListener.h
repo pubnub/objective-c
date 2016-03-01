@@ -7,13 +7,15 @@
 @class PNPresenceEventResult, PNMessageResult, PNErrorStatus, PubNub;
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  @brief      Subscriber state listeners manager.
- @discussion Subscriber manager work in pair with state listener manager. Using manager's ability
-             user able to add multiple listeners for state events which is triggered on subscriber.
-             Listeners may receive events about new message or presence event on one of remote data
-             objects live feed. Also listeners will receive subscriber state change (connected, 
-             disconnected, unexpected disconnect and etc).
+ @discussion Subscriber manager work in pair with state listener manager. Using manager's ability user able to
+             add multiple listeners for state events which is triggered on subscriber. Listeners may receive 
+             events about new message or presence event on one of remote data objects live feed. Also 
+             listeners will receive subscriber state change (connected, disconnected, unexpected disconnect
+             and etc).
  
  @author Sergey Mamontov
  @since 4.0
@@ -40,8 +42,8 @@
 /**
  @brief  Copy specified listener's state information.
  
- @param listener Reference on state listener manager whose information should be copied into 
-                 receiver's state objects.
+ @param listener Reference on state listener manager whose information should be copied into receiver's state 
+                 objects.
  
  @since 4.0
  */
@@ -53,10 +55,10 @@
 ///------------------------------------------------
 
 /**
- @brief      Add observer which conform to \b PNObjectEventListener protocol and would like to 
-             receive updates based on live feed events and status change.
- @discussion Listener can implement only required callbacks from \b PNObjectEventListener protocol
-             and called only when desired type of event arrive.
+ @brief      Add observer which conform to \b PNObjectEventListener protocol and would like to receive updates
+             based on live feed events and status change.
+ @discussion Listener can implement only required callbacks from \b PNObjectEventListener protocol and called 
+             only when desired type of event arrive.
  
  @param listener Listener which would like to receive updates.
  
@@ -66,8 +68,8 @@
 
 /**
  @brief      Remove listener from list for callback calls.
- @discussion When listener not interested in live feed updates it can remove itself from updates 
-             list using this method.
+ @discussion When listener not interested in live feed updates it can remove itself from updates list using 
+             this method.
  
  @param listener Listener which doesn't want to receive updates anymore.
  
@@ -82,13 +84,14 @@
  */
 - (void)removeAllListeners;
 
+
 ///------------------------------------------------
 /// @name Listeners notification
 ///------------------------------------------------
 
 /**
- @brief  This method allow to shift execution context temporary to private protected queue which 
-         will serialize access to list of listeners.
+ @brief  This method allow to shift execution context temporary to private protected queue which  will 
+         serialize access to list of listeners.
  
  @param block Reference on block which will be called on private queue.
  
@@ -98,11 +101,11 @@
 
 /**
  @brief   Notify all message listeners about new message.
- @warning Method should be called within \b -notifyWithBlock: block to shift execution to private 
-          protected queue.
+ @warning Method should be called within \b -notifyWithBlock: block to shift execution to private protected 
+          queue.
  
- @param message Reference on event object which provide information about operation type and service
-                response for it.
+ @param message Reference on event object which provide information about operation type and service response 
+                for it.
  
  @since 4.0
  */
@@ -144,3 +147,5 @@
 
 
 @end
+
+NS_ASSUME_NONNULL_END

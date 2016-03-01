@@ -17,7 +17,7 @@
 
 - (NSNumber *)timetoken {
     
-    return self.serviceData[@"timetoken"];
+    return (self.serviceData[@"timetoken"]?: @0);
 }
 
 #pragma mark -

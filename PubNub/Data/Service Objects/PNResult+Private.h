@@ -7,6 +7,8 @@
 #import "PNStructures.h"
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 #pragma mark Private interface declaration
 
 @interface PNResult (Private) <NSCopying>
@@ -25,18 +27,18 @@
  */
 @property (nonatomic, assign, getter = isUnexpectedServiceData) BOOL unexpectedServiceData;
 @property (nonatomic, copy) NSString *uuid;
-@property (nonatomic, copy) NSString *authKey;
+@property (nonatomic, nullable, copy) NSString *authKey;
 @property (nonatomic, copy) NSString *origin;
-@property (nonatomic, copy) NSURLRequest *clientRequest;
+@property (nonatomic, nullable, copy) NSURLRequest *clientRequest;
 
 /**
  @brief      Stores reference on processed \c response which is ready to use by user.
- @discussion Content and format for this property different for API. Each method has description
-             about expected fields and data stored inside.
+ @discussion Content and format for this property different for API. Each method has description about 
+             expected fields and data stored inside.
  
  @since 4.0
  */
-@property (nonatomic, copy) NSDictionary *serviceData;
+@property (nonatomic, nullable, copy) NSDictionary<NSString *, id> *serviceData;
 
 
 ///------------------------------------------------
@@ -46,12 +48,10 @@
 /**
  @brief  Consntruct result instance in response to successful task completion.
  
- @param operation     One of \b PNOperationType enum fields to describe what kind of operation has
-                      been processed.
- @param task          Reference on data task which has been used to communicate with \b PubNub
-                      network.
- @param processedData Reference on data which has been loaded and pre-processed by corresponding
-                      parser.
+ @param operation     One of \b PNOperationType enum fields to describe what kind of operation has been 
+                      processed.
+ @param task          Reference on data task which has been used to communicate with \b PubNub network.
+ @param processedData Reference on data which has been loaded and pre-processed by corresponding parser.
  @param error         Reference on request processing error.
  
  @return Constructed and ready to use result instance.
@@ -59,18 +59,17 @@
  @since 4.0
  */
 + (instancetype)objectForOperation:(PNOperationType)operation
-                 completedWithTask:(NSURLSessionDataTask *)task
-                     processedData:(NSDictionary *)processedData processingError:(NSError *)error;
+                 completedWithTask:(nullable NSURLSessionDataTask *)task
+                     processedData:(nullable NSDictionary<NSString *, id> *)processedData
+                   processingError:(nullable NSError *)error;
 
 /**
  @brief  Initialize result instance in response to successful task completion.
  
- @param operation     One of \b PNOperationType enum fields to describe what kind of operation has
-                      been processed.
- @param task          Reference on data task which has been used to communicate with \b PubNub
-                      network.
- @param processedData Reference on data which has been loaded and pre-processed by corresponding
-                      parser.
+ @param operation     One of \b PNOperationType enum fields to describe what kind of operation has been 
+                      processed.
+ @param task          Reference on data task which has been used to communicate with \b PubNub network.
+ @param processedData Reference on data which has been loaded and pre-processed by corresponding parser.
  @param error         Reference on request processing error.
  
  @return Initialized and ready to use result instance.
@@ -78,14 +77,13 @@
  @since 4.0
  */
 - (instancetype)initForOperation:(PNOperationType)operation
-               completedWithTask:(NSURLSessionDataTask *)task
-                   processedData:(NSDictionary *)processedData
-                 processingError:(NSError *)error;
+               completedWithTask:(nullable NSURLSessionDataTask *)task
+                   processedData:(nullable NSDictionary<NSString *, id> *)processedData
+                 processingError:(nullable NSError *)error;
 
 /**
  @brief      Make copy of current result object with mutated data which should be stored in it.
- @discussion Method can be used to create sub-events (for example one for each message or presence 
-             event).
+ @discussion Method can be used to create sub-events (for example one for each message or presence event).
  
  @param data Reference on data which should be stored within new instance.
  
@@ -93,7 +91,7 @@
  
  @since 4.0
  */
-- (instancetype)copyWithMutatedData:(id)data;
+- (instancetype)copyWithMutatedData:(nullable id)data;
 
 /**
  @brief  Update data stored for result object.
@@ -102,7 +100,7 @@
  
  @since 4.0
  */
-- (void)updateData:(id)data;
+- (void)updateData:(nullable id)data;
 
 
 ///------------------------------------------------
@@ -131,3 +129,5 @@
 
 
 @end
+
+NS_ASSUME_NONNULL_END

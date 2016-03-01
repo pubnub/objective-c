@@ -5,15 +5,12 @@
 /**
  @brief      Class suitable to handle and process \b PubNub service response on subscribe request.
  @discussion Handle and pre-process provided server data to fetch operation result from it.
+ @discussion Expected input:
  
  @code
- @endcode
- Expected output:
- 
- @code
- {
+{
   "tt": NSDictionary
- }
+}
  @endcode
  
  @author Sergey Mamontov

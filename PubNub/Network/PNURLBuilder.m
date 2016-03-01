@@ -48,28 +48,28 @@ static NSString * const PNOperationRequestTemplate[22] = {
 
 #pragma mark - API URL constructor
 
-+ (NSURL *)URLForOperation:(PNOperationType)operation
-            withParameters:(PNRequestParameters *)parameters {
++ (nullable NSURL *)URLForOperation:(PNOperationType)operation
+                     withParameters:(PNRequestParameters *)parameters {
     
     NSURL *requestURL = nil;
     NSMutableString *requestURLString = [PNOperationRequestTemplate[operation] mutableCopy];
-    [parameters.pathComponents enumerateKeysAndObjectsUsingBlock:^(NSString *placeholder,
-                                                                   NSString *component,
+    [parameters.pathComponents enumerateKeysAndObjectsUsingBlock:^(NSString *placeholder, NSString *component,
                                                                    __unused BOOL *componentsEnumeratorStop) {
 
         [requestURLString replaceOccurrencesOfString:placeholder withString:component
                                              options:NSCaseInsensitiveSearch
                                                range:NSMakeRange(0, requestURLString.length)];
     }];
+    
     if ([requestURLString rangeOfString:@"{"].location == NSNotFound) {
         
         if ([requestURLString hasSuffix:@"/"]) {
             
             NSRange lastSlashRange = NSMakeRange(requestURLString.length - 2, 2);
-            [requestURLString replaceOccurrencesOfString:@"/" withString:@""
-                                                 options:NSBackwardsSearch range:lastSlashRange];
+            [requestURLString replaceOccurrencesOfString:@"/" withString:@"" options:NSBackwardsSearch 
+                                                   range:lastSlashRange];
         }
-        if ([parameters.query count]) {
+        if (parameters.query.count) {
             
             [requestURLString appendFormat:@"?%@", [PNDictionary queryStringFrom:parameters.query]];
         }
