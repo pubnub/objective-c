@@ -421,6 +421,7 @@ NS_ASSUME_NONNULL_END
 @synthesize lastTimeToken = _lastTimeToken;
 @synthesize currentTimeTokenRegion = _currentTimeTokenRegion;
 @synthesize lastTimeTokenRegion = _lastTimeTokenRegion;
+@synthesize filterExpression = _filterExpression;
 
 
 #pragma mark - Logger
@@ -764,9 +765,29 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Filtering
 
+- (NSString *)filterExpression {
+    
+    __block NSString *expression = nil;
+    pn_safe_property_read(self.resourceAccessQueue, ^{ expression = _filterExpression; });
+
+    return expression;
+}
+
 - (void)setFilterExpression:(nullable NSString *)filterExpression {
     
-    _escapedFilterExpression = [PNString percentEscapedString:filterExpression];
+    pn_safe_property_write(self.resourceAccessQueue, ^{
+        
+        _filterExpression = [filterExpression copy];
+        _escapedFilterExpression = (filterExpression? [PNString percentEscapedString:filterExpression] : nil);
+    });
+}
+
+- (NSString *)escapedFilterExpression {
+    
+    __block NSString *expression = nil;
+    pn_safe_property_read(self.resourceAccessQueue, ^{ expression = _escapedFilterExpression; });
+    
+    return expression;
 }
 
 

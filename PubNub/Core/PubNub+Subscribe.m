@@ -55,9 +55,14 @@
 
 #pragma mark - Filtering
 
+- (NSString *)filterExpression {
+    
+    return self.subscriberManager.filterExpression;
+}
+
 - (void)setFilterExpression:(nullable NSString *)filterExpression {
     
-    [self.subscriberManager setFilterExpression:filterExpression];
+    self.subscriberManager.filterExpression = filterExpression;
     if ([self.subscriberManager allObjects].count) { [self subscribeToChannels:@[] withPresence:NO]; }
 }
 
