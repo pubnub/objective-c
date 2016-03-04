@@ -98,7 +98,7 @@
 
 - (void)tireKicker {
     [self pubNubInit];
-    
+
 #pragma mark - Time
 
     [self pubNubTime];
@@ -722,7 +722,10 @@
             NSLog(@"^^^^ Non-error status: Expected Disconnect");
         }
     }
-
+    else if (status.operation == PNHeartbeatOperation) {
+        
+        NSLog(@"Heartbeat operation successful.");
+    }
 }
 
 #pragma mark - Configuration

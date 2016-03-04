@@ -9,55 +9,40 @@
          <BuildActionEntry
             buildForTesting = "YES"
             buildForRunning = "YES"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "517A9ED21BE3181700FAA43A"
-               BuildableName = "OSX ObjC Tests.xctest"
-               BlueprintName = "OSX ObjC Tests"
-               ReferencedContainer = "container:PubNub Tests.xcodeproj">
+               BlueprintIdentifier = "511725D31BE92F7B008F069E"
+               BuildableName = "PubNub Mac Example.app"
+               BlueprintName = "PubNub Mac Example"
+               ReferencedContainer = "container:PubNub Example.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
-      buildConfiguration = "Debug"
+      buildConfiguration = "Release"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "517A9ED21BE3181700FAA43A"
-               BuildableName = "OSX ObjC Tests.xctest"
-               BlueprintName = "OSX ObjC Tests"
-               ReferencedContainer = "container:PubNub Tests.xcodeproj">
-            </BuildableReference>
-            <SkippedTests>
-               <Test
-                  Identifier = "PNBasicClientTestCase">
-               </Test>
-               <Test
-                  Identifier = "PNBasicSubscribeTestCase">
-               </Test>
-               <Test
-                  Identifier = "PNSubscribeTests/testTimeTokenResetBetweenSubscriptionsWithUnsubscribe">
-               </Test>
-               <Test
-                  Identifier = "PNSubscribeTests/testTimeTokenResetBetweenSubscriptionsWithUnsubscribeAll">
-               </Test>
-            </SkippedTests>
-         </TestableReference>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "511725D31BE92F7B008F069E"
+            BuildableName = "PubNub Mac Example.app"
+            BlueprintName = "PubNub Mac Example"
+            ReferencedContainer = "container:PubNub Example.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
    <LaunchAction
-      buildConfiguration = "Release"
+      buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
@@ -66,15 +51,16 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <MacroExpansion>
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "517A9ED21BE3181700FAA43A"
-            BuildableName = "OSX ObjC Tests.xctest"
-            BlueprintName = "OSX ObjC Tests"
-            ReferencedContainer = "container:PubNub Tests.xcodeproj">
+            BlueprintIdentifier = "511725D31BE92F7B008F069E"
+            BuildableName = "PubNub Mac Example.app"
+            BlueprintName = "PubNub Mac Example"
+            ReferencedContainer = "container:PubNub Example.xcodeproj">
          </BuildableReference>
-      </MacroExpansion>
+      </BuildableProductRunnable>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -84,15 +70,16 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <MacroExpansion>
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "517A9ED21BE3181700FAA43A"
-            BuildableName = "OSX ObjC Tests.xctest"
-            BlueprintName = "OSX ObjC Tests"
-            ReferencedContainer = "container:PubNub Tests.xcodeproj">
+            BlueprintIdentifier = "511725D31BE92F7B008F069E"
+            BuildableName = "PubNub Mac Example.app"
+            BlueprintName = "PubNub Mac Example"
+            ReferencedContainer = "container:PubNub Example.xcodeproj">
          </BuildableReference>
-      </MacroExpansion>
+      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

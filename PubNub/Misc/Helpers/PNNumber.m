@@ -77,7 +77,7 @@ NS_ASSUME_NONNULL_END
     if (number) {
         
         NSNumber *value = [self normalizeValue:number];
-        timeToken = @(number.unsignedLongLongValue * [self correctionForPrecision:[self numberPrecision:value]]);
+        timeToken = @(value.unsignedLongLongValue * [self correctionForPrecision:[self numberPrecision:value]]);
     }
     
     return timeToken;

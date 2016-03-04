@@ -1,3 +1,17 @@
+02-09-2016 - ad5d8a3 - 4.2.7
+. changed way how heartbeat state notification is set. Now it can be specified in heartbeatNotificationOptions bitfield property using PNHeartbeatNotificationOptions options.
+
+02-09-2016 - 161f2e8 - 4.2.6
+. added new property to PNConfiguration class called notifyAboutFailedHeartbeatsOnly which allow to configure client to notify not only about failed heartbeat statuses but for success as well.
+
+01-27-2016 - a5dd54a - 4.2.5
+. added private persistent storage which allow to keep crucial data safe on device.
+. added new target to build dynamic framework for tvOS 
+. fixed issue with time token precision verification in case if non-PubNub's time token value has been passe. 
+
+01-12-2016 - 8cfef05 - 4.2.4
+. fixed issue because of which client may not restore subscription on list of channels which has been left after previous unsubscription request
+
 12-20-2015 - 4210650 - 4.2.3
 . fixed unsubscription issue because of which time token didn't get reset if there is no more channels on which client may continue subscription
 . fixed issue with -unsubscribeFromAll which may issue unwanted subscribe requests in case if method call followed by subscribe method call

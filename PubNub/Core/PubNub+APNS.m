@@ -8,12 +8,23 @@
 #import "PubNub+CorePrivate.h"
 #import "PNStatus+Private.h"
 #import "PNLogMacro.h"
+#import "PNKeychain.h"
 #import "PNHelpers.h"
 
 
+#pragma mark Static
+
+/**
+ @brief  Stores reference on key under which previous device push token is stored
+         in persistent storage.
+ 
+ @since 4.x.1
+ */
+static NSString * const kPNAPNSDevicePushTokenStoreKey = @"PNAPNSDevicePushToken";
+
 NS_ASSUME_NONNULL_BEGIN
 
-#pragma mark Protected interface declaration
+#pragma mark - Protected interface declaration
 
 @interface PubNub (APNSProtected)
 
@@ -37,6 +48,18 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)enablePushNotification:(BOOL)shouldEnabled onChannels:(nullable NSArray<NSString *> *)channels
            withDevicePushToken:(NSData *)pushToken
                  andCompletion:(nullable PNPushNotificationsStateModificationCompletionBlock)block;
+
+
+#pragma mark - Misc
+
+/**
+ @brief      Receive device push token stored in persistent storage.
+ @discussion Try to receive device push token which has been during previous channels registration
+             from Keychain storage.
+ 
+ @since 4.x.1
+ */
+- (NSData *)storedDevicePushToken;
 
 #pragma mark - 
 
@@ -93,6 +116,15 @@ NS_ASSUME_NONNULL_END
 
             [parameters addQueryParameter:[PNChannel namesForRequest:channels]
                              forFieldName:(shouldEnabled ? @"add":@"remove")];
+            if (operationType == PNAddPushNotificationsOnChannelsOperation) {
+                
+                NSData *previousPushToken = [self storedDevicePushToken];
+                if (previousPushToken && ![pushToken isEqual:previousPushToken]) {
+                    
+                    [parameters addQueryParameter:[[PNData HEXFromDevicePushToken:previousPushToken] lowercaseString]
+                                     forFieldName:@"old_token"];
+                }
+            }
         }
         else if (operationType == PNAddPushNotificationsOnChannelsOperation) {
             
@@ -127,6 +159,11 @@ NS_ASSUME_NONNULL_END
                              withDevicePushToken:pushToken andCompletion:block];
             };
         }
+        else if (operationType == PNAddPushNotificationsOnChannelsOperation) {
+            
+            [PNKeychain storeValue:pushToken forKey:kPNAPNSDevicePushTokenStoreKey
+               withCompletionBlock:NULL];
+        }
         [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
         #pragma clang diagnostic pop
     }];
@@ -152,22 +189,42 @@ NS_ASSUME_NONNULL_END
     [self processOperation:PNPushNotificationEnabledChannelsOperation withParameters:parameters
            completionBlock:^(PNResult * _Nullable result, PNStatus * _Nullable status){
 
-        // Silence static analyzer warnings.
-        // Code is aware about this case and at the end will simply call on 'nil' object
-        // method. In most cases if referenced object become 'nil' it mean what there is no
-        // more need in it and probably whole client instance has been deallocated.
-        #pragma clang diagnostic push
-        #pragma clang diagnostic ignored "-Wreceiver-is-weak"
+               // Silence static analyzer warnings.
+               // Code is aware about this case and at the end will simply call on 'nil' object
+               // method. In most cases if referenced object become 'nil' it mean what there is no
+               // more need in it and probably whole client instance has been deallocated.
+               #pragma clang diagnostic push
+               #pragma clang diagnostic ignored "-Wreceiver-is-weak"
+               if (status.isError) {
+                    
+                   status.retryBlock = ^{
+                        
+                       [weakSelf pushNotificationEnabledChannelsForDeviceWithPushToken:pushToken
+                                                                         andCompletion:block];
+                   };
+               }
+               [weakSelf callBlock:block status:NO withResult:result andStatus:status];
+               #pragma clang diagnostic pop
+           }];
+}
+
+
+#pragma mark - Misc
+
+- (NSData *)storedDevicePushToken {
+    
+    __block NSData *token = nil;
+    [PNKeychain valueForKey:kPNAPNSDevicePushTokenStoreKey withCompletionBlock:^(id value) {
+        
+        if ([value isKindOfClass:NSString.class]) {
         if (status.isError) {
             
-           status.retryBlock = ^{
-                
-               [weakSelf pushNotificationEnabledChannelsForDeviceWithPushToken:pushToken andCompletion:block];
-           };
+            token = [(NSString *)value dataUsingEncoding:NSUTF8StringEncoding];
         }
-        [weakSelf callBlock:block status:NO withResult:result andStatus:status];
-        #pragma clang diagnostic pop
+        else if ([value isKindOfClass:NSData.class]){ token = value; }
     }];
+    
+    return token;
 }
 
 #pragma mark -

@@ -17,6 +17,37 @@
 #define PNStructures_h
 
 /**
+ @brief  Options describe possible heartbeat states on which delegate can be notified.
+ 
+ @since 4.2.7
+ */
+typedef NS_OPTIONS(NSUInteger, PNHeartbeatNotificationOptions) {
+    
+    /**
+     @brief  Delegate will be notified every time when heartbeat request will be successfully processed.
+     */
+    PNHeartbeatNotifySuccess = (1 << 0),
+    
+    /**
+     @brief  Delegate will be notified every time when heartbeat request processing will fail.
+     */
+    PNHeartbeatNotifyFailure = (1 << 1),
+    
+    /**
+     @brief  Delegate will be notified every time when heartbeat request processing will be successful or
+             fail.
+     */
+    PNHeartbeatNotifyAll = (PNHeartbeatNotifySuccess | PNHeartbeatNotifyFailure),
+    
+    /**
+     @brief  Delegate won't be notified about ant heartbeat request processing results.
+     */
+    PNHeartbeatNotifyNone = (1 << 2)
+};
+
+
+
+/**
  @brief  \b PubNub client logging levels available for manipulations.
  
  @since 4.0

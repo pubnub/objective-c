@@ -9,7 +9,7 @@
 
 Pod::Spec.new do |spec|
     spec.name     = 'PubNub'
-    spec.version  = '4.2.3'
+    spec.version  = '4.2.7'
     spec.summary  = 'The PubNub Real-Time Network. Build real-time apps quickly and scale them globally.'
     spec.homepage = 'https://github.com/pubnub/objective-c'
 
@@ -33,6 +33,7 @@ Pod::Spec.new do |spec|
         core.private_header_files = [
             'PubNub/Core/*Private.h',
             'PubNub/Data/*Private.h',
+            'PubNub/Data/PNKeychain.h',
             'PubNub/Data/PNEnvelopeInformation.h',
             'PubNub/Data/Managers/**/*.h',
             'PubNub/Data/Service Objects/*Private.h',

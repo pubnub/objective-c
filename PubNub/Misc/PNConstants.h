@@ -6,6 +6,7 @@
  @copyright © 2009-2015 PubNub, Inc.
  */
 #import <Foundation/Foundation.h>
+#import "PNStructures.h"
 
 
 #ifndef PNConstants_h
@@ -14,10 +15,10 @@
 #pragma mark General information constants
 
 // Stores client library version number
-static NSString * const kPNLibraryVersion = @"4.2.3";
+static NSString * const kPNLibraryVersion = @"4.2.7";
 
 // Stores information about SDK codebase
-static NSString * const kPNCommit = @"42106505560db45434ff00131f0d8fd9b16e102d";
+static NSString * const kPNCommit = @"ad5d8a3e2ec72907ed8201fc7e056e986c5a2f5c";
 
 #if TARGET_OS_WATCH
     static NSString * const kPNClientName = @"ObjC-watchOS";
@@ -36,6 +37,7 @@ static NSTimeInterval const kPNDefaultSubscribeMaximumIdleTime = 310.0f;
 static NSTimeInterval const kPNDefaultNonSubscribeRequestTimeout = 10.0f;
 
 static BOOL const kPNDefaultIsTLSEnabled = YES;
+static PNHeartbeatNotificationOptions const kPNDefaultHeartbeatNotificationOptions = PNHeartbeatNotifyFailure;
 static BOOL const kPNDefaultShouldKeepTimeTokenOnListChange = YES;
 static BOOL const kPNDefaultShouldRestoreSubscription = YES;
 static BOOL const kPNDefaultShouldTryCatchUpOnSubscriptionRestore = YES;

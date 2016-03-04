@@ -15,6 +15,7 @@
 #endif // __MAC_OS_X_VERSION_MIN_REQUIRED
 #import "PNConfiguration+Private.h"
 #import "PNConstants.h"
+#import "PNKeychain.h"
 
 
 #pragma mark Static
@@ -131,6 +132,7 @@ NS_ASSUME_NONNULL_END
         _subscribeMaximumIdleTime = kPNDefaultSubscribeMaximumIdleTime;
         _nonSubscribeRequestTimeout = kPNDefaultNonSubscribeRequestTimeout;
         _TLSEnabled = kPNDefaultIsTLSEnabled;
+        _heartbeatNotificationOptions = kPNDefaultHeartbeatNotificationOptions;
         _keepTimeTokenOnListChange = kPNDefaultShouldKeepTimeTokenOnListChange;
         _restoreSubscription = kPNDefaultShouldRestoreSubscription;
         _catchUpOnSubscriptionRestore = kPNDefaultShouldTryCatchUpOnSubscriptionRestore;
@@ -154,6 +156,7 @@ NS_ASSUME_NONNULL_END
     configuration.presenceHeartbeatValue = self.presenceHeartbeatValue;
     configuration.presenceHeartbeatInterval = self.presenceHeartbeatInterval;
     configuration.TLSEnabled = self.isTLSEnabled;
+    configuration.heartbeatNotificationOptions = self.heartbeatNotificationOptions;
     configuration.keepTimeTokenOnListChange = self.shouldKeepTimeTokenOnListChange;
     configuration.restoreSubscription = self.shouldRestoreSubscription;
     configuration.catchUpOnSubscriptionRestore = self.shouldTryCatchUpOnSubscriptionRestore;
@@ -166,14 +169,17 @@ NS_ASSUME_NONNULL_END
 
 - (nullable NSString *)uniqueDeviceIdentifier {
     
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *identifier = [defaults stringForKey:kPNConfigurationDeviceIDKey];
-    if (!identifier) {
+    __block NSString *identifier = nil;
+    [PNKeychain valueForKey:kPNConfigurationDeviceIDKey withCompletionBlock:^(id value) {
         
-        identifier = [self generateUniqueDeviceIdentifier];
-        [defaults setObject:identifier forKey:kPNConfigurationDeviceIDKey];
-        [defaults synchronize];
-    }
+        if (!value) {
+            
+            identifier = [self generateUniqueDeviceIdentifier];
+            [PNKeychain storeValue:identifier forKey:kPNConfigurationDeviceIDKey
+               withCompletionBlock:NULL];
+        }
+        else { identifier = value; }
+    }];
     
     return identifier;
 }
