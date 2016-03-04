@@ -191,7 +191,7 @@
                            @"URL": ([self.clientRequest.URL absoluteString]?: @"null"),
                            @"POST Body size": @([self.clientRequest.HTTPBody length]),
                            @"Secure": (self.isTLSEnabled ? @"YES" : @"NO"),
-                           @"UUID": (self.uuid?: @"uknonwn"),
+                           @"UUID": (self.uuid?: @"unknown"),
                            @"Authorization": (self.authKey?: @"not set"),
                            @"Origin": (self.origin?: @"unknown")},
              @"Response": response};
