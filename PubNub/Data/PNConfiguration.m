@@ -1,7 +1,7 @@
 /**
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 #import <Foundation/Foundation.h>
 #if __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH

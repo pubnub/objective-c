@@ -66,7 +66,7 @@ typedef void(^PNWhereNowCompletionBlock)(PNPresenceWhereNowResult * _Nullable re
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PubNub (Presence)
 

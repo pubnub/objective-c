@@ -1,7 +1,7 @@
 /**
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PubNub+APNS.h"
 #import "PNRequestParameters.h"
@@ -217,7 +217,6 @@ NS_ASSUME_NONNULL_END
     [PNKeychain valueForKey:kPNAPNSDevicePushTokenStoreKey withCompletionBlock:^(id value) {
         
         if ([value isKindOfClass:NSString.class]) {
-        if (status.isError) {
             
             token = [(NSString *)value dataUsingEncoding:NSUTF8StringEncoding];
         }

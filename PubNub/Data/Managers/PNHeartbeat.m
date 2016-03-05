@@ -1,7 +1,7 @@
 /**
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PNHeartbeat.h"
 #import "PubNub+PresencePrivate.h"
@@ -182,6 +182,7 @@ NS_ASSUME_NONNULL_END
             if ([weakSelf shouldNotifyAboutHeartbeatWithStatus:status]) {
                 
                 [weakSelf.client.listenersManager notifyHeartbeatStatus:status];
+            }
         }];
     }
     else { [self stopHeartbeatIfPossible]; }

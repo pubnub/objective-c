@@ -10,7 +10,7 @@
  
  @author Sergey Mamontov
  @since 4.2.2
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PubNub (FAB)
 
