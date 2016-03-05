@@ -8,7 +8,14 @@
 		<key>data</key>
 		<dict>
 			<key>data</key>
-			<data>eyJ0Ijp7InQiOiIxNDUyNzM2ODg1OTI5MjAyNSIsInIiOjU2fSwibSI6W3siYSI6IjQiLCJmIjo1MTIsImkiOiIzMjJBNzBCMy1GMEVBLTQ4Q0QtOUJCMC1EM0YwRjVERTk5NkMiLCJwIjp7InQiOiIxNDUyNzM2ODg1OTI5MTA3MyIsInIiOjU2fSwiayI6ImRlbW8tMzYiLCJjIjoiMzIyQTcwQjMtRjBFQS00OENELTlCQjAtRDNGMEY1REU5OTZDIiwiZCI6IlRpbWUgdG9rZW4gbWVzc2FnZSAjNSJ9XX0=</data>
+			<data>
+			eyJ0Ijp7InQiOiIxNDUyNzM2ODg1OTI5MjAyNSIsInIiOjU2fSwi
+			bSI6W3siYSI6IjQiLCJmIjo1MTIsImkiOiIzMjJBNzBCMy1GMEVB
+			LTQ4Q0QtOUJCMC1EM0YwRjVERTk5NkMiLCJwIjp7InQiOiIxNDUy
+			NzM2ODg1OTI5MTA3MyIsInIiOjU2fSwiayI6ImRlbW8tMzYiLCJj
+			IjoiMzIyQTcwQjMtRjBFQS00OENELTlCQjAtRDNGMEY1REU5OTZD
+			IiwiZCI6IlRpbWUgdG9rZW4gbWVzc2FnZSAjNSJ9XX0=
+			</data>
 			<key>json</key>
 			<dict>
 				<key>m</key>
@@ -53,7 +60,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tr=56&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=14527368856837249</string>
+				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?tt=14527368856837249&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;tr=56&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -70,7 +77,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 			<key>originalRequest</key>
 			<dict>
@@ -79,7 +86,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tr=56&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=14527368856837249</string>
+				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?tt=14527368856837249&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;tr=56&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -94,7 +101,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 		</dict>
 		<key>response</key>
@@ -118,7 +125,7 @@
 					<key>Content-Length</key>
 					<string>227</string>
 					<key>Content-Type</key>
-					<string>text/javascript; charset=&quot;UTF-8&quot;</string>
+					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
 					<string>Thu, 14 Jan 2016 02:01:25 GMT</string>
 				</dict>
@@ -129,7 +136,7 @@
 				<key>suggestedFileName</key>
 				<string>0.js</string>
 				<key>textEncodingName</key>
-				<string>&quot;utf-8&quot;</string>
+				<string>"utf-8"</string>
 			</dict>
 		</dict>
 	</dict>
@@ -139,7 +146,14 @@
 		<key>data</key>
 		<dict>
 			<key>data</key>
-			<data>eyJ0Ijp7InQiOiIxNDUyNzM2ODg1MTkyODUyMCIsInIiOjU2fSwibSI6W3siYSI6IjQiLCJmIjo1MTIsImkiOiIzMjJBNzBCMy1GMEVBLTQ4Q0QtOUJCMC1EM0YwRjVERTk5NkMiLCJwIjp7InQiOiIxNDUyNzM2ODg1MTkyNzU0NCIsInIiOjU2fSwiayI6ImRlbW8tMzYiLCJjIjoiMzIyQTcwQjMtRjBFQS00OENELTlCQjAtRDNGMEY1REU5OTZDIiwiZCI6IlRpbWUgdG9rZW4gbWVzc2FnZSAjMiJ9XX0=</data>
+			<data>
+			eyJ0Ijp7InQiOiIxNDUyNzM2ODg1MTkyODUyMCIsInIiOjU2fSwi
+			bSI6W3siYSI6IjQiLCJmIjo1MTIsImkiOiIzMjJBNzBCMy1GMEVB
+			LTQ4Q0QtOUJCMC1EM0YwRjVERTk5NkMiLCJwIjp7InQiOiIxNDUy
+			NzM2ODg1MTkyNzU0NCIsInIiOjU2fSwiayI6ImRlbW8tMzYiLCJj
+			IjoiMzIyQTcwQjMtRjBFQS00OENELTlCQjAtRDNGMEY1REU5OTZD
+			IiwiZCI6IlRpbWUgdG9rZW4gbWVzc2FnZSAjMiJ9XX0=
+			</data>
 			<key>json</key>
 			<dict>
 				<key>m</key>
@@ -184,7 +198,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tr=56&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=14527368849461163</string>
+				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?tt=14527368849461163&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;tr=56&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -201,7 +215,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 			<key>originalRequest</key>
 			<dict>
@@ -210,7 +224,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tr=56&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=14527368849461163</string>
+				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?tt=14527368849461163&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;tr=56&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -225,7 +239,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 		</dict>
 		<key>response</key>
@@ -249,7 +263,7 @@
 					<key>Content-Length</key>
 					<string>227</string>
 					<key>Content-Type</key>
-					<string>text/javascript; charset=&quot;UTF-8&quot;</string>
+					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
 					<string>Thu, 14 Jan 2016 02:01:25 GMT</string>
 				</dict>
@@ -260,7 +274,7 @@
 				<key>suggestedFileName</key>
 				<string>0.js</string>
 				<key>textEncodingName</key>
-				<string>&quot;utf-8&quot;</string>
+				<string>"utf-8"</string>
 			</dict>
 		</dict>
 	</dict>
@@ -270,7 +284,9 @@
 		<key>data</key>
 		<dict>
 			<key>data</key>
-			<data>WzEsIlNlbnQiLCIxNDUyNzM2ODg1NDM4MzkxMyJd</data>
+			<data>
+			WzEsIlNlbnQiLCIxNDUyNzM2ODg1NDM4MzkxMyJd
+			</data>
 			<key>json</key>
 			<array>
 				<integer>1</integer>
@@ -287,7 +303,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0/%22Time%20token%20message%20%233%22?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
+				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0/%22Time%20token%20message%20%233%22?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -304,7 +320,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 			<key>originalRequest</key>
 			<dict>
@@ -313,7 +329,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0/%22Time%20token%20message%20%233%22?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
+				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0/%22Time%20token%20message%20%233%22?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -328,7 +344,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 		</dict>
 		<key>response</key>
@@ -352,7 +368,7 @@
 					<key>Content-Length</key>
 					<string>30</string>
 					<key>Content-Type</key>
-					<string>text/javascript; charset=&quot;UTF-8&quot;</string>
+					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
 					<string>Thu, 14 Jan 2016 02:01:25 GMT</string>
 				</dict>
@@ -361,9 +377,9 @@
 				<key>statusCode</key>
 				<integer>200</integer>
 				<key>suggestedFileName</key>
-				<string>&quot;Time token message #3&quot;.js</string>
+				<string>"Time token message #3".js</string>
 				<key>textEncodingName</key>
-				<string>&quot;utf-8&quot;</string>
+				<string>"utf-8"</string>
 			</dict>
 		</dict>
 	</dict>
@@ -373,7 +389,9 @@
 		<key>data</key>
 		<dict>
 			<key>data</key>
-			<data>WzEsIlNlbnQiLCIxNDUyNzM2ODg1NjgzNjE0NiJd</data>
+			<data>
+			WzEsIlNlbnQiLCIxNDUyNzM2ODg1NjgzNjE0NiJd
+			</data>
 			<key>json</key>
 			<array>
 				<integer>1</integer>
@@ -390,7 +408,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0/%22Time%20token%20message%20%234%22?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
+				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0/%22Time%20token%20message%20%234%22?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -407,7 +425,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 			<key>originalRequest</key>
 			<dict>
@@ -416,7 +434,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0/%22Time%20token%20message%20%234%22?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
+				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0/%22Time%20token%20message%20%234%22?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -431,7 +449,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 		</dict>
 		<key>response</key>
@@ -455,7 +473,7 @@
 					<key>Content-Length</key>
 					<string>30</string>
 					<key>Content-Type</key>
-					<string>text/javascript; charset=&quot;UTF-8&quot;</string>
+					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
 					<string>Thu, 14 Jan 2016 02:01:25 GMT</string>
 				</dict>
@@ -464,9 +482,9 @@
 				<key>statusCode</key>
 				<integer>200</integer>
 				<key>suggestedFileName</key>
-				<string>&quot;Time token message #4&quot;.js</string>
+				<string>"Time token message #4".js</string>
 				<key>textEncodingName</key>
-				<string>&quot;utf-8&quot;</string>
+				<string>"utf-8"</string>
 			</dict>
 		</dict>
 	</dict>
@@ -476,7 +494,14 @@
 		<key>data</key>
 		<dict>
 			<key>data</key>
-			<data>eyJ0Ijp7InQiOiIxNDUyNzM2ODg0OTQ2MTE2MyIsInIiOjU2fSwibSI6W3siYSI6IjQiLCJmIjo1MTIsImkiOiIzMjJBNzBCMy1GMEVBLTQ4Q0QtOUJCMC1EM0YwRjVERTk5NkMiLCJwIjp7InQiOiIxNDUyNzM2ODg0OTQ1OTkxOSIsInIiOjU2fSwiayI6ImRlbW8tMzYiLCJjIjoiMzIyQTcwQjMtRjBFQS00OENELTlCQjAtRDNGMEY1REU5OTZDIiwiZCI6IlRpbWUgdG9rZW4gbWVzc2FnZSAjMSJ9XX0=</data>
+			<data>
+			eyJ0Ijp7InQiOiIxNDUyNzM2ODg0OTQ2MTE2MyIsInIiOjU2fSwi
+			bSI6W3siYSI6IjQiLCJmIjo1MTIsImkiOiIzMjJBNzBCMy1GMEVB
+			LTQ4Q0QtOUJCMC1EM0YwRjVERTk5NkMiLCJwIjp7InQiOiIxNDUy
+			NzM2ODg0OTQ1OTkxOSIsInIiOjU2fSwiayI6ImRlbW8tMzYiLCJj
+			IjoiMzIyQTcwQjMtRjBFQS00OENELTlCQjAtRDNGMEY1REU5OTZD
+			IiwiZCI6IlRpbWUgdG9rZW4gbWVzc2FnZSAjMSJ9XX0=
+			</data>
 			<key>json</key>
 			<dict>
 				<key>m</key>
@@ -521,7 +546,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tr=56&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=14527355634051087</string>
+				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?tt=14527355634051087&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;tr=56&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -538,7 +563,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 			<key>originalRequest</key>
 			<dict>
@@ -547,7 +572,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tr=56&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=14527355634051087</string>
+				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?tt=14527355634051087&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;tr=56&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -562,7 +587,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 		</dict>
 		<key>response</key>
@@ -586,7 +611,7 @@
 					<key>Content-Length</key>
 					<string>227</string>
 					<key>Content-Type</key>
-					<string>text/javascript; charset=&quot;UTF-8&quot;</string>
+					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
 					<string>Thu, 14 Jan 2016 02:01:24 GMT</string>
 				</dict>
@@ -597,7 +622,7 @@
 				<key>suggestedFileName</key>
 				<string>0.js</string>
 				<key>textEncodingName</key>
-				<string>&quot;utf-8&quot;</string>
+				<string>"utf-8"</string>
 			</dict>
 		</dict>
 	</dict>
@@ -607,7 +632,14 @@
 		<key>data</key>
 		<dict>
 			<key>data</key>
-			<data>eyJ0Ijp7InQiOiIxNDUyNzM2ODg1NDM4NDc0MiIsInIiOjU2fSwibSI6W3siYSI6IjQiLCJmIjo1MTIsImkiOiIzMjJBNzBCMy1GMEVBLTQ4Q0QtOUJCMC1EM0YwRjVERTk5NkMiLCJwIjp7InQiOiIxNDUyNzM2ODg1NDM4MzkxMyIsInIiOjU2fSwiayI6ImRlbW8tMzYiLCJjIjoiMzIyQTcwQjMtRjBFQS00OENELTlCQjAtRDNGMEY1REU5OTZDIiwiZCI6IlRpbWUgdG9rZW4gbWVzc2FnZSAjMyJ9XX0=</data>
+			<data>
+			eyJ0Ijp7InQiOiIxNDUyNzM2ODg1NDM4NDc0MiIsInIiOjU2fSwi
+			bSI6W3siYSI6IjQiLCJmIjo1MTIsImkiOiIzMjJBNzBCMy1GMEVB
+			LTQ4Q0QtOUJCMC1EM0YwRjVERTk5NkMiLCJwIjp7InQiOiIxNDUy
+			NzM2ODg1NDM4MzkxMyIsInIiOjU2fSwiayI6ImRlbW8tMzYiLCJj
+			IjoiMzIyQTcwQjMtRjBFQS00OENELTlCQjAtRDNGMEY1REU5OTZD
+			IiwiZCI6IlRpbWUgdG9rZW4gbWVzc2FnZSAjMyJ9XX0=
+			</data>
 			<key>json</key>
 			<dict>
 				<key>m</key>
@@ -652,7 +684,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tr=56&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=14527368851928520</string>
+				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?tt=14527368851928520&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;tr=56&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -669,7 +701,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 			<key>originalRequest</key>
 			<dict>
@@ -678,7 +710,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tr=56&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=14527368851928520</string>
+				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?tt=14527368851928520&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;tr=56&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -693,7 +725,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 		</dict>
 		<key>response</key>
@@ -717,7 +749,7 @@
 					<key>Content-Length</key>
 					<string>227</string>
 					<key>Content-Type</key>
-					<string>text/javascript; charset=&quot;UTF-8&quot;</string>
+					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
 					<string>Thu, 14 Jan 2016 02:01:25 GMT</string>
 				</dict>
@@ -728,7 +760,7 @@
 				<key>suggestedFileName</key>
 				<string>0.js</string>
 				<key>textEncodingName</key>
-				<string>&quot;utf-8&quot;</string>
+				<string>"utf-8"</string>
 			</dict>
 		</dict>
 	</dict>
@@ -738,7 +770,19 @@
 		<key>data</key>
 		<dict>
 			<key>data</key>
-			<data>eyJ0Ijp7InQiOiIxNDUyNzM2ODg1OTI5MjAyNSIsInIiOjU2fSwibSI6W3siYSI6IjQiLCJmIjo1MTIsImkiOiIzMjJBNzBCMy1GMEVBLTQ4Q0QtOUJCMC1EM0YwRjVERTk5NkMiLCJwIjp7InQiOiIxNDUyNzM2ODg1NjgzNjE0NiIsInIiOjU2fSwiayI6ImRlbW8tMzYiLCJjIjoiMzIyQTcwQjMtRjBFQS00OENELTlCQjAtRDNGMEY1REU5OTZDIiwiZCI6IlRpbWUgdG9rZW4gbWVzc2FnZSAjNCJ9LHsiYSI6IjQiLCJmIjo1MTIsImkiOiIzMjJBNzBCMy1GMEVBLTQ4Q0QtOUJCMC1EM0YwRjVERTk5NkMiLCJwIjp7InQiOiIxNDUyNzM2ODg1OTI5MTA3MyIsInIiOjU2fSwiayI6ImRlbW8tMzYiLCJjIjoiMzIyQTcwQjMtRjBFQS00OENELTlCQjAtRDNGMEY1REU5OTZDIiwiZCI6IlRpbWUgdG9rZW4gbWVzc2FnZSAjNSJ9XX0=</data>
+			<data>
+			eyJ0Ijp7InQiOiIxNDUyNzM2ODg1OTI5MjAyNSIsInIiOjU2fSwi
+			bSI6W3siYSI6IjQiLCJmIjo1MTIsImkiOiIzMjJBNzBCMy1GMEVB
+			LTQ4Q0QtOUJCMC1EM0YwRjVERTk5NkMiLCJwIjp7InQiOiIxNDUy
+			NzM2ODg1NjgzNjE0NiIsInIiOjU2fSwiayI6ImRlbW8tMzYiLCJj
+			IjoiMzIyQTcwQjMtRjBFQS00OENELTlCQjAtRDNGMEY1REU5OTZD
+			IiwiZCI6IlRpbWUgdG9rZW4gbWVzc2FnZSAjNCJ9LHsiYSI6IjQi
+			LCJmIjo1MTIsImkiOiIzMjJBNzBCMy1GMEVBLTQ4Q0QtOUJCMC1E
+			M0YwRjVERTk5NkMiLCJwIjp7InQiOiIxNDUyNzM2ODg1OTI5MTA3
+			MyIsInIiOjU2fSwiayI6ImRlbW8tMzYiLCJjIjoiMzIyQTcwQjMt
+			RjBFQS00OENELTlCQjAtRDNGMEY1REU5OTZDIiwiZCI6IlRpbWUg
+			dG9rZW4gbWVzc2FnZSAjNSJ9XX0=
+			</data>
 			<key>json</key>
 			<dict>
 				<key>m</key>
@@ -804,7 +848,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tr=56&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=14527368856836146</string>
+				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?tt=14527368856836146&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;tr=56&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -821,7 +865,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 			<key>originalRequest</key>
 			<dict>
@@ -830,7 +874,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tr=56&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=14527368856836146</string>
+				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?tt=14527368856836146&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;tr=56&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -845,7 +889,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 		</dict>
 		<key>response</key>
@@ -869,7 +913,7 @@
 					<key>Content-Length</key>
 					<string>410</string>
 					<key>Content-Type</key>
-					<string>text/javascript; charset=&quot;UTF-8&quot;</string>
+					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
 					<string>Thu, 14 Jan 2016 02:01:27 GMT</string>
 				</dict>
@@ -880,7 +924,7 @@
 				<key>suggestedFileName</key>
 				<string>0.js</string>
 				<key>textEncodingName</key>
-				<string>&quot;utf-8&quot;</string>
+				<string>"utf-8"</string>
 			</dict>
 		</dict>
 	</dict>
@@ -896,7 +940,8 @@
 			<key>domain</key>
 			<string>NSURLErrorDomain</string>
 			<key>userInfo</key>
-			<dict/>
+			<dict>
+			</dict>
 		</dict>
 		<key>request</key>
 		<dict>
@@ -907,7 +952,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tr=56&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=14527368859292025</string>
+				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?tt=14527368859292025&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;tr=56&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -924,7 +969,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 			<key>originalRequest</key>
 			<dict>
@@ -933,7 +978,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tr=56&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=14527368859292025</string>
+				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?tt=14527368859292025&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;tr=56&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -948,7 +993,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 		</dict>
 	</dict>
@@ -958,7 +1003,10 @@
 		<key>data</key>
 		<dict>
 			<key>data</key>
-			<data>eyJzdGF0dXMiOiAyMDAsICJhY3Rpb24iOiAibGVhdmUiLCAibWVzc2FnZSI6ICJPSyIsICJzZXJ2aWNlIjogIlByZXNlbmNlIn0=</data>
+			<data>
+			eyJzdGF0dXMiOiAyMDAsICJhY3Rpb24iOiAibGVhdmUiLCAibWVz
+			c2FnZSI6ICJPSyIsICJzZXJ2aWNlIjogIlByZXNlbmNlIn0=
+			</data>
 			<key>json</key>
 			<dict>
 				<key>action</key>
@@ -980,7 +1028,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/presence/sub_key/demo-36/channel/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/leave?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
+				<string>https://pubsub.pubnub.com/v2/presence/sub_key/demo-36/channel/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/leave?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -997,7 +1045,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 			<key>originalRequest</key>
 			<dict>
@@ -1006,7 +1054,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/presence/sub_key/demo-36/channel/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/leave?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
+				<string>https://pubsub.pubnub.com/v2/presence/sub_key/demo-36/channel/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/leave?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -1021,7 +1069,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 		</dict>
 		<key>response</key>
@@ -1049,7 +1097,7 @@
 					<key>Content-Length</key>
 					<string>74</string>
 					<key>Content-Type</key>
-					<string>text/javascript; charset=&quot;UTF-8&quot;</string>
+					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
 					<string>Thu, 14 Jan 2016 02:01:28 GMT</string>
 					<key>Server</key>
@@ -1062,7 +1110,7 @@
 				<key>suggestedFileName</key>
 				<string>leave.js</string>
 				<key>textEncodingName</key>
-				<string>&quot;utf-8&quot;</string>
+				<string>"utf-8"</string>
 			</dict>
 		</dict>
 	</dict>
@@ -1072,7 +1120,14 @@
 		<key>data</key>
 		<dict>
 			<key>data</key>
-			<data>eyJ0Ijp7InQiOiIxNDUyNzM2ODg1NjgzNzI0OSIsInIiOjU2fSwibSI6W3siYSI6IjQiLCJmIjo1MTIsImkiOiIzMjJBNzBCMy1GMEVBLTQ4Q0QtOUJCMC1EM0YwRjVERTk5NkMiLCJwIjp7InQiOiIxNDUyNzM2ODg1NjgzNjE0NiIsInIiOjU2fSwiayI6ImRlbW8tMzYiLCJjIjoiMzIyQTcwQjMtRjBFQS00OENELTlCQjAtRDNGMEY1REU5OTZDIiwiZCI6IlRpbWUgdG9rZW4gbWVzc2FnZSAjNCJ9XX0=</data>
+			<data>
+			eyJ0Ijp7InQiOiIxNDUyNzM2ODg1NjgzNzI0OSIsInIiOjU2fSwi
+			bSI6W3siYSI6IjQiLCJmIjo1MTIsImkiOiIzMjJBNzBCMy1GMEVB
+			LTQ4Q0QtOUJCMC1EM0YwRjVERTk5NkMiLCJwIjp7InQiOiIxNDUy
+			NzM2ODg1NjgzNjE0NiIsInIiOjU2fSwiayI6ImRlbW8tMzYiLCJj
+			IjoiMzIyQTcwQjMtRjBFQS00OENELTlCQjAtRDNGMEY1REU5OTZD
+			IiwiZCI6IlRpbWUgdG9rZW4gbWVzc2FnZSAjNCJ9XX0=
+			</data>
 			<key>json</key>
 			<dict>
 				<key>m</key>
@@ -1117,7 +1172,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tr=56&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=14527368854384742</string>
+				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?tt=14527368854384742&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;tr=56&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -1134,7 +1189,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 			<key>originalRequest</key>
 			<dict>
@@ -1143,7 +1198,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tr=56&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=14527368854384742</string>
+				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?tt=14527368854384742&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;tr=56&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -1158,7 +1213,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 		</dict>
 		<key>response</key>
@@ -1182,7 +1237,7 @@
 					<key>Content-Length</key>
 					<string>227</string>
 					<key>Content-Type</key>
-					<string>text/javascript; charset=&quot;UTF-8&quot;</string>
+					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
 					<string>Thu, 14 Jan 2016 02:01:25 GMT</string>
 				</dict>
@@ -1193,7 +1248,7 @@
 				<key>suggestedFileName</key>
 				<string>0.js</string>
 				<key>textEncodingName</key>
-				<string>&quot;utf-8&quot;</string>
+				<string>"utf-8"</string>
 			</dict>
 		</dict>
 	</dict>
@@ -1203,11 +1258,15 @@
 		<key>data</key>
 		<dict>
 			<key>data</key>
-			<data>eyJ0Ijp7InQiOiIxNDUyNzM1NTYzNDA1MTA4NyIsInIiOjU2fSwibSI6W119</data>
+			<data>
+			eyJ0Ijp7InQiOiIxNDUyNzM1NTYzNDA1MTA4NyIsInIiOjU2fSwi
+			bSI6W119
+			</data>
 			<key>json</key>
 			<dict>
 				<key>m</key>
-				<array/>
+				<array>
+				</array>
 				<key>t</key>
 				<dict>
 					<key>r</key>
@@ -1226,7 +1285,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=0</string>
+				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?tt=0&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -1243,7 +1302,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 			<key>originalRequest</key>
 			<dict>
@@ -1252,7 +1311,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=0</string>
+				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?tt=0&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -1267,7 +1326,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 		</dict>
 		<key>response</key>
@@ -1291,7 +1350,7 @@
 					<key>Content-Length</key>
 					<string>45</string>
 					<key>Content-Type</key>
-					<string>text/javascript; charset=&quot;UTF-8&quot;</string>
+					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
 					<string>Thu, 14 Jan 2016 02:01:23 GMT</string>
 				</dict>
@@ -1302,7 +1361,7 @@
 				<key>suggestedFileName</key>
 				<string>0.js</string>
 				<key>textEncodingName</key>
-				<string>&quot;utf-8&quot;</string>
+				<string>"utf-8"</string>
 			</dict>
 		</dict>
 	</dict>
@@ -1312,7 +1371,9 @@
 		<key>data</key>
 		<dict>
 			<key>data</key>
-			<data>WzEsIlNlbnQiLCIxNDUyNzM2ODg1OTI5MTA3MyJd</data>
+			<data>
+			WzEsIlNlbnQiLCIxNDUyNzM2ODg1OTI5MTA3MyJd
+			</data>
 			<key>json</key>
 			<array>
 				<integer>1</integer>
@@ -1329,7 +1390,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0/%22Time%20token%20message%20%235%22?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
+				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0/%22Time%20token%20message%20%235%22?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -1346,7 +1407,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 			<key>originalRequest</key>
 			<dict>
@@ -1355,7 +1416,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0/%22Time%20token%20message%20%235%22?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
+				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0/%22Time%20token%20message%20%235%22?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -1370,7 +1431,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 		</dict>
 		<key>response</key>
@@ -1394,7 +1455,7 @@
 					<key>Content-Length</key>
 					<string>30</string>
 					<key>Content-Type</key>
-					<string>text/javascript; charset=&quot;UTF-8&quot;</string>
+					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
 					<string>Thu, 14 Jan 2016 02:01:25 GMT</string>
 				</dict>
@@ -1403,9 +1464,9 @@
 				<key>statusCode</key>
 				<integer>200</integer>
 				<key>suggestedFileName</key>
-				<string>&quot;Time token message #5&quot;.js</string>
+				<string>"Time token message #5".js</string>
 				<key>textEncodingName</key>
-				<string>&quot;utf-8&quot;</string>
+				<string>"utf-8"</string>
 			</dict>
 		</dict>
 	</dict>
@@ -1415,7 +1476,9 @@
 		<key>data</key>
 		<dict>
 			<key>data</key>
-			<data>WzEsIlNlbnQiLCIxNDUyNzM2ODg1MTkyNzU0NCJd</data>
+			<data>
+			WzEsIlNlbnQiLCIxNDUyNzM2ODg1MTkyNzU0NCJd
+			</data>
 			<key>json</key>
 			<array>
 				<integer>1</integer>
@@ -1432,7 +1495,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0/%22Time%20token%20message%20%232%22?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
+				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0/%22Time%20token%20message%20%232%22?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -1449,7 +1512,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 			<key>originalRequest</key>
 			<dict>
@@ -1458,7 +1521,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0/%22Time%20token%20message%20%232%22?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
+				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0/%22Time%20token%20message%20%232%22?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -1473,7 +1536,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 		</dict>
 		<key>response</key>
@@ -1497,7 +1560,7 @@
 					<key>Content-Length</key>
 					<string>30</string>
 					<key>Content-Type</key>
-					<string>text/javascript; charset=&quot;UTF-8&quot;</string>
+					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
 					<string>Thu, 14 Jan 2016 02:01:25 GMT</string>
 				</dict>
@@ -1506,9 +1569,9 @@
 				<key>statusCode</key>
 				<integer>200</integer>
 				<key>suggestedFileName</key>
-				<string>&quot;Time token message #2&quot;.js</string>
+				<string>"Time token message #2".js</string>
 				<key>textEncodingName</key>
-				<string>&quot;utf-8&quot;</string>
+				<string>"utf-8"</string>
 			</dict>
 		</dict>
 	</dict>
@@ -1518,7 +1581,9 @@
 		<key>data</key>
 		<dict>
 			<key>data</key>
-			<data>WzEsIlNlbnQiLCIxNDUyNzM2ODg0OTQ1OTkxOSJd</data>
+			<data>
+			WzEsIlNlbnQiLCIxNDUyNzM2ODg0OTQ1OTkxOSJd
+			</data>
 			<key>json</key>
 			<array>
 				<integer>1</integer>
@@ -1535,7 +1600,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0/%22Time%20token%20message%20%231%22?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
+				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0/%22Time%20token%20message%20%231%22?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -1552,7 +1617,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 			<key>originalRequest</key>
 			<dict>
@@ -1561,7 +1626,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0/%22Time%20token%20message%20%231%22?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
+				<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0/%22Time%20token%20message%20%231%22?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -1576,7 +1641,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 		</dict>
 		<key>response</key>
@@ -1600,7 +1665,7 @@
 					<key>Content-Length</key>
 					<string>30</string>
 					<key>Content-Type</key>
-					<string>text/javascript; charset=&quot;UTF-8&quot;</string>
+					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
 					<string>Thu, 14 Jan 2016 02:01:24 GMT</string>
 				</dict>
@@ -1609,9 +1674,9 @@
 				<key>statusCode</key>
 				<integer>200</integer>
 				<key>suggestedFileName</key>
-				<string>&quot;Time token message #1&quot;.js</string>
+				<string>"Time token message #1".js</string>
 				<key>textEncodingName</key>
-				<string>&quot;utf-8&quot;</string>
+				<string>"utf-8"</string>
 			</dict>
 		</dict>
 	</dict>
@@ -1621,11 +1686,15 @@
 		<key>data</key>
 		<dict>
 			<key>data</key>
-			<data>eyJ0Ijp7InQiOiIxNDUyNzM2ODg1OTI5MjAyNSIsInIiOjU2fSwibSI6W119</data>
+			<data>
+			eyJ0Ijp7InQiOiIxNDUyNzM2ODg1OTI5MjAyNSIsInIiOjU2fSwi
+			bSI6W119
+			</data>
 			<key>json</key>
 			<dict>
 				<key>m</key>
-				<array/>
+				<array>
+				</array>
 				<key>t</key>
 				<dict>
 					<key>r</key>
@@ -1644,7 +1713,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=0</string>
+				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?tt=0&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -1661,7 +1730,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 			<key>originalRequest</key>
 			<dict>
@@ -1670,7 +1739,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=0</string>
+				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?tt=0&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -1685,7 +1754,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 		</dict>
 		<key>response</key>
@@ -1709,7 +1778,7 @@
 					<key>Content-Length</key>
 					<string>45</string>
 					<key>Content-Type</key>
-					<string>text/javascript; charset=&quot;UTF-8&quot;</string>
+					<string>text/javascript; charset="UTF-8"</string>
 					<key>Date</key>
 					<string>Thu, 14 Jan 2016 02:01:26 GMT</string>
 				</dict>
@@ -1720,7 +1789,7 @@
 				<key>suggestedFileName</key>
 				<string>0.js</string>
 				<key>textEncodingName</key>
-				<string>&quot;utf-8&quot;</string>
+				<string>"utf-8"</string>
 			</dict>
 		</dict>
 	</dict>
@@ -1736,7 +1805,8 @@
 			<key>domain</key>
 			<string>NSURLErrorDomain</string>
 			<key>userInfo</key>
-			<dict/>
+			<dict>
+			</dict>
 		</dict>
 		<key>request</key>
 		<dict>
@@ -1747,7 +1817,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tr=56&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=14527368859292025</string>
+				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?tt=14527368859292025&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;tr=56&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -1764,7 +1834,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 			<key>originalRequest</key>
 			<dict>
@@ -1773,7 +1843,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?pnsdk=PubNub-ObjC-iOS%2F4.2.3&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tr=56&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=14527368859292025</string>
+				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?tt=14527368859292025&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;tr=56&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -1788,7 +1858,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60</real>
+				<real>60.0</real>
 			</dict>
 		</dict>
 	</dict>
