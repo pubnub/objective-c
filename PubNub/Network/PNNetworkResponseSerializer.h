@@ -8,15 +8,17 @@
  
  @since 4.0.2
  */
-extern NSString * const kPNNetworkErrorResponseDataKey;
+extern NSString * _Nonnull const kPNNetworkErrorResponseDataKey;
 
+
+NS_ASSUME_NONNULL_BEGIN
 
 /**
  @brief      Class which is used by network manager to serialize responses from \b PubNub Network.
  
  @author Sergey Mamontov
  @since 4.0.2
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNNetworkResponseSerializer : NSObject
 
@@ -27,8 +29,8 @@ extern NSString * const kPNNetworkErrorResponseDataKey;
 
 /**
  @brief      Serialize service response taking into account metadata.
- @discussion This method used to extract Foundation object from service response if possible. In 
-             other cases error will be passed.
+ @discussion This method used to extract Foundation object from service response if possible. In other cases
+             error will be passed.
  
  @param response Reference on HTTP response object which has metadata which should be used in
                  pre-processing to identify whether body should be processed or not.
@@ -42,3 +44,5 @@ extern NSString * const kPNNetworkErrorResponseDataKey;
 
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -1,14 +1,14 @@
 /**
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PNTimeResult.h"
 #import "PNServiceData+Private.h"
 #import "PNResult+Private.h"
 
 
-#pragma mark Interface implementation
+#pragma mark - Interface implementation
 
 @implementation PNTimeData
 
@@ -17,8 +17,23 @@
 
 - (NSNumber *)timetoken {
     
-    return self.serviceData[@"timetoken"];
+    return (self.serviceData[@"timetoken"]?: @0);
 }
+
+#pragma mark -
+
+
+@end
+
+
+#pragma mark - Private interface declaration
+
+@interface PNTimeResult ()
+
+
+#pragma mark - Properties
+
+@property (nonatomic, strong) PNTimeData *data;
 
 #pragma mark -
 
@@ -35,7 +50,8 @@
 
 - (PNTimeData *)data {
     
-    return [PNTimeData dataWithServiceResponse:self.serviceData];
+    if (!_data) { _data = [PNTimeData dataWithServiceResponse:self.serviceData]; }
+    return _data;
 }
 
 #pragma mark -

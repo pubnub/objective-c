@@ -3,7 +3,7 @@
 
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 #import <Foundation/Foundation.h>
 #import "PNStructures.h"
@@ -15,10 +15,10 @@
 #pragma mark General information constants
 
 // Stores client library version number
-static NSString * const kPNLibraryVersion = @"4.2.7";
+static NSString * const kPNLibraryVersion = @"4.3.0";
 
 // Stores information about SDK codebase
-static NSString * const kPNCommit = @"ad5d8a3e2ec72907ed8201fc7e056e986c5a2f5c";
+static NSString * const kPNCommit = @"ce8b1468188d01de6d84f66d2715ee41e1aeb3cf";
 
 #if TARGET_OS_WATCH
     static NSString * const kPNClientName = @"ObjC-watchOS";

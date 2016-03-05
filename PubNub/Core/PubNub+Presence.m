@@ -1,7 +1,7 @@
 /**
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PubNub+PresencePrivate.h"
 #import "PNPrivateStructures.h"
@@ -12,6 +12,8 @@
 #import "PNLogMacro.h"
 #import "PNHelpers.h"
 
+
+NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Protected interface declaration
 
@@ -25,24 +27,26 @@
  @note   This API will retrieve only list of UUIDs for specified remote data object and number of
          subscribers on it.
  
- @param level      Reference on one of \b PNHereNowVerbosityLevel fields to instruct what exactly data it
-                   expected in response.
- @param forChannel Whether 'here now' information should be pulled for channel or group.
- @param object     Reference on remote data object for which here now information should be 
-                   received.
- @param block      Here now processing completion block which pass two arguments: \c result - in 
-                   case of successful request processing \c data field will contain results of here 
-                   now operation; \c status - in case if error occurred during request processing.
+ @param level     Reference on one of \b PNHereNowVerbosityLevel fields to instruct what exactly data it
+                  expected in response.
+ @param object    Reference on remote data object for which here now information should be received.
+ @param operation Reference on one of \b PNOperationType fields to identify which kind on of presence 
+                  operation should be performed.
+ @param block     Here now processing completion block which pass two arguments: \c result - in case of
+                  successful request processing \c data field will contain results of here now operation; 
+                  \c status - in case if error occurred during request processing.
  
  @since 4.0
  */
-- (void)hereNowWithVerbosity:(PNHereNowVerbosityLevel)level forChannel:(BOOL)forChannel
-                    withName:(NSString *)object withCompletion:(id)block;
+- (void)hereNowWithVerbosity:(PNHereNowVerbosityLevel)level forObject:(nullable NSString *)object 
+           withOperationType:(PNOperationType)operation completionBlock:(id)block;
 
 #pragma mark -
 
 
 @end
+
+NS_ASSUME_NONNULL_END
 
 
 #pragma mark - Interface implementation
@@ -60,7 +64,8 @@
 - (void)hereNowWithVerbosity:(PNHereNowVerbosityLevel)level
                   completion:(PNGlobalHereNowCompletionBlock)block {
 
-    [self hereNowForChannel:nil withVerbosity:level completion:(id)block];
+    [self hereNowWithVerbosity:level forObject:nil withOperationType:PNHereNowGlobalOperation 
+               completionBlock:block];
 }
 
 
@@ -73,8 +78,9 @@
 
 - (void)hereNowForChannel:(NSString *)channel withVerbosity:(PNHereNowVerbosityLevel)level
                completion:(PNHereNowCompletionBlock)block {
-
-    [self hereNowWithVerbosity:level forChannel:YES withName:channel withCompletion:block];
+    
+    [self hereNowWithVerbosity:level forObject:channel withOperationType:PNHereNowForChannelOperation
+               completionBlock:block];
 }
 
 
@@ -83,76 +89,72 @@
 - (void)hereNowForChannelGroup:(NSString *)group
                 withCompletion:(PNChannelGroupHereNowCompletionBlock)block {
 
-    [self hereNowWithVerbosity:PNHereNowState forChannel:NO withName:group withCompletion:block];
+    [self hereNowForChannelGroup:group withVerbosity:PNHereNowState completion:block];
 }
 
 - (void)hereNowForChannelGroup:(NSString *)group withVerbosity:(PNHereNowVerbosityLevel)level
                     completion:(PNChannelGroupHereNowCompletionBlock)block {
-
-    [self hereNowWithVerbosity:level forChannel:NO withName:group withCompletion:block];
+    
+    [self hereNowWithVerbosity:level forObject:group withOperationType:PNHereNowForChannelGroupOperation
+               completionBlock:block];
 }
 
-- (void)hereNowWithVerbosity:(PNHereNowVerbosityLevel)level forChannel:(BOOL)forChannel
-                    withName:(NSString *)object withCompletion:(id)block {
+- (void)hereNowWithVerbosity:(PNHereNowVerbosityLevel)level forObject:(nullable NSString *)object 
+           withOperationType:(PNOperationType)operation completionBlock:(id)block {
 
-    PNOperationType operation = PNHereNowGlobalOperation;
     PNRequestParameters *parameters = [PNRequestParameters new];
     [parameters addQueryParameter:@"1" forFieldName:@"disable_uuids"];
     [parameters addQueryParameter:@"0" forFieldName:@"state"];
     if (level == PNHereNowUUID || level == PNHereNowState){
         
         [parameters addQueryParameter:@"0" forFieldName:@"disable_uuids"];
-        if (level == PNHereNowState) {
-            
-            [parameters addQueryParameter:@"1" forFieldName:@"state"];
-        }
-    }
-    if ([object length]) {
-        
-        operation = PNHereNowForChannelOperation;
-        [parameters addPathComponent:(forChannel ? [PNString percentEscapedString:object] : @",")
-                      forPlaceholder:@"{channel}"];
-        if (!forChannel) {
-            
-            operation = PNHereNowForChannelGroupOperation;
-            [parameters addQueryParameter:[PNString percentEscapedString:object]
-                             forFieldName:@"channel-group"];
-        }
+        if (level == PNHereNowState) { [parameters addQueryParameter:@"1" forFieldName:@"state"]; }
     }
     
-    if (![object length]) {
+    if (operation == PNHereNowGlobalOperation) {
         
         DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> Global 'here now' information with "
                      "%@ data.", PNHereNowDataStrings[level]);
     }
     else {
         
+        if ([object length]) {
+            
+            [parameters addPathComponent:(operation == PNHereNowForChannelOperation ? 
+                                          [PNString percentEscapedString:object] : @",")
+                          forPlaceholder:@"{channel}"];
+            if (operation == PNHereNowForChannelGroupOperation) {
+                
+                [parameters addQueryParameter:[PNString percentEscapedString:object] 
+                                 forFieldName:@"channel-group"];
+            }
+        }
         DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> Channel%@ 'here now' information "
-                     "for %@ with %@ data.", (!forChannel ? @" group" : @""), (object?: @"<error>"),
-                     PNHereNowDataStrings[level]);
+                     "for %@ with %@ data.", (operation == PNHereNowForChannelGroupOperation ? @" group" : @""), 
+                     (object?: @"<error>"), PNHereNowDataStrings[level]);
     }
     
     __weak __typeof(self) weakSelf = self;
-    [self processOperation:operation withParameters:parameters completionBlock:^(PNResult *result,
-                                                                                 PNStatus *status) {
+    [self processOperation:operation withParameters:parameters completionBlock:^(PNResult * _Nullable result,
+                                                                                 PNStatus * _Nullable status) {
                
-           // Silence static analyzer warnings.
-           // Code is aware about this case and at the end will simply call on 'nil' object
-           // method. In most cases if referenced object become 'nil' it mean what there is no
-           // more need in it and probably whole client instance has been deallocated.
-           #pragma clang diagnostic push
-           #pragma clang diagnostic ignored "-Wreceiver-is-weak"
-           if (status.isError) {
-                
-               status.retryBlock = ^{
-                   
-                   [weakSelf hereNowWithVerbosity:level forChannel:forChannel withName:object
-                                   withCompletion:block];
-               };
-           }
-           [weakSelf callBlock:block status:NO withResult:result andStatus:status];
-           #pragma clang diagnostic pop
-       }];
+        // Silence static analyzer warnings.
+        // Code is aware about this case and at the end will simply call on 'nil' object
+        // method. In most cases if referenced object become 'nil' it mean what there is no
+        // more need in it and probably whole client instance has been deallocated.
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wreceiver-is-weak"
+        if (status.isError) {
+
+            status.retryBlock = ^{
+
+                [weakSelf hereNowWithVerbosity:level forObject:object withOperationType:operation 
+                              completionBlock:block];
+            };
+        }
+        [weakSelf callBlock:block status:NO withResult:result andStatus:status];
+        #pragma clang diagnostic pop
+    }];
 }
 
 
@@ -161,7 +163,7 @@
 - (void)whereNowUUID:(NSString *)uuid withCompletion:(PNWhereNowCompletionBlock)block {
 
     PNRequestParameters *parameters = [PNRequestParameters new];
-    if ([uuid length]) {
+    if (uuid.length) {
         
         [parameters addPathComponent:[PNString percentEscapedString:uuid] forPlaceholder:@"{uuid}"];
     }
@@ -170,24 +172,21 @@
 
     __weak __typeof(self) weakSelf = self;
     [self processOperation:PNWhereNowOperation withParameters:parameters
-           completionBlock:^(PNResult *result, PNStatus *status) {
+           completionBlock:^(PNResult * _Nullable result, PNStatus * _Nullable status) {
                
-               // Silence static analyzer warnings.
-               // Code is aware about this case and at the end will simply call on 'nil' object
-               // method. In most cases if referenced object become 'nil' it mean what there is no
-               // more need in it and probably whole client instance has been deallocated.
-               #pragma clang diagnostic push
-               #pragma clang diagnostic ignored "-Wreceiver-is-weak"
-               if (status.isError) {
-                    
-                   status.retryBlock = ^{
-                       
-                       [weakSelf whereNowUUID:uuid withCompletion:block];
-                   };
-               }
-               [weakSelf callBlock:block status:NO withResult:result andStatus:status];
-               #pragma clang diagnostic pop
-           }];
+        // Silence static analyzer warnings.
+        // Code is aware about this case and at the end will simply call on 'nil' object
+        // method. In most cases if referenced object become 'nil' it mean what there is no
+        // more need in it and probably whole client instance has been deallocated.
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wreceiver-is-weak"
+        if (status.isError) {
+
+            status.retryBlock = ^{ [weakSelf whereNowUUID:uuid withCompletion:block]; };
+        }
+        [weakSelf callBlock:block status:NO withResult:result andStatus:status];
+        #pragma clang diagnostic pop
+    }];
 }
 
 
@@ -200,23 +199,23 @@
         
         NSArray *channels = [self.subscriberManager channels];
         NSArray *groups = [PNChannel objectsWithOutPresenceFrom:[self.subscriberManager channelGroups]];
-        if (self.configuration.presenceHeartbeatValue > 0 && ([channels count] || [groups count])) {
+        if (self.configuration.presenceHeartbeatValue > 0 && (channels.count || groups.count)) {
             
             PNRequestParameters *parameters = [PNRequestParameters new];
             [parameters addPathComponent:[PNChannel namesForRequest:channels defaultString:@","]
                           forPlaceholder:@"{channels}"];
-            if ([groups count]) {
+            if (groups.count) {
                 
                 [parameters addQueryParameter:[PNChannel namesForRequest:groups]
                                  forFieldName:@"channel-group"];
             }
-            [parameters addQueryParameter:[@(self.configuration.presenceHeartbeatValue) stringValue]
+            [parameters addQueryParameter:@(self.configuration.presenceHeartbeatValue).stringValue
                              forFieldName:@"heartbeat"];
             NSDictionary *state = [self.clientStateManager state];
-            if ([state count]) {
+            if (state.count) {
                 
                 NSString *stateString = [PNJSON JSONStringFrom:state withError:nil];
-                if ([stateString length]) {
+                if (stateString.length) {
                     
                     [parameters addQueryParameter:[PNString percentEscapedString:stateString]
                                      forFieldName:@"state"];

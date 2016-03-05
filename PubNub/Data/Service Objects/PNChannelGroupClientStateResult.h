@@ -2,12 +2,14 @@
 #import "PNResult.h"
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  @brief  Class which allow to get access to client state for channel group processed result.
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNChannelGroupClientStateData : PNServiceData
 
@@ -21,7 +23,7 @@
  
  @since 4.0
  */
-@property (nonatomic, readonly, strong) NSDictionary *channels;
+@property (nonatomic, readonly, strong) NSDictionary<NSString *, NSDictionary *> *channels;
 
 #pragma mark -
 
@@ -34,7 +36,7 @@
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNChannelGroupClientStateResult : PNResult
 
@@ -54,3 +56,5 @@
 
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -34,7 +34,7 @@ if [[ ${BUILDING_UNIVERSAL_FRAMEWORK:=0} == 0 ]]; then
             [[ ! -d "${FRAMEWORK_TARGET_PATH}" ]] && mkdir -p "${FRAMEWORK_TARGET_PATH}"
             if [[ ! -d "${FRAMEWORK_TARGET_PATH}/Headers" ]]; then
                 cp -RP "${FRAMEWORK_BUILD_PATH}/Headers" "${FRAMEWORK_TARGET_PATH}/Headers"
-                cp "${FRAMEWORK_BUILD_PATH}/PubNub-iOS-Info.plist" "${FRAMEWORK_TARGET_PATH}/Info.plist"
+                find "${FRAMEWORK_BUILD_PATH}/" -type f -name 'PubNub*-Info.plist' -exec cp '{}' "${FRAMEWORK_TARGET_PATH}/Info.plist" ';'
             fi
             cp "${FRAMEWORK_BUILD_PATH}/${frameworkName}.a" "${FRAMEWORK_TARGET_PATH}/${frameworkName}"
         fi

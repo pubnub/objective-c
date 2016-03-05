@@ -117,6 +117,8 @@ static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupTestsName";
 - (void)testGetAllChannelGroupsForClient {
     PNWeakify(self);
     XCTestExpectation *getAllChannelGroups = [self expectationWithDescription:@"getAllChannelGroups"];
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdeprecated"
     [self.client channelGroupsWithCompletion:^(PNChannelGroupsResult *result, PNErrorStatus *status) {
         PNStrongify(self);
         XCTAssertNotNil(result);
@@ -127,6 +129,7 @@ static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupTestsName";
         XCTAssertEqual(result.data.groups.count, 64);
         [getAllChannelGroups fulfill];
     }];
+    #pragma clang diagnostic pop
     [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
         XCTAssertNil(error);
     }];

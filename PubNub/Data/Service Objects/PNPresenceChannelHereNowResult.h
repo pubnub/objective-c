@@ -2,12 +2,14 @@
 #import "PNServiceData.h"
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  @brief  Class which allow to get access to channel presence processed result.
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNPresenceChannelHereNowData : PNServiceData
 
@@ -24,7 +26,7 @@
  
  @since 4.0
  */
-@property (nonatomic, readonly, strong) id uuids;
+@property (nonatomic, nullable, readonly, strong) id uuids;
 
 /**
  @brief  Active subscribers count.
@@ -44,7 +46,7 @@
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNPresenceChannelHereNowResult : PNResult
 
@@ -64,3 +66,5 @@
 
 
 @end
+
+NS_ASSUME_NONNULL_END

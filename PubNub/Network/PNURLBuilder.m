@@ -1,7 +1,7 @@
 /**
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PNURLBuilder.h"
 #import "PNRequestParameters.h"
@@ -16,7 +16,7 @@
  @since 4.0
  */
 static NSString * const PNOperationRequestTemplate[22] = {
-    [PNSubscribeOperation] = @"/subscribe/{sub-key}/{channels}/0/{tt}",
+    [PNSubscribeOperation] = @"/v2/subscribe/{sub-key}/{channels}/0",
     [PNUnsubscribeOperation] = @"/v2/presence/sub_key/{sub-key}/channel/{channels}/leave",
     [PNPublishOperation] = @"/publish/{pub-key}/{sub-key}/0/{channel}/0/{message}",
     [PNHistoryOperation] = @"/v2/history/sub-key/{sub-key}/channel/{channel}",
@@ -48,28 +48,28 @@ static NSString * const PNOperationRequestTemplate[22] = {
 
 #pragma mark - API URL constructor
 
-+ (NSURL *)URLForOperation:(PNOperationType)operation
-            withParameters:(PNRequestParameters *)parameters {
++ (nullable NSURL *)URLForOperation:(PNOperationType)operation
+                     withParameters:(PNRequestParameters *)parameters {
     
     NSURL *requestURL = nil;
     NSMutableString *requestURLString = [PNOperationRequestTemplate[operation] mutableCopy];
-    [parameters.pathComponents enumerateKeysAndObjectsUsingBlock:^(NSString *placeholder,
-                                                                   NSString *component,
+    [parameters.pathComponents enumerateKeysAndObjectsUsingBlock:^(NSString *placeholder, NSString *component,
                                                                    __unused BOOL *componentsEnumeratorStop) {
 
         [requestURLString replaceOccurrencesOfString:placeholder withString:component
                                              options:NSCaseInsensitiveSearch
                                                range:NSMakeRange(0, requestURLString.length)];
     }];
+    
     if ([requestURLString rangeOfString:@"{"].location == NSNotFound) {
         
         if ([requestURLString hasSuffix:@"/"]) {
             
             NSRange lastSlashRange = NSMakeRange(requestURLString.length - 2, 2);
-            [requestURLString replaceOccurrencesOfString:@"/" withString:@""
-                                                 options:NSBackwardsSearch range:lastSlashRange];
+            [requestURLString replaceOccurrencesOfString:@"/" withString:@"" options:NSBackwardsSearch 
+                                                   range:lastSlashRange];
         }
-        if ([parameters.query count]) {
+        if (parameters.query.count) {
             
             [requestURLString appendFormat:@"?%@", [PNDictionary queryStringFrom:parameters.query]];
         }

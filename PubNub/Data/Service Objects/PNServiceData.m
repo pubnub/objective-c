@@ -1,10 +1,12 @@
 /**
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PNServiceData+Private.h"
 
+
+NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Private interface declaration
 
@@ -13,7 +15,7 @@
 
 #pragma mark - Information
 
-@property (nonatomic, copy) NSDictionary *serviceData;
+@property (nonatomic, copy) NSDictionary<NSString *, id> *serviceData;
 
 
 #pragma mark - Initialization and Configuration
@@ -28,12 +30,14 @@
  
  @since 4.0
  */
-- (instancetype)initWithServiceResponse:(NSDictionary *)response;
+- (instancetype)initWithServiceResponse:(NSDictionary<NSString *, id> *)response;
 
 #pragma mark -
 
 
 @end
+
+NS_ASSUME_NONNULL_END
 
 
 #pragma mark - Interface implementation
@@ -53,13 +57,13 @@
     // Check whether initialization was successful or not
     if ((self = [super init])) {
         
-        self.serviceData = response;
+        self.serviceData = (response?: @{});
     }
     
     return self;
 }
 
-- (id)objectForKeyedSubscript:(id)key {
+- (nullable id)objectForKeyedSubscript:(id)key {
     
     return [self.serviceData objectForKeyedSubscript:key];
 }

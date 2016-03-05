@@ -1,3 +1,17 @@
+03-05-2016 - ce8b146 - 4.3.0
+. added Pub/Sub V2 API support
+. added message filtering basing on published message metadata
+. added ability to publish message with additional metadata for filtering purposes
+. added generics to collection properties and arguments
+. added nulability annotations
+. updated tests
+. updated inline documentation formatting
+. fixed occupancy value storage for state-change (it will be set if available)
+. fixed issue with presence here now request where 'nil' passed as channel / group
+. fixed script responsible for module map update in built frameworks
+. fixed 'Universal Startic Frameork (iOS)' to use correct platform
+. added missing files to Mac Framework
+
 02-09-2016 - ad5d8a3 - 4.2.7
 . changed way how heartbeat state notification is set. Now it can be specified in heartbeatNotificationOptions bitfield property using PNHeartbeatNotificationOptions options.
 

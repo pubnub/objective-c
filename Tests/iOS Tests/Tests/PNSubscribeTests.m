@@ -37,7 +37,7 @@
     PNWeakify(self);
     NSMutableArray *receivedMessages = [NSMutableArray new];
     _expectedMessagesCount = 5;
-    _messageNumberToUseTimeToken = 3;
+    _messageNumberToUseTimeToken = 4;
     __block NSUInteger receivedMessagesCount = 0;
     XCTestExpectation *fillExpecation = [self expectationWithDescription:@"channelFill"];
     self.didReceiveStatusAssertions = ^void (PubNub *client, PNSubscribeStatus *status) {
@@ -51,8 +51,13 @@
         
         // Filling up target channel first.
         [self publish:@"Time token message #%@" count:self->_expectedMessagesCount
-            toChannel:client.channels.lastObject withCompletion:NULL];
+            toChannel:client.channels.lastObject withCompletion:^{
+                PNStrongify(self);
+                [self.publishExpectation fulfill];
+                self.publishExpectation = nil;
+            }];
         [self.subscribeExpectation fulfill];
+        self.subscribeExpectation = nil;
     };
     self.didReceiveMessageAssertions = ^void (PubNub *client, PNMessageResult *message) {
         
@@ -69,11 +74,11 @@
             [fillExpecation fulfill];
         }
     };
+    self.publishExpectation = [self expectationWithDescription:@"publish"];
     [self PNTest_subscribeToChannels:[self subscriptionChannels] withPresence:NO];
 }
 
 - (BOOL)isRecording{
-    
     return NO;
 }
 
@@ -97,14 +102,14 @@
 
 /**
  @brief  Publish specified number of message to the channel and report with completion block when it
-         done.
+ done.
  
  @param messageFormatString Template for message which will be published and will use 
-                            \c messagesCount value to identify message for future purposes.
+ \c messagesCount value to identify message for future purposes.
  @param messagesCount       How many messages should be sent to specified channel.
  @param channel             Name of the channel to which messages should be sent.
  @param block               Reference on block which should be called at the end of message publish 
-                            process.
+ process.
  */
 - (void)publish:(NSString *)messageFormatString count:(NSUInteger)messagesCount
       toChannel:(NSString *)channel withCompletion:(dispatch_block_t)block {
@@ -120,14 +125,14 @@
             [self.client publish:[NSString stringWithFormat:messageFormatString, @(messageIdx)]
                        toChannel:channel withCompletion:^(PNPublishStatus *status) {
                            
-                      XCTAssertNotNil(status);
-                      XCTAssertFalse(status.isError);
-                      XCTAssertEqual(status.operation, PNPublishOperation);
-                      XCTAssertEqual(status.category, PNAcknowledgmentCategory);
-                      
-                      messageIdx++;
-                      strongMessagePublishBlock();
-                  }];
+                           XCTAssertNotNil(status);
+                           XCTAssertFalse(status.isError);
+                           XCTAssertEqual(status.operation, PNPublishOperation);
+                           XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+                           
+                           messageIdx++;
+                           strongMessagePublishBlock();
+                       }];
         }
         else if (block) {
             
@@ -143,15 +148,18 @@
         PNStrongify(self);
         XCTAssertEqualObjects(self.client, client);
         XCTAssertNotNil(status);
+        if (status.operation == PNSubscribeOperation) {
+            return;
+        }
         XCTAssertFalse(status.isError);
-//        XCTAssertEqual(status.operation, PNUnsubscribeOperation);
-//        XCTAssertEqual(status.category, PNDisconnectedCategory);
-//        XCTAssertEqual(status.subscribedChannels.count, 0);
+        //        XCTAssertEqual(status.operation, PNUnsubscribeOperation);
+        //        XCTAssertEqual(status.category, PNDisconnectedCategory);
+        //        XCTAssertEqual(status.subscribedChannels.count, 0);
         XCTAssertEqual(status.subscribedChannelGroups.count, 0);
         XCTAssertEqual(status.operation, PNUnsubscribeOperation);
         NSLog(@"timeToken: %@", status.currentTimetoken);
-//        XCTAssertEqualObjects(status.currentTimetoken, @14355626738514132);
-//        XCTAssertEqualObjects(status.currentTimetoken, status.data.timetoken);
+        //        XCTAssertEqualObjects(status.currentTimetoken, @14355626738514132);
+        //        XCTAssertEqualObjects(status.currentTimetoken, status.data.timetoken);
         [self.unsubscribeExpectation fulfill];
         
     };
@@ -173,7 +181,7 @@
                               [NSSet setWithArray:expectedPresenceSubscriptions]);
         XCTAssertEqual(status.operation, PNSubscribeOperation);
         NSLog(@"timeToken: %@", status.currentTimetoken);
-        XCTAssertEqualObjects(status.currentTimetoken, @14356472220766752);
+        XCTAssertEqualObjects(status.currentTimetoken, @14508233455901453);
         XCTAssertEqualObjects(status.currentTimetoken, status.data.timetoken);
         
     };
@@ -188,8 +196,11 @@
         XCTAssertEqual(message.operation, PNSubscribeOperation);
         NSLog(@"message:");
         NSLog(@"%@", message.data.message);
-        XCTAssertEqualObjects(message.data.message, @"***********.... 6988 - 2015-06-29 23:53:42");
+        XCTAssertNil(message.data.actualChannel);
+        XCTAssertEqualObjects(message.data.subscribedChannel, @"a");
+        XCTAssertEqualObjects(message.data.message, @"*****.......... 1567 - 2015-12-22 14:29:06");
         [self.subscribeExpectation fulfill];
+        self.subscribeExpectation = nil;
     };
     [self PNTest_subscribeToChannels:[self subscriptionChannels] withPresence:YES];
 }
@@ -208,7 +219,7 @@
                               [NSSet setWithArray:expectedPresenceSubscriptions]);
         XCTAssertEqual(status.operation, PNSubscribeOperation);
         NSLog(@"timeToken: %@", status.currentTimetoken);
-        XCTAssertEqualObjects(status.currentTimetoken, @14356472196232226);
+        XCTAssertEqualObjects(status.currentTimetoken, @14508233442333240);
         XCTAssertEqualObjects(status.currentTimetoken, status.data.timetoken);
         
     };
@@ -223,7 +234,9 @@
         XCTAssertEqual(message.operation, PNSubscribeOperation);
         NSLog(@"message:");
         NSLog(@"%@", message.data.message);
-        XCTAssertEqualObjects(message.data.message, @"**********..... 6987 - 2015-06-29 23:53:40");
+        XCTAssertNil(message.data.actualChannel);
+        XCTAssertEqualObjects(message.data.subscribedChannel, @"a");
+        XCTAssertEqualObjects(message.data.message, @"****........... 1566 - 2015-12-22 14:29:05");
         [self.subscribeExpectation fulfill];
     };
     [self PNTest_subscribeToChannels:[self subscriptionChannels] withPresence:NO];
@@ -234,7 +247,7 @@
     PNWeakify(self);
     NSMutableArray *receivedMessages = [NSMutableArray new];
     __block NSUInteger receivedMessagesCount = 0;
-    NSUInteger expectedMessagesCount = (self.expectedMessagesCount - self.messageNumberToUseTimeToken);
+    NSUInteger expectedMessagesCount = (self.expectedMessagesCount - (self.messageNumberToUseTimeToken - 1));
     XCTestExpectation *catchUpExpecation = [self expectationWithDescription:@"channelCatchUp"];
     self.didReceiveStatusAssertions = ^void (PubNub *client, PNSubscribeStatus *status) {
         
@@ -246,11 +259,11 @@
         XCTAssertEqual(status.operation, PNSubscribeOperation);
         XCTAssertEqual(status.category, PNConnectedCategory);
         XCTAssertEqualObjects(status.currentTimetoken, self.catchUpTimeToken);
-        XCTAssertNotEqualObjects(status.currentTimetoken, status.data.timetoken);
         XCTAssertEqual(status.subscribedChannelGroups.count, 0);
         XCTAssertEqualObjects([NSSet setWithArray:status.subscribedChannels],
                               [NSSet setWithArray:[self subscriptionChannels]]);
         [self.subscribeExpectation fulfill];
+        self.subscribeExpectation = nil;
     };
     self.didReceiveMessageAssertions = ^void (PubNub *client, PNMessageResult *message) {
         
@@ -273,9 +286,9 @@
 
 /**
  @brief      Make sure what used token will be reset in scenario:
-             subscribed - unsuubscribed - subscribed.
+ subscribed - unsuubscribed - subscribed.
  @discussion When client unsubscribed from all channels, time token should be reset to \b 0 to 
-             prevent unwanted catch up.
+ prevent unwanted catch up.
  */
 - (void)testTimeTokenResetBetweenSubscriptionsWithUnsubscribe {
     

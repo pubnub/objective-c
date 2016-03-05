@@ -1,7 +1,7 @@
 /**
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PNHeartbeat.h"
 #import "PubNub+PresencePrivate.h"
@@ -11,6 +11,8 @@
 #import "PNHelpers.h"
 #import "PNStatus.h"
 
+
+NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Protected interface declaration
 
@@ -31,7 +33,7 @@
  
  @since 4.0
  */
-@property (nonatomic, strong) dispatch_source_t heartbeatTimer;
+@property (nonatomic, nullable, strong) dispatch_source_t heartbeatTimer;
 
 /**
  @brief  Stores reference on queue which is used to serialize access to shared heartbeat 
@@ -81,6 +83,8 @@
 
 @end
 
+NS_ASSUME_NONNULL_END
+
 
 #pragma mark - Interface implementation
 
@@ -102,8 +106,7 @@
     if ((self = [super init])) {
         
         _client = client;
-        _resourceAccessQueue = dispatch_queue_create("com.pubnub.heartbeat",
-                                                     DISPATCH_QUEUE_CONCURRENT);
+        _resourceAccessQueue = dispatch_queue_create("com.pubnub.heartbeat", DISPATCH_QUEUE_CONCURRENT);
     }
     
     return self;
@@ -112,20 +115,14 @@
 - (dispatch_source_t)heartbeatTimer {
     
     __block dispatch_source_t timer = nil;
-    dispatch_sync(self.resourceAccessQueue, ^{
-        
-        timer = self->_heartbeatTimer;
-    });
+    pn_safe_property_read(self.resourceAccessQueue, ^{ timer = self->_heartbeatTimer; });
     
     return timer;
 }
 
 - (void)setHeartbeatTimer:(dispatch_source_t)heartbeatTimer {
     
-    dispatch_barrier_async(self.resourceAccessQueue, ^{
-        
-        self->_heartbeatTimer = heartbeatTimer;
-    });
+    pn_safe_property_write(self.resourceAccessQueue, ^{ self->_heartbeatTimer = heartbeatTimer; });
 }
 
 
@@ -148,10 +145,7 @@
         __weak __typeof(self) weakSelf = self;
         dispatch_queue_t timerQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
         dispatch_source_t timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, timerQueue);
-        dispatch_source_set_event_handler(timer, ^{
-
-            [weakSelf handleHeartbeatTimer];
-        });
+        dispatch_source_set_event_handler(timer, ^{ [weakSelf handleHeartbeatTimer]; });
         uint64_t offset = (uint64_t)self.client.configuration.presenceHeartbeatInterval * NSEC_PER_SEC;
         dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t)offset);
         dispatch_source_set_timer(timer, start, offset, NSEC_PER_SEC);
@@ -164,10 +158,7 @@
 - (void)stopHeartbeatIfPossible {
 
     dispatch_source_t timer = self.heartbeatTimer;
-    if (timer != NULL && dispatch_source_testcancel(timer) == 0) {
-        
-        dispatch_source_cancel(timer);
-    }
+    if (timer != NULL && dispatch_source_testcancel(timer) == 0) { dispatch_source_cancel(timer); }
     self.heartbeatTimer = nil;
 }
 
@@ -183,7 +174,7 @@
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wreceiver-is-weak"
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
-    if ([[PNChannel objectsWithOutPresenceFrom:[self.client.subscriberManager allObjects]] count]) {
+    if ([PNChannel objectsWithOutPresenceFrom:[self.client.subscriberManager allObjects]].count) {
         
         __weak __typeof(self) weakSelf = self;
         [self.client heartbeatWithCompletion:^(PNStatus *status) {
@@ -194,10 +185,7 @@
             }
         }];
     }
-    else {
-        
-        [self stopHeartbeatIfPossible];
-    }
+    else { [self stopHeartbeatIfPossible]; }
     #pragma clang diagnostic pop
 }
 

@@ -47,15 +47,15 @@ static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupUnsubscribeTe
     NSArray *expectedChannelGroups;
     if (self.invocation.selector == @selector(testSimpleUnsubscribeWithNoPresence)) {
         shouldObservePresence = NO;
-        expectedMessage = @"*****.......... 583 - 2015-06-28 21:52:31";
-        expectedTimeToken = @14355535508745522;
+        expectedMessage = @"********....... 8449 - 2015-12-22 13:28:00";
+        expectedTimeToken = @14508196796692323;
         expectedChannelGroups = @[
                                   kPNChannelGroupTestsName
                                   ];
     } else if (self.invocation.selector == @selector(testSimpleUnsubscribeWithPresence)) {
         shouldObservePresence = YES;
-        expectedMessage =  @"*****.......... 583 - 2015-06-28 21:52:31";
-        expectedTimeToken = @14355535508745522;
+        expectedMessage =  @"*********...... 8450 - 2015-12-22 13:28:01";
+        expectedTimeToken = @14508196810395526;
         expectedChannelGroups = @[
                                   kPNChannelGroupTestsName,
                                   [kPNChannelGroupTestsName stringByAppendingString:@"-pnpres"]
@@ -75,7 +75,7 @@ static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupUnsubscribeTe
                               [NSSet setWithArray:expectedChannelGroups]);
         XCTAssertEqual(status.operation, PNSubscribeOperation);
         NSLog(@"timeToken: %@", status.currentTimetoken);
-//        XCTAssertEqualObjects(status.currentTimetoken, expectedTimeToken);
+        XCTAssertEqualObjects(status.currentTimetoken, expectedTimeToken);
         XCTAssertEqualObjects(status.currentTimetoken, status.data.timetoken);
         
     };
@@ -90,8 +90,11 @@ static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupUnsubscribeTe
         XCTAssertEqual(message.operation, PNSubscribeOperation);
         NSLog(@"message:");
         NSLog(@"%@", message.data.message);
-//        XCTAssertEqualObjects(message.data.message, expectedMessage);
+        XCTAssertEqualObjects(message.data.actualChannel, @"a");
+        XCTAssertEqualObjects(message.data.subscribedChannel, kPNChannelGroupTestsName);
+        XCTAssertEqualObjects(message.data.message, expectedMessage);
         [self.channelGroupSubscribeExpectation fulfill];
+        self.channelGroupSubscribeExpectation = nil;
     };
     
     [self PNTest_subscribeToChannelGroups:[self channelGroups] withPresence:shouldObservePresence];
@@ -104,6 +107,14 @@ static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupUnsubscribeTe
         XCTAssertNotNil(client);
         XCTAssertNotNil(status);
         XCTAssertEqualObjects(self.client, client);
+        if (
+            !(
+              (status.category == PNDisconnectedCategory) ||
+              (status.category == PNCancelledCategory)
+              )
+            ) {
+            return;
+        }
         XCTAssertEqual(status.category, PNDisconnectedCategory);
         XCTAssertFalse(status.isError);
         XCTAssertEqual(status.statusCode, 200);
@@ -120,6 +131,14 @@ static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupUnsubscribeTe
         XCTAssertNotNil(client);
         XCTAssertNotNil(status);
         XCTAssertEqualObjects(self.client, client);
+        if (
+            !(
+              (status.category == PNDisconnectedCategory) ||
+              (status.category == PNCancelledCategory)
+              )
+            ) {
+            return;
+        }
         XCTAssertEqual(status.category, PNDisconnectedCategory);
         XCTAssertFalse(status.isError);
         XCTAssertEqual(status.statusCode, 200);

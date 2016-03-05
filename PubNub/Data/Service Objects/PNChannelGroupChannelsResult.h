@@ -2,12 +2,14 @@
 #import "PNServiceData.h"
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  @brief  Class which allow to get access to channel group's channels list audit processed result.
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNChannelGroupChannelsData : PNServiceData
 
@@ -18,12 +20,12 @@
 
 /**
  @brief  Registered channels within channel group.
- @note   In case if status object represent error, this property may contain list of channels to 
-         which client doesn't have access.
+ @note   In case if status object represent error, this property may contain list of channels to which client 
+         doesn't have access.
  
  @since 4.0
  */
-@property (nonatomic, readonly, strong) NSArray *channels;
+@property (nonatomic, readonly, strong) NSArray<NSString *> *channels;
 
 #pragma mark -
 
@@ -36,7 +38,7 @@
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNChannelGroupChannelsResult : PNResult
 
@@ -50,9 +52,11 @@
  
  @since 4.0
  */
-@property (nonatomic, readonly, strong) PNChannelGroupChannelsData *data;
+@property (nonatomic, nonnull, readonly, strong) PNChannelGroupChannelsData *data;
 
 #pragma mark -
 
 
 @end
+
+NS_ASSUME_NONNULL_END

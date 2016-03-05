@@ -1,7 +1,7 @@
 /**
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PubNub+CorePrivate.h"
 #define PN_CORE_PROTOCOLS PNObjectEventListener
@@ -38,36 +38,28 @@
  
  @since 4.0
  */
-static DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNFailureStatusLogLevel|
-                                            PNAPICallLogLevel);
+static DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNFailureStatusLogLevel| PNAPICallLogLevel);
 
 
 #pragma mark - Externs
 
 void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
     
-    if (queue && block) {
-        
-        dispatch_async(queue, block);
-    }
+    if (queue && block) { dispatch_async(queue, block); }
 }
 
 void pn_safe_property_read(dispatch_queue_t queue, dispatch_block_t block) {
     
-    if (queue && block) {
-        
-        dispatch_sync(queue, block);
-    }
+    if (queue && block) { dispatch_sync(queue, block); }
 }
 
 void pn_safe_property_write(dispatch_queue_t queue, dispatch_block_t block) {
     
-    if (queue && block) {
-        
-        dispatch_barrier_async(queue, block);
-    }
+    if (queue && block) { dispatch_barrier_async(queue, block); }
 }
 
+
+NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Protected interface declaration
 
@@ -127,13 +119,13 @@ void pn_safe_property_write(dispatch_queue_t queue, dispatch_block_t block) {
  @since 4.0
 */
 - (instancetype)initWithConfiguration:(PNConfiguration *)configuration
-                        callbackQueue:(dispatch_queue_t)callbackQueue;
+                        callbackQueue:(nullable dispatch_queue_t)callbackQueue;
 
 
 #pragma mark - Reachability
 
 /**
- @brief      Complete reachability helper configuration.
+ @brief  Complete reachability helper configuration.
  
  @since 4.0
  */
@@ -166,6 +158,8 @@ void pn_safe_property_write(dispatch_queue_t queue, dispatch_block_t block) {
 
 @end
 
+NS_ASSUME_NONNULL_END
+
 
 #pragma mark - Interface implementation
 
@@ -191,10 +185,7 @@ void pn_safe_property_write(dispatch_queue_t queue, dispatch_block_t block) {
 
     static PNClientInformation *_sharedClientInformation;
     static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        
-        _sharedClientInformation = [PNClientInformation new];
-    });
+    dispatch_once(&onceToken, ^{ _sharedClientInformation = [PNClientInformation new]; });
     
     return _sharedClientInformation;
 }
@@ -230,8 +221,8 @@ void pn_safe_property_write(dispatch_queue_t queue, dispatch_block_t block) {
     // Check whether initialization has been successful or not
     if ((self = [super init])) {
         
-        DDLogClientInfo([[self class] ddLogLevel], @"<PubNub> PubNub SDK %@ (%@)",
-                        kPNLibraryVersion, kPNCommit);
+        DDLogClientInfo([[self class] ddLogLevel], @"<PubNub> PubNub SDK %@ (%@)", kPNLibraryVersion, 
+                        kPNCommit);
         
         _configuration = [configuration copy];
         _callbackQueue = callbackQueue;
@@ -292,16 +283,10 @@ void pn_safe_property_write(dispatch_queue_t queue, dispatch_block_t block) {
         
         [client.subscriberManager continueSubscriptionCycleIfRequiredWithCompletion:^(__unused PNSubscribeStatus *status) {
             
-            if (block) {
-                
-                pn_dispatch_async(client.callbackQueue, ^{
-                    
-                    block(client);
-                });
-            }
+            if (block) { pn_dispatch_async(client.callbackQueue, ^{ block(client); }); }
         }];
     };
-    if ([[self.subscriberManager allObjects] count]) {
+    if ([self.subscriberManager allObjects].count) {
         
         if (![configuration.uuid isEqualToString:self.configuration.uuid] ||
             ![configuration.authKey isEqualToString:self.configuration.authKey]) {
@@ -318,33 +303,20 @@ void pn_safe_property_write(dispatch_queue_t queue, dispatch_block_t block) {
                 }];
             }];
         }
-        else {
-            
-            subscriptionRestoreBlock();
-        }
+        else { subscriptionRestoreBlock(); }
     }
-    else if (block) {
-        
-        pn_dispatch_async(client.callbackQueue, ^{
-            
-            block(client);
-        });
-    }
+    else if (block) { pn_dispatch_async(client.callbackQueue, ^{ block(client); }); }
 }
 
 - (void)setRecentClientStatus:(PNStatusCategory)recentClientStatus {
     
-    // Check whether previous client state reported unexpected disconnection from remote data
-    // objects live feed or not.
+    // Check whether previous client state reported unexpected disconnection from remote data objects live 
+    // feed or not.
     PNStatusCategory previousState = self.recentClientStatus;
     PNStatusCategory currentState = recentClientStatus;
-    if (currentState == PNReconnectedCategory) {
-        
-        currentState = PNConnectedCategory;
-    }
+    if (currentState == PNReconnectedCategory) { currentState = PNConnectedCategory; }
     
-    // In case if client disconnected only from one of it's channels it should keep 'connected'
-    // state.
+    // In case if client disconnected only from one of it's channels it should keep 'connected' state.
     if (currentState == PNDisconnectedCategory &&
         ([[self channels] count] || [[self channelGroups] count] || [[self presenceChannels] count])) {
         
@@ -397,8 +369,7 @@ void pn_safe_property_write(dispatch_queue_t queue, dispatch_block_t block) {
 - (void)prepareReachability {
 
     __weak __typeof(self) weakSelf = self;
-    _reachability = [PNReachability reachabilityForClient:self
-                                           withPingStatus:^(BOOL pingSuccessful) {
+    _reachability = [PNReachability reachabilityForClient:self withPingStatus:^(BOOL pingSuccessful) {
         
         if (pingSuccessful) {
             
@@ -432,16 +403,14 @@ void pn_safe_property_write(dispatch_queue_t queue, dispatch_block_t block) {
 
 #pragma mark - Operation processing
 
-- (void)processOperation:(PNOperationType)operationType
-          withParameters:(PNRequestParameters *)parameters
-         completionBlock:(id)block {
+- (void)processOperation:(PNOperationType)operationType withParameters:(PNRequestParameters *)parameters
+         completionBlock:(nullable id)block {
 
     [self processOperation:operationType withParameters:parameters data:nil completionBlock:block];
 }
 
-- (void)processOperation:(PNOperationType)operationType
-          withParameters:(PNRequestParameters *)parameters data:(NSData *)data
-         completionBlock:(id)block {
+- (void)processOperation:(PNOperationType)operationType withParameters:(PNRequestParameters *)parameters 
+                    data:(nullable NSData *)data completionBlock:(nullable id)block {
     
     if (operationType == PNSubscribeOperation || operationType == PNUnsubscribeOperation) {
 
@@ -486,26 +455,20 @@ void pn_safe_property_write(dispatch_queue_t queue, dispatch_block_t block) {
 
 #pragma mark - Events notification
 
-- (void)callBlock:(id)block status:(BOOL)callingStatusBlock withResult:(PNResult *)result
-        andStatus:(PNStatus *)status {
+- (void)callBlock:(nullable id)block status:(BOOL)callingStatusBlock withResult:(nullable PNResult *)result
+        andStatus:(nullable PNStatus *)status {
     
-    if (result) {
-
-        DDLogResult([[self class] ddLogLevel], @"<PubNub> %@",
-                    [result stringifiedRepresentation]);
-    }
+    if (result) { DDLogResult([[self class] ddLogLevel], @"<PubNub> %@", [result stringifiedRepresentation]); }
     
     if (status) {
         
         if (status.isError) {
             
-            DDLogFailureStatus([[self class] ddLogLevel], @"<PubNub> %@",
-                               [status stringifiedRepresentation]);
+            DDLogFailureStatus([[self class] ddLogLevel], @"<PubNub> %@", [status stringifiedRepresentation]);
         }
         else {
             
-            DDLogStatus([[self class] ddLogLevel], @"<PubNub> %@",
-                        [status stringifiedRepresentation]);
+            DDLogStatus([[self class] ddLogLevel], @"<PubNub> %@", [status stringifiedRepresentation]);
         }
     }
 
@@ -513,14 +476,8 @@ void pn_safe_property_write(dispatch_queue_t queue, dispatch_block_t block) {
 
         pn_dispatch_async(self.callbackQueue, ^{
 
-            if (!callingStatusBlock) {
-                
-                ((PNCompletionBlock)block)(result, status);
-            }
-            else {
-
-                ((PNStatusBlock)block)(status);
-            }
+            if (!callingStatusBlock) { ((PNCompletionBlock)block)(result, status); }
+            else { ((PNStatusBlock)block)(status); }
         });
     }
 }
@@ -578,24 +535,18 @@ void pn_safe_property_write(dispatch_queue_t queue, dispatch_block_t block) {
     
 #if TARGET_OS_WATCH
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-    [notificationCenter removeObserver:self name:NSExtensionHostDidEnterBackgroundNotification
-                                object:nil];
-    [notificationCenter removeObserver:self name:NSExtensionHostWillEnterForegroundNotification
-                                object:nil];
+    [notificationCenter removeObserver:self name:NSExtensionHostDidEnterBackgroundNotification object:nil];
+    [notificationCenter removeObserver:self name:NSExtensionHostWillEnterForegroundNotification object:nil];
 #elif __IPHONE_OS_VERSION_MIN_REQUIRED
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-    [notificationCenter removeObserver:self name:UIApplicationWillEnterForegroundNotification
-                                object:nil];
-    [notificationCenter removeObserver:self name:UIApplicationDidEnterBackgroundNotification
-                                object:nil];
+    [notificationCenter removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];
+    [notificationCenter removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
 #elif __MAC_OS_X_VERSION_MIN_REQUIRED
     NSNotificationCenter *notificationCenter = [[NSWorkspace sharedWorkspace] notificationCenter];
     [notificationCenter removeObserver:self name:NSWorkspaceWillSleepNotification object:nil];
-    [notificationCenter removeObserver:self name:NSWorkspaceSessionDidResignActiveNotification
-                                object:nil];
+    [notificationCenter removeObserver:self name:NSWorkspaceSessionDidResignActiveNotification object:nil];
     [notificationCenter removeObserver:self name:NSWorkspaceDidWakeNotification object:nil];
-    [notificationCenter removeObserver:self name:NSWorkspaceSessionDidBecomeActiveNotification
-                                object:nil];
+    [notificationCenter removeObserver:self name:NSWorkspaceSessionDidBecomeActiveNotification object:nil];
 #endif
     [_subscriptionNetwork invalidate];
     _subscriptionNetwork = nil;

@@ -1,7 +1,7 @@
 /**
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PNPresenceChannelGroupHereNowResult.h"
 #import "PNServiceData+Private.h"
@@ -19,6 +19,21 @@
 @end
 
 
+#pragma mark - Private interface declaration
+
+@interface PNPresenceChannelGroupHereNowResult ()
+
+
+#pragma mark - Properties
+
+@property (nonatomic, nonnull, strong) PNPresenceChannelGroupHereNowData *data;
+
+#pragma mark -
+
+
+@end
+
+
 #pragma mark - Interface implementation
 
 @implementation PNPresenceChannelGroupHereNowResult
@@ -28,7 +43,8 @@
 
 - (PNPresenceChannelGroupHereNowData *)data {
     
-    return [PNPresenceChannelGroupHereNowData dataWithServiceResponse:self.serviceData];
+    if (!_data) { _data = [PNPresenceChannelGroupHereNowData dataWithServiceResponse:self.serviceData]; }
+    return _data;
 }
 
 #pragma mark -

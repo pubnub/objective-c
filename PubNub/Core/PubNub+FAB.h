@@ -1,4 +1,5 @@
-#import <PubNub/PubNub.h>
+#import <Foundation/Foundation.h>
+#import "PubNub+Core.h"
 
 
 /**
@@ -9,7 +10,7 @@
  
  @author Sergey Mamontov
  @since 4.2.2
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PubNub (FAB)
 
@@ -21,8 +22,9 @@
 /**
  @brief      Construct new \b PubNub client instance with Fabric pre-defined configuration.
  @discussion This method will create \b PubNub instance using configuration provided by \b Fabric.
- @note       This method is similar to \c +clientWithConfiguration: but configuration of the client
- done by \b Fabric.
+ @note       This method is similar to \c +clientWithConfiguration: but configuration of the client done by
+             \b Fabric.
+ 
  @return Configured and ready to use \b PubNub client.
  */
 + (instancetype)client;

@@ -1,7 +1,7 @@
 /**
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PNAPNSEnabledChannelsResult.h"
 #import "PNServiceData+Private.h"
@@ -14,10 +14,25 @@
 
 #pragma mark - Information
 
-- (NSArray *)channels {
+- (NSArray<NSString *> *)channels {
     
-    return self.serviceData[@"channels"];
+    return (self.serviceData[@"channels"]?: @[]);
 }
+
+#pragma mark -
+
+
+@end
+
+
+#pragma mark - Private interface declaration
+
+@interface PNAPNSEnabledChannelsResult ()
+
+
+#pragma mark - Properties
+
+@property (nonatomic, nonnull, strong) PNAPNSEnabledChannelsData *data;
 
 #pragma mark -
 
@@ -34,7 +49,8 @@
 
 - (PNAPNSEnabledChannelsData *)data {
     
-    return [PNAPNSEnabledChannelsData dataWithServiceResponse:self.serviceData];
+    if (!_data) { _data = [PNAPNSEnabledChannelsData dataWithServiceResponse:self.serviceData]; }
+    return _data;
 }
 
 #pragma mark - 

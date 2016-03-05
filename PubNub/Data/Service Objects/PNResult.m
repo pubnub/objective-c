@@ -1,7 +1,7 @@
 /**
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PNResult+Private.h"
 #import "PNPrivateStructures.h"
@@ -9,31 +9,31 @@
 #import "PNJSON.h"
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 #pragma mark Protected interface declaration
 
 @interface PNResult () <NSCopying>
 
 
-///------------------------------------------------
-/// @name Information
-///------------------------------------------------
+#pragma mark - Information
 
 @property (nonatomic, assign) NSInteger statusCode;
 @property (nonatomic, assign) PNOperationType operation;
 @property (nonatomic, assign, getter = isTLSEnabled) BOOL TLSEnabled;
 @property (nonatomic, assign, getter = isUnexpectedServiceData) BOOL unexpectedServiceData;
 @property (nonatomic, copy) NSString *uuid;
-@property (nonatomic, copy) NSString *authKey;
+@property (nonatomic, nullable, copy) NSString *authKey;
 @property (nonatomic, copy) NSString *origin;
-@property (nonatomic, copy) NSURLRequest *clientRequest;
-@property (nonatomic, copy) NSDictionary *serviceData;
+@property (nonatomic, nullable, copy) NSURLRequest *clientRequest;
+@property (nonatomic, nullable, copy) NSDictionary<NSString *, id> *serviceData;
 
 
 #pragma mark - Misc
 
 /**
- @brief  Create instance copy with additional adjustments on whether service data information should
-         be copied or not.
+ @brief  Create instance copy with additional adjustments on whether service data information should be copied
+         sor not.
  
  @param shouldCopyServiceData Whether service data should be passed to new copy or not.
  
@@ -42,21 +42,23 @@
 - (id)copyWithServiceData:(BOOL)shouldCopyServiceData;
 
 /**
- @brief      Ensure what passed \c serviceData has required data type (dictionary). 
-             If \c serviceData has different data type, it will be wrapped into dictionary.
- @discussion If unexpected data type will be passes, object will set corresponding flag, so it will
-             be processed and printed out to log file for further investigation.
+ @brief      Ensure what passed \c serviceData has required data type (dictionary). If \c serviceData has 
+             different data type, it will be wrapped into dictionary.
+ @discussion If unexpected data type will be passes, object will set corresponding flag, so it will be
+             processed and printed out to log file for further investigation.
  
  @param serviceData Reference on data which should be verified and used for resulting object.
  
  @return \c Normalized service data dictionary.
  */
-- (NSDictionary *)normalizedServiceData:(id)serviceData;
+- (NSDictionary *)normalizedServiceData:(nullable id)serviceData;
 
 #pragma mark -
 
 
 @end
+
+NS_ASSUME_NONNULL_END
 
 
 #pragma mark Interface implementation
@@ -75,17 +77,18 @@
 #pragma mark - Initialization and Configuration
 
 + (instancetype)objectForOperation:(PNOperationType)operation
-                 completedWithTaks:(NSURLSessionDataTask *)task
-                     processedData:(NSDictionary *)processedData processingError:(NSError *)error {
+                 completedWithTask:(nullable NSURLSessionDataTask *)task
+                     processedData:(nullable NSDictionary<NSString *, id> *)processedData 
+                   processingError:(nullable NSError *)error {
     
-    return [[self alloc] initForOperation:operation completedWithTaks:task
+    return [[self alloc] initForOperation:operation completedWithTask:task
                             processedData:processedData processingError:error];
 }
 
 - (instancetype)initForOperation:(PNOperationType)operation
-               completedWithTaks:(NSURLSessionDataTask *)task
-                   processedData:(NSDictionary *)processedData
-                 processingError:(NSError *)__unused error {
+               completedWithTask:(nullable NSURLSessionDataTask *)task
+                   processedData:(nullable NSDictionary<NSString *, id> *)processedData 
+                 processingError:(nullable NSError *)__unused error {
     
     // Check whether initialization was successful or not.
     if ((self = [super init])) {
@@ -102,7 +105,7 @@
             _statusCode = (([statusCode integerValue] > 200) ? [statusCode integerValue] : _statusCode);
         }
         // Received unknown response from service.
-        else if (processedData && ![processedData isKindOfClass:NSDictionary.class]){
+        else if (processedData && ![processedData isKindOfClass:[NSDictionary class]]){
             
             _unexpectedServiceData = YES;
             processedData = [self normalizedServiceData:processedData];
@@ -118,7 +121,7 @@
     return [self copyWithServiceData:YES];
 }
 
-- (instancetype)copyWithMutatedData:(id)data {
+- (instancetype)copyWithMutatedData:(nullable id)data {
     
     PNResult *result = [self copyWithServiceData:NO];
     [result updateData:data];
@@ -126,7 +129,7 @@
     return result;
 }
 
-- (void)updateData:(id)data {
+- (void)updateData:(nullable id)data {
     
     _serviceData = [[self normalizedServiceData:data] copy];
     _unexpectedServiceData = ![_serviceData isEqual:data];
@@ -137,7 +140,7 @@
 
 - (id)copyWithServiceData:(BOOL)shouldCopyServiceData {
     
-    PNResult *result = [self.class new];
+    PNResult *result = [[self class] new];
     result.statusCode = self.statusCode;
     result.operation = self.operation;
     result.TLSEnabled = self.isTLSEnabled;
@@ -153,10 +156,10 @@
     return result;
 }
 
-- (NSDictionary *)normalizedServiceData:(id)serviceData {
+- (NSDictionary *)normalizedServiceData:(nullable id)serviceData {
     
     NSDictionary *normalizedServiceData = serviceData;
-    if (serviceData && ![serviceData isKindOfClass:NSDictionary.class]) {
+    if (serviceData && ![serviceData isKindOfClass:[NSDictionary class]]) {
         
         normalizedServiceData = @{@"information": serviceData};
     }
@@ -179,12 +182,16 @@
 
 - (NSDictionary *)dictionaryRepresentation {
     
-    NSMutableDictionary *response = [@{@"Status code": @(self.statusCode),
-                                       @"Processed data": (self.serviceData?: @"no data")} mutableCopy];
-    if (_unexpectedServiceData) {
+    id processedData = (self.serviceData[@"envelope"] ? [self.serviceData mutableCopy] : 
+                        (self.serviceData?: @"no data"));
+    if ([processedData isKindOfClass:[NSMutableDictionary class]]) {
         
-        response[@"Unexpected"] = @(YES);
+        processedData[@"envelope"] = [self.serviceData[@"envelope"] valueForKey:@"dictionaryRepresentation"];
     }
+    
+    NSMutableDictionary *response = [@{@"Status code": @(self.statusCode),
+                                       @"Processed data": processedData} mutableCopy];
+    if (_unexpectedServiceData) { response[@"Unexpected"] = @(YES); }
     
     return @{@"Operation": PNOperationTypeStrings[[self operation]],
              @"Request": @{@"Method": (self.clientRequest.HTTPMethod?: @"GET"),

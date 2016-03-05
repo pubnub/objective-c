@@ -6,7 +6,7 @@
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNPresenceChannelGroupHereNowData : PNPresenceGlobalHereNowData
 
@@ -22,7 +22,7 @@
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNPresenceChannelGroupHereNowResult : PNResult
 
@@ -36,7 +36,7 @@
  
  @since 4.0
  */
-@property (nonatomic, readonly, strong) PNPresenceChannelGroupHereNowData *data;
+@property (nonatomic, nonnull, readonly, strong) PNPresenceChannelGroupHereNowData *data;
 
 
 #pragma mark -

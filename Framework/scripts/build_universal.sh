@@ -74,7 +74,7 @@ do
         [[ ! -d "${FRAMEWORK_PRODUCTS_PATH}" ]] && mkdir -p "${FRAMEWORK_PRODUCTS_PATH}"
         if [[ ! -d "${FRAMEWORK_PRODUCTS_PATH}/Headers" ]]; then
             cp -RP "${FRAMEWORK_ARM_BUILD_PATH}/Headers" "${FRAMEWORK_PRODUCTS_PATH}/Headers"
-            cp "${FRAMEWORK_ARM_BUILD_PATH}/PubNub-iOS-Info.plist" "${FRAMEWORK_PRODUCTS_PATH}/Info.plist"
+            find "${FRAMEWORK_ARM_BUILD_PATH}/" -type f -name 'PubNub*-Info.plist' -exec cp '{}' "${FRAMEWORK_PRODUCTS_PATH}/Info.plist" ';'
         fi
         cp "${FRAMEWORK_ARM_BUILD_PATH}/${frameworkName}.a" "${FRAMEWORK_PRODUCTS_PATH}/${frameworkName}.a"
 

@@ -6,6 +6,8 @@
 @class PubNub;
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  @brief      \b PubNub network reachability / ping utility.
  @discussion This class used by \b PubNub client to check whether current \b PubNub network state
@@ -15,7 +17,7 @@
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNReachability : NSObject
 
@@ -35,8 +37,7 @@
  
  @since 4.0
  */
-+ (instancetype)reachabilityForClient:(PubNub *)client
-                       withPingStatus:(void(^)(BOOL pingSuccessful))block;
++ (instancetype)reachabilityForClient:(PubNub *)client withPingStatus:(void(^)(BOOL pingSuccessful))block;
 
 
 ///------------------------------------------------
@@ -65,3 +66,5 @@
 
 
 @end
+
+NS_ASSUME_NONNULL_END

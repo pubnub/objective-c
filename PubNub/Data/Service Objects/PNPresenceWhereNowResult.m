@@ -1,7 +1,7 @@
 /**
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PNPresenceWhereNowResult.h"
 #import "PNServiceData+Private.h"
@@ -15,10 +15,25 @@
 
 #pragma mark - Information
 
-- (NSArray *)channels {
+- (NSArray<NSString *> *)channels {
     
-    return self.serviceData[@"channels"];
+    return (self.serviceData[@"channels"]?: @[]);
 }
+
+#pragma mark -
+
+
+@end
+
+
+#pragma mark - Private interface declaration
+
+@interface PNPresenceWhereNowResult ()
+
+
+#pragma mark - Properties
+
+@property (nonatomic, nonnull, strong) PNPresenceWhereNowData *data;
 
 #pragma mark -
 
@@ -35,7 +50,8 @@
 
 - (PNPresenceWhereNowData *)data {
     
-    return [PNPresenceWhereNowData dataWithServiceResponse:self.serviceData];
+    if (!_data) { _data = [PNPresenceWhereNowData dataWithServiceResponse:self.serviceData]; }
+    return _data;
 }
 
 #pragma mark -

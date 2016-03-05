@@ -1,7 +1,7 @@
 /**
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PNPresenceGlobalHereNowResult.h"
 #import "PNServiceData+Private.h"
@@ -15,25 +15,41 @@
 
 #pragma mark - Information
 
-- (NSDictionary *)channels {
+- (NSDictionary<NSString *, NSDictionary *> *)channels {
     
-    return self.serviceData[@"channels"];
+    return (self.serviceData[@"channels"]?: @{});
 }
 
 - (NSNumber *)totalChannels {
     
-    return self.serviceData[@"totalChannels"];
+    return (self.serviceData[@"totalChannels"]?: @0);
 }
 
 - (NSNumber *)totalOccupancy {
     
-    return self.serviceData[@"totalOccupancy"];
+    return (self.serviceData[@"totalOccupancy"]?: @0);
 }
 
 #pragma mark -
 
 
 @end
+
+
+#pragma mark - Private interface declaration
+
+@interface PNPresenceGlobalHereNowResult ()
+
+
+#pragma mark - Properties
+
+@property (nonatomic, nonnull, strong) PNPresenceGlobalHereNowData *data;
+
+#pragma mark -
+
+
+@end
+
 
 #pragma mark - Interface implementation
 
@@ -44,7 +60,8 @@
 
 - (PNPresenceGlobalHereNowData *)data {
     
-    return [PNPresenceGlobalHereNowData dataWithServiceResponse:self.serviceData];
+    if (!_data) { _data = [PNPresenceGlobalHereNowData dataWithServiceResponse:self.serviceData]; }
+    return _data;
 }
 
 #pragma mark -

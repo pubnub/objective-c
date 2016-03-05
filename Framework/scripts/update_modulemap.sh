@@ -17,7 +17,12 @@ if [[ ${BUILDING_UNIVERSAL_FRAMEWORK:=0} == 0 ]]; then
             MODULE_NAME="PubNub"
             FRAMEWORK_BUNDLE_NAME="PubNub.framework"
         fi
-        FRAMEWORK_MODULES_PATH="${PRODUCTS_PATH}/${FRAMEWORK_BUNDLE_NAME}/Modules"
+
+        if [[ $PLATFORM_NAME =~ (macosx) ]]; then
+            FRAMEWORK_MODULES_PATH="${PRODUCTS_PATH}/${FRAMEWORK_BUNDLE_NAME}/Versions/A/Modules"
+        else
+            FRAMEWORK_MODULES_PATH="${PRODUCTS_PATH}/${FRAMEWORK_BUNDLE_NAME}/Modules"
+        fi
         MODULEMAP_PATH="${FRAMEWORK_MODULES_PATH}/module.modulemap"
 
         if [ ! -f "${MODULEMAP_PATH}" ] || [ ${BUILDING_STATIC_FRAMEWORK:=0} == 0 ] ; then
