@@ -34,6 +34,7 @@ Pod::Spec.new do |spec|
             'PubNub/Core/*Private.h',
             'PubNub/Data/*Private.h',
             'PubNub/Data/PNKeychain.h',
+            'PubNub/Data/PNEnvelopeInformation.h',
             'PubNub/Data/Managers/**/*.h',
             'PubNub/Data/Service Objects/*Private.h',
             'PubNub/Misc/{PNConstants,PNPrivateStructures}.h',

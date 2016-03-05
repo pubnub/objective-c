@@ -20,9 +20,9 @@ class PNTimeTokenTests: PNBasicSubscribeTestCase {
         self.client.timeWithCompletion { (result, status) -> Void in
             XCTAssertNil(status)
             XCTAssertNotNil(result)
-            XCTAssertEqual(result.operation, PNOperationType.TimeOperation)
-            XCTAssertEqual(result.statusCode, 200)
-            XCTAssertEqual(result.data.timetoken, NSNumber(longLong: 14355553745683928))
+            XCTAssertEqual(result!.operation, PNOperationType.TimeOperation)
+            XCTAssertEqual(result!.statusCode, 200)
+            XCTAssertEqual(result!.data.timetoken, NSNumber(longLong: 14355553745683928))
             testTokenExpectation.fulfill()
         }
         self.waitForExpectationsWithTimeout(5, handler: { (error) -> Void in

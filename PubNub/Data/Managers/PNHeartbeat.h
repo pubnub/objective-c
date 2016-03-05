@@ -6,14 +6,16 @@
 @class PubNub;
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  @brief      Presence heartbeat manager used by client to ping \b PubNub network.
- @discussion Allow to notify service and tell what subscriber still alive and waiting for events 
-             from live feed.
+ @discussion Allow to notify service and tell what subscriber still alive and waiting for events from live 
+             feed.
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNHeartbeat : NSObject
 
@@ -57,3 +59,5 @@
 
 
 @end
+
+NS_ASSUME_NONNULL_END

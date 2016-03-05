@@ -2,15 +2,16 @@
 #import "PNStructures.h"
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  @brief      Class which allow to perform AES based encryption/decryption on provided data.
- @discussion Encryption works with native Foundation objects which internally will be translated
-             to JSON object. Decryption process will return Foundation object in response on
-             Base64 encoded string.
+ @discussion Encryption works with native Foundation objects which internally will be translated to JSON
+             object. Decryption process will return Foundation object in response on Base64 encoded string.
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNAES : NSObject
 
@@ -27,21 +28,19 @@
  @param data  Reference on \a NSData object which should be encrypted.
  @param key   Reference on key which should be used to encrypt data basing on it.
  
- @return Encrypted Base64-encoded string received from Foundation object. \c nil will be returned
-         in case of failure.
+ @return Encrypted Base64-encoded string received from Foundation object. \c nil will be returned in case of 
+         failure.
  
  @since 4.0
  */
-+ (NSString *)encrypt:(NSData *)data withKey:(NSString *)key;
++ (nullable NSString *)encrypt:(NSData *)data withKey:(NSString *)key;
 
 /**
  @brief      Encrypt \c data content and encode into Base64 string.
  @discussion Input \c data for example can be output of \a NSJSONSerialization or data created from
              \a NSString with UTF-8 encoding.
- @code
- @endcode
- Extension to \c -encrypt:withKey: and allow to specify pointer where encryption error can be 
- passed.
+ @discussion Extension to \c -encrypt:withKey: and allow to specify pointer where encryption error can be 
+             passed.
  
  @param data  Reference on \a NSData object which should be encrypted.
  @param key   Reference on key which should be used to encrypt data basing on it.
@@ -54,8 +53,8 @@
  
  @since 4.0
  */
-+ (NSString *)encrypt:(NSData *)data withKey:(NSString *)key
-             andError:(NSError *__autoreleasing *)error;
++ (nullable NSString *)encrypt:(NSData *)data withKey:(NSString *)key 
+                      andError:(NSError *__autoreleasing *)error;
 
 
 ///------------------------------------------------
@@ -75,16 +74,14 @@
  
  @since 4.0
  */
-+ (NSData *)decrypt:(NSString *)object withKey:(NSString *)key;
++ (nullable NSData *)decrypt:(NSString *)object withKey:(NSString *)key;
 
 /**
  @brief      Transform encrypted Base64 encoded string to \a NSData instance.
  @discussion Received data for example can be used with \a NSJSONSerialization to convert it's 
              content to Foundation objects.
- @code
- @endcode
- Extension to \c -decrypt:withKey: and allow to specify pointer where decryption error can be
- passed.
+ @discussion Extension to \c -decrypt:withKey: and allow to specify pointer where decryption error can be 
+             passed.
  
  @param object Reference on previously encrypted Base64-encoded string which should be decrypted.
  @param key    Reference on key which should be used to decrypt data.
@@ -97,10 +94,12 @@
  
  @since 4.0
  */
-+ (NSData *)decrypt:(NSString *)object withKey:(NSString *)key
-           andError:(NSError *__autoreleasing *)error;
++ (nullable NSData *)decrypt:(NSString *)object withKey:(NSString *)key 
+                    andError:(NSError *__autoreleasing *)error;
 
 #pragma mark -
 
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -1,7 +1,7 @@
 /**
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PNArray.h"
 
@@ -16,18 +16,15 @@
 + (NSArray *)mapObjects:(NSArray *)objects usingBlock:(id(^)(id object))mappingBlock {
     
     NSMutableArray *mappedObjects = nil;
-    if ([objects count]) {
+    if (objects.count) {
         
-        mappedObjects = [[NSMutableArray alloc] initWithCapacity:[objects count]];
+        mappedObjects = [[NSMutableArray alloc] initWithCapacity:objects.count];
         objects = [objects sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
         [objects enumerateObjectsUsingBlock:^(id object, __unused NSUInteger objectIdx,
                                               __unused BOOL *objectEnumeratorStop) {
             
             id mappedObject = mappingBlock(object);
-            if (mappedObject) {
-                
-                [mappedObjects addObject:mappedObject];
-            }
+            if (mappedObject) { [mappedObjects addObject:mappedObject]; }
         }];
     }
     

@@ -2,13 +2,15 @@
 #import "PNServiceData.h"
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  @brief  Class which is used to provide access to additional data available to describe publish 
          status.
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNPublishData : PNServiceData
 
@@ -18,8 +20,7 @@
 ///------------------------------------------------
 
 /**
- @brief  Service-provided time stamp at which message has been pushed to remote data object live
-         feed.
+ @brief  Service-provided time stamp at which message has been pushed to remote data object live feed.
  
  @since 4.0
  */
@@ -43,7 +44,7 @@
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNPublishStatus : PNAcknowledgmentStatus
 
@@ -63,3 +64,5 @@
 
 
 @end
+
+NS_ASSUME_NONNULL_END

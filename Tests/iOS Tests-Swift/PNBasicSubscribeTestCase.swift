@@ -44,7 +44,7 @@ class PNBasicSubscribeTestCase: PNBasicClientTestCase, PNObjectEventListener {
         })
     }
     
-    func client(client: PubNub!, didReceivePresenceEvent event: PNPresenceEventResult!) {
+    func client(client: PubNub, didReceivePresenceEvent event: PNPresenceEventResult) {
         
         if self.assertDidReceivePresenceEvent != nil {
             
@@ -53,7 +53,7 @@ class PNBasicSubscribeTestCase: PNBasicClientTestCase, PNObjectEventListener {
         }
     }
     
-    func client(client: PubNub!, didReceiveStatus status: PNStatus!) {
+    func client(client: PubNub, didReceiveStatus status: PNStatus) {
         
         if self.didReceiveStatusAssertions != nil {
             

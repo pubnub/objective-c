@@ -3,13 +3,15 @@
 #import "PNSubscribeStatus.h"
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
- @brief  Class which allow to get access to detailed presence information which has been received
-         on remote data object's live feed.
+ @brief  Class which allow to get access to detailed presence information which has been received on remote
+         data object's live feed.
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNPresenceDetailsData : PNSubscriberData
 
@@ -19,7 +21,7 @@
 ///------------------------------------------------
 
 /**
- @brief  Time when presence event has been tirggered.
+ @brief  Time when presence event has been triggered.
  
  @return Number with unsugned long long timestamp.
  
@@ -34,7 +36,7 @@
  
  @since 4.0
  */
-@property (nonatomic, readonly, strong) NSString *uuid;
+@property (nonatomic, nullable, readonly, strong) NSString *uuid;
 
 /**
  @brief  Channel presence information.
@@ -48,12 +50,11 @@
 /**
  @brief  User changed client state.
  
- @return In case of state change presence event will contain actual client state infotmation for
-         \c -uuid.
+ @return In case of state change presence event will contain actual client state infotmation for \c -uuid.
  
  @since 4.0
  */
-@property (nonatomic, readonly, strong) NSDictionary *state;
+@property (nonatomic, nullable, readonly, strong) NSDictionary<NSString *, id> *state;
 
 #pragma mark -
 
@@ -67,7 +68,7 @@
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNPresenceEventData : PNSubscriberData
 
@@ -105,7 +106,7 @@
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNMessageData : PNSubscriberData
 
@@ -121,7 +122,7 @@
  
  @since 4.0
  */
-@property (nonatomic, readonly, strong) id message;
+@property (nonatomic, nullable, readonly, strong) id message;
 
 #pragma mark - 
 
@@ -134,7 +135,7 @@
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNMessageResult : PNResult
 
@@ -161,7 +162,7 @@
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNPresenceEventResult : PNResult
 
@@ -181,3 +182,5 @@
 
 
 @end
+
+NS_ASSUME_NONNULL_END

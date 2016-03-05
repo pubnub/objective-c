@@ -2,15 +2,18 @@
 #import "PNStructures.h"
 
 
+
+NS_ASSUME_NONNULL_BEGIN
+
 /**
- @brief      Class which is used to describe error response from server or any non-request related
-             client state changes.
- @discussion In case of error this instance may contain service response in \c data. Also this 
-             object hold additional information about current client state.
+ @brief      Class which is used to describe error response from server or any non-request related client
+             state changes.
+ @discussion In case of error this instance may contain service response in \c data. Also this object hold 
+             additional information about current client state.
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNStatus : PNResult
 
@@ -20,8 +23,8 @@
 ///------------------------------------------------
 
 /**
- @brief  One of \b PNStatusCategory fields which provide information about for which status this
-         instance has been created.
+ @brief  One of \b PNStatusCategory fields which provide information about for which status this instance has 
+         been created.
  
  @return Processing status category.
 
@@ -40,8 +43,8 @@
 
 /**
  @brief      Auto-retry configuration information.
- @discussion In most cases client will keep retry request sending till it won't be successful or
-             canceled with \c -cancelAutomaticRetry method.
+ @discussion In most cases client will keep retry request sending till it won't be successful or canceled with
+             \c -cancelAutomaticRetry method.
  
  @return \c YES in case if request which represented with this failed status will be resent
          automatically or not.
@@ -53,8 +56,7 @@
 /**
  @brief  Stringified \c category value.
  
- @return Stringified representation for \c category property which store value from
-         \b PNStatusCategory.
+ @return Stringified representation for \c category property which store value from \b PNStatusCategory.
  */
 - (NSString *)stringifiedCategory;
 
@@ -84,3 +86,5 @@
 
 
 @end
+
+NS_ASSUME_NONNULL_END

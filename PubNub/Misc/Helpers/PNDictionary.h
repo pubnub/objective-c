@@ -6,26 +6,9 @@
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNDictionary : NSObject
-
-
-///------------------------------------------------
-/// @name API helper
-///------------------------------------------------
-
-/**
- @brief  Check whether specified dictionary has flattened structure or not.
- @discussion Flattened - mean what there is no nested objects stored for keys.
-
- @param dictionary Reference on dictionary against which check should be done.
-
- @return \c YES in case if there is collection instance stored inside of dictionary.
-
- @since 4.0
- */
-+ (BOOL)hasFlattenedContent:(NSDictionary *)dictionary;
 
 
 ///------------------------------------------------

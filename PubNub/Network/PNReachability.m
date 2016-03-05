@@ -1,7 +1,7 @@
 /**
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PNReachability.h"
 #import "PubNub+CorePrivate.h"
@@ -19,6 +19,8 @@
  */
 static DDLogLevel ddLogLevel = (DDLogLevel)PNReachabilityLogLevel;
 
+
+NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Protected interface declaration
 
@@ -79,8 +81,7 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNReachabilityLogLevel;
  
  @since 4.0
  */
-- (instancetype)initForClient:(PubNub *)client
-               withPingStatus:(void(^)(BOOL pingSuccessful))block;
+- (instancetype)initForClient:(PubNub *)client withPingStatus:(void(^)(BOOL pingSuccessful))block;
 
 
 #pragma mark - Handlers
@@ -99,6 +100,8 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNReachabilityLogLevel;
 
 @end
 
+NS_ASSUME_NONNULL_END
+
 
 #pragma mark - Interface implementation
 
@@ -109,25 +112,11 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNReachabilityLogLevel;
 
 #pragma mark - Logger
 
-/**
- @brief  Called by Cocoa Lumberjack during initialization.
- 
- @return Desired logger level for \b PubNub client main class.
- 
- @since 4.0
- */
 + (DDLogLevel)ddLogLevel {
     
     return ddLogLevel;
 }
 
-/**
- @brief  Allow modify logger level used by Cocoa Lumberjack with logging macros.
- 
- @param logLevel New log level which should be used by logger.
- 
- @since 4.0
- */
 + (void)ddSetLogLevel:(DDLogLevel)logLevel {
     
     ddLogLevel = logLevel;
@@ -159,20 +148,14 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNReachabilityLogLevel;
 - (BOOL)pingingRemoteService {
     
     __block BOOL pingingRemoteService = NO;
-    dispatch_sync(self.resourceAccessQueue, ^{
-        
-        pingingRemoteService = self->_pingRemoteService;
-    });
+    dispatch_sync(self.resourceAccessQueue, ^{ pingingRemoteService = self->_pingRemoteService; });
     
     return pingingRemoteService;
 }
 
 - (void)setPingRemoteService:(BOOL)pingRemoteService {
     
-    dispatch_barrier_async(self.resourceAccessQueue, ^{
-        
-        self->_pingRemoteService = pingRemoteService;
-    });
+    dispatch_barrier_async(self.resourceAccessQueue, ^{ self->_pingRemoteService = pingRemoteService; });
 }
 
 
@@ -211,10 +194,7 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNReachabilityLogLevel;
         
         DDLogReachability([[self class] ddLogLevel], @"<PubNub::Reachability> Connection restored.");
     }
-    if (self.pingCompleteBlock) {
-        
-        self.pingCompleteBlock(successfulPing);
-    }
+    if (self.pingCompleteBlock) { self.pingCompleteBlock(successfulPing); }
     if (self.pingingRemoteService) {
         
         NSTimeInterval delay = ((self.reachable && !successfulPing) ? 1.f : 10.0f);

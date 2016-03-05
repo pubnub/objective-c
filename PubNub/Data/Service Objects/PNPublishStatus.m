@@ -11,13 +11,29 @@
 
 - (NSNumber *)timetoken {
     
-    return self.serviceData[@"timetoken"];
+    return (self.serviceData[@"timetoken"]?: @0);
 }
 
 - (NSString *)information {
     
-    return self.serviceData[@"information"];
+    return (self.serviceData[@"information"]?: @"No Information");
 }
+
+#pragma mark -
+
+
+@end
+
+
+
+#pragma mark - Private interface declaration
+
+@interface PNPublishStatus ()
+
+
+#pragma mark - Properties
+
+@property (nonatomic, nonnull, strong) PNPublishData *data;
 
 #pragma mark -
 
@@ -34,7 +50,8 @@
 
 - (PNPublishData *)data {
     
-    return [PNPublishData dataWithServiceResponse:self.serviceData];
+    if (!_data) { _data = [PNPublishData dataWithServiceResponse:self.serviceData]; }
+    return _data;
 }
 
 #pragma mark -

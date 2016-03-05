@@ -1,12 +1,14 @@
 #import <Foundation/Foundation.h>
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  @brief  Useful NSData additions collection.
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNData : NSObject
 
@@ -54,3 +56,5 @@
 
 
 @end
+
+NS_ASSUME_NONNULL_END

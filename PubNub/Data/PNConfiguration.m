@@ -1,7 +1,7 @@
 /**
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 #import <Foundation/Foundation.h>
 #if __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
@@ -26,6 +26,8 @@
 static NSString * const kPNConfigurationDeviceIDKey = @"PNConfigurationDeviceID";
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 #pragma mark - Protected interface declaration
 
 @interface PNConfiguration () <NSCopying>
@@ -39,15 +41,13 @@ static NSString * const kPNConfigurationDeviceIDKey = @"PNConfigurationDeviceID"
  @brief  Initialize configuration instance using minimal required data.
  
  @param publishKey   Key which allow client to use data push API.
- @param subscribeKey Key which allow client to subscribe on live feeds pushed from \b PubNub 
-                     service.
+ @param subscribeKey Key which allow client to subscribe on live feeds pushed from \b PubNub service.
  
  @return Configured and ready to se configuration instance.
  
  @since 4.0
  */
-- (instancetype)initWithPublishKey:(NSString *)publishKey
-                      subscribeKey:(NSString *)subscribeKey;
+- (instancetype)initWithPublishKey:(NSString *)publishKey subscribeKey:(NSString *)subscribeKey;
 
 
 #pragma mark - Misc
@@ -59,7 +59,7 @@ static NSString * const kPNConfigurationDeviceIDKey = @"PNConfigurationDeviceID"
  
  @since 4.0.2
  */
-- (NSString *)uniqueDeviceIdentifier;
+- (nullable NSString *)uniqueDeviceIdentifier;
 
 /**
  @brief  Extract unique identifier for current platform.
@@ -68,18 +68,17 @@ static NSString * const kPNConfigurationDeviceIDKey = @"PNConfigurationDeviceID"
  
  @since 4.1.1
  */
-- (NSString *)generateUniqueDeviceIdentifier;
+- (nullable NSString *)generateUniqueDeviceIdentifier;
 
 #if __MAC_OS_X_VERSION_MIN_REQUIRED
 /**
  @brief  Try to fetch device serial number information.
  
- @return Serial number or \c nil in case if it has been lost (there is way for hardware to loose 
-         it).
+ @return Serial number or \c nil in case if it has been lost (there is way for hardware to loose it).
  
  @since 4.0.2
  */
-- (NSString *)serialNumber;
+- (nullable NSString *)serialNumber;
 
 /**
  @brief  Try to receive MAC address for any current interfaces.
@@ -88,13 +87,15 @@ static NSString * const kPNConfigurationDeviceIDKey = @"PNConfigurationDeviceID"
  
  @since 4.0.2
  */
-- (NSString *)macAddress;
+- (nullable NSString *)macAddress;
 #endif
 
 #pragma mark -
 
 
 @end
+
+NS_ASSUME_NONNULL_END
 
 
 #pragma mark - Interface implementation
@@ -104,8 +105,7 @@ static NSString * const kPNConfigurationDeviceIDKey = @"PNConfigurationDeviceID"
 
 #pragma mark - Initialization and Configuration
 
-+ (instancetype)configurationWithPublishKey:(NSString *)publishKey
-                               subscribeKey:(NSString *)subscribeKey {
++ (instancetype)configurationWithPublishKey:(NSString *)publishKey subscribeKey:(NSString *)subscribeKey {
     
     NSParameterAssert(publishKey);
     NSParameterAssert(subscribeKey);
@@ -167,7 +167,7 @@ static NSString * const kPNConfigurationDeviceIDKey = @"PNConfigurationDeviceID"
 
 #pragma mark - Misc
 
-- (NSString *)uniqueDeviceIdentifier {
+- (nullable NSString *)uniqueDeviceIdentifier {
     
     __block NSString *identifier = nil;
     [PNKeychain valueForKey:kPNConfigurationDeviceIDKey withCompletionBlock:^(id value) {
@@ -184,7 +184,7 @@ static NSString * const kPNConfigurationDeviceIDKey = @"PNConfigurationDeviceID"
     return identifier;
 }
 
-- (NSString *)generateUniqueDeviceIdentifier {
+- (nullable NSString *)generateUniqueDeviceIdentifier {
     
     NSString *identifier = nil;
 #if __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
@@ -197,7 +197,7 @@ static NSString * const kPNConfigurationDeviceIDKey = @"PNConfigurationDeviceID"
 }
 
 #if __MAC_OS_X_VERSION_MIN_REQUIRED
-- (NSString *)serialNumber {
+- (nullable NSString *)serialNumber {
     
     NSString *serialNumber = nil;
     io_service_t service = IOServiceGetMatchingService(kIOMasterPortDefault,
@@ -217,7 +217,7 @@ static NSString * const kPNConfigurationDeviceIDKey = @"PNConfigurationDeviceID"
     return serialNumber;
 }
 
-- (NSString *)macAddress {
+- (nullable NSString *)macAddress {
     
     NSString *macAddress = nil;
     size_t length = 0;

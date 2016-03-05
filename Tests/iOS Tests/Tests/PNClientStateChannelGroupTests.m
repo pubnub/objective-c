@@ -67,9 +67,9 @@ static NSString * const kPNChannelGroupTestsName = @"PNClientStateChannelGroupTe
         XCTAssertEqual(status.operation, PNSubscribeOperation);
         NSLog(@"timeToken: %@", status.currentTimetoken);
         if (self.invocation.selector == @selector(testSetClientStateOnSubscribedChannelGroup)) {
-            XCTAssertEqualObjects(status.currentTimetoken, @14356954400894751);
+            XCTAssertEqualObjects(status.currentTimetoken, @14508134350376968);
         } else if (self.invocation.selector == @selector(testStateForUUIDOnSubscribedChannelGroup)) {
-            XCTAssertEqualObjects(status.currentTimetoken, @14356954400894751);
+            XCTAssertEqualObjects(status.currentTimetoken, @14508134362087936);
         } else {
             XCTFail(@"not supposed to be handling this tests");
         }
@@ -120,18 +120,18 @@ static NSString * const kPNChannelGroupTestsName = @"PNClientStateChannelGroupTe
     PNWeakify(self);
     [self.client setState:state forUUID:self.client.uuid onChannelGroup:[self nonExistentChannelGroup]
            withCompletion:^(PNClientStateUpdateStatus *status) {
-        PNStrongify(self);
-        XCTAssertNotNil(status);
-        XCTAssertTrue(status.isError);
-        XCTAssertEqual(status.operation, PNSetStateOperation);
-        XCTAssertEqual(status.category, PNBadRequestCategory);
-        XCTAssertEqual(status.statusCode, 400);
-//        XCTAssertNil(status.data.state);
-        // TOOD: there should be a property for this?
-//        XCTAssertEqualObjects(status.data, @"No valid channels specified");
-        NSLog(@"Information %@", status.errorData.information);
-        [stateExpectation fulfill];
-    }];
+               PNStrongify(self);
+               XCTAssertNotNil(status);
+               XCTAssertTrue(status.isError);
+               XCTAssertEqual(status.operation, PNSetStateOperation);
+               XCTAssertEqual(status.category, PNBadRequestCategory);
+               XCTAssertEqual(status.statusCode, 400);
+               //        XCTAssertNil(status.data.state);
+               // TOOD: there should be a property for this?
+               //        XCTAssertEqualObjects(status.data, @"No valid channels specified");
+               NSLog(@"Information %@", status.errorData.information);
+               [stateExpectation fulfill];
+           }];
     [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
         XCTAssertNil(error);
     }];
@@ -141,13 +141,13 @@ static NSString * const kPNChannelGroupTestsName = @"PNClientStateChannelGroupTe
     PNWeakify(self);
     XCTestExpectation *stateExpectation = [self expectationWithDescription:@"clientState"];
     NSDictionary *channels = @{
-                            @"a" : @{
-                                    @"test" : @"test"
-                                    },
-                            @"b" : @{
-                                    @"test" : @"test"
-                                    }
-                            };
+                               @"a" : @{
+                                       @"test" : @"test"
+                                       },
+                               @"b" : @{
+                                       @"test" : @"test"
+                                       }
+                               };
     [self.client stateForUUID:self.client.uuid onChannelGroup:[self channelGroups].firstObject withCompletion:^(PNChannelGroupClientStateResult *result, PNErrorStatus *status) {
         PNStrongify(self);
         XCTAssertNil(status);

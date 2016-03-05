@@ -1,9 +1,11 @@
 /**
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PNSubscriber.h"
+#import "PNSubscribeStatus+Private.h"
+#import "PNEnvelopeInformation.h"
 #import "PNServiceData+Private.h"
 #import "PNErrorStatus+Private.h"
 #import "PNSubscriberResults.h"
@@ -47,8 +49,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     PNInitializedSubscriberState,
     
     /**
-     @brief  State set at the moment when client received response on 'leave' request and not 
-             subscribed to any remote data objects live feed.
+     @brief  State set at the moment when client received response on 'leave' request and not subscribed to 
+             any remote data objects live feed.
      
      @since 4.0
      */
@@ -63,22 +65,30 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     PNDisconnectedUnexpectedlySubscriberState,
     
     /**
-     @brief  State set at the moment when client received response with 200 status code for
-             subscribe request with TT 0.
+     @brief  State set at the moment when client received response with 200 status code for subscribe request
+             with TT 0.
      
      @since 4.0
      */
     PNConnectedSubscriberState,
     
     /**
-     @brief  State set at the moment when client received response with 403 status code for
-             subscribe request.
+     @brief  State set at the moment when client received response with 403 status code for subscribe request.
      
      @since 4.0
      */
-    PNAccessRightsErrorSubscriberState
+    PNAccessRightsErrorSubscriberState,
+    
+    /**
+     @brief  State set at the moment when client received response with 481 status code for subscribe request.
+     
+     @since 4.0
+     */
+    PNMalformedFilterExpressionErrorSubscriberState
 };
 
+
+NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Protected interface declaration
 
@@ -116,7 +126,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
  
  @since 4.0
  */
-@property (nonatomic, strong) NSMutableSet *channelsSet;
+@property (nonatomic, strong) NSMutableSet<NSString *> *channelsSet;
 
 /**
  @brief  Actual storage for list of channel groups on which client subscribed at this moment and 
@@ -124,7 +134,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
  
  @since 4.0
  */
-@property (nonatomic, strong) NSMutableSet *channelGroupsSet;
+@property (nonatomic, strong) NSMutableSet<NSString *> *channelGroupsSet;
 
 /**
  @brief  Actual storage for list of presence channels on which client subscribed at this moment and
@@ -132,7 +142,14 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
  
  @since 4.0
  */
-@property (nonatomic, strong) NSMutableSet *presenceChannelsSet;
+@property (nonatomic, strong) NSMutableSet<NSString *> *presenceChannelsSet;
+
+/**
+ @brief  Stores reference on percent-escaped message filtering expression.
+ 
+ @since 4.3.0
+ */
+@property (nonatomic, nullable, copy) NSString *escapedFilterExpression;
 
 /**
  @brief      Reference on time token which is used for current subscribe loop iteration.
@@ -151,7 +168,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
  
  @since 4.2.0
  */
-@property (nonatomic) NSNumber *overrideTimeToken;
+@property (nonatomic, nullable, strong) NSNumber *overrideTimeToken;
 
 /**
  @brief      Reference on time token which has been used for previous subscribe loop iteration.
@@ -160,6 +177,22 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
  @since 4.0
  */
 @property (nonatomic, strong) NSNumber *lastTimeToken;
+
+/**
+ @brief      Stores reference on \b PubNub server region identifier (which generated \c currentTimeToken value).
+ @discussion \b 0 for initial subscription loop and non-zero for long-poll requests.
+ 
+ @since 4.3.0
+ */
+@property (nonatomic, readonly, copy) NSNumber *currentTimeTokenRegion;
+
+/**
+ @brief      Reference on time token region which has been used for previous subscribe loop iteration.
+ @discussion \b 0 for initial subscription loop and non-zero for long-poll requests.
+ 
+ @since 4.3.0
+ */
+@property (nonatomic, readonly, copy) NSNumber *lastTimeTokenRegion;
 
 /**
  @brief  Stores reference on queue which is used to serialize access to shared subscriber 
@@ -176,7 +209,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
  
  @since 4.0
  */
-@property (nonatomic, strong) dispatch_source_t retryTimer;
+@property (nonatomic, nullable, strong) dispatch_source_t retryTimer;
 
 
 #pragma mark - Initialization and Configuration
@@ -210,10 +243,28 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 #pragma mark - Subscription
 
 /**
+ @brief      Perform initial subscription with \b 0 timetoken.
+ @discussion Subscription with \b 0 timetoken "register" client in \b PubNub network and allow to receive live
+             updates from remote data objects live feed.
+ 
+ @param initialSubscribe Stores whether client trying to subscriber using \b 0 time token and trigger all
+                         required presence notifications or not.
+ @param timeToken        Time from which client should try to catch up on messages.
+ @param state            Reference on client state which should be bound to channels on which client has been
+                         subscribed or will subscribe now.
+ @param block            Reference on subscription completion block which is used to notify code.
+ 
+ @since 4.3.0
+ */
+- (void)subscribe:(BOOL)initialSubscribe usingTimeToken:(nullable NSNumber *)timeToken 
+        withState:(nullable NSDictionary<NSString *, id> *)state 
+       completion:(nullable PNSubscriberCompletionBlock)block;
+
+/**
  @brief      Launch subscription retry timer.
- @discussion Launch timer with default 1 second interval after each subscribe attempt. In most of
-             cases timer used to retry subscription after PubNub Access Manager denial because of
-             client doesn't has enough rights.
+ @discussion Launch timer with default 1 second interval after each subscribe attempt. In most of cases timer
+             used to retry subscription after PubNub Access Manager denial because of client doesn't has 
+             enough rights.
 
  @since 4.0
  */
@@ -221,8 +272,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 
 /**
  @brief      Terminate previously launched subscription retry counter.
- @discussion In case if another subscribe request from user client better to stop retry timer to
-             eliminate race of conditions.
+ @discussion In case if another subscribe request from user client better to stop retry timer to eliminate 
+             race of conditions.
 
  @since 4.0
  */
@@ -233,30 +284,29 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 
 /**
  @brief      Perform unsubscription operation.
- @discussion If suitable objects has been passed, then client will ask \b PubNub presence service to
-             trigger \c 'leave' presence events on passed objects.
+ @discussion If suitable objects has been passed, then client will ask \b PubNub presence service to trigger 
+             \c 'leave' presence events on passed objects.
  
  @param channels                Whether unsubscribing from list of channels or channel groups.
  @param objects                 List of objects from which client should unsubscribe.
  @param shouldInformListener    Whether listener should be informed at the end of operation or not.
- @param subscribeOnRestChannels Whether client should try to subscribe on channels which may be left
-                                after unsubscription.
- @param block                   Reference on unsubscription completion block which is used to notify
-                                code.
+ @param subscribeOnRestChannels Whether client should try to subscribe on channels which may be left after 
+                                unsubscription.
+ @param block                   Reference on unsubscription completion block which is used to notify code.
  
  @since 4.2.0
  */
-- (void)unsubscribeFrom:(BOOL)channels objects:(NSArray *)objects
+- (void)unsubscribeFrom:(BOOL)channels objects:(NSArray<NSString *> *)objects
       informingListener:(BOOL)shouldInformListener subscribeOnRest:(BOOL)subscribeOnRestChannels
-             completion:(PNSubscriberCompletionBlock)block;
+             completion:(nullable PNSubscriberCompletionBlock)block;
 
 
 #pragma mark - Handlers
 
 /**
  @brief      Handle subscription status update.
- @discussion Depending on passed status category and whether it is error it will be sent for 
-             processing to corresponding methods.
+ @discussion Depending on passed status category and whether it is error it will be sent for processing to
+             corresponding methods.
  
  @param status Reference on status object which has been received from \b PubNub network.
  
@@ -266,8 +316,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 
 /**
  @brief      Process successful subscription status.
- @discussion Success can be called as result of initial subscription successful ACK response as well 
-             as long-poll response with events from remote data objects live feed.
+ @discussion Success can be called as result of initial subscription successful ACK response as well as 
+             long-poll response with events from remote data objects live feed.
  
  @param status Reference on status object which has been received from \b PubNub network.
  
@@ -277,8 +327,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 
 /**
  @brief      Process failed subscription status.
- @discussion Failure can be cause by Access Denied error, network issues or called when last 
-             subscribe request has been canceled (to execute new subscription for example).
+ @discussion Failure can be cause by Access Denied error, network issues or called when last subscribe request
+             has been canceled (to execute new subscription for example).
  
  @param status Reference on status object which has been received from \b PubNub network.
  
@@ -289,13 +339,15 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 /**
  @brief  Handle subscription time token received from \b PubNub network.
  
- @param initialSubscription Whether subscription is initial or received time token on long-poll
-                            request.
- @param timeToken           Reference on time token which has been received from \b PubNub nrtwork.
+ @param initialSubscription Whether subscription is initial or received time token on long-poll request.
+ @param timeToken           Reference on time token which has been received from \b PubNub network.
+ @param region              Reference on \b PubNub server region identifier (which generated \c timeToken 
+                            value).
  
  @since 4.0
  */
-- (void)handleSubscription:(BOOL)initialSubscription timeToken:(NSNumber *)timeToken;
+- (void)handleSubscription:(BOOL)initialSubscription timeToken:(nullable NSNumber *)timeToken 
+                    region:(nullable NSNumber *)region;
 
 /**
  @brief  Handle long-poll service response and deliver events to listeners if required.
@@ -307,22 +359,22 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 - (void)handleLiveFeedEvents:(PNSubscribeStatus *)status;
 
 /**
- @brief  Process message which just has been received from \b PubNub service through live feed on 
-         which client subscribed at this moment.
+ @brief  Process message which just has been received from \b PubNub service through live feed on which client
+         subscribed at this moment.
  
- @param data      Reference on result data which hold information about request on which this 
-                  response has been received and message itself.
+ @param data Reference on result data which hold information about request on which this response has been 
+             received and message itself.
  
  @since 4.0
  */
 - (void)handleNewMessage:(PNMessageResult *)data;
 
 /**
- @brief  Process presence event which just has been received from \b PubNub service through presence
-         live feeds on which client subscribed at this moment.
+ @brief  Process presence event which just has been received from \b PubNub service through presence live
+         feeds on which client subscribed at this moment.
  
- @param data      Reference on result data which hold information about request on which this 
-                  response has been received and presence event itself.
+ @param data Reference on result data which hold information about request on which this response has been 
+             received and presence event itself.
  
  @since 4.0
  */
@@ -340,7 +392,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
  
  @since 4.0
  */
-- (PNRequestParameters *)subscribeRequestParametersWithState:(NSDictionary *)state;
+- (PNRequestParameters *)subscribeRequestParametersWithState:(nullable NSDictionary<NSString *, id> *)state;
 
 /**
  @brief  Append subscriber information to status object.
@@ -356,6 +408,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 
 @end
 
+NS_ASSUME_NONNULL_END
+
 
 #pragma mark - Interface implementation
 
@@ -365,29 +419,18 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 @synthesize overrideTimeToken = _overrideTimeToken;
 @synthesize currentTimeToken = _currentTimeToken;
 @synthesize lastTimeToken = _lastTimeToken;
+@synthesize currentTimeTokenRegion = _currentTimeTokenRegion;
+@synthesize lastTimeTokenRegion = _lastTimeTokenRegion;
+@synthesize filterExpression = _filterExpression;
 
 
 #pragma mark - Logger
 
-/**
- @brief  Called by Cocoa Lumberjack during initialization.
- 
- @return Desired logger level for \b PubNub client main class.
- 
- @since 4.0
- */
 + (DDLogLevel)ddLogLevel {
     
     return ddLogLevel;
 }
 
-/**
- @brief  Allow modify logger level used by Cocoa Lumberjack with logging macros.
- 
- @param logLevel New log level which should be used by logger.
- 
- @since 4.0
- */
 + (void)ddSetLogLevel:(DDLogLevel)logLevel {
     
     ddLogLevel = logLevel;
@@ -412,21 +455,21 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 
 #pragma mark - State Information and Manipulation
 
-- (NSArray *)allObjects {
+- (NSArray<NSString *> *)allObjects {
     
     return [[[self channels] arrayByAddingObjectsFromArray:[self presenceChannels]]
             arrayByAddingObjectsFromArray:[self channelGroups]];
 }
 
-- (NSArray *)channels {
+- (NSArray<NSString *> *)channels {
     
     __block NSArray *channels = nil;
-    pn_safe_property_read(self.resourceAccessQueue, ^{ channels = [self.channelsSet allObjects]; });
+    pn_safe_property_read(self.resourceAccessQueue, ^{ channels = self.channelsSet.allObjects; });
     
     return channels;
 }
 
-- (void)addChannels:(NSArray *)channels {
+- (void)addChannels:(NSArray<NSString *> *)channels {
     
     pn_safe_property_write(self.resourceAccessQueue, ^{
         
@@ -442,7 +485,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     });
 }
 
-- (void)removeChannels:(NSArray *)channels {
+- (void)removeChannels:(NSArray<NSString *> *)channels {
     
     pn_safe_property_write(self.resourceAccessQueue, ^{
         
@@ -452,26 +495,23 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     });
 }
 
-- (NSArray *)channelGroups {
+- (NSArray<NSString *> *)channelGroups {
     
     __block NSArray *channelGroups = nil;
-    pn_safe_property_read(self.resourceAccessQueue, ^{
-        
-        channelGroups = [self.channelGroupsSet allObjects];
-    });
+    pn_safe_property_read(self.resourceAccessQueue, ^{ channelGroups = self.channelGroupsSet.allObjects; });
     
     return channelGroups;
 }
 
-- (void)addChannelGroups:(NSArray *)groups {
+- (void)addChannelGroups:(NSArray<NSString *> *)groups {
     
-    pn_safe_property_write(self.resourceAccessQueue, ^{
+    pn_safe_property_write(self.resourceAccessQueue, ^{ 
         
         [self.channelGroupsSet addObjectsFromArray:groups];
     });
 }
 
-- (void)removeChannelGroups:(NSArray *)groups {
+- (void)removeChannelGroups:(NSArray<NSString *> *)groups {
     
     pn_safe_property_write(self.resourceAccessQueue, ^{
         
@@ -479,18 +519,18 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     });
 }
 
-- (NSArray *)presenceChannels {
+- (NSArray<NSString *> *)presenceChannels {
     
     __block NSArray *presenceChannels = nil;
     pn_safe_property_read(self.resourceAccessQueue, ^{
         
-        presenceChannels = [self.presenceChannelsSet allObjects];
+        presenceChannels = self.presenceChannelsSet.allObjects;
     });
     
     return presenceChannels;
 }
 
-- (void)addPresenceChannels:(NSArray *)presenceChannels {
+- (void)addPresenceChannels:(NSArray<NSString *> *)presenceChannels {
     
     pn_safe_property_write(self.resourceAccessQueue, ^{
         
@@ -498,7 +538,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     });
 }
 
-- (void)removePresenceChannels:(NSArray *)presenceChannels {
+- (void)removePresenceChannels:(NSArray<NSString *> *)presenceChannels {
     
     pn_safe_property_write(self.resourceAccessQueue, ^{
         
@@ -509,20 +549,14 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 - (NSNumber *)currentTimeToken {
     
     __block NSNumber *currentTimeToken = nil;
-    pn_safe_property_read(self.resourceAccessQueue, ^{
-        
-        currentTimeToken = self->_currentTimeToken;
-    });
+    pn_safe_property_read(self.resourceAccessQueue, ^{ currentTimeToken = self->_currentTimeToken; });
     
     return currentTimeToken;
 }
 
 - (void)setCurrentTimeToken:(NSNumber *)currentTimeToken {
     
-    pn_safe_property_write(self.resourceAccessQueue, ^{
-        
-        self->_currentTimeToken = currentTimeToken;
-    });
+    pn_safe_property_write(self.resourceAccessQueue, ^{ self->_currentTimeToken = currentTimeToken; });
 }
 
 - (NSNumber *)lastTimeToken {
@@ -538,23 +572,46 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     pn_safe_property_write(self.resourceAccessQueue, ^{ self->_lastTimeToken = lastTimeToken; });
 }
 
-- (NSNumber *)overrideTimeToken {
+- (nullable NSNumber *)overrideTimeToken {
     
     __block NSNumber *overrideTimeToken = nil;
-    pn_safe_property_read(self.resourceAccessQueue, ^{
-        
-        overrideTimeToken = self->_overrideTimeToken;
-    });
+    pn_safe_property_read(self.resourceAccessQueue, ^{ overrideTimeToken = self->_overrideTimeToken; });
     
     return overrideTimeToken;
 }
 
-- (void)setOverrideTimeToken:(NSNumber *)overrideTimeToken {
+- (void)setOverrideTimeToken:(nullable NSNumber *)overrideTimeToken {
     
     pn_safe_property_write(self.resourceAccessQueue, ^{
         
         self->_overrideTimeToken = [PNNumber timeTokenFromNumber:overrideTimeToken];
     });
+}
+
+- (NSNumber *)currentTimeTokenRegion {
+    
+    __block NSNumber *currentTimeTokenRegion = nil;
+    pn_safe_property_read(self.resourceAccessQueue, ^{ currentTimeTokenRegion = self->_currentTimeTokenRegion; });
+    
+    return currentTimeTokenRegion;
+}
+
+- (void)setCurrentTimeTokenRegion:(NSNumber *)currentTimeTokenRegion {
+    
+    pn_safe_property_write(self.resourceAccessQueue, ^{ self->_currentTimeTokenRegion = currentTimeTokenRegion; });
+}
+
+- (NSNumber *)lastTimeTokenRegion {
+    
+    __block NSNumber *lastTimeTokenRegion = nil;
+    pn_safe_property_read(self.resourceAccessQueue, ^{ lastTimeTokenRegion = self->_lastTimeTokenRegion; });
+    
+    return lastTimeTokenRegion;
+}
+
+- (void)setLastTimeTokenRegion:(NSNumber *)lastTimeTokenRegion {
+    
+    pn_safe_property_write(self.resourceAccessQueue, ^{ self->_lastTimeTokenRegion = lastTimeTokenRegion; });
 }
 
 - (void)updateStateTo:(PNSubscriberState)state withStatus:(PNSubscribeStatus *)status {
@@ -618,10 +675,18 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         else if (targetState == PNAccessRightsErrorSubscriberState) {
             
             self.mayRequireSubscriptionRestore = NO;
-            
-            // Check whether client transit from non-'access denied' -> 'access denied' state.
             shouldHandleTransition = YES;
             category = PNAccessDeniedCategory;
+        }
+        // Check whether transit to 'malformed filter expression' state.
+        else if (targetState == PNMalformedFilterExpressionErrorSubscriberState) {
+            
+            // Change state to 'Unexpected disconnect'
+            targetState = PNDisconnectedUnexpectedlySubscriberState;
+            
+            self.mayRequireSubscriptionRestore = NO;
+            shouldHandleTransition = YES;
+            category = PNMalformedFilterExpressionCategory;
         }
         
         // Check whether allowed state transition has been issued or not.
@@ -672,6 +737,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         _channelsSet = [NSMutableSet new];
         _channelGroupsSet = [NSMutableSet new];
         _presenceChannelsSet = [NSMutableSet new];
+        _currentTimeToken = @0;
+        _lastTimeToken = @0;
         _resourceAccessQueue = dispatch_queue_create("com.pubnub.subscriber",
                                                      DISPATCH_QUEUE_CONCURRENT);
     }
@@ -684,19 +751,58 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     _channelsSet = [subscriber.channelsSet mutableCopy];
     _channelGroupsSet = [subscriber.channelGroupsSet mutableCopy];
     _presenceChannelsSet = [subscriber.presenceChannelsSet mutableCopy];
-    if ([_channelsSet count] || [_channelGroupsSet count] || [_presenceChannelsSet count]) {
+    if (_channelsSet.count || _channelGroupsSet.count || _presenceChannelsSet.count) {
         
         _currentState = PNDisconnectedSubscriberState;
     }
     _currentTimeToken = subscriber.currentTimeToken;
     _lastTimeToken = subscriber.lastTimeToken;
+    _currentTimeTokenRegion = subscriber.currentTimeTokenRegion;
+    _lastTimeTokenRegion = subscriber.lastTimeTokenRegion;
+    _escapedFilterExpression = subscriber.escapedFilterExpression;
+}
+
+
+#pragma mark - Filtering
+
+- (NSString *)filterExpression {
+    
+    __block NSString *expression = nil;
+    pn_safe_property_read(self.resourceAccessQueue, ^{ expression = _filterExpression; });
+
+    return expression;
+}
+
+- (void)setFilterExpression:(nullable NSString *)filterExpression {
+    
+    pn_safe_property_write(self.resourceAccessQueue, ^{
+        
+        _filterExpression = [filterExpression copy];
+        _escapedFilterExpression = (filterExpression? [PNString percentEscapedString:filterExpression] : nil);
+    });
+}
+
+- (NSString *)escapedFilterExpression {
+    
+    __block NSString *expression = nil;
+    pn_safe_property_read(self.resourceAccessQueue, ^{ expression = _escapedFilterExpression; });
+    
+    return expression;
 }
 
 
 #pragma mark - Subscription
 
-- (void)subscribe:(BOOL)initialSubscribe usingTimeToken:(NSNumber *)timeToken
-        withState:(NSDictionary *)state completion:(PNSubscriberCompletionBlock)block {
+- (void)subscribeUsingTimeToken:(nullable NSNumber *)timeToken
+                      withState:(nullable NSDictionary<NSString *, id> *)state 
+                     completion:(nullable PNSubscriberCompletionBlock)block {
+    
+    [self subscribe:YES usingTimeToken:timeToken withState:state completion:block];
+}
+
+- (void)subscribe:(BOOL)initialSubscribe usingTimeToken:(nullable NSNumber *)timeToken 
+        withState:(nullable NSDictionary<NSString *, id> *)state 
+       completion:(nullable PNSubscriberCompletionBlock)block {
     
     [self stopRetryTimer];
 
@@ -707,9 +813,9 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wreceiver-is-weak"
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
-    if ([[self allObjects] count]) {
-        
-        // Storing time tomen override
+    if ([self allObjects].count) {
+
+        // Storing time token override
         self.overrideTimeToken = timeToken;
         
         // In case if block is passed, it mean what subscription has been requested by user or
@@ -723,7 +829,13 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                     
                     self->_lastTimeToken = self->_currentTimeToken;
                 }
-                self->_currentTimeToken = @(0);
+                if (self->_currentTimeTokenRegion && [self->_currentTimeTokenRegion compare:@0] != NSOrderedSame &&
+                    [self->_currentTimeTokenRegion compare:@(-1)] == NSOrderedDescending) {
+                    
+                    self->_lastTimeTokenRegion = self->_currentTimeTokenRegion;
+                }
+                self->_currentTimeToken = @0;
+                self->_currentTimeTokenRegion = @(-1);
             });
         }
         
@@ -731,8 +843,9 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         
         if (initialSubscribe) {
             
-            DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> Subscribe (channels: %@; groups: %@)",
-                         parameters.pathComponents[@"{channels}"], parameters.query[@"channel-group"]);
+            DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> Subscribe (channels: %@; groups: %@)%@",
+                         parameters.pathComponents[@"{channels}"], parameters.query[@"channel-group"],
+                         (timeToken ? [NSString stringWithFormat:@" with catch up from %@.", timeToken] : @"."));
         }
         
         __weak __typeof(self) weakSelf = self;
@@ -743,30 +856,25 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
               [strongSelf handleSubscriptionStatus:(PNSubscribeStatus *)status];
               if (block) {
                   
-                  pn_dispatch_async(weakSelf.client.callbackQueue, ^{
-                      
-                      block((PNSubscribeStatus *)status);
-                  });
+                  pn_dispatch_async(weakSelf.client.callbackQueue, ^{ block((PNSubscribeStatus *)status); });
               }
           }];
     }
     else {
         
-        PNStatus *status = [PNStatus statusForOperation:PNSubscribeOperation
-                                               category:PNDisconnectedCategory
+        PNStatus *status = [PNStatus statusForOperation:PNSubscribeOperation category:PNDisconnectedCategory
                                     withProcessingError:nil];
         [self.client appendClientInformation:status];
         pn_safe_property_write(self.resourceAccessQueue, ^{
             
-            self->_lastTimeToken = @(0);
-            self->_currentTimeToken = @(0);
+            self->_lastTimeToken = @0;
+            self->_currentTimeToken = @0;
+            self->_lastTimeTokenRegion = @(-1);
+            self->_currentTimeTokenRegion = @(-1);
         });
         if (block) {
             
-            pn_dispatch_async(self.client.callbackQueue, ^{
-                
-                block((PNSubscribeStatus *)status);
-            });
+            pn_dispatch_async(self.client.callbackQueue, ^{ block((PNSubscribeStatus *)status); });
         }
         [self updateStateTo:PNDisconnectedSubscriberState withStatus:(PNSubscribeStatus *)status];
         [self.client cancelAllLongPollingOperations];
@@ -775,7 +883,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     #pragma clang diagnostic pop
 }
 
-- (void)restoreSubscriptionCycleIfRequiredWithCompletion:(PNSubscriberCompletionBlock)block {
+- (void)restoreSubscriptionCycleIfRequiredWithCompletion:(nullable PNSubscriberCompletionBlock)block {
     
     __block BOOL shouldRestore;
     __block BOOL ableToRestore;
@@ -788,15 +896,12 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     });
     if (shouldRestore && ableToRestore) {
         
-        [self subscribe:YES usingTimeToken:nil withState:nil completion:block];
+        [self subscribeUsingTimeToken:nil withState:nil completion:block];
     }
-    else if (block) {
-            
-        block(nil);
-    }
+    else if (block) { block(nil); }
 }
 
-- (void)continueSubscriptionCycleIfRequiredWithCompletion:(PNSubscriberCompletionBlock)block {
+- (void)continueSubscriptionCycleIfRequiredWithCompletion:(nullable PNSubscriberCompletionBlock)block {
 
     [self subscribe:NO usingTimeToken:nil withState:nil completion:block];
 }
@@ -805,12 +910,12 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     
     __weak __typeof(self) weakSelf = self;
     NSArray *channelGroups = [self.channelGroups copy];
-    PNSubscriberCompletionBlock channelUnsubscribeBlock = ^(PNSubscribeStatus *status) {
+    PNSubscriberCompletionBlock channelUnsubscribeBlock = ^(__unused PNSubscribeStatus * _Nullable status) {
         
         __strong __typeof(self) strongSelf = weakSelf;
         [strongSelf removeChannelGroups:channelGroups];
-        [strongSelf unsubscribeFrom:NO objects:channelGroups informingListener:YES
-                    subscribeOnRest:NO completion:nil];
+        [strongSelf unsubscribeFrom:NO objects:channelGroups informingListener:YES subscribeOnRest:NO 
+                         completion:nil];
     };
     
     if (self.channels.count > 0) {
@@ -825,16 +930,16 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     else if (channelGroups.count > 0) { channelUnsubscribeBlock(nil); }
 }
 
-- (void)unsubscribeFrom:(BOOL)channels objects:(NSArray *)objects
-             completion:(PNSubscriberCompletionBlock)block {
+- (void)unsubscribeFrom:(BOOL)channels objects:(NSArray<NSString *> *)objects
+             completion:(nullable PNSubscriberCompletionBlock)block {
     
     [self unsubscribeFrom:channels objects:objects informingListener:YES subscribeOnRest:YES
                completion:block];
 }
 
-- (void)unsubscribeFrom:(BOOL)channels objects:(NSArray *)objects
+- (void)unsubscribeFrom:(BOOL)channels objects:(NSArray<NSString *> *)objects
       informingListener:(BOOL)shouldInformListener subscribeOnRest:(BOOL)subscribeOnRestChannels
-             completion:(PNSubscriberCompletionBlock)block {
+             completion:(nullable PNSubscriberCompletionBlock)block {
     
     // Silence static analyzer warnings.
     // Code is aware about this case and at the end will simply call on 'nil' object method.
@@ -846,8 +951,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     [self.client.clientStateManager removeStateForObjects:objects];
     NSArray *objectWithOutPresence = [PNChannel objectsWithOutPresenceFrom:objects];
     PNStatus *successStatus = [PNStatus statusForOperation:PNUnsubscribeOperation
-                                                  category:PNAcknowledgmentCategory
-                                       withProcessingError:nil];
+                                                  category:PNAcknowledgmentCategory withProcessingError:nil];
     [self.client appendClientInformation:successStatus];
     __weak __typeof(self) weakSelf = self;
     
@@ -857,18 +961,21 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     NSSet *subscriptionObjects = [NSSet setWithArray:[self allObjects]];
     if (subscriptionObjects.count == 0) {
         
-        self.lastTimeToken = @(0);
-        self.currentTimeToken = @(0);
+        pn_safe_property_write(self.resourceAccessQueue, ^{
+            
+            self->_lastTimeToken = @0;
+            self->_currentTimeToken = @0;
+            self->_lastTimeTokenRegion = @(-1);
+            self->_currentTimeTokenRegion = @(-1);
+        });
     }
-    if ([objectWithOutPresence count]) {
+    
+    if (objectWithOutPresence.count) {
         
         NSString *objectsList = [PNChannel namesForRequest:objectWithOutPresence defaultString:@","];
         PNRequestParameters *parameters = [PNRequestParameters new];
         [parameters addPathComponent:objectsList forPlaceholder:@"{channels}"];
-        if (!channels) {
-            
-            [parameters addQueryParameter:objectsList forFieldName:@"channel-group"];
-        }
+        if (!channels) { [parameters addQueryParameter:objectsList forFieldName:@"channel-group"]; }
         [self.client processOperation:PNUnsubscribeOperation withParameters:parameters
                       completionBlock:^(__unused PNStatus *status1){
                           
@@ -894,8 +1001,6 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     }
     else {
         
-        self.lastTimeToken = @(0);
-        self.currentTimeToken = @(0);
         [self subscribe:YES usingTimeToken:nil withState:nil
              completion:^(__unused PNSubscribeStatus *status) {
             
@@ -944,10 +1049,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 - (void)stopRetryTimer {
     
     dispatch_source_t timer = [self retryTimer];
-    if (timer != NULL && dispatch_source_testcancel(timer) == 0) {
-        
-        dispatch_source_cancel(timer);
-    }
+    if (timer != NULL && dispatch_source_testcancel(timer) == 0) { dispatch_source_cancel(timer); }
     self.retryTimer = nil;
 }
 
@@ -961,17 +1063,13 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         
         [self handleSuccessSubscriptionStatus:status];
     }
-    else {
-        
-        [self handleFailedSubscriptionStatus:status];
-    }
+    else { [self handleFailedSubscriptionStatus:status]; }
 }
 
 - (void)handleSuccessSubscriptionStatus:(PNSubscribeStatus *)status {
     
     // Try fetch time token from passed result/status objects.
-    NSNumber *timeToken = @([[status.clientRequest.URL lastPathComponent] longLongValue]);
-    BOOL isInitialSubscription = (timeToken && [timeToken compare:@0] == NSOrderedSame);
+    BOOL isInitialSubscription = ([status.clientRequest.URL.query rangeOfString:@"tt=0"].location != NSNotFound);
     
     // Silence static analyzer warnings.
     // Code is aware about this case and at the end will simply call on 'nil' object method.
@@ -982,7 +1080,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
     if (status.data.timetoken != nil && status.clientRequest.URL != nil) {
         
-        [self handleSubscription:isInitialSubscription timeToken:status.data.timetoken];
+        [self handleSubscription:isInitialSubscription timeToken:status.data.timetoken
+                          region:status.data.region];
     }
     
     [self handleLiveFeedEvents:status];
@@ -1024,19 +1123,26 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         
         // Check whether status category declare subscription retry or not.
         if (status.category == PNAccessDeniedCategory || status.category == PNTimeoutCategory ||
+            status.category == PNMalformedFilterExpressionCategory ||
             status.category == PNMalformedResponseCategory ||
             status.category == PNTLSConnectionFailedCategory) {
             
             __weak __typeof(self) weakSelf = self;
-            ((PNStatus *)status).automaticallyRetry = YES;
+            ((PNStatus *)status).automaticallyRetry = (status.category != PNMalformedFilterExpressionCategory);
             ((PNStatus *)status).retryCancelBlock = ^{
                 
                 DDLogAPICall([[weakSelf class] ddLogLevel], @"<PubNub::API> Cancel retry");
                 [weakSelf stopRetryTimer];
             };
-            [self startRetryTimer];
+            if (((PNStatus *)status).willAutomaticallyRetry) { [self startRetryTimer]; }
+            
             PNSubscriberState subscriberState = PNAccessRightsErrorSubscriberState;
-            if (status.category != PNAccessDeniedCategory) {
+            if (status.category == PNMalformedFilterExpressionCategory) {
+                
+                subscriberState = PNMalformedFilterExpressionErrorSubscriberState;
+            }
+            if (status.category != PNAccessDeniedCategory &&
+                status.category != PNMalformedFilterExpressionCategory) {
                 
                 subscriberState = PNDisconnectedUnexpectedlySubscriberState;
                 [(PNStatus *)status updateCategory:PNUnexpectedDisconnectCategory];
@@ -1059,33 +1165,44 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                 pn_safe_property_write(self.resourceAccessQueue, ^{
                     
                     if (self.client.configuration.shouldTryCatchUpOnSubscriptionRestore) {
-                            
+                        
                         if (self->_currentTimeToken &&
                             [self->_currentTimeToken compare:@0] != NSOrderedSame) {
                             
                             self->_lastTimeToken = self->_currentTimeToken;
-                            self->_currentTimeToken = @(0);
+                            self->_currentTimeToken = @0;
+                        }   
+                        if (self->_currentTimeTokenRegion &&
+                            [self->_currentTimeTokenRegion compare:@0] != NSOrderedSame &&
+                            [self->_currentTimeTokenRegion compare:@(-1)] == NSOrderedDescending) {
+                            
+                            self->_lastTimeTokenRegion = self->_currentTimeTokenRegion;
+                            self->_currentTimeTokenRegion = @(-1);
                         }
                     }
                     else {
-                            
-                        self->_currentTimeToken = @(0);
-                        self->_lastTimeToken = @(0);
+                        
+                        self->_currentTimeToken = @0;
+                        self->_lastTimeToken = @0;
+                        self->_currentTimeTokenRegion = @(-1);
+                        self->_lastTimeTokenRegion = @(-1);
                     }
                 });
             }
             else {
                 
                 // Ask to clean up cache associated with objects
-                [self.client.clientStateManager removeStateForObjects:[self.channelsSet allObjects]];
-                [self.client.clientStateManager removeStateForObjects:[self.channelGroupsSet allObjects]];
+                [self.client.clientStateManager removeStateForObjects:self.channelsSet.allObjects];
+                [self.client.clientStateManager removeStateForObjects:self.channelGroupsSet.allObjects];
                 pn_safe_property_write(self.resourceAccessQueue, ^{
                     
                     self.channelsSet = [NSMutableSet new];
                     self.channelGroupsSet = [NSMutableSet new];
                     self.presenceChannelsSet = [NSMutableSet new];
-                    self->_currentTimeToken = @(0);
-                    self->_lastTimeToken = @(0);
+                    self->_currentTimeToken = @0;
+                    self->_lastTimeToken = @0;
+                    self->_currentTimeTokenRegion = @(-1);
+                    self->_lastTimeTokenRegion = @(-1);
                 });
             }
             [(PNStatus *)status updateCategory:PNUnexpectedDisconnectCategory];
@@ -1098,8 +1215,9 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     #pragma clang diagnostic pop
 }
 
-- (void)handleSubscription:(BOOL)initialSubscription timeToken:(NSNumber *)timeToken {
-    
+- (void)handleSubscription:(BOOL)initialSubscription timeToken:(nullable NSNumber *)timeToken 
+                    region:(nullable NSNumber *)region {
+
     pn_safe_property_write(self.resourceAccessQueue, ^{
         
         // Whether new time token from response should be applied for next subscription cycle or
@@ -1139,7 +1257,9 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                 // Swap time tokens to catch up on events which happened while client changed
                 // channels and groups list configuration.
                 self->_currentTimeToken = self->_lastTimeToken;
-                self->_lastTimeToken = @(0);
+                self->_lastTimeToken = @0;
+                self->_currentTimeTokenRegion = self->_lastTimeTokenRegion;
+                self->_lastTimeTokenRegion = @(-1);
             }
         }
         #pragma clang diagnostic pop
@@ -1157,7 +1277,13 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
                 
                 self->_lastTimeToken = self->_currentTimeToken;
             }
+            if (self->_currentTimeTokenRegion && [self->_currentTimeTokenRegion compare:@0] != NSOrderedSame &&
+                [self->_currentTimeTokenRegion compare:@(-1)] == NSOrderedDescending) {
+                
+                self->_lastTimeTokenRegion = self->_currentTimeTokenRegion;
+            }
             self->_currentTimeToken = (shouldOverrideTimeToken ? self->_overrideTimeToken : timeToken);
+            self->_currentTimeTokenRegion = region;
         }
         self->_overrideTimeToken = nil;
     });
@@ -1166,7 +1292,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 - (void)handleLiveFeedEvents:(PNSubscribeStatus *)status {
     
     NSArray *events = [(NSArray *)(status.serviceData)[@"events"] copy];
-    if ([events count]) {
+    if (events.count) {
         
         // Silence static analyzer warnings.
         // Code is aware about this case and at the end will simply call on 'nil' object method.
@@ -1176,28 +1302,13 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         #pragma clang diagnostic ignored "-Wreceiver-is-weak"
         [self.client.listenersManager notifyWithBlock:^{
             
-            NSArray *listOfActiveChannels = [self allObjects];
-            
             // Iterate through array with notifications and report back using callback blocks to the
             // user.
-            for (NSMutableDictionary *event in events) {
-                
-                if (!event[@"subscribedChannel"]) {
-                    
-                    if ([listOfActiveChannels count]) {
-                        
-                        event[@"subscribedChannel"] = listOfActiveChannels[0];
-                    }
-                    else {
-                        
-                        continue;
-                    }
-                }
+            for (NSMutableDictionary<NSString *, id> *event in events) {
                 
                 // Check whether event has been triggered on presence channel or channel group.
                 // In case if check will return YES this is presence event.
-                BOOL isPresenceEvent = ([PNChannel isPresenceObject:event[@"actualChannel"]] ||
-                                        [PNChannel isPresenceObject:event[@"subscribedChannel"]]);
+                BOOL isPresenceEvent = (event[@"presenceEvent"] ? YES : NO);
                 if (isPresenceEvent) {
                     
                     if (event[@"subscribedChannel"]) {
@@ -1225,7 +1336,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
         }];
         #pragma clang diagnostic pop
     }
-    [status updateData:[status.serviceData dictionaryWithValuesForKeys:@[@"timetoken"]]];
+    [status updateData:[status.serviceData dictionaryWithValuesForKeys:@[@"timetoken", @"region"]]];
 }
 
 - (void)handleNewMessage:(PNMessageResult *)data {
@@ -1233,12 +1344,10 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     PNErrorStatus *status = nil;
     if (data) {
         
-        DDLogResult([[self class] ddLogLevel], @"<PubNub> %@",
-                    [(PNResult *)data stringifiedRepresentation]);
-        if ([(data.serviceData)[@"decryptError"] boolValue]) {
+        DDLogResult([[self class] ddLogLevel], @"<PubNub> %@", [(PNResult *)data stringifiedRepresentation]);
+        if ([data.serviceData[@"decryptError"] boolValue]) {
             
-            status = [PNErrorStatus statusForOperation:PNSubscribeOperation
-                                              category:PNDecryptionErrorCategory
+            status = [PNErrorStatus statusForOperation:PNSubscribeOperation category:PNDecryptionErrorCategory
                                    withProcessingError:nil];
 
             NSMutableDictionary *updatedData = [data.serviceData mutableCopy];
@@ -1254,14 +1363,8 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wreceiver-is-weak"
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
-    if (status) {
-        
-        [self.client.listenersManager notifyStatusChange:(id)status];
-    }
-    else if (data) {
-        
-        [self.client.listenersManager notifyMessage:data];
-    }
+    if (status) { [self.client.listenersManager notifyStatusChange:(id)status]; }
+    else if (data) { [self.client.listenersManager notifyMessage:data]; }
     #pragma clang diagnostic pop
 }
 
@@ -1269,8 +1372,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     
     if (data) {
         
-        DDLogResult([[self class] ddLogLevel], @"<PubNub> %@",
-                    [(PNResult *)data stringifiedRepresentation]);
+        DDLogResult([[self class] ddLogLevel], @"<PubNub> %@", [(PNResult *)data stringifiedRepresentation]);
     }
     
     // Silence static analyzer warnings.
@@ -1298,7 +1400,7 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
 
 #pragma mark - Misc
 
-- (PNRequestParameters *)subscribeRequestParametersWithState:(NSDictionary *)state {
+- (PNRequestParameters *)subscribeRequestParametersWithState:(nullable NSDictionary<NSString *, id> *)state {
     
     // Compose full list of channels and groups stored in active subscription list.
     NSArray *channels = [[self channels] arrayByAddingObjectsFromArray:[self presenceChannels]];
@@ -1319,24 +1421,30 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     
     PNRequestParameters *parameters = [PNRequestParameters new];
     [parameters addPathComponent:channelsList forPlaceholder:@"{channels}"];
-    [parameters addPathComponent:[self.currentTimeToken stringValue] forPlaceholder:@"{tt}"];
+    [parameters addQueryParameter:self.currentTimeToken.stringValue forFieldName:@"tt"];
+    if ([self.currentTimeTokenRegion compare:@(-1)] == NSOrderedDescending) {
+        
+        [parameters addQueryParameter:self.currentTimeTokenRegion.stringValue forFieldName:@"tr"];
+    }
+    
     if (self.client.configuration.presenceHeartbeatValue > 0 ) {
         
-        [parameters addQueryParameter:[@(self.client.configuration.presenceHeartbeatValue) stringValue]
+        [parameters addQueryParameter:@(self.client.configuration.presenceHeartbeatValue).stringValue
                          forFieldName:@"heartbeat"];
     }
-    if ([groupsList length]) {
-        
-        [parameters addQueryParameter:groupsList forFieldName:@"channel-group"];
-    }
-    if ([mergedState count]) {
+    if (groupsList.length) { [parameters addQueryParameter:groupsList forFieldName:@"channel-group"]; }
+    if (mergedState.count) {
         
         NSString *mergedStateString = [PNJSON JSONStringFrom:mergedState withError:nil];
-        if ([mergedStateString length]) {
+        if (mergedStateString.length) {
             
             [parameters addQueryParameter:[PNString percentEscapedString:mergedStateString]
                              forFieldName:@"state"];
         }
+    }
+    if (self.escapedFilterExpression) {
+        
+        [parameters addQueryParameter:self.escapedFilterExpression forFieldName:@"filter-expr"];
     }
     #pragma clang diagnostic pop
     
@@ -1347,8 +1455,10 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
     
     status.currentTimetoken = _currentTimeToken;
     status.lastTimeToken = _lastTimeToken;
-    status.subscribedChannels = [[_channelsSet setByAddingObjectsFromSet:_presenceChannelsSet] allObjects];
-    status.subscribedChannelGroups = [_channelGroupsSet allObjects];
+    status.currentTimeTokenRegion = _currentTimeTokenRegion;
+    status.lastTimeTokenRegion = _lastTimeTokenRegion;
+    status.subscribedChannels = [_channelsSet setByAddingObjectsFromSet:_presenceChannelsSet].allObjects;
+    status.subscribedChannelGroups = _channelGroupsSet.allObjects;
 }
 
 #pragma mark -

@@ -1,24 +1,39 @@
 /**
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PNChannelGroupClientStateResult.h"
 #import "PNServiceData+Private.h"
 #import "PNResult+Private.h"
 
 
-#pragma mark Interface implementation
+#pragma mark - Interface implementation
 
 @implementation PNChannelGroupClientStateData
 
 
 #pragma mark - Information
 
-- (NSDictionary *)channels {
+- (NSDictionary<NSString *, NSDictionary *> *)channels {
     
-    return self.serviceData[@"channels"];
+    return (self.serviceData[@"channels"]?: @{});
 }
+
+#pragma mark -
+
+
+@end
+
+
+#pragma mark - Private interface declaration
+
+@interface PNChannelGroupClientStateResult ()
+
+
+#pragma mark - Properties
+
+@property (nonatomic, nonnull, strong) PNChannelGroupClientStateData *data;
 
 #pragma mark -
 
@@ -33,9 +48,10 @@
 
 #pragma mark - Information
 
--(PNChannelGroupClientStateData *)data {
+- (PNChannelGroupClientStateData *)data {
     
-    return [PNChannelGroupClientStateData dataWithServiceResponse:self.serviceData];
+    if (!_data) { _data = [PNChannelGroupClientStateData dataWithServiceResponse:self.serviceData]; }
+    return _data;
 }
 
 #pragma mark -

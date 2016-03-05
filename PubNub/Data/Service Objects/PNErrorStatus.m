@@ -1,33 +1,33 @@
 /**
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PNErrorStatus+Private.h"
 #import "PNServiceData+Private.h"
 #import "PNResult+Private.h"
 
 
-#pragma mark - Interface implementation
+#pragma mark Interface implementation
 
 @implementation PNErrorData
 
-- (NSArray *)channels {
+- (NSArray<NSString *> *)channels {
     
-    return self.serviceData[@"channels"];
+    return (self.serviceData[@"channels"]?: @[]);
 }
 
-- (NSArray *)channelGroups {
+- (NSArray<NSString *> *)channelGroups {
     
-    return self.serviceData[@"channelGroups"];
+    return (self.serviceData[@"channelGroups"]?: @[]);
 }
 
 - (NSString *)information {
     
-    return self.serviceData[@"information"];
+    return (self.serviceData[@"information"]?: @"No Error Information");
 }
 
-- (id)data {
+- (nullable id)data {
     
     return self.serviceData[@"data"];
 }
@@ -53,7 +53,8 @@
 
 - (PNErrorData *)errorData {
     
-    return [PNErrorData dataWithServiceResponse:self.serviceData];
+    if (!_errorData) { _errorData = [PNErrorData dataWithServiceResponse:self.serviceData]; }
+    return _errorData;
 }
 
 #pragma mark -

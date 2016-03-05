@@ -21,11 +21,11 @@ class PNPresenceTests: PNBasicClientTestCase {
     func testHereNow() {
         let testExpectation = self.expectationWithDescription("network")
         
-        self.client.hereNowWithCompletion { (result: PNPresenceGlobalHereNowResult!, status: PNErrorStatus!) -> Void in
+        self.client.hereNowWithCompletion { (result, status) -> Void in
             XCTAssertNil(status)
-            XCTAssertEqual(result.operation, PNOperationType.HereNowGlobalOperation, "Wrong operation")
-            XCTAssertNotNil(result.data)
-            XCTAssertEqual(result.statusCode, 200)
+            XCTAssertEqual(result!.operation, PNOperationType.HereNowGlobalOperation, "Wrong operation")
+            XCTAssertNotNil(result!.data)
+            XCTAssertEqual(result!.statusCode, 200)
             
             let expectedChannels: ([String: NSDictionary]) = [
                 "0_5098427633369088" : [
@@ -51,7 +51,7 @@ class PNPresenceTests: PNBasicClientTestCase {
                 ]
             ]
             
-            let resultChannels = result.data.channels as! ([String: NSDictionary])
+            let resultChannels = result!.data.channels
             
             XCTAssert(resultChannels == expectedChannels, "Result and expected channels are not equal.")
             
@@ -66,12 +66,12 @@ class PNPresenceTests: PNBasicClientTestCase {
     func testHereNowWithVerbosityNowUUID() {
         let testExpectation = self.expectationWithDescription("network")
         
-        self.client.hereNowWithVerbosity(PNHereNowVerbosityLevel.UUID, completion: { (result: PNPresenceGlobalHereNowResult!, status: PNErrorStatus!) -> Void in
+        self.client.hereNowWithVerbosity(PNHereNowVerbosityLevel.UUID, completion: { (result, status) -> Void in
             
             XCTAssertNil(status)
-            XCTAssertEqual(result.operation, PNOperationType.HereNowGlobalOperation, "Wrong operation")
-            XCTAssertNotNil(result.data)
-            XCTAssertEqual(result.statusCode, 200);
+            XCTAssertEqual(result!.operation, PNOperationType.HereNowGlobalOperation, "Wrong operation")
+            XCTAssertNotNil(result!.data)
+            XCTAssertEqual(result!.statusCode, 200);
             
             let expectedChannels: ([String: NSDictionary]) = [
                 "0_5098427633369088" :     [
@@ -91,7 +91,7 @@ class PNPresenceTests: PNBasicClientTestCase {
                     ]
                 ]]
             
-            let resultChannels = result.data.channels as! ([String: NSDictionary])
+            let resultChannels = result!.data.channels
             
             XCTAssert(resultChannels == expectedChannels, "Result and expected channels are not equal.")
             
@@ -106,12 +106,12 @@ class PNPresenceTests: PNBasicClientTestCase {
     func testHereNowWithVerbosityNowState() {
         let testExpectation = self.expectationWithDescription("network")
         
-        self.client.hereNowWithVerbosity(PNHereNowVerbosityLevel.State, completion: { (result: PNPresenceGlobalHereNowResult!, status: PNErrorStatus!) -> Void in
+        self.client.hereNowWithVerbosity(PNHereNowVerbosityLevel.State, completion: { (result, status) -> Void in
             
             XCTAssertNil(status)
-            XCTAssertEqual(result.operation, PNOperationType.HereNowGlobalOperation, "Wrong operation")
-            XCTAssertNotNil(result.data)
-            XCTAssertEqual(result.statusCode, 200);
+            XCTAssertEqual(result!.operation, PNOperationType.HereNowGlobalOperation, "Wrong operation")
+            XCTAssertNotNil(result!.data)
+            XCTAssertEqual(result!.statusCode, 200);
             
             let expectedChannels: ([String: NSDictionary]) = [
                 "0_5098427633369088" : [
@@ -139,7 +139,7 @@ class PNPresenceTests: PNBasicClientTestCase {
                     "occupancy" : 1
             ]
             ]
-            let resultChannels = result.data.channels as! ([String: NSDictionary])
+            let resultChannels = result!.data.channels
             
             XCTAssert(resultChannels == expectedChannels, "Result and expected channels are not equal.")
             
@@ -154,12 +154,12 @@ class PNPresenceTests: PNBasicClientTestCase {
     func testHereNowWithVerbosityNowOccupancy() {
         let testExpectation = self.expectationWithDescription("network")
         
-        self.client.hereNowWithVerbosity(PNHereNowVerbosityLevel.Occupancy, completion: { (result: PNPresenceGlobalHereNowResult!, status: PNErrorStatus!) -> Void in
+        self.client.hereNowWithVerbosity(PNHereNowVerbosityLevel.Occupancy, completion: { (result, status) -> Void in
             
             XCTAssertNil(status)
-            XCTAssertEqual(result.operation, PNOperationType.HereNowGlobalOperation, "Wrong operation")
-            XCTAssertNotNil(result.data)
-            XCTAssertEqual(result.statusCode, 200);
+            XCTAssertEqual(result!.operation, PNOperationType.HereNowGlobalOperation, "Wrong operation")
+            XCTAssertNotNil(result!.data)
+            XCTAssertEqual(result!.statusCode, 200);
             
             let expectedChannels: ([String: NSDictionary]) = [
                 "0_5098427633369088" : [
@@ -172,7 +172,7 @@ class PNPresenceTests: PNBasicClientTestCase {
                     "occupancy" : 1
                 ]]
             
-            let resultChannels = result.data.channels as! ([String: NSDictionary])
+            let resultChannels = result!.data.channels
             
             XCTAssert(resultChannels == expectedChannels, "Result and expected channels are not equal.")
             
@@ -187,15 +187,15 @@ class PNPresenceTests: PNBasicClientTestCase {
     func testHereNowForChannel() {
         let testExpectation = self.expectationWithDescription("network")
         
-        self.client.hereNowForChannel(uniqueChannelName, withCompletion: { (result: PNPresenceChannelHereNowResult!, status: PNErrorStatus!) -> Void in
+        self.client.hereNowForChannel(uniqueChannelName, withCompletion: { (result, status) -> Void in
             
             XCTAssertNil(status)
-            XCTAssertEqual(result.operation, PNOperationType.HereNowForChannelOperation, "Wrong operation")
-            XCTAssertNotNil(result.data)
-            XCTAssertEqual(result.statusCode, 200);
+            XCTAssertEqual(result!.operation, PNOperationType.HereNowForChannelOperation, "Wrong operation")
+            XCTAssertNotNil(result!.data)
+            XCTAssertEqual(result!.statusCode, 200);
             
-            XCTAssertEqual(result.data.occupancy, 0, "Result and expected channels are not equal.")
-            XCTAssert(result.data.uuids as! NSArray ==  [], "Result and expected channels are not equal.")
+            XCTAssertEqual(result!.data.occupancy, 0, "Result and expected channels are not equal.")
+            XCTAssert(result!.data.uuids as! NSArray ==  [], "Result and expected channels are not equal.")
             
             testExpectation.fulfill()
         })
@@ -208,13 +208,13 @@ class PNPresenceTests: PNBasicClientTestCase {
     func testHereNowForChannelWithVerbosityOccupancy() {
         let testExpectation = self.expectationWithDescription("network")
         
-        self.client.hereNowForChannel(uniqueChannelName, withVerbosity: PNHereNowVerbosityLevel.Occupancy) { (result: PNPresenceChannelHereNowResult!, status: PNErrorStatus!) -> Void in
+        self.client.hereNowForChannel(uniqueChannelName, withVerbosity: PNHereNowVerbosityLevel.Occupancy) { (result, status) -> Void in
             XCTAssertNil(status)
-            XCTAssertEqual(result.operation, PNOperationType.HereNowForChannelOperation, "Wrong operation")
-            XCTAssertNotNil(result.data)
-            XCTAssertEqual(result.statusCode, 200);
+            XCTAssertEqual(result!.operation, PNOperationType.HereNowForChannelOperation, "Wrong operation")
+            XCTAssertNotNil(result!.data)
+            XCTAssertEqual(result!.statusCode, 200);
             
-            XCTAssertEqual(result.data.occupancy, 0, "Result and expected channels are not equal.")
+            XCTAssertEqual(result!.data.occupancy, 0, "Result and expected channels are not equal.")
             
             testExpectation.fulfill()
         }
@@ -227,14 +227,14 @@ class PNPresenceTests: PNBasicClientTestCase {
     func testHereNowForChannelWithVerbosityState() {
         let testExpectation = self.expectationWithDescription("network")
         
-        self.client.hereNowForChannel(uniqueChannelName, withVerbosity: PNHereNowVerbosityLevel.State) { (result: PNPresenceChannelHereNowResult!, status: PNErrorStatus!) -> Void in
+        self.client.hereNowForChannel(uniqueChannelName, withVerbosity: PNHereNowVerbosityLevel.State) { (result, status) -> Void in
             XCTAssertNil(status)
-            XCTAssertEqual(result.operation, PNOperationType.HereNowForChannelOperation, "Wrong operation")
-            XCTAssertNotNil(result.data)
-            XCTAssertEqual(result.statusCode, 200);
+            XCTAssertEqual(result!.operation, PNOperationType.HereNowForChannelOperation, "Wrong operation")
+            XCTAssertNotNil(result!.data)
+            XCTAssertEqual(result!.statusCode, 200);
             
-            XCTAssertEqual(result.data.occupancy, 0, "Result and expected channels are not equal.")
-            XCTAssert(result.data.uuids as! NSArray ==  [], "Result and expected channels are not equal.")
+            XCTAssertEqual(result!.data.occupancy, 0, "Result and expected channels are not equal.")
+            XCTAssert(result!.data.uuids as! NSArray ==  [], "Result and expected channels are not equal.")
             
             testExpectation.fulfill()
         }
@@ -247,14 +247,14 @@ class PNPresenceTests: PNBasicClientTestCase {
     func testHereNowForChannelWithVerbosityUUID() {
         let testExpectation = self.expectationWithDescription("network")
         
-        self.client.hereNowForChannel(uniqueChannelName, withVerbosity: PNHereNowVerbosityLevel.UUID) { (result: PNPresenceChannelHereNowResult!, status: PNErrorStatus!) -> Void in
+        self.client.hereNowForChannel(uniqueChannelName, withVerbosity: PNHereNowVerbosityLevel.UUID) { (result, status) -> Void in
             XCTAssertNil(status)
-            XCTAssertEqual(result.operation, PNOperationType.HereNowForChannelOperation, "Wrong operation")
-            XCTAssertNotNil(result.data)
-            XCTAssertEqual(result.statusCode, 200);
+            XCTAssertEqual(result!.operation, PNOperationType.HereNowForChannelOperation, "Wrong operation")
+            XCTAssertNotNil(result!.data)
+            XCTAssertEqual(result!.statusCode, 200);
             
-            XCTAssertEqual(result.data.occupancy, 0, "Result and expected channels are not equal.")
-            XCTAssert(result.data.uuids as! NSArray ==  [], "Result and expected channels are not equal.")
+            XCTAssertEqual(result!.data.occupancy, 0, "Result and expected channels are not equal.")
+            XCTAssert(result!.data.uuids as! NSArray ==  [], "Result and expected channels are not equal.")
             
             testExpectation.fulfill()
         }
@@ -267,13 +267,13 @@ class PNPresenceTests: PNBasicClientTestCase {
     func testHereNowForChannelGroup() {
         let testExpectation = self.expectationWithDescription("network")
         
-        self.client.hereNowForChannelGroup(uniqueGroupName, withCompletion: { (result: PNPresenceChannelGroupHereNowResult!, status: PNErrorStatus!) -> Void in
+        self.client.hereNowForChannelGroup(uniqueGroupName, withCompletion: { (result, status) -> Void in
             XCTAssertNil(status)
-            XCTAssertEqual(result.operation, PNOperationType.HereNowForChannelGroupOperation, "Wrong operation")
-            XCTAssertNotNil(result.data)
-            XCTAssertEqual(result.statusCode, 200);
+            XCTAssertEqual(result!.operation, PNOperationType.HereNowForChannelGroupOperation, "Wrong operation")
+            XCTAssertNotNil(result!.data)
+            XCTAssertEqual(result!.statusCode, 200);
             
-            XCTAssert(result.data.channels as NSDictionary ==  [:], "Result and expected channels are not equal.")
+            XCTAssert(result!.data.channels as NSDictionary == [:], "Result and expected channels are not equal.")
             
             testExpectation.fulfill()
         })
@@ -286,13 +286,13 @@ class PNPresenceTests: PNBasicClientTestCase {
     func testHereNowForChannelGroupWithVerbosityOccupancy() {
         let testExpectation = self.expectationWithDescription("network")
         
-        self.client.hereNowForChannelGroup(uniqueGroupName, withVerbosity: PNHereNowVerbosityLevel.Occupancy) { (result: PNPresenceChannelGroupHereNowResult!, status: PNErrorStatus!) -> Void in
+        self.client.hereNowForChannelGroup(uniqueGroupName, withVerbosity: PNHereNowVerbosityLevel.Occupancy) { (result, status) -> Void in
             XCTAssertNil(status)
-            XCTAssertEqual(result.operation, PNOperationType.HereNowForChannelGroupOperation, "Wrong operation")
-            XCTAssertNotNil(result.data)
-            XCTAssertEqual(result.statusCode, 200);
+            XCTAssertEqual(result!.operation, PNOperationType.HereNowForChannelGroupOperation, "Wrong operation")
+            XCTAssertNotNil(result!.data)
+            XCTAssertEqual(result!.statusCode, 200);
             
-            XCTAssert(result.data.channels as NSDictionary ==  [:], "Result and expected channels are not equal.")
+            XCTAssert(result!.data.channels as NSDictionary ==  [:], "Result and expected channels are not equal.")
             testExpectation.fulfill()
         }
         
@@ -304,13 +304,13 @@ class PNPresenceTests: PNBasicClientTestCase {
     func testHereNowForChannelGroupWithVerbosityState() {
         let testExpectation = self.expectationWithDescription("network")
         
-        self.client.hereNowForChannelGroup(uniqueGroupName, withVerbosity: PNHereNowVerbosityLevel.State) { (result: PNPresenceChannelGroupHereNowResult!, status: PNErrorStatus!) -> Void in
+        self.client.hereNowForChannelGroup(uniqueGroupName, withVerbosity: PNHereNowVerbosityLevel.State) { (result, status) -> Void in
             XCTAssertNil(status)
-            XCTAssertEqual(result.operation, PNOperationType.HereNowForChannelGroupOperation, "Wrong operation")
-            XCTAssertNotNil(result.data)
-            XCTAssertEqual(result.statusCode, 200);
+            XCTAssertEqual(result!.operation, PNOperationType.HereNowForChannelGroupOperation, "Wrong operation")
+            XCTAssertNotNil(result!.data)
+            XCTAssertEqual(result!.statusCode, 200);
             
-            XCTAssert(result.data.channels as NSDictionary ==  [:], "Result and expected channels are not equal.")
+            XCTAssert(result!.data.channels as NSDictionary ==  [:], "Result and expected channels are not equal.")
             testExpectation.fulfill()
         }
         
@@ -322,13 +322,13 @@ class PNPresenceTests: PNBasicClientTestCase {
     func testHereNowForChannelGroupWithVerbosityUUID() {
         let testExpectation = self.expectationWithDescription("network")
         
-        self.client.hereNowForChannelGroup(uniqueGroupName, withVerbosity: PNHereNowVerbosityLevel.UUID) { (result: PNPresenceChannelGroupHereNowResult!, status: PNErrorStatus!) -> Void in
+        self.client.hereNowForChannelGroup(uniqueGroupName, withVerbosity: PNHereNowVerbosityLevel.UUID) { (result, status) -> Void in
             XCTAssertNil(status)
-            XCTAssertEqual(result.operation, PNOperationType.HereNowForChannelGroupOperation, "Wrong operation")
-            XCTAssertNotNil(result.data)
-            XCTAssertEqual(result.statusCode, 200);
+            XCTAssertEqual(result!.operation, PNOperationType.HereNowForChannelGroupOperation, "Wrong operation")
+            XCTAssertNotNil(result!.data)
+            XCTAssertEqual(result!.statusCode, 200);
             
-            XCTAssert(result.data.channels as NSDictionary ==  [:], "Result and expected channels are not equal.")
+            XCTAssert(result!.data.channels as NSDictionary ==  [:], "Result and expected channels are not equal.")
             testExpectation.fulfill()
         }
         
@@ -343,13 +343,13 @@ class PNPresenceTests: PNBasicClientTestCase {
         
         let uuid = NSUUID().UUIDString
         
-        self.client.whereNowUUID(uuid, withCompletion: { (result: PNPresenceWhereNowResult!, status: PNErrorStatus!) -> Void in
+        self.client.whereNowUUID(uuid, withCompletion: { (result, status) -> Void in
             XCTAssertNil(status)
-            XCTAssertEqual(result.operation, PNOperationType.WhereNowOperation, "Wrong operation")
-            XCTAssertNotNil(result.data)
-            XCTAssertEqual(result.statusCode, 200);
+            XCTAssertEqual(result!.operation, PNOperationType.WhereNowOperation, "Wrong operation")
+            XCTAssertNotNil(result!.data)
+            XCTAssertEqual(result!.statusCode, 200);
             
-            XCTAssert(result.data.channels as NSArray ==  [], "Result and expected channels are not equal.")
+            XCTAssert(result!.data.channels as NSArray ==  [], "Result and expected channels are not equal.")
             testExpectation.fulfill()
         })
         

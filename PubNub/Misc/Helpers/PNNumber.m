@@ -1,7 +1,7 @@
 /**
  @author Sergey Mamontov
  @since 4.2
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PNNumber.h"
 
@@ -13,6 +13,8 @@
  */
 static NSUInteger const kPNRequiredTimeTokenPrecision = 17;
 
+
+NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Private interface declaration
 
@@ -59,6 +61,8 @@ static NSUInteger const kPNRequiredTimeTokenPrecision = 17;
 
 @end
 
+NS_ASSUME_NONNULL_END
+
 
 #pragma mark - Interface implementation
 
@@ -73,7 +77,7 @@ static NSUInteger const kPNRequiredTimeTokenPrecision = 17;
     if (number) {
         
         NSNumber *value = [self normalizeValue:number];
-        timeToken = @([value unsignedLongLongValue] * [self correctionForPrecision:[self numberPrecision:value]]);
+        timeToken = @(value.unsignedLongLongValue * [self correctionForPrecision:[self numberPrecision:value]]);
     }
     
     return timeToken;
@@ -85,10 +89,10 @@ static NSUInteger const kPNRequiredTimeTokenPrecision = 17;
 + (NSNumber *)normalizeValue:(NSNumber *)number {
     
     NSNumber *normalizeValue = number;
-    if (strcmp([number objCType], @encode(float)) == 0 ||
-        strcmp([number objCType], @encode(double)) == 0) {
+    if (strcmp(number.objCType, @encode(float)) == 0 ||
+        strcmp(number.objCType, @encode(double)) == 0) {
         
-        double doubleValue = [number doubleValue];
+        double doubleValue = number.doubleValue;
         normalizeValue = @((doubleValue - (NSUInteger)doubleValue > 0) ? doubleValue * 1000000 : doubleValue);
     }
     
@@ -98,7 +102,7 @@ static NSUInteger const kPNRequiredTimeTokenPrecision = 17;
 + (NSUInteger)numberPrecision:(NSNumber *)number {
     
     return ([number unsignedLongLongValue] > 0 ?
-            ((NSUInteger)floor(log10([number unsignedLongLongValue])) + 1) : 0);
+            ((NSUInteger)floor(log10(number.unsignedLongLongValue)) + 1) : 0);
 }
 
 + (NSUInteger)correctionForPrecision:(NSUInteger)precision {

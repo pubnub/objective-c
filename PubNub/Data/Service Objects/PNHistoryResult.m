@@ -1,7 +1,7 @@
 /**
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PNHistoryResult.h"
 #import "PNServiceData+Private.h"
@@ -17,18 +17,33 @@
 
 - (NSArray *)messages {
     
-    return self.serviceData[@"messages"];
+    return (self.serviceData[@"messages"]?: @[]);
 }
 
 - (NSNumber *)start {
     
-    return self.serviceData[@"start"];
+    return (self.serviceData[@"start"]?: @0);
 }
 
 - (NSNumber *)end {
     
-    return self.serviceData[@"end"];
+    return (self.serviceData[@"end"]?: @0);
 }
+
+#pragma mark -
+
+
+@end
+
+
+#pragma mark - Private interface declaration
+
+@interface PNHistoryResult ()
+
+
+#pragma mark - Properties
+
+@property (nonatomic, nonnull, strong) PNHistoryData *data;
 
 #pragma mark -
 
@@ -45,7 +60,8 @@
 
 - (PNHistoryData *)data {
     
-    return [PNHistoryData dataWithServiceResponse:self.serviceData];
+    if (!_data) { _data = [PNHistoryData dataWithServiceResponse:self.serviceData]; }
+    return _data;
 }
 
 #pragma mark -

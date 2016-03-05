@@ -1,13 +1,15 @@
 #import <Foundation/Foundation.h>
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
- @brief  Useful collection of methods which make it easrier to work with set of channels, groups and
-         presence channels.
+ @brief  Useful collection of methods which make it easrier to work with set of channels, groups and presence
+         channels.
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNChannel : NSObject
 
@@ -17,10 +19,8 @@
 ///------------------------------------------------
 
 /**
- @brief      Convert provided list of data objects to comma-joined string where evert entry
-             percent-escaped.
- @discussion This method simplify data object names list preparation for use in request path and
-             queries.
+ @brief      Convert provided list of data objects to comma-joined string where evert entry percent-escaped.
+ @discussion This method simplify data object names list preparation for use in request path and queries.
  
  @param names List of data object names which should be joined into single string.
  
@@ -28,28 +28,23 @@
  
  @since 4.0
  */
-+ (NSString *)namesForRequest:(NSArray *)names;
++ (nullable NSString *)namesForRequest:(NSArray<NSString *> *)names;
 
 /**
- @brief      Convert provided list of data objects to comma-joined string where evert entry
-             percent-escaped.
- @discussion This method simplify data object names list preparation for use in reuqets path and
-             queries.
- 
- @code
- @endcode
- Extension to \c -namesForRequest: which allow to specify default value in case if passed array is
- empty.
+ @brief      Convert provided list of data objects to comma-joined string where evert entry percent-escaped.
+ @discussion This method simplify data object names list preparation for use in reuqets path and queries.
+ @discussion Extension to \c -namesForRequest: which allow to specify default value in case if passed array is
+             empty.
  
  @param names         List of data object names which should be joined into single string.
- @param defaultString String which will be returned in case if joined string length is equal to 
-                      \b 0.
+ @param defaultString String which will be returned in case if joined string length is equal to \b 0.
  
  @return Joined percent-escaped string.
  
  @since 4.0
  */
-+ (NSString *)namesForRequest:(NSArray *)names defaultString:(NSString *)defaultString;
++ (nullable NSString *)namesForRequest:(NSArray<NSString *> *)names 
+                         defaultString:(nullable NSString *)defaultString;
 
 
 ///------------------------------------------------
@@ -57,9 +52,9 @@
 ///------------------------------------------------
 
 /**
- @brief      Convert provided response string with list of data object names back to array dividing
-             it by default delimiter..
- @discussion This method simplify data object names list pull from response piece..
+ @brief      Convert provided response string with list of data object names back to array dividing it by 
+             default delimiter.
+ @discussion This method simplify data object names list pull from response piece.
 
  @param response Piece of response which hold list of data object names for processing.
 
@@ -67,7 +62,7 @@
 
  @since 4.0
  */
-+ (NSArray *)namesFromRequest:(NSString *)response;
++ (NSArray<NSString *> *)namesFromRequest:(NSString *)response;
 
 
 ///------------------------------------------------
@@ -97,8 +92,7 @@
 + (NSString *)channelForPresence:(NSString *)presenceChannel;
 
 /**
- @brief  Convert provided list of \c names to names which correspond to presence objects naming 
-         conventions.
+ @brief  Convert provided list of \c names to names which correspond to presence objects naming conventions.
  
  @param names List of names which should be converted.
  
@@ -106,11 +100,11 @@
  
  @since 4.0
  */
-+ (NSArray *)presenceChannelsFrom:(NSArray *)names;
++ (NSArray<NSString *> *)presenceChannelsFrom:(NSArray<NSString *> *)names;
 
 /**
- @brief  Filter provided mixed list of channels/groups and presence channels/groups to list w/o 
-         presence channels in it.
+ @brief  Filter provided mixed list of channels/groups and presence channels/groups to list w/o presence 
+         channels in it.
  
  @param names List of names which should be filtered.
  
@@ -118,9 +112,11 @@
  
  @since 4.0
  */
-+ (NSArray *)objectsWithOutPresenceFrom:(NSArray *)names;
++ (NSArray<NSString *> *)objectsWithOutPresenceFrom:(NSArray<NSString *> *)names;
 
 #pragma mark -
 
 
 @end
+
+NS_ASSUME_NONNULL_END

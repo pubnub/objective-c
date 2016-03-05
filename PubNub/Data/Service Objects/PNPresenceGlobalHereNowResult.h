@@ -2,12 +2,14 @@
 #import "PNServiceData.h"
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  @brief  Class which allow to get access to global presence processed result.
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNPresenceGlobalHereNowData : PNServiceData
 
@@ -18,12 +20,11 @@
 
 /**
  @brief      Active channels list.
- @discussion Each dictionary key represent channel name and it's value is presence information for 
-             it.
+ @discussion Each dictionary key represent channel name and it's value is presence information for it.
  
  @since 4.0
  */
-@property (nonatomic, readonly, strong) NSDictionary *channels;
+@property (nonatomic, readonly, strong) NSDictionary<NSString *, NSDictionary *> *channels;
 
 /**
  @brief  Total number of active channels.
@@ -50,7 +51,7 @@
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNPresenceGlobalHereNowResult : PNResult
 
@@ -70,3 +71,5 @@
 
 
 @end
+
+NS_ASSUME_NONNULL_END

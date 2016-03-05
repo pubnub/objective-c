@@ -1,6 +1,8 @@
 #import "PNServiceData.h"
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  @brief  Service data storage class extension to expose private information to subclasses.
  
@@ -18,7 +20,7 @@
  
  @since 4.0
  */
-@property (nonatomic, readonly, copy) NSDictionary *serviceData;
+@property (nonatomic, readonly, copy) NSDictionary<NSString *, id> *serviceData;
 
 
 ///------------------------------------------------
@@ -35,9 +37,11 @@
  
  @since 4.0
  */
-+ (instancetype)dataWithServiceResponse:(NSDictionary *)response;
++ (instancetype)dataWithServiceResponse:(NSDictionary<NSString *, id> *)response;
 
 #pragma mark -
 
 
 @end
+
+NS_ASSUME_NONNULL_END

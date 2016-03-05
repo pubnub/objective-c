@@ -1,17 +1,32 @@
 /**
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PNClientStateUpdateStatus.h"
 #import "PNServiceData+Private.h"
 #import "PNResult+Private.h"
 
 
-#pragma mark Interface implementation
+#pragma mark - Interface implementation
 
 @implementation PNClientStateUpdateData
 
+
+#pragma mark -
+
+
+@end
+
+
+#pragma mark - Private interface declaration
+
+@interface PNClientStateUpdateStatus ()
+
+
+#pragma mark - Properties
+
+@property (nonatomic, nonnull, strong) PNClientStateUpdateData *data;
 
 #pragma mark -
 
@@ -26,9 +41,10 @@
 
 #pragma mark - Information
 
-- (PNChannelClientStateData *)data {
+- (PNClientStateUpdateData *)data {
     
-    return [PNChannelClientStateData dataWithServiceResponse:self.serviceData];
+    if (!_data) { _data = [PNClientStateUpdateData dataWithServiceResponse:self.serviceData]; }
+    return _data;
 }
 
 #pragma mark -

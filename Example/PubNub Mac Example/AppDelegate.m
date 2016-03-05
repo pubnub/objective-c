@@ -569,6 +569,11 @@
                   ((PNMessageData *)status.associatedObject).subscribedChannel);
         }
     }
+    else if (status.category == PNMalformedFilterExpressionCategory) {
+        
+        NSLog(@"Value which has been passed to -setFilterExpression: malformed.");
+        NSLog(@"Please verify specified value with declared filtering expression syntax.");
+    }
     else if (status.category == PNMalformedResponseCategory) {
         
         NSLog(@"We were expecting JSON from the server, but we got HTML, or otherwise not legal JSON.");
@@ -601,7 +606,8 @@
     // Access Denied via PAM. Access status.data to determine the resource in question that was denied.
     // In addition, you can also change auth key dynamically if needed."
     
-    NSString *pamResourceName = status.errorData.channels ? status.errorData.channels[0] : status.errorData.channelGroups;
+    NSString *pamResourceName = (status.errorData.channels ? status.errorData.channels.firstObject : 
+                                 status.errorData.channelGroups.firstObject);
     NSString *pamResourceType = status.errorData.channels ? @"channel" : @"channel-groups";
     
     NSLog(@"PAM error on %@ %@", pamResourceType, pamResourceName);
@@ -666,7 +672,6 @@
         // For methods like Publish, Channel Group Add|Remove|List, APNS Add|Remove|List
         // when the method is executed, and completes, you can receive the 'ack' for it here.
         // status.data will contain more server-provided information about the ack as well.
-        
     }
     
     if (status.operation == PNSubscribeOperation) {
@@ -703,12 +708,10 @@
             
             NSLog(@"^^^^ Non-error status: Reconnected, Channel Info: %@",
                   subscriberStatus.subscribedChannels);
-            
         }
     }
     else if (status.operation == PNUnsubscribeOperation) {
         
-        PNSubscribeStatus *subscriberStatus = (PNSubscribeStatus *)status;
         if (status.category == PNDisconnectedCategory) {
             // PNDisconnect happens as part of our regular operation
             // No need to monitor for this unless requested by support

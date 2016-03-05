@@ -7,6 +7,8 @@
 @class PNErrorStatus, PNTimeResult;
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 #pragma mark - Types
 
 /**
@@ -17,7 +19,7 @@
  
  @since 4.0
  */
-typedef void(^PNTimeCompletionBlock)(PNTimeResult *result, PNErrorStatus *status);
+typedef void(^PNTimeCompletionBlock)(PNTimeResult * _Nullable result, PNErrorStatus * _Nullable status);
 
 
 #pragma mark - API group interface
@@ -27,7 +29,7 @@ typedef void(^PNTimeCompletionBlock)(PNTimeResult *result, PNErrorStatus *status
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PubNub (Time)
 
@@ -37,32 +39,29 @@ typedef void(^PNTimeCompletionBlock)(PNTimeResult *result, PNErrorStatus *status
 ///------------------------------------------------
 
 /**
- @brief Request current time from \b PubNub service servers.
+ @brief      Request current time from \b PubNub service servers.
+ @discussion \b Example:
  
  @code
- @endcode
- \b Example:
- 
- @code
- PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
+PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
                                                                   subscribeKey:@"demo"];
- self.client = [PubNub clientWithConfiguration:configuration];
- [self.client timeWithCompletion:^(PNTimeResult *result, PNErrorStatus *status) {
+self.client = [PubNub clientWithConfiguration:configuration];
+[self.client timeWithCompletion:^(PNTimeResult * _Nullable result, PNErrorStatus * _Nullable status) {
      
-     // Check whether request successfully completed or not.
-     if (!status.isError) {
-         
-         // Handle downloaded server time token using: result.data.timetoken
-     }
-     // Request processing failed.
-     else {
-     
-         // Handle tmie token download error. Check 'category' property to find out possible
-         // issue because of which request did fail.
-         //
-         // Request can be resent using: [status retry];
-     }
- }];
+    // Check whether request successfully completed or not.
+    if (!status.isError) {
+        
+        // Handle downloaded server time token using: result.data.timetoken
+    }
+    // Request processing failed.
+    else {
+    
+        // Handle tmie token download error. Check 'category' property to find out possible
+        // issue because of which request did fail.
+        //
+        // Request can be resent using: [status retry];
+    }
+}];
  @endcode
  
  @param block Time request process results handling block which pass two arguments: \c result - in 
@@ -77,3 +76,5 @@ typedef void(^PNTimeCompletionBlock)(PNTimeResult *result, PNErrorStatus *status
 
 
 @end
+
+NS_ASSUME_NONNULL_END

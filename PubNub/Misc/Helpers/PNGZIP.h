@@ -1,12 +1,14 @@
 #import <Foundation/Foundation.h>
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  @brief  Useful methods collection to work with data compression/uncompression.
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNGZIP : NSObject
 
@@ -24,9 +26,11 @@
 
  @since 4.0
  */
-+ (NSData *)GZIPDeflatedData:(NSData *)data;
++ (nullable NSData *)GZIPDeflatedData:(NSData *)data;
 
 #pragma mark -
 
 
 @end
+
+NS_ASSUME_NONNULL_END

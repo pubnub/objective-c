@@ -1,9 +1,11 @@
 /**
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PNSubscribeStatus.h"
+#import "PNSubscribeStatus+Private.h"
+#import "PNEnvelopeInformation.h"
 #import "PNServiceData+Private.h"
 #import "PNResult+Private.h"
 
@@ -15,19 +17,34 @@
 
 #pragma mark - Information
 
-- (NSString *)subscribedChannel {
+- (nullable NSString *)subscribedChannel {
     
     return self.serviceData[@"subscribedChannel"];
 }
 
-- (NSString *)actualChannel {
+- (nullable NSString *)actualChannel {
     
     return self.serviceData[@"actualChannel"];
 }
 
 - (NSNumber *)timetoken {
     
-    return self.serviceData[@"timetoken"];
+    return (self.serviceData[@"timetoken"]?: @0);
+}
+
+- (NSNumber *)region {
+    
+    return (self.serviceData[@"region"]?: @0);
+}
+
+- (nullable NSDictionary<NSString *, id> *)userMetadata {
+    
+    return self.envelope.metadata;
+}
+
+- (PNEnvelopeInformation *)envelope {
+    
+    return self.serviceData[@"envelope"];
 }
 
 #pragma mark -
@@ -46,7 +63,8 @@
 
 - (PNSubscriberData *)data {
     
-    return [PNSubscriberData dataWithServiceResponse:self.serviceData];
+    if (!_data) { _data = [PNSubscriberData dataWithServiceResponse:self.serviceData]; }
+    return _data;
 }
 
 #pragma mark -

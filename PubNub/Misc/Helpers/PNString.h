@@ -1,12 +1,14 @@
 #import <Foundation/Foundation.h>
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  @brief  Useful NSString additions collection.
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNString : NSObject
 
@@ -41,7 +43,7 @@
  
  @since 4.0
  */
-+ (NSData *)UTF8DataFrom:(NSString *)string;
++ (nullable NSData *)UTF8DataFrom:(NSString *)string;
 
 /**
  @brief      Convert provided base64-encoded \c string to \a NSData.
@@ -55,7 +57,7 @@
  
  @since 4.0
  */
-+ (NSData *)bas64DataFrom:(NSString *)string;
++ (NSData *)base64DataFrom:(NSString *)string;
 
 
 ///------------------------------------------------
@@ -77,3 +79,5 @@
 
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -2,12 +2,14 @@
 #import "PNServiceData.h"
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  @brief  Class which allow to get access to channel history processed result.
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNHistoryData : PNServiceData
 
@@ -48,7 +50,7 @@
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNHistoryResult : PNResult
 
@@ -68,3 +70,5 @@
 
 
 @end
+
+NS_ASSUME_NONNULL_END

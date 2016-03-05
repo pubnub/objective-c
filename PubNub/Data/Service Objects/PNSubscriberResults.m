@@ -1,7 +1,7 @@
 /**
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PNSubscriberResults.h"
 #import "PNServiceData+Private.h"
@@ -20,7 +20,7 @@
     return self.serviceData[@"timetoken"];
 }
 
-- (NSString *)uuid {
+- (nullable NSString *)uuid {
     
     return self.serviceData[@"uuid"];
 }
@@ -30,7 +30,7 @@
     return self.serviceData[@"occupancy"];
 }
 
-- (NSDictionary *)state {
+- (nullable NSDictionary<NSString *, id> *)state {
     
     return self.serviceData[@"state"];
 }
@@ -71,10 +71,25 @@
 
 #pragma mark - Information
 
-- (id)message {
+- (nullable id)message {
     
     return self.serviceData[@"message"];
 }
+
+#pragma mark -
+
+
+@end
+
+
+#pragma mark - Private interface declaration
+
+@interface PNMessageResult ()
+
+
+#pragma mark - Properties
+
+@property (nonatomic, strong) PNMessageData *data;
 
 #pragma mark -
 
@@ -91,8 +106,24 @@
 
 - (PNMessageData *)data {
     
-    return [PNMessageData dataWithServiceResponse:self.serviceData];
+    if (!_data) { _data = [PNMessageData dataWithServiceResponse:self.serviceData]; }
+    return _data;
 }
+
+#pragma mark -
+
+
+@end
+
+
+#pragma mark - Private interface declaration
+
+@interface PNPresenceEventResult ()
+
+
+#pragma mark - Properties
+
+@property (nonatomic, strong) PNPresenceEventData *data;
 
 #pragma mark -
 
@@ -109,7 +140,8 @@
 
 - (PNPresenceEventData *)data {
     
-    return [PNPresenceEventData dataWithServiceResponse:self.serviceData];
+    if (!_data) { _data = [PNPresenceEventData dataWithServiceResponse:self.serviceData]; }
+    return _data;
 }
 
 #pragma mark -

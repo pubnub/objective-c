@@ -1,7 +1,7 @@
 /**
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2015 PubNub, Inc.
+ @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PubNub+Publish.h"
 #import "PNRequestParameters.h"
@@ -12,6 +12,8 @@
 #import "PNHelpers.h"
 #import "PNAES.h"
 
+
+NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Private interface declaration
 
@@ -27,32 +29,32 @@
  @param channel         Reference on name of the channel to which message should be published.
  @param compressMessage Whether message should be compressed before publish.
  @param shouldStore     Whether message should be stored in history storage or not.
+ @param metadata        JSON representation of \b NSDictionary with values which should be used by \b PubNub 
+                        service to filter messages.
  
  @return Configured and ready to use request parameters instance.
  
  @since 4.0
  */
-- (PNRequestParameters *)requestParametersForMessage:(NSString *)message
-                                           toChannel:(NSString *)channel
-                                          compressed:(BOOL)compressMessage
-                                      storeInHistory:(BOOL)shouldStore;
+- (PNRequestParameters *)requestParametersForMessage:(NSString *)message toChannel:(NSString *)channel
+                                          compressed:(BOOL)compressMessage storeInHistory:(BOOL)shouldStore 
+                                            metadata:(nullable NSString *)metadata;
 
 /**
- @brief      Merge user-specified message with push payloads into single message which will be 
-             processed on \b PubNub service.
- @discussion In case if aside from \c message has been passed \c payloads this method will merge
-             them into format known by \b PubNub service and will cause further push distribution
-             to specified vendors.
+ @brief      Merge user-specified message with push payloads into single message which will be processed on
+             \b PubNub service.
+ @discussion In case if aside from \c message has been passed \c payloads this method will merge them into 
+             format known by \b PubNub service and will cause further push distribution to specified vendors.
  
  @param message  Message which should be merged with \c payloads.
- @param payloads Dictionary with payloads for different vendors (Apple with "apns" key and Google 
-                 with "gcm").
+ @param payloads Dictionary with payloads for different vendors (Apple with "apns" key and Google with "gcm").
  
  @return Merged message or original message if there is no data in \c payloads.
  
  @since 4.0
  */
-- (NSDictionary *)mergedMessage:(id)message withMobilePushPayload:(NSDictionary *)payloads;
+- (NSDictionary<NSString *, id> *)mergedMessage:(nullable id)message 
+   withMobilePushPayload:(nullable NSDictionary<NSString *, id> *)payloads;
 
 /**
  @brief  Try perform encryption of data which should be pushed to \b PubNub services.
@@ -74,6 +76,8 @@
 
 @end
 
+NS_ASSUME_NONNULL_END
+
 
 #pragma mark - Interface implementation
 
@@ -85,58 +89,124 @@
 - (void)  publish:(id)message toChannel:(NSString *)channel
    withCompletion:(PNPublishCompletionBlock)block {
 
-    [self publish:message toChannel:channel compressed:NO withCompletion:block];
+    [self publish:message toChannel:channel withMetadata:nil completion:block];
+}
+
+- (void)  publish:(id)message toChannel:(NSString *)channel
+     withMetadata:(nullable NSDictionary<NSString *, id> *)metadata
+       completion:(nullable PNPublishCompletionBlock)block {
+    
+    [self publish:message toChannel:channel compressed:NO withMetadata:metadata completion:block];
 }
 
 - (void)  publish:(id)message toChannel:(NSString *)channel compressed:(BOOL)compressed
-   withCompletion:(PNPublishCompletionBlock)block {
+   withCompletion:(nullable PNPublishCompletionBlock)block {
+    
+    [self publish:message toChannel:channel compressed:compressed withMetadata:nil completion:block];
+}
 
-    [self publish:message toChannel:channel storeInHistory:YES compressed:compressed
-   withCompletion:block];
+- (void)  publish:(id)message toChannel:(NSString *)channel compressed:(BOOL)compressed 
+     withMetadata:(nullable NSDictionary<NSString *, id> *)metadata 
+       completion:(nullable PNPublishCompletionBlock)block {
+    
+    [self publish:message toChannel:channel storeInHistory:YES compressed:compressed withMetadata:metadata 
+       completion:block];
 }
 
 - (void) publish:(id)message toChannel:(NSString *)channel storeInHistory:(BOOL)shouldStore
-  withCompletion:(PNPublishCompletionBlock)block {
+  withCompletion:(nullable PNPublishCompletionBlock)block {
+    
+    [self publish:message toChannel:channel storeInHistory:shouldStore withMetadata:nil completion:block];
+}
 
-    [self publish:message toChannel:channel storeInHistory:shouldStore compressed:NO
-   withCompletion:block];
+- (void)  publish:(id)message toChannel:(NSString *)channel storeInHistory:(BOOL)shouldStore 
+     withMetadata:(nullable NSDictionary<NSString *, id> *)metadata 
+       completion:(nullable PNPublishCompletionBlock)block {
+    
+    [self publish:message toChannel:channel storeInHistory:shouldStore compressed:NO withMetadata:metadata 
+       completion:block];
 }
 
 - (void)publish:(id)message toChannel:(NSString *)channel storeInHistory:(BOOL)shouldStore
-     compressed:(BOOL)compressed withCompletion:(PNPublishCompletionBlock)block {
+     compressed:(BOOL)compressed withCompletion:(nullable PNPublishCompletionBlock)block {
 
+    [self publish:message toChannel:channel storeInHistory:shouldStore compressed:compressed withMetadata:nil 
+       completion:block];
+}
+
+- (void)publish:(id)message toChannel:(NSString *)channel storeInHistory:(BOOL)shouldStore
+     compressed:(BOOL)compressed withMetadata:(nullable NSDictionary<NSString *, id> *)metadata 
+     completion:(nullable PNPublishCompletionBlock)block {
+    
     [self publish:message toChannel:channel mobilePushPayload:nil storeInHistory:shouldStore
-       compressed:compressed withCompletion:block];
+       compressed:compressed withMetadata:metadata completion:block];
 }
 
 
 #pragma mark - Composite message publish
 
-- (void)    publish:(id)message toChannel:(NSString *)channel
-  mobilePushPayload:(NSDictionary *)payloads withCompletion:(PNPublishCompletionBlock)block {
+- (void)    publish:(nullable id)message toChannel:(NSString *)channel
+  mobilePushPayload:(nullable NSDictionary<NSString *, id> *)payloads 
+     withCompletion:(nullable PNPublishCompletionBlock)block {
     
-    [self publish:message toChannel:channel mobilePushPayload:payloads compressed:NO
-   withCompletion:block];
+    [self publish:message toChannel:channel mobilePushPayload:payloads withMetadata:nil completion:block];
 }
 
-- (void)publish:(id)message toChannel:(NSString *)channel mobilePushPayload:(NSDictionary *)payloads
-     compressed:(BOOL)compressed withCompletion:(PNPublishCompletionBlock)block {
+- (void)    publish:(nullable id)message toChannel:(NSString *)channel
+  mobilePushPayload:(nullable NSDictionary<NSString *, id> *)payloads 
+       withMetadata:(nullable NSDictionary<NSString *, id> *)metadata 
+         completion:(nullable PNPublishCompletionBlock)block {
+    
+    [self publish:message toChannel:channel mobilePushPayload:payloads compressed:NO withMetadata:metadata
+       completion:block];
+}
 
+- (void)    publish:(nullable id)message toChannel:(NSString *)channel 
+  mobilePushPayload:(nullable NSDictionary<NSString *, id> *)payloads compressed:(BOOL)compressed 
+     withCompletion:(nullable PNPublishCompletionBlock)block {
+
+    [self publish:message toChannel:channel mobilePushPayload:payloads compressed:compressed withMetadata:nil
+       completion:block];
+}
+
+- (void)    publish:(nullable id)message toChannel:(NSString *)channel
+  mobilePushPayload:(nullable NSDictionary<NSString *, id> *)payloads compressed:(BOOL)compressed
+       withMetadata:(nullable NSDictionary<NSString *, id> *)metadata 
+         completion:(nullable PNPublishCompletionBlock)block {
+    
     [self publish:message toChannel:channel mobilePushPayload:payloads storeInHistory:YES
-       compressed:compressed withCompletion:block];
+       compressed:compressed withMetadata:metadata completion:block];
 }
 
-- (void)    publish:(id)message toChannel:(NSString *)channel
-  mobilePushPayload:(NSDictionary *)payloads storeInHistory:(BOOL)shouldStore
-     withCompletion:(PNPublishCompletionBlock)block {
+- (void)    publish:(nullable id)message toChannel:(NSString *)channel
+  mobilePushPayload:(nullable NSDictionary<NSString *, id> *)payloads storeInHistory:(BOOL)shouldStore
+     withCompletion:(nullable PNPublishCompletionBlock)block {
 
     [self publish:message toChannel:channel mobilePushPayload:payloads storeInHistory:shouldStore
-       compressed:NO withCompletion:block];
+     withMetadata:nil completion:block];
 }
 
-- (void)    publish:(id)message toChannel:(NSString *)channel
-  mobilePushPayload:(NSDictionary *)payloads storeInHistory:(BOOL)shouldStore
-         compressed:(BOOL)compressed withCompletion:(PNPublishCompletionBlock)block {
+- (void)    publish:(nullable id)message toChannel:(NSString *)channel
+  mobilePushPayload:(nullable NSDictionary<NSString *, id> *)payloads storeInHistory:(BOOL)shouldStore
+       withMetadata:(nullable NSDictionary<NSString *, id> *)metadata
+         completion:(nullable PNPublishCompletionBlock)block {
+    
+    [self publish:message toChannel:channel mobilePushPayload:payloads storeInHistory:shouldStore
+       compressed:NO withMetadata:metadata completion:block];
+}
+
+- (void)    publish:(nullable id)message toChannel:(NSString *)channel
+  mobilePushPayload:(nullable NSDictionary<NSString *, id> *)payloads storeInHistory:(BOOL)shouldStore
+         compressed:(BOOL)compressed withCompletion:(nullable PNPublishCompletionBlock)block {
+    
+    [self publish:message toChannel:channel mobilePushPayload:payloads storeInHistory:shouldStore
+       compressed:compressed withMetadata:nil completion:block];
+}
+
+- (void)    publish:(nullable id)message toChannel:(NSString *)channel
+  mobilePushPayload:(nullable NSDictionary<NSString *, id> *)payloads storeInHistory:(BOOL)shouldStore
+         compressed:(BOOL)compressed withMetadata:(nullable NSDictionary<NSString *, id> *)metadata
+         completion:(nullable PNPublishCompletionBlock)block {
 
     // Push further code execution on secondary queue to make service queue responsive during
     // JSON serialization and encryption process.
@@ -157,18 +227,21 @@
             encrypted = ![messageForPublish isEqualToString:encryptedMessage];
             messageForPublish = [encryptedMessage copy];
         }
+        
+        NSString *metadataForPublish = nil;
+        if (metadata) { metadataForPublish = [PNJSON JSONStringFrom:metadata withError:&publishError]; }
 
         // Merge user message with push notification payloads (if provided).
-        if (!publishError && [payloads count]) {
+        if (!publishError && payloads.count) {
 
             NSDictionary *mergedData = [self mergedMessage:(encrypted ? messageForPublish : message)
                                      withMobilePushPayload:payloads];
             messageForPublish = [PNJSON JSONStringFrom:mergedData withError:&publishError];
         }
         PNRequestParameters *parameters = [self requestParametersForMessage:messageForPublish
-                                                                  toChannel:channel
-                                                                 compressed:compressed
-                                                             storeInHistory:shouldStore];
+                                                                  toChannel:channel compressed:compressed
+                                                             storeInHistory:shouldStore 
+                                                                   metadata:metadataForPublish];
         NSData *publishData = nil;
         if (compressed) {
 
@@ -178,7 +251,9 @@
         }
         
         DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> Publish%@ message to '%@' "
-                     "channel%@%@", (compressed ? @" compressed" : @""), (channel?: @"<error>"),
+                     "channel%@%@%@", (compressed ? @" compressed" : @""), (channel?: @"<error>"),
+                     (metadata ? [NSString stringWithFormat:@" with metadata (%@)", 
+                                  metadataForPublish] : @""),
                      (!shouldStore ? @" which won't be saved in history" : @""),
                      (!compressed ? [NSString stringWithFormat:@": %@",
                                      (messageForPublish?: @"<error>")] : @"."));
@@ -197,7 +272,8 @@
                status.retryBlock = ^{
                    
                    [weakSelf publish:message toChannel:channel mobilePushPayload:payloads
-                      storeInHistory:shouldStore compressed:compressed withCompletion:block];
+                      storeInHistory:shouldStore compressed:compressed withMetadata:metadata
+                          completion:block];
                };
            }
            [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
@@ -212,26 +288,56 @@
 - (void)sizeOfMessage:(id)message toChannel:(NSString *)channel
        withCompletion:(PNMessageSizeCalculationCompletionBlock)block {
     
-    [self sizeOfMessage:message toChannel:channel compressed:NO withCompletion:block];
+    [self sizeOfMessage:message toChannel:channel withMetadata:nil completion:block];
+}
+
+- (void)sizeOfMessage:(id)message toChannel:(NSString *)channel
+         withMetadata:(nullable NSDictionary<NSString *, id> *)metadata
+           completion:(PNMessageSizeCalculationCompletionBlock)block {
+    
+    [self sizeOfMessage:message toChannel:channel compressed:NO withMetadata:metadata completion:block];
 }
 
 - (void)sizeOfMessage:(id)message toChannel:(NSString *)channel compressed:(BOOL)compressMessage
        withCompletion:(PNMessageSizeCalculationCompletionBlock)block {
     
+    [self sizeOfMessage:message toChannel:channel compressed:compressMessage withMetadata:nil 
+             completion:block];
+}
+
+- (void)sizeOfMessage:(id)message toChannel:(NSString *)channel compressed:(BOOL)compressMessage
+         withMetadata:(nullable NSDictionary<NSString *, id> *)metadata
+           completion:(PNMessageSizeCalculationCompletionBlock)block {
+    
     [self sizeOfMessage:message toChannel:channel compressed:compressMessage storeInHistory:YES
-         withCompletion:block];
+           withMetadata:metadata completion:block];
 }
 
 - (void)sizeOfMessage:(id)message toChannel:(NSString *)channel storeInHistory:(BOOL)shouldStore
        withCompletion:(PNMessageSizeCalculationCompletionBlock)block {
     
+    [self sizeOfMessage:message toChannel:channel storeInHistory:shouldStore withMetadata:nil
+             completion:block];
+}
+
+- (void)sizeOfMessage:(id)message toChannel:(NSString *)channel storeInHistory:(BOOL)shouldStore
+         withMetadata:(nullable NSDictionary<NSString *, id> *)metadata
+           completion:(PNMessageSizeCalculationCompletionBlock)block {
+    
     [self sizeOfMessage:message toChannel:channel compressed:NO storeInHistory:shouldStore
-         withCompletion:block];
+           withMetadata:metadata completion:block];
 }
 
 - (void)sizeOfMessage:(id)message toChannel:(NSString *)channel compressed:(BOOL)compressMessage
-       storeInHistory:(BOOL)shouldStore
-       withCompletion:(PNMessageSizeCalculationCompletionBlock)block {
+       storeInHistory:(BOOL)shouldStore withCompletion:(PNMessageSizeCalculationCompletionBlock)block {
+    
+    [self sizeOfMessage:message toChannel:channel compressed:compressMessage storeInHistory:shouldStore
+           withMetadata:nil completion:block];
+}
+
+- (void)sizeOfMessage:(id)message toChannel:(NSString *)channel compressed:(BOOL)compressMessage
+       storeInHistory:(BOOL)shouldStore withMetadata:(nullable NSDictionary<NSString *, id> *)metadata
+           completion:(PNMessageSizeCalculationCompletionBlock)block {
     
     if (block) {
         
@@ -257,10 +363,15 @@
                                              withCipherKey:self.configuration.cipherKey
                                                      error:&publishError];
             }
+            
+            NSString *metadataForPublish = nil;
+            if (metadata) { metadataForPublish = [PNJSON JSONStringFrom:metadata withError:&publishError]; }
+            
             PNRequestParameters *parameters = [self requestParametersForMessage:messageForPublish
                                                                       toChannel:channel
                                                                      compressed:compressMessage
-                                                                 storeInHistory:shouldStore];
+                                                                 storeInHistory:shouldStore 
+                                                                       metadata:metadataForPublish];
             NSData *publishData = nil;
             if (compressMessage) {
                 
@@ -282,32 +393,31 @@
 
 #pragma mark - Misc
 
-- (PNRequestParameters *)requestParametersForMessage:(NSString *)message
-                                           toChannel:(NSString *)channel
-                                          compressed:(BOOL)compressMessage
-                                      storeInHistory:(BOOL)shouldStore {
+- (PNRequestParameters *)requestParametersForMessage:(NSString *)message toChannel:(NSString *)channel
+                                          compressed:(BOOL)compressMessage storeInHistory:(BOOL)shouldStore 
+                                            metadata:(nullable NSString *)metadata {
     
     PNRequestParameters *parameters = [PNRequestParameters new];
-    if ([channel length]) {
+    if (channel.length) {
         
-        [parameters addPathComponent:[PNString percentEscapedString:channel]
-                      forPlaceholder:@"{channel}"];
+        [parameters addPathComponent:[PNString percentEscapedString:channel] forPlaceholder:@"{channel}"];
     }
-    if (!shouldStore) {
+    if (!shouldStore) { [parameters addQueryParameter:@"0" forFieldName:@"store"]; }
+    if (([message isKindOfClass:[NSString class]] && message.length) || message) {
         
-        [parameters addQueryParameter:@"0" forFieldName:@"store"];
-    }
-    if (([message isKindOfClass:[NSString class]] && [message length]) || message) {
-        
-        [parameters addPathComponent:(!compressMessage ? [PNString percentEscapedString:message] :
-                                      @"")
+        [parameters addPathComponent:(!compressMessage ? [PNString percentEscapedString:message] : @"")
                       forPlaceholder:@"{message}"];
+    }
+    if ([metadata isKindOfClass:[NSString class]] && metadata.length) {
+        
+        [parameters addQueryParameter:[PNString percentEscapedString:metadata] forFieldName:@"meta"];
     }
     
     return parameters;
 }
 
-- (NSDictionary *)mergedMessage:(id)message withMobilePushPayload:(NSDictionary *)payloads {
+- (NSDictionary<NSString *, id> *)mergedMessage:(nullable id)message
+   withMobilePushPayload:(nullable NSDictionary<NSString *, id> *)payloads {
 
     // Convert passed message to mutable dictionary into which required by push notification
     // delivery service provider data will be added.
@@ -337,7 +447,7 @@
                          error:(NSError *__autoreleasing *)error {
     
     NSString *encryptedMessage = message;
-    if ([key length]) {
+    if (key.length) {
         
         NSData *JSONData = [message dataUsingEncoding:NSUTF8StringEncoding];
         NSString *JSONString = [PNAES encrypt:JSONData withKey:key andError:error];
@@ -348,10 +458,7 @@
             // by helper when it need to create JSON string).
             encryptedMessage = [PNJSON JSONStringFrom:JSONString withError:error];
         }
-        else {
-
-            encryptedMessage = nil;
-        }
+        else { encryptedMessage = nil; }
     }
     
     return encryptedMessage;
