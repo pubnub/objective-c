@@ -22,8 +22,11 @@
 
 @implementation PNSubscribeTests
 
+- (BOOL)isRecording {
+    return NO;
+}
+
 - (void)setUp {
-    
     [super setUp];
     
     if ([NSStringFromSelector(self.invocation.selector) isEqualToString:@"testSimpleSubscribeWithTimeToken"]) {
@@ -76,10 +79,6 @@
     };
     self.publishExpectation = [self expectationWithDescription:@"publish"];
     [self PNTest_subscribeToChannels:[self subscriptionChannels] withPresence:NO];
-}
-
-- (BOOL)isRecording{
-    return NO;
 }
 
 - (NSArray *)subscriptionChannels {
@@ -248,7 +247,7 @@
     NSMutableArray *receivedMessages = [NSMutableArray new];
     __block NSUInteger receivedMessagesCount = 0;
     NSUInteger expectedMessagesCount = (self.expectedMessagesCount - (self.messageNumberToUseTimeToken - 1));
-    XCTestExpectation *catchUpExpecation = [self expectationWithDescription:@"channelCatchUp"];
+    __block XCTestExpectation *catchUpExpecation = [self expectationWithDescription:@"channelCatchUp"];
     self.didReceiveStatusAssertions = ^void (PubNub *client, PNSubscribeStatus *status) {
         
         PNStrongify(self);
