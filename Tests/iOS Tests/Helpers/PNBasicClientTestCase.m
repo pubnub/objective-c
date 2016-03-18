@@ -12,10 +12,6 @@
 
 @implementation PNBasicClientTestCase
 
-- (JSZVCRMatchingStrictness)matchingFailStrictness {
-    return JSZVCRMatchingStrictnessNone;
-}
-
 - (void)setUp {
     [super setUp];
     [PNLog enabled:YES];
@@ -31,9 +27,15 @@
     [super tearDown];
 }
 
-- (Class<JSZVCRMatching>)matcherClass {
-    return [PNDeviceIndependentMatcher class];
+- (BKRTestConfiguration *)testConfiguration {
+    BKRTestConfiguration *defaultConfiguration = [super testConfiguration];
+    defaultConfiguration.matcherClass = [PNDeviceIndependentMatcher class];
+    return defaultConfiguration;
 }
+
+//- (Class<JSZVCRMatching>)matcherClass {
+//    return [PNDeviceIndependentMatcher class];
+//}
 
 
 #pragma mark - Configuration override

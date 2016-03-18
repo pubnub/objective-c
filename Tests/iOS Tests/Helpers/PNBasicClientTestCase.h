@@ -6,9 +6,8 @@
 //
 //
 
-#import <JSZVCR/JSZVCR.h>
-
-#import "PubNub/PubNub.h"
+#import <BeKindRewind/BeKindRewind.h>
+#import <PubNub/PubNub.h>
 
 #define PNWeakify(__var) \
 __weak __typeof__(__var) __var ## _weak_ = (__var)
@@ -23,7 +22,7 @@ typedef void (^PNChannelGroupAssertions)(PNAcknowledgmentStatus *status);
 
 @class PubNub;
 
-@interface PNBasicClientTestCase : JSZVCRTestCase <PNObjectEventListener>
+@interface PNBasicClientTestCase : BKRTestCase <PNObjectEventListener>
 
 @property (nonatomic) PNConfiguration *configuration;
 @property (nonatomic) PubNub *client;

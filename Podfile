@@ -17,30 +17,31 @@ end
 target 'iOS ObjC Tests', :exclusive => true do
   platform :ios, "8.0"
   xcodeproj 'Tests/PubNub Tests.xcodeproj'
-  pod "JSZVCR", '~>0.7'
+  pod "OHHTTPStubs", :git => 'https://github.com/jzucker2/OHHTTPStubs.git', :branch => 'on-stub-end-one-place'
+  pod "BeKindRewind", :git => 'https://github.com/jzucker2/BeKindRewind.git', :branch => 'better-response-frame'
   pod "PubNub", :path => "."
 end
 
-target 'iOS Swift Tests', :exclusive => true do
-  platform :ios, "8.0"
-  xcodeproj 'Tests/PubNub Tests.xcodeproj'
-  pod "JSZVCR", '~>0.7'
-  pod "PubNub", :path => "."
-end
+# target 'iOS Swift Tests', :exclusive => true do
+#   platform :ios, "8.0"
+#   xcodeproj 'Tests/PubNub Tests.xcodeproj'
+#   pod "JSZVCR", '~>0.7'
+#   pod "PubNub", :path => "."
+# end
 
-target 'OSX ObjC Tests', :exclusive => true do
-  platform :osx, '10.9'
-  xcodeproj 'Tests/PubNub Tests.xcodeproj'
-  pod "JSZVCR", '~>0.7'
-  pod "PubNub", :path => "."
-end
+# target 'OSX ObjC Tests', :exclusive => true do
+#   platform :osx, '10.9'
+#   xcodeproj 'Tests/PubNub Tests.xcodeproj'
+#   pod "JSZVCR", '~>0.7'
+#   pod "PubNub", :path => "."
+# end
 
-target 'tvOS ObjC Tests', :exclusive => true do
-    platform :tvos, '9.0'
-    xcodeproj 'Tests/PubNub Tests.xcodeproj'
-    pod "JSZVCR", '~>0.7'
-    pod "PubNub", :path => "."
-end
+# target 'tvOS ObjC Tests', :exclusive => true do
+#     platform :tvos, '9.0'
+#     xcodeproj 'Tests/PubNub Tests.xcodeproj'
+#     pod "JSZVCR", '~>0.7'
+#     pod "PubNub", :path => "."
+# end
 
 post_install do |installer_representation|
     installer_representation.pods_project.targets.each do |target|
