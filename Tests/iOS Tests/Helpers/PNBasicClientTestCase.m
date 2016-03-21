@@ -30,6 +30,8 @@
 - (BKRTestConfiguration *)testConfiguration {
     BKRTestConfiguration *defaultConfiguration = [super testConfiguration];
     defaultConfiguration.matcherClass = [PNDeviceIndependentMatcher class];
+    defaultConfiguration.beginRecordingBlock = nil;
+    defaultConfiguration.endRecordingBlock = nil;
     return defaultConfiguration;
 }
 

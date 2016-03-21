@@ -39,7 +39,7 @@ static NSString * const kPNResponseEventTimeKey = @"t";
 /**
  @brief  Stores reference on key under which list of events is stored.
  */
-static NSString * const kPNResponseEvenetsListKey = @"m";
+static NSString * const kPNResponseEventsListKey = @"m";
 
 
 #pragma mark - Structures
@@ -259,7 +259,7 @@ NS_ASSUME_NONNULL_END
         NSNumber *region = @(timeTokenDictionary[PNEventTimeToken.region].longLongValue);
         
         // Checking whether at least one event arrived or not.
-        NSArray<NSDictionary *> *feedEvents = response[kPNResponseEvenetsListKey];
+        NSArray<NSDictionary *> *feedEvents = response[kPNResponseEventsListKey];
         if (feedEvents.count) {
             
             NSMutableArray<NSDictionary *> *events = [[NSMutableArray alloc] initWithCapacity:feedEvents.count];
