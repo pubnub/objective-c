@@ -105,13 +105,13 @@
                   Identifier = "PNPublishSizeOfMessage">
                </Test>
                <Test
-                  Identifier = "PNPublishTests">
-               </Test>
-               <Test
                   Identifier = "PNPublishWithHistoryTests">
                </Test>
                <Test
                   Identifier = "PNPublishWithMobilePayloadTests">
+               </Test>
+               <Test
+                  Identifier = "PNSubscribeTests">
                </Test>
                <Test
                   Identifier = "PNSubscribeTests/testSimpleSubscribeWithTimeToken">
@@ -124,6 +124,9 @@
                </Test>
                <Test
                   Identifier = "PNSubscribeToPresenceChannelsTests">
+               </Test>
+               <Test
+                  Identifier = "PNUnsubscribeTests">
                </Test>
             </SkippedTests>
          </TestableReference>

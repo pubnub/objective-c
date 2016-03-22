@@ -5,6 +5,7 @@
 //  Created by Jordan Zucker on 6/16/15.
 //
 //
+#import <BeKindRewind/BKRTestCaseFilePathHelper.h>
 #import <PubNub/PubNub.h>
 
 #import "PNDeviceIndependentMatcher.h"
@@ -35,8 +36,9 @@
     return defaultConfiguration;
 }
 
-//- (Class<JSZVCRMatching>)matcherClass {
-//    return [PNDeviceIndependentMatcher class];
+//- (NSString *)baseFixturesDirectoryFilePath {
+////    return [super baseFixturesDirectoryFilePath];
+//    return [BKRTestCaseFilePathHelper fixtureWriteDirectoryInProject];
 //}
 
 
