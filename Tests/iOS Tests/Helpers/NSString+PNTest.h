@@ -2,7 +2,7 @@
 //  NSString+PNTest.h
 //  PubNub Tests
 //
-//  Created by Vadim Osovets on 6/19/15.
+//  Created by Jordan Zucker on 3/23/16.
 //
 //
 

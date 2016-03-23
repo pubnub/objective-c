@@ -2,7 +2,7 @@
 //  PNPresenceEventTests.swift
 //  PubNub Tests
 //
-//  Created by Vadim Osovets on 8/28/15.
+//  Created by Jordan Zucker on 3/23/16.
 //
 //
 
