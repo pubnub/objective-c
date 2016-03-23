@@ -2,7 +2,7 @@
 //  PNAPNSTests.m
 //  PubNub Tests
 //
-//  Created by Vadim Osovets on 6/29/15.
+//  Created by Jordan Zucker on 3/23/16.
 //
 //
 

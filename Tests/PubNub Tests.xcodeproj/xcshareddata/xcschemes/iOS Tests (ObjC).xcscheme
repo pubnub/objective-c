@@ -60,9 +60,6 @@
                   Identifier = "PNChannelGroupSubscribeTests">
                </Test>
                <Test
-                  Identifier = "PNChannelGroupTests">
-               </Test>
-               <Test
                   Identifier = "PNChannelGroupUnsubscribeTests">
                </Test>
                <Test

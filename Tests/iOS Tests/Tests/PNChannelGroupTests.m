@@ -18,7 +18,7 @@ static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupTestsName";
 @implementation PNChannelGroupTests
 
 - (BOOL)isRecording{
-    return YES;
+    return NO;
 }
 
 - (void)setUp {
@@ -126,7 +126,7 @@ static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupTestsName";
         XCTAssertEqual(result.operation, PNChannelGroupsOperation);
         XCTAssertEqual(result.statusCode, 200);
         // TODO: assert on actual groups, for now just do count
-        XCTAssertEqual(result.data.groups.count, 64);
+        XCTAssertEqual(result.data.groups.count, 92);
         [getAllChannelGroups fulfill];
     }];
     #pragma clang diagnostic pop
