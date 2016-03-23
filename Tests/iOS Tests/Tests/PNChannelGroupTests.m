@@ -18,7 +18,7 @@ static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupTestsName";
 @implementation PNChannelGroupTests
 
 - (BOOL)isRecording{
-    return NO;
+    return YES;
 }
 
 - (void)setUp {

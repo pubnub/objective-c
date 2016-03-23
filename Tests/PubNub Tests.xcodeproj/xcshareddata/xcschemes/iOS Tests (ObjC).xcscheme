@@ -39,9 +39,6 @@
             </BuildableReference>
             <SkippedTests>
                <Test
-                  Identifier = "PNAPNSTests">
-               </Test>
-               <Test
                   Identifier = "PNBasicClientCryptTestCase">
                </Test>
                <Test
