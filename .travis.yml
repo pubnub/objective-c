@@ -1,6 +1,6 @@
 language: objective-c
 sudo: false
-osx_image: xcode7.2
+osx_image: xcode7.3
 cache: cocoapods
 env:
     global:
@@ -23,6 +23,8 @@ matrix:
     - env: FASTLANE_ENV=ios91_iPhone6S
     # iOS 9.2
     - env: FASTLANE_ENV=ios92_iPadPro
+    # iOS 9.3
+    - env: FASTLANE_ENV=ios93_iPhone6Plus
     # OSX
     # - env: FASTLANE_ENV=osx
     # tvOS 9.0
