@@ -33,6 +33,7 @@
     defaultConfiguration.matcherClass = [PNDeviceIndependentMatcher class];
     defaultConfiguration.beginRecordingBlock = nil;
     defaultConfiguration.endRecordingBlock = nil;
+    defaultConfiguration.shouldSaveEmptyCassette = YES;
     return defaultConfiguration;
 }
 

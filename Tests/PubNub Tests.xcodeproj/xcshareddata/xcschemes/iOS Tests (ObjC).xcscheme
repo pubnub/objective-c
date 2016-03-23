@@ -99,18 +99,6 @@
                   Identifier = "PNPresenceTests">
                </Test>
                <Test
-                  Identifier = "PNPublishCompressedTests">
-               </Test>
-               <Test
-                  Identifier = "PNPublishSizeOfMessage">
-               </Test>
-               <Test
-                  Identifier = "PNPublishWithHistoryTests">
-               </Test>
-               <Test
-                  Identifier = "PNPublishWithMobilePayloadTests">
-               </Test>
-               <Test
                   Identifier = "PNSubscribeTests">
                </Test>
                <Test
