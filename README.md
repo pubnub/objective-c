@@ -1,5 +1,5 @@
 # PubNub 4.3.0 for iOS 7+
-[![Build Status](https://travis-ci.org/pubnub/objective-c.svg?branch=master)](https://travis-ci.org/pubnub/objective-c)
+[![Build Status](https://travis-ci.org/pubnub/objective-c.svg?branch=develop)](https://travis-ci.org/pubnub/objective-c)
 ## Please direct all Support Questions and Concerns to Support@PubNub.com
 ## Complete Docs
 Check out our [official docs page](http://www.pubnub.com/docs/ios-objective-c/pubnub-objective-c-sdk-v4)
