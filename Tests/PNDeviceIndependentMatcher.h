@@ -6,8 +6,8 @@
 //
 //
 
-#import <JSZVCR/JSZVCRUnorderedQueryMatcher.h>
+#import <BeKindRewind/BKRPlayheadMatcher.h>
 
-@interface PNDeviceIndependentMatcher : JSZVCRUnorderedQueryMatcher
+@interface PNDeviceIndependentMatcher : BKRPlayheadMatcher
 
 @end

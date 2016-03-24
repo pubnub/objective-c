@@ -2,7 +2,7 @@
 //  PNConfigurationChiperKeyTests.swift
 //  PubNub Tests
 //
-//  Created by Vadim Osovets on 9/16/15.
+//  Created by Jordan Zucker on 3/23/16.
 //
 //
 
