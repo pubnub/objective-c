@@ -17,7 +17,7 @@ end
 target 'iOS ObjC Tests', :exclusive => true do
   platform :ios, "8.0"
   xcodeproj 'Tests/PubNub Tests.xcodeproj'
-  pod "BeKindRewind", :git => 'https://github.com/jzucker2/BeKindRewind.git', :branch => 'better-response-frame'
+  pod "BeKindRewind", '~> 0.10.0'
   pod "PubNub", :path => "."
 end
 
