@@ -17,7 +17,7 @@ end
 target 'iOS ObjC Tests', :exclusive => true do
   platform :ios, "8.0"
   xcodeproj 'Tests/PubNub Tests.xcodeproj'
-  pod "BeKindRewind", '~> 0.10.0'
+  pod "BeKindRewind", '~> 1.0.0'
   pod "PubNub", :path => "."
 end
 
