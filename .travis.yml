@@ -7,6 +7,7 @@ env:
         - LC_CTYPE=en_US.UTF-8
         - LANG=en_US.UTF-8
         - FASTLANE_LANE=ci_commit
+        - COCOAPODS_DISABLE_DETERMINISTIC_UUIDS=YES # remove this when Cocoapods upgrades to 1.0.0
 matrix:
   include:
     # iOS 8.1
@@ -26,11 +27,13 @@ matrix:
     # iOS 9.3
     - env: FASTLANE_ENV=ios93_iPhone6Plus
     # OSX
-    # - env: FASTLANE_ENV=osx
+    - env: FASTLANE_ENV=osx
     # tvOS 9.0
-    # - env: FASTLANE_ENV=tvos90_AppleTV1080p
+    - env: FASTLANE_ENV=tvos90_AppleTV1080p
     # tvOS 9.1
-    # - env: FASTLANE_ENV=tvos91_AppleTV1080p
+    - env: FASTLANE_ENV=tvos91_AppleTV1080p
+    # tvOS 9.2
+    - env: FASTLANE_ENV=tvos92_AppleTV1080p
 before_install:
   - gem install fastlane --no-rdoc --no-ri --no-document --quiet
   - gem install cocoapods --no-rdoc --no-ri --no-document --quiet
