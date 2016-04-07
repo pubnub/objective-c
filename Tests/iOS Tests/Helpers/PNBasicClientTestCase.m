@@ -34,6 +34,7 @@
     defaultConfiguration.beginRecordingBlock = nil;
     defaultConfiguration.endRecordingBlock = nil;
     defaultConfiguration.shouldSaveEmptyCassette = YES;
+    defaultConfiguration.tearDownExpectationTimeout = 60.0;
     return defaultConfiguration;
 }
 

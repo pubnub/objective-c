@@ -12,7 +12,7 @@
 
 - (NSDictionary *)requestComparisonOptions {
     NSMutableDictionary *superComparisonOptions = [super requestComparisonOptions].mutableCopy;
-    superComparisonOptions[kBKRIgnoreQueryItemNames] = @[
+    superComparisonOptions[kBKRIgnoreQueryItemNamesOptionsKey] = @[
                                                          @"pnsdk"
                                                          ];
     return superComparisonOptions.copy;
