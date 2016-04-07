@@ -10,6 +10,8 @@ env:
         - COCOAPODS_DISABLE_DETERMINISTIC_UUIDS=YES # remove this when Cocoapods upgrades to 1.0.0
 matrix:
   include:
+    # Code Coverage (iOS 9.3 iPhone 6 Plus)
+    - env: FASTLANE_LANE=code_coverage FASTLANE_ENV=ios93_iPhone6Plus
     # iOS 8.1
     - env: FASTLANE_ENV=ios81_iPad2
     # iOS 8.2
@@ -43,16 +45,11 @@ script:
   - fastlane $FASTLANE_LANE configuration:Debug --env $FASTLANE_ENV
   - fastlane $FASTLANE_LANE configuration:Release --env $FASTLANE_ENV
 after_success:
-  # - if [ "$FASTLANE_LANE" == "code_coverage" ]; then
-  #    bash <(curl -s https://codecov.io/bash);
-  #   fi
+  - if [ "$FASTLANE_LANE" == "code_coverage" ]; then
+     bash <(curl -s https://codecov.io/bash);
+    fi
 after_failure:
  - cat -n fastlane/report.xml
  - cat -n ~/Library/Logs/scan/*
  - cat -n $TMPDIR/com.apple.dt.XCTest-status/Session*.log
  - cat -n ~/Library/Logs/DiagnosticReports/xctest*.crash
-# deploy:
-#   provider: script
-#   script: fastlane complete_framework_release --env deploy
-#   on:
-#     tags: true

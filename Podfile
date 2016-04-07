@@ -46,8 +46,8 @@ end
 post_install do |installer_representation|
     installer_representation.pods_project.targets.each do |target|
         target.build_configurations.each do |config|
-            config.build_settings['GCC_INSTRUMENT_PROGRAM_FLOW_ARCS'] = 'NO'
-            config.build_settings['GCC_GENERATE_TEST_COVERAGE_FILES'] = 'NO'
+            config.build_settings['GCC_INSTRUMENT_PROGRAM_FLOW_ARCS'] = 'YES'
+            config.build_settings['GCC_GENERATE_TEST_COVERAGE_FILES'] = 'YES'
             config.build_settings['GCC_WARN_INHIBIT_ALL_WARNINGS'] = 'YES' unless target.name =~ /PubNub/
         end
     end
