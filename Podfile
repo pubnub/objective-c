@@ -1,6 +1,7 @@
 source 'https://github.com/CocoaPods/Specs.git'
 workspace 'PubNub.xcworkspace'
 xcodeproj 'Example/PubNub Example.xcodeproj'
+use_frameworks!
 
 target 'PubNub_Example', :exclusive => true do
   platform :ios, '8.0'

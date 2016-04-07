@@ -7,6 +7,7 @@ env:
         - LC_CTYPE=en_US.UTF-8
         - LANG=en_US.UTF-8
         - FASTLANE_LANE=ci_commit
+        - COCOAPODS_DISABLE_DETERMINISTIC_UUIDS=YES # remove this when Cocoapods upgrades to 1.0.0
 matrix:
   include:
     # iOS 8.1
