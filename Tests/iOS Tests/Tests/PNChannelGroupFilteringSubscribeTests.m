@@ -19,7 +19,7 @@ static NSString * const kPNChannelGroupTestName = @"PNChannelGroupFilterSubscrib
 @implementation PNChannelGroupFilteringSubscribeTests
 
 - (BOOL)isRecording{
-    return NO;
+    return YES;
 }
 
 - (void)setUp {

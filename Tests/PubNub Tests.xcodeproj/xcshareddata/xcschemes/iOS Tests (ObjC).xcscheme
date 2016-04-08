@@ -54,22 +54,7 @@
                   Identifier = "PNChannelGroupFilteringSubscribeTests">
                </Test>
                <Test
-                  Identifier = "PNChannelGroupPresenceEventTests">
-               </Test>
-               <Test
-                  Identifier = "PNChannelGroupSubscribeTests">
-               </Test>
-               <Test
                   Identifier = "PNChannelGroupUnsubscribeTests">
-               </Test>
-               <Test
-                  Identifier = "PNClientConfigurationTests">
-               </Test>
-               <Test
-                  Identifier = "PNClientStateChannelGroupTests">
-               </Test>
-               <Test
-                  Identifier = "PNClientStateChannelTests">
                </Test>
                <Test
                   Identifier = "PNConfigurationChiperKeyTests">

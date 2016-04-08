@@ -47,13 +47,13 @@
         NSLog(@"timeToken: %@", status.currentTimetoken);
         
         if (self.invocation.selector == @selector(testSetClientStateOnNotSubscribedChannel)) {
-            XCTAssertEqualObjects(status.currentTimetoken, @14508133561731382);
+            XCTAssertEqualObjects(status.currentTimetoken, @14600803516140024);
         } else if (self.invocation.selector == @selector(testSetClientStateOnSubscribedChannel)) {
-            XCTAssertEqualObjects(status.currentTimetoken, @14508133561731382);
+            XCTAssertEqualObjects(status.currentTimetoken, @14600803516140024);
         } else if (self.invocation.selector == @selector(testStateForUUIDOnSubscribedChannel)) {
-            XCTAssertEqualObjects(status.currentTimetoken, @14508133573449905);
+            XCTAssertEqualObjects(status.currentTimetoken, @14600803527846486);
         } else if (self.invocation.selector == @selector(testStateForUUIDOnUnsubscribedChannel)) {
-            XCTAssertEqualObjects(status.currentTimetoken, @14508133573449905);
+            XCTAssertEqualObjects(status.currentTimetoken, @14600803527846486);
         } else {
             XCTFail(@"we haven't done anything to prepare for %@", NSStringFromSelector(self.invocation.selector));
         }

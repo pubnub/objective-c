@@ -47,9 +47,9 @@
         XCTAssertEqual(status.operation, PNSubscribeOperation);
         NSLog(@"timeToken: %@", status.currentTimetoken);
         if (self.invocation.selector == @selector(testCopyConfigurationWithSubscribedChannels)) {
-            XCTAssertEqualObjects(status.currentTimetoken, @14508105355672413);
+            XCTAssertEqualObjects(status.currentTimetoken, @14600801623820325);
         } else if (self.invocation.selector == @selector(testCopyConfigurationWithSubscribedChannelsAndCallbackQueue)) {
-            XCTAssertEqualObjects(status.currentTimetoken, @14508105367362132);
+            XCTAssertEqualObjects(status.currentTimetoken, @14600801635321825);
         }
         XCTAssertEqualObjects(status.currentTimetoken, status.data.timetoken);
         [self.subscribeExpectation fulfill];
