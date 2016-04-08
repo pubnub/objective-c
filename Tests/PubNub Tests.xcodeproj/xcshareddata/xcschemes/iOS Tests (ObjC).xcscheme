@@ -75,9 +75,6 @@
                   Identifier = "PNPresenceEventTests">
                </Test>
                <Test
-                  Identifier = "PNPresenceTests">
-               </Test>
-               <Test
                   Identifier = "PNSubscribeTests/testSimpleSubscribeWithTimeToken">
                </Test>
                <Test

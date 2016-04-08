@@ -40,10 +40,23 @@
         XCTAssertEqual([result statusCode], 200);
         
         NSDictionary *expectedChannels = @{
-                                           @"a" : @{
+                                           @"2EC925F0-B996-47A4-AF54-A605E1A9AEBA" : @{
                                                    @"uuids" : @[
                                                            @{
-                                                               @"uuid" : @"d063790a-5fac-4c7b-9038-b511b61eb23d"
+                                                               @"uuid" : @"58A6FB32-4323-45BE-97BF-2D070A3F8912"
+                                                               }
+                                                           ],
+                                                   @"occupancy" : @1
+                                                   },
+                                           @"webinar-chat" : @{
+                                                   @"uuids" : @[
+                                                           @{
+                                                               @"uuid" : @"7230daed-990c-431b-8c2f-c4ad8a52bbd2",
+                                                               @"state": @{
+                                                                       @"avatar": @"face-10 color-3",
+                                                                       @"location": @"columbus",
+                                                                       @"username": @"mb"
+                                                                       }
                                                                }
                                                            ],
                                                    @"occupancy" : @1
@@ -52,8 +65,8 @@
         
         NSLog(@"expected: %@", result.data.channels.testAssertionFormat);
         XCTAssertEqualObjects(result.data.channels, expectedChannels, @"Result and expected channels are not equal.");
-        XCTAssertEqualObjects(result.data.totalChannels, @1);
-        XCTAssertEqualObjects(result.data.totalOccupancy, @1);
+        XCTAssertEqualObjects(result.data.totalChannels, @2);
+        XCTAssertEqualObjects(result.data.totalOccupancy, @2);
         
         [self.presenceExpectation fulfill];
     }];
@@ -76,15 +89,15 @@
                                XCTAssertEqual([result statusCode], 200);
                                
                                NSDictionary *expectedChannels = @{
-                                                                  @"a" : @{
+                                                                  @"2EC925F0-B996-47A4-AF54-A605E1A9AEBA" : @{
                                                                           @"uuids" : @[
-                                                                                  @"d063790a-5fac-4c7b-9038-b511b61eb23d"
+                                                                                  @"58A6FB32-4323-45BE-97BF-2D070A3F8912"
                                                                                   ],
                                                                           @"occupancy" : @1
                                                                           },
-                                                                  @"2EC925F0-B996-47A4-AF54-A605E1A9AEBA" : @{
+                                                                  @"webinar-chat" : @{
                                                                           @"uuids" : @[
-                                                                                  @"d063790a-5fac-4c7b-9038-b511b61eb23d"
+                                                                                  @"7230daed-990c-431b-8c2f-c4ad8a52bbd2",
                                                                                   ],
                                                                           @"occupancy" : @1
                                                                           }
@@ -115,18 +128,23 @@
                                XCTAssertEqual([result statusCode], 200);
                                
                                NSDictionary *expectedChannels = @{
-                                                                  @"a" : @{
+                                                                  @"2EC925F0-B996-47A4-AF54-A605E1A9AEBA" : @{
                                                                           @"uuids" : @[
                                                                                   @{
-                                                                                      @"uuid" : @"d063790a-5fac-4c7b-9038-b511b61eb23d"
+                                                                                      @"uuid" : @"58A6FB32-4323-45BE-97BF-2D070A3F8912"
                                                                                       }
                                                                                   ],
                                                                           @"occupancy" : @1
                                                                           },
-                                                                  @"2EC925F0-B996-47A4-AF54-A605E1A9AEBA" : @{
+                                                                  @"webinar-chat" : @{
                                                                           @"uuids" : @[
                                                                                   @{
-                                                                                      @"uuid" : @"d063790a-5fac-4c7b-9038-b511b61eb23d"
+                                                                                      @"uuid" : @"7230daed-990c-431b-8c2f-c4ad8a52bbd2",
+                                                                                      @"state": @{
+                                                                                              @"avatar": @"face-10 color-3",
+                                                                                              @"location": @"columbus",
+                                                                                              @"username": @"mb"
+                                                                                              }
                                                                                       }
                                                                                   ],
                                                                           @"occupancy" : @1
@@ -160,10 +178,10 @@
                                XCTAssertEqual([result statusCode], 200);
                                
                                NSDictionary *expectedChannels = @{
-                                                                  @"a" : @{
+                                                                  @"2EC925F0-B996-47A4-AF54-A605E1A9AEBA" : @{
                                                                           @"occupancy" : @1
                                                                           },
-                                                                  @"2EC925F0-B996-47A4-AF54-A605E1A9AEBA" : @{
+                                                                  @"webinar-chat" : @{
                                                                           @"occupancy" : @1
                                                                           }
                                                                   };
@@ -197,7 +215,7 @@
                         
                         NSArray *expectedUUIDs = @[
                                                    @{
-                                                       @"uuid" : @"d063790a-5fac-4c7b-9038-b511b61eb23d"
+                                                       @"uuid" : @"58A6FB32-4323-45BE-97BF-2D070A3F8912"
                                                        }
                                                    ];
                         
@@ -299,7 +317,7 @@
                             NSLog(@"actual: %@", result.data.uuids);
                             NSArray *expected = @[
                                                   @{
-                                                      @"uuid" : @"d063790a-5fac-4c7b-9038-b511b61eb23d"
+                                                      @"uuid" : @"58A6FB32-4323-45BE-97BF-2D070A3F8912"
                                                       }
                                                   ];
                             XCTAssertEqualObjects(result.data.uuids, expected, @"Result and expected channels are not equal.");
@@ -351,7 +369,7 @@
                             XCTAssertNotNil([result data]);
                             XCTAssertEqual([result statusCode], 200);
                             
-                            XCTAssertEqualObjects(result.data.uuids, @[@"d063790a-5fac-4c7b-9038-b511b61eb23d"], @"Result and expected channels are not equal.");
+                            XCTAssertEqualObjects(result.data.uuids, @[@"58A6FB32-4323-45BE-97BF-2D070A3F8912"], @"Result and expected channels are not equal.");
                             XCTAssertEqualObjects(result.data.occupancy, @1, @"Result and expected channels are not equal.");
                             
                             [self.presenceExpectation fulfill];
@@ -391,7 +409,7 @@
 
 - (void)testWhereNowUUID {
     self.presenceExpectation = [self expectationWithDescription:@"network"];
-    NSString *uuid = @"d063790a-5fac-4c7b-9038-b511b61eb23d";
+    NSString *uuid = @"7230daed-990c-431b-8c2f-c4ad8a52bbd2";
     [self.client whereNowUUID:uuid
                withCompletion:^(PNPresenceWhereNowResult *result, PNErrorStatus *status) {
                    XCTAssertNil(status);
@@ -399,7 +417,7 @@
                    XCTAssertNotNil([result data]);
                    XCTAssertEqual([result statusCode], 200);
                    
-                   NSArray *expectedChannels = @[@"a", @"2EC925F0-B996-47A4-AF54-A605E1A9AEBA"];
+                   NSArray *expectedChannels = @[@"webinar-chat"];
                    NSLog(@"%@", result.data.channels);
                    
                    XCTAssertEqualObjects(result.data.channels, expectedChannels, @"Result and expected channels are not equal.");
