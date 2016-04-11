@@ -51,7 +51,10 @@
                   Identifier = "PNBasicSubscribeTestCase">
                </Test>
                <Test
-                  Identifier = "PNChannelGroupUnsubscribeTests">
+                  Identifier = "PNChannelGroupFilteringSubscribeTests">
+               </Test>
+               <Test
+                  Identifier = "PNChannelGroupPresenceEventTests">
                </Test>
                <Test
                   Identifier = "PNConfigurationChiperKeyTests">
@@ -63,6 +66,9 @@
                   Identifier = "PNHistoryTests">
                </Test>
                <Test
+                  Identifier = "PNPresenceChannelGroupTests">
+               </Test>
+               <Test
                   Identifier = "PNPresenceEventTests">
                </Test>
                <Test
@@ -70,12 +76,6 @@
                </Test>
                <Test
                   Identifier = "PNSubscribeTests/testTimeTokenResetBetweenSubscriptionsWithUnsubscribeAll">
-               </Test>
-               <Test
-                  Identifier = "PNSubscribeToPresenceChannelsTests">
-               </Test>
-               <Test
-                  Identifier = "PNUnsubscribeTests">
                </Test>
             </SkippedTests>
          </TestableReference>

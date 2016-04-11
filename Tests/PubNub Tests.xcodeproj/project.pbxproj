@@ -58,6 +58,14 @@
 		519E7BF71CBC0FBE007D5770 /* PNDeviceIndependentMatcherWithTiming.m in Sources */ = {isa = PBXBuildFile; fileRef = 519E7BF61CBC0FBE007D5770 /* PNDeviceIndependentMatcherWithTiming.m */; };
 		519E7BF81CBC0FBE007D5770 /* PNDeviceIndependentMatcherWithTiming.m in Sources */ = {isa = PBXBuildFile; fileRef = 519E7BF61CBC0FBE007D5770 /* PNDeviceIndependentMatcherWithTiming.m */; };
 		519E7BF91CBC0FBE007D5770 /* PNDeviceIndependentMatcherWithTiming.m in Sources */ = {isa = PBXBuildFile; fileRef = 519E7BF61CBC0FBE007D5770 /* PNDeviceIndependentMatcherWithTiming.m */; };
+		519E7BFA1CBC1FF3007D5770 /* PNChannelGroupPresenceEventTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 799CE2EF1C45B89F00AAEBDC /* PNChannelGroupPresenceEventTests.m */; };
+		519E7BFB1CBC1FF4007D5770 /* PNChannelGroupPresenceEventTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 799CE2EF1C45B89F00AAEBDC /* PNChannelGroupPresenceEventTests.m */; };
+		519E7BFC1CBC1FF7007D5770 /* PNChannelGroupFilteringSubscribeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 799CE2F61C45B95400AAEBDC /* PNChannelGroupFilteringSubscribeTests.m */; };
+		519E7BFD1CBC1FF8007D5770 /* PNChannelGroupFilteringSubscribeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 799CE2F61C45B95400AAEBDC /* PNChannelGroupFilteringSubscribeTests.m */; };
+		519E7BFE1CBC1FFA007D5770 /* PNFilteringSubscribeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 799CE2F81C45B9FD00AAEBDC /* PNFilteringSubscribeTests.m */; };
+		519E7BFF1CBC1FFB007D5770 /* PNFilteringSubscribeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 799CE2F81C45B9FD00AAEBDC /* PNFilteringSubscribeTests.m */; };
+		519E7C001CBC1FFE007D5770 /* PNPresenceChannelGroupTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 799CE2FA1C45BA3000AAEBDC /* PNPresenceChannelGroupTests.m */; };
+		519E7C011CBC1FFF007D5770 /* PNPresenceChannelGroupTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 799CE2FA1C45BA3000AAEBDC /* PNPresenceChannelGroupTests.m */; };
 		51A6E6001BE421DC00C20B77 /* PNDeviceIndependentMatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A6E5FF1BE421DC00C20B77 /* PNDeviceIndependentMatcher.m */; };
 		51A6E6011BE421DC00C20B77 /* PNDeviceIndependentMatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A6E5FF1BE421DC00C20B77 /* PNDeviceIndependentMatcher.m */; };
 		51BB25401B6814EF00A9F154 /* PNBasicSubscribeTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BB253F1B6814EF00A9F154 /* PNBasicSubscribeTestCase.swift */; };
@@ -1103,6 +1111,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				519E7BFB1CBC1FF4007D5770 /* PNChannelGroupPresenceEventTests.m in Sources */,
 				517A9EE11BE3185800FAA43A /* PNClientStateChannelTests.m in Sources */,
 				517A9EF41BE318B700FAA43A /* NSString+PNTest.m in Sources */,
 				517A9EF21BE3189900FAA43A /* PNBasicClientCryptTestCase.m in Sources */,
@@ -1114,6 +1123,7 @@
 				517A9EF51BE318B900FAA43A /* NSArray+PNTest.m in Sources */,
 				517A9EEC1BE3185800FAA43A /* PNSubscribeToPresenceChannelsTests.m in Sources */,
 				517A9EF31BE318B400FAA43A /* NSDictionary+PNTest.m in Sources */,
+				519E7C011CBC1FFF007D5770 /* PNPresenceChannelGroupTests.m in Sources */,
 				517A9EDC1BE3185800FAA43A /* PNChannelGroupSubscribeTests.m in Sources */,
 				517A9EE21BE3185800FAA43A /* PNHeartbeatTests.m in Sources */,
 				519E7BF91CBC0FBE007D5770 /* PNDeviceIndependentMatcherWithTiming.m in Sources */,
@@ -1132,7 +1142,9 @@
 				517A9EE41BE3185800FAA43A /* PNPresenceTests.m in Sources */,
 				517A9EED1BE3185800FAA43A /* PNTimeTokenTests.m in Sources */,
 				517A9EDF1BE3185800FAA43A /* PNClientConfigurationTests.m in Sources */,
+				519E7BFF1CBC1FFB007D5770 /* PNFilteringSubscribeTests.m in Sources */,
 				79E20D2E1C8B1C64001BC9CC /* PNBasicPresenceTestCase.m in Sources */,
+				519E7BFD1CBC1FF8007D5770 /* PNChannelGroupFilteringSubscribeTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1233,6 +1245,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				519E7BFA1CBC1FF3007D5770 /* PNChannelGroupPresenceEventTests.m in Sources */,
 				797BDD071C1F5176006EF006 /* PNPublishWithMobilePayloadTests.m in Sources */,
 				797BDD081C1F5176006EF006 /* PNConfigurationChiperKeyTests.m in Sources */,
 				797BDD091C1F5176006EF006 /* PNPublishTests.m in Sources */,
@@ -1244,6 +1257,7 @@
 				797BDD0F1C1F5176006EF006 /* PNAPNSTests.m in Sources */,
 				797BDD101C1F5176006EF006 /* PNHistoryTests.m in Sources */,
 				797BDD111C1F5176006EF006 /* PNSubscribeTests.m in Sources */,
+				519E7C001CBC1FFE007D5770 /* PNPresenceChannelGroupTests.m in Sources */,
 				797BDD121C1F5176006EF006 /* PNBasicSubscribeTestCase.m in Sources */,
 				797BDD131C1F5176006EF006 /* PNChannelGroupSubscribeTests.m in Sources */,
 				519E7BF81CBC0FBE007D5770 /* PNDeviceIndependentMatcherWithTiming.m in Sources */,
@@ -1262,7 +1276,9 @@
 				797BDD201C1F5176006EF006 /* PNPublishSizeOfMessage.m in Sources */,
 				797BDD211C1F5176006EF006 /* PNHeartbeatTests.m in Sources */,
 				797BDD221C1F5176006EF006 /* PNClientConfigurationTests.m in Sources */,
+				519E7BFE1CBC1FFA007D5770 /* PNFilteringSubscribeTests.m in Sources */,
 				79E20D2D1C8B1C64001BC9CC /* PNBasicPresenceTestCase.m in Sources */,
+				519E7BFC1CBC1FF7007D5770 /* PNChannelGroupFilteringSubscribeTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

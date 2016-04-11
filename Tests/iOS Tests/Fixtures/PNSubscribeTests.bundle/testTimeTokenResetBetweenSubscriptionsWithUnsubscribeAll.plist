@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>creationDate</key>
-	<date>2016-04-08T00:57:23Z</date>
+	<date>2016-04-11T18:06:53Z</date>
 	<key>scenes</key>
 	<array>
 		<dict>
@@ -34,11 +34,42 @@
 					<key>class</key>
 					<string>BKROriginalRequestFrame</string>
 					<key>creationDate</key>
-					<real>1460077043.291702</real>
+					<real>1460398013.1666451</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
-					<string>29723052-4919-423A-888F-F62571529A03</string>
+					<string>81ABB2F5-22DD-4617-ADED-10766187E94D</string>
+				</dict>
+				<dict>
+					<key>HTTPMethod</key>
+					<string>GET</string>
+					<key>HTTPShouldHandleCookies</key>
+					<true/>
+					<key>HTTPShouldUsePipelining</key>
+					<false/>
+					<key>URL</key>
+					<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=0</string>
+					<key>allHTTPHeaderFields</key>
+					<dict>
+						<key>Accept</key>
+						<string>*/*</string>
+						<key>Accept-Encoding</key>
+						<string>gzip,deflate</string>
+						<key>Connection</key>
+						<string>keep-alive</string>
+						<key>User-Agent</key>
+						<string>iPhone; CPU iPhone OS 9.2 Version</string>
+					</dict>
+					<key>allowsCellularAccess</key>
+					<true/>
+					<key>class</key>
+					<string>BKRCurrentRequestFrame</string>
+					<key>creationDate</key>
+					<real>1460398013.166683</real>
+					<key>timeoutInterval</key>
+					<real>60</real>
+					<key>uniqueIdentifier</key>
+					<string>81ABB2F5-22DD-4617-ADED-10766187E94D</string>
 				</dict>
 				<dict>
 					<key>HTTPMethod</key>
@@ -67,11 +98,11 @@
 					<key>class</key>
 					<string>BKRCurrentRequestFrame</string>
 					<key>creationDate</key>
-					<real>1460077043.2919099</real>
+					<real>1460398013.1667581</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
-					<string>29723052-4919-423A-888F-F62571529A03</string>
+					<string>81ABB2F5-22DD-4617-ADED-10766187E94D</string>
 				</dict>
 				<dict>
 					<key>MIMEType</key>
@@ -93,33 +124,33 @@
 						<key>Content-Type</key>
 						<string>text/javascript; charset="UTF-8"</string>
 						<key>Date</key>
-						<string>Fri, 08 Apr 2016 00:57:23 GMT</string>
+						<string>Mon, 11 Apr 2016 18:06:53 GMT</string>
 					</dict>
 					<key>class</key>
 					<string>BKRResponseFrame</string>
 					<key>creationDate</key>
-					<real>1460077043.3643529</real>
+					<real>1460398013.2621579</real>
 					<key>statusCode</key>
 					<integer>200</integer>
 					<key>uniqueIdentifier</key>
-					<string>29723052-4919-423A-888F-F62571529A03</string>
+					<string>81ABB2F5-22DD-4617-ADED-10766187E94D</string>
 				</dict>
 				<dict>
 					<key>class</key>
 					<string>BKRDataFrame</string>
 					<key>creationDate</key>
-					<real>1460077043.3643911</real>
+					<real>1460398013.2622011</real>
 					<key>data</key>
 					<data>
-					eyJ0Ijp7InQiOiIxNDYwMDc3MDQzMjQxODUx
-					MSIsInIiOjF9LCJtIjpbXX0=
+					eyJ0Ijp7InQiOiIxNDYwMzk4MDEzMTcwMjEx
+					NCIsInIiOjF9LCJtIjpbXX0=
 					</data>
 					<key>uniqueIdentifier</key>
-					<string>29723052-4919-423A-888F-F62571529A03</string>
+					<string>81ABB2F5-22DD-4617-ADED-10766187E94D</string>
 				</dict>
 			</array>
 			<key>uniqueIdentifier</key>
-			<string>29723052-4919-423A-888F-F62571529A03</string>
+			<string>81ABB2F5-22DD-4617-ADED-10766187E94D</string>
 		</dict>
 		<dict>
 			<key>frames</key>
@@ -132,7 +163,7 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14600770432418511&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0</string>
+					<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14603980131702114&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0</string>
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -149,11 +180,11 @@
 					<key>class</key>
 					<string>BKROriginalRequestFrame</string>
 					<key>creationDate</key>
-					<real>1460077043.3647771</real>
+					<real>1460398013.2626419</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
-					<string>D6DF4A39-949B-4C6D-A13E-A5B742E0A5FB</string>
+					<string>E451DAD3-2EF7-499C-A836-7E2D0F782FF7</string>
 				</dict>
 				<dict>
 					<key>HTTPMethod</key>
@@ -163,7 +194,7 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14600770432418511&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0</string>
+					<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14603980131702114&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0</string>
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -182,11 +213,11 @@
 					<key>class</key>
 					<string>BKRCurrentRequestFrame</string>
 					<key>creationDate</key>
-					<real>1460077043.364918</real>
+					<real>1460398013.262821</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
-					<string>D6DF4A39-949B-4C6D-A13E-A5B742E0A5FB</string>
+					<string>E451DAD3-2EF7-499C-A836-7E2D0F782FF7</string>
 				</dict>
 				<dict>
 					<key>class</key>
@@ -194,26 +225,26 @@
 					<key>code</key>
 					<integer>-999</integer>
 					<key>creationDate</key>
-					<real>1460077043.3650739</real>
+					<real>1460398013.2632551</real>
 					<key>domain</key>
 					<string>NSURLErrorDomain</string>
 					<key>uniqueIdentifier</key>
-					<string>D6DF4A39-949B-4C6D-A13E-A5B742E0A5FB</string>
+					<string>E451DAD3-2EF7-499C-A836-7E2D0F782FF7</string>
 					<key>userInfo</key>
 					<dict>
 						<key>BKRSceneUUIDKey</key>
-						<string>D6DF4A39-949B-4C6D-A13E-A5B742E0A5FB</string>
+						<string>E451DAD3-2EF7-499C-A836-7E2D0F782FF7</string>
 						<key>NSErrorFailingURLKey</key>
-						<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14600770432418511&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0</string>
+						<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14603980131702114&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0</string>
 						<key>NSErrorFailingURLStringKey</key>
-						<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14600770432418511&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0</string>
+						<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14603980131702114&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0</string>
 						<key>NSLocalizedDescription</key>
 						<string>cancelled</string>
 					</dict>
 				</dict>
 			</array>
 			<key>uniqueIdentifier</key>
-			<string>D6DF4A39-949B-4C6D-A13E-A5B742E0A5FB</string>
+			<string>E451DAD3-2EF7-499C-A836-7E2D0F782FF7</string>
 		</dict>
 		<dict>
 			<key>frames</key>
@@ -243,11 +274,11 @@
 					<key>class</key>
 					<string>BKROriginalRequestFrame</string>
 					<key>creationDate</key>
-					<real>1460077043.3651271</real>
+					<real>1460398013.2633219</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
-					<string>BF10D46E-313D-47AF-94AE-AB50170F18D2</string>
+					<string>3AC6BB10-3231-4152-B205-356C7AF74DAF</string>
 				</dict>
 				<dict>
 					<key>HTTPMethod</key>
@@ -274,11 +305,11 @@
 					<key>class</key>
 					<string>BKRCurrentRequestFrame</string>
 					<key>creationDate</key>
-					<real>1460077043.3651509</real>
+					<real>1460398013.263341</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
-					<string>BF10D46E-313D-47AF-94AE-AB50170F18D2</string>
+					<string>3AC6BB10-3231-4152-B205-356C7AF74DAF</string>
 				</dict>
 				<dict>
 					<key>HTTPMethod</key>
@@ -307,11 +338,11 @@
 					<key>class</key>
 					<string>BKRCurrentRequestFrame</string>
 					<key>creationDate</key>
-					<real>1460077043.3652239</real>
+					<real>1460398013.2639461</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
-					<string>BF10D46E-313D-47AF-94AE-AB50170F18D2</string>
+					<string>3AC6BB10-3231-4152-B205-356C7AF74DAF</string>
 				</dict>
 				<dict>
 					<key>MIMEType</key>
@@ -337,24 +368,24 @@
 						<key>Content-Type</key>
 						<string>text/javascript; charset="UTF-8"</string>
 						<key>Date</key>
-						<string>Fri, 08 Apr 2016 00:57:23 GMT</string>
+						<string>Mon, 11 Apr 2016 18:06:53 GMT</string>
 						<key>Server</key>
 						<string>Pubnub Presence</string>
 					</dict>
 					<key>class</key>
 					<string>BKRResponseFrame</string>
 					<key>creationDate</key>
-					<real>1460077043.4332089</real>
+					<real>1460398013.815336</real>
 					<key>statusCode</key>
 					<integer>200</integer>
 					<key>uniqueIdentifier</key>
-					<string>BF10D46E-313D-47AF-94AE-AB50170F18D2</string>
+					<string>3AC6BB10-3231-4152-B205-356C7AF74DAF</string>
 				</dict>
 				<dict>
 					<key>class</key>
 					<string>BKRDataFrame</string>
 					<key>creationDate</key>
-					<real>1460077043.433373</real>
+					<real>1460398013.8153701</real>
 					<key>data</key>
 					<data>
 					eyJzdGF0dXMiOiAyMDAsICJhY3Rpb24iOiAi
@@ -362,11 +393,11 @@
 					ZXJ2aWNlIjogIlByZXNlbmNlIn0=
 					</data>
 					<key>uniqueIdentifier</key>
-					<string>BF10D46E-313D-47AF-94AE-AB50170F18D2</string>
+					<string>3AC6BB10-3231-4152-B205-356C7AF74DAF</string>
 				</dict>
 			</array>
 			<key>uniqueIdentifier</key>
-			<string>BF10D46E-313D-47AF-94AE-AB50170F18D2</string>
+			<string>3AC6BB10-3231-4152-B205-356C7AF74DAF</string>
 		</dict>
 		<dict>
 			<key>frames</key>
@@ -396,11 +427,11 @@
 					<key>class</key>
 					<string>BKROriginalRequestFrame</string>
 					<key>creationDate</key>
-					<real>1460077043.4340971</real>
+					<real>1460398013.816025</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
-					<string>35C8F3CC-D19D-496D-9E1E-A87BC30112C0</string>
+					<string>FD816F49-EE34-47CD-AB80-2CCBFBF5CFC6</string>
 				</dict>
 				<dict>
 					<key>HTTPMethod</key>
@@ -429,11 +460,11 @@
 					<key>class</key>
 					<string>BKRCurrentRequestFrame</string>
 					<key>creationDate</key>
-					<real>1460077043.4343009</real>
+					<real>1460398013.816237</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
-					<string>35C8F3CC-D19D-496D-9E1E-A87BC30112C0</string>
+					<string>FD816F49-EE34-47CD-AB80-2CCBFBF5CFC6</string>
 				</dict>
 				<dict>
 					<key>MIMEType</key>
@@ -455,33 +486,33 @@
 						<key>Content-Type</key>
 						<string>text/javascript; charset="UTF-8"</string>
 						<key>Date</key>
-						<string>Fri, 08 Apr 2016 00:57:23 GMT</string>
+						<string>Mon, 11 Apr 2016 18:06:53 GMT</string>
 					</dict>
 					<key>class</key>
 					<string>BKRResponseFrame</string>
 					<key>creationDate</key>
-					<real>1460077043.4554701</real>
+					<real>1460398013.8341999</real>
 					<key>statusCode</key>
 					<integer>200</integer>
 					<key>uniqueIdentifier</key>
-					<string>35C8F3CC-D19D-496D-9E1E-A87BC30112C0</string>
+					<string>FD816F49-EE34-47CD-AB80-2CCBFBF5CFC6</string>
 				</dict>
 				<dict>
 					<key>class</key>
 					<string>BKRDataFrame</string>
 					<key>creationDate</key>
-					<real>1460077043.4555559</real>
+					<real>1460398013.8342409</real>
 					<key>data</key>
 					<data>
-					eyJ0Ijp7InQiOiIxNDYwMDc3MDQzMzMzMTcx
-					MyIsInIiOjF9LCJtIjpbXX0=
+					eyJ0Ijp7InQiOiIxNDYwMzk4MDEzNzQ2MTg2
+					NyIsInIiOjF9LCJtIjpbXX0=
 					</data>
 					<key>uniqueIdentifier</key>
-					<string>35C8F3CC-D19D-496D-9E1E-A87BC30112C0</string>
+					<string>FD816F49-EE34-47CD-AB80-2CCBFBF5CFC6</string>
 				</dict>
 			</array>
 			<key>uniqueIdentifier</key>
-			<string>35C8F3CC-D19D-496D-9E1E-A87BC30112C0</string>
+			<string>FD816F49-EE34-47CD-AB80-2CCBFBF5CFC6</string>
 		</dict>
 		<dict>
 			<key>frames</key>
@@ -494,7 +525,7 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14600770433331713&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0</string>
+					<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14603980137461867&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0</string>
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -511,11 +542,11 @@
 					<key>class</key>
 					<string>BKROriginalRequestFrame</string>
 					<key>creationDate</key>
-					<real>1460077043.4562891</real>
+					<real>1460398013.835088</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
-					<string>B69A20E3-1297-4848-8B8B-C52A2A589084</string>
+					<string>2794F459-82E9-4A69-9BBD-9F96B0853E22</string>
 				</dict>
 				<dict>
 					<key>HTTPMethod</key>
@@ -525,7 +556,7 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14600770433331713&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0</string>
+					<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14603980137461867&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0</string>
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -542,11 +573,11 @@
 					<key>class</key>
 					<string>BKRCurrentRequestFrame</string>
 					<key>creationDate</key>
-					<real>1460077043.4563329</real>
+					<real>1460398013.8351409</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
-					<string>B69A20E3-1297-4848-8B8B-C52A2A589084</string>
+					<string>2794F459-82E9-4A69-9BBD-9F96B0853E22</string>
 				</dict>
 				<dict>
 					<key>HTTPMethod</key>
@@ -556,7 +587,7 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14600770433331713&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0</string>
+					<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14603980137461867&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0</string>
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -575,11 +606,11 @@
 					<key>class</key>
 					<string>BKRCurrentRequestFrame</string>
 					<key>creationDate</key>
-					<real>1460077043.4565039</real>
+					<real>1460398013.835515</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
-					<string>B69A20E3-1297-4848-8B8B-C52A2A589084</string>
+					<string>2794F459-82E9-4A69-9BBD-9F96B0853E22</string>
 				</dict>
 				<dict>
 					<key>class</key>
@@ -587,26 +618,26 @@
 					<key>code</key>
 					<integer>-999</integer>
 					<key>creationDate</key>
-					<real>1460077043.4568889</real>
+					<real>1460398013.836</real>
 					<key>domain</key>
 					<string>NSURLErrorDomain</string>
 					<key>uniqueIdentifier</key>
-					<string>B69A20E3-1297-4848-8B8B-C52A2A589084</string>
+					<string>2794F459-82E9-4A69-9BBD-9F96B0853E22</string>
 					<key>userInfo</key>
 					<dict>
 						<key>BKRSceneUUIDKey</key>
-						<string>B69A20E3-1297-4848-8B8B-C52A2A589084</string>
+						<string>2794F459-82E9-4A69-9BBD-9F96B0853E22</string>
 						<key>NSErrorFailingURLKey</key>
-						<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14600770433331713&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0</string>
+						<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14603980137461867&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0</string>
 						<key>NSErrorFailingURLStringKey</key>
-						<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14600770433331713&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0</string>
+						<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14603980137461867&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0</string>
 						<key>NSLocalizedDescription</key>
 						<string>cancelled</string>
 					</dict>
 				</dict>
 			</array>
 			<key>uniqueIdentifier</key>
-			<string>B69A20E3-1297-4848-8B8B-C52A2A589084</string>
+			<string>2794F459-82E9-4A69-9BBD-9F96B0853E22</string>
 		</dict>
 		<dict>
 			<key>frames</key>
@@ -636,11 +667,11 @@
 					<key>class</key>
 					<string>BKROriginalRequestFrame</string>
 					<key>creationDate</key>
-					<real>1460077043.4568429</real>
+					<real>1460398013.836112</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
-					<string>90A026F7-DE19-4882-AF3D-88C34B86239A</string>
+					<string>5E407CCD-5E17-45A0-90EF-45AF5ADA009B</string>
 				</dict>
 				<dict>
 					<key>HTTPMethod</key>
@@ -669,11 +700,11 @@
 					<key>class</key>
 					<string>BKRCurrentRequestFrame</string>
 					<key>creationDate</key>
-					<real>1460077043.4572439</real>
+					<real>1460398013.836586</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
-					<string>90A026F7-DE19-4882-AF3D-88C34B86239A</string>
+					<string>5E407CCD-5E17-45A0-90EF-45AF5ADA009B</string>
 				</dict>
 				<dict>
 					<key>MIMEType</key>
@@ -699,24 +730,24 @@
 						<key>Content-Type</key>
 						<string>text/javascript; charset="UTF-8"</string>
 						<key>Date</key>
-						<string>Fri, 08 Apr 2016 00:57:23 GMT</string>
+						<string>Mon, 11 Apr 2016 18:06:54 GMT</string>
 						<key>Server</key>
 						<string>Pubnub Presence</string>
 					</dict>
 					<key>class</key>
 					<string>BKRResponseFrame</string>
 					<key>creationDate</key>
-					<real>1460077043.5429711</real>
+					<real>1460398014.014447</real>
 					<key>statusCode</key>
 					<integer>200</integer>
 					<key>uniqueIdentifier</key>
-					<string>90A026F7-DE19-4882-AF3D-88C34B86239A</string>
+					<string>5E407CCD-5E17-45A0-90EF-45AF5ADA009B</string>
 				</dict>
 				<dict>
 					<key>class</key>
 					<string>BKRDataFrame</string>
 					<key>creationDate</key>
-					<real>1460077043.5430489</real>
+					<real>1460398014.014591</real>
 					<key>data</key>
 					<data>
 					eyJzdGF0dXMiOiAyMDAsICJhY3Rpb24iOiAi
@@ -724,11 +755,11 @@
 					ZXJ2aWNlIjogIlByZXNlbmNlIn0=
 					</data>
 					<key>uniqueIdentifier</key>
-					<string>90A026F7-DE19-4882-AF3D-88C34B86239A</string>
+					<string>5E407CCD-5E17-45A0-90EF-45AF5ADA009B</string>
 				</dict>
 			</array>
 			<key>uniqueIdentifier</key>
-			<string>90A026F7-DE19-4882-AF3D-88C34B86239A</string>
+			<string>5E407CCD-5E17-45A0-90EF-45AF5ADA009B</string>
 		</dict>
 	</array>
 	<key>version</key>

@@ -74,15 +74,6 @@
                <Test
                   Identifier = "PNPresenceEventTests">
                </Test>
-               <Test
-                  Identifier = "PNSubscribeTests/testSimpleSubscribeWithTimeToken">
-               </Test>
-               <Test
-                  Identifier = "PNSubscribeTests/testTimeTokenResetBetweenSubscriptionsWithUnsubscribe">
-               </Test>
-               <Test
-                  Identifier = "PNSubscribeTests/testTimeTokenResetBetweenSubscriptionsWithUnsubscribeAll">
-               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>

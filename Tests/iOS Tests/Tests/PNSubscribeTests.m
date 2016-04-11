@@ -180,7 +180,7 @@
                               [NSSet setWithArray:expectedPresenceSubscriptions]);
         XCTAssertEqual(status.operation, PNSubscribeOperation);
         NSLog(@"timeToken: %@", status.currentTimetoken);
-        XCTAssertEqualObjects(status.currentTimetoken, @14600770411449016);
+        XCTAssertEqualObjects(status.currentTimetoken, @14603980110674834);
         XCTAssertEqualObjects(status.currentTimetoken, status.data.timetoken);
         
     };
@@ -197,7 +197,7 @@
         NSLog(@"%@", message.data.message);
         XCTAssertNil(message.data.actualChannel);
         XCTAssertEqualObjects(message.data.subscribedChannel, @"a");
-        XCTAssertEqualObjects(message.data.message, @"*********...... 6809 - 2016-04-07 17:57:21");
+        XCTAssertEqualObjects(message.data.message, @"**............. 9139 - 2016-04-11 11:06:51");
         [self.subscribeExpectation fulfill];
         self.subscribeExpectation = nil;
     };
@@ -218,7 +218,7 @@
                               [NSSet setWithArray:expectedPresenceSubscriptions]);
         XCTAssertEqual(status.operation, PNSubscribeOperation);
         NSLog(@"timeToken: %@", status.currentTimetoken);
-        XCTAssertEqualObjects(status.currentTimetoken, @14600770398133870);
+        XCTAssertEqualObjects(status.currentTimetoken, @14603980096637582);
         XCTAssertEqualObjects(status.currentTimetoken, status.data.timetoken);
         
     };
@@ -235,7 +235,7 @@
         NSLog(@"%@", message.data.message);
         XCTAssertNil(message.data.actualChannel);
         XCTAssertEqualObjects(message.data.subscribedChannel, @"a");
-        XCTAssertEqualObjects(message.data.message, @"********....... 6808 - 2016-04-07 17:57:20");
+        XCTAssertEqualObjects(message.data.message, @"*.............. 9138 - 2016-04-11 11:06:50");
         [self.subscribeExpectation fulfill];
     };
     [self PNTest_subscribeToChannels:[self subscriptionChannels] withPresence:NO];
