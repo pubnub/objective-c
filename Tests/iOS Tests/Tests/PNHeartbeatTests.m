@@ -46,6 +46,7 @@
             
             XCTAssertFalse(status.isError, @"Subscription should be successful to test heartbeat.");
             [self.subscribeExpectation fulfill];
+            self.subscribeExpectation = nil;
         }
         else if (status.operation == PNHeartbeatOperation) {
             

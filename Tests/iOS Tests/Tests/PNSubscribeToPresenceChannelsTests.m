@@ -62,7 +62,7 @@
                               [NSSet setWithArray:expectedPresenceSubscriptions]);
         XCTAssertEqual(status.operation, PNSubscribeOperation);
         NSLog(@"timeToken: %@", status.currentTimetoken);
-        XCTAssertEqualObjects(status.currentTimetoken, @14508182981759319);
+        XCTAssertEqualObjects(status.currentTimetoken, @14603978083353295);
         XCTAssertEqualObjects(status.currentTimetoken, status.data.timetoken);
         [self.subscribeExpectation fulfill];
     };
