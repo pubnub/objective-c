@@ -63,6 +63,8 @@
 
 - (void)tearDown {
     self.presenceEventExpectation = nil;
+    [self.otherClient unsubscribeFromAll];
+    [self.otherClient removeListener:self];
     self.otherClient = nil;
     [super tearDown];
 }

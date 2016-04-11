@@ -32,6 +32,7 @@
 - (void)tearDown {
     self.subscribeExpectation = nil;
     self.unsubscribeExpectation = nil;
+    [self.client unsubscribeFromAll];
     [self.client removeListener:self];
     [super tearDown];
 }
