@@ -47,15 +47,15 @@ static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupUnsubscribeTe
     NSArray *expectedChannelGroups;
     if (self.invocation.selector == @selector(testSimpleUnsubscribeWithNoPresence)) {
         shouldObservePresence = NO;
-        expectedMessage = @"********....... 8449 - 2015-12-22 13:28:00";
-        expectedTimeToken = @14508196796692323;
+        expectedMessage = @"************... 8549 - 2016-04-11 10:55:09";
+        expectedTimeToken = @14603973089382417;
         expectedChannelGroups = @[
                                   kPNChannelGroupTestsName
                                   ];
     } else if (self.invocation.selector == @selector(testSimpleUnsubscribeWithPresence)) {
         shouldObservePresence = YES;
-        expectedMessage =  @"*********...... 8450 - 2015-12-22 13:28:01";
-        expectedTimeToken = @14508196810395526;
+        expectedMessage =  @"*************.. 8550 - 2016-04-11 10:55:10";
+        expectedTimeToken = @14603973097088696;
         expectedChannelGroups = @[
                                   kPNChannelGroupTestsName,
                                   [kPNChannelGroupTestsName stringByAppendingString:@"-pnpres"]

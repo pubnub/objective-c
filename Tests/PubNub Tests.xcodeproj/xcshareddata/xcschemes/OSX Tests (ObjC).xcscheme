@@ -80,6 +80,15 @@
             </SkippedTests>
          </TestableReference>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "517A9ED21BE3181700FAA43A"
+            BuildableName = "OSX ObjC Tests.xctest"
+            BlueprintName = "OSX ObjC Tests"
+            ReferencedContainer = "container:PubNub Tests.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
