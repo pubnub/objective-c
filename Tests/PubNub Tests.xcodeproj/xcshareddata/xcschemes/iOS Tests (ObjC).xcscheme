@@ -54,6 +54,9 @@
                   Identifier = "PNChannelGroupFilteringSubscribeTests">
                </Test>
                <Test
+                  Identifier = "PNChannelGroupPresenceEventTests">
+               </Test>
+               <Test
                   Identifier = "PNChannelGroupUnsubscribeTests">
                </Test>
                <Test

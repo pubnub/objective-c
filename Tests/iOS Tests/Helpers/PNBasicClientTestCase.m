@@ -9,6 +9,7 @@
 #import <PubNub/PubNub.h>
 
 #import "PNDeviceIndependentMatcher.h"
+#import "PNDeviceIndependentMatcherWithTiming.h"
 #import "PNBasicClientTestCase.h"
 
 @implementation PNBasicClientTestCase
@@ -30,7 +31,8 @@
 
 - (BKRTestConfiguration *)testConfiguration {
     BKRTestConfiguration *defaultConfiguration = [super testConfiguration];
-    defaultConfiguration.matcherClass = [PNDeviceIndependentMatcher class];
+//    defaultConfiguration.matcherClass = [PNDeviceIndependentMatcher class];
+    defaultConfiguration.matcherClass = [PNDeviceIndependentMatcherWithTiming class];
     defaultConfiguration.beginRecordingBlock = nil;
     defaultConfiguration.endRecordingBlock = nil;
     defaultConfiguration.shouldSaveEmptyCassette = YES;

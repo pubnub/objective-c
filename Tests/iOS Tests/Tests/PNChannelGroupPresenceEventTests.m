@@ -160,7 +160,7 @@
     [self PNTest_subscribeToChannels:@[[self otherClientChannelName]] withPresence:YES];
 }
 
-- (void)DISABLE_testLeaveEvent {
+- (void)testLeaveEvent {
     PNWeakify(self);
     self.didReceiveStatusAssertions = ^void (PubNub *client, PNSubscribeStatus *status) {
         PNStrongify(self);
@@ -208,7 +208,7 @@
     [self PNTest_unsubscribeFromChannels:@[[self otherClientChannelName]] withPresence:YES];
 }
 
-- (void)DISABLE_testTimeoutEvent {
+- (void)testTimeoutEvent {
     PNWeakify(self);
     self.didReceiveStatusAssertions = ^void (PubNub *client, PNSubscribeStatus *status) {
         PNStrongify(self);

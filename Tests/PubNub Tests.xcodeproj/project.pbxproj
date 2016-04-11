@@ -55,6 +55,9 @@
 		517A9F071BE31ADB00FAA43A /* PNSubscribeToPresenceChannelsTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 79EF04D21B4EAB1A007478CB /* PNSubscribeToPresenceChannelsTests.bundle */; };
 		517A9F081BE31ADB00FAA43A /* PNTimeTokenTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 79EF04D31B4EAB1A007478CB /* PNTimeTokenTests.bundle */; };
 		517A9F091BE31ADB00FAA43A /* PNUnsubscribeTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 79EF04D41B4EAB1A007478CB /* PNUnsubscribeTests.bundle */; };
+		519E7BF71CBC0FBE007D5770 /* PNDeviceIndependentMatcherWithTiming.m in Sources */ = {isa = PBXBuildFile; fileRef = 519E7BF61CBC0FBE007D5770 /* PNDeviceIndependentMatcherWithTiming.m */; };
+		519E7BF81CBC0FBE007D5770 /* PNDeviceIndependentMatcherWithTiming.m in Sources */ = {isa = PBXBuildFile; fileRef = 519E7BF61CBC0FBE007D5770 /* PNDeviceIndependentMatcherWithTiming.m */; };
+		519E7BF91CBC0FBE007D5770 /* PNDeviceIndependentMatcherWithTiming.m in Sources */ = {isa = PBXBuildFile; fileRef = 519E7BF61CBC0FBE007D5770 /* PNDeviceIndependentMatcherWithTiming.m */; };
 		51A6E6001BE421DC00C20B77 /* PNDeviceIndependentMatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A6E5FF1BE421DC00C20B77 /* PNDeviceIndependentMatcher.m */; };
 		51A6E6011BE421DC00C20B77 /* PNDeviceIndependentMatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A6E5FF1BE421DC00C20B77 /* PNDeviceIndependentMatcher.m */; };
 		51BB25401B6814EF00A9F154 /* PNBasicSubscribeTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BB253F1B6814EF00A9F154 /* PNBasicSubscribeTestCase.swift */; };
@@ -256,6 +259,8 @@
 		517A9ED71BE3181700FAA43A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		519C327D1B20C11500FAC283 /* iOS ObjC Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "iOS ObjC Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		519C32811B20C11500FAC283 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		519E7BF51CBC0FBE007D5770 /* PNDeviceIndependentMatcherWithTiming.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNDeviceIndependentMatcherWithTiming.h; sourceTree = "<group>"; };
+		519E7BF61CBC0FBE007D5770 /* PNDeviceIndependentMatcherWithTiming.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNDeviceIndependentMatcherWithTiming.m; sourceTree = "<group>"; };
 		51A6E5FE1BE421DC00C20B77 /* PNDeviceIndependentMatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNDeviceIndependentMatcher.h; sourceTree = "<group>"; };
 		51A6E5FF1BE421DC00C20B77 /* PNDeviceIndependentMatcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNDeviceIndependentMatcher.m; sourceTree = "<group>"; };
 		51BB253F1B6814EF00A9F154 /* PNBasicSubscribeTestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNBasicSubscribeTestCase.swift; sourceTree = "<group>"; };
@@ -485,6 +490,8 @@
 			children = (
 				51A6E5FE1BE421DC00C20B77 /* PNDeviceIndependentMatcher.h */,
 				51A6E5FF1BE421DC00C20B77 /* PNDeviceIndependentMatcher.m */,
+				519E7BF51CBC0FBE007D5770 /* PNDeviceIndependentMatcherWithTiming.h */,
+				519E7BF61CBC0FBE007D5770 /* PNDeviceIndependentMatcherWithTiming.m */,
 			);
 			name = Matchers;
 			sourceTree = "<group>";
@@ -1109,6 +1116,7 @@
 				517A9EF31BE318B400FAA43A /* NSDictionary+PNTest.m in Sources */,
 				517A9EDC1BE3185800FAA43A /* PNChannelGroupSubscribeTests.m in Sources */,
 				517A9EE21BE3185800FAA43A /* PNHeartbeatTests.m in Sources */,
+				519E7BF91CBC0FBE007D5770 /* PNDeviceIndependentMatcherWithTiming.m in Sources */,
 				517A9EEF1BE3185800FAA43A /* PNConfigurationChiperKeyTests.m in Sources */,
 				517A9EDB1BE3185800FAA43A /* PNAPNSTests.m in Sources */,
 				51A6E6011BE421DC00C20B77 /* PNDeviceIndependentMatcher.m in Sources */,
@@ -1141,6 +1149,7 @@
 				79EF04B41B4EAAB7007478CB /* PNSubscribeToPresenceChannelsTests.m in Sources */,
 				79EF04C11B4EAB01007478CB /* NSDictionary+PNTest.m in Sources */,
 				79EF04A41B4EAAB7007478CB /* PNAPNSTests.m in Sources */,
+				519E7BF71CBC0FBE007D5770 /* PNDeviceIndependentMatcherWithTiming.m in Sources */,
 				79EF04AC1B4EAAB7007478CB /* PNHistoryTests.m in Sources */,
 				79EF04B31B4EAAB7007478CB /* PNSubscribeTests.m in Sources */,
 				79EF04BC1B4EAAE4007478CB /* PNBasicSubscribeTestCase.m in Sources */,
@@ -1237,6 +1246,7 @@
 				797BDD111C1F5176006EF006 /* PNSubscribeTests.m in Sources */,
 				797BDD121C1F5176006EF006 /* PNBasicSubscribeTestCase.m in Sources */,
 				797BDD131C1F5176006EF006 /* PNChannelGroupSubscribeTests.m in Sources */,
+				519E7BF81CBC0FBE007D5770 /* PNDeviceIndependentMatcherWithTiming.m in Sources */,
 				797BDD141C1F5176006EF006 /* PNBasicClientCryptTestCase.m in Sources */,
 				797BDD151C1F5176006EF006 /* PNClientStateChannelGroupTests.m in Sources */,
 				797BDD161C1F5176006EF006 /* PNDeviceIndependentMatcher.m in Sources */,
