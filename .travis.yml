@@ -53,3 +53,6 @@ after_failure:
  - cat -n ~/Library/Logs/scan/*
  - cat -n $TMPDIR/com.apple.dt.XCTest-status/Session*.log
  - cat -n ~/Library/Logs/DiagnosticReports/xctest*.crash
+notifications:
+  flowdock:
+    secure: kOxa/6eB6+bQumvYSh7yf/uPNQ5xRastjSkRbUrqVbYEiMiguCuoe8xkmU5JJxmNMpvFjYL9yowPo9LELMceVsWVflNEEWFQE5sJe9qifZu/SpOD8RUWfHmZ2jZBELmnLSDSAIxaAjQMb1LEedkBHGMVJknbb+DRs4fT31ilMUM=
