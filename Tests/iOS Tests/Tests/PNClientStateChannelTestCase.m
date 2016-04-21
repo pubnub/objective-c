@@ -6,9 +6,9 @@
 //
 //
 
-#import "PNSubscribeTestCase.h"
+#import "PNSubscribeLoopTestCase.h"
 
-@interface PNClientStateChannelTestCase : PNSubscribeTestCase
+@interface PNClientStateChannelTestCase : PNSubscribeLoopTestCase
 
 @end
 
@@ -26,6 +26,10 @@
 - (void)tearDown {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
+}
+
+- (NSArray<NSString *> *)subscribedChannels {
+    return @[@"a"];
 }
 
 - (void)testSetClientStateOnSubscribedChannel {

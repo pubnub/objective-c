@@ -14,6 +14,9 @@
 		5126AE8F1CC95FD400808AC6 /* PNClientStateChannelTestCase.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 5126AE8E1CC95FD400808AC6 /* PNClientStateChannelTestCase.bundle */; };
 		5126AE901CC95FD400808AC6 /* PNClientStateChannelTestCase.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 5126AE8E1CC95FD400808AC6 /* PNClientStateChannelTestCase.bundle */; };
 		5126AE911CC95FD400808AC6 /* PNClientStateChannelTestCase.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 5126AE8E1CC95FD400808AC6 /* PNClientStateChannelTestCase.bundle */; };
+		5126AE941CC977B000808AC6 /* PNSubscribeLoopTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 5126AE931CC977B000808AC6 /* PNSubscribeLoopTestCase.m */; };
+		5126AE951CC977B000808AC6 /* PNSubscribeLoopTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 5126AE931CC977B000808AC6 /* PNSubscribeLoopTestCase.m */; };
+		5126AE961CC977B000808AC6 /* PNSubscribeLoopTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 5126AE931CC977B000808AC6 /* PNSubscribeLoopTestCase.m */; };
 		517A9EDB1BE3185800FAA43A /* PNAPNSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04911B4EAAB7007478CB /* PNAPNSTests.m */; };
 		517A9EDC1BE3185800FAA43A /* PNChannelGroupSubscribeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04921B4EAAB7007478CB /* PNChannelGroupSubscribeTests.m */; };
 		517A9EDD1BE3185800FAA43A /* PNChannelGroupTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04931B4EAAB7007478CB /* PNChannelGroupTests.m */; };
@@ -87,9 +90,6 @@
 		51EC09491CC83490004102A7 /* PNClientTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51EC09481CC83490004102A7 /* PNClientTestCase.m */; };
 		51EC094A1CC83490004102A7 /* PNClientTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51EC09481CC83490004102A7 /* PNClientTestCase.m */; };
 		51EC094B1CC83490004102A7 /* PNClientTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51EC09481CC83490004102A7 /* PNClientTestCase.m */; };
-		51EC094E1CC8383E004102A7 /* PNSubscribeTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51EC094D1CC8383E004102A7 /* PNSubscribeTestCase.m */; };
-		51EC094F1CC8383E004102A7 /* PNSubscribeTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51EC094D1CC8383E004102A7 /* PNSubscribeTestCase.m */; };
-		51EC09501CC8383E004102A7 /* PNSubscribeTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51EC094D1CC8383E004102A7 /* PNSubscribeTestCase.m */; };
 		51EC09521CC93B99004102A7 /* PNTimeTokenTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51EC09511CC93B99004102A7 /* PNTimeTokenTestCase.m */; };
 		51EC09531CC93B99004102A7 /* PNTimeTokenTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51EC09511CC93B99004102A7 /* PNTimeTokenTestCase.m */; };
 		51EC09541CC93B99004102A7 /* PNTimeTokenTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 51EC09511CC93B99004102A7 /* PNTimeTokenTestCase.m */; };
@@ -275,6 +275,8 @@
 		4D1A1D5D049AC1123C7098EF /* Pods-iOS Swift Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS Swift Tests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-iOS Swift Tests/Pods-iOS Swift Tests.release.xcconfig"; sourceTree = "<group>"; };
 		5126AE861CC9598000808AC6 /* PNClientStateChannelTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNClientStateChannelTestCase.m; path = Tests/PNClientStateChannelTestCase.m; sourceTree = "<group>"; };
 		5126AE8E1CC95FD400808AC6 /* PNClientStateChannelTestCase.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = PNClientStateChannelTestCase.bundle; path = Fixtures/PNClientStateChannelTestCase.bundle; sourceTree = "<group>"; };
+		5126AE921CC977B000808AC6 /* PNSubscribeLoopTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PNSubscribeLoopTestCase.h; path = Helpers/PNSubscribeLoopTestCase.h; sourceTree = "<group>"; };
+		5126AE931CC977B000808AC6 /* PNSubscribeLoopTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNSubscribeLoopTestCase.m; path = Helpers/PNSubscribeLoopTestCase.m; sourceTree = "<group>"; };
 		517A9ED31BE3181700FAA43A /* OSX ObjC Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "OSX ObjC Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		517A9ED71BE3181700FAA43A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		519C327D1B20C11500FAC283 /* iOS ObjC Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "iOS ObjC Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -289,8 +291,6 @@
 		51D889F11B66F49E009127D0 /* PNBasicClientTestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNBasicClientTestCase.swift; sourceTree = "<group>"; };
 		51EC09471CC83490004102A7 /* PNClientTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PNClientTestCase.h; path = Helpers/PNClientTestCase.h; sourceTree = "<group>"; };
 		51EC09481CC83490004102A7 /* PNClientTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNClientTestCase.m; path = Helpers/PNClientTestCase.m; sourceTree = "<group>"; };
-		51EC094C1CC8383E004102A7 /* PNSubscribeTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PNSubscribeTestCase.h; path = Helpers/PNSubscribeTestCase.h; sourceTree = "<group>"; };
-		51EC094D1CC8383E004102A7 /* PNSubscribeTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNSubscribeTestCase.m; path = Helpers/PNSubscribeTestCase.m; sourceTree = "<group>"; };
 		51EC09511CC93B99004102A7 /* PNTimeTokenTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNTimeTokenTestCase.m; path = Tests/PNTimeTokenTestCase.m; sourceTree = "<group>"; };
 		51EC09551CC93D62004102A7 /* PNTimeTokenTestCase.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = PNTimeTokenTestCase.bundle; path = Fixtures/PNTimeTokenTestCase.bundle; sourceTree = "<group>"; };
 		51EC09591CC93E54004102A7 /* XCTestCase+PNAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "XCTestCase+PNAdditions.h"; path = "iOS Tests/Helpers/XCTestCase+PNAdditions.h"; sourceTree = "<group>"; };
@@ -432,8 +432,8 @@
 				799CE2F21C45B8FD00AAEBDC /* PNBasicPresenceTestCase.m */,
 				51EC09471CC83490004102A7 /* PNClientTestCase.h */,
 				51EC09481CC83490004102A7 /* PNClientTestCase.m */,
-				51EC094C1CC8383E004102A7 /* PNSubscribeTestCase.h */,
-				51EC094D1CC8383E004102A7 /* PNSubscribeTestCase.m */,
+				5126AE921CC977B000808AC6 /* PNSubscribeLoopTestCase.h */,
+				5126AE931CC977B000808AC6 /* PNSubscribeLoopTestCase.m */,
 			);
 			name = "Base Test Classes";
 			path = "iOS Tests";
@@ -1146,6 +1146,7 @@
 				517A9EE11BE3185800FAA43A /* PNClientStateChannelTests.m in Sources */,
 				517A9EF41BE318B700FAA43A /* NSString+PNTest.m in Sources */,
 				517A9EF21BE3189900FAA43A /* PNBasicClientCryptTestCase.m in Sources */,
+				5126AE961CC977B000808AC6 /* PNSubscribeLoopTestCase.m in Sources */,
 				517A9EE71BE3185800FAA43A /* PNPublishSizeOfMessage.m in Sources */,
 				517A9EEA1BE3185800FAA43A /* PNPublishWithMobilePayloadTests.m in Sources */,
 				517A9EEE1BE3185800FAA43A /* PNUnsubscribeTests.m in Sources */,
@@ -1167,7 +1168,6 @@
 				51EC094B1CC83490004102A7 /* PNClientTestCase.m in Sources */,
 				517A9EE61BE3185800FAA43A /* PNPublishCompressedTests.m in Sources */,
 				517A9EDD1BE3185800FAA43A /* PNChannelGroupTests.m in Sources */,
-				51EC09501CC8383E004102A7 /* PNSubscribeTestCase.m in Sources */,
 				517A9EE91BE3185800FAA43A /* PNPublishWithHistoryTests.m in Sources */,
 				517A9EF11BE3189700FAA43A /* PNBasicSubscribeTestCase.m in Sources */,
 				51EC09541CC93B99004102A7 /* PNTimeTokenTestCase.m in Sources */,
@@ -1187,7 +1187,6 @@
 				79EF04B21B4EAAB7007478CB /* PNPublishWithMobilePayloadTests.m in Sources */,
 				9652F3E51BA31F7D001E940A /* PNConfigurationChiperKeyTests.m in Sources */,
 				79EF04B01B4EAAB7007478CB /* PNPublishTests.m in Sources */,
-				51EC094E1CC8383E004102A7 /* PNSubscribeTestCase.m in Sources */,
 				79EF04B51B4EAAB7007478CB /* PNTimeTokenTests.m in Sources */,
 				79EF04B61B4EAAB7007478CB /* PNUnsubscribeTests.m in Sources */,
 				79EF04AE1B4EAAB7007478CB /* PNPublishCompressedTests.m in Sources */,
@@ -1215,6 +1214,7 @@
 				79EF04C21B4EAB01007478CB /* NSString+PNTest.m in Sources */,
 				79EF04B11B4EAAB7007478CB /* PNPublishWithHistoryTests.m in Sources */,
 				79EF04AD1B4EAAB7007478CB /* PNPresenceTests.m in Sources */,
+				5126AE941CC977B000808AC6 /* PNSubscribeLoopTestCase.m in Sources */,
 				79EF04A61B4EAAB7007478CB /* PNChannelGroupTests.m in Sources */,
 				5126AE871CC9598000808AC6 /* PNClientStateChannelTestCase.m in Sources */,
 				96F0239E1B580D0000C4A581 /* NSArray+PNTest.m in Sources */,
@@ -1284,6 +1284,7 @@
 				797BDD071C1F5176006EF006 /* PNPublishWithMobilePayloadTests.m in Sources */,
 				797BDD081C1F5176006EF006 /* PNConfigurationChiperKeyTests.m in Sources */,
 				797BDD091C1F5176006EF006 /* PNPublishTests.m in Sources */,
+				5126AE951CC977B000808AC6 /* PNSubscribeLoopTestCase.m in Sources */,
 				797BDD0A1C1F5176006EF006 /* PNTimeTokenTests.m in Sources */,
 				797BDD0B1C1F5176006EF006 /* PNUnsubscribeTests.m in Sources */,
 				797BDD0C1C1F5176006EF006 /* PNPublishCompressedTests.m in Sources */,
@@ -1305,7 +1306,6 @@
 				51EC094A1CC83490004102A7 /* PNClientTestCase.m in Sources */,
 				797BDD1B1C1F5176006EF006 /* NSString+PNTest.m in Sources */,
 				797BDD1C1C1F5176006EF006 /* PNPublishWithHistoryTests.m in Sources */,
-				51EC094F1CC8383E004102A7 /* PNSubscribeTestCase.m in Sources */,
 				797BDD1D1C1F5176006EF006 /* PNPresenceTests.m in Sources */,
 				797BDD1E1C1F5176006EF006 /* PNChannelGroupTests.m in Sources */,
 				51EC09531CC93B99004102A7 /* PNTimeTokenTestCase.m in Sources */,
