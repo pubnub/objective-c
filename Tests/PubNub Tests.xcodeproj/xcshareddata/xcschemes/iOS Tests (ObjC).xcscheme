@@ -39,6 +39,9 @@
             </BuildableReference>
             <SkippedTests>
                <Test
+                  Identifier = "PNAPNSTests">
+               </Test>
+               <Test
                   Identifier = "PNBasicClientCryptTestCase">
                </Test>
                <Test
@@ -60,6 +63,9 @@
                   Identifier = "PNChannelGroupSubscribeTests">
                </Test>
                <Test
+                  Identifier = "PNChannelGroupTests">
+               </Test>
+               <Test
                   Identifier = "PNChannelGroupUnsubscribeTests">
                </Test>
                <Test
@@ -70,6 +76,9 @@
                </Test>
                <Test
                   Identifier = "PNClientStateChannelTests">
+               </Test>
+               <Test
+                  Identifier = "PNClientTestCase">
                </Test>
                <Test
                   Identifier = "PNConfigurationChiperKeyTests">
@@ -93,6 +102,24 @@
                   Identifier = "PNPresenceTests">
                </Test>
                <Test
+                  Identifier = "PNPublishCompressedTests">
+               </Test>
+               <Test
+                  Identifier = "PNPublishSizeOfMessage">
+               </Test>
+               <Test
+                  Identifier = "PNPublishTests">
+               </Test>
+               <Test
+                  Identifier = "PNPublishWithHistoryTests">
+               </Test>
+               <Test
+                  Identifier = "PNPublishWithMobilePayloadTests">
+               </Test>
+               <Test
+                  Identifier = "PNSubscribeTestCase">
+               </Test>
+               <Test
                   Identifier = "PNSubscribeTests">
                </Test>
                <Test
@@ -106,6 +133,9 @@
                </Test>
                <Test
                   Identifier = "PNSubscribeToPresenceChannelsTests">
+               </Test>
+               <Test
+                  Identifier = "PNTimeTokenTests">
                </Test>
                <Test
                   Identifier = "PNUnsubscribeTests">

@@ -6,8 +6,8 @@
 //
 //
 
-#import <BeKindRewind/BKRPlayheadMatcher.h>
+#import <BeKindRewind/BeKindRewind.h>
 
-@interface PNDeviceIndependentMatcher : BKRPlayheadMatcher
+@interface PNDeviceIndependentMatcher : BKRPlayheadWithTimingMatcher
 
 @end
