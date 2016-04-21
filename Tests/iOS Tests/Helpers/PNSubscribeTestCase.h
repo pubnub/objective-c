@@ -8,6 +8,9 @@
 
 #import "PNClientTestCase.h"
 
-@interface PNSubscribeTestCase : PNClientTestCase
+@interface PNSubscribeTestCase : PNClientTestCase <PNObjectEventListener>
+
+- (NSArray<NSString *> *)subscribedChannels;
+- (BOOL)shouldSubscribeWithPresence;
 
 @end
