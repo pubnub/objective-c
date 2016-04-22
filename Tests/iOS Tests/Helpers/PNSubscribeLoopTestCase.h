@@ -8,7 +8,15 @@
 
 #import "PNClientTestCase.h"
 
+typedef void (^PNClientDidReceiveStatusHandler)(PubNub *client, PNStatus *status);
+typedef void (^PNClientDidReceiveMessageHandler)(PubNub *client, PNMessageResult *message);
+typedef void (^PNClientDidReceivePresenceEventHandler)(PubNub *client, PNPresenceEventResult *event);
+
 @interface PNSubscribeLoopTestCase : PNClientTestCase <PNObjectEventListener>
+
+@property (nonatomic, copy) PNClientDidReceiveStatusHandler didReceiveStatusHandler;
+@property (nonatomic, copy) PNClientDidReceiveMessageHandler didReceiveMessageHandler;
+@property (nonatomic, copy) PNClientDidReceivePresenceEventHandler didReceivePresenceEventHandler;
 
 - (NSArray<NSString *> *)subscribedChannels;
 - (NSArray<NSString *> *)subscribedChannelGroups;
