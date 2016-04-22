@@ -34,30 +34,58 @@
 }
 
 - (void)testPublishString {
-    __block XCTestExpectation *publishExpectation = [self expectationWithDescription:@"publish"];
     PNWeakify(self);
-    [self.client publish:@"test" toChannel:self.publishChannel withCompletion:^(PNPublishStatus * _Nonnull status) {
+    [self performExpectedPublish:@"test" toChannel:self.publishChannel withCompletion:^(PNPublishStatus * _Nonnull status) {
         PNStrongify(self);
         [self PN_assertOnPublishStatus:status withSuccess:YES];
-        XCTAssertEqualObjects(status.data.timetoken, @14613474403206448);
-        [publishExpectation fulfill];
-    }];
-    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
-        XCTAssertNil(error);
+        XCTAssertEqualObjects(status.data.timetoken, @14613480530866726);
     }];
 }
 
 - (void)testPublishNilMessage {
-    __block XCTestExpectation *publishExpectation = [self expectationWithDescription:@"publish"];
     PNWeakify(self);
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wnonnull"
-    [self.client publish:nil toChannel:self.publishChannel withCompletion:^(PNPublishStatus * _Nonnull status) {
+    [self performExpectedPublish:nil toChannel:self.publishChannel withCompletion:^(PNPublishStatus * _Nonnull status) {
         PNStrongify(self);
         [self PN_assertOnPublishStatus:status withSuccess:NO];
+    }];
+}
+
+- (void)testPublishStringToNilChannel {
+    PNWeakify(self);
+    [self performExpectedPublish:@"test" toChannel:nil withCompletion:^(PNPublishStatus * _Nonnull status) {
+        PNStrongify(self);
+        [self PN_assertOnPublishStatus:status withSuccess:NO];
+    }];
+}
+
+- (void)testPublishDictionary {
+    PNWeakify(self);
+    [self performExpectedPublish:@{@"test": @"test"} toChannel:self.publishChannel withCompletion:^(PNPublishStatus * _Nonnull status) {
+        PNStrongify(self);
+        [self PN_assertOnPublishStatus:status withSuccess:YES];
+        XCTAssertEqualObjects(status.data.timetoken, @14613480529107131);
+    }];
+}
+
+- (void)testPublishNestedDictionary {
+    PNWeakify(self);
+    [self performExpectedPublish:@{@"test": @{@"test": @"test"}} toChannel:self.publishChannel withCompletion:^(PNPublishStatus * _Nonnull status) {
+        PNStrongify(self);
+        [self PN_assertOnPublishStatus:status withSuccess:YES];
+        XCTAssertEqualObjects(status.data.timetoken, @14613480529971055);
+    }];
+}
+
+#pragma mark - Helper
+
+- (void)performExpectedPublish:(id)message toChannel:(NSString *)channel withCompletion:(PNPublishCompletionBlock)completionBlock {
+    __block XCTestExpectation *publishExpectation = [self expectationWithDescription:@"publish"];
+    [self.client publish:message toChannel:channel withCompletion:^(PNPublishStatus * _Nonnull status) {
+        if (completionBlock) {
+            completionBlock(status);
+        }
         [publishExpectation fulfill];
     }];
-#pragma clang diagnostic pop
     [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
     }];
