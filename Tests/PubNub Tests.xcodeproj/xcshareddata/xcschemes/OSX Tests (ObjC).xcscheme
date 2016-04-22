@@ -117,6 +117,9 @@
                   Identifier = "PNPublishWithMobilePayloadTests">
                </Test>
                <Test
+                  Identifier = "PNSubscribeLoopTestCase">
+               </Test>
+               <Test
                   Identifier = "PNSubscribeTestCase">
                </Test>
                <Test

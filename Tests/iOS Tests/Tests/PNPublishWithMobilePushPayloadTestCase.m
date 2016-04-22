@@ -34,32 +34,13 @@
 }
 
 - (void)testPublishStringWithStoreInHistory {
-    PNWeakify(self);
     NSDictionary *payload = @{@"aps" :
                                   @{@"alert" : @"You got your emails.@",
                                     @"badge" : @(9),
                                     @"sound" : @"bingbong.aiff"},
                               @"acme 1" : @(42)};
-    [self performExpectedPublish:@"test" toChannel:self.publishChannel withMobilePushPayload:payload withCompletion:^(PNPublishStatus * _Nonnull status) {
-        PNStrongify(self);
-        [self PN_assertOnPublishStatus:status withSuccess:YES];
-        XCTAssertEqualObjects(status.data.timetoken, @14613497217595275);
-    }];
-}
-
-#pragma mark - Helper
-
-- (void)performExpectedPublish:(id)message toChannel:(NSString *)channel withMobilePushPayload:(NSDictionary *)pushPayload withCompletion:(PNPublishCompletionBlock)completionBlock {
-    __block XCTestExpectation *publishExpectation = [self expectationWithDescription:@"publish"];
-    [self.client publish:message toChannel:channel mobilePushPayload:pushPayload withCompletion:^(PNPublishStatus * _Nonnull status) {
-        if (completionBlock) {
-            completionBlock(status);
-        }
-        [publishExpectation fulfill];
-    }];
-    [self waitForExpectationsWithTimeout:kPNPublishTimeout handler:^(NSError * _Nullable error) {
-        XCTAssertNil(error);
-    }];
+    [self.client publish:@"test" toChannel:self.publishChannel mobilePushPayload:payload withCompletion:[self PN_successfulPublishCompletionWithExpectedTimeToken:@14613497217595275]];
+    [self waitFor:kPNPublishTimeout];
 }
 
 @end

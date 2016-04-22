@@ -34,27 +34,8 @@
 }
 
 - (void)testPublishStringWithStoreInHistory {
-    PNWeakify(self);
-    [self performExpectedPublish:@"test" toChannel:self.publishChannel withStoreInHistory:YES withCompletion:^(PNPublishStatus * _Nonnull status) {
-        PNStrongify(self);
-        [self PN_assertOnPublishStatus:status withSuccess:YES];
-        XCTAssertEqualObjects(status.data.timetoken, @14613497218336166);
-    }];
-}
-
-#pragma mark - Helper
-
-- (void)performExpectedPublish:(id)message toChannel:(NSString *)channel withStoreInHistory:(BOOL)shouldStoreInHistory withCompletion:(PNPublishCompletionBlock)completionBlock {
-    __block XCTestExpectation *publishExpectation = [self expectationWithDescription:@"publish"];
-    [self.client publish:message toChannel:channel storeInHistory:shouldStoreInHistory withCompletion:^(PNPublishStatus * _Nonnull status) {
-        if (completionBlock) {
-            completionBlock(status);
-        }
-        [publishExpectation fulfill];
-    }];
-    [self waitForExpectationsWithTimeout:kPNPublishTimeout handler:^(NSError * _Nullable error) {
-        XCTAssertNil(error);
-    }];
+    [self.client publish:@"test" toChannel:self.publishChannel storeInHistory:YES withCompletion:[self PN_successfulPublishCompletionWithExpectedTimeToken:@14613497218336166]];
+    [self waitFor:kPNPublishTimeout];
 }
 
 @end
