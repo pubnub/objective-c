@@ -346,6 +346,7 @@
 		5126AED51CCAA50800808AC6 /* PNPublishWithStoreInHistoryTestCase.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = PNPublishWithStoreInHistoryTestCase.bundle; path = Fixtures/PNPublishWithStoreInHistoryTestCase.bundle; sourceTree = "<group>"; };
 		5126AED61CCAA50800808AC6 /* PNPublishSizeOfMessageTestCase.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = PNPublishSizeOfMessageTestCase.bundle; path = Fixtures/PNPublishSizeOfMessageTestCase.bundle; sourceTree = "<group>"; };
 		5126AED71CCAA50800808AC6 /* PNPublishWithCompressionTestCase.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = PNPublishWithCompressionTestCase.bundle; path = Fixtures/PNPublishWithCompressionTestCase.bundle; sourceTree = "<group>"; };
+		5126AEE71CCABF7300808AC6 /* PNTestConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PNTestConstants.h; path = Helpers/PNTestConstants.h; sourceTree = "<group>"; };
 		517A9ED31BE3181700FAA43A /* OSX ObjC Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "OSX ObjC Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		517A9ED71BE3181700FAA43A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		519C327D1B20C11500FAC283 /* iOS ObjC Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "iOS ObjC Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -491,6 +492,7 @@
 		178251201B30AAE6006BC234 /* Base Test Classes */ = {
 			isa = PBXGroup;
 			children = (
+				5126AEE71CCABF7300808AC6 /* PNTestConstants.h */,
 				51EC09471CC83490004102A7 /* PNClientTestCase.h */,
 				51EC09481CC83490004102A7 /* PNClientTestCase.m */,
 				5126AE921CC977B000808AC6 /* PNSubscribeLoopTestCase.h */,

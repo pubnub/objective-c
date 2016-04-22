@@ -47,4 +47,11 @@
     return configuration;
 }
 
+- (void)waitFor:(NSTimeInterval)timeout {
+    NSParameterAssert(timeout);
+    [self waitForExpectationsWithTimeout:timeout handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+}
+
 @end

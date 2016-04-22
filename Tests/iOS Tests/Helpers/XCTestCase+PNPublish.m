@@ -28,4 +28,29 @@
     }
 }
 
+//- (PNPublishCompletionBlock)PN_assertWithSuccess:(BOOL)isSuccessful withExpectedTimetoken:(NSNumber *)timeToken {
+//    __block XCTestExpectation *publishExpectation = [self expectationWithDescription:@"publish"];
+//    return ^void (PNPublishStatus *status) {
+//        
+//        [publishExpectation fulfill];
+//    };
+//}
+
+- (PNPublishCompletionBlock)PN_successfulPublishCompletionWithExpectedTimeToken:(NSNumber *)timeToken {
+    __block XCTestExpectation *publishExpectation = [self expectationWithDescription:@"publish"];
+    return ^void (PNPublishStatus *status) {
+        [self PN_assertOnPublishStatus:status withSuccess:YES];
+        XCTAssertEqualObjects(status.data.timetoken, timeToken);
+        [publishExpectation fulfill];
+    };
+}
+
+- (PNPublishCompletionBlock)PN_failedPublishCompletion {
+    __block XCTestExpectation *publishExpectation = [self expectationWithDescription:@"publish"];
+    return ^void (PNPublishStatus *status) {
+        [self PN_assertOnPublishStatus:status withSuccess:NO];
+        [publishExpectation fulfill];
+    };
+}
+
 @end

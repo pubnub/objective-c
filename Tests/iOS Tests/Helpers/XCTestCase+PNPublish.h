@@ -14,4 +14,8 @@
 
 - (void)PN_assertOnPublishStatus:(PNPublishStatus *)status withSuccess:(BOOL)isSuccessful;
 
+//- (PNPublishCompletionBlock)PN_assertWithSuccess:(BOOL)isSuccessful withExpectedTimetoken:(NSNumber *)timeToken;
+- (PNPublishCompletionBlock)PN_successfulPublishCompletionWithExpectedTimeToken:(NSNumber *)timeToken;
+- (PNPublishCompletionBlock)PN_failedPublishCompletion;
+
 @end
