@@ -60,7 +60,7 @@
         }
         [publishExpectation fulfill];
     }];
-    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+    [self waitForExpectationsWithTimeout:kPNPublishTimeout handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
     }];
 }

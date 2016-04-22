@@ -28,7 +28,7 @@
         XCTAssertEqualObjects(result.data.timetoken, @14612575985029626);
         [timeTokenExpectation fulfill];
     }];
-    [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:kPNTimeTokenTimeout handler:^(NSError *error) {
         XCTAssertNil(error);
     }];
 }
