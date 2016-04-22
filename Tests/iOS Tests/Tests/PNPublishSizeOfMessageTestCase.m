@@ -7,6 +7,7 @@
 //
 
 #import "PNClientTestCase.h"
+#import "XCTestCase+PNPublish.h"
 
 @interface PNPublishSizeOfMessageTestCase : PNClientTestCase
 
@@ -15,7 +16,7 @@
 @implementation PNPublishSizeOfMessageTestCase
 
 - (BOOL)isRecording {
-    return YES;
+    return NO;
 }
 
 - (void)setUp {
@@ -26,6 +27,33 @@
 - (void)tearDown {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
+}
+
+- (NSString *)publishChannel {
+    return @"a";
+}
+
+- (void)testSizeOfStringMessage {
+    PNWeakify(self);
+    [self performExpectedSizeOfMessage:@"test" toChannel:self.publishChannel withCompletion:^(NSInteger size) {
+        PNStrongify(self);
+        XCTAssertEqual(size, 341);
+    }];
+}
+
+#pragma mark - Helper
+
+- (void)performExpectedSizeOfMessage:(id)message toChannel:(NSString *)channel withCompletion:(PNMessageSizeCalculationCompletionBlock)completionBlock {
+    __block XCTestExpectation *sizeExpectation = [self expectationWithDescription:@"publish size"];
+    [self.client sizeOfMessage:message toChannel:channel withCompletion:^(NSInteger size) {
+        if (completionBlock) {
+            completionBlock(size);
+        }
+        [sizeExpectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
 }
 
 @end

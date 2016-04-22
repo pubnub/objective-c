@@ -1,5 +1,5 @@
 //
-//  PNPublishWithMobilePushPayloadTestCase.m
+//  PNPublishWithStoreInHistoryTestCase.m
 //  PubNub Tests
 //
 //  Created by Jordan Zucker on 4/22/16.
@@ -9,11 +9,11 @@
 #import "PNClientTestCase.h"
 #import "XCTestCase+PNPublish.h"
 
-@interface PNPublishWithMobilePushPayloadTestCase : PNClientTestCase
+@interface PNPublishWithStoreInHistoryTestCase : PNClientTestCase
 
 @end
 
-@implementation PNPublishWithMobilePushPayloadTestCase
+@implementation PNPublishWithStoreInHistoryTestCase
 
 - (BOOL)isRecording {
     return NO;
@@ -35,23 +35,18 @@
 
 - (void)testPublishStringWithStoreInHistory {
     PNWeakify(self);
-    NSDictionary *payload = @{@"aps" :
-                                  @{@"alert" : @"You got your emails.@",
-                                    @"badge" : @(9),
-                                    @"sound" : @"bingbong.aiff"},
-                              @"acme 1" : @(42)};
-    [self performExpectedPublish:@"test" toChannel:self.publishChannel withMobilePushPayload:payload withCompletion:^(PNPublishStatus * _Nonnull status) {
+    [self performExpectedPublish:@"test" toChannel:self.publishChannel withStoreInHistory:YES withCompletion:^(PNPublishStatus * _Nonnull status) {
         PNStrongify(self);
         [self PN_assertOnPublishStatus:status withSuccess:YES];
-        XCTAssertEqualObjects(status.data.timetoken, @14613497217595275);
+        XCTAssertEqualObjects(status.data.timetoken, @14613497218336166);
     }];
 }
 
 #pragma mark - Helper
 
-- (void)performExpectedPublish:(id)message toChannel:(NSString *)channel withMobilePushPayload:(NSDictionary *)pushPayload withCompletion:(PNPublishCompletionBlock)completionBlock {
+- (void)performExpectedPublish:(id)message toChannel:(NSString *)channel withStoreInHistory:(BOOL)shouldStoreInHistory withCompletion:(PNPublishCompletionBlock)completionBlock {
     __block XCTestExpectation *publishExpectation = [self expectationWithDescription:@"publish"];
-    [self.client publish:message toChannel:channel mobilePushPayload:pushPayload withCompletion:^(PNPublishStatus * _Nonnull status) {
+    [self.client publish:message toChannel:channel storeInHistory:shouldStoreInHistory withCompletion:^(PNPublishStatus * _Nonnull status) {
         if (completionBlock) {
             completionBlock(status);
         }
