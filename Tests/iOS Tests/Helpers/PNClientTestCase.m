@@ -36,6 +36,9 @@
     defaultConfiguration.endRecordingBlock = nil;
     defaultConfiguration.shouldSaveEmptyCassette = YES;
     defaultConfiguration.tearDownExpectationTimeout = 60.0;
+    defaultConfiguration.requestMatchingFailedBlock = ^void (NSURLRequest *request) {
+        XCTFail(@"Failed to match request: %@", request);
+    };
     return defaultConfiguration;
 }
 

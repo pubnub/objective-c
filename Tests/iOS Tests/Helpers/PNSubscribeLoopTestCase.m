@@ -78,7 +78,6 @@
 #pragma mark - PNObjectEventListener
 
 - (void)client:(PubNub *)client didReceiveStatus:(PNStatus *)status {
-    NSLog(@"status: %@", status.debugDescription);
     if (self.isSettingUp) {
         XCTAssertEqual(status.operation, PNSubscribeOperation);
         XCTAssertEqual(status.category, PNConnectedCategory);
