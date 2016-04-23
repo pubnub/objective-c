@@ -33,7 +33,7 @@
     return @"a";
 }
 
-- (void)testPublishStringWithStoreInHistory {
+- (void)testPublishStringWithMobilePushPayload {
     NSDictionary *payload = @{@"aps" :
                                   @{@"alert" : @"You got your emails.@",
                                     @"badge" : @(9),
