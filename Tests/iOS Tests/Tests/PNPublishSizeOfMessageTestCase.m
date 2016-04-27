@@ -7,7 +7,7 @@
 //
 
 #import "PNClientTestCase.h"
-#import "XCTestCase+PNPublish.h"
+#import "XCTestCase+PNSizeOfMessage.h"
 
 @interface PNPublishSizeOfMessageTestCase : PNClientTestCase
 
@@ -34,26 +34,8 @@
 }
 
 - (void)testSizeOfStringMessage {
-    PNWeakify(self);
-    [self performExpectedSizeOfMessage:@"test" toChannel:self.publishChannel withCompletion:^(NSInteger size) {
-        PNStrongify(self);
-        XCTAssertEqual(size, 341);
-    }];
-}
-
-#pragma mark - Helper
-
-- (void)performExpectedSizeOfMessage:(id)message toChannel:(NSString *)channel withCompletion:(PNMessageSizeCalculationCompletionBlock)completionBlock {
-    __block XCTestExpectation *sizeExpectation = [self expectationWithDescription:@"publish size"];
-    [self.client sizeOfMessage:message toChannel:channel withCompletion:^(NSInteger size) {
-        if (completionBlock) {
-            completionBlock(size);
-        }
-        [sizeExpectation fulfill];
-    }];
-    [self waitForExpectationsWithTimeout:kPNSizeOfMessageTimeout handler:^(NSError * _Nullable error) {
-        XCTAssertNil(error);
-    }];
+    [self.client sizeOfMessage:@"test" toChannel:self.publishChannel withCompletion:[self PN_messageSizeCompletionWithSize:341]];
+    [self waitFor:kPNSizeOfMessageTimeout];
 }
 
 @end

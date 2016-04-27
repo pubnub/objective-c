@@ -15,6 +15,7 @@
     superComparisonOptions[kBKRIgnoreQueryItemNamesOptionsKey] = @[
                                                          @"pnsdk"
                                                          ];
+    superComparisonOptions[kBKRIgnoreNSURLComponentsPropertiesOptionsKey] = @[@"path"];
     return superComparisonOptions.copy;
 }
 
