@@ -8,12 +8,14 @@
 
 #import "XCTestCase+PNSizeOfMessage.h"
 
+static NSInteger const kPNMessageSizeTolerance = 8;
+
 @implementation XCTestCase (PNSizeOfMessage)
 
 - (PNMessageSizeCalculationCompletionBlock)PN_messageSizeCompletionWithSize:(NSInteger)expectedSize {
     __block XCTestExpectation *sizeExpectation = [self expectationWithDescription:@"message size"];
     return ^void (NSInteger size) {
-        XCTAssertEqual(expectedSize, size);
+        XCTAssertEqualWithAccuracy(expectedSize, size, kPNMessageSizeTolerance);
         [sizeExpectation fulfill];
     };
 }
