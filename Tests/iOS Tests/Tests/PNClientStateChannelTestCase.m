@@ -32,6 +32,10 @@
     return @[@"a"];
 }
 
+- (BOOL)shouldSubscribeWithPresence {
+    return YES;
+}
+
 - (void)testSetClientStateOnSubscribedChannel {
     PNWeakify(self);
     __block XCTestExpectation *stateExpectation = [self expectationWithDescription:@"clientState"];

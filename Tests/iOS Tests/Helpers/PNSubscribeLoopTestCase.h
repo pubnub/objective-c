@@ -23,5 +23,6 @@ typedef void (^PNClientDidReceivePresenceEventHandler)(PubNub *client, PNPresenc
 - (BOOL)shouldSubscribeWithPresence;
 - (BOOL)shouldRunSetUp;
 - (BOOL)shouldRunTearDown;
+- (BOOL)expectedSubscribeChannelsMatches:(NSArray<NSString *> *)actualChannels; // this checks if presence is yes or no and includes those in assert
 
 @end
