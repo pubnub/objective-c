@@ -77,28 +77,44 @@
 
 #pragma mark - Helpers
 
+- (BOOL)expectedSubscribeChannelGroupsMatches:(NSArray<NSString *> *)actualChannelGroups {
+    return [self _compareExpectedSubscribables:self.subscribedChannelGroups withActualSubscribables:actualChannelGroups];
+}
+
 - (BOOL)expectedSubscribeChannelsMatches:(NSArray<NSString *> *)actualChannels {
+    return [self _compareExpectedSubscribables:self.subscribedChannels withActualSubscribables:actualChannels];
+}
+
+- (BOOL)_compareExpectedSubscribables:(NSArray<NSString *> *)expectedSubscribables withActualSubscribables:(NSArray<NSString *> *)actualSubscribables {
     if (
-        !actualChannels &&
-        !self.subscribedChannels
+        !expectedSubscribables &&
+        !actualSubscribables
         ) {
         return YES;
     }
-    NSArray *finalExpectedChannels = self.subscribedChannels;
+    NSArray *finalExpectedSubscribables = expectedSubscribables.copy;
     if (self.shouldSubscribeWithPresence) {
-        NSMutableArray<NSString *> *updatedExpectedChannels = [NSMutableArray array];
-        for (NSString *channel in finalExpectedChannels) {
-            [updatedExpectedChannels addObject:channel];
+        NSMutableArray<NSString *> *updatedExpectedSubscribables = [NSMutableArray array];
+        for (NSString *channel in finalExpectedSubscribables) {
+            [updatedExpectedSubscribables addObject:channel];
             NSString *presenceChannel = [channel stringByAppendingString:@"-pnpres"];
-            [updatedExpectedChannels addObject:presenceChannel];
+            [updatedExpectedSubscribables addObject:presenceChannel];
         }
-        finalExpectedChannels = updatedExpectedChannels.mutableCopy;
+        finalExpectedSubscribables = updatedExpectedSubscribables.copy;
     }
-    NSSet *expectedChannelsSet = [NSSet setWithArray:finalExpectedChannels];
-    NSSet *actualChannelsSet = [NSSet setWithArray:actualChannels];
+    NSSet *expectedSubscribablesSet = [NSSet setWithArray:finalExpectedSubscribables];
+    NSSet *actualSubscribablesSet = [NSSet setWithArray:actualSubscribables];
     
-    return [expectedChannelsSet isEqualToSet:actualChannelsSet];
+    return [expectedSubscribablesSet isEqualToSet:actualSubscribablesSet];
 }
+
+- (BOOL)expectedAllSubscriptionsMatchesChannels:(NSArray<NSString *> *)actualChannels andChannelGroups:(NSArray<NSString *> *)actualChannelGroups {
+    return (
+            ([self expectedSubscribeChannelsMatches:actualChannels]) &&
+            ([self expectedSubscribeChannelGroupsMatches:actualChannelGroups])
+            );
+}
+
 
 #pragma mark - PNObjectEventListener
 

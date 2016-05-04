@@ -26,5 +26,7 @@ typedef void (^PNClientDidReceivePresenceEventHandler)(PubNub *client, PNPresenc
 @property (nonatomic, assign, readonly) BOOL shouldrunTearDown; // default is `YES`
 
 - (BOOL)expectedSubscribeChannelsMatches:(NSArray<NSString *> *)actualChannels; // this checks if presence is yes or no and includes those in assert
+- (BOOL)expectedSubscribeChannelGroupsMatches:(NSArray<NSString *> *)actualChannelGroups; // this checks if presence is yes or no and includes those in assert
+- (BOOL)expectedAllSubscriptionsMatchesChannels:(NSArray<NSString *> *)actualChannels andChannelGroups:(NSArray<NSString *> *)actualChannelGroups; // this checks if presence is yes or no and includes those in assert
 
 @end
