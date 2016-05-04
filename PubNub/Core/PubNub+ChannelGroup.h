@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  @brief  Channel groups list audition completion block.
  
- @param result Reference on result object which describe service response on audition request.
+ @param result Reference on result object which describe service response on audit request.
  @param status Reference on status instance which hold information about processing results.
  
  @since 4.0
@@ -25,7 +25,7 @@ typedef void(^PNGroupAuditCompletionBlock)(PNChannelGroupsResult * _Nullable res
 /**
  @brief  Channel group channels list audition completion block.
  
- @param result Reference on result object which describe service response on audition request.
+ @param result Reference on result object which describe service response on audit request.
  @param status Reference on status instance which hold information about processing results.
  
  @since 4.0

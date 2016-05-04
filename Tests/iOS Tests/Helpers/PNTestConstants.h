@@ -20,8 +20,10 @@ _Pragma("clang diagnostic ignored  \"-Wshadow\""); \
 __strong __typeof__(__var) __var = __var ## _weak_; \
 _Pragma("clang diagnostic pop") \
 
-static NSTimeInterval const kPNPublishTimeout = 5.0;
-static NSTimeInterval const kPNSizeOfMessageTimeout = 5.0;
-static NSTimeInterval const kPNTimeTokenTimeout = 5.0;
+static NSTimeInterval const kPNDefaultTimeout = 5.0;
+static NSTimeInterval const kPNPublishTimeout = kPNDefaultTimeout;
+static NSTimeInterval const kPNSizeOfMessageTimeout = kPNDefaultTimeout;
+static NSTimeInterval const kPNTimeTokenTimeout = kPNDefaultTimeout;
+static NSTimeInterval const kPNChannelGroupChangeTimeout = kPNDefaultTimeout;
 
 #endif /* PNTestConstants_h */
