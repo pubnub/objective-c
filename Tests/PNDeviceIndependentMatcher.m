@@ -8,14 +8,17 @@
 
 #import "PNDeviceIndependentMatcher.h"
 
+typedef NSArray<NSURLQueryItem *> PNQueryItemArray;
+
 @implementation PNDeviceIndependentMatcher
 
 - (NSDictionary *)requestComparisonOptions {
     NSMutableDictionary *superComparisonOptions = [super requestComparisonOptions].mutableCopy;
+    // ignored query items won't be passed to the override method
     superComparisonOptions[kBKRIgnoreQueryItemNamesOptionsKey] = @[
                                                          @"pnsdk"
                                                          ];
-    superComparisonOptions[kBKROverrideNSURLComponentsPropertiesOptionsKey] = @[@"path"];
+    superComparisonOptions[kBKROverrideNSURLComponentsPropertiesOptionsKey] = @[@"path", @"queryItems"];
     return superComparisonOptions.copy;
 }
 
@@ -64,6 +67,46 @@
         } else {
             return [requestPath isEqualToString:possibleMatchPath];
         }
+    } else if ([URLComponent isEqualToString:@"queryItems"]) {
+        PNQueryItemArray *requestQueryItems = (PNQueryItemArray *)requestComponentValue;
+        PNQueryItemArray *otherRequestQueryItems = (PNQueryItemArray *)possibleMatchComponentValue;
+        // need to separate into two arrays, one with query items that need to be turned into objects and one for everything else
+        NSArray<NSString *> *specialQueryItemsNames = @[
+                                                        @"state",
+                                                        ];
+        
+        // pull out all simple matching query items
+        NSPredicate *removeSpecialQueryItemNamesPredicate = [NSPredicate predicateWithFormat:@"NOT (name IN %@)", specialQueryItemsNames];
+        PNQueryItemArray *simpleRequestQueryItems = [requestQueryItems filteredArrayUsingPredicate:removeSpecialQueryItemNamesPredicate];
+        PNQueryItemArray *simpleOtherRequestQueryItems = [otherRequestQueryItems filteredArrayUsingPredicate:removeSpecialQueryItemNamesPredicate];
+        
+        BOOL simpleMatch = [NSURLComponents BKR_componentQueryItems:simpleRequestQueryItems matchesOtherComponentQueryItems:simpleOtherRequestQueryItems withOptions:[self requestComparisonOptions]];
+        
+        // pull out all special query items
+        NSPredicate *removeNonSpecialQueryItemNamesPredicate = [NSPredicate predicateWithFormat:@"(name IN %@)", specialQueryItemsNames];
+        PNQueryItemArray *objectRequestQueryItems = [requestQueryItems filteredArrayUsingPredicate:removeNonSpecialQueryItemNamesPredicate];
+        PNQueryItemArray *objectOtherRequestQueryItems = [otherRequestQueryItems filteredArrayUsingPredicate:removeNonSpecialQueryItemNamesPredicate];
+        
+        BOOL objectMatch = YES;
+        for (NSInteger i=0; i<objectRequestQueryItems.count; i++) {
+            NSURLQueryItem *queryItem = objectRequestQueryItems[i];
+            NSURLQueryItem *otherQueryItem = objectOtherRequestQueryItems[i];
+            // Now convert publish to JSON and compare objects
+            NSData *data = [queryItem.value dataUsingEncoding:NSUTF8StringEncoding];
+            NSData *possibleMatchData = [otherQueryItem.value dataUsingEncoding:NSUTF8StringEncoding];
+            id object = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+            id otherObject = [NSJSONSerialization JSONObjectWithData:possibleMatchData options:kNilOptions error:nil];
+            if (![object isEqual:otherObject]) {
+                objectMatch = NO;
+                break;
+            }
+        }
+        
+        return (
+                simpleMatch &&
+                objectMatch
+                );
+        
     }
     return YES;
 }
