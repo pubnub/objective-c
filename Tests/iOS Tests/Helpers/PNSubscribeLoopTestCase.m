@@ -9,7 +9,8 @@
 #import "PNSubscribeLoopTestCase.h"
 
 @interface PNSubscribeLoopTestCase ()
-@property (nonatomic, strong) XCTestExpectation *setUpExpectation;
+@property (nonatomic, strong) XCTestExpectation *channelSetUpExpectation;
+@property (nonatomic, strong) XCTestExpectation *channelGroupSetUpExpectation;
 @property (nonatomic, strong) XCTestExpectation *tearDownExpectation;
 @property (nonatomic, assign) BOOL isSettingUp;
 @property (nonatomic, assign) BOOL isTearingDown;
@@ -26,11 +27,12 @@
         self.isSettingUp = NO;
         return;
     }
-    self.setUpExpectation = [self expectationWithDescription:@"setUp"];
     if (self.subscribedChannels.count) {
+        self.channelSetUpExpectation = [self expectationWithDescription:@"channel setUp"];
         [self.client subscribeToChannels:self.subscribedChannels withPresence:self.shouldSubscribeWithPresence];
     }
     if (self.subscribedChannelGroups.count) {
+        self.channelGroupSetUpExpectation = [self expectationWithDescription:@"channel group setUp"];
         [self.client subscribeToChannelGroups:self.subscribedChannelGroups withPresence:self.shouldSubscribeWithPresence];
     }
     [self waitForExpectationsWithTimeout:10 handler:^(NSError * _Nullable error) {
@@ -130,7 +132,7 @@
         //        XCTAssertEqualObjects(subscribeStatus.data.timetoken, @14612663455086844);
         //        XCTAssertEqualObjects(subscribeStatus.data.subscribedChannel, self.subscribedChannels.firstObject);
         //        XCTAssertEqualObjects(subscribeStatus.data.actualChannel, self.subscribedChannels.firstObject);
-        [self.setUpExpectation fulfill];
+        [self.channelSetUpExpectation fulfill];
         return; // return after setUp
     } else if (self.isTearingDown) {
         XCTAssertEqual(status.operation, PNUnsubscribeOperation);
