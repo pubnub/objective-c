@@ -18,11 +18,13 @@ typedef void (^PNClientDidReceivePresenceEventHandler)(PubNub *client, PNPresenc
 @property (nonatomic, copy) PNClientDidReceiveMessageHandler didReceiveMessageHandler;
 @property (nonatomic, copy) PNClientDidReceivePresenceEventHandler didReceivePresenceEventHandler;
 
-- (NSArray<NSString *> *)subscribedChannels;
-- (NSArray<NSString *> *)subscribedChannelGroups;
-- (BOOL)shouldSubscribeWithPresence;
-- (BOOL)shouldRunSetUp;
-- (BOOL)shouldRunTearDown;
+// these are properties so that they can be easily accessed with dot accessors with compiler autocomplete
+@property (nonatomic, strong, readonly) NSArray<NSString *> *subscribedChannels; // default is empty array
+@property (nonatomic, strong, readonly) NSArray<NSString *> *subscribedChannelGroups; // default is empty array
+@property (nonatomic, assign, readonly) BOOL shouldSubscribeWithPresence; // default is `NO`
+@property (nonatomic, assign, readonly) BOOL shouldRunSetUp; // default is `YES`
+@property (nonatomic, assign, readonly) BOOL shouldrunTearDown; // default is `YES`
+
 - (BOOL)expectedSubscribeChannelsMatches:(NSArray<NSString *> *)actualChannels; // this checks if presence is yes or no and includes those in assert
 
 @end
