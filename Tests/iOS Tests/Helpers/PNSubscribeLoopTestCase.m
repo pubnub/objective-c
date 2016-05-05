@@ -14,7 +14,9 @@
 @property (nonatomic, strong) XCTestExpectation *channelSubscribeSetUpExpectation;
 @property (nonatomic, strong) XCTestExpectation *channelGroupSubscribeSetUpExpectation;
 @property (nonatomic, strong) XCTestExpectation *tearDownExpectation;
-@property (nonatomic, assign) BOOL isSettingUp;
+@property (nonatomic, assign) BOOL hasSetUpChannelSubscriptions;
+@property (nonatomic, assign) BOOL hasSetUpChannelGroupSubscriptions;
+@property (nonatomic, assign, readonly) BOOL isSettingUp;
 @property (nonatomic, assign) BOOL isTearingDown;
 @end
 
@@ -22,11 +24,15 @@
 
 - (void)setUp {
     [super setUp];
-    self.isSettingUp = YES;
+//    self.isSettingUp = YES;
+    self.hasSetUpChannelSubscriptions = NO;
+    self.hasSetUpChannelGroupSubscriptions = NO;
     self.isTearingDown = NO;
     [self.client addListener:self];
     if (![self shouldRunSetUp]) {
-        self.isSettingUp = NO;
+//        self.isSettingUp = NO;
+        self.hasSetUpChannelGroupSubscriptions = YES;
+        self.hasSetUpChannelGroupSubscriptions = YES;
         return;
     }
     if (self.subscribedChannels.count) {
@@ -46,11 +52,13 @@
         self.channelGroupSubscribeSetUpExpectation = [self expectationWithDescription:@"channel group subscribe setUp"];
         [self.client subscribeToChannelGroups:self.subscribedChannelGroups withPresence:self.shouldSubscribeWithPresence];
     }
-    PNWeakify(self);
-    [self waitFor:kPNSubscribeTimeout withHandler:^(NSError * _Nullable error) {
-        PNStrongify(self);
-        self.isSettingUp = NO;
-    }];
+    [self waitFor:kPNSubscribeTimeout];
+//    PNWeakify(self);
+//    [self waitFor:kPNSubscribeTimeout withHandler:^(NSError * _Nullable error) {
+//        PNStrongify(self);
+//
+////        self.isSettingUp = NO;
+//    }];
 }
 
 - (void)tearDown {
@@ -92,6 +100,13 @@
 }
 
 #pragma mark - Helpers
+
+- (BOOL)isSettingUp {
+    return (
+            !self.hasSetUpChannelSubscriptions &&
+            !self.hasSetUpChannelGroupSubscriptions
+            );
+}
 
 - (BOOL)expectedSubscribeChannelGroupsMatches:(NSArray<NSString *> *)actualChannelGroups {
     return [self _compareExpectedSubscribables:self.subscribedChannelGroups withActualSubscribables:actualChannelGroups];
@@ -138,22 +153,37 @@
     if (self.isSettingUp) {
         XCTAssertEqual(status.operation, PNSubscribeOperation);
         XCTAssertEqual(status.category, PNConnectedCategory);
-        XCTAssertEqualObjects(self.client.channels, self.subscribedChannels);
+        
         PNSubscribeStatus *subscribeStatus = (PNSubscribeStatus *)status;
 //        XCTAssertEqualObjects(subscribeStatus.subscribedChannels, self.subscribedChannels);
-        XCTAssertTrue([self expectedSubscribeChannelsMatches:subscribeStatus.subscribedChannels]);
-        XCTAssertEqualObjects(subscribeStatus.subscribedChannelGroups, self.subscribedChannelGroups);
+        if (!self.hasSetUpChannelSubscriptions) {
+            XCTAssertEqualObjects(self.client.channels, self.subscribedChannels);
+            XCTAssertTrue([self expectedSubscribeChannelsMatches:subscribeStatus.subscribedChannels]);
+            self.hasSetUpChannelSubscriptions = YES;
+            [self.channelSubscribeSetUpExpectation fulfill];
+        }
+        if (!self.hasSetUpChannelGroupSubscriptions) {
+            XCTAssertEqualObjects(self.client.channelGroups, self.subscribedChannelGroups);
+            XCTAssertTrue([self expectedSubscribeChannelGroupsMatches:subscribeStatus.subscribedChannelGroups]);
+            self.hasSetUpChannelGroupSubscriptions = YES;
+            [self.channelGroupSubscribeSetUpExpectation fulfill];
+        }
+//        XCTAssertTrue([self expectedSubscribeChannelsMatches:subscribeStatus.subscribedChannels]);
+//        XCTAssertEqualObjects(subscribeStatus.subscribedChannelGroups, self.subscribedChannelGroups);
+        
         //        XCTAssertEqualObjects(subscribeStatus.data.timetoken, @14612663455086844);
         //        XCTAssertEqualObjects(subscribeStatus.data.subscribedChannel, self.subscribedChannels.firstObject);
         //        XCTAssertEqualObjects(subscribeStatus.data.actualChannel, self.subscribedChannels.firstObject);
-        [self.channelSubscribeSetUpExpectation fulfill];
+//        [self.channelSubscribeSetUpExpectation fulfill];
         return; // return after setUp
     } else if (self.isTearingDown) {
         XCTAssertEqual(status.operation, PNUnsubscribeOperation);
         XCTAssertEqual(status.category, PNDisconnectedCategory);
         XCTAssertEqualObjects(self.client.channels, @[]);
+        XCTAssertEqualObjects(self.client.channelGroups, @[]);
         PNSubscribeStatus *subscribeStatus = (PNSubscribeStatus *)status;
         XCTAssertEqualObjects(subscribeStatus.subscribedChannels, @[]);
+        XCTAssertEqualObjects(subscribeStatus.subscribedChannelGroups, @[]);
         //        XCTAssertEqualObjects(subscribeStatus.data.timetoken, @12);
         //        XCTAssertEqualObjects(subscribeStatus.data.subscribedChannel, self.subscribedChannels.firstObject);
         //        XCTAssertEqualObjects(subscribeStatus.data.actualChannel, self.subscribedChannels.firstObject);
