@@ -28,5 +28,6 @@ typedef void (^PNClientDidReceivePresenceEventHandler)(PubNub *client, PNPresenc
 - (BOOL)expectedSubscribeChannelsMatches:(NSArray<NSString *> *)actualChannels; // this checks if presence is yes or no and includes those in assert
 - (BOOL)expectedSubscribeChannelGroupsMatches:(NSArray<NSString *> *)actualChannelGroups; // this checks if presence is yes or no and includes those in assert
 - (BOOL)expectedAllSubscriptionsMatchesChannels:(NSArray<NSString *> *)actualChannels andChannelGroups:(NSArray<NSString *> *)actualChannelGroups; // this checks if presence is yes or no and includes those in assert
+- (NSArray<NSString *> *)expectedChannelsForChannelGroup:(NSString *)channelGroup; // this is implemented, usually with a big if else statement to determine what channels are added to a channel group during setUp, this is skipped if shouldRunSetUp is NO, if subscribedChannelGroups has no objects then this is not called
 
 @end

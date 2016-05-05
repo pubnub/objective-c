@@ -52,9 +52,16 @@
 }
 
 - (void)waitFor:(NSTimeInterval)timeout {
+    [self waitFor:timeout withHandler:nil];
+}
+
+- (void)waitFor:(NSTimeInterval)timeout withHandler:(XCWaitCompletionHandler)handler {
     NSParameterAssert(timeout);
     [self waitForExpectationsWithTimeout:timeout handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
+        if (handler) {
+            handler(error);
+        }
     }];
 }
 

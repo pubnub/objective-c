@@ -25,5 +25,7 @@ static NSTimeInterval const kPNPublishTimeout = kPNDefaultTimeout;
 static NSTimeInterval const kPNSizeOfMessageTimeout = kPNDefaultTimeout;
 static NSTimeInterval const kPNTimeTokenTimeout = kPNDefaultTimeout;
 static NSTimeInterval const kPNChannelGroupChangeTimeout = kPNDefaultTimeout;
+static NSTimeInterval const kPNSubscribeTimeout = kPNDefaultTimeout;
+static NSTimeInterval const kPNUnsubscribeTimeout = kPNDefaultTimeout;
 
 #endif /* PNTestConstants_h */

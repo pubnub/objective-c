@@ -7,10 +7,12 @@
 //
 
 #import "PNSubscribeLoopTestCase.h"
+#import "XCTestCase+PNChannelGroup.h"
+//#import "PNTestConstants.h"
 
 @interface PNSubscribeLoopTestCase ()
-@property (nonatomic, strong) XCTestExpectation *channelSetUpExpectation;
-@property (nonatomic, strong) XCTestExpectation *channelGroupSetUpExpectation;
+@property (nonatomic, strong) XCTestExpectation *channelSubscribeSetUpExpectation;
+@property (nonatomic, strong) XCTestExpectation *channelGroupSubscribeSetUpExpectation;
 @property (nonatomic, strong) XCTestExpectation *tearDownExpectation;
 @property (nonatomic, assign) BOOL isSettingUp;
 @property (nonatomic, assign) BOOL isTearingDown;
@@ -28,15 +30,25 @@
         return;
     }
     if (self.subscribedChannels.count) {
-        self.channelSetUpExpectation = [self expectationWithDescription:@"channel setUp"];
+        self.channelSubscribeSetUpExpectation = [self expectationWithDescription:@"channel subscribe setUp"];
         [self.client subscribeToChannels:self.subscribedChannels withPresence:self.shouldSubscribeWithPresence];
     }
     if (self.subscribedChannelGroups.count) {
-        self.channelGroupSetUpExpectation = [self expectationWithDescription:@"channel group setUp"];
+        // loop through all channel groups
+        for (NSString *channelGroup in self.subscribedChannelGroups) {
+            // first remove channel group
+            [self.client removeChannelsFromGroup:channelGroup withCompletion:[self PN_channelGroupRemoveAllChannels]];
+            [self waitFor:kPNChannelGroupChangeTimeout];
+            NSArray<NSString *> *channels = [self expectedChannelsForChannelGroup:channelGroup];
+            [self.client addChannels:channels toGroup:channelGroup withCompletion:[self PN_channelGroupAdd]];
+            [self waitFor:kPNChannelGroupChangeTimeout];
+        }
+        self.channelGroupSubscribeSetUpExpectation = [self expectationWithDescription:@"channel group subscribe setUp"];
         [self.client subscribeToChannelGroups:self.subscribedChannelGroups withPresence:self.shouldSubscribeWithPresence];
     }
-    [self waitForExpectationsWithTimeout:10 handler:^(NSError * _Nullable error) {
-        XCTAssertNil(error);
+    PNWeakify(self);
+    [self waitFor:kPNSubscribeTimeout withHandler:^(NSError * _Nullable error) {
+        PNStrongify(self);
         self.isSettingUp = NO;
     }];
 }
@@ -46,9 +58,7 @@
         self.isTearingDown = YES;
         self.tearDownExpectation = [self expectationWithDescription:@"tearDown"];
         [self.client unsubscribeFromAll];
-        [self waitForExpectationsWithTimeout:10 handler:^(NSError * _Nullable error) {
-            XCTAssertNil(error);
-        }];
+        [self waitFor:kPNUnsubscribeTimeout];
     }
     [self.client removeListener:self];
     self.isTearingDown = NO;
@@ -75,6 +85,10 @@
 
 - (BOOL)shouldRunTearDown {
     return YES;
+}
+
+- (NSArray<NSString *> *)expectedChannelsForChannelGroup:(NSString *)channelGroup {
+    return @[];
 }
 
 #pragma mark - Helpers
@@ -132,7 +146,7 @@
         //        XCTAssertEqualObjects(subscribeStatus.data.timetoken, @14612663455086844);
         //        XCTAssertEqualObjects(subscribeStatus.data.subscribedChannel, self.subscribedChannels.firstObject);
         //        XCTAssertEqualObjects(subscribeStatus.data.actualChannel, self.subscribedChannels.firstObject);
-        [self.channelSetUpExpectation fulfill];
+        [self.channelSubscribeSetUpExpectation fulfill];
         return; // return after setUp
     } else if (self.isTearingDown) {
         XCTAssertEqual(status.operation, PNUnsubscribeOperation);
