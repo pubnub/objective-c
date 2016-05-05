@@ -52,9 +52,7 @@
     };
     self.unsubscribeExpectation = [self expectationWithDescription:@"unsubscribe"];
     [self.client unsubscribeFromChannels:self.subscribedChannels withPresence:YES];
-    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
-        XCTAssertNil(error);
-    }];
+    [self waitFor:kPNUnsubscribeTimeout];
 }
 
 @end

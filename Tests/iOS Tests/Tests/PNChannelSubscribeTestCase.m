@@ -55,9 +55,7 @@
     };
     self.subscribeExpectation = [self expectationWithDescription:@"subscribe"];
     [self.client subscribeToChannels:self.subscribedChannels withPresence:YES];
-    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
-        XCTAssertNil(error);
-    }];
+    [self waitFor:kPNSubscribeTimeout];
 }
 
 @end

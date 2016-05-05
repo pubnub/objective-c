@@ -115,6 +115,9 @@
 		517A9F071BE31ADB00FAA43A /* PNSubscribeToPresenceChannelsTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 79EF04D21B4EAB1A007478CB /* PNSubscribeToPresenceChannelsTests.bundle */; };
 		517A9F081BE31ADB00FAA43A /* PNTimeTokenTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 79EF04D31B4EAB1A007478CB /* PNTimeTokenTests.bundle */; };
 		517A9F091BE31ADB00FAA43A /* PNUnsubscribeTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 79EF04D41B4EAB1A007478CB /* PNUnsubscribeTests.bundle */; };
+		5181C1B81CDBD9B1003725D5 /* XCTestCase+PNClientState.m in Sources */ = {isa = PBXBuildFile; fileRef = 5181C1B71CDBD9B1003725D5 /* XCTestCase+PNClientState.m */; };
+		5181C1B91CDBD9B1003725D5 /* XCTestCase+PNClientState.m in Sources */ = {isa = PBXBuildFile; fileRef = 5181C1B71CDBD9B1003725D5 /* XCTestCase+PNClientState.m */; };
+		5181C1BA1CDBD9B1003725D5 /* XCTestCase+PNClientState.m in Sources */ = {isa = PBXBuildFile; fileRef = 5181C1B71CDBD9B1003725D5 /* XCTestCase+PNClientState.m */; };
 		51A36B401CD122BA00E6D8E5 /* XCTestCase+PNSizeOfMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A36B3F1CD122BA00E6D8E5 /* XCTestCase+PNSizeOfMessage.m */; };
 		51A36B411CD122BA00E6D8E5 /* XCTestCase+PNSizeOfMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A36B3F1CD122BA00E6D8E5 /* XCTestCase+PNSizeOfMessage.m */; };
 		51A36B421CD122BA00E6D8E5 /* XCTestCase+PNSizeOfMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A36B3F1CD122BA00E6D8E5 /* XCTestCase+PNSizeOfMessage.m */; };
@@ -358,6 +361,8 @@
 		5126AEE71CCABF7300808AC6 /* PNTestConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PNTestConstants.h; path = Helpers/PNTestConstants.h; sourceTree = "<group>"; };
 		517A9ED31BE3181700FAA43A /* OSX ObjC Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "OSX ObjC Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		517A9ED71BE3181700FAA43A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5181C1B61CDBD9B1003725D5 /* XCTestCase+PNClientState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "XCTestCase+PNClientState.h"; path = "iOS Tests/Helpers/XCTestCase+PNClientState.h"; sourceTree = "<group>"; };
+		5181C1B71CDBD9B1003725D5 /* XCTestCase+PNClientState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "XCTestCase+PNClientState.m"; path = "iOS Tests/Helpers/XCTestCase+PNClientState.m"; sourceTree = "<group>"; };
 		519C327D1B20C11500FAC283 /* iOS ObjC Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "iOS ObjC Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		519C32811B20C11500FAC283 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		51A36B3E1CD122BA00E6D8E5 /* XCTestCase+PNSizeOfMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "XCTestCase+PNSizeOfMessage.h"; path = "iOS Tests/Helpers/XCTestCase+PNSizeOfMessage.h"; sourceTree = "<group>"; };
@@ -765,6 +770,8 @@
 				51AF20E61CDAB775000B510B /* XCTestCase+PNChannelGroup.m */,
 				51A36B3E1CD122BA00E6D8E5 /* XCTestCase+PNSizeOfMessage.h */,
 				51A36B3F1CD122BA00E6D8E5 /* XCTestCase+PNSizeOfMessage.m */,
+				5181C1B61CDBD9B1003725D5 /* XCTestCase+PNClientState.h */,
+				5181C1B71CDBD9B1003725D5 /* XCTestCase+PNClientState.m */,
 				5126AE991CCA8E0100808AC6 /* Old */,
 			);
 			name = Categories;
@@ -1331,6 +1338,7 @@
 				5126AEC51CCA974300808AC6 /* PNPublishSimpleTestCase.m in Sources */,
 				517A9EDD1BE3185800FAA43A /* PNChannelGroupTests.m in Sources */,
 				5126AEBD1CCA970800808AC6 /* PNPublishWithMobilePushPayloadTestCase.m in Sources */,
+				5181C1BA1CDBD9B1003725D5 /* XCTestCase+PNClientState.m in Sources */,
 				5126AEC11CCA973500808AC6 /* PNPublishAdvancedTestCase.m in Sources */,
 				517A9EE91BE3185800FAA43A /* PNPublishWithHistoryTests.m in Sources */,
 				5126AEB11CCA96CE00808AC6 /* PNPublishWithCompressionTestCase.m in Sources */,
@@ -1363,6 +1371,7 @@
 				79EF04A41B4EAAB7007478CB /* PNAPNSTests.m in Sources */,
 				51EC09521CC93B99004102A7 /* PNTimeTokenTestCase.m in Sources */,
 				79EF04AC1B4EAAB7007478CB /* PNHistoryTests.m in Sources */,
+				5181C1B81CDBD9B1003725D5 /* XCTestCase+PNClientState.m in Sources */,
 				79EF04B31B4EAAB7007478CB /* PNSubscribeTests.m in Sources */,
 				51AF20E71CDAB775000B510B /* XCTestCase+PNChannelGroup.m in Sources */,
 				79EF04BC1B4EAAE4007478CB /* PNBasicSubscribeTestCase.m in Sources */,
@@ -1491,6 +1500,7 @@
 				5126AEC41CCA974300808AC6 /* PNPublishSimpleTestCase.m in Sources */,
 				797BDD1C1C1F5176006EF006 /* PNPublishWithHistoryTests.m in Sources */,
 				5126AEBC1CCA970800808AC6 /* PNPublishWithMobilePushPayloadTestCase.m in Sources */,
+				5181C1B91CDBD9B1003725D5 /* XCTestCase+PNClientState.m in Sources */,
 				5126AEC01CCA973500808AC6 /* PNPublishAdvancedTestCase.m in Sources */,
 				797BDD1D1C1F5176006EF006 /* PNPresenceTests.m in Sources */,
 				5126AEB01CCA96CE00808AC6 /* PNPublishWithCompressionTestCase.m in Sources */,

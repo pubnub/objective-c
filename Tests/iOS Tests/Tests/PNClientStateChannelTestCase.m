@@ -7,6 +7,7 @@
 //
 
 #import "PNSubscribeLoopTestCase.h"
+#import "XCTestCase+PNClientState.h"
 
 @interface PNClientStateChannelTestCase : PNSubscribeLoopTestCase
 
@@ -37,24 +38,11 @@
 }
 
 - (void)testSetClientStateOnSubscribedChannel {
-    PNWeakify(self);
-    __block XCTestExpectation *stateExpectation = [self expectationWithDescription:@"clientState"];
     NSDictionary *state = @{
                             @"test" : @"test"
                             };
-    [self.client setState:state forUUID:self.client.uuid onChannel:[self subscribedChannels].firstObject withCompletion:^(PNClientStateUpdateStatus *status) {
-        PNStrongify(self);
-        XCTAssertNotNil(status);
-        XCTAssertFalse(status.isError);
-        XCTAssertEqual(status.operation, PNSetStateOperation);
-        XCTAssertEqual(status.category, PNAcknowledgmentCategory);
-        XCTAssertEqual(status.statusCode, 200);
-        XCTAssertEqualObjects(status.data.state, state);
-        [stateExpectation fulfill];
-    }];
-    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
-        XCTAssertNil(error);
-    }];
+    [self.client setState:state forUUID:self.client.uuid onChannel:self.subscribedChannels.firstObject withCompletion:[self PN_successfulSetClientState:state]];
+    [self waitFor:kPNSetClientStateTimeout];
 }
 
 @end
