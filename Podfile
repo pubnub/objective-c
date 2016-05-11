@@ -43,6 +43,17 @@ end
      pod "PubNub", :path => "."
  end
 
+# Making all interfaces visible for all targets on explicit import
+pre_install do |installer_representation|
+    installer_representation.aggregate_targets.each do |aggregate_target|
+        aggregate_target.spec_consumers.each do |spec_consumer|
+            unless spec_consumer.private_header_files.empty?
+                spec_consumer.spec.attributes_hash['private_header_files'].clear
+            end 
+        end
+    end
+end
+
 post_install do |installer_representation|
     installer_representation.pods_project.targets.each do |target|
         target.build_configurations.each do |config|
