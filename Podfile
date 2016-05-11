@@ -1,9 +1,9 @@
 source 'https://github.com/CocoaPods/Specs.git'
 workspace 'PubNub.xcworkspace'
-use_frameworks!
 install! 'cocoapods', :lock_pod_sources => false
 
-abstract_target 'PubNub Integration' do
+abstract_target 'PubNub Example' do
+  use_frameworks!
   pod "PubNub", :path => "."
 
   target 'PubNub_Example' do
@@ -15,29 +15,30 @@ abstract_target 'PubNub Integration' do
     platform :osx, '10.9'
     project 'Example/PubNub Example'
   end
+end
 
-  abstract_target 'PubNub Tests' do
-    pod "BeKindRewind", '~> 1.0.0'
-    
-    target 'iOS ObjC Tests' do
-      platform :ios, "8.0"
-      project 'Tests/PubNub Tests'
-    end
+abstract_target 'PubNub Tests' do
+  pod "PubNub", :path => "."
+  pod "BeKindRewind", '~> 1.0.0'
+  
+  target 'iOS ObjC Tests' do
+    platform :ios, "8.0"
+    project 'Tests/PubNub Tests'
+  end
 
 #    target 'iOS Swift Tests' do
 #      platform :ios, "8.0"
 #      project 'Tests/PubNub Tests'
 #    end
 
-    target 'OSX ObjC Tests' do
-      platform :osx, '10.9'
-      project 'Tests/PubNub Tests'
-    end
+  target 'OSX ObjC Tests' do
+    platform :osx, '10.9'
+    project 'Tests/PubNub Tests'
+  end
 
-    target 'tvOS ObjC Tests' do
-      platform :tvos, '9.0'
-      project 'Tests/PubNub Tests'
-    end
+  target 'tvOS ObjC Tests' do
+    platform :tvos, '9.0'
+    project 'Tests/PubNub Tests'
   end
 end
 
