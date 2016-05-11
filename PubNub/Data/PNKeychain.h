@@ -37,7 +37,7 @@
 /**
  @brief  Remove any value from Keychain which is associated with specified \c key.
  
- @param value Referebce on string for which stored value should be removed from Keychain.
+ @param key   Referebce on string for which stored value should be removed from Keychain.
  @param block Reference on block which will be called at the end of removal operation. Block pass 
               only one argument - whether error occurred or not.
  */
