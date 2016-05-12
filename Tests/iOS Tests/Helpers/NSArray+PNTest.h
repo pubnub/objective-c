@@ -2,7 +2,7 @@
 //  NSArray+PNTest.h
 //  PubNub Tests
 //
-//  Created by Vadim Osovets on 7/16/15.
+//  Created by Jordan Zucker on 3/23/16.
 //
 //
 

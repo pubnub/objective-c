@@ -8,13 +8,10 @@
 		<key>data</key>
 		<dict>
 			<key>data</key>
-			<data>
-			W1tdLCIxNDQ0ODU0MTk4MjA1MDY1NyJd
-			</data>
+			<data>W1tdLCIxNDQ0ODU0MTk4MjA1MDY1NyJd</data>
 			<key>json</key>
 			<array>
-				<array>
-				</array>
+				<array/>
 				<string>14448541982050657</string>
 			</array>
 		</dict>
@@ -27,7 +24,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/subscribe/demo-36/heartbeat-test/0/0?heartbeat=60&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
+				<string>https://pubsub.pubnub.com/subscribe/demo-36/heartbeat-test/0/0?heartbeat=60&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -44,7 +41,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60.0</real>
+				<real>60</real>
 			</dict>
 			<key>originalRequest</key>
 			<dict>
@@ -53,7 +50,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/subscribe/demo-36/heartbeat-test/0/0?heartbeat=60&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
+				<string>https://pubsub.pubnub.com/subscribe/demo-36/heartbeat-test/0/0?heartbeat=60&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -68,7 +65,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60.0</real>
+				<real>60</real>
 			</dict>
 		</dict>
 		<key>response</key>
@@ -92,7 +89,7 @@
 					<key>Content-Length</key>
 					<string>24</string>
 					<key>Content-Type</key>
-					<string>text/javascript; charset="UTF-8"</string>
+					<string>text/javascript; charset=&quot;UTF-8&quot;</string>
 					<key>Date</key>
 					<string>Wed, 14 Oct 2015 20:23:18 GMT</string>
 				</dict>
@@ -103,7 +100,7 @@
 				<key>suggestedFileName</key>
 				<string>0.js</string>
 				<key>textEncodingName</key>
-				<string>"utf-8"</string>
+				<string>&quot;utf-8&quot;</string>
 			</dict>
 		</dict>
 	</dict>
@@ -113,10 +110,7 @@
 		<key>data</key>
 		<dict>
 			<key>data</key>
-			<data>
-			eyJzdGF0dXMiOiA0MDQsICJtZXNzYWdlIjogIk5vdCBGb3VuZCIs
-			ICJzZXJ2aWNlIjogIlByZXNlbmNlIn0=
-			</data>
+			<data>eyJzdGF0dXMiOiA0MDQsICJtZXNzYWdlIjogIk5vdCBGb3VuZCIsICJzZXJ2aWNlIjogIlByZXNlbmNlIn0=</data>
 			<key>json</key>
 			<dict>
 				<key>message</key>
@@ -136,7 +130,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/presence/sub-key/demo-36/channel/heartbeat-test/heartbeat?heartbeat=60&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
+				<string>https://pubsub.pubnub.com/v2/presence/sub-key/demo-36/channel/heartbeat-test/heartbeat?heartbeat=60&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -153,7 +147,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60.0</real>
+				<real>60</real>
 			</dict>
 			<key>originalRequest</key>
 			<dict>
@@ -162,7 +156,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/presence/sub-key/demo-36/channel/heartbeat-test/heartbeat?heartbeat=60&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
+				<string>https://pubsub.pubnub.com/v2/presence/sub-key/demo-36/channel/heartbeat-test/heartbeat?heartbeat=60&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -177,7 +171,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60.0</real>
+				<real>60</real>
 			</dict>
 		</dict>
 		<key>response</key>
@@ -205,7 +199,7 @@
 					<key>Content-Length</key>
 					<string>55</string>
 					<key>Content-Type</key>
-					<string>text/javascript; charset="UTF-8"</string>
+					<string>text/javascript; charset=&quot;UTF-8&quot;</string>
 					<key>Date</key>
 					<string>Wed, 14 Oct 2015 20:23:23 GMT</string>
 					<key>Server</key>
@@ -218,7 +212,7 @@
 				<key>suggestedFileName</key>
 				<string>heartbeat.js</string>
 				<key>textEncodingName</key>
-				<string>"utf-8"</string>
+				<string>&quot;utf-8&quot;</string>
 			</dict>
 		</dict>
 	</dict>

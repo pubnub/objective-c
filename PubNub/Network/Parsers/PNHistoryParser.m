@@ -87,9 +87,10 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNAESErrorLogLevel;
                 
                 NSError *decryptionError;
                 id decryptedMessage = nil;
-                if ([message isKindOfClass:[NSString class]]) {
+                id dataForDecryption = ([message isKindOfClass:[NSDictionary class]] ? ((NSDictionary *)message)[@"pn_other"] : message);
+                if ([dataForDecryption isKindOfClass:[NSString class]]) {
                     
-                    NSData *eventData = [PNAES decrypt:message withKey:additionalData[@"cipherKey"]
+                    NSData *eventData = [PNAES decrypt:dataForDecryption withKey:additionalData[@"cipherKey"]
                                               andError:&decryptionError];
                     NSString *decryptedMessageString = nil;
                     if (eventData) {
@@ -100,7 +101,7 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNAESErrorLogLevel;
                     
                     // In case if decrypted message (because of error suppression) is equal to original 
                     // message, there is no need to retry JSON de-serialization.
-                    if (decryptedMessageString && ![decryptedMessageString isEqualToString:message]) {
+                    if (decryptedMessageString && ![decryptedMessageString isEqualToString:dataForDecryption]) {
                         
                         decryptedMessage = [PNJSON JSONObjectFrom:decryptedMessageString withError:nil];
                     }
@@ -119,6 +120,20 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNAESErrorLogLevel;
             }
             
             if (message) {
+                
+                if ([message isKindOfClass:[NSDictionary class]] &&
+                    (message[@"pn_apns"] || message[@"pn_gcm"] || message[@"pn_mpns"])) {
+                    
+                    id decomposedMessage = message;
+                    if (!message[@"pn_other"]) {
+                        
+                        NSMutableDictionary *dictionaryData = [message mutableCopy];
+                        [dictionaryData removeObjectsForKeys:@[@"pn_apns", @"pn_gcm", @"pn_mpns"]];
+                        decomposedMessage = dictionaryData;
+                    }
+                    else { decomposedMessage = message[@"pn_other"]; }
+                    message = decomposedMessage;
+                }
                 
                 message = (timeToken ? @{@"message":message, @"timetoken":timeToken} : message);
                 [data[@"messages"] addObject:message];

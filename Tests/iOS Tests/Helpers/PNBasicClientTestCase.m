@@ -5,6 +5,7 @@
 //  Created by Jordan Zucker on 6/16/15.
 //
 //
+#import <BeKindRewind/BKRTestCaseFilePathHelper.h>
 #import <PubNub/PubNub.h>
 
 #import "PNDeviceIndependentMatcher.h"
@@ -12,13 +13,9 @@
 
 @implementation PNBasicClientTestCase
 
-- (JSZVCRMatchingStrictness)matchingFailStrictness {
-    return JSZVCRMatchingStrictnessNone;
-}
-
 - (void)setUp {
     [super setUp];
-    [PNLog enabled:YES];
+    [PNLog enabled:NO];
     self.configuration = [PNConfiguration configurationWithPublishKey:@"demo-36" subscribeKey:@"demo-36"];
     self.configuration.uuid = @"322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C";
     self.configuration.origin = @"pubsub.pubnub.com";
@@ -31,9 +28,20 @@
     [super tearDown];
 }
 
-- (Class<JSZVCRMatching>)matcherClass {
-    return [PNDeviceIndependentMatcher class];
+- (BKRTestConfiguration *)testConfiguration {
+    BKRTestConfiguration *defaultConfiguration = [super testConfiguration];
+    defaultConfiguration.matcherClass = [PNDeviceIndependentMatcher class];
+    defaultConfiguration.beginRecordingBlock = nil;
+    defaultConfiguration.endRecordingBlock = nil;
+    defaultConfiguration.shouldSaveEmptyCassette = YES;
+    defaultConfiguration.tearDownExpectationTimeout = 60.0;
+    return defaultConfiguration;
 }
+
+//- (NSString *)baseFixturesDirectoryFilePath {
+////    return [super baseFixturesDirectoryFilePath];
+//    return [BKRTestCaseFilePathHelper fixtureWriteDirectoryInProject];
+//}
 
 
 #pragma mark - Configuration override

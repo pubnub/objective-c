@@ -1,4 +1,11 @@
-# PubNub 4.3.0 for iOS 7+
+# PubNub 4.3.1 for iOS 7+
+[![Twitter](https://img.shields.io/badge/twitter-%40PubNub-blue.svg?style=flat)](https://twitter.com/PubNub)
+[![Twitter Releases](https://img.shields.io/badge/twitter-%40PubNubRelease-blue.svg?style=flat)](https://twitter.com/PubNubRelease)
+[![License](https://img.shields.io/github/license/pubnub/objective-c.svg?style=flat)](https://img.shields.io/github/license/pubnub/objective-c.svg)
+[![CocoaPods Compatible](https://img.shields.io/cocoapods/v/PubNub.svg?style=flat)](https://img.shields.io/cocoapods/v/PubNub.svg)
+[![Platform](https://img.shields.io/cocoapods/p/PubNub.svg?style=flat)](https://img.shields.io/cocoapods/p/PubNub.svg)
+[![Docs Coverage](https://img.shields.io/cocoapods/metrics/doc-percent/PubNub.svg?style=flat)](https://img.shields.io/cocoapods/metrics/doc-percent/PubNub.svg)
+[![Build Status](https://img.shields.io/travis/pubnub/objective-c/develop.svg?style=flat)](https://travis-ci.org/pubnub/objective-c)
 ## Please direct all Support Questions and Concerns to Support@PubNub.com
 ## Complete Docs
 Check out our [official docs page](http://www.pubnub.com/docs/ios-objective-c/pubnub-objective-c-sdk-v4)

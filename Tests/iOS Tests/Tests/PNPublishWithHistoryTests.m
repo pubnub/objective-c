@@ -2,7 +2,7 @@
 //  PNPublishWithHistoryTests.m
 //  PubNub Tests
 //
-//  Created by Vadim Osovets on 6/19/15.
+//  Created by Jordan Zucker on 3/23/16.
 //
 //
 
@@ -39,7 +39,7 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @14355338601176506);
+                      XCTAssertEqualObjects(status.data.timetoken, @14587653525292456);
     }];
 }
 
@@ -55,7 +55,7 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @14355338601978693);
+                      XCTAssertEqualObjects(status.data.timetoken, @14587653526660044);
                   }];
 }
 
@@ -106,7 +106,7 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @14355338598726743);
+                      XCTAssertEqualObjects(status.data.timetoken, @14587653521717263);
     }];
 }
 
@@ -123,7 +123,7 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @14355338599684259);
+                      XCTAssertEqualObjects(status.data.timetoken, @14587653523219629);
                   }];
 }
 

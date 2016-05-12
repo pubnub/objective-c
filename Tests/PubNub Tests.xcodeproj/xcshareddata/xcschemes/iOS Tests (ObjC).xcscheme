@@ -39,16 +39,76 @@
             </BuildableReference>
             <SkippedTests>
                <Test
+                  Identifier = "PNBasicClientCryptTestCase">
+               </Test>
+               <Test
                   Identifier = "PNBasicClientTestCase">
                </Test>
                <Test
+                  Identifier = "PNBasicPresenceTestCase">
+               </Test>
+               <Test
                   Identifier = "PNBasicSubscribeTestCase">
+               </Test>
+               <Test
+                  Identifier = "PNChannelGroupFilteringSubscribeTests">
+               </Test>
+               <Test
+                  Identifier = "PNChannelGroupPresenceEventTests">
+               </Test>
+               <Test
+                  Identifier = "PNChannelGroupSubscribeTests">
+               </Test>
+               <Test
+                  Identifier = "PNChannelGroupUnsubscribeTests">
+               </Test>
+               <Test
+                  Identifier = "PNClientConfigurationTests">
+               </Test>
+               <Test
+                  Identifier = "PNClientStateChannelGroupTests">
+               </Test>
+               <Test
+                  Identifier = "PNClientStateChannelTests">
+               </Test>
+               <Test
+                  Identifier = "PNConfigurationChiperKeyTests">
+               </Test>
+               <Test
+                  Identifier = "PNFilteringSubscribeTests">
+               </Test>
+               <Test
+                  Identifier = "PNHeartbeatTests">
+               </Test>
+               <Test
+                  Identifier = "PNHistoryTests">
+               </Test>
+               <Test
+                  Identifier = "PNPresenceChannelGroupTests">
+               </Test>
+               <Test
+                  Identifier = "PNPresenceEventTests">
+               </Test>
+               <Test
+                  Identifier = "PNPresenceTests">
+               </Test>
+               <Test
+                  Identifier = "PNSubscribeTests">
+               </Test>
+               <Test
+                  Identifier = "PNSubscribeTests/testSimpleSubscribeWithTimeToken">
                </Test>
                <Test
                   Identifier = "PNSubscribeTests/testTimeTokenResetBetweenSubscriptionsWithUnsubscribe">
                </Test>
                <Test
                   Identifier = "PNSubscribeTests/testTimeTokenResetBetweenSubscriptionsWithUnsubscribeAll">
+               </Test>
+               <Test
+                  Identifier = "PNSubscribeToPresenceChannelsTests">
+               </Test>
+               <Test
+                  Identifier = "PNUnsubscribeTests">
                </Test>
             </SkippedTests>
          </TestableReference>
@@ -66,7 +126,7 @@
       </AdditionalOptions>
    </TestAction>
    <LaunchAction
-      buildConfiguration = "Release"
+      buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"

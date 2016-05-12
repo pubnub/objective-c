@@ -2,7 +2,7 @@
 //  PNBasicClientCryptTestCase.m
 //  PubNub Tests
 //
-//  Created by Vadim Osovets on 9/11/15.
+//  Created by Jordan Zucker on 3/23/16.
 //
 //
 

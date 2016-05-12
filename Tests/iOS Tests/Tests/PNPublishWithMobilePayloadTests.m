@@ -2,7 +2,7 @@
 //  PNPublishWithMobilePayloadTests.m
 //  PubNub Tests
 //
-//  Created by Vadim Osovets on 6/22/15.
+//  Created by Jordan Zucker on 3/23/16.
 //
 //
 
@@ -48,7 +48,7 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @14355449397087311);
+                      XCTAssertEqualObjects(status.data.timetoken, @14587651644081128);
                   }];
 }
 
@@ -67,7 +67,7 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @14355449396125368);
+                      XCTAssertEqualObjects(status.data.timetoken, @14587651642570398);
                   }];
 }
 
@@ -93,7 +93,7 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @14355449393962620);
+                      XCTAssertEqualObjects(status.data.timetoken, @14587651639789412);
                   }];
 }
 
