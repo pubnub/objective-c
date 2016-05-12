@@ -17,7 +17,7 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/2EC925F0-B996-47A4-AF54-A605E1A9AEBA/0/%7B%22Hello%22%3A%22world%22%2C%22pn_apns%22%3A%7B%22alert%22%3A%22Hello%20from%20PubNub%22%7D%7D?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;store=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+					<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/2EC925F0-B996-47A4-AF54-A605E1A9AEBA/0/%7B%22Hello%22%3A%22world%22%2C%22pn_apns%22%3A%7B%22alert%22%3A%22Hello%20from%20PubNub%22%7D%7D?pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;store=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -48,7 +48,7 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/2EC925F0-B996-47A4-AF54-A605E1A9AEBA/0/%7B%22Hello%22%3A%22world%22%2C%22pn_apns%22%3A%7B%22alert%22%3A%22Hello%20from%20PubNub%22%7D%7D?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;store=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+					<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/2EC925F0-B996-47A4-AF54-A605E1A9AEBA/0/%7B%22Hello%22%3A%22world%22%2C%22pn_apns%22%3A%7B%22alert%22%3A%22Hello%20from%20PubNub%22%7D%7D?pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;store=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -79,7 +79,7 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/2EC925F0-B996-47A4-AF54-A605E1A9AEBA/0/%7B%22Hello%22%3A%22world%22%2C%22pn_apns%22%3A%7B%22alert%22%3A%22Hello%20from%20PubNub%22%7D%7D?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;store=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+					<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/2EC925F0-B996-47A4-AF54-A605E1A9AEBA/0/%7B%22Hello%22%3A%22world%22%2C%22pn_apns%22%3A%7B%22alert%22%3A%22Hello%20from%20PubNub%22%7D%7D?pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;store=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -98,7 +98,7 @@
 					<key>class</key>
 					<string>BKRCurrentRequestFrame</string>
 					<key>creationDate</key>
-					<real>1458605760.7406149</real>
+					<real>1458605760.740615</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
@@ -108,7 +108,7 @@
 					<key>MIMEType</key>
 					<string>text/javascript</string>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/2EC925F0-B996-47A4-AF54-A605E1A9AEBA/0/%7B%22Hello%22%3A%22world%22%2C%22pn_apns%22%3A%7B%22alert%22%3A%22Hello%20from%20PubNub%22%7D%7D?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;store=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+					<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/2EC925F0-B996-47A4-AF54-A605E1A9AEBA/0/%7B%22Hello%22%3A%22world%22%2C%22pn_apns%22%3A%7B%22alert%22%3A%22Hello%20from%20PubNub%22%7D%7D?pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;store=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 					<key>allHeaderFields</key>
 					<dict>
 						<key>Access-Control-Allow-Methods</key>
@@ -122,14 +122,14 @@
 						<key>Content-Length</key>
 						<string>30</string>
 						<key>Content-Type</key>
-						<string>text/javascript; charset="UTF-8"</string>
+						<string>text/javascript; charset=&quot;UTF-8&quot;</string>
 						<key>Date</key>
 						<string>Tue, 22 Mar 2016 00:16:00 GMT</string>
 					</dict>
 					<key>class</key>
 					<string>BKRResponseFrame</string>
 					<key>creationDate</key>
-					<real>1458605760.8259449</real>
+					<real>1458605760.825945</real>
 					<key>statusCode</key>
 					<integer>200</integer>
 					<key>uniqueIdentifier</key>
@@ -139,12 +139,9 @@
 					<key>class</key>
 					<string>BKRDataFrame</string>
 					<key>creationDate</key>
-					<real>1458605760.8259771</real>
+					<real>1458605760.825977</real>
 					<key>data</key>
-					<data>
-					WzEsIlNlbnQiLCIxNDU4NjA1NzYwODA5MDk3
-					NyJd
-					</data>
+					<data>WzEsIlNlbnQiLCIxNDU4NjA1NzYwODA5MDk3NyJd</data>
 					<key>uniqueIdentifier</key>
 					<string>1D155B9E-F37E-4675-904A-407B7D4B976D</string>
 				</dict>

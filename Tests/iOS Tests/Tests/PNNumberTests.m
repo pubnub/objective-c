@@ -1,5 +1,6 @@
 #import <XCTest/XCTest.h>
-#import <PubNub/PNNumber.h>
+#import "PNNumber.h"
+
 
 /**
  @brief      PNNumber testing.

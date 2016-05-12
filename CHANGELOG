@@ -1,3 +1,9 @@
+12-05-2016 - 9d23825 - 4.3.1
+. fixed issue with PNNumber on 32bit system, when passed NSNumber instance created from unix-timestamp multiplied on 10000000
+. fixed message content descryption in case if it has been sent along with mobile push payload
+. mobile push payload removed from received message
+. 'pn_other' key has been removed and original object will be returned in delegate callback (this field used with message encryption and/or mobile push payload).
+
 03-05-2016 - ce8b146 - 4.3.0
 . added Pub/Sub V2 API support
 . added message filtering basing on published message metadata
