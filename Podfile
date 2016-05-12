@@ -1,44 +1,46 @@
 source 'https://github.com/CocoaPods/Specs.git'
 workspace 'PubNub.xcworkspace'
-use_frameworks!
 install! 'cocoapods', :lock_pod_sources => false
+use_frameworks!
 
-abstract_target 'PubNub Integration' do
+target 'PubNub_Example' do
+  platform :ios, '8.0'
+  project 'Example/PubNub Example'
   pod "PubNub", :path => "."
+end
 
-  target 'PubNub_Example' do
-    platform :ios, '8.0'
-    project 'Example/PubNub Example'
-  end
+target 'PubNub Mac Example' do
+  platform :osx, '10.9'
+  project 'Example/PubNub Example'
+  pod "PubNub", :path => "."
+end
+  
+target 'iOS ObjC Tests' do
+  platform :ios, "8.0"
+  project 'Tests/PubNub Tests'
+  pod "BeKindRewind", '~> 1.0.0'
+  pod "PubNub", :path => "."
+end
 
-  target 'PubNub Mac Example' do
-    platform :osx, '10.9'
-    project 'Example/PubNub Example'
-  end
+#  target 'iOS Swift Tests' do
+#    platform :ios, "8.0"
+#    project 'Tests/PubNub Tests'
+#    pod "BeKindRewind", '~> 1.0.0'
+#    pod "PubNub", :path => "."
+#  end
 
-  abstract_target 'PubNub Tests' do
-    pod "BeKindRewind", '~> 1.0.0'
-    
-    target 'iOS ObjC Tests' do
-      platform :ios, "8.0"
-      project 'Tests/PubNub Tests'
-    end
+target 'OSX ObjC Tests' do
+  platform :osx, '10.9'
+  project 'Tests/PubNub Tests'
+  pod "BeKindRewind", '~> 1.0.0'
+  pod "PubNub", :path => "."
+end
 
-#    target 'iOS Swift Tests' do
-#      platform :ios, "8.0"
-#      project 'Tests/PubNub Tests'
-#    end
-
-    target 'OSX ObjC Tests' do
-      platform :osx, '10.9'
-      project 'Tests/PubNub Tests'
-    end
-
-    target 'tvOS ObjC Tests' do
-      platform :tvos, '9.0'
-      project 'Tests/PubNub Tests'
-    end
-  end
+target 'tvOS ObjC Tests' do
+  platform :tvos, '9.0'
+  project 'Tests/PubNub Tests'
+  pod "BeKindRewind", '~> 1.0.0'
+  pod "PubNub", :path => "."
 end
 
 # Making all interfaces visible for all targets on explicit import

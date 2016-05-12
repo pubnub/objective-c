@@ -93,7 +93,8 @@ NS_ASSUME_NONNULL_END
         strcmp(number.objCType, @encode(double)) == 0) {
         
         double doubleValue = number.doubleValue;
-        normalizeValue = @((doubleValue - (NSUInteger)doubleValue > 0) ? doubleValue * 1000000 : doubleValue);
+        unsigned long long unsignedLongLongValue = number.unsignedLongLongValue;
+        normalizeValue = @((doubleValue - unsignedLongLongValue > 0) ? doubleValue * 1000000 : doubleValue);
     }
     
     return normalizeValue;
