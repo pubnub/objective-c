@@ -17,7 +17,7 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNChannelGroupTestsName/remove?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNChannelGroupTestsName/remove?pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -48,7 +48,7 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNChannelGroupTestsName/remove?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNChannelGroupTestsName/remove?pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -79,7 +79,7 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNChannelGroupTestsName/remove?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNChannelGroupTestsName/remove?pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -98,7 +98,7 @@
 					<key>class</key>
 					<string>BKRCurrentRequestFrame</string>
 					<key>creationDate</key>
-					<real>1458765830.8354349</real>
+					<real>1458765830.835435</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
@@ -108,7 +108,7 @@
 					<key>MIMEType</key>
 					<string>text/javascript</string>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNChannelGroupTestsName/remove?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNChannelGroupTestsName/remove?pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 					<key>allHeaderFields</key>
 					<dict>
 						<key>Accept-Ranges</key>
@@ -126,7 +126,7 @@
 						<key>Content-Length</key>
 						<string>79</string>
 						<key>Content-Type</key>
-						<string>text/javascript; charset="UTF-8"</string>
+						<string>text/javascript; charset=&quot;UTF-8&quot;</string>
 						<key>Date</key>
 						<string>Wed, 23 Mar 2016 20:43:51 GMT</string>
 						<key>Server</key>
@@ -135,7 +135,7 @@
 					<key>class</key>
 					<string>BKRResponseFrame</string>
 					<key>creationDate</key>
-					<real>1458765831.0492959</real>
+					<real>1458765831.049296</real>
 					<key>statusCode</key>
 					<integer>200</integer>
 					<key>uniqueIdentifier</key>
@@ -147,11 +147,7 @@
 					<key>creationDate</key>
 					<real>1458765831.049361</real>
 					<key>data</key>
-					<data>
-					eyJzdGF0dXMiOiAyMDAsICJtZXNzYWdlIjog
-					Ik9LIiwgInNlcnZpY2UiOiAiY2hhbm5lbC1y
-					ZWdpc3RyeSIsICJlcnJvciI6IGZhbHNlfQ==
-					</data>
+					<data>eyJzdGF0dXMiOiAyMDAsICJtZXNzYWdlIjogIk9LIiwgInNlcnZpY2UiOiAiY2hhbm5lbC1yZWdpc3RyeSIsICJlcnJvciI6IGZhbHNlfQ==</data>
 					<key>uniqueIdentifier</key>
 					<string>5418E02D-F27F-4EAB-BFC3-077F742B60BC</string>
 				</dict>
@@ -170,7 +166,7 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group?pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -201,7 +197,7 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group?pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -230,7 +226,7 @@
 					<key>MIMEType</key>
 					<string>text/javascript</string>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group?pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 					<key>allHeaderFields</key>
 					<dict>
 						<key>Access-Control-Allow-Methods</key>
@@ -246,7 +242,7 @@
 						<key>Content-Encoding</key>
 						<string>gzip</string>
 						<key>Content-Type</key>
-						<string>text/javascript; charset="UTF-8"</string>
+						<string>text/javascript; charset=&quot;UTF-8&quot;</string>
 						<key>Date</key>
 						<string>Wed, 23 Mar 2016 20:43:51 GMT</string>
 						<key>Server</key>
@@ -257,7 +253,7 @@
 					<key>class</key>
 					<string>BKRResponseFrame</string>
 					<key>creationDate</key>
-					<real>1458765831.1160889</real>
+					<real>1458765831.116089</real>
 					<key>statusCode</key>
 					<integer>200</integer>
 					<key>uniqueIdentifier</key>
@@ -269,69 +265,7 @@
 					<key>creationDate</key>
 					<real>1458765831.116189</real>
 					<key>data</key>
-					<data>
-					eyJzdGF0dXMiOiAyMDAsICJwYXlsb2FkIjog
-					eyJuYW1lc3BhY2UiOiAiIiwgImdyb3VwcyI6
-					IFsiJyciLCAiMjAiLCAiQUJDIiwgIkNHLTE5
-					MSIsICJDRy02NjMiLCAiQ0ctNzcwIiwgIkNH
-					LTc3OSIsICJDRy04OTQiLCAiQ0dfMjIzIiwg
-					IkNHXzY3NiIsICJQTkNoYW5uZWxHcm91cEZp
-					bHRlclN1YnNjcmliZVRlc3RzIiwgIlBOQ2hh
-					bm5lbEdyb3VwVW5zdWJzY3JpYmVUZXN0cyIs
-					ICJQTkNsaWVudFN0YXRlQ2hhbm5lbEdyb3Vw
-					VGVzdHMiLCAiUHViTnViLWNnIiwgImIiLCAi
-					YmxvZyIsICJib3QiLCAiY2FiZXJhX2RyaXZl
-					cl91a19zbWFsbCIsICJjZyIsICJjZzEiLCAi
-					Y2cyIiwgImNnOSIsICJjZ0FBQSIsICJjZ0JC
-					QiIsICJjZ190ZXN0IiwgImNnX3RqIiwgImNn
-					X3RqMyIsICJjZ190ajUiLCAiY2dfdGo2Iiwg
-					ImNnX3RqNyIsICJjZ190ajgiLCAiY2d0ZXN0
-					IiwgImNvZHlfY2hhbm5lbHMiLCAiZmFtaWx5
-					IiwgImZyaWVuZHMiLCAiZnRlc3RfMTQzNzkx
-					MjczNzUxNCIsICJmdGVzdF8xNDM3OTEyNzM5
-					MzAxIiwgImZ0ZXN0XzE0Mzc5MTI3Mzk1NDUy
-					IiwgImZ0ZXN0ZnRlc3RfMTQyMzQ5MzMwMjU3
-					MCIsICJmdGVzdGZ0ZXN0XzE0MjM0OTQ1ODE5
-					MzUiLCAiZnRlc3RmdGVzdF8xNDIzNDk2NDky
-					MDMyIiwgImZ0ZXN0ZnRlc3RfMTQyMzQ5NjYz
-					NzEyMCIsICJmdGVzdGZ0ZXN0XzE0MjM0OTY5
-					Mzk0NDEiLCAiZnRlc3RmdGVzdF8xNDIzNDk3
-					MDAwMDI0IiwgImZ0ZXN0ZnRlc3RfMTQyMzQ5
-					NzA4MTQzOCIsICJmdGVzdGZ0ZXN0XzE0MjM0
-					OTcxMjkxNTciLCAiZnRlc3RmdGVzdF8xNDIz
-					NDk3MzA4OTI0IiwgImZ0ZXN0ZnRlc3RfMTQy
-					MzQ5NzczNDQyOCIsICJmdGVzdGZ0ZXN0XzE0
-					MjM0OTc4NTQ4ODgiLCAiZnRlc3RmdGVzdF8x
-					NDIzNTYxMTUxMDk5IiwgImZ0ZXN0ZnRlc3Rf
-					MTQyMzU2MzQzNTMyOCIsICJmdGVzdGZ0ZXN0
-					XzE0MjM1NjM2MTg3NDgiLCAiZnRlc3RmdGVz
-					dF8xNDI0ODcxOTEyNTIyIiwgImZ0ZXN0ZnRl
-					c3RfMTQyNDg3MjE0MzI0OSIsICJmdGVzdGZ0
-					ZXN0XzE0MjQ4NzIyNzY1NjciLCAiZnRlc3Rm
-					dGVzdF8xNDI0ODcyNDMzMDcxIiwgImZ0ZXN0
-					ZnRlc3RfMTQyNDg3MjQ4NjkzNiIsICJmdGVz
-					dGZ0ZXN0XzE0Mzc3MzcwOTI5MjciLCAiZnRl
-					c3RmdGVzdF8xNDM3NzUyMzgwNDczIiwgImZ0
-					ZXN0ZnRlc3RfMTQzNzkxMjU0MjU0NiIsICJm
-					dGVzdGZ0ZXN0XzE0Mzc5MTI3MzcyNjIiLCAi
-					Z3JvdXAhIiwgImdyb3VwMSIsICJncnAxIiwg
-					ImhlbGxvX2NoYW5uZWxfZ3JvdXAiLCAiaGVs
-					bG9fbXlfZ3JvdXAiLCAiaGVsbG9fbXlfZ3Jv
-					dXAxIiwgImhlbGxvX215X2dyb3VwMiIsICJt
-					eUNHIiwgIm15Q0cwIiwgIm15Q0cyIiwgIm15
-					X2NoYW5uZWxfZ3JvdXAiLCAibXlfaGVsbG9f
-					Z3JvdXAiLCAicGFuZHVjZzEiLCAicGdfZ3Jv
-					dXAiLCAic3Vic2NyaWJlLWdyb3VwLXRlc3Qi
-					LCAidGVzdC0xMzQ4OCIsICJ0ZXN0Q2hhbm5l
-					bEdyb3VwX3N1Yl8xMCIsICJ0ZXN0R3JvdXAi
-					LCAidGpfY2cxIiwgInVuc3Vic2NyaWJlLWdy
-					b3VwLXRlc3QiLCAid2FhemltMyIsICJ6Q0cx
-					IiwgInpDRzEwIiwgInpDRzIiLCAiekNHMyIs
-					ICJ6Q0c0IiwgInpDRzUiLCAiekNHNiIsICJ6
-					Q0c3IiwgInpDRzgiLCAiekNHOSJdfSwgInNl
-					cnZpY2UiOiAiY2hhbm5lbC1yZWdpc3RyeSIs
-					ICJlcnJvciI6IGZhbHNlfQ==
-					</data>
+					<data>eyJzdGF0dXMiOiAyMDAsICJwYXlsb2FkIjogeyJuYW1lc3BhY2UiOiAiIiwgImdyb3VwcyI6IFsiJyciLCAiMjAiLCAiQUJDIiwgIkNHLTE5MSIsICJDRy02NjMiLCAiQ0ctNzcwIiwgIkNHLTc3OSIsICJDRy04OTQiLCAiQ0dfMjIzIiwgIkNHXzY3NiIsICJQTkNoYW5uZWxHcm91cEZpbHRlclN1YnNjcmliZVRlc3RzIiwgIlBOQ2hhbm5lbEdyb3VwVW5zdWJzY3JpYmVUZXN0cyIsICJQTkNsaWVudFN0YXRlQ2hhbm5lbEdyb3VwVGVzdHMiLCAiUHViTnViLWNnIiwgImIiLCAiYmxvZyIsICJib3QiLCAiY2FiZXJhX2RyaXZlcl91a19zbWFsbCIsICJjZyIsICJjZzEiLCAiY2cyIiwgImNnOSIsICJjZ0FBQSIsICJjZ0JCQiIsICJjZ190ZXN0IiwgImNnX3RqIiwgImNnX3RqMyIsICJjZ190ajUiLCAiY2dfdGo2IiwgImNnX3RqNyIsICJjZ190ajgiLCAiY2d0ZXN0IiwgImNvZHlfY2hhbm5lbHMiLCAiZmFtaWx5IiwgImZyaWVuZHMiLCAiZnRlc3RfMTQzNzkxMjczNzUxNCIsICJmdGVzdF8xNDM3OTEyNzM5MzAxIiwgImZ0ZXN0XzE0Mzc5MTI3Mzk1NDUyIiwgImZ0ZXN0ZnRlc3RfMTQyMzQ5MzMwMjU3MCIsICJmdGVzdGZ0ZXN0XzE0MjM0OTQ1ODE5MzUiLCAiZnRlc3RmdGVzdF8xNDIzNDk2NDkyMDMyIiwgImZ0ZXN0ZnRlc3RfMTQyMzQ5NjYzNzEyMCIsICJmdGVzdGZ0ZXN0XzE0MjM0OTY5Mzk0NDEiLCAiZnRlc3RmdGVzdF8xNDIzNDk3MDAwMDI0IiwgImZ0ZXN0ZnRlc3RfMTQyMzQ5NzA4MTQzOCIsICJmdGVzdGZ0ZXN0XzE0MjM0OTcxMjkxNTciLCAiZnRlc3RmdGVzdF8xNDIzNDk3MzA4OTI0IiwgImZ0ZXN0ZnRlc3RfMTQyMzQ5NzczNDQyOCIsICJmdGVzdGZ0ZXN0XzE0MjM0OTc4NTQ4ODgiLCAiZnRlc3RmdGVzdF8xNDIzNTYxMTUxMDk5IiwgImZ0ZXN0ZnRlc3RfMTQyMzU2MzQzNTMyOCIsICJmdGVzdGZ0ZXN0XzE0MjM1NjM2MTg3NDgiLCAiZnRlc3RmdGVzdF8xNDI0ODcxOTEyNTIyIiwgImZ0ZXN0ZnRlc3RfMTQyNDg3MjE0MzI0OSIsICJmdGVzdGZ0ZXN0XzE0MjQ4NzIyNzY1NjciLCAiZnRlc3RmdGVzdF8xNDI0ODcyNDMzMDcxIiwgImZ0ZXN0ZnRlc3RfMTQyNDg3MjQ4NjkzNiIsICJmdGVzdGZ0ZXN0XzE0Mzc3MzcwOTI5MjciLCAiZnRlc3RmdGVzdF8xNDM3NzUyMzgwNDczIiwgImZ0ZXN0ZnRlc3RfMTQzNzkxMjU0MjU0NiIsICJmdGVzdGZ0ZXN0XzE0Mzc5MTI3MzcyNjIiLCAiZ3JvdXAhIiwgImdyb3VwMSIsICJncnAxIiwgImhlbGxvX2NoYW5uZWxfZ3JvdXAiLCAiaGVsbG9fbXlfZ3JvdXAiLCAiaGVsbG9fbXlfZ3JvdXAxIiwgImhlbGxvX215X2dyb3VwMiIsICJteUNHIiwgIm15Q0cwIiwgIm15Q0cyIiwgIm15X2NoYW5uZWxfZ3JvdXAiLCAibXlfaGVsbG9fZ3JvdXAiLCAicGFuZHVjZzEiLCAicGdfZ3JvdXAiLCAic3Vic2NyaWJlLWdyb3VwLXRlc3QiLCAidGVzdC0xMzQ4OCIsICJ0ZXN0Q2hhbm5lbEdyb3VwX3N1Yl8xMCIsICJ0ZXN0R3JvdXAiLCAidGpfY2cxIiwgInVuc3Vic2NyaWJlLWdyb3VwLXRlc3QiLCAid2FhemltMyIsICJ6Q0cxIiwgInpDRzEwIiwgInpDRzIiLCAiekNHMyIsICJ6Q0c0IiwgInpDRzUiLCAiekNHNiIsICJ6Q0c3IiwgInpDRzgiLCAiekNHOSJdfSwgInNlcnZpY2UiOiAiY2hhbm5lbC1yZWdpc3RyeSIsICJlcnJvciI6IGZhbHNlfQ==</data>
 					<key>uniqueIdentifier</key>
 					<string>D439E024-39ED-4550-A586-1605305D26B8</string>
 				</dict>
@@ -350,7 +284,7 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNChannelGroupTestsName/remove?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNChannelGroupTestsName/remove?pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -367,7 +301,7 @@
 					<key>class</key>
 					<string>BKROriginalRequestFrame</string>
 					<key>creationDate</key>
-					<real>1458765831.1182899</real>
+					<real>1458765831.11829</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
@@ -381,7 +315,7 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNChannelGroupTestsName/remove?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNChannelGroupTestsName/remove?pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -400,7 +334,7 @@
 					<key>class</key>
 					<string>BKRCurrentRequestFrame</string>
 					<key>creationDate</key>
-					<real>1458765831.1185021</real>
+					<real>1458765831.118502</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
@@ -410,7 +344,7 @@
 					<key>MIMEType</key>
 					<string>text/javascript</string>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNChannelGroupTestsName/remove?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNChannelGroupTestsName/remove?pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 					<key>allHeaderFields</key>
 					<dict>
 						<key>Accept-Ranges</key>
@@ -428,7 +362,7 @@
 						<key>Content-Length</key>
 						<string>79</string>
 						<key>Content-Type</key>
-						<string>text/javascript; charset="UTF-8"</string>
+						<string>text/javascript; charset=&quot;UTF-8&quot;</string>
 						<key>Date</key>
 						<string>Wed, 23 Mar 2016 20:43:51 GMT</string>
 						<key>Server</key>
@@ -437,7 +371,7 @@
 					<key>class</key>
 					<string>BKRResponseFrame</string>
 					<key>creationDate</key>
-					<real>1458765831.2016571</real>
+					<real>1458765831.201657</real>
 					<key>statusCode</key>
 					<integer>200</integer>
 					<key>uniqueIdentifier</key>
@@ -447,13 +381,9 @@
 					<key>class</key>
 					<string>BKRDataFrame</string>
 					<key>creationDate</key>
-					<real>1458765831.2017131</real>
+					<real>1458765831.201713</real>
 					<key>data</key>
-					<data>
-					eyJzdGF0dXMiOiAyMDAsICJtZXNzYWdlIjog
-					Ik9LIiwgInNlcnZpY2UiOiAiY2hhbm5lbC1y
-					ZWdpc3RyeSIsICJlcnJvciI6IGZhbHNlfQ==
-					</data>
+					<data>eyJzdGF0dXMiOiAyMDAsICJtZXNzYWdlIjogIk9LIiwgInNlcnZpY2UiOiAiY2hhbm5lbC1yZWdpc3RyeSIsICJlcnJvciI6IGZhbHNlfQ==</data>
 					<key>uniqueIdentifier</key>
 					<string>417626FB-1AFD-4FA0-90F6-61AD30104A3A</string>
 				</dict>

@@ -11,13 +11,7 @@
 			<array>
 				<dict>
 					<key>HTTPBody</key>
-					<data>
-					H4sIAAAAAAAAAyWMMQrDMBAEvyK2NoaENFGV
-					b6QKp/isCOw7IZ2KYPT3KLgaWGbnQJaX2ocL
-					PIyrYfovlKXCH6B8YuNiQ3hqc1HNfbUVxzul
-					rc6P8Qi0RIa/T6jaZBlmSBKDSpwprSt6P6vv
-					nd0F/nbtPwTbwBl4AAAA
-					</data>
+					<data>H4sIAAAAAAAAAyWMMQrDMBAEvyK2NoaENFGVb6QKp/isCOw7IZ2KYPT3KLgaWGbnQJaX2ocLPIyrYfovlKXCH6B8YuNiQ3hqc1HNfbUVxzulrc6P8Qi0RIa/T6jaZBlmSBKDSpwprSt6P6vvnd0F/nbtPwTbwBl4AAAA</data>
 					<key>HTTPMethod</key>
 					<string>POST</string>
 					<key>HTTPShouldHandleCookies</key>
@@ -25,7 +19,7 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/02290046-2F36-43DD-97F0-2F51D925451A/0?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;store=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+					<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/02290046-2F36-43DD-97F0-2F51D925451A/0?pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;store=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -62,7 +56,7 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/02290046-2F36-43DD-97F0-2F51D925451A/0?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;store=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+					<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/02290046-2F36-43DD-97F0-2F51D925451A/0?pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;store=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -99,7 +93,7 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/02290046-2F36-43DD-97F0-2F51D925451A/0?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;store=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+					<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/02290046-2F36-43DD-97F0-2F51D925451A/0?pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;store=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -134,7 +128,7 @@
 					<key>MIMEType</key>
 					<string>text/javascript</string>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/02290046-2F36-43DD-97F0-2F51D925451A/0?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;store=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+					<string>https://pubsub.pubnub.com/publish/demo-36/demo-36/0/02290046-2F36-43DD-97F0-2F51D925451A/0?pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;store=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 					<key>allHeaderFields</key>
 					<dict>
 						<key>Access-Control-Allow-Methods</key>
@@ -148,14 +142,14 @@
 						<key>Content-Length</key>
 						<string>30</string>
 						<key>Content-Type</key>
-						<string>text/javascript; charset="UTF-8"</string>
+						<string>text/javascript; charset=&quot;UTF-8&quot;</string>
 						<key>Date</key>
 						<string>Wed, 23 Mar 2016 20:32:43 GMT</string>
 					</dict>
 					<key>class</key>
 					<string>BKRResponseFrame</string>
 					<key>creationDate</key>
-					<real>1458765164.0352101</real>
+					<real>1458765164.03521</real>
 					<key>statusCode</key>
 					<integer>200</integer>
 					<key>uniqueIdentifier</key>
@@ -167,10 +161,7 @@
 					<key>creationDate</key>
 					<real>1458765164.035305</real>
 					<key>data</key>
-					<data>
-					WzEsIlNlbnQiLCIxNDU4NzY1MTYzOTc4OTQx
-					MiJd
-					</data>
+					<data>WzEsIlNlbnQiLCIxNDU4NzY1MTYzOTc4OTQxMiJd</data>
 					<key>uniqueIdentifier</key>
 					<string>FBDFB935-9461-44C4-A458-606DC150BEE9</string>
 				</dict>
