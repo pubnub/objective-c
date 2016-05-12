@@ -318,15 +318,17 @@ NS_ASSUME_NONNULL_END
 + (NSMutableDictionary *)messageFromData:(id)data
                 withAdditionalParserData:(nullable NSDictionary<NSString *, id> *)additionalData {
     
-    NSMutableDictionary *message = [@{@"message": data} mutableCopy];
+    NSMutableDictionary *message = nil;
     // Try decrypt message body if possible.
     if (((NSString *)additionalData[@"cipherKey"]).length){
         
         NSError *decryptionError;
         id decryptedEvent = nil;
-        if ([data isKindOfClass:[NSString class]]) {
+        message = [NSMutableDictionary new];
+        id dataForDecryption = ([data isKindOfClass:[NSDictionary class]] ? ((NSDictionary *)data)[@"pn_other"] : data);
+        if ([dataForDecryption isKindOfClass:[NSString class]]) {
             
-            NSData *eventData = [PNAES decrypt:data withKey:additionalData[@"cipherKey"]
+            NSData *eventData = [PNAES decrypt:dataForDecryption withKey:additionalData[@"cipherKey"]
                                       andError:&decryptionError];
             NSString *decryptedEventData = nil;
             if (eventData) {
@@ -336,7 +338,7 @@ NS_ASSUME_NONNULL_END
             
             // In case if after encryption another object has been received client should try to de-serialize
             // it again as JSON object.
-            if (decryptedEventData && ![decryptedEventData isEqualToString:data]) {
+            if (decryptedEventData && ![decryptedEventData isEqualToString:dataForDecryption]) {
                 
                 decryptedEvent = [PNJSON JSONObjectFrom:decryptedEventData withError:nil];
             }
@@ -348,6 +350,22 @@ NS_ASSUME_NONNULL_END
             message[@"decryptError"] = @YES;
         }
         else { message[@"message"] = decryptedEvent; }
+    }
+    else {
+        
+        if (![data isKindOfClass:[NSDictionary class]]) { message = [@{@"message": data} mutableCopy]; }
+        else if (data[@"pn_apns"] || data[@"pn_gcm"] || data[@"pn_mpns"]) {
+            
+            id decomposedMessage = data;
+            if (!data[@"pn_other"]) {
+                
+                NSMutableDictionary *dictionaryData = [data mutableCopy];
+                [dictionaryData removeObjectsForKeys:@[@"pn_apns", @"pn_gcm", @"pn_mpns"]];
+                decomposedMessage = dictionaryData;
+            }
+            else { decomposedMessage = data[@"pn_other"]; }
+            message = [@{@"message": decomposedMessage} mutableCopy];
+        }
     }
     
     return message;

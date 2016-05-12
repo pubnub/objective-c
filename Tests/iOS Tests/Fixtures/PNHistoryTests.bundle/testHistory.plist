@@ -8,24 +8,7 @@
 		<key>data</key>
 		<dict>
 			<key>data</key>
-			<data>
-			W1siKioqKioqKioqLi4uLi4uIDEyNDQgLSAyMDE1LTA2LTMwIDEz
-			OjMwOjM1IiwiKioqKioqKioqKi4uLi4uIDEyNDUgLSAyMDE1LTA2
-			LTMwIDEzOjMwOjM3IiwiKioqKioqKioqKiouLi4uIDEyNDYgLSAy
-			MDE1LTA2LTMwIDEzOjMwOjM5IiwiKioqKioqKioqKioqLi4uIDEy
-			NDcgLSAyMDE1LTA2LTMwIDEzOjMwOjQxIiwiKioqKioqKioqKioq
-			Ki4uIDEyNDggLSAyMDE1LTA2LTMwIDEzOjMwOjQzIiwiKioqKioq
-			KioqKioqKiouIDEyNDkgLSAyMDE1LTA2LTMwIDEzOjMwOjQ1Iiwi
-			KioqKioqKioqKioqKioqIDEyNTAgLSAyMDE1LTA2LTMwIDEzOjMw
-			OjQ3IiwiKi4uLi4uLi4uLi4uLi4uIDEyNTEgLSAyMDE1LTA2LTMw
-			IDEzOjMwOjQ5IiwiKiouLi4uLi4uLi4uLi4uIDEyNTIgLSAyMDE1
-			LTA2LTMwIDEzOjMwOjUxIiwiKioqLi4uLi4uLi4uLi4uIDEyNTMg
-			LSAyMDE1LTA2LTMwIDEzOjMwOjUzIiwiKioqKi4uLi4uLi4uLi4u
-			IDEyNTQgLSAyMDE1LTA2LTMwIDEzOjMwOjU1IiwiKioqKiouLi4u
-			Li4uLi4uIDEyNTUgLSAyMDE1LTA2LTMwIDEzOjMwOjU4IiwiKioq
-			KioqLi4uLi4uLi4uIDEyNTYgLSAyMDE1LTA2LTMwIDEzOjMxOjAw
-			Il0sMTQzNTY5NjIzNjQ0OTA4ODgsMTQzNTY5NjI2MDk1MjE0NTVd
-			</data>
+			<data>W1siKioqKioqKioqLi4uLi4uIDEyNDQgLSAyMDE1LTA2LTMwIDEzOjMwOjM1IiwiKioqKioqKioqKi4uLi4uIDEyNDUgLSAyMDE1LTA2LTMwIDEzOjMwOjM3IiwiKioqKioqKioqKiouLi4uIDEyNDYgLSAyMDE1LTA2LTMwIDEzOjMwOjM5IiwiKioqKioqKioqKioqLi4uIDEyNDcgLSAyMDE1LTA2LTMwIDEzOjMwOjQxIiwiKioqKioqKioqKioqKi4uIDEyNDggLSAyMDE1LTA2LTMwIDEzOjMwOjQzIiwiKioqKioqKioqKioqKiouIDEyNDkgLSAyMDE1LTA2LTMwIDEzOjMwOjQ1IiwiKioqKioqKioqKioqKioqIDEyNTAgLSAyMDE1LTA2LTMwIDEzOjMwOjQ3IiwiKi4uLi4uLi4uLi4uLi4uIDEyNTEgLSAyMDE1LTA2LTMwIDEzOjMwOjQ5IiwiKiouLi4uLi4uLi4uLi4uIDEyNTIgLSAyMDE1LTA2LTMwIDEzOjMwOjUxIiwiKioqLi4uLi4uLi4uLi4uIDEyNTMgLSAyMDE1LTA2LTMwIDEzOjMwOjUzIiwiKioqKi4uLi4uLi4uLi4uIDEyNTQgLSAyMDE1LTA2LTMwIDEzOjMwOjU1IiwiKioqKiouLi4uLi4uLi4uIDEyNTUgLSAyMDE1LTA2LTMwIDEzOjMwOjU4IiwiKioqKioqLi4uLi4uLi4uIDEyNTYgLSAyMDE1LTA2LTMwIDEzOjMxOjAwIl0sMTQzNTY5NjIzNjQ0OTA4ODgsMTQzNTY5NjI2MDk1MjE0NTVd</data>
 			<key>json</key>
 			<array>
 				<array>
@@ -56,7 +39,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/history/sub-key/demo-36/channel/a?count=100&amp;end=14356962619609342&amp;reverse=false&amp;start=14356962344283504&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;include_token=false&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/v2/history/sub-key/demo-36/channel/a?count=100&amp;end=14356962619609342&amp;reverse=false&amp;start=14356962344283504&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;include_token=false&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -71,7 +54,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60.0</real>
+				<real>60</real>
 			</dict>
 			<key>originalRequest</key>
 			<dict>
@@ -80,7 +63,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/history/sub-key/demo-36/channel/a?count=100&amp;end=14356962619609342&amp;reverse=false&amp;start=14356962344283504&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;include_token=false&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/v2/history/sub-key/demo-36/channel/a?count=100&amp;end=14356962619609342&amp;reverse=false&amp;start=14356962344283504&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;include_token=false&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept-Language</key>
@@ -91,7 +74,7 @@
 				<key>allowsCellularAccess</key>
 				<true/>
 				<key>timeoutInterval</key>
-				<real>60.0</real>
+				<real>60</real>
 			</dict>
 		</dict>
 		<key>response</key>
@@ -119,7 +102,7 @@
 					<key>Content-Length</key>
 					<string>624</string>
 					<key>Content-Type</key>
-					<string>text/javascript; charset="UTF-8"</string>
+					<string>text/javascript; charset=&quot;UTF-8&quot;</string>
 					<key>Date</key>
 					<string>Tue, 30 Jun 2015 20:54:45 GMT</string>
 					<key>Server</key>
@@ -132,7 +115,7 @@
 				<key>suggestedFileName</key>
 				<string>a.js</string>
 				<key>textEncodingName</key>
-				<string>"utf-8"</string>
+				<string>&quot;utf-8&quot;</string>
 			</dict>
 		</dict>
 	</dict>
