@@ -1351,7 +1351,7 @@ NS_ASSUME_NONNULL_END
                                    withProcessingError:nil];
 
             NSMutableDictionary *updatedData = [data.serviceData mutableCopy];
-            [updatedData removeObjectForKey:@"decryptError"];
+            [updatedData removeObjectsForKeys:@[@"decryptError", @"envelope"]];
             status.associatedObject = [PNMessageData dataWithServiceResponse:updatedData];
             [status updateData:updatedData];
         }
