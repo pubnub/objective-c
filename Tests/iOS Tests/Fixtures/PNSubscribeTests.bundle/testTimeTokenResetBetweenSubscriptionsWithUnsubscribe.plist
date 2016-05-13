@@ -17,7 +17,7 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=0</string>
+					<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.2&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=0</string>
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -48,7 +48,7 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=0</string>
+					<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.2&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=0</string>
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -77,7 +77,7 @@
 					<key>MIMEType</key>
 					<string>text/javascript</string>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=0</string>
+					<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.2&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=0</string>
 					<key>allHeaderFields</key>
 					<dict>
 						<key>Access-Control-Allow-Methods</key>
@@ -129,7 +129,7 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14583348421884477&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.1</string>
+					<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14583348421884477&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.2</string>
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -160,7 +160,7 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14583348421884477&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.1</string>
+					<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14583348421884477&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.2</string>
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -201,9 +201,9 @@
 						<key>BKRSceneUUIDKey</key>
 						<string>9C242089-07F0-40AB-B797-81C73E41BE3D</string>
 						<key>NSErrorFailingURLKey</key>
-						<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14583348421884477&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.1</string>
+						<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14583348421884477&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.2</string>
 						<key>NSErrorFailingURLStringKey</key>
-						<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14583348421884477&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.1</string>
+						<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14583348421884477&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.2</string>
 						<key>NSLocalizedDescription</key>
 						<string>cancelled</string>
 					</dict>
@@ -223,7 +223,7 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/v2/presence/sub_key/demo-36/channel/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/leave?pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+					<string>https://pubsub.pubnub.com/v2/presence/sub_key/demo-36/channel/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/leave?pnsdk=PubNub-ObjC-iOS%2F4.3.2&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -254,7 +254,7 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/v2/presence/sub_key/demo-36/channel/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/leave?pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+					<string>https://pubsub.pubnub.com/v2/presence/sub_key/demo-36/channel/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/leave?pnsdk=PubNub-ObjC-iOS%2F4.3.2&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -283,7 +283,7 @@
 					<key>MIMEType</key>
 					<string>text/javascript</string>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/v2/presence/sub_key/demo-36/channel/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/leave?pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+					<string>https://pubsub.pubnub.com/v2/presence/sub_key/demo-36/channel/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/leave?pnsdk=PubNub-ObjC-iOS%2F4.3.2&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 					<key>allHeaderFields</key>
 					<dict>
 						<key>Accept-Ranges</key>
@@ -341,7 +341,7 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=0</string>
+					<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.2&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=0</string>
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -372,7 +372,7 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=0</string>
+					<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.2&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=0</string>
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -403,7 +403,7 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=0</string>
+					<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.2&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=0</string>
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -432,7 +432,7 @@
 					<key>MIMEType</key>
 					<string>text/javascript</string>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=0</string>
+					<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.2&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;tt=0</string>
 					<key>allHeaderFields</key>
 					<dict>
 						<key>Access-Control-Allow-Methods</key>
@@ -484,7 +484,7 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14583348439633520&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.1</string>
+					<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14583348439633520&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.2</string>
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -515,7 +515,7 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14583348439633520&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.1</string>
+					<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14583348439633520&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.2</string>
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -546,7 +546,7 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14583348439633520&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.1</string>
+					<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14583348439633520&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.2</string>
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -587,9 +587,9 @@
 						<key>BKRSceneUUIDKey</key>
 						<string>C9C8B7CA-09B9-44D0-8B70-98726CFF6435</string>
 						<key>NSErrorFailingURLKey</key>
-						<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14583348439633520&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.1</string>
+						<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14583348439633520&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.2</string>
 						<key>NSErrorFailingURLStringKey</key>
-						<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14583348439633520&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.1</string>
+						<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14583348439633520&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.2</string>
 						<key>NSLocalizedDescription</key>
 						<string>cancelled</string>
 					</dict>
@@ -609,7 +609,7 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/v2/presence/sub_key/demo-36/channel/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/leave?pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+					<string>https://pubsub.pubnub.com/v2/presence/sub_key/demo-36/channel/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/leave?pnsdk=PubNub-ObjC-iOS%2F4.3.2&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -640,7 +640,7 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/v2/presence/sub_key/demo-36/channel/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/leave?pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+					<string>https://pubsub.pubnub.com/v2/presence/sub_key/demo-36/channel/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/leave?pnsdk=PubNub-ObjC-iOS%2F4.3.2&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -669,7 +669,7 @@
 					<key>MIMEType</key>
 					<string>text/javascript</string>
 					<key>URL</key>
-					<string>https://pubsub.pubnub.com/v2/presence/sub_key/demo-36/channel/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/leave?pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+					<string>https://pubsub.pubnub.com/v2/presence/sub_key/demo-36/channel/343D8550-B5E3-48A5-9564-3220EA50A500,5ABCEBF2-A887-491E-9D8C-52957BEDBCCA/leave?pnsdk=PubNub-ObjC-iOS%2F4.3.2&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 					<key>allHeaderFields</key>
 					<dict>
 						<key>Accept-Ranges</key>

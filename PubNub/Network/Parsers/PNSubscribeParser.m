@@ -348,13 +348,14 @@ NS_ASSUME_NONNULL_END
             
             DDLogAESError([self ddLogLevel], @"<PubNub::AES> Message decryption error: %@", decryptionError);
             message[@"decryptError"] = @YES;
+            message[@"message"] = (dataForDecryption?: data);
         }
         else { message[@"message"] = decryptedEvent; }
     }
     else {
         
-        if (![data isKindOfClass:[NSDictionary class]]) { message = [@{@"message": data} mutableCopy]; }
-        else if (data[@"pn_apns"] || data[@"pn_gcm"] || data[@"pn_mpns"]) {
+        if ([data isKindOfClass:[NSDictionary class]] && 
+            (data[@"pn_apns"] || data[@"pn_gcm"] || data[@"pn_mpns"])) {
             
             id decomposedMessage = data;
             if (!data[@"pn_other"]) {
@@ -366,6 +367,7 @@ NS_ASSUME_NONNULL_END
             else { decomposedMessage = data[@"pn_other"]; }
             message = [@{@"message": decomposedMessage} mutableCopy];
         }
+        else { message = [@{@"message": data} mutableCopy]; } 
     }
     
     return message;

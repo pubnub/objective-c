@@ -179,7 +179,7 @@ NS_ASSUME_NONNULL_END
         status = [PNErrorStatus statusForOperation:PNHistoryOperation category:PNDecryptionErrorCategory
                                withProcessingError:nil];
         NSMutableDictionary *updatedData = [result.serviceData mutableCopy];
-        [updatedData removeObjectForKey:@"decryptError"];
+        [updatedData removeObjectsForKeys:@[@"decryptError", @"envelope"]];
         status.associatedObject = [PNHistoryData dataWithServiceResponse:updatedData];
         [status updateData:updatedData];
     }
