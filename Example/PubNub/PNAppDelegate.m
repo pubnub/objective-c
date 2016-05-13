@@ -566,8 +566,9 @@
         NSLog(@"You can find the raw data returned from the server in the status.data attribute: %@", status.associatedObject);
         if (status.operation == PNSubscribeOperation) {
             
-            NSLog(@"Decryption failed for message from channel: %@",
-                  ((PNMessageData *)status.associatedObject).subscribedChannel);
+            NSLog(@"Decryption failed for message from channel: %@\nmessage: %@",
+                  ((PNMessageData *)status.associatedObject).subscribedChannel, 
+                  ((PNMessageData *)status.associatedObject).message);
         }
     }
     else if (status.category == PNMalformedFilterExpressionCategory) {
