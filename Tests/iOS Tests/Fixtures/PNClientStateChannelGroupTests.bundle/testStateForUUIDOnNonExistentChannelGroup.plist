@@ -30,7 +30,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNClientStateChannelGroupTests/remove?pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNClientStateChannelGroupTests/remove?pnsdk=PubNub-ObjC-iOS%2F4.3.2&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -56,7 +56,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNClientStateChannelGroupTests/remove?pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNClientStateChannelGroupTests/remove?pnsdk=PubNub-ObjC-iOS%2F4.3.2&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -139,7 +139,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/,/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14508134358706559&amp;state=%7B%22PNClientStateChannelGroupTests%22%3A%7B%22test%22%3A%22test%22%7D%7D&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;channel-group=PNClientStateChannelGroupTests%2CPNClientStateChannelGroupTests-pnpres</string>
+				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/,/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14508134358706559&amp;state=%7B%22PNClientStateChannelGroupTests%22%3A%7B%22test%22%3A%22test%22%7D%7D&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.2&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;channel-group=PNClientStateChannelGroupTests%2CPNClientStateChannelGroupTests-pnpres</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -165,7 +165,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/,/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14508134358706559&amp;state=%7B%22PNClientStateChannelGroupTests%22%3A%7B%22test%22%3A%22test%22%7D%7D&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;channel-group=PNClientStateChannelGroupTests%2CPNClientStateChannelGroupTests-pnpres</string>
+				<string>https://pubsub.pubnub.com/v2/subscribe/demo-36/,/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14508134358706559&amp;state=%7B%22PNClientStateChannelGroupTests%22%3A%7B%22test%22%3A%22test%22%7D%7D&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.2&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;channel-group=PNClientStateChannelGroupTests%2CPNClientStateChannelGroupTests-pnpres</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -210,7 +210,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/presence/sub-key/demo-36/channel/,/uuid/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C?channel-group=42&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/v2/presence/sub-key/demo-36/channel/,/uuid/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C?channel-group=42&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.2&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -236,7 +236,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/presence/sub-key/demo-36/channel/,/uuid/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C?channel-group=42&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/v2/presence/sub-key/demo-36/channel/,/uuid/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C?channel-group=42&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.2&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -324,7 +324,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNClientStateChannelGroupTests/remove?pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNClientStateChannelGroupTests/remove?pnsdk=PubNub-ObjC-iOS%2F4.3.2&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -350,7 +350,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNClientStateChannelGroupTests/remove?pnsdk=PubNub-ObjC-iOS%2F4.3.1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNClientStateChannelGroupTests/remove?pnsdk=PubNub-ObjC-iOS%2F4.3.2&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
