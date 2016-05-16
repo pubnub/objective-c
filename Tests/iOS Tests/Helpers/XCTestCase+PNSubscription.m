@@ -83,6 +83,14 @@
     }
 }
 
+- (void)PN_successfulMessageWithExpectedMessage:(PNTestMessageResult *)expectedResult andActualMessage:(PNMessageResult *)message {
+    
+}
+
+- (void)PN_successfulPresenceEventWithExpectedEvent:(PNTestPresenceResult *)expectedResult andActualEvent:(PNPresenceEventResult *)result {
+    
+}
+
 //- (BOOL)PN_successfulSubscriptionWithComparisonType:(PNTestSubscribeComparisonType)comparisonType forClient:(PubNub *)client withStatus:(PNStatus *)status forChannels:(NSArray<NSString *> *)channels {
 ////    XCTAssertNotNil(client);
 ////    XCTAssertNotNil(status);

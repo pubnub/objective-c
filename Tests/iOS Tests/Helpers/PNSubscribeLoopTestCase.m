@@ -8,6 +8,7 @@
 
 #import "PNSubscribeLoopTestCase.h"
 #import "XCTestCase+PNChannelGroup.h"
+#import "XCTestCase+PNSubscription.h"
 //#import "PNTestConstants.h"
 
 @interface PNSubscribeLoopTestCase ()
@@ -18,12 +19,74 @@
 @property (nonatomic, assign) BOOL hasSetUpChannelGroupSubscriptions;
 @property (nonatomic, assign, readonly) BOOL isSettingUp;
 @property (nonatomic, assign) BOOL isTearingDown;
+@property (nonatomic, strong) dispatch_queue_t accessQueue;
+@property (nonatomic, assign) NSInteger expectedMessageResultIndex;
+@property (nonatomic, assign) NSInteger expectedSubscribeStatusIndex;
+@property (nonatomic, assign) NSInteger expectedPresenceResultIndex;
 @end
 
 @implementation PNSubscribeLoopTestCase
 
+- (NSInteger)expectedMessageResultIndex {
+    __block NSInteger currentMessageResultIndex = 0;
+    PNWeakify(self);
+    dispatch_sync(self.accessQueue, ^{
+        PNStrongify(self);
+        currentMessageResultIndex = self->_expectedMessageResultIndex;
+    });
+    return currentMessageResultIndex;
+}
+
+- (NSInteger)expectedPresenceResultIndex {
+    __block NSInteger currentPresenceResultIndex = 0;
+    PNWeakify(self);
+    dispatch_sync(self.accessQueue, ^{
+        PNStrongify(self);
+        currentPresenceResultIndex = self->_expectedPresenceResultIndex;
+    });
+    return currentPresenceResultIndex;
+}
+
+- (NSInteger)expectedSubscribeStatusIndex {
+    __block NSInteger currentSubscribeStatusIndex = 0;
+    PNWeakify(self);
+    dispatch_sync(self.accessQueue, ^{
+        PNStrongify(self);
+        currentSubscribeStatusIndex = self->_expectedSubscribeStatusIndex;
+    });
+    return currentSubscribeStatusIndex;
+}
+
+- (void)incrementExpectedMessageResultIndex {
+    PNWeakify(self);
+    dispatch_barrier_async(self.accessQueue, ^{
+        PNStrongify(self);
+        self->_expectedMessageResultIndex++;
+    });
+}
+
+- (void)incrementExpectedSubscribeStatusIndex {
+    PNWeakify(self);
+    dispatch_barrier_async(self.accessQueue, ^{
+        PNStrongify(self);
+        self->_expectedSubscribeStatusIndex++;
+    });
+}
+
+- (void)incrementExpectedPresenceResultIndex {
+    PNWeakify(self);
+    dispatch_barrier_async(self.accessQueue, ^{
+        PNStrongify(self);
+        self->_expectedPresenceResultIndex++;
+    });
+}
+
 - (void)setUp {
     [super setUp];
+    self.accessQueue = dispatch_queue_create("com.PubNubTest.subscriberAccessQueue", DISPATCH_QUEUE_CONCURRENT);
+    _expectedMessageResultIndex = 0;
+    _expectedPresenceResultIndex = 0;
+    _expectedSubscribeStatusIndex = 0;
 //    self.isSettingUp = YES;
     self.hasSetUpChannelSubscriptions = NO;
     self.hasSetUpChannelGroupSubscriptions = NO;
@@ -53,12 +116,6 @@
         [self.client subscribeToChannelGroups:self.subscribedChannelGroups withPresence:self.shouldSubscribeWithPresence];
     }
     [self waitFor:kPNSubscribeTimeout];
-//    PNWeakify(self);
-//    [self waitFor:kPNSubscribeTimeout withHandler:^(NSError * _Nullable error) {
-//        PNStrongify(self);
-//
-////        self.isSettingUp = NO;
-//    }];
 }
 
 - (void)tearDown {
@@ -190,6 +247,12 @@
         [self.tearDownExpectation fulfill];
         return; //return after tearDown
     }
+    NSInteger index = self.expectedSubscribeStatusIndex;
+    if (self.expectedSubscribeStatuses[index]) {
+        PNTestSubscribeStatus *expectedSubscribeStatus = self.expectedSubscribeStatuses[index];
+        [self PN_successfulSubscribeWithExpectedResult:expectedSubscribeStatus andActualStatus:(PNSubscribeStatus *)status withComparisonType:PNTestSubscribeComparisonTypeContains];
+        [self incrementExpectedSubscribeStatusIndex];
+    }
     if (self.didReceiveStatusHandler) {
         self.didReceiveStatusHandler(client, status);
     }
@@ -197,12 +260,26 @@
 }
 
 - (void)client:(PubNub *)client didReceiveMessage:(PNMessageResult *)message {
+    NSInteger index = self.expectedMessageResultIndex;
+    if (self.expectedMessageResults[index]) {
+        PNTestMessageResult *expectedMessage = self.expectedMessageResults[index];
+        // assert here
+        [self PN_successfulMessageWithExpectedMessage:expectedMessage andActualMessage:message];
+        [self incrementExpectedMessageResultIndex];
+    }
     if (self.didReceiveMessageHandler) {
         self.didReceiveMessageHandler(client, message);
     }
 }
 
 - (void)client:(PubNub *)client didReceivePresenceEvent:(PNPresenceEventResult *)event {
+    NSInteger index = self.expectedPresenceResultIndex;
+    if (self.expectedPresenceResults[index]) {
+        PNTestPresenceResult *expectedPresenceResult = self.expectedPresenceResults[index];
+        // assert here
+        [self PN_successfulPresenceEventWithExpectedEvent:expectedPresenceResult andActualEvent:event];
+        [self incrementExpectedPresenceResultIndex];
+    }
     if (self.didReceivePresenceEventHandler) {
         self.didReceivePresenceEventHandler(client, event);
     }
