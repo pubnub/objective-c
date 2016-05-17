@@ -17,7 +17,11 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
+<<<<<<< HEAD:Tests/iOS Tests/Fixtures/PNChannelGroupTestCase.bundle/testAddChannelsToAChannelGroup.plist
 					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/test-group/remove?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+=======
+					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNChannelGroupTestsName/remove?pnsdk=PubNub-ObjC-iOS%2F4.3.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+>>>>>>> master:Tests/iOS Tests/Fixtures/PNChannelGroupTests.bundle/testChannelGroupAdd.plist
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -48,7 +52,11 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
+<<<<<<< HEAD:Tests/iOS Tests/Fixtures/PNChannelGroupTestCase.bundle/testAddChannelsToAChannelGroup.plist
 					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/test-group/remove?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+=======
+					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNChannelGroupTestsName/remove?pnsdk=PubNub-ObjC-iOS%2F4.3.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+>>>>>>> master:Tests/iOS Tests/Fixtures/PNChannelGroupTests.bundle/testChannelGroupAdd.plist
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -79,7 +87,11 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
+<<<<<<< HEAD:Tests/iOS Tests/Fixtures/PNChannelGroupTestCase.bundle/testAddChannelsToAChannelGroup.plist
 					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/test-group/remove?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+=======
+					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNChannelGroupTestsName/remove?pnsdk=PubNub-ObjC-iOS%2F4.3.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+>>>>>>> master:Tests/iOS Tests/Fixtures/PNChannelGroupTests.bundle/testChannelGroupAdd.plist
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -108,7 +120,11 @@
 					<key>MIMEType</key>
 					<string>text/javascript</string>
 					<key>URL</key>
+<<<<<<< HEAD:Tests/iOS Tests/Fixtures/PNChannelGroupTestCase.bundle/testAddChannelsToAChannelGroup.plist
 					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/test-group/remove?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+=======
+					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNChannelGroupTestsName/remove?pnsdk=PubNub-ObjC-iOS%2F4.3.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+>>>>>>> master:Tests/iOS Tests/Fixtures/PNChannelGroupTests.bundle/testChannelGroupAdd.plist
 					<key>allHeaderFields</key>
 					<dict>
 						<key>Accept-Ranges</key>
@@ -170,7 +186,11 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
+<<<<<<< HEAD:Tests/iOS Tests/Fixtures/PNChannelGroupTestCase.bundle/testAddChannelsToAChannelGroup.plist
 					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/test-group?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;add=a,c&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+=======
+					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNChannelGroupTestsName?pnsdk=PubNub-ObjC-iOS%2F4.3.3&amp;add=a,c&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+>>>>>>> master:Tests/iOS Tests/Fixtures/PNChannelGroupTests.bundle/testChannelGroupAdd.plist
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -201,7 +221,42 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
+<<<<<<< HEAD:Tests/iOS Tests/Fixtures/PNChannelGroupTestCase.bundle/testAddChannelsToAChannelGroup.plist
 					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/test-group?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;add=a,c&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+=======
+					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNChannelGroupTestsName?pnsdk=PubNub-ObjC-iOS%2F4.3.3&amp;add=a,c&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+					<key>allHTTPHeaderFields</key>
+					<dict>
+						<key>Accept</key>
+						<string>*/*</string>
+						<key>Accept-Encoding</key>
+						<string>gzip,deflate</string>
+						<key>Connection</key>
+						<string>keep-alive</string>
+						<key>User-Agent</key>
+						<string>iPhone; CPU iPhone OS 9.2 Version</string>
+					</dict>
+					<key>allowsCellularAccess</key>
+					<true/>
+					<key>class</key>
+					<string>BKRCurrentRequestFrame</string>
+					<key>creationDate</key>
+					<real>1458765829.50465</real>
+					<key>timeoutInterval</key>
+					<real>60</real>
+					<key>uniqueIdentifier</key>
+					<string>9CF54A99-CC1A-4C26-AB91-DCE84E23D60F</string>
+				</dict>
+				<dict>
+					<key>HTTPMethod</key>
+					<string>GET</string>
+					<key>HTTPShouldHandleCookies</key>
+					<true/>
+					<key>HTTPShouldUsePipelining</key>
+					<false/>
+					<key>URL</key>
+					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNChannelGroupTestsName?pnsdk=PubNub-ObjC-iOS%2F4.3.3&amp;add=a,c&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+>>>>>>> master:Tests/iOS Tests/Fixtures/PNChannelGroupTests.bundle/testChannelGroupAdd.plist
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -230,7 +285,11 @@
 					<key>MIMEType</key>
 					<string>text/javascript</string>
 					<key>URL</key>
+<<<<<<< HEAD:Tests/iOS Tests/Fixtures/PNChannelGroupTestCase.bundle/testAddChannelsToAChannelGroup.plist
 					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/test-group?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;add=a,c&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+=======
+					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNChannelGroupTestsName?pnsdk=PubNub-ObjC-iOS%2F4.3.3&amp;add=a,c&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+>>>>>>> master:Tests/iOS Tests/Fixtures/PNChannelGroupTests.bundle/testChannelGroupAdd.plist
 					<key>allHeaderFields</key>
 					<dict>
 						<key>Accept-Ranges</key>
@@ -292,7 +351,11 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
+<<<<<<< HEAD:Tests/iOS Tests/Fixtures/PNChannelGroupTestCase.bundle/testAddChannelsToAChannelGroup.plist
 					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/test-group/remove?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+=======
+					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNChannelGroupTestsName/remove?pnsdk=PubNub-ObjC-iOS%2F4.3.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+>>>>>>> master:Tests/iOS Tests/Fixtures/PNChannelGroupTests.bundle/testChannelGroupAdd.plist
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -354,7 +417,11 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
+<<<<<<< HEAD:Tests/iOS Tests/Fixtures/PNChannelGroupTestCase.bundle/testAddChannelsToAChannelGroup.plist
 					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/test-group/remove?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+=======
+					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNChannelGroupTestsName/remove?pnsdk=PubNub-ObjC-iOS%2F4.3.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+>>>>>>> master:Tests/iOS Tests/Fixtures/PNChannelGroupTests.bundle/testChannelGroupAdd.plist
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -383,7 +450,11 @@
 					<key>MIMEType</key>
 					<string>text/javascript</string>
 					<key>URL</key>
+<<<<<<< HEAD:Tests/iOS Tests/Fixtures/PNChannelGroupTestCase.bundle/testAddChannelsToAChannelGroup.plist
 					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/test-group/remove?pnsdk=PubNub-ObjC-iOS%2F4.3.0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+=======
+					<string>https://pubsub.pubnub.com/v1/channel-registration/sub-key/demo-36/channel-group/PNChannelGroupTestsName/remove?pnsdk=PubNub-ObjC-iOS%2F4.3.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+>>>>>>> master:Tests/iOS Tests/Fixtures/PNChannelGroupTests.bundle/testChannelGroupAdd.plist
 					<key>allHeaderFields</key>
 					<dict>
 						<key>Accept-Ranges</key>

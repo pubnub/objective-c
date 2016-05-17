@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>cancelled</key>
+		<false/>
+		<key>data</key>
+		<dict>
+			<key>data</key>
+			<data>W1siKioqKioqKioqKioqKioqIDc2MjggLSAyMDE1LTA3LTE2IDEzOjM2OjQ2IiwiKi4uLi4uLi4uLi4uLi4uIDc2MjkgLSAyMDE1LTA3LTE2IDEzOjM2OjQ4IiwiKiouLi4uLi4uLi4uLi4uIDc2MzAgLSAyMDE1LTA3LTE2IDEzOjM2OjUwIiwiKioqLi4uLi4uLi4uLi4uIDc2MzEgLSAyMDE1LTA3LTE2IDEzOjM2OjUyIiwiKioqKi4uLi4uLi4uLi4uIDc2MzIgLSAyMDE1LTA3LTE2IDEzOjM2OjU0IiwiKioqKiouLi4uLi4uLi4uIDc2MzMgLSAyMDE1LTA3LTE2IDEzOjM2OjU2IiwiKioqKioqLi4uLi4uLi4uIDc2MzQgLSAyMDE1LTA3LTE2IDEzOjM2OjU4IiwiKioqKioqKi4uLi4uLi4uIDc2MzUgLSAyMDE1LTA3LTE2IDEzOjM3OjAwIiwiKioqKioqKiouLi4uLi4uIDc2MzYgLSAyMDE1LTA3LTE2IDEzOjM3OjAyIiwiKioqKioqKioqLi4uLi4uIDc2MzcgLSAyMDE1LTA3LTE2IDEzOjM3OjA0IiwiKioqKioqKioqKi4uLi4uIDc2MzggLSAyMDE1LTA3LTE2IDEzOjM3OjA2IiwiKioqKioqKioqKiouLi4uIDc2MzkgLSAyMDE1LTA3LTE2IDEzOjM3OjA4IiwiKioqKioqKioqKioqLi4uIDc2NDAgLSAyMDE1LTA3LTE2IDEzOjM3OjEwIiwiKioqKioqKioqKioqKi4uIDc2NDEgLSAyMDE1LTA3LTE2IDEzOjM3OjEyIiwiKioqKioqKioqKioqKiouIDc2NDIgLSAyMDE1LTA3LTE2IDEzOjM3OjE0IiwiKioqKioqKioqKioqKioqIDc2NDMgLSAyMDE1LTA3LTE2IDEzOjM3OjE2IiwiKi4uLi4uLi4uLi4uLi4uIDc2NDQgLSAyMDE1LTA3LTE2IDEzOjM3OjE4IiwiKiouLi4uLi4uLi4uLi4uIDc2NDUgLSAyMDE1LTA3LTE2IDEzOjM3OjIwIiwiKioqLi4uLi4uLi4uLi4uIDc2NDYgLSAyMDE1LTA3LTE2IDEzOjM3OjIyIiwiKioqKi4uLi4uLi4uLi4uIDc2NDcgLSAyMDE1LTA3LTE2IDEzOjM3OjI1IiwiKioqKiouLi4uLi4uLi4uIDc2NDggLSAyMDE1LTA3LTE2IDEzOjM3OjI3IiwiKioqKioqLi4uLi4uLi4uIDc2NDkgLSAyMDE1LTA3LTE2IDEzOjM3OjI5IiwiKioqKioqKi4uLi4uLi4uIDc2NTAgLSAyMDE1LTA3LTE2IDEzOjM3OjMxIiwiKioqKioqKiouLi4uLi4uIDc2NTEgLSAyMDE1LTA3LTE2IDEzOjM3OjMzIiwiKioqKioqKioqLi4uLi4uIDc2NTIgLSAyMDE1LTA3LTE2IDEzOjM3OjM1IiwiKioqKioqKioqKi4uLi4uIDc2NTMgLSAyMDE1LTA3LTE2IDEzOjM3OjM3IiwiKioqKioqKioqKiouLi4uIDc2NTQgLSAyMDE1LTA3LTE2IDEzOjM3OjM5IiwiKioqKioqKioqKioqLi4uIDc2NTUgLSAyMDE1LTA3LTE2IDEzOjM3OjQxIiwiKioqKioqKioqKioqKi4uIDc2NTYgLSAyMDE1LTA3LTE2IDEzOjM3OjQzIiwiKioqKioqKioqKioqKiouIDc2NTcgLSAyMDE1LTA3LTE2IDEzOjM3OjQ1IiwiKioqKioqKioqKioqKioqIDc2NTggLSAyMDE1LTA3LTE2IDEzOjM3OjQ3IiwiKi4uLi4uLi4uLi4uLi4uIDc2NTkgLSAyMDE1LTA3LTE2IDEzOjM3OjQ5IiwiKiouLi4uLi4uLi4uLi4uIDc2NjAgLSAyMDE1LTA3LTE2IDEzOjM3OjUxIiwiKioqLi4uLi4uLi4uLi4uIDc2NjEgLSAyMDE1LTA3LTE2IDEzOjM3OjUzIiwiKioqKi4uLi4uLi4uLi4uIDc2NjIgLSAyMDE1LTA3LTE2IDEzOjM3OjU1IiwiKioqKiouLi4uLi4uLi4uIDc2NjMgLSAyMDE1LTA3LTE2IDEzOjM3OjU3IiwiKioqKioqLi4uLi4uLi4uIDc2NjQgLSAyMDE1LTA3LTE2IDEzOjM3OjU5IiwiKioqKioqKi4uLi4uLi4uIDc2NjUgLSAyMDE1LTA3LTE2IDEzOjM4OjAyIiwiKioqKioqKiouLi4uLi4uIDc2NjYgLSAyMDE1LTA3LTE2IDEzOjM4OjA0IiwiKioqKioqKioqLi4uLi4uIDc2NjcgLSAyMDE1LTA3LTE2IDEzOjM4OjA2IiwiKioqKioqKioqKi4uLi4uIDc2NjggLSAyMDE1LTA3LTE2IDEzOjM4OjA4IiwiKioqKioqKioqKiouLi4uIDc2NjkgLSAyMDE1LTA3LTE2IDEzOjM4OjExIiwiKioqKioqKioqKioqLi4uIDc2NzAgLSAyMDE1LTA3LTE2IDEzOjM4OjEzIiwiKioqKioqKioqKioqKi4uIDc2NzEgLSAyMDE1LTA3LTE2IDEzOjM4OjE1IiwiKioqKioqKioqKioqKiouIDc2NzIgLSAyMDE1LTA3LTE2IDEzOjM4OjE3IiwiKioqKioqKioqKioqKioqIDc2NzMgLSAyMDE1LTA3LTE2IDEzOjM4OjE5IiwiKi4uLi4uLi4uLi4uLi4uIDc2NzQgLSAyMDE1LTA3LTE2IDEzOjM4OjIxIiwiKiouLi4uLi4uLi4uLi4uIDc2NzUgLSAyMDE1LTA3LTE2IDEzOjM4OjIzIiwiKioqLi4uLi4uLi4uLi4uIDc2NzYgLSAyMDE1LTA3LTE2IDEzOjM4OjI1IiwiKioqKi4uLi4uLi4uLi4uIDc2NzcgLSAyMDE1LTA3LTE2IDEzOjM4OjI3IiwiKioqKiouLi4uLi4uLi4uIDc2NzggLSAyMDE1LTA3LTE2IDEzOjM4OjI5IiwiKioqKioqLi4uLi4uLi4uIDc2NzkgLSAyMDE1LTA3LTE2IDEzOjM4OjMxIiwiKioqKioqKi4uLi4uLi4uIDc2ODAgLSAyMDE1LTA3LTE2IDEzOjM4OjMzIiwiKioqKioqKiouLi4uLi4uIDc2ODEgLSAyMDE1LTA3LTE2IDEzOjM4OjM1IiwiKioqKioqKioqLi4uLi4uIDc2ODIgLSAyMDE1LTA3LTE2IDEzOjM4OjM3IiwiKioqKioqKioqKi4uLi4uIDc2ODMgLSAyMDE1LTA3LTE2IDEzOjM4OjM5IiwiKioqKioqKioqKiouLi4uIDc2ODQgLSAyMDE1LTA3LTE2IDEzOjM4OjQxIiwiKioqKioqKioqKioqLi4uIDc2ODUgLSAyMDE1LTA3LTE2IDEzOjM4OjQzIiwiKioqKioqKioqKioqKi4uIDc2ODYgLSAyMDE1LTA3LTE2IDEzOjM4OjQ1IiwiKioqKioqKioqKioqKiouIDc2ODcgLSAyMDE1LTA3LTE2IDEzOjM4OjQ4IiwiKioqKioqKioqKioqKioqIDc2ODggLSAyMDE1LTA3LTE2IDEzOjM4OjUwIiwiKi4uLi4uLi4uLi4uLi4uIDc2ODkgLSAyMDE1LTA3LTE2IDEzOjM4OjUyIiwiKiouLi4uLi4uLi4uLi4uIDc2OTAgLSAyMDE1LTA3LTE2IDEzOjM4OjU0IiwiKioqLi4uLi4uLi4uLi4uIDc2OTEgLSAyMDE1LTA3LTE2IDEzOjM4OjU2IiwiKioqKi4uLi4uLi4uLi4uIDc2OTIgLSAyMDE1LTA3LTE2IDEzOjM4OjU4IiwiKioqKiouLi4uLi4uLi4uIDc2OTMgLSAyMDE1LTA3LTE2IDEzOjM5OjAwIiwiKioqKioqLi4uLi4uLi4uIDc2OTQgLSAyMDE1LTA3LTE2IDEzOjM5OjAyIiwiKioqKioqKi4uLi4uLi4uIDc2OTUgLSAyMDE1LTA3LTE2IDEzOjM5OjA0IiwiKioqKioqKiouLi4uLi4uIDc2OTYgLSAyMDE1LTA3LTE2IDEzOjM5OjA2IiwiKioqKioqKioqLi4uLi4uIDc2OTcgLSAyMDE1LTA3LTE2IDEzOjM5OjA4IiwiKioqKioqKioqKi4uLi4uIDc2OTggLSAyMDE1LTA3LTE2IDEzOjM5OjEwIiwiKioqKioqKioqKiouLi4uIDc2OTkgLSAyMDE1LTA3LTE2IDEzOjM5OjEyIiwiKioqKioqKioqKioqLi4uIDc3MDAgLSAyMDE1LTA3LTE2IDEzOjM5OjE0IiwiKioqKioqKioqKioqKi4uIDc3MDEgLSAyMDE1LTA3LTE2IDEzOjM5OjE2IiwiKioqKioqKioqKioqKiouIDc3MDIgLSAyMDE1LTA3LTE2IDEzOjM5OjE4IiwiKioqKioqKioqKioqKioqIDc3MDMgLSAyMDE1LTA3LTE2IDEzOjM5OjIwIiwiKi4uLi4uLi4uLi4uLi4uIDc3MDQgLSAyMDE1LTA3LTE2IDEzOjM5OjIyIiwiKiouLi4uLi4uLi4uLi4uIDc3MDUgLSAyMDE1LTA3LTE2IDEzOjM5OjI0IiwiKioqLi4uLi4uLi4uLi4uIDc3MDYgLSAyMDE1LTA3LTE2IDEzOjM5OjI2IiwiKioqKi4uLi4uLi4uLi4uIDc3MDcgLSAyMDE1LTA3LTE2IDEzOjM5OjI4IiwiKioqKiouLi4uLi4uLi4uIDc3MDggLSAyMDE1LTA3LTE2IDEzOjM5OjMwIiwiKioqKioqLi4uLi4uLi4uIDc3MDkgLSAyMDE1LTA3LTE2IDEzOjM5OjMzIiwiKioqKioqKi4uLi4uLi4uIDc3MTAgLSAyMDE1LTA3LTE2IDEzOjM5OjM1IiwiKioqKioqKiouLi4uLi4uIDc3MTEgLSAyMDE1LTA3LTE2IDEzOjM5OjM3IiwiKioqKioqKioqLi4uLi4uIDc3MTIgLSAyMDE1LTA3LTE2IDEzOjM5OjM5IiwiKioqKioqKioqKi4uLi4uIDc3MTMgLSAyMDE1LTA3LTE2IDEzOjM5OjQxIiwiKioqKioqKioqKiouLi4uIDc3MTQgLSAyMDE1LTA3LTE2IDEzOjM5OjQzIiwiKioqKioqKioqKioqLi4uIDc3MTUgLSAyMDE1LTA3LTE2IDEzOjM5OjQ1IiwiKioqKioqKioqKioqKi4uIDc3MTYgLSAyMDE1LTA3LTE2IDEzOjM5OjQ3IiwiKioqKioqKioqKioqKiouIDc3MTcgLSAyMDE1LTA3LTE2IDEzOjM5OjQ5IiwiKioqKioqKioqKioqKioqIDc3MTggLSAyMDE1LTA3LTE2IDEzOjM5OjUxIiwiKi4uLi4uLi4uLi4uLi4uIDc3MTkgLSAyMDE1LTA3LTE2IDEzOjM5OjUzIiwiKiouLi4uLi4uLi4uLi4uIDc3MjAgLSAyMDE1LTA3LTE2IDEzOjM5OjU1IiwiKioqLi4uLi4uLi4uLi4uIDc3MjEgLSAyMDE1LTA3LTE2IDEzOjM5OjU3IiwiKioqKi4uLi4uLi4uLi4uIDc3MjIgLSAyMDE1LTA3LTE2IDEzOjM5OjU5IiwiKioqKiouLi4uLi4uLi4uIDc3MjMgLSAyMDE1LTA3LTE2IDEzOjQwOjAxIiwiKioqKioqLi4uLi4uLi4uIDc3MjQgLSAyMDE1LTA3LTE2IDEzOjQwOjAzIiwiKioqKioqKi4uLi4uLi4uIDc3MjUgLSAyMDE1LTA3LTE2IDEzOjQwOjA1IiwiKioqKioqKiouLi4uLi4uIDc3MjYgLSAyMDE1LTA3LTE2IDEzOjQwOjA3IiwiKioqKioqKioqLi4uLi4uIDc3MjcgLSAyMDE1LTA3LTE2IDEzOjQwOjA5Il0sMTQzNzA3OTAwNzE0NTU1NTAsMTQzNzA3OTIxMDYxODc1MzBd</data>
+			<key>json</key>
+			<array>
+				<array>
+					<string>*************** 7628 - 2015-07-16 13:36:46</string>
+					<string>*.............. 7629 - 2015-07-16 13:36:48</string>
+					<string>**............. 7630 - 2015-07-16 13:36:50</string>
+					<string>***............ 7631 - 2015-07-16 13:36:52</string>
+					<string>****........... 7632 - 2015-07-16 13:36:54</string>
+					<string>*****.......... 7633 - 2015-07-16 13:36:56</string>
+					<string>******......... 7634 - 2015-07-16 13:36:58</string>
+					<string>*******........ 7635 - 2015-07-16 13:37:00</string>
+					<string>********....... 7636 - 2015-07-16 13:37:02</string>
+					<string>*********...... 7637 - 2015-07-16 13:37:04</string>
+					<string>**********..... 7638 - 2015-07-16 13:37:06</string>
+					<string>***********.... 7639 - 2015-07-16 13:37:08</string>
+					<string>************... 7640 - 2015-07-16 13:37:10</string>
+					<string>*************.. 7641 - 2015-07-16 13:37:12</string>
+					<string>**************. 7642 - 2015-07-16 13:37:14</string>
+					<string>*************** 7643 - 2015-07-16 13:37:16</string>
+					<string>*.............. 7644 - 2015-07-16 13:37:18</string>
+					<string>**............. 7645 - 2015-07-16 13:37:20</string>
+					<string>***............ 7646 - 2015-07-16 13:37:22</string>
+					<string>****........... 7647 - 2015-07-16 13:37:25</string>
+					<string>*****.......... 7648 - 2015-07-16 13:37:27</string>
+					<string>******......... 7649 - 2015-07-16 13:37:29</string>
+					<string>*******........ 7650 - 2015-07-16 13:37:31</string>
+					<string>********....... 7651 - 2015-07-16 13:37:33</string>
+					<string>*********...... 7652 - 2015-07-16 13:37:35</string>
+					<string>**********..... 7653 - 2015-07-16 13:37:37</string>
+					<string>***********.... 7654 - 2015-07-16 13:37:39</string>
+					<string>************... 7655 - 2015-07-16 13:37:41</string>
+					<string>*************.. 7656 - 2015-07-16 13:37:43</string>
+					<string>**************. 7657 - 2015-07-16 13:37:45</string>
+					<string>*************** 7658 - 2015-07-16 13:37:47</string>
+					<string>*.............. 7659 - 2015-07-16 13:37:49</string>
+					<string>**............. 7660 - 2015-07-16 13:37:51</string>
+					<string>***............ 7661 - 2015-07-16 13:37:53</string>
+					<string>****........... 7662 - 2015-07-16 13:37:55</string>
+					<string>*****.......... 7663 - 2015-07-16 13:37:57</string>
+					<string>******......... 7664 - 2015-07-16 13:37:59</string>
+					<string>*******........ 7665 - 2015-07-16 13:38:02</string>
+					<string>********....... 7666 - 2015-07-16 13:38:04</string>
+					<string>*********...... 7667 - 2015-07-16 13:38:06</string>
+					<string>**********..... 7668 - 2015-07-16 13:38:08</string>
+					<string>***********.... 7669 - 2015-07-16 13:38:11</string>
+					<string>************... 7670 - 2015-07-16 13:38:13</string>
+					<string>*************.. 7671 - 2015-07-16 13:38:15</string>
+					<string>**************. 7672 - 2015-07-16 13:38:17</string>
+					<string>*************** 7673 - 2015-07-16 13:38:19</string>
+					<string>*.............. 7674 - 2015-07-16 13:38:21</string>
+					<string>**............. 7675 - 2015-07-16 13:38:23</string>
+					<string>***............ 7676 - 2015-07-16 13:38:25</string>
+					<string>****........... 7677 - 2015-07-16 13:38:27</string>
+					<string>*****.......... 7678 - 2015-07-16 13:38:29</string>
+					<string>******......... 7679 - 2015-07-16 13:38:31</string>
+					<string>*******........ 7680 - 2015-07-16 13:38:33</string>
+					<string>********....... 7681 - 2015-07-16 13:38:35</string>
+					<string>*********...... 7682 - 2015-07-16 13:38:37</string>
+					<string>**********..... 7683 - 2015-07-16 13:38:39</string>
+					<string>***********.... 7684 - 2015-07-16 13:38:41</string>
+					<string>************... 7685 - 2015-07-16 13:38:43</string>
+					<string>*************.. 7686 - 2015-07-16 13:38:45</string>
+					<string>**************. 7687 - 2015-07-16 13:38:48</string>
+					<string>*************** 7688 - 2015-07-16 13:38:50</string>
+					<string>*.............. 7689 - 2015-07-16 13:38:52</string>
+					<string>**............. 7690 - 2015-07-16 13:38:54</string>
+					<string>***............ 7691 - 2015-07-16 13:38:56</string>
+					<string>****........... 7692 - 2015-07-16 13:38:58</string>
+					<string>*****.......... 7693 - 2015-07-16 13:39:00</string>
+					<string>******......... 7694 - 2015-07-16 13:39:02</string>
+					<string>*******........ 7695 - 2015-07-16 13:39:04</string>
+					<string>********....... 7696 - 2015-07-16 13:39:06</string>
+					<string>*********...... 7697 - 2015-07-16 13:39:08</string>
+					<string>**********..... 7698 - 2015-07-16 13:39:10</string>
+					<string>***********.... 7699 - 2015-07-16 13:39:12</string>
+					<string>************... 7700 - 2015-07-16 13:39:14</string>
+					<string>*************.. 7701 - 2015-07-16 13:39:16</string>
+					<string>**************. 7702 - 2015-07-16 13:39:18</string>
+					<string>*************** 7703 - 2015-07-16 13:39:20</string>
+					<string>*.............. 7704 - 2015-07-16 13:39:22</string>
+					<string>**............. 7705 - 2015-07-16 13:39:24</string>
+					<string>***............ 7706 - 2015-07-16 13:39:26</string>
+					<string>****........... 7707 - 2015-07-16 13:39:28</string>
+					<string>*****.......... 7708 - 2015-07-16 13:39:30</string>
+					<string>******......... 7709 - 2015-07-16 13:39:33</string>
+					<string>*******........ 7710 - 2015-07-16 13:39:35</string>
+					<string>********....... 7711 - 2015-07-16 13:39:37</string>
+					<string>*********...... 7712 - 2015-07-16 13:39:39</string>
+					<string>**********..... 7713 - 2015-07-16 13:39:41</string>
+					<string>***********.... 7714 - 2015-07-16 13:39:43</string>
+					<string>************... 7715 - 2015-07-16 13:39:45</string>
+					<string>*************.. 7716 - 2015-07-16 13:39:47</string>
+					<string>**************. 7717 - 2015-07-16 13:39:49</string>
+					<string>*************** 7718 - 2015-07-16 13:39:51</string>
+					<string>*.............. 7719 - 2015-07-16 13:39:53</string>
+					<string>**............. 7720 - 2015-07-16 13:39:55</string>
+					<string>***............ 7721 - 2015-07-16 13:39:57</string>
+					<string>****........... 7722 - 2015-07-16 13:39:59</string>
+					<string>*****.......... 7723 - 2015-07-16 13:40:01</string>
+					<string>******......... 7724 - 2015-07-16 13:40:03</string>
+					<string>*******........ 7725 - 2015-07-16 13:40:05</string>
+					<string>********....... 7726 - 2015-07-16 13:40:07</string>
+					<string>*********...... 7727 - 2015-07-16 13:40:09</string>
+				</array>
+				<integer>14370790071455550</integer>
+				<integer>14370792106187530</integer>
+			</array>
+		</dict>
+		<key>request</key>
+		<dict>
+			<key>currentRequest</key>
+			<dict>
+				<key>HTTPMethod</key>
+				<string>GET</string>
+				<key>HTTPShouldHandleCookies</key>
+				<true/>
+				<key>URL</key>
+				<string>https://pubsub.pubnub.com/v2/history/sub-key/demo-36/channel/a?count=100&amp;reverse=false&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;include_token=false</string>
+				<key>allHTTPHeaderFields</key>
+				<dict>
+					<key>Accept</key>
+					<string>*/*</string>
+					<key>Accept-Encoding</key>
+					<string>gzip,deflate</string>
+					<key>Accept-Language</key>
+					<string>en-us</string>
+					<key>Connection</key>
+					<string>keep-alive</string>
+					<key>User-Agent</key>
+					<string>PubNub-ObjC-iOS/4.3.3</string>
+				</dict>
+				<key>allowsCellularAccess</key>
+				<true/>
+				<key>timeoutInterval</key>
+				<real>60</real>
+			</dict>
+			<key>originalRequest</key>
+			<dict>
+				<key>HTTPMethod</key>
+				<string>GET</string>
+				<key>HTTPShouldHandleCookies</key>
+				<true/>
+				<key>URL</key>
+				<string>https://pubsub.pubnub.com/v2/history/sub-key/demo-36/channel/a?count=100&amp;reverse=false&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;include_token=false</string>
+				<key>allHTTPHeaderFields</key>
+				<dict>
+					<key>Accept</key>
+					<string>*/*</string>
+					<key>Accept-Encoding</key>
+					<string>gzip,deflate</string>
+					<key>Connection</key>
+					<string>keep-alive</string>
+					<key>User-Agent</key>
+					<string>PubNub-ObjC-iOS/4.3.3</string>
+				</dict>
+				<key>allowsCellularAccess</key>
+				<true/>
+				<key>timeoutInterval</key>
+				<real>60</real>
+			</dict>
+		</dict>
+		<key>response</key>
+		<dict>
+			<key>response</key>
+			<dict>
+				<key>MIMEType</key>
+				<string>text/javascript</string>
+				<key>URL</key>
+				<string>https://pubsub.pubnub.com/v2/history/sub-key/demo-36/channel/a?pnsdk=PubNub-ObjC-iOS%2F4.0.2&amp;include_token=false&amp;count=100&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;reverse=false&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<key>allHeaderFields</key>
+				<dict>
+					<key>Access-Control-Allow-Methods</key>
+					<string>GET</string>
+					<key>Access-Control-Allow-Origin</key>
+					<string>*</string>
+					<key>Age</key>
+					<string>0</string>
+					<key>Cache-Control</key>
+					<string>no-cache</string>
+					<key>Connection</key>
+					<string>keep-alive</string>
+					<key>Content-Encoding</key>
+					<string>gzip</string>
+					<key>Content-Type</key>
+					<string>text/javascript; charset=&quot;UTF-8&quot;</string>
+					<key>Date</key>
+					<string>Thu, 16 Jul 2015 20:40:11 GMT</string>
+					<key>Server</key>
+					<string>Pubnub</string>
+					<key>Transfer-Encoding</key>
+					<string>Identity</string>
+				</dict>
+				<key>expectedContentLength</key>
+				<integer>4539</integer>
+				<key>statusCode</key>
+				<integer>200</integer>
+				<key>suggestedFileName</key>
+				<string>a.js</string>
+				<key>textEncodingName</key>
+				<string>&quot;utf-8&quot;</string>
+			</dict>
+		</dict>
+	</dict>
+</array>
+</plist>
