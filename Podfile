@@ -18,8 +18,8 @@ end
 target 'iOS ObjC Tests' do
   platform :ios, "8.0"
   project 'Tests/PubNub Tests'
-  pod "BeKindRewind", '~> 2'
   pod "PubNub", :path => "."
+  pod "PubNub-Testing", '~> 0.3.0'
 end
 
 #  target 'iOS Swift Tests' do
@@ -32,15 +32,15 @@ end
  target 'OSX ObjC Tests' do
    platform :osx, '10.9'
    project 'Tests/PubNub Tests'
-   pod "BeKindRewind", '~> 2'
    pod "PubNub", :path => "."
+   pod "PubNub-Testing", '~> 0.3.0'
  end
 
  target 'tvOS ObjC Tests' do
-     platform :tvos, '9.0'
-     project 'Tests/PubNub Tests'
-    pod "BeKindRewind", '~> 2'
+    platform :tvos, '9.0'
+    project 'Tests/PubNub Tests'
     pod "PubNub", :path => "."
+    pod "PubNub-Testing", '~> 0.3.0'
  end
 
 # Making all interfaces visible for all targets on explicit import

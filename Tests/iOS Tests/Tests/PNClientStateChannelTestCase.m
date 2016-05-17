@@ -6,10 +6,9 @@
 //
 //
 
-#import "PNSubscribeLoopTestCase.h"
-#import "XCTestCase+PNClientState.h"
+#import <PubNub_Testing/PubNubTesting.h>
 
-@interface PNClientStateChannelTestCase : PNSubscribeLoopTestCase
+@interface PNClientStateChannelTestCase : PNTSubscribeLoopTestCase
 
 @end
 
@@ -41,8 +40,8 @@
     NSDictionary *state = @{
                             @"test" : @"test"
                             };
-    [self.client setState:state forUUID:self.client.uuid onChannel:self.subscribedChannels.firstObject withCompletion:[self PN_successfulSetClientState:state]];
-    [self waitFor:kPNSetClientStateTimeout];
+    [self.client setState:state forUUID:self.client.uuid onChannel:self.subscribedChannels.firstObject withCompletion:[self PNT_successfulSetClientState:state]];
+    [self waitFor:kPNTSetClientStateTimeout];
 }
 
 @end

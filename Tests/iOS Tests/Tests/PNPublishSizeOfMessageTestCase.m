@@ -6,10 +6,9 @@
 //
 //
 
-#import "PNClientTestCase.h"
-#import "XCTestCase+PNSizeOfMessage.h"
+#import <PubNub_Testing/PubNubTesting.h>
 
-@interface PNPublishSizeOfMessageTestCase : PNClientTestCase
+@interface PNPublishSizeOfMessageTestCase : PNTClientTestCase
 
 @end
 
@@ -34,8 +33,8 @@
 }
 
 - (void)testSizeOfStringMessage {
-    [self.client sizeOfMessage:@"test" toChannel:self.publishChannel withCompletion:[self PN_messageSizeCompletionWithSize:341]];
-    [self waitFor:kPNSizeOfMessageTimeout];
+    [self.client sizeOfMessage:@"test" toChannel:self.publishChannel withCompletion:[self PNT_messageSizeCompletionWithSize:341]];
+    [self waitFor:kPNTSizeOfMessageTimeout];
 }
 
 @end

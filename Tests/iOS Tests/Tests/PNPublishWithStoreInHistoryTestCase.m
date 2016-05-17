@@ -6,10 +6,9 @@
 //
 //
 
-#import "PNClientTestCase.h"
-#import "XCTestCase+PNPublish.h"
+#import <PubNub_Testing/PubNubTesting.h>
 
-@interface PNPublishWithStoreInHistoryTestCase : PNClientTestCase
+@interface PNPublishWithStoreInHistoryTestCase : PNTClientTestCase
 
 @end
 
@@ -34,8 +33,8 @@
 }
 
 - (void)testPublishStringWithStoreInHistory {
-    [self.client publish:@"test" toChannel:self.publishChannel storeInHistory:YES withCompletion:[self PN_successfulPublishCompletionWithExpectedTimeToken:@14613497218336166]];
-    [self waitFor:kPNPublishTimeout];
+    [self.client publish:@"test" toChannel:self.publishChannel storeInHistory:YES withCompletion:[self PNT_successfulPublishCompletionWithExpectedTimeToken:@14613497218336166]];
+    [self waitFor:kPNTPublishTimeout];
 }
 
 @end

@@ -6,10 +6,9 @@
 //
 //
 
-#import "PNClientTestCase.h"
-#import "XCTestCase+PNPublish.h"
+#import <PubNub_Testing/PubNubTesting.h>
 
-@interface PNPublishWithMobilePushPayloadTestCase : PNClientTestCase
+@interface PNPublishWithMobilePushPayloadTestCase : PNTClientTestCase
 
 @end
 
@@ -39,8 +38,8 @@
                                     @"badge" : @(9),
                                     @"sound" : @"bingbong.aiff"},
                               @"acme 1" : @(42)};
-    [self.client publish:@"test" toChannel:self.publishChannel mobilePushPayload:payload withCompletion:[self PN_successfulPublishCompletionWithExpectedTimeToken:@14614418259630643]];
-    [self waitFor:kPNPublishTimeout];
+    [self.client publish:@"test" toChannel:self.publishChannel mobilePushPayload:payload withCompletion:[self PNT_successfulPublishCompletionWithExpectedTimeToken:@14614418259630643]];
+    [self waitFor:kPNTPublishTimeout];
 }
 
 @end

@@ -5,10 +5,10 @@
 //  Created by Jordan Zucker on 6/16/15.
 //
 //
-#import <BeKindRewind/BKRTestCaseFilePathHelper.h>
+//#import <BeKindRewind/BKRTestCaseFilePathHelper.h>
 #import <PubNub/PubNub.h>
 
-#import "PNDeviceIndependentMatcher.h"
+//#import "PNDeviceIndependentMatcher.h"
 #import "PNBasicClientTestCase.h"
 
 @implementation PNBasicClientTestCase
@@ -28,15 +28,15 @@
     [super tearDown];
 }
 
-- (BKRTestConfiguration *)testConfiguration {
-    BKRTestConfiguration *defaultConfiguration = [super testConfiguration];
-    defaultConfiguration.matcherClass = [PNDeviceIndependentMatcher class];
-    defaultConfiguration.beginRecordingBlock = nil;
-    defaultConfiguration.endRecordingBlock = nil;
-    defaultConfiguration.shouldSaveEmptyCassette = YES;
-    defaultConfiguration.tearDownExpectationTimeout = 60.0;
-    return defaultConfiguration;
-}
+//- (BKRTestConfiguration *)testConfiguration {
+//    BKRTestConfiguration *defaultConfiguration = [super testConfiguration];
+//    defaultConfiguration.matcherClass = [PNDeviceIndependentMatcher class];
+//    defaultConfiguration.beginRecordingBlock = nil;
+//    defaultConfiguration.endRecordingBlock = nil;
+//    defaultConfiguration.shouldSaveEmptyCassette = YES;
+//    defaultConfiguration.tearDownExpectationTimeout = 60.0;
+//    return defaultConfiguration;
+//}
 
 //- (NSString *)baseFixturesDirectoryFilePath {
 ////    return [super baseFixturesDirectoryFilePath];

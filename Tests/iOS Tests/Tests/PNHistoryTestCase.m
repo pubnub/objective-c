@@ -6,10 +6,9 @@
 //
 //
 
-#import "PNClientTestCase.h"
-#import "XCTestCase+PNHistory.h"
+#import <PubNub_Testing/PubNubTesting.h>
 
-@interface PNHistoryTestCase : PNClientTestCase
+@interface PNHistoryTestCase : PNTClientTestCase
 @property (nonatomic, strong, readonly) NSString *historyChannel;
 @end
 
@@ -36,8 +35,8 @@
 - (void)testGetHistory {
     // This is an example of a functional test case.
     // Use XCTAssert and related functions to verify your tests produce the correct results.
-    [self.client historyForChannel:self.historyChannel withCompletion:[self PN_historyCompletionBlock]];
-    [self waitFor:kPNHistoryTimeout];
+    [self.client historyForChannel:self.historyChannel withCompletion:[self PNT_historyCompletionBlock]];
+    [self waitFor:kPNTHistoryTimeout];
 }
 
 @end

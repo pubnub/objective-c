@@ -6,7 +6,7 @@
 //
 //
 
-#import <BeKindRewind/BeKindRewind.h>
+#import <XCTest/XCTest.h>
 #import <PubNub/PubNub.h>
 
 #define PNWeakify(__var) \
@@ -22,7 +22,7 @@ typedef void (^PNChannelGroupAssertions)(PNAcknowledgmentStatus *status);
 
 @class PubNub;
 
-@interface PNBasicClientTestCase : BKRTestCase <PNObjectEventListener>
+@interface PNBasicClientTestCase : XCTestCase <PNObjectEventListener>
 
 @property (nonatomic) PNConfiguration *configuration;
 @property (nonatomic) PubNub *client;

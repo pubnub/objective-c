@@ -6,10 +6,9 @@
 //
 //
 
-#import "PNClientTestCase.h"
-#import "XCTestCase+PNPublish.h"
+#import <PubNub_Testing/PubNubTesting.h>
 
-@interface PNPublishAdvancedTestCase : PNClientTestCase
+@interface PNPublishAdvancedTestCase : PNTClientTestCase
 
 @end
 
@@ -42,8 +41,8 @@
     NSDictionary *metadata = @{
                                @"foo": @"bar"
                                };
-    [self.client publish:@"test" toChannel:self.publishChannel mobilePushPayload:payload storeInHistory:YES compressed:YES withMetadata:metadata completion:[self PN_successfulPublishCompletionWithExpectedTimeToken:@14613497208195952]];
-    [self waitFor:kPNPublishTimeout];
+    [self.client publish:@"test" toChannel:self.publishChannel mobilePushPayload:payload storeInHistory:YES compressed:YES withMetadata:metadata completion:[self PNT_successfulPublishCompletionWithExpectedTimeToken:@14613497208195952]];
+    [self waitFor:kPNTPublishTimeout];
 }
 
 @end
