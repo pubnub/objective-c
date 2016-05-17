@@ -1,3 +1,6 @@
+17-05-2016 - 2123b8a - 4.3.3
+. fixed podspec dependency version format compatibiliyty with CocoaPods 0.39
+
 13-05-2016 - 06b92a1 - 4.3.2
 . fixed issue for case when client doesn't use encryption and message has been received w/o mobile payload to clean up.
 . original message (in case of decryption error) will be passed into associatedObject of PNStatus error instance.
