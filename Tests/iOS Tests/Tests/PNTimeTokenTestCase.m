@@ -6,9 +6,9 @@
 //
 //
 
-#import "PNClientTestCase.h"
+#import <PubNub_Testing/PubNubTesting.h>
 
-@interface PNTimeTokenTestCase : PNClientTestCase
+@interface PNTimeTokenTestCase : PNTClientTestCase
 
 @end
 
@@ -28,7 +28,7 @@
         XCTAssertEqualObjects(result.data.timetoken, @14612575985029626);
         [timeTokenExpectation fulfill];
     }];
-    [self waitForExpectationsWithTimeout:kPNTimeTokenTimeout handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:kPNTTimeTokenTimeout handler:^(NSError *error) {
         XCTAssertNil(error);
     }];
 }

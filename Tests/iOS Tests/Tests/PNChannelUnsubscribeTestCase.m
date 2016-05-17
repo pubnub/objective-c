@@ -6,9 +6,9 @@
 //
 //
 
-#import "PNSubscribeLoopTestCase.h"
+#import <PubNub_Testing/PubNubTesting.h>
 
-@interface PNChannelUnsubscribeTestCase : PNSubscribeLoopTestCase
+@interface PNChannelUnsubscribeTestCase : PNTSubscribeLoopTestCase
 @property (nonatomic, strong) XCTestExpectation *unsubscribeExpectation;
 @end
 
@@ -38,9 +38,9 @@
 }
 
 - (void)testUnsubscribeWithPresence {
-    PNWeakify(self);
+    PNTWeakify(self);
     self.didReceiveStatusHandler = ^void (PubNub *client, PNStatus *status) {
-        PNStrongify(self);
+        PNTStrongify(self);
         XCTAssertNotNil(client);
         XCTAssertEqualObjects(self.client, client);
         XCTAssertNotNil(status);
@@ -52,7 +52,7 @@
     };
     self.unsubscribeExpectation = [self expectationWithDescription:@"unsubscribe"];
     [self.client unsubscribeFromChannels:self.subscribedChannels withPresence:YES];
-    [self waitFor:kPNUnsubscribeTimeout];
+    [self waitFor:kPNTUnsubscribeTimeout];
 }
 
 @end
