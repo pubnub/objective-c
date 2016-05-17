@@ -39,9 +39,8 @@ before_install:
   - gem install fastlane --no-rdoc --no-ri --no-document --quiet
   - gem install cocoapods --no-rdoc --no-ri --no-document --quiet
   - gem install xcpretty --no-rdoc --no-ri --no-document --quiet
-  - pod --version
-  - pod repo update
-  - pod install --verbose
+  - pod --version # make sure that travis cocoapods install is overwritten properly
+  - pod repo update # fixes bug in travis repo when checking out
 script:
   - set -o pipefail
   - fastlane $FASTLANE_LANE configuration:Debug --env $FASTLANE_ENV
