@@ -19,7 +19,8 @@ target 'iOS ObjC Tests' do
   platform :ios, '8.0'
   project 'Tests/PubNub Tests'
   pod "PubNub", :path => "."
-  pod "PubNub-Testing"
+#  pod "PubNub-Testing"
+  pod "PubNub-Testing", :git => 'https://github.com/pubnub/objective-c-testing.git', :branch => 'develop'
 end
 
 #  target 'iOS Swift Tests' do
@@ -33,14 +34,16 @@ end
    platform :osx, '10.9'
    project 'Tests/PubNub Tests'
    pod "PubNub", :path => "."
-   pod "PubNub-Testing"
+#   pod "PubNub-Testing"
+   pod "PubNub-Testing", :git => 'https://github.com/pubnub/objective-c-testing.git', :branch => 'develop'
  end
 
  target 'tvOS ObjC Tests' do
     platform :tvos, '9.0'
     project 'Tests/PubNub Tests'
     pod "PubNub", :path => "."
-    pod "PubNub-Testing"
+#    pod "PubNub-Testing"
+    pod "PubNub-Testing", :git => 'https://github.com/pubnub/objective-c-testing.git', :branch => 'develop'
  end
 
 # Making all interfaces visible for all targets on explicit import
