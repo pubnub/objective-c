@@ -16,7 +16,7 @@ target 'PubNub Mac Example' do
 end
   
 target 'iOS ObjC Tests' do
-  platform :ios, "8.0"
+  platform :ios, '8.0'
   project 'Tests/PubNub Tests'
   pod "PubNub", :path => "."
   pod "PubNub-Testing"

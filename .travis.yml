@@ -7,7 +7,6 @@ env:
         - LC_CTYPE=en_US.UTF-8
         - LANG=en_US.UTF-8
         - FASTLANE_LANE=ci_commit
-        - COCOAPODS_DISABLE_DETERMINISTIC_UUIDS=YES # remove this when Cocoapods upgrades to 1.0.0
 matrix:
   include:
     # Code Coverage (iOS 9.3 iPhone 6 Plus)
@@ -40,6 +39,7 @@ before_install:
   - gem install fastlane --no-rdoc --no-ri --no-document --quiet
   - gem install cocoapods --no-rdoc --no-ri --no-document --quiet
   - gem install xcpretty --no-rdoc --no-ri --no-document --quiet
+  - pod install --verbose
 script:
   - set -o pipefail
   - fastlane $FASTLANE_LANE configuration:Debug --env $FASTLANE_ENV
