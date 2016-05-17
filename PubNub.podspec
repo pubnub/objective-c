@@ -9,7 +9,7 @@
 
 Pod::Spec.new do |spec|
     spec.name     = 'PubNub'
-    spec.version  = '4.3.2'
+    spec.version  = '4.3.3'
     spec.summary  = 'The PubNub Real-Time Network. Build real-time apps quickly and scale them globally.'
     spec.homepage = 'https://github.com/pubnub/objective-c'
 
@@ -55,7 +55,7 @@ Pod::Spec.new do |spec|
     end
 
     spec.library   = 'z'
-    spec.dependency 'CocoaLumberjack', '2.3'
+    spec.dependency 'CocoaLumberjack', '2.3.0'
     spec.default_subspec = 'Core'
 
     spec.license = { 
