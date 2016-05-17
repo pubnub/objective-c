@@ -40,6 +40,7 @@ before_install:
   - gem install cocoapods --no-rdoc --no-ri --no-document --quiet
   - gem install xcpretty --no-rdoc --no-ri --no-document --quiet
   - pod --version
+  - pod repo update
   - pod install --verbose
 script:
   - set -o pipefail
