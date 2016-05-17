@@ -32,17 +32,17 @@
     return @"a";
 }
 
-- (void)testPublishStringWithPushPayloadAndStoreInHistoryAndCompressionAndMetadata {
-    NSDictionary *payload = @{@"aps" :
-                                  @{@"alert" : @"You got your emails.@",
-                                    @"badge" : @(9),
-                                    @"sound" : @"bingbong.aiff"},
-                              @"acme 1" : @(42)};
-    NSDictionary *metadata = @{
-                               @"foo": @"bar"
-                               };
-    [self.client publish:@"test" toChannel:self.publishChannel mobilePushPayload:payload storeInHistory:YES compressed:YES withMetadata:metadata completion:[self PNT_successfulPublishCompletionWithExpectedTimeToken:@14613497208195952]];
-    [self waitFor:kPNTPublishTimeout];
-}
+//- (void)testPublishStringWithPushPayloadAndStoreInHistoryAndCompressionAndMetadata {
+//    NSDictionary *payload = @{@"aps" :
+//                                  @{@"alert" : @"You got your emails.@",
+//                                    @"badge" : @(9),
+//                                    @"sound" : @"bingbong.aiff"},
+//                              @"acme 1" : @(42)};
+//    NSDictionary *metadata = @{
+//                               @"foo": @"bar"
+//                               };
+//    [self.client publish:@"test" toChannel:self.publishChannel mobilePushPayload:payload storeInHistory:YES compressed:YES withMetadata:metadata completion:[self PNT_successfulPublishCompletionWithExpectedTimeToken:@14613497208195952]];
+//    [self waitFor:kPNTPublishTimeout];
+//}
 
 @end

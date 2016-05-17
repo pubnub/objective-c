@@ -32,9 +32,9 @@
     return @"a";
 }
 
-- (void)testPublishStringWithStoreInHistory {
-    [self.client publish:@"test" toChannel:self.publishChannel storeInHistory:YES withCompletion:[self PNT_successfulPublishCompletionWithExpectedTimeToken:@14613497218336166]];
-    [self waitFor:kPNTPublishTimeout];
-}
+//- (void)testPublishStringWithStoreInHistory {
+//    [self.client publish:@"test" toChannel:self.publishChannel storeInHistory:YES withCompletion:[self PNT_successfulPublishCompletionWithExpectedTimeToken:@14613497218336166]];
+//    [self waitFor:kPNTPublishTimeout];
+//}
 
 @end

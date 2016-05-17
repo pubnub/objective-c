@@ -32,14 +32,14 @@
     return @"a";
 }
 
-- (void)testPublishStringWithCompression {
-    [self.client publish:@"test" toChannel:self.publishChannel compressed:YES withCompletion:[self PNT_successfulPublishCompletionWithExpectedTimeToken:@14613497214576406]];
-    [self waitFor:kPNTPublishTimeout];
-}
-
-- (void)testPublishStringWithNoCompression {
-    [self.client publish:@"test" toChannel:self.publishChannel compressed:NO withCompletion:[self PNT_successfulPublishCompletionWithExpectedTimeToken:@14613497216762423]];
-    [self waitFor:kPNTPublishTimeout];
-}
+//- (void)testPublishStringWithCompression {
+//    [self.client publish:@"test" toChannel:self.publishChannel compressed:YES withCompletion:[self PNT_successfulPublishCompletionWithExpectedTimeToken:@14613497214576406]];
+//    [self waitFor:kPNTPublishTimeout];
+//}
+//
+//- (void)testPublishStringWithNoCompression {
+//    [self.client publish:@"test" toChannel:self.publishChannel compressed:NO withCompletion:[self PNT_successfulPublishCompletionWithExpectedTimeToken:@14613497216762423]];
+//    [self waitFor:kPNTPublishTimeout];
+//}
 
 @end

@@ -32,14 +32,14 @@
     return @"a";
 }
 
-- (void)testPublishStringWithMobilePushPayload {
-    NSDictionary *payload = @{@"aps" :
-                                  @{@"alert" : @"You got your emails.@",
-                                    @"badge" : @(9),
-                                    @"sound" : @"bingbong.aiff"},
-                              @"acme 1" : @(42)};
-    [self.client publish:@"test" toChannel:self.publishChannel mobilePushPayload:payload withCompletion:[self PNT_successfulPublishCompletionWithExpectedTimeToken:@14614418259630643]];
-    [self waitFor:kPNTPublishTimeout];
-}
+//- (void)testPublishStringWithMobilePushPayload {
+//    NSDictionary *payload = @{@"aps" :
+//                                  @{@"alert" : @"You got your emails.@",
+//                                    @"badge" : @(9),
+//                                    @"sound" : @"bingbong.aiff"},
+//                              @"acme 1" : @(42)};
+//    [self.client publish:@"test" toChannel:self.publishChannel mobilePushPayload:payload withCompletion:[self PNT_successfulPublishCompletionWithExpectedTimeToken:@14614418259630643]];
+//    [self waitFor:kPNTPublishTimeout];
+//}
 
 @end
