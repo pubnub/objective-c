@@ -23,7 +23,7 @@
 }
 
 - (void)testPublishString {
-    PNTTestPublishStatus *expectedStatus = [PNTTestPublishStatus successfulStatusWithClient:self.client timeToken:@14635327686402110];
+    PNTTestPublishStatus *expectedStatus = [PNTTestPublishStatus successfulStatusWithClient:self.client timeToken:@14635351328797872];
     [self.client publish:@"test" toChannel:self.publishChannel withCompletion:[self PNT_completionWithExpectedPublishStatus:expectedStatus]];
     [self waitFor:kPNTPublishTimeout];
 //    PNTTestPublishStatus *status = [PNTTestPublishStatus successfulStatusWithClient:self.client timeToken:@14635151139158093];
@@ -33,9 +33,10 @@
 
 //- (void)testPublishNilMessage {
 //    // silence warnings for this test
+//    PNTTestPublishStatus *expectedStatus = [PNTTestPublishStatus failedStatusWithClient:self.client timeToken:nil];
 //#pragma clang diagnostic push
 //#pragma clang diagnostic ignored "-Wnonnull"
-//    [self.client publish:nil toChannel:self.publishChannel withCompletion:[self PNT_failedPublishCompletion]];
+//    [self.client publish:nil toChannel:self.publishChannel withCompletion:[self PNT_completionWithExpectedPublishStatus:expectedStatus]];
 //#pragma clang diagnostic pop
 //    [self waitFor:kPNTPublishTimeout];
 //}
@@ -57,15 +58,17 @@
 //#pragma clang diagnostic pop
 //    [self waitFor:kPNTPublishTimeout];
 //}
-//
-//- (void)testPublishDictionary {
-//    [self.client publish:@{@"test": @"test"} toChannel:self.publishChannel withCompletion:[self PNT_successfulPublishCompletionWithExpectedTimeToken:@14613480529107131]];
-//    [self waitFor:kPNTPublishTimeout];
-//}
-//
-//- (void)testPublishNestedDictionary {
-//    [self.client publish:@{@"test": @{@"test": @"test"}} toChannel:self.publishChannel withCompletion:[self PNT_successfulPublishCompletionWithExpectedTimeToken:@14613480529971055]];
-//    [self waitFor:kPNTPublishTimeout];
-//}
+
+- (void)testPublishDictionary {
+    PNTTestPublishStatus *expectedStatus = [PNTTestPublishStatus successfulStatusWithClient:self.client timeToken:@14635351327138983];
+    [self.client publish:@{@"test": @"test"} toChannel:self.publishChannel withCompletion:[self PNT_completionWithExpectedPublishStatus:expectedStatus]];
+    [self waitFor:kPNTPublishTimeout];
+}
+
+- (void)testPublishNestedDictionary {
+    PNTTestPublishStatus *expectedStatus = [PNTTestPublishStatus successfulStatusWithClient:self.client timeToken:@14635351328021386];
+    [self.client publish:@{@"test": @{@"test": @"test"}} toChannel:self.publishChannel withCompletion:[self PNT_completionWithExpectedPublishStatus:expectedStatus]];
+    [self waitFor:kPNTPublishTimeout];
+}
 
 @end
