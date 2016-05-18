@@ -23,7 +23,7 @@
 }
 
 - (void)testPublishString {
-    PNTTestPublishStatus *expectedStatus = [PNTTestPublishStatus successfulStatusWithClient:self.client timeToken:@14635141685212657];
+    PNTTestPublishStatus *expectedStatus = [PNTTestPublishStatus successfulStatusWithClient:self.client timeToken:@14635327686402110];
     [self.client publish:@"test" toChannel:self.publishChannel withCompletion:[self PNT_completionWithExpectedPublishStatus:expectedStatus]];
     [self waitFor:kPNTPublishTimeout];
 //    PNTTestPublishStatus *status = [PNTTestPublishStatus successfulStatusWithClient:self.client timeToken:@14635151139158093];
