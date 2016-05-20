@@ -6,7 +6,7 @@
 //
 //
 
-#import <PubNub_Testing/PubNubTesting.h>
+#import <PubNubTesting/PubNubTesting.h>
 
 @interface PNChannelUnsubscribeTestCase : PNTSubscribeLoopTestCase
 @property (nonatomic, strong) XCTestExpectation *unsubscribeExpectation;

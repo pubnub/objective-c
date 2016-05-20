@@ -6,10 +6,9 @@
 //
 //
 
-#import <PubNub_Testing/PubNubTesting.h>
+#import <PubNubTesting/PubNubTesting.h>
 
 @interface PNHistoryTestCase : PNTClientTestCase
-@property (nonatomic, strong, readonly) NSString *historyChannel;
 @end
 
 @implementation PNHistoryTestCase
