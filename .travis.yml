@@ -1,7 +1,7 @@
 language: objective-c
 sudo: false
 osx_image: xcode7.3
-cache: cocoapods
+#cache: cocoapods # this needs to be commented out until travis fixes it
 env:
     global:
         - LC_CTYPE=en_US.UTF-8
