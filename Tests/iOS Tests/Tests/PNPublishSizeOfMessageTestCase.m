@@ -15,7 +15,7 @@
 @implementation PNPublishSizeOfMessageTestCase
 
 - (BOOL)isRecording {
-    return YES;
+    return NO;
 }
 
 - (void)setUp {
@@ -40,7 +40,7 @@
 - (void)testSizeOfStringMessageToNilChannel {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wnonnull"
-    [self.client sizeOfMessage:@"test" toChannel:nil withCompletion:[self PNT_messageSizeCompletionWithSize:341]];
+    [self.client sizeOfMessage:@"test" toChannel:nil withCompletion:[self PNT_messageSizeCompletionWithSize:-1]];
 #pragma clang diagnostic pop
     [self waitFor:kPNTSizeOfMessageTimeout];
 }
@@ -51,12 +51,12 @@
 }
 
 - (void)testSizeOfStringMessageCompressed {
-    [self.client sizeOfMessage:@"test" toChannel:self.publishChannel compressed:YES withCompletion:[self PNT_messageSizeCompletionWithSize:341]];
+    [self.client sizeOfMessage:@"test" toChannel:self.publishChannel compressed:YES withCompletion:[self PNT_messageSizeCompletionWithSize:451]];
     [self waitFor:kPNTSizeOfMessageTimeout];
 }
 
 - (void)testSizeOfStringMessageWithStoreInHistoryAndCompressed {
-    [self.client sizeOfMessage:@"test" toChannel:self.publishChannel compressed:YES storeInHistory:YES withCompletion:[self PNT_messageSizeCompletionWithSize:341]];
+    [self.client sizeOfMessage:@"test" toChannel:self.publishChannel compressed:YES storeInHistory:YES withCompletion:[self PNT_messageSizeCompletionWithSize:451]];
     [self waitFor:kPNTSizeOfMessageTimeout];
 }
 
@@ -71,7 +71,7 @@
 }
 
 - (void)testSizeOfStringMessageWithNoStoreInHistoryAndCompressed {
-    [self.client sizeOfMessage:@"test" toChannel:self.publishChannel compressed:YES storeInHistory:NO withCompletion:[self PNT_messageSizeCompletionWithSize:341]];
+    [self.client sizeOfMessage:@"test" toChannel:self.publishChannel compressed:YES storeInHistory:NO withCompletion:[self PNT_messageSizeCompletionWithSize:459]];
     [self waitFor:kPNTSizeOfMessageTimeout];
 }
 
@@ -87,25 +87,25 @@
 
 - (void)testSizeOfDictionaryMessageWithStoreInHistoryAndCompressed {
     NSDictionary *message = @{@"1": @"3", @"2": @"3"};
-    [self.client sizeOfMessage:message toChannel:self.publishChannel compressed:YES storeInHistory:YES withCompletion:[self PNT_messageSizeCompletionWithSize:341]];
+    [self.client sizeOfMessage:message toChannel:self.publishChannel compressed:YES storeInHistory:YES withCompletion:[self PNT_messageSizeCompletionWithSize:458]];
     [self waitFor:kPNTSizeOfMessageTimeout];
 }
 
 - (void)testSizeOfNestedDictionaryMessageWithStoreInHistoryAndCompressed {
     NSDictionary *message = @{@"1": @{@"1": @{@"3": @"5"}}, @"2": @"3"};
-    [self.client sizeOfMessage:message toChannel:self.publishChannel compressed:YES storeInHistory:YES withCompletion:[self PNT_messageSizeCompletionWithSize:341]];
+    [self.client sizeOfMessage:message toChannel:self.publishChannel compressed:YES storeInHistory:YES withCompletion:[self PNT_messageSizeCompletionWithSize:468]];
     [self waitFor:kPNTSizeOfMessageTimeout];
 }
 
 - (void)testSizeOfArrayMessageWithStoreInHistoryAndCompressed {
     NSArray *message = @[@"1", @"2", @"3", @"4"];
-    [self.client sizeOfMessage:message toChannel:self.publishChannel compressed:YES storeInHistory:YES withCompletion:[self PNT_messageSizeCompletionWithSize:341]];
+    [self.client sizeOfMessage:message toChannel:self.publishChannel compressed:YES storeInHistory:YES withCompletion:[self PNT_messageSizeCompletionWithSize:459]];
     [self waitFor:kPNTSizeOfMessageTimeout];
 }
 
 - (void)testSizeOfComplexArrayMessageWithStoreInHistoryAndCompressed {
     NSArray *message =   @[@"1", @{@"1": @{@"1": @"2"}}, @[@"1", @"2", @(2)], @(567)];
-    [self.client sizeOfMessage:message toChannel:self.publishChannel compressed:YES storeInHistory:YES withCompletion:[self PNT_messageSizeCompletionWithSize:341]];
+    [self.client sizeOfMessage:message toChannel:self.publishChannel compressed:YES storeInHistory:YES withCompletion:[self PNT_messageSizeCompletionWithSize:474]];
     [self waitFor:kPNTSizeOfMessageTimeout];
 }
 
