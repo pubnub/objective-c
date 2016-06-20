@@ -77,7 +77,6 @@
 		517A9EE01BE3185800FAA43A /* PNClientStateChannelGroupTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04961B4EAAB7007478CB /* PNClientStateChannelGroupTests.m */; };
 		517A9EE11BE3185800FAA43A /* PNClientStateChannelTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04971B4EAAB7007478CB /* PNClientStateChannelTests.m */; };
 		517A9EE21BE3185800FAA43A /* PNHeartbeatTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04981B4EAAB7007478CB /* PNHeartbeatTests.m */; };
-		517A9EE31BE3185800FAA43A /* PNHistoryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04991B4EAAB7007478CB /* PNHistoryTests.m */; };
 		517A9EE41BE3185800FAA43A /* PNPresenceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF049A1B4EAAB7007478CB /* PNPresenceTests.m */; };
 		517A9EE51BE3185800FAA43A /* PNPresenceEventTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 967707F61B8F4A80002B8E84 /* PNPresenceEventTests.m */; };
 		517A9EE61BE3185800FAA43A /* PNPublishCompressedTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF049B1B4EAAB7007478CB /* PNPublishCompressedTests.m */; };
@@ -115,7 +114,6 @@
 		797BDCD01C1F5091006EF006 /* PNSubscribeToPresenceChannelsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04A11B4EAAB7007478CB /* PNSubscribeToPresenceChannelsTests.m */; };
 		797BDCD11C1F5091006EF006 /* NSDictionary+PNTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04BE1B4EAB01007478CB /* NSDictionary+PNTest.m */; };
 		797BDCD21C1F5091006EF006 /* PNAPNSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04911B4EAAB7007478CB /* PNAPNSTests.m */; };
-		797BDCD31C1F5091006EF006 /* PNHistoryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04991B4EAAB7007478CB /* PNHistoryTests.m */; };
 		797BDCD41C1F5091006EF006 /* PNSubscribeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04A01B4EAAB7007478CB /* PNSubscribeTests.m */; };
 		797BDCD51C1F5091006EF006 /* PNBasicSubscribeTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04BA1B4EAAE4007478CB /* PNBasicSubscribeTestCase.m */; };
 		797BDCD61C1F5091006EF006 /* PNChannelGroupSubscribeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04921B4EAAB7007478CB /* PNChannelGroupSubscribeTests.m */; };
@@ -142,7 +140,6 @@
 		797BDD0D1C1F5176006EF006 /* PNSubscribeToPresenceChannelsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04A11B4EAAB7007478CB /* PNSubscribeToPresenceChannelsTests.m */; };
 		797BDD0E1C1F5176006EF006 /* NSDictionary+PNTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04BE1B4EAB01007478CB /* NSDictionary+PNTest.m */; };
 		797BDD0F1C1F5176006EF006 /* PNAPNSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04911B4EAAB7007478CB /* PNAPNSTests.m */; };
-		797BDD101C1F5176006EF006 /* PNHistoryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04991B4EAAB7007478CB /* PNHistoryTests.m */; };
 		797BDD111C1F5176006EF006 /* PNSubscribeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04A01B4EAAB7007478CB /* PNSubscribeTests.m */; };
 		797BDD121C1F5176006EF006 /* PNBasicSubscribeTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04BA1B4EAAE4007478CB /* PNBasicSubscribeTestCase.m */; };
 		797BDD131C1F5176006EF006 /* PNChannelGroupSubscribeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04921B4EAAB7007478CB /* PNChannelGroupSubscribeTests.m */; };
@@ -176,7 +173,6 @@
 		79EF04A91B4EAAB7007478CB /* PNClientStateChannelGroupTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04961B4EAAB7007478CB /* PNClientStateChannelGroupTests.m */; };
 		79EF04AA1B4EAAB7007478CB /* PNClientStateChannelTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04971B4EAAB7007478CB /* PNClientStateChannelTests.m */; };
 		79EF04AB1B4EAAB7007478CB /* PNHeartbeatTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04981B4EAAB7007478CB /* PNHeartbeatTests.m */; };
-		79EF04AC1B4EAAB7007478CB /* PNHistoryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF04991B4EAAB7007478CB /* PNHistoryTests.m */; };
 		79EF04AD1B4EAAB7007478CB /* PNPresenceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF049A1B4EAAB7007478CB /* PNPresenceTests.m */; };
 		79EF04AE1B4EAAB7007478CB /* PNPublishCompressedTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF049B1B4EAAB7007478CB /* PNPublishCompressedTests.m */; };
 		79EF04AF1B4EAAB7007478CB /* PNPublishSizeOfMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF049C1B4EAAB7007478CB /* PNPublishSizeOfMessage.m */; };
@@ -262,7 +258,6 @@
 		79EF04961B4EAAB7007478CB /* PNClientStateChannelGroupTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNClientStateChannelGroupTests.m; path = Tests/PNClientStateChannelGroupTests.m; sourceTree = "<group>"; };
 		79EF04971B4EAAB7007478CB /* PNClientStateChannelTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNClientStateChannelTests.m; path = Tests/PNClientStateChannelTests.m; sourceTree = "<group>"; };
 		79EF04981B4EAAB7007478CB /* PNHeartbeatTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNHeartbeatTests.m; path = Tests/PNHeartbeatTests.m; sourceTree = "<group>"; };
-		79EF04991B4EAAB7007478CB /* PNHistoryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNHistoryTests.m; path = Tests/PNHistoryTests.m; sourceTree = "<group>"; };
 		79EF049A1B4EAAB7007478CB /* PNPresenceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNPresenceTests.m; path = Tests/PNPresenceTests.m; sourceTree = "<group>"; };
 		79EF049B1B4EAAB7007478CB /* PNPublishCompressedTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNPublishCompressedTests.m; path = Tests/PNPublishCompressedTests.m; sourceTree = "<group>"; };
 		79EF049C1B4EAAB7007478CB /* PNPublishSizeOfMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNPublishSizeOfMessage.m; path = Tests/PNPublishSizeOfMessage.m; sourceTree = "<group>"; };
@@ -366,7 +361,6 @@
 				79EF04961B4EAAB7007478CB /* PNClientStateChannelGroupTests.m */,
 				79EF04971B4EAAB7007478CB /* PNClientStateChannelTests.m */,
 				79EF04981B4EAAB7007478CB /* PNHeartbeatTests.m */,
-				79EF04991B4EAAB7007478CB /* PNHistoryTests.m */,
 				79EF049A1B4EAAB7007478CB /* PNPresenceTests.m */,
 				967707F61B8F4A80002B8E84 /* PNPresenceEventTests.m */,
 				79EF049B1B4EAAB7007478CB /* PNPublishCompressedTests.m */,
@@ -1052,7 +1046,6 @@
 				51AF20ED1CDABA81000B510B /* PNChannelGroupTestCase.m in Sources */,
 				517A9EEB1BE3185800FAA43A /* PNSubscribeTests.m in Sources */,
 				517A9EE81BE3185800FAA43A /* PNPublishTests.m in Sources */,
-				517A9EE31BE3185800FAA43A /* PNHistoryTests.m in Sources */,
 				517A9EDE1BE3185800FAA43A /* PNChannelGroupUnsubscribeTests.m in Sources */,
 				517A9EE61BE3185800FAA43A /* PNPublishCompressedTests.m in Sources */,
 				5126AEC51CCA974300808AC6 /* PNPublishSimpleTestCase.m in Sources */,
@@ -1089,7 +1082,6 @@
 				79EF04C11B4EAB01007478CB /* NSDictionary+PNTest.m in Sources */,
 				79EF04A41B4EAAB7007478CB /* PNAPNSTests.m in Sources */,
 				51EC09521CC93B99004102A7 /* PNTimeTokenTestCase.m in Sources */,
-				79EF04AC1B4EAAB7007478CB /* PNHistoryTests.m in Sources */,
 				79EF04B31B4EAAB7007478CB /* PNSubscribeTests.m in Sources */,
 				79EF04BC1B4EAAE4007478CB /* PNBasicSubscribeTestCase.m in Sources */,
 				79E198C31CE3DCF600F36216 /* PNNumberTests.m in Sources */,
@@ -1156,7 +1148,6 @@
 				797BDCD01C1F5091006EF006 /* PNSubscribeToPresenceChannelsTests.m in Sources */,
 				797BDCD11C1F5091006EF006 /* NSDictionary+PNTest.m in Sources */,
 				797BDCD21C1F5091006EF006 /* PNAPNSTests.m in Sources */,
-				797BDCD31C1F5091006EF006 /* PNHistoryTests.m in Sources */,
 				797BDCD41C1F5091006EF006 /* PNSubscribeTests.m in Sources */,
 				797BDCD51C1F5091006EF006 /* PNBasicSubscribeTestCase.m in Sources */,
 				797BDCD61C1F5091006EF006 /* PNChannelGroupSubscribeTests.m in Sources */,
@@ -1192,7 +1183,6 @@
 				515C09C81CE6517F00F411B5 /* PNHistoryTestCase.m in Sources */,
 				797BDD0E1C1F5176006EF006 /* NSDictionary+PNTest.m in Sources */,
 				797BDD0F1C1F5176006EF006 /* PNAPNSTests.m in Sources */,
-				797BDD101C1F5176006EF006 /* PNHistoryTests.m in Sources */,
 				797BDD111C1F5176006EF006 /* PNSubscribeTests.m in Sources */,
 				797BDD121C1F5176006EF006 /* PNBasicSubscribeTestCase.m in Sources */,
 				797BDD131C1F5176006EF006 /* PNChannelGroupSubscribeTests.m in Sources */,
