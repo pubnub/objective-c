@@ -75,13 +75,15 @@
     [self waitFor:kPNTSizeOfMessageTimeout];
 }
 
-- (void)DISABLE_testSize10kCharacterStringMessageWithStoreInHistoryAndCompressed {
-    [self.client sizeOfMessage:@"test" toChannel:self.publishChannel compressed:YES storeInHistory:YES withCompletion:[self PNT_messageSizeCompletionWithSize:341]];
+- (void)testSize10kCharacterStringMessageWithStoreInHistoryAndCompressed {
+    NSString *message = [NSString PNT_randomAlphanumericStringWithLength:10000];
+    [self.client sizeOfMessage:message toChannel:self.publishChannel compressed:YES storeInHistory:YES withCompletion:[self PNT_messageSizeCompletionWithSize:7971]];
     [self waitFor:kPNTSizeOfMessageTimeout];
 }
 
-- (void)DISABLE_testSizeOf100kCharacterStringWithStoreInHistoryAndCompressed {
-    [self.client sizeOfMessage:@"test" toChannel:self.publishChannel compressed:YES storeInHistory:YES withCompletion:[self PNT_messageSizeCompletionWithSize:341]];
+- (void)testSizeOf100kCharacterStringWithStoreInHistoryAndCompressed {
+    NSString *message = [NSString PNT_randomAlphanumericStringWithLength:100000];
+    [self.client sizeOfMessage:message toChannel:self.publishChannel compressed:YES storeInHistory:YES withCompletion:[self PNT_messageSizeCompletionWithSize:75651]];
     [self waitFor:kPNTSizeOfMessageTimeout];
 }
 

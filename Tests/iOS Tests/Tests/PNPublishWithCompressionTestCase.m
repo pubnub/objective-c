@@ -32,14 +32,76 @@
     return @"a";
 }
 
-//- (void)testPublishStringWithCompression {
-//    [self.client publish:@"test" toChannel:self.publishChannel compressed:YES withCompletion:[self PNT_successfulPublishCompletionWithExpectedTimeToken:@14613497214576406]];
-//    [self waitFor:kPNTPublishTimeout];
-//}
-//
-//- (void)testPublishStringWithNoCompression {
-//    [self.client publish:@"test" toChannel:self.publishChannel compressed:NO withCompletion:[self PNT_successfulPublishCompletionWithExpectedTimeToken:@14613497216762423]];
-//    [self waitFor:kPNTPublishTimeout];
-//}
+- (void)testPublishStringWithCompression {
+    PNTTestPublishStatus *expectedStatus = [PNTTestPublishStatus successfulStatusWithClient:self.client timeToken:@14666254530494384];
+    [self.client publish:@"test" toChannel:self.publishChannel compressed:YES withCompletion:[self PNT_completionWithExpectedPublishStatus:expectedStatus]];
+    [self waitFor:kPNTPublishTimeout];
+}
+
+- (void)testPublishStringWithNoCompression {
+    PNTTestPublishStatus *expectedStatus = [PNTTestPublishStatus successfulStatusWithClient:self.client timeToken:@14666254531237488];
+    [self.client publish:@"test" toChannel:self.publishChannel compressed:NO withCompletion:[self PNT_completionWithExpectedPublishStatus:expectedStatus]];
+    [self waitFor:kPNTPublishTimeout];
+}
+
+- (void)testPublishNilMessageCompressed {
+    PNTTestPublishStatus *expectedStatus = [PNTTestPublishStatus failedStatusWithClient:self.client];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+    [self.client publish:nil toChannel:self.publishChannel compressed:YES withCompletion:[self PNT_completionWithExpectedPublishStatus:expectedStatus]];
+#pragma clang diagnostic pop
+    [self waitFor:kPNTPublishTimeout];
+}
+
+- (void)testPublishNilMessageNotCompressed {
+    PNTTestPublishStatus *expectedStatus = [PNTTestPublishStatus failedStatusWithClient:self.client];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+    [self.client publish:nil toChannel:self.publishChannel compressed:NO withCompletion:[self PNT_completionWithExpectedPublishStatus:expectedStatus]];
+#pragma clang diagnostic pop
+    [self waitFor:kPNTPublishTimeout];
+}
+
+- (void)testPublishDictionaryCompressed {
+    PNTTestPublishStatus *expectedStatus = [PNTTestPublishStatus successfulStatusWithClient:self.client timeToken:@14666254523212140];
+    [self.client publish:@{@"foo": @"bar"} toChannel:self.publishChannel compressed:YES withCompletion:[self PNT_completionWithExpectedPublishStatus:expectedStatus]];
+    [self waitFor:kPNTPublishTimeout];
+}
+
+- (void)testPublishDictionaryNotCompressed {
+    PNTTestPublishStatus *expectedStatus = [PNTTestPublishStatus successfulStatusWithClient:self.client timeToken:@14666254528926243];
+    [self.client publish:@{@"foo": @"bar"} toChannel:self.publishChannel compressed:NO withCompletion:[self PNT_completionWithExpectedPublishStatus:expectedStatus]];
+    [self waitFor:kPNTPublishTimeout];
+}
+
+- (void)testPublishArrayCompressed {
+    PNTTestPublishStatus *expectedStatus = [PNTTestPublishStatus successfulStatusWithClient:self.client timeToken:@14666254521232642];
+    [self.client publish:@[@"foo", @"bar"] toChannel:self.publishChannel compressed:YES withCompletion:[self PNT_completionWithExpectedPublishStatus:expectedStatus]];
+    [self waitFor:kPNTPublishTimeout];
+}
+
+- (void)testPublishArrayNotCompressed {
+    PNTTestPublishStatus *expectedStatus = [PNTTestPublishStatus successfulStatusWithClient:self.client timeToken:@14666254522200385];
+    [self.client publish:@[@"foo", @"bar"] toChannel:self.publishChannel compressed:NO withCompletion:[self PNT_completionWithExpectedPublishStatus:expectedStatus]];
+    [self waitFor:kPNTPublishTimeout];
+}
+
+- (void)testPublishStringToNilChannelCompressed {
+    PNTTestPublishStatus *expectedStatus = [PNTTestPublishStatus failedStatusWithClient:self.client];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+    [self.client publish:@"test" toChannel:nil compressed:YES withCompletion:[self PNT_completionWithExpectedPublishStatus:expectedStatus]];
+#pragma clang diagnostic pop
+    [self waitFor:kPNTPublishTimeout];
+}
+
+- (void)testPublishStringToNilChannelNotCompressed {
+    PNTTestPublishStatus *expectedStatus = [PNTTestPublishStatus failedStatusWithClient:self.client];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+    [self.client publish:@"test" toChannel:nil compressed:NO withCompletion:[self PNT_completionWithExpectedPublishStatus:expectedStatus]];
+#pragma clang diagnostic pop
+    [self waitFor:kPNTPublishTimeout];
+}
 
 @end
