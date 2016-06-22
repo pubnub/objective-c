@@ -23,12 +23,27 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Misc
 
 /**
+ @since 4.4.0
+ */
+- (void)publish:(nullable id)message toChannel:(NSString *)channel
+  mobilePushPayload:(nullable NSDictionary<NSString *, id> *)payloads storeInHistory:(BOOL)shouldStore
+     compressed:(BOOL)compressed replicate:(BOOL)shouldReplicate withMetadata:(nullable NSDictionary<NSString *, id> *)metadata completion:(nullable PNPublishCompletionBlock)block;
+
+/**
+ @since 4.4.0
+ */
+- (void)sizeOfMessage:(id)message toChannel:(NSString *)channel compressed:(BOOL)compressMessage
+       storeInHistory:(BOOL)shouldStore replicate:(BOOL)shouldReplicate withMetadata:(nullable NSDictionary<NSString *, id> *)metadata completion:(PNMessageSizeCalculationCompletionBlock)block;
+
+/**
  @brief  Compose set of parameters which is required to publish message.
  
  @param message         Reference on message which should be published.
  @param channel         Reference on name of the channel to which message should be published.
  @param compressMessage Whether message should be compressed before publish.
  @param shouldStore     Whether message should be stored in history storage or not.
+ @param shouldReplicate Whether the message should be replicated across stores. This is true by
+                        default. This is only added as a query parameter if it NO is provided as a value.
  @param metadata        JSON representation of \b NSDictionary with values which should be used by \b PubNub 
                         service to filter messages.
  
@@ -37,8 +52,8 @@ NS_ASSUME_NONNULL_BEGIN
  @since 4.0
  */
 - (PNRequestParameters *)requestParametersForMessage:(NSString *)message toChannel:(NSString *)channel
-                                          compressed:(BOOL)compressMessage storeInHistory:(BOOL)shouldStore 
-                                            metadata:(nullable NSString *)metadata;
+                                          compressed:(BOOL)compressMessage storeInHistory:(BOOL)shouldStore
+                                         replicate:(BOOL)shouldReplicate metadata:(nullable NSString *)metadata;
 
 /**
  @brief      Merge user-specified message with push payloads into single message which will be processed on
@@ -142,6 +157,18 @@ NS_ASSUME_NONNULL_END
        compressed:compressed withMetadata:metadata completion:block];
 }
 
+#pragma mark - Fire
+
+- (void)fire:(id)message toChannel:(NSString *)channel completion:(PNPublishCompletionBlock)block {
+    
+    [self fire:message toChannel:channel mobilePushPayload:nil storeInHistory:YES compressed:NO withMetadata:nil completion:block];
+}
+
+- (void)fire:(id)message toChannel:(NSString *)channel mobilePushPayload:(NSDictionary<NSString *,id> *)payloads storeInHistory:(BOOL)shouldStore compressed:(BOOL)compressed withMetadata:(NSDictionary<NSString *,id> *)metadata completion:(PNPublishCompletionBlock)block {
+    
+    [self publish:message toChannel:channel mobilePushPayload:payloads storeInHistory:shouldStore compressed:compressed replicate:NO withMetadata:metadata completion:block];
+}
+
 
 #pragma mark - Composite message publish
 
@@ -207,19 +234,25 @@ NS_ASSUME_NONNULL_END
   mobilePushPayload:(nullable NSDictionary<NSString *, id> *)payloads storeInHistory:(BOOL)shouldStore
          compressed:(BOOL)compressed withMetadata:(nullable NSDictionary<NSString *, id> *)metadata
          completion:(nullable PNPublishCompletionBlock)block {
+    
+    [self publish:message toChannel:channel mobilePushPayload:payloads storeInHistory:shouldStore compressed:compressed replicate:YES withMetadata:metadata completion:block];
+}
 
+- (void)publish:(nullable id)message toChannel:(NSString *)channel
+mobilePushPayload:(nullable NSDictionary<NSString *, id> *)payloads storeInHistory:(BOOL)shouldStore
+     compressed:(BOOL)compressed replicate:(BOOL)shouldReplicate withMetadata:(nullable NSDictionary<NSString *, id> *)metadata completion:(nullable PNPublishCompletionBlock)block {
     // Push further code execution on secondary queue to make service queue responsive during
     // JSON serialization and encryption process.
     __weak __typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-
+        
         BOOL encrypted = NO;
         NSError *publishError = nil;
         NSString *messageForPublish = [PNJSON JSONStringFrom:message withError:&publishError];
-
+        
         // Encrypt message in case if serialization to JSON was successful.
         if (!publishError) {
-
+            
             // Try perform user message encryption.
             NSString *encryptedMessage = [self encryptedMessage:messageForPublish
                                                   withCipherKey:self.configuration.cipherKey
@@ -230,55 +263,56 @@ NS_ASSUME_NONNULL_END
         
         NSString *metadataForPublish = nil;
         if (metadata) { metadataForPublish = [PNJSON JSONStringFrom:metadata withError:&publishError]; }
-
+        
         // Merge user message with push notification payloads (if provided).
         if (!publishError && payloads.count) {
-
+            
             NSDictionary *mergedData = [self mergedMessage:(encrypted ? messageForPublish : message)
                                      withMobilePushPayload:payloads];
             messageForPublish = [PNJSON JSONStringFrom:mergedData withError:&publishError];
         }
         PNRequestParameters *parameters = [self requestParametersForMessage:messageForPublish
                                                                   toChannel:channel compressed:compressed
-                                                             storeInHistory:shouldStore 
+                                                             storeInHistory:shouldStore
+                                                                  replicate:shouldReplicate
                                                                    metadata:metadataForPublish];
         NSData *publishData = nil;
         if (compressed) {
-
+            
             NSData *messageData = [messageForPublish dataUsingEncoding:NSUTF8StringEncoding];
             NSData *compressedBody = [PNGZIP GZIPDeflatedData:messageData];
             publishData = (compressedBody?: [@"" dataUsingEncoding:NSUTF8StringEncoding]);
         }
         
-        DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> Publish%@ message to '%@' "
-                     "channel%@%@%@", (compressed ? @" compressed" : @""), (channel?: @"<error>"),
-                     (metadata ? [NSString stringWithFormat:@" with metadata (%@)", 
+        DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> Publish%@%@ message to '%@' "
+                     "channel%@%@%@", (compressed ? @" compressed" : @""), (shouldReplicate ? @"" : @" no replication"), (channel?: @"<error>"),
+                     (metadata ? [NSString stringWithFormat:@" with metadata (%@)",
                                   metadataForPublish] : @""),
                      (!shouldStore ? @" which won't be saved in history" : @""),
                      (!compressed ? [NSString stringWithFormat:@": %@",
                                      (messageForPublish?: @"<error>")] : @"."));
-
+        
         [self processOperation:PNPublishOperation withParameters:parameters data:publishData
                completionBlock:^(PNStatus *status) {
                    
-           // Silence static analyzer warnings.
-           // Code is aware about this case and at the end will simply call on 'nil' object method.
-           // In most cases if referenced object become 'nil' it mean what there is no more need in
-           // it and probably whole client instance has been deallocated.
-           #pragma clang diagnostic push
-           #pragma clang diagnostic ignored "-Wreceiver-is-weak"
-           if (status.isError) {
-                
-               status.retryBlock = ^{
-                   
-                   [weakSelf publish:message toChannel:channel mobilePushPayload:payloads
-                      storeInHistory:shouldStore compressed:compressed withMetadata:metadata
-                          completion:block];
-               };
-           }
-           [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
-           #pragma clang diagnostic pop
-       }];
+                   // Silence static analyzer warnings.
+                   // Code is aware about this case and at the end will simply call on 'nil' object method.
+                   // In most cases if referenced object become 'nil' it mean what there is no more need in
+                   // it and probably whole client instance has been deallocated.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreceiver-is-weak"
+                   if (status.isError) {
+                       
+                       status.retryBlock = ^{
+                           
+                           [weakSelf publish:message toChannel:channel mobilePushPayload:payloads
+                              storeInHistory:shouldStore compressed:compressed withMetadata:metadata
+                                  completion:block];
+                       };
+                   }
+                   [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
+#pragma clang diagnostic pop
+               }];
     });
 }
 
@@ -335,8 +369,25 @@ NS_ASSUME_NONNULL_END
            withMetadata:nil completion:block];
 }
 
+- (void)sizeOfFireMessage:(id)message toChannel:(NSString *)channel completion:(PNMessageSizeCalculationCompletionBlock)block {
+    
+    [self sizeOfFireMessage:message toChannel:channel compressed:NO storeInHistory:YES withMetadata:nil completion:block];
+}
+
+- (void)sizeOfFireMessage:(id)message toChannel:(NSString *)channel compressed:(BOOL)compressMessage storeInHistory:(BOOL)shouldStore withMetadata:(NSDictionary<NSString *,id> *)metadata completion:(PNMessageSizeCalculationCompletionBlock)block {
+    
+    [self sizeOfMessage:message toChannel:channel compressed:compressMessage storeInHistory:shouldStore replicate:NO withMetadata:metadata completion:block];
+}
+
 - (void)sizeOfMessage:(id)message toChannel:(NSString *)channel compressed:(BOOL)compressMessage
        storeInHistory:(BOOL)shouldStore withMetadata:(nullable NSDictionary<NSString *, id> *)metadata
+           completion:(PNMessageSizeCalculationCompletionBlock)block {
+    
+    [self sizeOfMessage:message toChannel:channel compressed:compressMessage storeInHistory:shouldStore replicate:YES withMetadata:metadata completion:block];
+}
+
+- (void)sizeOfMessage:(id)message toChannel:(NSString *)channel compressed:(BOOL)compressMessage
+       storeInHistory:(BOOL)shouldStore replicate:(BOOL)shouldReplicate withMetadata:(nullable NSDictionary<NSString *, id> *)metadata
            completion:(PNMessageSizeCalculationCompletionBlock)block {
     
     if (block) {
@@ -352,9 +403,9 @@ NS_ASSUME_NONNULL_END
             // Code is aware about this case and at the end will simply call on 'nil' object method.
             // In most cases if referenced object become 'nil' it mean what there is no more need in
             // it and probably whole client instance has been deallocated.
-            #pragma clang diagnostic push
-            #pragma clang diagnostic ignored "-Wreceiver-is-weak"
-            #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreceiver-is-weak"
+#pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
             // Encrypt message in case if serialization to JSON was successful.
             if (!publishError) {
                 
@@ -370,7 +421,8 @@ NS_ASSUME_NONNULL_END
             PNRequestParameters *parameters = [self requestParametersForMessage:messageForPublish
                                                                       toChannel:channel
                                                                      compressed:compressMessage
-                                                                 storeInHistory:shouldStore 
+                                                                 storeInHistory:shouldStore
+                                                                      replicate:shouldReplicate
                                                                        metadata:metadataForPublish];
             NSData *publishData = nil;
             if (compressMessage) {
@@ -385,7 +437,7 @@ NS_ASSUME_NONNULL_END
                 
                 block(size);
             });
-            #pragma clang diagnostic pop
+#pragma clang diagnostic pop
         });
     }
 }
@@ -394,8 +446,8 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Misc
 
 - (PNRequestParameters *)requestParametersForMessage:(NSString *)message toChannel:(NSString *)channel
-                                          compressed:(BOOL)compressMessage storeInHistory:(BOOL)shouldStore 
-                                            metadata:(nullable NSString *)metadata {
+                                          compressed:(BOOL)compressMessage storeInHistory:(BOOL)shouldStore
+                                         replicate:(BOOL)shouldReplicate metadata:(nullable NSString *)metadata {
     
     PNRequestParameters *parameters = [PNRequestParameters new];
     if (channel.length) {
@@ -411,6 +463,10 @@ NS_ASSUME_NONNULL_END
     if ([metadata isKindOfClass:[NSString class]] && metadata.length) {
         
         [parameters addQueryParameter:[PNString percentEscapedString:metadata] forFieldName:@"meta"];
+    }
+    
+    if (!shouldReplicate) {
+        [parameters addQueryParameter:@"1" forFieldName:@"no-rep"];
     }
     
     return parameters;

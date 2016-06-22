@@ -1,3 +1,6 @@
+22-06-2016 - 2123b8a - 4.4.0
+. Added fire method for special publish
+
 17-05-2016 - 2123b8a - 4.3.3
 . fixed podspec dependency version format compatibiliyty with CocoaPods 0.39
 
