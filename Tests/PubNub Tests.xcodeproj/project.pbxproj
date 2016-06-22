@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		377DE67046ED1EE58D9F802F /* Pods_iOS_ObjC_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E80B402168C919133EE37A2 /* Pods_iOS_ObjC_Tests.framework */; };
+		511C7A541D1B294100B7E83F /* PNPublishWithStoreInHistoryTestCase.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 511C7A531D1B294100B7E83F /* PNPublishWithStoreInHistoryTestCase.bundle */; };
+		511C7A551D1B294100B7E83F /* PNPublishWithStoreInHistoryTestCase.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 511C7A531D1B294100B7E83F /* PNPublishWithStoreInHistoryTestCase.bundle */; };
+		511C7A561D1B294100B7E83F /* PNPublishWithStoreInHistoryTestCase.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 511C7A531D1B294100B7E83F /* PNPublishWithStoreInHistoryTestCase.bundle */; };
 		5126AE871CC9598000808AC6 /* PNClientStateChannelTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 5126AE861CC9598000808AC6 /* PNClientStateChannelTestCase.m */; };
 		5126AE881CC9598000808AC6 /* PNClientStateChannelTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 5126AE861CC9598000808AC6 /* PNClientStateChannelTestCase.m */; };
 		5126AE891CC9598000808AC6 /* PNClientStateChannelTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 5126AE861CC9598000808AC6 /* PNClientStateChannelTestCase.m */; };
@@ -200,6 +203,7 @@
 		21528763D496254D153EECE7 /* Pods_tvOS_ObjC_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_tvOS_ObjC_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3F73BFCCFD4187ABDB5B9A0F /* Pods-OSX ObjC Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OSX ObjC Tests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-OSX ObjC Tests/Pods-OSX ObjC Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		465CE6E598EF89CE18960407 /* Pods_OSX_ObjC_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_OSX_ObjC_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		511C7A531D1B294100B7E83F /* PNPublishWithStoreInHistoryTestCase.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = PNPublishWithStoreInHistoryTestCase.bundle; path = Fixtures/PNPublishWithStoreInHistoryTestCase.bundle; sourceTree = "<group>"; };
 		5126AE861CC9598000808AC6 /* PNClientStateChannelTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNClientStateChannelTestCase.m; path = Tests/PNClientStateChannelTestCase.m; sourceTree = "<group>"; };
 		5126AE9A1CCA8E3000808AC6 /* PNChannelSubscribeTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNChannelSubscribeTestCase.m; path = Tests/PNChannelSubscribeTestCase.m; sourceTree = "<group>"; };
 		5126AE9E1CCA8E4600808AC6 /* PNChannelUnsubscribeTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNChannelUnsubscribeTestCase.m; path = Tests/PNChannelUnsubscribeTestCase.m; sourceTree = "<group>"; };
@@ -534,6 +538,7 @@
 		51F7AAC11B27AD7400BEDA1F /* Fixtures */ = {
 			isa = PBXGroup;
 			children = (
+				511C7A531D1B294100B7E83F /* PNPublishWithStoreInHistoryTestCase.bundle */,
 				51B1EA8D1D19C07100669390 /* PNPublishWithCompressionTestCase.bundle */,
 				513CBCD91CEBB58F00D04188 /* PNPublishSimpleTestCase.bundle */,
 				513CBCB61CEBABEC00D04188 /* PNChannelGroupTestCase.bundle */,
@@ -743,6 +748,7 @@
 				513CBCC41CEBABEC00D04188 /* PNChannelSubscribeTestCase.bundle in Resources */,
 				513CBCCC1CEBABEC00D04188 /* PNClientStateChannelTestCase.bundle in Resources */,
 				513CBCC01CEBABEC00D04188 /* PNChannelGroupTestCase.bundle in Resources */,
+				511C7A561D1B294100B7E83F /* PNPublishWithStoreInHistoryTestCase.bundle in Resources */,
 				513CBCD81CEBABEC00D04188 /* PNTimeTokenTestCase.bundle in Resources */,
 				513CBCD41CEBABEC00D04188 /* PNPublishSizeOfMessageTestCase.bundle in Resources */,
 			);
@@ -759,6 +765,7 @@
 				513CBCC11CEBABEC00D04188 /* PNChannelSubscribeTestCase.bundle in Resources */,
 				513CBCC91CEBABEC00D04188 /* PNClientStateChannelTestCase.bundle in Resources */,
 				513CBCBD1CEBABEC00D04188 /* PNChannelGroupTestCase.bundle in Resources */,
+				511C7A541D1B294100B7E83F /* PNPublishWithStoreInHistoryTestCase.bundle in Resources */,
 				513CBCD51CEBABEC00D04188 /* PNTimeTokenTestCase.bundle in Resources */,
 				513CBCD11CEBABEC00D04188 /* PNPublishSizeOfMessageTestCase.bundle in Resources */,
 			);
@@ -796,6 +803,7 @@
 				513CBCC31CEBABEC00D04188 /* PNChannelSubscribeTestCase.bundle in Resources */,
 				513CBCCB1CEBABEC00D04188 /* PNClientStateChannelTestCase.bundle in Resources */,
 				513CBCBF1CEBABEC00D04188 /* PNChannelGroupTestCase.bundle in Resources */,
+				511C7A551D1B294100B7E83F /* PNPublishWithStoreInHistoryTestCase.bundle in Resources */,
 				513CBCD71CEBABEC00D04188 /* PNTimeTokenTestCase.bundle in Resources */,
 				513CBCD31CEBABEC00D04188 /* PNPublishSizeOfMessageTestCase.bundle in Resources */,
 			);
