@@ -28,7 +28,7 @@ PODS:
     - PubNub/Core (= 4.3.3)
   - PubNub/Core (4.3.3):
     - CocoaLumberjack (= 2.3.0)
-  - PubNubTesting (0.7.4):
+  - PubNubTesting (0.7.5):
     - BeKindRewind (~> 2.3.2)
     - JSONLiteralString
     - PubNub
@@ -47,7 +47,7 @@ SPEC CHECKSUMS:
   JSONLiteralString: 00002dc3523978adfaa683071aabcf96423ebce0
   OHHTTPStubs: a5d2e9eea07869d42ec03338325f398bc520e159
   PubNub: 51acd937c947d931a75d2caef654fd12f7573e09
-  PubNubTesting: 574823f16a343087c8a59711fb906b4c45123076
+  PubNubTesting: b76ad543748a632fdd671ba3e7b071cd334c9d7e
 
 PODFILE CHECKSUM: 1b46bf1667f83decad93910c2c7ca760ec5b7bd0
 
