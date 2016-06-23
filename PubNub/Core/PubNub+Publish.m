@@ -161,12 +161,12 @@ NS_ASSUME_NONNULL_END
 
 - (void)fire:(id)message toChannel:(NSString *)channel completion:(PNPublishCompletionBlock)block {
     
-    [self fire:message toChannel:channel mobilePushPayload:nil storeInHistory:YES compressed:NO withMetadata:nil completion:block];
+    [self fire:message toChannel:channel mobilePushPayload:nil compressed:NO withMetadata:nil completion:block];
 }
 
-- (void)fire:(id)message toChannel:(NSString *)channel mobilePushPayload:(NSDictionary<NSString *,id> *)payloads storeInHistory:(BOOL)shouldStore compressed:(BOOL)compressed withMetadata:(NSDictionary<NSString *,id> *)metadata completion:(PNPublishCompletionBlock)block {
+- (void)fire:(id)message toChannel:(NSString *)channel mobilePushPayload:(NSDictionary<NSString *,id> *)payloads compressed:(BOOL)compressed withMetadata:(NSDictionary<NSString *,id> *)metadata completion:(PNPublishCompletionBlock)block {
     
-    [self publish:message toChannel:channel mobilePushPayload:payloads storeInHistory:shouldStore compressed:compressed replicate:NO withMetadata:metadata completion:block];
+    [self publish:message toChannel:channel mobilePushPayload:payloads storeInHistory:NO compressed:compressed replicate:NO withMetadata:metadata completion:block];
 }
 
 
@@ -371,12 +371,12 @@ mobilePushPayload:(nullable NSDictionary<NSString *, id> *)payloads storeInHisto
 
 - (void)sizeOfFireMessage:(id)message toChannel:(NSString *)channel completion:(PNMessageSizeCalculationCompletionBlock)block {
     
-    [self sizeOfFireMessage:message toChannel:channel compressed:NO storeInHistory:YES withMetadata:nil completion:block];
+    [self sizeOfFireMessage:message toChannel:channel compressed:NO withMetadata:nil completion:block];
 }
 
-- (void)sizeOfFireMessage:(id)message toChannel:(NSString *)channel compressed:(BOOL)compressMessage storeInHistory:(BOOL)shouldStore withMetadata:(NSDictionary<NSString *,id> *)metadata completion:(PNMessageSizeCalculationCompletionBlock)block {
+- (void)sizeOfFireMessage:(id)message toChannel:(NSString *)channel compressed:(BOOL)compressMessage withMetadata:(NSDictionary<NSString *,id> *)metadata completion:(PNMessageSizeCalculationCompletionBlock)block {
     
-    [self sizeOfMessage:message toChannel:channel compressed:compressMessage storeInHistory:shouldStore replicate:NO withMetadata:metadata completion:block];
+    [self sizeOfMessage:message toChannel:channel compressed:compressMessage storeInHistory:NO replicate:NO withMetadata:metadata completion:block];
 }
 
 - (void)sizeOfMessage:(id)message toChannel:(NSString *)channel compressed:(BOOL)compressMessage

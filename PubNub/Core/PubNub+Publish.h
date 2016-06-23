@@ -839,9 +839,9 @@ self.client = [PubNub clientWithConfiguration:configuration];
 /**
  @since 4.4.0
  */
-- (void)fire:(nullable id)message toChannel:(NSString *)channel
-  mobilePushPayload:(nullable NSDictionary<NSString *, id> *)payloads storeInHistory:(BOOL)shouldStore
-         compressed:(BOOL)compressed withMetadata:(nullable NSDictionary<NSString *, id> *)metadata
+- (void)         fire:(nullable id)message toChannel:(NSString *)channel
+    mobilePushPayload:(nullable NSDictionary<NSString *, id> *)payloads compressed:(BOOL)compressed
+         withMetadata:(nullable NSDictionary<NSString *, id> *)metadata
          completion:(nullable PNPublishCompletionBlock)block;
 
 
@@ -1112,7 +1112,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  @since 4.4.0
  */
 - (void)sizeOfFireMessage:(id)message toChannel:(NSString *)channel compressed:(BOOL)compressMessage
-           storeInHistory:(BOOL)shouldStore withMetadata:(nullable NSDictionary<NSString *, id> *)metadata
+             withMetadata:(nullable NSDictionary<NSString *, id> *)metadata
                completion:(PNMessageSizeCalculationCompletionBlock)block;
 
 #pragma mark -
