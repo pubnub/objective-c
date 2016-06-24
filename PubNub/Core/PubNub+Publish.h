@@ -834,7 +834,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
 /**
  @since 4.4.0
  */
-- (void)fire:(nullable id)message toChannel:(NSString *)channel completion:(nullable PNPublishCompletionBlock)block;
+- (void)fire:(id)message toChannel:(NSString *)channel completion:(nullable PNPublishCompletionBlock)block;
 
 /**
  @since 4.4.0

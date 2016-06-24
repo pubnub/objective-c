@@ -164,7 +164,7 @@ NS_ASSUME_NONNULL_END
     [self fire:message toChannel:channel mobilePushPayload:nil compressed:NO withMetadata:nil completion:block];
 }
 
-- (void)fire:(id)message toChannel:(NSString *)channel mobilePushPayload:(NSDictionary<NSString *,id> *)payloads compressed:(BOOL)compressed withMetadata:(NSDictionary<NSString *,id> *)metadata completion:(PNPublishCompletionBlock)block {
+- (void)fire:(nullable id)message toChannel:(NSString *)channel mobilePushPayload:(nullable NSDictionary<NSString *, id> *)payloads compressed:(BOOL)compressed withMetadata:(nullable NSDictionary<NSString *, id> *)metadata completion:(nullable PNPublishCompletionBlock)block {
     
     [self publish:message toChannel:channel mobilePushPayload:payloads storeInHistory:NO compressed:compressed replicate:NO withMetadata:metadata completion:block];
 }
