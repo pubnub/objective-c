@@ -466,7 +466,7 @@ mobilePushPayload:(nullable NSDictionary<NSString *, id> *)payloads storeInHisto
     }
     
     if (!shouldReplicate) {
-        [parameters addQueryParameter:@"1" forFieldName:@"no-rep"];
+        [parameters addQueryParameter:@"1" forFieldName:@"norep"];
     }
     
     return parameters;
