@@ -4570,6 +4570,7 @@
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GENERATE_MASTER_OBJECT_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				OTHER_CFLAGS = "-fembed-bitcode";
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = CocoaLumberjack;
 				SEPARATE_STRIP = NO;
@@ -4590,6 +4591,7 @@
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GENERATE_MASTER_OBJECT_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				OTHER_CFLAGS = "-fembed-bitcode";
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = CocoaLumberjack;
 				SEPARATE_STRIP = NO;
@@ -4642,10 +4644,11 @@
 				);
 				GENERATE_MASTER_OBJECT_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				OTHER_CFLAGS = "-fembed-bitcode";
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = PubNub;
 				PUBLIC_HEADERS_FOLDER_PATH = Headers;
-				SEPARATE_STRIP = NO;
+				SEPARATE_STRIP = YES;
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -4667,10 +4670,11 @@
 				);
 				GENERATE_MASTER_OBJECT_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				OTHER_CFLAGS = "-fembed-bitcode";
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = PubNub;
 				PUBLIC_HEADERS_FOLDER_PATH = Headers;
-				SEPARATE_STRIP = NO;
+				SEPARATE_STRIP = YES;
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
@@ -4802,8 +4806,10 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				OTHER_CFLAGS = "-fembed-bitcode";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.pubnub.pubnub-objc";
 				PRODUCT_NAME = PubNub;
+				SEPARATE_STRIP = YES;
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
@@ -4823,8 +4829,10 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				OTHER_CFLAGS = "-fembed-bitcode";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.pubnub.pubnub-objc";
 				PRODUCT_NAME = PubNub;
+				SEPARATE_STRIP = YES;
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
@@ -4843,7 +4851,9 @@
 					"$(inherited)",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				OTHER_CFLAGS = "-fembed-bitcode";
 				PRODUCT_NAME = "Universal Framework";
+				SEPARATE_STRIP = YES;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
 			name = Debug;
@@ -4857,7 +4867,9 @@
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = "FABRIC_SUPPORT=1";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				OTHER_CFLAGS = "-fembed-bitcode";
 				PRODUCT_NAME = "Universal Framework";
+				SEPARATE_STRIP = YES;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
 			name = Release;
