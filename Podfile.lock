@@ -1,0 +1,47 @@
+PODS:
+  - BeKindRewind (2.3.2):
+    - OHHTTPStubs (~> 5.0.0)
+  - CocoaLumberjack (2.3.0):
+    - CocoaLumberjack/Default (= 2.3.0)
+    - CocoaLumberjack/Extensions (= 2.3.0)
+  - CocoaLumberjack/Core (2.3.0)
+  - CocoaLumberjack/Default (2.3.0):
+    - CocoaLumberjack/Core
+  - CocoaLumberjack/Extensions (2.3.0):
+    - CocoaLumberjack/Default
+  - OHHTTPStubs (5.0.0):
+    - OHHTTPStubs/Default (= 5.0.0)
+  - OHHTTPStubs/Core (5.0.0)
+  - OHHTTPStubs/Default (5.0.0):
+    - OHHTTPStubs/Core
+    - OHHTTPStubs/JSON
+    - OHHTTPStubs/NSURLSession
+    - OHHTTPStubs/OHPathHelpers
+  - OHHTTPStubs/JSON (5.0.0):
+    - OHHTTPStubs/Core
+  - OHHTTPStubs/NSURLSession (5.0.0):
+    - OHHTTPStubs/Core
+  - OHHTTPStubs/OHPathHelpers (5.0.0)
+  - PubNub (4.3.3):
+    - CocoaLumberjack (= 2.3.0)
+    - PubNub/Core (= 4.3.3)
+  - PubNub/Core (4.3.3):
+    - CocoaLumberjack (= 2.3.0)
+
+DEPENDENCIES:
+  - BeKindRewind
+  - PubNub (from `.`)
+
+EXTERNAL SOURCES:
+  PubNub:
+    :path: "."
+
+SPEC CHECKSUMS:
+  BeKindRewind: bd3713b67a4b269bb3e938abd3306a2ee11107f7
+  CocoaLumberjack: 97fab7ee5f507fe54445cca7ea80f926729cfd15
+  OHHTTPStubs: a5d2e9eea07869d42ec03338325f398bc520e159
+  PubNub: f20311f685d9d86384fcff132ff39b5357dfee1a
+
+PODFILE CHECKSUM: 9791f9559c6dd04984ca269a3d8ed4bb35919a58
+
+COCOAPODS: 1.0.1

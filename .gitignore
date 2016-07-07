@@ -37,7 +37,6 @@ xcuserdata
 # http://guides.cocoapods.org/using/using-cocoapods.html#should-i-check-the-pods-directory-into-source-control
 #
 Pods/
-Podfile.lock
 
 # Carthage
 #
@@ -45,6 +44,14 @@ Podfile.lock
 # Carthage/Checkouts
 
 Carthage/Build
+
+# Fastlane
+##########
+/fastlane/README.md
+/fastlane/report.xml
+/fastlane/.env*private*
+fastlane/test-output/*
+
 
 # OS generated files #
 ######################
