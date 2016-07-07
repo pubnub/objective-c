@@ -521,6 +521,10 @@ NS_ASSUME_NONNULL_END
     NSURL *fullURL = [NSURL URLWithString:requestURL.absoluteString relativeToURL:self.baseURL];
     NSMutableURLRequest *httpRequest = [NSMutableURLRequest requestWithURL:fullURL];
     httpRequest.HTTPMethod = ([postData length] ? @"POST" : @"GET");
+    OSSpinLockLock(&_lock);
+    httpRequest.cachePolicy = self.session.configuration.requestCachePolicy;
+    httpRequest.allHTTPHeaderFields = self.session.configuration.HTTPAdditionalHeaders;
+    OSSpinLockUnlock(&_lock);
     if (postData) {
         
         NSMutableDictionary *allHeaders = [httpRequest.allHTTPHeaderFields mutableCopy];

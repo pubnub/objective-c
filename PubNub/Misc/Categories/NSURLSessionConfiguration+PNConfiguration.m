@@ -68,7 +68,7 @@ NS_ASSUME_NONNULL_END
     return (headers.count ? headers : nil);
 }
 
-+ (void)pn_setHTTPAdditionalHeaders:(nullable NSDictionary<NSString *, id> *)HTTPAdditionalHeaders {
++ (void)pn_setHTTPAdditionalHeaders:(NSDictionary<NSString *, id> *)HTTPAdditionalHeaders {
     
     NSMutableDictionary *headers = [HTTPAdditionalHeaders mutableCopy];
     [headers removeObjectsForKeys:@[@"Accept", @"Accept-Encoding", @"User-Agent", @"Connection"]];
@@ -109,8 +109,22 @@ NS_ASSUME_NONNULL_END
 + (NSArray<Class> *)pn_protocolClasses {
     
     NSURLSessionConfiguration *configuration = [self pn_ephemeralSessionConfiguration];
+    NSArray<Class> *protocols = (configuration.protocolClasses.count ? configuration.protocolClasses : nil);
+    if (protocols.count) {
+        
+        NSMutableArray *filteredProtocols = [protocols mutableCopy];
+        [protocols enumerateObjectsUsingBlock:^(Class protocolClass, NSUInteger protocolClassIdx, BOOL *protocolClassesEnumeratorStop) {
+            
+            NSString *className = NSStringFromClass(protocolClass);
+            if ([className hasPrefix:@"_NS"] || [className hasPrefix:@"NS"]) {
+                
+                [filteredProtocols removeObject:protocolClass];
+            }
+        }];
+        protocols = [filteredProtocols copy];
+    }
     
-    return (configuration.protocolClasses.count ? configuration.protocolClasses : nil);
+    return protocols;
 }
 
 + (void)pn_setProtocolClasses:(NSArray<Class> *)protocolClasses {
