@@ -92,7 +92,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (nullable NSArray<Class> *)pn_protocolClasses;
 
 /**
- @brief  Configure extra set of protocols which will handle requests which is sent to \b PubNub service.
+ @brief   Configure extra set of protocols which will handle requests which is sent to \b PubNub service.
+ @warning Protocol classes which is prefixed with: \b NS or \b _NS will be ignored.
  
  @since 4.4.0
  

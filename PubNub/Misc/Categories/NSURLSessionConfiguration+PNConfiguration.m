@@ -21,6 +21,19 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Misc
 
 /**
+ @brief  Allow to filter up passed list of prtocol classes from names which can intersect with \c Apple's 
+         protocols. 
+ 
+ @since 4.4.0
+ 
+ @param protocolClasses Srouce list of protocol classes which should be filtered.
+ 
+ @return Filtered list of protocol classes or same list if there was no potentially dangerous protocol 
+        classes.
+ */
++ (nullable NSArray<Class> *)pn_filteredProtocolClasses:(NSArray<Class> *)protocolClasses;
+
+/**
  @brief  Allow to construct set of headers which should be used for network requests.
  
  @return Dictionary with headers which should be added to each request.
@@ -70,14 +83,15 @@ NS_ASSUME_NONNULL_END
 
 + (void)pn_setHTTPAdditionalHeaders:(NSDictionary<NSString *, id> *)HTTPAdditionalHeaders {
     
+    NSURLSessionConfiguration *configuration = [self pn_ephemeralSessionConfiguration];
     NSMutableDictionary *headers = [HTTPAdditionalHeaders mutableCopy];
     [headers removeObjectsForKeys:@[@"Accept", @"Accept-Encoding", @"User-Agent", @"Connection"]];
     if (headers.count) {
         
-        NSURLSessionConfiguration *configuration = [self pn_ephemeralSessionConfiguration];
         [headers addEntriesFromDictionary:configuration.HTTPAdditionalHeaders];
         configuration.HTTPAdditionalHeaders = headers;
     }
+    else { configuration.HTTPAdditionalHeaders = [self pn_defaultHeaders]; }
 }
 
 + (NSURLRequestNetworkServiceType)pn_networkServiceType {
@@ -109,28 +123,19 @@ NS_ASSUME_NONNULL_END
 + (NSArray<Class> *)pn_protocolClasses {
     
     NSURLSessionConfiguration *configuration = [self pn_ephemeralSessionConfiguration];
-    NSArray<Class> *protocols = (configuration.protocolClasses.count ? configuration.protocolClasses : nil);
-    if (protocols.count) {
-        
-        NSMutableArray *filteredProtocols = [protocols mutableCopy];
-        [protocols enumerateObjectsUsingBlock:^(Class protocolClass, NSUInteger protocolClassIdx, BOOL *protocolClassesEnumeratorStop) {
-            
-            NSString *className = NSStringFromClass(protocolClass);
-            if ([className hasPrefix:@"_NS"] || [className hasPrefix:@"NS"]) {
-                
-                [filteredProtocols removeObject:protocolClass];
-            }
-        }];
-        protocols = [filteredProtocols copy];
-    }
     
-    return protocols;
+    return [self pn_filteredProtocolClasses:configuration.protocolClasses];
 }
 
 + (void)pn_setProtocolClasses:(NSArray<Class> *)protocolClasses {
     
     NSURLSessionConfiguration *configuration = [self pn_ephemeralSessionConfiguration];
-    configuration.protocolClasses = protocolClasses;
+    
+    // Append user-provided protocol classes to system-provided.
+    NSMutableArray *currentProtocolClasses = [NSMutableArray arrayWithArray:configuration.protocolClasses];
+    [currentProtocolClasses removeObjectsInArray:[self pn_protocolClasses]];
+    [currentProtocolClasses addObjectsFromArray:[self pn_filteredProtocolClasses:protocolClasses]];
+    configuration.protocolClasses = [currentProtocolClasses copy];
 }
 
 + (NSDictionary<NSString *, id> *)pn_connectionProxyDictionary {
@@ -148,6 +153,26 @@ NS_ASSUME_NONNULL_END
 
 
 #pragma mark - Misc
+
++ (NSArray<Class> *)pn_filteredProtocolClasses:(NSArray<Class> *)protocolClasses {
+    
+    NSArray<Class> *protocols = (protocolClasses.count ? protocolClasses : nil);
+    if (protocols.count) {
+        
+        NSMutableArray *filteredProtocols = [protocols mutableCopy];
+        [protocols enumerateObjectsUsingBlock:^(Class protocolClass, NSUInteger protocolClassIdx, BOOL *protocolClassesEnumeratorStop) {
+            
+            NSString *className = NSStringFromClass(protocolClass);
+            if ([className hasPrefix:@"_NS"] || [className hasPrefix:@"NS"]) {
+                
+                [filteredProtocols removeObject:protocolClass];
+            }
+        }];
+        protocols = [filteredProtocols copy];
+    }
+    
+    return protocols;
+}
 
 + (NSDictionary *)pn_defaultHeaders {
     
