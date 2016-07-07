@@ -4,11 +4,7 @@
  @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PNNetwork.h"
-#if TARGET_OS_WATCH
-    #import <WatchKit/WatchKit.h>
-#elif __IPHONE_OS_VERSION_MIN_REQUIRED
-    #import <UIKit/UIKit.h>
-#endif // __IPHONE_OS_VERSION_MIN_REQUIRED
+#import "NSURLSessionConfiguration+PNConfigurationPrivate.h"
 #import "PNNetworkResponseSerializer.h"
 #import "PNConfiguration+Private.h"
 #import "PNRequestParameters.h"
@@ -127,13 +123,6 @@ NS_ASSUME_NONNULL_BEGIN
  @since 4.0.2
  */
 @property (nonatomic, strong) NSURLSession *session;
-
-/**
- @brief  Stores dictionary with headers which should be appended to every request.
- 
- @since 4.0.2
- */
-@property (nonatomic, strong) NSDictionary *additionalHeaders;
 
 /**
  @brief  Stores reference on base URL which should be appeanded with reasource path to perform network
@@ -357,15 +346,6 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (NSURL *)requestBaseURL;
 
-/**
- @brief  Allow to construct set of headers which should be used for network requests.
- 
- @return Dictionary with headers which should be added to each request.
- 
- @since 4.0.2
- */
-- (NSDictionary *)defaultHeaders;
-
 
 #pragma mark - Handlers
 
@@ -452,6 +432,16 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)handleOperation:(PNOperationType)operation processingCompletedWithResult:(nullable PNResult *)result
                  status:(nullable PNStatus *)status completionBlock:(id)block;
 
+
+#pragma mark - Misc
+
+/**
+ @brief  Print out any session configuration instance customizations which has been done by developer.
+ 
+ @since 4.4.0
+ */
+- (void)printIfRequiredSessionCustomizationInformation;
+
 #pragma mark -
 
 
@@ -502,7 +492,6 @@ NS_ASSUME_NONNULL_END
         _processingQueue = queue;
         _serializer = [PNNetworkResponseSerializer new];
         _baseURL = [self requestBaseURL];
-        _additionalHeaders = [self defaultHeaders];
         _lock = OS_SPINLOCK_INIT;
         [self prepareSessionWithRequesrTimeout:timeout maximumConnections:maximumConnections];
     }
@@ -532,8 +521,6 @@ NS_ASSUME_NONNULL_END
     NSURL *fullURL = [NSURL URLWithString:requestURL.absoluteString relativeToURL:self.baseURL];
     NSMutableURLRequest *httpRequest = [NSMutableURLRequest requestWithURL:fullURL];
     httpRequest.HTTPMethod = ([postData length] ? @"POST" : @"GET");
-    httpRequest.cachePolicy = NSURLRequestReloadIgnoringCacheData;
-    httpRequest.allHTTPHeaderFields = self.additionalHeaders;
     if (postData) {
         
         NSMutableDictionary *allHeaders = [httpRequest.allHTTPHeaderFields mutableCopy];
@@ -785,6 +772,7 @@ NS_ASSUME_NONNULL_END
                                                            maximumConnections:maximumConnections];
     _delegateQueue = [self operationQueueWithConfiguration:config];
     _session = [self sessionWithConfiguration:config];
+    [self printIfRequiredSessionCustomizationInformation];
     
 }
 
@@ -793,11 +781,8 @@ NS_ASSUME_NONNULL_END
     
     // Prepare base configuration with predefined timeout values and maximum connections
     // to same host (basically how many requests can be handled at once).
-    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration ephemeralSessionConfiguration];
-    configuration.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
-    configuration.URLCache = nil;
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration pn_ephemeralSessionConfiguration];
     configuration.HTTPShouldUsePipelining = !self.forLongPollRequests;
-    configuration.HTTPAdditionalHeaders = _additionalHeaders;
     configuration.timeoutIntervalForRequest = timeout;
     configuration.HTTPMaximumConnectionsPerHost = maximumConnections;
     
@@ -825,29 +810,6 @@ NS_ASSUME_NONNULL_END
     
     return [NSURL URLWithString:[NSString stringWithFormat:@"http%@://%@",
                                  (_configuration.TLSEnabled ? @"s" : @""), _configuration.origin]];
-}
-
-- (NSDictionary *)defaultHeaders {
-    
-    NSString *device = @"iPhone";
-#if TARGET_OS_WATCH
-    NSString *osVersion = [[WKInterfaceDevice currentDevice] systemVersion];
-#elif __IPHONE_OS_VERSION_MIN_REQUIRED
-    NSString *osVersion = [[UIDevice currentDevice] systemVersion];
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED
-    NSOperatingSystemVersion version = [[NSProcessInfo processInfo]operatingSystemVersion];
-    NSMutableString *osVersion = [NSMutableString stringWithFormat:@"%@.%@",
-                                  @(version.majorVersion), @(version.minorVersion)];
-    if (version.patchVersion > 0) {
-        
-        [osVersion appendFormat:@".%@", @(version.patchVersion)];
-    }
-#endif
-    NSString *userAgent = [NSString stringWithFormat:@"iPhone; CPU %@ OS %@ Version",
-                           device, osVersion];
-    
-    return @{@"Accept":@"*/*", @"Accept-Encoding":@"gzip,deflate", @"User-Agent":userAgent,
-             @"Connection":@"keep-alive"};
 }
 
 
@@ -987,6 +949,42 @@ NS_ASSUME_NONNULL_END
         }
     }
     #pragma clang diagnostic pop
+}
+
+
+#pragma mark - Misc
+
+- (void)printIfRequiredSessionCustomizationInformation {
+    
+    if ([NSURLSessionConfiguration pn_HTTPAdditionalHeaders].count) {
+        
+        DDLogClientInfo([[self class] ddLogLevel], @"<PubNub::Network> Custom HTTP headers is set by user: "
+                        "%@", [NSURLSessionConfiguration pn_HTTPAdditionalHeaders]);
+    }
+    
+    if ([NSURLSessionConfiguration pn_networkServiceType] != NSURLNetworkServiceTypeDefault) {
+        
+        DDLogClientInfo([[self class] ddLogLevel], @"<PubNub::Network> Custom network service type is set by "
+                        "user: %@", @([NSURLSessionConfiguration pn_networkServiceType]));
+    }
+    
+    if (![NSURLSessionConfiguration pn_allowsCellularAccess]) {
+        
+        DDLogClientInfo([[self class] ddLogLevel], @"<PubNub::Network> User limited access to cellular data "
+                        "and only WiFi connection can be used.");
+    }
+    
+    if ([NSURLSessionConfiguration pn_protocolClasses].count) {
+        
+        DDLogClientInfo([[self class] ddLogLevel], @"<PubNub::Network> Extra requests handling protocols "
+                        "defined by user: %@", [NSURLSessionConfiguration pn_protocolClasses]);
+    }
+    
+    if ([NSURLSessionConfiguration pn_connectionProxyDictionary].count) {
+        
+        DDLogClientInfo([[self class] ddLogLevel], @"<PubNub::Network> Connection proxy has been set by user:"
+                        " %@", [NSURLSessionConfiguration pn_connectionProxyDictionary]);
+    }
 }
 
 #pragma mark -
