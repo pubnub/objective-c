@@ -16,6 +16,9 @@ FOUNDATION_EXPORT const unsigned char PubNubVersionString[];
 // Protocols
 #import "PNObjectEventListener.h"
 
+// Categories
+#import "NSURLSessionConfiguration+PNConfiguration.h"
+
 // Data objects
 #import "PNPresenceChannelGroupHereNowResult.h"
 #import "PNChannelGroupClientStateResult.h"

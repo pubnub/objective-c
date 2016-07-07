@@ -41,6 +41,7 @@ Pod::Spec.new do |spec|
             'PubNub/Misc/Helpers/*.h',
             'PubNub/Misc/Logger/{PNLogFileManager,PNLogger,PNLogMacro}.h',
             'PubNub/Misc/Protocols/PNParser.h',
+            'PubNub/Misc/Categories/*Private.h',
             'PubNub/Network/**/*.h',
         ]
         core.exclude_files = "PubNub/Core/PubNub+FAB.{h,m}"
