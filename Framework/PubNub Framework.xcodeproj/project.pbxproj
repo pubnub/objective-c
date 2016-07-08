@@ -764,6 +764,27 @@
 		798843AA1C191692003E8948 /* PubNub.h in Headers */ = {isa = PBXBuildFile; fileRef = 795158611C11EA5500A9D3AE /* PubNub.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		798843AB1C1916A6003E8948 /* PubNub+FAB.h in Headers */ = {isa = PBXBuildFile; fileRef = 79ACC3D91C11BB420056523A /* PubNub+FAB.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		798843AC1C1916AC003E8948 /* PubNub+FAB.m in Sources */ = {isa = PBXBuildFile; fileRef = 79ACC3DA1C11BB420056523A /* PubNub+FAB.m */; };
+		79A238D01D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 79A238CD1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79A238D11D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 79A238CD1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79A238D21D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 79A238CD1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79A238D31D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 79A238CD1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79A238D41D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 79A238CD1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79A238D51D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 79A238CD1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79A238D61D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 79A238CD1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79A238D71D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 79A238CE1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.m */; };
+		79A238D81D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 79A238CE1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.m */; };
+		79A238D91D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 79A238CE1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.m */; };
+		79A238DA1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 79A238CE1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.m */; };
+		79A238DB1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 79A238CE1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.m */; };
+		79A238DC1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 79A238CE1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.m */; };
+		79A238DD1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 79A238CE1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.m */; };
+		79A238DE1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfigurationPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 79A238CF1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfigurationPrivate.h */; };
+		79A238DF1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfigurationPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 79A238CF1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfigurationPrivate.h */; };
+		79A238E01D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfigurationPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 79A238CF1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfigurationPrivate.h */; };
+		79A238E11D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfigurationPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 79A238CF1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfigurationPrivate.h */; };
+		79A238E21D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfigurationPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 79A238CF1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfigurationPrivate.h */; };
+		79A238E31D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfigurationPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 79A238CF1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfigurationPrivate.h */; };
+		79A238E41D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfigurationPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 79A238CF1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfigurationPrivate.h */; };
 		79A8BC1E1C58F93900015BDE /* PubNub+History.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB05E1BD03DE4001FC34D /* PubNub+History.m */; };
 		79A8BC1F1C58F93900015BDE /* PNPresenceGlobalHereNowResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0951BD03DE4001FC34D /* PNPresenceGlobalHereNowResult.m */; };
 		79A8BC201C58F93900015BDE /* PNString.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0BC1BD03DE4001FC34D /* PNString.m */; };
@@ -1421,6 +1442,9 @@
 		798842C81C18F369003E8948 /* CocoaLumberjack.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = CocoaLumberjack.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		798842F51C19133E003E8948 /* merge_static_libraries.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = merge_static_libraries.sh; sourceTree = "<group>"; };
 		798843A11C191579003E8948 /* PubNub.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = PubNub.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		79A238CD1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURLSessionConfiguration+PNConfiguration.h"; sourceTree = "<group>"; };
+		79A238CE1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURLSessionConfiguration+PNConfiguration.m"; sourceTree = "<group>"; };
+		79A238CF1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfigurationPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURLSessionConfiguration+PNConfigurationPrivate.h"; sourceTree = "<group>"; };
 		79A8BCC41C58F93900015BDE /* PubNub.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PubNub.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		79A8BCC61C58F97A00015BDE /* PubNub-tvOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PubNub-tvOS-Info.plist"; sourceTree = "<group>"; };
 		79A8BD8F1C58FA7F00015BDE /* CocoaLumberjack.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CocoaLumberjack.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1733,6 +1757,16 @@
 			path = ../../Support/Fabric/Headers;
 			sourceTree = "<group>";
 		};
+		79A238CC1D2E70BD00D080CD /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				79A238CD1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.h */,
+				79A238CE1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.m */,
+				79A238CF1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfigurationPrivate.h */,
+			);
+			path = Categories;
+			sourceTree = "<group>";
+		};
 		79CBB0341BD03D3F001FC34D = {
 			isa = PBXGroup;
 			children = (
@@ -1911,6 +1945,7 @@
 		79CBB0AA1BD03DE4001FC34D /* Misc */ = {
 			isa = PBXGroup;
 			children = (
+				79A238CC1D2E70BD00D080CD /* Categories */,
 				79CBB0CB1BD03DE4001FC34D /* Protocols */,
 				79CBB0AB1BD03DE4001FC34D /* Helpers */,
 				79CBB0BF1BD03DE4001FC34D /* Logger */,
@@ -2121,6 +2156,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				79A238D01D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.h in Headers */,
 				791582771BD709C60084FC70 /* PNPushNotificationsStateModificationParser.h in Headers */,
 				791582521BD709C60084FC70 /* PNPresenceChannelGroupHereNowResult.h in Headers */,
 				791582A21BD709C60084FC70 /* PNChannelGroupModificationParser.h in Headers */,
@@ -2163,6 +2199,7 @@
 				791582841BD709C60084FC70 /* PNStatus+Private.h in Headers */,
 				791582621BD709C60084FC70 /* PubNub+Subscribe.h in Headers */,
 				7915829D1BD709C60084FC70 /* PNStateListener.h in Headers */,
+				79A238DE1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfigurationPrivate.h in Headers */,
 				791582911BD709C60084FC70 /* PNHistoryParser.h in Headers */,
 				791582681BD709C60084FC70 /* PNHistoryResult.h in Headers */,
 				791582671BD709C60084FC70 /* PNConfiguration.h in Headers */,
@@ -2216,6 +2253,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				79A238D21D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.h in Headers */,
 				791583201BD709D10084FC70 /* PNPushNotificationsStateModificationParser.h in Headers */,
 				791582FB1BD709D10084FC70 /* PNPresenceChannelGroupHereNowResult.h in Headers */,
 				7915834B1BD709D10084FC70 /* PNChannelGroupModificationParser.h in Headers */,
@@ -2252,6 +2290,7 @@
 				791583481BD709D10084FC70 /* PubNub+CorePrivate.h in Headers */,
 				7915832F1BD709D10084FC70 /* PNHeartbeatParser.h in Headers */,
 				7915832B1BD709D10084FC70 /* PNSubscribeParser.h in Headers */,
+				79A238E01D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfigurationPrivate.h in Headers */,
 				7915830C1BD709D10084FC70 /* PNSubscribeStatus.h in Headers */,
 				791583471BD709D10084FC70 /* PNResult+Private.h in Headers */,
 				791583411BD709D10084FC70 /* PNLogFileManager.h in Headers */,
@@ -2353,6 +2392,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				79A238D51D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.h in Headers */,
 				798842B01C18F2D5003E8948 /* PNPushNotificationsStateModificationParser.h in Headers */,
 				798842461C18F15C003E8948 /* PNPresenceChannelGroupHereNowResult.h in Headers */,
 				798842A61C18F2D3003E8948 /* PNChannelGroupModificationParser.h in Headers */,
@@ -2389,6 +2429,7 @@
 				798842301C18F0A2003E8948 /* PubNub+CorePrivate.h in Headers */,
 				798842B21C18F2D6003E8948 /* PNSubscribeParser.h in Headers */,
 				798842A91C18F2D4003E8948 /* PNHeartbeatParser.h in Headers */,
+				79A238E31D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfigurationPrivate.h in Headers */,
 				798842771C18F208003E8948 /* PNSubscribeStatus.h in Headers */,
 				7988424B1C18F173003E8948 /* PNResult+Private.h in Headers */,
 				798842981C18F2A2003E8948 /* PNLogFileManager.h in Headers */,
@@ -2468,6 +2509,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				79A238D61D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.h in Headers */,
 				798843801C191579003E8948 /* PNPushNotificationsStateModificationParser.h in Headers */,
 				7988437C1C191579003E8948 /* PNPresenceChannelGroupHereNowResult.h in Headers */,
 				798843571C191579003E8948 /* PNChannelGroupModificationParser.h in Headers */,
@@ -2506,6 +2548,7 @@
 				7988434B1C191579003E8948 /* PNHeartbeatParser.h in Headers */,
 				798843451C191579003E8948 /* PNSubscribeStatus.h in Headers */,
 				7988438B1C191579003E8948 /* PNResult+Private.h in Headers */,
+				79A238E41D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfigurationPrivate.h in Headers */,
 				798843721C191579003E8948 /* PNLogFileManager.h in Headers */,
 				798843561C191579003E8948 /* PNStatus+Private.h in Headers */,
 				798843471C191579003E8948 /* PubNub+Subscribe.h in Headers */,
@@ -2564,6 +2607,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				79A238D11D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.h in Headers */,
 				79A8BC8D1C58F93900015BDE /* PNPushNotificationsStateModificationParser.h in Headers */,
 				79A8BC681C58F93900015BDE /* PNPresenceChannelGroupHereNowResult.h in Headers */,
 				79A8BCBA1C58F93900015BDE /* PNChannelGroupModificationParser.h in Headers */,
@@ -2600,6 +2644,7 @@
 				79A8BCB71C58F93900015BDE /* PubNub+CorePrivate.h in Headers */,
 				79A8BC9D1C58F93900015BDE /* PNHeartbeatParser.h in Headers */,
 				79A8BC991C58F93900015BDE /* PNSubscribeParser.h in Headers */,
+				79A238DF1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfigurationPrivate.h in Headers */,
 				79A8BC791C58F93900015BDE /* PNSubscribeStatus.h in Headers */,
 				79A8BCB61C58F93900015BDE /* PNResult+Private.h in Headers */,
 				79A8BCB01C58F93900015BDE /* PNLogFileManager.h in Headers */,
@@ -2680,6 +2725,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				79A238D41D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.h in Headers */,
 				79ACC4591C11BC4D0056523A /* PNPushNotificationsStateModificationParser.h in Headers */,
 				79ACC4341C11BC4D0056523A /* PNPresenceChannelGroupHereNowResult.h in Headers */,
 				79ACC4851C11BC4D0056523A /* PNChannelGroupModificationParser.h in Headers */,
@@ -2718,6 +2764,7 @@
 				79ACC4641C11BC4D0056523A /* PNSubscribeParser.h in Headers */,
 				79ACC4451C11BC4D0056523A /* PNSubscribeStatus.h in Headers */,
 				79ACC4811C11BC4D0056523A /* PNResult+Private.h in Headers */,
+				79A238E21D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfigurationPrivate.h in Headers */,
 				79ACC47B1C11BC4D0056523A /* PNLogFileManager.h in Headers */,
 				79ACC4661C11BC4D0056523A /* PNStatus+Private.h in Headers */,
 				79ACC4441C11BC4D0056523A /* PubNub+Subscribe.h in Headers */,
@@ -2776,6 +2823,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				79E20D2B1C8B0A70001BC9CC /* PNPresenceChannelGroupHereNowResult.h in Headers */,
 				79CBB16A1BD03DE4001FC34D /* PNChannelGroupModificationParser.h in Headers */,
 				79CBB1241BD03DE4001FC34D /* PNChannelGroupClientStateResult.h in Headers */,
 				79CBB17C1BD03DE4001FC34D /* PNPushNotificationsAuditParser.h in Headers */,
@@ -2800,7 +2848,6 @@
 				79CBB13C1BD03DE4001FC34D /* PNServiceData+Private.h in Headers */,
 				79CBB1661BD03DE4001FC34D /* PNObjectEventListener.h in Headers */,
 				79CBB1261BD03DE4001FC34D /* PNChannelGroupsResult.h in Headers */,
-				79E20D2B1C8B0A70001BC9CC /* PNPresenceChannelGroupHereNowResult.h in Headers */,
 				79E20D191C8AEC44001BC9CC /* PNEnvelopeInformation.h in Headers */,
 				79CBB16C1BD03DE4001FC34D /* PNClientStateParser.h in Headers */,
 				79CBB18C1BD03DE4001FC34D /* PNRequestParameters.h in Headers */,
@@ -2813,6 +2860,7 @@
 				79CBB1821BD03DE4001FC34D /* PNSubscribeParser.h in Headers */,
 				79CBB1441BD03DE4001FC34D /* PNSubscribeStatus.h in Headers */,
 				79CBB1391BD03DE4001FC34D /* PNResult+Private.h in Headers */,
+				79A238E11D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfigurationPrivate.h in Headers */,
 				79CBB15D1BD03DE4001FC34D /* PNLogFileManager.h in Headers */,
 				79CBB13F1BD03DE4001FC34D /* PNStatus+Private.h in Headers */,
 				79CBB1081BD03DE4001FC34D /* PubNub+Subscribe.h in Headers */,
@@ -2834,6 +2882,7 @@
 				79CBB1131BD03DE4001FC34D /* PNSubscriber.h in Headers */,
 				79CBB1591BD03DE4001FC34D /* PNURLRequest.h in Headers */,
 				79CBB18E1BD03DE4001FC34D /* PNURLBuilder.h in Headers */,
+				79A238D31D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.h in Headers */,
 				79CBB1841BD03DE4001FC34D /* PNTimeParser.h in Headers */,
 				79CBB1651BD03DE4001FC34D /* PNStructures.h in Headers */,
 				79CBB1461BD03DE4001FC34D /* PNTimeResult.h in Headers */,
@@ -3710,6 +3759,7 @@
 				7915820C1BD709C60084FC70 /* PubNub+Core.m in Sources */,
 				791582181BD709C60084FC70 /* PubNub+APNS.m in Sources */,
 				7915821B1BD709C60084FC70 /* PubNub+Time.m in Sources */,
+				79A238D71D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.m in Sources */,
 				79E2D0F41C56434700BAA244 /* PNKeychain.m in Sources */,
 				791582281BD709C60084FC70 /* PNChannel.m in Sources */,
 				791582391BD709C60084FC70 /* PNNetwork.m in Sources */,
@@ -3787,6 +3837,7 @@
 				791582C41BD709D10084FC70 /* PubNub+Time.m in Sources */,
 				791582C11BD709D10084FC70 /* PubNub+APNS.m in Sources */,
 				791582B51BD709D10084FC70 /* PubNub+Core.m in Sources */,
+				79A238D91D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.m in Sources */,
 				79E2D0F51C56434700BAA244 /* PNKeychain.m in Sources */,
 				791582E21BD709D10084FC70 /* PNNetwork.m in Sources */,
 				791582D11BD709D10084FC70 /* PNChannel.m in Sources */,
@@ -3896,6 +3947,7 @@
 				798842501C18F199003E8948 /* PubNub+APNS.m in Sources */,
 				7988425A1C18F1C8003E8948 /* PNHeartbeat.m in Sources */,
 				798842581C18F1C0003E8948 /* PubNub+Time.m in Sources */,
+				79A238DC1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.m in Sources */,
 				79E2D0F81C56434700BAA244 /* PNKeychain.m in Sources */,
 				7988428C1C18F291003E8948 /* PNChannel.m in Sources */,
 				798842A01C18F2C2003E8948 /* PNNetwork.m in Sources */,
@@ -4005,6 +4057,7 @@
 				798843171C191579003E8948 /* PNGZIP.m in Sources */,
 				798843321C191579003E8948 /* PNLog.m in Sources */,
 				798843251C191579003E8948 /* PNAES.m in Sources */,
+				79A238DD1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4067,6 +4120,7 @@
 				79A8BC301C58F93900015BDE /* PubNub+Time.m in Sources */,
 				79A8BC2D1C58F93900015BDE /* PubNub+APNS.m in Sources */,
 				79A8BC211C58F93900015BDE /* PubNub+Core.m in Sources */,
+				79A238D81D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.m in Sources */,
 				79A8BC491C58F93900015BDE /* PNKeychain.m in Sources */,
 				79A8BC4F1C58F93900015BDE /* PNNetwork.m in Sources */,
 				79A8BC3D1C58F93900015BDE /* PNChannel.m in Sources */,
@@ -4176,6 +4230,7 @@
 				79ACC3EF1C11BC4D0056523A /* PNData.m in Sources */,
 				79ACC4191C11BC4D0056523A /* PNAES.m in Sources */,
 				79ACC4161C11BC4D0056523A /* PNLog.m in Sources */,
+				79A238DB1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4238,6 +4293,7 @@
 				79CBB10C1BD03DE4001FC34D /* PubNub+Time.m in Sources */,
 				79CBB0FD1BD03DE4001FC34D /* PubNub+Core.m in Sources */,
 				79CBB0F91BD03DE4001FC34D /* PubNub+APNS.m in Sources */,
+				79A238DA1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.m in Sources */,
 				79E2D0F61C56434700BAA244 /* PNKeychain.m in Sources */,
 				79CBB1871BD03DE4001FC34D /* PNNetwork.m in Sources */,
 				79CBB14B1BD03DE4001FC34D /* PNChannel.m in Sources */,
@@ -4570,6 +4626,7 @@
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GENERATE_MASTER_OBJECT_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				OTHER_CFLAGS = "-fembed-bitcode";
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = CocoaLumberjack;
 				SEPARATE_STRIP = NO;
@@ -4590,6 +4647,7 @@
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GENERATE_MASTER_OBJECT_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				OTHER_CFLAGS = "-fembed-bitcode";
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = CocoaLumberjack;
 				SEPARATE_STRIP = NO;
@@ -4642,10 +4700,11 @@
 				);
 				GENERATE_MASTER_OBJECT_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				OTHER_CFLAGS = "-fembed-bitcode";
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = PubNub;
 				PUBLIC_HEADERS_FOLDER_PATH = Headers;
-				SEPARATE_STRIP = NO;
+				SEPARATE_STRIP = YES;
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -4667,10 +4726,11 @@
 				);
 				GENERATE_MASTER_OBJECT_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				OTHER_CFLAGS = "-fembed-bitcode";
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = PubNub;
 				PUBLIC_HEADERS_FOLDER_PATH = Headers;
-				SEPARATE_STRIP = NO;
+				SEPARATE_STRIP = YES;
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
@@ -4802,8 +4862,10 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				OTHER_CFLAGS = "-fembed-bitcode";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.pubnub.pubnub-objc";
 				PRODUCT_NAME = PubNub;
+				SEPARATE_STRIP = YES;
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
@@ -4823,8 +4885,10 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				OTHER_CFLAGS = "-fembed-bitcode";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.pubnub.pubnub-objc";
 				PRODUCT_NAME = PubNub;
+				SEPARATE_STRIP = YES;
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
@@ -4843,7 +4907,9 @@
 					"$(inherited)",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				OTHER_CFLAGS = "-fembed-bitcode";
 				PRODUCT_NAME = "Universal Framework";
+				SEPARATE_STRIP = YES;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
 			name = Debug;
@@ -4857,7 +4923,9 @@
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = "FABRIC_SUPPORT=1";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				OTHER_CFLAGS = "-fembed-bitcode";
 				PRODUCT_NAME = "Universal Framework";
+				SEPARATE_STRIP = YES;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
 			name = Release;
