@@ -25,9 +25,11 @@ NS_ASSUME_NONNULL_BEGIN
  
  @since 4.4.0
  
+ @param identifier Unique identifier to identify session configuration among other.
+ 
  @return Configured and ready to use \c NSURLSession configuration instance.
  */
-+ (instancetype)pn_ephemeralSessionConfiguration;
++ (instancetype)pn_ephemeralSessionConfigurationWithIdentifier:(NSString *)identifier;
 
 #pragma mark -
 

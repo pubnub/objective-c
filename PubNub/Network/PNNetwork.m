@@ -92,6 +92,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) PNConfiguration *configuration;
 
 /**
+ @brief  Stores reference on unique \b PubNub network manager instance identifier.
+ 
+ @since 4.4.1
+ */
+@property (nonatomic, copy) NSString *identifier;
+
+/**
  @brief      Stores whether \b PubNub network manager configured for long-poll request processing or not.
  @discussion This property taken into account when manager need to invalidate underlying \a NSURLSession and 
              dictate whether all scheduled requests should be completed or terminated.
@@ -176,16 +183,13 @@ NS_ASSUME_NONNULL_BEGIN
  @param maximumConnections Maximum simultaneously connections (requests) which can be opened.
  @param longPollEnabled    Whether \b PubNub network manager should be configured for long-poll requests or 
                            not. This option affect the way how network manager handle reset.
- @param queue              Reference on GCD queue which should be used for callbacks and as working queue for 
-                           underlying logic.
  
  @return 4.0
  
  @since Initialized and ready to use \b PubNub network manager.
  */
 - (instancetype)initForClient:(PubNub *)client requestTimeout:(NSTimeInterval)timeout
-           maximumConnections:(NSInteger)maximumConnections longPoll:(BOOL)longPollEnabled
-                 workingQueue:(dispatch_queue_t)queue;
+           maximumConnections:(NSInteger)maximumConnections longPoll:(BOOL)longPollEnabled;
 
 
 #pragma mark - Request helper
@@ -473,15 +477,12 @@ NS_ASSUME_NONNULL_END
 + (instancetype)networkForClient:(PubNub *)client requestTimeout:(NSTimeInterval)timeout
               maximumConnections:(NSInteger)maximumConnections longPoll:(BOOL)longPollEnabled {
     
-    dispatch_queue_t queue = dispatch_queue_create("com.pubnub.network", DISPATCH_QUEUE_CONCURRENT);
-    return [[self alloc] initForClient:client requestTimeout:timeout
-                    maximumConnections:maximumConnections longPoll:longPollEnabled
-                          workingQueue:queue];
+    return [[self alloc] initForClient:client requestTimeout:timeout maximumConnections:maximumConnections 
+                              longPoll:longPollEnabled];
 }
 
 - (instancetype)initForClient:(PubNub *)client requestTimeout:(NSTimeInterval)timeout
-           maximumConnections:(NSInteger)maximumConnections longPoll:(BOOL)longPollEnabled
-                 workingQueue:(dispatch_queue_t)queue {
+           maximumConnections:(NSInteger)maximumConnections longPoll:(BOOL)longPollEnabled {
     
     // Check whether initialization was successful or not.
     if ((self = [super init])) {
@@ -489,7 +490,8 @@ NS_ASSUME_NONNULL_END
         _client = client;
         _configuration = client.configuration;
         _forLongPollRequests = longPollEnabled;
-        _processingQueue = queue;
+        _identifier = [[NSString stringWithFormat:@"com.pubnub.network.%p", self] copy];
+        _processingQueue = dispatch_queue_create([_identifier UTF8String], DISPATCH_QUEUE_CONCURRENT);;
         _serializer = [PNNetworkResponseSerializer new];
         _baseURL = [self requestBaseURL];
         _lock = OS_SPINLOCK_INIT;
@@ -785,7 +787,8 @@ NS_ASSUME_NONNULL_END
     
     // Prepare base configuration with predefined timeout values and maximum connections
     // to same host (basically how many requests can be handled at once).
-    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration pn_ephemeralSessionConfiguration];
+    NSURLSessionConfiguration *configuration = nil;
+    configuration = [NSURLSessionConfiguration pn_ephemeralSessionConfigurationWithIdentifier:self.identifier];
     configuration.HTTPShouldUsePipelining = !self.forLongPollRequests;
     configuration.timeoutIntervalForRequest = timeout;
     configuration.HTTPMaximumConnectionsPerHost = maximumConnections;
