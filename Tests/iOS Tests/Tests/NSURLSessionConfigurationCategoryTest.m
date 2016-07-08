@@ -64,9 +64,9 @@
     // Forward method call to the super class.
     [super setUp];
     
-    self.configuration = [NSURLSessionConfiguration pn_ephemeralSessionConfiguration];
+    self.configuration = [NSURLSessionConfiguration pn_ephemeralSessionConfigurationWithIdentifier:@"testConfiguration"];
     self.originalProtocolClasses = [self.configuration.protocolClasses copy];
-    
+
     // Reset shared session configuration instance.
     [NSURLSessionConfiguration pn_setHTTPAdditionalHeaders:nil];
     [NSURLSessionConfiguration pn_setNetworkServiceType:NSURLNetworkServiceTypeDefault];
@@ -82,6 +82,45 @@
     
     // Restoring original set of protocol classes.
     self.configuration.protocolClasses = self.originalProtocolClasses;
+}
+
+/**
+ @brief  Checking what changes inside of two configuration for non-shared values won't affect second instance.
+ */
+- (void)testConfigurationsScopedModification {
+    
+    NSURLSessionConfiguration *configuration1 = nil;
+    NSURLSessionConfiguration *configuration2 = nil;
+    
+    // Setup first configuration data.
+    configuration1 = [NSURLSessionConfiguration pn_ephemeralSessionConfigurationWithIdentifier:@"testConfiguration1"];
+    configuration1.HTTPShouldUsePipelining = YES;
+    configuration1.timeoutIntervalForRequest = 10.f;
+    configuration1.HTTPMaximumConnectionsPerHost = 3;
+    
+    // Setup second configuration data.
+    configuration2 = [NSURLSessionConfiguration pn_ephemeralSessionConfigurationWithIdentifier:@"testConfiguration2"];
+    configuration2.HTTPShouldUsePipelining = NO;
+    configuration2.timeoutIntervalForRequest = 310.f;
+    configuration2.HTTPMaximumConnectionsPerHost = 1;
+    
+    // Set custom HTTP header.
+    NSDictionary *customHeaders = @{@"X-Powered-By": @"PubNub"};
+    [NSURLSessionConfiguration pn_setHTTPAdditionalHeaders:customHeaders];
+    
+    XCTAssertNotEqual(configuration1.HTTPShouldUsePipelining, configuration2.HTTPShouldUsePipelining, 
+                      @"HTTPShouldUsePipelining value expected to be different for independent configuration "
+                      "instances.");
+    XCTAssertNotEqual(configuration1.timeoutIntervalForRequest, configuration2.timeoutIntervalForRequest, 
+                      @"Request timeout value expected to be different for independent configuration "
+                      "instances.");
+    XCTAssertNotEqual(configuration1.HTTPMaximumConnectionsPerHost, configuration2.HTTPMaximumConnectionsPerHost, 
+                      @"HTTPMaximumConnectionsPerHost value expected to be different for independent "
+                      "configuration instances.");
+    
+    XCTAssertEqualObjects(configuration1.HTTPAdditionalHeaders, configuration2.HTTPAdditionalHeaders, 
+                          @"Independent configurations expected to has same value for shared additional HTTP "
+                          "headers.");
 }
 
 - (void)testDefaultSessionConfiguration {
