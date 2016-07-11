@@ -9,7 +9,7 @@
 
 Pod::Spec.new do |spec|
     spec.name     = 'PubNub'
-    spec.version  = '4.3.3'
+    spec.version  = '4.4.1'
     spec.summary  = 'The PubNub Real-Time Network. Build real-time apps quickly and scale them globally.'
     spec.homepage = 'https://github.com/pubnub/objective-c'
 
@@ -41,6 +41,7 @@ Pod::Spec.new do |spec|
             'PubNub/Misc/Helpers/*.h',
             'PubNub/Misc/Logger/{PNLogFileManager,PNLogger,PNLogMacro}.h',
             'PubNub/Misc/Protocols/PNParser.h',
+            'PubNub/Misc/Categories/*Private.h',
             'PubNub/Network/**/*.h',
         ]
         core.exclude_files = "PubNub/Core/PubNub+FAB.{h,m}"

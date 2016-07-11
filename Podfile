@@ -25,7 +25,7 @@ end
 #  target 'iOS Swift Tests' do
 #    platform :ios, "8.0"
 #    project 'Tests/PubNub Tests'
-#    pod "BeKindRewind", '~> 1.0.0'
+#    pod "BeKindRewind"
 #    pod "PubNub", :path => "."
 #  end
 

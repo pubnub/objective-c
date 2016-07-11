@@ -38,6 +38,9 @@
 		5126AED01CCAA0C400808AC6 /* PNPublishWithStoreInHistoryTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 5126AECF1CCAA0C400808AC6 /* PNPublishWithStoreInHistoryTestCase.m */; };
 		5126AED11CCAA0C400808AC6 /* PNPublishWithStoreInHistoryTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 5126AECF1CCAA0C400808AC6 /* PNPublishWithStoreInHistoryTestCase.m */; };
 		5126AED21CCAA0C400808AC6 /* PNPublishWithStoreInHistoryTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 5126AECF1CCAA0C400808AC6 /* PNPublishWithStoreInHistoryTestCase.m */; };
+		51285BCB1D34387600A12879 /* NSURLSessionConfigurationCategoryTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 51285BC61D34335C00A12879 /* NSURLSessionConfigurationCategoryTest.m */; };
+		51285BCD1D34387900A12879 /* NSURLSessionConfigurationCategoryTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 51285BC61D34335C00A12879 /* NSURLSessionConfigurationCategoryTest.m */; };
+		51285BCE1D34387900A12879 /* NSURLSessionConfigurationCategoryTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 51285BC61D34335C00A12879 /* NSURLSessionConfigurationCategoryTest.m */; };
 		513CBCBD1CEBABEC00D04188 /* PNChannelGroupTestCase.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 513CBCB61CEBABEC00D04188 /* PNChannelGroupTestCase.bundle */; };
 		513CBCBE1CEBABEC00D04188 /* PNChannelGroupTestCase.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 513CBCB61CEBABEC00D04188 /* PNChannelGroupTestCase.bundle */; };
 		513CBCBF1CEBABEC00D04188 /* PNChannelGroupTestCase.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 513CBCB61CEBABEC00D04188 /* PNChannelGroupTestCase.bundle */; };
@@ -209,6 +212,7 @@
 		5126AEBE1CCA973500808AC6 /* PNPublishAdvancedTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNPublishAdvancedTestCase.m; path = Tests/PNPublishAdvancedTestCase.m; sourceTree = "<group>"; };
 		5126AEC21CCA974300808AC6 /* PNPublishSimpleTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNPublishSimpleTestCase.m; path = Tests/PNPublishSimpleTestCase.m; sourceTree = "<group>"; };
 		5126AECF1CCAA0C400808AC6 /* PNPublishWithStoreInHistoryTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNPublishWithStoreInHistoryTestCase.m; path = Tests/PNPublishWithStoreInHistoryTestCase.m; sourceTree = "<group>"; };
+		51285BC61D34335C00A12879 /* NSURLSessionConfigurationCategoryTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NSURLSessionConfigurationCategoryTest.m; path = Tests/NSURLSessionConfigurationCategoryTest.m; sourceTree = "<group>"; };
 		513CBCB61CEBABEC00D04188 /* PNChannelGroupTestCase.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = PNChannelGroupTestCase.bundle; path = Fixtures/PNChannelGroupTestCase.bundle; sourceTree = "<group>"; };
 		513CBCB71CEBABEC00D04188 /* PNChannelSubscribeTestCase.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = PNChannelSubscribeTestCase.bundle; path = Fixtures/PNChannelSubscribeTestCase.bundle; sourceTree = "<group>"; };
 		513CBCB81CEBABEC00D04188 /* PNChannelUnsubscribeTestCase.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = PNChannelUnsubscribeTestCase.bundle; path = Fixtures/PNChannelUnsubscribeTestCase.bundle; sourceTree = "<group>"; };
@@ -417,6 +421,7 @@
 			isa = PBXGroup;
 			children = (
 				79E198C21CE3DCF600F36216 /* PNNumberTests.m */,
+				51285BC61D34335C00A12879 /* NSURLSessionConfigurationCategoryTest.m */,
 			);
 			name = "Unit Tests";
 			sourceTree = "<group>";
@@ -1050,6 +1055,7 @@
 				5126AEB51CCA96DD00808AC6 /* PNPublishSizeOfMessageTestCase.m in Sources */,
 				5126AED21CCAA0C400808AC6 /* PNPublishWithStoreInHistoryTestCase.m in Sources */,
 				517A9EDF1BE3185800FAA43A /* PNClientConfigurationTests.m in Sources */,
+				51285BCE1D34387900A12879 /* NSURLSessionConfigurationCategoryTest.m in Sources */,
 				5126AEA11CCA8E4600808AC6 /* PNChannelUnsubscribeTestCase.m in Sources */,
 				5126AE891CC9598000808AC6 /* PNClientStateChannelTestCase.m in Sources */,
 				79E20D2E1C8B1C64001BC9CC /* PNBasicPresenceTestCase.m in Sources */,
@@ -1100,6 +1106,7 @@
 				5126AEBF1CCA973500808AC6 /* PNPublishAdvancedTestCase.m in Sources */,
 				79EF04A81B4EAAB7007478CB /* PNClientConfigurationTests.m in Sources */,
 				799CE2F71C45B95400AAEBDC /* PNChannelGroupFilteringSubscribeTests.m in Sources */,
+				51285BCB1D34387600A12879 /* NSURLSessionConfigurationCategoryTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1184,6 +1191,7 @@
 				797BDD211C1F5176006EF006 /* PNHeartbeatTests.m in Sources */,
 				5126AED11CCAA0C400808AC6 /* PNPublishWithStoreInHistoryTestCase.m in Sources */,
 				797BDD221C1F5176006EF006 /* PNClientConfigurationTests.m in Sources */,
+				51285BCD1D34387900A12879 /* NSURLSessionConfigurationCategoryTest.m in Sources */,
 				5126AEA01CCA8E4600808AC6 /* PNChannelUnsubscribeTestCase.m in Sources */,
 				5126AE881CC9598000808AC6 /* PNClientStateChannelTestCase.m in Sources */,
 				79E20D2D1C8B1C64001BC9CC /* PNBasicPresenceTestCase.m in Sources */,

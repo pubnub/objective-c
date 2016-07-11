@@ -45,6 +45,14 @@ Pods/
 
 Carthage/Build
 
+# Fastlane
+##########
+/fastlane/README.md
+/fastlane/report.xml
+/fastlane/.env*private*
+fastlane/test-output/*
+
+
 # OS generated files #
 ######################
 .DS_Store

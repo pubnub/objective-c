@@ -42,8 +42,7 @@ before_install:
   - pod repo update --silent # fixes bug in travis repo when checking out
 script:
   - set -o pipefail
-  - fastlane $FASTLANE_LANE configuration:Debug --env $FASTLANE_ENV
-  - fastlane $FASTLANE_LANE configuration:Release --env $FASTLANE_ENV
+  - fastlane $FASTLANE_LANE configuration:Debug --env $FASTLANE_ENV && fastlane $FASTLANE_LANE configuration:Release --env $FASTLANE_ENV
 after_success:
   - if [ "$FASTLANE_LANE" == "code_coverage" ]; then
      bash <(curl -s https://codecov.io/bash);
