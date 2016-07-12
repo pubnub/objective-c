@@ -950,7 +950,8 @@ NS_ASSUME_NONNULL_END
             [weakSelf endBackgroundTasksCompletionIfRequired];
         }];
              
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.05f * NSEC_PER_SEC)),
+        // Give some time before checking whether tasks has been scheduled for execution or not.
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3f * NSEC_PER_SEC)),
                        dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                            
             // Get list of scheduled operation.
