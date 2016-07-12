@@ -186,9 +186,24 @@ NS_ASSUME_NONNULL_BEGIN
  @warning    If there history/storage feature has been activated for \b PubNub account, some messages can be 
              pushed to it after some period of time and catch up won't be able to receive them.
  
+ @default    By default client use \b YES to try catch up on missed messages (while client has been 
+             disconnected because of network issues).
+ 
  @since 4.0
  */
 @property (nonatomic, assign, getter = shouldTryCatchUpOnSubscriptionRestore) BOOL catchUpOnSubscriptionRestore;
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED
+/**
+ @brief  Stores whether client should try complete all API call which is done before application will be 
+         completelly suspended.
+ 
+ @default    By default client use \b YES to restore subscription on remote data objects live feeds.
+ 
+ @since 4.<#minor-version#>.0
+ */
+@property (nonatomic, assign, getter = shouldCompleteRequestsBeforeSuspension) BOOL completeRequestsBeforeSuspension;
+#endif // __IPHONE_OS_VERSION_MIN_REQUIRED
 
 /**
  @brief  Construct configuration instance using minimal required data.

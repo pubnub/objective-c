@@ -41,5 +41,8 @@ static PNHeartbeatNotificationOptions const kPNDefaultHeartbeatNotificationOptio
 static BOOL const kPNDefaultShouldKeepTimeTokenOnListChange = YES;
 static BOOL const kPNDefaultShouldRestoreSubscription = YES;
 static BOOL const kPNDefaultShouldTryCatchUpOnSubscriptionRestore = YES;
+#elif __IPHONE_OS_VERSION_MIN_REQUIRED
+static BOOL const kPNDefaultShouldCompleteRequestsBeforeSuspension = YES;
+#endif // __IPHONE_OS_VERSION_MIN_REQUIRED
 
 #endif // PNConstants_h

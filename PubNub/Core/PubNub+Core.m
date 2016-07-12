@@ -509,10 +509,20 @@ NS_ASSUME_NONNULL_END
     if ([notification.name isEqualToString:UIApplicationDidEnterBackgroundNotification]) {
         
         DDLogClientInfo([[self class] ddLogLevel], @"<PubNub> Did enter background execution context.");
+        if (self.configuration.shouldCompleteRequestsBeforeSuspension) {
+            
+            [self.subscriptionNetwork handleClientWillResignActive];
+            [self.serviceNetwork handleClientWillResignActive];
+        }
     }
     else if ([notification.name isEqualToString:UIApplicationWillEnterForegroundNotification]) {
         
         DDLogClientInfo([[self class] ddLogLevel], @"<PubNub> Will enter foreground execution context.");
+        if (self.configuration.shouldCompleteRequestsBeforeSuspension) {
+            
+            [self.subscriptionNetwork handleClientDidBecomeActive];
+            [self.serviceNetwork handleClientDidBecomeActive];
+        }
     }
 #elif __MAC_OS_X_VERSION_MIN_REQUIRED
     if ([notification.name isEqualToString:NSWorkspaceWillSleepNotification] ||
