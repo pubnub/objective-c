@@ -15,7 +15,7 @@
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
     #import <UIKit/UIKit.h>
-#endif // __IPHONE_OS_VERSION_MIN_REQUIRED
+#endif // __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
 #import "PubNub+SubscribePrivate.h"
 #import "PNObjectEventListener.h"
 #import "PNClientInformation.h"

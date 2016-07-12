@@ -193,7 +193,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, assign, getter = shouldTryCatchUpOnSubscriptionRestore) BOOL catchUpOnSubscriptionRestore;
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
+#if __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
 /**
  @brief  Stores whether client should try complete all API call which is done before application will be 
          completelly suspended.
@@ -203,7 +203,7 @@ NS_ASSUME_NONNULL_BEGIN
  @since 4.<#minor-version#>.0
  */
 @property (nonatomic, assign, getter = shouldCompleteRequestsBeforeSuspension) BOOL completeRequestsBeforeSuspension;
-#endif // __IPHONE_OS_VERSION_MIN_REQUIRED
+#endif // __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
 
 /**
  @brief  Construct configuration instance using minimal required data.

@@ -80,7 +80,7 @@
 /// @name Handlers
 ///------------------------------------------------
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED
+#if __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
 
 /**
  @brief      Handle \b PubNub client transition to inactive satate.
@@ -100,7 +100,7 @@
  */
 - (void)handleClientDidBecomeActive;
 
-#endif // __IPHONE_OS_VERSION_MIN_REQUIRED
+#endif // __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
 
 
 ///------------------------------------------------
