@@ -16,6 +16,9 @@
 #import "PNErrorStatus.h"
 #import "PNErrorParser.h"
 #import "PNURLBuilder.h"
+#if __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+    #import <UIKit/UIKit.h>
+#endif // __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
 #import "PNConstants.h"
 #import "PNLogMacro.h"
 #import "PNHelpers.h"
@@ -145,6 +148,28 @@ NS_ASSUME_NONNULL_BEGIN
  @since 4.0.2
  */
 @property (nonatomic, strong) PNNetworkResponseSerializer *serializer;
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+
+/**
+ @brief      Stores reference on list of currently scheduled data tasks.
+ @discussion List allow to get information about active data task synchronously at any moment 
+             (when \c NSURLSession allow to get this information only from block which will be scheduled on
+             processing queue).
+ 
+ @since 4.<#minor-version#>.0
+ */
+@property (nonatomic, strong) NSMutableArray<NSURLSessionDataTask *> *scheduledDataTasks;
+
+/**
+ @brief  Stores reference on identifier which has been used to request from system more time to complete
+         pending tasks when client resign active.
+ 
+ @since 4.<#minor-version#>.0
+ */
+@property (nonatomic, assign) UIBackgroundTaskIdentifier tasksCompletionIdentifier;
+
+#endif // __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
 
 /**
  @brief  Stores reference on queue which should be used by session to call callbacks and completion blocks on
@@ -290,6 +315,24 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)parseData:(nullable id)data withParser:(Class <PNParser>)parser
        completion:(void(^)(NSDictionary * _Nullable parsedData, BOOL parseError))block;
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+
+/**
+ @brief  Complete processing of tasks which has been scheduled but not completelly processed before \b PubNub 
+         client resign active state.
+ 
+ @since 4.<#minor-version#>.0
+ 
+ @param dataTasks    List of \c NSURLSession data tasks which didn't completed before \b PubNub client resign
+                     active state.
+ @param onCompletion Whether list processed after another data task completed or right \b PubNub after client
+                     resign active state.
+ */
+- (void)processIncompleteBeforeClientResignActiveTasks:(NSArray<NSURLSessionDataTask *> *)dataTasks
+                                  onDataTaskCompletion:(BOOL)onCompletion;
+
+#endif // __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
 
 
 #pragma mark - Session constructor
@@ -439,6 +482,31 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Misc
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+
+/**
+ @brief  Check whether there \c operation is in the list of passed \c tasks. 
+ 
+ @since 4.<#minor-version#>.0
+ 
+ @param operation One of \b PNOperationType enum fields which is used during search.
+ @param tasks     List of currently scheduled and pending / executing data tasks among which should be found 
+                  reference on \c operation.
+ 
+ @return \c YES in case if \c operation has been found in list of passed \c tasks.
+ */
+- (BOOL)hasOperation:(PNOperationType)operation inDataTasks:(NSArray<NSURLSessionDataTask *> *)tasks;
+
+/**
+ @brief  Depending on current network manager state it may require to complete currently active tasks 
+         completion from background execution context.
+ 
+ @since 4.<#minor-version#>.0
+ */
+- (void)endBackgroundTasksCompletionIfRequired;
+
+#endif // __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+
 /**
  @brief  Print out any session configuration instance customizations which has been done by developer.
  
@@ -490,6 +558,10 @@ NS_ASSUME_NONNULL_END
         _client = client;
         _configuration = client.configuration;
         _forLongPollRequests = longPollEnabled;
+#if __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+        _scheduledDataTasks = [NSMutableArray new];
+        _tasksCompletionIdentifier = UIBackgroundTaskInvalid;
+#endif // __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
         _identifier = [[NSString stringWithFormat:@"com.pubnub.network.%p", self] copy];
         _processingQueue = dispatch_queue_create([_identifier UTF8String], DISPATCH_QUEUE_CONCURRENT);;
         _serializer = [PNNetworkResponseSerializer new];
@@ -562,6 +634,12 @@ NS_ASSUME_NONNULL_END
     };
     OSSpinLockLock(&_lock);
     task = [self.session dataTaskWithRequest:request completionHandler:[handler copy]];
+#if __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+    if (self.configuration.shouldCompleteRequestsBeforeSuspension) {
+        
+        [self.scheduledDataTasks addObject:task];
+    }
+#endif // __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
     OSSpinLockUnlock(&_lock);
     
     return task;
@@ -728,9 +806,45 @@ NS_ASSUME_NONNULL_END
     }
 }
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+
+- (void)processIncompleteBeforeClientResignActiveTasks:(NSArray<NSURLSessionDataTask *> *)dataTasks
+                                  onDataTaskCompletion:(BOOL)onCompletion {
+    
+    NSUInteger incompleteTasksCount = dataTasks.count;
+    if (incompleteTasksCount > 0 && self.forLongPollRequests) {
+        
+        if (![self hasOperation:PNUnsubscribeOperation inDataTasks:dataTasks]) {
+            
+            incompleteTasksCount = 0;
+        }
+    }
+    
+    if (incompleteTasksCount == 0) {
+        
+        DDLogRequest([[self class] ddLogLevel], @"<PubNub::Network> All tasks completed. There is"
+                     " no need in additional execution time in background context.");
+        [self endBackgroundTasksCompletionIfRequired];
+    }
+    else if (!onCompletion) {
+        
+        DDLogRequest([[self class] ddLogLevel], @"<PubNub::Network> There is %lu incompleted "
+                     "tasks. Required additional execution time in background context.", 
+                     (unsigned long)incompleteTasksCount);
+    }
+}
+#endif // __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+
 - (void)cancelAllRequests {
 
     OSSpinLockLock(&_lock);
+#if __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+    if (self.configuration.shouldCompleteRequestsBeforeSuspension) {
+        
+        [self.scheduledDataTasks removeAllObjects];
+    }
+#endif // __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+    
     [self.session getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks,
                                                   NSArray *downloadTasks) {
         
@@ -822,11 +936,60 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Handlers
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+
+- (void)handleClientWillResignActive {
+    
+    OSSpinLockLock(&_lock);
+    if (self.tasksCompletionIdentifier == UIBackgroundTaskInvalid) {
+        
+        // Give manager some time to figure out whether background task should be used to complete all 
+        // scheduled data tasks or not.
+        __weak __typeof__(self) weakSelf = self;
+        self.tasksCompletionIdentifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+            
+            [weakSelf endBackgroundTasksCompletionIfRequired];
+        }];
+             
+        // Give some time before checking whether tasks has been scheduled for execution or not.
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3f * NSEC_PER_SEC)),
+                       dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                           
+            // Get list of scheduled operation.
+            __strong __typeof__(weakSelf) strongSelf = weakSelf;
+            OSSpinLockLock(&strongSelf->_lock);
+            if (strongSelf.tasksCompletionIdentifier != UIBackgroundTaskInvalid) {
+                
+                [strongSelf processIncompleteBeforeClientResignActiveTasks:self.scheduledDataTasks
+                                                      onDataTaskCompletion:NO];
+            }
+            OSSpinLockUnlock(&strongSelf->_lock);
+        });
+    } 
+    OSSpinLockUnlock(&_lock);
+}
+
+- (void)handleClientDidBecomeActive {
+    
+    [self endBackgroundTasksCompletionIfRequired];
+}
+
+#endif // __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+
+
 -(void)URLSession:(NSURLSession *)session didBecomeInvalidWithError:(NSError *)error {
     
     if (error) {
         
         OSSpinLockLock(&_lock);
+        // Clean up cached tasks if required.
+#if __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+        if (self.configuration.shouldCompleteRequestsBeforeSuspension) {
+            
+            [self.scheduledDataTasks removeAllObjects];
+        }
+#endif // __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+        
         // Replace invalidated session with new one which can be used for next requests.
         [self prepareSessionWithRequesrTimeout:self.requestTimeout
                             maximumConnections:self.maximumConnections];
@@ -930,6 +1093,20 @@ NS_ASSUME_NONNULL_END
         [self handleOperation:operation processingCompletedWithResult:result
                        status:status completionBlock:block];
     }
+    
+#if __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+    if (self.configuration.shouldCompleteRequestsBeforeSuspension) {
+        
+        OSSpinLockLock(&_lock);
+        [self.scheduledDataTasks removeObject:task];
+        if (self.tasksCompletionIdentifier != UIBackgroundTaskInvalid) {
+            
+            [self processIncompleteBeforeClientResignActiveTasks:self.scheduledDataTasks
+                                            onDataTaskCompletion:YES];
+        }
+        OSSpinLockUnlock(&_lock); 
+    }
+#endif // __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
 }
 
 - (void)handleOperation:(PNOperationType)operation processingCompletedWithResult:(nullable PNResult *)result
@@ -960,6 +1137,36 @@ NS_ASSUME_NONNULL_END
 
 
 #pragma mark - Misc
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+
+- (BOOL)hasOperation:(PNOperationType)operation inDataTasks:(NSArray<NSURLSessionDataTask *> *)tasks {
+    
+    BOOL hasOperation = NO;
+    for (NSURLSessionDataTask *dataTask in tasks) {
+        
+        if ([PNURLBuilder isURL:dataTask.originalRequest.URL forOperation:operation]) {
+            
+            hasOperation = YES;
+            break;
+        }
+    }
+    
+    return hasOperation;
+}
+
+- (void)endBackgroundTasksCompletionIfRequired {
+    
+    bool locked = OSSpinLockTry(&_lock);
+    if (self.tasksCompletionIdentifier != UIBackgroundTaskInvalid) {
+        
+        [[UIApplication sharedApplication] endBackgroundTask:self.tasksCompletionIdentifier];
+        self.tasksCompletionIdentifier = UIBackgroundTaskInvalid;
+    }
+    if (locked) { OSSpinLockUnlock(&_lock); }
+}
+
+#endif // __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
 
 - (void)printIfRequiredSessionCustomizationInformation {
     

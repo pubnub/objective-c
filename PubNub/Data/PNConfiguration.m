@@ -136,6 +136,9 @@ NS_ASSUME_NONNULL_END
         _keepTimeTokenOnListChange = kPNDefaultShouldKeepTimeTokenOnListChange;
         _restoreSubscription = kPNDefaultShouldRestoreSubscription;
         _catchUpOnSubscriptionRestore = kPNDefaultShouldTryCatchUpOnSubscriptionRestore;
+#if __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+        _completeRequestsBeforeSuspension = kPNDefaultShouldCompleteRequestsBeforeSuspension;
+#endif // __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
     }
     
     return self;
@@ -160,6 +163,9 @@ NS_ASSUME_NONNULL_END
     configuration.keepTimeTokenOnListChange = self.shouldKeepTimeTokenOnListChange;
     configuration.restoreSubscription = self.shouldRestoreSubscription;
     configuration.catchUpOnSubscriptionRestore = self.shouldTryCatchUpOnSubscriptionRestore;
+#if __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+    configuration.completeRequestsBeforeSuspension = self.shouldCompleteRequestsBeforeSuspension;
+#endif // __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
     
     return configuration;
 }

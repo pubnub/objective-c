@@ -79,6 +79,21 @@ static NSString * const PNOperationRequestTemplate[22] = {
     return requestURL;
 }
 
+
+#pragma mark - API URL verificator
+
++ (BOOL)isURL:(NSURL *)url forOperation:(PNOperationType)operation {
+    
+    BOOL result = NO;
+    if (url) {
+        
+        NSString *requestURLPrefixString = [PNOperationRequestTemplate[operation] componentsSeparatedByString:@"{"].firstObject;
+        result = ([url.absoluteString rangeOfString:requestURLPrefixString].location != NSNotFound);
+    }
+    
+    return result;
+}
+
 #pragma mark -
 
 
