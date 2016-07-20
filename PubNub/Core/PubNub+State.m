@@ -125,6 +125,7 @@ NS_ASSUME_NONNULL_END
     __weak __typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         
+        __strong __typeof__(weakSelf) strongSelf = weakSelf;
         PNRequestParameters *parameters = [PNRequestParameters new];
         [parameters addPathComponent:(onChannel ? [PNString percentEscapedString:object] : @",")
                       forPlaceholder:@"{channel}"];
@@ -141,12 +142,12 @@ NS_ASSUME_NONNULL_END
                              forFieldName:@"channel-group"];
         }
         
-        DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> Set %@'s state on '%@' channel%@: "
-                     "%@.", (uuid?: @"<error>"), (object?: @"<error>"), (!onChannel ? @" group" : @""), 
+        DDLogAPICall(strongSelf.logger, @"<PubNub::API> Set %@'s state on '%@' channel%@: %@.", 
+                     (uuid?: @"<error>"), (object?: @"<error>"), (!onChannel ? @" group" : @""), 
                      parameters.query[@"state"]);
         
-        [self processOperation:PNSetStateOperation withParameters:parameters
-               completionBlock:^(PNStatus *status) {
+        [strongSelf processOperation:PNSetStateOperation withParameters:parameters
+                     completionBlock:^(PNStatus *status) {
                    
            // Silence static analyzer warnings.
            // Code is aware about this case and at the end will simply call on 'nil' object method.
@@ -199,13 +200,13 @@ NS_ASSUME_NONNULL_END
         [parameters addQueryParameter:[PNString percentEscapedString:object] forFieldName:@"channel-group"];
     }
     
-    DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> State request on '%@' channel%@: %@.",
-                 (uuid?: @"<error>"), (object?: @"<error>"), (!onChannel ? @" group" : @""));
+    DDLogAPICall(self.logger, @"<PubNub::API> State request on '%@' channel%@: %@.", (uuid?: @"<error>"), 
+                 (object?: @"<error>"), (!onChannel ? @" group" : @""));
     
     __weak __typeof(self) weakSelf = self;
     [self processOperation:(onChannel ? PNStateForChannelOperation : PNStateForChannelGroupOperation)
             withParameters:parameters 
-           completionBlock:^(PNResult * _Nullable result, PNStatus * _Nullable status) {
+           completionBlock:^(PNResult *result, PNStatus *status) {
                
         // Silence static analyzer warnings.
         // Code is aware about this case and at the end will simply call on 'nil' object method.

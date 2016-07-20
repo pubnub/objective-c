@@ -1,22 +1,21 @@
 /**
  @brief  Define list of macro which used by clien't component to print out messages using 
-         \b CocoaLumberjack framework.
+         \b PNLLogger.
  
  @author Sergey Mamontov
  @since 4.0
  @copyright © 2009-2016 PubNub, Inc.
  */
-#import <CocoaLumberjack/CocoaLumberjack.h>
+#import "PNLLogger.h"
 
 #pragma once
 
-#define PNLOG(level, pnll, frmt, ...) LOG_MAYBE(NO, pnll, (DDLogFlag)level, 0, nil, \
-                                           __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
-#define DDLogClientInfo(pnll, frmt, ...) PNLOG(PNInfoLogLevel, pnll, frmt, ##__VA_ARGS__)
-#define DDLogReachability(pnll, frmt, ...) PNLOG(PNReachabilityLogLevel, pnll, frmt, ##__VA_ARGS__)
-#define DDLogRequest(pnll, frmt, ...) PNLOG(PNRequestLogLevel, pnll, frmt, ##__VA_ARGS__)
-#define DDLogResult(pnll, frmt, ...) PNLOG(PNResultLogLevel, pnll, frmt, ##__VA_ARGS__)
-#define DDLogStatus(pnll, frmt, ...) PNLOG(PNStatusLogLevel, pnll, frmt, ##__VA_ARGS__)
-#define DDLogFailureStatus(pnll, frmt, ...) PNLOG(PNFailureStatusLogLevel, pnll, frmt, ##__VA_ARGS__)
-#define DDLogAESError(pnll, frmt, ...) PNLOG(PNAESErrorLogLevel, pnll, frmt, ##__VA_ARGS__)
-#define DDLogAPICall(pnll, frmt, ...) PNLOG(PNAPICallLogLevel, pnll, frmt, ##__VA_ARGS__)
+#define PNLOG(logger, level, frmt, ...) [logger log:level format:frmt, ##__VA_ARGS__]
+#define DDLogClientInfo(logger, frmt, ...) PNLOG(logger, PNInfoLogLevel, frmt, ##__VA_ARGS__)
+#define DDLogReachability(logger, frmt, ...) PNLOG(logger, PNReachabilityLogLevel, frmt, ##__VA_ARGS__)
+#define DDLogRequest(logger, frmt, ...) PNLOG(logger, PNRequestLogLevel, frmt, ##__VA_ARGS__)
+#define DDLogResult(logger, frmt, ...) PNLOG(logger, PNResultLogLevel, frmt, ##__VA_ARGS__)
+#define DDLogStatus(logger, frmt, ...) PNLOG(logger, PNStatusLogLevel, frmt, ##__VA_ARGS__)
+#define DDLogFailureStatus(logger, frmt, ...) PNLOG(logger, PNFailureStatusLogLevel, frmt, ##__VA_ARGS__)
+#define DDLogAESError(logger, frmt, ...) PNLOG(logger, PNAESErrorLogLevel, frmt, ##__VA_ARGS__)
+#define DDLogAPICall(logger, frmt, ...) PNLOG(logger, PNAPICallLogLevel, frmt, ##__VA_ARGS__)

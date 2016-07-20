@@ -131,15 +131,15 @@ NS_ASSUME_NONNULL_END
             [parameters removePathComponentForPlaceholder:@"{token}"];
         }
 
-        DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> %@ push notifications for device '%@': %@.",
-                (shouldEnabled ? @"Enable" : @"Disable"),
-                [PNData HEXFromDevicePushToken:pushToken].lowercaseString,
-                [PNChannel namesForRequest:channels]);
+        DDLogAPICall(self.logger, @"<PubNub::API> %@ push notifications for device '%@': %@.",
+                     (shouldEnabled ? @"Enable" : @"Disable"), 
+                     [PNData HEXFromDevicePushToken:pushToken].lowercaseString, 
+                     [PNChannel namesForRequest:channels]);
     }
     else {
 
-        DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> Disable push notifications for device '%@'.",
-                [[PNData HEXFromDevicePushToken:pushToken] lowercaseString]);
+        DDLogAPICall(self.logger, @"<PubNub::API> Disable push notifications for device '%@'.",
+                     [[PNData HEXFromDevicePushToken:pushToken] lowercaseString]);
     }
 
     __weak __typeof(self) weakSelf = self;
@@ -182,7 +182,7 @@ NS_ASSUME_NONNULL_END
                       forPlaceholder:@"{token}"];
     }
 
-    DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> Push notification enabled channels for device '%@'.",
+    DDLogAPICall(self.logger, @"<PubNub::API> Push notification enabled channels for device '%@'.",
                  [PNData HEXFromDevicePushToken:pushToken].lowercaseString);
 
     __weak __typeof(self) weakSelf = self;

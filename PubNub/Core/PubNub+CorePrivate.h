@@ -4,7 +4,6 @@
 #import "PNSubscriber.h"
 #import "PNHeartbeat.h"
 #import "PNLogMacro.h"
-#import "PNLog.h"
 
 
 #pragma mark Class forward
@@ -84,29 +83,6 @@ NS_ASSUME_NONNULL_BEGIN
  @since 4.0
  */
 @property (nonatomic, readonly, strong) dispatch_queue_t callbackQueue;
-
-
-///------------------------------------------------
-/// @name Logger
-///------------------------------------------------
-
-/**
-@brief  Called by Cocoa Lumberjack during initialization.
-
-@return Desired logger level for \b PubNub client main class.
-
-@since 4.0
-*/
-+ (DDLogLevel)ddLogLevel;
-
-/**
-@brief  Allow modify logger level used by Cocoa Lumberjack with logging macros.
-
-@param logLevel New log level which should be used by logger.
-
-@since 4.0
-*/
-+ (void)ddSetLogLevel:(DDLogLevel)logLevel;
 
 
 ///------------------------------------------------

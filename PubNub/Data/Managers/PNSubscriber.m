@@ -22,13 +22,6 @@
 #pragma mark Static
 
 /**
- @brief  Cocoa Lumberjack logging level configuration for subscriber.
- 
- @since 4.0
- */
-static DDLogLevel ddLogLevel = (DDLogLevel)PNAPICallLogLevel;
-
-/**
  @brief  Reference on time which should be used by retry timer as interval between subscription
  retry attempts.
  
@@ -424,19 +417,6 @@ NS_ASSUME_NONNULL_END
 @synthesize filterExpression = _filterExpression;
 
 
-#pragma mark - Logger
-
-+ (DDLogLevel)ddLogLevel {
-    
-    return ddLogLevel;
-}
-
-+ (void)ddSetLogLevel:(DDLogLevel)logLevel {
-    
-    ddLogLevel = logLevel;
-}
-
-
 #pragma mark - Information
 
 - (dispatch_source_t)retryTimer {
@@ -734,6 +714,7 @@ NS_ASSUME_NONNULL_END
     if ((self = [super init])) {
         
         _client = client;
+        [_client.logger enableLogLevel:PNAPICallLogLevel];
         _channelsSet = [NSMutableSet new];
         _channelGroupsSet = [NSMutableSet new];
         _presenceChannelsSet = [NSMutableSet new];
@@ -843,7 +824,7 @@ NS_ASSUME_NONNULL_END
         
         if (initialSubscribe) {
             
-            DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> Subscribe (channels: %@; groups: %@)%@",
+            DDLogAPICall(self.client.logger, @"<PubNub::API> Subscribe (channels: %@; groups: %@)%@",
                          parameters.pathComponents[@"{channels}"], parameters.query[@"channel-group"],
                          (timeToken ? [NSString stringWithFormat:@" with catch up from %@.", timeToken] : @"."));
         }
@@ -955,7 +936,7 @@ NS_ASSUME_NONNULL_END
     [self.client appendClientInformation:successStatus];
     __weak __typeof(self) weakSelf = self;
     
-    DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> Unsubscribe (channels: %@; groups: %@)",
+    DDLogAPICall(self.client.logger, @"<PubNub::API> Unsubscribe (channels: %@; groups: %@)",
                  (channels ? objectWithOutPresence : nil), (!channels ? objectWithOutPresence : nil));
     
     NSSet *subscriptionObjects = [NSSet setWithArray:[self allObjects]];
@@ -1080,6 +1061,8 @@ NS_ASSUME_NONNULL_END
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
     if (status.data.timetoken != nil && status.clientRequest.URL != nil) {
         
+        DDLogResult(self.client.logger, @"<PubNub> Did receive next subscription loop information: "
+                    "timetoken = %@, region = %@", status.data.timetoken, status.data.region);
         [self handleSubscription:isInitialSubscription timeToken:status.data.timetoken
                           region:status.data.region];
     }
@@ -1131,7 +1114,7 @@ NS_ASSUME_NONNULL_END
             ((PNStatus *)status).automaticallyRetry = (status.category != PNMalformedFilterExpressionCategory);
             ((PNStatus *)status).retryCancelBlock = ^{
                 
-                DDLogAPICall([[weakSelf class] ddLogLevel], @"<PubNub::API> Cancel retry");
+                DDLogAPICall(weakSelf.client.logger, @"<PubNub::API> Cancel retry");
                 [weakSelf stopRetryTimer];
             };
             if (((PNStatus *)status).willAutomaticallyRetry) { [self startRetryTimer]; }
@@ -1344,7 +1327,7 @@ NS_ASSUME_NONNULL_END
     PNErrorStatus *status = nil;
     if (data) {
         
-        DDLogResult([[self class] ddLogLevel], @"<PubNub> %@", [(PNResult *)data stringifiedRepresentation]);
+        DDLogResult(self.client.logger, @"<PubNub> %@", [(PNResult *)data stringifiedRepresentation]);
         if ([data.serviceData[@"decryptError"] boolValue]) {
             
             status = [PNErrorStatus statusForOperation:PNSubscribeOperation category:PNDecryptionErrorCategory
@@ -1372,7 +1355,7 @@ NS_ASSUME_NONNULL_END
     
     if (data) {
         
-        DDLogResult([[self class] ddLogLevel], @"<PubNub> %@", [(PNResult *)data stringifiedRepresentation]);
+        DDLogResult(self.client.logger, @"<PubNub> %@", [(PNResult *)data stringifiedRepresentation]);
     }
     
     // Silence static analyzer warnings.

@@ -15,6 +15,8 @@
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
     #import <UIKit/UIKit.h>
+#elif __MAC_OS_X_VERSION_MIN_REQUIRED
+    #import <AppKit/AppKit.h>
 #endif // __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
 #import "PubNub+SubscribePrivate.h"
 #import "PNObjectEventListener.h"
@@ -29,16 +31,6 @@
 #import "PNLogMacro.h"
 #import "PNNetwork.h"
 #import "PNHelpers.h"
-
-
-#pragma mark Static
-
-/**
- @brief  Cocoa Lumberjack logging level configuration for \b PubNub client class and categories.
- 
- @since 4.0
- */
-static DDLogLevel ddLogLevel = (DDLogLevel)(PNInfoLogLevel|PNFailureStatusLogLevel| PNAPICallLogLevel);
 
 
 #pragma mark - Externs
@@ -68,6 +60,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Properties
 
+@property (nonatomic, strong) PNLLogger *logger;
 @property (nonatomic, strong) dispatch_queue_t callbackQueue;
 @property (nonatomic, copy) PNConfiguration *configuration;
 @property (nonatomic, strong) PNSubscriber *subscriberManager;
@@ -153,6 +146,23 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)handleContextTransition:(NSNotification *)notification;
 
+
+#pragma mark - Misc
+
+/**
+ @brief  Create and configure \b PubNub client logger instance.
+ 
+ @since 4.5.0
+ */
+- (void)setupClientLogger;
+
+/**
+ @brief  Print out logger's verbosity configuration information.
+ 
+ @since 4.5.0
+ */
+- (void)printLogVerbosityInformation;
+
 #pragma mark -
 
 
@@ -164,19 +174,6 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Interface implementation
 
 @implementation PubNub
-
-
-#pragma mark - Logger
-
-+ (DDLogLevel)ddLogLevel {
-    
-    return ddLogLevel;
-}
-
-+ (void)ddSetLogLevel:(DDLogLevel)logLevel {
-    
-    ddLogLevel = logLevel;
-}
 
 
 #pragma mark - Information
@@ -221,8 +218,8 @@ NS_ASSUME_NONNULL_END
     // Check whether initialization has been successful or not
     if ((self = [super init])) {
         
-        DDLogClientInfo([[self class] ddLogLevel], @"<PubNub> PubNub SDK %@ (%@)", kPNLibraryVersion, 
-                        kPNCommit);
+        [self setupClientLogger];
+        DDLogClientInfo(self.logger, @"<PubNub> PubNub SDK %@ (%@)", kPNLibraryVersion, kPNCommit);
         
         _configuration = [configuration copy];
         _callbackQueue = callbackQueue;
@@ -354,7 +351,7 @@ NS_ASSUME_NONNULL_END
 #ifdef FABRIC_SUPPORT
 + (NSString *)bundleIdentifier {
     
-    return @"com.pubnub.pubnub-objc";
+    return kPNClientIdentifier;
 }
 
 + (NSString *)kitDisplayVersion {
@@ -458,18 +455,15 @@ NS_ASSUME_NONNULL_END
 - (void)callBlock:(nullable id)block status:(BOOL)callingStatusBlock withResult:(nullable PNResult *)result
         andStatus:(nullable PNStatus *)status {
     
-    if (result) { DDLogResult([[self class] ddLogLevel], @"<PubNub> %@", [result stringifiedRepresentation]); }
+    if (result) { DDLogResult(self.logger, @"<PubNub> %@", [result stringifiedRepresentation]); }
     
     if (status) {
         
         if (status.isError) {
             
-            DDLogFailureStatus([[self class] ddLogLevel], @"<PubNub> %@", [status stringifiedRepresentation]);
+            DDLogFailureStatus(self.logger, @"<PubNub> %@", [status stringifiedRepresentation]);
         }
-        else {
-            
-            DDLogStatus([[self class] ddLogLevel], @"<PubNub> %@", [status stringifiedRepresentation]);
-        }
+        else { DDLogStatus(self.logger, @"<PubNub> %@", [status stringifiedRepresentation]); }
     }
 
     if (block) {
@@ -499,16 +493,16 @@ NS_ASSUME_NONNULL_END
 #if TARGET_OS_WATCH
     if ([notification.name isEqualToString:NSExtensionHostDidEnterBackgroundNotification]) {
         
-        DDLogClientInfo([[self class] ddLogLevel], @"<PubNub> Did enter background execution context.");
+        DDLogClientInfo(self.logger, @"<PubNub> Did enter background execution context.");
     }
     else if ([notification.name isEqualToString:NSExtensionHostWillEnterForegroundNotification]) {
         
-        DDLogClientInfo([[self class] ddLogLevel], @"<PubNub> Will enter foreground execution context.");
+        DDLogClientInfo(self.logger, @"<PubNub> Will enter foreground execution context.");
     }
 #elif __IPHONE_OS_VERSION_MIN_REQUIRED
     if ([notification.name isEqualToString:UIApplicationDidEnterBackgroundNotification]) {
         
-        DDLogClientInfo([[self class] ddLogLevel], @"<PubNub> Did enter background execution context.");
+        DDLogClientInfo(self.logger, @"<PubNub> Did enter background execution context.");
         if (self.configuration.shouldCompleteRequestsBeforeSuspension) {
             
             [self.subscriptionNetwork handleClientWillResignActive];
@@ -517,7 +511,7 @@ NS_ASSUME_NONNULL_END
     }
     else if ([notification.name isEqualToString:UIApplicationWillEnterForegroundNotification]) {
         
-        DDLogClientInfo([[self class] ddLogLevel], @"<PubNub> Will enter foreground execution context.");
+        DDLogClientInfo(self.logger, @"<PubNub> Will enter foreground execution context.");
         if (self.configuration.shouldCompleteRequestsBeforeSuspension) {
             
             [self.subscriptionNetwork handleClientDidBecomeActive];
@@ -528,18 +522,66 @@ NS_ASSUME_NONNULL_END
     if ([notification.name isEqualToString:NSWorkspaceWillSleepNotification] ||
         [notification.name isEqualToString:NSWorkspaceSessionDidResignActiveNotification]) {
         
-        DDLogClientInfo([[self class] ddLogLevel], @"<PubNub> Workspace became inactive.");
+        DDLogClientInfo(self.logger, @"<PubNub> Workspace became inactive.");
     }
     else if ([notification.name isEqualToString:NSWorkspaceDidWakeNotification] ||
              [notification.name isEqualToString:NSWorkspaceSessionDidBecomeActiveNotification]) {
         
-        DDLogClientInfo([[self class] ddLogLevel], @"<PubNub> Workspace became active.");
+        DDLogClientInfo(self.logger, @"<PubNub> Workspace became active.");
     }
 #endif
 }
 
 
 #pragma mark - Misc
+
+- (void)setupClientLogger {
+    
+    // Configure file manager with default storage in application's Documents folder.
+    NSSearchPathDirectory searchPath = (TARGET_OS_IPHONE ? NSDocumentDirectory : NSApplicationSupportDirectory);
+    NSArray<NSString *> *documents = NSSearchPathForDirectoriesInDomains(searchPath, NSUserDomainMask, YES);
+    NSString *logsPath = documents.lastObject;
+#if __MAC_OS_X_VERSION_MIN_REQUIRED
+    NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
+    if (NSClassFromString(@"XCTestExpectation")) { bundleIdentifier = @"com.pubnub.objc-tests"; }
+    logsPath = [logsPath stringByAppendingPathComponent:bundleIdentifier];
+#endif 
+    logsPath = [logsPath stringByAppendingPathComponent:@"Logs"];
+    
+    __weak __typeof__(self) weakSelf = self;
+    self.logger = [PNLLogger loggerWithIdentifier:kPNClientIdentifier directory:logsPath 
+                                     logExtension:@"log"];
+    self.logger.enabled = YES;
+    self.logger.writeToConsole = YES;
+    self.logger.writeToFile = YES;
+    [self.logger setLogLevel:(PNInfoLogLevel|PNFailureStatusLogLevel|PNAPICallLogLevel)];
+    self.logger.logFilesDiskQuota = (50 * 1024 * 1024);
+    self.logger.maximumLogFileSize = (5 * 1024 * 1024);
+    self.logger.maximumNumberOfLogFiles = 5;
+    
+    // Give some time for components to setup loggers verbosity level (this avoid spam on log level change).
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        
+        weakSelf.logger.logLevelChangeHandler = ^{ [weakSelf printLogVerbosityInformation]; };
+        [weakSelf printLogVerbosityInformation];
+    });
+}
+
+- (void)printLogVerbosityInformation {
+    
+    NSUInteger verbosityFlags = self.logger.logLevel;
+    NSMutableArray *enabledFlags = [NSMutableArray new];
+    if (verbosityFlags & PNReachabilityLogLevel) { [enabledFlags addObject:@"Reachability"]; }
+    if (verbosityFlags & PNRequestLogLevel) { [enabledFlags addObject:@"Network Request"]; }
+    if (verbosityFlags & PNResultLogLevel) { [enabledFlags addObject:@"Result instance"]; }
+    if (verbosityFlags & PNStatusLogLevel) { [enabledFlags addObject:@"Status instance"]; }
+    if (verbosityFlags & PNFailureStatusLogLevel) { [enabledFlags addObject:@"Failed status instance"]; }
+    if (verbosityFlags & PNAESErrorLogLevel) { [enabledFlags addObject:@"AES error"]; }
+    if (verbosityFlags & PNAPICallLogLevel) { [enabledFlags addObject:@"API Call"]; }
+    
+    DDLogClientInfo(self.logger, @"<PubNub::Logger> Enabled verbosity level flags: %@",
+                    [enabledFlags componentsJoinedByString:@", "]);
+}
 
 - (void)dealloc {
     

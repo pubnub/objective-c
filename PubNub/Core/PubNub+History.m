@@ -138,7 +138,7 @@ NS_ASSUME_NONNULL_END
         [parameters addPathComponent:[PNString percentEscapedString:channel] forPlaceholder:@"{channel}"];
     }
     
-    DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> %@ for '%@' channel%@%@ with %@ limit%@.",
+    DDLogAPICall(self.logger, @"<PubNub::API> %@ for '%@' channel%@%@ with %@ limit%@.",
                  (shouldReverseOrder ? @"Reversed history" : @"History"), (channel?: @"<error>"),
                  (startDate ? [NSString stringWithFormat:@" from %@", startDate] : @""),
                  (endDate ? [NSString stringWithFormat:@" to %@", endDate] : @""), @(limit),

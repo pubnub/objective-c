@@ -212,7 +212,8 @@ NS_ASSUME_NONNULL_END
     // JSON serialization and encryption process.
     __weak __typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-
+        
+        __strong __typeof__(weakSelf) strongSelf = weakSelf;
         BOOL encrypted = NO;
         NSError *publishError = nil;
         NSString *messageForPublish = [PNJSON JSONStringFrom:message withError:&publishError];
@@ -221,9 +222,9 @@ NS_ASSUME_NONNULL_END
         if (!publishError) {
 
             // Try perform user message encryption.
-            NSString *encryptedMessage = [self encryptedMessage:messageForPublish
-                                                  withCipherKey:self.configuration.cipherKey
-                                                          error:&publishError];
+            NSString *encryptedMessage = [strongSelf encryptedMessage:messageForPublish
+                                                        withCipherKey:strongSelf.configuration.cipherKey
+                                                                error:&publishError];
             encrypted = ![messageForPublish isEqualToString:encryptedMessage];
             messageForPublish = [encryptedMessage copy];
         }
@@ -234,14 +235,14 @@ NS_ASSUME_NONNULL_END
         // Merge user message with push notification payloads (if provided).
         if (!publishError && payloads.count) {
 
-            NSDictionary *mergedData = [self mergedMessage:(encrypted ? messageForPublish : message)
-                                     withMobilePushPayload:payloads];
+            NSDictionary *mergedData = [strongSelf mergedMessage:(encrypted ? messageForPublish : message)
+                                           withMobilePushPayload:payloads];
             messageForPublish = [PNJSON JSONStringFrom:mergedData withError:&publishError];
         }
-        PNRequestParameters *parameters = [self requestParametersForMessage:messageForPublish
-                                                                  toChannel:channel compressed:compressed
-                                                             storeInHistory:shouldStore 
-                                                                   metadata:metadataForPublish];
+        PNRequestParameters *parameters = [strongSelf requestParametersForMessage:messageForPublish
+                                                                        toChannel:channel compressed:compressed
+                                                                   storeInHistory:shouldStore 
+                                                                         metadata:metadataForPublish];
         NSData *publishData = nil;
         if (compressed) {
 
@@ -250,16 +251,16 @@ NS_ASSUME_NONNULL_END
             publishData = (compressedBody?: [@"" dataUsingEncoding:NSUTF8StringEncoding]);
         }
         
-        DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> Publish%@ message to '%@' "
-                     "channel%@%@%@", (compressed ? @" compressed" : @""), (channel?: @"<error>"),
+        DDLogAPICall(strongSelf.logger, @"<PubNub::API> Publish%@ message to '%@' channel%@%@%@", 
+                     (compressed ? @" compressed" : @""), (channel?: @"<error>"),
                      (metadata ? [NSString stringWithFormat:@" with metadata (%@)", 
                                   metadataForPublish] : @""),
                      (!shouldStore ? @" which won't be saved in history" : @""),
                      (!compressed ? [NSString stringWithFormat:@": %@",
                                      (messageForPublish?: @"<error>")] : @"."));
 
-        [self processOperation:PNPublishOperation withParameters:parameters data:publishData
-               completionBlock:^(PNStatus *status) {
+        [strongSelf processOperation:PNPublishOperation withParameters:parameters data:publishData
+                     completionBlock:^(PNStatus *status) {
                    
            // Silence static analyzer warnings.
            // Code is aware about this case and at the end will simply call on 'nil' object method.
