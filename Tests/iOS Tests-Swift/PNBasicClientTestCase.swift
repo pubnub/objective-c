@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import XCTest
+import PubNub
 
 class PNBasicClientTestCase: JSZVCRTestCase {
     
@@ -33,7 +34,8 @@ class PNBasicClientTestCase: JSZVCRTestCase {
     
     override func setUp() {
         super.setUp()
-        PNLog.enabled(true)
+        
+        self.client.logger.setLogLevel(PNLogLevel.PNVerboseLogLevel)
         // Put setup code here. This method is called before the invocation of each test method in the class.
         
     }
