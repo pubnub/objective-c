@@ -6,19 +6,14 @@
 #import "PNSubscribeParser.h"
 #import "PNEnvelopeInformation.h"
 #import "PubNub+CorePrivate.h"
+#import "PNConstants.h"
 #import "PNLogMacro.h"
+#import "PNLLogger.h"
 #import "PNHelpers.h"
 #import "PNAES.h"
 
 
 #pragma mark Static
-
-/**
- @brief  Cocoa Lumberjack logging level configuration for subscriber results parser.
- 
- @since 4.0
- */
-static DDLogLevel ddLogLevel = (DDLogLevel)PNAESErrorLogLevel;
 
 /**
  @brief  Stores reference on key under which request status is stored.
@@ -216,19 +211,6 @@ NS_ASSUME_NONNULL_END
 @implementation PNSubscribeParser
 
 
-#pragma mark - Logger
-
-+ (DDLogLevel)ddLogLevel {
-    
-    return ddLogLevel;
-}
-
-+ (void)ddSetLogLevel:(DDLogLevel)logLevel {
-    
-    ddLogLevel = logLevel;
-}
-
-
 #pragma mark - Identification
 
 + (NSArray<NSNumber *> *)operations {
@@ -346,7 +328,9 @@ NS_ASSUME_NONNULL_END
         
         if (decryptionError || !decryptedEvent) {
             
-            DDLogAESError([self ddLogLevel], @"<PubNub::AES> Message decryption error: %@", decryptionError);
+            PNLLogger *logger = [PNLLogger loggerWithIdentifier:kPNClientIdentifier];
+            [logger enableLogLevel:PNAESErrorLogLevel];
+            DDLogAESError(logger, @"<PubNub::AES> Message decryption error: %@", decryptionError);
             message[@"decryptError"] = @YES;
             message[@"message"] = (dataForDecryption?: data);
         }

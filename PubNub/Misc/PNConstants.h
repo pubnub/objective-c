@@ -20,6 +20,14 @@ static NSString * const kPNLibraryVersion = @"4.4.1";
 // Stores information about SDK codebase
 static NSString * const kPNCommit = @"91a5176363d10d9e0c121e93aff23dce61a0f8e9";
 
+/**
+ @brief  Stores reference on unique identifier which is used to identify \b PubNub client among other 
+         \b PubNub products.
+ 
+ @since 4.5.0
+ */
+static NSString * const kPNClientIdentifier = @"com.pubnub.pubnub-objc";
+
 #if TARGET_OS_WATCH
     static NSString * const kPNClientName = @"ObjC-watchOS";
 #elif __IPHONE_OS_VERSION_MIN_REQUIRED

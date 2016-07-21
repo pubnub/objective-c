@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import "PNStructures.h"
+#import "PNLLogger.h"
 
 
 #pragma mark Class forward
@@ -25,6 +26,14 @@ NS_ASSUME_NONNULL_BEGIN
 ///------------------------------------------------
 /// @name Information
 ///------------------------------------------------
+
+/**
+ @brief  Reference on \b PubNub client logger instance which can be used to inser additional logs into console
+         (if enabled) and file (if enabled).
+ 
+ @since 4.5.0
+ */
+@property (nonatomic, readonly, strong) PNLLogger *logger;
 
 /**
  @brief  Retrive basic information about \b PubNub client.

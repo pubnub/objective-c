@@ -5,38 +5,16 @@
  */
 #import "PNHistoryParser.h"
 #import "PubNub+CorePrivate.h"
+#import "PNConstants.h"
 #import "PNLogMacro.h"
+#import "PNLLogger.h"
 #import "PNHelpers.h"
 #import "PNAES.h"
-#import "PNLog.h"
 
 
-#pragma mark CocoaLumberjack logging support
-
-/**
- @brief  Cocoa Lumberjack logging level configuration for history parser.
- 
- @since 4.0
- */
-static DDLogLevel ddLogLevel = (DDLogLevel)PNAESErrorLogLevel;
-
-
-#pragma mark - Interface implementation
+#pragma mark Interface implementation
 
 @implementation PNHistoryParser
-
-
-#pragma mark - Logger
-
-+ (DDLogLevel)ddLogLevel {
-    
-    return ddLogLevel;
-}
-
-+ (void)ddSetLogLevel:(DDLogLevel)logLevel {
-    
-    ddLogLevel = logLevel;
-}
 
 
 #pragma mark - Identification
@@ -109,7 +87,9 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNAESErrorLogLevel;
                 
                 if (decryptionError || !decryptedMessage) {
                     
-                    DDLogAESError([self ddLogLevel], @"<PubNub::AES> History entry decryption error: %@",
+                    PNLLogger *logger = [PNLLogger loggerWithIdentifier:kPNClientIdentifier];
+                    [logger enableLogLevel:PNAESErrorLogLevel];
+                    DDLogAESError(logger, @"<PubNub::AES> History entry decryption error: %@", 
                                   decryptionError);
                     data[@"decryptError"] = @YES;
                     

@@ -31,20 +31,22 @@ Pod::Spec.new do |spec|
     spec.subspec 'Core' do |core|
         core.source_files = 'PubNub/{Core,Data,Misc,Network}/**/*', 'PubNub/PubNub.h'
         core.private_header_files = [
-            'PubNub/Core/*Private.h',
-            'PubNub/Data/*Private.h',
-            'PubNub/Data/PNKeychain.h',
-            'PubNub/Data/PNEnvelopeInformation.h',
+            'PubNub/**/*Private.h',
+            'PubNub/Data/{PNEnvelopeInformation,PNKeychain}.h',
             'PubNub/Data/Managers/**/*.h',
-            'PubNub/Data/Service Objects/*Private.h',
             'PubNub/Misc/{PNConstants,PNPrivateStructures}.h',
             'PubNub/Misc/Helpers/*.h',
-            'PubNub/Misc/Logger/{PNLogFileManager,PNLogger,PNLogMacro}.h',
+            'PubNub/Misc/Logger/PNLogMacro.h',
+            'PubNub/Misc/Logger/Data/*.h',
             'PubNub/Misc/Protocols/PNParser.h',
-            'PubNub/Misc/Categories/*Private.h',
             'PubNub/Network/**/*.h',
         ]
-        core.exclude_files = "PubNub/Core/PubNub+FAB.{h,m}"
+        core.exclude_files = 'PubNub/Core/PubNub+FAB.{h,m}'
+    end
+
+    spec.subspec 'Logger' do |logger|
+        logger.source_files = 'PubNub/Misc/Logger/{Core,Data}/**/*'
+        logger.private_header_files = 'PubNub/Misc/Logger/Data/*.h'
     end
 
     spec.subspec 'Fabric' do |fabric|
@@ -56,7 +58,6 @@ Pod::Spec.new do |spec|
     end
 
     spec.library   = 'z'
-    spec.dependency 'CocoaLumberjack', '2.3.0'
     spec.default_subspec = 'Core'
 
     spec.license = { 

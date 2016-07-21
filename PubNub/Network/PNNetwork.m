@@ -24,17 +24,7 @@
 #import "PNHelpers.h"
 
 
-#pragma mark CocoaLumberjack logging support
-
-/**
- @brief  Cocoa Lumberjack logging level configuration for network manager.
- 
- @since 4.0
- */
-static DDLogLevel ddLogLevel;
-
-
-#pragma mark - Types
+#pragma mark Types
 
 /**
  @brief  Definition for block which is used as NSURLSessionDataTask completion handler (passed during task 
@@ -527,19 +517,6 @@ NS_ASSUME_NONNULL_END
 @implementation PNNetwork
 
 
-#pragma mark - Logger
-
-+ (DDLogLevel)ddLogLevel {
-    
-    return ddLogLevel;
-}
-
-+ (void)ddSetLogLevel:(DDLogLevel)logLevel {
-    
-    ddLogLevel = logLevel;
-}
-
-
 #pragma mark - Initialization and Configuration
 
 + (instancetype)networkForClient:(PubNub *)client requestTimeout:(NSTimeInterval)timeout
@@ -556,6 +533,7 @@ NS_ASSUME_NONNULL_END
     if ((self = [super init])) {
         
         _client = client;
+        [_client.logger enableLogLevel:(PNRequestLogLevel|PNInfoLogLevel)];
         _configuration = client.configuration;
         _forLongPollRequests = longPollEnabled;
 #if __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
@@ -724,7 +702,7 @@ NS_ASSUME_NONNULL_END
     NSURL *requestURL = [PNURLBuilder URLForOperation:operationType withParameters:parameters];
     if (requestURL) {
         
-        DDLogRequest([[self class] ddLogLevel], @"<PubNub::Network> %@ %@", (data.length ? @"POST" : @"GET"), 
+        DDLogRequest(self.client.logger, @"<PubNub::Network> %@ %@", (data.length ? @"POST" : @"GET"), 
                      requestURL.absoluteString);
         
         __weak __typeof(self) weakSelf = self;
@@ -822,15 +800,14 @@ NS_ASSUME_NONNULL_END
     
     if (incompleteTasksCount == 0) {
         
-        DDLogRequest([[self class] ddLogLevel], @"<PubNub::Network> All tasks completed. There is"
-                     " no need in additional execution time in background context.");
+        DDLogRequest(self.client.logger, @"<PubNub::Network> All tasks completed. There is no need in "
+                     "additional execution time in background context.");
         [self endBackgroundTasksCompletionIfRequired];
     }
     else if (!onCompletion) {
         
-        DDLogRequest([[self class] ddLogLevel], @"<PubNub::Network> There is %lu incompleted "
-                     "tasks. Required additional execution time in background context.", 
-                     (unsigned long)incompleteTasksCount);
+        DDLogRequest(self.client.logger, @"<PubNub::Network> There is %lu incompleted tasks. Required "
+                     "additional execution time in background context.", (unsigned long)incompleteTasksCount);
     }
 }
 #endif // __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
@@ -1172,32 +1149,32 @@ NS_ASSUME_NONNULL_END
     
     if ([NSURLSessionConfiguration pn_HTTPAdditionalHeaders].count) {
         
-        DDLogClientInfo([[self class] ddLogLevel], @"<PubNub::Network> Custom HTTP headers is set by user: "
-                        "%@", [NSURLSessionConfiguration pn_HTTPAdditionalHeaders]);
+        DDLogClientInfo(self.client.logger, @"<PubNub::Network> Custom HTTP headers is set by user: %@", 
+                        [NSURLSessionConfiguration pn_HTTPAdditionalHeaders]);
     }
     
     if ([NSURLSessionConfiguration pn_networkServiceType] != NSURLNetworkServiceTypeDefault) {
         
-        DDLogClientInfo([[self class] ddLogLevel], @"<PubNub::Network> Custom network service type is set by "
-                        "user: %@", @([NSURLSessionConfiguration pn_networkServiceType]));
+        DDLogClientInfo(self.client.logger, @"<PubNub::Network> Custom network service type is set by user: %@",
+                        @([NSURLSessionConfiguration pn_networkServiceType]));
     }
     
     if (![NSURLSessionConfiguration pn_allowsCellularAccess]) {
         
-        DDLogClientInfo([[self class] ddLogLevel], @"<PubNub::Network> User limited access to cellular data "
-                        "and only WiFi connection can be used.");
+        DDLogClientInfo(self.client.logger, @"<PubNub::Network> User limited access to cellular data and only"
+                        " WiFi connection can be used.");
     }
     
     if ([NSURLSessionConfiguration pn_protocolClasses].count) {
         
-        DDLogClientInfo([[self class] ddLogLevel], @"<PubNub::Network> Extra requests handling protocols "
-                        "defined by user: %@", [NSURLSessionConfiguration pn_protocolClasses]);
+        DDLogClientInfo(self.client.logger, @"<PubNub::Network> Extra requests handling protocols defined by "
+                        "user: %@", [NSURLSessionConfiguration pn_protocolClasses]);
     }
     
     if ([NSURLSessionConfiguration pn_connectionProxyDictionary].count) {
         
-        DDLogClientInfo([[self class] ddLogLevel], @"<PubNub::Network> Connection proxy has been set by user:"
-                        " %@", [NSURLSessionConfiguration pn_connectionProxyDictionary]);
+        DDLogClientInfo(self.client.logger, @"<PubNub::Network> Connection proxy has been set by user: %@", 
+                        [NSURLSessionConfiguration pn_connectionProxyDictionary]);
     }
 }
 
