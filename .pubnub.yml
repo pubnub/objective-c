@@ -1,4 +1,254 @@
 name: objective-c
+version: 4.4.1
+schema: 1
+scm: github.com/pubnub/objective-c
+changelog:
+  - version: v4.4.1
+    date: 
+    changes:
+      - type: bug
+        text: fixed timeout issue which caused by recently added shared NSURLSessionConfiguration configuration.
+      - type: improvement
+        text: added tests to cover fixed issue
+  - version: v4.4.0
+    changes:
+      - type: improvement
+        text: added ability provide limited customization of NSURLSessionConfiguration.
+      - type: improvement
+        text: added bitcode support for frameworks.
+  - version: v4.3.3
+    changes:
+      - type: bug
+        text: fixed podspec dependency version format compatibiliyty with CocoaPods 0.39.
+  - version: v4.3.2
+    changes:
+      - type: bug
+        text: fixed issue for case when client doesn't use encryption and message has been received w/o mobile payload to clean up.
+      - type: bug
+        text: original message (in case of decryption error) will be passed into associatedObject of PNStatus error instance.
+  - version: v4.3.1
+    changes:
+      - type: bug
+        text:fixed issue with PNNumber on 32bit system, when passed NSNumber instance created from unix-timestamp multiplied on 10000000.
+      - type: bug
+        text: fixed message content descryption in case if it has been sent along with mobile push payload.
+      - type: improvement
+        text: mobile push payload removed from received message.
+      - type: improvement
+        text: 'pn_other' key has been removed and original object will be returned in delegate callback (this field used with message encryption and/or mobile push payload).
+  - version: v4.3.0
+    changes:
+      - type: feature
+        text: added Pub/Sub V2 API support.
+      - type: feature
+        text: added message filtering basing on published message metadata.
+      - type: feature
+        text: added ability to publish message with additional metadata for filtering purposes.
+      - type: feature
+        text: added generics to collection properties and arguments.
+      - type: improvement
+        text: added nulability annotations.
+      - type: improvement
+        text: updated tests.
+      - type: improvement
+        text: updated inline documentation formatting.
+      - type: bug
+        text: fixed occupancy value storage for state-change (it will be set if available).
+      - type: bug
+        text: fixed issue with presence here now request where 'nil' passed as channel / group.
+      - type: bug
+        text: fixed script responsible for module map update in built frameworks.
+      - type: bug
+        text: fixed 'Universal Startic Frameork (iOS)' to use correct platform.
+      - type: bug
+        text: added missing files to Mac Framework.
+- version: v4.2.7
+    changes:
+      - type: improvement
+        text: changed way how heartbeat state notification is set. Now it can be specified in heartbeatNotificationOptions bitfield property using PNHeartbeatNotificationOptions options.
+  - version: v4.2.6
+    changes:
+      - type: improvement
+        text: added new property to PNConfiguration class called notifyAboutFailedHeartbeatsOnly which allow to configure client to notify not only about failed heartbeat statuses but for success as well.
+  - version: v4.2.5	
+    changes:
+      - type: improvement
+        text: added private persistent storage which allow to keep crucial data safe on device.
+      - type: feature
+        text: added new target to build dynamic framework for tvOS.
+      - type: bug
+        text: fixed issue with time token precision verification in case if non-PubNub's time token value has been passe.
+  - version: v4.2.4	
+    changes:
+      - type: bug
+        text: fixed issue because of which client may not restore subscription on list of channels which has been left after previous unsubscription request.
+  - version: v4.2.3
+    changes:
+      - type: bug
+        text: fixed unsubscription issue because of which time token didn't get reset if there is no more channels on which client may continue subscription.
+      - type: bug
+        text: fixed issue with -unsubscribeFromAll which may issue unwanted subscribe requests in case if method call followed by subscribe method call.
+  - version: v4.2.2	
+    changes:
+      - type: feature
+        text: added ability to build static library based frameworks (universal as well).
+      - type: feature
+        text: added Fabric support.
+  - version: v4.2.1	
+    changes:
+      - type: bug
+        text: fixed cient state cache issue because of which channel group state itself get updated even if state has been changed for one.
+  - version: v4.2.0	
+    changes:
+      - type: feature
+        text: extended subscribe API with ability to specify arbitrarily time token to catch up from.
+      - type: improvement
+        text: added ability to specify time tokens not only as 17 digit, but time interval from NSDate acceptable too.
+      - type: improvement
+        text: added stringified representation for category and operation fields.
+      - type: improvement
+        text: removed client initialisation code which affected PNLogger configuration.
+      - type: bug
+        text: fixed Mac OSX target and scripts for dynamic framework creation.
+  - version: v4.1.4
+    changes:
+      - type: feature
+        text: added watchOS deployment information to PubNub.podspec file.
+  - version: v4.1.3	
+    changes:
+      - type: bug
+        text: adjusted Base64 decoding settings which will allow to decode encrypted messages from some clients which changed base64 encoding algorithms.
+  - version: v4.1.2	
+    changes:
+      - type: bug
+        text: fixed listener 'disconnect' status handling after client stumbled on network issues and reported 'unexpected disconnect'.
+      - type: bug
+        text: fixed issue because of which string has been stored inside of serviceData for PNErrorStatus created from NSError.
+      - type: improvement
+        text: logger will print out current verbosity level information every time when it will be changed.
+      - type: improvement
+        text: all components (except core components) will add information about component to log output in format <PubNub::{component}>.
+      - type: improvement
+        text: changed 'build configuration' from Debug to Release for framework building targets.
+      - type: improvement
+        text: updated demo projects to correctly handle disconnection event (which happen for unsubscribe operation not for subscribe).
+  - version: v4.1.1	
+    changes:
+      - type: improvement
+        text: fixed memory issues with PNNetwork instance.
+      - type: improvement
+        text: removed deprecated string encoding methods.
+  - version: v4.1.0	
+    changes:
+      - type: feature
+        text: added ability to build dynamic frameworks for iOS 8.0+.
+      - type: improvement
+        text: version bump because of backward compatible changes in public interface.
+  - version: v4.0.8
+    changes:
+      - type: improvement
+        text: exposed heartbeat error to -client:didReceiveStatus:
+      - type: bug
+        text: fixed ping triggering logic after corner case with network issues
+  - version: v4.0.7	
+    changes:
+      - type: bug
+        text: fixed issue which prevented proper -retry execution.
+  - version: v4.0.6
+    changes:
+      - type: improvement
+        text: updated logger macro usage.
+      - type: improvement
+        text: updated Podspec file organization.
+      - type: improvement
+        text: downgraded deployment target in Podspec file from 8.0 to 7.0.
+  - version: v4.0.5
+    changes:
+      - type: improvement
+        text: suppressed designated initializer warnings.
+      - type: improvement
+        text: added client information class.
+      - type: improvement
+        text: added conditional device ID specification in request constructor.
+      - type: improvement
+        text: added ObjC/Swift test for crypto issue.
+      - type: bug
+        text: fixed issue with messages decryption in history and real-time messaging API.
+  - version: v4.0.4
+    changes:
+      - type: bug
+        text: fixed issue with missing presence event handling.
+      - type: bug
+        text: fixed subscriber parser issue because of which channel group name and actual channel changed their places in status object for presence event.
+      - type: bug
+        text: fixed non-multiplexing subscription issue.
+      - type: improvement
+        text: added additional presence events tests.
+  - version: v4.0.3
+    changes:
+      - type: bug
+        text: fixed and changed data types for few data objects (which caused crash in swift environment).
+      - type: bug
+        text: fixed size tests to handle updated packet size during tests.
+      - type: bug
+        text: Fixed Podfile.
+      - type: improvement
+        text: removed CocoaPods post-install script from Podfile.
+      - type: improvement
+        text: added custom 'User-Agent' header field.
+      - type: improvement
+        text: changed test environment check.
+  - version: v4.0.2	
+    changes:
+      - type: improvement
+        text: replaced AFNetworking with native NSURLSession wrapper.
+      - type: bug
+        text: fixed podspec to suppress warnings which appeared because private headers has been exposed to public.
+      - type: bug
+        text: fixed code which had warnings from clang.
+      - type: bug
+        text: fixed issues with composed message publish (with mobile push payloads).
+      - type: bug
+        text: fixed demo application which provided wrong logger configuration for log file size.
+      - type: bug
+        text: fixed issue with number publishing.
+      - type: improvement
+        text: if empty array of channels passed to enable push notifications SDK will report error.
+      - type: improvement
+        text: added 'associatedObject' field to PNErrorStatus (for now only for decryption error on live feed).
+      - type: improvement
+        text: in case of decryption error only status object will arrive to lisetner (-client:didReceiveMessage: won't be called).
+      - type: bug
+        text: fixed logger levels manipulation.
+      - type: bug
+        text: fixed inability to publish mobile gateway payloads only.
+  - version: v4.0.1	
+    changes:
+      - type: improvement
+        text: updated documentation hosted by CocoaPods.
+  - version: v4.0.0	
+    changes:
+      - type: improvement
+        text: The new, refactored PN 4.0 for iOS is here.
 features:
+  access:
+    - GRANT
+    - AUDIT
+  channel-groups:
+    - ADD-CHANNELS
+    - REMOVE-CHANNELS
+    - LIST-GROUPS
+    - LIST-CHANNELS-IN-GROUP
+  push:
+    - ADD-DEVICE-TO-CHANNELS
+    - REMOVE-DEVICE-FROM-CHANNELS
+    - LIST-CHANNELS-FROM-DEVICE
+    - REMOVE-DEVICE
+  presence:
+    - HERE-NOW
+    - WHERE-NOW
+    - SET-STATE
+    - GET-STATE
+    - HEARTBEAT
   publish:
    - STORE-FLAG
