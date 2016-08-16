@@ -29,13 +29,14 @@ changelog:
   - version: v4.3.1
     changes:
       - type: bug
-        text:fixed issue with PNNumber on 32bit system, when passed NSNumber instance created from unix-timestamp multiplied on 10000000.
+        text: fixed issue with PNNumber on 32bit system, when passed NSNumber instance created from unix-timestamp multiplied on 10000000.
       - type: bug
         text: fixed message content descryption in case if it has been sent along with mobile push payload.
       - type: improvement
         text: mobile push payload removed from received message.
       - type: improvement
-        text: 'pn_other' key has been removed and original object will be returned in delegate callback (this field used with message encryption and/or mobile push payload).
+        text: |
+          'pn_other' key has been removed and original object will be returned in delegate callback (this field used with message encryption and/or mobile push payload).
   - version: v4.3.0
     changes:
       - type: feature
@@ -62,7 +63,7 @@ changelog:
         text: fixed 'Universal Startic Frameork (iOS)' to use correct platform.
       - type: bug
         text: added missing files to Mac Framework.
-- version: v4.2.7
+  - version: v4.2.7
     changes:
       - type: improvement
         text: changed way how heartbeat state notification is set. Now it can be specified in heartbeatNotificationOptions bitfield property using PNHeartbeatNotificationOptions options.
