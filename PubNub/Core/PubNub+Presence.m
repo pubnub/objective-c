@@ -4,6 +4,7 @@
  @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PubNub+PresencePrivate.h"
+#import "PNAPICallBuilder+Private.h"
 #import "PNPrivateStructures.h"
 #import "PNRequestParameters.h"
 #import "PubNub+CorePrivate.h"
@@ -52,6 +53,38 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Interface implementation
 
 @implementation PubNub (Presence)
+
+
+#pragma mark - API Builder support
+
+- (PNPresenceAPICallBuilder *(^)(void))presence {
+    
+    PNPresenceAPICallBuilder *builder = nil;
+    builder = [PNPresenceAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags, 
+                                                                    NSDictionary *parameters) {
+                                         
+        NSString *object = (parameters[NSStringFromSelector(@selector(channel))]?: 
+                            parameters[NSStringFromSelector(@selector(channelGroup))]);
+        PNOperationType type = PNHereNowGlobalOperation;
+        if (object) {
+
+            type = PNHereNowForChannelOperation;
+            if (parameters[NSStringFromSelector(@selector(channelGroup))]) {
+
+                type = PNHereNowForChannelGroupOperation;
+            }
+        }
+        PNHereNowVerbosityLevel level = PNHereNowState;
+        if (parameters[NSStringFromSelector(@selector(verbosity))]) {
+
+            level = ((NSNumber *)parameters[NSStringFromSelector(@selector(verbosity))]).integerValue;
+        }
+        id block = parameters[@"block"];
+        [self hereNowWithVerbosity:level forObject:object withOperationType:type completionBlock:block];
+    }];
+    
+    return ^PNPresenceAPICallBuilder *{ return builder; };
+}
 
 
 #pragma mark - Global here now

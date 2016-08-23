@@ -5,6 +5,7 @@
  */
 #import "PubNub+State.h"
 #import "PNClientStateUpdateStatus.h"
+#import "PNAPICallBuilder+Private.h"
 #import "PNRequestParameters.h"
 #import "PubNub+CorePrivate.h"
 #import "PNStatus+Private.h"
@@ -102,6 +103,31 @@ NS_ASSUME_NONNULL_END
 #pragma mark Interface implementation
 
 @implementation PubNub (State)
+
+
+#pragma mark - API Builder support
+
+- (PNStateAPICallBuilder *(^)(void))state {
+    
+    PNStateAPICallBuilder *builder = nil;
+    builder = [PNStateAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags, 
+                                                                 NSDictionary *parameters) {
+                            
+        NSString *uuid = parameters[NSStringFromSelector(@selector(uuid))];
+        NSString *object = (parameters[NSStringFromSelector(@selector(channel))]?: 
+                            parameters[NSStringFromSelector(@selector(channelGroup))]);
+        BOOL forChannel = (parameters[NSStringFromSelector(@selector(channel))] != nil);
+        NSDictionary *state = parameters[NSStringFromSelector(@selector(state))];
+        id block = parameters[@"block"];
+        if ([flags containsObject:NSStringFromSelector(@selector(audit))]) {
+            
+            [self stateForUUID:uuid onChannel:forChannel withName:object withCompletion:block];
+        }
+        else { [self setState:state forUUID:uuid onChannel:forChannel withName:object withCompletion:block]; }
+    }];
+    
+    return ^PNStateAPICallBuilder *{ return builder; };
+}
 
 
 #pragma mark - Client state information manipulation

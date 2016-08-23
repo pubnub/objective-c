@@ -75,11 +75,6 @@
 
 - (void)pubNubInit {
     
-    [PNLog enabled:YES];
-    [PNLog dumpToFile:YES];
-    [PNLog setMaximumLogFileSize:(10 * 1024 * 1024)];
-    [PNLog setMaximumNumberOfLogFiles:10];
-    
     // Initialize PubNub client.
     self.myConfig = [PNConfiguration configurationWithPublishKey:_pubKey subscribeKey:_subKey];
     
@@ -88,6 +83,13 @@
     
     // Bind config
     self.client = [PubNub clientWithConfiguration:self.myConfig];
+    
+    // Configure logger
+    self.client.logger.enabled = YES;
+    self.client.logger.writeToFile = YES;
+    self.client.logger.maximumLogFileSize = (10 * 1024 * 1024);
+    self.client.logger.maximumNumberOfLogFiles = 10;
+    [self.client.logger setLogLevel:PNVerboseLogLevel];
     
     // Bind didReceiveMessage, didReceiveStatus, and didReceivePresenceEvent 'listeners' to this delegate
     // just be sure the target has implemented the PNObjectEventListener extension

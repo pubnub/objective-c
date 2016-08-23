@@ -4,6 +4,7 @@
  @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PubNub+Publish.h"
+#import "PNAPICallBuilder+Private.h"
 #import "PNRequestParameters.h"
 #import "PubNub+CorePrivate.h"
 #import "PNStatus+Private.h"
@@ -17,7 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Private interface declaration
 
-@interface PubNub (PublishPrivate)
+@interface PubNub (PublishProtected)
 
 
 #pragma mark - Misc
@@ -82,6 +83,52 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Interface implementation
 
 @implementation PubNub (Publish)
+
+
+#pragma mark - API Builder support
+
+- (PNPublishAPICallBuilder *(^)(void))publish {
+    
+    PNPublishAPICallBuilder *builder = nil;
+    builder = [PNPublishAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags, 
+                                                                   NSDictionary *parameters) {
+                                     
+        id message = parameters[NSStringFromSelector(@selector(message))];
+        NSString *channel = parameters[NSStringFromSelector(@selector(channel))];
+        NSDictionary *payloads = parameters[NSStringFromSelector(@selector(payloads))];
+        NSNumber *shouldStore = parameters[NSStringFromSelector(@selector(shouldStore))];
+        NSNumber *compressed = parameters[NSStringFromSelector(@selector(compress))];
+        NSDictionary *metadata = parameters[NSStringFromSelector(@selector(metadata))];
+        id block = parameters[@"block"];
+                                         
+        [self publish:message toChannel:channel mobilePushPayload:payloads 
+       storeInHistory:(shouldStore ? shouldStore.boolValue : YES)
+           compressed:(compressed ? compressed.boolValue : NO) withMetadata:metadata completion:block];
+    }];
+    
+    return ^PNPublishAPICallBuilder *{ return builder; };
+}
+
+- (PNPublishSizeAPICallBuilder *(^)(void))size {
+    
+    PNPublishSizeAPICallBuilder *builder = nil;
+    builder = [PNPublishSizeAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
+                                                                       NSDictionary *parameters) {
+                                     
+        id message = parameters[NSStringFromSelector(@selector(message))];
+        NSString *channel = parameters[NSStringFromSelector(@selector(channel))];
+        NSDictionary *payloads = parameters[NSStringFromSelector(@selector(payloads))];
+        NSNumber *shouldStore = parameters[NSStringFromSelector(@selector(shouldStore))];
+        NSNumber *compressed = parameters[NSStringFromSelector(@selector(compress))];
+        NSDictionary *metadata = parameters[NSStringFromSelector(@selector(metadata))];
+        id block = parameters[@"block"];
+                                         
+        [self sizeOfMessage:message toChannel:channel compressed:compressed.boolValue 
+             storeInHistory:shouldStore.boolValue withMetadata:metadata completion:block];
+    }];
+    
+    return ^PNPublishSizeAPICallBuilder *{ return builder; };
+}
 
 
 #pragma mark - Plain message publish
