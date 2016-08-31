@@ -1,4 +1,9 @@
 #import <Foundation/Foundation.h>
+#import "PNPresenceChannelGroupHereNowAPICallBuilder.h"
+#import "PNPresenceChannelHereNowAPICallBuilder.h"
+#import "PNPresenceWhereNowAPICallBuilder.h"
+#import "PNPresenceHereNowAPICallBuilder.h"
+#import "PNPresenceAPICallBuilder.h"
 #import "PubNub+Core.h"
 
 
@@ -9,53 +14,6 @@
 
 
 NS_ASSUME_NONNULL_BEGIN
-
-#pragma mark - Types
-
-/**
- @brief  Here now completion block.
- 
- @param result Reference on result object which describe service response on here now request.
- @param status Reference on status instance which hold information about processing results.
- 
- @since 4.0
- */
-typedef void(^PNHereNowCompletionBlock)(PNPresenceChannelHereNowResult * _Nullable result,
-                                        PNErrorStatus * _Nullable status);
-
-/**
- @brief  Global here now completion block.
- 
- @param result Reference on result object which describe service response on here now request.
- @param status Reference on status instance which hold information about processing results.
- 
- @since 4.0
- */
-typedef void(^PNGlobalHereNowCompletionBlock)(PNPresenceGlobalHereNowResult * _Nullable result,
-                                              PNErrorStatus * _Nullable status);
-
-/**
- @brief  Channel group here now completion block.
- 
- @param result Reference on result object which describe service response on here now request.
- @param status Reference on status instance which hold information about processing results.
- 
- @since 4.0
- */
-typedef void(^PNChannelGroupHereNowCompletionBlock)(PNPresenceChannelGroupHereNowResult * _Nullable result,
-                                                    PNErrorStatus * _Nullable status);
-
-/**
- @brief  UUID where now completion block.
- 
- @param result Reference on result object which describe service response on where now request.
- @param status Reference on status instance which hold information about processing results.
- 
- @since 4.0
- */
-typedef void(^PNWhereNowCompletionBlock)(PNPresenceWhereNowResult * _Nullable result, 
-                                         PNErrorStatus * _Nullable status);
-
 
 #pragma mark - API group interface
 /**
@@ -69,6 +27,19 @@ typedef void(^PNWhereNowCompletionBlock)(PNPresenceWhereNowResult * _Nullable re
  @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PubNub (Presence)
+
+
+///------------------------------------------------
+/// @name API Builder support
+///------------------------------------------------
+
+/**
+ @brief      Stores reference on presence API access \c builder construction block.
+ @discussion On block call return builder which allow to configure parameters for presence API access.
+ 
+ @since <#version#>
+ */
+@property (nonatomic, readonly, strong) PNPresenceAPICallBuilder *(^presence)(void);
 
 
 ///------------------------------------------------

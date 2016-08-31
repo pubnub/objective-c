@@ -896,7 +896,7 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
 
 - (void)retrieveEnvironmentInformation {
     
-    _applicationName = ([[NSBundle mainBundle] bundleIdentifier]?: [[NSProcessInfo processInfo] processName]);
+    _applicationName = ([[NSProcessInfo processInfo] processName]?: [[NSBundle mainBundle] bundleIdentifier]);
     if (!_applicationName) { _applicationName = @"PNLUnknownApplicationName"; }
     _applicationNameLength = [_applicationName lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
     _applicationCName = malloc(_applicationNameLength + 1);

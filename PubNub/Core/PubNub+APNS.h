@@ -1,4 +1,7 @@
 #import <Foundation/Foundation.h>
+#import "PNAPNSModificationAPICallBuilder.h"
+#import "PNAPNSAuditAPICallBuilder.h"
+#import "PNAPNSAPICallBuilder.h"
 #import "PubNub+Core.h"
 
 
@@ -8,28 +11,6 @@
 
 
 NS_ASSUME_NONNULL_BEGIN
-
-#pragma mark - Types
-
-/**
- @brief  Push notifications state modification completion block.
- 
- @param status Reference on status instance which hold information about processing results.
- 
- @since 4.0
- */
-typedef void(^PNPushNotificationsStateModificationCompletionBlock)(PNAcknowledgmentStatus *status);
-
-/**
- @brief  Push notifications state audit completion block.
- 
- @param status Reference on status instance which hold information about processing results.
- 
- @since 4.0
- */
-typedef void(^PNPushNotificationsStateAuditCompletionBlock)(PNAPNSEnabledChannelsResult * _Nullable result,
-                                                            PNErrorStatus * _Nullable status);
-
 
 #pragma mark - API group interface
 
@@ -44,6 +25,20 @@ typedef void(^PNPushNotificationsStateAuditCompletionBlock)(PNAPNSEnabledChannel
  @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PubNub (APNS)
+
+
+///------------------------------------------------
+/// @name API Builder support
+///------------------------------------------------
+
+/**
+ @brief      Stores reference on push notification API access \c builder construction block.
+ @discussion On block call return builder which allow to configure parameters for push API access and data 
+             manipulation.
+ 
+ @since <#version#>
+ */
+@property (nonatomic, readonly, strong) PNAPNSAPICallBuilder *(^push)(void);
 
 
 ///------------------------------------------------

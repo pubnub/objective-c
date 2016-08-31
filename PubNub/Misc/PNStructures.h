@@ -10,11 +10,266 @@
 
 #pragma mark Class forward
 
-@class PNResult, PNStatus;
-
+@class PNPresenceChannelGroupHereNowResult, PNChannelGroupClientStateResult, PNPresenceChannelHereNowResult; 
+@class PNPresenceGlobalHereNowResult, PNAPNSEnabledChannelsResult, PNChannelGroupChannelsResult;
+@class PNPresenceWhereNowResult, PNChannelClientStateResult, PNClientStateUpdateStatus;
+@class PNAcknowledgmentStatus, PNChannelGroupsResult, PNHistoryResult, PNAPICallBuilder, PNPublishStatus;
+@class PNErrorStatus, PNTimeResult, PNResult, PNStatus;
 
 #ifndef PNStructures_h
 #define PNStructures_h
+
+/**
+ @breif      Description of define to shorten builder constructors declaration.
+ @discussion Define describe block with specified \c protocol which provide interface for concrete API methods
+             family.
+ 
+ @since <#version#>
+ 
+ @param _protocol_ Reference on protocol for which \c builder should provide interface.
+ */
+#define PNBuilder(_protocol_) PNBuilderWithArgument(_protocol_, void)
+
+/**
+ @breif      Description of define to shorten builder constructors declaration.
+ @discussion Define describe block with specified \c protocol which provide interface for concrete API methods
+             family.
+ 
+ @since <#version#>
+ 
+ @param _protocol_ Reference on protocol for which \c builder should provide interface.
+ @param _argument_ Reference on argument type (including nullability) which is expected from user and will be
+                   passed later by builder to corresponding API call. 
+ */
+#define PNBuilderWithArgument(_protocol_, _argument_) PNAPICallBuilder <_protocol_> * (^)( _argument_ )
+
+
+NS_ASSUME_NONNULL_BEGIN
+
+#pragma mark - Completion blocks
+
+#pragma mark - Completion blocks :: General
+
+/**
+ @brief  Base block structure used by client for all API endpoints to handle request processing
+         completion.
+
+ @param result Provide \b PubNub service response information.
+ @param status Provide information about request to \b PubNub service failed or received error.
+
+ @since 4.0
+ */
+typedef void(^PNCompletionBlock)(PNResult * _Nullable result, PNStatus * _Nullable status);
+
+
+/**
+ @brief      Block type which is used as completion block for som API endpoint where only server
+             response can be delivered.
+ @discussion Used by API which as \b PubNub service to generate usable data (not request processing
+             status).
+
+ @param result Reference on results generated from passed request.
+
+ @since 4.0
+ */
+typedef void(^PNResultBlock)(PNResult *result);
+
+/**
+ @brief  Block type which is used as completion block for som API endpoint where only request
+         processing status can be delivered in response.
+
+ @param status Reference on status which represent service request processing state.
+
+ @since 4.0
+ */
+typedef void(^PNStatusBlock)(PNStatus *status);
+
+
+#pragma mark - Completion blocks :: APNS
+
+/**
+ @brief  Push notifications state modification completion block.
+ 
+ @param status Reference on status instance which hold information about processing results.
+ 
+ @since 4.0
+ */
+typedef void(^PNPushNotificationsStateModificationCompletionBlock)(PNAcknowledgmentStatus *status);
+
+/**
+ @brief  Push notifications state audit completion block.
+ 
+ @param status Reference on status instance which hold information about processing results.
+ 
+ @since 4.0
+ */
+typedef void(^PNPushNotificationsStateAuditCompletionBlock)(PNAPNSEnabledChannelsResult * _Nullable result,
+                                                            PNErrorStatus * _Nullable status);
+
+
+#pragma mark - Completion blocks :: Stream
+
+/**
+ @brief  Channel groups list audition completion block.
+ 
+ @param result Reference on result object which describe service response on audition request.
+ @param status Reference on status instance which hold information about processing results.
+ 
+ @since 4.0
+ */
+typedef void(^PNGroupAuditCompletionBlock)(PNChannelGroupsResult * _Nullable result, 
+                                           PNErrorStatus * _Nullable status);
+
+/**
+ @brief  Channel group channels list audition completion block.
+ 
+ @param result Reference on result object which describe service response on audition request.
+ @param status Reference on status instance which hold information about processing results.
+ 
+ @since 4.0
+ */
+typedef void(^PNGroupChannelsAuditCompletionBlock)(PNChannelGroupChannelsResult * _Nullable result,
+                                                   PNErrorStatus * _Nullable status);
+
+/**
+ @brief  Channel group content modification completion block.
+ 
+ @param status Reference on status instance which hold information about processing results.
+ 
+ @since 4.0
+ */
+typedef void(^PNChannelGroupChangeCompletionBlock)(PNAcknowledgmentStatus *status);
+
+
+#pragma mark - Completion blocks :: History
+
+/**
+ @brief  Channel history fetch completion block.
+ 
+ @param result Reference on result object which describe service response on history request.
+ @param status Reference on status instance which hold information about processing results.
+ 
+ @since 4.0
+ */
+typedef void(^PNHistoryCompletionBlock)(PNHistoryResult * _Nullable result, PNErrorStatus * _Nullable status);
+
+
+#pragma mark - Completion blocks :: Presence
+
+/**
+ @brief  Here now completion block.
+ 
+ @param result Reference on result object which describe service response on here now request.
+ @param status Reference on status instance which hold information about processing results.
+ 
+ @since 4.0
+ */
+typedef void(^PNHereNowCompletionBlock)(PNPresenceChannelHereNowResult * _Nullable result,
+                                        PNErrorStatus * _Nullable status);
+
+/**
+ @brief  Global here now completion block.
+ 
+ @param result Reference on result object which describe service response on here now request.
+ @param status Reference on status instance which hold information about processing results.
+ 
+ @since 4.0
+ */
+typedef void(^PNGlobalHereNowCompletionBlock)(PNPresenceGlobalHereNowResult * _Nullable result,
+                                              PNErrorStatus * _Nullable status);
+
+/**
+ @brief  Channel group here now completion block.
+ 
+ @param result Reference on result object which describe service response on here now request.
+ @param status Reference on status instance which hold information about processing results.
+ 
+ @since 4.0
+ */
+typedef void(^PNChannelGroupHereNowCompletionBlock)(PNPresenceChannelGroupHereNowResult * _Nullable result,
+                                                    PNErrorStatus * _Nullable status);
+
+/**
+ @brief  UUID where now completion block.
+ 
+ @param result Reference on result object which describe service response on where now request.
+ @param status Reference on status instance which hold information about processing results.
+ 
+ @since 4.0
+ */
+typedef void(^PNWhereNowCompletionBlock)(PNPresenceWhereNowResult * _Nullable result, 
+                                         PNErrorStatus * _Nullable status);
+
+
+#pragma mark - Completion blocks :: Messaging
+
+/**
+ @brief  Message publish completion block.
+ 
+ @param status Reference on status instance which hold information about processing results.
+ 
+ @since 4.0
+ */
+typedef void(^PNPublishCompletionBlock)(PNPublishStatus *status);
+
+/**
+ @brief  Message size calculation completion block.
+ 
+ @param size Calculated size of the packet which will be used to send message.
+ 
+ @since 4.0
+ */
+typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
+
+
+#pragma mark - Completion blocks :: State
+
+/**
+ @brief State modification completion block.
+ 
+ @param status Reference on status instance which hold information about processing results.
+ 
+ @since 4.0
+ */
+typedef void(^PNSetStateCompletionBlock)(PNClientStateUpdateStatus *status);
+
+/**
+ @brief  Channel state audition completion block.
+ 
+ @param result Reference on result object which describe service response on channel state audit request.
+ @param status Reference on status instance which hold information about processing results.
+ 
+ @since 4.0
+ */
+typedef void(^PNChannelStateCompletionBlock)(PNChannelClientStateResult * _Nullable result,
+                                             PNErrorStatus * _Nullable status);
+
+/**
+ @brief  Channel group state audition completion block.
+ 
+ @param result Reference on result object which describe service response on channel group state audit request.
+ @param status Reference on status instance which hold information about processing results.
+ 
+ @since 4.0
+ */
+typedef void(^PNChannelGroupStateCompletionBlock)(PNChannelGroupClientStateResult * _Nullable result,
+                                                  PNErrorStatus * _Nullable status);
+
+
+#pragma mark - Completion blocks :: Time
+
+/**
+ @brief  Time request completion block.
+ 
+ @param result Reference on result object which describe service response on time request.
+ @param status Reference on status instance which hold information about processing results.
+ 
+ @since 4.0
+ */
+typedef void(^PNTimeCompletionBlock)(PNTimeResult * _Nullable result, PNErrorStatus * _Nullable status);
+
+NS_ASSUME_NONNULL_END
+
 
 /**
  @brief  Options describe possible heartbeat states on which delegate can be notified.
@@ -347,39 +602,5 @@ typedef NS_ENUM(NSInteger, PNHereNowVerbosityLevel) {
      */
     PNHereNowState
 };
-
-/**
- @brief  Base block structure used by client for all API endpoints to handle request processing
-         completion.
-
- @param result Provide \b PubNub service response information.
- @param status Provide information about request to \b PubNub service failed or received error.
-
- @since 4.0
- */
-typedef void(^PNCompletionBlock)(PNResult *result, PNStatus *status);
-
-
-/**
- @brief      Block type which is used as completion block for som API endpoint where only server
-             response can be delivered.
- @discussion Used by API which as \b PubNub service to generate usable data (not request processing
-             status).
-
- @param result Reference on results generated from passed request.
-
- @since 4.0
- */
-typedef void(^PNResultBlock)(PNResult *result);
-
-/**
- @brief  Block type which is used as completion block for som API endpoint where only request
-         processing status can be delivered in response.
-
- @param status Reference on status which represent service request processing state.
-
- @since 4.0
- */
-typedef void(^PNStatusBlock)(PNStatus *status);
 
 #endif // PNStructures_h
