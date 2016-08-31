@@ -147,7 +147,7 @@ NS_ASSUME_NONNULL_BEGIN
              (when \c NSURLSession allow to get this information only from block which will be scheduled on
              processing queue).
  
- @since 4.<#minor-version#>.0
+ @since 4.5.0
  */
 @property (nonatomic, strong) NSMutableArray<NSURLSessionDataTask *> *scheduledDataTasks;
 
@@ -155,7 +155,7 @@ NS_ASSUME_NONNULL_BEGIN
  @brief  Stores reference on identifier which has been used to request from system more time to complete
          pending tasks when client resign active.
  
- @since 4.<#minor-version#>.0
+ @since 4.5.0
  */
 @property (nonatomic, assign) UIBackgroundTaskIdentifier tasksCompletionIdentifier;
 
@@ -312,7 +312,7 @@ NS_ASSUME_NONNULL_BEGIN
  @brief  Complete processing of tasks which has been scheduled but not completelly processed before \b PubNub 
          client resign active state.
  
- @since 4.<#minor-version#>.0
+ @since 4.5.0
  
  @param dataTasks    List of \c NSURLSession data tasks which didn't completed before \b PubNub client resign
                      active state.
@@ -477,7 +477,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  @brief  Check whether there \c operation is in the list of passed \c tasks. 
  
- @since 4.<#minor-version#>.0
+ @since 4.5.0
  
  @param operation One of \b PNOperationType enum fields which is used during search.
  @param tasks     List of currently scheduled and pending / executing data tasks among which should be found 
@@ -491,7 +491,7 @@ NS_ASSUME_NONNULL_BEGIN
  @brief  Depending on current network manager state it may require to complete currently active tasks 
          completion from background execution context.
  
- @since 4.<#minor-version#>.0
+ @since 4.5.0
  */
 - (void)endBackgroundTasksCompletionIfRequired;
 

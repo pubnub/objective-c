@@ -1,3 +1,11 @@
+31-08-2016 - d05b11d - 4.5.0
+. added ability to complete issued API calls before application will be suspended (happens by default for iOS).
+. added PNConfiguration property called 'completeRequestsBeforeSuspension' which allow to change default behavior (for iOS).
+. removed dependency against CocoaLumberjack and replaced with own logger. 
+. added Carthage support.
+. Framework targets build bundle with bitcode enabled by default
+. added ability to disable message stripping (removing data which has been added by client during publish with mobile payload) which is enabled by default 
+
 08-07-2016 - 91a5176 - 4.4.1
 . fixed timeout issue which caused by recently added shared NSURLSessionConfiguration configuration
 . added tests to cover fixed issue
