@@ -9,15 +9,15 @@
          <BuildActionEntry
             buildForTesting = "YES"
             buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "791582AE1BD709D10084FC70"
-               BuildableName = "PubNub.framework"
-               BlueprintName = "PubNub (watchOS)"
-               ReferencedContainer = "container:PubNub Framework.xcodeproj">
+               BlueprintIdentifier = "797BDCC71C1F5091006EF006"
+               BuildableName = "watchOS ObjC Tests.xctest"
+               BlueprintName = "watchOS ObjC Tests"
+               ReferencedContainer = "container:PubNub Tests.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -28,6 +28,16 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "797BDCC71C1F5091006EF006"
+               BuildableName = "watchOS ObjC Tests.xctest"
+               BlueprintName = "watchOS ObjC Tests"
+               ReferencedContainer = "container:PubNub Tests.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <AdditionalOptions>
       </AdditionalOptions>
@@ -45,10 +55,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "791582AE1BD709D10084FC70"
-            BuildableName = "PubNub.framework"
-            BlueprintName = "PubNub (watchOS)"
-            ReferencedContainer = "container:PubNub Framework.xcodeproj">
+            BlueprintIdentifier = "797BDCC71C1F5091006EF006"
+            BuildableName = "watchOS ObjC Tests.xctest"
+            BlueprintName = "watchOS ObjC Tests"
+            ReferencedContainer = "container:PubNub Tests.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -63,10 +73,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "791582AE1BD709D10084FC70"
-            BuildableName = "PubNub.framework"
-            BlueprintName = "PubNub (watchOS)"
-            ReferencedContainer = "container:PubNub Framework.xcodeproj">
+            BlueprintIdentifier = "797BDCC71C1F5091006EF006"
+            BuildableName = "watchOS ObjC Tests.xctest"
+            BlueprintName = "watchOS ObjC Tests"
+            ReferencedContainer = "container:PubNub Tests.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>
