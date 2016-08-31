@@ -36,7 +36,7 @@
 
 #pragma mark - Class filtering
 
-+ (nullable NSArray<Class> *)classesConformingToProtocol:(Protocol *)protocol {
++ (NSArray<Class> *)classesConformingToProtocol:(Protocol *)protocol {
     
     NSMutableArray *classesList = [NSMutableArray new];
     for (Class class in [self classes]) {
@@ -47,7 +47,7 @@
     return (classesList.count ? [classesList copy] : nil);
 }
 
-+ (nullable NSArray<Class> *)classesRespondingToSelector:(SEL)selector {
++ (NSArray<Class> *)classesRespondingToSelector:(SEL)selector {
     
     NSMutableArray *classesList = [NSMutableArray new];
     for (Class class in [self classes]) {
@@ -64,7 +64,7 @@
 
 #pragma mark - Misc
 
-+ (nullable NSArray<Class> *)classes {
++ (NSArray<Class> *)classes {
     
     NSMutableArray *classesList = [NSMutableArray new];
     unsigned int visibleClassesCount;

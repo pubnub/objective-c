@@ -206,7 +206,6 @@
 		791582961BD709C60084FC70 /* PNPresenceWhereNowParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0E21BD03DE4001FC34D /* PNPresenceWhereNowParser.h */; };
 		791582971BD709C60084FC70 /* PNDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0B41BD03DE4001FC34D /* PNDictionary.h */; };
 		791582991BD709C60084FC70 /* PNNetwork.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0EE1BD03DE4001FC34D /* PNNetwork.h */; };
-		7915829A1BD709C60084FC70 /* PNConfiguration+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0791BD03DE4001FC34D /* PNConfiguration+Private.h */; };
 		7915829B1BD709C60084FC70 /* PNClientStateParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0D41BD03DE4001FC34D /* PNClientStateParser.h */; };
 		7915829C1BD709C60084FC70 /* PNConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0C71BD03DE4001FC34D /* PNConstants.h */; };
 		7915829D1BD709C60084FC70 /* PNStateListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0711BD03DE4001FC34D /* PNStateListener.h */; };
@@ -353,7 +352,6 @@
 		7915833F1BD709D10084FC70 /* PNPresenceWhereNowParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0E21BD03DE4001FC34D /* PNPresenceWhereNowParser.h */; };
 		791583401BD709D10084FC70 /* PNDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0B41BD03DE4001FC34D /* PNDictionary.h */; };
 		791583421BD709D10084FC70 /* PNNetwork.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0EE1BD03DE4001FC34D /* PNNetwork.h */; };
-		791583431BD709D10084FC70 /* PNConfiguration+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0791BD03DE4001FC34D /* PNConfiguration+Private.h */; };
 		791583441BD709D10084FC70 /* PNClientStateParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0D41BD03DE4001FC34D /* PNClientStateParser.h */; };
 		791583451BD709D10084FC70 /* PNConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0C71BD03DE4001FC34D /* PNConstants.h */; };
 		791583461BD709D10084FC70 /* PNStateListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0711BD03DE4001FC34D /* PNStateListener.h */; };
@@ -413,7 +411,6 @@
 		798842331C18F0B3003E8948 /* PubNub+Time.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0691BD03DE4001FC34D /* PubNub+Time.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		798842341C18F0F6003E8948 /* PNAES.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0751BD03DE4001FC34D /* PNAES.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		798842351C18F0FB003E8948 /* PNClientInformation.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0771BD03DE4001FC34D /* PNClientInformation.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		798842361C18F101003E8948 /* PNConfiguration+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0791BD03DE4001FC34D /* PNConfiguration+Private.h */; };
 		798842371C18F104003E8948 /* PNConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB07A1BD03DE4001FC34D /* PNConfiguration.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		798842381C18F10D003E8948 /* PNClientState.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB06D1BD03DE4001FC34D /* PNClientState.h */; };
 		798842391C18F111003E8948 /* PNHeartbeat.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB06F1BD03DE4001FC34D /* PNHeartbeat.h */; };
@@ -641,7 +638,6 @@
 		798843611C191579003E8948 /* PNTimeParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0EC1BD03DE4001FC34D /* PNTimeParser.h */; };
 		798843621C191579003E8948 /* PNErrorStatus+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB08B1BD03DE4001FC34D /* PNErrorStatus+Private.h */; };
 		798843631C191579003E8948 /* PNNetworkResponseSerializer.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0F01BD03DE4001FC34D /* PNNetworkResponseSerializer.h */; };
-		798843641C191579003E8948 /* PNConfiguration+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0791BD03DE4001FC34D /* PNConfiguration+Private.h */; };
 		798843651C191579003E8948 /* PNSubscriberResults.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0A31BD03DE4001FC34D /* PNSubscriberResults.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		798843661C191579003E8948 /* PubNub+ChannelGroup.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0581BD03DE4001FC34D /* PubNub+ChannelGroup.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		798843671C191579003E8948 /* PubNub+APNS.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0561BD03DE4001FC34D /* PubNub+APNS.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -856,7 +852,6 @@
 		79A8BCAE1C58F93900015BDE /* PNNumber.h in Headers */ = {isa = PBXBuildFile; fileRef = 793887021BEAD49100DCC662 /* PNNumber.h */; };
 		79A8BCAF1C58F93900015BDE /* PNDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0B41BD03DE4001FC34D /* PNDictionary.h */; };
 		79A8BCB11C58F93900015BDE /* PNNetwork.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0EE1BD03DE4001FC34D /* PNNetwork.h */; };
-		79A8BCB21C58F93900015BDE /* PNConfiguration+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0791BD03DE4001FC34D /* PNConfiguration+Private.h */; };
 		79A8BCB31C58F93900015BDE /* PNClientStateParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0D41BD03DE4001FC34D /* PNClientStateParser.h */; };
 		79A8BCB41C58F93900015BDE /* PNConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0C71BD03DE4001FC34D /* PNConstants.h */; };
 		79A8BCB51C58F93900015BDE /* PNStateListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0711BD03DE4001FC34D /* PNStateListener.h */; };
@@ -1007,7 +1002,6 @@
 		79ACC4791C11BC4D0056523A /* PNNumber.h in Headers */ = {isa = PBXBuildFile; fileRef = 793887021BEAD49100DCC662 /* PNNumber.h */; };
 		79ACC47A1C11BC4D0056523A /* PNDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0B41BD03DE4001FC34D /* PNDictionary.h */; };
 		79ACC47C1C11BC4D0056523A /* PNNetwork.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0EE1BD03DE4001FC34D /* PNNetwork.h */; };
-		79ACC47D1C11BC4D0056523A /* PNConfiguration+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0791BD03DE4001FC34D /* PNConfiguration+Private.h */; };
 		79ACC47E1C11BC4D0056523A /* PNClientStateParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0D41BD03DE4001FC34D /* PNClientStateParser.h */; };
 		79ACC47F1C11BC4D0056523A /* PNConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0C71BD03DE4001FC34D /* PNConstants.h */; };
 		79ACC4801C11BC4D0056523A /* PNStateListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0711BD03DE4001FC34D /* PNStateListener.h */; };
@@ -1052,7 +1046,6 @@
 		79CBB1161BD03DE4001FC34D /* PNAES.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0761BD03DE4001FC34D /* PNAES.m */; };
 		79CBB1171BD03DE4001FC34D /* PNClientInformation.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0771BD03DE4001FC34D /* PNClientInformation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		79CBB1181BD03DE4001FC34D /* PNClientInformation.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0781BD03DE4001FC34D /* PNClientInformation.m */; };
-		79CBB1191BD03DE4001FC34D /* PNConfiguration+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0791BD03DE4001FC34D /* PNConfiguration+Private.h */; };
 		79CBB11A1BD03DE4001FC34D /* PNConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB07A1BD03DE4001FC34D /* PNConfiguration.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		79CBB11B1BD03DE4001FC34D /* PNConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB07B1BD03DE4001FC34D /* PNConfiguration.m */; };
 		79CBB11C1BD03DE4001FC34D /* PNAcknowledgmentStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB07D1BD03DE4001FC34D /* PNAcknowledgmentStatus.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1851,7 +1844,6 @@
 				791582581BD709C60084FC70 /* PNPresenceWhereNowResult.h in Headers */,
 				791582A41BD709C60084FC70 /* PNPresenceHereNowParser.h in Headers */,
 				791582A11BD709C60084FC70 /* PubNub+SubscribePrivate.h in Headers */,
-				7915829A1BD709C60084FC70 /* PNConfiguration+Private.h in Headers */,
 				791582951BD709C60084FC70 /* PubNub+PresencePrivate.h in Headers */,
 				791582921BD709C60084FC70 /* PNMessagePublishParser.h in Headers */,
 				7915825B1BD709C60084FC70 /* PNAcknowledgmentStatus.h in Headers */,
@@ -1947,7 +1939,6 @@
 				791583011BD709D10084FC70 /* PNPresenceWhereNowResult.h in Headers */,
 				7915834D1BD709D10084FC70 /* PNPresenceHereNowParser.h in Headers */,
 				7915834A1BD709D10084FC70 /* PubNub+SubscribePrivate.h in Headers */,
-				791583431BD709D10084FC70 /* PNConfiguration+Private.h in Headers */,
 				7915833E1BD709D10084FC70 /* PubNub+PresencePrivate.h in Headers */,
 				7915833B1BD709D10084FC70 /* PNMessagePublishParser.h in Headers */,
 				791583041BD709D10084FC70 /* PNAcknowledgmentStatus.h in Headers */,
@@ -2043,7 +2034,6 @@
 				798842491C18F16A003E8948 /* PNPresenceWhereNowResult.h in Headers */,
 				798842AD1C18F2D5003E8948 /* PNPresenceHereNowParser.h in Headers */,
 				7988422A1C18F07B003E8948 /* PubNub+SubscribePrivate.h in Headers */,
-				798842361C18F101003E8948 /* PNConfiguration+Private.h in Headers */,
 				7988423C1C18F124003E8948 /* PNAcknowledgmentStatus.h in Headers */,
 				798842291C18F071003E8948 /* PubNub+PresencePrivate.h in Headers */,
 				798842AC1C18F2D4003E8948 /* PNMessagePublishParser.h in Headers */,
@@ -2138,7 +2128,6 @@
 				7988435D1C191579003E8948 /* PNPresenceWhereNowResult.h in Headers */,
 				798843901C191579003E8948 /* PNPresenceHereNowParser.h in Headers */,
 				798843741C191579003E8948 /* PubNub+SubscribePrivate.h in Headers */,
-				798843641C191579003E8948 /* PNConfiguration+Private.h in Headers */,
 				798843831C191579003E8948 /* PNAcknowledgmentStatus.h in Headers */,
 				798843681C191579003E8948 /* PubNub+PresencePrivate.h in Headers */,
 				7988434C1C191579003E8948 /* PNMessagePublishParser.h in Headers */,
@@ -2235,7 +2224,6 @@
 				79A8BC6E1C58F93900015BDE /* PNPresenceWhereNowResult.h in Headers */,
 				79A8BCBB1C58F93900015BDE /* PNPresenceHereNowParser.h in Headers */,
 				79A8BCB91C58F93900015BDE /* PubNub+SubscribePrivate.h in Headers */,
-				79A8BCB21C58F93900015BDE /* PNConfiguration+Private.h in Headers */,
 				79A8BCAC1C58F93900015BDE /* PubNub+PresencePrivate.h in Headers */,
 				79A8BCA91C58F93900015BDE /* PNMessagePublishParser.h in Headers */,
 				79A8BC711C58F93900015BDE /* PNAcknowledgmentStatus.h in Headers */,
@@ -2331,7 +2319,6 @@
 				79ACC43A1C11BC4D0056523A /* PNPresenceWhereNowResult.h in Headers */,
 				79ACC4871C11BC4D0056523A /* PNPresenceHereNowParser.h in Headers */,
 				79ACC4841C11BC4D0056523A /* PubNub+SubscribePrivate.h in Headers */,
-				79ACC47D1C11BC4D0056523A /* PNConfiguration+Private.h in Headers */,
 				79ACC4771C11BC4D0056523A /* PubNub+PresencePrivate.h in Headers */,
 				79ACC4741C11BC4D0056523A /* PNMessagePublishParser.h in Headers */,
 				79ACC43D1C11BC4D0056523A /* PNAcknowledgmentStatus.h in Headers */,
@@ -2428,7 +2415,6 @@
 				79CBB1351BD03DE4001FC34D /* PNPresenceWhereNowResult.h in Headers */,
 				79CBB1781BD03DE4001FC34D /* PNPresenceHereNowParser.h in Headers */,
 				79CBB10A1BD03DE4001FC34D /* PubNub+SubscribePrivate.h in Headers */,
-				79CBB1191BD03DE4001FC34D /* PNConfiguration+Private.h in Headers */,
 				79CBB1031BD03DE4001FC34D /* PubNub+PresencePrivate.h in Headers */,
 				79CBB1761BD03DE4001FC34D /* PNMessagePublishParser.h in Headers */,
 				79CBB11C1BD03DE4001FC34D /* PNAcknowledgmentStatus.h in Headers */,

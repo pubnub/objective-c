@@ -60,7 +60,7 @@
     return self.subscriberManager.filterExpression;
 }
 
-- (void)setFilterExpression:(nullable NSString *)filterExpression {
+- (void)setFilterExpression:(NSString *)filterExpression {
     
     self.subscriberManager.filterExpression = filterExpression;
     if ([self.subscriberManager allObjects].count) { [self subscribeToChannels:@[] withPresence:NO]; }
@@ -75,22 +75,21 @@
 }
 
 - (void)subscribeToChannels:(NSArray<NSString *> *)channels withPresence:(BOOL)shouldObservePresence
-             usingTimeToken:(nullable NSNumber *)timeToken {
+             usingTimeToken:(NSNumber *)timeToken {
     
     [self subscribeToChannels:channels withPresence:shouldObservePresence usingTimeToken:timeToken
                   clientState:nil];
 }
 
 - (void)subscribeToChannels:(NSArray<NSString *> *)channels withPresence:(BOOL)shouldObservePresence
-                clientState:(nullable NSDictionary<NSString *, id> *)state {
+                clientState:(NSDictionary<NSString *, id> *)state {
     
     [self subscribeToChannels:channels withPresence:shouldObservePresence usingTimeToken:nil
                   clientState:state];
 }
 
 - (void)subscribeToChannels:(NSArray<NSString *> *)channels withPresence:(BOOL)shouldObservePresence
-             usingTimeToken:(nullable NSNumber *)timeToken 
-                clientState:(nullable NSDictionary<NSString *, id> *)state {
+             usingTimeToken:(NSNumber *)timeToken clientState:(NSDictionary<NSString *, id> *)state {
     
     NSArray *presenceChannelsList = nil;
     if (shouldObservePresence) { presenceChannelsList = [PNChannel presenceChannelsFrom:channels]; }
@@ -105,22 +104,21 @@
 }
 
 - (void)subscribeToChannelGroups:(NSArray<NSString *> *)groups withPresence:(BOOL)shouldObservePresence
-                  usingTimeToken:(nullable NSNumber *)timeToken {
+                  usingTimeToken:(NSNumber *)timeToken {
     
     [self subscribeToChannelGroups:groups withPresence:shouldObservePresence usingTimeToken:timeToken
                        clientState:nil];
 }
 
 - (void)subscribeToChannelGroups:(NSArray<NSString *> *)groups withPresence:(BOOL)shouldObservePresence
-                     clientState:(nullable NSDictionary<NSString *, id> *)state {
+                     clientState:(NSDictionary<NSString *, id> *)state {
 
     [self subscribeToChannelGroups:groups withPresence:shouldObservePresence usingTimeToken:nil
                        clientState:state];
 }
 
 - (void)subscribeToChannelGroups:(NSArray<NSString *> *)groups withPresence:(BOOL)shouldObservePresence
-                  usingTimeToken:(nullable NSNumber *)timeToken
-                     clientState:(nullable NSDictionary<NSString *, id> *)state {
+                  usingTimeToken:(NSNumber *)timeToken clientState:(NSDictionary<NSString *, id> *)state {
     
     NSArray *groupsList = [NSArray arrayWithArray:groups];
     if (shouldObservePresence) {
@@ -147,7 +145,7 @@
 }
 
 - (void)unsubscribeFromChannels:(NSArray<NSString *> *)channels withPresence:(BOOL)shouldObservePresence
-                     completion:(nullable PNSubscriberCompletionBlock)block {
+                     completion:(PNSubscriberCompletionBlock)block {
 
     NSArray *presenceChannels = nil;
     if (shouldObservePresence) { presenceChannels = [PNChannel presenceChannelsFrom:channels]; }
@@ -162,7 +160,7 @@
 }
 
 - (void)unsubscribeFromChannelGroups:(NSArray<NSString *> *)groups withPresence:(BOOL)shouldObservePresence
-                          completion:(nullable PNSubscriberCompletionBlock)block {
+                          completion:(PNSubscriberCompletionBlock)block {
 
     NSArray *groupsList = [NSArray arrayWithArray:groups];
     if (shouldObservePresence) {

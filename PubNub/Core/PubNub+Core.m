@@ -401,13 +401,13 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Operation processing
 
 - (void)processOperation:(PNOperationType)operationType withParameters:(PNRequestParameters *)parameters
-         completionBlock:(nullable id)block {
+         completionBlock:(id)block {
 
     [self processOperation:operationType withParameters:parameters data:nil completionBlock:block];
 }
 
 - (void)processOperation:(PNOperationType)operationType withParameters:(PNRequestParameters *)parameters 
-                    data:(nullable NSData *)data completionBlock:(nullable id)block {
+                    data:(NSData *)data completionBlock:(id)block {
     
     if (operationType == PNSubscribeOperation || operationType == PNUnsubscribeOperation) {
 
@@ -452,8 +452,8 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Events notification
 
-- (void)callBlock:(nullable id)block status:(BOOL)callingStatusBlock withResult:(nullable PNResult *)result
-        andStatus:(nullable PNStatus *)status {
+- (void)callBlock:(id)block status:(BOOL)callingStatusBlock withResult:(PNResult *)result 
+        andStatus:(PNStatus *)status {
     
     if (result) { DDLogResult(self.logger, @"<PubNub> %@", [result stringifiedRepresentation]); }
     

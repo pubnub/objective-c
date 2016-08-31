@@ -6,13 +6,13 @@
 #import "PNNetwork.h"
 #import "NSURLSessionConfiguration+PNConfigurationPrivate.h"
 #import "PNNetworkResponseSerializer.h"
-#import "PNConfiguration+Private.h"
 #import "PNRequestParameters.h"
 #import "PNPrivateStructures.h"
 #import "PubNub+CorePrivate.h"
 #import "PNResult+Private.h"
 #import "PNStatus+Private.h"
 #import <libkern/OSAtomic.h>
+#import "PNConfiguration.h"
 #import "PNErrorStatus.h"
 #import "PNErrorParser.h"
 #import "PNURLBuilder.h"
@@ -597,8 +597,7 @@ NS_ASSUME_NONNULL_END
     
     __block NSURLSessionDataTask *task = nil;
     __weak __typeof(self) weakSelf = self;
-    NSURLSessionDataTaskCompletion handler = ^(NSData * _Nullable data, NSURLResponse * _Nullable response,
-                                               NSError * _Nullable error) {
+    NSURLSessionDataTaskCompletion handler = ^(NSData *data, NSURLResponse *response, NSError *error) {
         
         // Silence static analyzer warnings.
         // Code is aware about this case and at the end will simply call on 'nil' object method.
@@ -643,7 +642,7 @@ NS_ASSUME_NONNULL_END
     return [_resultExpectingOperations containsObject:@(operation)];
 }
 
-- (nullable Class <PNParser>)parserForOperation:(PNOperationType)operation {
+- (Class <PNParser>)parserForOperation:(PNOperationType)operation {
     
     static NSDictionary *_parsers;
     static dispatch_once_t onceToken;
@@ -683,9 +682,8 @@ NS_ASSUME_NONNULL_END
     return class;
 }
 
-- (void)processOperation:(PNOperationType)operationType
-          withParameters:(nullable PNRequestParameters *)parameters data:(nullable NSData *)data
-         completionBlock:(nullable id)block {
+- (void)processOperation:(PNOperationType)operationType withParameters:(PNRequestParameters *)parameters 
+                    data:(NSData *)data completionBlock:(id)block {
 
     if (operationType == PNSubscribeOperation || operationType == PNUnsubscribeOperation) {
         
@@ -736,8 +734,8 @@ NS_ASSUME_NONNULL_END
     #pragma clang diagnostic pop
 }
 
-- (void)parseData:(nullable id)data withParser:(Class <PNParser>)parser
-       completion:(void(^)(NSDictionary * _Nullable parsedData, BOOL parseError))block {
+- (void)parseData:(id)data withParser:(Class <PNParser>)parser 
+       completion:(void(^)(NSDictionary *parsedData, BOOL parseError))block {
 
     __weak __typeof(self) weakSelf = self;
     void(^parseCompletion)(NSDictionary *) = ^(NSDictionary *processedData){
@@ -765,10 +763,11 @@ NS_ASSUME_NONNULL_END
     }
     else {
 
-        NSDictionary *additionalData = nil;
+        NSMutableDictionary *additionalData = [NSMutableDictionary new];
+        additionalData[@"stripMobilePayload"] = @(self.configuration.shouldStripMobilePayload);
         if ([self.configuration.cipherKey length]) {
 
-            additionalData = @{@"cipherKey": self.configuration.cipherKey};
+            additionalData[@"cipherKey"] = self.configuration.cipherKey;
         }
         
         // If additional data required client should assume what potentially additional calculations
@@ -974,9 +973,8 @@ NS_ASSUME_NONNULL_END
     }
 }
 
-- (void)handleData:(nullable NSData *)data loadedWithTask:(nullable NSURLSessionDataTask *)task
-             error:(nullable NSError *)requestError usingSuccess:(NSURLSessionDataTaskSuccess)success
-           failure:(NSURLSessionDataTaskFailure)failure {
+- (void)handleData:(NSData *)data loadedWithTask:(NSURLSessionDataTask *)task error:(NSError *)requestError 
+      usingSuccess:(NSURLSessionDataTaskSuccess)success failure:(NSURLSessionDataTaskFailure)failure {
     
     dispatch_async(self.processingQueue, ^{
         
@@ -988,8 +986,8 @@ NS_ASSUME_NONNULL_END
     });
 }
 
-- (void)handleOperation:(PNOperationType)operation taskDidComplete:(nullable NSURLSessionDataTask *)task
-               withData:(nullable id)responseObject completionBlock:(id)block {
+- (void)handleOperation:(PNOperationType)operation taskDidComplete:(NSURLSessionDataTask *)task
+               withData:(id)responseObject completionBlock:(id)block {
     
     __weak __typeof(self) weakSelf = self;
     [self parseData:responseObject withParser:[self parserForOperation:operation]
@@ -1008,8 +1006,8 @@ NS_ASSUME_NONNULL_END
          }];
 }
 
-- (void)handleOperation:(PNOperationType)operation taskDidFail:(nullable NSURLSessionDataTask *)task
-              withError:(nullable NSError *)error completionBlock:(id)block {
+- (void)handleOperation:(PNOperationType)operation taskDidFail:(NSURLSessionDataTask *)task
+              withError:(NSError *)error completionBlock:(id)block {
     
     if (error.code == NSURLErrorCancelled) {
         
@@ -1034,9 +1032,9 @@ NS_ASSUME_NONNULL_END
     }
 }
 
-- (void)handleParsedData:(nullable NSDictionary *)data loadedWithTask:(nullable NSURLSessionDataTask *)task
+- (void)handleParsedData:(NSDictionary *)data loadedWithTask:(NSURLSessionDataTask *)task
             forOperation:(PNOperationType)operation parsedAsError:(BOOL)isError
-         processingError:(nullable NSError *)error completionBlock:(id)block {
+         processingError:(NSError *)error completionBlock:(id)block {
     
     PNResult *result = nil;
     PNStatus *status = nil;
@@ -1086,8 +1084,8 @@ NS_ASSUME_NONNULL_END
 #endif // __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
 }
 
-- (void)handleOperation:(PNOperationType)operation processingCompletedWithResult:(nullable PNResult *)result
-                 status:(nullable PNStatus *)status completionBlock:(id)block {
+- (void)handleOperation:(PNOperationType)operation processingCompletedWithResult:(PNResult *)result
+                 status:(PNStatus *)status completionBlock:(id)block {
     
     // Silence static analyzer warnings.
     // Code is aware about this case and at the end will simply call on 'nil' object method.

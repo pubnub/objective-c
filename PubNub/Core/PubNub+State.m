@@ -106,21 +106,20 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Client state information manipulation
 
-- (void)setState:(nullable NSDictionary<NSString *, id> *)state forUUID:(NSString *)uuid 
-       onChannel:(NSString *)channel withCompletion:(nullable PNSetStateCompletionBlock)block {
+- (void)setState:(NSDictionary<NSString *, id> *)state forUUID:(NSString *)uuid onChannel:(NSString *)channel 
+  withCompletion:(PNSetStateCompletionBlock)block {
     
     [self setState:state forUUID:uuid onChannel:YES withName:channel withCompletion:block];
 }
 
-- (void)setState:(nullable NSDictionary<NSString *, id> *)state forUUID:(NSString *)uuid 
-  onChannelGroup:(NSString *)group withCompletion:(nullable PNSetStateCompletionBlock)block {
+- (void)setState:(NSDictionary<NSString *, id> *)state forUUID:(NSString *)uuid 
+  onChannelGroup:(NSString *)group withCompletion:(PNSetStateCompletionBlock)block {
     
     [self setState:state forUUID:uuid onChannel:NO withName:group withCompletion:block];
 }
 
-- (void)setState:(nullable NSDictionary<NSString *, id> *)state forUUID:(NSString *)uuid 
-       onChannel:(BOOL)onChannel withName:(NSString *)object
-  withCompletion:(nullable PNSetStateCompletionBlock)block {
+- (void)setState:(NSDictionary<NSString *, id> *)state forUUID:(NSString *)uuid onChannel:(BOOL)onChannel 
+        withName:(NSString *)object withCompletion:(PNSetStateCompletionBlock)block {
     
     __weak __typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -231,7 +230,7 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Handlers
 
 - (void)handleSetStateStatus:(PNClientStateUpdateStatus *)status forUUID:(NSString *)uuid
-                    atObject:(NSString *)object withCompletion:(nullable PNSetStateCompletionBlock)block {
+                    atObject:(NSString *)object withCompletion:(PNSetStateCompletionBlock)block {
     
     // Check whether state modification to the client has been successful or not.
     if (status && !status.isError && [uuid isEqualToString:self.configuration.uuid]) {
@@ -242,7 +241,7 @@ NS_ASSUME_NONNULL_END
     [self callBlock:block status:YES withResult:nil andStatus:(PNStatus *)status];
 }
 
-- (void)handleStateResult:(nullable PNChannelClientStateResult *)result withStatus:(nullable PNStatus *)status
+- (void)handleStateResult:(PNChannelClientStateResult *)result withStatus:(PNStatus *)status
                   forUUID:(NSString *)uuid atChannel:(BOOL)isChannel object:(NSString *)object
            withCompletion:(id)block {
     

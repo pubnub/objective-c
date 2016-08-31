@@ -99,7 +99,7 @@ NS_ASSUME_NONNULL_END
                completionBlock:block];
 }
 
-- (void)hereNowWithVerbosity:(PNHereNowVerbosityLevel)level forObject:(nullable NSString *)object 
+- (void)hereNowWithVerbosity:(PNHereNowVerbosityLevel)level forObject:(NSString *)object 
            withOperationType:(PNOperationType)operation completionBlock:(id)block {
 
     PNRequestParameters *parameters = [PNRequestParameters new];
@@ -135,8 +135,8 @@ NS_ASSUME_NONNULL_END
     }
     
     __weak __typeof(self) weakSelf = self;
-    [self processOperation:operation withParameters:parameters completionBlock:^(PNResult * _Nullable result,
-                                                                                 PNStatus * _Nullable status) {
+    [self processOperation:operation withParameters:parameters 
+           completionBlock:^(PNResult *result, PNStatus *status) {
                
         // Silence static analyzer warnings.
         // Code is aware about this case and at the end will simply call on 'nil' object
@@ -171,7 +171,7 @@ NS_ASSUME_NONNULL_END
 
     __weak __typeof(self) weakSelf = self;
     [self processOperation:PNWhereNowOperation withParameters:parameters
-           completionBlock:^(PNResult * _Nullable result, PNStatus * _Nullable status) {
+           completionBlock:^(PNResult *result, PNStatus *status) {
                
         // Silence static analyzer warnings.
         // Code is aware about this case and at the end will simply call on 'nil' object

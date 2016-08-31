@@ -88,6 +88,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, nullable, copy) NSString *cipherKey;
 
 /**
+ @brief Stores reference on unique device identifier based on bundle identifier used by software vendor.
+
+ @since 4.0
+ */
+@property (nonatomic, readonly, copy) NSString *deviceID;
+
+/**
  @brief      Stores reference on maximum number of seconds which client should wait for events from live feed.
  @discussion By default value is set to \b 310 seconds. If in specified time frame \b PubNub service won't 
              push any events into live feed client will re-subscribe on remote data objects with same time 
@@ -198,12 +205,24 @@ NS_ASSUME_NONNULL_BEGIN
  @brief  Stores whether client should try complete all API call which is done before application will be 
          completelly suspended.
  
- @default    By default client use \b YES to restore subscription on remote data objects live feeds.
+ @default By default \c client use \b YES to complete tasks which has been scheduled before \c client resign 
+          active.
  
- @since 4.<#minor-version#>.0
+ @since 4.5.0
  */
 @property (nonatomic, assign, getter = shouldCompleteRequestsBeforeSuspension) BOOL completeRequestsBeforeSuspension;
 #endif // __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+
+/**
+ @brief  Stores whether client should strip out received messages (real-time and history) from data which has 
+         been appended by \c client (like mobile payload for push notifications).
+ 
+ @default By default \c client use \b YES to strip client's data from message and return object with same data
+          type and content as it has been sent.
+ 
+ @since 4.5.0
+ */
+@property (nonatomic, assign, getter = shouldStripMobilePayload) BOOL stripMobilePayload;
 
 /**
  @brief  Construct configuration instance using minimal required data.

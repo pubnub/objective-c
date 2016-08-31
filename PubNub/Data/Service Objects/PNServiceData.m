@@ -63,7 +63,7 @@ NS_ASSUME_NONNULL_END
     return self;
 }
 
-- (nullable id)objectForKeyedSubscript:(id)key {
+- (id)objectForKeyedSubscript:(id)key {
     
     return [self.serviceData objectForKeyedSubscript:key];
 }

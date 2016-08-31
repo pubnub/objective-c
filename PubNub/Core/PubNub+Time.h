@@ -46,7 +46,7 @@ typedef void(^PNTimeCompletionBlock)(PNTimeResult * _Nullable result, PNErrorSta
 PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
                                                                   subscribeKey:@"demo"];
 self.client = [PubNub clientWithConfiguration:configuration];
-[self.client timeWithCompletion:^(PNTimeResult * _Nullable result, PNErrorStatus * _Nullable status) {
+[self.client timeWithCompletion:^(PNTimeResult *result, PNErrorStatus *status) {
      
     // Check whether request successfully completed or not.
     if (!status.isError) {

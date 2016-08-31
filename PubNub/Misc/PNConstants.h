@@ -52,5 +52,6 @@ static BOOL const kPNDefaultShouldTryCatchUpOnSubscriptionRestore = YES;
 #if __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
 static BOOL const kPNDefaultShouldCompleteRequestsBeforeSuspension = YES;
 #endif // __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+static BOOL const kPNDefaultShouldStripMobilePayload = YES;
 
 #endif // PNConstants_h

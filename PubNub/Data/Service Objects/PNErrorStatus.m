@@ -27,7 +27,7 @@
     return (self.serviceData[@"information"]?: @"No Error Information");
 }
 
-- (nullable id)data {
+- (id)data {
     
     return self.serviceData[@"data"];
 }
