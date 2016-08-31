@@ -25,13 +25,12 @@ static NSString * const kPubNubPresenceChannelNameSuffix = @"-pnpres";
 
 #pragma mark - Lists encoding
 
-+ (nullable NSString *)namesForRequest:(NSArray<NSString *> *)names {
++ (NSString *)namesForRequest:(NSArray<NSString *> *)names {
     
     return [self namesForRequest:names defaultString:nil];
 }
 
-+ (nullable NSString *)namesForRequest:(NSArray<NSString *> *)names
-                         defaultString:(nullable NSString *)defaultString {
++ (NSString *)namesForRequest:(NSArray<NSString *> *)names defaultString:(NSString *)defaultString {
     
     NSString *namesForRequest = defaultString;
     if (names.count) {

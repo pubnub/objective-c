@@ -49,8 +49,7 @@ typedef void(^PNHistoryCompletionBlock)(PNHistoryResult * _Nullable result, PNEr
 PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
                                                                  subscribeKey:@"demo"];
 self.client = [PubNub clientWithConfiguration:configuration];
-[self.client historyForChannel:@"storage" withCompletion:^(PNHistoryResult * _Nullable result,
-                                                           PNErrorStatus * _Nullable status) {
+[self.client historyForChannel:@"storage" withCompletion:^(PNHistoryResult *result, PNErrorStatus *status) {
 
     // Check whether request successfully completed or not.
     if (!status.isError) {
@@ -100,7 +99,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
 NSNumber *startDate = @([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]);
 NSNumber *endDate = @([[NSDate date] timeIntervalSince1970]);
 [self.client historyForChannel:@"storage" start:startDate end:endDate
-                withCompletion:^(PNHistoryResult * _Nullable result, PNErrorStatus * _Nullable status) {
+                withCompletion:^(PNHistoryResult *result, PNErrorStatus *status) {
 
     // Check whether request successfully completed or not.
     if (!status.isError) {
@@ -152,7 +151,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
 NSNumber *startDate = @([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]);
 NSNumber *endDate = @([[NSDate date] timeIntervalSince1970]);
 [self.client historyForChannel:@"storage" start:startDate end:endDate limit:50
-                withCompletion:^(PNHistoryResult * _Nullable result, PNErrorStatus * _Nullable status) {
+                withCompletion:^(PNHistoryResult *result, PNErrorStatus *status) {
 
     // Check whether request successfully completed or not.
     if (!status.isError) {
@@ -211,7 +210,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
 NSNumber *startDate = @([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]);
 NSNumber *endDate = @([[NSDate date] timeIntervalSince1970]);
 [self.client historyForChannel:@"storage" start:startDate end:endDate includeTimeToken:YES
-                withCompletion:^(PNHistoryResult * _Nullable result, PNErrorStatus * _Nullable status) {
+                withCompletion:^(PNHistoryResult *result, PNErrorStatus *status) {
 
     // Check whether request successfully completed or not.
     if (!status.isError) {
@@ -269,7 +268,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
 NSNumber *startDate = @([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]);
 NSNumber *endDate = @([[NSDate date] timeIntervalSince1970]);
 [self.client historyForChannel:@"storage" start:startDate end:endDate limit:35 includeTimeToken:YES
-                withCompletion:^(PNHistoryResult * _Nullable result, PNErrorStatus * _Nullable status) {
+                withCompletion:^(PNHistoryResult *result, PNErrorStatus *status) {
 
     // Check whether request successfully completed or not.
     if (!status.isError) {
@@ -328,7 +327,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
 NSNumber *startDate = @([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]);
 NSNumber *endDate = @([[NSDate date] timeIntervalSince1970]);
 [self.client historyForChannel:@"storage" start:startDate end:endDate limit:35 reverse:YES
-                withCompletion:^(PNHistoryResult * _Nullable result, PNErrorStatus * _Nullable status) {
+                withCompletion:^(PNHistoryResult *result, PNErrorStatus *status) {
 
     // Check whether request successfully completed or not.
     if (!status.isError) {
@@ -384,8 +383,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
 NSNumber *startDate = @([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]);
 NSNumber *endDate = @([[NSDate date] timeIntervalSince1970]);
 [self.client historyForChannel:@"storage" start:startDate end:endDate limit:35 reverse:YES 
-              includeTimeToken:YES 
-                withCompletion:^(PNHistoryResult * _Nullable result, PNErrorStatus * _Nullable status) {
+              includeTimeToken:YES withCompletion:^(PNHistoryResult *result, PNErrorStatus *status) {
 
     // Check whether request successfully completed or not.
     if (!status.isError) {

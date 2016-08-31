@@ -186,8 +186,7 @@ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"
                                                                  subscribeKey:@"demo"];
 self.client = [PubNub clientWithConfiguration:configuration];
 [self.client pushNotificationEnabledChannelsForDeviceWithPushToken:self.devicePushToken
-                             andCompletion:^(PNAPNSEnabledChannelsResult * _Nullable result,
-                                             PNErrorStatus * _Nullable status) {
+                             andCompletion:^(PNAPNSEnabledChannelsResult *result, PNErrorStatus *status) {
 
     // Check whether request successfully completed or not.
     if (!status.isError) {

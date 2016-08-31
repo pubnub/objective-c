@@ -70,8 +70,7 @@ typedef void(^PNChannelGroupChangeCompletionBlock)(PNAcknowledgmentStatus *statu
 PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
                                                                  subscribeKey:@"demo"];
 self.client = [PubNub clientWithConfiguration:configuration];
-[self.client channelGroupsWithCompletion:^(PNChannelGroupsResult * _Nullable result, 
-                                           PNErrorStatus * _Nullable status) {
+[self.client channelGroupsWithCompletion:^(PNChannelGroupsResult *result, PNErrorStatus *status) {
 
     // Check whether request successfully completed or not.
     if (!status.isError) {
@@ -108,8 +107,8 @@ self.client = [PubNub clientWithConfiguration:configuration];
 PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
                                                                  subscribeKey:@"demo"];
 self.client = [PubNub clientWithConfiguration:configuration];
-[self.client channelsForGroup:@"pubnub" withCompletion:^(PNChannelGroupChannelsResult * _Nullable result,
-                                                         PNErrorStatus * _Nullable status) {
+[self.client channelsForGroup:@"pubnub" withCompletion:^(PNChannelGroupChannelsResult *result,
+                                                         PNErrorStatus *status) {
 
     // Check whether request successfully completed or not.
     if (!status.isError) {

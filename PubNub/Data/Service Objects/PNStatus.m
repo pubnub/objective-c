@@ -147,10 +147,9 @@
     return self;
 }
 
-- (instancetype)initForOperation:(PNOperationType)operation 
-               completedWithTask:(nullable NSURLSessionDataTask *)task
-                   processedData:(nullable NSDictionary<NSString *, id> *)processedData 
-                 processingError:(nullable NSError *)error {
+- (instancetype)initForOperation:(PNOperationType)operation completedWithTask:(NSURLSessionDataTask *)task
+                   processedData:(NSDictionary<NSString *, id> *)processedData 
+                 processingError:(NSError *)error {
     
     // Check whether initialization was successful or not.
     if ((self = [super initForOperation:operation completedWithTask:task processedData:processedData
@@ -230,7 +229,7 @@
     return category;
 }
 
-- (PNStatusCategory)categoryTypeFromError:(nullable NSError *)error {
+- (PNStatusCategory)categoryTypeFromError:(NSError *)error {
 
     PNStatusCategory category = PNUnknownCategory;
     if ([error.domain isEqualToString:NSURLErrorDomain]) {
@@ -289,7 +288,7 @@
     return category;
 }
 
-- (nullable NSDictionary<NSString *, id> *)dataFromError:(nullable NSError *)error {
+- (NSDictionary<NSString *, id> *)dataFromError:(NSError *)error {
     
     // Try to fetch server response if available.
     id errorDetails = nil;

@@ -77,29 +77,29 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Push notifications state manipulation
 
 - (void)addPushNotificationsOnChannels:(NSArray<NSString *> *)channels withDevicePushToken:(NSData *)pushToken
-                         andCompletion:(nullable PNPushNotificationsStateModificationCompletionBlock)block {
+                         andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block {
     
     [self enablePushNotification:YES onChannels:channels withDevicePushToken:pushToken andCompletion:block];
 }
 
 - (void)removePushNotificationsFromChannels:(NSArray<NSString *> *)channels
                         withDevicePushToken:(NSData *)pushToken
-                              andCompletion:(nullable PNPushNotificationsStateModificationCompletionBlock)block {
+                              andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block {
     
     [self enablePushNotification:NO onChannels:channels withDevicePushToken:pushToken andCompletion:block];
 }
 
 - (void)removeAllPushNotificationsFromDeviceWithPushToken:(NSData *)pushToken
-                          andCompletion:(nullable PNPushNotificationsStateModificationCompletionBlock)block {
+                          andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block {
     
     [self enablePushNotification:NO onChannels:nil withDevicePushToken:pushToken andCompletion:block];
 }
 
-- (void)enablePushNotification:(BOOL)shouldEnabled onChannels:(nullable NSArray<NSString *> *)channels
+- (void)enablePushNotification:(BOOL)shouldEnabled onChannels:(NSArray<NSString *> *)channels
            withDevicePushToken:(NSData *)pushToken
-                 andCompletion:(nullable PNPushNotificationsStateModificationCompletionBlock)block {
+                 andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block {
 
-    BOOL removeAllChannels = (!shouldEnabled && channels == nil);
+    BOOL removeAllChannels = (!shouldEnabled && !channels.count);
     PNOperationType operationType = PNRemoveAllPushNotificationsOperation;
     PNRequestParameters *parameters = [PNRequestParameters new];
     if (pushToken.length) {
@@ -187,7 +187,7 @@ NS_ASSUME_NONNULL_END
 
     __weak __typeof(self) weakSelf = self;
     [self processOperation:PNPushNotificationEnabledChannelsOperation withParameters:parameters
-           completionBlock:^(PNResult * _Nullable result, PNStatus * _Nullable status){
+           completionBlock:^(PNResult *result, PNStatus *status){
 
                // Silence static analyzer warnings.
                // Code is aware about this case and at the end will simply call on 'nil' object

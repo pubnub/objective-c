@@ -155,7 +155,7 @@ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"
                                                                  subscribeKey:@"demo"];
 self.client = [PubNub clientWithConfiguration:configuration];
 [self.client stateForUUID:self.client.uuid onChannel:@"chat"    
-           withCompletion:^(PNChannelClientStateResult * _Nullable result, PNErrorStatus * _Nullable status) {
+           withCompletion:^(PNChannelClientStateResult *result, PNErrorStatus *status) {
 
     // Check whether request successfully completed or not.
     if (!status.isError) {
@@ -195,8 +195,7 @@ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"
                                                                  subscribeKey:@"demo"];
 self.client = [PubNub clientWithConfiguration:configuration];
 [self.client stateForUUID:self.client.uuid onChannelGroup:@"system"
-           withCompletion:^(PNChannelGroupClientStateResult * _Nullable result,
-                            PNErrorStatus * _Nullable status) {
+           withCompletion:^(PNChannelGroupClientStateResult *result, PNErrorStatus *status) {
 
     // Check whether request successfully completed or not.
     if (!status.isError) {

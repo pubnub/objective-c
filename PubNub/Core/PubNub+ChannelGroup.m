@@ -70,7 +70,7 @@ NS_ASSUME_NONNULL_END
 
     __weak __typeof(self) weakSelf = self;
     [self processOperation:operationType withParameters:parameters
-           completionBlock:^(PNResult * _Nullable result, PNStatus * _Nullable status) {
+           completionBlock:^(PNResult *result, PNStatus *status) {
                
         // Silence static analyzer warnings.
         // Code is aware about this case and at the end will simply call on 'nil' object
@@ -91,27 +91,26 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Channel group content manipulation
 
 - (void)addChannels:(NSArray<NSString *> *)channels toGroup:(NSString *)group
-     withCompletion:(nullable PNChannelGroupChangeCompletionBlock)block {
+     withCompletion:(PNChannelGroupChangeCompletionBlock)block {
     
     [self add:YES channels:channels toGroup:group withCompletion:block];
 }
 
 - (void)removeChannels:(NSArray<NSString *> *)channels fromGroup:(NSString *)group
-        withCompletion:(nullable PNChannelGroupChangeCompletionBlock)block {
+        withCompletion:(PNChannelGroupChangeCompletionBlock)block {
     
     [self add:NO channels:(channels.count ? channels : nil) toGroup:group withCompletion:block];
 }
 
-- (void)removeChannelsFromGroup:(NSString *)group
-                 withCompletion:(nullable PNChannelGroupChangeCompletionBlock)block {
+- (void)removeChannelsFromGroup:(NSString *)group withCompletion:(PNChannelGroupChangeCompletionBlock)block {
     
     [self removeChannels:@[] fromGroup:group withCompletion:block];
 }
 
 - (void)     add:(BOOL)shouldAdd channels:(NSArray<NSString *> *)channels toGroup:(NSString *)group
-  withCompletion:(nullable PNChannelGroupChangeCompletionBlock)block {
+  withCompletion:(PNChannelGroupChangeCompletionBlock)block {
 
-    BOOL removeAllObjects = (!shouldAdd && channels == nil);
+    BOOL removeAllObjects = (!shouldAdd && !channels.count);
     PNOperationType operationType = PNRemoveGroupOperation;
     PNRequestParameters *parameters = [PNRequestParameters new];
     if (group.length) {
