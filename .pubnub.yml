@@ -3,6 +3,25 @@ changelog:
   - 
     changes: 
       - 
+        text: "added scheduled API calls completion before application suspension (for iOS only)."
+        type: feature
+      - 
+        text: "removed dependency to CocoaLumberjack."
+        type: improvement
+      - 
+        text: "added Carthage support."
+        type: feature
+      - 
+        text: "by default Framework bundles will be build with bitcode enabled."
+        type: improvement
+      - 
+        text: "added ability to disable message stripping (removing data which has been added by client during publish with mobile payload) which is enabled by default."
+        type: feature
+    date: ~
+    version: v4.5.0
+  - 
+    changes: 
+      - 
         text: "fixed timeout issue which caused by recently added shared NSURLSessionConfiguration configuration."
         type: bug
       - 
