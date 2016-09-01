@@ -106,7 +106,7 @@ NS_ASSUME_NONNULL_END
     return state;
 }
 
-- (NSDictionary *)stateMergedWith:(nullable NSDictionary<NSString *, id> *)state 
+- (NSDictionary *)stateMergedWith:(NSDictionary<NSString *, id> *)state 
                        forObjects:(NSArray<NSString *> *)objects {
     
     NSMutableDictionary *mutableState = [([self state]?: @{}) mutableCopy];
@@ -126,7 +126,7 @@ NS_ASSUME_NONNULL_END
     return [(mutableState.count ? mutableState : nil) copy];
 }
 
-- (void)mergeWithState:(nullable NSDictionary<NSString *, id> *)state {
+- (void)mergeWithState:(NSDictionary<NSString *, id> *)state {
 
     if (state.count) {
 
@@ -153,7 +153,7 @@ NS_ASSUME_NONNULL_END
     }
 }
 
-- (void)setState:(nullable NSDictionary<NSString *, id> *)state forObject:(NSString *)object {
+- (void)setState:(NSDictionary<NSString *, id> *)state forObject:(NSString *)object {
 
     dispatch_barrier_async(self.resourceAccessQueue, ^{
         

@@ -9,21 +9,13 @@
 #import "PubNub+CorePrivate.h"
 #import <libkern/OSAtomic.h>
 #import "PNErrorCodes.h"
+#import "PNConstants.h"
 #import "PNLogMacro.h"
+#import "PNLLogger.h"
 #import "PNHelpers.h"
 
 
-#pragma mark CocoaLumberjack logging support
-
-/**
- @brief  Cocoa Lumberjack logging level configuration for cryptor helper.
- 
- @since 4.0
- */
-static DDLogLevel ddLogLevel = (NSUInteger)PNAESErrorLogLevel;
-
-
-#pragma mark - Static
+#pragma mark Static
 
 /**
  @brief  Initializing vector used to initialize (de)cryptor.
@@ -93,42 +85,14 @@ NS_ASSUME_NONNULL_END
 @implementation PNAES
 
 
-#pragma mark - Logger
-
-/**
- @brief  Called by Cocoa Lumberjack during initialization.
- 
- @return Desired logger level for \b PubNub client main class.
- 
- @since 4.0
- */
-+ (DDLogLevel)ddLogLevel {
-    
-    return ddLogLevel;
-}
-
-/**
- @brief  Allow modify logger level used by Cocoa Lumberjack with logging macros.
- 
- @param logLevel New log level which should be used by logger.
- 
- @since 4.0
- */
-+ (void)ddSetLogLevel:(DDLogLevel)logLevel {
-    
-    ddLogLevel = logLevel;
-}
-
-
 #pragma mark - Data encryption
 
-+ (nullable NSString *)encrypt:(NSData *)data withKey:(NSString *)key {
++ (NSString *)encrypt:(NSData *)data withKey:(NSString *)key {
     
     return [self encrypt:data withKey:key andError:NULL];
 }
 
-+ (nullable NSString *)encrypt:(NSData *)data withKey:(NSString *)key
-                      andError:(NSError *__autoreleasing *)error {
++ (NSString *)encrypt:(NSData *)data withKey:(NSString *)key andError:(NSError *__autoreleasing *)error {
     
     NSData *processedData = nil;
     NSError *encryptionError = nil;
@@ -159,7 +123,12 @@ NS_ASSUME_NONNULL_END
     if (encryptionError) {
         
         if (error != NULL) { *error = encryptionError; }
-        else { DDLogAESError([self ddLogLevel], @"<PubNub::AES> Encryption error: %@", encryptionError); }
+        else {
+            
+            PNLLogger *logger = [PNLLogger loggerWithIdentifier:kPNClientIdentifier];
+            [logger enableLogLevel:PNAESErrorLogLevel];
+            DDLogAESError(logger, @"<PubNub::AES> Encryption error: %@", encryptionError);
+        }
     }
     
     return [PNData base64StringFrom:processedData];
@@ -168,13 +137,12 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Data decryption
 
-+ (nullable NSData *)decrypt:(NSString *)object withKey:(NSString *)key {
++ (NSData *)decrypt:(NSString *)object withKey:(NSString *)key {
     
     return [self decrypt:object withKey:key andError:NULL];
 }
 
-+ (nullable NSData *)decrypt:(NSString *)object withKey:(NSString *)key
-                    andError:(NSError *__autoreleasing *)error {
++ (NSData *)decrypt:(NSString *)object withKey:(NSString *)key andError:(NSError *__autoreleasing *)error {
     
     NSError *decryptionError = nil;
     id decryptedObject = nil;
@@ -230,7 +198,12 @@ NS_ASSUME_NONNULL_END
     if (decryptionError) {
         
         if (error != NULL) { *error = decryptionError; }
-        else { DDLogAESError([self ddLogLevel], @"<PubNub::AES> Decryption error: %@", decryptionError); }
+        else {
+            
+            PNLLogger *logger = [PNLLogger loggerWithIdentifier:kPNClientIdentifier]; 
+            [logger enableLogLevel:PNAESErrorLogLevel];
+            DDLogAESError(logger, @"<PubNub::AES> Decryption error: %@", decryptionError);
+        }
     }
     
     return decryptedObject;
@@ -263,8 +236,8 @@ NS_ASSUME_NONNULL_END
     return key;
 }
 
-+ (nullable  NSData *)processedDataFrom:(NSData *)data withKey:(NSString *)cipherKey
-                           forOperation:(CCOperation)operation andStatus:(CCCryptorStatus *)status {
++ (NSData *)processedDataFrom:(NSData *)data withKey:(NSString *)cipherKey forOperation:(CCOperation)operation
+                    andStatus:(CCCryptorStatus *)status {
     
     NSData *cryptorKeyData = [self SHA256HexFromKey:cipherKey];
     NSMutableData *processedData = nil;

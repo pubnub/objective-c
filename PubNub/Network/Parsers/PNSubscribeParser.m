@@ -6,19 +6,14 @@
 #import "PNSubscribeParser.h"
 #import "PNEnvelopeInformation.h"
 #import "PubNub+CorePrivate.h"
+#import "PNConstants.h"
 #import "PNLogMacro.h"
+#import "PNLLogger.h"
 #import "PNHelpers.h"
 #import "PNAES.h"
 
 
 #pragma mark Static
-
-/**
- @brief  Cocoa Lumberjack logging level configuration for subscriber results parser.
- 
- @since 4.0
- */
-static DDLogLevel ddLogLevel = (DDLogLevel)PNAESErrorLogLevel;
 
 /**
  @brief  Stores reference on key under which request status is stored.
@@ -216,19 +211,6 @@ NS_ASSUME_NONNULL_END
 @implementation PNSubscribeParser
 
 
-#pragma mark - Logger
-
-+ (DDLogLevel)ddLogLevel {
-    
-    return ddLogLevel;
-}
-
-+ (void)ddSetLogLevel:(DDLogLevel)logLevel {
-    
-    ddLogLevel = logLevel;
-}
-
-
 #pragma mark - Identification
 
 + (NSArray<NSNumber *> *)operations {
@@ -244,8 +226,8 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Parsing
 
-+ (nullable NSDictionary<NSString *, id> *)parsedServiceResponse:(id)response 
-   withData:(nullable NSDictionary<NSString *, id> *)additionalData {
++ (NSDictionary<NSString *, id> *)parsedServiceResponse:(id)response 
+   withData:(NSDictionary<NSString *, id> *)additionalData {
     
     // To handle case when response is unexpected for this type of operation processed value sent
     // through 'nil' initialized local variable.
@@ -283,7 +265,7 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Events processing
 
 + (NSMutableDictionary *)eventFromData:(NSDictionary<NSString *, id> *)data
-              withAdditionalParserData:(nullable NSDictionary<NSString *, id> *)additionalData {
+              withAdditionalParserData:(NSDictionary<NSString *, id> *)additionalData {
     
     NSMutableDictionary *event = [NSMutableDictionary new];
     NSString *channel = data[PNEventEnvelope.actualChannel];
@@ -315,10 +297,12 @@ NS_ASSUME_NONNULL_END
     return event;
 }
 
-+ (NSMutableDictionary *)messageFromData:(id)data
-                withAdditionalParserData:(nullable NSDictionary<NSString *, id> *)additionalData {
++ (NSMutableDictionary *)messageFromData:(id)data 
+                withAdditionalParserData:(NSDictionary<NSString *, id> *)additionalData {
     
+    BOOL shouldStripMobilePayload = ((NSNumber *)additionalData[@"stripMobilePayload"]).boolValue;
     NSMutableDictionary *message = nil;
+    
     // Try decrypt message body if possible.
     if (((NSString *)additionalData[@"cipherKey"]).length){
         
@@ -346,15 +330,31 @@ NS_ASSUME_NONNULL_END
         
         if (decryptionError || !decryptedEvent) {
             
-            DDLogAESError([self ddLogLevel], @"<PubNub::AES> Message decryption error: %@", decryptionError);
+            PNLLogger *logger = [PNLLogger loggerWithIdentifier:kPNClientIdentifier];
+            [logger enableLogLevel:PNAESErrorLogLevel];
+            DDLogAESError(logger, @"<PubNub::AES> Message decryption error: %@", decryptionError);
             message[@"decryptError"] = @YES;
-            message[@"message"] = (dataForDecryption?: data);
+            message[@"message"] = dataForDecryption;
         }
-        else { message[@"message"] = decryptedEvent; }
+        else {
+            
+            if (!shouldStripMobilePayload && [data isKindOfClass:[NSDictionary class]]) {
+                
+                NSMutableDictionary *mutableData = [data mutableCopy];
+                [mutableData removeObjectForKey:@"pn_other"];
+                if (![decryptedEvent isKindOfClass:[NSDictionary class]]) {
+                    
+                    mutableData[@"pn_other"] = decryptedEvent;
+                } else { [mutableData addEntriesFromDictionary:decryptedEvent]; }
+                decryptedEvent = [mutableData copy];
+            }            
+            
+            message[@"message"] = decryptedEvent;
+        }
     }
     else {
         
-        if ([data isKindOfClass:[NSDictionary class]] && 
+        if (shouldStripMobilePayload && [data isKindOfClass:[NSDictionary class]] && 
             (data[@"pn_apns"] || data[@"pn_gcm"] || data[@"pn_mpns"])) {
             
             id decomposedMessage = data;

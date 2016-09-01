@@ -5,38 +5,16 @@
  */
 #import "PNHistoryParser.h"
 #import "PubNub+CorePrivate.h"
+#import "PNConstants.h"
 #import "PNLogMacro.h"
+#import "PNLLogger.h"
 #import "PNHelpers.h"
 #import "PNAES.h"
-#import "PNLog.h"
 
 
-#pragma mark CocoaLumberjack logging support
-
-/**
- @brief  Cocoa Lumberjack logging level configuration for history parser.
- 
- @since 4.0
- */
-static DDLogLevel ddLogLevel = (DDLogLevel)PNAESErrorLogLevel;
-
-
-#pragma mark - Interface implementation
+#pragma mark Interface implementation
 
 @implementation PNHistoryParser
-
-
-#pragma mark - Logger
-
-+ (DDLogLevel)ddLogLevel {
-    
-    return ddLogLevel;
-}
-
-+ (void)ddSetLogLevel:(DDLogLevel)logLevel {
-    
-    ddLogLevel = logLevel;
-}
 
 
 #pragma mark - Identification
@@ -54,8 +32,8 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNAESErrorLogLevel;
 
 #pragma mark - Parsing
 
-+ (nullable NSDictionary<NSString *, id> *)parsedServiceResponse:(id)response 
-   withData:(nullable NSDictionary<NSString *, id> *)additionalData {
++ (NSDictionary<NSString *, id> *)parsedServiceResponse:(id)response 
+                                               withData:(NSDictionary<NSString *, id> *)additionalData {
     
     // To handle case when response is unexpected for this type of operation processed value sent through 
     // 'nil' initialized local variable.
@@ -64,6 +42,7 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNAESErrorLogLevel;
     // Array is valid response type for history request.
     if ([response isKindOfClass:[NSArray class]] && ((NSArray *)response).count == 3) {
         
+        BOOL shouldStripMobilePayload = ((NSNumber *)additionalData[@"stripMobilePayload"]).boolValue;
         NSMutableDictionary *data = [@{@"start": (NSArray *)response[1], @"end": (NSArray *)response[2],
                                        @"messages": [NSMutableArray new]} mutableCopy];
         NSArray *messages = (NSArray *)response[0];
@@ -109,19 +88,34 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNAESErrorLogLevel;
                 
                 if (decryptionError || !decryptedMessage) {
                     
-                    DDLogAESError([self ddLogLevel], @"<PubNub::AES> History entry decryption error: %@",
+                    PNLLogger *logger = [PNLLogger loggerWithIdentifier:kPNClientIdentifier];
+                    [logger enableLogLevel:PNAESErrorLogLevel];
+                    DDLogAESError(logger, @"<PubNub::AES> History entry decryption error: %@", 
                                   decryptionError);
                     data[@"decryptError"] = @YES;
                     
                     // Restore message to original form.
                     message = messageObject;
                 }
-                else { message = decryptedMessage; }
+                else { 
+                    
+                    if (!shouldStripMobilePayload && [message isKindOfClass:[NSDictionary class]]) {
+                        
+                        NSMutableDictionary *mutableMessage = [message mutableCopy];
+                        [mutableMessage removeObjectForKey:@"pn_other"];
+                        if (![decryptedMessage isKindOfClass:[NSDictionary class]]) {
+                            
+                            mutableMessage[@"pn_other"] = decryptedMessage;
+                        } else { [mutableMessage addEntriesFromDictionary:decryptedMessage]; }
+                        message = [mutableMessage copy];
+                    }
+                    else { message = decryptedMessage; }
+                }
             }
             
             if (message) {
                 
-                if ([message isKindOfClass:[NSDictionary class]] &&
+                if (shouldStripMobilePayload && [message isKindOfClass:[NSDictionary class]] &&
                     (message[@"pn_apns"] || message[@"pn_gcm"] || message[@"pn_mpns"])) {
                     
                     id decomposedMessage = message;
@@ -135,7 +129,7 @@ static DDLogLevel ddLogLevel = (DDLogLevel)PNAESErrorLogLevel;
                     message = decomposedMessage;
                 }
                 
-                message = (timeToken ? @{@"message":message, @"timetoken":timeToken} : message);
+                message = (timeToken ? @{@"message": message, @"timetoken": timeToken} : message);
                 [data[@"messages"] addObject:message];
             }
         }];

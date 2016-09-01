@@ -46,7 +46,6 @@ typedef NS_OPTIONS(NSUInteger, PNHeartbeatNotificationOptions) {
 };
 
 
-
 /**
  @brief  \b PubNub client logging levels available for manipulations.
  
@@ -55,12 +54,12 @@ typedef NS_OPTIONS(NSUInteger, PNHeartbeatNotificationOptions) {
 typedef NS_OPTIONS(NSUInteger, PNLogLevel){
     
     /**
-     @brief       \b PNLog level which allow to disable all active logging levels.
-     @discussion This log level can be set with \b PNLog class method +setLogLevel:
+     @brief      \b PNLog level which allow to disable all active logging levels.
+     @discussion This log level can be set with \b PNLLogger instance method \c -setLogLevel:
      
      @since 4.0
      */
-    PNSilentLogLevel = (NSUIntegerMax ^ (NSUIntegerMax >> 1)),
+    PNSilentLogLevel = 0,
     
     /**
      @brief      \b PNLog level which allow to print out client information data.
@@ -69,14 +68,14 @@ typedef NS_OPTIONS(NSUInteger, PNLogLevel){
      
      @since 4.0
      */
-    PNInfoLogLevel = (NSUIntegerMax ^ (NSUIntegerMax >> 2 | PNSilentLogLevel)),
+    PNInfoLogLevel = (1 << 1),
     
     /**
      @brief  \b PNLog level which allow to print out all reachability events.
      
      @since 4.0
      */
-    PNReachabilityLogLevel = (NSUIntegerMax ^ (NSUIntegerMax >> 3 | (NSUIntegerMax ^ (NSUIntegerMax >> 2)))),
+    PNReachabilityLogLevel = (1 << 2),
     
     /**
      @brief  \b PNLog level which allow to print out all API call request URI which has been passed
@@ -84,14 +83,14 @@ typedef NS_OPTIONS(NSUInteger, PNLogLevel){
      
      @since 4.0
      */
-    PNRequestLogLevel = (NSUIntegerMax ^ (NSUIntegerMax >> 4 | (NSUIntegerMax ^ (NSUIntegerMax >> 3)))),
+    PNRequestLogLevel = (1 << 3),
     
     /**
      @brief  \b PNLog level which allow to print out API execution results.
      
      @since 4.0
      */
-    PNResultLogLevel = (NSUIntegerMax ^ (NSUIntegerMax >> 5 | (NSUIntegerMax ^ (NSUIntegerMax >> 4)))),
+    PNResultLogLevel = (1 << 4),
     
     /**
      @brief  \b PNLog level which allow to print out client state change status information and 
@@ -99,7 +98,7 @@ typedef NS_OPTIONS(NSUInteger, PNLogLevel){
      
      @since 4.0
      */
-    PNStatusLogLevel = (NSUIntegerMax ^ (NSUIntegerMax >> 6 | (NSUIntegerMax ^ (NSUIntegerMax >> 5)))),
+    PNStatusLogLevel = (1 << 5),
     
     /**
      @brief      \b PNLog level which allow to print out every failure status information.
@@ -108,7 +107,7 @@ typedef NS_OPTIONS(NSUInteger, PNLogLevel){
      
      @since 4.0
      */
-    PNFailureStatusLogLevel = (NSUIntegerMax ^ (NSUIntegerMax >> 7 | (NSUIntegerMax ^ (NSUIntegerMax >> 6)))),
+    PNFailureStatusLogLevel = (1 << 6),
     
     /**
      @brief      \b PNLog level which allow to print out all API calls with passed parameters.
@@ -117,14 +116,14 @@ typedef NS_OPTIONS(NSUInteger, PNLogLevel){
      
      @since 4.0
      */
-    PNAPICallLogLevel = (NSUIntegerMax ^ (NSUIntegerMax >> 8 | (NSUIntegerMax ^ (NSUIntegerMax >> 7)))),
+    PNAPICallLogLevel = (1 << 7),
     
     /**
      @brief  \b PNLog level which allow to print out all AES errors.
      
      @since 4.0
      */
-    PNAESErrorLogLevel = (NSUIntegerMax ^ (NSUIntegerMax >> 9 | (NSUIntegerMax ^ (NSUIntegerMax >> 8)))),
+    PNAESErrorLogLevel = (1 << 8),
     
     /**
      @brief  Log every message from \b PubNub client.

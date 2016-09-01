@@ -20,10 +20,10 @@
 
 - (void)timeWithCompletion:(PNTimeCompletionBlock)block {
     
-    DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> Time token request.");
+    DDLogAPICall(self.logger, @"<PubNub::API> Time token request.");
     __weak __typeof(self) weakSelf = self;
     [self processOperation:PNTimeOperation withParameters:[PNRequestParameters new]
-           completionBlock:^(PNResult * _Nullable result, PNStatus * _Nullable status) {
+           completionBlock:^(PNResult *result, PNStatus *status) {
                
         // Silence static analyzer warnings.
         // Code is aware about this case and at the end will simply call on 'nil' object method.

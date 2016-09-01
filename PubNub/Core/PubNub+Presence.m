@@ -99,7 +99,7 @@ NS_ASSUME_NONNULL_END
                completionBlock:block];
 }
 
-- (void)hereNowWithVerbosity:(PNHereNowVerbosityLevel)level forObject:(nullable NSString *)object 
+- (void)hereNowWithVerbosity:(PNHereNowVerbosityLevel)level forObject:(NSString *)object 
            withOperationType:(PNOperationType)operation completionBlock:(id)block {
 
     PNRequestParameters *parameters = [PNRequestParameters new];
@@ -113,8 +113,8 @@ NS_ASSUME_NONNULL_END
     
     if (operation == PNHereNowGlobalOperation) {
         
-        DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> Global 'here now' information with "
-                     "%@ data.", PNHereNowDataStrings[level]);
+        DDLogAPICall(self.logger, @"<PubNub::API> Global 'here now' information with %@ data.",
+                     PNHereNowDataStrings[level]);
     }
     else {
         
@@ -129,14 +129,14 @@ NS_ASSUME_NONNULL_END
                                  forFieldName:@"channel-group"];
             }
         }
-        DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> Channel%@ 'here now' information "
-                     "for %@ with %@ data.", (operation == PNHereNowForChannelGroupOperation ? @" group" : @""), 
-                     (object?: @"<error>"), PNHereNowDataStrings[level]);
+        DDLogAPICall(self.logger, @"<PubNub::API> Channel%@ 'here now' information for %@ with %@ data.", 
+                     (operation == PNHereNowForChannelGroupOperation ? @" group" : @""), (object?: @"<error>"),
+                     PNHereNowDataStrings[level]);
     }
     
     __weak __typeof(self) weakSelf = self;
-    [self processOperation:operation withParameters:parameters completionBlock:^(PNResult * _Nullable result,
-                                                                                 PNStatus * _Nullable status) {
+    [self processOperation:operation withParameters:parameters 
+           completionBlock:^(PNResult *result, PNStatus *status) {
                
         // Silence static analyzer warnings.
         // Code is aware about this case and at the end will simply call on 'nil' object
@@ -167,12 +167,11 @@ NS_ASSUME_NONNULL_END
         
         [parameters addPathComponent:[PNString percentEscapedString:uuid] forPlaceholder:@"{uuid}"];
     }
-    DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> 'Where now' presence information for "
-                 "%@.", (uuid?: @"<error>"));
+    DDLogAPICall(self.logger, @"<PubNub::API> 'Where now' presence information for %@.", (uuid?: @"<error>"));
 
     __weak __typeof(self) weakSelf = self;
     [self processOperation:PNWhereNowOperation withParameters:parameters
-           completionBlock:^(PNResult * _Nullable result, PNStatus * _Nullable status) {
+           completionBlock:^(PNResult *result, PNStatus *status) {
                
         // Silence static analyzer warnings.
         // Code is aware about this case and at the end will simply call on 'nil' object
@@ -221,9 +220,15 @@ NS_ASSUME_NONNULL_END
                                      forFieldName:@"state"];
                 }
             }
-            DDLogAPICall([[self class] ddLogLevel], @"<PubNub::API> Heartbeat for channels %@ and "
-                         "groups %@.", [channels componentsJoinedByString:@", "],
-                         [groups componentsJoinedByString:@", "]);
+            
+            DDLogAPICall(weakSelf.logger, @"<PubNub::API> Heartbeat for %@%@%@.", 
+                         (channels.count ? [NSString stringWithFormat:@"channel%@ '%@'", 
+                                            (channels.count > 1 ? @"s" : @""),
+                                            [channels componentsJoinedByString:@", "]] : @""),
+                         (channels.count && groups.count ? @" and " : @""), 
+                         (groups.count ? [NSString stringWithFormat:@"group%@ '%@'", 
+                                          (groups.count > 1 ? @"s" : @""),
+                                          [groups componentsJoinedByString:@", "]] : @""));
             
             [self processOperation:PNHeartbeatOperation withParameters:parameters
                    completionBlock:^(PNStatus *status) {

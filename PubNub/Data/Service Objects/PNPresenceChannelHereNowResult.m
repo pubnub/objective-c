@@ -15,7 +15,7 @@
 
 #pragma mark - Information
 
-- (nullable id)uuids {
+- (id)uuids {
     
     return self.serviceData[@"uuids"];
 }
