@@ -383,4 +383,4 @@ features:
 name: objective-c
 schema: 1
 scm: github.com/pubnub/objective-c
-version: "4.4.1"
+version: "4.5.0"
