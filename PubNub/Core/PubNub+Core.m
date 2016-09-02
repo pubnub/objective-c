@@ -538,7 +538,11 @@ NS_ASSUME_NONNULL_END
 - (void)setupClientLogger {
     
     // Configure file manager with default storage in application's Documents folder.
+#if TARGET_OS_TV && !TARGET_OS_SIMULATOR
+    NSSearchPathDirectory searchPath = NSCachesDirectory;
+#else 
     NSSearchPathDirectory searchPath = (TARGET_OS_IPHONE ? NSDocumentDirectory : NSApplicationSupportDirectory);
+#endif
     NSArray<NSString *> *documents = NSSearchPathForDirectoriesInDomains(searchPath, NSUserDomainMask, YES);
     NSString *logsPath = documents.lastObject;
 #if __MAC_OS_X_VERSION_MIN_REQUIRED
