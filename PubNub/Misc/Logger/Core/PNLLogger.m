@@ -694,7 +694,7 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
 - (NSString *)createLogFile {
     
     NSString *filePath = [self.directory stringByAppendingPathComponent:[self newLogFileName]];
-#if TARGET_OS_IOS
+#if !TARGET_OS_TV && TARGET_OS_IOS
     NSDictionary *attributes = @{NSFileProtectionKey: NSFileProtectionCompleteUntilFirstUserAuthentication};
 #else
     NSDictionary *attributes = nil;
