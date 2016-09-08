@@ -367,8 +367,6 @@ changelog:
         type: improvement
     version: v4.0.0
 features: 
-  access:
-    - ACCESS-GRANT
   channel-groups:
     - CHANNEL-GROUPS-ADD-CHANNELS
     - CHANNEL-GROUPS-REMOVE-CHANNELS
