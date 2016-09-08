@@ -388,11 +388,8 @@ features:
     - PUBLISH-RAW-JSON
     - PUBLISH-WITH-METADATA
     - PUBLISH-GET
-    - PUBLISH-POST
     - PUBLISH-COMPRESS-MESSAGE    
     - PUBLISH-ASYNC
-    - PUBLISH-FIRE 
-    - PUBLISH-REPLICATION-FLAG
   storage:
     - STORAGE-REVERSE
     - STORAGE-INCLUDE-TIMETOKEN
@@ -408,6 +405,8 @@ features:
     - SUBSCRIBE-WITH-TIMETOKEN
     - SUBSCRIBE-WILDCARD
     - SUBSCRIBE-FILTER-EXPRESSION
+  unsubscribe:
+    - UNSUBSCRIBE-ALL
 name: objective-c
 schema: 1
 scm: github.com/pubnub/objective-c
