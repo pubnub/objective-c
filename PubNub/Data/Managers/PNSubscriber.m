@@ -1292,13 +1292,13 @@ NS_ASSUME_NONNULL_END
                 BOOL isPresenceEvent = (event[@"presenceEvent"] ? YES : NO);
                 if (isPresenceEvent) {
                     
-                    if (event[@"subscribedChannel"]) {
+                    if (event[@"subscription"]) {
                         
-                        event[@"subscribedChannel"] = [PNChannel channelForPresence:event[@"subscribedChannel"]];
+                        event[@"subscription"] = [PNChannel channelForPresence:event[@"subscription"]];
                     }
-                    if (event[@"actualChannel"]) {
+                    if (event[@"channel"]) {
                         
-                        event[@"actualChannel"] = [PNChannel channelForPresence:event[@"actualChannel"]];
+                        event[@"channel"] = [PNChannel channelForPresence:event[@"channel"]];
                     }
                 }
                 
@@ -1370,8 +1370,7 @@ NS_ASSUME_NONNULL_END
         // Check whether state has been changed for current client or not.
         if ([data.data.presence.uuid isEqualToString:self.client.configuration.uuid]) {
             
-            NSString *object = (data.data.actualChannel?: data.data.subscribedChannel);
-            [self.client.clientStateManager setState:data.data.presence.state forObject:object];
+            [self.client.clientStateManager setState:data.data.presence.state forObject:data.data.channel];
         }
     }
     [self.client.listenersManager notifyPresenceEvent:data];

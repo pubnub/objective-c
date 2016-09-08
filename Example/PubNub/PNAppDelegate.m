@@ -509,7 +509,7 @@
     if (message) {
         
         NSLog(@"Received message: %@ on channel %@ at %@", message.data.message,
-              message.data.subscribedChannel, message.data.timetoken);
+              message.data.channel, message.data.timetoken);
     }
 }
 
@@ -569,7 +569,7 @@
         if (status.operation == PNSubscribeOperation) {
             
             NSLog(@"Decryption failed for message from channel: %@\nmessage: %@",
-                  ((PNMessageData *)status.associatedObject).subscribedChannel, 
+                  ((PNMessageData *)status.associatedObject).channel, 
                   ((PNMessageData *)status.associatedObject).message);
         }
     }
