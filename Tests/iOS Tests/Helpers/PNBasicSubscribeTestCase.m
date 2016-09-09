@@ -173,8 +173,7 @@
             NSLog(@"%@", message.data.message);
             XCTAssertNotNil(message.data);
             XCTAssertEqualObjects(message.data.message, testData.publishMessage);
-            XCTAssertNil(message.data.actualChannel);
-            XCTAssertEqualObjects(message.data.subscribedChannel, testData.expectedMessageSubscribedChannel);
+            XCTAssertEqualObjects(message.data.channel, testData.expectedMessageSubscribedChannel);
             XCTAssertEqualObjects(message.data.timetoken, testData.expectedMessageTimetoken);
         } else {
             XCTFail(@"Should not receive a message, received: %@", message.debugDescription);

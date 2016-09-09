@@ -195,8 +195,7 @@
         XCTAssertEqual(message.operation, PNSubscribeOperation);
         NSLog(@"message:");
         NSLog(@"%@", message.data.message);
-        XCTAssertNil(message.data.actualChannel);
-        XCTAssertEqualObjects(message.data.subscribedChannel, @"a");
+        XCTAssertEqualObjects(message.data.channel, @"a");
         XCTAssertEqualObjects(message.data.message, @"****........... 2757 - 2016-03-18 14:00:40");
         [self.subscribeExpectation fulfill];
         self.subscribeExpectation = nil;
@@ -233,8 +232,7 @@
         XCTAssertEqual(message.operation, PNSubscribeOperation);
         NSLog(@"message:");
         NSLog(@"%@", message.data.message);
-        XCTAssertNil(message.data.actualChannel);
-        XCTAssertEqualObjects(message.data.subscribedChannel, @"a");
+        XCTAssertEqualObjects(message.data.channel, @"a");
         XCTAssertEqualObjects(message.data.message, @"**............. 4255 - 2016-03-18 14:30:10");
         [self.subscribeExpectation fulfill];
     };

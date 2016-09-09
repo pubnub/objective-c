@@ -17,14 +17,24 @@
 
 #pragma mark - Information
 
+- (NSString *)channel {
+    
+    return self.serviceData[@"channel"];
+}
+
+- (NSString *)subscription {
+    
+    return self.serviceData[@"subscription"];
+}
+
 - (NSString *)subscribedChannel {
     
-    return self.serviceData[@"subscribedChannel"];
+    return self.subscription;
 }
 
 - (NSString *)actualChannel {
     
-    return self.serviceData[@"actualChannel"];
+    return self.channel;
 }
 
 - (NSNumber *)timetoken {
