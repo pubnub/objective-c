@@ -202,21 +202,6 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
                       logExtension:(nullable NSString *)extension;
 
 
-#pragma mark - Logging
-
-/**
- @brief  Process log message with specified \c level and format.
- 
- @since 4.5.0
- 
- @param level   Reference on bitfield against which configured \c logLevel will be checked to decide whether 
-                log should be handled or not.
- @param message Reference on composed log message which should be sent to console (if enabled) and file (if 
-                enabled).
- */
-- (void)log:(NSUInteger)level message:(NSString *)message;
-
-
 #pragma mark - File logging
 
 /**
