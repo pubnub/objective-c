@@ -1,4 +1,5 @@
 #import "PubNub+Core.h"
+#import "PNPublishSequence.h"
 #import "PNStateListener.h"
 #import "PNClientState.h"
 #import "PNSubscriber.h"
@@ -8,8 +9,7 @@
 
 #pragma mark Class forward
 
-@class PNRequestParameters, PNConfiguration, PNClientState, PNStateListener, PNSubscriber,
-       PNHeartbeat, PNResult, PNStatus;
+@class PNRequestParameters, PNConfiguration, PNResult, PNStatus;
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -45,6 +45,13 @@ NS_ASSUME_NONNULL_BEGIN
  @since 4.0
  */
 @property (nonatomic, readonly, strong) PNSubscriber *subscriberManager;
+
+/**
+ @brief  Stores reference on instance which manage currently published message sequence number.
+ 
+ @since 4.5.2
+ */
+@property (nonatomic, readonly, strong) PNPublishSequence *sequenceManager;
 
 /**
  @brief  Stores reference on instance which is responsible for cached client state management.

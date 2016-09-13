@@ -390,6 +390,20 @@
 		7925DBA01D3FFCAC00857C0D /* PNLLogFileInformation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7925DB861D3FFCAC00857C0D /* PNLLogFileInformation.m */; };
 		7925DBA11D3FFCAC00857C0D /* PNLLogFileInformation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7925DB861D3FFCAC00857C0D /* PNLLogFileInformation.m */; };
 		7925DBA21D3FFCAC00857C0D /* PNLLogFileInformation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7925DB861D3FFCAC00857C0D /* PNLLogFileInformation.m */; };
+		7932485E1D874D9F00FBDF36 /* PNPublishSequence.h in Headers */ = {isa = PBXBuildFile; fileRef = 7932485C1D874D9F00FBDF36 /* PNPublishSequence.h */; };
+		7932485F1D874D9F00FBDF36 /* PNPublishSequence.h in Headers */ = {isa = PBXBuildFile; fileRef = 7932485C1D874D9F00FBDF36 /* PNPublishSequence.h */; };
+		793248601D874D9F00FBDF36 /* PNPublishSequence.h in Headers */ = {isa = PBXBuildFile; fileRef = 7932485C1D874D9F00FBDF36 /* PNPublishSequence.h */; };
+		793248611D874D9F00FBDF36 /* PNPublishSequence.h in Headers */ = {isa = PBXBuildFile; fileRef = 7932485C1D874D9F00FBDF36 /* PNPublishSequence.h */; };
+		793248621D874D9F00FBDF36 /* PNPublishSequence.h in Headers */ = {isa = PBXBuildFile; fileRef = 7932485C1D874D9F00FBDF36 /* PNPublishSequence.h */; };
+		793248631D874D9F00FBDF36 /* PNPublishSequence.h in Headers */ = {isa = PBXBuildFile; fileRef = 7932485C1D874D9F00FBDF36 /* PNPublishSequence.h */; };
+		793248641D874D9F00FBDF36 /* PNPublishSequence.h in Headers */ = {isa = PBXBuildFile; fileRef = 7932485C1D874D9F00FBDF36 /* PNPublishSequence.h */; };
+		793248651D874D9F00FBDF36 /* PNPublishSequence.m in Sources */ = {isa = PBXBuildFile; fileRef = 7932485D1D874D9F00FBDF36 /* PNPublishSequence.m */; };
+		793248661D874D9F00FBDF36 /* PNPublishSequence.m in Sources */ = {isa = PBXBuildFile; fileRef = 7932485D1D874D9F00FBDF36 /* PNPublishSequence.m */; };
+		793248671D874D9F00FBDF36 /* PNPublishSequence.m in Sources */ = {isa = PBXBuildFile; fileRef = 7932485D1D874D9F00FBDF36 /* PNPublishSequence.m */; };
+		793248681D874D9F00FBDF36 /* PNPublishSequence.m in Sources */ = {isa = PBXBuildFile; fileRef = 7932485D1D874D9F00FBDF36 /* PNPublishSequence.m */; };
+		793248691D874D9F00FBDF36 /* PNPublishSequence.m in Sources */ = {isa = PBXBuildFile; fileRef = 7932485D1D874D9F00FBDF36 /* PNPublishSequence.m */; };
+		7932486A1D874D9F00FBDF36 /* PNPublishSequence.m in Sources */ = {isa = PBXBuildFile; fileRef = 7932485D1D874D9F00FBDF36 /* PNPublishSequence.m */; };
+		7932486B1D874D9F00FBDF36 /* PNPublishSequence.m in Sources */ = {isa = PBXBuildFile; fileRef = 7932485D1D874D9F00FBDF36 /* PNPublishSequence.m */; };
 		793887041BEAD49100DCC662 /* PNNumber.h in Headers */ = {isa = PBXBuildFile; fileRef = 793887021BEAD49100DCC662 /* PNNumber.h */; };
 		793887051BEAD49100DCC662 /* PNNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = 793887031BEAD49100DCC662 /* PNNumber.m */; };
 		793887061BEAD4A700DCC662 /* PNNumber.h in Headers */ = {isa = PBXBuildFile; fileRef = 793887021BEAD49100DCC662 /* PNNumber.h */; };
@@ -1224,6 +1238,8 @@
 		7925DB831D3FFCAC00857C0D /* PNLLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNLLogger.m; sourceTree = "<group>"; };
 		7925DB851D3FFCAC00857C0D /* PNLLogFileInformation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNLLogFileInformation.h; sourceTree = "<group>"; };
 		7925DB861D3FFCAC00857C0D /* PNLLogFileInformation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNLLogFileInformation.m; sourceTree = "<group>"; };
+		7932485C1D874D9F00FBDF36 /* PNPublishSequence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNPublishSequence.h; sourceTree = "<group>"; };
+		7932485D1D874D9F00FBDF36 /* PNPublishSequence.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNPublishSequence.m; sourceTree = "<group>"; };
 		793887021BEAD49100DCC662 /* PNNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNNumber.h; sourceTree = "<group>"; };
 		793887031BEAD49100DCC662 /* PNNumber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNNumber.m; sourceTree = "<group>"; };
 		795158591C11C88500A9D3AE /* FABAttributes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FABAttributes.h; sourceTree = "<group>"; };
@@ -1279,7 +1295,6 @@
 		79CBB0761BD03DE4001FC34D /* PNAES.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNAES.m; sourceTree = "<group>"; };
 		79CBB0771BD03DE4001FC34D /* PNClientInformation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNClientInformation.h; sourceTree = "<group>"; };
 		79CBB0781BD03DE4001FC34D /* PNClientInformation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNClientInformation.m; sourceTree = "<group>"; };
-		79CBB0791BD03DE4001FC34D /* PNConfiguration+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNConfiguration+Private.h"; sourceTree = "<group>"; };
 		79CBB07A1BD03DE4001FC34D /* PNConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNConfiguration.h; sourceTree = "<group>"; };
 		79CBB07B1BD03DE4001FC34D /* PNConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNConfiguration.m; sourceTree = "<group>"; };
 		79CBB07D1BD03DE4001FC34D /* PNAcknowledgmentStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNAcknowledgmentStatus.h; sourceTree = "<group>"; };
@@ -1594,7 +1609,6 @@
 				79E20D141C8AEC3A001BC9CC /* PNEnvelopeInformation.m */,
 				79CBB0771BD03DE4001FC34D /* PNClientInformation.h */,
 				79CBB0781BD03DE4001FC34D /* PNClientInformation.m */,
-				79CBB0791BD03DE4001FC34D /* PNConfiguration+Private.h */,
 				79CBB07A1BD03DE4001FC34D /* PNConfiguration.h */,
 				79CBB07B1BD03DE4001FC34D /* PNConfiguration.m */,
 				79E2D0EC1C56434700BAA244 /* PNKeychain.h */,
@@ -1609,6 +1623,8 @@
 		79CBB06C1BD03DE4001FC34D /* Managers */ = {
 			isa = PBXGroup;
 			children = (
+				7932485C1D874D9F00FBDF36 /* PNPublishSequence.h */,
+				7932485D1D874D9F00FBDF36 /* PNPublishSequence.m */,
 				79CBB0711BD03DE4001FC34D /* PNStateListener.h */,
 				79CBB0721BD03DE4001FC34D /* PNStateListener.m */,
 				79CBB06D1BD03DE4001FC34D /* PNClientState.h */,
@@ -1828,6 +1844,7 @@
 				791582771BD709C60084FC70 /* PNPushNotificationsStateModificationParser.h in Headers */,
 				79A238D01D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.h in Headers */,
 				791582521BD709C60084FC70 /* PNPresenceChannelGroupHereNowResult.h in Headers */,
+				7932485E1D874D9F00FBDF36 /* PNPublishSequence.h in Headers */,
 				791582A21BD709C60084FC70 /* PNChannelGroupModificationParser.h in Headers */,
 				791582541BD709C60084FC70 /* PNChannelGroupClientStateResult.h in Headers */,
 				791582611BD709C60084FC70 /* PNPushNotificationsAuditParser.h in Headers */,
@@ -1923,6 +1940,7 @@
 				791583201BD709D10084FC70 /* PNPushNotificationsStateModificationParser.h in Headers */,
 				79A238D21D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.h in Headers */,
 				791582FB1BD709D10084FC70 /* PNPresenceChannelGroupHereNowResult.h in Headers */,
+				793248601D874D9F00FBDF36 /* PNPublishSequence.h in Headers */,
 				7915834B1BD709D10084FC70 /* PNChannelGroupModificationParser.h in Headers */,
 				791582FD1BD709D10084FC70 /* PNChannelGroupClientStateResult.h in Headers */,
 				7915830A1BD709D10084FC70 /* PNPushNotificationsAuditParser.h in Headers */,
@@ -2045,6 +2063,7 @@
 				79E20D1B1C8AEC4C001BC9CC /* PNEnvelopeInformation.h in Headers */,
 				798842A71C18F2D3003E8948 /* PNClientStateParser.h in Headers */,
 				7988429E1C18F2BD003E8948 /* PNRequestParameters.h in Headers */,
+				793248631D874D9F00FBDF36 /* PNPublishSequence.h in Headers */,
 				7988427B1C18F263003E8948 /* PNPrivateStructures.h in Headers */,
 				7988422F1C18F098003E8948 /* PubNub+ChannelGroup.h in Headers */,
 				798842761C18F205003E8948 /* PNSubscriberResults.h in Headers */,
@@ -2155,6 +2174,7 @@
 				7988436F1C191579003E8948 /* PNStateListener.h in Headers */,
 				7988435B1C191579003E8948 /* PNHistoryParser.h in Headers */,
 				7988434F1C191579003E8948 /* PNHistoryResult.h in Headers */,
+				793248641D874D9F00FBDF36 /* PNPublishSequence.h in Headers */,
 				7988434D1C191579003E8948 /* PNPublishStatus.h in Headers */,
 				798843811C191579003E8948 /* PubNub+Publish.h in Headers */,
 				7988437A1C191579003E8948 /* PNReachability.h in Headers */,
@@ -2208,6 +2228,7 @@
 				79A8BC8D1C58F93900015BDE /* PNPushNotificationsStateModificationParser.h in Headers */,
 				79A238D11D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.h in Headers */,
 				79A8BC681C58F93900015BDE /* PNPresenceChannelGroupHereNowResult.h in Headers */,
+				7932485F1D874D9F00FBDF36 /* PNPublishSequence.h in Headers */,
 				79A8BCBA1C58F93900015BDE /* PNChannelGroupModificationParser.h in Headers */,
 				79A8BC6A1C58F93900015BDE /* PNChannelGroupClientStateResult.h in Headers */,
 				79A8BC771C58F93900015BDE /* PNPushNotificationsAuditParser.h in Headers */,
@@ -2346,6 +2367,7 @@
 				79ACC44A1C11BC4D0056523A /* PNHistoryResult.h in Headers */,
 				79ACC4491C11BC4D0056523A /* PNConfiguration.h in Headers */,
 				79ACC4481C11BC4D0056523A /* PNPublishStatus.h in Headers */,
+				793248621D874D9F00FBDF36 /* PNPublishSequence.h in Headers */,
 				79ACC4461C11BC4D0056523A /* PubNub+Presence.h in Headers */,
 				79ACC4631C11BC4D0056523A /* PNReachability.h in Headers */,
 				79ACC44B1C11BC4D0056523A /* PubNub+History.h in Headers */,
@@ -2399,6 +2421,7 @@
 				79E20D2C1C8B0AD5001BC9CC /* PNPushNotificationsStateModificationParser.h in Headers */,
 				79A238D31D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.h in Headers */,
 				79E20D2B1C8B0A70001BC9CC /* PNPresenceChannelGroupHereNowResult.h in Headers */,
+				793248611D874D9F00FBDF36 /* PNPublishSequence.h in Headers */,
 				79CBB16A1BD03DE4001FC34D /* PNChannelGroupModificationParser.h in Headers */,
 				79CBB1241BD03DE4001FC34D /* PNChannelGroupClientStateResult.h in Headers */,
 				79CBB17C1BD03DE4001FC34D /* PNPushNotificationsAuditParser.h in Headers */,
@@ -3082,6 +3105,7 @@
 				79E20D161C8AEC3A001BC9CC /* PNEnvelopeInformation.m in Sources */,
 				7925DB9C1D3FFCAC00857C0D /* PNLLogFileInformation.m in Sources */,
 				7915822C1BD709C60084FC70 /* PNClientInformation.m in Sources */,
+				793248651D874D9F00FBDF36 /* PNPublishSequence.m in Sources */,
 				791582231BD709C60084FC70 /* PNRequestParameters.m in Sources */,
 				791582291BD709C60084FC70 /* PNSubscriberResults.m in Sources */,
 				791582221BD709C60084FC70 /* PubNub+ChannelGroup.m in Sources */,
@@ -3159,6 +3183,7 @@
 				79E20D1E1C8AEC51001BC9CC /* PNEnvelopeInformation.m in Sources */,
 				7925DB9E1D3FFCAC00857C0D /* PNLLogFileInformation.m in Sources */,
 				791582F31BD709D10084FC70 /* PNClientStateParser.m in Sources */,
+				793248671D874D9F00FBDF36 /* PNPublishSequence.m in Sources */,
 				791582D51BD709D10084FC70 /* PNClientInformation.m in Sources */,
 				791582D21BD709D10084FC70 /* PNSubscriberResults.m in Sources */,
 				791582CC1BD709D10084FC70 /* PNRequestParameters.m in Sources */,
@@ -3236,6 +3261,7 @@
 				79E20D211C8AEC53001BC9CC /* PNEnvelopeInformation.m in Sources */,
 				7925DBA11D3FFCAC00857C0D /* PNLLogFileInformation.m in Sources */,
 				798842A31C18F2C2003E8948 /* PNRequestParameters.m in Sources */,
+				7932486A1D874D9F00FBDF36 /* PNPublishSequence.m in Sources */,
 				798842551C18F1C0003E8948 /* PubNub+ChannelGroup.m in Sources */,
 				798842B61C18F2EA003E8948 /* PNClientStateParser.m in Sources */,
 				7988425E1C18F1CE003E8948 /* PNClientInformation.m in Sources */,
@@ -3334,6 +3360,7 @@
 				798843221C191579003E8948 /* PNLeaveParser.m in Sources */,
 				7988431E1C191579003E8948 /* PNServiceData.m in Sources */,
 				7988431B1C191579003E8948 /* PNClientState.m in Sources */,
+				7932486B1D874D9F00FBDF36 /* PNPublishSequence.m in Sources */,
 				798843091C191579003E8948 /* PNErrorStatus.m in Sources */,
 				7988433C1C191579003E8948 /* PNURLBuilder.m in Sources */,
 				798843391C191579003E8948 /* PNURLRequest.m in Sources */,
@@ -3391,6 +3418,7 @@
 				79E20D1D1C8AEC51001BC9CC /* PNEnvelopeInformation.m in Sources */,
 				7925DB9D1D3FFCAC00857C0D /* PNLLogFileInformation.m in Sources */,
 				79A8BC601C58F93900015BDE /* PNClientStateParser.m in Sources */,
+				793248661D874D9F00FBDF36 /* PNPublishSequence.m in Sources */,
 				79A8BC411C58F93900015BDE /* PNClientInformation.m in Sources */,
 				79A8BC3E1C58F93900015BDE /* PNSubscriberResults.m in Sources */,
 				79A8BC381C58F93900015BDE /* PNRequestParameters.m in Sources */,
@@ -3489,6 +3517,7 @@
 				79ACC4101C11BC4D0056523A /* PNClientState.m in Sources */,
 				79ACC40F1C11BC4D0056523A /* PNLeaveParser.m in Sources */,
 				79ACC4061C11BC4D0056523A /* PNErrorParser.m in Sources */,
+				793248691D874D9F00FBDF36 /* PNPublishSequence.m in Sources */,
 				79ACC3FD1C11BC4D0056523A /* PNErrorStatus.m in Sources */,
 				79ACC4201C11BC4D0056523A /* PNURLBuilder.m in Sources */,
 				79ACC41F1C11BC4D0056523A /* PNSubscriber.m in Sources */,
@@ -3546,6 +3575,7 @@
 				79E20D1F1C8AEC52001BC9CC /* PNEnvelopeInformation.m in Sources */,
 				7925DB9F1D3FFCAC00857C0D /* PNLLogFileInformation.m in Sources */,
 				79CBB1431BD03DE4001FC34D /* PNSubscriberResults.m in Sources */,
+				793248681D874D9F00FBDF36 /* PNPublishSequence.m in Sources */,
 				79CBB1181BD03DE4001FC34D /* PNClientInformation.m in Sources */,
 				79CBB18D1BD03DE4001FC34D /* PNRequestParameters.m in Sources */,
 				79CBB16D1BD03DE4001FC34D /* PNClientStateParser.m in Sources */,
@@ -3602,9 +3632,10 @@
 		791582031BD705130084FC70 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				BITCODE_GENERATION_MODE = bitcode;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				OTHER_CFLAGS = "-fembed-bitcode";
+				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "Universal Framework";
 				SDKROOT = watchos;
 				SUPPORTED_PLATFORMS = "watchsimulator watchos";
@@ -3615,9 +3646,10 @@
 		791582041BD705130084FC70 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				BITCODE_GENERATION_MODE = bitcode;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				OTHER_CFLAGS = "-fembed-bitcode";
+				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "Universal Framework";
 				SDKROOT = watchos;
 				SUPPORTED_PLATFORMS = "watchsimulator watchos";
@@ -3632,6 +3664,7 @@
 					"$(ARCHS_STANDARD)",
 					armv7s,
 				);
+				BITCODE_GENERATION_MODE = bitcode;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -3640,7 +3673,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				OTHER_CFLAGS = "-fembed-bitcode";
+				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.pubnub.pubnub-objc";
 				PRODUCT_NAME = PubNub;
@@ -3656,6 +3689,7 @@
 					"$(ARCHS_STANDARD)",
 					armv7s,
 				);
+				BITCODE_GENERATION_MODE = bitcode;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -3664,7 +3698,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				OTHER_CFLAGS = "-fembed-bitcode";
+				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.pubnub.pubnub-objc";
 				PRODUCT_NAME = PubNub;
@@ -3676,6 +3710,7 @@
 		791583531BD709D10084FC70 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				BITCODE_GENERATION_MODE = bitcode;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -3684,7 +3719,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				OTHER_CFLAGS = "-fembed-bitcode";
+				OTHER_CFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.pubnub.pubnub-objc";
 				PRODUCT_NAME = PubNub;
 				SDKROOT = watchos;
@@ -3698,6 +3733,7 @@
 		791583541BD709D10084FC70 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				BITCODE_GENERATION_MODE = bitcode;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -3706,7 +3742,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				OTHER_CFLAGS = "-fembed-bitcode";
+				OTHER_CFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.pubnub.pubnub-objc";
 				PRODUCT_NAME = PubNub;
 				SDKROOT = watchos;
@@ -3724,6 +3760,7 @@
 					"$(ARCHS_STANDARD)",
 					armv7s,
 				);
+				BITCODE_GENERATION_MODE = bitcode;
 				DEFINES_MODULE = YES;
 				EXECUTABLE_EXTENSION = a;
 				EXECUTABLE_PREFIX = "";
@@ -3735,7 +3772,7 @@
 				);
 				GENERATE_MASTER_OBJECT_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
-				OTHER_CFLAGS = "-fembed-bitcode";
+				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = PubNub;
 				PUBLIC_HEADERS_FOLDER_PATH = Headers;
@@ -3751,6 +3788,7 @@
 					"$(ARCHS_STANDARD)",
 					armv7s,
 				);
+				BITCODE_GENERATION_MODE = bitcode;
 				DEFINES_MODULE = YES;
 				EXECUTABLE_EXTENSION = a;
 				EXECUTABLE_PREFIX = "";
@@ -3758,7 +3796,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "PN_STATIC_LIBRARY=1";
 				GENERATE_MASTER_OBJECT_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
-				OTHER_CFLAGS = "-fembed-bitcode";
+				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = PubNub;
 				PUBLIC_HEADERS_FOLDER_PATH = Headers;
@@ -3771,9 +3809,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
+				BITCODE_GENERATION_MODE = bitcode;
 				GENERATE_MASTER_OBJECT_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
-				OTHER_CFLAGS = "-fembed-bitcode";
+				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "Universal Static Framework";
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
@@ -3785,9 +3824,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
+				BITCODE_GENERATION_MODE = bitcode;
 				GENERATE_MASTER_OBJECT_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
-				OTHER_CFLAGS = "-fembed-bitcode";
+				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "Universal Static Framework";
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
@@ -3802,6 +3842,7 @@
 					"$(ARCHS_STANDARD)",
 					armv7s,
 				);
+				BITCODE_GENERATION_MODE = bitcode;
 				DEFINES_MODULE = YES;
 				EXECUTABLE_EXTENSION = a;
 				EXECUTABLE_PREFIX = "";
@@ -3814,7 +3855,7 @@
 				);
 				GENERATE_MASTER_OBJECT_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
-				OTHER_CFLAGS = "-fembed-bitcode";
+				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = PubNub;
 				PUBLIC_HEADERS_FOLDER_PATH = Headers;
@@ -3830,6 +3871,7 @@
 					"$(ARCHS_STANDARD)",
 					armv7s,
 				);
+				BITCODE_GENERATION_MODE = bitcode;
 				DEFINES_MODULE = YES;
 				EXECUTABLE_EXTENSION = a;
 				EXECUTABLE_PREFIX = "";
@@ -3840,7 +3882,7 @@
 				);
 				GENERATE_MASTER_OBJECT_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
-				OTHER_CFLAGS = "-fembed-bitcode";
+				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = PubNub;
 				PUBLIC_HEADERS_FOLDER_PATH = Headers;
@@ -3853,6 +3895,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
+				BITCODE_GENERATION_MODE = bitcode;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -3861,7 +3904,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				OTHER_CFLAGS = "-fembed-bitcode";
+				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.pubnub.pubnub-objc";
 				PRODUCT_NAME = PubNub;
@@ -3877,6 +3920,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
+				BITCODE_GENERATION_MODE = bitcode;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -3885,7 +3929,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				OTHER_CFLAGS = "-fembed-bitcode";
+				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.pubnub.pubnub-objc";
 				PRODUCT_NAME = PubNub;
@@ -3901,9 +3945,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
+				BITCODE_GENERATION_MODE = bitcode;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				OTHER_CFLAGS = "-fembed-bitcode";
+				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "Universal Framework";
 				SDKROOT = appletvos;
 				SUPPORTED_PLATFORMS = "appletvsimulator appletvos";
@@ -3915,9 +3960,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
+				BITCODE_GENERATION_MODE = bitcode;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				OTHER_CFLAGS = "-fembed-bitcode";
+				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "Universal Framework";
 				SDKROOT = appletvos;
 				SUPPORTED_PLATFORMS = "appletvsimulator appletvos";
@@ -3928,6 +3974,7 @@
 		79ACC48D1C11BC4D0056523A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				BITCODE_GENERATION_MODE = bitcode;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -3942,7 +3989,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				OTHER_CFLAGS = "-fembed-bitcode";
+				OTHER_CFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.pubnub.pubnub-objc";
 				PRODUCT_NAME = PubNub;
 				SEPARATE_STRIP = YES;
@@ -3954,6 +4001,7 @@
 		79ACC48E1C11BC4D0056523A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				BITCODE_GENERATION_MODE = bitcode;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
@@ -3965,7 +4013,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				OTHER_CFLAGS = "-fembed-bitcode";
+				OTHER_CFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.pubnub.pubnub-objc";
 				PRODUCT_NAME = PubNub;
 				SEPARATE_STRIP = YES;
@@ -3981,13 +4029,14 @@
 					"$(ARCHS_STANDARD)",
 					armv7s,
 				);
+				BITCODE_GENERATION_MODE = bitcode;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"FABRIC_SUPPORT=1",
 					"$(inherited)",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				OTHER_CFLAGS = "-fembed-bitcode";
+				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "Universal Framework";
 				SEPARATE_STRIP = YES;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
@@ -4001,9 +4050,10 @@
 					"$(ARCHS_STANDARD)",
 					armv7s,
 				);
+				BITCODE_GENERATION_MODE = bitcode;
 				GCC_PREPROCESSOR_DEFINITIONS = "FABRIC_SUPPORT=1";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				OTHER_CFLAGS = "-fembed-bitcode";
+				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "Universal Framework";
 				SEPARATE_STRIP = YES;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
@@ -4101,6 +4151,7 @@
 		79CBB0471BD03D3F001FC34D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				BITCODE_GENERATION_MODE = bitcode;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -4111,7 +4162,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
-				OTHER_CFLAGS = "-fembed-bitcode";
+				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-l",
@@ -4128,6 +4179,7 @@
 		79CBB0481BD03D3F001FC34D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				BITCODE_GENERATION_MODE = bitcode;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -4138,7 +4190,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
-				OTHER_CFLAGS = "-fembed-bitcode";
+				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-l",
@@ -4159,8 +4211,9 @@
 					"$(ARCHS_STANDARD)",
 					armv7s,
 				);
+				BITCODE_GENERATION_MODE = bitcode;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				OTHER_CFLAGS = "-fembed-bitcode";
+				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "Universal Framework";
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
@@ -4173,8 +4226,9 @@
 					"$(ARCHS_STANDARD)",
 					armv7s,
 				);
+				BITCODE_GENERATION_MODE = bitcode;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				OTHER_CFLAGS = "-fembed-bitcode";
+				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "Universal Framework";
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
