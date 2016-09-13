@@ -18,7 +18,8 @@
 
 @implementation PNPublishWithMobilePayloadTests
 
-- (BOOL)isRecording{
+- (BOOL)isRecording {
+    
     return NO;
 }
 
@@ -48,7 +49,7 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @14587651644081128);
+                      XCTAssertEqualObjects(status.data.timetoken, @14737057715261562);
                   }];
 }
 
@@ -67,7 +68,7 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @14587651642570398);
+                      XCTAssertEqualObjects(status.data.timetoken, @14737057712867061);
                   }];
 }
 
@@ -93,7 +94,7 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @14587651639789412);
+                      XCTAssertEqualObjects(status.data.timetoken, @14737057707666104);
                   }];
 }
 

@@ -18,9 +18,9 @@
 
 @implementation PNPublishWithHistoryTests
 
-- (BOOL)isRecording{
-    return NO;
+- (BOOL)isRecording {
     
+    return NO;
 }
 
 - (NSString *)publishChannelString {
@@ -39,7 +39,7 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @14587653525292456);
+                      XCTAssertEqualObjects(status.data.timetoken, @14737056110828829);
     }];
 }
 
@@ -55,7 +55,7 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @14587653526660044);
+                      XCTAssertEqualObjects(status.data.timetoken, @14737056113338996);
                   }];
 }
 
@@ -106,7 +106,7 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @14587653521717263);
+                      XCTAssertEqualObjects(status.data.timetoken, @14737056104528041);
     }];
 }
 
@@ -123,7 +123,7 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @14587653523219629);
+                      XCTAssertEqualObjects(status.data.timetoken, @14737056107251739);
                   }];
 }
 
