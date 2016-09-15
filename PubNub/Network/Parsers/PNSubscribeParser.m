@@ -98,13 +98,13 @@ struct PNEventEnvelopeStructure {
     /**
      @brief  Stores reference on key under which actual channel name on which event has been triggered.
      */
-    __unsafe_unretained NSString *actualChannel;
+    __unsafe_unretained NSString *channel;
     
     /**
      @brief  Stores reference on key under which stored name of the object on which client subscribed at this 
              moment (can be: \c channel, \c group or \c wildcard).
      */
-    __unsafe_unretained NSString *subscribedChannel;
+    __unsafe_unretained NSString *subscriptionMatch;
     
     /**
      @brief  Stores reference on key under which stored event object data (can be user message for publish
@@ -144,8 +144,8 @@ struct PNEventEnvelopeStructure {
 } PNEventEnvelope = {
     .senderTimeToken = { .key = @"o" },
     .publishTimeToken = { .key = @"p" },
-    .actualChannel = @"c",
-    .subscribedChannel = @"b",
+    .channel = @"c",
+    .subscriptionMatch = @"b",
     .payload = @"d",
     .presence = { .action = @"action", .data = @"data", .occupancy = @"occupancy",
         .timestamp = @"timestamp", .uuid = @"uuid" }
@@ -268,12 +268,12 @@ NS_ASSUME_NONNULL_END
               withAdditionalParserData:(NSDictionary<NSString *, id> *)additionalData {
     
     NSMutableDictionary *event = [NSMutableDictionary new];
-    NSString *channel = data[PNEventEnvelope.actualChannel];
-    NSString *subscriptionMatch = data[PNEventEnvelope.subscribedChannel];
+    NSString *channel = data[PNEventEnvelope.channel];
+    NSString *subscriptionMatch = data[PNEventEnvelope.subscriptionMatch];
     if ([channel isEqualToString:subscriptionMatch]) { subscriptionMatch = nil; }
     event[@"envelope"] = [PNEnvelopeInformation envelopeInformationWithPayload:data];
-    event[@"subscribedChannel"] = (subscriptionMatch?: channel);
-    event[@"actualChannel"] = (subscriptionMatch ? channel : nil);
+    event[@"subscription"] = (subscriptionMatch?: channel);
+    event[@"channel"] = channel;
 
     id timeTokenData = (data[PNEventEnvelope.senderTimeToken.key]?:
                         data[PNEventEnvelope.publishTimeToken.key]);
@@ -284,7 +284,7 @@ NS_ASSUME_NONNULL_END
         event[@"region"] = @(timeToken[PNEventTimeToken.region].longLongValue);
     }
     
-    if ([PNChannel isPresenceObject:event[@"subscribedChannel"]]) {
+    if ([PNChannel isPresenceObject:event[@"subscription"]]) {
         
         [event addEntriesFromDictionary:[self presenceFromData:data[PNEventEnvelope.payload]]];
     }

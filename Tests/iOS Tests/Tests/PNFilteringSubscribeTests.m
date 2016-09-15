@@ -112,16 +112,14 @@ static NSString * const kPNChannelTestName = @"PNFilterSubscribeTests";
             case 0:
             {
                 XCTAssertEqualObjects(message.data.message, @"message");
-                XCTAssertNil(message.data.actualChannel);
-                XCTAssertEqualObjects(message.data.subscribedChannel, kPNChannelTestName);
+                XCTAssertEqualObjects(message.data.subscription, kPNChannelTestName);
                 XCTAssertEqualObjects(message.data.timetoken, @14521912345094137);
             }
                 break;
             case 1:
             {
                 XCTAssertEqualObjects(message.data.message, @"message1");
-                XCTAssertNil(message.data.actualChannel);
-                XCTAssertEqualObjects(message.data.subscribedChannel, kPNChannelTestName);
+                XCTAssertEqualObjects(message.data.subscription, kPNChannelTestName);
                 XCTAssertEqualObjects(message.data.timetoken, @14521912346468431);
                 [self.subscribeExpectation fulfill];
                 self.subscribeExpectation = nil;
@@ -207,16 +205,14 @@ static NSString * const kPNChannelTestName = @"PNFilterSubscribeTests";
             case 0:
             {
                 XCTAssertEqualObjects(message.data.message, @"message");
-                XCTAssertNil(message.data.actualChannel);
-                XCTAssertEqualObjects(message.data.subscribedChannel, kPNChannelTestName);
+                XCTAssertEqualObjects(message.data.channel, kPNChannelTestName);
                 XCTAssertEqualObjects(message.data.timetoken, @14521919071550816);
             }
                 break;
             case 1:
             {
                 XCTAssertEqualObjects(message.data.message, @"message1");
-                XCTAssertNil(message.data.actualChannel);
-                XCTAssertEqualObjects(message.data.subscribedChannel, kPNChannelTestName);
+                XCTAssertEqualObjects(message.data.channel, kPNChannelTestName);
                 XCTAssertEqualObjects(message.data.timetoken, @14521919072760992);
                 [self.subscribeExpectation fulfill];
                 self.subscribeExpectation = nil;
@@ -303,16 +299,14 @@ static NSString * const kPNChannelTestName = @"PNFilterSubscribeTests";
             case 0:
             {
                 XCTAssertEqualObjects(message.data.message, @"message");
-                XCTAssertNil(message.data.actualChannel);
-                XCTAssertEqualObjects(message.data.subscribedChannel, kPNChannelTestName);
+                XCTAssertEqualObjects(message.data.channel, kPNChannelTestName);
                 XCTAssertEqualObjects(message.data.timetoken, @14570385560170716);
             }
                 break;
             case 1:
             {
                 XCTAssertEqualObjects(message.data.message, @"message1");
-                XCTAssertNil(message.data.actualChannel);
-                XCTAssertEqualObjects(message.data.subscribedChannel, kPNChannelTestName);
+                XCTAssertEqualObjects(message.data.channel, kPNChannelTestName);
                 XCTAssertEqualObjects(message.data.timetoken, @14570385561462085);
             }
                 break;

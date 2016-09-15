@@ -19,18 +19,34 @@ NS_ASSUME_NONNULL_BEGIN
 ///------------------------------------------------
 
 /**
+ @brief  Name of channel for which subscriber received data.
+ 
+ @since 4.5.2
+ */
+@property (nonatomic, readonly, strong) NSString *channel;
+
+/**
+ @brief  Name of \c channel or channel \c group (in case if not equal to \c channel).
+ 
+ @since 4.5.2
+ */
+@property (nonatomic, nullable, readonly, strong) NSString *subscription;
+
+/**
  @brief  Name of regular channel or channel group.
  
  @since 4.0
  */
-@property (nonatomic, nullable, readonly, strong) NSString *subscribedChannel;
+@property (nonatomic, nullable, readonly, strong) NSString *subscribedChannel 
+          DEPRECATED_MSG_ATTRIBUTE("Property will be removed soon. Use 'subscription' property instead.");
 
 /**
  @brief  Name of channel in case if \c -subscribedChannel represent channel group.
  
  @since 4.0
  */
-@property (nonatomic, nullable, readonly, strong) NSString *actualChannel;
+@property (nonatomic, nullable, readonly, strong) NSString *actualChannel 
+          DEPRECATED_MSG_ATTRIBUTE("Property will be removed soon. Use 'channel' property instead.");
 
 /**
  @brief  Time at which event arrived.

@@ -6,6 +6,7 @@
 //
 //
 #import <BeKindRewind/BKRTestCaseFilePathHelper.h>
+#import <PubNub/PubNub+CorePrivate.h>
 #import <PubNub/PubNub.h>
 
 #import "PNDeviceIndependentMatcher.h"
@@ -22,9 +23,12 @@
     self.configuration = [self overrideClientConfiguration:self.configuration];
     self.client = [PubNub clientWithConfiguration:self.configuration];
     self.client.logger.enabled = NO;
+    [self.client.logger setLogLevel:PNVerboseLogLevel];
 }
 
 - (void)tearDown {
+    
+    [self.client.sequenceManager reset];
     self.client = nil;
     [super tearDown];
 }

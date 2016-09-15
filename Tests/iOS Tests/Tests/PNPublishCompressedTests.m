@@ -18,9 +18,9 @@
 
 @implementation PNPublishCompressedTests
 
-- (BOOL)isRecording{
-    return NO;
+- (BOOL)isRecording {
     
+    return NO;
 }
 
 - (NSString *)publishChannelString {
@@ -39,7 +39,7 @@
                           NSLog(@"status.data.information: %@", status.data.information);
                           NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                           XCTAssertEqualObjects(status.data.information, @"Sent");
-                          XCTAssertEqualObjects(status.data.timetoken, @14587654551044796);
+                          XCTAssertEqualObjects(status.data.timetoken, @14737054442643779);
                       }];
 }
 
@@ -56,7 +56,7 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @14587654556399534);
+                      XCTAssertEqualObjects(status.data.timetoken, @14737054445444510);
                   }];
 }
 
@@ -107,7 +107,7 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @14587654547934069);
+                      XCTAssertEqualObjects(status.data.timetoken, @14737054436300432);
                   }];
 }
 
@@ -124,7 +124,7 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @14587654549418446);
+                      XCTAssertEqualObjects(status.data.timetoken, @14737054439376241);
                   }];
 }
 

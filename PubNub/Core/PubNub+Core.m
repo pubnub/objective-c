@@ -64,6 +64,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) dispatch_queue_t callbackQueue;
 @property (nonatomic, copy) PNConfiguration *configuration;
 @property (nonatomic, strong) PNSubscriber *subscriberManager;
+@property (nonatomic, strong) PNPublishSequence *sequenceManager;
 @property (nonatomic, strong) PNClientState *clientStateManager;
 @property (nonatomic, strong) PNStateListener *listenersManager;
 @property (nonatomic, strong) PNHeartbeat *heartbeatManager;
@@ -226,6 +227,7 @@ NS_ASSUME_NONNULL_END
         [self prepareNetworkManagers];
         
         _subscriberManager = [PNSubscriber subscriberForClient:self];
+        _sequenceManager = [PNPublishSequence sequenceForClient:self];
         _clientStateManager = [PNClientState stateForClient:self];
         _listenersManager = [PNStateListener stateListenerForClient:self];
         _heartbeatManager = [PNHeartbeat heartbeatForClient:self];

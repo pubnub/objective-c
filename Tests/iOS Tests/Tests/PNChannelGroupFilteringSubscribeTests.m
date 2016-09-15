@@ -133,8 +133,8 @@ static NSString * const kPNChannelGroupTestName = @"PNChannelGroupFilterSubscrib
         NSLog(@"%@", message.data.message);
         XCTAssertNotNil(message.data);
         XCTAssertEqualObjects(message.data.message, @"message");
-        XCTAssertEqualObjects(message.data.actualChannel, kPNChannelTestName);
-        XCTAssertEqualObjects(message.data.subscribedChannel, kPNChannelGroupTestName);
+        XCTAssertEqualObjects(message.data.channel, kPNChannelTestName);
+        XCTAssertEqualObjects(message.data.subscription, kPNChannelGroupTestName);
         XCTAssertEqualObjects(message.data.timetoken, @14513349814151806);
         [self.channelGroupSubscribeExpectation fulfill];
         self.channelGroupSubscribeExpectation = nil;
@@ -176,16 +176,16 @@ static NSString * const kPNChannelGroupTestName = @"PNChannelGroupFilterSubscrib
             case 0:
             {
                 XCTAssertEqualObjects(message.data.message, @"message");
-                XCTAssertEqualObjects(message.data.actualChannel, kPNChannelTestName);
-                XCTAssertEqualObjects(message.data.subscribedChannel, kPNChannelGroupTestName);
+                XCTAssertEqualObjects(message.data.channel, kPNChannelTestName);
+                XCTAssertEqualObjects(message.data.subscription, kPNChannelGroupTestName);
                 XCTAssertEqualObjects(message.data.timetoken, @14521907558018569);
             }
                 break;
             case 1:
             {
                 XCTAssertEqualObjects(message.data.message, @"message1");
-                XCTAssertEqualObjects(message.data.actualChannel, kPNChannelTestName);
-                XCTAssertEqualObjects(message.data.subscribedChannel, kPNChannelGroupTestName);
+                XCTAssertEqualObjects(message.data.channel, kPNChannelTestName);
+                XCTAssertEqualObjects(message.data.subscription, kPNChannelGroupTestName);
                 XCTAssertEqualObjects(message.data.timetoken, @14521907559875616);
                 [self.channelGroupSubscribeExpectation fulfill];
                 self.channelGroupSubscribeExpectation = nil;
@@ -271,16 +271,16 @@ static NSString * const kPNChannelGroupTestName = @"PNChannelGroupFilterSubscrib
             case 0:
             {
                 XCTAssertEqualObjects(message.data.message, @"message");
-                XCTAssertEqualObjects(message.data.actualChannel, kPNChannelTestName);
-                XCTAssertEqualObjects(message.data.subscribedChannel, kPNChannelGroupTestName);
+                XCTAssertEqualObjects(message.data.channel, kPNChannelTestName);
+                XCTAssertEqualObjects(message.data.subscription, kPNChannelGroupTestName);
                 XCTAssertEqualObjects(message.data.timetoken, @14521919903633129);
             }
                 break;
             case 1:
             {
                 XCTAssertEqualObjects(message.data.message, @"message1");
-                XCTAssertEqualObjects(message.data.actualChannel, kPNChannelTestName);
-                XCTAssertEqualObjects(message.data.subscribedChannel, kPNChannelGroupTestName);
+                XCTAssertEqualObjects(message.data.channel, kPNChannelTestName);
+                XCTAssertEqualObjects(message.data.subscription, kPNChannelGroupTestName);
                 XCTAssertEqualObjects(message.data.timetoken, @14521919904785185);
                 [self.channelGroupSubscribeExpectation fulfill];
                 self.channelGroupSubscribeExpectation = nil;
@@ -520,8 +520,8 @@ static NSString * const kPNChannelGroupTestName = @"PNChannelGroupFilterSubscrib
         NSLog(@"%@", message.data.message);
         XCTAssertNotNil(message.data);
         XCTAssertEqualObjects(message.data.message, @"message");
-        XCTAssertEqualObjects(message.data.actualChannel, kPNChannelTestName);
-        XCTAssertEqualObjects(message.data.subscribedChannel, kPNChannelGroupTestName);
+        XCTAssertEqualObjects(message.data.channel, kPNChannelTestName);
+        XCTAssertEqualObjects(message.data.subscription, kPNChannelGroupTestName);
         XCTAssertEqualObjects(message.data.timetoken, @14508303357934556);
         [self.channelGroupSubscribeExpectation fulfill];
         self.channelGroupSubscribeExpectation = nil;

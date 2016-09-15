@@ -103,6 +103,18 @@ NS_ASSUME_NONNULL_END
 @implementation PNConfiguration
 
 
+#pragma mark - Information
+
+- (void)setPresenceHeartbeatValue:(NSInteger)presenceHeartbeatValue {
+    
+    _presenceHeartbeatValue = presenceHeartbeatValue;
+    if (self.presenceHeartbeatInterval == 0) { 
+        
+        _presenceHeartbeatInterval = (NSInteger)(_presenceHeartbeatValue * 0.5f);
+    }
+}
+
+
 #pragma mark - Initialization and Configuration
 
 + (instancetype)configurationWithPublishKey:(NSString *)publishKey subscribeKey:(NSString *)subscribeKey {

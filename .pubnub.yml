@@ -1,6 +1,25 @@
 --- 
 changelog: 
   -
+    changes:
+      -
+        text: "added published message sequence number to publish API call (this information arrive as message envelope and used for issues debugging)."
+        type: improvement
+      -
+        text: "added logger method which will allow to use it from Swift."
+        type: feature
+      -
+        text: "added automatic heartbeat interval using formula and heartbeat value for calculated value."
+        type: improvement
+      -
+        text: "added 'channel' and 'subscription' properties to represent channel from which event arrived and actual data strean name which is used by PubNub client for subscription."
+        type: feature
+      -
+        text: "deprecated 'actualChannel' and 'subscribedChannel' in favor of 'channel' and 'subscription' (properties still available, but will be eventually will be completelly removed)."
+        type: improvement
+    date: ~
+    version: v4.5.2
+  -
     changes: 
       -
         text: "Changed default logs directory which should be used for tvOS client."
@@ -410,4 +429,4 @@ features:
 name: objective-c
 schema: 1
 scm: github.com/pubnub/objective-c
-version: "4.5.1"
+version: "4.5.2"

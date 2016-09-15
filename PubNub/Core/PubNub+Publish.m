@@ -31,6 +31,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param shouldStore     Whether message should be stored in history storage or not.
  @param metadata        JSON representation of \b NSDictionary with values which should be used by \b PubNub 
                         service to filter messages.
+ @param sequenceNumber  Next published message sequence number which should be used.
  
  @return Configured and ready to use request parameters instance.
  
@@ -38,7 +39,8 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (PNRequestParameters *)requestParametersForMessage:(NSString *)message toChannel:(NSString *)channel
                                           compressed:(BOOL)compressMessage storeInHistory:(BOOL)shouldStore 
-                                            metadata:(nullable NSString *)metadata;
+                                            metadata:(nullable NSString *)metadata 
+                                      sequenceNumber:(NSUInteger)sequenceNumber;
 
 /**
  @brief      Merge user-specified message with push payloads into single message which will be processed on
@@ -199,6 +201,9 @@ NS_ASSUME_NONNULL_END
   mobilePushPayload:(NSDictionary<NSString *, id> *)payloads storeInHistory:(BOOL)shouldStore
          compressed:(BOOL)compressed withMetadata:(NSDictionary<NSString *, id> *)metadata
          completion:(PNPublishCompletionBlock)block {
+    
+    // Get next published message sequence number and update stored data.
+    NSUInteger nextSequenceNumber = [self.sequenceManager nextSequenceNumber:YES];
 
     // Push further code execution on secondary queue to make service queue responsive during
     // JSON serialization and encryption process.
@@ -232,9 +237,12 @@ NS_ASSUME_NONNULL_END
             messageForPublish = [PNJSON JSONStringFrom:mergedData withError:&publishError];
         }
         PNRequestParameters *parameters = [strongSelf requestParametersForMessage:messageForPublish
-                                                                        toChannel:channel compressed:compressed
+                                                                        toChannel:channel 
+                                                                       compressed:compressed
                                                                    storeInHistory:shouldStore 
-                                                                         metadata:metadataForPublish];
+                                                                         metadata:metadataForPublish 
+                                                                   sequenceNumber:nextSequenceNumber];
+        
         NSData *publishData = nil;
         if (compressed) {
 
@@ -334,6 +342,9 @@ NS_ASSUME_NONNULL_END
     
     if (block) {
         
+        // Get next published message sequence number.
+        NSUInteger nextSequenceNumber = [self.sequenceManager nextSequenceNumber:NO];
+        
         // Push further code execution on secondary queue to make service queue responsive during
         // JSON serialization and encryption process.
         __weak __typeof(self) weakSelf = self;
@@ -364,7 +375,8 @@ NS_ASSUME_NONNULL_END
                                                                       toChannel:channel
                                                                      compressed:compressMessage
                                                                  storeInHistory:shouldStore 
-                                                                       metadata:metadataForPublish];
+                                                                       metadata:metadataForPublish 
+                                                                 sequenceNumber:nextSequenceNumber];
             NSData *publishData = nil;
             if (compressMessage) {
                 
@@ -387,7 +399,9 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Misc
 
 - (PNRequestParameters *)requestParametersForMessage:(NSString *)message toChannel:(NSString *)channel
-  compressed:(BOOL)compressMessage storeInHistory:(BOOL)shouldStore metadata:(NSString *)metadata {
+                                          compressed:(BOOL)compressMessage storeInHistory:(BOOL)shouldStore 
+                                            metadata:(nullable NSString *)metadata 
+                                      sequenceNumber:(NSUInteger)sequenceNumber {
     
     PNRequestParameters *parameters = [PNRequestParameters new];
     if (channel.length) {
@@ -400,10 +414,13 @@ NS_ASSUME_NONNULL_END
         [parameters addPathComponent:(!compressMessage ? [PNString percentEscapedString:message] : @"")
                       forPlaceholder:@"{message}"];
     }
+    
     if ([metadata isKindOfClass:[NSString class]] && metadata.length) {
         
         [parameters addQueryParameter:[PNString percentEscapedString:metadata] forFieldName:@"meta"];
     }
+    
+    [parameters addQueryParameter:@(sequenceNumber).stringValue forFieldName:@"seqn"];
     
     return parameters;
 }
