@@ -1,3 +1,6 @@
+26-09-2016 - 3cc8b7b - 4.5.3
+. added NS_SWIFT_NAME with Swift equivalent specified in it to all public API. This allow to prevent Swift function signature generator from changing it between Swift releases.
+
 13-09-2016 - 2c8d262 - 4.5.2
 . added published message sequence number to publish API call (this information arrive as message envelope and used for issues debugging).
 . added logger method which will allow to use it from Swift.

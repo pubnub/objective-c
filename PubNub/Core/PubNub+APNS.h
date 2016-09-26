@@ -88,7 +88,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  @since 4.0
  */
 - (void)addPushNotificationsOnChannels:(NSArray<NSString *> *)channels withDevicePushToken:(NSData *)pushToken
-                         andCompletion:(nullable PNPushNotificationsStateModificationCompletionBlock)block;
+                         andCompletion:(nullable PNPushNotificationsStateModificationCompletionBlock)block NS_SWIFT_NAME(addPushNotificationsOnChannels(_:withDevicePushToken:andCompletion:));
 
 /**
  @brief      Disable push notifications on provided set of \c channels.
@@ -129,7 +129,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  */
 - (void)removePushNotificationsFromChannels:(NSArray<NSString *> *)channels
                         withDevicePushToken:(NSData *)pushToken
-                              andCompletion:(nullable PNPushNotificationsStateModificationCompletionBlock)block;
+                              andCompletion:(nullable PNPushNotificationsStateModificationCompletionBlock)block NS_SWIFT_NAME(removePushNotificationsFromChannels(_:withDevicePushToken:andCompletion:));
 
 /**
  @brief      Disable push notifications from all channels which is registered with specified \c pushToken.
@@ -168,7 +168,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  @since 4.0
  */
 - (void)removeAllPushNotificationsFromDeviceWithPushToken:(NSData *)pushToken
-                           andCompletion:(nullable PNPushNotificationsStateModificationCompletionBlock)block;
+                           andCompletion:(nullable PNPushNotificationsStateModificationCompletionBlock)block NS_SWIFT_NAME(removeAllPushNotificationsFromDeviceWithPushToken(_:andCompletion:));
 
 
 ///------------------------------------------------
@@ -213,7 +213,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  @since 4.0
  */
 - (void)pushNotificationEnabledChannelsForDeviceWithPushToken:(NSData *)pushToken
-                                  andCompletion:(PNPushNotificationsStateAuditCompletionBlock)block;
+                                  andCompletion:(PNPushNotificationsStateAuditCompletionBlock)block NS_SWIFT_NAME(pushNotificationEnabledChannelsForDeviceWithPushToken(_:andCompletion:));
 
 #pragma mark -
 
