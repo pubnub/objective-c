@@ -70,7 +70,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  
  @since 4.0
  */
-- (void)timeWithCompletion:(PNTimeCompletionBlock)block;
+- (void)timeWithCompletion:(PNTimeCompletionBlock)block NS_SWIFT_NAME(timeWithCompletion(_:));
 
 #pragma mark -
 

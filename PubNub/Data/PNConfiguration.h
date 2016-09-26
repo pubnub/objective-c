@@ -234,7 +234,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @since 4.0
  */
-+ (instancetype)configurationWithPublishKey:(NSString *)publishKey subscribeKey:(NSString *)subscribeKey;
++ (instancetype)configurationWithPublishKey:(NSString *)publishKey subscribeKey:(NSString *)subscribeKey NS_SWIFT_NAME(init(publishKey:subscribeKey:));
 
 #pragma mark -
 

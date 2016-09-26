@@ -77,7 +77,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  
  @since 4.0
  */
-- (void)historyForChannel:(NSString *)channel withCompletion:(PNHistoryCompletionBlock)block;
+- (void)historyForChannel:(NSString *)channel withCompletion:(PNHistoryCompletionBlock)block NS_SWIFT_NAME(historyForChannel(_:withCompletion:));
 
 
 ///------------------------------------------------
@@ -132,7 +132,7 @@ NSNumber *endDate = @([[NSDate date] timeIntervalSince1970]);
  @since 4.0
  */
 - (void)historyForChannel:(NSString *)channel start:(nullable NSNumber *)startDate 
-                      end:(nullable NSNumber *)endDate withCompletion:(PNHistoryCompletionBlock)block;
+                      end:(nullable NSNumber *)endDate withCompletion:(PNHistoryCompletionBlock)block NS_SWIFT_NAME(historyForChannel(_:start:end:withCompletion:));
 
 /**
  @brief      Allow to fetch events from specified \c channel's history within specified time frame.
@@ -186,7 +186,7 @@ NSNumber *endDate = @([[NSDate date] timeIntervalSince1970]);
  */
 - (void)historyForChannel:(NSString *)channel start:(nullable NSNumber *)startDate 
                       end:(nullable NSNumber *)endDate limit:(NSUInteger)limit 
-           withCompletion:(PNHistoryCompletionBlock)block;
+           withCompletion:(PNHistoryCompletionBlock)block NS_SWIFT_NAME(historyForChannel(_:start:end:limit:withCompletion:));
 
 
 ///------------------------------------------------
@@ -248,7 +248,7 @@ NSNumber *endDate = @([[NSDate date] timeIntervalSince1970]);
  */
 - (void)historyForChannel:(NSString *)channel start:(nullable NSNumber *)startDate 
                       end:(nullable NSNumber *)endDate includeTimeToken:(BOOL)shouldIncludeTimeToken 
-           withCompletion:(PNHistoryCompletionBlock)block;
+           withCompletion:(PNHistoryCompletionBlock)block NS_SWIFT_NAME(historyForChannel(_:start:end:includeTimeToken:withCompletion:));
 
 /**
  @brief      Allow to fetch events from specified \c channel's history within specified time frame.
@@ -308,7 +308,7 @@ NSNumber *endDate = @([[NSDate date] timeIntervalSince1970]);
  */
 - (void)historyForChannel:(NSString *)channel start:(nullable NSNumber *)startDate 
                       end:(nullable NSNumber *)endDate limit:(NSUInteger)limit
-         includeTimeToken:(BOOL)shouldIncludeTimeToken withCompletion:(PNHistoryCompletionBlock)block;
+         includeTimeToken:(BOOL)shouldIncludeTimeToken withCompletion:(PNHistoryCompletionBlock)block NS_SWIFT_NAME(historyForChannel(_:start:end:limit:includeTimeToken:withCompletion:));
 
 /**
  @brief      Allow to fetch events from specified \c channel's history within specified time frame.
@@ -364,7 +364,7 @@ NSNumber *endDate = @([[NSDate date] timeIntervalSince1970]);
  */
 - (void)historyForChannel:(NSString *)channel start:(nullable NSNumber *)startDate
                       end:(nullable NSNumber *)endDate limit:(NSUInteger)limit 
-                  reverse:(BOOL)shouldReverseOrder withCompletion:(PNHistoryCompletionBlock)block;
+                  reverse:(BOOL)shouldReverseOrder withCompletion:(PNHistoryCompletionBlock)block NS_SWIFT_NAME(historyForChannel(_:start:end:limit:reverse:withCompletion:));
 
 /**
  @brief      Allow to fetch events from specified \c channel's history within specified time frame.
@@ -425,7 +425,7 @@ NSNumber *endDate = @([[NSDate date] timeIntervalSince1970]);
 - (void)historyForChannel:(NSString *)channel start:(nullable NSNumber *)startDate
                       end:(nullable NSNumber *)endDate limit:(NSUInteger)limit 
                   reverse:(BOOL)shouldReverseOrder includeTimeToken:(BOOL)shouldIncludeTimeToken 
-           withCompletion:(PNHistoryCompletionBlock)block;
+           withCompletion:(PNHistoryCompletionBlock)block NS_SWIFT_NAME(historyForChannel(_:start:end:limit:reverse:includeTimeToken:withCompletion:));
 
 #pragma mark -
 

@@ -119,7 +119,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  
  @since 4.0
  */
-- (void)hereNowWithCompletion:(PNGlobalHereNowCompletionBlock)block;
+- (void)hereNowWithCompletion:(PNGlobalHereNowCompletionBlock)block NS_SWIFT_NAME(hereNowWithCompletion(_:));
 
 /**
  @brief      Request information about subscribers on all remote data objects live feeds.
@@ -168,7 +168,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  
  @since 4.0
  */
-- (void)hereNowWithVerbosity:(PNHereNowVerbosityLevel)level completion:(PNGlobalHereNowCompletionBlock)block;
+- (void)hereNowWithVerbosity:(PNHereNowVerbosityLevel)level completion:(PNGlobalHereNowCompletionBlock)block NS_SWIFT_NAME(hereNowWithVerbosity(_:completion:));
 
 
 ///------------------------------------------------
@@ -216,7 +216,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  
  @since 4.0
  */
-- (void)hereNowForChannel:(NSString *)channel withCompletion:(PNHereNowCompletionBlock)block;
+- (void)hereNowForChannel:(NSString *)channel withCompletion:(PNHereNowCompletionBlock)block NS_SWIFT_NAME(hereNowForChannel(_:withCompletion:));
 
 /**
  @brief      Request information about subscribers on specific channel live feeds.
@@ -262,7 +262,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  @since 4.0
  */
 - (void)hereNowForChannel:(NSString *)channel withVerbosity:(PNHereNowVerbosityLevel)level
-               completion:(PNHereNowCompletionBlock)block;
+               completion:(PNHereNowCompletionBlock)block NS_SWIFT_NAME(hereNowForChannel(_:withVerbosity:completion:));
 
 
 ///------------------------------------------------
@@ -314,7 +314,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  
  @since 4.0
  */
-- (void)hereNowForChannelGroup:(NSString *)group withCompletion:(PNChannelGroupHereNowCompletionBlock)block;
+- (void)hereNowForChannelGroup:(NSString *)group withCompletion:(PNChannelGroupHereNowCompletionBlock)block NS_SWIFT_NAME(hereNowForChannelGroup(_:withCompletion:));
 
 /**
  @brief      Request information about subscribers on specific channel group live feeds.
@@ -364,7 +364,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  @since 4.0
  */
 - (void)hereNowForChannelGroup:(NSString *)group withVerbosity:(PNHereNowVerbosityLevel)level
-                    completion:(PNChannelGroupHereNowCompletionBlock)block;
+                    completion:(PNChannelGroupHereNowCompletionBlock)block NS_SWIFT_NAME(hereNowForChannelGroup(_:withVerbosity:completion:));
 
 
 ///------------------------------------------------
@@ -406,7 +406,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  
  @since 4.0
  */
-- (void)whereNowUUID:(NSString *)uuid withCompletion:(PNWhereNowCompletionBlock)block;
+- (void)whereNowUUID:(NSString *)uuid withCompletion:(PNWhereNowCompletionBlock)block NS_SWIFT_NAME(whereNowUUID(_:withCompletion:));
 
 #pragma mark -
 
