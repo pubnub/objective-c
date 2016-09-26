@@ -3,6 +3,13 @@ changelog:
   -
     changes:
       -
+        text: added NS_SWIFT_NAME with Swift equivalent specified in it to all public API to prevent Swift function signature change between Swift releases
+        type: improvement
+    date: ~
+    version: v4.5.3 
+  -
+    changes:
+      -
         text: "added published message sequence number to publish API call (this information arrive as message envelope and used for issues debugging)."
         type: improvement
       -
@@ -429,4 +436,4 @@ features:
 name: objective-c
 schema: 1
 scm: github.com/pubnub/objective-c
-version: "4.5.2"
+version: "4.5.3"
