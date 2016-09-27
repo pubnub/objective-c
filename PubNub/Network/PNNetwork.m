@@ -916,33 +916,43 @@ NS_ASSUME_NONNULL_END
 
 - (void)handleClientWillResignActive {
     
-    OSSpinLockLock(&_lock);
-    if (self.tasksCompletionIdentifier == UIBackgroundTaskInvalid) {
+    UIApplication *application = nil;
+    SEL sharedApplication = NSSelectorFromString(@"sharedApplication");
+    if ([UIApplication respondsToSelector:sharedApplication]) {
         
-        // Give manager some time to figure out whether background task should be used to complete all 
-        // scheduled data tasks or not.
-        __weak __typeof__(self) weakSelf = self;
-        self.tasksCompletionIdentifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+        application = [UIApplication performSelector:sharedApplication];
+    }
+    
+    if (application) {
+        
+        OSSpinLockLock(&_lock);
+        if (self.tasksCompletionIdentifier == UIBackgroundTaskInvalid) {
             
-            [weakSelf endBackgroundTasksCompletionIfRequired];
-        }];
-             
-        // Give some time before checking whether tasks has been scheduled for execution or not.
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3f * NSEC_PER_SEC)),
-                       dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                           
-            // Get list of scheduled operation.
-            __strong __typeof__(weakSelf) strongSelf = weakSelf;
-            OSSpinLockLock(&strongSelf->_lock);
-            if (strongSelf.tasksCompletionIdentifier != UIBackgroundTaskInvalid) {
+            // Give manager some time to figure out whether background task should be used to complete all 
+            // scheduled data tasks or not.
+            __weak __typeof__(self) weakSelf = self;
+            self.tasksCompletionIdentifier = [application beginBackgroundTaskWithExpirationHandler:^{
                 
-                [strongSelf processIncompleteBeforeClientResignActiveTasks:self.scheduledDataTasks
-                                                      onDataTaskCompletion:NO];
-            }
-            OSSpinLockUnlock(&strongSelf->_lock);
-        });
-    } 
-    OSSpinLockUnlock(&_lock);
+                [weakSelf endBackgroundTasksCompletionIfRequired];
+            }];
+                 
+            // Give some time before checking whether tasks has been scheduled for execution or not.
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3f * NSEC_PER_SEC)),
+                           dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                               
+                // Get list of scheduled operation.
+                __strong __typeof__(weakSelf) strongSelf = weakSelf;
+                OSSpinLockLock(&strongSelf->_lock);
+                if (strongSelf.tasksCompletionIdentifier != UIBackgroundTaskInvalid) {
+                    
+                    [strongSelf processIncompleteBeforeClientResignActiveTasks:self.scheduledDataTasks
+                                                          onDataTaskCompletion:NO];
+                }
+                OSSpinLockUnlock(&strongSelf->_lock);
+            });
+        } 
+        OSSpinLockUnlock(&_lock);
+    }
 }
 
 - (void)handleClientDidBecomeActive {
@@ -1133,9 +1143,16 @@ NS_ASSUME_NONNULL_END
 - (void)endBackgroundTasksCompletionIfRequired {
     
     bool locked = OSSpinLockTry(&_lock);
-    if (self.tasksCompletionIdentifier != UIBackgroundTaskInvalid) {
+    UIApplication *application = nil;
+    SEL sharedApplication = NSSelectorFromString(@"sharedApplication");
+    if ([UIApplication respondsToSelector:sharedApplication]) {
         
-        [[UIApplication sharedApplication] endBackgroundTask:self.tasksCompletionIdentifier];
+        application = [UIApplication performSelector:sharedApplication];
+    }
+    
+    if (application && self.tasksCompletionIdentifier != UIBackgroundTaskInvalid) {
+        
+        [application endBackgroundTask:self.tasksCompletionIdentifier];
         self.tasksCompletionIdentifier = UIBackgroundTaskInvalid;
     }
     if (locked) { OSSpinLockUnlock(&_lock); }
