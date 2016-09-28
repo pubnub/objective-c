@@ -243,9 +243,9 @@
     NSString *device = @"iPhone";
 #if TARGET_OS_WATCH
     NSString *osVersion = [[WKInterfaceDevice currentDevice] systemVersion];
-#elif __IPHONE_OS_VERSION_MIN_REQUIRED
+#elif TARGET_OS_IOS
     NSString *osVersion = [[UIDevice currentDevice] systemVersion];
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED
+#elif TARGET_OS_OSX
     NSOperatingSystemVersion version = [[NSProcessInfo processInfo]operatingSystemVersion];
     NSMutableString *osVersion = [NSMutableString stringWithFormat:@"%@.%@",
                                   @(version.majorVersion), @(version.minorVersion)];

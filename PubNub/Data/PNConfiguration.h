@@ -200,7 +200,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, assign, getter = shouldTryCatchUpOnSubscriptionRestore) BOOL catchUpOnSubscriptionRestore;
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+#if TARGET_OS_IOS
 /**
  @brief  Stores whether client should try complete all API call which is done before application will be 
          completelly suspended.
@@ -208,10 +208,12 @@ NS_ASSUME_NONNULL_BEGIN
  @default By default \c client use \b YES to complete tasks which has been scheduled before \c client resign 
           active.
  
+ @note    This property ignored when SDK compiled for application with application extension.
+ 
  @since 4.5.0
  */
 @property (nonatomic, assign, getter = shouldCompleteRequestsBeforeSuspension) BOOL completeRequestsBeforeSuspension;
-#endif // __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+#endif // TARGET_OS_IOS
 
 /**
  @brief  Stores whether client should strip out received messages (real-time and history) from data which has 

@@ -679,11 +679,11 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
 - (NSString *)createLogFile {
     
     NSString *filePath = [self.directory stringByAppendingPathComponent:[self newLogFileName]];
-#if !TARGET_OS_TV && TARGET_OS_IOS
+#if TARGET_OS_IOS
     NSDictionary *attributes = @{NSFileProtectionKey: NSFileProtectionCompleteUntilFirstUserAuthentication};
 #else
     NSDictionary *attributes = nil;
-#endif
+#endif // TARGET_OS_IOS
     
     // Create logs folder if required.
     if (![[NSFileManager defaultManager] fileExistsAtPath:_directory]) {
@@ -873,7 +873,7 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
         
         logsDirectory = [logsDirectory stringByAppendingPathComponent:_applicationName];
     }
-#endif
+#endif // TARGET_OS_IPHONE
     logsDirectory = [logsDirectory stringByAppendingPathComponent:self.identifier];
     
     return logsDirectory;
