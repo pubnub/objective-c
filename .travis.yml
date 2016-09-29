@@ -37,6 +37,8 @@ matrix:
     # tvOS 9.2
     - env: FASTLANE_ENV=tvos92_AppleTV1080p
 before_install:
+  - gem uninstall bundler -v '>1.12.5' --force || echo "bundler >1.12.5 is not installed"
+  - gem install bundler -v 1.12.5 --no-rdoc --no-ri --no-document --quiet
   - gem install fastlane --no-rdoc --no-ri --no-document --quiet
   - gem install cocoapods --no-rdoc --no-ri --no-document --quiet
   - gem install xcpretty --no-rdoc --no-ri --no-document --quiet
