@@ -36,11 +36,6 @@ script:
   - set -o pipefail
   - fastlane $FASTLANE_LANE configuration:Release language:$PN_TEST_LANG --env $FASTLANE_ENV
 
-after_success:
-  - if [ "$FASTLANE_LANE" == "code_coverage" ]; then
-     bash <(curl -s https://codecov.io/bash);
-    fi
-
 after_failure:
  - cat -n fastlane/report.xml
  - cat -n ~/Library/Logs/scan/*
