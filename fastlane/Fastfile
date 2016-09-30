@@ -17,7 +17,7 @@ desc "The lane to run by Travis-CI on every commit or merge pull request."
 lane :test_tvos do |options|
   scan(
     sdk: 'appletvsimulator',
-    device: devices,
+    devices: devices,
     configuration: options[:configuration],
     scheme: scheme(options[:language])
   )
