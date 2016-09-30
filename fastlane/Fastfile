@@ -4,15 +4,11 @@
 desc "Run iOS tests against devices specified in Travis jobs matrix."
 desc "The lane to run by Travis-CI on every commit or merge pull request."
 lane :test_ios do |options|
-  output.each do |key, value|
-    puts key + ' : ' + value
-  end
-
   scan(
     sdk: 'iphonesimulator',
     devices: devices,
     configuration: options[:configuration],
-    scheme: scheme
+    scheme: scheme(options[:language])
   )
 end
 
@@ -23,7 +19,7 @@ lane :test_tvos do |options|
     sdk: 'appletvsimulator',
     device: devices,
     configuration: options[:configuration],
-    scheme: scheme
+    scheme: scheme(options[:language])
   )
 end
 
@@ -32,7 +28,7 @@ desc "The lane to run by Travis-CI on every commit or merge pull request."
 lane :test_macos do |options|
   scan(
     configuration: options[:configuration],
-    scheme: scheme
+    scheme: scheme(options[:language])
   )
 end
 
@@ -44,6 +40,6 @@ def devices
   devices_names.map { |device_name| "#{device_name} (#{ENV['PN_TEST_OS_VERSION']})" }
 end
 
-def scheme
-  "#{ENV['PN_TEST_OS_SCHEME']} (#{ENV['PN_TEST_LANG']})"
+def scheme(language)
+  "#{ENV['PN_TEST_OS_SCHEME']} (#{language})"
 end
