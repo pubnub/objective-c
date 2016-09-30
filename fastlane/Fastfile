@@ -1,132 +1,54 @@
-# Customise this file, documentation can be found here:
-# https://github.com/fastlane/fastlane/tree/master/docs
-# All available actions: https://github.com/fastlane/fastlane/blob/master/docs/Actions.md
-# can also be listed using the `fastlane actions` command
+fastlane_version "1.104.0"
+update_fastlane
 
-# Change the syntax highlighting to Ruby
-# All lines starting with a # are ignored when running `fastlane`
-
-# By default, fastlane will send which actions are used
-# No personal data is shared, more information on https://github.com/fastlane/enhancer
-# Uncomment the following line to opt out
-# opt_out_usage
-
-# If you want to automatically update fastlane if a new version is available:
-# update_fastlane
-
-# This is the minimum version number required.
-# Update this, if you use features of a newer version
-fastlane_version "1.50.0"
-
-# default_platform :ios
-
-before_all do
-  # "This block is executed before every action of all platforms"
-end
-
-#Test Lanes
-desc "Runs tests and builds example for the given environment"
-desc "The lane to run by ci on every commit This lanes calls the lanes `test_framework` and `build_example`."
-desc "####Example:"
-desc "```\nfastlane ci_commit configuration:Debug --env ios91\n```"
-desc "####Options"
-desc " * **`configuration`**: The build configuration to use. (`AF_CONFIGURATION`)"
-desc ""
-lane :ci_commit do |options|
-  if options[:configuration]
-    configuration = options[:configuration]
-  elsif ENV["BKR_CONFIGURATION"]
-    configuration = ENV["BKR_CONFIGURATION"]
-  else
-    configuration = "Release"
-  end
-  
-  test_framework(configuration: configuration)
-  
-  pod_spec_lint(
-    quick:true
-  )
-end
-
-desc "Runs all tests for the given environment"
-desc "Set `scan` action environment variables to control test configuration"
-desc "####Example:"
-desc "```\nfastlane test_framework configuration:Debug --env ios91\n```"
-desc "####Options"
-desc " * **`configuration`**: The build configuration to use."
-desc ""
-lane :test_framework do |options|
+desc "Run iOS tests against devices specified in Travis jobs matrix."
+desc "The lane to run by Travis-CI on every commit or merge pull request."
+lane :test_ios do |options|
   scan(
-    configuration: options[:configuration]
+    sdk: 'iphonesimulator',
+    devices: devices,
+    configuration: options[:configuration],
+    scheme: scheme,
+    output_directory: "",
+    skip_slack: true,
+    clean: true
   )
+end
+
+desc "Run tvOS tests against devices specified in Travis jobs matrix."
+desc "The lane to run by Travis-CI on every commit or merge pull request."
+lane :test_tvos do |options|
+  scan(
+    sdk: 'appletvsimulator',
+    device: devices,
+    configuration: options[:configuration],
+    scheme: scheme,
+    output_directory: "",
+    skip_slack: true,
+    clean: true
+  )
+end
+
+desc "Run macOS tests."
+desc "The lane to run by Travis-CI on every commit or merge pull request."
+lane :test_macos do |options|
+  scan(
+    configuration: options[:configuration],
+    scheme: scheme,
+    output_directory: "",
+    skip_slack: true,
+    clean: true
+  )
+end
+
+desc "Compose list of devices against which tests should be performed."
+def devices  
+  # Fetch available device names list
+  devices_names = ENV["PN_TEST_OS_DEVICES"].split(',')
   
+  devices_names.map { |device_name| "#{device_name} (#{ENV['PN_TEST_OS_VERSION']})" }
 end
 
-desc "Produces code coverage information"
-desc "Set `scan` action environment variables to control test configuration"
-desc "####Example:"
-desc "```\nfastlane code_coverage configuration:Debug\n```"
-desc "####Options"
-desc " * **`configuration`**: The build configuration to use. The only supported configuration is the `Debug` configuration."
-desc ""
-lane :code_coverage do |options|
-  if options[:configuration] != "Debug"
-    Helper.log.info "Not running code coverage lane for #{options[:configuration]} configuration".yellow
-  else
-    scan(
-      configuration: options[:configuration],
-      xcargs: "OBJROOT=build GCC_GENERATE_TEST_COVERAGE_FILES=YES GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES"
-    )
-  end
+def scheme
+  "ENV['PN_TEST_OS_SCHEME'] (#{ENV['PN_TEST_LANG']})"
 end
-
-platform :ios do
-  before_all do
-    # ENV["SLACK_URL"] = "https://hooks.slack.com/services/..."
-    
-    
-    # increment_build_number
-
-    # xctool # run the tests of your app
-  end
-
-  # desc "Deploy a new version to the App Store"
-  # lane :deploy do
-  #   # snapshot
-  #   # sigh
-  #   gym # Build your app - more options available
-  #   # deliver(force: true)
-  #   # frameit
-  # end
-
-  # You can define as many lanes as you want
-
-  after_all do |lane|
-    # This block is called, only if the executed lane was successful
-    
-    # slack(
-    #   message: "Successfully deployed new App Update."
-    # )
-  end
-
-  error do |lane, exception|
-    # slack(
-    #   message: exception.message,
-    #   success: false
-    # )
-  end
-end
-
-
-
-
-
-after_all do
-  # puts "Executed after every lane of both Mac and iPhone"
-  # slack
-end
-
-
-
-# More information about multiple platforms in fastlane: https://github.com/fastlane/fastlane/blob/master/docs/Platforms.md
-# All available actions: https://github.com/fastlane/fastlane/blob/master/docs/Actions.md
