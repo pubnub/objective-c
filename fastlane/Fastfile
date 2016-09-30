@@ -1,5 +1,5 @@
-fastlane_version "1.104.0"
-update_fastlane
+#fastlane_version "1.104.0"
+#update_fastlane
 
 desc "Run iOS tests against devices specified in Travis jobs matrix."
 desc "The lane to run by Travis-CI on every commit or merge pull request."
