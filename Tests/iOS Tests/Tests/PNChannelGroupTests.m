@@ -114,7 +114,7 @@ static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupTestsName";
     }];
 }
 
-- (void)testGetAllChannelGroupsForClient {
+- (void)DISABLED_testGetAllChannelGroupsForClient {
     PNWeakify(self);
     XCTestExpectation *getAllChannelGroups = [self expectationWithDescription:@"getAllChannelGroups"];
     #pragma clang diagnostic push
