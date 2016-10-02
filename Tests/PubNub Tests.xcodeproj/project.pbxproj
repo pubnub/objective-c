@@ -743,6 +743,9 @@
 					51D889E01B66E0F8009127D0 = {
 						CreatedOnToolsVersion = 6.4;
 					};
+					797BDD041C1F5176006EF006 = {
+						LastSwiftMigration = 0800;
+					};
 				};
 			};
 			buildConfigurationList = 519C32761B20BF4D00FAC283 /* Build configuration list for PBXProject "PubNub Tests" */;
@@ -1734,6 +1737,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.pubnub.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
+				SWIFT_VERSION = 3.0;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Debug;
@@ -1779,6 +1783,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.pubnub.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
+				SWIFT_VERSION = 3.0;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 				VALIDATE_PRODUCT = YES;
 			};

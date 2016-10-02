@@ -6,13 +6,13 @@
 #import "PNNetwork.h"
 #import "NSURLSessionConfiguration+PNConfigurationPrivate.h"
 #import "PNNetworkResponseSerializer.h"
+#import "PNConfiguration+Private.h"
 #import "PNRequestParameters.h"
 #import "PNPrivateStructures.h"
 #import "PubNub+CorePrivate.h"
 #import "PNResult+Private.h"
 #import "PNStatus+Private.h"
 #import <libkern/OSAtomic.h>
-#import "PNConfiguration.h"
 #import "PNErrorStatus.h"
 #import "PNErrorParser.h"
 #import "PNURLBuilder.h"
@@ -570,6 +570,7 @@ NS_ASSUME_NONNULL_END
                                     @"{pub-key}": (self.configuration.publishKey?: @"")}];
     [parameters addQueryParameters:@{@"uuid": (self.configuration.uuid?: @""),
                                      @"deviceid": (self.configuration.deviceID?: @""),
+                                     @"instanceid": self.configuration.instanceID,
                                      @"pnsdk":[NSString stringWithFormat:@"PubNub-%@%%2F%@",
                                                kPNClientName, kPNLibraryVersion]}];
     if (self.configuration.authKey.length) {
