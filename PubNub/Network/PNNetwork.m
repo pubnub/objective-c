@@ -65,7 +65,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Protected interface declaration
 
-@interface PNNetwork () <NSURLSessionDelegate>
+@interface PNNetwork () <NSURLSessionTaskDelegate, NSURLSessionDelegate>
 
 
 #pragma mark - Information
@@ -125,6 +125,23 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSURLSession *session;
 
 /**
+ @brief      Stores reference on data task completion block which should be used to notify caller about task 
+             completion.
+ @discussion This property used along with background session in application extension execution context.
+ 
+ @since 4.5.4
+ */
+@property (nonatomic, nullable, copy) NSURLSessionDataTaskCompletion previousDataTaskCompletionHandler;
+
+/**
+ @brief      Stores reference on object which is able to store received service response.
+ @discussion This property used along with background session in application extension execution context.
+ 
+ @since 4.5.4
+ */
+@property (nonatomic, nullable, strong) NSMutableData *fetchedData;
+
+/**
  @brief  Stores reference on base URL which should be appeanded with reasource path to perform network
          request.
  
@@ -140,15 +157,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) PNNetworkResponseSerializer *serializer;
 
 #if TARGET_OS_IOS
-
-/**
- @brief       Stores whether \b PubNub client is able to complete tasks in background execution context or not.
- @discusssion Depending from environment \b PubNub client may not be able to complete tasks execution in 
-              background. For example application extensions doesn't have such ability.
- 
- @since 4.5.4
- */
-@property (nonatomic, assign, getter = isTaskCompletionAvailable) BOOL taskCompletionAvailable;
 
 /**
  @brief      Stores reference on list of currently scheduled data tasks.
@@ -546,12 +554,15 @@ NS_ASSUME_NONNULL_END
         _configuration = client.configuration;
         _forLongPollRequests = longPollEnabled;
 #if TARGET_OS_IOS
-        _taskCompletionAvailable = [UIApplication respondsToSelector:NSSelectorFromString(@"sharedApplication")];
         _scheduledDataTasks = [NSMutableArray new];
         _tasksCompletionIdentifier = UIBackgroundTaskInvalid;
 #endif // TARGET_OS_IOS
         _identifier = [[NSString stringWithFormat:@"com.pubnub.network.%p", self] copy];
-        _processingQueue = dispatch_queue_create([_identifier UTF8String], DISPATCH_QUEUE_CONCURRENT);;
+        if (!_configuration.isApplicationExtensionSupportEnabled) {
+            
+            _processingQueue = dispatch_queue_create([_identifier UTF8String], DISPATCH_QUEUE_CONCURRENT);
+        } 
+        else { _processingQueue = dispatch_get_main_queue(); }
         _serializer = [PNNetworkResponseSerializer new];
         _baseURL = [self requestBaseURL];
         _lock = OS_SPINLOCK_INIT;
@@ -621,9 +632,16 @@ NS_ASSUME_NONNULL_END
         #pragma clang diagnostic pop
     };
     OSSpinLockLock(&_lock);
-    task = [self.session dataTaskWithRequest:request completionHandler:[handler copy]];
+    if (_configuration.isApplicationExtensionSupportEnabled) { 
+        self.previousDataTaskCompletionHandler = handler;
+        self.fetchedData = [NSMutableData new];
+        task = [self.session dataTaskWithRequest:request];
+    }
+    else { task = [self.session dataTaskWithRequest:request completionHandler:[handler copy]]; }
+    
 #if TARGET_OS_IOS
-    if (self.isTaskCompletionAvailable && self.configuration.shouldCompleteRequestsBeforeSuspension) {
+    if (!self.configuration.isApplicationExtensionSupportEnabled && 
+        self.configuration.shouldCompleteRequestsBeforeSuspension) {
         
         [self.scheduledDataTasks addObject:task];
     }
@@ -695,7 +713,7 @@ NS_ASSUME_NONNULL_END
 
 - (void)processOperation:(PNOperationType)operationType withParameters:(PNRequestParameters *)parameters 
                     data:(NSData *)data completionBlock:(id)block {
-
+    
     if (operationType == PNSubscribeOperation || operationType == PNUnsubscribeOperation) {
         
         [self cancelAllRequests];
@@ -826,7 +844,8 @@ NS_ASSUME_NONNULL_END
 
     OSSpinLockLock(&_lock);
 #if TARGET_OS_IOS
-    if (self.isTaskCompletionAvailable && self.configuration.shouldCompleteRequestsBeforeSuspension) {
+    if (!self.configuration.isApplicationExtensionSupportEnabled && 
+        self.configuration.shouldCompleteRequestsBeforeSuspension) {
         
         [self.scheduledDataTasks removeAllObjects];
     }
@@ -889,8 +908,17 @@ NS_ASSUME_NONNULL_END
     // Prepare base configuration with predefined timeout values and maximum connections
     // to same host (basically how many requests can be handled at once).
     NSURLSessionConfiguration *configuration = nil;
-    configuration = [NSURLSessionConfiguration pn_ephemeralSessionConfigurationWithIdentifier:self.identifier];
-    configuration.HTTPShouldUsePipelining = !self.forLongPollRequests;
+    if (!self.configuration.isApplicationExtensionSupportEnabled) {
+        
+        configuration = [NSURLSessionConfiguration pn_ephemeralSessionConfigurationWithIdentifier:self.identifier];
+    }
+    else {
+        
+        configuration = [NSURLSessionConfiguration pn_backgroundSessionConfigurationWithIdentifier:self.identifier];
+        configuration.sharedContainerIdentifier = _configuration.applicationExtensionSharedGroupIdentifier;
+    }
+    
+    configuration.HTTPShouldUsePipelining = (!self.forLongPollRequests && !self.configuration.isApplicationExtensionSupportEnabled);
     configuration.timeoutIntervalForRequest = timeout;
     configuration.HTTPMaximumConnectionsPerHost = maximumConnections;
     
@@ -927,7 +955,7 @@ NS_ASSUME_NONNULL_END
 
 - (void)handleClientWillResignActive {
     
-    if (self.isTaskCompletionAvailable) {
+    if (!self.configuration.isApplicationExtensionSupportEnabled) {
         
         OSSpinLockLock(&_lock);
         UIApplication *application = [UIApplication performSelector:NSSelectorFromString(@"sharedApplication")];
@@ -975,7 +1003,8 @@ NS_ASSUME_NONNULL_END
         OSSpinLockLock(&_lock);
         // Clean up cached tasks if required.
 #if TARGET_OS_IOS
-        if (self.isTaskCompletionAvailable && self.configuration.shouldCompleteRequestsBeforeSuspension) {
+        if (!self.configuration.isApplicationExtensionSupportEnabled &&
+            self.configuration.shouldCompleteRequestsBeforeSuspension) {
             
             [self.scheduledDataTasks removeAllObjects];
         }
@@ -985,6 +1014,31 @@ NS_ASSUME_NONNULL_END
         [self prepareSessionWithRequesrTimeout:self.requestTimeout
                             maximumConnections:self.maximumConnections];
         OSSpinLockUnlock(&_lock);
+    }
+}
+
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
+    
+    if (self.configuration.isApplicationExtensionSupportEnabled) {
+        
+        NSData *fetchedData = [self.fetchedData copy];
+        self.fetchedData = nil; 
+        if (self.previousDataTaskCompletionHandler) {
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                self.previousDataTaskCompletionHandler(fetchedData, task.response, error);
+            });
+        }
+    }
+}
+
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask
+    didReceiveData:(NSData *)data {
+    
+    if (self.configuration.isApplicationExtensionSupportEnabled && data.length) {
+        
+        [self.fetchedData appendData:data];
     }
 }
 
@@ -1085,7 +1139,8 @@ NS_ASSUME_NONNULL_END
     }
     
 #if TARGET_OS_IOS
-    if (self.isTaskCompletionAvailable && self.configuration.shouldCompleteRequestsBeforeSuspension) {
+    if (!self.configuration.isApplicationExtensionSupportEnabled && 
+        self.configuration.shouldCompleteRequestsBeforeSuspension) {
         
         OSSpinLockLock(&_lock);
         [self.scheduledDataTasks removeObject:task];
@@ -1147,7 +1202,7 @@ NS_ASSUME_NONNULL_END
 
 - (void)endBackgroundTasksCompletionIfRequired {
 
-    if (self.isTaskCompletionAvailable) {
+    if (!self.configuration.isApplicationExtensionSupportEnabled) {
         
         bool locked = OSSpinLockTry(&_lock);
         UIApplication *application = [UIApplication performSelector:NSSelectorFromString(@"sharedApplication")];

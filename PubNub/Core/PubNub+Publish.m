@@ -208,7 +208,9 @@ NS_ASSUME_NONNULL_END
     // Push further code execution on secondary queue to make service queue responsive during
     // JSON serialization and encryption process.
     __weak __typeof(self) weakSelf = self;
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    dispatch_queue_t queue = (self.configuration.isApplicationExtensionSupportEnabled ? dispatch_get_main_queue() :
+                              dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
+    dispatch_async(queue, ^{
         
         __strong __typeof__(weakSelf) strongSelf = weakSelf;
         BOOL encrypted = NO;
@@ -348,7 +350,9 @@ NS_ASSUME_NONNULL_END
         // Push further code execution on secondary queue to make service queue responsive during
         // JSON serialization and encryption process.
         __weak __typeof(self) weakSelf = self;
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        dispatch_queue_t queue = (self.configuration.isApplicationExtensionSupportEnabled ? dispatch_get_main_queue() :
+                                  dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
+        dispatch_async(queue, ^{
             
             NSError *publishError = nil;
             NSString *messageForPublish = [PNJSON JSONStringFrom:message withError:&publishError];

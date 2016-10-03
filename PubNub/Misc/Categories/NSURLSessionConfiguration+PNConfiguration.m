@@ -32,6 +32,16 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSMutableDictionary<NSString *, NSURLSessionConfiguration *> *)pn_configurations;
 
 /**
+ @brief  Set default values for session's configuration object.
+ 
+ @since 4.5.4
+ 
+ @param configuration Reference on created session configuration instance to which default settings should be 
+                      applied.
+ */
++ (void)pn_setDefaultValuesForSessionConfiguration:(NSURLSessionConfiguration *)configuration;
+
+/**
  @brief  Allow to filter up passed list of prtocol classes from names which can intersect with \c Apple's 
          protocols. 
  
@@ -68,17 +78,33 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Initialization and Configuration
 
-+ (instancetype)pn_ephemeralSessionConfigurationWithIdentifier:(NSString *)identifier; {
++ (instancetype)pn_ephemeralSessionConfigurationWithIdentifier:(NSString *)identifier {
     
     NSMutableDictionary *sessionConfigurations = [self pn_configurations];
     if (sessionConfigurations[identifier] == nil) {
         
-        NSURLSessionConfiguration *sessionConfiguration;
-        sessionConfiguration = [NSURLSessionConfiguration ephemeralSessionConfiguration];
-        sessionConfiguration.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
-        sessionConfiguration.URLCache = nil;
-        sessionConfiguration.HTTPAdditionalHeaders = [self pn_defaultHeaders];
-        sessionConfigurations[identifier] = sessionConfiguration;
+        NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration ephemeralSessionConfiguration];
+        [self pn_setDefaultValuesForSessionConfiguration:configuration];
+        sessionConfigurations[identifier] = configuration;
+    }
+    
+    return sessionConfigurations[identifier];
+}
+
++ (instancetype)pn_backgroundSessionConfigurationWithIdentifier:(NSString *)identifier {
+      
+    NSMutableDictionary *sessionConfigurations = [self pn_configurations];
+    if (sessionConfigurations[identifier] == nil) {
+        
+        NSURLSessionConfiguration *configuration = nil;
+        SEL backgroundConfiguration = @selector(backgroundSessionConfigurationWithIdentifier:);
+        if ([NSURLSessionConfiguration respondsToSelector:backgroundConfiguration]) {
+            
+            configuration = [NSURLSessionConfiguration performSelector:backgroundConfiguration
+                                                            withObject:identifier];
+            [self pn_setDefaultValuesForSessionConfiguration:configuration];
+            sessionConfigurations[identifier] = configuration;
+        }
     }
     
     return sessionConfigurations[identifier];
@@ -187,6 +213,13 @@ NS_ASSUME_NONNULL_END
     dispatch_once(&onceToken, ^{ _sharedSessionConfigurations = [NSMutableDictionary new]; });
     
     return _sharedSessionConfigurations;
+}
+
++ (void)pn_setDefaultValuesForSessionConfiguration:(NSURLSessionConfiguration *)configuration {
+    
+    configuration.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
+    configuration.URLCache = nil;
+    configuration.HTTPAdditionalHeaders = [self pn_defaultHeaders];
 }
 
 + (NSArray<Class> *)pn_filteredProtocolClasses:(NSArray<Class> *)protocolClasses {

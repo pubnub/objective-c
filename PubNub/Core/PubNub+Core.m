@@ -209,8 +209,10 @@ NS_ASSUME_NONNULL_END
 + (instancetype)clientWithConfiguration:(PNConfiguration *)configuration
                           callbackQueue:(dispatch_queue_t)callbackQueue {
     
-    return [[self alloc] initWithConfiguration:configuration
-                                 callbackQueue:(callbackQueue?: dispatch_get_main_queue())];
+    dispatch_queue_t queue = (callbackQueue?: dispatch_get_main_queue());
+    if (configuration.isApplicationExtensionSupportEnabled) { queue = dispatch_get_main_queue(); }
+    
+    return [[self alloc] initWithConfiguration:configuration callbackQueue:queue];
 }
 
 - (instancetype)initWithConfiguration:(PNConfiguration *)configuration
@@ -391,12 +393,19 @@ NS_ASSUME_NONNULL_END
 
 - (void)prepareNetworkManagers {
     
-    _subscriptionNetwork = [PNNetwork networkForClient:self
-                                        requestTimeout:_configuration.subscribeMaximumIdleTime
-                                    maximumConnections:1 longPoll:YES];
+    // Check whether application extension support enabled or not.
+    // Long-poll tasks not supported in application extension context.
+    if (!_configuration.isApplicationExtensionSupportEnabled) {
+        
+        _subscriptionNetwork = [PNNetwork networkForClient:self
+                                            requestTimeout:_configuration.subscribeMaximumIdleTime
+                                        maximumConnections:1 longPoll:YES];
+    }
+    
     _serviceNetwork = [PNNetwork networkForClient:self
                                    requestTimeout:_configuration.nonSubscribeRequestTimeout
-                               maximumConnections:3 longPoll:NO];
+                               maximumConnections:(_configuration.isApplicationExtensionSupportEnabled ? 1 : 3)
+                                         longPoll:NO];
 }
 
 
@@ -412,12 +421,12 @@ NS_ASSUME_NONNULL_END
                     data:(NSData *)data completionBlock:(id)block {
     
     if (operationType == PNSubscribeOperation || operationType == PNUnsubscribeOperation) {
-
+        
         [self.subscriptionNetwork processOperation:operationType withParameters:parameters
                                               data:data completionBlock:block];
     }
     else {
-
+        
         [self.serviceNetwork processOperation:operationType withParameters:parameters
                                          data:data completionBlock:block];
     }

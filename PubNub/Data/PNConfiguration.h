@@ -159,7 +159,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @since 4.0
  */
-@property (nonatomic, assign, getter = isTLSEnabled) BOOL TLSEnabled;
+@property (nonatomic, assign, getter = isTLSEnabled) BOOL TLSEnabled NS_SWIFT_NAME(TLSEnabled);
 
 /**
  @brief  Stores whether client should keep previous time token when subscribe on new set of remote data 
@@ -170,7 +170,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @since 4.0
  */
-@property (nonatomic, assign, getter = shouldKeepTimeTokenOnListChange) BOOL keepTimeTokenOnListChange;
+@property (nonatomic, assign, getter = shouldKeepTimeTokenOnListChange) BOOL keepTimeTokenOnListChange NS_SWIFT_NAME(keepTimeTokenOnListChange);
 
 /**
  @brief      Stores whether client should restore subscription on remote data objects live feed after network 
@@ -182,7 +182,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @since 4.0
  */
-@property (nonatomic, assign, getter = shouldRestoreSubscription) BOOL restoreSubscription;
+@property (nonatomic, assign, getter = shouldRestoreSubscription) BOOL restoreSubscription NS_SWIFT_NAME(restoreSubscription);
 
 /**
  @brief      Stores whether client should try to catch up for events which occurred on previously subscribed 
@@ -198,7 +198,36 @@ NS_ASSUME_NONNULL_BEGIN
  
  @since 4.0
  */
-@property (nonatomic, assign, getter = shouldTryCatchUpOnSubscriptionRestore) BOOL catchUpOnSubscriptionRestore;
+@property (nonatomic, assign, getter = shouldTryCatchUpOnSubscriptionRestore) BOOL catchUpOnSubscriptionRestore NS_SWIFT_NAME(catchUpOnSubscriptionRestore);
+
+/**
+ @brief      Stores whether client should operate in application compatibility mode.
+ @discussion This flag allow to confgure \b PubNub client instance to operate properly in application 
+             extenstion context.
+ @discussion They only effective API which can operate in this mode w/o limitations is - \b publish API.
+ @discussion \b Important: In this mode client is able to process one API call at time. If multiple requests 
+             should be processed - they should be called from completion block of previous API call.
+ @warning    If property is set to \c YES client will be limited in functionality because of application 
+             extension life-cycle. Any API which pull data from \b PubNub service may be useless because as 
+             soon as extension will complete it's tasks system will suspend or terminate it and there will be 
+             no way to \c 'consume' received data. If extension was able to operate or resumed operation (if 
+             wasn't killed by system) requested data will be received and returned in completion block).
+ @warning    Subscribe / unsubscribe API calls will be silently ignored.
+ 
+ @since 4.5.4
+ */
+@property (nonatomic, assign, getter = isApplicationExtensionSupportEnabled) BOOL applicationExtensionSupport NS_SWIFT_NAME(applicationExtensionSupport)  NS_AVAILABLE(10_10, 8_0);
+
+/**
+ @brief      Stores reference on group identifier which is used to share request cache between application 
+             extension and it's containing application.
+ @discussion Because \b NSURLSession for application extensions can operate only as background data pull it 
+             doesn't have cache (where temporarry data can be loaded) in application extension. Shared data 
+             container will be used by \b NSURLSession during request processing.
+ 
+ @since 4.5.4
+ */
+@property (nonatomic, copy) NSString *applicationExtensionSharedGroupIdentifier NS_AVAILABLE(10_10, 8_0);
 
 #if TARGET_OS_IOS
 /**
@@ -212,7 +241,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @since 4.5.0
  */
-@property (nonatomic, assign, getter = shouldCompleteRequestsBeforeSuspension) BOOL completeRequestsBeforeSuspension;
+@property (nonatomic, assign, getter = shouldCompleteRequestsBeforeSuspension) BOOL completeRequestsBeforeSuspension NS_SWIFT_NAME(completeRequestsBeforeSuspension);
 #endif // TARGET_OS_IOS
 
 /**
@@ -224,7 +253,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @since 4.5.0
  */
-@property (nonatomic, assign, getter = shouldStripMobilePayload) BOOL stripMobilePayload;
+@property (nonatomic, assign, getter = shouldStripMobilePayload) BOOL stripMobilePayload NS_SWIFT_NAME(stripMobilePayload);
 
 /**
  @brief  Construct configuration instance using minimal required data.
