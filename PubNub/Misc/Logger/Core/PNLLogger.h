@@ -148,15 +148,6 @@ NS_ASSUME_NONNULL_BEGIN
                         logExtension:(nullable NSString *)extension;
 
 /**
- @brief  Set whether \c logger should process messages which is sent to it or not.
- 
- @param isLoggingEnabled \c YES in case if logger should process data which is sent to it.
- 
- @since 4.5.0
- */
-- (void)enabled:(BOOL)isLoggingEnabled;
-
-/**
  @brief      Enable particular logging level.
  @discussion If any call to logger with specified \c level will be done it will be handled and message will be
              printed out and written into file (if enabled).

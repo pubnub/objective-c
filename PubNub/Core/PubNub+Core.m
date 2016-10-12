@@ -557,7 +557,7 @@ NS_ASSUME_NONNULL_END
     __weak __typeof__(self) weakSelf = self;
     self.logger = [PNLLogger loggerWithIdentifier:kPNClientIdentifier directory:logsPath 
                                      logExtension:@"log"];
-    self.logger.enabled = YES;
+    self.logger.enabled = NO;
     self.logger.writeToConsole = YES;
     self.logger.writeToFile = YES;
     [self.logger setLogLevel:(PNInfoLogLevel|PNFailureStatusLogLevel|PNAPICallLogLevel)];
