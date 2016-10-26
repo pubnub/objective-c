@@ -85,12 +85,13 @@ static NSString * const PNOperationStatusClasses[22] = {
 
  @since 4.0
  */
-static NSString * const PNStatusCategoryStrings[16] = {
+static NSString * const PNStatusCategoryStrings[17] = {
     [PNUnknownCategory] = @"Unknown",
     [PNAcknowledgmentCategory] = @"Acknowledgment",
     [PNAccessDeniedCategory] = @"Access Denied",
     [PNTimeoutCategory] = @"Timeout",
     [PNNetworkIssuesCategory] = @"Network Issues",
+    [PNRequestMessageCountExceededCategory] = @"Message Count Exceeded",
     [PNConnectedCategory] = @"Connected",
     [PNReconnectedCategory] = @"Reconnected",
     [PNDisconnectedCategory] = @"Expected Disconnect",

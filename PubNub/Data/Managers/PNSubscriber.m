@@ -1273,6 +1273,7 @@ NS_ASSUME_NONNULL_END
 - (void)handleLiveFeedEvents:(PNSubscribeStatus *)status {
     
     NSArray *events = [(NSArray *)(status.serviceData)[@"events"] copy];
+    NSUInteger messageCountThreshold = self.client.configuration.requestMessageCountThreshold;
     if (events.count) {
         
         // Silence static analyzer warnings.
@@ -1282,6 +1283,14 @@ NS_ASSUME_NONNULL_END
         #pragma clang diagnostic push
         #pragma clang diagnostic ignored "-Wreceiver-is-weak"
         [self.client.listenersManager notifyWithBlock:^{
+            
+            // Check whether number of messages exceed specified threshold or not.
+            if (messageCountThreshold > 0 && events.count >= messageCountThreshold) {
+                
+                PNSubscribeStatus *exceedStatus = [status copyWithMutatedData:nil];
+                [exceedStatus updateCategory:PNRequestMessageCountExceededCategory];
+                [self.client.listenersManager notifyStatusChange:exceedStatus];
+            }
             
             // Iterate through array with notifications and report back using callback blocks to the
             // user.

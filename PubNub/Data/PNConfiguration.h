@@ -200,6 +200,17 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, assign, getter = shouldTryCatchUpOnSubscriptionRestore) BOOL catchUpOnSubscriptionRestore;
 
+/**
+ @brief      Number of maximum expected messages from \b PubNub service in single response.
+ @discussion This value can be set to some specific value and in case if with single subscribe request will 
+             get number of messages which is larger than specified threashold 
+             \c PNRequestMessageCountExceededCategory status category will be triggered - this may mean what 
+             history request should be done.
+ 
+ @since 4.5.4
+ */
+@property (nonatomic, assign) NSUInteger requestMessageCountThreshold;
+
 #if __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
 /**
  @brief  Stores whether client should try complete all API call which is done before application will be 

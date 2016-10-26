@@ -46,7 +46,7 @@
             
             errorData[@"channels"] = (response[@"payload"][@"channels"]?: @[]);
             errorData[@"channelGroups"] = (response[@"payload"][@"channel-groups"]?: @[]);
-            if (!errorData[@"channels"] && !errorData[@"channel-groups"]) {
+            if (!response[@"payload"][@"channels"] && !response[@"payload"][@"channel-groups"]) {
                 
                 errorData[@"data"] = response[@"payload"];
             }
