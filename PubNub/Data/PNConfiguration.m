@@ -180,7 +180,6 @@ NS_ASSUME_NONNULL_END
     configuration.keepTimeTokenOnListChange = self.shouldKeepTimeTokenOnListChange;
     configuration.restoreSubscription = self.shouldRestoreSubscription;
     configuration.catchUpOnSubscriptionRestore = self.shouldTryCatchUpOnSubscriptionRestore;
-    configuration.applicationExtensionSupport = self.isApplicationExtensionSupportEnabled;
     configuration.applicationExtensionSharedGroupIdentifier = self.applicationExtensionSharedGroupIdentifier;
 #if TARGET_OS_IOS
     configuration.completeRequestsBeforeSuspension = self.shouldCompleteRequestsBeforeSuspension;

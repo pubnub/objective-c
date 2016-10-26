@@ -210,7 +210,7 @@ NS_ASSUME_NONNULL_END
                           callbackQueue:(dispatch_queue_t)callbackQueue {
     
     dispatch_queue_t queue = (callbackQueue?: dispatch_get_main_queue());
-    if (configuration.isApplicationExtensionSupportEnabled) { queue = dispatch_get_main_queue(); }
+    if (configuration.applicationExtensionSharedGroupIdentifier != nil) { queue = dispatch_get_main_queue(); }
     
     return [[self alloc] initWithConfiguration:configuration callbackQueue:queue];
 }
@@ -395,7 +395,7 @@ NS_ASSUME_NONNULL_END
     
     // Check whether application extension support enabled or not.
     // Long-poll tasks not supported in application extension context.
-    if (!_configuration.isApplicationExtensionSupportEnabled) {
+    if (_configuration.applicationExtensionSharedGroupIdentifier == nil) {
         
         _subscriptionNetwork = [PNNetwork networkForClient:self
                                             requestTimeout:_configuration.subscribeMaximumIdleTime
@@ -404,7 +404,7 @@ NS_ASSUME_NONNULL_END
     
     _serviceNetwork = [PNNetwork networkForClient:self
                                    requestTimeout:_configuration.nonSubscribeRequestTimeout
-                               maximumConnections:(_configuration.isApplicationExtensionSupportEnabled ? 1 : 3)
+                               maximumConnections:(_configuration.applicationExtensionSharedGroupIdentifier != nil ? 1 : 3)
                                          longPoll:NO];
 }
 

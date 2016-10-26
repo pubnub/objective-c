@@ -201,29 +201,23 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign, getter = shouldTryCatchUpOnSubscriptionRestore) BOOL catchUpOnSubscriptionRestore NS_SWIFT_NAME(catchUpOnSubscriptionRestore);
 
 /**
- @brief      Stores whether client should operate in application compatibility mode.
- @discussion This flag allow to confgure \b PubNub client instance to operate properly in application 
-             extenstion context.
- @discussion They only effective API which can operate in this mode w/o limitations is - \b publish API.
- @discussion \b Important: In this mode client is able to process one API call at time. If multiple requests 
-             should be processed - they should be called from completion block of previous API call.
- @warning    If property is set to \c YES client will be limited in functionality because of application 
-             extension life-cycle. Any API which pull data from \b PubNub service may be useless because as 
-             soon as extension will complete it's tasks system will suspend or terminate it and there will be 
-             no way to \c 'consume' received data. If extension was able to operate or resumed operation (if 
-             wasn't killed by system) requested data will be received and returned in completion block).
- @warning    Subscribe / unsubscribe API calls will be silently ignored.
- 
- @since 4.5.4
- */
-@property (nonatomic, assign, getter = isApplicationExtensionSupportEnabled) BOOL applicationExtensionSupport NS_SWIFT_NAME(applicationExtensionSupport)  NS_AVAILABLE(10_10, 8_0);
-
-/**
  @brief      Stores reference on group identifier which is used to share request cache between application 
              extension and it's containing application.
- @discussion Because \b NSURLSession for application extensions can operate only as background data pull it 
-             doesn't have cache (where temporarry data can be loaded) in application extension. Shared data 
+ @discussion When identifier is set it let configure \b PubNub client instance to operate properly when used 
+             in application extension context.
+ @discussion There only effective API which can operate in this mode w/o limitations is - \b publish API.
+ @discussion \b Important: In this mode client is able to process one API call at time. If multiple requests 
+             should be processed - they should be called from completion block of previous API call.
+ @note       Because \b NSURLSession for application extensions can operate only as background data pull it 
+             doesn't have cache (where temporary data can be loaded) in application extension. Shared data 
              container will be used by \b NSURLSession during request processing.
+ @warning    If property is set to valid identifier (registered in 'App Groups' inside of 'Capabilities')
+             client will be limited in functionality because of application extension life-cycle. Any API 
+             which pull data from \b PubNub service may be useless because as soon as extension will complete 
+             it's tasks system will suspend or terminate it and there will be no way to \c 'consume' received 
+             data. If extension was able to operate or resumed operation (if wasn't killed by system) 
+             requested data will be received and returned in completion block).
+ @warning    Subscribe / unsubscribe API calls will be silently ignored.
  
  @since 4.5.4
  */

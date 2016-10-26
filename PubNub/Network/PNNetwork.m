@@ -352,7 +352,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @since 4.0
  */
-- (void)prepareSessionWithRequesrTimeout:(NSTimeInterval)timeout
+- (void)prepareSessionWithRequestTimeout:(NSTimeInterval)timeout
                       maximumConnections:(NSInteger)maximumConnections;
 
 /**
@@ -558,7 +558,7 @@ NS_ASSUME_NONNULL_END
         _tasksCompletionIdentifier = UIBackgroundTaskInvalid;
 #endif // TARGET_OS_IOS
         _identifier = [[NSString stringWithFormat:@"com.pubnub.network.%p", self] copy];
-        if (!_configuration.isApplicationExtensionSupportEnabled) {
+        if (_configuration.applicationExtensionSharedGroupIdentifier == nil) {
             
             _processingQueue = dispatch_queue_create([_identifier UTF8String], DISPATCH_QUEUE_CONCURRENT);
         } 
@@ -566,7 +566,7 @@ NS_ASSUME_NONNULL_END
         _serializer = [PNNetworkResponseSerializer new];
         _baseURL = [self requestBaseURL];
         _lock = OS_SPINLOCK_INIT;
-        [self prepareSessionWithRequesrTimeout:timeout maximumConnections:maximumConnections];
+        [self prepareSessionWithRequestTimeout:timeout maximumConnections:maximumConnections];
     }
     
     return self;
@@ -632,7 +632,7 @@ NS_ASSUME_NONNULL_END
         #pragma clang diagnostic pop
     };
     OSSpinLockLock(&_lock);
-    if (_configuration.isApplicationExtensionSupportEnabled) { 
+    if (_configuration.applicationExtensionSharedGroupIdentifier != nil) { 
         self.previousDataTaskCompletionHandler = handler;
         self.fetchedData = [NSMutableData new];
         task = [self.session dataTaskWithRequest:request];
@@ -640,7 +640,7 @@ NS_ASSUME_NONNULL_END
     else { task = [self.session dataTaskWithRequest:request completionHandler:[handler copy]]; }
     
 #if TARGET_OS_IOS
-    if (!self.configuration.isApplicationExtensionSupportEnabled && 
+    if (self.configuration.applicationExtensionSharedGroupIdentifier == nil && 
         self.configuration.shouldCompleteRequestsBeforeSuspension) {
         
         [self.scheduledDataTasks addObject:task];
@@ -844,7 +844,7 @@ NS_ASSUME_NONNULL_END
 
     OSSpinLockLock(&_lock);
 #if TARGET_OS_IOS
-    if (!self.configuration.isApplicationExtensionSupportEnabled && 
+    if (self.configuration.applicationExtensionSharedGroupIdentifier == nil && 
         self.configuration.shouldCompleteRequestsBeforeSuspension) {
         
         [self.scheduledDataTasks removeAllObjects];
@@ -889,7 +889,7 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Session constructor
 
-- (void)prepareSessionWithRequesrTimeout:(NSTimeInterval)timeout
+- (void)prepareSessionWithRequestTimeout:(NSTimeInterval)timeout
                       maximumConnections:(NSInteger)maximumConnections {
     
     _requestTimeout = timeout;
@@ -908,7 +908,7 @@ NS_ASSUME_NONNULL_END
     // Prepare base configuration with predefined timeout values and maximum connections
     // to same host (basically how many requests can be handled at once).
     NSURLSessionConfiguration *configuration = nil;
-    if (!self.configuration.isApplicationExtensionSupportEnabled) {
+    if (self.configuration.applicationExtensionSharedGroupIdentifier == nil) {
         
         configuration = [NSURLSessionConfiguration pn_ephemeralSessionConfigurationWithIdentifier:self.identifier];
     }
@@ -918,7 +918,7 @@ NS_ASSUME_NONNULL_END
         configuration.sharedContainerIdentifier = _configuration.applicationExtensionSharedGroupIdentifier;
     }
     
-    configuration.HTTPShouldUsePipelining = (!self.forLongPollRequests && !self.configuration.isApplicationExtensionSupportEnabled);
+    configuration.HTTPShouldUsePipelining = (!self.forLongPollRequests && self.configuration.applicationExtensionSharedGroupIdentifier == nil);
     configuration.timeoutIntervalForRequest = timeout;
     configuration.HTTPMaximumConnectionsPerHost = maximumConnections;
     
@@ -955,7 +955,7 @@ NS_ASSUME_NONNULL_END
 
 - (void)handleClientWillResignActive {
     
-    if (!self.configuration.isApplicationExtensionSupportEnabled) {
+    if (self.configuration.applicationExtensionSharedGroupIdentifier == nil) {
         
         OSSpinLockLock(&_lock);
         UIApplication *application = [UIApplication performSelector:NSSelectorFromString(@"sharedApplication")];
@@ -1003,7 +1003,7 @@ NS_ASSUME_NONNULL_END
         OSSpinLockLock(&_lock);
         // Clean up cached tasks if required.
 #if TARGET_OS_IOS
-        if (!self.configuration.isApplicationExtensionSupportEnabled &&
+        if (self.configuration.applicationExtensionSharedGroupIdentifier == nil &&
             self.configuration.shouldCompleteRequestsBeforeSuspension) {
             
             [self.scheduledDataTasks removeAllObjects];
@@ -1011,7 +1011,7 @@ NS_ASSUME_NONNULL_END
 #endif // TARGET_OS_IOS
         
         // Replace invalidated session with new one which can be used for next requests.
-        [self prepareSessionWithRequesrTimeout:self.requestTimeout
+        [self prepareSessionWithRequestTimeout:self.requestTimeout
                             maximumConnections:self.maximumConnections];
         OSSpinLockUnlock(&_lock);
     }
@@ -1019,7 +1019,17 @@ NS_ASSUME_NONNULL_END
 
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
     
-    if (self.configuration.isApplicationExtensionSupportEnabled) {
+    BOOL isBackgroundProcessingError = (error && [error.domain isEqualToString:NSURLErrorDomain] &&
+                                        error.code == NSURLErrorBackgroundSessionRequiresSharedContainer);
+    if (self.configuration.applicationExtensionSharedGroupIdentifier != nil || isBackgroundProcessingError) {
+        
+        if (isBackgroundProcessingError) {
+            
+            NSString *message = [NSString stringWithFormat:@"<PubNub::Network> NSURLSession activity in the "
+                                 "background requires you to set `applicationExtensionSharedGroupIdentifier` "
+                                 "in PNConfiguration."];
+            [self.client.logger log:0 message:message];
+        }
         
         NSData *fetchedData = [self.fetchedData copy];
         self.fetchedData = nil; 
@@ -1036,7 +1046,7 @@ NS_ASSUME_NONNULL_END
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask
     didReceiveData:(NSData *)data {
     
-    if (self.configuration.isApplicationExtensionSupportEnabled && data.length) {
+    if (self.configuration.applicationExtensionSharedGroupIdentifier != nil && data.length) {
         
         [self.fetchedData appendData:data];
     }
@@ -1139,7 +1149,7 @@ NS_ASSUME_NONNULL_END
     }
     
 #if TARGET_OS_IOS
-    if (!self.configuration.isApplicationExtensionSupportEnabled && 
+    if (self.configuration.applicationExtensionSharedGroupIdentifier == nil && 
         self.configuration.shouldCompleteRequestsBeforeSuspension) {
         
         OSSpinLockLock(&_lock);
@@ -1202,7 +1212,7 @@ NS_ASSUME_NONNULL_END
 
 - (void)endBackgroundTasksCompletionIfRequired {
 
-    if (!self.configuration.isApplicationExtensionSupportEnabled) {
+    if (self.configuration.applicationExtensionSharedGroupIdentifier == nil) {
         
         bool locked = OSSpinLockTry(&_lock);
         UIApplication *application = [UIApplication performSelector:NSSelectorFromString(@"sharedApplication")];
