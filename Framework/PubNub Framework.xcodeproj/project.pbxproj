@@ -2677,6 +2677,9 @@
 				LastUpgradeCheck = 0730;
 				ORGANIZATIONNAME = PubNub;
 				TargetAttributes = {
+					791582051BD709C60084FC70 = {
+						LastSwiftMigration = 0800;
+					};
 					7988421A1C18EDA7003E8948 = {
 						CreatedOnToolsVersion = 7.1.1;
 					};
@@ -3695,6 +3698,7 @@
 				PRODUCT_NAME = PubNub;
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -3720,6 +3724,7 @@
 				PRODUCT_NAME = PubNub;
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
