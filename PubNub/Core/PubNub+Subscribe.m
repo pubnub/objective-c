@@ -4,6 +4,7 @@
  @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PubNub+Subscribe.h"
+#import "PNAPICallBuilder+Private.h"
 #import "PubNub+CorePrivate.h"
 #import "PNSubscriber.h"
 #import "PNHelpers.h"
@@ -64,6 +65,64 @@
     
     self.subscriberManager.filterExpression = filterExpression;
     if ([self.subscriberManager allObjects].count) { [self subscribeToChannels:@[] withPresence:NO]; }
+}
+
+
+#pragma mark - API Builder support
+
+- (PNSubscribeAPIBuilder *(^)(void))subscribe {
+    
+    PNSubscribeAPIBuilder *builder = nil;
+    builder = [PNSubscribeAPIBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags, 
+                                                                 NSDictionary *parameters) {
+                            
+        NSDictionary *state = parameters[NSStringFromSelector(@selector(state))];
+        NSNumber *withPresence = parameters[NSStringFromSelector(@selector(withPresence))];
+        NSNumber *timetoken = parameters[NSStringFromSelector(@selector(withTimetoken))];
+        NSArray<NSString *> *objects = nil;
+        if ((objects = parameters[NSStringFromSelector(@selector(channels))]).count) {
+         
+            [self subscribeToChannels:objects withPresence:withPresence.boolValue usingTimeToken:timetoken
+                          clientState:state];
+        }
+        else if ((objects = parameters[NSStringFromSelector(@selector(channelGroups))]).count) {
+            
+            [self subscribeToChannelGroups:objects withPresence:withPresence.boolValue usingTimeToken:timetoken
+                               clientState:state];
+        }
+        else if ((objects = parameters[NSStringFromSelector(@selector(presenceChannels))]).count) {
+            
+            [self subscribeToPresenceChannels:objects];
+        }
+    }];
+    
+    return ^PNSubscribeAPIBuilder *{ return builder; };
+}
+
+- (PNUnsubscribeAPICallBuilder *(^)(void))unsubscribe {
+    
+    PNUnsubscribeAPICallBuilder *builder = nil;
+    builder = [PNUnsubscribeAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags, 
+                                                                       NSDictionary *parameters) {
+
+        NSNumber *withPresence = parameters[NSStringFromSelector(@selector(withPresence))];
+        NSArray<NSString *> *objects = nil;
+        if ((objects = parameters[NSStringFromSelector(@selector(channels))]).count) {
+         
+            [self unsubscribeFromChannels:objects withPresence:withPresence.boolValue];
+        }
+        else if ((objects = parameters[NSStringFromSelector(@selector(channelGroups))]).count) {
+            
+            [self unsubscribeFromChannelGroups:objects withPresence:withPresence.boolValue];
+        }
+        else if ((objects = parameters[NSStringFromSelector(@selector(presenceChannels))]).count) {
+            
+            [self unsubscribeFromPresenceChannels:objects];
+        }
+        else { [self unsubscribeFromAll]; }
+    }];
+    
+    return ^PNUnsubscribeAPICallBuilder *{ return builder; };
 }
 
 

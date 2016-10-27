@@ -1,4 +1,6 @@
 #import <Foundation/Foundation.h>
+#import "PNPublishSizeAPICallBuilder.h"
+#import "PNPublishAPICallBuilder.h"
 #import "PubNub+Core.h"
 
 
@@ -8,27 +10,6 @@
 
 
 NS_ASSUME_NONNULL_BEGIN
-
-#pragma mark - Types
-
-/**
- @brief  Message publish completion block.
- 
- @param status Reference on status instance which hold information about processing results.
- 
- @since 4.0
- */
-typedef void(^PNPublishCompletionBlock)(PNPublishStatus *status);
-
-/**
- @brief  Message size calculation completion block.
- 
- @param size Calculated size of the packet which will be used to send message.
- 
- @since 4.0
- */
-typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
-
 
 #pragma mark - API group interface
 
@@ -42,6 +23,38 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
  @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PubNub (Publish)
+
+
+///------------------------------------------------
+/// @name API Builder support
+///------------------------------------------------
+
+/**
+ @brief      Stores reference on publish API access \c builder construction block.
+ @discussion On block call return builder which allow to configure parameters for publish API access.
+ 
+ @since <#version#>
+ */
+@property (nonatomic, readonly, strong) PNPublishAPICallBuilder *(^publish)(void);
+
+/**
+ @brief      Stores reference on publish API access \c builder construction block.
+ @discussion Returned biulder is pre-configured to send messages which won't be stored in \c Storage and won't
+             be replicated.
+ @discussion On block call return builder which allow to configure parameters for publish API access.
+ 
+ @since <#version#>
+ */
+@property (nonatomic, readonly, strong) PNPublishAPICallBuilder *(^fire)(void);
+
+/**
+ @brief      Stores reference on publish message size calculation \c builder construction block.
+ @discussion On block call return builder which allow to configure parameters for publish message size 
+             calculation.
+ 
+ @since <#version#>
+ */
+@property (nonatomic, readonly, strong) PNPublishSizeAPICallBuilder *(^size)(void);
 
 
 ///------------------------------------------------

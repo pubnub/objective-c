@@ -4,6 +4,7 @@
  @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PubNub+History.h"
+#import "PNAPICallBuilder+Private.h"
 #import "PNServiceData+Private.h"
 #import "PNErrorStatus+Private.h"
 #import "PNRequestParameters.h"
@@ -20,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Private interface declaration
 
-@interface PubNub (HistoryPrivate)
+@interface PubNub (HistoryProtected)
 
 
 #pragma mark - Handlers
@@ -51,6 +52,31 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Interface implementation
 
 @implementation PubNub (History)
+
+
+#pragma mark - API Builder support
+
+- (PNHistoryAPICallBuilder *(^)(void))history {
+    
+    PNHistoryAPICallBuilder *builder = nil;
+    builder = [PNHistoryAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags, 
+                                                                   NSDictionary *parameters) {
+                                         
+        NSString *channel = parameters[NSStringFromSelector(@selector(channel))];
+        NSNumber *start = parameters[NSStringFromSelector(@selector(start))];
+        NSNumber *end = parameters[NSStringFromSelector(@selector(end))];
+        NSNumber *limit = parameters[NSStringFromSelector(@selector(end))];
+        NSNumber *reverse = parameters[NSStringFromSelector(@selector(reverse))];
+        NSNumber *includeTimeToken = parameters[NSStringFromSelector(@selector(includeTimeToken))];
+        id block = parameters[@"block"];
+
+        [self historyForChannel:channel start:start end:end limit:(limit ? limit.unsignedIntegerValue : 100 ) 
+                        reverse:reverse.boolValue includeTimeToken:includeTimeToken.boolValue 
+                 withCompletion:block];
+    }];
+    
+    return ^PNHistoryAPICallBuilder *{ return builder; };
+}
 
 
 #pragma mark - Full history

@@ -1,4 +1,8 @@
 #import <Foundation/Foundation.h>
+#import "PNUnsubscribeChannelsOrGroupsAPICallBuilder.h"
+#import "PNSubscribeChannelsOrGroupsAPIBuilder.h"
+#import "PNUnsubscribeAPICallBuilder.h"
+#import "PNSubscribeAPIBuilder.h"
 #import "PubNub+Core.h"
 
 
@@ -108,6 +112,27 @@ NS_ASSUME_NONNULL_BEGIN
           presence events from service (only error status).
  */
 @property (nonatomic, nullable, copy) NSString *filterExpression;
+
+
+///------------------------------------------------
+/// @name API Builder support
+///------------------------------------------------
+
+/**
+ @brief      Stores reference on subscribe API access \c builder construction block.
+ @discussion On block call return builder which allow to configure parameters for subscribe API access.
+ 
+ @since <#version#>
+ */
+@property (nonatomic, readonly, strong) PNSubscribeAPIBuilder *(^subscribe)(void);
+
+/**
+ @brief      Stores reference on unsubscribe API access \c builder construction block.
+ @discussion On block call return builder which allow to configure parameters for unsubscribe API access.
+ 
+ @since <#version#>
+ */
+@property (nonatomic, readonly, strong) PNUnsubscribeAPICallBuilder *(^unsubscribe)(void);
 
 
 ///------------------------------------------------

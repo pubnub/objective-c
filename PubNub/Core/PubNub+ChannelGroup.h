@@ -1,4 +1,7 @@
 #import <Foundation/Foundation.h>
+#import "PNStreamModificationAPICallBuilder.h"
+#import "PNStreamAuditAPICallBuilder.h"
+#import "PNStreamAPICallBuilder.h"
 #import "PubNub+Core.h"
 
 
@@ -8,40 +11,6 @@
 
 
 NS_ASSUME_NONNULL_BEGIN
-
-#pragma mark - Types
-
-/**
- @brief  Channel groups list audition completion block.
- 
- @param result Reference on result object which describe service response on audition request.
- @param status Reference on status instance which hold information about processing results.
- 
- @since 4.0
- */
-typedef void(^PNGroupAuditCompletionBlock)(PNChannelGroupsResult * _Nullable result, 
-                                           PNErrorStatus * _Nullable status);
-
-/**
- @brief  Channel group channels list audition completion block.
- 
- @param result Reference on result object which describe service response on audition request.
- @param status Reference on status instance which hold information about processing results.
- 
- @since 4.0
- */
-typedef void(^PNGroupChannelsAuditCompletionBlock)(PNChannelGroupChannelsResult * _Nullable result,
-                                                   PNErrorStatus * _Nullable status);
-
-/**
- @brief  Channel group content modification completion block.
- 
- @param status Reference on status instance which hold information about processing results.
- 
- @since 4.0
- */
-typedef void(^PNChannelGroupChangeCompletionBlock)(PNAcknowledgmentStatus *status);
-
 
 #pragma mark - API group interface
 
@@ -55,6 +24,20 @@ typedef void(^PNChannelGroupChangeCompletionBlock)(PNAcknowledgmentStatus *statu
  @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PubNub (ChannelGroup)
+
+
+///------------------------------------------------
+/// @name API Builder support
+///------------------------------------------------
+
+/**
+ @brief      Retrieve reference on stream API access builder.
+ @discussion On block call return builder which allow to configure parameters for stream API access and data 
+             manipulation.
+ 
+ @since <#version#>
+ */
+@property (nonatomic, readonly, strong) PNStreamAPICallBuilder *(^stream)(void);
 
 
 ///------------------------------------------------
