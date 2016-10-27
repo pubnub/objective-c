@@ -76,19 +76,17 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Initialization and Configuration
 
-+ (instancetype)objectForOperation:(PNOperationType)operation
-                 completedWithTask:(nullable NSURLSessionDataTask *)task
-                     processedData:(nullable NSDictionary<NSString *, id> *)processedData 
-                   processingError:(nullable NSError *)error {
++ (instancetype)objectForOperation:(PNOperationType)operation completedWithTask:(NSURLSessionDataTask *)task
+                     processedData:(NSDictionary<NSString *, id> *)processedData 
+                   processingError:(NSError *)error {
     
     return [[self alloc] initForOperation:operation completedWithTask:task
                             processedData:processedData processingError:error];
 }
 
-- (instancetype)initForOperation:(PNOperationType)operation
-               completedWithTask:(nullable NSURLSessionDataTask *)task
-                   processedData:(nullable NSDictionary<NSString *, id> *)processedData 
-                 processingError:(nullable NSError *)__unused error {
+- (instancetype)initForOperation:(PNOperationType)operation completedWithTask:(NSURLSessionDataTask *)task
+                   processedData:(NSDictionary<NSString *, id> *)processedData 
+                 processingError:(NSError *)__unused error {
     
     // Check whether initialization was successful or not.
     if ((self = [super init])) {
@@ -121,7 +119,7 @@ NS_ASSUME_NONNULL_END
     return [self copyWithServiceData:YES];
 }
 
-- (instancetype)copyWithMutatedData:(nullable id)data {
+- (instancetype)copyWithMutatedData:(id)data {
     
     PNResult *result = [self copyWithServiceData:NO];
     [result updateData:data];
@@ -129,7 +127,7 @@ NS_ASSUME_NONNULL_END
     return result;
 }
 
-- (void)updateData:(nullable id)data {
+- (void)updateData:(id)data {
     
     _serviceData = [[self normalizedServiceData:data] copy];
     _unexpectedServiceData = ![_serviceData isEqual:data];
@@ -156,7 +154,7 @@ NS_ASSUME_NONNULL_END
     return result;
 }
 
-- (NSDictionary *)normalizedServiceData:(nullable id)serviceData {
+- (NSDictionary *)normalizedServiceData:(id)serviceData {
     
     NSDictionary *normalizedServiceData = serviceData;
     if (serviceData && ![serviceData isKindOfClass:[NSDictionary class]]) {

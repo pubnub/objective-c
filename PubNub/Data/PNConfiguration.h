@@ -88,6 +88,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, nullable, copy) NSString *cipherKey;
 
 /**
+ @brief Stores reference on unique device identifier based on bundle identifier used by software vendor.
+
+ @since 4.0
+ */
+@property (nonatomic, readonly, copy) NSString *deviceID;
+
+/**
  @brief      Stores reference on maximum number of seconds which client should wait for events from live feed.
  @discussion By default value is set to \b 310 seconds. If in specified time frame \b PubNub service won't 
              push any events into live feed client will re-subscribe on remote data objects with same time 
@@ -152,7 +159,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @since 4.0
  */
-@property (nonatomic, assign, getter = isTLSEnabled) BOOL TLSEnabled;
+@property (nonatomic, assign, getter = isTLSEnabled) BOOL TLSEnabled NS_SWIFT_NAME(TLSEnabled);
 
 /**
  @brief  Stores whether client should keep previous time token when subscribe on new set of remote data 
@@ -163,7 +170,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @since 4.0
  */
-@property (nonatomic, assign, getter = shouldKeepTimeTokenOnListChange) BOOL keepTimeTokenOnListChange;
+@property (nonatomic, assign, getter = shouldKeepTimeTokenOnListChange) BOOL keepTimeTokenOnListChange NS_SWIFT_NAME(keepTimeTokenOnListChange);
 
 /**
  @brief      Stores whether client should restore subscription on remote data objects live feed after network 
@@ -175,7 +182,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @since 4.0
  */
-@property (nonatomic, assign, getter = shouldRestoreSubscription) BOOL restoreSubscription;
+@property (nonatomic, assign, getter = shouldRestoreSubscription) BOOL restoreSubscription NS_SWIFT_NAME(restoreSubscription);
 
 /**
  @brief      Stores whether client should try to catch up for events which occurred on previously subscribed 
@@ -191,19 +198,67 @@ NS_ASSUME_NONNULL_BEGIN
  
  @since 4.0
  */
-@property (nonatomic, assign, getter = shouldTryCatchUpOnSubscriptionRestore) BOOL catchUpOnSubscriptionRestore;
+@property (nonatomic, assign, getter = shouldTryCatchUpOnSubscriptionRestore) BOOL catchUpOnSubscriptionRestore NS_SWIFT_NAME(catchUpOnSubscriptionRestore);
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+/**
+ @brief      Stores reference on group identifier which is used to share request cache between application 
+             extension and it's containing application.
+ @discussion When identifier is set it let configure \b PubNub client instance to operate properly when used 
+             in application extension context.
+ @discussion There only effective API which can operate in this mode w/o limitations is - \b publish API.
+ @discussion \b Important: In this mode client is able to process one API call at time. If multiple requests 
+             should be processed - they should be called from completion block of previous API call.
+ @note       Because \b NSURLSession for application extensions can operate only as background data pull it 
+             doesn't have cache (where temporary data can be loaded) in application extension. Shared data 
+             container will be used by \b NSURLSession during request processing.
+ @warning    If property is set to valid identifier (registered in 'App Groups' inside of 'Capabilities')
+             client will be limited in functionality because of application extension life-cycle. Any API 
+             which pull data from \b PubNub service may be useless because as soon as extension will complete 
+             it's tasks system will suspend or terminate it and there will be no way to \c 'consume' received 
+             data. If extension was able to operate or resumed operation (if wasn't killed by system) 
+             requested data will be received and returned in completion block).
+ @warning    Subscribe / unsubscribe API calls will be silently ignored.
+ 
+ @since 4.5.4
+ */
+@property (nonatomic, copy) NSString *applicationExtensionSharedGroupIdentifier  NS_SWIFT_NAME(applicationExtensionSharedGroupIdentifier) NS_AVAILABLE(10_10, 8_0);
+
+/**
+ @brief      Number of maximum expected messages from \b PubNub service in single response.
+ @discussion This value can be set to some specific value and in case if with single subscribe request will 
+             get number of messages which is larger than specified threashold 
+             \c PNRequestMessageCountExceededCategory status category will be triggered - this may mean what 
+             history request should be done.
+ 
+ @since 4.5.4
+ */
+@property (nonatomic, assign) NSUInteger requestMessageCountThreshold  NS_SWIFT_NAME(requestMessageCountThreshold);
+
+#if TARGET_OS_IOS
 /**
  @brief  Stores whether client should try complete all API call which is done before application will be 
          completelly suspended.
  
- @default    By default client use \b YES to restore subscription on remote data objects live feeds.
+ @default By default \c client use \b YES to complete tasks which has been scheduled before \c client resign 
+          active.
  
- @since 4.<#minor-version#>.0
+ @note    This property ignored when SDK compiled for application with application extension.
+ 
+ @since 4.5.0
  */
-@property (nonatomic, assign, getter = shouldCompleteRequestsBeforeSuspension) BOOL completeRequestsBeforeSuspension;
-#endif // __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+@property (nonatomic, assign, getter = shouldCompleteRequestsBeforeSuspension) BOOL completeRequestsBeforeSuspension NS_SWIFT_NAME(completeRequestsBeforeSuspension);
+#endif // TARGET_OS_IOS
+
+/**
+ @brief  Stores whether client should strip out received messages (real-time and history) from data which has 
+         been appended by \c client (like mobile payload for push notifications).
+ 
+ @default By default \c client use \b YES to strip client's data from message and return object with same data
+          type and content as it has been sent.
+ 
+ @since 4.5.0
+ */
+@property (nonatomic, assign, getter = shouldStripMobilePayload) BOOL stripMobilePayload NS_SWIFT_NAME(stripMobilePayload);
 
 /**
  @brief  Construct configuration instance using minimal required data.
@@ -215,7 +270,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @since 4.0
  */
-+ (instancetype)configurationWithPublishKey:(NSString *)publishKey subscribeKey:(NSString *)subscribeKey;
++ (instancetype)configurationWithPublishKey:(NSString *)publishKey subscribeKey:(NSString *)subscribeKey NS_SWIFT_NAME(init(publishKey:subscribeKey:));
 
 #pragma mark -
 

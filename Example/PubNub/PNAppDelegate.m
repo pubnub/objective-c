@@ -508,7 +508,7 @@
     if (message) {
         
         NSLog(@"Received message: %@ on channel %@ at %@", message.data.message,
-              message.data.subscribedChannel, message.data.timetoken);
+              message.data.channel, message.data.timetoken);
     }
 }
 
@@ -590,7 +590,7 @@
         if (status.operation == PNSubscribeOperation) {
             
             NSLog(@"Decryption failed for message from channel: %@\nmessage: %@",
-                  ((PNMessageData *)status.associatedObject).subscribedChannel, 
+                  ((PNMessageData *)status.associatedObject).channel, 
                   ((PNMessageData *)status.associatedObject).message);
         }
     }
@@ -736,6 +736,14 @@
                     subscribeStatus.subscribedChannels);
 
         }
+        else if (status.category == PNRequestMessageCountExceededCategory) {
+            
+            /**
+             Looks like client received a lot of messages at once (larget than specified 
+             'requestMessageCountThreshold') and potentially history request maybe required.
+            */
+            NSLog(@"^^^^ Non-error status: Message Count Exceeded");
+        }
     }
     else if (status.operation == PNUnsubscribeOperation) {
         
@@ -773,6 +781,9 @@
     self.myConfig.keepTimeTokenOnListChange = YES;
     self.myConfig.restoreSubscription = YES;
     self.myConfig.catchUpOnSubscriptionRestore = YES;
+    
+    // Messages threshold
+    self.myConfig.requestMessageCountThreshold = 100;
 }
 
 - (NSString *)randomString {

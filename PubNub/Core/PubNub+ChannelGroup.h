@@ -53,8 +53,7 @@ NS_ASSUME_NONNULL_BEGIN
 PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
                                                                  subscribeKey:@"demo"];
 self.client = [PubNub clientWithConfiguration:configuration];
-[self.client channelGroupsWithCompletion:^(PNChannelGroupsResult * _Nullable result, 
-                                           PNErrorStatus * _Nullable status) {
+[self.client channelGroupsWithCompletion:^(PNChannelGroupsResult *result, PNErrorStatus *status) {
 
     // Check whether request successfully completed or not.
     if (!status.isError) {
@@ -91,8 +90,8 @@ self.client = [PubNub clientWithConfiguration:configuration];
 PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" 
                                                                  subscribeKey:@"demo"];
 self.client = [PubNub clientWithConfiguration:configuration];
-[self.client channelsForGroup:@"pubnub" withCompletion:^(PNChannelGroupChannelsResult * _Nullable result,
-                                                         PNErrorStatus * _Nullable status) {
+[self.client channelsForGroup:@"pubnub" withCompletion:^(PNChannelGroupChannelsResult *result,
+                                                         PNErrorStatus *status) {
 
     // Check whether request successfully completed or not.
     if (!status.isError) {
@@ -117,7 +116,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  
  @since 4.0
  */
-- (void)channelsForGroup:(NSString *)group withCompletion:(PNGroupChannelsAuditCompletionBlock)block;
+- (void)channelsForGroup:(NSString *)group withCompletion:(PNGroupChannelsAuditCompletionBlock)block NS_SWIFT_NAME(channelsForGroup(_:withCompletion:));
 
 
 ///------------------------------------------------
@@ -162,7 +161,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  @since 4.0
  */
 - (void)addChannels:(NSArray<NSString *> *)channels toGroup:(NSString *)group
-     withCompletion:(nullable PNChannelGroupChangeCompletionBlock)block;
+     withCompletion:(nullable PNChannelGroupChangeCompletionBlock)block NS_SWIFT_NAME(addChannels(_:toGroup:withCompletion:));
 
 /**
  @brief      Remove specified \c channels from \c group.
@@ -202,7 +201,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  @since 4.0
  */
 - (void)removeChannels:(NSArray<NSString *> *)channels fromGroup:(NSString *)group
-        withCompletion:(nullable PNChannelGroupChangeCompletionBlock)block;
+        withCompletion:(nullable PNChannelGroupChangeCompletionBlock)block NS_SWIFT_NAME(removeChannels(_:fromGroup:withCompletion:));
 
 /**
  @brief      Remove all channels from \c group.
@@ -240,7 +239,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  @since 4.0
  */ 
 - (void)removeChannelsFromGroup:(NSString *)group
-                 withCompletion:(nullable PNChannelGroupChangeCompletionBlock)block;
+                 withCompletion:(nullable PNChannelGroupChangeCompletionBlock)block NS_SWIFT_NAME(removeChannelsFromGroup(_:withCompletion:));
 
 #pragma mark -
 

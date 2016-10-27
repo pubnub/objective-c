@@ -40,12 +40,12 @@
 
 #pragma mark - Information
 
-- (nullable NSDictionary<NSString *, NSString *> *)pathComponents {
+- (NSDictionary<NSString *, NSString *> *)pathComponents {
     
     return (self.resourcePathComponents.count ? [self.resourcePathComponents copy] : nil);
 }
 
-- (nullable NSDictionary<NSString *, NSString *> *)query {
+- (NSDictionary<NSString *, NSString *> *)query {
     
     return (self.queryFields.count ? [self.queryFields copy] : nil);
 }

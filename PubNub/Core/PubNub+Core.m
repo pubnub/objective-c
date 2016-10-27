@@ -13,11 +13,11 @@
     #define PN_CORE_PROTOCOLS PNObjectEventListener, FABKit
 #endif
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+#if TARGET_OS_IOS
     #import <UIKit/UIKit.h>
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED
+#elif TARGET_OS_OSX
     #import <AppKit/AppKit.h>
-#endif // __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+#endif // TARGET_OS_OSX
 #import "PubNub+SubscribePrivate.h"
 #import "PNObjectEventListener.h"
 #import "PNClientInformation.h"
@@ -64,6 +64,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) dispatch_queue_t callbackQueue;
 @property (nonatomic, copy) PNConfiguration *configuration;
 @property (nonatomic, strong) PNSubscriber *subscriberManager;
+@property (nonatomic, strong) PNPublishSequence *sequenceManager;
 @property (nonatomic, strong) PNClientState *clientStateManager;
 @property (nonatomic, strong) PNStateListener *listenersManager;
 @property (nonatomic, strong) PNHeartbeat *heartbeatManager;
@@ -208,8 +209,10 @@ NS_ASSUME_NONNULL_END
 + (instancetype)clientWithConfiguration:(PNConfiguration *)configuration
                           callbackQueue:(dispatch_queue_t)callbackQueue {
     
-    return [[self alloc] initWithConfiguration:configuration
-                                 callbackQueue:(callbackQueue?: dispatch_get_main_queue())];
+    dispatch_queue_t queue = (callbackQueue?: dispatch_get_main_queue());
+    if (configuration.applicationExtensionSharedGroupIdentifier != nil) { queue = dispatch_get_main_queue(); }
+    
+    return [[self alloc] initWithConfiguration:configuration callbackQueue:queue];
 }
 
 - (instancetype)initWithConfiguration:(PNConfiguration *)configuration
@@ -226,24 +229,25 @@ NS_ASSUME_NONNULL_END
         [self prepareNetworkManagers];
         
         _subscriberManager = [PNSubscriber subscriberForClient:self];
+        _sequenceManager = [PNPublishSequence sequenceForClient:self];
         _clientStateManager = [PNClientState stateForClient:self];
         _listenersManager = [PNStateListener stateListenerForClient:self];
         _heartbeatManager = [PNHeartbeat heartbeatForClient:self];
         [self addListener:self];
         [self prepareReachability];
-#if TARGET_OS_WATCH
-        NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-        [notificationCenter addObserver:self selector:@selector(handleContextTransition:)
-                                   name:NSExtensionHostWillEnterForegroundNotification object:nil];
-        [notificationCenter addObserver:self selector:@selector(handleContextTransition:)
-                                   name:NSExtensionHostDidEnterBackgroundNotification object:nil];
-#elif __IPHONE_OS_VERSION_MIN_REQUIRED
+#if TARGET_OS_IOS
         NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
         [notificationCenter addObserver:self selector:@selector(handleContextTransition:)
                                    name:UIApplicationWillEnterForegroundNotification object:nil];
         [notificationCenter addObserver:self selector:@selector(handleContextTransition:)
                                    name:UIApplicationDidEnterBackgroundNotification object:nil];
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED
+#elif TARGET_OS_WATCH
+        NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+        [notificationCenter addObserver:self selector:@selector(handleContextTransition:)
+                                   name:NSExtensionHostWillEnterForegroundNotification object:nil];
+        [notificationCenter addObserver:self selector:@selector(handleContextTransition:)
+                                   name:NSExtensionHostDidEnterBackgroundNotification object:nil];
+#elif TARGET_OS_OSX
         NSNotificationCenter *notificationCenter = [[NSWorkspace sharedWorkspace] notificationCenter];
         [notificationCenter addObserver:self selector:@selector(handleContextTransition:)
                                    name:NSWorkspaceWillSleepNotification object:nil];
@@ -389,33 +393,40 @@ NS_ASSUME_NONNULL_END
 
 - (void)prepareNetworkManagers {
     
-    _subscriptionNetwork = [PNNetwork networkForClient:self
-                                        requestTimeout:_configuration.subscribeMaximumIdleTime
-                                    maximumConnections:1 longPoll:YES];
+    // Check whether application extension support enabled or not.
+    // Long-poll tasks not supported in application extension context.
+    if (_configuration.applicationExtensionSharedGroupIdentifier == nil) {
+        
+        _subscriptionNetwork = [PNNetwork networkForClient:self
+                                            requestTimeout:_configuration.subscribeMaximumIdleTime
+                                        maximumConnections:1 longPoll:YES];
+    }
+    
     _serviceNetwork = [PNNetwork networkForClient:self
                                    requestTimeout:_configuration.nonSubscribeRequestTimeout
-                               maximumConnections:3 longPoll:NO];
+                               maximumConnections:(_configuration.applicationExtensionSharedGroupIdentifier != nil ? 1 : 3)
+                                         longPoll:NO];
 }
 
 
 #pragma mark - Operation processing
 
 - (void)processOperation:(PNOperationType)operationType withParameters:(PNRequestParameters *)parameters
-         completionBlock:(nullable id)block {
+         completionBlock:(id)block {
 
     [self processOperation:operationType withParameters:parameters data:nil completionBlock:block];
 }
 
 - (void)processOperation:(PNOperationType)operationType withParameters:(PNRequestParameters *)parameters 
-                    data:(nullable NSData *)data completionBlock:(nullable id)block {
+                    data:(NSData *)data completionBlock:(id)block {
     
     if (operationType == PNSubscribeOperation || operationType == PNUnsubscribeOperation) {
-
+        
         [self.subscriptionNetwork processOperation:operationType withParameters:parameters
                                               data:data completionBlock:block];
     }
     else {
-
+        
         [self.serviceNetwork processOperation:operationType withParameters:parameters
                                          data:data completionBlock:block];
     }
@@ -452,8 +463,8 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Events notification
 
-- (void)callBlock:(nullable id)block status:(BOOL)callingStatusBlock withResult:(nullable PNResult *)result
-        andStatus:(nullable PNStatus *)status {
+- (void)callBlock:(id)block status:(BOOL)callingStatusBlock withResult:(PNResult *)result 
+        andStatus:(PNStatus *)status {
     
     if (result) { DDLogResult(self.logger, @"<PubNub> %@", [result stringifiedRepresentation]); }
     
@@ -489,17 +500,8 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Handlers
 
 - (void)handleContextTransition:(NSNotification *)notification {
-
-#if TARGET_OS_WATCH
-    if ([notification.name isEqualToString:NSExtensionHostDidEnterBackgroundNotification]) {
-        
-        DDLogClientInfo(self.logger, @"<PubNub> Did enter background execution context.");
-    }
-    else if ([notification.name isEqualToString:NSExtensionHostWillEnterForegroundNotification]) {
-        
-        DDLogClientInfo(self.logger, @"<PubNub> Will enter foreground execution context.");
-    }
-#elif __IPHONE_OS_VERSION_MIN_REQUIRED
+    
+#if TARGET_OS_IOS
     if ([notification.name isEqualToString:UIApplicationDidEnterBackgroundNotification]) {
         
         DDLogClientInfo(self.logger, @"<PubNub> Did enter background execution context.");
@@ -518,7 +520,16 @@ NS_ASSUME_NONNULL_END
             [self.serviceNetwork handleClientDidBecomeActive];
         }
     }
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED
+#elif TARGET_OS_WATCH
+    if ([notification.name isEqualToString:NSExtensionHostDidEnterBackgroundNotification]) {
+        
+        DDLogClientInfo(self.logger, @"<PubNub> Did enter background execution context.");
+    }
+    else if ([notification.name isEqualToString:NSExtensionHostWillEnterForegroundNotification]) {
+        
+        DDLogClientInfo(self.logger, @"<PubNub> Will enter foreground execution context.");
+    }
+#elif TARGET_OS_OSX
     if ([notification.name isEqualToString:NSWorkspaceWillSleepNotification] ||
         [notification.name isEqualToString:NSWorkspaceSessionDidResignActiveNotification]) {
         
@@ -529,7 +540,7 @@ NS_ASSUME_NONNULL_END
         
         DDLogClientInfo(self.logger, @"<PubNub> Workspace became active.");
     }
-#endif
+#endif // TARGET_OS_OSX
 }
 
 
@@ -538,20 +549,24 @@ NS_ASSUME_NONNULL_END
 - (void)setupClientLogger {
     
     // Configure file manager with default storage in application's Documents folder.
+#if TARGET_OS_TV && !TARGET_OS_SIMULATOR
+    NSSearchPathDirectory searchPath = NSCachesDirectory;
+#else 
     NSSearchPathDirectory searchPath = (TARGET_OS_IPHONE ? NSDocumentDirectory : NSApplicationSupportDirectory);
+#endif // TARGET_OS_TV && !TARGET_OS_SIMULATOR
     NSArray<NSString *> *documents = NSSearchPathForDirectoriesInDomains(searchPath, NSUserDomainMask, YES);
     NSString *logsPath = documents.lastObject;
-#if __MAC_OS_X_VERSION_MIN_REQUIRED
+#if TARGET_OS_OSX || TARGET_OS_SIMULATOR
     NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
     if (NSClassFromString(@"XCTestExpectation")) { bundleIdentifier = @"com.pubnub.objc-tests"; }
     logsPath = [logsPath stringByAppendingPathComponent:bundleIdentifier];
-#endif 
+#endif // TARGET_OS_OSX || TARGET_OS_SIMULATOR
     logsPath = [logsPath stringByAppendingPathComponent:@"Logs"];
     
     __weak __typeof__(self) weakSelf = self;
     self.logger = [PNLLogger loggerWithIdentifier:kPNClientIdentifier directory:logsPath 
                                      logExtension:@"log"];
-    self.logger.enabled = YES;
+    self.logger.enabled = NO;
     self.logger.writeToConsole = YES;
     self.logger.writeToFile = YES;
     [self.logger setLogLevel:(PNInfoLogLevel|PNFailureStatusLogLevel|PNAPICallLogLevel)];
@@ -585,21 +600,21 @@ NS_ASSUME_NONNULL_END
 
 - (void)dealloc {
     
-#if TARGET_OS_WATCH
-    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-    [notificationCenter removeObserver:self name:NSExtensionHostDidEnterBackgroundNotification object:nil];
-    [notificationCenter removeObserver:self name:NSExtensionHostWillEnterForegroundNotification object:nil];
-#elif __IPHONE_OS_VERSION_MIN_REQUIRED
+#if TARGET_OS_IOS
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
     [notificationCenter removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];
     [notificationCenter removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED
+#elif TARGET_OS_WATCH
+    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+    [notificationCenter removeObserver:self name:NSExtensionHostDidEnterBackgroundNotification object:nil];
+    [notificationCenter removeObserver:self name:NSExtensionHostWillEnterForegroundNotification object:nil];
+#elif TARGET_OS_OSX
     NSNotificationCenter *notificationCenter = [[NSWorkspace sharedWorkspace] notificationCenter];
     [notificationCenter removeObserver:self name:NSWorkspaceWillSleepNotification object:nil];
     [notificationCenter removeObserver:self name:NSWorkspaceSessionDidResignActiveNotification object:nil];
     [notificationCenter removeObserver:self name:NSWorkspaceDidWakeNotification object:nil];
     [notificationCenter removeObserver:self name:NSWorkspaceSessionDidBecomeActiveNotification object:nil];
-#endif
+#endif // TARGET_OS_OSX
     [_subscriptionNetwork invalidate];
     _subscriptionNetwork = nil;
     [_serviceNetwork invalidate];

@@ -87,13 +87,12 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Data encryption
 
-+ (nullable NSString *)encrypt:(NSData *)data withKey:(NSString *)key {
++ (NSString *)encrypt:(NSData *)data withKey:(NSString *)key {
     
     return [self encrypt:data withKey:key andError:NULL];
 }
 
-+ (nullable NSString *)encrypt:(NSData *)data withKey:(NSString *)key
-                      andError:(NSError *__autoreleasing *)error {
++ (NSString *)encrypt:(NSData *)data withKey:(NSString *)key andError:(NSError *__autoreleasing *)error {
     
     NSData *processedData = nil;
     NSError *encryptionError = nil;
@@ -138,13 +137,12 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Data decryption
 
-+ (nullable NSData *)decrypt:(NSString *)object withKey:(NSString *)key {
++ (NSData *)decrypt:(NSString *)object withKey:(NSString *)key {
     
     return [self decrypt:object withKey:key andError:NULL];
 }
 
-+ (nullable NSData *)decrypt:(NSString *)object withKey:(NSString *)key
-                    andError:(NSError *__autoreleasing *)error {
++ (NSData *)decrypt:(NSString *)object withKey:(NSString *)key andError:(NSError *__autoreleasing *)error {
     
     NSError *decryptionError = nil;
     id decryptedObject = nil;
@@ -238,8 +236,8 @@ NS_ASSUME_NONNULL_END
     return key;
 }
 
-+ (nullable  NSData *)processedDataFrom:(NSData *)data withKey:(NSString *)cipherKey
-                           forOperation:(CCOperation)operation andStatus:(CCCryptorStatus *)status {
++ (NSData *)processedDataFrom:(NSData *)data withKey:(NSString *)cipherKey forOperation:(CCOperation)operation
+                    andStatus:(CCCryptorStatus *)status {
     
     NSData *cryptorKeyData = [self SHA256HexFromKey:cipherKey];
     NSMutableData *processedData = nil;

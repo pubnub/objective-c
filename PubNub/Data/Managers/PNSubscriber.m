@@ -552,7 +552,7 @@ NS_ASSUME_NONNULL_END
     pn_safe_property_write(self.resourceAccessQueue, ^{ self->_lastTimeToken = lastTimeToken; });
 }
 
-- (nullable NSNumber *)overrideTimeToken {
+- (NSNumber *)overrideTimeToken {
     
     __block NSNumber *overrideTimeToken = nil;
     pn_safe_property_read(self.resourceAccessQueue, ^{ overrideTimeToken = self->_overrideTimeToken; });
@@ -560,7 +560,7 @@ NS_ASSUME_NONNULL_END
     return overrideTimeToken;
 }
 
-- (void)setOverrideTimeToken:(nullable NSNumber *)overrideTimeToken {
+- (void)setOverrideTimeToken:(NSNumber *)overrideTimeToken {
     
     pn_safe_property_write(self.resourceAccessQueue, ^{
         
@@ -754,7 +754,7 @@ NS_ASSUME_NONNULL_END
     return expression;
 }
 
-- (void)setFilterExpression:(nullable NSString *)filterExpression {
+- (void)setFilterExpression:(NSString *)filterExpression {
     
     pn_safe_property_write(self.resourceAccessQueue, ^{
         
@@ -774,16 +774,14 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Subscription
 
-- (void)subscribeUsingTimeToken:(nullable NSNumber *)timeToken
-                      withState:(nullable NSDictionary<NSString *, id> *)state 
-                     completion:(nullable PNSubscriberCompletionBlock)block {
+- (void)subscribeUsingTimeToken:(NSNumber *)timeToken withState:(NSDictionary<NSString *, id> *)state 
+                     completion:(PNSubscriberCompletionBlock)block {
     
     [self subscribe:YES usingTimeToken:timeToken withState:state completion:block];
 }
 
-- (void)subscribe:(BOOL)initialSubscribe usingTimeToken:(nullable NSNumber *)timeToken 
-        withState:(nullable NSDictionary<NSString *, id> *)state 
-       completion:(nullable PNSubscriberCompletionBlock)block {
+- (void)subscribe:(BOOL)initialSubscribe usingTimeToken:(NSNumber *)timeToken 
+        withState:(NSDictionary<NSString *, id> *)state completion:(PNSubscriberCompletionBlock)block {
     
     [self stopRetryTimer];
 
@@ -864,7 +862,7 @@ NS_ASSUME_NONNULL_END
     #pragma clang diagnostic pop
 }
 
-- (void)restoreSubscriptionCycleIfRequiredWithCompletion:(nullable PNSubscriberCompletionBlock)block {
+- (void)restoreSubscriptionCycleIfRequiredWithCompletion:(PNSubscriberCompletionBlock)block {
     
     __block BOOL shouldRestore;
     __block BOOL ableToRestore;
@@ -882,7 +880,7 @@ NS_ASSUME_NONNULL_END
     else if (block) { block(nil); }
 }
 
-- (void)continueSubscriptionCycleIfRequiredWithCompletion:(nullable PNSubscriberCompletionBlock)block {
+- (void)continueSubscriptionCycleIfRequiredWithCompletion:(PNSubscriberCompletionBlock)block {
 
     [self subscribe:NO usingTimeToken:nil withState:nil completion:block];
 }
@@ -891,7 +889,7 @@ NS_ASSUME_NONNULL_END
     
     __weak __typeof(self) weakSelf = self;
     NSArray *channelGroups = [self.channelGroups copy];
-    PNSubscriberCompletionBlock channelUnsubscribeBlock = ^(__unused PNSubscribeStatus * _Nullable status) {
+    PNSubscriberCompletionBlock channelUnsubscribeBlock = ^(__unused PNSubscribeStatus *status) {
         
         __strong __typeof(self) strongSelf = weakSelf;
         [strongSelf removeChannelGroups:channelGroups];
@@ -912,7 +910,7 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)unsubscribeFrom:(BOOL)channels objects:(NSArray<NSString *> *)objects
-             completion:(nullable PNSubscriberCompletionBlock)block {
+             completion:(PNSubscriberCompletionBlock)block {
     
     [self unsubscribeFrom:channels objects:objects informingListener:YES subscribeOnRest:YES
                completion:block];
@@ -920,7 +918,7 @@ NS_ASSUME_NONNULL_END
 
 - (void)unsubscribeFrom:(BOOL)channels objects:(NSArray<NSString *> *)objects
       informingListener:(BOOL)shouldInformListener subscribeOnRest:(BOOL)subscribeOnRestChannels
-             completion:(nullable PNSubscriberCompletionBlock)block {
+             completion:(PNSubscriberCompletionBlock)block {
     
     // Silence static analyzer warnings.
     // Code is aware about this case and at the end will simply call on 'nil' object method.
@@ -1198,8 +1196,8 @@ NS_ASSUME_NONNULL_END
     #pragma clang diagnostic pop
 }
 
-- (void)handleSubscription:(BOOL)initialSubscription timeToken:(nullable NSNumber *)timeToken 
-                    region:(nullable NSNumber *)region {
+- (void)handleSubscription:(BOOL)initialSubscription timeToken:(NSNumber *)timeToken 
+                    region:(NSNumber *)region {
 
     pn_safe_property_write(self.resourceAccessQueue, ^{
         
@@ -1275,6 +1273,7 @@ NS_ASSUME_NONNULL_END
 - (void)handleLiveFeedEvents:(PNSubscribeStatus *)status {
     
     NSArray *events = [(NSArray *)(status.serviceData)[@"events"] copy];
+    NSUInteger messageCountThreshold = self.client.configuration.requestMessageCountThreshold;
     if (events.count) {
         
         // Silence static analyzer warnings.
@@ -1285,6 +1284,14 @@ NS_ASSUME_NONNULL_END
         #pragma clang diagnostic ignored "-Wreceiver-is-weak"
         [self.client.listenersManager notifyWithBlock:^{
             
+            // Check whether number of messages exceed specified threshold or not.
+            if (messageCountThreshold > 0 && events.count >= messageCountThreshold) {
+                
+                PNSubscribeStatus *exceedStatus = [status copyWithMutatedData:nil];
+                [exceedStatus updateCategory:PNRequestMessageCountExceededCategory];
+                [self.client.listenersManager notifyStatusChange:exceedStatus];
+            }
+            
             // Iterate through array with notifications and report back using callback blocks to the
             // user.
             for (NSMutableDictionary<NSString *, id> *event in events) {
@@ -1294,13 +1301,13 @@ NS_ASSUME_NONNULL_END
                 BOOL isPresenceEvent = (event[@"presenceEvent"] ? YES : NO);
                 if (isPresenceEvent) {
                     
-                    if (event[@"subscribedChannel"]) {
+                    if (event[@"subscription"]) {
                         
-                        event[@"subscribedChannel"] = [PNChannel channelForPresence:event[@"subscribedChannel"]];
+                        event[@"subscription"] = [PNChannel channelForPresence:event[@"subscription"]];
                     }
-                    if (event[@"actualChannel"]) {
+                    if (event[@"channel"]) {
                         
-                        event[@"actualChannel"] = [PNChannel channelForPresence:event[@"actualChannel"]];
+                        event[@"channel"] = [PNChannel channelForPresence:event[@"channel"]];
                     }
                 }
                 
@@ -1372,8 +1379,7 @@ NS_ASSUME_NONNULL_END
         // Check whether state has been changed for current client or not.
         if ([data.data.presence.uuid isEqualToString:self.client.configuration.uuid]) {
             
-            NSString *object = (data.data.actualChannel?: data.data.subscribedChannel);
-            [self.client.clientStateManager setState:data.data.presence.state forObject:object];
+            [self.client.clientStateManager setState:data.data.presence.state forObject:data.data.channel];
         }
     }
     [self.client.listenersManager notifyPresenceEvent:data];
@@ -1383,7 +1389,7 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Misc
 
-- (PNRequestParameters *)subscribeRequestParametersWithState:(nullable NSDictionary<NSString *, id> *)state {
+- (PNRequestParameters *)subscribeRequestParametersWithState:(NSDictionary<NSString *, id> *)state {
     
     // Compose full list of channels and groups stored in active subscription list.
     NSArray *channels = [[self channels] arrayByAddingObjectsFromArray:[self presenceChannels]];

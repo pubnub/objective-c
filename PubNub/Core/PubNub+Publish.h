@@ -91,7 +91,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  @since 4.0
  */
 - (void)  publish:(id)message toChannel:(NSString *)channel
-   withCompletion:(nullable PNPublishCompletionBlock)block;
+   withCompletion:(nullable PNPublishCompletionBlock)block NS_SWIFT_NAME(publish(_:toChannel:withCompletion:));
 
 /**
  @brief      Send provided Foundation object to \b PubNub service.
@@ -137,7 +137,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  */
 - (void)  publish:(id)message toChannel:(NSString *)channel 
      withMetadata:(nullable NSDictionary<NSString *, id> *)metadata
-       completion:(nullable PNPublishCompletionBlock)block;
+       completion:(nullable PNPublishCompletionBlock)block NS_SWIFT_NAME(publish(_:toChannel:withMetadata:completion:));
 
 /**
  @brief      Send provided Foundation object to \b PubNub service.
@@ -184,7 +184,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  @since 4.0
  */
 - (void)  publish:(id)message toChannel:(NSString *)channel compressed:(BOOL)compressed
-   withCompletion:(nullable PNPublishCompletionBlock)block;
+   withCompletion:(nullable PNPublishCompletionBlock)block NS_SWIFT_NAME(publish(_:toChannel:compressed:withCompletion:));
 
 /**
  @brief      Send provided Foundation object to \b PubNub service.
@@ -233,7 +233,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  */
 - (void)  publish:(id)message toChannel:(NSString *)channel compressed:(BOOL)compressed 
      withMetadata:(nullable NSDictionary<NSString *, id> *)metadata 
-       completion:(nullable PNPublishCompletionBlock)block;
+       completion:(nullable PNPublishCompletionBlock)block NS_SWIFT_NAME(publish(_:toChannel:compressed:withMetadata:completion:));
 
 /**
  @brief      Send provided Foundation object to \b PubNub service.
@@ -278,7 +278,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  @since 4.0
  */
 - (void)  publish:(id)message toChannel:(NSString *)channel storeInHistory:(BOOL)shouldStore
-   withCompletion:(nullable PNPublishCompletionBlock)block;
+   withCompletion:(nullable PNPublishCompletionBlock)block NS_SWIFT_NAME(publish(_:toChannel:storeInHistory:withCompletion:));
 
 /**
  @brief      Send provided Foundation object to \b PubNub service.
@@ -325,7 +325,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  */
 - (void)  publish:(id)message toChannel:(NSString *)channel storeInHistory:(BOOL)shouldStore 
      withMetadata:(nullable NSDictionary<NSString *, id> *)metadata
-       completion:(nullable PNPublishCompletionBlock)block;
+       completion:(nullable PNPublishCompletionBlock)block NS_SWIFT_NAME(publish(_:toChannel:storeInHistory:withMetadata:completion:));
 
 /**
  @brief      Send provided Foundation object to \b PubNub service.
@@ -372,7 +372,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  @since 4.0
  */
 - (void)publish:(id)message toChannel:(NSString *)channel storeInHistory:(BOOL)shouldStore
-     compressed:(BOOL)compressed withCompletion:(nullable PNPublishCompletionBlock)block;
+     compressed:(BOOL)compressed withCompletion:(nullable PNPublishCompletionBlock)block NS_SWIFT_NAME(publish(_:toChannel:storeInHistory:compressed:withCompletion:));
 
 /**
  @brief      Send provided Foundation object to \b PubNub service.
@@ -422,7 +422,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  */
 - (void)publish:(id)message toChannel:(NSString *)channel storeInHistory:(BOOL)shouldStore
      compressed:(BOOL)compressed withMetadata:(nullable NSDictionary<NSString *, id> *)metadata 
-     completion:(nullable PNPublishCompletionBlock)block;
+     completion:(nullable PNPublishCompletionBlock)block NS_SWIFT_NAME(publish(_:toChannel:storeInHistory:compressed:withMetadata:completion:));
 
 
 ///------------------------------------------------
@@ -474,7 +474,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  */
 - (void)    publish:(nullable id)message toChannel:(NSString *)channel
   mobilePushPayload:(nullable NSDictionary<NSString *, id> *)payloads
-     withCompletion:(nullable PNPublishCompletionBlock)block;
+     withCompletion:(nullable PNPublishCompletionBlock)block NS_SWIFT_NAME(publish(_:toChannel:mobilePushPayload:withCompletion:));
 
 /**
  @brief      Send provided Foundation object to \b PubNub service.
@@ -522,7 +522,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
 - (void)    publish:(nullable id)message toChannel:(NSString *)channel
   mobilePushPayload:(nullable NSDictionary<NSString *, id> *)payloads
        withMetadata:(nullable NSDictionary<NSString *, id> *)metadata 
-         completion:(nullable PNPublishCompletionBlock)block;
+         completion:(nullable PNPublishCompletionBlock)block NS_SWIFT_NAME(publish(_:toChannel:mobilePushPayload:withMetadata:completion:));
 
 /**
  @brief      Send provided Foundation object to \b PubNub service.
@@ -573,7 +573,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  */
 - (void)    publish:(nullable id)message toChannel:(NSString *)channel
   mobilePushPayload:(nullable NSDictionary<NSString *, id> *)payloads compressed:(BOOL)compressed 
-     withCompletion:(nullable PNPublishCompletionBlock)block;
+     withCompletion:(nullable PNPublishCompletionBlock)block NS_SWIFT_NAME(publish(_:toChannel:mobilePushPayload:compressed:withCompletion:));
 
 /**
  @brief      Send provided Foundation object to \b PubNub service.
@@ -625,7 +625,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
 - (void)    publish:(nullable id)message toChannel:(NSString *)channel
   mobilePushPayload:(nullable NSDictionary<NSString *, id> *)payloads compressed:(BOOL)compressed 
        withMetadata:(nullable NSDictionary<NSString *, id> *)metadata
-         completion:(nullable PNPublishCompletionBlock)block;
+         completion:(nullable PNPublishCompletionBlock)block NS_SWIFT_NAME(publish(_:toChannel:mobilePushPayload:compressed:withMetadata:completion:));
 
 /**
  @brief      Send provided Foundation object to \b PubNub service.
@@ -674,7 +674,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  */
 - (void)    publish:(nullable id)message toChannel:(NSString *)channel
   mobilePushPayload:(nullable NSDictionary<NSString *, id> *)payloads storeInHistory:(BOOL)shouldStore
-     withCompletion:(nullable PNPublishCompletionBlock)block;
+     withCompletion:(nullable PNPublishCompletionBlock)block NS_SWIFT_NAME(publish(_:toChannel:mobilePushPayload:storeInHistory:withCompletion:));
 
 /**
  @brief      Send provided Foundation object to \b PubNub service.
@@ -725,7 +725,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
 - (void)    publish:(nullable id)message toChannel:(NSString *)channel
   mobilePushPayload:(nullable NSDictionary<NSString *, id> *)payloads storeInHistory:(BOOL)shouldStore
        withMetadata:(nullable NSDictionary<NSString *, id> *)metadata
-         completion:(nullable PNPublishCompletionBlock)block;
+         completion:(nullable PNPublishCompletionBlock)block NS_SWIFT_NAME(publish(_:toChannel:mobilePushPayload:storeInHistory:withMetadata:completion:));
 
 /**
  @brief      Send provided Foundation object to \b PubNub service.
@@ -777,7 +777,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  */
 - (void)    publish:(nullable id)message toChannel:(NSString *)channel
   mobilePushPayload:(nullable NSDictionary<NSString *, id> *)payloads storeInHistory:(BOOL)shouldStore
-         compressed:(BOOL)compressed withCompletion:(nullable PNPublishCompletionBlock)block;
+         compressed:(BOOL)compressed withCompletion:(nullable PNPublishCompletionBlock)block NS_SWIFT_NAME(publish(_:toChannel:mobilePushPayload:storeInHistory:compressed:withCompletion:));
 
 /**
  @brief      Send provided Foundation object to \b PubNub service.
@@ -830,7 +830,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
 - (void)    publish:(nullable id)message toChannel:(NSString *)channel
   mobilePushPayload:(nullable NSDictionary<NSString *, id> *)payloads storeInHistory:(BOOL)shouldStore
          compressed:(BOOL)compressed withMetadata:(nullable NSDictionary<NSString *, id> *)metadata
-         completion:(nullable PNPublishCompletionBlock)block;
+         completion:(nullable PNPublishCompletionBlock)block NS_SWIFT_NAME(publish(_:toChannel:mobilePushPayload:storeInHistory:compressed:withMetadata:completion:));
 
 
 ///------------------------------------------------
@@ -862,7 +862,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  @since 4.0
  */
 - (void)sizeOfMessage:(id)message toChannel:(NSString *)channel
-       withCompletion:(PNMessageSizeCalculationCompletionBlock)block;
+       withCompletion:(PNMessageSizeCalculationCompletionBlock)block NS_SWIFT_NAME(sizeOfMessage(_:toChannel:withCompletion:));
 
 /**
  @brief      Helper method which allow to calculate resulting message before it will be sent to \b PubNub 
@@ -893,7 +893,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  */
 - (void)sizeOfMessage:(id)message toChannel:(NSString *)channel 
          withMetadata:(nullable NSDictionary<NSString *, id> *)metadata
-           completion:(PNMessageSizeCalculationCompletionBlock)block;
+           completion:(PNMessageSizeCalculationCompletionBlock)block NS_SWIFT_NAME(sizeOfMessage(_:toChannel:withMetadata:completion:));
 
 /**
  @brief      Helper method which allow to calculate resulting message before it will be sent to \b PubNub 
@@ -924,7 +924,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  @since 4.0
  */
 - (void)sizeOfMessage:(id)message toChannel:(NSString *)channel compressed:(BOOL)compressMessage
-       withCompletion:(PNMessageSizeCalculationCompletionBlock)block;
+       withCompletion:(PNMessageSizeCalculationCompletionBlock)block NS_SWIFT_NAME(sizeOfMessage(_:toChannel:compressed:withCompletion:));
 
 /**
  @brief      Helper method which allow to calculate resulting message before it will be sent to \b PubNub
@@ -958,7 +958,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  */
 - (void)sizeOfMessage:(id)message toChannel:(NSString *)channel compressed:(BOOL)compressMessage
          withMetadata:(nullable NSDictionary<NSString *, id> *)metadata 
-           completion:(PNMessageSizeCalculationCompletionBlock)block;
+           completion:(PNMessageSizeCalculationCompletionBlock)block NS_SWIFT_NAME(sizeOfMessage(_:toChannel:compressed:withMetadata:completion:));
 
 /**
  @brief      Helper method which allow to calculate resulting message before it will be sent to \b PubNub 
@@ -988,7 +988,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  @since 4.0
  */
 - (void)sizeOfMessage:(id)message toChannel:(NSString *)channel storeInHistory:(BOOL)shouldStore
-       withCompletion:(PNMessageSizeCalculationCompletionBlock)block;
+       withCompletion:(PNMessageSizeCalculationCompletionBlock)block NS_SWIFT_NAME(sizeOfMessage(_:toChannel:storeInHistory:withCompletion:));
 
 /**
  @brief      Helper method which allow to calculate resulting message before it will be sent to \b PubNub 
@@ -1020,7 +1020,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  */
 - (void)sizeOfMessage:(id)message toChannel:(NSString *)channel storeInHistory:(BOOL)shouldStore
          withMetadata:(nullable NSDictionary<NSString *, id> *)metadata 
-           completion:(PNMessageSizeCalculationCompletionBlock)block;
+           completion:(PNMessageSizeCalculationCompletionBlock)block NS_SWIFT_NAME(sizeOfMessage(_:toChannel:storeInHistory:withMetadata:completion:));
 
 /**
  @brief      Helper method which allow to calculate resulting message before it will be sent to \b PubNub 
@@ -1053,7 +1053,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  @since 4.0
  */
 - (void)sizeOfMessage:(id)message toChannel:(NSString *)channel compressed:(BOOL)compressMessage
-       storeInHistory:(BOOL)shouldStore withCompletion:(PNMessageSizeCalculationCompletionBlock)block;
+       storeInHistory:(BOOL)shouldStore withCompletion:(PNMessageSizeCalculationCompletionBlock)block NS_SWIFT_NAME(sizeOfMessage(_:toChannel:compressed:storeInHistory:withCompletion:));
 
 /**
  @brief      Helper method which allow to calculate resulting message before it will be sent to \b PubNub 
@@ -1089,7 +1089,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  */
 - (void)sizeOfMessage:(id)message toChannel:(NSString *)channel compressed:(BOOL)compressMessage
        storeInHistory:(BOOL)shouldStore withMetadata:(nullable NSDictionary<NSString *, id> *)metadata
-           completion:(PNMessageSizeCalculationCompletionBlock)block;
+           completion:(PNMessageSizeCalculationCompletionBlock)block NS_SWIFT_NAME(sizeOfMessage(_:toChannel:compressed:storeInHistory:withMetadata:completion:));
 
 #pragma mark -
 

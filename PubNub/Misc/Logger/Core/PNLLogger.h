@@ -148,15 +148,6 @@ NS_ASSUME_NONNULL_BEGIN
                         logExtension:(nullable NSString *)extension;
 
 /**
- @brief  Set whether \c logger should process messages which is sent to it or not.
- 
- @param isLoggingEnabled \c YES in case if logger should process data which is sent to it.
- 
- @since 4.5.0
- */
-- (void)enabled:(BOOL)isLoggingEnabled;
-
-/**
  @brief      Enable particular logging level.
  @discussion If any call to logger with specified \c level will be done it will be handled and message will be
              printed out and written into file (if enabled).
@@ -207,6 +198,18 @@ NS_ASSUME_NONNULL_BEGIN
                composition.
  */
 - (void)log:(NSUInteger)level format:(NSString *)format, ... NS_FORMAT_FUNCTION(2,3);
+
+/**
+ @brief  Process log message with specified \c level and format.
+ 
+ @since 4.5.0
+ 
+ @param level   Reference on bitfield against which configured \c logLevel will be checked to decide whether 
+                log should be handled or not.
+ @param message Reference on composed log message which should be sent to console (if enabled) and file (if 
+                enabled).
+ */
+- (void)log:(NSUInteger)level message:(NSString *)message;
 
 #pragma mark -
 

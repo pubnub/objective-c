@@ -81,7 +81,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  @since 4.0
  */
 - (void)setState:(nullable NSDictionary<NSString *, id> *)state forUUID:(NSString *)uuid 
-       onChannel:(NSString *)channel withCompletion:(nullable PNSetStateCompletionBlock)block;
+       onChannel:(NSString *)channel withCompletion:(nullable PNSetStateCompletionBlock)block NS_SWIFT_NAME(setState(_:forUUID:onChannel:withCompletion:));
 
 /**
  @brief      Modify state information for \c uuid on specified channel group.
@@ -120,7 +120,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  @since 4.0
  */
 - (void)setState:(nullable NSDictionary<NSString *, id> *)state forUUID:(NSString *)uuid
-  onChannelGroup:(NSString *)group withCompletion:(nullable PNSetStateCompletionBlock)block;
+  onChannelGroup:(NSString *)group withCompletion:(nullable PNSetStateCompletionBlock)block NS_SWIFT_NAME(setState(_:forUUID:onChannelGroup:withCompletion:));
 
 
 ///------------------------------------------------
@@ -137,7 +137,7 @@ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"
                                                                  subscribeKey:@"demo"];
 self.client = [PubNub clientWithConfiguration:configuration];
 [self.client stateForUUID:self.client.uuid onChannel:@"chat"    
-           withCompletion:^(PNChannelClientStateResult * _Nullable result, PNErrorStatus * _Nullable status) {
+           withCompletion:^(PNChannelClientStateResult *result, PNErrorStatus *status) {
 
     // Check whether request successfully completed or not.
     if (!status.isError) {
@@ -165,7 +165,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  @since 4.0
  */
 - (void)stateForUUID:(NSString *)uuid onChannel:(NSString *)channel
-      withCompletion:(PNChannelStateCompletionBlock)block;
+      withCompletion:(PNChannelStateCompletionBlock)block NS_SWIFT_NAME(stateForUUID(_:onChannel:withCompletion:));
 
 /**
  @brief      Retrieve state information for \c uuid on specified channel group.
@@ -177,8 +177,7 @@ PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"
                                                                  subscribeKey:@"demo"];
 self.client = [PubNub clientWithConfiguration:configuration];
 [self.client stateForUUID:self.client.uuid onChannelGroup:@"system"
-           withCompletion:^(PNChannelGroupClientStateResult * _Nullable result,
-                            PNErrorStatus * _Nullable status) {
+           withCompletion:^(PNChannelGroupClientStateResult *result, PNErrorStatus *status) {
 
     // Check whether request successfully completed or not.
     if (!status.isError) {
@@ -207,7 +206,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
  @since 4.0
  */
 - (void)stateForUUID:(NSString *)uuid onChannelGroup:(NSString *)group
-      withCompletion:(PNChannelGroupStateCompletionBlock)block;
+      withCompletion:(PNChannelGroupStateCompletionBlock)block NS_SWIFT_NAME(stateForUUID(_:onChannelGroup:withCompletion:));
 
 #pragma mark -
 

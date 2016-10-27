@@ -48,10 +48,11 @@ Carthage/Build
 
 # Fastlane
 ##########
-/fastlane/README.md
-/fastlane/report.xml
-/fastlane/.env*private*
-fastlane/test-output/*
+fastlane/README.md
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test*output/*
 
 
 # OS generated files #

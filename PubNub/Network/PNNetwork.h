@@ -80,14 +80,14 @@
 /// @name Handlers
 ///------------------------------------------------
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+#if TARGET_OS_IOS
 
 /**
  @brief      Handle \b PubNub client transition to inactive satate.
  @discussion Depending from network manager configuration it may request from system more time to complete 
              already scheduled data tasks.
  
- @since 4.<#minor-version#>.0
+ @since 4.5.0
  */
 - (void)handleClientWillResignActive;
 
@@ -96,11 +96,11 @@
  @discussion If network manager requested from system more time to complete tasks processing it will cancel 
              this request.
  
- @since 4.<#minor-version#>.0
+ @since 4.5.0
  */
 - (void)handleClientDidBecomeActive;
 
-#endif // __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+#endif // TARGET_OS_IOS
 
 
 ///------------------------------------------------

@@ -144,13 +144,6 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
 @property (nonatomic, assign) NSUInteger logLevel;
 
 /**
- @brief  Stores reference on auto-updating calendar which is used during timestamp format composition.
- 
- @since 4.5.0
- */
-@property (nonatomic, strong) NSCalendar *calendar;
-
-/**
  @brief  Stores bit fields of calendar units which take part in timetoken composition.
  
  @since 4.5.0
@@ -200,21 +193,6 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
  */
 - (instancetype)initWithIdentifier:(NSString *)identifier directory:(nullable NSString *)logsDirectoryPath 
                       logExtension:(nullable NSString *)extension;
-
-
-#pragma mark - Logging
-
-/**
- @brief  Process log message with specified \c level and format.
- 
- @since 4.5.0
- 
- @param level   Reference on bitfield against which configured \c logLevel will be checked to decide whether 
-                log should be handled or not.
- @param message Reference on composed log message which should be sent to console (if enabled) and file (if 
-                enabled).
- */
-- (void)log:(NSUInteger)level message:(NSString *)message;
 
 
 #pragma mark - File logging
@@ -542,10 +520,10 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
     return self;
 }
 
-- (void)enabled:(BOOL)isLoggingEnabled {
+- (void)setEnabled:(BOOL)enabled {
     
     bool locked = OSSpinLockTry(&_accessLock);
-    _enabled = isLoggingEnabled;
+    _enabled = enabled;
     if (locked) { OSSpinLockUnlock(&_accessLock); }
 }
 
@@ -572,7 +550,7 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
     bool locked = OSSpinLockTry(&_accessLock);
     BOOL notifyChange = (_logLevel != level && _logLevelChangeHandler);
     _logLevel = level;
-    if (level == 0) { [self enabled:NO]; }
+    if (level == 0) { _enabled = NO; }
     if (notifyChange) { dispatch_async(dispatch_get_main_queue(), _logLevelChangeHandler); }
     if (locked) { OSSpinLockUnlock(&_accessLock); }
 }
@@ -698,7 +676,7 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
     NSDictionary *attributes = @{NSFileProtectionKey: NSFileProtectionCompleteUntilFirstUserAuthentication};
 #else
     NSDictionary *attributes = nil;
-#endif
+#endif // TARGET_OS_IOS
     
     // Create logs folder if required.
     if (![[NSFileManager defaultManager] fileExistsAtPath:_directory]) {
@@ -888,7 +866,7 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
         
         logsDirectory = [logsDirectory stringByAppendingPathComponent:_applicationName];
     }
-#endif
+#endif // TARGET_OS_IPHONE
     logsDirectory = [logsDirectory stringByAppendingPathComponent:self.identifier];
     
     return logsDirectory;
@@ -912,7 +890,6 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
 
 - (void)prepareDateFormatter {
     
-    _calendar = [NSCalendar autoupdatingCurrentCalendar];
     _calendarUnits = (NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitHour |
                       NSCalendarUnitMinute | NSCalendarUnitSecond);
     
@@ -937,7 +914,8 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
 
 - (NSUInteger)getTimestamp:(char *)timestamp fromDate:(NSDate *)date {
     
-    NSDateComponents *components = [self.calendar components:self.calendarUnits fromDate:date];
+    NSDateComponents *components = [[NSCalendar autoupdatingCurrentCalendar] components:self.calendarUnits
+                                                                               fromDate:date];
     NSTimeInterval seconds = [date timeIntervalSince1970];
     int milliseconds = (int)((seconds - floor(seconds)) * 1000);
     snprintf(timestamp, kPNLLogEntryTimestampLength, "%04ld-%02ld-%02ld %02ld:%02ld:%02ld:%03d", 

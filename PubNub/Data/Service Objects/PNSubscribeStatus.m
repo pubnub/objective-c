@@ -17,14 +17,24 @@
 
 #pragma mark - Information
 
-- (nullable NSString *)subscribedChannel {
+- (NSString *)channel {
     
-    return self.serviceData[@"subscribedChannel"];
+    return self.serviceData[@"channel"];
 }
 
-- (nullable NSString *)actualChannel {
+- (NSString *)subscription {
     
-    return self.serviceData[@"actualChannel"];
+    return self.serviceData[@"subscription"];
+}
+
+- (NSString *)subscribedChannel {
+    
+    return self.subscription;
+}
+
+- (NSString *)actualChannel {
+    
+    return self.channel;
 }
 
 - (NSNumber *)timetoken {
@@ -37,7 +47,7 @@
     return (self.serviceData[@"region"]?: @0);
 }
 
-- (nullable NSDictionary<NSString *, id> *)userMetadata {
+- (NSDictionary<NSString *, id> *)userMetadata {
     
     return self.envelope.metadata;
 }

@@ -1,3 +1,24 @@
+26-09-2016 - 3cc8b7b - 4.5.3
+. added NS_SWIFT_NAME with Swift equivalent specified in it to all public API. This allow to prevent Swift function signature generator from changing it between Swift releases.
+
+13-09-2016 - 2c8d262 - 4.5.2
+. added published message sequence number to publish API call (this information arrive as message envelope and used for issues debugging).
+. added logger method which will allow to use it from Swift.
+. added automatic heartbeat interval using formula and heartbeat value for calculated value.
+. added 'channel' and 'subscription' properties to represent channel from which event arrived and actual data strean name which is used by PubNub client for subscription.
+. deprecated 'actualChannel' and 'subscribedChannel' in favor of 'channel' and 'subscription' (properties still available, but will be eventually will be completelly removed).
+
+02-09-2016 - ea0d9c7 - 4.5.1
+. changed default logs directory which should be used for tvOS client.
+
+31-08-2016 - d05b11d - 4.5.0
+. added ability to complete issued API calls before application will be suspended (happens by default for iOS).
+. added PNConfiguration property called 'completeRequestsBeforeSuspension' which allow to change default behavior (for iOS).
+. removed dependency against CocoaLumberjack and replaced with own logger. 
+. added Carthage support.
+. Framework targets build bundle with bitcode enabled by default
+. added ability to disable message stripping (removing data which has been added by client during publish with mobile payload) which is enabled by default 
+
 08-07-2016 - 91a5176 - 4.4.1
 . fixed timeout issue which caused by recently added shared NSURLSessionConfiguration configuration
 . added tests to cover fixed issue

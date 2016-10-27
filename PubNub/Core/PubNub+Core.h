@@ -88,7 +88,7 @@ self.client = [PubNub clientWithConfiguration:configuration];
 
  @since 4.0
 */
-+ (instancetype)clientWithConfiguration:(PNConfiguration *)configuration;
++ (instancetype)clientWithConfiguration:(PNConfiguration *)configuration NS_SWIFT_NAME(clientWithConfiguration(_:));
 
 /**
  @brief      Construct new \b PubNub client instance with pre-defined configuration.
@@ -117,7 +117,7 @@ self.client = [PubNub clientWithConfiguration:configuration callbackQueue:queue]
  @since 4.0
 */
 + (instancetype)clientWithConfiguration:(PNConfiguration *)configuration
-                          callbackQueue:(nullable dispatch_queue_t)callbackQueue;
+                          callbackQueue:(nullable dispatch_queue_t)callbackQueue NS_SWIFT_NAME(clientWithConfiguration(_:callbackQueue:));
 
 /**
  @brief      Make copy of client with it's current state using new configuration.
@@ -150,7 +150,7 @@ configuration.TLSEnabled = NO;
  
  @since 4.0
  */
-- (void)copyWithConfiguration:(PNConfiguration *)configuration completion:(void(^)(PubNub *client))block;
+- (void)copyWithConfiguration:(PNConfiguration *)configuration completion:(void(^)(PubNub *client))block NS_SWIFT_NAME(copyWithConfiguration(_:completion:));
 
 /**
  @brief      Make copy of client with it's current state using new configuration.
@@ -189,7 +189,7 @@ configuration.TLSEnabled = NO;
  */
 - (void)copyWithConfiguration:(PNConfiguration *)configuration
                 callbackQueue:(nullable dispatch_queue_t)callbackQueue
-                   completion:(void(^)(PubNub *client))block;
+                   completion:(void(^)(PubNub *client))block NS_SWIFT_NAME(copyWithConfiguration(_:callbackQueue:completion:));
 
 #pragma mark -
 

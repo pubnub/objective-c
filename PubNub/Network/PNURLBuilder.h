@@ -45,7 +45,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  @brief  Check whether passed URL represent call to API described by passed \c operation.
  
- @since 4.<#minor-version#>.0
+ @since 4.5.0
  
  @param url        Previously generated API call URL which should be used during verification.
  @param operation  One of \b PNOperationType fields which describes operation type against which verification will be done.
