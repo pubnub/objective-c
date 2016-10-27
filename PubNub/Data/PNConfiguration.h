@@ -221,7 +221,18 @@ NS_ASSUME_NONNULL_BEGIN
  
  @since 4.5.4
  */
-@property (nonatomic, copy) NSString *applicationExtensionSharedGroupIdentifier NS_AVAILABLE(10_10, 8_0);
+@property (nonatomic, copy) NSString *applicationExtensionSharedGroupIdentifier  NS_SWIFT_NAME(applicationExtensionSharedGroupIdentifier) NS_AVAILABLE(10_10, 8_0);
+
+/**
+ @brief      Number of maximum expected messages from \b PubNub service in single response.
+ @discussion This value can be set to some specific value and in case if with single subscribe request will 
+             get number of messages which is larger than specified threashold 
+             \c PNRequestMessageCountExceededCategory status category will be triggered - this may mean what 
+             history request should be done.
+ 
+ @since 4.5.4
+ */
+@property (nonatomic, assign) NSUInteger requestMessageCountThreshold  NS_SWIFT_NAME(requestMessageCountThreshold);
 
 #if TARGET_OS_IOS
 /**

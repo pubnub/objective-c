@@ -213,6 +213,16 @@ typedef NS_ENUM(NSInteger, PNStatusCategory) {
     PNNetworkIssuesCategory,
 
     /**
+     @brief      Subscribe returned more than specified number of messages / events.
+     @discussion At the moment when client recover after network issues there is a chance what a lot of 
+                 messages queued to return in subscribe response. If number of received objects will be larger
+                 than specified threshold this status will be sent (maybe history request required).
+
+     @since 4.5.4
+     */
+    PNRequestMessageCountExceededCategory,
+
+    /**
      @brief      Status sent when client successfully subscribed to remote data objects live feed.
      @discussion Connected mean what client will receive live updates from \b PubNub service at
                  specified set of data objects.

@@ -35,7 +35,7 @@ static NSString * const kPNClientIdentifier = @"com.pubnub.pubnub-objc";
 #elif TARGET_OS_TV
     static NSString * const kPNClientName = @"ObjC-tvOS";
 #elif TARGET_OS_OSX
-    static NSString * const kPNClientName = @"ObjC-MacOS";
+    static NSString * const kPNClientName = @"ObjC-macOS";
 #endif // TARGET_OS_OSX
 
 
@@ -51,6 +51,7 @@ static PNHeartbeatNotificationOptions const kPNDefaultHeartbeatNotificationOptio
 static BOOL const kPNDefaultShouldKeepTimeTokenOnListChange = YES;
 static BOOL const kPNDefaultShouldRestoreSubscription = YES;
 static BOOL const kPNDefaultShouldTryCatchUpOnSubscriptionRestore = YES;
+static BOOL const kPNDefaultRequestMessageCountThreshold = 0;
 #if TARGET_OS_IOS
 static BOOL const kPNDefaultShouldCompleteRequestsBeforeSuspension = YES;
 #endif // TARGET_OS_IOS

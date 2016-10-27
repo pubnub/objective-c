@@ -151,6 +151,7 @@ NS_ASSUME_NONNULL_END
         _keepTimeTokenOnListChange = kPNDefaultShouldKeepTimeTokenOnListChange;
         _restoreSubscription = kPNDefaultShouldRestoreSubscription;
         _catchUpOnSubscriptionRestore = kPNDefaultShouldTryCatchUpOnSubscriptionRestore;
+        _requestMessageCountThreshold = kPNDefaultRequestMessageCountThreshold;
 #if TARGET_OS_IOS
         _completeRequestsBeforeSuspension = kPNDefaultShouldCompleteRequestsBeforeSuspension;
 #endif // TARGET_OS_IOS
@@ -181,6 +182,7 @@ NS_ASSUME_NONNULL_END
     configuration.restoreSubscription = self.shouldRestoreSubscription;
     configuration.catchUpOnSubscriptionRestore = self.shouldTryCatchUpOnSubscriptionRestore;
     configuration.applicationExtensionSharedGroupIdentifier = self.applicationExtensionSharedGroupIdentifier;
+    configuration.requestMessageCountThreshold = self.requestMessageCountThreshold;
 #if TARGET_OS_IOS
     configuration.completeRequestsBeforeSuspension = self.shouldCompleteRequestsBeforeSuspension;
 #endif // TARGET_OS_IOS
@@ -261,7 +263,6 @@ NS_ASSUME_NONNULL_END
     
     return macAddress;
 }
-
 #endif // TARGET_OS_OSX
 
 #pragma mark -
