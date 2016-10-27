@@ -66,7 +66,15 @@ NS_ASSUME_NONNULL_BEGIN
  
  @since <#version#>
  */
-@property (nonatomic, readonly, strong) PNPublishSizeAPICallBuilder *(^compress)(BOOL compress); 
+@property (nonatomic, readonly, strong) PNPublishSizeAPICallBuilder *(^compress)(BOOL compress);
+
+/**
+ @brief  Specify whether published \c message should be replicated across the PubNub Real-Time Network and 
+         sent simultaneously to all subscribed clients on a channel.
+ 
+ @since <#version#>
+ */
+@property (nonatomic, readonly, strong) PNPublishSizeAPICallBuilder *(^replicate)(BOOL replicate); 
 
 
 ///------------------------------------------------

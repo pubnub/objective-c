@@ -64,6 +64,16 @@
     };
 }
 
+- (PNPublishAPICallBuilder *(^)(BOOL))replicate {
+    
+    return ^PNPublishAPICallBuilder* (BOOL replicate) {
+        
+        [self setValue:@(replicate) forParameter:NSStringFromSelector(_cmd)];
+        
+        return self;
+    };
+}
+
 - (PNPublishAPICallBuilder *(^)(NSDictionary *payload))payloads {
     
     return ^PNPublishAPICallBuilder* (NSDictionary *payload) {

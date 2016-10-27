@@ -38,6 +38,16 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, strong) PNPublishAPICallBuilder *(^publish)(void);
 
 /**
+ @brief      Stores reference on publish API access \c builder construction block.
+ @discussion Returned biulder is pre-configured to send messages which won't be stored in \c Storage and won't
+             be replicated.
+ @discussion On block call return builder which allow to configure parameters for publish API access.
+ 
+ @since <#version#>
+ */
+@property (nonatomic, readonly, strong) PNPublishAPICallBuilder *(^fire)(void);
+
+/**
  @brief      Stores reference on publish message size calculation \c builder construction block.
  @discussion On block call return builder which allow to configure parameters for publish message size 
              calculation.

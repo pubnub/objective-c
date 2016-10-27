@@ -68,6 +68,14 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, strong) PNPublishAPICallBuilder *(^compress)(BOOL compress);
 
 /**
+ @brief  Specify whether published \c message should be replicated across the PubNub Real-Time Network and 
+         sent simultaneously to all subscribed clients on a channel.
+ 
+ @since <#version#>
+ */
+@property (nonatomic, readonly, strong) PNPublishAPICallBuilder *(^replicate)(BOOL replicate);
+
+/**
  @brief      Specify message push payloads.
  @discussion On block call return block which consume \b NSDictionary with payloads for different vendors 
              (Apple with "apns" key and Google with "gcm") which is used to deliver updates while application 

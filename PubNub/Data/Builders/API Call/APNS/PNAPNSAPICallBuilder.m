@@ -21,7 +21,7 @@
     
     if (self == [PNAPNSAPICallBuilder class]) {
         
-        [self copyMethodsFromClasses:@[/*[PNAPNSModificationAPICallBuilder class], */
+        [self copyMethodsFromClasses:@[[PNAPNSModificationAPICallBuilder class],
                                        [PNAPNSAuditAPICallBuilder class]]];
     }
 }

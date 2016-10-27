@@ -64,6 +64,16 @@
     };
 }
 
+- (PNPublishSizeAPICallBuilder *(^)(BOOL))replicate {
+    
+    return ^PNPublishSizeAPICallBuilder* (BOOL replicate) {
+        
+        [self setValue:@(replicate) forParameter:NSStringFromSelector(_cmd)];
+        
+        return self;
+    };
+}
+
 
 #pragma mark - Execution
 
