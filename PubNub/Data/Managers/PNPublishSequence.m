@@ -1,11 +1,11 @@
 
 #import "PNPublishSequence.h"
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+#if TARGET_OS_IOS
     #import <UIKit/UIKit.h>
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED
+#elif TARGET_OS_OSX
     #import <AppKit/AppKit.h>
-#endif // __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+#endif // TARGET_OS_OSX
 
 #import <libkern/OSAtomic.h>
 #import "PNConfiguration.h"
@@ -341,19 +341,19 @@ NS_ASSUME_NONNULL_END
 
 - (void)subscribeOnNotifications {
     
-#if TARGET_OS_WATCH
-    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-    [notificationCenter addObserver:self selector:@selector(handleContextTransition:)
-                               name:NSExtensionHostWillResignActiveNotification object:nil];
-    [notificationCenter addObserver:self selector:@selector(handleContextTransition:)
-                               name:NSExtensionHostDidEnterBackgroundNotification object:nil];
-#elif __IPHONE_OS_VERSION_MIN_REQUIRED
+#if TARGET_OS_IOS
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
     [notificationCenter addObserver:self selector:@selector(handleContextTransition:) 
                                name:UIApplicationWillResignActiveNotification object:nil];
     [notificationCenter addObserver:self selector:@selector(handleContextTransition:)
                                name:UIApplicationDidEnterBackgroundNotification object:nil];
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED
+#elif TARGET_OS_WATCH
+    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+    [notificationCenter addObserver:self selector:@selector(handleContextTransition:)
+                               name:NSExtensionHostWillResignActiveNotification object:nil];
+    [notificationCenter addObserver:self selector:@selector(handleContextTransition:)
+                               name:NSExtensionHostDidEnterBackgroundNotification object:nil];
+#elif TARGET_OS_OSX
     NSNotificationCenter *notificationCenter = [[NSWorkspace sharedWorkspace] notificationCenter];
     [notificationCenter addObserver:self selector:@selector(handleContextTransition:)
                                name:NSWorkspaceWillSleepNotification object:nil];
@@ -361,20 +361,20 @@ NS_ASSUME_NONNULL_END
                                name:NSWorkspaceSessionDidResignActiveNotification object:nil];
     [notificationCenter addObserver:self selector:@selector(handleContextTransition:)
                                name:NSWorkspaceDidDeactivateApplicationNotification object:nil];
-#endif
+#endif // TARGET_OS_OSX
 }
 
 - (void)unsubscribeFromNotifications {
     
-#if TARGET_OS_WATCH
-    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-    [notificationCenter removeObserver:self name:NSExtensionHostWillResignActiveNotification object:nil];
-    [notificationCenter removeObserver:self name:NSExtensionHostDidEnterBackgroundNotification object:nil];
-#elif __IPHONE_OS_VERSION_MIN_REQUIRED
+#if TARGET_OS_IOS
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
     [notificationCenter removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
     [notificationCenter removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED
+#elif TARGET_OS_WATCH
+    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+    [notificationCenter removeObserver:self name:NSExtensionHostWillResignActiveNotification object:nil];
+    [notificationCenter removeObserver:self name:NSExtensionHostDidEnterBackgroundNotification object:nil];
+#elif TARGET_OS_OSX
     NSNotificationCenter *notificationCenter = [[NSWorkspace sharedWorkspace] notificationCenter];
     [notificationCenter removeObserver:self name:NSWorkspaceWillSleepNotification object:nil];
     [notificationCenter removeObserver:self name:NSWorkspaceSessionDidResignActiveNotification object:nil];

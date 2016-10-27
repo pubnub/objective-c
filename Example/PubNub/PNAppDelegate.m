@@ -246,7 +246,6 @@
 - (void)pubNubUnsubFromChannelGroups {
     [self.client unsubscribeFromChannelGroups:@[@"myChannelGroup"] withPresence:NO];
 
-
 }
 
 - (void)pubNubSubscribeToPresence {
@@ -517,6 +516,28 @@
 
 - (void)client:(PubNub *)client didReceivePresenceEvent:(PNPresenceEventResult *)event {
     
+    
+    if (event.data.actualChannel != nil) {
+        
+        // Presence event has been received on channel group stored in event.data.subscribedChannel.
+    }
+    else {
+        
+        // Presence event has been received on channel stored in event.data.subscribedChannel.
+    }
+    
+    if (![event.data.presenceEvent isEqualToString:@"state-change"]) {
+        
+        NSLog(@"%@ \"%@'ed\"\nat: %@ on %@ (Occupancy: %@)", event.data.presence.uuid, 
+              event.data.presenceEvent, event.data.presence.timetoken, 
+              (event.data.actualChannel?: event.data.subscribedChannel), event.data.presence.occupancy);
+    }
+    else {
+        
+        NSLog(@"%@ changed state at: %@ on %@ to: %@", event.data.presence.uuid, 
+              event.data.presence.timetoken, (event.data.actualChannel?: event.data.subscribedChannel), 
+              event.data.presence.state);
+    }
     NSLog(@"^^^^^ Did receive presence event: %@", event.data.presenceEvent);
 }
 
@@ -681,7 +702,7 @@
 
     if (status.operation == PNSubscribeOperation) {
 
-        PNSubscribeStatus *subscriberStatus = (PNSubscribeStatus *)status;
+        PNSubscribeStatus *subscribeStatus = (PNSubscribeStatus *)status;
         // Specific to the subscribe loop operation, you can handle connection events
         // These status checks are only available via the subscribe status completion block or
         // on the long-running subscribe loop listener didReceiveStatus
@@ -692,7 +713,7 @@
             // This event happens when radio / connectivity is lost
 
             NSLog(@"^^^^ Non-error status: Unexpected Disconnect, Channel Info: %@",
-                  subscriberStatus.subscribedChannels);
+                  subscribeStatus.subscribedChannels);
         }
 
         else if (status.category == PNConnectedCategory) {
@@ -702,7 +723,7 @@
 
             // NSLog(@"Subscribe Connected to %@", status.data[@"channels"]);
             NSLog(@"^^^^ Non-error status: Connected, Channel Info: %@",
-                    subscriberStatus.subscribedChannels);
+                    subscribeStatus.subscribedChannels);
             [self pubNubPublish];
 
         }
@@ -712,8 +733,16 @@
             // This event happens when radio / connectivity is lost
 
             NSLog(@"^^^^ Non-error status: Reconnected, Channel Info: %@",
-                    subscriberStatus.subscribedChannels);
+                    subscribeStatus.subscribedChannels);
 
+        }
+        else if (status.category == PNRequestMessageCountExceededCategory) {
+            
+            /**
+             Looks like client received a lot of messages at once (larget than specified 
+             'requestMessageCountThreshold') and potentially history request maybe required.
+            */
+            NSLog(@"^^^^ Non-error status: Message Count Exceeded");
         }
     }
     else if (status.operation == PNUnsubscribeOperation) {
@@ -752,6 +781,9 @@
     self.myConfig.keepTimeTokenOnListChange = YES;
     self.myConfig.restoreSubscription = YES;
     self.myConfig.catchUpOnSubscriptionRestore = YES;
+    
+    // Messages threshold
+    self.myConfig.requestMessageCountThreshold = 100;
 }
 
 - (NSString *)randomString {

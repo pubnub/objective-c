@@ -12,6 +12,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface PubNub (PresencePrivate)
 
+
+///------------------------------------------------
+/// @name Heartbeat support
+///------------------------------------------------
+
 /**
  @brief      Issue heartbeat request to \b PubNub network.
  @discussion Heartbeat help \b PubNub presence service to control subscribers availability.

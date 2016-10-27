@@ -4,6 +4,7 @@
  @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PubNub+ChannelGroup.h"
+#import "PNAPICallBuilder+Private.h"
 #import "PNRequestParameters.h"
 #import "PubNub+CorePrivate.h"
 #import "PNStatus+Private.h"
@@ -31,7 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @since 4.0
  */
-- (void)     add:(BOOL)shouldAdd channels:(NSArray<NSString *> *)channels toGroup:(NSString *)group
+- (void)     add:(BOOL)shouldAdd channels:(nullable NSArray<NSString *> *)channels toGroup:(NSString *)group
   withCompletion:(nullable PNChannelGroupChangeCompletionBlock)block;
 
 #pragma mark -
@@ -45,6 +46,32 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Interface implementation
 
 @implementation PubNub (ChannelGroup)
+
+
+#pragma mark - API Builder support
+
+- (PNStreamAPICallBuilder *(^)(void))stream {
+    
+    PNStreamAPICallBuilder *builder = nil;
+    builder = [PNStreamAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
+                                                                  NSDictionary *parameters) {
+                               
+        NSString *group = parameters[NSStringFromSelector(@selector(channelGroup))];
+        id block = parameters[@"block"];
+        if ([flags containsObject:NSStringFromSelector(@selector(audit))]) {
+            
+            [self channelsForGroup:group withCompletion:block];
+        }
+        else {
+            
+            NSArray<NSString *> *channels = parameters[NSStringFromSelector(@selector(channels))];
+            BOOL adding = [flags containsObject:NSStringFromSelector(@selector(add))];
+            [self add:adding channels:(channels.count ? channels : nil) toGroup:group withCompletion:block];
+        }
+    }];
+    
+    return ^PNStreamAPICallBuilder *{ return builder; };
+}
 
 
 #pragma mark - Channel group audition

@@ -4,6 +4,7 @@
  @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PubNub+APNS.h"
+#import "PNAPICallBuilder+Private.h"
 #import "PNRequestParameters.h"
 #import "PubNub+CorePrivate.h"
 #import "PNStatus+Private.h"
@@ -72,6 +73,33 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Interface implementation
 
 @implementation PubNub (APNS)
+
+
+#pragma mark - API Builder support
+
+- (PNAPNSAPICallBuilder *(^)(void))push {
+    
+    PNAPNSAPICallBuilder *builder = nil; 
+    builder = [PNAPNSAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags, 
+                                                                NSDictionary *parameters) {
+        
+        NSData *pushToken = parameters[NSStringFromSelector(@selector(token))];
+        id block = parameters[@"block"];
+        if ([flags containsObject:NSStringFromSelector(@selector(audit))]) {
+            
+            [self pushNotificationEnabledChannelsForDeviceWithPushToken:pushToken andCompletion:block];
+        }
+        else {
+            
+            NSArray<NSString *> *channels = parameters[NSStringFromSelector(@selector(channels))];
+            BOOL enabling = [flags containsObject:NSStringFromSelector(@selector(enable))];
+            [self enablePushNotification:enabling onChannels:(channels.count ? channels : nil)
+                     withDevicePushToken:pushToken andCompletion:block];
+        }
+    }];
+    
+    return ^PNAPNSAPICallBuilder *{ return builder; };
+}
 
 
 #pragma mark - Push notifications state manipulation
