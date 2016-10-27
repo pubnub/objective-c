@@ -8,7 +8,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion Class describe interface which allow to \b add channel(s) to channel \c group.
  
  @author Sergey Mamontov
- @since <#version#>
+ @since 4.5.4
  @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNStreamModificationAPICallBuilder : PNStreamAPICallBuilder
@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return block which consume (\b required) name of channel \c group for which list of
              registered channels should be modified.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNStreamModificationAPICallBuilder *(^channelGroup)(NSString *channelGroup);
 
@@ -34,7 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
  @warning    \b PubNub client will remove specified channel \c group if \c nil or \c empty list will be passed
              during \c remove.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNStreamModificationAPICallBuilder *(^channels)(NSArray<NSString *> *channels);
 
@@ -50,7 +50,7 @@ NS_ASSUME_NONNULL_BEGIN
              completion block which pass only one argument - request processing status to report about how 
              data pushing was successful or not.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) void(^performWithCompletion)(PNChannelGroupChangeCompletionBlock _Nullable block);
 

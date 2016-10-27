@@ -122,7 +122,7 @@ NS_ASSUME_NONNULL_BEGIN
  @brief      Stores reference on subscribe API access \c builder construction block.
  @discussion On block call return builder which allow to configure parameters for subscribe API access.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNSubscribeAPIBuilder *(^subscribe)(void);
 
@@ -130,7 +130,7 @@ NS_ASSUME_NONNULL_BEGIN
  @brief      Stores reference on unsubscribe API access \c builder construction block.
  @discussion On block call return builder which allow to configure parameters for unsubscribe API access.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNUnsubscribeAPICallBuilder *(^unsubscribe)(void);
 

@@ -8,7 +8,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion Class describe interface which allow to modify push notification enabled channels list.
  
  @author Sergey Mamontov
- @since <#version#>
+ @since 4.5.4
  @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNAPNSModificationAPICallBuilder : PNAPNSAPICallBuilder
@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return block which consume \a NSData which represent received from APNS device push
              token.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNAPNSModificationAPICallBuilder *(^token)(NSData *token);
 
@@ -34,7 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
  @warning    \b PubNub client will remove push notification state for all channels which is registered with 
              passed \c token if \c nil or \c empty list will be passed during \c disable.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNAPNSModificationAPICallBuilder *(^channels)(NSArray<NSString *> * _Nullable channels);
 
@@ -50,7 +50,7 @@ NS_ASSUME_NONNULL_BEGIN
              processing completion block which pass only one argument - request processing status to report
              about how data pushing was successful or not.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) void(^performWithCompletion)(PNPushNotificationsStateModificationCompletionBlock _Nullable block);
 

@@ -33,7 +33,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return builder which allow to configure parameters for history / storage API
              access.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNHistoryAPICallBuilder *(^history)(void);
 

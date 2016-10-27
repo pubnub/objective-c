@@ -1,6 +1,6 @@
 /**
  @author Sergey Mamontov
- @since <#version#>
+ @since 4.5.4
  @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PNAPNSAPICallBuilder.h"
@@ -36,7 +36,7 @@
         object_setClass(self, [PNAPNSModificationAPICallBuilder class]);
         [self setFlag:NSStringFromSelector(_cmd)];
         
-        return self;
+        return (PNAPNSModificationAPICallBuilder *)self;
     };
 }
 
@@ -47,7 +47,7 @@
         object_setClass(self, [PNAPNSModificationAPICallBuilder class]);
         [self setFlag:NSStringFromSelector(_cmd)];
         
-        return self;
+        return (PNAPNSModificationAPICallBuilder *)self;
     };
 }
 
@@ -61,7 +61,7 @@
         object_setClass(self, [PNAPNSAuditAPICallBuilder class]);
         [self setFlag:NSStringFromSelector(_cmd)];
         
-        return self;
+        return (PNAPNSAuditAPICallBuilder *)self;
     };
 }
 

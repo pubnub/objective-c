@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion Class describe interface which provide access to various presence endpoints.
  
  @author Sergey Mamontov
- @since <#version#>
+ @since 4.5.4
  @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNPresenceAPICallBuilder : PNAPICallBuilder
@@ -30,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return builder which provide interface to access channel / group 'here now' 
              presence information.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNPresenceHereNowAPICallBuilder *(^hereNow)(void);
 
@@ -45,7 +45,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return builder which provide interface to access user's presence information (on 
              which channels \c user subscribed).
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNPresenceWhereNowAPICallBuilder *(^whereNow)(void);
 

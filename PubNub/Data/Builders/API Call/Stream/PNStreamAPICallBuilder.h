@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
              endpoints.
  
  @author Sergey Mamontov
- @since <#version#>
+ @since 4.5.4
  @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNStreamAPICallBuilder : PNAPICallBuilder
@@ -30,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return builder which provide interface for channel(s) \b addition to channel 
              \c group.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNStreamModificationAPICallBuilder *(^add)(void);
 
@@ -39,7 +39,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return builder which provide interface for channel(s) \b removal from channel 
              \c group.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNStreamModificationAPICallBuilder *(^remove)(void);
 
@@ -53,7 +53,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return builder which provide interface for stream state audit (retrieve list of 
              channels which belong to provided channel \c group).
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNStreamAuditAPICallBuilder *(^audit)(void);
 

@@ -9,7 +9,7 @@ NS_ASSUME_NONNULL_BEGIN
              set of additional optinos.
  
  @author Sergey Mamontov
- @since <#version#>
+ @since 4.5.4
  @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNSubscribeChannelsOrGroupsAPIBuilder : PNSubscribeAPIBuilder
@@ -24,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return block which consume \a BOOL and specify wheter client should subscribe to 
              presence \c channel(s) or presence channel \c group(s).
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNSubscribeChannelsOrGroupsAPIBuilder *(^withPresence)(BOOL withPresence);
 
@@ -34,7 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
              messages.
  @note       Value will be converted to required precision internally.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNSubscribeChannelsOrGroupsAPIBuilder *(^withTimetoken)(NSNumber *withTimetoken);
 
@@ -44,7 +44,7 @@ NS_ASSUME_NONNULL_BEGIN
              list of \c state for each of which key is name of \c channel or channel \c group where it should 
              be set.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNSubscribeChannelsOrGroupsAPIBuilder *(^state)(NSDictionary *state);
 
@@ -56,7 +56,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  @brief  Perform composed API call.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) dispatch_block_t perform;
 

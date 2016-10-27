@@ -9,7 +9,7 @@ NS_ASSUME_NONNULL_BEGIN
              with set of additional optinos.
  
  @author Sergey Mamontov
- @since <#version#>
+ @since 4.5.4
  @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNUnsubscribeChannelsOrGroupsAPICallBuilder : PNUnsubscribeAPICallBuilder
@@ -24,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return block which consume \a BOOL and specify wheter client should unsubscribe 
              from presence \c channel(s) or presence channel \c group(s).
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNUnsubscribeChannelsOrGroupsAPICallBuilder *(^withPresence)(BOOL withPresence);
 
@@ -39,7 +39,7 @@ NS_ASSUME_NONNULL_BEGIN
           will unsubscribed from all \c channel(s) and channel \c group(s) (including presence \c channel(s) 
           and channel \c group(s)).
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) dispatch_block_t perform;
 

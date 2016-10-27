@@ -9,7 +9,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion Class describe interface which provide access to history / storage API.
  
  @author Sergey Mamontov
- @since <#version#>
+ @since 4.5.4
  @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNHistoryAPICallBuilder : PNAPICallBuilder
@@ -24,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return block which consume (\b required) name of \c channel for which access to 
              history / storage should be done.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNHistoryAPICallBuilder *(^channel)(NSString *channel);
 
@@ -34,7 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
              should be returned events.
  @note       Value will be converted to required precision internally.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNHistoryAPICallBuilder *(^start)(NSNumber *start);
 
@@ -44,7 +44,7 @@ NS_ASSUME_NONNULL_BEGIN
              pulled out.
  @note       Value will be converted to required precision internally.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNHistoryAPICallBuilder *(^end)(NSNumber *end);
 
@@ -53,7 +53,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return block which consume maximum number of events which should be returned in
              response (not more then \b 100).
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNHistoryAPICallBuilder *(^limit)(NSUInteger limit);
 
@@ -62,7 +62,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return block which consume \a BOOL and specify wheter events' time tokens should be
              retrieved as well or not.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNHistoryAPICallBuilder *(^includeTimeToken)(BOOL includeTimeToken); 
 
@@ -71,7 +71,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return block which consume \a BOOL and specify whether events order in response 
              should be reversed or not.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNHistoryAPICallBuilder *(^reverse)(BOOL reverse);
 
@@ -88,7 +88,7 @@ NS_ASSUME_NONNULL_BEGIN
              contain results of history request operation; \c status - in case if error occurred during 
              request processing.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) void(^performWithCompletion)(PNHistoryCompletionBlock block);
 

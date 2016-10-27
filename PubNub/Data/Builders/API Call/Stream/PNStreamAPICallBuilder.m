@@ -1,6 +1,6 @@
 /**
  @author Sergey Mamontov
- @since <#version#>
+ @since 4.5.4
  @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PNStreamAPICallBuilder.h"
@@ -36,7 +36,7 @@
         object_setClass(self, [PNStreamModificationAPICallBuilder class]);
         [self setFlag:NSStringFromSelector(_cmd)];
         
-        return self;
+        return (PNStreamModificationAPICallBuilder *)self;
     };
 }
 
@@ -47,7 +47,7 @@
         object_setClass(self, [PNStreamModificationAPICallBuilder class]);
         [self setFlag:NSStringFromSelector(_cmd)];
         
-        return self;
+        return (PNStreamModificationAPICallBuilder *)self;
     };
 }
 
@@ -61,7 +61,7 @@
         object_setClass(self, [PNStreamAuditAPICallBuilder class]);
         [self setFlag:NSStringFromSelector(_cmd)];
         
-        return self;
+        return (PNStreamAuditAPICallBuilder *)self;
     };
 }
 

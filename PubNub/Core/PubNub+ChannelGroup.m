@@ -57,7 +57,6 @@ NS_ASSUME_NONNULL_END
                                                                   NSDictionary *parameters) {
                                
         NSString *group = parameters[NSStringFromSelector(@selector(channelGroup))];
-        NSArray<NSString *> *channels = parameters[NSStringFromSelector(@selector(channels))];
         id block = parameters[@"block"];
         if ([flags containsObject:NSStringFromSelector(@selector(audit))]) {
             
@@ -132,7 +131,7 @@ NS_ASSUME_NONNULL_END
 
 - (void)removeChannelsFromGroup:(NSString *)group withCompletion:(PNChannelGroupChangeCompletionBlock)block {
     
-    [self removeChannels:nil fromGroup:group withCompletion:block];
+    [self removeChannels:@[] fromGroup:group withCompletion:block];
 }
 
 - (void)     add:(BOOL)shouldAdd channels:(NSArray<NSString *> *)channels toGroup:(NSString *)group

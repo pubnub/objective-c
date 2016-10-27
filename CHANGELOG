@@ -1,3 +1,13 @@
+27-10-2016 - 935ae96 - 4.5.4
+. added application extension environment support (applicationExtensionSharedGroupIdentifier PNConfiguration property).
+. added builder pattern for API calls.
+. added 'fire' and 'replicate' options to publish API call builder.
+. added messages count threshold configuration property (requestMessageCountThreshold) which allow to specify how many messages client can receive without PNRequestMessageCountExceededCategory status object sending (to -client:didReceiveStatus: observer callback).
+. added 'instanceid' query property to simplify multi client debug.
+. added 'requestid' query property for each request to force proxy servers to not cache responses and debug purposes.
+. updated fastlane configuration to speed test stage up.
+. fixed issue with shared auto-updating user calendar which is used with logger (calendar instance created every time when timestamp information is required).
+
 26-09-2016 - 3cc8b7b - 4.5.3
 . added NS_SWIFT_NAME with Swift equivalent specified in it to all public API. This allow to prevent Swift function signature generator from changing it between Swift releases.
 

@@ -1,6 +1,6 @@
 /**
  @author Sergey Mamontov
- @since <#version#>
+ @since 4.5.4
  @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PNPresenceAPICallBuilder.h"
@@ -36,7 +36,7 @@
         object_setClass(self, [PNPresenceHereNowAPICallBuilder class]);
         [self setFlag:NSStringFromSelector(_cmd)];
         
-        return self;
+        return (PNPresenceHereNowAPICallBuilder *)self;
     };
 }
 
@@ -50,7 +50,7 @@
         object_setClass(self, [PNPresenceWhereNowAPICallBuilder class]);
         [self setFlag:NSStringFromSelector(_cmd)];
         
-        return self;
+        return (PNPresenceWhereNowAPICallBuilder *)self;
     };
 }
 

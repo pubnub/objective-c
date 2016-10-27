@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
              endpoints.
  
  @author Sergey Mamontov
- @since <#version#>
+ @since 4.5.4
  @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNStateAPICallBuilder : PNAPICallBuilder
@@ -29,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
  @brief      Stores reference on construction block which return \c builder which is responsible for access to presence state modification.
  @discussion On block call return builder which provide interface for user presence state modification.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNStateModificationAPICallBuilder *(^set)(void);
 
@@ -43,7 +43,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return builder which provide interface for user's presence state audit (retrieve 
              state information which has been set for user on \c channel and / or channel \c group).
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNStateAuditAPICallBuilder *(^audit)(void);
 

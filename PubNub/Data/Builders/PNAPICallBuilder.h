@@ -9,7 +9,7 @@ NS_ASSUME_NONNULL_BEGIN
              corresponding API end-point.
  
  @author Sergey Mamontov
- @since <#version#>
+ @since 4.5.4
  @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNAPICallBuilder : NSObject

@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
              endpoints.
  
  @author Sergey Mamontov
- @since <#version#>
+ @since 4.5.4
  @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNAPNSAPICallBuilder : PNAPICallBuilder
@@ -31,7 +31,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return builder which provide interface for push notification enabling on list of 
              channel(s).
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNAPNSModificationAPICallBuilder *(^enable)(void);
 
@@ -41,7 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return builder which provide interface for push notification disabling on list of 
              channel(s).
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNAPNSModificationAPICallBuilder *(^disable)(void);
 
@@ -56,7 +56,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return builder which provide interface for push notification state audit (retrieve 
              list of channels for which push notifications has been enabled).
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNAPNSAuditAPICallBuilder *(^audit)(void);
 

@@ -9,7 +9,7 @@ NS_ASSUME_NONNULL_BEGIN
              notification enabled channels list).
  
  @author Sergey Mamontov
- @since <#version#>
+ @since 4.5.4
  @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNAPNSAuditAPICallBuilder : PNAPNSAPICallBuilder
@@ -24,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return block consume \a NSData which represent received from APNS device push 
              token.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNAPNSAuditAPICallBuilder *(^token)(NSData *token);
 
@@ -41,7 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
              \c data field will contain results of push notifications audit operation; \c status - in case if 
              error occurred during request processing.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) void(^performWithCompletion)(PNPushNotificationsStateAuditCompletionBlock block);
 
