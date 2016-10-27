@@ -4,15 +4,15 @@
  @copyright © 2009-2016 PubNub, Inc.
  */
 #import <Foundation/Foundation.h>
-#if __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+#if TARGET_OS_IOS
     #import <UIKit/UIKit.h>
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED
+#elif TARGET_OS_OSX
     #import <IOKit/IOKitLib.h>
     #include <sys/socket.h>
     #include <sys/sysctl.h>
     #include <net/if.h>
     #include <net/if_dl.h>
-#endif // __MAC_OS_X_VERSION_MIN_REQUIRED
+#endif // TARGET_OS_OSX
 #import "PNConfiguration+Private.h"
 #import "PNConstants.h"
 #import "PNKeychain.h"
@@ -71,7 +71,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (nullable NSString *)generateUniqueDeviceIdentifier;
 
-#if __MAC_OS_X_VERSION_MIN_REQUIRED
+#if TARGET_OS_OSX
 /**
  @brief  Try to fetch device serial number information.
  
@@ -89,7 +89,7 @@ NS_ASSUME_NONNULL_BEGIN
  @since 4.0.2
  */
 - (nullable NSString *)macAddress;
-#endif
+#endif // TARGET_OS_OSX
 
 #pragma mark -
 
@@ -151,9 +151,9 @@ NS_ASSUME_NONNULL_END
         _keepTimeTokenOnListChange = kPNDefaultShouldKeepTimeTokenOnListChange;
         _restoreSubscription = kPNDefaultShouldRestoreSubscription;
         _catchUpOnSubscriptionRestore = kPNDefaultShouldTryCatchUpOnSubscriptionRestore;
-#if __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+#if TARGET_OS_IOS
         _completeRequestsBeforeSuspension = kPNDefaultShouldCompleteRequestsBeforeSuspension;
-#endif // __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+#endif // TARGET_OS_IOS
         _stripMobilePayload = kPNDefaultShouldStripMobilePayload;
     }
     
@@ -180,9 +180,10 @@ NS_ASSUME_NONNULL_END
     configuration.keepTimeTokenOnListChange = self.shouldKeepTimeTokenOnListChange;
     configuration.restoreSubscription = self.shouldRestoreSubscription;
     configuration.catchUpOnSubscriptionRestore = self.shouldTryCatchUpOnSubscriptionRestore;
-#if __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+    configuration.applicationExtensionSharedGroupIdentifier = self.applicationExtensionSharedGroupIdentifier;
+#if TARGET_OS_IOS
     configuration.completeRequestsBeforeSuspension = self.shouldCompleteRequestsBeforeSuspension;
-#endif // __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+#endif // TARGET_OS_IOS
     configuration.stripMobilePayload = self.shouldStripMobilePayload;
     
     return configuration;
@@ -211,16 +212,16 @@ NS_ASSUME_NONNULL_END
 - (NSString *)generateUniqueDeviceIdentifier {
     
     NSString *identifier = nil;
-#if __IPHONE_OS_VERSION_MIN_REQUIRED && !TARGET_OS_WATCH
+#if TARGET_OS_IOS
     identifier = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED
+#elif TARGET_OS_OSX
     identifier = ([self serialNumber]?: [self macAddress]);
-#endif
+#endif // TARGET_OS_OSX
     
     return (identifier?: [[[NSUUID UUID] UUIDString] copy]);
 }
 
-#if __MAC_OS_X_VERSION_MIN_REQUIRED
+#if TARGET_OS_OSX
 - (NSString *)serialNumber {
     
     NSString *serialNumber = nil;
@@ -260,7 +261,8 @@ NS_ASSUME_NONNULL_END
     
     return macAddress;
 }
-#endif
+
+#endif // TARGET_OS_OSX
 
 #pragma mark -
 

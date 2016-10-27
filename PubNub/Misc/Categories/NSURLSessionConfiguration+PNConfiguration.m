@@ -4,11 +4,13 @@
  @copyright © 2009-2016 PubNub, Inc.
  */
 #import "NSURLSessionConfiguration+PNConfigurationPrivate.h"
-#if TARGET_OS_WATCH
-    #import <WatchKit/WatchKit.h>
-#elif __IPHONE_OS_VERSION_MIN_REQUIRED
+#if TARGET_OS_IOS || TARGET_OS_TV
     #import <UIKit/UIKit.h>
-#endif // __IPHONE_OS_VERSION_MIN_REQUIRED
+#elif TARGET_OS_WATCH
+    #import <WatchKit/WatchKit.h>
+#elif TARGET_OS_OSX
+    #import <AppKit/AppKit.h>
+#endif // TARGET_OS_OSX
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -28,6 +30,16 @@ NS_ASSUME_NONNULL_BEGIN
  @return Dictionary where each configuration mapped to it's identifier.
  */
 + (NSMutableDictionary<NSString *, NSURLSessionConfiguration *> *)pn_configurations;
+
+/**
+ @brief  Set default values for session's configuration object.
+ 
+ @since 4.5.4
+ 
+ @param configuration Reference on created session configuration instance to which default settings should be 
+                      applied.
+ */
++ (void)pn_setDefaultValuesForSessionConfiguration:(NSURLSessionConfiguration *)configuration;
 
 /**
  @brief  Allow to filter up passed list of prtocol classes from names which can intersect with \c Apple's 
@@ -66,17 +78,33 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Initialization and Configuration
 
-+ (instancetype)pn_ephemeralSessionConfigurationWithIdentifier:(NSString *)identifier; {
++ (instancetype)pn_ephemeralSessionConfigurationWithIdentifier:(NSString *)identifier {
     
     NSMutableDictionary *sessionConfigurations = [self pn_configurations];
     if (sessionConfigurations[identifier] == nil) {
         
-        NSURLSessionConfiguration *sessionConfiguration;
-        sessionConfiguration = [NSURLSessionConfiguration ephemeralSessionConfiguration];
-        sessionConfiguration.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
-        sessionConfiguration.URLCache = nil;
-        sessionConfiguration.HTTPAdditionalHeaders = [self pn_defaultHeaders];
-        sessionConfigurations[identifier] = sessionConfiguration;
+        NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration ephemeralSessionConfiguration];
+        [self pn_setDefaultValuesForSessionConfiguration:configuration];
+        sessionConfigurations[identifier] = configuration;
+    }
+    
+    return sessionConfigurations[identifier];
+}
+
++ (instancetype)pn_backgroundSessionConfigurationWithIdentifier:(NSString *)identifier {
+      
+    NSMutableDictionary *sessionConfigurations = [self pn_configurations];
+    if (sessionConfigurations[identifier] == nil) {
+        
+        NSURLSessionConfiguration *configuration = nil;
+        SEL backgroundConfiguration = @selector(backgroundSessionConfigurationWithIdentifier:);
+        if ([NSURLSessionConfiguration respondsToSelector:backgroundConfiguration]) {
+            
+            configuration = [NSURLSessionConfiguration performSelector:backgroundConfiguration
+                                                            withObject:identifier];
+            [self pn_setDefaultValuesForSessionConfiguration:configuration];
+            sessionConfigurations[identifier] = configuration;
+        }
     }
     
     return sessionConfigurations[identifier];
@@ -187,13 +215,21 @@ NS_ASSUME_NONNULL_END
     return _sharedSessionConfigurations;
 }
 
++ (void)pn_setDefaultValuesForSessionConfiguration:(NSURLSessionConfiguration *)configuration {
+    
+    configuration.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
+    configuration.URLCache = nil;
+    configuration.HTTPAdditionalHeaders = [self pn_defaultHeaders];
+}
+
 + (NSArray<Class> *)pn_filteredProtocolClasses:(NSArray<Class> *)protocolClasses {
     
     NSArray<Class> *protocols = (protocolClasses.count ? protocolClasses : nil);
     if (protocols.count) {
         
         NSMutableArray *filteredProtocols = [protocols mutableCopy];
-        [protocols enumerateObjectsUsingBlock:^(Class protocolClass, NSUInteger protocolClassIdx, BOOL *protocolClassesEnumeratorStop) {
+        [protocols enumerateObjectsUsingBlock:^(Class protocolClass, NSUInteger protocolClassIdx, 
+                                                BOOL *protocolClassesEnumeratorStop) {
             
             NSString *className = NSStringFromClass(protocolClass);
             if ([className hasPrefix:@"_NS"] || [className hasPrefix:@"NS"]) {
@@ -201,6 +237,7 @@ NS_ASSUME_NONNULL_END
                 [filteredProtocols removeObject:protocolClass];
             }
         }];
+        
         protocols = [filteredProtocols copy];
     }
     
@@ -209,25 +246,30 @@ NS_ASSUME_NONNULL_END
 
 + (NSDictionary *)pn_defaultHeaders {
     
-    NSString *device = @"iPhone";
-#if TARGET_OS_WATCH
-    NSString *osVersion = [[WKInterfaceDevice currentDevice] systemVersion];
-#elif __IPHONE_OS_VERSION_MIN_REQUIRED
-    NSString *osVersion = [[UIDevice currentDevice] systemVersion];
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED
-    NSOperatingSystemVersion version = [[NSProcessInfo processInfo]operatingSystemVersion];
-    NSMutableString *osVersion = [NSMutableString stringWithFormat:@"%@.%@",
-                                  @(version.majorVersion), @(version.minorVersion)];
-    if (version.patchVersion > 0) {
+    static NSDictionary *defaultHeaders;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
         
-        [osVersion appendFormat:@".%@", @(version.patchVersion)];
-    }
-#endif
-    NSString *userAgent = [NSString stringWithFormat:@"iPhone; CPU %@ OS %@ Version",
-                           device, osVersion];
+        NSString *device = @"iPhone";
+#if TARGET_OS_IOS || TARGET_OS_TV
+        NSString *osVersion = [[UIDevice currentDevice] systemVersion];
+#elif TARGET_OS_WATCH
+        NSString *osVersion = [[WKInterfaceDevice currentDevice] systemVersion];
+#elif TARGET_OS_OSX
+        NSOperatingSystemVersion version = [[NSProcessInfo processInfo] operatingSystemVersion];
+        NSMutableString *osVersion = [NSMutableString stringWithFormat:@"%@.%@",
+                                      @(version.majorVersion), @(version.minorVersion)];
+        if (version.patchVersion > 0) {
+            
+            [osVersion appendFormat:@".%@", @(version.patchVersion)];
+        }
+#endif // TARGET_OS_OSX
+        NSString *userAgent = [NSString stringWithFormat:@"iPhone; CPU %@ OS %@ Version", device, osVersion];
+        defaultHeaders = @{@"Accept":@"*/*", @"Accept-Encoding":@"gzip,deflate", @"User-Agent":userAgent,
+                           @"Connection":@"keep-alive"};
+    });
     
-    return @{@"Accept":@"*/*", @"Accept-Encoding":@"gzip,deflate", @"User-Agent":userAgent,
-             @"Connection":@"keep-alive"};
+    return defaultHeaders;
 }
 
 #pragma mark -
