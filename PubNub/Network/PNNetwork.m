@@ -156,6 +156,22 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, strong) PNNetworkResponseSerializer *serializer;
 
+/**
+ @brief  Stores refeference on set of key/value pairs which is used in API endpoint path and common for all 
+         endpoints.
+ 
+ @since 4.5.4
+ */
+@property (nonatomic, strong) NSDictionary *defaultPathComponents;
+
+/**
+ @brief  Stores refeference on set of key/value pairs which is used in API endpoint query and common for all 
+         endpoints.
+ 
+ @since 4.5.4
+ */
+@property (nonatomic, strong) NSDictionary *defaultQueryComponents;
+
 #if TARGET_OS_IOS
 
 /**
@@ -235,6 +251,13 @@ NS_ASSUME_NONNULL_BEGIN
  @since 4.0
  */
 - (void)appendRequiredParametersTo:(PNRequestParameters *)parameters;
+
+/**
+ @brief  Compose objects which is used to provide default values for requests.
+ 
+ @since 4.5.4
+ */
+- (void)prepareRequiredParameters;
 
 /**
  @brief  Construct URL request suitable to send POST request (if required).
@@ -566,6 +589,7 @@ NS_ASSUME_NONNULL_END
         _serializer = [PNNetworkResponseSerializer new];
         _baseURL = [self requestBaseURL];
         _lock = OS_SPINLOCK_INIT;
+        [self prepareRequiredParameters];
         [self prepareSessionWithRequestTimeout:timeout maximumConnections:maximumConnections];
     }
     
@@ -577,17 +601,31 @@ NS_ASSUME_NONNULL_END
 
 - (void)appendRequiredParametersTo:(PNRequestParameters *)parameters {
     
-    [parameters addPathComponents:@{@"{sub-key}": (self.configuration.subscribeKey?: @""),
-                                    @"{pub-key}": (self.configuration.publishKey?: @"")}];
-    [parameters addQueryParameters:@{@"uuid": (self.configuration.uuid?: @""),
-                                     @"deviceid": (self.configuration.deviceID?: @""),
-                                     @"instanceid": self.configuration.instanceID,
-                                     @"pnsdk":[NSString stringWithFormat:@"PubNub-%@%%2F%@",
-                                               kPNClientName, kPNLibraryVersion]}];
-    if (self.configuration.authKey.length) {
+    [parameters addPathComponents:self.defaultPathComponents];
+    [parameters addQueryParameters:self.defaultQueryComponents];
+    
+    // In case if we client used from tests environment unique request identifier should be excluded from
+    // default query components.
+    static BOOL isTestEnvironment;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{ isTestEnvironment = NSClassFromString(@"XCTestExpectation") != nil; });
+    if (!isTestEnvironment) {
         
-        [parameters addQueryParameter:self.configuration.authKey forFieldName:@"auth"];
+        [parameters addQueryParameter:[[NSUUID UUID] UUIDString] forFieldName:@"requestid"];
     }
+}
+
+- (void)prepareRequiredParameters {
+    
+    _defaultPathComponents = @{@"{sub-key}": (self.configuration.subscribeKey?: @""),
+                               @"{pub-key}": (self.configuration.publishKey?: @"")};
+    NSMutableDictionary *queryComponents = [@{@"uuid": (self.configuration.uuid?: @""),
+                                              @"deviceid": (self.configuration.deviceID?: @""),
+                                              @"instanceid": self.configuration.instanceID,
+                                              @"pnsdk":[NSString stringWithFormat:@"PubNub-%@%%2F%@",
+                                                        kPNClientName, kPNLibraryVersion]} mutableCopy];
+    if (self.configuration.authKey.length) { queryComponents[@"auth"] = self.configuration.authKey; }
+    _defaultQueryComponents = [queryComponents copy];
 }
 
 - (NSURLRequest *)requestWithURL:(NSURL *)requestURL data:(NSData *)postData {
