@@ -6,13 +6,13 @@
 #import "PNNetwork.h"
 #import "NSURLSessionConfiguration+PNConfigurationPrivate.h"
 #import "PNNetworkResponseSerializer.h"
-#import "PNConfiguration+Private.h"
 #import "PNRequestParameters.h"
 #import "PNPrivateStructures.h"
 #import "PubNub+CorePrivate.h"
 #import "PNResult+Private.h"
 #import "PNStatus+Private.h"
 #import <libkern/OSAtomic.h>
+#import "PNConfiguration.h"
 #import "PNErrorStatus.h"
 #import "PNErrorParser.h"
 #import "PNURLBuilder.h"
@@ -621,7 +621,7 @@ NS_ASSUME_NONNULL_END
                                @"{pub-key}": (self.configuration.publishKey?: @"")};
     NSMutableDictionary *queryComponents = [@{@"uuid": (self.configuration.uuid?: @""),
                                               @"deviceid": (self.configuration.deviceID?: @""),
-                                              @"instanceid": self.configuration.instanceID,
+                                              @"instanceid": self.client.instanceID,
                                               @"pnsdk":[NSString stringWithFormat:@"PubNub-%@%%2F%@",
                                                         kPNClientName, kPNLibraryVersion]} mutableCopy];
     if (self.configuration.authKey.length) { queryComponents[@"auth"] = self.configuration.authKey; }

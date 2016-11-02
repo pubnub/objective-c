@@ -39,6 +39,17 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, copy) PNConfiguration *configuration;
 
 /**
+ @brief      Stores reference on unique instance identifier.
+ @discussion Identifier used by presence service to track multiple clients which is configured for same 
+             \c uuid and trigger events like \c leave only if all client instances not subscribed for
+             particular channel. \c timeout event can be triggered only if all clients went \c offline 
+             (w/o unsubscription)
+
+ @since 4.5.4
+ */
+@property (nonatomic, readonly, copy) NSString *instanceID;
+
+/**
  @brief  Stores reference on instance which manage all subscribe loop logic and help to deliver updates from 
          remote data objects live feed to the client.
  

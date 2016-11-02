@@ -60,6 +60,17 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, strong) PNPublishSizeAPICallBuilder *(^shouldStore)(BOOL shouldStore);
 
 /**
+ @brief      Specify for how many hours published \c message should be stored.
+ @discussion On block call return block which consume \a NSUInteger and specify for how many hours published 
+             message should be stored in channel's storage.
+ @note       If \c shouldStore is set to \c NO this value will be ignored. If value is \b 0 then message will
+             be stored in channel's storage or \b N hours (if non-zero value passed).
+ 
+ @since 4.5.5
+ */
+@property (nonatomic, readonly, strong) PNPublishSizeAPICallBuilder *(^ttl)(NSUInteger ttl);
+
+/**
  @brief      Specify whether published \c message should be compressed or not.
  @discussion On block call return block which consume \a BOOL and specify wheter published \c message should 
              be compressed and sent with \c POST request or not.

@@ -3,6 +3,16 @@ changelog:
   -
     changes:
       -
+        text: "Added ability to specify for how long published message should be stored in channel's storage (added into API call builder interface)."
+        type: feature
+      -
+        text: "Fixed 'instanceID' which is placed inside of PNConfiguration."
+        type: bug
+    date: ~
+    version: v4.5.5
+  -
+    changes:
+      -
         text: "Added application extension environment support (applicationExtensionSharedGroupIdentifier PNConfiguration property)."
         type: improvement
       -
@@ -421,6 +431,8 @@ changelog:
         type: improvement
     version: v4.0.0
 features: 
+  notify:
+    - REQUEST-MESSAGE-COUNT-EXCEEDED
   channel-groups:
     - CHANNEL-GROUPS-ADD-CHANNELS
     - CHANNEL-GROUPS-REMOVE-CHANNELS
@@ -444,6 +456,9 @@ features:
     - PUBLISH-GET
     - PUBLISH-COMPRESS-MESSAGE    
     - PUBLISH-ASYNC
+    - PUBLISH-FIRE
+    - PUBLISH-REPLICATION-FLAG
+    - PUBLISH-MESSAGE-TTL
   storage:
     - STORAGE-REVERSE
     - STORAGE-INCLUDE-TIMETOKEN
@@ -464,4 +479,4 @@ features:
 name: objective-c
 schema: 1
 scm: github.com/pubnub/objective-c
-version: "4.5.3"
+version: "4.5.5"

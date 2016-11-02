@@ -1,3 +1,7 @@
+02-11-2016 - fddb1f1 - 4.5.4
+. added ability to specify for how long published message should be stored in channel's storage (added into API call builder interface)
+. fixed 'instanceID' which is placed inside of PNConfiguration - if it requesed to setup new client it will have same 'instanceID'. Now 'instanceID' is set per PubNub client instance.
+
 27-10-2016 - 935ae96 - 4.5.4
 . added application extension environment support (applicationExtensionSharedGroupIdentifier PNConfiguration property).
 . added builder pattern for API calls.
