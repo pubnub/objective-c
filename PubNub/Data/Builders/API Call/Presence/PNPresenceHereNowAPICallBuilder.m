@@ -1,6 +1,6 @@
 /**
  @author Sergey Mamontov
- @since <#version#>
+ @since 4.5.4
  @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PNPresenceHereNowAPICallBuilder.h"
@@ -36,7 +36,7 @@
         object_setClass(self, [PNPresenceChannelHereNowAPICallBuilder class]);
         [self setValue:channel forParameter:NSStringFromSelector(_cmd)];
         
-        return self;
+        return (PNPresenceChannelHereNowAPICallBuilder *)self;
     };
 }
 
@@ -50,7 +50,7 @@
         object_setClass(self, [PNPresenceChannelGroupHereNowAPICallBuilder class]);
         [self setValue:channelGroup forParameter:NSStringFromSelector(_cmd)];
         
-        return self;
+        return (PNPresenceChannelGroupHereNowAPICallBuilder *)self;
     };
 }
 

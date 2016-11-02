@@ -200,7 +200,6 @@ NS_ASSUME_NONNULL_END
                                      
         id message = parameters[NSStringFromSelector(@selector(message))];
         NSString *channel = parameters[NSStringFromSelector(@selector(channel))];
-        NSDictionary *payloads = parameters[NSStringFromSelector(@selector(payloads))];
         NSNumber *shouldStore = parameters[NSStringFromSelector(@selector(shouldStore))];
         NSNumber *compressed = parameters[NSStringFromSelector(@selector(compress))];
         NSNumber *replicate = parameters[NSStringFromSelector(@selector(replicate))];

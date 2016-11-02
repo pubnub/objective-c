@@ -37,7 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
  @brief      Stores reference on presence API access \c builder construction block.
  @discussion On block call return builder which allow to configure parameters for presence API access.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNPresenceAPICallBuilder *(^presence)(void);
 

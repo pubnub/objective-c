@@ -9,7 +9,7 @@ NS_ASSUME_NONNULL_BEGIN
              channel \c group.
  
  @author Sergey Mamontov
- @since <#version#>
+ @since 4.5.4
  @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNStateModificationAPICallBuilder : PNStateAPICallBuilder
@@ -24,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return block which consume (\b required) unique \c user identifier for which 
              presence state should be modified on provided \c channel or channel \c group.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNStateModificationAPICallBuilder *(^uuid)(NSString *uuid);
 
@@ -34,7 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return block which consume dictionary which should be bound to \c uuid on specified
              \c channel or channel \c group.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNStateModificationAPICallBuilder *(^state)(NSDictionary * _Nullable state); 
 
@@ -43,7 +43,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return block which consume name of \c channel for which \c user's presence state 
              should be modified.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNStateModificationAPICallBuilder *(^channel)(NSString *channel);
 
@@ -52,7 +52,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return block which consume name of channel \c group for which \c user's presence 
              state should be modified.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNStateModificationAPICallBuilder *(^channelGroup)(NSString *channelGroup);
 
@@ -68,7 +68,7 @@ NS_ASSUME_NONNULL_BEGIN
              processing completion block which pass only one argument - request processing status to report 
              about how data pushing was successful or not.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) void(^performWithCompletion)(PNSetStateCompletionBlock _Nullable block);
 

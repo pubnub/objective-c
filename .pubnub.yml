@@ -3,7 +3,35 @@ changelog:
   -
     changes:
       -
-        text: added NS_SWIFT_NAME with Swift equivalent specified in it to all public API to prevent Swift function signature change between Swift releases
+        text: "Added application extension environment support (applicationExtensionSharedGroupIdentifier PNConfiguration property)."
+        type: improvement
+      -
+        text: "Added builder pattern for API calls."
+        type: feature
+      -
+        text: "Added 'fire' and 'replicate' options to publish API call builder."
+        type: feature
+      -
+        text: "Added messages count threshold configuration property."
+        type: improvement
+      -
+        text: "Added 'instanceid' query property."
+        type: improvement
+      -
+        text: "Added 'requestid' query property."
+        type: improvement
+      -
+        text: "Updated fastlane configuration to speed test stage up."
+        type: improvement
+      -
+        text: "Fixed issue with shared auto-updating user calendar."
+        type: bug
+    date: ~
+    version: v4.5.4 
+  -
+    changes:
+      -
+        text: "added NS_SWIFT_NAME with Swift equivalent specified in it to all public API to prevent Swift function signature change between Swift releases."
         type: improvement
     date: ~
     version: v4.5.3 

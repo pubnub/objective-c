@@ -8,7 +8,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion Class describe interface which provide access to channel \b group 'here now' API.
  
  @author Sergey Mamontov
- @since <#version#>
+ @since 4.5.4
  @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNPresenceChannelGroupHereNowAPICallBuilder : PNPresenceHereNowAPICallBuilder
@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return block which consume one of \b PNHereNowVerbosityLevel fields to instruct
              what exactly data it expected in response.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNPresenceChannelGroupHereNowAPICallBuilder *(^verbosity)(PNHereNowVerbosityLevel verbosity); 
 
@@ -40,7 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
              contain results of here now operation; \c status - in case if error occurred during request 
              processing.
  
- @since <#version#>
+ @since 4.5.4
  */
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wincompatible-pointer-types"

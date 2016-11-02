@@ -1,6 +1,6 @@
 /**
  @author Sergey Mamontov
- @since <#version#>
+ @since 4.5.4
  @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PNAPICallBuilder+Private.h"
@@ -19,7 +19,7 @@
  @discussion Usually stores flahs which allow to identify API type (if there is group of API available for 
              single endpoint). Flags also used in cased when default state should be adjusted. 
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, strong) NSMutableArray<NSString *> *flags;
 
@@ -28,14 +28,14 @@
  @discussion Parameters allow to configure particular API call with values which should be passed to \b PubNub
              service.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, strong) NSMutableDictionary<NSString *, id> *parameters;
 
 /**
  @brief Stores reference on block which will be called in response \c -performWithBlock: method call.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, copy) PNAPICallCompletionBlock executionBlock;
 
@@ -46,7 +46,7 @@
  @brief  Initialize builder which will be able to handle API \c parotocol and accept user provided argument
          values.
  
- @since <#version#>
+ @since 4.5.4
  
  @param block Reference on block which will be called in response \c -performWithBlock: method call. Block 
               pass two arguments: \c flags - list of user-configured API flags; \c parameters - list of API 

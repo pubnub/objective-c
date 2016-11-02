@@ -1,6 +1,6 @@
 /**
  @author Sergey Mamontov
- @since <#version#>
+ @since 4.5.4
  @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PNAPICallBuilder.h"
@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion Block pass two arguments: \c flags - list of user-configured API flags; \c parameters - list of
              API request query and URI parameter-value pairs.
  
- @since <#version#>
+ @since 4.5.4
  */
 typedef void(^PNAPICallCompletionBlock)(NSArray<NSString *> * _Nullable flags, 
                                         NSDictionary * _Nullable parameters);
@@ -36,7 +36,7 @@ typedef void(^PNAPICallCompletionBlock)(NSArray<NSString *> * _Nullable flags,
  @discussion This approach allow to re-use same instance when user navigated between different options of API 
              call.
  
- @since <#version#>
+ @since 4.5.4
  
  @param classes Reference on list of classes which describe builders for API from same API group. Classes 
                 information will be used to copy methods and implementations to base API call builder class.
@@ -46,7 +46,7 @@ typedef void(^PNAPICallCompletionBlock)(NSArray<NSString *> * _Nullable flags,
 /**
  @brief  Create and configure builder which will allow to configure furure API call.
  
- @since <#version#>
+ @since 4.5.4
  
  @param block Reference on block which will be called in response \c -performWithBlock: method call. Block 
               pass two arguments: \c flags - list of user-configured API flags; \c parameters - list of API 
@@ -61,7 +61,7 @@ typedef void(^PNAPICallCompletionBlock)(NSArray<NSString *> * _Nullable flags,
  @discussion Method can be used during builder initialization to help identify method from API group which 
              should be called.
  
- @since <#version#>
+ @since 4.5.4
  
  @param flag Reference on \c flag which should be set for API call. 
  */
@@ -72,7 +72,7 @@ typedef void(^PNAPICallCompletionBlock)(NSArray<NSString *> * _Nullable flags,
  @discussion Method can be used during builder initialization to provide required parameters for constructed 
              API call.
  
- @since <#version#>
+ @since 4.5.4
  
  @param value     Reference on value which should be set for \c parameter.
  @param parameter Reference on parameter name for which value should be set.
@@ -88,12 +88,12 @@ typedef void(^PNAPICallCompletionBlock)(NSArray<NSString *> * _Nullable flags,
  @brief      Execute configured API call.
  @discussion Try to use user-provided information to execute target API.
  
- @since <#version#>
+ @since 4.5.4
  
  @param block Reference on API execution completion block to which \b PubNub client will pass execution 
         results.
  */
-- (void)performWithBlock:(id)block;
+- (void)performWithBlock:(nullable id)block;
 
 #pragma mark -
 

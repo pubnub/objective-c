@@ -1,6 +1,6 @@
 /**
  @author Sergey Mamontov
- @since <#version#>
+ @since 4.5.4
  @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PNStateAPICallBuilder.h"
@@ -36,7 +36,7 @@
         object_setClass(self, [PNStateModificationAPICallBuilder class]);
         [self setFlag:NSStringFromSelector(_cmd)];
         
-        return self;
+        return (PNStateModificationAPICallBuilder *)self;
     };
 }
 
@@ -50,7 +50,7 @@
         object_setClass(self, [PNStateAuditAPICallBuilder class]);
         [self setFlag:NSStringFromSelector(_cmd)];
         
-        return self;
+        return (PNStateAuditAPICallBuilder *)self;
     };
 }
 

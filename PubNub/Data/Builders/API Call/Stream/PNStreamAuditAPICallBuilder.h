@@ -8,7 +8,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion Protocol describe interface which provide access to stream audition endpoints.
  
  @author Sergey Mamontov
- @since <#version#>
+ @since 4.5.4
  @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNStreamAuditAPICallBuilder : PNStreamAPICallBuilder
@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return block which consume (\b required) name of channel \c group for which list of
              registered channels should be received.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNStreamAuditAPICallBuilder *(^channelGroup)(NSString *channelGroup);
 
@@ -40,7 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
              contain results of channel groups channels audition operation; \c status - in case if error 
              occurred during request processing.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) void(^performWithCompletion)(PNGroupChannelsAuditCompletionBlock block);
 

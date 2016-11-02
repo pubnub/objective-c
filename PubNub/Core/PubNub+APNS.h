@@ -36,7 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return builder which allow to configure parameters for push API access and data 
              manipulation.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNAPNSAPICallBuilder *(^push)(void);
 

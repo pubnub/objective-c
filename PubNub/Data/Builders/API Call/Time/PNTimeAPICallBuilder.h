@@ -9,7 +9,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion Class describe interface which allow to use time API endpoint.
  
  @author Sergey Mamontov
- @since <#version#>
+ @since 4.5.4
  @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNTimeAPICallBuilder : PNAPICallBuilder
@@ -27,7 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
              field will contain server-provided time token; \c status - in case if error occurred during 
              request processing.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) void(^performWithCompletion)(PNTimeCompletionBlock block);
 

@@ -9,7 +9,7 @@ NS_ASSUME_NONNULL_BEGIN
              which has been set for user on \c channel and / or channel \c group).
  
  @author Sergey Mamontov
- @since <#version#>
+ @since 4.5.4
  @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNStateAuditAPICallBuilder : PNStateAPICallBuilder
@@ -24,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return block which consume (\b required) unique \c user identifier for which 
              presence state audition should be done for provided \c channel or channel \c group.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNStateAuditAPICallBuilder *(^uuid)(NSString *uuid);
 
@@ -33,7 +33,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return block which consume name of \c channel for which \c user's presence state 
              should be audited.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNStateAuditAPICallBuilder *(^channel)(NSString *channel);
 
@@ -42,7 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return block which consume name of channel \c group for which \c user's presence 
              state should be audited.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNStateAuditAPICallBuilder *(^channelGroup)(NSString *channelGroup);
 
@@ -59,7 +59,7 @@ NS_ASSUME_NONNULL_BEGIN
              processing \c data field will contain results of client state retrieve operation; \c status - in 
              case if error occurred during request processing.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) void(^performWithCompletion)(PNChannelStateCompletionBlock block);
 

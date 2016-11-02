@@ -35,7 +35,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return builder which allow to configure parameters for stream API access and data 
              manipulation.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNStreamAPICallBuilder *(^stream)(void);
 

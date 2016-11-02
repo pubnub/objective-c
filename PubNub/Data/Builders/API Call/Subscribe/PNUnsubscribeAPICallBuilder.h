@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion Class describe interface which provide access to various unsubscription endpoints.
  
  @author Sergey Mamontov
- @since <#version#>
+ @since 4.5.4
  @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNUnsubscribeAPICallBuilder : PNAPICallBuilder
@@ -30,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return block which consume list of \c channel name(s) from which \b PubNub client 
              should unsubscribe.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNUnsubscribeChannelsOrGroupsAPICallBuilder *(^channels)(NSArray<NSString *> *channels);
 
@@ -40,7 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return block which consume list of channel \c group name(s) from which \b PubNub 
              client should unsubscribe.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNUnsubscribeChannelsOrGroupsAPICallBuilder *(^channelGroups)(NSArray<NSString *> *channelGroups);
 
@@ -54,7 +54,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return block which consume list of presence \c channel name(s) from which \b PubNub
              client should unsubscribe.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNUnsubscribeAPICallBuilder *(^presenceChannels)(NSArray<NSString *> *presenceChannels);
 
@@ -69,7 +69,7 @@ NS_ASSUME_NONNULL_BEGIN
           client will unsubscribed from all \c channel(s) and channel \c group(s) (including presence 
           \c channel(s) and channel \c group(s)).
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) dispatch_block_t perform;
 

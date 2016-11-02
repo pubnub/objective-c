@@ -10,7 +10,7 @@ NS_ASSUME_NONNULL_BEGIN
              can be published.
  
  @author Sergey Mamontov
- @since <#version#>
+ @since 4.5.4
  @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNPublishSizeAPICallBuilder : PNAPICallBuilder
@@ -25,7 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return block which consume (\b required) name of \c channel to which \c message 
              size should be calculated.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNPublishSizeAPICallBuilder *(^channel)(NSString *channel);
 
@@ -37,7 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
              client has been configured with cipher key message will be encrypted as well.
  @note       Objects can be pushed only to regular channels.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNPublishSizeAPICallBuilder *(^message)(id message); 
 
@@ -46,7 +46,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return block which consume \b NSDictionary with values which should be used by 
              \b PubNub service to filter messages.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNPublishSizeAPICallBuilder *(^metadata)(NSDictionary *metadata);
 
@@ -55,7 +55,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return block which consume \a BOOL and specify wheter published \c message should 
              be stored in history / storage or not.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNPublishSizeAPICallBuilder *(^shouldStore)(BOOL shouldStore);
 
@@ -64,7 +64,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return block which consume \a BOOL and specify wheter published \c message should 
              be compressed and sent with \c POST request or not.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNPublishSizeAPICallBuilder *(^compress)(BOOL compress);
 
@@ -72,7 +72,7 @@ NS_ASSUME_NONNULL_BEGIN
  @brief  Specify whether published \c message should be replicated across the PubNub Real-Time Network and 
          sent simultaneously to all subscribed clients on a channel.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNPublishSizeAPICallBuilder *(^replicate)(BOOL replicate); 
 
@@ -87,7 +87,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return block which consume (\b required) block which should be sent, when message 
              size calculation will be completed.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) void(^performWithCompletion)(PNMessageSizeCalculationCompletionBlock block);
 

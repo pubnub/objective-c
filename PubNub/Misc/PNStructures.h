@@ -24,7 +24,7 @@
  @discussion Define describe block with specified \c protocol which provide interface for concrete API methods
              family.
  
- @since <#version#>
+ @since 4.5.4
  
  @param _protocol_ Reference on protocol for which \c builder should provide interface.
  */
@@ -35,7 +35,7 @@
  @discussion Define describe block with specified \c protocol which provide interface for concrete API methods
              family.
  
- @since <#version#>
+ @since 4.5.4
  
  @param _protocol_ Reference on protocol for which \c builder should provide interface.
  @param _argument_ Reference on argument type (including nullability) which is expected from user and will be

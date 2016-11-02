@@ -8,7 +8,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion Class describe interface which provide access to \b user 'where now' API.
  
  @author Sergey Mamontov
- @since <#version#>
+ @since 4.5.4
  @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNPresenceWhereNowAPICallBuilder : PNPresenceAPICallBuilder
@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return block which consume unique \c user idetifier for which should be retireved 
              presence information (list of channels on which \c user subscribed).
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNPresenceWhereNowAPICallBuilder *(^uuid)(NSString *uuid);
 
@@ -40,7 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
              contain results of where now operation; \c status - in case if error occurred during request 
              processing.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) void(^performWithCompletion)(PNWhereNowCompletionBlock block);
 

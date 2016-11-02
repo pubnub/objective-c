@@ -33,7 +33,7 @@ NS_ASSUME_NONNULL_BEGIN
  @brief      Stores reference on publish API access \c builder construction block.
  @discussion On block call return builder which allow to configure parameters for publish API access.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNPublishAPICallBuilder *(^publish)(void);
 
@@ -43,7 +43,7 @@ NS_ASSUME_NONNULL_BEGIN
              be replicated.
  @discussion On block call return builder which allow to configure parameters for publish API access.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNPublishAPICallBuilder *(^fire)(void);
 
@@ -52,7 +52,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return builder which allow to configure parameters for publish message size 
              calculation.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNPublishSizeAPICallBuilder *(^size)(void);
 

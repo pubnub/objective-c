@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion Class describe interface which provide access to various subscription endpoints.
  
  @author Sergey Mamontov
- @since <#version#>
+ @since 4.5.4
  @copyright © 2009-2016 PubNub, Inc.
  */
 @interface PNSubscribeAPIBuilder : PNAPICallBuilder
@@ -30,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return block which consume list of \c channel name(s) from which \b PubNub client 
              should subscribe.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNSubscribeChannelsOrGroupsAPIBuilder *(^channels)(NSArray<NSString *> *channels); 
 
@@ -40,7 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return block which consume list of channel \c group name(s) from which \b PubNub 
              client should subscribe.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNSubscribeChannelsOrGroupsAPIBuilder *(^channelGroups)(NSArray<NSString *> *channelGroups);
 
@@ -54,7 +54,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion On block call return block which consume list of presence \c channel name(s) for which \b PubNub 
              client should subscribe.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNSubscribeAPIBuilder *(^presenceChannels)(NSArray<NSString *> *presenceChannels); 
 
@@ -66,7 +66,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  @brief  Perform composed API call.
  
- @since <#version#>
+ @since 4.5.4
  */
 @property (nonatomic, readonly, strong) dispatch_block_t perform;
 

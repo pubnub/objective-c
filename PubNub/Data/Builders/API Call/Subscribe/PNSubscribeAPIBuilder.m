@@ -1,6 +1,6 @@
 /**
  @author Sergey Mamontov
- @since <#version#>
+ @since 4.5.4
  @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PNSubscribeAPIBuilder.h"
@@ -34,7 +34,7 @@
         object_setClass(self, [PNSubscribeChannelsOrGroupsAPIBuilder class]);
         [self setValue:channels forParameter:NSStringFromSelector(_cmd)];
         
-        return self;
+        return (PNSubscribeChannelsOrGroupsAPIBuilder *)self;
     };
 }
 
@@ -45,7 +45,7 @@
         object_setClass(self, [PNSubscribeChannelsOrGroupsAPIBuilder class]);
         [self setValue:channelGroups forParameter:NSStringFromSelector(_cmd)];
         
-        return self;
+        return (PNSubscribeChannelsOrGroupsAPIBuilder *)self;
     };
 }
 
