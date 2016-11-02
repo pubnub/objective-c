@@ -34,6 +34,8 @@ NS_ASSUME_NONNULL_BEGIN
  @param payloads    Dictionary with payloads for different vendors (Apple with "apns" key and Google with 
                     "gcm").
  @param shouldStore With \c NO this message later won't be fetched with \c history API.
+ @param ttl         Specify for how long message should be stored in channe's storage. If \b 0 it will be 
+                    stored foreved or if \c nil - depends from account configuration.
  @param compressed  Compression useful in case if large data should be published, in another case it will lead
                     to packet size grow.
  @param replicate   Whether message should be replicated across the PubNub Real-Time Network and sent 
@@ -46,7 +48,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)    publish:(nullable id)message toChannel:(NSString *)channel
   mobilePushPayload:(nullable NSDictionary<NSString *, id> *)payloads storeInHistory:(BOOL)shouldStore
-         compressed:(BOOL)compressed withReplication:(BOOL)replicate 
+                ttl:(nullable NSNumber *)ttl compressed:(BOOL)compressed withReplication:(BOOL)replicate 
            metadata:(nullable NSDictionary<NSString *, id> *)metadata
          completion:(nullable PNPublishCompletionBlock)block;
 
@@ -63,6 +65,8 @@ NS_ASSUME_NONNULL_BEGIN
  @param compressMessage \c YES in case if message should be compressed before sending to \b PubNub network.
  @param shouldStore     \c NO in case if message shouldn't be available after it has been sent via history
                         storage API methods group.
+ @param ttl             Specify for how long message should be stored in channe's storage. If \b 0 it will be 
+                        stored foreved or if \c nil - depends from account configuration.
  @param replicate       Whether message should be replicated across the PubNub Real-Time Network and sent 
                         simultaneously to all subscribed clients on a channel.
  @param metadata        \b NSDictionary with values which should be used by \b PubNub service to filter 
@@ -73,7 +77,7 @@ NS_ASSUME_NONNULL_BEGIN
  @since 4.5.4
  */
 - (void)sizeOfMessage:(id)message toChannel:(NSString *)channel compressed:(BOOL)compressMessage
-       storeInHistory:(BOOL)shouldStore withReplication:(BOOL)replicate 
+       storeInHistory:(BOOL)shouldStore ttl:(nullable NSNumber *)ttl withReplication:(BOOL)replicate 
              metadata:(nullable NSDictionary<NSString *, id> *)metadata
            completion:(PNMessageSizeCalculationCompletionBlock)block;
 
@@ -105,6 +109,8 @@ NS_ASSUME_NONNULL_BEGIN
  @param replicate       Whether message should be replicated across the PubNub Real-Time Network and sent 
                         simultaneously to all subscribed clients on a channel.
  @param shouldStore     Whether message should be stored in history storage or not.
+ @param ttl             Specify for how long message should be stored in channe's storage. If \b 0 it will be 
+                        stored foreved or if \c nil - depends from account configuration.
  @param metadata        JSON representation of \b NSDictionary with values which should be used by \b PubNub 
                         service to filter messages.
  @param sequenceNumber  Next published message sequence number which should be used.
@@ -115,7 +121,8 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (PNRequestParameters *)requestParametersForMessage:(NSString *)message toChannel:(NSString *)channel
                                           compressed:(BOOL)compressMessage storeInHistory:(BOOL)shouldStore 
-                                           replicate:(BOOL)replicate metadata:(nullable NSString *)metadata 
+                                                 ttl:(nullable NSNumber *)ttl replicate:(BOOL)replicate
+                                            metadata:(nullable NSString *)metadata
                                       sequenceNumber:(NSUInteger)sequenceNumber;
 
 /**
@@ -201,13 +208,15 @@ NS_ASSUME_NONNULL_END
         id message = parameters[NSStringFromSelector(@selector(message))];
         NSString *channel = parameters[NSStringFromSelector(@selector(channel))];
         NSNumber *shouldStore = parameters[NSStringFromSelector(@selector(shouldStore))];
+        NSNumber *ttl = parameters[NSStringFromSelector(@selector(ttl))];
+        if (shouldStore && !shouldStore.boolValue) { ttl = nil; }
         NSNumber *compressed = parameters[NSStringFromSelector(@selector(compress))];
         NSNumber *replicate = parameters[NSStringFromSelector(@selector(replicate))];
         NSDictionary *metadata = parameters[NSStringFromSelector(@selector(metadata))];
         id block = parameters[@"block"];
                                          
         [self sizeOfMessage:message toChannel:channel compressed:compressed.boolValue 
-             storeInHistory:(shouldStore ? shouldStore.boolValue : YES) 
+             storeInHistory:(shouldStore ? shouldStore.boolValue : YES) ttl:ttl
             withReplication:(replicate ? replicate.boolValue : YES) metadata:metadata completion:block];
     }];
     
@@ -331,15 +340,14 @@ NS_ASSUME_NONNULL_END
          compressed:(BOOL)compressed withMetadata:(NSDictionary<NSString *, id> *)metadata
          completion:(PNPublishCompletionBlock)block {
     
-    [self publish:message toChannel:channel mobilePushPayload:payloads storeInHistory:shouldStore
+    [self publish:message toChannel:channel mobilePushPayload:payloads storeInHistory:shouldStore ttl:nil
        compressed:compressed withReplication:YES metadata:metadata completion:block];
 }
 
-- (void)    publish:(nullable id)message toChannel:(NSString *)channel
-  mobilePushPayload:(nullable NSDictionary<NSString *, id> *)payloads storeInHistory:(BOOL)shouldStore
-         compressed:(BOOL)compressed withReplication:(BOOL)replicate 
-           metadata:(nullable NSDictionary<NSString *, id> *)metadata
-         completion:(nullable PNPublishCompletionBlock)block {
+- (void)    publish:(id)message toChannel:(NSString *)channel
+  mobilePushPayload:(NSDictionary<NSString *, id> *)payloads storeInHistory:(BOOL)shouldStore
+                ttl:(NSNumber *)ttl compressed:(BOOL)compressed withReplication:(BOOL)replicate 
+           metadata:(NSDictionary<NSString *, id> *)metadata completion:(PNPublishCompletionBlock)block {
     
     // Get next published message sequence number and update stored data.
     NSUInteger nextSequenceNumber = [self.sequenceManager nextSequenceNumber:YES];
@@ -380,7 +388,7 @@ NS_ASSUME_NONNULL_END
         PNRequestParameters *parameters = [strongSelf requestParametersForMessage:messageForPublish
                                                                         toChannel:channel 
                                                                        compressed:compressed
-                                                                   storeInHistory:shouldStore 
+                                                                   storeInHistory:shouldStore ttl:ttl
                                                                         replicate:replicate
                                                                          metadata:metadataForPublish 
                                                                    sequenceNumber:nextSequenceNumber];
@@ -482,12 +490,12 @@ NS_ASSUME_NONNULL_END
        storeInHistory:(BOOL)shouldStore withMetadata:(NSDictionary<NSString *, id> *)metadata
            completion:(PNMessageSizeCalculationCompletionBlock)block {
     
-    [self sizeOfMessage:message toChannel:channel compressed:compressMessage storeInHistory:shouldStore 
-        withReplication:YES metadata:metadata completion:block];
+    [self sizeOfMessage:message toChannel:channel compressed:compressMessage storeInHistory:shouldStore
+                    ttl:nil withReplication:YES metadata:metadata completion:block];
 }
 
 - (void)sizeOfMessage:(id)message toChannel:(NSString *)channel compressed:(BOOL)compressMessage
-       storeInHistory:(BOOL)shouldStore withReplication:(BOOL)replicate 
+       storeInHistory:(BOOL)shouldStore ttl:(NSNumber *)ttl withReplication:(BOOL)replicate 
              metadata:( NSDictionary<NSString *, id> *)metadata
            completion:(PNMessageSizeCalculationCompletionBlock)block {
     
@@ -527,7 +535,7 @@ NS_ASSUME_NONNULL_END
             PNRequestParameters *parameters = [self requestParametersForMessage:messageForPublish
                                                                       toChannel:channel
                                                                      compressed:compressMessage
-                                                                 storeInHistory:shouldStore 
+                                                                 storeInHistory:shouldStore ttl:ttl
                                                                       replicate:replicate
                                                                        metadata:metadataForPublish 
                                                                  sequenceNumber:nextSequenceNumber];
@@ -559,13 +567,15 @@ NS_ASSUME_NONNULL_END
     NSString *channel = parameters[NSStringFromSelector(@selector(channel))];
     NSDictionary *payloads = parameters[NSStringFromSelector(@selector(payloads))];
     NSNumber *shouldStore = parameters[NSStringFromSelector(@selector(shouldStore))];
+    NSNumber *ttl = parameters[NSStringFromSelector(@selector(ttl))];
+    if (shouldStore && !shouldStore.boolValue) { ttl = nil; }
     NSNumber *compressed = parameters[NSStringFromSelector(@selector(compress))];
     NSNumber *replicate = parameters[NSStringFromSelector(@selector(replicate))];
     NSDictionary *metadata = parameters[NSStringFromSelector(@selector(metadata))];
     id block = parameters[@"block"];
     
     [self publish:message toChannel:channel mobilePushPayload:payloads 
-   storeInHistory:(shouldStore ? shouldStore.boolValue : YES) compressed:compressed.boolValue
+   storeInHistory:(shouldStore ? shouldStore.boolValue : YES) ttl:ttl compressed:compressed.boolValue
   withReplication:(replicate ? replicate.boolValue : YES) metadata:metadata completion:block];
 }
 
@@ -574,7 +584,8 @@ NS_ASSUME_NONNULL_END
 
 - (PNRequestParameters *)requestParametersForMessage:(NSString *)message toChannel:(NSString *)channel
                                           compressed:(BOOL)compressMessage storeInHistory:(BOOL)shouldStore 
-                                           replicate:(BOOL)replicate metadata:(nullable NSString *)metadata 
+                                                 ttl:(NSNumber *)ttl replicate:(BOOL)replicate
+                                            metadata:(NSString *)metadata
                                       sequenceNumber:(NSUInteger)sequenceNumber {
     
     PNRequestParameters *parameters = [PNRequestParameters new];
@@ -583,6 +594,7 @@ NS_ASSUME_NONNULL_END
         [parameters addPathComponent:[PNString percentEscapedString:channel] forPlaceholder:@"{channel}"];
     }
     if (!shouldStore) { [parameters addQueryParameter:@"0" forFieldName:@"store"]; }
+    if (ttl) { [parameters addQueryParameter:ttl forFieldName:@"ttl"]; }
     if (!replicate) { [parameters addQueryParameter:@"true" forFieldName:@"norep"]; }
     if (([message isKindOfClass:[NSString class]] && message.length) || message) {
         
