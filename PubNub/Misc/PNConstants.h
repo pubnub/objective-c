@@ -15,10 +15,10 @@
 #pragma mark General information constants
 
 // Stores client library version number
-static NSString * const kPNLibraryVersion = @"4.5.4";
+static NSString * const kPNLibraryVersion = @"4.5.5";
 
 // Stores information about SDK codebase
-static NSString * const kPNCommit = @"935ae961d8fcaa44986994b3e922224ce3951067";
+static NSString * const kPNCommit = @"fddb1f138e51e44f9a5ad7ddbea7b8466292d51a";
 
 /**
  @brief  Stores reference on unique identifier which is used to identify \b PubNub client among other 
