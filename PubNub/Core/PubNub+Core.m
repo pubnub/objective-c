@@ -63,6 +63,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) PNLLogger *logger;
 @property (nonatomic, strong) dispatch_queue_t callbackQueue;
 @property (nonatomic, copy) PNConfiguration *configuration;
+@property (nonatomic, copy) NSString *instanceID;
 @property (nonatomic, strong) PNSubscriber *subscriberManager;
 @property (nonatomic, strong) PNPublishSequence *sequenceManager;
 @property (nonatomic, strong) PNClientState *clientStateManager;
@@ -226,6 +227,13 @@ NS_ASSUME_NONNULL_END
         
         _configuration = [configuration copy];
         _callbackQueue = callbackQueue;
+        _instanceID = [[[NSUUID UUID] UUIDString] copy];
+        // In case if we client used from tests environment configuration should use specified
+        // device and instance identifier.
+        if (NSClassFromString(@"XCTestExpectation")) {
+            
+            _instanceID = [@"58EB05C9-9DE4-4118-B5D7-EE059FBF19A9" copy];
+        }
         [self prepareNetworkManagers];
         
         _subscriberManager = [PNSubscriber subscriberForClient:self];

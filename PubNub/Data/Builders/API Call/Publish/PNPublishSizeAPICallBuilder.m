@@ -54,6 +54,16 @@
     };
 }
 
+- (PNPublishSizeAPICallBuilder *(^)(NSUInteger ttl))ttl {
+    
+    return ^PNPublishSizeAPICallBuilder* (NSUInteger ttl) {
+        
+        [self setValue:@(ttl) forParameter:NSStringFromSelector(_cmd)];
+        
+        return self;
+    };
+}
+
 - (PNPublishSizeAPICallBuilder *(^)(BOOL compress))compress {
     
     return ^PNPublishSizeAPICallBuilder* (BOOL compress) {

@@ -13,7 +13,7 @@
     #include <net/if.h>
     #include <net/if_dl.h>
 #endif // TARGET_OS_OSX
-#import "PNConfiguration+Private.h"
+#import "PNConfiguration.h"
 #import "PNConstants.h"
 #import "PNKeychain.h"
 
@@ -36,7 +36,6 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Initialization and Configuration
 
 @property (nonatomic, copy) NSString *deviceID;
-@property (nonatomic, copy) NSString *instanceID;
 
 /**
  @brief  Initialize configuration instance using minimal required data.
@@ -132,13 +131,11 @@ NS_ASSUME_NONNULL_END
     if ((self = [super init])) {
         
         _deviceID = [[self uniqueDeviceIdentifier] copy];
-        _instanceID = [[[NSUUID UUID] UUIDString] copy];
         // In case if we client used from tests environment configuration should use specified
         // device and instance identifier.
         if (NSClassFromString(@"XCTestExpectation")) {
             
             _deviceID = [@"3650F534-FC54-4EE8-884C-EF1B83188BB7" copy];
-            _instanceID = [@"58EB05C9-9DE4-4118-B5D7-EE059FBF19A9" copy];
         }
         _origin = [kPNDefaultOrigin copy];
         _publishKey = [publishKey copy];
@@ -165,7 +162,6 @@ NS_ASSUME_NONNULL_END
     
     PNConfiguration *configuration = [[PNConfiguration allocWithZone:zone] init];
     configuration.deviceID = self.deviceID;
-    configuration.instanceID = self.instanceID;
     configuration.origin = self.origin;
     configuration.publishKey = self.publishKey;
     configuration.subscribeKey = self.subscribeKey;
