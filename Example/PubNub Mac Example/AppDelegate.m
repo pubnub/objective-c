@@ -505,10 +505,19 @@
 
 - (void)client:(PubNub *)client didReceiveMessage:(PNMessageResult *)message {
     
+    if (![message.data.channel isEqualToString:message.data.subscription]) {
+        
+        // Message has been received on channel group stored in message.data.subscription.
+    }
+    else {
+        
+        // Message has been received on channel stored in message.data.channel.
+    }
+    
     if (message) {
         
-        NSLog(@"Received message: %@ on channel %@ at %@", message.data.message,
-              message.data.channel, message.data.timetoken);
+        NSLog(@"Received message from '%@': %@ on channel %@ at %@", message.data.publisher, 
+              message.data.message, message.data.channel, message.data.timetoken);
     }
 }
 
@@ -516,7 +525,26 @@
 
 - (void)client:(PubNub *)client didReceivePresenceEvent:(PNPresenceEventResult *)event {
     
-    NSLog(@"^^^^^ Did receive presence event: %@", event.data.presenceEvent);
+    if (![event.data.channel isEqualToString:event.data.subscription]) {
+        
+        // Presence event has been received on channel group stored in event.data.subscription.
+    }
+    else {
+        
+        // Presence event has been received on channel stored in event.data.channel.
+    }
+    
+    if (![event.data.presenceEvent isEqualToString:@"state-change"]) {
+        
+        NSLog(@"%@ \"%@'ed\"\nat: %@ on %@ (Occupancy: %@)", event.data.presence.uuid, 
+              event.data.presenceEvent, event.data.presence.timetoken, event.data.channel,
+              event.data.presence.occupancy);
+    }
+    else {
+        
+        NSLog(@"%@ changed state at: %@ on %@ to: %@", event.data.presence.uuid, 
+              event.data.presence.timetoken, event.data.channel, event.data.presence.state);
+    }
 }
 
 #pragma mark - Streaming Data didReceiveStatus Listener

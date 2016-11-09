@@ -4,6 +4,7 @@
  @copyright © 2009-2016 PubNub, Inc.
  */
 #import "PNSubscriberResults.h"
+#import "PNSubscribeStatus+Private.h"
 #import "PNServiceData+Private.h"
 #import "PNResult+Private.h"
 
@@ -70,6 +71,11 @@
 
 
 #pragma mark - Information
+
+- (NSString *)publisher {
+    
+    return self.envelope.senderIdentifier;
+}
 
 - (id)message {
     
