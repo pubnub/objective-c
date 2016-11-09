@@ -3,7 +3,6 @@
  @since 4.0
  @copyright © 2009-2016 PubNub, Inc.
  */
-#import "PNSubscribeStatus.h"
 #import "PNSubscribeStatus+Private.h"
 #import "PNEnvelopeInformation.h"
 #import "PNServiceData+Private.h"

@@ -107,9 +107,9 @@
                             
                             mutableMessage[@"pn_other"] = decryptedMessage;
                         } else { [mutableMessage addEntriesFromDictionary:decryptedMessage]; }
-                        message = [mutableMessage copy];
+                        decryptedMessage = [mutableMessage copy];
                     }
-                    else { message = decryptedMessage; }
+                    message = decryptedMessage;
                 }
             }
             
