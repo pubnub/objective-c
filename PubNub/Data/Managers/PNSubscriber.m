@@ -280,18 +280,19 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion If suitable objects has been passed, then client will ask \b PubNub presence service to trigger 
              \c 'leave' presence events on passed objects.
  
- @param channels                Whether unsubscribing from list of channels or channel groups.
- @param objects                 List of objects from which client should unsubscribe.
+ @param channels                List of channels from which client should unsubscribe.
+ @param groups                  List of channel groups from which client should unsubscribe.
  @param shouldInformListener    Whether listener should be informed at the end of operation or not.
  @param subscribeOnRestChannels Whether client should try to subscribe on channels which may be left after 
                                 unsubscription.
  @param block                   Reference on unsubscription completion block which is used to notify code.
  
- @since 4.2.0
+ @since 4.5.6
  */
-- (void)unsubscribeFrom:(BOOL)channels objects:(NSArray<NSString *> *)objects
-      informingListener:(BOOL)shouldInformListener subscribeOnRest:(BOOL)subscribeOnRestChannels
-             completion:(nullable PNSubscriberCompletionBlock)block;
+- (void)unsubscribeFromChannels:(nullable NSArray<NSString *> *)channels 
+                         groups:(nullable NSArray<NSString *> *)groups 
+              informingListener:(BOOL)shouldInformListener subscribeOnRest:(BOOL)subscribeOnRestChannels
+                     completion:(nullable PNSubscriberCompletionBlock)block;
 
 
 #pragma mark - Handlers
@@ -887,38 +888,28 @@ NS_ASSUME_NONNULL_END
 
 - (void)unsubscribeFromAll {
     
-    __weak __typeof(self) weakSelf = self;
-    NSArray *channelGroups = [self.channelGroups copy];
-    PNSubscriberCompletionBlock channelUnsubscribeBlock = ^(__unused PNSubscribeStatus *status) {
+    NSArray *channels = [self.channels copy];
+    NSArray *channelGroups = [self.channelGroups copy]; 
+    if (channels.count || channelGroups.count) {
         
-        __strong __typeof(self) strongSelf = weakSelf;
-        [strongSelf removeChannelGroups:channelGroups];
-        [strongSelf unsubscribeFrom:NO objects:channelGroups informingListener:YES subscribeOnRest:NO 
-                         completion:nil];
-    };
-    
-    if (self.channels.count > 0) {
-        
-        BOOL hasChannelGroups = (channelGroups.count > 0);
-        NSArray *objects = [self.channels copy];
-        [self removeChannels:objects];
+        [self removeChannels:channels];
         [self removePresenceChannels:self.presenceChannels];
-        [self unsubscribeFrom:YES objects:objects informingListener:!hasChannelGroups
-              subscribeOnRest:NO completion:(hasChannelGroups ? channelUnsubscribeBlock : nil)];
+        [self removeChannelGroups:channelGroups];
+        [self unsubscribeFromChannels:channels groups:channelGroups informingListener:YES subscribeOnRest:NO
+                           completion:nil];
     }
-    else if (channelGroups.count > 0) { channelUnsubscribeBlock(nil); }
 }
 
-- (void)unsubscribeFrom:(BOOL)channels objects:(NSArray<NSString *> *)objects
-             completion:(PNSubscriberCompletionBlock)block {
+- (void)unsubscribeFromChannels:(NSArray<NSString *> *)channels groups:(NSArray<NSString *> *)groups
+                     completion:(PNSubscriberCompletionBlock)block {
     
-    [self unsubscribeFrom:channels objects:objects informingListener:YES subscribeOnRest:YES
-               completion:block];
+    [self unsubscribeFromChannels:channels groups:groups informingListener:YES subscribeOnRest:YES 
+                       completion:block];
 }
 
-- (void)unsubscribeFrom:(BOOL)channels objects:(NSArray<NSString *> *)objects
-      informingListener:(BOOL)shouldInformListener subscribeOnRest:(BOOL)subscribeOnRestChannels
-             completion:(PNSubscriberCompletionBlock)block {
+- (void)unsubscribeFromChannels:(NSArray<NSString *> *)channels groups:(NSArray<NSString *> *)groups
+              informingListener:(BOOL)shouldInformListener subscribeOnRest:(BOOL)subscribeOnRestChannels
+                     completion:(PNSubscriberCompletionBlock)block {
     
     // Silence static analyzer warnings.
     // Code is aware about this case and at the end will simply call on 'nil' object method.
@@ -926,16 +917,20 @@ NS_ASSUME_NONNULL_END
     // it and probably whole client instance has been deallocated.
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wreceiver-is-weak"
-    #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
-    [self.client.clientStateManager removeStateForObjects:objects];
-    NSArray *objectWithOutPresence = [PNChannel objectsWithOutPresenceFrom:objects];
+#pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
+    [self.client.clientStateManager removeStateForObjects:channels];
+    [self.client.clientStateManager removeStateForObjects:groups];
+    NSArray *channelsWithOutPresence = nil;
+    if (channels.count) { channelsWithOutPresence = [PNChannel objectsWithOutPresenceFrom:channels]; }
+    NSArray *groupsWithOutPresence = nil;
+    if (groups.count) { groupsWithOutPresence = [PNChannel objectsWithOutPresenceFrom:groups]; }
     PNStatus *successStatus = [PNStatus statusForOperation:PNUnsubscribeOperation
                                                   category:PNAcknowledgmentCategory withProcessingError:nil];
     [self.client appendClientInformation:successStatus];
     __weak __typeof(self) weakSelf = self;
     
     DDLogAPICall(self.client.logger, @"<PubNub::API> Unsubscribe (channels: %@; groups: %@)",
-                 (channels ? objectWithOutPresence : nil), (!channels ? objectWithOutPresence : nil));
+                 channelsWithOutPresence, groupsWithOutPresence);
     
     NSSet *subscriptionObjects = [NSSet setWithArray:[self allObjects]];
     if (subscriptionObjects.count == 0) {
@@ -949,12 +944,16 @@ NS_ASSUME_NONNULL_END
         });
     }
     
-    if (objectWithOutPresence.count) {
+    if (channelsWithOutPresence.count || groupsWithOutPresence.count) {
         
-        NSString *objectsList = [PNChannel namesForRequest:objectWithOutPresence defaultString:@","];
+        NSString *channelsList = [PNChannel namesForRequest:channelsWithOutPresence defaultString:@","];
         PNRequestParameters *parameters = [PNRequestParameters new];
-        [parameters addPathComponent:objectsList forPlaceholder:@"{channels}"];
-        if (!channels) { [parameters addQueryParameter:objectsList forFieldName:@"channel-group"]; }
+        [parameters addPathComponent:channelsList forPlaceholder:@"{channels}"];
+        if (groupsWithOutPresence.count) {
+            
+            [parameters addQueryParameter:[PNChannel namesForRequest:groupsWithOutPresence]
+                             forFieldName:@"channel-group"];
+        }
         [self.client processOperation:PNUnsubscribeOperation withParameters:parameters
                       completionBlock:^(__unused PNStatus *status1){
                           
