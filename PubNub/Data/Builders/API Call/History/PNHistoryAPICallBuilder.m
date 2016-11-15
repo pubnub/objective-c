@@ -24,6 +24,16 @@
     };
 }
 
+- (PNHistoryAPICallBuilder *(^)(NSArray<NSString *> *))channels {
+    
+    return ^PNHistoryAPICallBuilder* (NSArray<NSString *> *channels) {
+        
+        [self setValue:channels forParameter:NSStringFromSelector(_cmd)];
+        
+        return self;
+    };
+}
+
 - (PNHistoryAPICallBuilder *(^)(NSNumber *start))start {
     
     return ^PNHistoryAPICallBuilder* (NSNumber *start) {
