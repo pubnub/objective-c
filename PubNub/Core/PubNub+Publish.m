@@ -594,7 +594,7 @@ NS_ASSUME_NONNULL_END
         [parameters addPathComponent:[PNString percentEscapedString:channel] forPlaceholder:@"{channel}"];
     }
     if (!shouldStore) { [parameters addQueryParameter:@"0" forFieldName:@"store"]; }
-    if (ttl) { [parameters addQueryParameter:ttl forFieldName:@"ttl"]; }
+    if (ttl) { [parameters addQueryParameter:ttl.stringValue forFieldName:@"ttl"]; }
     if (!replicate) { [parameters addQueryParameter:@"true" forFieldName:@"norep"]; }
     if (([message isKindOfClass:[NSString class]] && message.length) || message) {
         

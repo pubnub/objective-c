@@ -401,6 +401,7 @@ typedef NS_ENUM(NSInteger, PNOperationType){
     PNUnsubscribeOperation,
     PNPublishOperation,
     PNHistoryOperation,
+    PNHistoryForChannelsOperation,
     PNWhereNowOperation,
     PNHereNowGlobalOperation,
     PNHereNowForChannelOperation,
