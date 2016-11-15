@@ -146,7 +146,6 @@ NS_ASSUME_NONNULL_END
         _TLSEnabled = kPNDefaultIsTLSEnabled;
         _heartbeatNotificationOptions = kPNDefaultHeartbeatNotificationOptions;
         _keepTimeTokenOnListChange = kPNDefaultShouldKeepTimeTokenOnListChange;
-        _restoreSubscription = kPNDefaultShouldRestoreSubscription;
         _catchUpOnSubscriptionRestore = kPNDefaultShouldTryCatchUpOnSubscriptionRestore;
         _requestMessageCountThreshold = kPNDefaultRequestMessageCountThreshold;
 #if TARGET_OS_IOS
@@ -175,7 +174,6 @@ NS_ASSUME_NONNULL_END
     configuration.TLSEnabled = self.isTLSEnabled;
     configuration.heartbeatNotificationOptions = self.heartbeatNotificationOptions;
     configuration.keepTimeTokenOnListChange = self.shouldKeepTimeTokenOnListChange;
-    configuration.restoreSubscription = self.shouldRestoreSubscription;
     configuration.catchUpOnSubscriptionRestore = self.shouldTryCatchUpOnSubscriptionRestore;
     configuration.applicationExtensionSharedGroupIdentifier = self.applicationExtensionSharedGroupIdentifier;
     configuration.requestMessageCountThreshold = self.requestMessageCountThreshold;

@@ -137,8 +137,7 @@ To setup a custom configuration:
 
     // Time Token Handling Settings
     self.myConfig.keepTimeTokenOnListChange = YES; // When changing channels, 'catchup' ?
-    self.myConfig.restoreSubscription = YES; // If you lose the connection, should you resubscribe when it comes back?
-    self.myConfig.catchUpOnSubscriptionRestore = YES; // If restoreSubscription == YES, catchup ? Or start at 'now' ?
+    self.myConfig.catchUpOnSubscriptionRestore = YES; // Catchup ? Or start at 'now' ?
 ```
 
 ## New for 4.0

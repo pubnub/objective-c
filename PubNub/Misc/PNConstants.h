@@ -49,7 +49,6 @@ static NSTimeInterval const kPNDefaultNonSubscribeRequestTimeout = 10.0f;
 static BOOL const kPNDefaultIsTLSEnabled = YES;
 static PNHeartbeatNotificationOptions const kPNDefaultHeartbeatNotificationOptions = PNHeartbeatNotifyFailure;
 static BOOL const kPNDefaultShouldKeepTimeTokenOnListChange = YES;
-static BOOL const kPNDefaultShouldRestoreSubscription = YES;
 static BOOL const kPNDefaultShouldTryCatchUpOnSubscriptionRestore = YES;
 static BOOL const kPNDefaultRequestMessageCountThreshold = 0;
 #if TARGET_OS_IOS

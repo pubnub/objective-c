@@ -1058,8 +1058,6 @@ NS_ASSUME_NONNULL_END
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
     if (status.data.timetoken != nil && status.clientRequest.URL != nil) {
         
-        DDLogResult(self.client.logger, @"<PubNub> Did receive next subscription loop information: "
-                    "timetoken = %@, region = %@", status.data.timetoken, status.data.region);
         [self handleSubscription:isInitialSubscription timeToken:status.data.timetoken
                           region:status.data.region];
     }
@@ -1133,58 +1131,37 @@ NS_ASSUME_NONNULL_END
         // related issues.
         else {
             
-            // Check whether subscription should be restored on network connection restore or
-            // not.
-            if (self.client.configuration.shouldRestoreSubscription) {
+            ((PNStatus *)status).automaticallyRetry = YES;
+            ((PNStatus *)status).retryCancelBlock = ^{
+            /* Do nothing, because we can't stop auto-retry in case of network issues.
+             It handled by client configuration. */ };
+            
+            pn_safe_property_write(self.resourceAccessQueue, ^{
                 
-                ((PNStatus *)status).automaticallyRetry = YES;
-                ((PNStatus *)status).retryCancelBlock = ^{
-                /* Do nothing, because we can't stop auto-retry in case of network issues.
-                 It handled by client configuration. */ };
-                
-                pn_safe_property_write(self.resourceAccessQueue, ^{
+                if (self.client.configuration.shouldTryCatchUpOnSubscriptionRestore) {
                     
-                    if (self.client.configuration.shouldTryCatchUpOnSubscriptionRestore) {
+                    if (self->_currentTimeToken &&
+                        [self->_currentTimeToken compare:@0] != NSOrderedSame) {
                         
-                        if (self->_currentTimeToken &&
-                            [self->_currentTimeToken compare:@0] != NSOrderedSame) {
-                            
-                            self->_lastTimeToken = self->_currentTimeToken;
-                            self->_currentTimeToken = @0;
-                        }   
-                        if (self->_currentTimeTokenRegion &&
-                            [self->_currentTimeTokenRegion compare:@0] != NSOrderedSame &&
-                            [self->_currentTimeTokenRegion compare:@(-1)] == NSOrderedDescending) {
-                            
-                            self->_lastTimeTokenRegion = self->_currentTimeTokenRegion;
-                            self->_currentTimeTokenRegion = @(-1);
-                        }
-                    }
-                    else {
-                        
+                        self->_lastTimeToken = self->_currentTimeToken;
                         self->_currentTimeToken = @0;
-                        self->_lastTimeToken = @0;
+                    }   
+                    if (self->_currentTimeTokenRegion &&
+                        [self->_currentTimeTokenRegion compare:@0] != NSOrderedSame &&
+                        [self->_currentTimeTokenRegion compare:@(-1)] == NSOrderedDescending) {
+                        
+                        self->_lastTimeTokenRegion = self->_currentTimeTokenRegion;
                         self->_currentTimeTokenRegion = @(-1);
-                        self->_lastTimeTokenRegion = @(-1);
                     }
-                });
-            }
-            else {
-                
-                // Ask to clean up cache associated with objects
-                [self.client.clientStateManager removeStateForObjects:self.channelsSet.allObjects];
-                [self.client.clientStateManager removeStateForObjects:self.channelGroupsSet.allObjects];
-                pn_safe_property_write(self.resourceAccessQueue, ^{
+                }
+                else {
                     
-                    self.channelsSet = [NSMutableSet new];
-                    self.channelGroupsSet = [NSMutableSet new];
-                    self.presenceChannelsSet = [NSMutableSet new];
                     self->_currentTimeToken = @0;
                     self->_lastTimeToken = @0;
                     self->_currentTimeTokenRegion = @(-1);
                     self->_lastTimeTokenRegion = @(-1);
-                });
-            }
+                }
+            });
             [(PNStatus *)status updateCategory:PNUnexpectedDisconnectCategory];
             
             [self.client.heartbeatManager stopHeartbeatIfPossible];
@@ -1222,8 +1199,7 @@ NS_ASSUME_NONNULL_END
             BOOL shouldUseLastTimeToken = self.client.configuration.shouldKeepTimeTokenOnListChange;
             if (!shouldUseLastTimeToken) {
                 
-                shouldUseLastTimeToken = (self.client.configuration.shouldRestoreSubscription &&
-                                          self.client.configuration.shouldTryCatchUpOnSubscriptionRestore);
+                shouldUseLastTimeToken = self.client.configuration.shouldTryCatchUpOnSubscriptionRestore;
             }
             shouldUseLastTimeToken = (shouldUseLastTimeToken && !shouldOverrideTimeToken);
             
@@ -1231,6 +1207,13 @@ NS_ASSUME_NONNULL_END
             // previous sessions.
             if (shouldUseLastTimeToken && self->_lastTimeToken &&
                 [self->_lastTimeToken compare:@0] != NSOrderedSame) {
+                
+                BOOL keepOnListChange = self.client.configuration.shouldKeepTimeTokenOnListChange;
+                DDLogResult(self.client.logger, @"<PubNub> Reuse existing subscription loop information "
+                            "because of '%@' is set to 'YES' (timetoken = %@, region = %@)", 
+                            (keepOnListChange ? @"keepTimeTokenOnListChange" : @"catchUpOnSubscriptionRestore"),
+                            self->_lastTimeToken, self->_lastTimeTokenRegion);
+                
                 
                 shouldAcceptNewTimeToken = NO;
                 
@@ -1248,6 +1231,10 @@ NS_ASSUME_NONNULL_END
         if (!initialSubscription && self->_currentTimeToken &&
             [self->_currentTimeToken compare:@0] == NSOrderedSame) {
             
+            DDLogResult(self.client.logger, @"<PubNub> Ignore new subscription loop information because "
+                        "non-initial subscribe request received when current timetoken is 0 (timetoken = %@, "
+                        "region = %@). Potentially delayed request has been processed.", timeToken, region);
+            
             shouldAcceptNewTimeToken = NO;
         }
         
@@ -1263,6 +1250,11 @@ NS_ASSUME_NONNULL_END
                 self->_lastTimeTokenRegion = self->_currentTimeTokenRegion;
             }
             self->_currentTimeToken = (shouldOverrideTimeToken ? self->_overrideTimeToken : timeToken);
+            DDLogResult(self.client.logger, @"<PubNub> Did receive next subscription loop information: "
+                        "timetoken = %@, region = %@.%@", timeToken, region, 
+                        (shouldOverrideTimeToken ? [NSString stringWithFormat:@" But received timetoken "
+                                                    "should be replaced with user provided: %@", 
+                                                    self->_overrideTimeToken] : @""));
             self->_currentTimeTokenRegion = region;
         }
         self->_overrideTimeToken = nil;
