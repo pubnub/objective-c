@@ -62,7 +62,6 @@
     // Array is valid response type for v2 history request.
     if ([response isKindOfClass:[NSArray class]] && ((NSArray *)response).count == 3) {
         
-        BOOL shouldStripMobilePayload = ((NSNumber *)additionalData[@"stripMobilePayload"]).boolValue;
         NSMutableDictionary *data = [@{@"start": (NSArray *)response[1], @"end": (NSArray *)response[2],
                                        @"messages": [NSMutableArray new]} mutableCopy];
         NSArray *messages = (NSArray *)response[0];
@@ -92,7 +91,7 @@
                                       withData:(NSDictionary<NSString *, id> *)additionalData {
     
     BOOL shouldStripMobilePayload = ((NSNumber *)additionalData[@"stripMobilePayload"]).boolValue;
-    NSMutableDictionary *data = @{@"messages": [NSMutableArray new]};
+    NSMutableDictionary *data = [@{@"messages": [NSMutableArray new]} mutableCopy];
     [messages enumerateObjectsUsingBlock:^(id messageObject, __unused NSUInteger messageObjectIdx,
                                            __unused BOOL *messageObjectEnumeratorStop) {
         
