@@ -3,6 +3,25 @@ changelog:
   -
     changes:
       -
+        text: "Added multi-channel history request API to API call builder interface."
+        type: feature
+      -
+        text: "Added ability to subscribe / unsubscribe to/from channels and/or groups with single API call."
+        type: feature
+      -
+        text: "Added ability to receive message sender identifier."
+        type: improvement
+      -
+        text: "Deprecated 'restoreSubscription' property."
+        type: improvement
+      -
+        text: "Added verbose logs around subscription loop timetoken usage."
+        type: improvement
+    date: ~
+    version: v4.5.6
+  -
+    changes:
+      -
         text: "Added ability to specify for how long published message should be stored in channel's storage (added into API call builder interface)."
         type: feature
       -
@@ -474,6 +493,7 @@ features:
     - SUBSCRIBE-WITH-TIMETOKEN
     - SUBSCRIBE-WILDCARD
     - SUBSCRIBE-FILTER-EXPRESSION
+    - SUBSCRIBE-PUBLISHER-UUID
   unsubscribe:
     - UNSUBSCRIBE-ALL
 name: objective-c
