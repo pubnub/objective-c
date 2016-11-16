@@ -699,11 +699,12 @@ NS_ASSUME_NONNULL_END
     dispatch_once(&onceToken, ^{
         
         _resultExpectingOperations = @[
-                   @(PNHistoryOperation), @(PNWhereNowOperation), @(PNHereNowGlobalOperation),
-                   @(PNHereNowForChannelOperation), @(PNHereNowForChannelGroupOperation),
-                   @(PNStateForChannelOperation), @(PNStateForChannelGroupOperation),
-                   @(PNChannelGroupsOperation), @(PNChannelsForGroupOperation),
-                   @(PNPushNotificationEnabledChannelsOperation), @(PNTimeOperation)];
+                   @(PNHistoryOperation), @(PNHistoryForChannelsOperation), @(PNWhereNowOperation), 
+                   @(PNHereNowGlobalOperation), @(PNHereNowForChannelOperation), 
+                   @(PNHereNowForChannelGroupOperation), @(PNStateForChannelOperation), 
+                   @(PNStateForChannelGroupOperation), @(PNChannelGroupsOperation), 
+                   @(PNChannelsForGroupOperation), @(PNPushNotificationEnabledChannelsOperation), 
+                   @(PNTimeOperation)];
     });
     
     return [_resultExpectingOperations containsObject:@(operation)];

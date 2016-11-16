@@ -1,4 +1,4 @@
-# PubNub 4.5.5 for iOS 7+
+# PubNub 4.5.6 for iOS 7+
 [![Twitter](https://img.shields.io/badge/twitter-%40PubNub-blue.svg?style=flat)](https://twitter.com/PubNub)
 [![Twitter Releases](https://img.shields.io/badge/twitter-%40PubNubRelease-blue.svg?style=flat)](https://twitter.com/PubNubRelease)
 [![License](https://img.shields.io/github/license/pubnub/objective-c.svg?style=flat)](https://img.shields.io/github/license/pubnub/objective-c.svg)
@@ -137,8 +137,7 @@ To setup a custom configuration:
 
     // Time Token Handling Settings
     self.myConfig.keepTimeTokenOnListChange = YES; // When changing channels, 'catchup' ?
-    self.myConfig.restoreSubscription = YES; // If you lose the connection, should you resubscribe when it comes back?
-    self.myConfig.catchUpOnSubscriptionRestore = YES; // If restoreSubscription == YES, catchup ? Or start at 'now' ?
+    self.myConfig.catchUpOnSubscriptionRestore = YES; // Catchup ? Or start at 'now' ?
 ```
 
 ## New for 4.0

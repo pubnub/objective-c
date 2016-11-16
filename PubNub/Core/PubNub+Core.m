@@ -299,17 +299,12 @@ NS_ASSUME_NONNULL_END
         
         if (![configuration.uuid isEqualToString:self.configuration.uuid] ||
             ![configuration.authKey isEqualToString:self.configuration.authKey]) {
-            __weak __typeof(self) weakSelf = self;
-            [self unsubscribeFromChannels:self.subscriberManager.channels withPresence:YES
-                               completion:^(__unused PNSubscribeStatus *status1) {
-                   
-                 __strong __typeof(self) strongSelf = weakSelf;
-                [strongSelf unsubscribeFromChannelGroups:strongSelf.subscriberManager.channelGroups
-                                            withPresence:YES
-                                              completion:^(__unused PNSubscribeStatus *status2) {
-                                          
-                    subscriptionRestoreBlock();
-                }];
+            
+            [self unsubscribeFromChannels:self.subscriberManager.channels 
+                                   groups:self.subscriberManager.channelGroups withPresence:YES
+                               completion:^(__unused PNSubscribeStatus *status) {
+                                   
+                subscriptionRestoreBlock();
             }];
         }
         else { subscriptionRestoreBlock(); }
