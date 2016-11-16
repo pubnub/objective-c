@@ -785,7 +785,6 @@
 
     // Time Token Handling Settings
     self.myConfig.keepTimeTokenOnListChange = YES;
-    self.myConfig.restoreSubscription = YES;
     self.myConfig.catchUpOnSubscriptionRestore = YES;
     
     // Messages threshold
@@ -807,8 +806,6 @@
     // Time Token Handling Settings
     NSLog(@"keepTimeTokenOnChannelChange: %@",
             (self.myConfig.shouldKeepTimeTokenOnListChange ? @"YES" : @"NO"));
-    NSLog(@"resubscribeOnConnectionRestore: %@",
-            (self.myConfig.shouldRestoreSubscription ? @"YES" : @"NO"));
     NSLog(@"catchUpOnSubscriptionRestore: %@",
             (self.myConfig.shouldTryCatchUpOnSubscriptionRestore ? @"YES" : @"NO"));
 

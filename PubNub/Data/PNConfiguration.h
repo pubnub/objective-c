@@ -182,7 +182,9 @@ NS_ASSUME_NONNULL_BEGIN
  
  @since 4.0
  */
-@property (nonatomic, assign, getter = shouldRestoreSubscription) BOOL restoreSubscription NS_SWIFT_NAME(restoreSubscription);
+@property (nonatomic, assign, getter = shouldRestoreSubscription) BOOL restoreSubscription NS_SWIFT_NAME(restoreSubscription) 
+          DEPRECATED_MSG_ATTRIBUTE("This option will be deprecated in upcoming releases. Client will restore "
+                                   "it's subscription after network issues automatically.");
 
 /**
  @brief      Stores whether client should try to catch up for events which occurred on previously subscribed 
