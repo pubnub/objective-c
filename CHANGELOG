@@ -1,3 +1,10 @@
+16-11-2016 - 21726f3 - 4.5.6
+. added multi-channel history request API to API call builder interface.
+. added ability to subscribe / unsubscribe to/from channels and/or groups with single API call.
+. added ability to receive message sender identifier.
+. deprecated 'restoreSubscription' property.
+. added verbose logs around subscription loop timetoken usage.
+
 02-11-2016 - fddb1f1 - 4.5.4
 . added ability to specify for how long published message should be stored in channel's storage (added into API call builder interface)
 . fixed 'instanceID' which is placed inside of PNConfiguration - if it requesed to setup new client it will have same 'instanceID'. Now 'instanceID' is set per PubNub client instance.
