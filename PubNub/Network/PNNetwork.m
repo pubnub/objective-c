@@ -716,10 +716,18 @@ NS_ASSUME_NONNULL_END
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         
+        // Registering known PubNub service response parsers.
+        NSArray<NSString *> *parserNames = @[
+            @"PNChannelGroupAuditionParser", @"PNChannelGroupModificationParser", @"PNClientStateParser", 
+            @"PNErrorParser", @"PNHeartbeatParser", @"PNHistoryParser", @"PNLeaveParser", 
+            @"PNMessagePublishParser", @"PNPresenceHereNowParser", @"PNPresenceWhereNowParser", 
+            @"PNPushNotificationsAuditParser", @"PNPushNotificationsStateModificationParser", 
+            @"PNSubscribeParser",@"PNTimeParser"];
         NSMutableDictionary *parsers = [NSMutableDictionary new];
-        for (Class class in [PNClass classesConformingToProtocol:@protocol(PNParser)]) {
+        for (NSString *className in parserNames) {
             
-            NSArray<NSNumber *> *operations = [(Class<PNParser>)class operations];
+            Class<PNParser> class = NSClassFromString(className);
+            NSArray<NSNumber *> *operations = [class operations];
             for (NSNumber *operationType in operations) { parsers[operationType] = class; }
         }
         _parsers = [parsers copy];
