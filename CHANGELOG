@@ -1,3 +1,9 @@
+20-11-2016 - 2bc6d69 - 4.5.7
+. removed PNClass and added manual service response parsers registration (in attempt to solve third-party classes initialization at run-time).
+. added additional service response check and wrap (in case if still somehow non-dictionary reached data objects).
+. fixed issue because of which "reverse" flag had same value as "include timetokens".
+. added APPLICATION_EXTENSION_API_ONLY flag to PubNub.podspec and Framework targets.
+
 16-11-2016 - 21726f3 - 4.5.6
 . added multi-channel history request API to API call builder interface.
 . added ability to subscribe / unsubscribe to/from channels and/or groups with single API call.
