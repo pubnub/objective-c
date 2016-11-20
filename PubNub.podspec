@@ -9,7 +9,7 @@
 
 Pod::Spec.new do |spec|
     spec.name     = 'PubNub'
-    spec.version  = '4.5.6'
+    spec.version  = '4.5.7'
     spec.summary  = 'The PubNub Real-Time Network. Build real-time apps quickly and scale them globally.'
     spec.homepage = 'https://github.com/pubnub/objective-c'
 
@@ -42,6 +42,7 @@ Pod::Spec.new do |spec|
             'PubNub/Network/**/*.h',
         ]
         core.exclude_files = 'PubNub/Core/PubNub+FAB.{h,m}'
+        core.pod_target_xcconfig = { 'APPLICATION_EXTENSION_API_ONLY' => 'YES' }
     end
 
     spec.subspec 'Logger' do |logger|
@@ -53,8 +54,11 @@ Pod::Spec.new do |spec|
         fabric.dependency 'PubNub/Core'
         fabric.source_files = 'PubNub/Core/PubNub+FAB.{h,m}', 'Support/Fabric/Headers/*'
         fabric.private_header_files = [ 'Support/Fabric/Headers/{Fabric+FABKits,FABKitProtocol}.h' ]
-        fabric.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'FABRIC_SUPPORT=1'  }
-        fabric.pod_target_xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'FABRIC_SUPPORT=1'  }
+        fabric.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'FABRIC_SUPPORT=1' }
+        fabric.pod_target_xcconfig = { 
+            'APPLICATION_EXTENSION_API_ONLY' => 'YES',
+            'GCC_PREPROCESSOR_DEFINITIONS' => 'FABRIC_SUPPORT=1'
+        }
     end
 
     spec.library   = 'z'

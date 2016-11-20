@@ -167,7 +167,7 @@ NS_ASSUME_NONNULL_END
          includeTimeToken:(BOOL)shouldIncludeTimeToken withCompletion:(PNHistoryCompletionBlock)block {
     
     [self historyForChannels:NO object:channel start:startDate end:endDate limit:@(limit) 
-                     reverse:@(shouldIncludeTimeToken) includeTimeToken:@(shouldIncludeTimeToken) 
+                     reverse:@(shouldReverseOrder) includeTimeToken:@(shouldIncludeTimeToken) 
               withCompletion:block];
 }
 
