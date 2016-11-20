@@ -12,7 +12,6 @@
 #import "PNString.h"
 #import "PNNumber.h"
 #import "PNArray.h"
-#import "PNClass.h"
 #import "PNData.h"
 #import "PNJSON.h"
 #import "PNGZIP.h"
