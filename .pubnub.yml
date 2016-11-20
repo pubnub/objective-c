@@ -3,6 +3,22 @@ changelog:
   -
     changes:
       -
+        text: "Added 'APPLICATION_EXTENSION_API_ONLY' flag to PubNub.podspec and Framework targets."
+        type: improvement
+      -
+        text: "Fixed issue because of which 'reverse' flag had same value as 'include timetokens'."
+        type: bug
+      -
+        text: "Removed PNClass and added manual service response parsers registration (in attempt to solve third-party classes initialization at run-time)."
+        type: bug
+      -
+        text: "Added additional service response check and wrap (in case if still somehow non-dictionary reached data objects)."
+        type: bug
+    date: ~
+    version: v4.5.7
+  -
+    changes:
+      -
         text: "Added multi-channel history request API to API call builder interface."
         type: feature
       -
