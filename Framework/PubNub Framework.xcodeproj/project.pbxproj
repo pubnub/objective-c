@@ -4435,6 +4435,7 @@
 		791582031BD705130084FC70 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = bitcode;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -4449,6 +4450,7 @@
 		791582041BD705130084FC70 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = bitcode;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -4463,6 +4465,7 @@
 		791582AA1BD709C60084FC70 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				ARCHS = (
 					"$(ARCHS_STANDARD)",
 					armv7s,
@@ -4489,6 +4492,7 @@
 		791582AB1BD709C60084FC70 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				ARCHS = (
 					"$(ARCHS_STANDARD)",
 					armv7s,
@@ -4515,6 +4519,7 @@
 		791583531BD709D10084FC70 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = bitcode;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -4538,6 +4543,7 @@
 		791583541BD709D10084FC70 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = bitcode;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -4561,6 +4567,7 @@
 		798842211C18EDA7003E8948 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				ARCHS = (
 					"$(ARCHS_STANDARD)",
 					armv7s,
@@ -4589,6 +4596,7 @@
 		798842221C18EDA7003E8948 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				ARCHS = (
 					"$(ARCHS_STANDARD)",
 					armv7s,
@@ -4613,6 +4621,7 @@
 		798842F31C190DF5003E8948 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				ARCHS = "$(ARCHS_STANDARD)";
 				BITCODE_GENERATION_MODE = bitcode;
 				GENERATE_MASTER_OBJECT_FILE = YES;
@@ -4628,6 +4637,7 @@
 		798842F41C190DF5003E8948 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				ARCHS = "$(ARCHS_STANDARD)";
 				BITCODE_GENERATION_MODE = bitcode;
 				GENERATE_MASTER_OBJECT_FILE = YES;
@@ -4643,6 +4653,7 @@
 		7988439F1C191579003E8948 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				ARCHS = (
 					"$(ARCHS_STANDARD)",
 					armv7s,
@@ -4672,6 +4683,7 @@
 		798843A01C191579003E8948 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				ARCHS = (
 					"$(ARCHS_STANDARD)",
 					armv7s,
@@ -4699,6 +4711,7 @@
 		79A8BCC21C58F93900015BDE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				ARCHS = "$(ARCHS_STANDARD)";
 				BITCODE_GENERATION_MODE = bitcode;
 				DEFINES_MODULE = YES;
@@ -4724,6 +4737,7 @@
 		79A8BCC31C58F93900015BDE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				ARCHS = "$(ARCHS_STANDARD)";
 				BITCODE_GENERATION_MODE = bitcode;
 				DEFINES_MODULE = YES;
@@ -4749,6 +4763,7 @@
 		79A8BDBB1C58FC2E00015BDE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				ARCHS = "$(ARCHS_STANDARD)";
 				BITCODE_GENERATION_MODE = bitcode;
 				CODE_SIGN_IDENTITY = "";
@@ -4764,6 +4779,7 @@
 		79A8BDBC1C58FC2E00015BDE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				ARCHS = "$(ARCHS_STANDARD)";
 				BITCODE_GENERATION_MODE = bitcode;
 				CODE_SIGN_IDENTITY = "";
@@ -4779,6 +4795,7 @@
 		79ACC48D1C11BC4D0056523A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = bitcode;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
@@ -4806,6 +4823,7 @@
 		79ACC48E1C11BC4D0056523A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = bitcode;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -4830,6 +4848,7 @@
 		79ACC4941C11BC620056523A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				ARCHS = (
 					"$(ARCHS_STANDARD)",
 					armv7s,
@@ -4851,6 +4870,7 @@
 		79ACC4951C11BC620056523A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				ARCHS = (
 					"$(ARCHS_STANDARD)",
 					armv7s,
@@ -4956,6 +4976,7 @@
 		79CBB0471BD03D3F001FC34D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = bitcode;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
@@ -4984,6 +5005,7 @@
 		79CBB0481BD03D3F001FC34D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = bitcode;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
@@ -5012,6 +5034,7 @@
 		79CBB1D51BD042FB001FC34D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				ARCHS = (
 					"$(ARCHS_STANDARD)",
 					armv7s,
@@ -5027,6 +5050,7 @@
 		79CBB1D61BD042FB001FC34D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				ARCHS = (
 					"$(ARCHS_STANDARD)",
 					armv7s,
