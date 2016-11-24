@@ -223,7 +223,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @since 4.5.4
  */
-@property (nonatomic, copy) NSString *applicationExtensionSharedGroupIdentifier  NS_SWIFT_NAME(applicationExtensionSharedGroupIdentifier) NS_AVAILABLE(10_10, 8_0);
+@property (nonatomic, copy) NSString *applicationExtensionSharedGroupIdentifier NS_SWIFT_NAME(applicationExtensionSharedGroupIdentifier) NS_AVAILABLE(10_10, 8_0);
 
 /**
  @brief      Number of maximum expected messages from \b PubNub service in single response.
@@ -234,7 +234,22 @@ NS_ASSUME_NONNULL_BEGIN
  
  @since 4.5.4
  */
-@property (nonatomic, assign) NSUInteger requestMessageCountThreshold  NS_SWIFT_NAME(requestMessageCountThreshold);
+@property (nonatomic, assign) NSUInteger requestMessageCountThreshold NS_SWIFT_NAME(requestMessageCountThreshold);
+
+/**
+ @brief      Messages de-duplication cache size.
+ @discussion This value is responsible for messages cache size which is used during messages de-duplication 
+             process. In various situations (for rexample in case of enabled multi-regional support) \b PubNub
+             service may decide to re-send few messages to ensure what they won't be missed (for example when 
+             region switched for better performance).
+             De-duplication ensure what at the end listeners won't receive message which has been processed 
+             already through real-time channels.
+ @default    By default this cache is set to \b 100 messages. It is possible to disable de-duplication by 
+             passing \b 0 to this property.
+ 
+ @since 4.5.8
+ */
+@property (nonatomic, assign) NSUInteger maximumMessagesCacheSize NS_SWIFT_NAME(maximumMessagesCacheSize);
 
 #if TARGET_OS_IOS
 /**
