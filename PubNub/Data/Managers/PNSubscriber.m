@@ -23,7 +23,7 @@
 
 /**
  @brief  Reference on time which should be used by retry timer as interval between subscription
- retry attempts.
+         retry attempts.
  
  @since 4.0
  */
@@ -136,6 +136,23 @@ NS_ASSUME_NONNULL_BEGIN
  @since 4.0
  */
 @property (nonatomic, strong) NSMutableSet<NSString *> *presenceChannelsSet;
+
+/**
+ @brief  Stores reference on dictionary which is used in messages 'de-dupe' logic to prevent same messages 
+         or prsence events delivering to objects event listeners.
+ 
+ @since 4.5.8
+ */
+@property (nonatomic, strong) NSMutableDictionary<NSString *, NSMutableArray<NSDictionary *> *> *cachedObjects;
+
+/**
+ @brief      Stores reference on list of cached object identifiers.
+ @discussion Array used every time when maximum cached objects count has been reached to clean up cache 
+             from older entries.
+ 
+ @since 4.5.8
+ */
+@property (nonatomic, strong) NSMutableArray<NSString *> *cachedObjectIdentifiers;
 
 /**
  @brief  Stores reference on percent-escaped message filtering expression.
@@ -346,11 +363,15 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  @brief  Handle long-poll service response and deliver events to listeners if required.
  
- @param status Reference on status object which has been received from \b PubNub network.
+ @param status              Reference on status object which has been received from \b PubNub network.
+ @param initialSubscription Whether message has been received in response on initial subscription request.
+ @param overrideTimeToken   Reference on timetoken which is used to override timetoken which has been received
+                            during initial subscription.
  
  @since 4.0
  */
-- (void)handleLiveFeedEvents:(PNSubscribeStatus *)status;
+- (void)handleLiveFeedEvents:(PNSubscribeStatus *)status forInitialSubscription:(BOOL)initialSubscription 
+           overrideTimeToken:(nullable NSNumber *)overrideTimeToken;
 
 /**
  @brief  Process message which just has been received from \b PubNub service through live feed on which client
@@ -387,6 +408,54 @@ NS_ASSUME_NONNULL_BEGIN
  @since 4.0
  */
 - (PNRequestParameters *)subscribeRequestParametersWithState:(nullable NSDictionary<NSString *, id> *)state;
+
+/**
+ @brief      Clean up \c events list from messages which has been already received.
+ @discussion Use messages cahce to identify message duplicates and remove them from input \c events list so 
+             listeners won't receive them through callback methods again.
+ @warning    Method should be called within resource access queue to prevent race of conditions.
+ 
+ @since 4.5.8
+ 
+ @param events Reference on list of received events from real-time channels and should be clean up from
+               message duplicates.
+ */
+- (void)deDuplicateMessages:(NSMutableArray<NSDictionary *> *)events;
+
+/**
+ @brief      Remove from messages cache those who has date same or newer than passed \c timetoken.
+ @discussion Method used for subscriptions where user pass specific \c timetoken to which client should catch
+             up. It expensive to run, but subscriptions to specific \c timetoken pretty rare and shouldn't 
+             affect overall performance. 
+ @warning    Method should be called within resource access queue to prevent race of conditions.
+ */
+- (void)clearCacheFromMessagesNewerThan:(NSNumber *)timetoken;
+
+/**
+ @brief      Store to cache passed \c object.
+ @discussion This method used by 'de-dupe' logic to identify unique objects about which object listeners 
+             should be notified.
+ @warning    Method should be called within resource access queue to prevent race of conditions.
+ 
+ @since 4.5.8
+ 
+ @param object Reference on object which client should try to store in cache.
+ @param size   Maximum number of objects which can be stored in cache and used during messages de-dpublication
+               process.
+ 
+ @return \c YES in case if object successfuly stored in cache and object listeners should be notified about 
+         it.
+ */
+- (BOOL)cacheObjectIfPossible:(NSDictionary *)object withMaximumCacheSize:(NSUInteger)size;
+
+/**
+ @brief  Shrink messages cache size to specified size if required.
+ 
+ @since 4.5.8
+ 
+ @param maximumCacheSize Messages cache maximum size.
+ */
+- (void)cleanUpCachedObjectsIfRequired:(NSUInteger)maximumCacheSize;
 
 /**
  @brief  Append subscriber information to status object.
@@ -719,6 +788,8 @@ NS_ASSUME_NONNULL_END
         _channelsSet = [NSMutableSet new];
         _channelGroupsSet = [NSMutableSet new];
         _presenceChannelsSet = [NSMutableSet new];
+        _cachedObjectIdentifiers = [NSMutableArray new];
+        _cachedObjects = [NSMutableDictionary new];
         _currentTimeToken = @0;
         _lastTimeToken = @0;
         _resourceAccessQueue = dispatch_queue_create("com.pubnub.subscriber",
@@ -737,6 +808,8 @@ NS_ASSUME_NONNULL_END
         
         _currentState = PNDisconnectedSubscriberState;
     }
+    _cachedObjects = [subscriber.cachedObjects mutableCopy];
+    _cachedObjectIdentifiers = [subscriber.cachedObjectIdentifiers mutableCopy];
     _currentTimeToken = subscriber.currentTimeToken;
     _lastTimeToken = subscriber.lastTimeToken;
     _currentTimeTokenRegion = subscriber.currentTimeTokenRegion;
@@ -1048,6 +1121,7 @@ NS_ASSUME_NONNULL_END
     
     // Try fetch time token from passed result/status objects.
     BOOL isInitialSubscription = ([status.clientRequest.URL.query rangeOfString:@"tt=0"].location != NSNotFound);
+    NSNumber *overrideTimeToken = self.overrideTimeToken;
     
     // Silence static analyzer warnings.
     // Code is aware about this case and at the end will simply call on 'nil' object method.
@@ -1062,7 +1136,8 @@ NS_ASSUME_NONNULL_END
                           region:status.data.region];
     }
     
-    [self handleLiveFeedEvents:status];
+    [self handleLiveFeedEvents:status forInitialSubscription:isInitialSubscription 
+             overrideTimeToken:overrideTimeToken];
     [self continueSubscriptionCycleIfRequiredWithCompletion:nil];
     
     // Because client received new event from service, it can restart reachability timer with
@@ -1261,9 +1336,11 @@ NS_ASSUME_NONNULL_END
     });
 }
 
-- (void)handleLiveFeedEvents:(PNSubscribeStatus *)status {
+- (void)handleLiveFeedEvents:(PNSubscribeStatus *)status forInitialSubscription:(BOOL)initialSubscription 
+           overrideTimeToken:(NSNumber *)overrideTimeToken {
     
-    NSArray *events = [(NSArray *)(status.serviceData)[@"events"] copy];
+    NSMutableArray *events = [(NSArray *)(status.serviceData)[@"events"] mutableCopy];
+    NSUInteger eventsCount = events.count;
     NSUInteger messageCountThreshold = self.client.configuration.requestMessageCountThreshold;
     if (events.count) {
         
@@ -1275,8 +1352,18 @@ NS_ASSUME_NONNULL_END
         #pragma clang diagnostic ignored "-Wreceiver-is-weak"
         [self.client.listenersManager notifyWithBlock:^{
             
+            // Check whether after initial subscription client should use user-provided timetoken to catch up on
+            // messages since specified date.
+            if (initialSubscription && overrideTimeToken && [overrideTimeToken compare:@0] != NSOrderedSame) {
+                
+                [self clearCacheFromMessagesNewerThan:overrideTimeToken]; 
+            }
+            
+            // Remove message duplicates from received events list.
+            [self deDuplicateMessages:events];
+            
             // Check whether number of messages exceed specified threshold or not.
-            if (messageCountThreshold > 0 && events.count >= messageCountThreshold) {
+            if (messageCountThreshold > 0 && eventsCount >= messageCountThreshold) {
                 
                 PNSubscribeStatus *exceedStatus = [status copyWithMutatedData:nil];
                 [exceedStatus updateCategory:PNRequestMessageCountExceededCategory];
@@ -1287,23 +1374,10 @@ NS_ASSUME_NONNULL_END
             // user.
             for (NSMutableDictionary<NSString *, id> *event in events) {
                 
-                // Check whether event has been triggered on presence channel or channel group.
-                // In case if check will return YES this is presence event.
-                BOOL isPresenceEvent = (event[@"presenceEvent"] ? YES : NO);
-                if (isPresenceEvent) {
-                    
-                    if (event[@"subscription"]) {
-                        
-                        event[@"subscription"] = [PNChannel channelForPresence:event[@"subscription"]];
-                    }
-                    if (event[@"channel"]) {
-                        
-                        event[@"channel"] = [PNChannel channelForPresence:event[@"channel"]];
-                    }
-                }
-                
                 id eventResultObject = [status copyWithMutatedData:event];
-                if (isPresenceEvent) {
+                
+                // Check whether event has been triggered on presence channel or channel group.
+                if (event[@"presenceEvent"] != nil) {
                     
                     object_setClass(eventResultObject, [PNPresenceEventResult class]);
                     [self handleNewPresenceEvent:((PNPresenceEventResult *)eventResultObject)];
@@ -1429,6 +1503,82 @@ NS_ASSUME_NONNULL_END
     #pragma clang diagnostic pop
     
     return parameters;
+}
+
+- (void)deDuplicateMessages:(NSMutableArray<NSDictionary *> *)events {
+    
+    NSUInteger maximumMessagesCacheSize = self.client.configuration.maximumMessagesCacheSize;
+    if (maximumMessagesCacheSize > 0) {
+        
+        NSMutableIndexSet *duplicateMessagesIndices = [NSMutableIndexSet indexSet];
+        [events enumerateObjectsUsingBlock:^(NSDictionary<NSString *, id> *event, NSUInteger eventIdx, 
+                                             BOOL *eventsEnumeratorStop) {
+            
+            if (event[@"presenceEvent"] == nil && 
+                ![self cacheObjectIfPossible:event withMaximumCacheSize:maximumMessagesCacheSize]) {
+                
+                [duplicateMessagesIndices addIndex:eventIdx];
+            }
+        }];
+        if (duplicateMessagesIndices.count) { [events removeObjectsAtIndexes:duplicateMessagesIndices]; }
+        [self cleanUpCachedObjectsIfRequired:maximumMessagesCacheSize];
+    }
+}
+
+- (void)clearCacheFromMessagesNewerThan:(NSNumber *)timetoken {
+    
+    NSUInteger maximumMessagesCacheSize = self.client.configuration.maximumMessagesCacheSize;
+    if (maximumMessagesCacheSize > 0) {
+        
+        SEL sortSelector = @selector(localizedCaseInsensitiveCompare:);
+        NSArray<NSString *> *identifiers = [[_cachedObjects allKeys] sortedArrayUsingSelector:sortSelector];
+        NSString *timetokenString = timetoken.stringValue;
+        __block NSUInteger indexOfMessage = NSNotFound;
+        [identifiers enumerateObjectsUsingBlock:^(NSString *identifier, NSUInteger identifierIdx, 
+                                                  BOOL *identifiersEnumeratorStop) {
+            
+            NSString *cachedTimetoken = [identifier componentsSeparatedByString:@"_"][0];
+            NSComparisonResult result = [timetokenString compare:cachedTimetoken options:NSNumericSearch];
+            if (result == NSOrderedSame || result == NSOrderedAscending) { indexOfMessage = identifierIdx; }
+            *identifiersEnumeratorStop = (indexOfMessage != NSNotFound);
+        }];
+        
+        if (indexOfMessage != NSNotFound) {
+            
+            NSRange messagesRange = NSMakeRange(indexOfMessage, identifiers.count - indexOfMessage);
+            identifiers = [identifiers subarrayWithRange:messagesRange];
+            [_cachedObjects removeObjectsForKeys:identifiers];
+            [_cachedObjectIdentifiers removeObjectsInArray:identifiers];
+        }
+    }
+}
+
+- (BOOL)cacheObjectIfPossible:(NSDictionary *)object withMaximumCacheSize:(NSUInteger)size {
+    
+    NSString *identifier = [@[object[@"timetoken"], object[@"channel"]] componentsJoinedByString:@"_"];
+    NSMutableArray *objects = (_cachedObjects[identifier]?: [NSMutableArray new]);
+    NSUInteger cachedMessagesCount = objects.count;
+    
+    // Cache objects if required.
+    if (objects.count == 0) { [objects addObject:object]; }
+    else if ([objects indexOfObject:object] == NSNotFound) { [objects addObject:object]; }
+    if (cachedMessagesCount == 0) { _cachedObjects[identifier] = objects; }
+    BOOL cached = (cachedMessagesCount != objects.count);
+    
+    if (cached) { [_cachedObjectIdentifiers addObject:identifier]; }
+    
+    return cached;
+}
+
+- (void)cleanUpCachedObjectsIfRequired:(NSUInteger)maximumCacheSize {
+    
+    if (_cachedObjectIdentifiers.count > maximumCacheSize) {
+        
+        NSString *identifier = [_cachedObjectIdentifiers objectAtIndex:0];
+        NSMutableArray *objects = _cachedObjects[identifier];
+        if (objects.count == 1) { [_cachedObjects removeObjectForKey:identifier]; }
+        else { [objects removeObjectAtIndex:0]; }
+    }
 }
 
 - (void)appendSubscriberInformation:(PNStatus *)status {
