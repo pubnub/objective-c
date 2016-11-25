@@ -1,5 +1,16 @@
 --- 
+name: objective-c
+scm: github.com/pubnub/objective-c
+version: "4.5.8"
+schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Added new configuration property 'maximumMessagesCacheSize' which allow to enable (when non-zero value passed) messages de-duplication logic."
+        type: improvement
+    date: ~
+    version: v4.5.8
   -
     changes:
       -
@@ -510,9 +521,6 @@ features:
     - SUBSCRIBE-WILDCARD
     - SUBSCRIBE-FILTER-EXPRESSION
     - SUBSCRIBE-PUBLISHER-UUID
+    - SUBSCRIBE-MESSAGE-DEDUPE
   unsubscribe:
     - UNSUBSCRIBE-ALL
-name: objective-c
-schema: 1
-scm: github.com/pubnub/objective-c
-version: "4.5.5"
