@@ -1,3 +1,6 @@
+26-11-2016 - 7808174 - 4.5.9
+. fixed cached messages identifier list clean up.
+
 25-11-2016 - b71546b - 4.5.8
 . added new configuration property 'maximumMessagesCacheSize' which allow to enable (when non-zero value passed) messages de-duplication logic.
 
