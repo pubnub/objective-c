@@ -411,7 +411,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  @brief      Clean up \c events list from messages which has been already received.
- @discussion Use messages cahce to identify message duplicates and remove them from input \c events list so 
+ @discussion Use messages cache to identify message duplicates and remove them from input \c events list so 
              listeners won't receive them through callback methods again.
  @warning    Method should be called within resource access queue to prevent race of conditions.
  
@@ -1560,8 +1560,7 @@ NS_ASSUME_NONNULL_END
     NSUInteger cachedMessagesCount = objects.count;
     
     // Cache objects if required.
-    if (objects.count == 0) { [objects addObject:object]; }
-    else if ([objects indexOfObject:object] == NSNotFound) { [objects addObject:object]; }
+    if (objects.count == 0 || [objects indexOfObject:object] == NSNotFound) { [objects addObject:object]; }
     if (cachedMessagesCount == 0) { _cachedObjects[identifier] = objects; }
     BOOL cached = (cachedMessagesCount != objects.count);
     
@@ -1578,6 +1577,7 @@ NS_ASSUME_NONNULL_END
         NSMutableArray *objects = _cachedObjects[identifier];
         if (objects.count == 1) { [_cachedObjects removeObjectForKey:identifier]; }
         else { [objects removeObjectAtIndex:0]; }
+        [_cachedObjectIdentifiers removeObjectAtIndex:0];
     }
 }
 
