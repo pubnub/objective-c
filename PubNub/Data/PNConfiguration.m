@@ -148,6 +148,7 @@ NS_ASSUME_NONNULL_END
         _keepTimeTokenOnListChange = kPNDefaultShouldKeepTimeTokenOnListChange;
         _catchUpOnSubscriptionRestore = kPNDefaultShouldTryCatchUpOnSubscriptionRestore;
         _requestMessageCountThreshold = kPNDefaultRequestMessageCountThreshold;
+        _maximumMessagesCacheSize = kPNDefaultMaximumMessagesCacheSize;
 #if TARGET_OS_IOS
         _completeRequestsBeforeSuspension = kPNDefaultShouldCompleteRequestsBeforeSuspension;
 #endif // TARGET_OS_IOS
@@ -177,6 +178,7 @@ NS_ASSUME_NONNULL_END
     configuration.catchUpOnSubscriptionRestore = self.shouldTryCatchUpOnSubscriptionRestore;
     configuration.applicationExtensionSharedGroupIdentifier = self.applicationExtensionSharedGroupIdentifier;
     configuration.requestMessageCountThreshold = self.requestMessageCountThreshold;
+    configuration.maximumMessagesCacheSize = self.maximumMessagesCacheSize;
 #if TARGET_OS_IOS
     configuration.completeRequestsBeforeSuspension = self.shouldCompleteRequestsBeforeSuspension;
 #endif // TARGET_OS_IOS

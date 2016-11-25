@@ -1,3 +1,6 @@
+25-11-2016 - b71546b - 4.5.8
+. added new configuration property 'maximumMessagesCacheSize' which allow to enable (when non-zero value passed) messages de-duplication logic.
+
 20-11-2016 - 2bc6d69 - 4.5.7
 . removed PNClass and added manual service response parsers registration (in attempt to solve third-party classes initialization at run-time).
 . added additional service response check and wrap (in case if still somehow non-dictionary reached data objects).

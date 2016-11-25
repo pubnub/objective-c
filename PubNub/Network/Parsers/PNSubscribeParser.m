@@ -287,6 +287,8 @@ NS_ASSUME_NONNULL_END
     if ([PNChannel isPresenceObject:event[@"subscription"]]) {
         
         [event addEntriesFromDictionary:[self presenceFromData:data[PNEventEnvelope.payload]]];
+        event[@"subscription"] = [PNChannel channelForPresence:event[@"subscription"]];
+        event[@"channel"] = [PNChannel channelForPresence:event[@"channel"]];
     }
     else {
         
