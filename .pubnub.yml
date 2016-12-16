@@ -1,9 +1,20 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.5.9"
+version: "4.5.10"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Changed object which is stored in cache which is used for de-duplication."
+        type: bug
+      - 
+        text: "Changed default origin"
+        type: improvement
+    date: ~
+    version: v4.5.10
+
   -
     changes:
       -
