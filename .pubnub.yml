@@ -1,9 +1,16 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.5.10"
+version: "4.5.11"
 schema: 1
 changelog: 
+  -
+    changes:
+      - 
+        text: "Reverted default origin back to pubsub.pubnub.com"
+        type: improvement
+    date: ~
+    version: v4.5.11
   -
     changes:
       -
@@ -14,7 +21,6 @@ changelog:
         type: improvement
     date: ~
     version: v4.5.10
-
   -
     changes:
       -
