@@ -1,3 +1,7 @@
+16-12-2016 - 464f67b - 4.5.10
+. changed object which is stored in cache which is used for de-duplication.
+. changed default origin.
+
 26-11-2016 - 7808174 - 4.5.9
 . fixed cached messages identifier list clean up.
 
