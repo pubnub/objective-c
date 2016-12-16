@@ -1555,16 +1555,20 @@ NS_ASSUME_NONNULL_END
 
 - (BOOL)cacheObjectIfPossible:(NSDictionary *)object withMaximumCacheSize:(NSUInteger)size {
     
+    BOOL cached = NO;
     NSString *identifier = [@[object[@"timetoken"], object[@"channel"]] componentsJoinedByString:@"_"];
     NSMutableArray *objects = (_cachedObjects[identifier]?: [NSMutableArray new]);
     NSUInteger cachedMessagesCount = objects.count;
     
     // Cache objects if required.
-    if (objects.count == 0 || [objects indexOfObject:object] == NSNotFound) { [objects addObject:object]; }
+    id data = object[@"message"];
+    if (objects.count == 0 || [objects indexOfObject:data] == NSNotFound) {
+        
+        cached = YES; 
+        [objects addObject:data];
+        [_cachedObjectIdentifiers addObject:identifier];
+    }
     if (cachedMessagesCount == 0) { _cachedObjects[identifier] = objects; }
-    BOOL cached = (cachedMessagesCount != objects.count);
-    
-    if (cached) { [_cachedObjectIdentifiers addObject:identifier]; }
     
     return cached;
 }

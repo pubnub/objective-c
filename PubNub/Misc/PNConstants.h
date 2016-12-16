@@ -15,10 +15,10 @@
 #pragma mark General information constants
 
 // Stores client library version number
-static NSString * const kPNLibraryVersion = @"4.5.9";
+static NSString * const kPNLibraryVersion = @"4.5.10";
 
 // Stores information about SDK codebase
-static NSString * const kPNCommit = @"78081741390d0785d78c4030d96a79fd8f29fd3e";
+static NSString * const kPNCommit = @"464f67b0278409e5b64abdf87c13ac234e5eefcb";
 
 /**
  @brief  Stores reference on unique identifier which is used to identify \b PubNub client among other 
@@ -41,7 +41,7 @@ static NSString * const kPNClientIdentifier = @"com.pubnub.pubnub-objc";
 
 #pragma mark - Default client configuration
 
-static NSString * const kPNDefaultOrigin = @"pubsub.pubnub.com";
+static NSString * const kPNDefaultOrigin = @"ps.pndsn.com";
 
 static NSTimeInterval const kPNDefaultSubscribeMaximumIdleTime = 310.0f;
 static NSTimeInterval const kPNDefaultNonSubscribeRequestTimeout = 10.0f;
