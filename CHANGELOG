@@ -1,3 +1,6 @@
+05-01-2016 - 96449f1 - 4.5.12
+. changed default origin.
+
 16-12-2016 - d0e711e - 4.5.11
 . default origin reverted back to pubsub.pubnub.com
 
