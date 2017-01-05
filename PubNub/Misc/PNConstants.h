@@ -41,7 +41,7 @@ static NSString * const kPNClientIdentifier = @"com.pubnub.pubnub-objc";
 
 #pragma mark - Default client configuration
 
-static NSString * const kPNDefaultOrigin = @"pubsub.pubnub.com";
+static NSString * const kPNDefaultOrigin = @"ps.pndsn.com";
 
 static NSTimeInterval const kPNDefaultSubscribeMaximumIdleTime = 310.0f;
 static NSTimeInterval const kPNDefaultNonSubscribeRequestTimeout = 10.0f;
