@@ -1,9 +1,16 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.5.11"
+version: "4.5.12"
 schema: 1
 changelog: 
+  -
+    changes:
+      - 
+        text: "Changed default origin"
+        type: improvement
+    date: ~
+    version: v4.5.12
   -
     changes:
       - 
