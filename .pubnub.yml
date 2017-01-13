@@ -9,14 +9,14 @@ changelog:
       - 
         text: "Changed default origin"
         type: improvement
-    date: ~
+    date: Jan 01, 17
     version: v4.5.12
   -
     changes:
       - 
         text: "Reverted default origin back to pubsub.pubnub.com"
         type: improvement
-    date: ~
+    date: Dec 16, 16
     version: v4.5.11
   -
     changes:
@@ -26,21 +26,21 @@ changelog:
       - 
         text: "Changed default origin"
         type: improvement
-    date: ~
+    date: Dec 16, 16
     version: v4.5.10
   -
     changes:
       -
         text: "Fixed cached message identifiers list clean up."
         type: bug
-    date: ~
+    date: Nov 26, 16
     version: v4.5.9
   -
     changes:
       -
         text: "Added new configuration property 'maximumMessagesCacheSize' which allow to enable (when non-zero value passed) messages de-duplication logic."
         type: improvement
-    date: ~
+    date: Nov 25, 16
     version: v4.5.8
   -
     changes:
@@ -56,7 +56,7 @@ changelog:
       -
         text: "Added additional service response check and wrap (in case if still somehow non-dictionary reached data objects)."
         type: bug
-    date: ~
+    date: Nov 20, 16
     version: v4.5.7
   -
     changes:
@@ -75,7 +75,7 @@ changelog:
       -
         text: "Added verbose logs around subscription loop timetoken usage."
         type: improvement
-    date: ~
+    date: Nov 16, 16
     version: v4.5.6
   -
     changes:
@@ -85,7 +85,7 @@ changelog:
       -
         text: "Fixed 'instanceID' which is placed inside of PNConfiguration."
         type: bug
-    date: ~
+    date: Nov 02, 16
     version: v4.5.5
   -
     changes:
@@ -113,14 +113,14 @@ changelog:
       -
         text: "Fixed issue with shared auto-updating user calendar."
         type: bug
-    date: ~
+    date: Oct 27, 16
     version: v4.5.4 
   -
     changes:
       -
         text: "added NS_SWIFT_NAME with Swift equivalent specified in it to all public API to prevent Swift function signature change between Swift releases."
         type: improvement
-    date: ~
+    date: Sep 26, 16
     version: v4.5.3 
   -
     changes:
@@ -139,14 +139,14 @@ changelog:
       -
         text: "deprecated 'actualChannel' and 'subscribedChannel' in favor of 'channel' and 'subscription' (properties still available, but will be eventually will be completelly removed)."
         type: improvement
-    date: ~
+    date: Sep 13, 16
     version: v4.5.2
   -
     changes: 
       -
         text: "Changed default logs directory which should be used for tvOS client."
         type: bug
-    date: ~
+    date: Sep 02, 16
     version: v4.5.1
   - 
     changes: 
@@ -165,7 +165,7 @@ changelog:
       - 
         text: "added ability to disable message stripping (removing data which has been added by client during publish with mobile payload) which is enabled by default."
         type: feature
-    date: ~
+    date: Aug 31, 16
     version: v4.5.0
   - 
     changes: 
@@ -175,7 +175,7 @@ changelog:
       - 
         text: "added tests to cover fixed issue"
         type: improvement
-    date: ~
+    date: Jul 07, 16
     version: v4.4.1
   - 
     changes: 
@@ -185,12 +185,14 @@ changelog:
       - 
         text: "added bitcode support for frameworks."
         type: improvement
+    date: Jul 07, 16
     version: v4.4.0
   - 
     changes: 
       - 
         text: "fixed podspec dependency version format compatibiliyty with CocoaPods 0.39."
         type: bug
+    date: May 17, 16
     version: v4.3.3
   - 
     changes: 
@@ -200,6 +202,7 @@ changelog:
       - 
         text: "original message (in case of decryption error) will be passed into associatedObject of PNStatus error instance."
         type: bug
+    date: May 13, 16
     version: v4.3.2
   - 
     changes: 
@@ -215,6 +218,7 @@ changelog:
       - 
         text: "'pn_other' key has been removed and original object will be returned in delegate callback (this field used with message encryption and/or mobile push payload).\n"
         type: improvement
+    date: May 12, 16
     version: v4.3.1
   - 
     changes: 
@@ -254,18 +258,21 @@ changelog:
       - 
         text: "added missing files to Mac Framework."
         type: bug
+    date: Mar 05, 16
     version: v4.3.0
   - 
     changes: 
       - 
         text: "changed way how heartbeat state notification is set. Now it can be specified in heartbeatNotificationOptions bitfield property using PNHeartbeatNotificationOptions options."
         type: improvement
+    date: Feb 09, 16
     version: v4.2.7
   - 
     changes: 
       - 
         text: "added new property to PNConfiguration class called notifyAboutFailedHeartbeatsOnly which allow to configure client to notify not only about failed heartbeat statuses but for success as well."
         type: improvement
+    date: Feb 09, 16
     version: v4.2.6
   - 
     changes: 
@@ -278,12 +285,14 @@ changelog:
       - 
         text: "fixed issue with time token precision verification in case if non-PubNub's time token value has been passe."
         type: bug
+    date: Jan 27, 16
     version: v4.2.5
   - 
     changes: 
       - 
         text: "fixed issue because of which client may not restore subscription on list of channels which has been left after previous unsubscription request."
         type: bug
+    date: Jan 12, 16
     version: v4.2.4
   - 
     changes: 
@@ -293,6 +302,7 @@ changelog:
       - 
         text: "fixed issue with -unsubscribeFromAll which may issue unwanted subscribe requests in case if method call followed by subscribe method call."
         type: bug
+    date: Dec 20, 15
     version: v4.2.3
   - 
     changes: 
@@ -302,12 +312,14 @@ changelog:
       - 
         text: "added Fabric support."
         type: feature
+    date: Dec 14, 15
     version: v4.2.2
   - 
     changes: 
       - 
         text: "fixed cient state cache issue because of which channel group state itself get updated even if state has been changed for one."
         type: bug
+    date: Dec 10, 15
     version: v4.2.1
   - 
     changes: 
@@ -326,18 +338,21 @@ changelog:
       - 
         text: "fixed Mac OSX target and scripts for dynamic framework creation."
         type: bug
+    date: Dec 02, 15
     version: v4.2.0
   - 
     changes: 
       - 
         text: "added watchOS deployment information to PubNub.podspec file."
         type: feature
+    date: Nov 24, 15
     version: v4.1.4
   - 
     changes: 
       - 
         text: "adjusted Base64 decoding settings which will allow to decode encrypted messages from some clients which changed base64 encoding algorithms."
         type: bug
+    date: Nov 20, 15
     version: v4.1.3
   - 
     changes: 
@@ -359,6 +374,7 @@ changelog:
       - 
         text: "updated demo projects to correctly handle disconnection event (which happen for unsubscribe operation not for subscribe)."
         type: improvement
+    date: Nov 16, 15
     version: v4.1.2
   - 
     changes: 
@@ -368,6 +384,7 @@ changelog:
       - 
         text: "removed deprecated string encoding methods."
         type: improvement
+    date: Oct 22, 15
     version: v4.1.1
   - 
     changes: 
@@ -377,6 +394,7 @@ changelog:
       - 
         text: "version bump because of backward compatible changes in public interface."
         type: improvement
+    date: Oct 15, 15
     version: v4.1.0
   - 
     changes: 
@@ -386,12 +404,14 @@ changelog:
       - 
         text: "fixed ping triggering logic after corner case with network issues"
         type: bug
+    date: Oct 14, 15
     version: v4.0.8
   - 
     changes: 
       - 
         text: "fixed issue which prevented proper -retry execution."
         type: bug
+    date: Oct 03, 15
     version: v4.0.7
   - 
     changes: 
@@ -404,6 +424,7 @@ changelog:
       - 
         text: "downgraded deployment target in Podspec file from 8.0 to 7.0."
         type: improvement
+    date: Oct 01, 15
     version: v4.0.6
   - 
     changes: 
@@ -422,6 +443,7 @@ changelog:
       - 
         text: "fixed issue with messages decryption in history and real-time messaging API."
         type: bug
+    date: Sep 20, 15
     version: v4.0.5
   - 
     changes: 
@@ -437,6 +459,7 @@ changelog:
       - 
         text: "added additional presence events tests."
         type: improvement
+    date: Sep 02, 15
     version: v4.0.4
   - 
     changes: 
@@ -458,6 +481,7 @@ changelog:
       - 
         text: "changed test environment check."
         type: improvement
+    date: Jul 24, 15
     version: v4.0.3
   - 
     changes: 
@@ -494,18 +518,21 @@ changelog:
       - 
         text: "fixed inability to publish mobile gateway payloads only."
         type: bug
+    date: Jul 13, 15
     version: v4.0.2
   - 
     changes: 
       - 
         text: "updated documentation hosted by CocoaPods."
         type: improvement
+    date: Jun 30, 15
     version: v4.0.1
   - 
     changes: 
       - 
         text: "The new, refactored PN 4.0 for iOS is here."
         type: improvement
+    date: Jun 30, 15
     version: v4.0.0
 features: 
   notify:
