@@ -182,7 +182,10 @@ NS_ASSUME_NONNULL_END
 #if TARGET_OS_IOS
     configuration.completeRequestsBeforeSuspension = self.shouldCompleteRequestsBeforeSuspension;
 #endif // TARGET_OS_IOS
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     configuration.stripMobilePayload = self.shouldStripMobilePayload;
+#pragma clang diagnostic pop
     
     return configuration;
 }

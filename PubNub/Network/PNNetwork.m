@@ -855,7 +855,10 @@ NS_ASSUME_NONNULL_END
     else {
 
         NSMutableDictionary *additionalData = [NSMutableDictionary new];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
         additionalData[@"stripMobilePayload"] = @(self.configuration.shouldStripMobilePayload);
+#pragma clang diagnostic pop
         if ([self.configuration.cipherKey length]) {
 
             additionalData[@"cipherKey"] = self.configuration.cipherKey;
@@ -1270,7 +1273,7 @@ NS_ASSUME_NONNULL_END
             [metricsData appendFormat:@"\nWARNING: Request redirections has been noticed:\n\t%@", 
              [redirections componentsJoinedByString:@"\n\t"]];
         }
-        DDLogRequestMetrics(self.client.logger, metricsData);
+        DDLogRequestMetrics(self.client.logger, @"%@", metricsData);
     }
 }
 #endif
