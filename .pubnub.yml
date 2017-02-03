@@ -1,9 +1,19 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.5.12"
+version: "4.5.13"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Added TCP metrics output to PubNub logs (added corresponding logger level)."
+        type: improvement
+      -
+        text: "Deprecated 'stripMobilePayload' property with output into console if property still used."
+        type: improvement
+    date: Feb 03, 17
+    version: v4.5.13
   -
     changes:
       - 
