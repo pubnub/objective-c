@@ -537,6 +537,21 @@ NS_ASSUME_NONNULL_BEGIN
 
 #endif // TARGET_OS_IOS
 
+#if defined(__MAC_10_12) || defined(__IPHONE_10_0) || defined(__WATCHOS_3_0) || defined(__TVOS_10_0)
+/**
+ @brief  Compose string with important request metrics.
+ 
+ @since 4.5.13
+ 
+ @param transaction   Reference on object which contain useful metrics which can be used in debug purposes.
+ @param isRedirection Whether metrics data has been provided for non-original request.
+ 
+ @return String with request metrics which can be printed into PubNub's log file/Xcode console.
+ */
+- (NSMutableString *)formattedMetricsDataFrom:(NSURLSessionTaskTransactionMetrics *)transaction 
+                                  redirection:(BOOL)isRedirection;
+#endif
+
 /**
  @brief  Print out any session configuration instance customizations which has been done by developer.
  
@@ -1237,6 +1252,29 @@ NS_ASSUME_NONNULL_END
     #pragma clang diagnostic pop
 }
 
+#if defined(__MAC_10_12) || defined(__IPHONE_10_0) || defined(__WATCHOS_3_0) || defined(__TVOS_10_0)
+- (void)          URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task 
+  didFinishCollectingMetrics:(NSURLSessionTaskMetrics *)metrics {
+    
+    if (self.client.logger.logLevel & PNRequestMetricsLogLevel) {
+        NSMutableArray *redirections = metrics.transactionMetrics.count > 1 ? [NSMutableArray new] : nil;
+        __block NSMutableString *metricsData = nil;
+        NSArray<NSURLSessionTaskTransactionMetrics *> *transactions = metrics.transactionMetrics;
+        [transactions enumerateObjectsUsingBlock:^(NSURLSessionTaskTransactionMetrics *transaction,
+                                                   NSUInteger transactionIdx, BOOL *trabsactionsEnumeratorStop) {
+            if (transactionIdx == 0) { metricsData = [self formattedMetricsDataFrom:transaction redirection:NO]; }
+            else { [redirections addObject:[self formattedMetricsDataFrom:transaction redirection:YES]]; }
+        }];
+        if (redirections.count) {
+            
+            [metricsData appendFormat:@"\nWARNING: Request redirections has been noticed:\n\t%@", 
+             [redirections componentsJoinedByString:@"\n\t"]];
+        }
+        DDLogRequestMetrics(self.client.logger, metricsData);
+    }
+}
+#endif
+
 
 #pragma mark - Misc
 
@@ -1274,6 +1312,66 @@ NS_ASSUME_NONNULL_END
 }
 
 #endif // TARGET_OS_IOS
+
+#if defined(__MAC_10_12) || defined(__IPHONE_10_0) || defined(__WATCHOS_3_0) || defined(__TVOS_10_0)
+- (NSMutableString *)formattedMetricsDataFrom:(NSURLSessionTaskTransactionMetrics *)transaction 
+                                  redirection:(BOOL)isRedirection {
+    
+    NSURLRequest *request = transaction.request;
+    NSMutableString *metricsData = [NSMutableString stringWithFormat:@"<PubNub::Network::Metrics> %@ ", 
+                                    request.HTTPMethod];
+    if (!isRedirection) {
+        
+        [metricsData appendFormat:@"%@?%@", request.URL.relativePath,
+         [request.URL.query stringByReplacingOccurrencesOfString:@"%2F" withString:@"/"]];
+    }
+    else {
+        
+        [metricsData appendString:[request.URL.absoluteString stringByReplacingOccurrencesOfString:@"%2F" withString:@"/"]];
+    }
+    [metricsData appendFormat:@" (%@; ", transaction.networkProtocolName?: @"<unknown>"];
+    [metricsData appendFormat:@"persistent: %@; ", transaction.isReusedConnection ? @"YES": @"NO"];
+    [metricsData appendFormat:@"proxy: %@; ", transaction.isProxyConnection ? @"YES": @"NO"];
+    
+    // Add request duration.
+    NSDate *fetchStartDate = transaction.fetchStartDate;
+    NSDate *fetchEndDate = transaction.responseEndDate;
+    NSTimeInterval fetchDuration = [fetchEndDate timeIntervalSinceDate:(fetchStartDate?:fetchEndDate)];
+    [metricsData appendFormat:@"fetch: %@ (%fs); ", fetchStartDate, fetchDuration];
+    
+    // Add DNS lookup duration.
+    NSDate *lookupStartDate = transaction.domainLookupStartDate;
+    NSDate *lookupEndDate = transaction.domainLookupEndDate;
+    NSTimeInterval lookupDuration = [lookupEndDate timeIntervalSinceDate:(lookupStartDate?:lookupEndDate)];
+    [metricsData appendFormat:@"lookup: %@ (%fs); ", lookupStartDate?:@"<re-use>", lookupDuration];
+    
+    // Add connection establish duration.
+    NSDate *connectStartDate = transaction.connectStartDate;
+    NSDate *connectEndDate = transaction.connectEndDate;
+    NSTimeInterval connectDuration = [connectEndDate timeIntervalSinceDate:(connectStartDate?:connectEndDate)];
+    [metricsData appendFormat:@"connect: %@ (%fs); ", connectStartDate?:@"<re-use>", connectDuration];
+    
+    // Add secure connection establish duration.
+    NSDate *secureStartDate = transaction.secureConnectionStartDate;
+    NSDate *secureEndDate = transaction.secureConnectionEndDate;
+    NSTimeInterval secureDuration = [secureEndDate timeIntervalSinceDate:(secureStartDate?:secureEndDate)];
+    [metricsData appendFormat:@"secure: %@ (%fs); ", secureStartDate?:@"<re-use>", secureDuration];
+    
+    // Add request sending duration.
+    NSDate *requestStartDate = transaction.requestStartDate;
+    NSDate *requestEndDate = transaction.requestEndDate;
+    NSTimeInterval requestDuration = [requestEndDate timeIntervalSinceDate:(requestStartDate?:requestEndDate)];
+    [metricsData appendFormat:@"request: %@ (%fs); ", requestStartDate?:@"<not-started>", requestDuration];
+    
+    // Add response loading duration.
+    NSDate *responseStartDate = transaction.responseStartDate;
+    NSDate *responseEndDate = transaction.responseEndDate;
+    NSTimeInterval responseDuration = [responseEndDate timeIntervalSinceDate:(responseStartDate?:responseEndDate)];
+    [metricsData appendFormat:@"response: %@ (%fs))", responseStartDate?:@"<not-started>", responseDuration];
+    
+    return metricsData;
+}
+#endif
 
 - (void)printIfRequiredSessionCustomizationInformation {
     
