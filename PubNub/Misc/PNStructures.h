@@ -340,12 +340,23 @@ typedef NS_OPTIONS(NSUInteger, PNLogLevel){
      */
     PNRequestLogLevel = (1 << 3),
     
+#if defined(__MAC_10_12) || defined(__IPHONE_10_0) || defined(__WATCHOS_3_0) || defined(__TVOS_10_0)
+    /**
+     @brief      \b PNLog level which allow to print out all API call requests' metrics.
+     @discussion Starting from macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0) it is possible to gather 
+                 metrics information about each request processed.
+     
+     @since 4.5.13
+     */
+    PNRequestMetricsLogLevel = (1 << 4),
+#endif
+    
     /**
      @brief  \b PNLog level which allow to print out API execution results.
      
      @since 4.0
      */
-    PNResultLogLevel = (1 << 4),
+    PNResultLogLevel = (1 << 5),
     
     /**
      @brief  \b PNLog level which allow to print out client state change status information and 
@@ -353,7 +364,7 @@ typedef NS_OPTIONS(NSUInteger, PNLogLevel){
      
      @since 4.0
      */
-    PNStatusLogLevel = (1 << 5),
+    PNStatusLogLevel = (1 << 6),
     
     /**
      @brief      \b PNLog level which allow to print out every failure status information.
@@ -362,7 +373,7 @@ typedef NS_OPTIONS(NSUInteger, PNLogLevel){
      
      @since 4.0
      */
-    PNFailureStatusLogLevel = (1 << 6),
+    PNFailureStatusLogLevel = (1 << 7),
     
     /**
      @brief      \b PNLog level which allow to print out all API calls with passed parameters.
@@ -371,22 +382,25 @@ typedef NS_OPTIONS(NSUInteger, PNLogLevel){
      
      @since 4.0
      */
-    PNAPICallLogLevel = (1 << 7),
+    PNAPICallLogLevel = (1 << 8),
     
     /**
      @brief  \b PNLog level which allow to print out all AES errors.
      
      @since 4.0
      */
-    PNAESErrorLogLevel = (1 << 8),
+    PNAESErrorLogLevel = (1 << 9),
     
     /**
      @brief  Log every message from \b PubNub client.
      
      @since 4.0
      */
-    PNVerboseLogLevel = (PNInfoLogLevel|PNReachabilityLogLevel|PNRequestLogLevel|PNResultLogLevel|
-                         PNStatusLogLevel|PNFailureStatusLogLevel|PNAPICallLogLevel|
+    PNVerboseLogLevel = (PNInfoLogLevel|PNReachabilityLogLevel|PNRequestLogLevel|
+#if defined(__MAC_10_12) || defined(__IPHONE_10_0) || defined(__WATCHOS_3_0) || defined(__TVOS_10_0)
+                         PNRequestMetricsLogLevel|
+#endif
+                         PNResultLogLevel|PNStatusLogLevel|PNFailureStatusLogLevel|PNAPICallLogLevel|
                          PNAESErrorLogLevel)
 };
 
