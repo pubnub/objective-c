@@ -593,17 +593,17 @@ features:
   unsubscribe:
     - UNSUBSCRIBE-ALL
 supported-platforms:
--
-  version: PubNub Objective-C 4.5.13
-  platforms:
-    - iOS 7.0 or higher.
-    - watchOS 2.0 or higher.
-    - tvOS 9.0 or higher.
-    - macOS 10.9 or higher.
--
-  version: PubNub Swift 4.5.13
-  platforms:
-    - iOS 7.0 or higher.
-    - watchOS 2.0 or higher.
-    - tvOS 9.0 or higher.
-    - macOS 10.9 or higher.
+  -
+    version: PubNub Objective-C 4.5.13
+    platforms:
+      - iOS 7.0 or higher.
+      - watchOS 2.0 or higher.
+      - tvOS 9.0 or higher.
+      - macOS 10.9 or higher.
+  -
+    version: PubNub Swift 4.5.13
+    platforms:
+      - iOS 7.0 or higher.
+      - watchOS 2.0 or higher.
+      - tvOS 9.0 or higher.
+      - macOS 10.9 or higher.
