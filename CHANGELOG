@@ -1,4 +1,9 @@
-05-01-2016 - 96449f1 - 4.5.12
+03-02-2017 - 3c5c14c - 4.5.13
+. added TCP metrics output to PubNub logs (added corresponding logger level).
+. deprecated 'stripMobilePayload' property
+. added information about 'stripMobilePayload' deprecation to Xcode console with guide what can be done next.
+
+05-01-2017 - 96449f1 - 4.5.12
 . changed default origin.
 
 16-12-2016 - d0e711e - 4.5.11

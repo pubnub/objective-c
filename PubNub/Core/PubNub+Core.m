@@ -614,7 +614,10 @@ NS_ASSUME_NONNULL_END
     NSMutableString *deprecation = [NSMutableString new];
     [deprecation appendString:@"\n\n\n--------------------------------------------\n- PubNub deprecated API "
                                "usage notification -\n--------------------------------------------\n\n"];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     if (self.configuration.shouldStripMobilePayload) {
+#pragma clang diagnostic pop
         
         [deprecation appendString:@"- Deprecated: PNConfiguration.shouldStripMobilePayload property.-\n"
          "When set to YES SDK automatically stripped out original message\nfrompayload which combined message"
