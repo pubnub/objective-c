@@ -634,12 +634,15 @@ NS_ASSUME_NONNULL_END
     
     _defaultPathComponents = @{@"{sub-key}": (self.configuration.subscribeKey?: @""),
                                @"{pub-key}": (self.configuration.publishKey?: @"")};
-    NSMutableDictionary *queryComponents = [@{@"uuid": (self.configuration.uuid?: @""),
-                                              @"deviceid": (self.configuration.deviceID?: @""),
-                                              @"instanceid": self.client.instanceID,
-                                              @"pnsdk":[NSString stringWithFormat:@"PubNub-%@%%2F%@",
-                                                        kPNClientName, kPNLibraryVersion]} mutableCopy];
-    if (self.configuration.authKey.length) { queryComponents[@"auth"] = self.configuration.authKey; }
+    NSMutableDictionary *queryComponents = [@{
+        @"uuid": [PNString percentEscapedString:(self.configuration.uuid?: @"")],
+        @"deviceid": (self.configuration.deviceID?: @""),
+        @"instanceid": self.client.instanceID,
+        @"pnsdk":[NSString stringWithFormat:@"PubNub-%@%%2F%@", kPNClientName, kPNLibraryVersion]
+    } mutableCopy];
+    if (self.configuration.authKey.length) { 
+        queryComponents[@"auth"] = [PNString percentEscapedString:self.configuration.authKey];
+    }
     _defaultQueryComponents = [queryComponents copy];
 }
 
