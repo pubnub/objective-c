@@ -1,9 +1,16 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.5.13"
+version: "4.5.14"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Fixed uuid and auth keys encoding in query string."
+        type: bug
+    date: Mar 08, 17
+    version: v4.5.14
   -
     changes:
       -
