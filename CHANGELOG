@@ -1,3 +1,6 @@
+08-03-2017 - 1d8e2ac - 4.5.14
+. fixed uuid and auth keys encoding in query string.
+
 03-02-2017 - 3c5c14c - 4.5.13
 . added TCP metrics output to PubNub logs (added corresponding logger level).
 . deprecated 'stripMobilePayload' property
