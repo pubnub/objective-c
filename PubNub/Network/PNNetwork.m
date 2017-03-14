@@ -11,7 +11,6 @@
 #import "PubNub+CorePrivate.h"
 #import "PNResult+Private.h"
 #import "PNStatus+Private.h"
-#import <libkern/OSAtomic.h>
 #import "PNConfiguration.h"
 #import "PNErrorStatus.h"
 #import "PNErrorParser.h"
@@ -218,7 +217,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @since 4.0.2
  */
-@property (nonatomic, assign) OSSpinLock lock;
+@property (nonatomic, assign) os_unfair_lock lock;
 
 
 #pragma mark - Initialization and Configuration
@@ -603,7 +602,7 @@ NS_ASSUME_NONNULL_END
         else { _processingQueue = dispatch_get_main_queue(); }
         _serializer = [PNNetworkResponseSerializer new];
         _baseURL = [self requestBaseURL];
-        _lock = OS_SPINLOCK_INIT;
+        _lock = OS_UNFAIR_LOCK_INIT;
         [self prepareRequiredParameters];
         [self prepareSessionWithRequestTimeout:timeout maximumConnections:maximumConnections];
     }
@@ -651,10 +650,11 @@ NS_ASSUME_NONNULL_END
     NSURL *fullURL = [NSURL URLWithString:requestURL.absoluteString relativeToURL:self.baseURL];
     NSMutableURLRequest *httpRequest = [NSMutableURLRequest requestWithURL:fullURL];
     httpRequest.HTTPMethod = ([postData length] ? @"POST" : @"GET");
-    OSSpinLockLock(&_lock);
-    httpRequest.cachePolicy = self.session.configuration.requestCachePolicy;
-    httpRequest.allHTTPHeaderFields = self.session.configuration.HTTPAdditionalHeaders;
-    OSSpinLockUnlock(&_lock);
+    pn_lock(&_lock, ^{
+        
+        httpRequest.cachePolicy = self.session.configuration.requestCachePolicy;
+        httpRequest.allHTTPHeaderFields = self.session.configuration.HTTPAdditionalHeaders;
+    });
     if (postData) {
         
         NSMutableDictionary *allHeaders = [httpRequest.allHTTPHeaderFields mutableCopy];
@@ -687,22 +687,23 @@ NS_ASSUME_NONNULL_END
                 usingSuccess:success failure:failure];
         #pragma clang diagnostic pop
     };
-    OSSpinLockLock(&_lock);
-    if (_configuration.applicationExtensionSharedGroupIdentifier != nil) { 
-        self.previousDataTaskCompletionHandler = handler;
-        self.fetchedData = [NSMutableData new];
-        task = [self.session dataTaskWithRequest:request];
-    }
-    else { task = [self.session dataTaskWithRequest:request completionHandler:[handler copy]]; }
-    
-#if TARGET_OS_IOS
-    if (self.configuration.applicationExtensionSharedGroupIdentifier == nil && 
-        self.configuration.shouldCompleteRequestsBeforeSuspension) {
+    pn_lock(&_lock, ^{
         
-        [self.scheduledDataTasks addObject:task];
-    }
+        if (_configuration.applicationExtensionSharedGroupIdentifier != nil) { 
+            self.previousDataTaskCompletionHandler = handler;
+            self.fetchedData = [NSMutableData new];
+            task = [self.session dataTaskWithRequest:request];
+        }
+        else { task = [self.session dataTaskWithRequest:request completionHandler:[handler copy]]; }
+        
+#if TARGET_OS_IOS
+        if (self.configuration.applicationExtensionSharedGroupIdentifier == nil && 
+            self.configuration.shouldCompleteRequestsBeforeSuspension) {
+            
+            [self.scheduledDataTasks addObject:task];
+        }
 #endif // TARGET_OS_IOS
-    OSSpinLockUnlock(&_lock);
+    });
     
     return task;
 }
@@ -910,31 +911,33 @@ NS_ASSUME_NONNULL_END
 
 - (void)cancelAllRequests {
 
-    OSSpinLockLock(&_lock);
+    pn_lock_async(&_lock, ^(dispatch_block_t complete) {
 #if TARGET_OS_IOS
-    if (self.configuration.applicationExtensionSharedGroupIdentifier == nil && 
-        self.configuration.shouldCompleteRequestsBeforeSuspension) {
-        
-        [self.scheduledDataTasks removeAllObjects];
-    }
+        if (self.configuration.applicationExtensionSharedGroupIdentifier == nil && 
+            self.configuration.shouldCompleteRequestsBeforeSuspension) {
+            
+            [self.scheduledDataTasks removeAllObjects];
+        }
 #endif // TARGET_OS_IOS
-    
-    [self.session getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks,
-                                                  NSArray *downloadTasks) {
         
-        [dataTasks makeObjectsPerformSelector:@selector(cancel)];
-        [uploadTasks makeObjectsPerformSelector:@selector(cancel)];
-        [downloadTasks makeObjectsPerformSelector:@selector(cancel)];
-        OSSpinLockUnlock(&self->_lock);
-    }];
+        [self.session getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks,
+                                                      NSArray *downloadTasks) {
+            
+            [dataTasks makeObjectsPerformSelector:@selector(cancel)];
+            [uploadTasks makeObjectsPerformSelector:@selector(cancel)];
+            [downloadTasks makeObjectsPerformSelector:@selector(cancel)];
+            complete();
+        }];
+    });
 }
 
 - (void)invalidate {
     
-    OSSpinLockLock(&_lock);
-    [_session invalidateAndCancel];
-    _session = nil;
-    OSSpinLockUnlock(&self->_lock);
+    pn_lock(&_lock, ^{
+        
+        [_session invalidateAndCancel];
+        _session = nil;
+    });
 }
 
 
@@ -1025,34 +1028,36 @@ NS_ASSUME_NONNULL_END
     
     if (self.configuration.applicationExtensionSharedGroupIdentifier == nil) {
         
-        OSSpinLockLock(&_lock);
-        UIApplication *application = [UIApplication performSelector:NSSelectorFromString(@"sharedApplication")];
-        if (self.tasksCompletionIdentifier == UIBackgroundTaskInvalid) {
+        pn_lock(&_lock, ^{
             
-            // Give manager some time to figure out whether background task should be used to complete all 
-            // scheduled data tasks or not.
-            __weak __typeof__(self) weakSelf = self;
-            self.tasksCompletionIdentifier = [application beginBackgroundTaskWithExpirationHandler:^{
+            UIApplication *application = [UIApplication performSelector:NSSelectorFromString(@"sharedApplication")];
+            if (self.tasksCompletionIdentifier == UIBackgroundTaskInvalid) {
                 
-                [weakSelf endBackgroundTasksCompletionIfRequired];
-            }];
-                 
-            // Give some time before checking whether tasks has been scheduled for execution or not.
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3f * NSEC_PER_SEC)),
-                           dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                               
-                // Get list of scheduled operation.
-                __strong __typeof__(weakSelf) strongSelf = weakSelf;
-                OSSpinLockLock(&strongSelf->_lock);
-                if (strongSelf.tasksCompletionIdentifier != UIBackgroundTaskInvalid) {
+                // Give manager some time to figure out whether background task should be used to complete all 
+                // scheduled data tasks or not.
+                __weak __typeof__(self) weakSelf = self;
+                self.tasksCompletionIdentifier = [application beginBackgroundTaskWithExpirationHandler:^{
                     
-                    [strongSelf processIncompleteBeforeClientResignActiveTasks:self.scheduledDataTasks
-                                                          onDataTaskCompletion:NO];
-                }
-                OSSpinLockUnlock(&strongSelf->_lock);
-            });
-        } 
-        OSSpinLockUnlock(&_lock);
+                    [weakSelf endBackgroundTasksCompletionIfRequired];
+                }];
+                     
+                // Give some time before checking whether tasks has been scheduled for execution or not.
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3f * NSEC_PER_SEC)),
+                               dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                   
+                    // Get list of scheduled operation.
+                    __strong __typeof__(weakSelf) strongSelf = weakSelf;
+                    pn_lock(&strongSelf->_lock, ^{
+                        
+                        if (strongSelf.tasksCompletionIdentifier != UIBackgroundTaskInvalid) {
+                            
+                            [strongSelf processIncompleteBeforeClientResignActiveTasks:self.scheduledDataTasks
+                                                                  onDataTaskCompletion:NO];
+                        }
+                    });
+                });
+            } 
+        });
     }
 }
 
@@ -1068,20 +1073,20 @@ NS_ASSUME_NONNULL_END
     
     if (error) {
         
-        OSSpinLockLock(&_lock);
-        // Clean up cached tasks if required.
+        pn_lock(&_lock, ^{
+            // Clean up cached tasks if required.
 #if TARGET_OS_IOS
-        if (self.configuration.applicationExtensionSharedGroupIdentifier == nil &&
-            self.configuration.shouldCompleteRequestsBeforeSuspension) {
-            
-            [self.scheduledDataTasks removeAllObjects];
-        }
+            if (self.configuration.applicationExtensionSharedGroupIdentifier == nil &&
+                self.configuration.shouldCompleteRequestsBeforeSuspension) {
+                
+                [self.scheduledDataTasks removeAllObjects];
+            }
 #endif // TARGET_OS_IOS
-        
-        // Replace invalidated session with new one which can be used for next requests.
-        [self prepareSessionWithRequestTimeout:self.requestTimeout
-                            maximumConnections:self.maximumConnections];
-        OSSpinLockUnlock(&_lock);
+            
+            // Replace invalidated session with new one which can be used for next requests.
+            [self prepareSessionWithRequestTimeout:self.requestTimeout
+                                maximumConnections:self.maximumConnections];
+        });
     }
 }
 
@@ -1220,14 +1225,14 @@ NS_ASSUME_NONNULL_END
     if (self.configuration.applicationExtensionSharedGroupIdentifier == nil && 
         self.configuration.shouldCompleteRequestsBeforeSuspension) {
         
-        OSSpinLockLock(&_lock);
-        [self.scheduledDataTasks removeObject:task];
-        if (self.tasksCompletionIdentifier != UIBackgroundTaskInvalid) {
-            
-            [self processIncompleteBeforeClientResignActiveTasks:self.scheduledDataTasks
-                                            onDataTaskCompletion:YES];
-        }
-        OSSpinLockUnlock(&_lock); 
+        pn_lock(&_lock, ^{
+            [self.scheduledDataTasks removeObject:task];
+            if (self.tasksCompletionIdentifier != UIBackgroundTaskInvalid) {
+                
+                [self processIncompleteBeforeClientResignActiveTasks:self.scheduledDataTasks
+                                                onDataTaskCompletion:YES];
+            }
+        });
     }
 #endif // TARGET_OS_IOS
 }
@@ -1305,15 +1310,16 @@ NS_ASSUME_NONNULL_END
 
     if (self.configuration.applicationExtensionSharedGroupIdentifier == nil) {
         
-        bool locked = OSSpinLockTry(&_lock);
-        UIApplication *application = [UIApplication performSelector:NSSelectorFromString(@"sharedApplication")];
-        
-        if (self.tasksCompletionIdentifier != UIBackgroundTaskInvalid) {
+        pn_trylock(&_lock, ^{
             
-            [application endBackgroundTask:self.tasksCompletionIdentifier];
-            self.tasksCompletionIdentifier = UIBackgroundTaskInvalid;
-        }
-        if (locked) { OSSpinLockUnlock(&_lock); }
+            UIApplication *application = [UIApplication performSelector:NSSelectorFromString(@"sharedApplication")];
+            
+            if (self.tasksCompletionIdentifier != UIBackgroundTaskInvalid) {
+                
+                [application endBackgroundTask:self.tasksCompletionIdentifier];
+                self.tasksCompletionIdentifier = UIBackgroundTaskInvalid;
+            }
+        });
     }
 }
 
