@@ -213,7 +213,7 @@ NS_ASSUME_NONNULL_END
         
         if (!value) {
             
-            identifier = [[NSUUID UUID] UUIDString];
+            identifier = [@"pn-" stringByAppendingString:[[NSUUID UUID] UUIDString]];
             [PNKeychain storeValue:identifier forKey:kPNConfigurationUUIDKey
                withCompletionBlock:NULL];
         }
