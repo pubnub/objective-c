@@ -30,6 +30,10 @@
 - (void)testSimpleHeartbeat {
     PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo-36"
                                                                      subscribeKey:@"demo-36"];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    configuration.stripMobilePayload = NO;
+#pragma clang diagnostic pop    
     XCTAssertNotNil(configuration);
     configuration.presenceHeartbeatInterval = 5;
     PubNub *heartbeatClient = [PubNub clientWithConfiguration:configuration];

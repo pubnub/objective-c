@@ -25,6 +25,8 @@
  */
 static NSString * const kPNConfigurationDeviceIDKey = @"PNConfigurationDeviceID";
 
+NSString * const kPNConfigurationUUIDKey = @"PNConfigurationUUID";
+
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -53,7 +55,18 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Misc
 
 /**
- @brief  Fetch unique device idenrifier from user defaults or generate new one.
+ @brief      Fetch unique user identifier from keychain or generate new one.
+ @discussion This value updates with every client configuration (if different from previous one). If user 
+             doesn't provide custom \c uuid during client configuration, client will generate and store new 
+             unique value which will be re-used during next client configuration (if not provided custom 
+             \c uuid).
+ 
+ @return Unique user identifier.
+ */
+- (NSString *)uniqueUserIdentifier;
+
+/**
+ @brief  Fetch unique device idenrifier from keychain or generate new one.
  
  @return Unique device identifier which depends on platform for which client has been compiled.
  
@@ -140,7 +153,7 @@ NS_ASSUME_NONNULL_END
         _origin = [kPNDefaultOrigin copy];
         _publishKey = [publishKey copy];
         _subscribeKey = [subscribeKey copy];
-        _uuid = [[[NSUUID UUID] UUIDString] copy];
+        _uuid = [[self uniqueUserIdentifier] copy];
         _subscribeMaximumIdleTime = kPNDefaultSubscribeMaximumIdleTime;
         _nonSubscribeRequestTimeout = kPNDefaultNonSubscribeRequestTimeout;
         _TLSEnabled = kPNDefaultIsTLSEnabled;
@@ -192,6 +205,23 @@ NS_ASSUME_NONNULL_END
 
 
 #pragma mark - Misc
+
+- (NSString *)uniqueUserIdentifier {
+    
+    __block NSString *identifier = nil;
+    [PNKeychain valueForKey:kPNConfigurationUUIDKey withCompletionBlock:^(id value) {
+        
+        if (!value) {
+            
+            identifier = [[NSUUID UUID] UUIDString];
+            [PNKeychain storeValue:identifier forKey:kPNConfigurationUUIDKey
+               withCompletionBlock:NULL];
+        }
+        else { identifier = value; }
+    }];
+    
+    return identifier;
+}
 
 - (NSString *)uniqueDeviceIdentifier {
     
