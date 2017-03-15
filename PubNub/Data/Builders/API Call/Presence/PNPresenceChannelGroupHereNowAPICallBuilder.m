@@ -1,7 +1,7 @@
 /**
  @author Sergey Mamontov
  @since 4.5.4
- @copyright © 2009-2016 PubNub, Inc.
+ @copyright © 2009-2017 PubNub, Inc.
  */
 #import "PNPresenceChannelGroupHereNowAPICallBuilder.h"
 #import "PNAPICallBuilder+Private.h"
