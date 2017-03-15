@@ -536,7 +536,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #endif // TARGET_OS_IOS
 
-#if defined(__MAC_10_12) || defined(__IPHONE_10_0) || defined(__WATCHOS_3_0) || defined(__TVOS_10_0)
+#if PN_URLSESSION_TRANSACTION_METRICS_AVAILABLE
 /**
  @brief  Compose string with important request metrics.
  
@@ -1263,11 +1263,12 @@ NS_ASSUME_NONNULL_END
     #pragma clang diagnostic pop
 }
 
-#if defined(__MAC_10_12) || defined(__IPHONE_10_0) || defined(__WATCHOS_3_0) || defined(__TVOS_10_0)
+#if PN_URLSESSION_TRANSACTION_METRICS_AVAILABLE
 - (void)          URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task 
   didFinishCollectingMetrics:(NSURLSessionTaskMetrics *)metrics {
     
     if (self.client.logger.logLevel & PNRequestMetricsLogLevel) {
+        
         NSMutableArray *redirections = metrics.transactionMetrics.count > 1 ? [NSMutableArray new] : nil;
         __block NSMutableString *metricsData = nil;
         NSArray<NSURLSessionTaskTransactionMetrics *> *transactions = metrics.transactionMetrics;
@@ -1325,7 +1326,7 @@ NS_ASSUME_NONNULL_END
 
 #endif // TARGET_OS_IOS
 
-#if defined(__MAC_10_12) || defined(__IPHONE_10_0) || defined(__WATCHOS_3_0) || defined(__TVOS_10_0)
+#if PN_URLSESSION_TRANSACTION_METRICS_AVAILABLE
 - (NSMutableString *)formattedMetricsDataFrom:(NSURLSessionTaskTransactionMetrics *)transaction 
                                   redirection:(BOOL)isRedirection {
     

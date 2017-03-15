@@ -35,7 +35,7 @@ Pod::Spec.new do |spec|
             'PubNub/Data/{PNEnvelopeInformation,PNKeychain}.h',
             'PubNub/Data/Managers/**/*.h',
             'PubNub/Misc/{PNConstants,PNPrivateStructures}.h',
-            'PubNub/Misc/Helpers/*.h',
+            'PubNub/Misc/Helpers/{PNArray,PNChannel,PNData,PNDictionary,PNGZIP,PNHelpers,PNJSON,PNLockSupport,PNNumber,PNString,PNURLRequest}.h',
             'PubNub/Misc/Logger/PNLogMacro.h',
             'PubNub/Misc/Logger/Data/*.h',
             'PubNub/Misc/Protocols/PNParser.h',
