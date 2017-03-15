@@ -1,13 +1,15 @@
 /**
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2016 PubNub, Inc.
+ @copyright © 2009-2017 PubNub, Inc.
  */
 #ifndef PNHelpers_h
 #define PNHelpers_h
 
+#import "PNLockSupport.h"
 #import "PNURLRequest.h"
 #import "PNDictionary.h"
+#import "PNDefines.h"
 #import "PNChannel.h"
 #import "PNString.h"
 #import "PNNumber.h"
@@ -16,6 +18,8 @@
 #import "PNJSON.h"
 #import "PNGZIP.h"
 
+
+#pragma mark - GCD helpers
 
 /**
  @brief      GCD async block call wrapper.

@@ -46,8 +46,11 @@ Pod::Spec.new do |spec|
     end
 
     spec.subspec 'Logger' do |logger|
-        logger.source_files = 'PubNub/Misc/Logger/{Core,Data}/**/*'
-        logger.private_header_files = 'PubNub/Misc/Logger/Data/*.h'
+        logger.source_files = 'PubNub/Misc/Logger/{Core,Data}/**/*', 'PubNub/Misc/Helpers/{PNLockSupport,PNDefines}.h'
+        logger.private_header_files = [
+            'PubNub/Misc/Logger/Data/*.h',
+            'PubNub/Misc/Helpers/{PNLockSupport,PNDefines}.h'
+        ]
     end
 
     spec.subspec 'Fabric' do |fabric|
