@@ -14,9 +14,9 @@ matrix:
   include:
     - env: NAME="[ObjC] iOS 9.3 32bit" FASTLANE_LANE=test_ios FASTLANE_ENV=ios93x32 PN_TEST_LANG="ObjC"
     - env: NAME="[ObjC] iOS 9.3 64bit" FASTLANE_LANE=test_ios FASTLANE_ENV=ios93x64 PN_TEST_LANG="ObjC"
-    - env: NAME="[ObjC] iOS 10.0 64bit" FASTLANE_LANE=test_ios FASTLANE_ENV=ios100x64 PN_TEST_LANG="ObjC"
+    - env: NAME="[ObjC] iOS 10.0 64bit" FASTLANE_LANE=test_ios FASTLANE_ENV=ios102x64 PN_TEST_LANG="ObjC"
     - env: NAME="[ObjC] tvOS 9.2" FASTLANE_LANE=test_tvos FASTLANE_ENV=tvos92 PN_TEST_LANG="ObjC"
-    - env: NAME="[ObjC] tvOS 10.0" FASTLANE_LANE=test_tvos FASTLANE_ENV=tvos100 PN_TEST_LANG="ObjC"
+    - env: NAME="[ObjC] tvOS 10.0" FASTLANE_LANE=test_tvos FASTLANE_ENV=tvos101 PN_TEST_LANG="ObjC"
     - env: NAME="[ObjC] macOS" FASTLANE_LANE=test_macos FASTLANE_ENV=macos PN_TEST_LANG="ObjC"
 
 before_install:
