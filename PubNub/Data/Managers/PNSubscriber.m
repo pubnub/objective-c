@@ -940,7 +940,7 @@ NS_ASSUME_NONNULL_END
                  completion:^(PNStatusCategory category) {
             
             [self.client cancelAllLongPollingOperations];
-            [status updateCategory:status];
+            [status updateCategory:category];
             [self.client callBlock:nil status:YES withResult:nil andStatus:status];
         }];
     }

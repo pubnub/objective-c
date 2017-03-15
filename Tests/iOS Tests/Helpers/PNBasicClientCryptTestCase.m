@@ -17,6 +17,10 @@
     self.cryptedConfiguration = [PNConfiguration configurationWithPublishKey:@"demo-36" subscribeKey:@"demo-36"];
     self.cryptedConfiguration.uuid = @"322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C";
     self.cryptedConfiguration.cipherKey = @"chiper key";
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    self.cryptedConfiguration.stripMobilePayload = NO;
+#pragma clang diagnostic pop
     self.cryptedClient = [PubNub clientWithConfiguration:self.cryptedConfiguration];
     [self.cryptedClient.logger setLogLevel:PNVerboseLogLevel];
 }

@@ -20,6 +20,7 @@
 #endif // TARGET_OS_OSX
 #import "PubNub+SubscribePrivate.h"
 #import "PNObjectEventListener.h"
+#import "PNPrivateStructures.h"
 #import "PNClientInformation.h"
 #import "PNRequestParameters.h"
 #import "PNSubscribeStatus.h"
@@ -28,6 +29,7 @@
 #import "PNConfiguration.h"
 #import "PNReachability.h"
 #import "PNConstants.h"
+#import "PNKeychain.h"
 #import "PNLogMacro.h"
 #import "PNNetwork.h"
 #import "PNHelpers.h"
@@ -152,6 +154,15 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Misc
 
 /**
+ @brief  Store provided unique user identifier in keychain.
+ 
+ @param uuid  Reference on unique user identifier which has been provided with \b PNConfiguration instance.
+ 
+ @since 4.5.15
+ */
+- (void)storeUUID:(NSString *)uuid;
+
+/**
  @brief  Create and configure \b PubNub client logger instance.
  
  @since 4.5.0
@@ -229,6 +240,7 @@ NS_ASSUME_NONNULL_END
     // Check whether initialization has been successful or not
     if ((self = [super init])) {
         
+        [self storeUUID:configuration.uuid];
         [self setupClientLogger];
         DDLogClientInfo(self.logger, @"<PubNub> PubNub SDK %@ (%@)", kPNLibraryVersion, kPNCommit);
         
@@ -556,6 +568,11 @@ NS_ASSUME_NONNULL_END
 
 
 #pragma mark - Misc
+
+- (void)storeUUID:(NSString *)uuid {
+    
+    [PNKeychain storeValue:uuid forKey:kPNConfigurationUUIDKey withCompletionBlock:NULL];
+}
 
 - (void)setupClientLogger {
     

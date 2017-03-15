@@ -61,6 +61,10 @@
 
 - (void)testCreateClientWithBasicConfiguration {
     PNConfiguration *config = [PNConfiguration configurationWithPublishKey:@"demo-36" subscribeKey:@"demo-36"];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    config.stripMobilePayload = NO;
+#pragma clang diagnostic pop
     XCTAssertNotNil(config);
     PubNub *simpleClient = [PubNub clientWithConfiguration:config];
     XCTAssertNotNil(simpleClient);
@@ -68,6 +72,10 @@
 
 - (void)testCreateClientWithCallbackQueue {
     PNConfiguration *config = [PNConfiguration configurationWithPublishKey:@"demo-36" subscribeKey:@"demo-36"];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    config.stripMobilePayload = NO;
+#pragma clang diagnostic pop
     XCTAssertNotNil(config);
     dispatch_queue_t callbackQueue = dispatch_queue_create("com.testCreateClientWithCallbackQueue", DISPATCH_QUEUE_SERIAL);
     PubNub *simpleClient = [PubNub clientWithConfiguration:config callbackQueue:callbackQueue];
