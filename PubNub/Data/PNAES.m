@@ -1,13 +1,12 @@
 /**
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2016 PubNub, Inc.
+ @copyright © 2009-2017 PubNub, Inc.
  */
 #import "PNAES.h"
 #import <CommonCrypto/CommonCryptor.h>
 #import <CommonCrypto/CommonHMAC.h>
 #import "PubNub+CorePrivate.h"
-#import <libkern/OSAtomic.h>
 #import "PNErrorCodes.h"
 #import "PNConstants.h"
 #import "PNLogMacro.h"
@@ -214,24 +213,26 @@ NS_ASSUME_NONNULL_END
 
 + (NSData *)SHA256HexFromKey:(NSString *)cipherKey {
     
-    static OSSpinLock _cipherKeysSpinLock;
+    static os_unfair_lock _cipherKeysSpinLock;
     static NSMutableDictionary *_cipherKeys;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         
-        _cipherKeysSpinLock = OS_SPINLOCK_INIT;
+        _cipherKeysSpinLock = OS_UNFAIR_LOCK_INIT;
         _cipherKeys = [NSMutableDictionary new];
     });
     
-    OSSpinLockLock(&_cipherKeysSpinLock);
-    NSData *key = _cipherKeys[cipherKey];
-    if (!key) {
+    __block NSData *key = nil;
+    pn_lock(&_cipherKeysSpinLock, ^{
         
-        NSString *SHA256String = [PNData HEXFrom:[PNString SHA256DataFrom:cipherKey]];
-        key = [PNString UTF8DataFrom:[SHA256String lowercaseString]];
-        _cipherKeys[cipherKey] = key;
-    }
-    OSSpinLockUnlock(&_cipherKeysSpinLock);
+        key = _cipherKeys[cipherKey];
+        if (!key) {
+            
+            NSString *SHA256String = [PNData HEXFrom:[PNString SHA256DataFrom:cipherKey]];
+            key = [PNString UTF8DataFrom:[SHA256String lowercaseString]];
+            _cipherKeys[cipherKey] = key;
+        }
+    });
     
     return key;
 }

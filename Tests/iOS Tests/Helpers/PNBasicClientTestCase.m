@@ -21,6 +21,10 @@
     self.configuration.uuid = @"322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C";
     self.configuration.origin = @"pubsub.pubnub.com";
     self.configuration = [self overrideClientConfiguration:self.configuration];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    self.configuration.stripMobilePayload = NO;
+#pragma clang diagnostic pop
     self.client = [PubNub clientWithConfiguration:self.configuration];
     self.client.logger.enabled = NO;
     [self.client.logger setLogLevel:PNVerboseLogLevel];

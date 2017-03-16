@@ -1,7 +1,7 @@
 /**
  @author Sergey Mamontov
  @since 4.4.0
- @copyright © 2009-2016 PubNub, Inc.
+ @copyright © 2009-2017 PubNub, Inc.
  */
 #import "NSURLSessionConfiguration+PNConfigurationPrivate.h"
 #if TARGET_OS_IOS || TARGET_OS_TV

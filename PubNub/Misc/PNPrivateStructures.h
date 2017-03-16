@@ -3,13 +3,18 @@
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2016 PubNub, Inc.
+ @copyright © 2009-2017 PubNub, Inc.
  */
 #import "PNStructures.h"
 
 
 #ifndef PNPrivateStructures_h
 #define PNPrivateStructures_h
+
+/**
+ @brief  Stores reference on key under which unique user identifier will be stored persistently.
+ */
+extern NSString * const kPNConfigurationUUIDKey;
 
 /**
  @brief  Helper to stringify operation type in result and status objects.

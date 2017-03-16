@@ -1,7 +1,7 @@
 /**
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2016 PubNub, Inc.
+ @copyright © 2009-2017 PubNub, Inc.
  */
 #import "PNSubscriber.h"
 #import "PNSubscribeStatus+Private.h"
@@ -244,10 +244,15 @@ NS_ASSUME_NONNULL_BEGIN
  
  @param state  New state from \b PNSubscriberState enum fields.
  @param status Reference on status object which should be passed along to listeners.
+ @param block  Reference on block which will be called at the end of subscriber's state update process. Block
+               pass only one argument - reference on one of \c PNStatusCategory enum fields which represent 
+               calculated status category (may differ from the one, which is passed into method because of
+               current and expected subscriber's state).
  
- @since 4.0
+ @since 4.5.15
  */
-- (void)updateStateTo:(PNSubscriberState)state withStatus:(PNSubscribeStatus *)status;
+- (void)updateStateTo:(PNSubscriberState)state withStatus:(PNSubscribeStatus *)status 
+           completion:(nullable void(^)(PNStatusCategory category))block;
 
 
 #pragma mark - Subscription
@@ -664,7 +669,8 @@ NS_ASSUME_NONNULL_END
     pn_safe_property_write(self.resourceAccessQueue, ^{ self->_lastTimeTokenRegion = lastTimeTokenRegion; });
 }
 
-- (void)updateStateTo:(PNSubscriberState)state withStatus:(PNSubscribeStatus *)status {
+- (void)updateStateTo:(PNSubscriberState)state withStatus:(PNSubscribeStatus *)status
+           completion:(void(^)(PNStatusCategory category))block {
 
     pn_safe_property_write(self.resourceAccessQueue, ^{
         
@@ -746,7 +752,7 @@ NS_ASSUME_NONNULL_END
             
             // Build status object in case if update has been called as transition between two
             // different states.
-            PNStatus *targetStatus = (PNStatus *)status;
+            PNStatus *targetStatus = [(PNStatus *)status copy];
             if (!targetStatus) {
                 
                 targetStatus = [PNStatus statusForOperation:PNSubscribeOperation
@@ -766,7 +772,8 @@ NS_ASSUME_NONNULL_END
                 [self.client.listenersManager notifyStatusChange:(PNSubscribeStatus *)targetStatus];
             }];
             #pragma clang diagnostic pop
-        }
+        } else { category = (status ? status.category : PNUnknownCategory); }
+        if (block) { pn_dispatch_async(self.client.callbackQueue, ^{ block(category); }); }
     });
 }
 
@@ -929,9 +936,13 @@ NS_ASSUME_NONNULL_END
             
             pn_dispatch_async(self.client.callbackQueue, ^{ block((PNSubscribeStatus *)status); });
         }
-        [self updateStateTo:PNDisconnectedSubscriberState withStatus:(PNSubscribeStatus *)status];
-        [self.client cancelAllLongPollingOperations];
-        [self.client callBlock:nil status:YES withResult:nil andStatus:status];
+        [self updateStateTo:PNDisconnectedSubscriberState withStatus:(PNSubscribeStatus *)status 
+                 completion:^(PNStatusCategory category) {
+            
+            [self.client cancelAllLongPollingOperations];
+            [status updateCategory:category];
+            [self.client callBlock:nil status:YES withResult:nil andStatus:status];
+        }];
     }
     #pragma clang diagnostic pop
 }
@@ -1030,24 +1041,28 @@ NS_ASSUME_NONNULL_END
         [self.client processOperation:PNUnsubscribeOperation withParameters:parameters
                       completionBlock:^(__unused PNStatus *status1){
                           
+            void(^updateCompletion)(PNStatusCategory) = ^(PNStatusCategory category) {
+                
+                [successStatus updateCategory:category];
+                [weakSelf.client callBlock:nil status:YES withResult:nil andStatus:successStatus];
+                BOOL listChanged = ![[NSSet setWithArray:[weakSelf allObjects]] isEqualToSet:subscriptionObjects];
+                if (subscribeOnRestChannels && (subscriptionObjects.count > 0 && !listChanged)) {
+                    
+                    [weakSelf subscribe:YES usingTimeToken:nil withState:nil completion:nil];
+                }
+                else if (block) {
+                        
+                    pn_dispatch_async(weakSelf.client.callbackQueue, ^{
+                        
+                        block((PNSubscribeStatus *)successStatus);
+                    });
+                }
+            };
             if (shouldInformListener) {
                 
                 [weakSelf updateStateTo:PNDisconnectedSubscriberState
-                             withStatus:(PNSubscribeStatus *)successStatus];
-            }
-            [weakSelf.client callBlock:nil status:YES withResult:nil andStatus:successStatus];
-            BOOL listChanged = ![[NSSet setWithArray:[weakSelf allObjects]] isEqualToSet:subscriptionObjects];
-            if (subscribeOnRestChannels && (subscriptionObjects.count > 0 && !listChanged)) {
-                
-                [weakSelf subscribe:YES usingTimeToken:nil withState:nil completion:nil];
-            }
-            else if (block) {
-                    
-                pn_dispatch_async(weakSelf.client.callbackQueue, ^{
-                    
-                    block((PNSubscribeStatus *)successStatus);
-                });
-            }
+                             withStatus:(PNSubscribeStatus *)successStatus completion:updateCompletion];
+            } else { updateCompletion(successStatus.category); }
         }];
     }
     else {
@@ -1062,12 +1077,16 @@ NS_ASSUME_NONNULL_END
                     block((PNSubscribeStatus *)successStatus);
                 });
             }
+            void(^updateCompletion)(PNStatusCategory) = ^(PNStatusCategory category) {
+                
+                [successStatus updateCategory:category];
+                [weakSelf.client callBlock:nil status:YES withResult:nil andStatus:successStatus];
+            };
             if (shouldInformListener) {
                 
                 [weakSelf updateStateTo:PNDisconnectedSubscriberState
-                             withStatus:(PNSubscribeStatus *)successStatus];
-            }
-            [weakSelf.client callBlock:nil status:YES withResult:nil andStatus:successStatus];
+                             withStatus:(PNSubscribeStatus *)successStatus completion:updateCompletion];
+            } else { updateCompletion(successStatus.category); }
         }];
     }
     #pragma clang diagnostic pop
@@ -1146,8 +1165,12 @@ NS_ASSUME_NONNULL_END
     
     if (status.clientRequest.URL != nil && isInitialSubscription) {
         
-        [self updateStateTo:PNConnectedSubscriberState withStatus:status];
-        [self.client callBlock:nil status:YES withResult:nil andStatus:(PNStatus *)status];
+        [self updateStateTo:PNConnectedSubscriberState withStatus:status 
+                 completion:^(PNStatusCategory category){
+            
+            [status updateCategory:category];
+            [self.client callBlock:nil status:YES withResult:nil andStatus:(PNStatus *)status];
+        }];
     }
     #pragma clang diagnostic pop
 }
@@ -1200,7 +1223,7 @@ NS_ASSUME_NONNULL_END
                 subscriberState = PNDisconnectedUnexpectedlySubscriberState;
                 [(PNStatus *)status updateCategory:PNUnexpectedDisconnectCategory];
             }
-            [self updateStateTo:subscriberState withStatus:status];
+            [self updateStateTo:subscriberState withStatus:status completion:nil];
         }
         // Looks like client lost connection with internet or has any other connection
         // related issues.
@@ -1240,7 +1263,7 @@ NS_ASSUME_NONNULL_END
             [(PNStatus *)status updateCategory:PNUnexpectedDisconnectCategory];
             
             [self.client.heartbeatManager stopHeartbeatIfPossible];
-            [self updateStateTo:PNDisconnectedUnexpectedlySubscriberState withStatus:status];
+            [self updateStateTo:PNDisconnectedUnexpectedlySubscriberState withStatus:status completion:nil];
         }
     }
     [self.client callBlock:nil status:YES withResult:nil andStatus:(PNStatus *)status];

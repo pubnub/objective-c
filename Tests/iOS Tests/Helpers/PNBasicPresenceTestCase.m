@@ -37,6 +37,10 @@
     config.uuid = @"58A6FB32-4323-45BE-97BF-2D070A3F8912";
     config.origin = @"pubsub.pubnub.com";
     config.presenceHeartbeatValue = 0;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    config.stripMobilePayload = NO;
+#pragma clang diagnostic pop
     self.otherClient = [PubNub clientWithConfiguration:config];
     [self.otherClient addListener:self];
 }
