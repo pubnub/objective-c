@@ -1,5 +1,5 @@
 language: objective-c
-sudo: false
+sudo: true
 osx_image: xcode8.2
 cache: 
   - bundler
@@ -14,15 +14,13 @@ matrix:
   include:
     - env: NAME="[ObjC] iOS 9.3 32bit" FASTLANE_LANE=test_ios FASTLANE_ENV=ios93x32 PN_TEST_LANG="ObjC"
     - env: NAME="[ObjC] iOS 9.3 64bit" FASTLANE_LANE=test_ios FASTLANE_ENV=ios93x64 PN_TEST_LANG="ObjC"
-    - env: NAME="[ObjC] iOS 10.0 64bit" FASTLANE_LANE=test_ios FASTLANE_ENV=ios102x64 PN_TEST_LANG="ObjC"
+    - env: NAME="[ObjC] iOS 10.2 64bit" FASTLANE_LANE=test_ios FASTLANE_ENV=ios102x64 PN_TEST_LANG="ObjC"
     - env: NAME="[ObjC] tvOS 9.2" FASTLANE_LANE=test_tvos FASTLANE_ENV=tvos92 PN_TEST_LANG="ObjC"
-    - env: NAME="[ObjC] tvOS 10.0" FASTLANE_LANE=test_tvos FASTLANE_ENV=tvos101 PN_TEST_LANG="ObjC"
+    - env: NAME="[ObjC] tvOS 10.1" FASTLANE_LANE=test_tvos FASTLANE_ENV=tvos101 PN_TEST_LANG="ObjC"
     - env: NAME="[ObjC] macOS" FASTLANE_LANE=test_macos FASTLANE_ENV=macos PN_TEST_LANG="ObjC"
 
 before_install:
-  - gem uninstall bundler -v '>1.12.5' --force || echo "bundler >1.12.5 is not installed"
-  - gem list -i bundler -v 1.12.5 || gem install bundler -v 1.12.5 --no-rdoc --no-ri --no-document --quiet
-  - gem list -i fastlane || gem cleanup && gem install fastlane --no-rdoc --no-ri --no-document --quiet
+  - sudo gem install fastlane -NV
 
 script:
   - set -o pipefail
