@@ -6,7 +6,7 @@
  
  @author Sergey Mamontov
  @since 4.x.1
- @copyright © 2009-2016 PubNub, Inc.
+ @copyright © 2009-2017 PubNub, Inc.
  */
 @interface PNKeychain : NSObject
 

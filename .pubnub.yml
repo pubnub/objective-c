@@ -1,9 +1,25 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.5.14"
+version: "4.5.15"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Added ability to store last used UUID in persistent storage."
+        type: feature
+      -
+        text: "Added 'pn-' prefix for client-provided unique user identifiers."
+        type: improvement
+      -
+        text: "Added OSSpinLock and os_unfair_lock switch."
+        type: improvement
+      -
+        text: "Changed pre-compile macro for URLSession metrics gathering delegate usage."
+        type: bug
+    date: Mar 15, 17
+    version: v4.5.15
   -
     changes:
       -

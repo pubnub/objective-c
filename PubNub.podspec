@@ -9,7 +9,7 @@
 
 Pod::Spec.new do |spec|
     spec.name     = 'PubNub'
-    spec.version  = '4.5.14'
+    spec.version  = '4.5.15'
     spec.summary  = 'The PubNub Real-Time Network. Build real-time apps quickly and scale them globally.'
     spec.homepage = 'https://github.com/pubnub/objective-c'
 
@@ -46,7 +46,7 @@ Pod::Spec.new do |spec|
     end
 
     spec.subspec 'Logger' do |logger|
-        logger.source_files = 'PubNub/Misc/Logger/{Core,Data}/**/*', 'PubNub/Misc/Helpers/{PNLockSupport,PNDefines}.h'
+        logger.source_files = 'PubNub/Misc/Logger/{Core,Data}/**/*', 'PubNub/Misc/Helpers/{PNLockSupport,PNDefines}.{h,m}'
         logger.private_header_files = [
             'PubNub/Misc/Logger/Data/*.h',
             'PubNub/Misc/Helpers/{PNLockSupport,PNDefines}.h'

@@ -1,7 +1,7 @@
 /**
  @author Sergey Mamontov
  @since 4.5.4
- @copyright © 2009-2016 PubNub, Inc.
+ @copyright © 2009-2017 PubNub, Inc.
  */
 #import "PNStreamAPICallBuilder.h"
 #import "PNStreamModificationAPICallBuilder.h"
