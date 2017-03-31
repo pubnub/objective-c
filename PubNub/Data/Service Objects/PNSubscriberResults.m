@@ -26,6 +26,21 @@
     return self.serviceData[@"uuid"];
 }
 
+- (NSString *)join {
+    
+    return self.serviceData[@"join"];
+}
+
+- (NSString *)leave {
+    
+    return self.serviceData[@"leave"];
+}
+
+- (NSString *)timeout {
+    
+    return self.serviceData[@"timeout"];
+}
+
 - (NSNumber *)occupancy {
     
     return self.serviceData[@"occupancy"];
