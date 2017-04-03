@@ -1,3 +1,6 @@
+31-03-2017 - 10a7af7 - 4.6.0
+. add support for presence deltas.
+
 15-03-2017 - 0ca22f9 - 4.5.15
 . added 'pn-' prefix for client-provided unique user identifiers.
 . changed pre-compile macro for URLSession metrics gathering delegate usage.
