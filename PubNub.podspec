@@ -57,6 +57,7 @@ Pod::Spec.new do |spec|
         fabric.dependency 'PubNub/Core'
         fabric.source_files = 'PubNub/Core/PubNub+FAB.{h,m}', 'Support/Fabric/Headers/*'
         fabric.private_header_files = [ 'Support/Fabric/Headers/{Fabric+FABKits,FABKitProtocol}.h' ]
+        fabric.exclude_files = 'Support/Fabric/Headers/PubNub.h'
         fabric.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'FABRIC_SUPPORT=1' }
         fabric.pod_target_xcconfig = { 
             'APPLICATION_EXTENSION_API_ONLY' => 'YES',
