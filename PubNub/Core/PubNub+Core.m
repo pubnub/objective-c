@@ -638,9 +638,11 @@ NS_ASSUME_NONNULL_END
         
         [deprecation appendString:@"- Deprecated: PNConfiguration.shouldStripMobilePayload property.-\n"
          "When set to YES SDK automatically stripped out original message\nfrompayload which combined message"
-         " and push notification payloads.\n\nThis deprecation may affect application in case if it "
-         "used\npublish API to send messages along with push notification payloads.\nProperty completely will"
-         " be deprecated with next 'major' SDK update.\n\n"];
+         " and push notification payloads.\n\n"];
+        [deprecation appendString:@"!!! To disable this warning set shouldStripMobilePayload to NO.\n\n"];
+        [deprecation appendString:@"This deprecation may affect application in case if it used\npublish API "
+         "to send messages along with push notification payloads.\nProperty completely will be deprecated "
+         "with next 'major' SDK update.\n\n"];
         
         [deprecation appendString:@"If application's code rely on automatic messages clean up (send\nmobile "
          "push notifications along with messages or store message\ninside payload) it is suggested to update "
