@@ -1,9 +1,16 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.5.15"
+version: "4.6.0"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Add support for presence deltas."
+        type: feature
+    date: Mar 31, 17
+    version: v4.6.0
   -
     changes:
       -
@@ -568,13 +575,13 @@ changelog:
     date: Jun 30, 15
     version: v4.0.0
 features: 
-  notify:
-    - REQUEST-MESSAGE-COUNT-EXCEEDED
   channel-groups:
     - CHANNEL-GROUPS-ADD-CHANNELS
     - CHANNEL-GROUPS-REMOVE-CHANNELS
     - CHANNEL-GROUPS-REMOVE-GROUPS
     - CHANNEL-GROUPS-LIST-CHANNELS-IN-GROUP
+  notify:
+    - REQUEST-MESSAGE-COUNT-EXCEEDED
   push:
     - PUSH-ADD-DEVICE-TO-CHANNELS
     - PUSH-REMOVE-DEVICE-FROM-CHANNELS
@@ -586,6 +593,7 @@ features:
     - PRESENCE-SET-STATE
     - PRESENCE-GET-STATE
     - PRESENCE-HEARTBEAT
+    - PRESENCE-DELTAS
   publish:
     - PUBLISH-STORE-FLAG
     - PUBLISH-RAW-JSON
@@ -617,14 +625,14 @@ features:
     - UNSUBSCRIBE-ALL
 supported-platforms:
   -
-    version: PubNub Objective-C 4.5.13
+    version: PubNub Objective-C 4.6.0
     platforms:
       - iOS 7.0 or higher.
       - watchOS 2.0 or higher.
       - tvOS 9.0 or higher.
       - macOS 10.9 or higher.
   -
-    version: PubNub Swift 4.5.13
+    version: PubNub Swift 4.6.0
     platforms:
       - iOS 7.0 or higher.
       - watchOS 2.0 or higher.
