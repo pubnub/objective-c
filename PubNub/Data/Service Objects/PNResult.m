@@ -37,7 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @param shouldCopyServiceData Whether service data should be passed to new copy or not.
  
- @param Receiver's new copy.
+ @return Receiver's new copy.
  */
 - (id)copyWithServiceData:(BOOL)shouldCopyServiceData;
 
