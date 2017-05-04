@@ -1,3 +1,6 @@
+26-04-2017 - 9087df2 - 4.6.1
+. fixed dependency analysis warnings for Fabric integration via CocoaPods.
+
 31-03-2017 - 10a7af7 - 4.6.0
 . add support for presence deltas.
 
