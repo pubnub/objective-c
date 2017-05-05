@@ -79,7 +79,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @since 4.0
  */
-@property (nonatomic, strong) PNNetwork *subscriptionNetwork;
+@property (nonatomic, strong, nullable) PNNetwork *subscriptionNetwork;
 
 /**
  @brief Stores reference on \b PubNub network manager configured to be used for 'non-subscription'
@@ -87,7 +87,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @since 4.0
  */
-@property (nonatomic, strong) PNNetwork *serviceNetwork;
+@property (nonatomic, strong, nullable) PNNetwork *serviceNetwork;
 
 /**
  @brief  Stores reference on reachability helper.
@@ -457,7 +457,7 @@ NS_ASSUME_NONNULL_END
 
 - (void)cancelAllLongPollingOperations {
     
-    [self.subscriptionNetwork cancelAllRequests];
+    [self.subscriptionNetwork cancelAllOperationsWithURLPrefix:@"/v2/subscribe/"];
 }
 
 

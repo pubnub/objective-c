@@ -121,7 +121,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @since 4.0.2
  */
-@property (nonatomic, strong) NSURLSession *session;
+@property (nonatomic, strong, nullable) NSURLSession *session;
 
 /**
  @brief      Stores reference on data task completion block which should be used to notify caller about task 
@@ -780,9 +780,9 @@ NS_ASSUME_NONNULL_END
 - (void)processOperation:(PNOperationType)operationType withParameters:(PNRequestParameters *)parameters 
                     data:(NSData *)data completionBlock:(id)block {
     
-    if (operationType == PNSubscribeOperation || operationType == PNUnsubscribeOperation) {
+    if (operationType == PNSubscribeOperation) {
         
-        [self cancelAllRequests];
+        [self cancelAllOperationsWithURLPrefix:@"/v2/subscribe/"];
     }
     
     [self appendRequiredParametersTo:parameters];
@@ -854,7 +854,7 @@ NS_ASSUME_NONNULL_END
     
     if (![parser requireAdditionalData]) {
         
-        parseCompletion([parser parsedServiceResponse:data]);
+        parseCompletion(data ? [parser parsedServiceResponse:data] : nil);
     }
     else {
 
@@ -909,8 +909,8 @@ NS_ASSUME_NONNULL_END
 }
 #endif // TARGET_OS_IOS
 
-- (void)cancelAllRequests {
-
+- (void)cancelAllOperationsWithURLPrefix:(NSString *)prefix {
+    
     pn_lock_async(&_lock, ^(dispatch_block_t complete) {
 #if TARGET_OS_IOS
         if (self.configuration.applicationExtensionSharedGroupIdentifier == nil && 
@@ -923,9 +923,12 @@ NS_ASSUME_NONNULL_END
         [self.session getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks,
                                                       NSArray *downloadTasks) {
             
-            [dataTasks makeObjectsPerformSelector:@selector(cancel)];
-            [uploadTasks makeObjectsPerformSelector:@selector(cancel)];
-            [downloadTasks makeObjectsPerformSelector:@selector(cancel)];
+            if (prefix) {
+                for (NSURLSessionDataTask *dataTask in dataTasks) {
+                    if ([dataTask.originalRequest.URL.path hasPrefix:prefix]) { [dataTask cancel]; }
+                }
+            }
+            else { [dataTasks makeObjectsPerformSelector:@selector(cancel)]; }
             complete();
         }];
     });
@@ -1247,8 +1250,8 @@ NS_ASSUME_NONNULL_END
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wreceiver-is-weak"
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
-    [self.client appendClientInformation:result];
-    [self.client appendClientInformation:status];
+    if (result) { [self.client appendClientInformation:result]; }
+    if (status) { [self.client appendClientInformation:status]; }
     if (block) {
         
         if ([self operationExpectResult:operation]) {

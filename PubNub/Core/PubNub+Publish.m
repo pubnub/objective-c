@@ -153,8 +153,8 @@ NS_ASSUME_NONNULL_BEGIN
  
  @since 4.0
  */
-- (NSString *)encryptedMessage:(NSString *)message withCipherKey:(NSString *)key
-                         error:(NSError **)error;
+- (nullable NSString *)encryptedMessage:(NSString *)message withCipherKey:(NSString *)key
+                                  error:(NSError **)error;
 
 #pragma mark -
 

@@ -1032,7 +1032,8 @@ NS_ASSUME_NONNULL_END
     __weak __typeof(self) weakSelf = self;
     
     DDLogAPICall(self.client.logger, @"<PubNub::API> Unsubscribe (channels: %@; groups: %@)",
-                 channelsWithOutPresence, groupsWithOutPresence);
+                 [channelsWithOutPresence componentsJoinedByString:@","], 
+                 [groupsWithOutPresence componentsJoinedByString:@","]);
     
     NSSet *subscriptionObjects = [NSSet setWithArray:[self allObjects]];
     if (subscriptionObjects.count == 0) {

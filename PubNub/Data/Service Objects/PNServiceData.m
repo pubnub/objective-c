@@ -58,7 +58,12 @@ NS_ASSUME_NONNULL_END
     if ((self = [super init])) {
         
         self.serviceData = (response?: @{});
-        if (![response isKindOfClass:[NSDictionary class]]) { self.serviceData = @{@"information": response}; }
+        if (![response isKindOfClass:[NSDictionary class]]) { 
+            self.serviceData = @{
+                @"information": (response?: @"Something went really wrong or method has been called on "
+                                 "inappropriate object.")
+            }; 
+        }
     }
     
     return self;
