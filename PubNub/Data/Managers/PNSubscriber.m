@@ -77,7 +77,15 @@ typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
      
      @since 4.0
      */
-    PNMalformedFilterExpressionErrorSubscriberState
+    PNMalformedFilterExpressionErrorSubscriberState,
+    
+    /**
+     @brief  State set at the moment when client received response with 414 status code for 
+             subscribe/unsubscribe requests.
+     
+     @since 4.6.2
+     */
+    PNPNRequestURITooLongErrorSubscriberState
 };
 
 
@@ -744,6 +752,16 @@ NS_ASSUME_NONNULL_END
             shouldHandleTransition = YES;
             category = PNMalformedFilterExpressionCategory;
         }
+        // Check whether transit to 'request URI too long' state.
+        else if (targetState == PNPNRequestURITooLongErrorSubscriberState) {
+            
+            // Change state to 'Unexpected disconnect'
+            targetState = PNDisconnectedUnexpectedlySubscriberState;
+            
+            self.mayRequireSubscriptionRestore = NO;
+            shouldHandleTransition = YES;
+            category = PNRequestURITooLongCategory;
+        }
         
         // Check whether allowed state transition has been issued or not.
         if (shouldHandleTransition) {
@@ -1201,10 +1219,12 @@ NS_ASSUME_NONNULL_END
         if (status.category == PNAccessDeniedCategory || status.category == PNTimeoutCategory ||
             status.category == PNMalformedFilterExpressionCategory ||
             status.category == PNMalformedResponseCategory ||
+            status.category == PNRequestURITooLongCategory ||
             status.category == PNTLSConnectionFailedCategory) {
             
             __weak __typeof(self) weakSelf = self;
-            ((PNStatus *)status).automaticallyRetry = (status.category != PNMalformedFilterExpressionCategory);
+            ((PNStatus *)status).automaticallyRetry = (status.category != PNMalformedFilterExpressionCategory &&
+                                                       status.category != PNRequestURITooLongCategory);
             ((PNStatus *)status).retryCancelBlock = ^{
                 
                 DDLogAPICall(weakSelf.client.logger, @"<PubNub::API> Cancel retry");
@@ -1217,8 +1237,13 @@ NS_ASSUME_NONNULL_END
                 
                 subscriberState = PNMalformedFilterExpressionErrorSubscriberState;
             }
+            else if(status.category == PNRequestURITooLongCategory) {
+                
+                subscriberState = PNPNRequestURITooLongErrorSubscriberState;
+            }
             if (status.category != PNAccessDeniedCategory &&
-                status.category != PNMalformedFilterExpressionCategory) {
+                status.category != PNMalformedFilterExpressionCategory &&
+                status.category != PNRequestURITooLongCategory) {
                 
                 subscriberState = PNDisconnectedUnexpectedlySubscriberState;
                 [(PNStatus *)status updateCategory:PNUnexpectedDisconnectCategory];

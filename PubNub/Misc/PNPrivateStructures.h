@@ -93,7 +93,7 @@ static NSString * const PNOperationStatusClasses[23] = {
 
  @since 4.0
  */
-static NSString * const PNStatusCategoryStrings[17] = {
+static NSString * const PNStatusCategoryStrings[18] = {
     [PNUnknownCategory] = @"Unknown",
     [PNAcknowledgmentCategory] = @"Acknowledgment",
     [PNAccessDeniedCategory] = @"Access Denied",
@@ -106,6 +106,7 @@ static NSString * const PNStatusCategoryStrings[17] = {
     [PNUnexpectedDisconnectCategory] = @"Unexpected Disconnect",
     [PNCancelledCategory] = @"Cancelled",
     [PNBadRequestCategory] = @"Bad Request",
+    [PNRequestURITooLongCategory] = @"Request-URI Too Long",
     [PNMalformedFilterExpressionCategory] = @"Malformed Filter Expression",
     [PNMalformedResponseCategory] = @"Malformed Response",
     [PNDecryptionErrorCategory] = @"Decryption Error",

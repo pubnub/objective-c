@@ -224,6 +224,7 @@
     
     PNStatusCategory category = PNUnknownCategory;
     if (statusCode == 403) { category = PNAccessDeniedCategory; }
+    else if (statusCode == 414) { category = PNRequestURITooLongCategory; }
     else if (statusCode == 481) { category = PNMalformedFilterExpressionCategory; }
     
     return category;
