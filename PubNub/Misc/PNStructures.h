@@ -540,15 +540,25 @@ typedef NS_ENUM(NSInteger, PNStatusCategory) {
      @since 4.0
      */
     PNCancelledCategory,
-
+    
     /**
      @brief      Status is used to notify what API request from client is malformed.
      @discussion In case if this status arrive, it is better to print out status object debug
                  description and contact support@pubnub.com
-
+     
      @since 4.0
      */
     PNBadRequestCategory,
+    
+    /**
+     @brief      Status is used to notify what composed API request has too many data in it.
+     @discussion In case if this status arrive, depending from used API it mean what too many data has been 
+                 passed to it. For example for publish it may mean what too big message has been sent. For
+                 subscription/unsubscription API it may mean what too many channels has been passed to API.
+     
+     @since 4.6.2
+     */
+    PNRequestURITooLongCategory,
 
     /**
      @brief      Status is used to notify what client has been configured with malformed filtering expression.
