@@ -780,11 +780,6 @@ NS_ASSUME_NONNULL_END
 - (void)processOperation:(PNOperationType)operationType withParameters:(PNRequestParameters *)parameters 
                     data:(NSData *)data completionBlock:(id)block {
     
-    if (operationType == PNSubscribeOperation) {
-        
-        [self cancelAllOperationsWithURLPrefix:@"/v2/subscribe/"];
-    }
-    
     [self appendRequiredParametersTo:parameters];
     // Silence static analyzer warnings.
     // Code is aware about this case and at the end will simply call on 'nil' object method.
