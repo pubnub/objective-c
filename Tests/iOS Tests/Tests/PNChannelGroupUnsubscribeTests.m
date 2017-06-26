@@ -41,7 +41,7 @@ static NSString * const kPNChannelGroupTestsName = @"PNChannelGroupUnsubscribeTe
         XCTAssertEqual(status.statusCode, 200);
     }];
     
-    BOOL shouldObservePresence;
+    BOOL shouldObservePresence = NO;
     NSString *expectedMessage;
     NSNumber *expectedTimeToken;
     NSArray *expectedChannelGroups;

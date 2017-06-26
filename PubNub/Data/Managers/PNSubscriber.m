@@ -5,6 +5,7 @@
  */
 #import "PNSubscriber.h"
 #import "PNSubscribeStatus+Private.h"
+#import "PubNub+SubscribePrivate.h"
 #import "PNEnvelopeInformation.h"
 #import "PNServiceData+Private.h"
 #import "PNErrorStatus+Private.h"
@@ -957,7 +958,7 @@ NS_ASSUME_NONNULL_END
         [self updateStateTo:PNDisconnectedSubscriberState withStatus:(PNSubscribeStatus *)status 
                  completion:^(PNStatusCategory category) {
             
-            [self.client cancelAllLongPollingOperations];
+            [self.client cancelSubscribeOperations];
             [status updateCategory:category];
             [self.client callBlock:nil status:YES withResult:nil andStatus:status];
         }];
@@ -1032,7 +1033,8 @@ NS_ASSUME_NONNULL_END
     __weak __typeof(self) weakSelf = self;
     
     DDLogAPICall(self.client.logger, @"<PubNub::API> Unsubscribe (channels: %@; groups: %@)",
-                 channelsWithOutPresence, groupsWithOutPresence);
+                 [channelsWithOutPresence componentsJoinedByString:@","], 
+                 [groupsWithOutPresence componentsJoinedByString:@","]);
     
     NSSet *subscriptionObjects = [NSSet setWithArray:[self allObjects]];
     if (subscriptionObjects.count == 0) {

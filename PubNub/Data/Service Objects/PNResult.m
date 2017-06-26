@@ -156,7 +156,7 @@ NS_ASSUME_NONNULL_END
 
 - (NSDictionary *)normalizedServiceData:(id)serviceData {
     
-    NSDictionary *normalizedServiceData = serviceData;
+    NSDictionary *normalizedServiceData = serviceData?: @{};
     if (serviceData && ![serviceData isKindOfClass:[NSDictionary class]]) {
         
         normalizedServiceData = @{@"information": serviceData};
