@@ -172,14 +172,13 @@ struct PNPublishSequenceDataStructure PNPublishSequenceData = {
 #pragma mark - Misc
 
 /**
- @brief      Subscribe / unsubscribe to/from application context change notifications.
+ @brief      Subscribe to application context change notifications.
  @discussion Context change allow to react and if required save sequence data information into persistent 
              storage.
  
  @since 4.5.2
  */
 - (void)subscribeOnNotifications;
-- (void)unsubscribeFromNotifications;
 
 #pragma mark -
 
@@ -230,6 +229,9 @@ NS_ASSUME_NONNULL_END
             manager = [[self alloc] initForClient:client];
             sequenceManagers[client.currentConfiguration.publishKey] = manager;
         }
+        // In case if received manager which existed after PubNub client has been deallocated it should be set
+        // new reference on client.
+        if (manager.client == nil) { manager.client = client; }
     }
     
     return manager;
@@ -291,16 +293,21 @@ NS_ASSUME_NONNULL_END
     
     pn_lock_async(&publishSequenceKeychainAccessLock, ^(dispatch_block_t completion) {
         
-        [PNKeychain valueForKey:kPNPublishSequenceDataKey withCompletionBlock:^(NSDictionary *sequences) {
+        // Perform data maniupulation only if PubNub client, for which manager has been created, still 
+        // available. 
+        if (self.client != nil) {
             
-            NSMutableDictionary *mutableSequences = [(sequences?: @{}) mutableCopy];
-            NSMutableDictionary *sequenceData = [(mutableSequences[self.publishKey]?: @{}) mutableCopy];
-            sequenceData[PNPublishSequenceData.sequence] = @(self.sequenceNumber);
-            sequenceData[PNPublishSequenceData.lastSaveDate] = @([NSDate date].timeIntervalSince1970);
-            mutableSequences[self.publishKey] = sequenceData;
-            [PNKeychain storeValue:mutableSequences forKey:kPNPublishSequenceDataKey
-               withCompletionBlock:^(BOOL stored) { completion(); }];
-        }];
+            [PNKeychain valueForKey:kPNPublishSequenceDataKey withCompletionBlock:^(NSDictionary *sequences) {
+                
+                NSMutableDictionary *mutableSequences = [(sequences?: @{}) mutableCopy];
+                NSMutableDictionary *sequenceData = [(mutableSequences[self.publishKey]?: @{}) mutableCopy];
+                sequenceData[PNPublishSequenceData.sequence] = @(self.sequenceNumber);
+                sequenceData[PNPublishSequenceData.lastSaveDate] = @([NSDate date].timeIntervalSince1970);
+                mutableSequences[self.publishKey] = sequenceData;
+                [PNKeychain storeValue:mutableSequences forKey:kPNPublishSequenceDataKey
+                   withCompletionBlock:^(BOOL stored) { completion(); }];
+            }];
+        }
     });
 }
 
@@ -367,30 +374,6 @@ NS_ASSUME_NONNULL_END
     [notificationCenter addObserver:self selector:@selector(handleContextTransition:)
                                name:NSWorkspaceDidDeactivateApplicationNotification object:nil];
 #endif // TARGET_OS_OSX
-}
-
-- (void)unsubscribeFromNotifications {
-    
-#if TARGET_OS_IOS
-    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-    [notificationCenter removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
-    [notificationCenter removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
-#elif TARGET_OS_WATCH
-    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-    [notificationCenter removeObserver:self name:NSExtensionHostWillResignActiveNotification object:nil];
-    [notificationCenter removeObserver:self name:NSExtensionHostDidEnterBackgroundNotification object:nil];
-#elif TARGET_OS_OSX
-    NSNotificationCenter *notificationCenter = [[NSWorkspace sharedWorkspace] notificationCenter];
-    [notificationCenter removeObserver:self name:NSWorkspaceWillSleepNotification object:nil];
-    [notificationCenter removeObserver:self name:NSWorkspaceSessionDidResignActiveNotification object:nil];
-    [notificationCenter removeObserver:self name:NSWorkspaceDidDeactivateApplicationNotification object:nil];
-    
-#endif
-}
-
-- (void)dealloc {
-    
-    [self unsubscribeFromNotifications];
 }
 
 #pragma mark -
