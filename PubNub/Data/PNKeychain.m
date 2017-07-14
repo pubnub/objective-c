@@ -5,11 +5,38 @@
  */
 #import "PNKeychain.h"
 #import <Security/Security.h>
+#import "PNHelpers.h"
+
+
+#pragma mark Static
+
+/**
+ @brief  Spin-lock which is used to protect access to shared resources from multiple threads.
+ 
+ @since 4.6.2
+ */
+static os_unfair_lock keychainAccessLock = OS_UNFAIR_LOCK_INIT;
 
 
 #pragma mark Private interface declaration
 
 @interface PNKeychain ()
+
+#pragma mark - Temorary storage
+
+/**
+ @brief      Reference on storage which is used for environment where Keychain access DB not
+             available.
+ @discussion In multi-user systems before user authorize system is unable to provide information 
+             about Keychain because it doesn't know for which user. Used only by macOS because iOS 
+             is always single user.
+ 
+ @since 4.6.2
+ 
+ @return Reference on dictionary which should be used as temporary in-memory Keychain access DB
+         replacement.
+ */
++ (NSMutableDictionary *)inMemoryStorage;
 
 
 #pragma mark - Keychain query
@@ -80,6 +107,14 @@
 #pragma mark - Misc
 
 /**
+ @brief Check whether system is able to provide access to Keychain (even locked) or not.
+ 
+ @return \c NO in case if client is used in milti-user macOS environment and user not authorized 
+         yet.
+ */
++ (BOOL)isKeychainAvailable;
+
+/**
  @brief  Construct dictionary which will describe item storage or access information.
  
  @param key Reference on key under which item should be stored or searched.
@@ -99,29 +134,61 @@
 @implementation PNKeychain
 
 
+#pragma mark - Temorary storage
+
++ (NSMutableDictionary *)inMemoryStorage {
+    
+    static NSMutableDictionary *_inMemoryStorage;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{ _inMemoryStorage = [NSMutableDictionary new]; });
+    
+    return _inMemoryStorage;
+}
+
+
 #pragma mark - Storage manipulation
 
 + (void)storeValue:(id)value forKey:(NSString *)key withCompletionBlock:(void(^)(BOOL stored))block {
     
-    [self update:value usingQuery:[self baseInformationForItemWithKey:key] completionBlock:block];
+    if ([self isKeychainAvailable]) {
+        
+        [self update:value usingQuery:[self baseInformationForItemWithKey:key] completionBlock:block];
+    } else {
+        
+        [self inMemoryStorage][key] = value;
+        if (block) { block(YES); }
+    }
 }
 
 + (void)valueForKey:(NSString *)key withCompletionBlock:(void(^)(id value))block {
     
+    if ([self isKeychainAvailable]) {
+    } else { block([self inMemoryStorage][key]); }
+#if TARGET_OS_OSX
+    pn_trylock(&keychainAccessLock, ^{ block([self inMemoryStorage][key]); });
+#endif
     [self searchWithQuery:[self baseInformationForItemWithKey:key] fetchData:YES
           completionBlock:^(id data, BOOL error) { if (block) { block(data); } }];
 }
 
 + (void)removeValueForKey:(NSString *)key withCompletionBlock:(void(^)(BOOL))block {
     
-    [self checkExistingDataWithQuery:[self baseInformationForItemWithKey:key]
-                     completionBlock:^(BOOL exists) {
-                         
-        if (exists) {
+    if ([self isKeychainAvailable]) {
+        
+        [self checkExistingDataWithQuery:[self baseInformationForItemWithKey:key]
+                         completionBlock:^(BOOL exists) {
+                             
+            if (exists) {
 
-            [self update:nil usingQuery:[self baseInformationForItemWithKey:key] completionBlock:block];
-        }
-    }];
+                [self update:nil usingQuery:[self baseInformationForItemWithKey:key]
+             completionBlock:block];
+            }
+        }];
+    } else {
+        
+        [[self inMemoryStorage] removeObjectForKey:key];
+        if (block) { block(YES); }
+    }
 }
 
 
@@ -264,6 +331,22 @@
 
 
 #pragma mark - Misc
+
++ (BOOL)isKeychainAvailable {
+    static BOOL available;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+#if TARGET_OS_OSX
+        SecKeychainRef keychain;
+        available = SecKeychainCopyDefault(&keychain) == errSecSuccess;
+        if(available) { CFRelease(keychain); }
+#else
+        available = YES;
+#endif
+    });
+    
+    return available;
+}
 
 + (NSMutableDictionary *)baseInformationForItemWithKey:(NSString *)key {
     
