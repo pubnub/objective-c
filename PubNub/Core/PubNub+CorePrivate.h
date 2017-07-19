@@ -3,6 +3,7 @@
 #import "PNStateListener.h"
 #import "PNClientState.h"
 #import "PNSubscriber.h"
+#import "PNTelemetry.h"
 #import "PNHeartbeat.h"
 #import "PNLogMacro.h"
 
@@ -100,6 +101,13 @@ NS_ASSUME_NONNULL_BEGIN
  @since 4.0
  */
 @property (nonatomic, strong, nullable) PNNetwork *serviceNetwork;
+
+/**
+ @brief  Stores reference on instance which is responsible for client telemetry gathering and sending.
+ 
+ @since 4.6.2
+ */
+@property (nonatomic, readonly, strong) PNTelemetry *telemetryManager;
 
 /**
  @brief  Stores reference about recent client state (whether it was connected or not).

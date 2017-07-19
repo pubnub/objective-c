@@ -124,6 +124,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) NSURLSession *session;
 
 /**
+ @brief  Stores unique session identifier which is used by telemetry.
+ 
+ @since 4.6.1
+ */
+@property (nonatomic, copy) NSString *sessionIdentifier;
+
+/**
  @brief      Stores reference on data task completion block which should be used to notify caller about task 
              completion.
  @discussion This property used along with background session in application extension execution context.
@@ -170,6 +177,17 @@ NS_ASSUME_NONNULL_BEGIN
  @since 4.5.4
  */
 @property (nonatomic, strong) NSDictionary *defaultQueryComponents;
+
+#if PN_URLSESSION_TRANSACTION_METRICS_AVAILABLE
+/**
+ @brief      Stores reference on linkage of scheduled data task and it's operation type.
+ @discussion NSURLSession metrics arrive through callbacs and there is no information about type of operation 
+             which has been processed by task. This map allow to link tasks to API operation type.
+ 
+ @since 4.6.2
+ */
+@property (nonatomic, strong) NSMutableDictionary<NSString *, NSNumber *> *dataTaskToOperationMap;
+#endif
 
 #if TARGET_OS_IOS
 
@@ -273,16 +291,19 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  @brief  Construct data task which should be used to process provided request.
  
- @param request Reference on request which should be issued with data task to NSURL session.
- @param success Reference on data task success handling block which will be called by network manager.
- @param failure Reference on data task processing failure handling block which will be called by network 
-                manager.
+ @param request       Reference on request which should be issued with data task to NSURL session.
+ @param operationType One of \b PNOperationType enumerator fields which describe what kind of operation will 
+                      be performed by passed \c request.
+ @param success       Reference on data task success handling block which will be called by network manager.
+ @param failure       Reference on data task processing failure handling block which will be called by network 
+                      manager.
  
  @return Constructed and ready to use data task.
  
  @since 4.0
  */
-- (NSURLSessionDataTask *)dataTaskWithRequest:(NSURLRequest *)request
+- (NSURLSessionDataTask *)dataTaskWithRequest:(NSURLRequest *)request 
+                                 forOperation:(PNOperationType)operationType
                                       success:(NSURLSessionDataTaskSuccess)success
                                       failure:(NSURLSessionDataTaskFailure)failure;
 
@@ -600,6 +621,7 @@ NS_ASSUME_NONNULL_END
             _processingQueue = dispatch_queue_create([_identifier UTF8String], DISPATCH_QUEUE_CONCURRENT);
         } 
         else { _processingQueue = dispatch_get_main_queue(); }
+        _dataTaskToOperationMap = [NSMutableDictionary new];
         _serializer = [PNNetworkResponseSerializer new];
         _baseURL = [self requestBaseURL];
         _lock = OS_UNFAIR_LOCK_INIT;
@@ -617,6 +639,7 @@ NS_ASSUME_NONNULL_END
     
     [parameters addPathComponents:self.defaultPathComponents];
     [parameters addQueryParameters:self.defaultQueryComponents];
+    [parameters addQueryParameters:[self.client.telemetryManager operationsLatencyForRequest]];
     
     // In case if we client used from tests environment unique request identifier should be excluded from
     // default query components.
@@ -670,6 +693,7 @@ NS_ASSUME_NONNULL_END
 }
 
 - (NSURLSessionDataTask *)dataTaskWithRequest:(NSURLRequest *)request
+                                 forOperation:(PNOperationType)operationType
                                       success:(NSURLSessionDataTaskSuccess)success
                                       failure:(NSURLSessionDataTaskFailure)failure {
     
@@ -683,6 +707,10 @@ NS_ASSUME_NONNULL_END
         // it and probably whole client instance has been deallocated.
         #pragma clang diagnostic push
         #pragma clang diagnostic ignored "-Wreceiver-is-weak"
+#if !PN_URLSESSION_TRANSACTION_METRICS_AVAILABLE
+        NSString *taskIdentifier = [self.sessionIdentifier stringByAppendingString:@(task.taskIdentifier).stringValue];
+        [weakSelf.client.telemetryManager stopLatencyMeasureFor:operationType withIdentifier:taskIdentifier];
+#endif
         [weakSelf handleData:data loadedWithTask:task error:(error?: task.error)
                 usingSuccess:success failure:failure];
         #pragma clang diagnostic pop
@@ -794,17 +822,25 @@ NS_ASSUME_NONNULL_END
                      requestURL.absoluteString);
         
         __weak __typeof(self) weakSelf = self;
-        [[self dataTaskWithRequest:[self requestWithURL:requestURL data:data]
-                           success:^(NSURLSessionDataTask *task, id responseObject) {
-                               
-               [weakSelf handleOperation:operationType taskDidComplete:task withData:responseObject
-                         completionBlock:block];
-           }
-           failure:^(NSURLSessionDataTask *task, id error) {
-               
-               [weakSelf handleOperation:operationType taskDidFail:task withError:error
-                         completionBlock:block];
-           }] resume];
+        NSURLSessionDataTask *task = [self dataTaskWithRequest:[self requestWithURL:requestURL data:data] 
+                                                  forOperation:operationType
+                                                       success:^(NSURLSessionDataTask *task, id responseObject) {
+                                                           
+            [weakSelf handleOperation:operationType taskDidComplete:task withData:responseObject
+                      completionBlock:block];
+        }
+                                                       failure:^(NSURLSessionDataTask *task, id error) {
+
+            [weakSelf handleOperation:operationType taskDidFail:task withError:error
+                      completionBlock:block];
+        }];
+        NSString *taskIdentifier = [self.sessionIdentifier stringByAppendingString:@(task.taskIdentifier).stringValue];
+#if !PN_URLSESSION_TRANSACTION_METRICS_AVAILABLE
+        [self.client.telemetryManager startLatencyMeasureFor:operationType withIdentifier:taskIdentifier];
+#else   
+        pn_lock(&_lock, ^{ self.dataTaskToOperationMap[taskIdentifier] = @(operationType); });
+#endif
+        [task resume];
     }
     else {
         
@@ -934,6 +970,7 @@ NS_ASSUME_NONNULL_END
     pn_lock(&_lock, ^{
         
         [_session invalidateAndCancel];
+        _sessionIdentifier = nil;
         _session = nil;
     });
 }
@@ -967,6 +1004,7 @@ NS_ASSUME_NONNULL_END
                                                            maximumConnections:maximumConnections];
     _delegateQueue = [self operationQueueWithConfiguration:config];
     _session = [self sessionWithConfiguration:config];
+    _sessionIdentifier = [[NSUUID UUID] UUIDString];
     [self printIfRequiredSessionCustomizationInformation];
     
 }
@@ -1274,6 +1312,17 @@ NS_ASSUME_NONNULL_END
                                                    NSUInteger transactionIdx, BOOL *trabsactionsEnumeratorStop) {
             if (transactionIdx == 0) { metricsData = [self formattedMetricsDataFrom:transaction redirection:NO]; }
             else { [redirections addObject:[self formattedMetricsDataFrom:transaction redirection:YES]]; }
+            
+            NSTimeInterval latency = [transaction.responseEndDate timeIntervalSince1970] - [transaction.requestStartDate timeIntervalSince1970];
+            if (latency > 0.f) {
+                pn_lock(&_lock, ^{ 
+                        
+                    NSString *taskIdentifier = [self.sessionIdentifier stringByAppendingString:@(task.taskIdentifier).stringValue];
+                    PNOperationType operationType = self.dataTaskToOperationMap[taskIdentifier].integerValue;
+                    [self.dataTaskToOperationMap removeObjectForKey:taskIdentifier];
+                    [self.client.telemetryManager setLatency:latency forOperation:operationType];
+                });
+            }
         }];
         if (redirections.count) {
             

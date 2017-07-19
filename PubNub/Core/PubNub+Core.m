@@ -71,9 +71,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) PNClientState *clientStateManager;
 @property (nonatomic, strong) PNStateListener *listenersManager;
 @property (nonatomic, strong) PNHeartbeat *heartbeatManager;
+@property (nonatomic, strong) PNTelemetry *telemetryManager;
+@property (nonatomic, assign) PNStatusCategory recentClientStatus;
 @property (nonatomic, strong) PNNetwork *subscriptionNetwork;
 @property (nonatomic, strong) PNNetwork *serviceNetwork;
-@property (nonatomic, assign) PNStatusCategory recentClientStatus;
 
 /**
  @brief  Stores reference on reachability helper.
@@ -247,6 +248,7 @@ NS_ASSUME_NONNULL_END
         _clientStateManager = [PNClientState stateForClient:self];
         _listenersManager = [PNStateListener stateListenerForClient:self];
         _heartbeatManager = [PNHeartbeat heartbeatForClient:self];
+        _telemetryManager = [PNTelemetry new];
         [self addListener:self];
         [self prepareReachability];
 #if TARGET_OS_IOS
@@ -684,6 +686,7 @@ NS_ASSUME_NONNULL_END
     _subscriptionNetwork = nil;
     [_serviceNetwork invalidate];
     _serviceNetwork = nil;
+    [_telemetryManager invalidate];
 }
 
 #pragma mark -
