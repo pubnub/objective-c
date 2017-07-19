@@ -73,21 +73,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) PNHeartbeat *heartbeatManager;
 @property (nonatomic, strong) PNTelemetry *telemetryManager;
 @property (nonatomic, assign) PNStatusCategory recentClientStatus;
-
-/**
- @brief Stores reference on \b PubNub network manager configured to be used for 'subscription' API 
-        group with long-polling.
- 
- @since 4.0
- */
 @property (nonatomic, strong) PNNetwork *subscriptionNetwork;
-
-/**
- @brief Stores reference on \b PubNub network manager configured to be used for 'non-subscription'
-        API group.
- 
- @since 4.0
- */
 @property (nonatomic, strong) PNNetwork *serviceNetwork;
 
 /**
@@ -455,11 +441,6 @@ NS_ASSUME_NONNULL_END
         [self.serviceNetwork processOperation:operationType withParameters:parameters
                                          data:data completionBlock:block];
     }
-}
-
-- (void)cancelAllLongPollingOperations {
-    
-    [self.subscriptionNetwork cancelAllRequests];
 }
 
 
