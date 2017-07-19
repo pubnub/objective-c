@@ -7,6 +7,28 @@ changelog:
   -
     changes:
       -
+        text: "Added ability to gather service performance information."
+        type: improvement
+      -
+        text: "Added new error category PNRequestURITooLongCategory to properly handle and report issues to callbacks and completion blocks."
+        type: improvement
+      -
+        text: "Removed unsubscribe request cancellation by sequential call to subscribe API."
+        type: bug
+      -
+        text: "Reorganized code which is responsible for subscribe requests cancellation"
+        type: bug
+      -
+        text: "Fixed issue with macOS Keychain access in multi-user environment when none authorized."
+        type: bug
+      -
+        text: "Fixed inline documentation."
+        type: bug
+    date: Jul 19, 17
+    version: v4.6.2
+  -
+    changes:
+      -
         text: "Fixed dependency analysis warnings for Fabric integration via CocoaPods."
         type: bug
     date: Apr 26, 17
