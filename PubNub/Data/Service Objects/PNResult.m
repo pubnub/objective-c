@@ -37,7 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @param shouldCopyServiceData Whether service data should be passed to new copy or not.
  
- @param Receiver's new copy.
+ @return Receiver's new copy.
  */
 - (id)copyWithServiceData:(BOOL)shouldCopyServiceData;
 
@@ -156,7 +156,7 @@ NS_ASSUME_NONNULL_END
 
 - (NSDictionary *)normalizedServiceData:(id)serviceData {
     
-    NSDictionary *normalizedServiceData = serviceData;
+    NSDictionary *normalizedServiceData = serviceData?: @{};
     if (serviceData && ![serviceData isKindOfClass:[NSDictionary class]]) {
         
         normalizedServiceData = @{@"information": serviceData};
@@ -180,9 +180,8 @@ NS_ASSUME_NONNULL_END
 
 - (NSDictionary *)dictionaryRepresentation {
     
-    id processedData = (self.serviceData[@"envelope"] ? [self.serviceData mutableCopy] : 
-                        (self.serviceData?: @"no data"));
-    if ([processedData isKindOfClass:[NSMutableDictionary class]]) {
+    id processedData = ([self.serviceData mutableCopy]?: @"no data");
+    if (self.serviceData[@"envelope"]) {
         
         processedData[@"envelope"] = [self.serviceData[@"envelope"] valueForKey:@"dictionaryRepresentation"];
     }

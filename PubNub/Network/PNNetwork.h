@@ -7,6 +7,8 @@
 @class PNRequestParameters, PubNub;
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  @brief      Class which translate \b PubNub operations to request for \b PubNub network.
  @discussion Intermediate layer between \b PubNub client operations and networking which is used to send 
@@ -58,15 +60,18 @@
  @since 4.0
  */
 - (void)processOperation:(PNOperationType)operationType
-          withParameters:(PNRequestParameters *)parameters data:(NSData *)data
+          withParameters:(PNRequestParameters *)parameters data:(nullable NSData *)data
          completionBlock:(id)block;
 
 /**
- @brief  Fetch list of active requests and cancel their processing.
+ @brief  Fetch list of active requests (filtered by API path prefix if passed) and cancel their processing.
  
- @since 4.0
+ @param prefix Reference on string which represent specific API endpoint path prefix. If passed, all data 
+               tasks which is created against such API endpoint will be cancelled.
+ 
+ @since 4.6.2
  */
-- (void)cancelAllRequests;
+- (void)cancelAllOperationsWithURLPrefix:(nullable NSString *)prefix;
 
 /**
  @brief  Invalidate network communication layer.
@@ -126,3 +131,5 @@
 
 
 @end
+
+NS_ASSUME_NONNULL_END

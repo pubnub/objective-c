@@ -164,7 +164,7 @@
             if (shouldStripMobilePayload && [message isKindOfClass:[NSDictionary class]] &&
                 (message[@"pn_apns"] || message[@"pn_gcm"] || message[@"pn_mpns"])) {
                 
-                id decomposedMessage = message;
+                id decomposedMessage;
                 if (!message[@"pn_other"]) {
                     
                     NSMutableDictionary *dictionaryData = [message mutableCopy];

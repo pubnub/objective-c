@@ -22,7 +22,7 @@
         #endif
     #endif
 
-    #if PN_OS_UNFAIR_LOCK_AVAILABILE
+    #if PN_OS_UNFAIR_LOCK_AVAILABLE
         #import <os/lock.h>
         #if !PN_OS_VERSION_10_SDK_API_IS_SAFE
             #import <dlfcn.h>

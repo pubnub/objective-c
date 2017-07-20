@@ -7,7 +7,19 @@
 #import "PNAPICallBuilder+Private.h"
 #import "PubNub+CorePrivate.h"
 #import "PNSubscriber.h"
+#import "PNNetwork.h"
 #import "PNHelpers.h"
+
+
+#pragma mark - Constants
+
+/**
+ @brief      Stored reference on subscribe REST API path prefix. 
+ @discussion Prefix used for faster request identification (w/o performing search of range with options).
+ 
+ @since 4.6.2
+ */
+static NSString * const kPNSubscribeAPIPrefix = @"/v2/subscribe/";
 
 
 #pragma mark - Interface implementation
@@ -145,11 +157,8 @@
 - (void)subscribeToChannels:(NSArray<NSString *> *)channels withPresence:(BOOL)shouldObservePresence
              usingTimeToken:(NSNumber *)timeToken clientState:(NSDictionary<NSString *, id> *)state {
     
-    NSArray *presenceChannelsList = nil;
-    if (shouldObservePresence) { presenceChannelsList = [PNChannel presenceChannelsFrom:channels]; }
-    
-    [self.subscriberManager addChannels:[channels arrayByAddingObjectsFromArray:presenceChannelsList]];
-    [self.subscriberManager subscribeUsingTimeToken:timeToken withState:state completion:nil];
+    [self subscribeToChannels:channels groups:nil withPresence:shouldObservePresence
+               usingTimeToken:timeToken clientState:state];
 }
 
 - (void)subscribeToChannelGroups:(NSArray<NSString *> *)groups withPresence:(BOOL)shouldObservePresence {
@@ -174,13 +183,8 @@
 - (void)subscribeToChannelGroups:(NSArray<NSString *> *)groups withPresence:(BOOL)shouldObservePresence
                   usingTimeToken:(NSNumber *)timeToken clientState:(NSDictionary<NSString *, id> *)state {
     
-    NSArray *groupsList = [NSArray arrayWithArray:groups];
-    if (shouldObservePresence) {
-        
-        groupsList = [groups arrayByAddingObjectsFromArray:[PNChannel presenceChannelsFrom:groups]];
-    }
-    [self.subscriberManager addChannelGroups:groupsList];
-    [self.subscriberManager subscribeUsingTimeToken:timeToken withState:state completion:nil];
+    [self subscribeToChannels:nil groups:groups withPresence:shouldObservePresence
+               usingTimeToken:timeToken clientState:state];
 }
 
 - (void)subscribeToChannels:(NSArray<NSString *> *)channels groups:(NSArray<NSString *> *)groups 
@@ -203,7 +207,7 @@
         if (shouldObservePresence) { presenceGroupsList = [PNChannel presenceChannelsFrom:groups]; }
         [self.subscriberManager addChannelGroups:[channels arrayByAddingObjectsFromArray:presenceGroupsList]];
     }
-    
+    [self cancelSubscribeOperations];
     [self.subscriberManager subscribeUsingTimeToken:timeToken withState:state completion:nil];
 }
 
@@ -211,6 +215,7 @@
     
     channels = [PNChannel presenceChannelsFrom:channels];
     [self.subscriberManager addPresenceChannels:channels];
+    [self cancelSubscribeOperations];
     [self.subscriberManager subscribeUsingTimeToken:nil withState:nil completion:nil];
 }
 
@@ -264,6 +269,14 @@
 - (void)unsubscribeFromAll {
     
     [self.subscriberManager unsubscribeFromAll];
+}
+
+
+#pragma mark - Misc
+
+- (void)cancelSubscribeOperations {
+    
+    [self.subscriptionNetwork cancelAllOperationsWithURLPrefix:kPNSubscribeAPIPrefix];
 }
 
 #pragma mark -

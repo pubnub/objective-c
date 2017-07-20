@@ -610,7 +610,17 @@
         NSLog(@"This may happen when you connect to a public WiFi Hotspot that requires you to auth via your web browser first,");
         NSLog(@"or if there is a proxy somewhere returning an HTML access denied error, or if there was an intermittent server issue.");
     }
-    
+    else if (status.category == PNRequestURITooLongCategory) {
+        if (status.operation == PNSubscribeOperation) {
+            
+            NSLog(@"Too many channels has been passed to subscribe API.");
+        }
+        else {
+            
+            NSLog(@"Depending from used API this error may mean what to big message has been publish for publish API,");
+            NSLog(@" or too many channels has been passed to stream controller at once.");
+        }
+    }
     else if (status.category == PNTimeoutCategory) {
         
         NSLog(@"For whatever reason, the request timed out. Temporary connectivity issues, etc.");

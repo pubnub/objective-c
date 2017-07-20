@@ -130,7 +130,7 @@ NS_ASSUME_NONNULL_END
         }
     }
     
-    return [PNData base64StringFrom:processedData];
+    return (processedData ? [PNData base64StringFrom:processedData] : nil);
 }
 
 

@@ -17,7 +17,7 @@
  @since 4.5.15
  */
 BOOL _pn_os_unfair_lock_functions_visible() {
-#if PN_OS_UNFAIR_LOCK_AVAILABILE
+#if PN_OS_UNFAIR_LOCK_AVAILABLE
     static BOOL visible;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -35,7 +35,7 @@ void _pn_lock_lock(os_unfair_lock *lock) {
     #if PN_OS_VERSION_10_SDK_API_IS_SAFE
         os_unfair_lock_lock(lock);
     #else
-        #if PN_OS_UNFAIR_LOCK_AVAILABILE
+        #if PN_OS_UNFAIR_LOCK_AVAILABLE
             if (_pn_os_unfair_lock_functions_visible()) { os_unfair_lock_lock(lock); }
             else { OSSpinLockLock((void *)lock); }
         #else
@@ -49,7 +49,7 @@ BOOL _pn_lock_trylock(os_unfair_lock *lock) {
     #if PN_OS_VERSION_10_SDK_API_IS_SAFE
         locked = os_unfair_lock_trylock(lock);
     #else
-        #if PN_OS_UNFAIR_LOCK_AVAILABILE
+        #if PN_OS_UNFAIR_LOCK_AVAILABLE
             if (_pn_os_unfair_lock_functions_visible()) { locked = os_unfair_lock_trylock(lock); }
             else { locked = OSSpinLockTry((void *)lock); }
         #else
@@ -64,7 +64,7 @@ void _pn_lock_unlock(os_unfair_lock *lock) {
     #if PN_OS_VERSION_10_SDK_API_IS_SAFE
         os_unfair_lock_unlock(lock);
     #else
-        #if PN_OS_UNFAIR_LOCK_AVAILABILE
+        #if PN_OS_UNFAIR_LOCK_AVAILABLE
             if (_pn_os_unfair_lock_functions_visible()) { os_unfair_lock_unlock(lock); }
             else { OSSpinLockUnlock((void *)lock); }
         #else

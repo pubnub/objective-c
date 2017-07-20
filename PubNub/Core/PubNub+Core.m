@@ -71,22 +71,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) PNClientState *clientStateManager;
 @property (nonatomic, strong) PNStateListener *listenersManager;
 @property (nonatomic, strong) PNHeartbeat *heartbeatManager;
+@property (nonatomic, strong) PNTelemetry *telemetryManager;
 @property (nonatomic, assign) PNStatusCategory recentClientStatus;
-
-/**
- @brief Stores reference on \b PubNub network manager configured to be used for 'subscription' API 
-        group with long-polling.
- 
- @since 4.0
- */
 @property (nonatomic, strong) PNNetwork *subscriptionNetwork;
-
-/**
- @brief Stores reference on \b PubNub network manager configured to be used for 'non-subscription'
-        API group.
- 
- @since 4.0
- */
 @property (nonatomic, strong) PNNetwork *serviceNetwork;
 
 /**
@@ -261,6 +248,7 @@ NS_ASSUME_NONNULL_END
         _clientStateManager = [PNClientState stateForClient:self];
         _listenersManager = [PNStateListener stateListenerForClient:self];
         _heartbeatManager = [PNHeartbeat heartbeatForClient:self];
+        _telemetryManager = [PNTelemetry new];
         [self addListener:self];
         [self prepareReachability];
 #if TARGET_OS_IOS
@@ -455,11 +443,6 @@ NS_ASSUME_NONNULL_END
     }
 }
 
-- (void)cancelAllLongPollingOperations {
-    
-    [self.subscriptionNetwork cancelAllRequests];
-}
-
 
 #pragma mark - Operation information
 
@@ -639,7 +622,7 @@ NS_ASSUME_NONNULL_END
         [deprecation appendString:@"- Deprecated: PNConfiguration.shouldStripMobilePayload property.-\n"
          "When set to YES SDK automatically stripped out original message\nfrompayload which combined message"
          " and push notification payloads.\n\n"];
-        [deprecation appendString:@"!!! To disable this warning set shouldStripMobilePayload to NO.\n\n"];
+        [deprecation appendString:@"!!! To disable this warning set stripMobilePayload to NO.\n\n"];
         [deprecation appendString:@"This deprecation may affect application in case if it used\npublish API "
          "to send messages along with push notification payloads.\nProperty completely will be deprecated "
          "with next 'major' SDK update.\n\n"];
@@ -703,6 +686,7 @@ NS_ASSUME_NONNULL_END
     _subscriptionNetwork = nil;
     [_serviceNetwork invalidate];
     _serviceNetwork = nil;
+    [_telemetryManager invalidate];
 }
 
 #pragma mark -

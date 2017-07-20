@@ -3,13 +3,14 @@
 #import "PNStateListener.h"
 #import "PNClientState.h"
 #import "PNSubscriber.h"
+#import "PNTelemetry.h"
 #import "PNHeartbeat.h"
 #import "PNLogMacro.h"
 
 
 #pragma mark Class forward
 
-@class PNRequestParameters, PNConfiguration, PNResult, PNStatus;
+@class PNRequestParameters, PNConfiguration, PNNetwork, PNResult, PNStatus;
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -86,6 +87,29 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, strong) PNHeartbeat *heartbeatManager;
 
 /**
+ @brief Stores reference on \b PubNub network manager configured to be used for 'subscription' API 
+        group with long-polling.
+ 
+ @since 4.0
+ */
+@property (nonatomic, strong, nullable) PNNetwork *subscriptionNetwork;
+
+/**
+ @brief Stores reference on \b PubNub network manager configured to be used for 'non-subscription'
+        API group.
+ 
+ @since 4.0
+ */
+@property (nonatomic, strong, nullable) PNNetwork *serviceNetwork;
+
+/**
+ @brief  Stores reference on instance which is responsible for client telemetry gathering and sending.
+ 
+ @since 4.6.2
+ */
+@property (nonatomic, readonly, strong) PNTelemetry *telemetryManager;
+
+/**
  @brief  Stores reference about recent client state (whether it was connected or not).
  
  @since 4.0
@@ -133,13 +157,6 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)processOperation:(PNOperationType)operationType withParameters:(PNRequestParameters *)parameters 
                     data:(nullable NSData *)data completionBlock:(nullable id)block;
-
-/**
- @brief  Cancel any active long-polling operations scheduled for processing.
- 
- @since 4.0
- */
-- (void)cancelAllLongPollingOperations;
 
 
 ///------------------------------------------------

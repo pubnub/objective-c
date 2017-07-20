@@ -13,6 +13,10 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PubNub (SubscribePrivate)
 
 
+///------------------------------------------------
+/// @name Subscription
+///------------------------------------------------
+
 /**
  @brief      Try subscribe on specified set of channels and/or groups.
  @discussion Using subscribe API client is able to subscribe of remote data objects live feed and listen for 
@@ -56,6 +60,19 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)unsubscribeFromChannels:(nullable NSArray<NSString *> *)channels 
                          groups:(nullable NSArray<NSString *> *)groups withPresence:(BOOL)shouldObservePresence
                      completion:(nullable PNSubscriberCompletionBlock)block;
+
+
+///------------------------------------------------
+/// @name Misc
+///------------------------------------------------
+
+/**
+ @brief  Cancel any active long-polling subscribe operations scheduled for processing.
+ 
+ @since 4.6.2
+ */
+- (void)cancelSubscribeOperations;
+
 
 #pragma mark -
 
