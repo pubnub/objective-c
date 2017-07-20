@@ -22,7 +22,8 @@ static os_unfair_lock keychainAccessLock = OS_UNFAIR_LOCK_INIT;
 
 @interface PNKeychain ()
 
-#pragma mark - Temorary storage
+
+#pragma mark - Temporary storage
 
 /**
  @brief      Reference on storage which is used for environment where Keychain access DB not
@@ -134,7 +135,7 @@ static os_unfair_lock keychainAccessLock = OS_UNFAIR_LOCK_INIT;
 @implementation PNKeychain
 
 
-#pragma mark - Temorary storage
+#pragma mark - Temporary storage
 
 + (NSMutableDictionary *)inMemoryStorage {
     
