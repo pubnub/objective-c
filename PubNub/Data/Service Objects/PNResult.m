@@ -180,9 +180,9 @@ NS_ASSUME_NONNULL_END
 
 - (NSDictionary *)dictionaryRepresentation {
     
-    id processedData = (self.serviceData[@"envelope"] ? [self.serviceData mutableCopy] : 
+    id processedData = (self.serviceData[@"envelope"] ? [self.serviceData mutableCopy] :
                         (self.serviceData?: @"no data"));
-    if ([processedData isKindOfClass:[NSMutableDictionary class]]) {
+    if (self.serviceData[@"envelope"]) {
         
         processedData[@"envelope"] = [self.serviceData[@"envelope"] valueForKey:@"dictionaryRepresentation"];
     }
