@@ -205,7 +205,7 @@ static NSString * const kPNSubscribeAPIPrefix = @"/v2/subscribe/";
         
         NSArray *presenceGroupsList = nil;
         if (shouldObservePresence) { presenceGroupsList = [PNChannel presenceChannelsFrom:groups]; }
-        [self.subscriberManager addChannelGroups:[channels arrayByAddingObjectsFromArray:presenceGroupsList]];
+        [self.subscriberManager addChannelGroups:[groups arrayByAddingObjectsFromArray:presenceGroupsList]];
     }
     [self cancelSubscribeOperations];
     [self.subscriberManager subscribeUsingTimeToken:timeToken withState:state completion:nil];
