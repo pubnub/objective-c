@@ -1,3 +1,6 @@
+21-01-2017 - 718ffe6 - 4.6.3
+. fixed bug with channel group subscription from previous release.
+
 19-07-2017 - 424bf71 - 4.6.2
 . added ability to gather service performance information.
 . fixed issue with macOS Keychain access in multi-user environment when none authorized.
