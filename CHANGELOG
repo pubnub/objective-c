@@ -1,3 +1,11 @@
+19-07-2017 - 424bf71 - 4.6.2
+. added ability to gather service performance information.
+. fixed issue with macOS Keychain access in multi-user environment when none authorized.
+. removed unsubscribe request cancellation by sequential call to subscribe API.
+. added new error category PNRequestURITooLongCategory to properly handle and report issues to callbacks and completion blocks.
+. reorganized code which is responsible for subscribe requests cancellation.
+. fixed inline documentation.
+
 26-04-2017 - 9087df2 - 4.6.1
 . fixed dependency analysis warnings for Fabric integration via CocoaPods.
 

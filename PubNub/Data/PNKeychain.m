@@ -22,7 +22,8 @@ static os_unfair_lock keychainAccessLock = OS_UNFAIR_LOCK_INIT;
 
 @interface PNKeychain ()
 
-#pragma mark - Temorary storage
+
+#pragma mark - Temporary storage
 
 /**
  @brief      Reference on storage which is used for environment where Keychain access DB not
@@ -134,7 +135,7 @@ static os_unfair_lock keychainAccessLock = OS_UNFAIR_LOCK_INIT;
 @implementation PNKeychain
 
 
-#pragma mark - Temorary storage
+#pragma mark - Temporary storage
 
 + (NSMutableDictionary *)inMemoryStorage {
     
@@ -155,20 +156,21 @@ static os_unfair_lock keychainAccessLock = OS_UNFAIR_LOCK_INIT;
         [self update:value usingQuery:[self baseInformationForItemWithKey:key] completionBlock:block];
     } else {
         
-        [self inMemoryStorage][key] = value;
-        if (block) { block(YES); }
+        pn_trylock(&keychainAccessLock, ^{
+            
+            [self inMemoryStorage][key] = value;
+            if (block) { block(YES); }
+        });
     }
 }
 
 + (void)valueForKey:(NSString *)key withCompletionBlock:(void(^)(id value))block {
     
     if ([self isKeychainAvailable]) {
-    } else { block([self inMemoryStorage][key]); }
-#if TARGET_OS_OSX
-    pn_trylock(&keychainAccessLock, ^{ block([self inMemoryStorage][key]); });
-#endif
-    [self searchWithQuery:[self baseInformationForItemWithKey:key] fetchData:YES
-          completionBlock:^(id data, BOOL error) { if (block) { block(data); } }];
+        
+        [self searchWithQuery:[self baseInformationForItemWithKey:key] fetchData:YES
+              completionBlock:^(id data, BOOL error) { if (block) { block(data); } }];
+    } else { pn_trylock(&keychainAccessLock, ^{ block([self inMemoryStorage][key]); }); }
 }
 
 + (void)removeValueForKey:(NSString *)key withCompletionBlock:(void(^)(BOOL))block {
@@ -186,8 +188,11 @@ static os_unfair_lock keychainAccessLock = OS_UNFAIR_LOCK_INIT;
         }];
     } else {
         
-        [[self inMemoryStorage] removeObjectForKey:key];
-        if (block) { block(YES); }
+        pn_trylock(&keychainAccessLock, ^{
+            
+            [[self inMemoryStorage] removeObjectForKey:key];
+            if (block) { block(YES); }
+        });
     }
 }
 
