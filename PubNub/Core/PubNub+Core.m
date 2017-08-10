@@ -295,6 +295,9 @@ NS_ASSUME_NONNULL_END
     [client.listenersManager inheritStateFromListener:self.listenersManager];
     [client removeListener:self];
     [self.listenersManager removeAllListeners];
+    // Because inheritence replace current event subscribers with set from old client new should add
+    // itself back.
+    [client addListener:client];
     
     dispatch_block_t subscriptionRestoreBlock = ^{
         
