@@ -1,9 +1,16 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.6.1"
+version: "4.6.3"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Fixed issue with subscription to channel group."
+        type: bug
+    date: Jul 21, 17
+    version: v4.6.3
   -
     changes:
       -
