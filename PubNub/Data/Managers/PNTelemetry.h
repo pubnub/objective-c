@@ -36,7 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// @name Telemetry information tracking
 ///------------------------------------------------
 
-#if PN_URLSESSION_TRANSACTION_METRICS_AVAILABLE
+#if !PN_URLSESSION_TRANSACTION_METRICS_AVAILABLE
 /**
  @brief      Start request execution time tracking.
  @discussion Internally manager will mark time when request has been started and it will be used to calculate

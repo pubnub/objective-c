@@ -146,7 +146,7 @@ NS_ASSUME_NONNULL_END
     
     if (operation == PNHereNowGlobalOperation) {
         
-        DDLogAPICall(self.logger, @"<PubNub::API> Global 'here now' information with %@ data.",
+        PNLogAPICall(self.logger, @"<PubNub::API> Global 'here now' information with %@ data.",
                      PNHereNowDataStrings[level]);
     }
     else {
@@ -162,7 +162,7 @@ NS_ASSUME_NONNULL_END
                                  forFieldName:@"channel-group"];
             }
         }
-        DDLogAPICall(self.logger, @"<PubNub::API> Channel%@ 'here now' information for %@ with %@ data.", 
+        PNLogAPICall(self.logger, @"<PubNub::API> Channel%@ 'here now' information for %@ with %@ data.",
                      (operation == PNHereNowForChannelGroupOperation ? @" group" : @""), (object?: @"<error>"),
                      PNHereNowDataStrings[level]);
     }
@@ -200,7 +200,7 @@ NS_ASSUME_NONNULL_END
         
         [parameters addPathComponent:[PNString percentEscapedString:uuid] forPlaceholder:@"{uuid}"];
     }
-    DDLogAPICall(self.logger, @"<PubNub::API> 'Where now' presence information for %@.", (uuid?: @"<error>"));
+    PNLogAPICall(self.logger, @"<PubNub::API> 'Where now' presence information for %@.", (uuid?: @"<error>"));
 
     __weak __typeof(self) weakSelf = self;
     [self processOperation:PNWhereNowOperation withParameters:parameters
@@ -254,7 +254,7 @@ NS_ASSUME_NONNULL_END
                 }
             }
             
-            DDLogAPICall(weakSelf.logger, @"<PubNub::API> Heartbeat for %@%@%@.", 
+            PNLogAPICall(weakSelf.logger, @"<PubNub::API> Heartbeat for %@%@%@.",
                          (channels.count ? [NSString stringWithFormat:@"channel%@ '%@'", 
                                             (channels.count > 1 ? @"s" : @""),
                                             [channels componentsJoinedByString:@", "]] : @""),

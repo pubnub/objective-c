@@ -126,7 +126,7 @@ NS_ASSUME_NONNULL_END
             
             PNLLogger *logger = [PNLLogger loggerWithIdentifier:kPNClientIdentifier];
             [logger enableLogLevel:PNAESErrorLogLevel];
-            DDLogAESError(logger, @"<PubNub::AES> Encryption error: %@", encryptionError);
+            PNLogAESError(logger, @"<PubNub::AES> Encryption error: %@", encryptionError);
         }
     }
     
@@ -201,7 +201,7 @@ NS_ASSUME_NONNULL_END
             
             PNLLogger *logger = [PNLLogger loggerWithIdentifier:kPNClientIdentifier]; 
             [logger enableLogLevel:PNAESErrorLogLevel];
-            DDLogAESError(logger, @"<PubNub::AES> Decryption error: %@", decryptionError);
+            PNLogAESError(logger, @"<PubNub::AES> Decryption error: %@", decryptionError);
         }
     }
     

@@ -136,7 +136,7 @@
                 
                 PNLLogger *logger = [PNLLogger loggerWithIdentifier:kPNClientIdentifier];
                 [logger enableLogLevel:PNAESErrorLogLevel];
-                DDLogAESError(logger, @"<PubNub::AES> History entry decryption error: %@", 
+                PNLogAESError(logger, @"<PubNub::AES> History entry decryption error: %@",
                               decryptionError);
                 data[@"decryptError"] = @YES;
                 

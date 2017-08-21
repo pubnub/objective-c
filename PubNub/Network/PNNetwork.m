@@ -280,13 +280,14 @@ NS_ASSUME_NONNULL_BEGIN
  @brief  Construct URL request suitable to send POST request (if required).
  
  @param requestURL Reference on complete remote resource URL which should be used for request.
+ @param method     Reference on string with HTTP method which should be used to send request.
  @param postData   Reference on data which should be sent as POST body (if passed).
  
  @return Constructed and ready to use request object.
  
  @since 4.0
  */
-- (NSURLRequest *)requestWithURL:(NSURL *)requestURL data:(NSData *)postData;
+- (NSURLRequest *)requestWithURL:(NSURL *)requestURL method:(NSString *)method data:(NSData *)postData;
 
 /**
  @brief  Construct data task which should be used to process provided request.
@@ -621,7 +622,9 @@ NS_ASSUME_NONNULL_END
             _processingQueue = dispatch_queue_create([_identifier UTF8String], DISPATCH_QUEUE_CONCURRENT);
         } 
         else { _processingQueue = dispatch_get_main_queue(); }
+#if PN_URLSESSION_TRANSACTION_METRICS_AVAILABLE
         _dataTaskToOperationMap = [NSMutableDictionary new];
+#endif // PN_URLSESSION_TRANSACTION_METRICS_AVAILABLE
         _serializer = [PNNetworkResponseSerializer new];
         _baseURL = [self requestBaseURL];
         _lock = OS_UNFAIR_LOCK_INIT;
@@ -668,11 +671,11 @@ NS_ASSUME_NONNULL_END
     _defaultQueryComponents = [queryComponents copy];
 }
 
-- (NSURLRequest *)requestWithURL:(NSURL *)requestURL data:(NSData *)postData {
+- (NSURLRequest *)requestWithURL:(NSURL *)requestURL method:(NSString *)method data:(NSData *)postData {
     
     NSURL *fullURL = [NSURL URLWithString:requestURL.absoluteString relativeToURL:self.baseURL];
     NSMutableURLRequest *httpRequest = [NSMutableURLRequest requestWithURL:fullURL];
-    httpRequest.HTTPMethod = ([postData length] ? @"POST" : @"GET");
+    httpRequest.HTTPMethod = method;
     pn_lock(&_lock, ^{
         
         httpRequest.cachePolicy = self.session.configuration.requestCachePolicy;
@@ -766,10 +769,10 @@ NS_ASSUME_NONNULL_END
         // Registering known PubNub service response parsers.
         NSArray<NSString *> *parserNames = @[
             @"PNChannelGroupAuditionParser", @"PNChannelGroupModificationParser", @"PNClientStateParser", 
-            @"PNErrorParser", @"PNHeartbeatParser", @"PNHistoryParser", @"PNLeaveParser", 
-            @"PNMessagePublishParser", @"PNPresenceHereNowParser", @"PNPresenceWhereNowParser", 
-            @"PNPushNotificationsAuditParser", @"PNPushNotificationsStateModificationParser", 
-            @"PNSubscribeParser",@"PNTimeParser"];
+            @"PNErrorParser", @"PNHeartbeatParser", @"PNHistoryParser", @"PNMessageDeleteParser",
+            @"PNLeaveParser", @"PNMessagePublishParser", @"PNPresenceHereNowParser",
+            @"PNPresenceWhereNowParser", @"PNPushNotificationsAuditParser",
+            @"PNPushNotificationsStateModificationParser", @"PNSubscribeParser",@"PNTimeParser"];
         NSMutableDictionary *parsers = [NSMutableDictionary new];
         for (NSString *className in parserNames) {
             
@@ -818,20 +821,21 @@ NS_ASSUME_NONNULL_END
     NSURL *requestURL = [PNURLBuilder URLForOperation:operationType withParameters:parameters];
     if (requestURL) {
         
-        DDLogRequest(self.client.logger, @"<PubNub::Network> %@ %@", (data.length ? @"POST" : @"GET"), 
+        PNLogRequest(self.client.logger, @"<PubNub::Network> %@ %@", parameters.HTTPMethod,
                      requestURL.absoluteString);
         
         __weak __typeof(self) weakSelf = self;
-        NSURLSessionDataTask *task = [self dataTaskWithRequest:[self requestWithURL:requestURL data:data] 
-                                                  forOperation:operationType
-                                                       success:^(NSURLSessionDataTask *task, id responseObject) {
+        NSURLRequest *request = [self requestWithURL:requestURL method:parameters.HTTPMethod data:data];
+        NSURLSessionDataTask *task = [self dataTaskWithRequest:request forOperation:operationType
+                                                       success:^(NSURLSessionDataTask *completedTask,
+                                                                 id responseObject) {
                                                            
-            [weakSelf handleOperation:operationType taskDidComplete:task withData:responseObject
+            [weakSelf handleOperation:operationType taskDidComplete:completedTask withData:responseObject
                       completionBlock:block];
         }
-                                                       failure:^(NSURLSessionDataTask *task, id error) {
+                                                       failure:^(NSURLSessionDataTask *failedTask, id error) {
 
-            [weakSelf handleOperation:operationType taskDidFail:task withError:error
+            [weakSelf handleOperation:operationType taskDidFail:failedTask withError:error
                       completionBlock:block];
         }];
         NSString *taskIdentifier = [self.sessionIdentifier stringByAppendingString:@(task.taskIdentifier).stringValue];
@@ -928,13 +932,13 @@ NS_ASSUME_NONNULL_END
     
     if (incompleteTasksCount == 0) {
         
-        DDLogRequest(self.client.logger, @"<PubNub::Network> All tasks completed. There is no need in "
+        PNLogRequest(self.client.logger, @"<PubNub::Network> All tasks completed. There is no need in "
                      "additional execution time in background context.");
         [self endBackgroundTasksCompletionIfRequired];
     }
     else if (!onCompletion) {
         
-        DDLogRequest(self.client.logger, @"<PubNub::Network> There is %lu incompleted tasks. Required "
+        PNLogRequest(self.client.logger, @"<PubNub::Network> There is %lu incompleted tasks. Required "
                      "additional execution time in background context.", (unsigned long)incompleteTasksCount);
     }
 }
@@ -986,7 +990,8 @@ NS_ASSUME_NONNULL_END
     NSURL *requestURL = [PNURLBuilder URLForOperation:operationType withParameters:parameters];
     if (requestURL) {
         
-        size = [PNURLRequest packetSizeForRequest:[self requestWithURL:requestURL data:data]];
+        size = [PNURLRequest packetSizeForRequest:[self requestWithURL:requestURL method:parameters.HTTPMethod 
+                                                                  data:data]];
     }
     
     return size;
@@ -1152,7 +1157,7 @@ NS_ASSUME_NONNULL_END
     }
 }
 
-- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask
+- (void)URLSession:(NSURLSession *)__unused session dataTask:(NSURLSessionDataTask *)__unused dataTask
     didReceiveData:(NSData *)data {
     
     if (self.configuration.applicationExtensionSharedGroupIdentifier != nil && data.length) {
@@ -1329,7 +1334,7 @@ NS_ASSUME_NONNULL_END
             [metricsData appendFormat:@"\nWARNING: Request redirections has been noticed:\n\t%@", 
              [redirections componentsJoinedByString:@"\n\t"]];
         }
-        DDLogRequestMetrics(self.client.logger, @"%@", metricsData);
+        PNLogRequestMetrics(self.client.logger, @"%@", metricsData);
     }
 }
 #endif
@@ -1437,31 +1442,31 @@ NS_ASSUME_NONNULL_END
     
     if ([NSURLSessionConfiguration pn_HTTPAdditionalHeaders].count) {
         
-        DDLogClientInfo(self.client.logger, @"<PubNub::Network> Custom HTTP headers is set by user: %@", 
+        PNLogClientInfo(self.client.logger, @"<PubNub::Network> Custom HTTP headers is set by user: %@",
                         [NSURLSessionConfiguration pn_HTTPAdditionalHeaders]);
     }
     
     if ([NSURLSessionConfiguration pn_networkServiceType] != NSURLNetworkServiceTypeDefault) {
         
-        DDLogClientInfo(self.client.logger, @"<PubNub::Network> Custom network service type is set by user: %@",
+        PNLogClientInfo(self.client.logger, @"<PubNub::Network> Custom network service type is set by user: %@",
                         @([NSURLSessionConfiguration pn_networkServiceType]));
     }
     
     if (![NSURLSessionConfiguration pn_allowsCellularAccess]) {
         
-        DDLogClientInfo(self.client.logger, @"<PubNub::Network> User limited access to cellular data and only"
+        PNLogClientInfo(self.client.logger, @"<PubNub::Network> User limited access to cellular data and only"
                         " WiFi connection can be used.");
     }
     
     if ([NSURLSessionConfiguration pn_protocolClasses].count) {
         
-        DDLogClientInfo(self.client.logger, @"<PubNub::Network> Extra requests handling protocols defined by "
+        PNLogClientInfo(self.client.logger, @"<PubNub::Network> Extra requests handling protocols defined by "
                         "user: %@", [NSURLSessionConfiguration pn_protocolClasses]);
     }
     
     if ([NSURLSessionConfiguration pn_connectionProxyDictionary].count) {
         
-        DDLogClientInfo(self.client.logger, @"<PubNub::Network> Connection proxy has been set by user: %@", 
+        PNLogClientInfo(self.client.logger, @"<PubNub::Network> Connection proxy has been set by user: %@",
                         [NSURLSessionConfiguration pn_connectionProxyDictionary]);
     }
 }

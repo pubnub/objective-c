@@ -21,6 +21,13 @@ NS_ASSUME_NONNULL_BEGIN
 ///------------------------------------------------
 
 /**
+ @brief  Stores reference on expected HTTP method for request.
+ 
+ @since 4.7.0
+ */
+@property (nonatomic, copy) NSString *HTTPMethod;
+
+/**
  @brief  Stores reference on key/value pairs which should be expanded in remote resource path.
  
  @since 4.0

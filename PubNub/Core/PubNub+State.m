@@ -169,7 +169,7 @@ NS_ASSUME_NONNULL_END
                              forFieldName:@"channel-group"];
         }
         
-        DDLogAPICall(strongSelf.logger, @"<PubNub::API> Set %@'s state on '%@' channel%@: %@.", 
+        PNLogAPICall(strongSelf.logger, @"<PubNub::API> Set %@'s state on '%@' channel%@: %@.",
                      (uuid?: @"<error>"), (object?: @"<error>"), (!onChannel ? @" group" : @""), 
                      parameters.query[@"state"]);
         
@@ -227,7 +227,7 @@ NS_ASSUME_NONNULL_END
         [parameters addQueryParameter:[PNString percentEscapedString:object] forFieldName:@"channel-group"];
     }
     
-    DDLogAPICall(self.logger, @"<PubNub::API> State request on '%@' channel%@: %@.", (uuid?: @"<error>"), 
+    PNLogAPICall(self.logger, @"<PubNub::API> State request on '%@' channel%@: %@.", (uuid?: @"<error>"),
                  (object?: @"<error>"), (!onChannel ? @" group" : @""));
     
     __weak __typeof(self) weakSelf = self;
