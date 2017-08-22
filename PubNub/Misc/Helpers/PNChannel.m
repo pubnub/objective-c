@@ -73,7 +73,7 @@ static NSString * const kPubNubPresenceChannelNameSuffix = @"-pnpres";
     for (NSString *name in names) {
         
         NSString *targetName = name;
-        if (![name hasSuffix:kPubNubPresenceChannelNameSuffix]) {
+        if (![name hasSuffix:kPubNubPresenceChannelNameSuffix] && ![name hasSuffix:@".*"]) {
             
             targetName = [name stringByAppendingString:kPubNubPresenceChannelNameSuffix];
         }
