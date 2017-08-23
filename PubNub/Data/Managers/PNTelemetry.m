@@ -17,7 +17,7 @@
  
  @since 4.6.2
  */
-static NSTimeInterval const kPNOperationLatencyMaximumAge = 10.0f;
+static NSTimeInterval const kPNOperationLatencyMaximumAge = 60.0f;
 
 /**
  @brief  Stores reference on key under which request status is stored.
