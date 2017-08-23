@@ -318,7 +318,8 @@ NS_ASSUME_NONNULL_END
         event[@"region"] = @(timeToken[PNEventTimeToken.region].longLongValue);
     }
     
-    if ([PNChannel isPresenceObject:event[@"subscription"]]) {
+    if ([PNChannel isPresenceObject:event[@"subscription"]] || 
+        [PNChannel isPresenceObject:event[@"channel"]]) {
         
         [event addEntriesFromDictionary:[self presenceFromData:data[PNEventEnvelope.payload]]];
         event[@"subscription"] = [PNChannel channelForPresence:event[@"subscription"]];

@@ -1307,35 +1307,36 @@ NS_ASSUME_NONNULL_END
 #if PN_URLSESSION_TRANSACTION_METRICS_AVAILABLE
 - (void)          URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task 
   didFinishCollectingMetrics:(NSURLSessionTaskMetrics *)metrics {
-    
-    if (self.client.logger.logLevel & PNRequestMetricsLogLevel) {
         
-        NSMutableArray *redirections = metrics.transactionMetrics.count > 1 ? [NSMutableArray new] : nil;
-        __block NSMutableString *metricsData = nil;
-        NSArray<NSURLSessionTaskTransactionMetrics *> *transactions = metrics.transactionMetrics;
-        [transactions enumerateObjectsUsingBlock:^(NSURLSessionTaskTransactionMetrics *transaction,
-                                                   NSUInteger transactionIdx, BOOL *trabsactionsEnumeratorStop) {
+    NSMutableArray *redirections = metrics.transactionMetrics.count > 1 ? [NSMutableArray new] : nil;
+    __block NSMutableString *metricsData = nil;
+    NSArray<NSURLSessionTaskTransactionMetrics *> *transactions = metrics.transactionMetrics;
+    [transactions enumerateObjectsUsingBlock:^(NSURLSessionTaskTransactionMetrics *transaction,
+                                               NSUInteger transactionIdx, BOOL *trabsactionsEnumeratorStop) {
+        
+        if (self.client.logger.logLevel & PNRequestMetricsLogLevel) {
+            
             if (transactionIdx == 0) { metricsData = [self formattedMetricsDataFrom:transaction redirection:NO]; }
             else { [redirections addObject:[self formattedMetricsDataFrom:transaction redirection:YES]]; }
-            
-            NSTimeInterval latency = [transaction.responseEndDate timeIntervalSince1970] - [transaction.requestStartDate timeIntervalSince1970];
-            if (latency > 0.f) {
-                pn_lock(&_lock, ^{ 
-                        
-                    NSString *taskIdentifier = [self.sessionIdentifier stringByAppendingString:@(task.taskIdentifier).stringValue];
-                    PNOperationType operationType = self.dataTaskToOperationMap[taskIdentifier].integerValue;
-                    [self.dataTaskToOperationMap removeObjectForKey:taskIdentifier];
-                    [self.client.telemetryManager setLatency:latency forOperation:operationType];
-                });
-            }
-        }];
-        if (redirections.count) {
-            
-            [metricsData appendFormat:@"\nWARNING: Request redirections has been noticed:\n\t%@", 
-             [redirections componentsJoinedByString:@"\n\t"]];
         }
-        PNLogRequestMetrics(self.client.logger, @"%@", metricsData);
+        
+        NSTimeInterval latency = [transaction.responseEndDate timeIntervalSince1970] - [transaction.requestStartDate timeIntervalSince1970];
+        if (latency > 0.f) {
+            pn_lock(&_lock, ^{ 
+                    
+                NSString *taskIdentifier = [self.sessionIdentifier stringByAppendingString:@(task.taskIdentifier).stringValue];
+                PNOperationType operationType = self.dataTaskToOperationMap[taskIdentifier].integerValue;
+                [self.dataTaskToOperationMap removeObjectForKey:taskIdentifier];
+                [self.client.telemetryManager setLatency:latency forOperation:operationType];
+            });
+        }
+    }];
+    if (redirections.count && metricsData) {
+        
+        [metricsData appendFormat:@"\nWARNING: Request redirections has been noticed:\n\t%@", 
+         [redirections componentsJoinedByString:@"\n\t"]];
     }
+    DDLogRequestMetrics(self.client.logger, @"%@", metricsData);
 }
 #endif
 

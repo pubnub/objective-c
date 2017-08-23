@@ -275,8 +275,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @since 4.5.0
  */
-@property (nonatomic, assign, getter = shouldStripMobilePayload) BOOL stripMobilePayload NS_SWIFT_NAME(stripMobilePayload)
-          DEPRECATED_MSG_ATTRIBUTE("This option deprecated and will be removed in next general SDK update.");
+@property (nonatomic, assign, getter = shouldStripMobilePayload) BOOL stripMobilePayload NS_SWIFT_NAME(stripMobilePayload);
 
 /**
  @brief  Construct configuration instance using minimal required data.
