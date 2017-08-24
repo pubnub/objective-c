@@ -97,10 +97,6 @@ There is a new configuration class which is not backwards compatible with the co
 
 In 4.x we use DDLog (Lumberjack) for our logging, and therefore, logging configuration has changed. Please see "Logging" below for more information on how to use the new logger.
 
-Example:
-```objective-c
-[DDLog addLogger:[DDTTYLogger sharedInstance]];
-```
 
 ### Optimized / Consolidated instance method names
 

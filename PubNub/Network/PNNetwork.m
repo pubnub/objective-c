@@ -1336,7 +1336,7 @@ NS_ASSUME_NONNULL_END
         [metricsData appendFormat:@"\nWARNING: Request redirections has been noticed:\n\t%@", 
          [redirections componentsJoinedByString:@"\n\t"]];
     }
-    DDLogRequestMetrics(self.client.logger, @"%@", metricsData);
+    PNLogRequestMetrics(self.client.logger, @"%@", metricsData);
 }
 #endif
 
