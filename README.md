@@ -26,7 +26,6 @@ Check out our [official docs page](http://www.pubnub.com/docs/ios-objective-c/pu
   - [Removed support for blocking, synchronous calls (all calls are now async)](#removed-support-for-blocking-synchronous-calls-all-calls-are-now-async)
   - [Removed support for Singleton, Delegate, Observer, Notifications response patterns](#removed-support-for-singleton-delegate-observer-notifications-response-patterns)
   - [New Configuration Class](#new-configuration-class)
-  - [New Logger and Logging Options](#new-logger-and-logging-options)
   - [Optimized / Consolidated instance method names](#optimized--consolidated-instance-method-names)
   - [Sending Logs to Support](#sending-logs-to-support)
 - [Configuration](#configuration)
@@ -92,11 +91,6 @@ Please checkout the "New for 4.0" section below for a general overview of the ma
 ### New Configuration Class
 
 There is a new configuration class which is not backwards compatible with the configuration class introduced in 3.x. Be sure to examine the "Configuration" section below, or the Example app for proper usage.
-
-### New Logger and Logging Options
-
-In 4.x we use DDLog (Lumberjack) for our logging, and therefore, logging configuration has changed. Please see "Logging" below for more information on how to use the new logger.
-
 
 ### Optimized / Consolidated instance method names
 
