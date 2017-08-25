@@ -15,12 +15,13 @@
  
  @since 4.0
  */
-static NSString * const PNOperationRequestTemplate[23] = {
+static NSString * const PNOperationRequestTemplate[24] = {
     [PNSubscribeOperation] = @"/v2/subscribe/{sub-key}/{channels}/0",
     [PNUnsubscribeOperation] = @"/v2/presence/sub_key/{sub-key}/channel/{channels}/leave",
     [PNPublishOperation] = @"/publish/{pub-key}/{sub-key}/0/{channel}/0/{message}",
     [PNHistoryOperation] = @"/v2/history/sub-key/{sub-key}/channel/{channel}",
     [PNHistoryForChannelsOperation] = @"/v3/history/sub-key/{sub-key}/channel/{channels}",
+    [PNDeleteMessageOperation] = @"/v3/history/sub-key/{sub-key}/channel/{channel}",
     [PNWhereNowOperation] = @"/v2/presence/sub-key/{sub-key}/uuid/{uuid}",
     [PNHereNowGlobalOperation] = @"/v2/presence/sub-key/{sub-key}",
     [PNHereNowForChannelOperation] = @"/v2/presence/sub-key/{sub-key}/channel/{channel}",

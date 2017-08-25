@@ -399,9 +399,10 @@ NS_ASSUME_NONNULL_END
             NSData *messageData = [messageForPublish dataUsingEncoding:NSUTF8StringEncoding];
             NSData *compressedBody = [PNGZIP GZIPDeflatedData:messageData];
             publishData = (compressedBody?: [@"" dataUsingEncoding:NSUTF8StringEncoding]);
+            parameters.HTTPMethod = @"POST";
         }
         
-        DDLogAPICall(strongSelf.logger, @"<PubNub::API> Publish%@ message to '%@' channel%@%@%@", 
+        PNLogAPICall(strongSelf.logger, @"<PubNub::API> Publish%@ message to '%@' channel%@%@%@",
                      (compressed ? @" compressed" : @""), (channel?: @"<error>"),
                      (metadata ? [NSString stringWithFormat:@" with metadata (%@)", 
                                   metadataForPublish] : @""),

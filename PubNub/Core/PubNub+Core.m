@@ -229,7 +229,7 @@ NS_ASSUME_NONNULL_END
         
         [self storeUUID:configuration.uuid];
         [self setupClientLogger];
-        DDLogClientInfo(self.logger, @"<PubNub> PubNub SDK %@ (%@)", kPNLibraryVersion, kPNCommit);
+        PNLogClientInfo(self.logger, @"<PubNub> PubNub SDK %@ (%@)", kPNLibraryVersion, kPNCommit);
         
         _configuration = [configuration copy];
         _callbackQueue = callbackQueue;
@@ -475,15 +475,15 @@ NS_ASSUME_NONNULL_END
 - (void)callBlock:(id)block status:(BOOL)callingStatusBlock withResult:(PNResult *)result 
         andStatus:(PNStatus *)status {
     
-    if (result) { DDLogResult(self.logger, @"<PubNub> %@", [result stringifiedRepresentation]); }
+    if (result) { PNLogResult(self.logger, @"<PubNub> %@", [result stringifiedRepresentation]); }
     
     if (status) {
         
         if (status.isError) {
             
-            DDLogFailureStatus(self.logger, @"<PubNub> %@", [status stringifiedRepresentation]);
+            PNLogFailureStatus(self.logger, @"<PubNub> %@", [status stringifiedRepresentation]);
         }
-        else { DDLogStatus(self.logger, @"<PubNub> %@", [status stringifiedRepresentation]); }
+        else { PNLogStatus(self.logger, @"<PubNub> %@", [status stringifiedRepresentation]); }
     }
 
     if (block) {
@@ -513,7 +513,7 @@ NS_ASSUME_NONNULL_END
 #if TARGET_OS_IOS
     if ([notification.name isEqualToString:UIApplicationDidEnterBackgroundNotification]) {
         
-        DDLogClientInfo(self.logger, @"<PubNub> Did enter background execution context.");
+        PNLogClientInfo(self.logger, @"<PubNub> Did enter background execution context.");
         if (self.configuration.shouldCompleteRequestsBeforeSuspension) {
             
             [self.subscriptionNetwork handleClientWillResignActive];
@@ -522,7 +522,7 @@ NS_ASSUME_NONNULL_END
     }
     else if ([notification.name isEqualToString:UIApplicationWillEnterForegroundNotification]) {
         
-        DDLogClientInfo(self.logger, @"<PubNub> Will enter foreground execution context.");
+        PNLogClientInfo(self.logger, @"<PubNub> Will enter foreground execution context.");
         if (self.configuration.shouldCompleteRequestsBeforeSuspension) {
             
             [self.subscriptionNetwork handleClientDidBecomeActive];
@@ -532,22 +532,22 @@ NS_ASSUME_NONNULL_END
 #elif TARGET_OS_WATCH
     if ([notification.name isEqualToString:NSExtensionHostDidEnterBackgroundNotification]) {
         
-        DDLogClientInfo(self.logger, @"<PubNub> Did enter background execution context.");
+        PNLogClientInfo(self.logger, @"<PubNub> Did enter background execution context.");
     }
     else if ([notification.name isEqualToString:NSExtensionHostWillEnterForegroundNotification]) {
         
-        DDLogClientInfo(self.logger, @"<PubNub> Will enter foreground execution context.");
+        PNLogClientInfo(self.logger, @"<PubNub> Will enter foreground execution context.");
     }
 #elif TARGET_OS_OSX
     if ([notification.name isEqualToString:NSWorkspaceWillSleepNotification] ||
         [notification.name isEqualToString:NSWorkspaceSessionDidResignActiveNotification]) {
         
-        DDLogClientInfo(self.logger, @"<PubNub> Workspace became inactive.");
+        PNLogClientInfo(self.logger, @"<PubNub> Workspace became inactive.");
     }
     else if ([notification.name isEqualToString:NSWorkspaceDidWakeNotification] ||
              [notification.name isEqualToString:NSWorkspaceSessionDidBecomeActiveNotification]) {
         
-        DDLogClientInfo(self.logger, @"<PubNub> Workspace became active.");
+        PNLogClientInfo(self.logger, @"<PubNub> Workspace became active.");
     }
 #endif // TARGET_OS_OSX
 }
@@ -608,7 +608,7 @@ NS_ASSUME_NONNULL_END
     if (verbosityFlags & PNAESErrorLogLevel) { [enabledFlags addObject:@"AES error"]; }
     if (verbosityFlags & PNAPICallLogLevel) { [enabledFlags addObject:@"API Call"]; }
     
-    DDLogClientInfo(self.logger, @"<PubNub::Logger> Enabled verbosity level flags: %@",
+    PNLogClientInfo(self.logger, @"<PubNub::Logger> Enabled verbosity level flags: %@",
                     [enabledFlags componentsJoinedByString:@", "]);
 }
 

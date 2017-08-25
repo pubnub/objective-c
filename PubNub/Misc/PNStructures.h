@@ -154,6 +154,15 @@ typedef void(^PNChannelGroupChangeCompletionBlock)(PNAcknowledgmentStatus *statu
  */
 typedef void(^PNHistoryCompletionBlock)(PNHistoryResult * _Nullable result, PNErrorStatus * _Nullable status);
 
+/**
+ @brief  Messages removal completion block.
+ 
+ @param status Reference on status instance which hold information about processing results.
+ 
+ @since 4.7.0
+ */
+typedef void(^PNMessageDeleteCompletionBlock)(PNAcknowledgmentStatus *status);
+
 
 #pragma mark - Completion blocks :: Presence
 
@@ -417,6 +426,7 @@ typedef NS_ENUM(NSInteger, PNOperationType){
     PNPublishOperation,
     PNHistoryOperation,
     PNHistoryForChannelsOperation,
+    PNDeleteMessageOperation,
     PNWhereNowOperation,
     PNHereNowGlobalOperation,
     PNHereNowForChannelOperation,

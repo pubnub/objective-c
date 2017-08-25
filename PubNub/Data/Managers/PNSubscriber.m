@@ -922,7 +922,7 @@ NS_ASSUME_NONNULL_END
         
         if (initialSubscribe) {
             
-            DDLogAPICall(self.client.logger, @"<PubNub::API> Subscribe (channels: %@; groups: %@)%@",
+            PNLogAPICall(self.client.logger, @"<PubNub::API> Subscribe (channels: %@; groups: %@)%@",
                          parameters.pathComponents[@"{channels}"], parameters.query[@"channel-group"],
                          (timeToken ? [NSString stringWithFormat:@" with catch up from %@.", timeToken] : @"."));
         }
@@ -1032,7 +1032,7 @@ NS_ASSUME_NONNULL_END
     [self.client appendClientInformation:successStatus];
     __weak __typeof(self) weakSelf = self;
     
-    DDLogAPICall(self.client.logger, @"<PubNub::API> Unsubscribe (channels: %@; groups: %@)",
+    PNLogAPICall(self.client.logger, @"<PubNub::API> Unsubscribe (channels: %@; groups: %@)",
                  [channelsWithOutPresence componentsJoinedByString:@","], 
                  [groupsWithOutPresence componentsJoinedByString:@","]);
     
@@ -1229,7 +1229,7 @@ NS_ASSUME_NONNULL_END
                                                        status.category != PNRequestURITooLongCategory);
             ((PNStatus *)status).retryCancelBlock = ^{
                 
-                DDLogAPICall(weakSelf.client.logger, @"<PubNub::API> Cancel retry");
+                PNLogAPICall(weakSelf.client.logger, @"<PubNub::API> Cancel retry");
                 [weakSelf stopRetryTimer];
             };
             if (((PNStatus *)status).willAutomaticallyRetry) { [self startRetryTimer]; }
@@ -1334,7 +1334,7 @@ NS_ASSUME_NONNULL_END
                 [self->_lastTimeToken compare:@0] != NSOrderedSame) {
                 
                 BOOL keepOnListChange = self.client.configuration.shouldKeepTimeTokenOnListChange;
-                DDLogResult(self.client.logger, @"<PubNub> Reuse existing subscription loop information "
+                PNLogResult(self.client.logger, @"<PubNub> Reuse existing subscription loop information "
                             "because of '%@' is set to 'YES' (timetoken = %@, region = %@)", 
                             (keepOnListChange ? @"keepTimeTokenOnListChange" : @"catchUpOnSubscriptionRestore"),
                             self->_lastTimeToken, self->_lastTimeTokenRegion);
@@ -1356,7 +1356,7 @@ NS_ASSUME_NONNULL_END
         if (!initialSubscription && self->_currentTimeToken &&
             [self->_currentTimeToken compare:@0] == NSOrderedSame) {
             
-            DDLogResult(self.client.logger, @"<PubNub> Ignore new subscription loop information because "
+            PNLogResult(self.client.logger, @"<PubNub> Ignore new subscription loop information because "
                         "non-initial subscribe request received when current timetoken is 0 (timetoken = %@, "
                         "region = %@). Potentially delayed request has been processed.", timeToken, region);
             
@@ -1375,7 +1375,7 @@ NS_ASSUME_NONNULL_END
                 self->_lastTimeTokenRegion = self->_currentTimeTokenRegion;
             }
             self->_currentTimeToken = (shouldOverrideTimeToken ? self->_overrideTimeToken : timeToken);
-            DDLogResult(self.client.logger, @"<PubNub> Did receive next subscription loop information: "
+            PNLogResult(self.client.logger, @"<PubNub> Did receive next subscription loop information: "
                         "timetoken = %@, region = %@.%@", timeToken, region, 
                         (shouldOverrideTimeToken ? [NSString stringWithFormat:@" But received timetoken "
                                                     "should be replaced with user provided: %@", 
@@ -1449,7 +1449,7 @@ NS_ASSUME_NONNULL_END
     PNErrorStatus *status = nil;
     if (data) {
         
-        DDLogResult(self.client.logger, @"<PubNub> %@", [(PNResult *)data stringifiedRepresentation]);
+        PNLogResult(self.client.logger, @"<PubNub> %@", [(PNResult *)data stringifiedRepresentation]);
         if ([data.serviceData[@"decryptError"] boolValue]) {
             
             status = [PNErrorStatus statusForOperation:PNSubscribeOperation category:PNDecryptionErrorCategory
@@ -1477,7 +1477,7 @@ NS_ASSUME_NONNULL_END
     
     if (data) {
         
-        DDLogResult(self.client.logger, @"<PubNub> %@", [(PNResult *)data stringifiedRepresentation]);
+        PNLogResult(self.client.logger, @"<PubNub> %@", [(PNResult *)data stringifiedRepresentation]);
     }
     
     // Silence static analyzer warnings.

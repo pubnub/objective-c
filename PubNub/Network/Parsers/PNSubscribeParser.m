@@ -369,7 +369,7 @@ NS_ASSUME_NONNULL_END
             
             PNLLogger *logger = [PNLLogger loggerWithIdentifier:kPNClientIdentifier];
             [logger enableLogLevel:PNAESErrorLogLevel];
-            DDLogAESError(logger, @"<PubNub::AES> Message decryption error: %@", decryptionError);
+            PNLogAESError(logger, @"<PubNub::AES> Message decryption error: %@", decryptionError);
             message[@"decryptError"] = @YES;
             message[@"message"] = dataForDecryption;
         }

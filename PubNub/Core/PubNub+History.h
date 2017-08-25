@@ -1,4 +1,5 @@
 #import <Foundation/Foundation.h>
+#import "PNDeleteMessageAPICallBuilder.h"
 #import "PNHistoryAPICallBuilder.h"
 #import "PubNub+Core.h"
 
@@ -36,6 +37,15 @@ NS_ASSUME_NONNULL_BEGIN
  @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNHistoryAPICallBuilder *(^history)(void);
+
+/**
+ @brief      Stores reference on history / storage manipulation API access \c builder construction block.
+ @discussion On block call return builder which allow to configure parameters for history / storage 
+             manipulation API access.
+ 
+ @since 4.7.0
+ */
+@property (nonatomic, readonly, strong) PNDeleteMessageAPICallBuilder *(^deleteMessage)(void);
 
 
 ///------------------------------------------------
@@ -79,7 +89,8 @@ self.client = [PubNub clientWithConfiguration:configuration];
  
  @since 4.0
  */
-- (void)historyForChannel:(NSString *)channel withCompletion:(PNHistoryCompletionBlock)block NS_SWIFT_NAME(historyForChannel(_:withCompletion:));
+- (void)historyForChannel:(NSString *)channel withCompletion:(PNHistoryCompletionBlock)block 
+  NS_SWIFT_NAME(historyForChannel(_:withCompletion:));
 
 
 ///------------------------------------------------
@@ -134,7 +145,8 @@ NSNumber *endDate = @([[NSDate date] timeIntervalSince1970]);
  @since 4.0
  */
 - (void)historyForChannel:(NSString *)channel start:(nullable NSNumber *)startDate 
-                      end:(nullable NSNumber *)endDate withCompletion:(PNHistoryCompletionBlock)block NS_SWIFT_NAME(historyForChannel(_:start:end:withCompletion:));
+                      end:(nullable NSNumber *)endDate withCompletion:(PNHistoryCompletionBlock)block 
+  NS_SWIFT_NAME(historyForChannel(_:start:end:withCompletion:));
 
 /**
  @brief      Allow to fetch events from specified \c channel's history within specified time frame.
@@ -188,7 +200,8 @@ NSNumber *endDate = @([[NSDate date] timeIntervalSince1970]);
  */
 - (void)historyForChannel:(NSString *)channel start:(nullable NSNumber *)startDate 
                       end:(nullable NSNumber *)endDate limit:(NSUInteger)limit 
-           withCompletion:(PNHistoryCompletionBlock)block NS_SWIFT_NAME(historyForChannel(_:start:end:limit:withCompletion:));
+           withCompletion:(PNHistoryCompletionBlock)block 
+  NS_SWIFT_NAME(historyForChannel(_:start:end:limit:withCompletion:));
 
 
 ///------------------------------------------------
@@ -250,7 +263,8 @@ NSNumber *endDate = @([[NSDate date] timeIntervalSince1970]);
  */
 - (void)historyForChannel:(NSString *)channel start:(nullable NSNumber *)startDate 
                       end:(nullable NSNumber *)endDate includeTimeToken:(BOOL)shouldIncludeTimeToken 
-           withCompletion:(PNHistoryCompletionBlock)block NS_SWIFT_NAME(historyForChannel(_:start:end:includeTimeToken:withCompletion:));
+           withCompletion:(PNHistoryCompletionBlock)block 
+  NS_SWIFT_NAME(historyForChannel(_:start:end:includeTimeToken:withCompletion:));
 
 /**
  @brief      Allow to fetch events from specified \c channel's history within specified time frame.
@@ -310,7 +324,8 @@ NSNumber *endDate = @([[NSDate date] timeIntervalSince1970]);
  */
 - (void)historyForChannel:(NSString *)channel start:(nullable NSNumber *)startDate 
                       end:(nullable NSNumber *)endDate limit:(NSUInteger)limit
-         includeTimeToken:(BOOL)shouldIncludeTimeToken withCompletion:(PNHistoryCompletionBlock)block NS_SWIFT_NAME(historyForChannel(_:start:end:limit:includeTimeToken:withCompletion:));
+         includeTimeToken:(BOOL)shouldIncludeTimeToken withCompletion:(PNHistoryCompletionBlock)block 
+  NS_SWIFT_NAME(historyForChannel(_:start:end:limit:includeTimeToken:withCompletion:));
 
 /**
  @brief      Allow to fetch events from specified \c channel's history within specified time frame.
@@ -366,7 +381,8 @@ NSNumber *endDate = @([[NSDate date] timeIntervalSince1970]);
  */
 - (void)historyForChannel:(NSString *)channel start:(nullable NSNumber *)startDate
                       end:(nullable NSNumber *)endDate limit:(NSUInteger)limit 
-                  reverse:(BOOL)shouldReverseOrder withCompletion:(PNHistoryCompletionBlock)block NS_SWIFT_NAME(historyForChannel(_:start:end:limit:reverse:withCompletion:));
+                  reverse:(BOOL)shouldReverseOrder withCompletion:(PNHistoryCompletionBlock)block 
+  NS_SWIFT_NAME(historyForChannel(_:start:end:limit:reverse:withCompletion:));
 
 /**
  @brief      Allow to fetch events from specified \c channel's history within specified time frame.
@@ -427,7 +443,60 @@ NSNumber *endDate = @([[NSDate date] timeIntervalSince1970]);
 - (void)historyForChannel:(NSString *)channel start:(nullable NSNumber *)startDate
                       end:(nullable NSNumber *)endDate limit:(NSUInteger)limit 
                   reverse:(BOOL)shouldReverseOrder includeTimeToken:(BOOL)shouldIncludeTimeToken 
-           withCompletion:(PNHistoryCompletionBlock)block NS_SWIFT_NAME(historyForChannel(_:start:end:limit:reverse:includeTimeToken:withCompletion:));
+           withCompletion:(PNHistoryCompletionBlock)block 
+  NS_SWIFT_NAME(historyForChannel(_:start:end:limit:reverse:includeTimeToken:withCompletion:));
+
+
+///------------------------------------------------
+/// @name History manipulation
+///------------------------------------------------
+
+/**
+ @brief      Allow to remove events from specified \c channel's history within specified time frame.
+ @discussion \b Example:
+ 
+ @code
+// Client configuration.
+PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo-36" 
+                                                                 subscribeKey:@"demo-36"];
+self.client = [PubNub clientWithConfiguration:configuration];
+NSNumber *startDate = @([[NSDate dateWithTimeIntervalSinceNow:-(60*60)] timeIntervalSince1970]);
+NSNumber *endDate = @([[NSDate date] timeIntervalSince1970]);
+[self.client deleteMessagesFromChannel:@"storage" start:startDate end:endDate
+                        withCompletion:^(PNAcknowledgmentStatus *status) {
+
+    // Check whether request successfully completed or not.
+    if (!status.isError) {
+
+       // Messages within specified time frame has been removed.
+    }
+    // Request processing failed.
+    else {
+    
+       // Handle message history download error. Check 'category' property to find out possible 
+       // issue because of which request did fail.
+       //
+       // Request can be resent using: [status retry];
+    }
+}];
+ @endcode
+ 
+ @param channel   Name of the channel from which events should be removed.
+ @param startDate Reference on time token for oldest event starting from which events should be removed. 
+                  Value will be converted to required precision internally. If no \c endDate value provided, 
+                  will be removed all events till specified \c startDate date (not inclusive).
+ @param endDate   Reference on time token for latest event till which events should be removed. Value will be 
+                  converted to required precision internally. If no \c startDate value provided, will be 
+                  removed all events starting from specified \c endDate date (inclusive).
+ @param block     Events remove processing completion block which pass only one argument - request processing 
+                  status to report about how data pushing was successful or not.
+ 
+ @since 4.0
+ */
+- (void)deleteMessagesFromChannel:(NSString *)channel start:(nullable NSNumber *)startDate 
+                              end:(nullable NSNumber *)endDate 
+                   withCompletion:(nullable PNMessageDeleteCompletionBlock)block 
+  NS_SWIFT_NAME(deleteMessagesFromChannel(_:start:end:withCompletion:));
 
 #pragma mark -
 

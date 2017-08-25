@@ -36,7 +36,7 @@
 
 - (void)timeWithCompletion:(PNTimeCompletionBlock)block {
     
-    DDLogAPICall(self.logger, @"<PubNub::API> Time token request.");
+    PNLogAPICall(self.logger, @"<PubNub::API> Time token request.");
     __weak __typeof(self) weakSelf = self;
     [self processOperation:PNTimeOperation withParameters:[PNRequestParameters new]
            completionBlock:^(PNResult *result, PNStatus *status) {
