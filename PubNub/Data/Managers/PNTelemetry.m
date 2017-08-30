@@ -17,7 +17,7 @@
  
  @since 4.6.2
  */
-static NSTimeInterval const kPNOperationLatencyMaximumAge = 10.0f;
+static NSTimeInterval const kPNOperationLatencyMaximumAge = 60.0f;
 
 /**
  @brief  Stores reference on key under which request status is stored.
@@ -157,6 +157,8 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Telemetry information tracking
 
+#if !PN_URLSESSION_TRANSACTION_METRICS_AVAILABLE
+
 - (void)startLatencyMeasureFor:(PNOperationType)operationType withIdentifier:(NSString *)identifier {
     
     // Check whether subscribe operation asked for latency measurment or not. 
@@ -186,6 +188,8 @@ NS_ASSUME_NONNULL_END
     }
 
 }
+
+#endif
 
 #pragma mark - Telemetry information update
 
@@ -220,8 +224,9 @@ NS_ASSUME_NONNULL_END
         case PNPublishOperation: 
             operation = @"pub";
             break;
-        case PNHistoryOperation: 
-        case PNHistoryForChannelsOperation: 
+        case PNHistoryOperation:
+        case PNHistoryForChannelsOperation:
+        case PNDeleteMessageOperation:
             operation = @"hist";
             break;
         case PNUnsubscribeOperation: 

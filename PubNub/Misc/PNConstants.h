@@ -15,10 +15,10 @@
 #pragma mark General information constants
 
 // Stores client library version number
-static NSString * const kPNLibraryVersion = @"4.6.3";
+static NSString * const kPNLibraryVersion = @"4.7.0";
 
 // Stores information about SDK codebase
-static NSString * const kPNCommit = @"718ffe6d0f50d22ec87aa13b0b15e8df2dbd044d";
+static NSString * const kPNCommit = @"6638b35ba097d9d1003091f4c79e88b1dca252ee";
 
 /**
  @brief  Stores reference on unique identifier which is used to identify \b PubNub client among other 
@@ -51,7 +51,7 @@ static PNHeartbeatNotificationOptions const kPNDefaultHeartbeatNotificationOptio
 static BOOL const kPNDefaultShouldKeepTimeTokenOnListChange = YES;
 static BOOL const kPNDefaultShouldTryCatchUpOnSubscriptionRestore = YES;
 static BOOL const kPNDefaultRequestMessageCountThreshold = 0;
-static BOOL const kPNDefaultMaximumMessagesCacheSize = 100;
+static NSUInteger const kPNDefaultMaximumMessagesCacheSize = 100;
 #if TARGET_OS_IOS
 static BOOL const kPNDefaultShouldCompleteRequestsBeforeSuspension = YES;
 #endif // TARGET_OS_IOS

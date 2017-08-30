@@ -39,7 +39,8 @@
         NSMutableDictionary *errorData = [NSMutableDictionary new];
         if (response[@"message"] || response[@"error"]) {
             
-            errorData[@"information"] = (response[@"message"]?: response[@"error"]);
+            id errorDescription = response[@"error"]?: response[@"error_message"];
+            errorData[@"information"] = response[@"message"]?: errorDescription;
         }
         
         if (response[@"payload"]) {

@@ -112,6 +112,22 @@ NS_ASSUME_NONNULL_END
     return ^PNHistoryAPICallBuilder *{ return builder; };
 }
 
+- (PNDeleteMessageAPICallBuilder * _Nonnull (^)(void))deleteMessage {
+    
+    PNDeleteMessageAPICallBuilder *builder = nil;
+    builder = [PNDeleteMessageAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags, 
+                                                                         NSDictionary *parameters) {
+        NSString *channel = parameters[NSStringFromSelector(@selector(channel))];
+        NSNumber *start = parameters[NSStringFromSelector(@selector(start))];
+        NSNumber *end = parameters[NSStringFromSelector(@selector(end))];
+        id block = parameters[@"block"];
+        
+        [self deleteMessagesFromChannel:channel start:start end:end withCompletion:block];
+    }];
+    
+    return ^PNDeleteMessageAPICallBuilder *{ return builder; };
+}
+
 
 #pragma mark - Full history
 
@@ -212,7 +228,7 @@ NS_ASSUME_NONNULL_END
             [parameters addPathComponent:[PNString percentEscapedString:channel] forPlaceholder:@"{channel}"];
         }
         
-        DDLogAPICall(self.logger, @"<PubNub::API> %@ for '%@' channel%@%@ with %@ limit%@.",
+        PNLogAPICall(self.logger, @"<PubNub::API> %@ for '%@' channel%@%@ with %@ limit%@.",
                      (shouldReverseOrder ? @"Reversed history" : @"History"), (channel?: @"<error>"),
                      (startDate ? [NSString stringWithFormat:@" from %@", startDate] : @""),
                      (endDate ? [NSString stringWithFormat:@" to %@", endDate] : @""), @(limitValue),
@@ -227,7 +243,7 @@ NS_ASSUME_NONNULL_END
             [parameters addPathComponent:[PNChannel namesForRequest:channels] forPlaceholder:@"{channels}"];
         }
         
-        DDLogAPICall(self.logger, @"<PubNub::API> History for '%@' channels%@%@ with %@ limit.",
+        PNLogAPICall(self.logger, @"<PubNub::API> History for '%@' channels%@%@ with %@ limit.",
                      (channels != nil ? [channels componentsJoinedByString:@", "] : @"<error>"),
                      (startDate ? [NSString stringWithFormat:@" from %@", startDate] : @""),
                      (endDate ? [NSString stringWithFormat:@" to %@", endDate] : @""), @(limitValue));
@@ -256,6 +272,67 @@ NS_ASSUME_NONNULL_END
         [weakSelf handleHistoryResult:result withStatus:status completion:block];
         #pragma clang diagnostic pop
     }];
+}
+
+#pragma mark - History manipulation
+
+- (void)deleteMessagesFromChannel:(NSString *)channel start:(NSNumber *)startDate end:(NSNumber *)endDate 
+                   withCompletion:(PNMessageDeleteCompletionBlock)block {
+    
+    // Swap time frame dates if required.
+    if (startDate && endDate && [startDate compare:endDate] == NSOrderedDescending) {
+        
+        NSNumber *_startDate = startDate;
+        startDate = endDate;
+        endDate = _startDate;
+    }
+    
+    PNRequestParameters *parameters = [PNRequestParameters new];
+    parameters.HTTPMethod = @"DELETE";
+    if (startDate) {
+        
+        [parameters addQueryParameter:[PNNumber timeTokenFromNumber:startDate].stringValue
+                         forFieldName:@"start"];
+    }
+    
+    if (endDate) {
+        
+        [parameters addQueryParameter:[PNNumber timeTokenFromNumber:endDate].stringValue
+                         forFieldName:@"end"];
+    }
+    if (channel.length) {
+        
+        [parameters addPathComponent:[PNString percentEscapedString:channel] forPlaceholder:@"{channel}"];
+    }
+    
+    PNLogAPICall(self.logger, @"<PubNub::API> Delete messages from '%@' channel%@%@.", (channel?: @"<error>"),
+                 (startDate ? [NSString stringWithFormat:@" %@ %@", 
+                               endDate ? @"from" : @"till", startDate] : @""),
+                 (endDate ? [NSString stringWithFormat:@" %@ %@", 
+                             startDate ? @"to" : @"from", endDate] : @""));
+    
+    __weak __typeof(self) weakSelf = self;
+    [self processOperation:PNDeleteMessageOperation withParameters:parameters 
+           completionBlock:^(PNStatus *status) {
+               
+        // Silence static analyzer warnings.
+        // Code is aware about this case and at the end will simply call on 'nil' object
+        // method. In most cases if referenced object become 'nil' it mean what there is no
+        // more need in it and probably whole client instance has been deallocated.
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wreceiver-is-weak"
+        if (status.isError) {
+
+            status.retryBlock = ^{
+
+                [weakSelf deleteMessagesFromChannel:channel start:startDate end:endDate 
+                                     withCompletion:block];
+            };
+        }
+        [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
+        #pragma clang diagnostic pop
+    }];
+
 }
 
 

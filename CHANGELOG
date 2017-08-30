@@ -1,4 +1,13 @@
-21-01-2017 - 718ffe6 - 4.6.3
+28-08-2017 - 6638b35 - 4.7.0
+. added 'delete message' functionality.
+. fixed issue with wildcard subscription and presence events which treated as messages.
+. fixed issue with copyWithConfiguration method which removed client itself from state change observers.
+. fixed de-duplication messages cache size issue.
+. fixed issue because of which requests metrics gathered only if 'metrics' log level has been enabled.
+. removed deprecated flag from 'stripMobilePayload' so it will only print out deprecation warning in console w/o actual warning in Xcode.
+. adjusted telemetry cache clean up interval.
+
+21-08-2017 - 718ffe6 - 4.6.3
 . fixed bug with channel group subscription from previous release.
 
 19-07-2017 - 424bf71 - 4.6.2

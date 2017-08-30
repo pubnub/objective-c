@@ -1,9 +1,34 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.6.3"
+version: "4.7.0"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Added 'delete message' functionality."
+        type: feature
+      -
+        text: "Fixed issue with wildcard subscription and presence events which treated as messages."
+        type: bug
+      -
+        text: "Fixed issue with copyWithConfiguration method which removed client itself from state change observers."
+        type: bug
+      -
+        text: "Fixed de-duplication messages cache size issue."
+        type: bug
+      -
+        text: "Fixed issue because of which requests metrics gathered only if 'metrics' log level has been enabled."
+        type: bug
+      -
+        text: "Removed deprecated flag from 'stripMobilePayload' so it will only print out deprecation warning in console w/o actual warning in Xcode."
+        type: improvement
+      -
+        text: "Adjusted telemetry cache clean up interval."
+        type: improvement
+    date: Aug 28, 17
+    version: v4.7.0
   -
     changes:
       -
@@ -645,6 +670,7 @@ features:
     - STORAGE-INCLUDE-TIMETOKEN
     - STORAGE-START-END
     - STORAGE-COUNT
+    - HISTORY-DELETE
   time:
     - TIME-TIME
   subscribe:
