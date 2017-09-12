@@ -167,8 +167,9 @@ NS_ASSUME_NONNULL_END
     
     // Check whether subscribe operation asked for latency measurment or not. 
     // There is no point to track long-poll operation latency.
-    if (operationType != PNSubscribeOperation) {
+    if (operationType != PNSubscribeOperation && identifier) {
         NSNumber *date = @([[NSDate date] timeIntervalSince1970]);
+
         pn_safe_property_write(self.resourceAccessQueue, ^{
             self.trackedLatencies[identifier] = date;
         });
@@ -179,7 +180,7 @@ NS_ASSUME_NONNULL_END
     
     // Check whether subscribe operation asked for latency measurment or not. 
     // There is no point to track long-poll operation latency.
-    if (operationType != PNSubscribeOperation) {
+    if (operationType != PNSubscribeOperation && identifier) {
         NSTimeInterval date = [[NSDate date] timeIntervalSince1970];
         __block NSNumber *startDate;
 
