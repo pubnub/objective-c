@@ -70,7 +70,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		75E962FB1F680F6500E8B0BB /* PNDeleteMessageAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 75E962F91F680F6500E8B0BB /* PNDeleteMessageAPICallBuilder.h */; };
+		75E962FB1F680F6500E8B0BB /* PNDeleteMessageAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 75E962F91F680F6500E8B0BB /* PNDeleteMessageAPICallBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		75E962FC1F680F6500E8B0BB /* PNDeleteMessageAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 75E962F91F680F6500E8B0BB /* PNDeleteMessageAPICallBuilder.h */; };
 		75E962FD1F680F6500E8B0BB /* PNDeleteMessageAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 75E962F91F680F6500E8B0BB /* PNDeleteMessageAPICallBuilder.h */; };
 		75E962FE1F680F6500E8B0BB /* PNDeleteMessageAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 75E962F91F680F6500E8B0BB /* PNDeleteMessageAPICallBuilder.h */; };
@@ -84,6 +84,7 @@
 		75E963061F680F6500E8B0BB /* PNDeleteMessageAPICallBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 75E962FA1F680F6500E8B0BB /* PNDeleteMessageAPICallBuilder.m */; };
 		75E963071F680F6500E8B0BB /* PNDeleteMessageAPICallBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 75E962FA1F680F6500E8B0BB /* PNDeleteMessageAPICallBuilder.m */; };
 		75E963081F680F6500E8B0BB /* PNDeleteMessageAPICallBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 75E962FA1F680F6500E8B0BB /* PNDeleteMessageAPICallBuilder.m */; };
+		75E963161F682DD700E8B0BB /* PNDeleteMessageAPICallBuilder.m in Headers */ = {isa = PBXBuildFile; fileRef = 75E962FA1F680F6500E8B0BB /* PNDeleteMessageAPICallBuilder.m */; settings = {ATTRIBUTES = (Public, ); }; };
 		791582091BD709C60084FC70 /* PubNub+History.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB05E1BD03DE4001FC34D /* PubNub+History.m */; };
 		7915820A1BD709C60084FC70 /* PNPresenceGlobalHereNowResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0951BD03DE4001FC34D /* PNPresenceGlobalHereNowResult.m */; };
 		7915820B1BD709C60084FC70 /* PNString.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0BC1BD03DE4001FC34D /* PNString.m */; };
@@ -2388,6 +2389,8 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				75E963161F682DD700E8B0BB /* PNDeleteMessageAPICallBuilder.m in Headers */,
+				75E962FB1F680F6500E8B0BB /* PNDeleteMessageAPICallBuilder.h in Headers */,
 				79A238DE1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfigurationPrivate.h in Headers */,
 				791582771BD709C60084FC70 /* PNPushNotificationsStateModificationParser.h in Headers */,
 				79A238D01D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.h in Headers */,
@@ -2484,7 +2487,6 @@
 				7915826E1BD709C60084FC70 /* PubNub+Time.h in Headers */,
 				7915826B1BD709C60084FC70 /* PubNub+APNS.h in Headers */,
 				791582851BD709C60084FC70 /* PNLogMacro.h in Headers */,
-				75E962FB1F680F6500E8B0BB /* PNDeleteMessageAPICallBuilder.h in Headers */,
 				79E2D0EE1C56434700BAA244 /* PNKeychain.h in Headers */,
 				791582991BD709C60084FC70 /* PNNetwork.h in Headers */,
 				791582931BD709C60084FC70 /* PNChannel.h in Headers */,
