@@ -1,9 +1,16 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.7.0"
+version: "4.7.1"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Fixed telemetry shared data access issues."
+        type: bug
+    date: Sep 15, 17
+    version: v4.7.1
   -
     changes:
       -
