@@ -974,7 +974,6 @@ NS_ASSUME_NONNULL_END
     pn_lock(&_lock, ^{
         
         [_session invalidateAndCancel];
-        _sessionIdentifier = nil;
         _session = nil;
     });
 }
@@ -1322,12 +1321,14 @@ NS_ASSUME_NONNULL_END
         
         NSTimeInterval latency = [transaction.responseEndDate timeIntervalSince1970] - [transaction.requestStartDate timeIntervalSince1970];
         if (latency > 0.f) {
-            pn_lock(&_lock, ^{ 
-                    
+            pn_lock(&_lock, ^{
                 NSString *taskIdentifier = [self.sessionIdentifier stringByAppendingString:@(task.taskIdentifier).stringValue];
-                PNOperationType operationType = self.dataTaskToOperationMap[taskIdentifier].integerValue;
-                [self.dataTaskToOperationMap removeObjectForKey:taskIdentifier];
-                [self.client.telemetryManager setLatency:latency forOperation:operationType];
+
+                if (taskIdentifier) {
+                    PNOperationType operationType = self.dataTaskToOperationMap[taskIdentifier].integerValue;
+                    [self.dataTaskToOperationMap removeObjectForKey:taskIdentifier];
+                    [self.client.telemetryManager setLatency:latency forOperation:operationType];
+                }
             });
         }
     }];

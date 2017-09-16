@@ -1,3 +1,6 @@
+15-09-2017 - 5811cce - 4.7.1
+. fixed telemetry shared data access issues.
+
 28-08-2017 - 6638b35 - 4.7.0
 . added 'delete message' functionality.
 . fixed issue with wildcard subscription and presence events which treated as messages.

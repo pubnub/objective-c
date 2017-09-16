@@ -6,6 +6,7 @@
 #import "PNTelemetry.h"
 #import "PNPrivateStructures.h"
 #import "PNLockSupport.h"
+#import "PNHelpers.h"
 #import "PNNumber.h"
 
 
@@ -66,11 +67,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) NSTimer *cleanUpTimer;
 
 /**
- @brief  Spin/unfair-lock which is used to protect access to shared resources from multiple threads.
- 
- @since 4.6.2
+ @brief  Stores reference on queue which is used to serialize access to shared telemetry
+         information.
+
+ @since 4.7.1
  */
-@property (nonatomic, assign) os_unfair_lock resourceAccessLock;
+@property (nonatomic, strong) dispatch_queue_t resourceAccessQueue;
 
 
 #pragma mark - Operation information
@@ -120,13 +122,14 @@ NS_ASSUME_NONNULL_END
     
     // Cjeck whether initialization has been successful or not.
     if ((self = [super init])) {
-        
-        self.resourceAccessLock = OS_UNFAIR_LOCK_INIT;
-        self.latencies = [NSMutableDictionary new];
-        self.trackedLatencies = [NSMutableDictionary new];
-        self.cleanUpTimer = [NSTimer scheduledTimerWithTimeInterval:1.0f target:self
-                                                           selector:@selector(handleCleanUpTimer:) 
-                                                           userInfo:nil repeats:YES];
+
+        _resourceAccessQueue = dispatch_queue_create("com.pubnub.telemetry", DISPATCH_QUEUE_CONCURRENT);
+        _latencies = [NSMutableDictionary new];
+        _trackedLatencies = [NSMutableDictionary new];
+        _cleanUpTimer = [NSTimer scheduledTimerWithTimeInterval:1.0f
+                                                         target:self
+                                                       selector:@selector(handleCleanUpTimer:)
+                                                       userInfo:nil repeats:YES];
     }
     
     return self;
@@ -138,15 +141,16 @@ NS_ASSUME_NONNULL_END
 - (NSDictionary *)operationsLatencyForRequest {
     
     NSMutableDictionary *latenciesForRequest = [NSMutableDictionary new];
-    pn_trylock(&_resourceAccessLock, ^{
-        
+    pn_safe_property_read(self.resourceAccessQueue, ^{
         NSString *averageKeyPath = [@"@avg." stringByAppendingString:kPNOperationLatencyKey];
-        [self.latencies enumerateKeysAndObjectsUsingBlock:^(NSString *latencyKey, 
-                                                            NSMutableArray<NSDictionary *> *latencies, 
+
+        [self.latencies enumerateKeysAndObjectsUsingBlock:^(NSString *latencyKey,
+                                                            NSMutableArray<NSDictionary *> *latencies,
                                                             BOOL *latenciesEnumeratorStop) {
-            
+
             NSString *averageLatencyKey = [@"l_" stringByAppendingString:latencyKey];
-            latenciesForRequest[averageLatencyKey] = [latencies valueForKeyPath:averageKeyPath];
+            NSNumber *averageLatency = [latencies valueForKeyPath:averageKeyPath];
+            latenciesForRequest[averageLatencyKey] = [NSString stringWithFormat:@"%.10f", averageLatency.doubleValue];
         }];
     });
     
@@ -163,9 +167,12 @@ NS_ASSUME_NONNULL_END
     
     // Check whether subscribe operation asked for latency measurment or not. 
     // There is no point to track long-poll operation latency.
-    if (operationType != PNSubscribeOperation) {
+    if (operationType != PNSubscribeOperation && identifier) {
         NSNumber *date = @([[NSDate date] timeIntervalSince1970]);
-        pn_trylock(&_resourceAccessLock, ^{ self.trackedLatencies[identifier] = date; });
+
+        pn_safe_property_write(self.resourceAccessQueue, ^{
+            self.trackedLatencies[identifier] = date;
+        });
     }
 }
 
@@ -173,18 +180,17 @@ NS_ASSUME_NONNULL_END
     
     // Check whether subscribe operation asked for latency measurment or not. 
     // There is no point to track long-poll operation latency.
-    if (operationType != PNSubscribeOperation) {
-        
+    if (operationType != PNSubscribeOperation && identifier) {
         NSTimeInterval date = [[NSDate date] timeIntervalSince1970];
-        pn_trylock(&_resourceAccessLock, ^{
-            
-            NSNumber *startDate = self.trackedLatencies[identifier];
-            if (startDate) {
-                
-                [self.trackedLatencies removeObjectForKey:identifier];
-                [self setLatency:(date - startDate.doubleValue) forOperation:operationType];
-            }
+        __block NSNumber *startDate;
+
+        pn_safe_property_read(self.resourceAccessQueue, ^{
+            startDate = self.trackedLatencies[identifier];
         });
+        pn_safe_property_write(self.resourceAccessQueue, ^{
+            [self.trackedLatencies removeObjectForKey:identifier];
+        });
+        [self setLatency:(date - startDate.doubleValue) forOperation:operationType];
     }
 
 }
@@ -198,12 +204,12 @@ NS_ASSUME_NONNULL_END
     // Check whether subscribe operation asked for latency measurment or not. 
     // There is no point to track long-poll operation latency.
     if (operationType != PNSubscribeOperation) {
-        
         NSNumber *date = @([[NSDate date] timeIntervalSince1970]);
-        pn_trylock(&_resourceAccessLock, ^{
-            
-            NSString *endpointName = [self endpointNameForOperation:operationType];
+        NSString *endpointName = [self endpointNameForOperation:operationType];
+
+        pn_safe_property_write(self.resourceAccessQueue, ^{
             NSMutableArray *latencies = self.latencies[endpointName];
+
             if (!latencies) {
                 latencies = [NSMutableArray new];
                 self.latencies[endpointName] = latencies;
@@ -265,23 +271,26 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Handlers
 
 - (void)handleCleanUpTimer:(NSTimer *)timer {
-    
-    pn_trylock(&_resourceAccessLock, ^{
-        
+
+    pn_safe_property_write(self.resourceAccessQueue, ^{
         NSTimeInterval date = [[NSDate date] timeIntervalSince1970];
         NSArray<NSString *> *endpoints = self.latencies.allKeys;
+
         for (NSString *key in endpoints) {
-            
             NSMutableArray *outdatedLatencies = [NSMutableArray new];
             NSMutableArray<NSDictionary *> *latencies = self.latencies[key];
+
             for (NSDictionary *latencyInformation in latencies) {
                 NSNumber *latencyStoreDate = latencyInformation[kPNOperationDateKey];
+
                 if (date - latencyStoreDate.doubleValue > kPNOperationLatencyMaximumAge) {
                     [outdatedLatencies addObject:latencyInformation];
                 }
             }
             [latencies removeObjectsInArray:outdatedLatencies];
-            if (latencies.count == 0) { [self.latencies removeObjectForKey:key]; }
+            if (latencies.count == 0) {
+                [self.latencies removeObjectForKey:key];
+            }
         }
     });
 }
