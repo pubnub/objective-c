@@ -350,15 +350,7 @@ NS_ASSUME_NONNULL_END
             __weak __typeof(self) weakSelf = self;
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)),
                            dispatch_get_main_queue(), ^{
-                               
-                // Silence static analyzer warnings.
-                // Code is aware about this case and at the end will simply call on 'nil' object
-                // method. In most cases if referenced object become 'nil' it mean what there is no
-                // more need in it and probably whole client instance has been deallocated.
-                #pragma clang diagnostic push
-                #pragma clang diagnostic ignored "-Wreceiver-is-weak"
                 [weakSelf.reachability startServicePing];
-                #pragma clang diagnostic pop
             });
         }
     }
@@ -393,7 +385,6 @@ NS_ASSUME_NONNULL_END
             // In most cases if referenced object become 'nil' it mean what there is no more need in
             // it and probably whole client instance has been deallocated.
             #pragma clang diagnostic push
-            #pragma clang diagnostic ignored "-Wreceiver-is-weak"
             #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
             [weakSelf.reachability stopServicePing];
             [weakSelf.subscriberManager restoreSubscriptionCycleIfRequiredWithCompletion:nil];
