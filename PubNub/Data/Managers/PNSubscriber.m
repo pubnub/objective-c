@@ -784,7 +784,6 @@ NS_ASSUME_NONNULL_END
             // method. In most cases if referenced object become 'nil' it mean what there is no
             // more need in it and probably whole client instance has been deallocated.
             #pragma clang diagnostic push
-            #pragma clang diagnostic ignored "-Wreceiver-is-weak"
             #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
             [self.client.listenersManager notifyWithBlock:^{
                 
@@ -890,7 +889,6 @@ NS_ASSUME_NONNULL_END
     // In most cases if referenced object become 'nil' it mean what there is no more need in
     // it and probably whole client instance has been deallocated.
     #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wreceiver-is-weak"
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
     if ([self allObjects].count) {
 
@@ -1019,8 +1017,7 @@ NS_ASSUME_NONNULL_END
     // In most cases if referenced object become 'nil' it mean what there is no more need in
     // it and probably whole client instance has been deallocated.
     #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wreceiver-is-weak"
-#pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
+    #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
     [self.client.clientStateManager removeStateForObjects:channels];
     [self.client.clientStateManager removeStateForObjects:groups];
     NSArray *channelsWithOutPresence = nil;
@@ -1120,15 +1117,7 @@ NS_ASSUME_NONNULL_END
     dispatch_queue_t timerQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_source_t timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, timerQueue);
     dispatch_source_set_event_handler(timer, ^{
-        
-        // Silence static analyzer warnings.
-        // Code is aware about this case and at the end will simply call on 'nil' object method.
-        // In most cases if referenced object become 'nil' it mean what there is no more need in
-        // it and probably whole client instance has been deallocated.
-        #pragma clang diagnostic push
-        #pragma clang diagnostic ignored "-Wreceiver-is-weak"
         [weakSelf continueSubscriptionCycleIfRequiredWithCompletion:nil];
-        #pragma clang diagnostic pop
     });
     dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(kPubNubSubscriptionRetryInterval * NSEC_PER_SEC));
     dispatch_source_set_timer(timer, start, (uint64_t)(kPubNubSubscriptionRetryInterval * NSEC_PER_SEC), NSEC_PER_SEC);
@@ -1167,7 +1156,6 @@ NS_ASSUME_NONNULL_END
     // In most cases if referenced object become 'nil' it mean what there is no more need in
     // it and probably whole client instance has been deallocated.
     #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wreceiver-is-weak"
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
     if (status.data.timetoken != nil && status.clientRequest.URL != nil) {
         
@@ -1202,7 +1190,6 @@ NS_ASSUME_NONNULL_END
     // In most cases if referenced object become 'nil' it mean what there is no more need in
     // it and probably whole client instance has been deallocated.
     #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wreceiver-is-weak"
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
     // Looks like subscription request has been cancelled.
     // Cancelling can happen because of: user changed subscriber sensitive configuration or
@@ -1315,7 +1302,6 @@ NS_ASSUME_NONNULL_END
         // In most cases if referenced object become 'nil' it mean what there is no more need in
         // it and probably whole client instance has been deallocated.
         #pragma clang diagnostic push
-        #pragma clang diagnostic ignored "-Wreceiver-is-weak"
         #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
         if (initialSubscription) {
             
@@ -1393,13 +1379,6 @@ NS_ASSUME_NONNULL_END
     NSUInteger eventsCount = events.count;
     NSUInteger messageCountThreshold = self.client.configuration.requestMessageCountThreshold;
     if (events.count) {
-        
-        // Silence static analyzer warnings.
-        // Code is aware about this case and at the end will simply call on 'nil' object method.
-        // In most cases if referenced object become 'nil' it mean what there is no more need in
-        // it and probably whole client instance has been deallocated.
-        #pragma clang diagnostic push
-        #pragma clang diagnostic ignored "-Wreceiver-is-weak"
         [self.client.listenersManager notifyWithBlock:^{
             
             // Check whether after initial subscription client should use user-provided timetoken to catch up on
@@ -1439,7 +1418,6 @@ NS_ASSUME_NONNULL_END
                 }
             }
         }];
-        #pragma clang diagnostic pop
     }
     [status updateData:[status.serviceData dictionaryWithValuesForKeys:@[@"timetoken", @"region"]]];
 }
@@ -1466,7 +1444,6 @@ NS_ASSUME_NONNULL_END
     // In most cases if referenced object become 'nil' it mean what there is no more need in
     // it and probably whole client instance has been deallocated.
     #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wreceiver-is-weak"
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
     if (status) { [self.client.listenersManager notifyStatusChange:(id)status]; }
     else if (data) { [self.client.listenersManager notifyMessage:data]; }
@@ -1485,7 +1462,6 @@ NS_ASSUME_NONNULL_END
     // In most cases if referenced object become 'nil' it mean what there is no more need in
     // it and probably whole client instance has been deallocated.
     #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wreceiver-is-weak"
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
     // Check whether state modification event arrived or not.
     // In case of state modification event for current client it should be applied on local storage.
@@ -1517,7 +1493,6 @@ NS_ASSUME_NONNULL_END
     // In most cases if referenced object become 'nil' it mean what there is no more need in
     // it and probably whole client instance has been deallocated.
     #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wreceiver-is-weak"
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
     NSDictionary *mergedState = [self.client.clientStateManager stateMergedWith:state
                                                                      forObjects:fullObjectsList];
