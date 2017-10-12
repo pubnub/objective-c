@@ -443,6 +443,28 @@ self.client = [PubNub clientWithConfiguration:configuration];
  */
 - (void)unsubscribeFromAll;
 
+/**
+ @brief      Unsubscribe from all channels and groups on which client has been subscrbed so far.
+ @discussion This is extension to \c -unsubscribeFromAll method which allow to specify unsubscription
+             completion block.
+ @discussion \b Example:
+ 
+ @code
+PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo"
+                                                                 subscribeKey:@"demo"];
+self.client = [PubNub clientWithConfiguration:configuration];
+[self.client unsubscribeFromAllWithCompletion:^(PNAcknowledgmentStatus *status) {
+    // Handle unsubscription process completion.
+}];
+ @endcode
+ 
+ @param block - Reference on block which should be called at the end of unsubscription process. Block
+                pass only one argument - unsubscription completion status object.
+ 
+ @since 4.7.2
+ */
+- (void)unsubscribeFromAllWithCompletion:(void(^__nullable)(PNStatus *status))block;
+
 #pragma mark -
 
 

@@ -987,17 +987,19 @@ NS_ASSUME_NONNULL_END
     [self subscribe:NO usingTimeToken:nil withState:nil completion:block];
 }
 
-- (void)unsubscribeFromAll {
+- (void)unsubscribeFromAllWithCompletion:(void(^)(PNStatus *status))block {
     
     NSArray *channels = [self.channels copy];
     NSArray *channelGroups = [self.channelGroups copy]; 
     if (channels.count || channelGroups.count) {
         
+        PNLogAPICall(self.client.logger, @"<PubNub::API> Unsubscribe from all");
+        
         [self removeChannels:channels];
         [self removePresenceChannels:self.presenceChannels];
         [self removeChannelGroups:channelGroups];
         [self unsubscribeFromChannels:channels groups:channelGroups informingListener:YES subscribeOnRest:NO
-                           completion:nil];
+                           completion:block];
     }
 }
 

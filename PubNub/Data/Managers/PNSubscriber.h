@@ -220,9 +220,12 @@ typedef void(^PNSubscriberCompletionBlock)(PNSubscribeStatus * _Nullable status)
  @discussion Client will as \b PubNub presence service to trigger \c 'leave' for all channels and groups 
              (except presence) on which client was subscribed earlier.
  
- @since 4.2.0
+ @param block - Reference on block which should be called at the end of unsubscription process. Block pass only
+                one argument - unsubscription completion status object.
+ 
+ @since 4.7.2
  */
-- (void)unsubscribeFromAll;
+- (void)unsubscribeFromAllWithCompletion:(void(^__nullable)(PNStatus *status))block;
 
 /**
  @brief      Perform unsubscription operation.
