@@ -703,20 +703,12 @@ NS_ASSUME_NONNULL_END
     __block NSURLSessionDataTask *task = nil;
     __weak __typeof(self) weakSelf = self;
     NSURLSessionDataTaskCompletion handler = ^(NSData *data, NSURLResponse *response, NSError *error) {
-        
-        // Silence static analyzer warnings.
-        // Code is aware about this case and at the end will simply call on 'nil' object method.
-        // In most cases if referenced object become 'nil' it mean what there is no more need in
-        // it and probably whole client instance has been deallocated.
-        #pragma clang diagnostic push
-        #pragma clang diagnostic ignored "-Wreceiver-is-weak"
 #if !PN_URLSESSION_TRANSACTION_METRICS_AVAILABLE
         NSString *taskIdentifier = [self.sessionIdentifier stringByAppendingString:@(task.taskIdentifier).stringValue];
         [weakSelf.client.telemetryManager stopLatencyMeasureFor:operationType withIdentifier:taskIdentifier];
 #endif
         [weakSelf handleData:data loadedWithTask:task error:(error?: task.error)
                 usingSuccess:success failure:failure];
-        #pragma clang diagnostic pop
     };
     pn_lock(&_lock, ^{
         
@@ -812,12 +804,6 @@ NS_ASSUME_NONNULL_END
                     data:(NSData *)data completionBlock:(id)block {
     
     [self appendRequiredParametersTo:parameters];
-    // Silence static analyzer warnings.
-    // Code is aware about this case and at the end will simply call on 'nil' object method.
-    // In most cases if referenced object become 'nil' it mean what there is no more need in
-    // it and probably whole client instance has been deallocated.
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wreceiver-is-weak"
     NSURL *requestURL = [PNURLBuilder URLForOperation:operationType withParameters:parameters];
     if (requestURL) {
         
@@ -861,7 +847,6 @@ NS_ASSUME_NONNULL_END
             else { ((PNStatusBlock)block)(badRequestStatus); }
         }
     }
-    #pragma clang diagnostic pop
 }
 
 - (void)parseData:(id)data withParser:(Class <PNParser>)parser 
@@ -875,15 +860,7 @@ NS_ASSUME_NONNULL_END
             block(processedData, (parser == [PNErrorParser class]));
         }
         else {
-            
-            // Silence static analyzer warnings.
-            // Code is aware about this case and at the end will simply call on 'nil' object method.
-            // In most cases if referenced object become 'nil' it mean what there is no more need in
-            // it and probably whole client instance has been deallocated.
-            #pragma clang diagnostic push
-            #pragma clang diagnostic ignored "-Wreceiver-is-weak"
             [weakSelf parseData:data withParser:[PNErrorParser class] completion:[block copy]];
-            #pragma clang diagnostic pop
         }
     };
     
@@ -1184,17 +1161,9 @@ NS_ASSUME_NONNULL_END
     __weak __typeof(self) weakSelf = self;
     [self parseData:responseObject withParser:[self parserForOperation:operation]
          completion:^(NSDictionary *parsedData, BOOL parseError) {
-
-             // Silence static analyzer warnings.
-             // Code is aware about this case and at the end will simply call on 'nil' object method.
-             // In most cases if referenced object become 'nil' it mean what there is no more need in
-             // it and probably whole client instance has been deallocated.
-             #pragma clang diagnostic push
-             #pragma clang diagnostic ignored "-Wreceiver-is-weak"
              [weakSelf handleParsedData:parsedData loadedWithTask:task forOperation:operation
                           parsedAsError:parseError processingError:task.error
                         completionBlock:[block copy]];
-             #pragma clang diagnostic pop
          }];
 }
 
@@ -1285,7 +1254,6 @@ NS_ASSUME_NONNULL_END
     // In most cases if referenced object become 'nil' it mean what there is no more need in
     // it and probably whole client instance has been deallocated.
     #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wreceiver-is-weak"
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
     if (result) { [self.client appendClientInformation:result]; }
     if (status) { [self.client appendClientInformation:status]; }

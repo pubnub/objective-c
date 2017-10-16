@@ -253,7 +253,8 @@ static NSString * const kPNSubscribeAPIPrefix = @"/v2/subscribe/";
     }
     
     if (channels.count || groups.count) {
-        
+
+        [self cancelSubscribeOperations];
         [self.subscriberManager unsubscribeFromChannels:channels groups:groups completion:block];
     }
     else if (block) { pn_dispatch_async(self.callbackQueue, ^{ block(nil); }); }
@@ -263,12 +264,19 @@ static NSString * const kPNSubscribeAPIPrefix = @"/v2/subscribe/";
     
     channels = [PNChannel presenceChannelsFrom:channels];
     [self.subscriberManager removePresenceChannels:channels];
+    [self cancelSubscribeOperations];
     [self.subscriberManager unsubscribeFromChannels:channels groups:nil completion:nil];
 }
 
 - (void)unsubscribeFromAll {
+
+    [self unsubscribeFromAllWithCompletion:nil];
+}
+
+- (void)unsubscribeFromAllWithCompletion:(void(^)(PNStatus *status))block {
     
-    [self.subscriberManager unsubscribeFromAll];
+    [self cancelSubscribeOperations];
+    [self.subscriberManager unsubscribeFromAllWithCompletion:block];
 }
 
 
