@@ -1057,32 +1057,38 @@ NS_ASSUME_NONNULL_END
             [parameters addQueryParameter:[PNChannel namesForRequest:groupsWithOutPresence]
                              forFieldName:@"channel-group"];
         }
-        [self.client processOperation:PNUnsubscribeOperation withParameters:parameters
-                      completionBlock:^(__unused PNStatus *status1){
-                          
-            void(^updateCompletion)(PNStatusCategory) = ^(PNStatusCategory category) {
-                
-                [successStatus updateCategory:category];
-                [weakSelf.client callBlock:nil status:YES withResult:nil andStatus:successStatus];
-                BOOL listChanged = ![[NSSet setWithArray:[weakSelf allObjects]] isEqualToSet:subscriptionObjects];
-                if (subscribeOnRestChannels && (subscriptionObjects.count > 0 && !listChanged)) {
-                    
-                    [weakSelf subscribe:YES usingTimeToken:nil withState:nil completion:nil];
-                }
-                else if (block) {
-                        
-                    pn_dispatch_async(weakSelf.client.callbackQueue, ^{
-                        
-                        block((PNSubscribeStatus *)successStatus);
-                    });
-                }
-            };
+
+        void(^updateCompletion)(PNStatusCategory) = ^(PNStatusCategory category) {
+
+            [successStatus updateCategory:category];
+            [weakSelf.client callBlock:nil status:YES withResult:nil andStatus:successStatus];
+            BOOL listChanged = ![[NSSet setWithArray:[weakSelf allObjects]] isEqualToSet:subscriptionObjects];
+            if (subscribeOnRestChannels && (subscriptionObjects.count > 0 && !listChanged)) {
+
+                [weakSelf subscribe:YES usingTimeToken:nil withState:nil completion:nil];
+            }
+            else if (block) {
+
+                pn_dispatch_async(weakSelf.client.callbackQueue, ^{
+
+                    block((PNSubscribeStatus *)successStatus);
+                });
+            }
+        };
+
+        void(^unsubscribeCompletionBlock)(PNStatus *) = ^(PNStatus *status1) {
             if (shouldInformListener) {
-                
                 [weakSelf updateStateTo:PNDisconnectedSubscriberState
                              withStatus:(PNSubscribeStatus *)successStatus completion:updateCompletion];
             } else { updateCompletion(successStatus.category); }
-        }];
+        };
+
+        if (!self.client.configuration.shouldSuppressLeaveEvents) {
+            [self.client processOperation:PNUnsubscribeOperation withParameters:parameters
+                          completionBlock:unsubscribeCompletionBlock];
+        } else {
+            unsubscribeCompletionBlock(nil);
+        }
     }
     else {
         

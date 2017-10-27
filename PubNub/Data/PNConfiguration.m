@@ -158,6 +158,7 @@ NS_ASSUME_NONNULL_END
         _nonSubscribeRequestTimeout = kPNDefaultNonSubscribeRequestTimeout;
         _TLSEnabled = kPNDefaultIsTLSEnabled;
         _heartbeatNotificationOptions = kPNDefaultHeartbeatNotificationOptions;
+        _suppressLeaveEvents = kPNDefaultShouldSuppressLeaveEvents;
         _keepTimeTokenOnListChange = kPNDefaultShouldKeepTimeTokenOnListChange;
         _catchUpOnSubscriptionRestore = kPNDefaultShouldTryCatchUpOnSubscriptionRestore;
         _requestMessageCountThreshold = kPNDefaultRequestMessageCountThreshold;
@@ -185,8 +186,9 @@ NS_ASSUME_NONNULL_END
     configuration.nonSubscribeRequestTimeout = self.nonSubscribeRequestTimeout;
     configuration.presenceHeartbeatValue = self.presenceHeartbeatValue;
     configuration.presenceHeartbeatInterval = self.presenceHeartbeatInterval;
-    configuration.TLSEnabled = self.isTLSEnabled;
     configuration.heartbeatNotificationOptions = self.heartbeatNotificationOptions;
+    configuration.suppressLeaveEvents = self.shouldSuppressLeaveEvents;
+    configuration.TLSEnabled = self.isTLSEnabled;
     configuration.keepTimeTokenOnListChange = self.shouldKeepTimeTokenOnListChange;
     configuration.catchUpOnSubscriptionRestore = self.shouldTryCatchUpOnSubscriptionRestore;
     configuration.applicationExtensionSharedGroupIdentifier = self.applicationExtensionSharedGroupIdentifier;
