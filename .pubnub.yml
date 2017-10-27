@@ -7,6 +7,19 @@ changelog:
   -
     changes:
       -
+        text: "Added new method to unsubscribe from all channels and groups with completion block."
+        type: feature
+      -
+        text: "Fixed issue because of which unsubscribe requests didn't terminated previous long-poll subscribe request."
+        type: bug
+      -
+        text: "Removed 'receiver-is-weak' clang warning suppression since it was deprecated."
+        type: improvement
+    date: Oct 16, 17
+    version: v4.7.2
+  -
+    changes:
+      -
         text: "Fixed telemetry shared data access issues."
         type: bug
     date: Sep 15, 17
