@@ -1,9 +1,19 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.7.1"
+version: "4.7.3"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Added 'suppressLeaveEvents' parameter to PNConfiguration which allow to suppress presence leave API call on unsubscription."
+        type: feature
+      -
+        text: "Fixed issue because of which there was a chance to create second subscribe request while subscription loop has been restarted with new timetoken."
+        type: bug
+    date: Oct 31, 17
+    version: v4.7.3
   -
     changes:
       -
