@@ -153,6 +153,15 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) PNHeartbeatNotificationOptions heartbeatNotificationOptions;
 
 /**
+ * @brief      Stores whether client shouldn't send presence \c leave events during unsubscription process.
+ * @discussion If this option is set to \c YES client will simply remove unsubscribed channels/groups from subscription
+ *             loop w/o notifying remote subscribers about leave.
+ *
+ * @since 4.7.3
+ */
+@property (nonatomic, assign, getter = shouldSuppressLeaveEvents) BOOL suppressLeaveEvents NS_SWIFT_NAME(suppressLeaveEvents);
+
+/**
  @brief   Stores whether client should communicate with \b PubNub services using secured connection or not.
  
  @default By default client use \b YES to secure communication with \b PubNub services.
