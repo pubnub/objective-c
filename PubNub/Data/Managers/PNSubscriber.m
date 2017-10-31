@@ -1173,7 +1173,6 @@ NS_ASSUME_NONNULL_END
     
     [self handleLiveFeedEvents:status forInitialSubscription:isInitialSubscription 
              overrideTimeToken:overrideTimeToken];
-    [self continueSubscriptionCycleIfRequiredWithCompletion:nil];
     
     // Because client received new event from service, it can restart reachability timer with
     // new interval.
@@ -1398,6 +1397,7 @@ NS_ASSUME_NONNULL_END
             
             // Remove message duplicates from received events list.
             [self deDuplicateMessages:events];
+            [self continueSubscriptionCycleIfRequiredWithCompletion:nil];
             
             // Check whether number of messages exceed specified threshold or not.
             if (messageCountThreshold > 0 && eventsCount >= messageCountThreshold) {
@@ -1426,6 +1426,8 @@ NS_ASSUME_NONNULL_END
                 }
             }
         }];
+    } else {
+        [self continueSubscriptionCycleIfRequiredWithCompletion:nil];
     }
     [status updateData:[status.serviceData dictionaryWithValuesForKeys:@[@"timetoken", @"region"]]];
 }
