@@ -1,3 +1,7 @@
+31-10-2017 - 364c1ac - 4.7.3
+. added 'suppressLeaveEvents' parameter to PNConfiguration which allow to suppress presence leave API call on unsubscription.
+. fixed issue because of which there was a chance to create second subscribe request while subscription loop has been restarted with new timetoken.
+
 16-10-2017 - 17ad5ac - 4.7.2
 . added new method to unsubscribe from all channels and groups with completion block.
 . fixed issue because of which unsubscribe requests didn't terminated previous long-poll subscribe request.
