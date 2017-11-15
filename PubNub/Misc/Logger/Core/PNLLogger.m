@@ -562,7 +562,8 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
 #pragma mark - Logging
 
 - (void)log:(NSUInteger)level format:(NSString *)format, ... {
-    
+
+#ifndef PUBNUB_DISABLE_LOGGER
     __block BOOL shouldHandleLog = NO;
     pn_trylock(&_accessLock, ^{ shouldHandleLog = (_logLevel & level); });
     if (shouldHandleLog && format.length) {
@@ -572,10 +573,12 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
         [self log:level message:[[NSString alloc] initWithFormat:format arguments:args]];
         va_end(args);
     }
+#endif
 }
 
 - (void)log:(NSUInteger)level message:(NSString *)message {
-    
+
+#ifndef PUBNUB_DISABLE_LOGGER
     if (self.enabled || level == 0) {
         
         NSString *threadID = [self currentThreadID];
@@ -625,6 +628,7 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
             }
         });
     }
+#endif
 }
 
 
