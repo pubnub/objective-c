@@ -1,3 +1,6 @@
+15-11-2017 - 114804a - 4.7.4
+. added ability to completely disable PubNub's client logger with 'PUBNUB_DISABLE_LOGGER' build configuration macro.
+
 31-10-2017 - 364c1ac - 4.7.3
 . added 'suppressLeaveEvents' parameter to PNConfiguration which allow to suppress presence leave API call on unsubscription.
 . fixed issue because of which there was a chance to create second subscribe request while subscription loop has been restarted with new timetoken.
