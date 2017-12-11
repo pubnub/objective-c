@@ -19,7 +19,7 @@
     
     self.configuration = [PNConfiguration configurationWithPublishKey:@"demo-36" subscribeKey:@"demo-36"];
     self.configuration.uuid = @"322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C";
-    self.configuration.origin = @"pubsub.pubnub.com";
+    self.configuration.origin = @"ps.pndsn.com";
     self.configuration = [self overrideClientConfiguration:self.configuration];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"

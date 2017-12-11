@@ -15,7 +15,10 @@
  
  @since 4.6.2
  */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
 static os_unfair_lock keychainAccessLock = OS_UNFAIR_LOCK_INIT;
+#pragma clang diagnostic pop
 
 
 #pragma mark Private interface declaration

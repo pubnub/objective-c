@@ -216,7 +216,8 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Data processing
 
 + (NSData *)SHA256HexFromKey:(NSString *)cipherKey {
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
     static os_unfair_lock _cipherKeysSpinLock;
     static NSMutableDictionary *_cipherKeys;
     static dispatch_once_t onceToken;
@@ -237,7 +238,7 @@ NS_ASSUME_NONNULL_END
             _cipherKeys[cipherKey] = key;
         }
     });
-    
+#pragma clang diagnostic pop
     return key;
 }
 

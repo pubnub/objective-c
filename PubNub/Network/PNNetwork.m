@@ -189,6 +189,14 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSMutableDictionary<NSString *, NSNumber *> *dataTaskToOperationMap;
 #endif
 
+/**
+ * @brief  Stores whether system version for which client is running doesn't support native metrics
+ *         information gathering.
+ *
+ * @since 4.7.5
+ */
+@property (nonatomic, assign, getter = isMetricsNotSupportByOS) BOOL metricsNotSupportedByOS;
+
 #if TARGET_OS_IOS
 
 /**
@@ -235,7 +243,10 @@ NS_ASSUME_NONNULL_BEGIN
  
  @since 4.0.2
  */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
 @property (nonatomic, assign) os_unfair_lock lock;
+#pragma clang diagnostic pop
 
 
 #pragma mark - Initialization and Configuration
@@ -569,8 +580,11 @@ NS_ASSUME_NONNULL_BEGIN
  
  @return String with request metrics which can be printed into PubNub's log file/Xcode console.
  */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
 - (NSMutableString *)formattedMetricsDataFrom:(NSURLSessionTaskTransactionMetrics *)transaction 
                                   redirection:(BOOL)isRedirection;
+#pragma clang diagnostic pop
 #endif
 
 /**
@@ -610,6 +624,7 @@ NS_ASSUME_NONNULL_END
         
         _client = client;
         [_client.logger enableLogLevel:(PNRequestLogLevel|PNInfoLogLevel)];
+        _metricsNotSupportedByOS = pn_operating_system_version_is_lower_than(PN_URLSESSION_TRANSACTION_METRICS_AVAILABLE_SINCE);
         _configuration = client.configuration;
         _forLongPollRequests = longPollEnabled;
 #if TARGET_OS_IOS
@@ -627,7 +642,10 @@ NS_ASSUME_NONNULL_END
 #endif // PN_URLSESSION_TRANSACTION_METRICS_AVAILABLE
         _serializer = [PNNetworkResponseSerializer new];
         _baseURL = [self requestBaseURL];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
         _lock = OS_UNFAIR_LOCK_INIT;
+#pragma clang diagnostic pop
         [self prepareRequiredParameters];
         [self prepareSessionWithRequestTimeout:timeout maximumConnections:maximumConnections];
     }
@@ -703,10 +721,11 @@ NS_ASSUME_NONNULL_END
     __block NSURLSessionDataTask *task = nil;
     __weak __typeof(self) weakSelf = self;
     NSURLSessionDataTaskCompletion handler = ^(NSData *data, NSURLResponse *response, NSError *error) {
-#if !PN_URLSESSION_TRANSACTION_METRICS_AVAILABLE
-        NSString *taskIdentifier = [self.sessionIdentifier stringByAppendingString:@(task.taskIdentifier).stringValue];
-        [weakSelf.client.telemetryManager stopLatencyMeasureFor:operationType withIdentifier:taskIdentifier];
-#endif
+        if (self.isMetricsNotSupportByOS) {
+            NSString *taskIdentifier = [self.sessionIdentifier stringByAppendingString:@(task.taskIdentifier).stringValue];
+            [weakSelf.client.telemetryManager stopLatencyMeasureFor:operationType withIdentifier:taskIdentifier];
+        }
+
         [weakSelf handleData:data loadedWithTask:task error:(error?: task.error)
                 usingSuccess:success failure:failure];
     };
@@ -825,11 +844,13 @@ NS_ASSUME_NONNULL_END
                       completionBlock:block];
         }];
         NSString *taskIdentifier = [self.sessionIdentifier stringByAppendingString:@(task.taskIdentifier).stringValue];
-#if !PN_URLSESSION_TRANSACTION_METRICS_AVAILABLE
-        [self.client.telemetryManager startLatencyMeasureFor:operationType withIdentifier:taskIdentifier];
-#else   
-        pn_lock(&_lock, ^{ self.dataTaskToOperationMap[taskIdentifier] = @(operationType); });
+        if (self.isMetricsNotSupportByOS) {
+            [self.client.telemetryManager startLatencyMeasureFor:operationType withIdentifier:taskIdentifier];
+        } else {
+#if PN_URLSESSION_TRANSACTION_METRICS_AVAILABLE
+            pn_lock(&_lock, ^{ self.dataTaskToOperationMap[taskIdentifier] = @(operationType); });
 #endif
+        }
         [task resume];
     }
     else {
@@ -1272,6 +1293,8 @@ NS_ASSUME_NONNULL_END
 }
 
 #if PN_URLSESSION_TRANSACTION_METRICS_AVAILABLE
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
 - (void)          URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task 
   didFinishCollectingMetrics:(NSURLSessionTaskMetrics *)metrics {
         
@@ -1307,6 +1330,7 @@ NS_ASSUME_NONNULL_END
     }
     PNLogRequestMetrics(self.client.logger, @"%@", metricsData);
 }
+#pragma clang diagnostic pop
 #endif
 
 
@@ -1349,6 +1373,8 @@ NS_ASSUME_NONNULL_END
 #endif // TARGET_OS_IOS
 
 #if PN_URLSESSION_TRANSACTION_METRICS_AVAILABLE
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
 - (NSMutableString *)formattedMetricsDataFrom:(NSURLSessionTaskTransactionMetrics *)transaction 
                                   redirection:(BOOL)isRedirection {
     
@@ -1406,6 +1432,7 @@ NS_ASSUME_NONNULL_END
     
     return metricsData;
 }
+#pragma clang diagnostic pop
 #endif
 
 - (void)printIfRequiredSessionCustomizationInformation {

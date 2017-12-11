@@ -52,6 +52,33 @@ void pn_safe_property_write(dispatch_queue_t queue, dispatch_block_t block) {
     if (queue && block) { dispatch_barrier_async(queue, block); }
 }
 
+NSString * pn_operating_system_version(void) {
+
+    NSString *osVersion = [[NSProcessInfo processInfo].operatingSystemVersionString componentsSeparatedByString:@" "][1];
+    NSMutableArray<NSString *> *versionComponents = [[osVersion componentsSeparatedByString:@"."] mutableCopy];
+
+    if (versionComponents.count == 2) {
+        [versionComponents addObject:@"0"];
+    }
+
+    return [versionComponents componentsJoinedByString:@"."];
+}
+
+BOOL pn_operating_system_version_is_greater_than(NSString *version) {
+
+    return [pn_operating_system_version() compare:version options:NSNumericSearch] == NSOrderedDescending;
+}
+
+BOOL pn_operating_system_version_is_same_as(NSString *version) {
+
+    return [pn_operating_system_version() compare:version options:NSNumericSearch] == NSOrderedSame;
+}
+
+BOOL pn_operating_system_version_is_lower_than(NSString *version) {
+    
+    return [pn_operating_system_version() compare:version options:NSNumericSearch] == NSOrderedAscending;
+}
+
 
 NS_ASSUME_NONNULL_BEGIN
 
