@@ -4,7 +4,7 @@
 
 #pragma mark Class forward
 
-@class PNPresenceWhereNowAPICallBuilder, PNPresenceHereNowAPICallBuilder;
+@class PNPresenceWhereNowAPICallBuilder, PNPresenceHereNowAPICallBuilder, PNPresenceHeartbeatAPICallBuilder;
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -48,6 +48,21 @@ NS_ASSUME_NONNULL_BEGIN
  @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNPresenceWhereNowAPICallBuilder *(^whereNow)(void);
+
+
+///------------------------------------------------
+/// @name Connected state
+///------------------------------------------------
+
+/**
+ * @brief      Stores reference on construction block which return \c builder which is responsible
+ *             for access to client's connected presence state management.
+ * @discussion On block call return block which consume client's \c connected state flag and
+ *             provide interface to access client's connected presence state management.
+ *
+ * @since 4.7.5
+ */
+@property (nonatomic, readonly, strong) PNPresenceHeartbeatAPICallBuilder *(^connected)(BOOL connected);
 
 #pragma mark -
 

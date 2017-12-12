@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "PNPresenceChannelGroupHereNowAPICallBuilder.h"
 #import "PNPresenceChannelHereNowAPICallBuilder.h"
+#import "PNPresenceHeartbeatAPICallBuilder.h"
 #import "PNPresenceWhereNowAPICallBuilder.h"
 #import "PNPresenceHereNowAPICallBuilder.h"
 #import "PNPresenceAPICallBuilder.h"
