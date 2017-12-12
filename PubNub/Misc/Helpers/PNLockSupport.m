@@ -31,6 +31,8 @@ BOOL _pn_os_unfair_lock_functions_visible() {
 #endif
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
 void _pn_lock_lock(os_unfair_lock *lock) {
     #if PN_OS_VERSION_10_SDK_API_IS_SAFE
         os_unfair_lock_lock(lock);
@@ -143,3 +145,4 @@ void pn_trylock_async(os_unfair_lock * lock, PNLockAsyncAction block) {
     
     _pn_lock_async(YES, lock, block);
 }
+#pragma clang diagnostic pop

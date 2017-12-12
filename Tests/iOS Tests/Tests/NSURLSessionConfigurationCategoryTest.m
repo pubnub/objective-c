@@ -225,7 +225,7 @@
 - (void)testSetConnectionProxy {
     
     // Prepare and apply connection proxy dictionary.
-    NSDictionary *proxyDictionary = @{(NSString *)kCFStreamPropertySOCKSProxyHost : @"pubsub.pubnub.com",
+    NSDictionary *proxyDictionary = @{(NSString *)kCFStreamPropertySOCKSProxyHost : @"ps.pndsn.com",
                                       (NSString *)kCFStreamPropertySOCKSProxyPort : @(80) };
     [NSURLSessionConfiguration pn_setConnectionProxyDictionary:proxyDictionary];
     

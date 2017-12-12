@@ -45,4 +45,25 @@ extern void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block);
 extern void pn_safe_property_read(dispatch_queue_t queue, dispatch_block_t block);
 extern void pn_safe_property_write(dispatch_queue_t queue, dispatch_block_t block);
 
+
+/**
+ * @brief  Get stringified operation system version representation.
+ *
+ * @return Stringified version representation in format: <major>.<minor>.<patch>.
+ */
+extern NSString * pn_operating_system_version(void);
+
+/**
+ * @brief  Check whether OS version on which code currently executed is greated/same/lower than
+ *         specified version.
+ *
+ * @param version Reference on checked system version represented as string.
+ *
+ * @return \c YES in case if tested version conform to constrains (greater, same or lower than
+ *         specified value).
+ */
+extern BOOL pn_operating_system_version_is_greater_than(NSString *version);
+extern BOOL pn_operating_system_version_is_same_as(NSString *version);
+extern BOOL pn_operating_system_version_is_lower_than(NSString *version);
+
 #endif // PNHelpers_h

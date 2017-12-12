@@ -39,7 +39,10 @@ static NSUInteger const kPNMaximumPublishSequenceDataAge = (30 * 24 * 60 * 60);
  
  @since 4.5.2
  */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
 static os_unfair_lock publishSequenceKeychainAccessLock = OS_UNFAIR_LOCK_INIT;
+#pragma clang diagnostic pop
 
 
 #pragma mark - Structures
@@ -83,7 +86,10 @@ struct PNPublishSequenceDataStructure PNPublishSequenceData = {
      
      @since 4.5.2
      */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
     os_unfair_lock _lock;
+#pragma clang diagnostic pop
 }
 
 
@@ -253,7 +259,10 @@ NS_ASSUME_NONNULL_END
         
         _client = client;
         _publishKey = client.currentConfiguration.publishKey;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
         _lock = OS_UNFAIR_LOCK_INIT;
+#pragma clang diagnostic pop
         
         [self loadFromPersistentStorage];
         [self cleanUpIfRequired];
