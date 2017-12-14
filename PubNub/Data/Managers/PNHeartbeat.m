@@ -29,6 +29,22 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, weak) PubNub *client;
 
 /**
+ * @brief  Stores reference on list of channels for which client's connected state has been set
+ *         to \c YES.
+ *
+ * @since 4.7.5
+ */
+@property (nonatomic, strong) NSMutableArray *presenceChannels;
+
+/**
+ * @brief  Stores reference on list of channel groups for which client's connected state has
+ *         been set to \c YES.
+ *
+ * @since 4.7.5
+ */
+@property (nonatomic, strong) NSMutableArray *presenceChannelGroups;
+
+/**
  @brief  Stores reference on timer used to trigger heartbeat requests.
  
  @since 4.0
@@ -106,6 +122,8 @@ NS_ASSUME_NONNULL_END
     if ((self = [super init])) {
         
         _client = client;
+        _presenceChannels = [NSMutableArray array];
+        _presenceChannelGroups = [NSMutableArray array];
         _resourceAccessQueue = dispatch_queue_create("com.pubnub.heartbeat", DISPATCH_QUEUE_CONCURRENT);
     }
     
@@ -125,6 +143,88 @@ NS_ASSUME_NONNULL_END
     pn_safe_property_write(self.resourceAccessQueue, ^{ self->_heartbeatTimer = heartbeatTimer; });
 }
 
+
+#pragma mark - Client presence
+
+- (NSArray<NSString *> *)allObjects {
+
+    NSMutableArray<NSString *> *allObjects = [NSMutableArray array];
+
+    pn_safe_property_read(self.resourceAccessQueue, ^{
+        [allObjects addObjectsFromArray:self->_presenceChannels];
+        [allObjects addObjectsFromArray:self->_presenceChannelGroups];
+    });
+
+    return allObjects;
+}
+
+- (NSArray<NSString *> *)channels {
+
+    __block NSArray<NSString *> *channels = nil;
+
+    pn_safe_property_read(self.resourceAccessQueue, ^{
+        channels = self->_presenceChannels;
+    });
+
+    return channels;
+}
+
+- (NSArray<NSString *> *)channelGroups {
+
+    __block NSArray<NSString *> *channelGroups = nil;
+
+    pn_safe_property_read(self.resourceAccessQueue, ^{
+        channelGroups = self->_presenceChannelGroups;
+
+    });
+
+    return channelGroups;
+}
+
+- (void)removeChannels:(NSArray<NSString *> *)channels {
+
+    if ([channels isKindOfClass:[NSArray class]]) {
+        pn_safe_property_write(self.resourceAccessQueue, ^{
+            [self->_presenceChannels removeObjectsInArray:channels];
+        });
+    }
+}
+
+- (void)removeChannelGroups:(NSArray<NSString *> *)channelGroups {
+
+    if ([channelGroups isKindOfClass:[NSArray class]]) {
+        pn_safe_property_write(self.resourceAccessQueue, ^{
+            [self->_presenceChannelGroups removeObjectsInArray:channelGroups];
+        });
+    }
+}
+
+- (void)setConnected:(BOOL)connected forChannels:(NSArray<NSString *> *)channels {
+
+    if ([channels isKindOfClass:[NSArray class]]) {
+        pn_safe_property_write(self.resourceAccessQueue, ^{
+            if (connected) {
+                [self->_presenceChannels addObjectsFromArray:channels];
+            } else {
+                [self->_presenceChannels removeObjectsInArray:channels];
+            }
+        });
+    }
+}
+
+- (void)setConnected:(BOOL)connected forChannelGroups:(NSArray<NSString *> *)channelGroups {
+
+    if ([channelGroups isKindOfClass:[NSArray class]]) {
+        pn_safe_property_write(self.resourceAccessQueue, ^{
+            if (connected) {
+                [self->_presenceChannelGroups addObjectsFromArray:channelGroups];
+            } else {
+                [self->_presenceChannelGroups removeObjectsInArray:channelGroups];
+
+            }
+        });
+    }
+}
 
 #pragma mark - State manipulation
 
@@ -172,7 +272,8 @@ NS_ASSUME_NONNULL_END
     // it and probably whole client instance has been deallocated.
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
-    if ([PNChannel objectsWithOutPresenceFrom:[self.client.subscriberManager allObjects]].count) {
+    if ([PNChannel objectsWithOutPresenceFrom:[self.client.subscriberManager allObjects]].count ||
+        [self allObjects].count) {
         
         __weak __typeof(self) weakSelf = self;
         [self.client heartbeatWithCompletion:^(PNStatus *status) {
