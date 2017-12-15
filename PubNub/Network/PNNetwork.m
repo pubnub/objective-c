@@ -632,11 +632,13 @@ NS_ASSUME_NONNULL_END
         _tasksCompletionIdentifier = UIBackgroundTaskInvalid;
 #endif // TARGET_OS_IOS
         _identifier = [[NSString stringWithFormat:@"com.pubnub.network.%p", self] copy];
-        if (_configuration.applicationExtensionSharedGroupIdentifier == nil) {
-            
-            _processingQueue = dispatch_queue_create([_identifier UTF8String], DISPATCH_QUEUE_CONCURRENT);
-        } 
-        else { _processingQueue = dispatch_get_main_queue(); }
+
+        _processingQueue = dispatch_queue_create([_identifier UTF8String], DISPATCH_QUEUE_CONCURRENT);
+        if (@available(macOS 10.10, iOS 8.0, *)) {
+            if (_configuration.applicationExtensionSharedGroupIdentifier) {
+                _processingQueue = dispatch_get_main_queue();
+            }
+        }
 #if PN_URLSESSION_TRANSACTION_METRICS_AVAILABLE
         _dataTaskToOperationMap = [NSMutableDictionary new];
 #endif // PN_URLSESSION_TRANSACTION_METRICS_AVAILABLE
@@ -730,8 +732,13 @@ NS_ASSUME_NONNULL_END
                 usingSuccess:success failure:failure];
     };
     pn_lock(&_lock, ^{
-        
-        if (_configuration.applicationExtensionSharedGroupIdentifier != nil) { 
+
+        BOOL isApplicationExtension = NO;
+        if (@available(macOS 10.10, iOS 8.0, *)) {
+            isApplicationExtension = _configuration.applicationExtensionSharedGroupIdentifier != nil;
+        }
+
+        if (isApplicationExtension) {
             self.previousDataTaskCompletionHandler = handler;
             self.fetchedData = [NSMutableData new];
             task = [self.session dataTaskWithRequest:request];
@@ -1016,18 +1023,18 @@ NS_ASSUME_NONNULL_END
     
     // Prepare base configuration with predefined timeout values and maximum connections
     // to same host (basically how many requests can be handled at once).
+    BOOL shouldUsepipelining = !self.forLongPollRequests;
     NSURLSessionConfiguration *configuration = nil;
-    if (self.configuration.applicationExtensionSharedGroupIdentifier == nil) {
-        
-        configuration = [NSURLSessionConfiguration pn_ephemeralSessionConfigurationWithIdentifier:self.identifier];
-    }
-    else {
-        
-        configuration = [NSURLSessionConfiguration pn_backgroundSessionConfigurationWithIdentifier:self.identifier];
-        configuration.sharedContainerIdentifier = _configuration.applicationExtensionSharedGroupIdentifier;
+    configuration = [NSURLSessionConfiguration pn_ephemeralSessionConfigurationWithIdentifier:self.identifier];
+    if (@available(macOS 10.10, iOS 8.0, *)) {
+        if (self.configuration.applicationExtensionSharedGroupIdentifier) {
+            configuration = [NSURLSessionConfiguration pn_backgroundSessionConfigurationWithIdentifier:self.identifier];
+            configuration.sharedContainerIdentifier = _configuration.applicationExtensionSharedGroupIdentifier;
+            shouldUsepipelining = NO;
+        }
     }
     
-    configuration.HTTPShouldUsePipelining = (!self.forLongPollRequests && self.configuration.applicationExtensionSharedGroupIdentifier == nil);
+    configuration.HTTPShouldUsePipelining = shouldUsepipelining;
     configuration.timeoutIntervalForRequest = timeout;
     configuration.HTTPMaximumConnectionsPerHost = maximumConnections;
     
@@ -1129,10 +1136,17 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
-    
-    BOOL isBackgroundProcessingError = (error && [error.domain isEqualToString:NSURLErrorDomain] &&
-                                        error.code == NSURLErrorBackgroundSessionRequiresSharedContainer);
-    if (self.configuration.applicationExtensionSharedGroupIdentifier != nil || isBackgroundProcessingError) {
+
+    BOOL isApplicationExtension = NO;
+    BOOL isBackgroundProcessingError = NO;
+
+    if (@available(macOS 10.10, iOS 8.0, *)) {
+        isApplicationExtension = self.configuration.applicationExtensionSharedGroupIdentifier != nil;
+        isBackgroundProcessingError = (error && [error.domain isEqualToString:NSURLErrorDomain] &&
+                                       error.code == NSURLErrorBackgroundSessionRequiresSharedContainer);
+    }
+
+    if (isApplicationExtension || isBackgroundProcessingError) {
         
         if (isBackgroundProcessingError) {
             
@@ -1156,10 +1170,12 @@ NS_ASSUME_NONNULL_END
 
 - (void)URLSession:(NSURLSession *)__unused session dataTask:(NSURLSessionDataTask *)__unused dataTask
     didReceiveData:(NSData *)data {
-    
-    if (self.configuration.applicationExtensionSharedGroupIdentifier != nil && data.length) {
-        
-        [self.fetchedData appendData:data];
+
+    if (@available(macOS 10.10, iOS 8.0, *)) {
+        if (self.configuration.applicationExtensionSharedGroupIdentifier != nil && data.length) {
+
+            [self.fetchedData appendData:data];
+        }
     }
 }
 
