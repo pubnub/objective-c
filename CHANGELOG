@@ -1,3 +1,9 @@
+16-12-2017 - 4ad8a12 - 4.7.5
+. added ability to change client's presence without actual subscription to channels/groups (based on heartbeat and presence leave API).
+. fixed Xcode warnings about partly API availability.
+. fixed race of conditions for logger.
+. fixed pre-compile macro usage to send metrics when code is running on device with pre-iOS 10 version.
+
 15-11-2017 - 114804a - 4.7.4
 . added ability to completely disable PubNub's client logger with 'PUBNUB_DISABLE_LOGGER' build configuration macro.
 

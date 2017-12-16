@@ -4,6 +4,7 @@
  @copyright © 2009-2017 PubNub, Inc.
  */
 #import "PNLLogFileInformation.h"
+#import "PNLockSupport.h"
 #import <sys/xattr.h>
 
 
@@ -34,6 +35,16 @@ static NSString * const kPNLArchivedFileAttributeName = @"com.pubnub.logger.arch
  @since 4.5.0
  */
 @property (nonatomic, copy) NSDictionary *attributes;
+
+/**
+ @brief  Lock which is used to protect access to shared resources from multiple threads.
+
+ @since 4.7.5
+ */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+@property (nonatomic, assign) os_unfair_lock accessLock;
+#pragma clang diagnostic pop
 
 
 #pragma mark - Initialization and Configuration
@@ -88,11 +99,13 @@ static NSString * const kPNLArchivedFileAttributeName = @"com.pubnub.logger.arch
 #pragma mark - Information
 
 - (NSDictionary *)attributes {
-    
-    if (!_attributes) {
-        
-        _attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:self.path error:nil];
-    }
+
+    pn_lock(&_accessLock, ^{
+        if (!_attributes) {
+
+            _attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:self.path error:nil];
+        }
+    });
     
     return _attributes;
 }
@@ -136,7 +149,11 @@ static NSString * const kPNLArchivedFileAttributeName = @"com.pubnub.logger.arch
     
     // Check whether initialization has been successful or not.
     if ((self = [super init])) {
-        
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+        _accessLock = OS_UNFAIR_LOCK_INIT;
+#pragma clang diagnostic pop
         _path = [path copy];
         _name = [[_path lastPathComponent] copy];
         _extension = ([_path pathExtension].length ? [_path pathExtension] : nil);

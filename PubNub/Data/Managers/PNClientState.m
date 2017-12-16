@@ -141,6 +141,7 @@ NS_ASSUME_NONNULL_END
             // Clean up state cache from objects on which client not subscribed at this moment.
             NSMutableArray *objects = [NSMutableArray arrayWithArray:[self.stateCache allKeys]];
             [objects removeObjectsInArray:[self.client.subscriberManager allObjects]];
+            [objects removeObjectsInArray:[self.client.heartbeatManager allObjects]];
             [self removeStateForObjects:objects];
         });
     }

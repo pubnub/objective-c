@@ -29,7 +29,10 @@
  
  @since 4.5.0
  */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
 static os_unfair_lock pnl_cacheAccessLock = OS_UNFAIR_LOCK_INIT;
+#pragma clang diagnostic pop
 
 /**
  @brief  Stores maximum log entry timestamp string length.
@@ -171,7 +174,10 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
  
  @since 4.5.0
  */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
 @property (nonatomic, assign) os_unfair_lock accessLock;
+#pragma clang diagnostic pop
 
 
 #pragma mark - Initialization and Configuration
@@ -367,33 +373,33 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
 - (BOOL)writeToConsole {
     
     __block BOOL writeToConsole = NO;
-    pn_trylock(&_accessLock, ^{ writeToConsole = _writeToConsole; });
+    pn_lock(&_accessLock, ^{ writeToConsole = _writeToConsole; });
     
     return writeToConsole;
 }
 
 - (void)setWriteToConsole:(BOOL)writeToConsole {
     
-    pn_trylock(&_accessLock, ^{ _writeToConsole = writeToConsole; });
+    pn_lock(&_accessLock, ^{ _writeToConsole = writeToConsole; });
 }
 
 - (BOOL)writeToFile {
     
     __block BOOL writeToFile = NO;
-    pn_trylock(&_accessLock, ^{ writeToFile = _writeToFile; });
+    pn_lock(&_accessLock, ^{ writeToFile = _writeToFile; });
     
     return writeToFile;
 }
 
 - (void)setWriteToFile:(BOOL)writeToFile {
     
-    pn_trylock(&_accessLock, ^{ _writeToFile = writeToFile; });
+    pn_lock(&_accessLock, ^{ _writeToFile = writeToFile; });
 }
 
 - (void)setMaximumLogFileSize:(NSUInteger)maximumLogFileSize {
     
     __block BOOL changed = NO;
-    pn_trylock(&_accessLock, ^{
+    pn_lock(&_accessLock, ^{
         
         changed = (_maximumLogFileSize != maximumLogFileSize);
         _maximumLogFileSize = maximumLogFileSize;
@@ -404,7 +410,7 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
 - (void)setMaximumNumberOfLogFiles:(NSUInteger)maximumNumberOfLogFiles {
     
     __block BOOL changed = NO;
-    pn_trylock(&_accessLock, ^{
+    pn_lock(&_accessLock, ^{
         changed = (_maximumNumberOfLogFiles != maximumNumberOfLogFiles);
         _maximumNumberOfLogFiles = maximumNumberOfLogFiles;
     });
@@ -480,7 +486,7 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
                         logExtension:(NSString *)extension {
     
     __block PNLLogger *logger = nil;
-    pn_trylock(&pnl_cacheAccessLock, ^{
+    pn_lock(&pnl_cacheAccessLock, ^{
         
         logger = [self loggersCache][identifier];
         if (!logger) { 
@@ -510,7 +516,10 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
         
         const char *queueIdentifier = [[identifier stringByAppendingString:@".logger.queue"] UTF8String];
         _queue = dispatch_queue_create(queueIdentifier, DISPATCH_QUEUE_SERIAL);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
         _accessLock = OS_UNFAIR_LOCK_INIT;
+#pragma clang diagnostic pop
         
         [self prepareDateFormatter];
         [self indexExistingLogFiles];
@@ -524,12 +533,12 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
 
 - (void)setEnabled:(BOOL)enabled {
     
-    pn_trylock(&_accessLock, ^{ _enabled = enabled; });
+    pn_lock(&_accessLock, ^{ _enabled = enabled; });
 }
 
 - (void)enableLogLevel:(NSUInteger)level {
     
-    pn_trylock(&_accessLock, ^{ 
+    pn_lock(&_accessLock, ^{
         
         BOOL notifyChange = (_logLevel != (_logLevel | level) && _logLevelChangeHandler);
         _logLevel |= level;
@@ -539,7 +548,7 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
 
 - (void)disableLogLevel:(NSUInteger)level {
     
-    pn_trylock(&_accessLock, ^{ 
+    pn_lock(&_accessLock, ^{
         
         BOOL notifyChange = (_logLevel != (_logLevel & ~level) && _logLevelChangeHandler);
         _logLevel &= ~level;
@@ -549,7 +558,7 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
 
 - (void)setLogLevel:(NSUInteger)level {
     
-    pn_trylock(&_accessLock, ^{ 
+    pn_lock(&_accessLock, ^{
         
         BOOL notifyChange = (_logLevel != level && _logLevelChangeHandler);
         _logLevel = level;
@@ -565,7 +574,7 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
 
 #ifndef PUBNUB_DISABLE_LOGGER
     __block BOOL shouldHandleLog = NO;
-    pn_trylock(&_accessLock, ^{ shouldHandleLog = (_logLevel & level); });
+    pn_lock(&_accessLock, ^{ shouldHandleLog = (_logLevel & level); });
     if (shouldHandleLog && format.length) {
         
         va_list args;

@@ -161,7 +161,7 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Telemetry information tracking
 
-#if !PN_URLSESSION_TRANSACTION_METRICS_AVAILABLE
+#if !PN_URLSESSION_TRANSACTION_METRICS_AVAILABLE || !PN_OS_VERSION_10_SDK_API_IS_SAFE
 
 - (void)startLatencyMeasureFor:(PNOperationType)operationType withIdentifier:(NSString *)identifier {
     

@@ -148,8 +148,13 @@ NS_ASSUME_NONNULL_END
         withName:(NSString *)object withCompletion:(PNSetStateCompletionBlock)block {
     
     __weak __typeof(self) weakSelf = self;
-    dispatch_queue_t queue = (self.configuration.applicationExtensionSharedGroupIdentifier != nil ? dispatch_get_main_queue() :
-                              dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    if (@available(macOS 10.10, iOS 8.0, *)) {
+        if (self.configuration.applicationExtensionSharedGroupIdentifier) {
+            queue = dispatch_get_main_queue();
+        }
+    }
+    
     dispatch_async(queue, ^{
         
         __strong __typeof__(weakSelf) strongSelf = weakSelf;

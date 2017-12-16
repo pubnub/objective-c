@@ -1568,6 +1568,20 @@
 		79E2D0F71C56434700BAA244 /* PNKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 79E2D0ED1C56434700BAA244 /* PNKeychain.m */; };
 		79E2D0F81C56434700BAA244 /* PNKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 79E2D0ED1C56434700BAA244 /* PNKeychain.m */; };
 		79E2D0F91C56434700BAA244 /* PNKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 79E2D0ED1C56434700BAA244 /* PNKeychain.m */; };
+		79F90F191FDEC1BA007132A3 /* PNPresenceHeartbeatAPICallBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F90F171FDEC1B9007132A3 /* PNPresenceHeartbeatAPICallBuilder.m */; };
+		79F90F1A1FDEC1BA007132A3 /* PNPresenceHeartbeatAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 79F90F181FDEC1B9007132A3 /* PNPresenceHeartbeatAPICallBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79F90F1B1FDEC1C6007132A3 /* PNPresenceHeartbeatAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 79F90F181FDEC1B9007132A3 /* PNPresenceHeartbeatAPICallBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79F90F1C1FDEC1C7007132A3 /* PNPresenceHeartbeatAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 79F90F181FDEC1B9007132A3 /* PNPresenceHeartbeatAPICallBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79F90F1D1FDEC1C7007132A3 /* PNPresenceHeartbeatAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 79F90F181FDEC1B9007132A3 /* PNPresenceHeartbeatAPICallBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79F90F1E1FDEC1C7007132A3 /* PNPresenceHeartbeatAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 79F90F181FDEC1B9007132A3 /* PNPresenceHeartbeatAPICallBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79F90F1F1FDEC1C8007132A3 /* PNPresenceHeartbeatAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 79F90F181FDEC1B9007132A3 /* PNPresenceHeartbeatAPICallBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79F90F201FDEC1C9007132A3 /* PNPresenceHeartbeatAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 79F90F181FDEC1B9007132A3 /* PNPresenceHeartbeatAPICallBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79F90F211FDEC1DC007132A3 /* PNPresenceHeartbeatAPICallBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F90F171FDEC1B9007132A3 /* PNPresenceHeartbeatAPICallBuilder.m */; };
+		79F90F221FDEC1DD007132A3 /* PNPresenceHeartbeatAPICallBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F90F171FDEC1B9007132A3 /* PNPresenceHeartbeatAPICallBuilder.m */; };
+		79F90F231FDEC1DD007132A3 /* PNPresenceHeartbeatAPICallBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F90F171FDEC1B9007132A3 /* PNPresenceHeartbeatAPICallBuilder.m */; };
+		79F90F241FDEC1DE007132A3 /* PNPresenceHeartbeatAPICallBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F90F171FDEC1B9007132A3 /* PNPresenceHeartbeatAPICallBuilder.m */; };
+		79F90F251FDEC1DE007132A3 /* PNPresenceHeartbeatAPICallBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F90F171FDEC1B9007132A3 /* PNPresenceHeartbeatAPICallBuilder.m */; };
+		79F90F261FDEC1DE007132A3 /* PNPresenceHeartbeatAPICallBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 79F90F171FDEC1B9007132A3 /* PNPresenceHeartbeatAPICallBuilder.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -1830,6 +1844,8 @@
 		79E20D231C8AEC5B001BC9CC /* PNSubscribeStatus+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNSubscribeStatus+Private.h"; sourceTree = "<group>"; };
 		79E2D0EC1C56434700BAA244 /* PNKeychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNKeychain.h; sourceTree = "<group>"; };
 		79E2D0ED1C56434700BAA244 /* PNKeychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNKeychain.m; sourceTree = "<group>"; };
+		79F90F171FDEC1B9007132A3 /* PNPresenceHeartbeatAPICallBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNPresenceHeartbeatAPICallBuilder.m; sourceTree = "<group>"; };
+		79F90F181FDEC1B9007132A3 /* PNPresenceHeartbeatAPICallBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNPresenceHeartbeatAPICallBuilder.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1988,6 +2004,8 @@
 				79A0D81D1DC22C950039A264 /* PNPresenceHereNowAPICallBuilder.m */,
 				79A0D81E1DC22C950039A264 /* PNPresenceWhereNowAPICallBuilder.h */,
 				79A0D81F1DC22C950039A264 /* PNPresenceWhereNowAPICallBuilder.m */,
+				79F90F181FDEC1B9007132A3 /* PNPresenceHeartbeatAPICallBuilder.h */,
+				79F90F171FDEC1B9007132A3 /* PNPresenceHeartbeatAPICallBuilder.m */,
 			);
 			path = Presence;
 			sourceTree = "<group>";
@@ -2401,6 +2419,7 @@
 				791582551BD709C60084FC70 /* PNPresenceGlobalHereNowResult.h in Headers */,
 				791582A01BD709C60084FC70 /* PNChannelGroupAuditionParser.h in Headers */,
 				791582561BD709C60084FC70 /* PNChannelGroupChannelsResult.h in Headers */,
+				79F90F1A1FDEC1BA007132A3 /* PNPresenceHeartbeatAPICallBuilder.h in Headers */,
 				79A0D8501DC22C950039A264 /* PNPresenceHereNowAPICallBuilder.h in Headers */,
 				79A0D85E1DC22C950039A264 /* PNStreamAPICallBuilder.h in Headers */,
 				791582881BD709C60084FC70 /* PNNetworkResponseSerializer.h in Headers */,
@@ -2524,6 +2543,7 @@
 				791582FE1BD709D10084FC70 /* PNPresenceGlobalHereNowResult.h in Headers */,
 				791583491BD709D10084FC70 /* PNChannelGroupAuditionParser.h in Headers */,
 				791582FF1BD709D10084FC70 /* PNChannelGroupChannelsResult.h in Headers */,
+				79F90F1C1FDEC1C7007132A3 /* PNPresenceHeartbeatAPICallBuilder.h in Headers */,
 				791583311BD709D10084FC70 /* PNNetworkResponseSerializer.h in Headers */,
 				791583001BD709D10084FC70 /* PNAPNSEnabledChannelsResult.h in Headers */,
 				791583021BD709D10084FC70 /* PNChannelClientStateResult.h in Headers */,
@@ -2719,6 +2739,7 @@
 				798842B31C18F2D6003E8948 /* PNTimeParser.h in Headers */,
 				7988423B1C18F119003E8948 /* PNSubscriber.h in Headers */,
 				7988427A1C18F25E003E8948 /* PNErrorCodes.h in Headers */,
+				79F90F1F1FDEC1C8007132A3 /* PNPresenceHeartbeatAPICallBuilder.h in Headers */,
 				7988429F1C18F2BD003E8948 /* PNURLBuilder.h in Headers */,
 				79A0D9181DC2308A0039A264 /* PNStateModificationAPICallBuilder.h in Headers */,
 				798842391C18F111003E8948 /* PNHeartbeat.h in Headers */,
@@ -2827,6 +2848,7 @@
 				7988437A1C191579003E8948 /* PNReachability.h in Headers */,
 				798843791C191579003E8948 /* PubNub+History.h in Headers */,
 				7988437D1C191579003E8948 /* PNClientState.h in Headers */,
+				79F90F201FDEC1C9007132A3 /* PNPresenceHeartbeatAPICallBuilder.h in Headers */,
 				7988436D1C191579003E8948 /* PNErrorParser.h in Headers */,
 				7988435C1C191579003E8948 /* PNErrorStatus.h in Headers */,
 				79A0D9661DC231050039A264 /* PNUnsubscribeChannelsOrGroupsAPICallBuilder.h in Headers */,
@@ -2893,6 +2915,7 @@
 				79A8BC6B1C58F93900015BDE /* PNPresenceGlobalHereNowResult.h in Headers */,
 				79A8BCB81C58F93900015BDE /* PNChannelGroupAuditionParser.h in Headers */,
 				79A8BC6C1C58F93900015BDE /* PNChannelGroupChannelsResult.h in Headers */,
+				79F90F1B1FDEC1C6007132A3 /* PNPresenceHeartbeatAPICallBuilder.h in Headers */,
 				79A8BC9F1C58F93900015BDE /* PNNetworkResponseSerializer.h in Headers */,
 				79A8BC6D1C58F93900015BDE /* PNAPNSEnabledChannelsResult.h in Headers */,
 				79A8BC6F1C58F93900015BDE /* PNChannelClientStateResult.h in Headers */,
@@ -3074,6 +3097,7 @@
 				79ACC44B1C11BC4D0056523A /* PubNub+History.h in Headers */,
 				79ACC4471C11BC4D0056523A /* PubNub+Publish.h in Headers */,
 				79ACC46F1C11BC4D0056523A /* PNLeaveParser.h in Headers */,
+				79F90F1E1FDEC1C7007132A3 /* PNPresenceHeartbeatAPICallBuilder.h in Headers */,
 				79ACC46B1C11BC4D0056523A /* PNClientState.h in Headers */,
 				79ACC45B1C11BC4D0056523A /* PNErrorParser.h in Headers */,
 				79A0D9641DC231040039A264 /* PNUnsubscribeChannelsOrGroupsAPICallBuilder.h in Headers */,
@@ -3140,6 +3164,7 @@
 				79CBB1331BD03DE4001FC34D /* PNPresenceGlobalHereNowResult.h in Headers */,
 				79CBB1681BD03DE4001FC34D /* PNChannelGroupAuditionParser.h in Headers */,
 				79CBB1221BD03DE4001FC34D /* PNChannelGroupChannelsResult.h in Headers */,
+				79F90F1D1FDEC1C7007132A3 /* PNPresenceHeartbeatAPICallBuilder.h in Headers */,
 				79CBB1881BD03DE4001FC34D /* PNNetworkResponseSerializer.h in Headers */,
 				79CBB11E1BD03DE4001FC34D /* PNAPNSEnabledChannelsResult.h in Headers */,
 				79CBB1201BD03DE4001FC34D /* PNChannelClientStateResult.h in Headers */,
@@ -3873,6 +3898,7 @@
 				79A0D8491DC22C950039A264 /* PNHistoryAPICallBuilder.m in Sources */,
 				79A0D8511DC22C950039A264 /* PNPresenceHereNowAPICallBuilder.m in Sources */,
 				791582121BD709C60084FC70 /* PNConfiguration.m in Sources */,
+				79F90F191FDEC1BA007132A3 /* PNPresenceHeartbeatAPICallBuilder.m in Sources */,
 				7915823B1BD709C60084FC70 /* PNPublishStatus.m in Sources */,
 				791582091BD709C60084FC70 /* PubNub+History.m in Sources */,
 				79A0D8531DC22C950039A264 /* PNPresenceWhereNowAPICallBuilder.m in Sources */,
@@ -3976,6 +4002,7 @@
 				79A0D8D21DC2300F0039A264 /* PNPresenceAPICallBuilder.m in Sources */,
 				79A0D8AE1DC22FB40039A264 /* PNHistoryAPICallBuilder.m in Sources */,
 				791582CD1BD709D10084FC70 /* PNHistoryResult.m in Sources */,
+				79F90F251FDEC1DE007132A3 /* PNPresenceHeartbeatAPICallBuilder.m in Sources */,
 				791582C81BD709D10084FC70 /* PNStateListener.m in Sources */,
 				791582BC1BD709D10084FC70 /* PNHistoryParser.m in Sources */,
 				791582BB1BD709D10084FC70 /* PNConfiguration.m in Sources */,
@@ -4079,6 +4106,7 @@
 				79A0D8D51DC230100039A264 /* PNPresenceAPICallBuilder.m in Sources */,
 				79A0D8B11DC22FB60039A264 /* PNHistoryAPICallBuilder.m in Sources */,
 				798842681C18F1E3003E8948 /* PNHistoryResult.m in Sources */,
+				79F90F221FDEC1DD007132A3 /* PNPresenceHeartbeatAPICallBuilder.m in Sources */,
 				7988425B1C18F1C8003E8948 /* PNStateListener.m in Sources */,
 				7988425F1C18F1CE003E8948 /* PNConfiguration.m in Sources */,
 				798842521C18F1B6003E8948 /* PubNub+Presence.m in Sources */,
@@ -4207,6 +4235,7 @@
 				79A0D9001DC230560039A264 /* PNPublishAPICallBuilder.m in Sources */,
 				79A0D9061DC2305C0039A264 /* PNPublishSizeAPICallBuilder.m in Sources */,
 				798843AC1C1916AC003E8948 /* PubNub+FAB.m in Sources */,
+				79F90F211FDEC1DC007132A3 /* PNPresenceHeartbeatAPICallBuilder.m in Sources */,
 				79A0D8B21DC22FB60039A264 /* PNHistoryAPICallBuilder.m in Sources */,
 				79E2D0F91C56434700BAA244 /* PNKeychain.m in Sources */,
 				798843291C191579003E8948 /* PNChannel.m in Sources */,
@@ -4286,6 +4315,7 @@
 				79A0D8D11DC2300F0039A264 /* PNPresenceAPICallBuilder.m in Sources */,
 				79A0D8AD1DC22FB40039A264 /* PNHistoryAPICallBuilder.m in Sources */,
 				79A8BC391C58F93900015BDE /* PNHistoryResult.m in Sources */,
+				79F90F261FDEC1DE007132A3 /* PNPresenceHeartbeatAPICallBuilder.m in Sources */,
 				79A8BC341C58F93900015BDE /* PNStateListener.m in Sources */,
 				79A8BC281C58F93900015BDE /* PNHistoryParser.m in Sources */,
 				79A8BC271C58F93900015BDE /* PNConfiguration.m in Sources */,
@@ -4414,6 +4444,7 @@
 				79A0D8FF1DC230560039A264 /* PNPublishAPICallBuilder.m in Sources */,
 				79A0D9041DC2305B0039A264 /* PNPublishSizeAPICallBuilder.m in Sources */,
 				79AAC15C1C11BE77008D94A8 /* PubNub+FAB.m in Sources */,
+				79F90F231FDEC1DD007132A3 /* PNPresenceHeartbeatAPICallBuilder.m in Sources */,
 				79A0D8B01DC22FB50039A264 /* PNHistoryAPICallBuilder.m in Sources */,
 				79E2D0F71C56434700BAA244 /* PNKeychain.m in Sources */,
 				79ACC41A1C11BC4D0056523A /* PNNetwork.m in Sources */,
@@ -4493,6 +4524,7 @@
 				79A0D8D31DC2300F0039A264 /* PNPresenceAPICallBuilder.m in Sources */,
 				79A0D8AF1DC22FB50039A264 /* PNHistoryAPICallBuilder.m in Sources */,
 				79CBB1121BD03DE4001FC34D /* PNStateListener.m in Sources */,
+				79F90F241FDEC1DE007132A3 /* PNPresenceHeartbeatAPICallBuilder.m in Sources */,
 				79CBB1021BD03DE4001FC34D /* PubNub+Presence.m in Sources */,
 				79CBB12E1BD03DE4001FC34D /* PNHistoryResult.m in Sources */,
 				79CBB11B1BD03DE4001FC34D /* PNConfiguration.m in Sources */,
@@ -5028,6 +5060,7 @@
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -5079,6 +5112,7 @@
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";

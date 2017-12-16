@@ -4,6 +4,7 @@
  @copyright © 2009-2017 PubNub, Inc.
  */
 #import "PNPresenceAPICallBuilder.h"
+#import "PNPresenceHeartbeatAPICallBuilder.h"
 #import "PNPresenceWhereNowAPICallBuilder.h"
 #import "PNPresenceHereNowAPICallBuilder.h"
 #import "PNAPICallBuilder+Private.h"
@@ -21,7 +22,8 @@
     
     if (self == [PNPresenceAPICallBuilder class]) {
         
-        [self copyMethodsFromClasses:@[[PNPresenceWhereNowAPICallBuilder class], 
+        [self copyMethodsFromClasses:@[[PNPresenceHeartbeatAPICallBuilder class],
+                                       [PNPresenceWhereNowAPICallBuilder class],
                                        [PNPresenceHereNowAPICallBuilder class]]];
     }
 }
@@ -53,6 +55,22 @@
         return (PNPresenceWhereNowAPICallBuilder *)self;
     };
 }
+
+
+#pragma mark - Heartbeat
+
+- (PNPresenceHeartbeatAPICallBuilder *(^)(BOOL connected))connected {
+
+    return ^PNPresenceHeartbeatAPICallBuilder * (BOOL connected) {
+
+        object_setClass(self, [PNPresenceHeartbeatAPICallBuilder class]);
+        [self setFlag:NSStringFromSelector(_cmd)];
+        [self setValue:@(connected) forParameter:NSStringFromSelector(_cmd)];
+
+        return (PNPresenceHeartbeatAPICallBuilder *)self;
+    };
+}
+
 
 #pragma mark -
 

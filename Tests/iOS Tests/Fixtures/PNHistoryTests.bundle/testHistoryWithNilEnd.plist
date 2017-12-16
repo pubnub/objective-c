@@ -126,7 +126,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/history/sub-key/demo-36/channel/a?count=100&amp;reverse=false&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;start=14370749493660012&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;instanceid=58EB05C9-9DE4-4118-B5D7-EE059FBF19A9&amp;include_token=false</string>
+				<string>https://ps.pndsn.com/v2/history/sub-key/demo-36/channel/a?count=100&amp;reverse=false&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;start=14370749493660012&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;instanceid=58EB05C9-9DE4-4118-B5D7-EE059FBF19A9&amp;include_token=false</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -152,7 +152,7 @@
 				<key>HTTPShouldHandleCookies</key>
 				<true/>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/history/sub-key/demo-36/channel/a?count=100&amp;reverse=false&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;start=14370749493660012&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;instanceid=58EB05C9-9DE4-4118-B5D7-EE059FBF19A9&amp;include_token=false</string>
+				<string>https://ps.pndsn.com/v2/history/sub-key/demo-36/channel/a?count=100&amp;reverse=false&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;start=14370749493660012&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.3&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;instanceid=58EB05C9-9DE4-4118-B5D7-EE059FBF19A9&amp;include_token=false</string>
 				<key>allHTTPHeaderFields</key>
 				<dict>
 					<key>Accept</key>
@@ -177,7 +177,7 @@
 				<key>MIMEType</key>
 				<string>text/javascript</string>
 				<key>URL</key>
-				<string>https://pubsub.pubnub.com/v2/history/sub-key/demo-36/channel/a?deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;instanceid=58EB05C9-9DE4-4118-B5D7-EE059FBF19A9&amp;start=14370749493660012&amp;reverse=false&amp;count=100&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.0.2&amp;include_token=false</string>
+				<string>https://ps.pndsn.com/v2/history/sub-key/demo-36/channel/a?deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;instanceid=58EB05C9-9DE4-4118-B5D7-EE059FBF19A9&amp;start=14370749493660012&amp;reverse=false&amp;count=100&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;pnsdk=PubNub-ObjC-iOS%2F4.0.2&amp;include_token=false</string>
 				<key>allHeaderFields</key>
 				<dict>
 					<key>Access-Control-Allow-Methods</key>

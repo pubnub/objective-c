@@ -1,9 +1,25 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.7.4"
+version: "4.7.5"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Added ability to change client's presence without actual subscription to channels/groups (based on heartbeat and presence leave API)."
+        type: feature
+      -
+        text: "Fixed pre-compile macro usage to send metrics when code is running on device with pre-iOS 10 version."
+        type: bug
+      -
+        text: "Fixed race of conditions for logger."
+        type: bug
+      -
+        text: "Removed Xcode warnings about partly API availability."
+        type: improvement
+    date: Dec 16, 17
+    version: v4.7.5
   -
     changes:
       -

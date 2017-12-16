@@ -13,7 +13,13 @@
 - (NSDictionary *)requestComparisonOptions {
     NSMutableDictionary *superComparisonOptions = [super requestComparisonOptions].mutableCopy;
     superComparisonOptions[kBKRIgnoreQueryItemNamesOptionsKey] = @[
-                                                         @"pnsdk"
+                                                                   @"pnsdk",
+                                                                   @"l_pub",
+                                                                   @"l_hist",
+                                                                   @"l_pres",
+                                                                   @"l_cg",
+                                                                   @"l_push",
+                                                                   @"l_time"
                                                          ];
     return superComparisonOptions.copy;
 }

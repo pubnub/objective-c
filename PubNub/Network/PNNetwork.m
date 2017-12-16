@@ -189,6 +189,14 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSMutableDictionary<NSString *, NSNumber *> *dataTaskToOperationMap;
 #endif
 
+/**
+ * @brief  Stores whether system version for which client is running doesn't support native metrics
+ *         information gathering.
+ *
+ * @since 4.7.5
+ */
+@property (nonatomic, assign, getter = isMetricsNotSupportByOS) BOOL metricsNotSupportedByOS;
+
 #if TARGET_OS_IOS
 
 /**
@@ -235,7 +243,10 @@ NS_ASSUME_NONNULL_BEGIN
  
  @since 4.0.2
  */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
 @property (nonatomic, assign) os_unfair_lock lock;
+#pragma clang diagnostic pop
 
 
 #pragma mark - Initialization and Configuration
@@ -569,8 +580,11 @@ NS_ASSUME_NONNULL_BEGIN
  
  @return String with request metrics which can be printed into PubNub's log file/Xcode console.
  */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
 - (NSMutableString *)formattedMetricsDataFrom:(NSURLSessionTaskTransactionMetrics *)transaction 
                                   redirection:(BOOL)isRedirection;
+#pragma clang diagnostic pop
 #endif
 
 /**
@@ -610,6 +624,7 @@ NS_ASSUME_NONNULL_END
         
         _client = client;
         [_client.logger enableLogLevel:(PNRequestLogLevel|PNInfoLogLevel)];
+        _metricsNotSupportedByOS = pn_operating_system_version_is_lower_than(PN_URLSESSION_TRANSACTION_METRICS_AVAILABLE_SINCE);
         _configuration = client.configuration;
         _forLongPollRequests = longPollEnabled;
 #if TARGET_OS_IOS
@@ -617,17 +632,22 @@ NS_ASSUME_NONNULL_END
         _tasksCompletionIdentifier = UIBackgroundTaskInvalid;
 #endif // TARGET_OS_IOS
         _identifier = [[NSString stringWithFormat:@"com.pubnub.network.%p", self] copy];
-        if (_configuration.applicationExtensionSharedGroupIdentifier == nil) {
-            
-            _processingQueue = dispatch_queue_create([_identifier UTF8String], DISPATCH_QUEUE_CONCURRENT);
-        } 
-        else { _processingQueue = dispatch_get_main_queue(); }
+
+        _processingQueue = dispatch_queue_create([_identifier UTF8String], DISPATCH_QUEUE_CONCURRENT);
+        if (@available(macOS 10.10, iOS 8.0, *)) {
+            if (_configuration.applicationExtensionSharedGroupIdentifier) {
+                _processingQueue = dispatch_get_main_queue();
+            }
+        }
 #if PN_URLSESSION_TRANSACTION_METRICS_AVAILABLE
         _dataTaskToOperationMap = [NSMutableDictionary new];
 #endif // PN_URLSESSION_TRANSACTION_METRICS_AVAILABLE
         _serializer = [PNNetworkResponseSerializer new];
         _baseURL = [self requestBaseURL];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
         _lock = OS_UNFAIR_LOCK_INIT;
+#pragma clang diagnostic pop
         [self prepareRequiredParameters];
         [self prepareSessionWithRequestTimeout:timeout maximumConnections:maximumConnections];
     }
@@ -703,16 +723,22 @@ NS_ASSUME_NONNULL_END
     __block NSURLSessionDataTask *task = nil;
     __weak __typeof(self) weakSelf = self;
     NSURLSessionDataTaskCompletion handler = ^(NSData *data, NSURLResponse *response, NSError *error) {
-#if !PN_URLSESSION_TRANSACTION_METRICS_AVAILABLE
-        NSString *taskIdentifier = [self.sessionIdentifier stringByAppendingString:@(task.taskIdentifier).stringValue];
-        [weakSelf.client.telemetryManager stopLatencyMeasureFor:operationType withIdentifier:taskIdentifier];
-#endif
+        if (self.isMetricsNotSupportByOS) {
+            NSString *taskIdentifier = [self.sessionIdentifier stringByAppendingString:@(task.taskIdentifier).stringValue];
+            [weakSelf.client.telemetryManager stopLatencyMeasureFor:operationType withIdentifier:taskIdentifier];
+        }
+
         [weakSelf handleData:data loadedWithTask:task error:(error?: task.error)
                 usingSuccess:success failure:failure];
     };
     pn_lock(&_lock, ^{
-        
-        if (_configuration.applicationExtensionSharedGroupIdentifier != nil) { 
+
+        BOOL isApplicationExtension = NO;
+        if (@available(macOS 10.10, iOS 8.0, *)) {
+            isApplicationExtension = _configuration.applicationExtensionSharedGroupIdentifier != nil;
+        }
+
+        if (isApplicationExtension) {
             self.previousDataTaskCompletionHandler = handler;
             self.fetchedData = [NSMutableData new];
             task = [self.session dataTaskWithRequest:request];
@@ -825,11 +851,13 @@ NS_ASSUME_NONNULL_END
                       completionBlock:block];
         }];
         NSString *taskIdentifier = [self.sessionIdentifier stringByAppendingString:@(task.taskIdentifier).stringValue];
-#if !PN_URLSESSION_TRANSACTION_METRICS_AVAILABLE
-        [self.client.telemetryManager startLatencyMeasureFor:operationType withIdentifier:taskIdentifier];
-#else   
-        pn_lock(&_lock, ^{ self.dataTaskToOperationMap[taskIdentifier] = @(operationType); });
+        if (self.isMetricsNotSupportByOS) {
+            [self.client.telemetryManager startLatencyMeasureFor:operationType withIdentifier:taskIdentifier];
+        } else {
+#if PN_URLSESSION_TRANSACTION_METRICS_AVAILABLE
+            pn_lock(&_lock, ^{ self.dataTaskToOperationMap[taskIdentifier] = @(operationType); });
 #endif
+        }
         [task resume];
     }
     else {
@@ -995,18 +1023,18 @@ NS_ASSUME_NONNULL_END
     
     // Prepare base configuration with predefined timeout values and maximum connections
     // to same host (basically how many requests can be handled at once).
+    BOOL shouldUsepipelining = !self.forLongPollRequests;
     NSURLSessionConfiguration *configuration = nil;
-    if (self.configuration.applicationExtensionSharedGroupIdentifier == nil) {
-        
-        configuration = [NSURLSessionConfiguration pn_ephemeralSessionConfigurationWithIdentifier:self.identifier];
-    }
-    else {
-        
-        configuration = [NSURLSessionConfiguration pn_backgroundSessionConfigurationWithIdentifier:self.identifier];
-        configuration.sharedContainerIdentifier = _configuration.applicationExtensionSharedGroupIdentifier;
+    configuration = [NSURLSessionConfiguration pn_ephemeralSessionConfigurationWithIdentifier:self.identifier];
+    if (@available(macOS 10.10, iOS 8.0, *)) {
+        if (self.configuration.applicationExtensionSharedGroupIdentifier) {
+            configuration = [NSURLSessionConfiguration pn_backgroundSessionConfigurationWithIdentifier:self.identifier];
+            configuration.sharedContainerIdentifier = _configuration.applicationExtensionSharedGroupIdentifier;
+            shouldUsepipelining = NO;
+        }
     }
     
-    configuration.HTTPShouldUsePipelining = (!self.forLongPollRequests && self.configuration.applicationExtensionSharedGroupIdentifier == nil);
+    configuration.HTTPShouldUsePipelining = shouldUsepipelining;
     configuration.timeoutIntervalForRequest = timeout;
     configuration.HTTPMaximumConnectionsPerHost = maximumConnections;
     
@@ -1108,10 +1136,17 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
-    
-    BOOL isBackgroundProcessingError = (error && [error.domain isEqualToString:NSURLErrorDomain] &&
-                                        error.code == NSURLErrorBackgroundSessionRequiresSharedContainer);
-    if (self.configuration.applicationExtensionSharedGroupIdentifier != nil || isBackgroundProcessingError) {
+
+    BOOL isApplicationExtension = NO;
+    BOOL isBackgroundProcessingError = NO;
+
+    if (@available(macOS 10.10, iOS 8.0, *)) {
+        isApplicationExtension = self.configuration.applicationExtensionSharedGroupIdentifier != nil;
+        isBackgroundProcessingError = (error && [error.domain isEqualToString:NSURLErrorDomain] &&
+                                       error.code == NSURLErrorBackgroundSessionRequiresSharedContainer);
+    }
+
+    if (isApplicationExtension || isBackgroundProcessingError) {
         
         if (isBackgroundProcessingError) {
             
@@ -1135,10 +1170,12 @@ NS_ASSUME_NONNULL_END
 
 - (void)URLSession:(NSURLSession *)__unused session dataTask:(NSURLSessionDataTask *)__unused dataTask
     didReceiveData:(NSData *)data {
-    
-    if (self.configuration.applicationExtensionSharedGroupIdentifier != nil && data.length) {
-        
-        [self.fetchedData appendData:data];
+
+    if (@available(macOS 10.10, iOS 8.0, *)) {
+        if (self.configuration.applicationExtensionSharedGroupIdentifier != nil && data.length) {
+
+            [self.fetchedData appendData:data];
+        }
     }
 }
 
@@ -1272,6 +1309,8 @@ NS_ASSUME_NONNULL_END
 }
 
 #if PN_URLSESSION_TRANSACTION_METRICS_AVAILABLE
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
 - (void)          URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task 
   didFinishCollectingMetrics:(NSURLSessionTaskMetrics *)metrics {
         
@@ -1307,6 +1346,7 @@ NS_ASSUME_NONNULL_END
     }
     PNLogRequestMetrics(self.client.logger, @"%@", metricsData);
 }
+#pragma clang diagnostic pop
 #endif
 
 
@@ -1349,6 +1389,8 @@ NS_ASSUME_NONNULL_END
 #endif // TARGET_OS_IOS
 
 #if PN_URLSESSION_TRANSACTION_METRICS_AVAILABLE
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
 - (NSMutableString *)formattedMetricsDataFrom:(NSURLSessionTaskTransactionMetrics *)transaction 
                                   redirection:(BOOL)isRedirection {
     
@@ -1406,6 +1448,7 @@ NS_ASSUME_NONNULL_END
     
     return metricsData;
 }
+#pragma clang diagnostic pop
 #endif
 
 - (void)printIfRequiredSessionCustomizationInformation {

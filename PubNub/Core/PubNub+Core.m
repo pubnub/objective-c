@@ -52,6 +52,33 @@ void pn_safe_property_write(dispatch_queue_t queue, dispatch_block_t block) {
     if (queue && block) { dispatch_barrier_async(queue, block); }
 }
 
+NSString * pn_operating_system_version(void) {
+
+    NSString *osVersion = [[NSProcessInfo processInfo].operatingSystemVersionString componentsSeparatedByString:@" "][1];
+    NSMutableArray<NSString *> *versionComponents = [[osVersion componentsSeparatedByString:@"."] mutableCopy];
+
+    if (versionComponents.count == 2) {
+        [versionComponents addObject:@"0"];
+    }
+
+    return [versionComponents componentsJoinedByString:@"."];
+}
+
+BOOL pn_operating_system_version_is_greater_than(NSString *version) {
+
+    return [pn_operating_system_version() compare:version options:NSNumericSearch] == NSOrderedDescending;
+}
+
+BOOL pn_operating_system_version_is_same_as(NSString *version) {
+
+    return [pn_operating_system_version() compare:version options:NSNumericSearch] == NSOrderedSame;
+}
+
+BOOL pn_operating_system_version_is_lower_than(NSString *version) {
+    
+    return [pn_operating_system_version() compare:version options:NSNumericSearch] == NSOrderedAscending;
+}
+
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -216,7 +243,11 @@ NS_ASSUME_NONNULL_END
                           callbackQueue:(dispatch_queue_t)callbackQueue {
     
     dispatch_queue_t queue = (callbackQueue?: dispatch_get_main_queue());
-    if (configuration.applicationExtensionSharedGroupIdentifier != nil) { queue = dispatch_get_main_queue(); }
+    if (@available(macOS 10.10, iOS 8.0, *)) {
+        if (configuration.applicationExtensionSharedGroupIdentifier) {
+            queue = dispatch_get_main_queue();
+        }
+    }
     
     return [[self alloc] initWithConfiguration:configuration callbackQueue:queue];
 }
@@ -400,16 +431,24 @@ NS_ASSUME_NONNULL_END
     
     // Check whether application extension support enabled or not.
     // Long-poll tasks not supported in application extension context.
-    if (_configuration.applicationExtensionSharedGroupIdentifier == nil) {
+    BOOL shouldCreateSubscriptionNetwork = YES;
+    NSInteger maximumConnections = 3;
+    if (@available(macOS 10.10, iOS 8.0, *)) {
+        shouldCreateSubscriptionNetwork = _configuration.applicationExtensionSharedGroupIdentifier == nil;
+        maximumConnections = shouldCreateSubscriptionNetwork ? maximumConnections : 1;
+    }
+
+    if (shouldCreateSubscriptionNetwork) {
         
         _subscriptionNetwork = [PNNetwork networkForClient:self
                                             requestTimeout:_configuration.subscribeMaximumIdleTime
                                         maximumConnections:1 longPoll:YES];
     }
-    
+
+
     _serviceNetwork = [PNNetwork networkForClient:self
                                    requestTimeout:_configuration.nonSubscribeRequestTimeout
-                               maximumConnections:(_configuration.applicationExtensionSharedGroupIdentifier != nil ? 1 : 3)
+                               maximumConnections:maximumConnections
                                          longPoll:NO];
 }
 

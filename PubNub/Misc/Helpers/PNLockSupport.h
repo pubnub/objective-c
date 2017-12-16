@@ -51,7 +51,8 @@
  */
 typedef void(^PNLockAsyncAction)(dispatch_block_t complete);
 
-
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
 /**
  @brief      Acquire lock to exec piece of code passed in \c block.
  @discussion Lock object will be used to acquire lock before \c block call and release if possible after 
@@ -107,3 +108,4 @@ extern void pn_lock_async(os_unfair_lock * lock, PNLockAsyncAction block);
  @since 4.5.15
  */
 extern void pn_trylock_async(os_unfair_lock * lock, PNLockAsyncAction block);
+#pragma clang diagnostic pop
