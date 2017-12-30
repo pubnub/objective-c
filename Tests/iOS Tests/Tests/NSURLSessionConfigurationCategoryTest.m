@@ -1,5 +1,6 @@
 #import <XCTest/XCTest.h>
 #import "NSURLSessionConfiguration+PNConfigurationPrivate.h"
+#import <PubNub/PNHelpers.h>
 
 
 #pragma mark NSURLProtocol
@@ -241,19 +242,7 @@
 + (NSDictionary *)pn_testHeaders {
     
     NSString *device = @"iPhone";
-#if TARGET_OS_WATCH
-    NSString *osVersion = [[WKInterfaceDevice currentDevice] systemVersion];
-#elif TARGET_OS_IOS
-    NSString *osVersion = [[UIDevice currentDevice] systemVersion];
-#elif TARGET_OS_OSX
-    NSOperatingSystemVersion version = [[NSProcessInfo processInfo]operatingSystemVersion];
-    NSMutableString *osVersion = [NSMutableString stringWithFormat:@"%@.%@",
-                                  @(version.majorVersion), @(version.minorVersion)];
-    if (version.patchVersion > 0) {
-        
-        [osVersion appendFormat:@".%@", @(version.patchVersion)];
-    }
-#endif
+    NSString *osVersion = pn_operating_system_version();
     NSString *userAgent = [NSString stringWithFormat:@"iPhone; CPU %@ OS %@ Version",
                            device, osVersion];
     

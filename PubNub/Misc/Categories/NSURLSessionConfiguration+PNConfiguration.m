@@ -11,6 +11,7 @@
 #elif TARGET_OS_OSX
     #import <AppKit/AppKit.h>
 #endif // TARGET_OS_OSX
+#import "PNHelpers.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -251,19 +252,7 @@ NS_ASSUME_NONNULL_END
     dispatch_once(&onceToken, ^{
         
         NSString *device = @"iPhone";
-#if TARGET_OS_IOS || TARGET_OS_TV
-        NSString *osVersion = [[UIDevice currentDevice] systemVersion];
-#elif TARGET_OS_WATCH
-        NSString *osVersion = [[WKInterfaceDevice currentDevice] systemVersion];
-#elif TARGET_OS_OSX
-        NSOperatingSystemVersion version = [[NSProcessInfo processInfo] operatingSystemVersion];
-        NSMutableString *osVersion = [NSMutableString stringWithFormat:@"%@.%@",
-                                      @(version.majorVersion), @(version.minorVersion)];
-        if (version.patchVersion > 0) {
-            
-            [osVersion appendFormat:@".%@", @(version.patchVersion)];
-        }
-#endif // TARGET_OS_OSX
+        NSString *osVersion = pn_operating_system_version();
         NSString *userAgent = [NSString stringWithFormat:@"iPhone; CPU %@ OS %@ Version", device, osVersion];
         defaultHeaders = @{@"Accept":@"*/*", @"Accept-Encoding":@"gzip,deflate", @"User-Agent":userAgent,
                            @"Connection":@"keep-alive"};
