@@ -6,6 +6,7 @@
 #import "PNSubscriber.h"
 #import "PNSubscribeStatus+Private.h"
 #import "PubNub+SubscribePrivate.h"
+#import "PNAcknowledgmentStatus.h"
 #import "PNEnvelopeInformation.h"
 #import "PNServiceData+Private.h"
 #import "PNErrorStatus+Private.h"
@@ -1010,6 +1011,15 @@ NS_ASSUME_NONNULL_END
                        completion:block];
 }
 
+- (void)unsubscribeFromChannels:(NSArray<NSString *> *)channels
+                         groups:(NSArray<NSString *> *)groups
+              informingListener:(BOOL)shouldInformListener
+                     completion:(PNSubscriberCompletionBlock)block {
+    
+    [self unsubscribeFromChannels:channels groups:groups informingListener:shouldInformListener subscribeOnRest:YES
+                       completion:block];
+}
+
 - (void)unsubscribeFromChannels:(NSArray<NSString *> *)channels groups:(NSArray<NSString *> *)groups
               informingListener:(BOOL)shouldInformListener subscribeOnRest:(BOOL)subscribeOnRestChannels
                      completion:(PNSubscriberCompletionBlock)block {
@@ -1026,8 +1036,9 @@ NS_ASSUME_NONNULL_END
     if (channels.count) { channelsWithOutPresence = [PNChannel objectsWithOutPresenceFrom:channels]; }
     NSArray *groupsWithOutPresence = nil;
     if (groups.count) { groupsWithOutPresence = [PNChannel objectsWithOutPresenceFrom:groups]; }
-    PNStatus *successStatus = [PNStatus statusForOperation:PNUnsubscribeOperation
-                                                  category:PNAcknowledgmentCategory withProcessingError:nil];
+    PNAcknowledgmentStatus *successStatus = [PNAcknowledgmentStatus statusForOperation:PNUnsubscribeOperation
+                                                                              category:PNAcknowledgmentCategory
+                                                                   withProcessingError:nil];
     [self.client appendClientInformation:successStatus];
     __weak __typeof(self) weakSelf = self;
     
@@ -1065,12 +1076,12 @@ NS_ASSUME_NONNULL_END
             BOOL listChanged = ![[NSSet setWithArray:[weakSelf allObjects]] isEqualToSet:subscriptionObjects];
             if (subscribeOnRestChannels && (subscriptionObjects.count > 0 && !listChanged)) {
 
-                [weakSelf subscribe:YES usingTimeToken:nil withState:nil completion:nil];
+                [weakSelf subscribe:NO usingTimeToken:nil withState:nil completion:nil];
             }
-            else if (block) {
+            
+            if (block) {
 
                 pn_dispatch_async(weakSelf.client.callbackQueue, ^{
-
                     block((PNSubscribeStatus *)successStatus);
                 });
             }
