@@ -4,6 +4,7 @@
  @copyright © 2009-2017 PubNub, Inc.
  */
 #import "PubNub+Subscribe.h"
+#import "PNSubscriber.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
