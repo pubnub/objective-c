@@ -7,6 +7,16 @@ changelog:
   -
     changes:
       -
+        text: "Fixed issue because of which new 'connected' presence API wasn't able to 'disconnect' user."
+        type: bug
+      -
+        text: "Fixed behavior during unsubscribe - connect event won't fire after user 'disconnectec', because there is no new channels about which listeners should be notified."
+        type: improvement
+    date: Feb 1, 18
+    version: v4.7.6
+  -
+    changes:
+      -
         text: "Added ability to change client's presence without actual subscription to channels/groups (based on heartbeat and presence leave API)."
         type: feature
       -

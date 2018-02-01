@@ -5,6 +5,7 @@
  */
 #import "PubNub+PresencePrivate.h"
 #import "PNAPICallBuilder+Private.h"
+#import "PubNub+SubscribePrivate.h"
 #import "PNPrivateStructures.h"
 #import "PNRequestParameters.h"
 #import "PubNub+CorePrivate.h"
@@ -341,8 +342,10 @@ NS_ASSUME_NONNULL_END
             [self heartbeatWithCompletion:block];
             [self.heartbeatManager startHeartbeatIfRequired];
         } else {
+            [self cancelSubscribeOperations];
             [self.subscriberManager unsubscribeFromChannels:presenceChannels
                                                      groups:presenceChannelGroups
+                                          informingListener:NO
                                                  completion:^(PNSubscribeStatus *status) {
 
                 if (block) {

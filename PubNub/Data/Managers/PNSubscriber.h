@@ -242,6 +242,24 @@ typedef void(^PNSubscriberCompletionBlock)(PNSubscribeStatus * _Nullable status)
                          groups:(nullable NSArray<NSString *> *)groups
                      completion:(nullable PNSubscriberCompletionBlock)block;
 
+/**
+ * @brief      Perform unsubscription operation.
+ * @discussion If suitable objects has been passed, then client will ask \b PubNub presence service
+ *             to trigger \c 'leave' presence events on passed objects.
+ *
+ * @param channels             List of channels from which client should unsubscribe.
+ * @param groups               List of channel groups from which client should unsubscribe.
+ * @param shouldInformListener Whether listener should be informed at the end of operation or not.
+ * @param block                Reference on unsubscription completion block which is used to notify
+ *                             code.
+ *
+ * @since 4.7.6
+ */
+- (void)unsubscribeFromChannels:(nullable NSArray<NSString *> *)channels
+                         groups:(nullable NSArray<NSString *> *)groups
+              informingListener:(BOOL)shouldInformListener
+                     completion:(nullable PNSubscriberCompletionBlock)block;
+
 #pragma mark -
 
 
