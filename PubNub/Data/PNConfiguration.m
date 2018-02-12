@@ -123,7 +123,7 @@ NS_ASSUME_NONNULL_END
     _presenceHeartbeatValue = presenceHeartbeatValue;
     if (self.presenceHeartbeatInterval == 0) { 
         
-        _presenceHeartbeatInterval = (NSInteger)(_presenceHeartbeatValue * 0.5f);
+        _presenceHeartbeatInterval = (NSInteger)(_presenceHeartbeatValue * 0.5f) - 1;
     }
 }
 
