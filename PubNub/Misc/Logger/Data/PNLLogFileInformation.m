@@ -64,6 +64,13 @@ static NSString * const kPNLArchivedFileAttributeName = @"com.pubnub.logger.arch
 #pragma mark - Misc
 
 /**
+ * @brief  Exclude represented file from device local and iCloud backups.
+ *
+ * @since 4.7.7
+ */
+- (void)excludeFromBackup;
+
+/**
  @brief  Check whether referenced file has attribute with specified \c name or not.
  
  @since 4.5.0
@@ -157,6 +164,8 @@ static NSString * const kPNLArchivedFileAttributeName = @"com.pubnub.logger.arch
         _path = [path copy];
         _name = [[_path lastPathComponent] copy];
         _extension = ([_path pathExtension].length ? [_path pathExtension] : nil);
+        
+        [self excludeFromBackup];
     }
     
     return self;
@@ -174,6 +183,17 @@ static NSString * const kPNLArchivedFileAttributeName = @"com.pubnub.logger.arch
     }
     
     return isEqual;
+}
+
+- (void)excludeFromBackup {
+    
+    NSError *error = nil;
+    
+    if (![[NSURL fileURLWithPath:self.path] setResourceValue:@YES forKey:NSURLIsExcludedFromBackupKey error:&error]) {
+#if DEBUG
+        NSLog(@"PNLLogger: '%@' attribute set did dail for '%@': %@", NSURLIsExcludedFromBackupKey, self.path, error);
+#endif // DEBUG
+    }
 }
 
 - (BOOL)hasExtendedAttribute:(NSString *)name {
