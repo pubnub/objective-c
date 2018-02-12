@@ -1,9 +1,19 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.7.5"
+version: "4.7.6"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Fixed issue because of which new 'connected' presence API wasn't able to 'disconnect' user."
+        type: bug
+      -
+        text: "Fixed behavior during unsubscribe - connect event won't fire after user 'disconnectec', because there is no new channels about which listeners should be notified."
+        type: improvement
+    date: Feb 1, 18
+    version: v4.7.6
   -
     changes:
       -

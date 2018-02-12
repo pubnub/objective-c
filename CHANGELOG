@@ -1,3 +1,7 @@
+01-02-2018 - f2e6792 - 4.7.6
+. fixed issue because of which new 'connected' presence API wasn't able to 'disconnect' user.
+. fixed behavior during unsubscribe - connect event won't fire after user 'disconnectec', because there is no new channels about which listeners should be notified.
+
 16-12-2017 - 4ad8a12 - 4.7.5
 . added ability to change client's presence without actual subscription to channels/groups (based on heartbeat and presence leave API).
 . fixed Xcode warnings about partly API availability.
