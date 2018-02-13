@@ -231,7 +231,7 @@ NS_ASSUME_NONNULL_END
 - (void)startHeartbeatIfRequired {
 
     // Stop previous heartbeat timer if it has been launched.
-    [self stopHeartbeatIfPossible];
+    BOOL heartbeatTimerStopped = [self stopHeartbeatIfPossible];
     
     // Silence static analyzer warnings.
     // Code is aware about this case and at the end will simply call on 'nil' object method.
@@ -239,7 +239,7 @@ NS_ASSUME_NONNULL_END
     // it and probably whole client instance has been deallocated.
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
-    if (self.client.configuration.presenceHeartbeatInterval > 0) {
+    if (self.client.configuration.presenceHeartbeatInterval > 0 && heartbeatTimerStopped) {
         
         __weak __typeof(self) weakSelf = self;
         dispatch_queue_t timerQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
@@ -254,11 +254,28 @@ NS_ASSUME_NONNULL_END
     #pragma clang diagnostic pop
 }
 
-- (void)stopHeartbeatIfPossible {
-
-    dispatch_source_t timer = self.heartbeatTimer;
-    if (timer != NULL && dispatch_source_testcancel(timer) == 0) { dispatch_source_cancel(timer); }
-    self.heartbeatTimer = nil;
+- (BOOL)stopHeartbeatIfPossible {
+    
+    __block BOOL shouldStopHeartbeatTimer = YES;
+    dispatch_barrier_sync(self.resourceAccessQueue, ^{
+        /**
+         * Heartbeat should keep previous interval usage in case if there is channel and or groups
+         * which is not part of subscription loop and user's presence on them kept only by heartbeat.
+         */
+        if (self->_presenceChannels.count || self->_presenceChannelGroups.count) {
+            shouldStopHeartbeatTimer = !self->_heartbeatTimer;
+        }
+        
+        if (shouldStopHeartbeatTimer && self->_heartbeatTimer != NULL && dispatch_source_testcancel(self->_heartbeatTimer) == 0) {
+            dispatch_source_cancel(self->_heartbeatTimer);
+        }
+        
+        if (shouldStopHeartbeatTimer) {
+            self->_heartbeatTimer = nil;
+        }
+    });
+    
+    return shouldStopHeartbeatTimer;
 }
 
 
