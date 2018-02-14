@@ -1,9 +1,19 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.7.6"
+version: "4.7.7"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Fixed issue because of which channel(s) and/or group(s) wasn't able to maintain user's presence with heartbeat."
+        type: bug
+      -
+        text: "Fixed log file attributes to prevent their backup locally or to iCloud."
+        type: improvement
+    date: Feb 14, 18
+    version: v4.7.7
   -
     changes:
       -

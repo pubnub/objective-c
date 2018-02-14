@@ -131,7 +131,7 @@ NS_ASSUME_NONNULL_BEGIN
 
  @since 4.0
  */
-- (void)stopHeartbeatIfPossible;
+- (BOOL)stopHeartbeatIfPossible;
 
 #pragma mark -
 

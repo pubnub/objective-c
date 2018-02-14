@@ -54,7 +54,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @discussion On block call return block which consume (\b required) presence change completion block
  *             which pass only one argument - operation processing status object.
  */
-@property (nonatomic, readonly, strong) void(^performWithCompletion)(PNStatusBlock block);
+@property (nonatomic, readonly, strong) void(^performWithCompletion)(PNStatusBlock __nullable block);
 
 #pragma mark -
 
