@@ -11,14 +11,15 @@ env:
         - LC_CTYPE=en_US.UTF-8
         - LANG=en_US.UTF-8
 
-env:
-  - NAME='[ObjC] iOS 10.3.1 32bit' SCHEME='"iOS Tests (ObjC)"' DESTINATIONS='-destination "platform=iOS Simulator,name=iPhone 6s Plus,OS=10.3.1" -destination "platform=iOS Simulator,name=iPhone 6s Plus,OS=10.3.1" -destination "platform=iOS Simulator,name=iPhone 7 Plus,OS=10.3.1" -destination "platform=iOS Simulator,name=iPad Pro (12.9 inch),OS=10.3.1"' ARCHS=i386
-  - NAME='[ObjC] iOS 10.3.1 64bit' SCHEME='"iOS Tests (ObjC)"' DESTINATIONS='-destination "platform=iOS Simulator,name=iPhone 6s Plus,OS=10.3.1" -destination "platform=iOS Simulator,name=iPhone 6s Plus,OS=10.3.1" -destination "platform=iOS Simulator,name=iPhone 7 Plus,OS=10.3.1" -destination "platform=iOS Simulator,name=iPad Pro (12.9 inch),OS=10.3.1"' ARCHS=x86_64
-  - NAME='[ObjC] iOS 11.3 32bit' SCHEME='"iOS Tests (ObjC)"' DESTINATIONS='-destination "platform=iOS Simulator,name=iPhone 6s Plus,OS=11.3" -destination "platform=iOS Simulator,name=iPhone 6s Plus,OS=11.3" -destination "platform=iOS Simulator,name=iPhone 7 Plus,OS=11.3" -destination "platform=iOS Simulator,name=iPad Pro (12.9 inch),OS=11.3"' ARCHS=i386
-  - NAME='[ObjC] iOS 11.3 64bit' SCHEME='"iOS Tests (ObjC)"' DESTINATIONS='-destination "platform=iOS Simulator,name=iPhone 6s Plus,OS=11.3" -destination "platform=iOS Simulator,name=iPhone 6s Plus,OS=11.3" -destination "platform=iOS Simulator,name=iPhone 7 Plus,OS=11.3" -destination "platform=iOS Simulator,name=iPad Pro (12.9 inch),OS=11.3"' ARCHS=x86_64
-  - NAME='[ObjC] tvOS 10.2 64bit' SCHEME='"tvOS Tests (ObjC)"' DESTINATIONS='-destination "platform=tvOS Simulator,name=Apple TV 4K (at 1080p),OS=10.2"' ARCHS=x86_64
-  - NAME='[ObjC] tvOS 10.2 64bit' SCHEME='"tvOS Tests (ObjC)"' DESTINATIONS='-destination "platform=tvOS Simulator,name=Apple TV 4K (at 1080p),OS=11.3"' ARCHS=x86_64
-  - NAME='[ObjC] macOS' SCHEME='"OSX Tests (ObjC)"' DESTINATIONS='-destination "platform=macOS"' ARCHS=x86_64
+matrix:
+  include:
+    - env: NAME='[ObjC] iOS 10.3.1 32bit' SCHEME='"iOS Tests (ObjC)"' DESTINATIONS='-destination "platform=iOS Simulator,name=iPhone 6s Plus,OS=10.3.1" -destination "platform=iOS Simulator,name=iPhone 6s Plus,OS=10.3.1" -destination "platform=iOS Simulator,name=iPhone 7 Plus,OS=10.3.1" -destination "platform=iOS Simulator,name=iPad Pro (12.9 inch),OS=10.3.1"' ARCHS=i386
+    - env: NAME='[ObjC] iOS 10.3.1 64bit' SCHEME='"iOS Tests (ObjC)"' DESTINATIONS='-destination "platform=iOS Simulator,name=iPhone 6s Plus,OS=10.3.1" -destination "platform=iOS Simulator,name=iPhone 6s Plus,OS=10.3.1" -destination "platform=iOS Simulator,name=iPhone 7 Plus,OS=10.3.1" -destination "platform=iOS Simulator,name=iPad Pro (12.9 inch),OS=10.3.1"' ARCHS=x86_64
+    - env: NAME='[ObjC] iOS 11.3 32bit' SCHEME='"iOS Tests (ObjC)"' DESTINATIONS='-destination "platform=iOS Simulator,name=iPhone 6s Plus,OS=11.3" -destination "platform=iOS Simulator,name=iPhone 6s Plus,OS=11.3" -destination "platform=iOS Simulator,name=iPhone 7 Plus,OS=11.3" -destination "platform=iOS Simulator,name=iPad Pro (12.9 inch),OS=11.3"' ARCHS=i386
+    - env: NAME='[ObjC] iOS 11.3 64bit' SCHEME='"iOS Tests (ObjC)"' DESTINATIONS='-destination "platform=iOS Simulator,name=iPhone 6s Plus,OS=11.3" -destination "platform=iOS Simulator,name=iPhone 6s Plus,OS=11.3" -destination "platform=iOS Simulator,name=iPhone 7 Plus,OS=11.3" -destination "platform=iOS Simulator,name=iPad Pro (12.9 inch),OS=11.3"' ARCHS=x86_64
+    - env: NAME='[ObjC] tvOS 10.2 64bit' SCHEME='"tvOS Tests (ObjC)"' DESTINATIONS='-destination "platform=tvOS Simulator,name=Apple TV 4K (at 1080p),OS=10.2"' ARCHS=x86_64
+    - env: NAME='[ObjC] tvOS 10.2 64bit' SCHEME='"tvOS Tests (ObjC)"' DESTINATIONS='-destination "platform=tvOS Simulator,name=Apple TV 4K (at 1080p),OS=11.3"' ARCHS=x86_64
+    - env: NAME='[ObjC] macOS' SCHEME='"OSX Tests (ObjC)"' DESTINATIONS='-destination "platform=macOS"' ARCHS=x86_64
 
 before_install:
   - sudo gem install cocoapods -v '1.5.0'
