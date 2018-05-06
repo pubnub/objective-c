@@ -19,6 +19,8 @@ matrix:
 
 before_install:
   - sudo gem install cocoapods -v '1.5.0'
+  - sudo gem install xcpretty
+  - sudo gem install xcpretty-travis-formatter
 
 script:
   - set -o pipefail && xcodebuild -workspace ./PubNub.xcworkspace -scheme "${SCHEME}" -destination "${DESTINATION}" clean build test CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO | xcpretty -f `xcpretty-travis-formatter`
