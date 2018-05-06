@@ -15,7 +15,7 @@ matrix:
   include:
     - env: NAME='[ObjC] iOS' SCHEME='iOS Tests (ObjC)' DESTINATION='platform=iOS Simulator,name=iPhone 7 Plus,OS=11.3'
     - env: NAME='[ObjC] tvOS' SCHEME='tvOS Tests (ObjC)' DESTINATION='platform=tvOS Simulator,name=Apple TV 4K (at 1080p),OS=11.3'
-    - env: NAME='[ObjC] macOS' SCHEME='OSX Tests (ObjC)' DESTINATION='-platform=macOS'
+    - env: NAME='[ObjC] macOS' SCHEME='OSX Tests (ObjC)' DESTINATION='platform=macOS'
 
 before_install:
   - sudo gem install cocoapods -v '1.5.0'
