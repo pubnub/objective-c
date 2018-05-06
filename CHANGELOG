@@ -1,3 +1,7 @@
+14-02-2018 - 0e9968f - 4.7.7
+. fixed issue because of which channel(s) and/or group(s) wasn't able to maintain user's presence with heartbeat.
+. fixed log file attributes to prevent their backup locally or to iCloud.
+
 01-02-2018 - f2e6792 - 4.7.6
 . fixed issue because of which new 'connected' presence API wasn't able to 'disconnect' user.
 . fixed behavior during unsubscribe - connect event won't fire after user 'disconnectec', because there is no new channels about which listeners should be notified.
