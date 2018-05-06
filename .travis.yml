@@ -13,20 +13,15 @@ env:
 
 matrix:
   include:
-    - env: NAME='[ObjC] iOS 10.3.1 32bit' SCHEME='"iOS Tests (ObjC)"' DESTINATIONS='-destination "platform=iOS Simulator,name=iPhone 6s Plus,OS=10.3.1" -destination "platform=iOS Simulator,name=iPhone 6s Plus,OS=10.3.1" -destination "platform=iOS Simulator,name=iPhone 7 Plus,OS=10.3.1" -destination "platform=iOS Simulator,name=iPad Pro (12.9 inch),OS=10.3.1"' ARCHS=i386
-    - env: NAME='[ObjC] iOS 10.3.1 64bit' SCHEME='"iOS Tests (ObjC)"' DESTINATIONS='-destination "platform=iOS Simulator,name=iPhone 6s Plus,OS=10.3.1" -destination "platform=iOS Simulator,name=iPhone 6s Plus,OS=10.3.1" -destination "platform=iOS Simulator,name=iPhone 7 Plus,OS=10.3.1" -destination "platform=iOS Simulator,name=iPad Pro (12.9 inch),OS=10.3.1"' ARCHS=x86_64
-    - env: NAME='[ObjC] iOS 11.3 32bit' SCHEME='"iOS Tests (ObjC)"' DESTINATIONS='-destination "platform=iOS Simulator,name=iPhone 6s Plus,OS=11.3" -destination "platform=iOS Simulator,name=iPhone 6s Plus,OS=11.3" -destination "platform=iOS Simulator,name=iPhone 7 Plus,OS=11.3" -destination "platform=iOS Simulator,name=iPad Pro (12.9 inch),OS=11.3"' ARCHS=i386
-    - env: NAME='[ObjC] iOS 11.3 64bit' SCHEME='"iOS Tests (ObjC)"' DESTINATIONS='-destination "platform=iOS Simulator,name=iPhone 6s Plus,OS=11.3" -destination "platform=iOS Simulator,name=iPhone 6s Plus,OS=11.3" -destination "platform=iOS Simulator,name=iPhone 7 Plus,OS=11.3" -destination "platform=iOS Simulator,name=iPad Pro (12.9 inch),OS=11.3"' ARCHS=x86_64
-    - env: NAME='[ObjC] tvOS 10.2 64bit' SCHEME='"tvOS Tests (ObjC)"' DESTINATIONS='-destination "platform=tvOS Simulator,name=Apple TV 4K (at 1080p),OS=10.2"' ARCHS=x86_64
-    - env: NAME='[ObjC] tvOS 10.2 64bit' SCHEME='"tvOS Tests (ObjC)"' DESTINATIONS='-destination "platform=tvOS Simulator,name=Apple TV 4K (at 1080p),OS=11.3"' ARCHS=x86_64
-    - env: NAME='[ObjC] macOS' SCHEME='"OSX Tests (ObjC)"' DESTINATIONS='-destination "platform=macOS"' ARCHS=x86_64
+    - env: NAME='[ObjC] iOS' SCHEME='iOS Tests (ObjC)' DESTINATION='platform=iOS Simulator,name=iPhone 7 Plus,OS=11.3'
+    - env: NAME='[ObjC] tvOS' SCHEME='tvOS Tests (ObjC)' DESTINATION='platform=tvOS Simulator,name=Apple TV 4K (at 1080p),OS=11.3'
+    - env: NAME='[ObjC] macOS' SCHEME='OSX Tests (ObjC)' DESTINATION='-platform=macOS'
 
 before_install:
   - sudo gem install cocoapods -v '1.5.0'
 
 script:
-  - set -o pipefail
-  - xcodebuild -workspace ./PubNub.xcworkspace -scheme $SCHEME $DESTINATIONS ARCHS=$ARCHS clean build test CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO | xcpretty -f `xcpretty-travis-formatter`
+  - set -o pipefail && xcodebuild -workspace ./PubNub.xcworkspace -scheme "${SCHEME}" -destination "${DESTINATION}" clean build test CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO | xcpretty -f `xcpretty-travis-formatter`
 
 after_failure:
  - cat -n $TMPDIR/com.apple.dt.XCTest-status/Session*.log
