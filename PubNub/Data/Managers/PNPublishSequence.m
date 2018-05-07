@@ -204,7 +204,7 @@ NS_ASSUME_NONNULL_END
 - (NSUInteger)sequenceNumber {
     
     __block NSUInteger sequenceNumber = 0;
-    pn_lock(&_lock, ^{ sequenceNumber = _sequenceNumber; });
+    pn_lock(&_lock, ^{ sequenceNumber = self->_sequenceNumber; });
     
     return sequenceNumber;
 }
@@ -213,8 +213,8 @@ NS_ASSUME_NONNULL_END
     
     __block NSUInteger sequenceNumber = 0;
     pn_lock(&_lock, ^{
-        sequenceNumber = (_sequenceNumber == NSUIntegerMax ? 1 : _sequenceNumber + 1);
-        if (shouldUpdateCurrent) { _sequenceNumber = sequenceNumber; }
+        sequenceNumber = (self->_sequenceNumber == NSUIntegerMax ? 1 : self->_sequenceNumber + 1);
+        if (shouldUpdateCurrent) { self->_sequenceNumber = sequenceNumber; }
     });
     
     return sequenceNumber;
@@ -274,7 +274,7 @@ NS_ASSUME_NONNULL_END
 
 - (void)reset {
     
-    pn_lock(&_lock, ^{ _sequenceNumber = 0; });
+    pn_lock(&_lock, ^{ self->_sequenceNumber = 0; });
     [self saveToPersistentStorage];
 }
 
@@ -291,7 +291,7 @@ NS_ASSUME_NONNULL_END
             NSMutableDictionary *sequenceData = [(mutableSequences[self.publishKey]?: @{}) mutableCopy];
             NSNumber *sequenceNumber = (NSNumber *)sequenceData[PNPublishSequenceData.sequence];
             sequenceData[PNPublishSequenceData.lastSaveDate] = @([NSDate date].timeIntervalSince1970);
-            _sequenceNumber = sequenceNumber.unsignedIntegerValue;
+            self->_sequenceNumber = sequenceNumber.unsignedIntegerValue;
             [PNKeychain storeValue:mutableSequences forKey:kPNPublishSequenceDataKey
                withCompletionBlock:^(BOOL stored) { completion(); }];
         }];
