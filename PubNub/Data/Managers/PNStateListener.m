@@ -86,6 +86,18 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)notifyStatusObservers:(PNStatus *)status;
 
+
+#pragma mark - Misc
+
+/**
+ * @brief  Make copy of listeners from specified collection.
+ *
+ * @param listeners Reference on collection from which event listeners should be copied.
+ *
+ * @return Listeners copy.
+ */
+- (NSHashTable *)listenersCopyFrom:(NSHashTable *)listeners;
+
 #pragma mark -
 
 
@@ -123,9 +135,15 @@ NS_ASSUME_NONNULL_END
 
 - (void)inheritStateFromListener:(PNStateListener *)listener {
     
-    _messageListeners = [listener.messageListeners mutableCopy];
-    _presenceEventListeners = [listener.presenceEventListeners mutableCopy];
-    _stateListeners = [listener.stateListeners mutableCopy];
+    if ([listener isEqual:self]) {
+        return;
+    }
+    
+    dispatch_async(self.resourceAccessQueue, ^{
+        self.messageListeners = [listener listenersCopyFrom:listener.messageListeners];
+        self.presenceEventListeners = [listener listenersCopyFrom:listener.presenceEventListeners];
+        self.stateListeners = [listener listenersCopyFrom:listener.stateListeners];
+    });
 }
 
 
@@ -247,6 +265,20 @@ NS_ASSUME_NONNULL_END
         }
     });
     #pragma clang diagnostic pop
+}
+
+
+#pragma mark - Misc
+
+- (NSHashTable *)listenersCopyFrom:(NSHashTable *)listeners {
+    
+    __block NSHashTable *listenersCopy = nil;
+    
+    dispatch_sync(self.resourceAccessQueue, ^{
+        listenersCopy = [listeners copy];
+    });
+    
+    return listenersCopy;
 }
 
 #pragma mark -
