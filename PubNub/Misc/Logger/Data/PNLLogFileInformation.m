@@ -108,9 +108,9 @@ static NSString * const kPNLArchivedFileAttributeName = @"com.pubnub.logger.arch
 - (NSDictionary *)attributes {
 
     pn_lock(&_accessLock, ^{
-        if (!_attributes) {
+        if (!self->_attributes) {
 
-            _attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:self.path error:nil];
+            self->_attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:self.path error:nil];
         }
     });
     

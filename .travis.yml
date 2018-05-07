@@ -1,6 +1,6 @@
 language: objective-c
 sudo: true
-osx_image: xcode9.2
+osx_image: xcode9.3
 cache: 
   - bundler
   - cocoapods
@@ -10,29 +10,22 @@ env:
     global:
         - LC_CTYPE=en_US.UTF-8
         - LANG=en_US.UTF-8
-addons:
-  srcclr: true
-  
+
 matrix:
   include:
-    - env: NAME="[ObjC] iOS 9.3 32bit" FASTLANE_LANE=test_ios FASTLANE_ENV=ios93x32 PN_TEST_LANG="ObjC"
-    - env: NAME="[ObjC] iOS 9.3 64bit" FASTLANE_LANE=test_ios FASTLANE_ENV=ios93x64 PN_TEST_LANG="ObjC"
-    - env: NAME="[ObjC] iOS 10.2 64bit" FASTLANE_LANE=test_ios FASTLANE_ENV=ios102x64 PN_TEST_LANG="ObjC"
-    - env: NAME="[ObjC] tvOS 9.2" FASTLANE_LANE=test_tvos FASTLANE_ENV=tvos92 PN_TEST_LANG="ObjC"
-    - env: NAME="[ObjC] tvOS 10.1" FASTLANE_LANE=test_tvos FASTLANE_ENV=tvos101 PN_TEST_LANG="ObjC"
-    - env: NAME="[ObjC] macOS" FASTLANE_LANE=test_macos FASTLANE_ENV=macos PN_TEST_LANG="ObjC"
+    - env: NAME='[ObjC] iOS' SCHEME='iOS Tests (ObjC)' DESTINATION='platform=iOS Simulator,name=iPhone 7 Plus,OS=11.3'
+    - env: NAME='[ObjC] tvOS' SCHEME='tvOS Tests (ObjC)' DESTINATION='platform=tvOS Simulator,name=Apple TV 4K (at 1080p),OS=11.3'
+    - env: NAME='[ObjC] macOS' SCHEME='OSX Tests (ObjC)' DESTINATION='platform=macOS'
 
 before_install:
-  - sudo gem install cocoapods -v '1.3.1'
-  - sudo gem install fastlane -NV
+  - sudo gem install cocoapods -v '1.5.0'
+  - sudo gem install xcpretty
+  - sudo gem install xcpretty-travis-formatter
 
 script:
-  - set -o pipefail
-  - fastlane $FASTLANE_LANE configuration:Release language:$PN_TEST_LANG --env $FASTLANE_ENV
+  - set -o pipefail && xcodebuild -workspace ./PubNub.xcworkspace -scheme "${SCHEME}" -destination "${DESTINATION}" clean build test | xcpretty -f `xcpretty-travis-formatter`
 
 after_failure:
- - cat -n fastlane/report.xml
- - cat -n ~/Library/Logs/scan/*
  - cat -n $TMPDIR/com.apple.dt.XCTest-status/Session*.log
  - cat -n ~/Library/Logs/DiagnosticReports/xctest*.crash
 

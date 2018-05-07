@@ -849,7 +849,7 @@ NS_ASSUME_NONNULL_END
 - (NSString *)filterExpression {
     
     __block NSString *expression = nil;
-    pn_safe_property_read(self.resourceAccessQueue, ^{ expression = _filterExpression; });
+    pn_safe_property_read(self.resourceAccessQueue, ^{ expression = self->_filterExpression; });
 
     return expression;
 }
@@ -858,15 +858,15 @@ NS_ASSUME_NONNULL_END
     
     pn_safe_property_write(self.resourceAccessQueue, ^{
         
-        _filterExpression = [filterExpression copy];
-        _escapedFilterExpression = (filterExpression? [PNString percentEscapedString:filterExpression] : nil);
+        self->_filterExpression = [filterExpression copy];
+        self->_escapedFilterExpression = (filterExpression? [PNString percentEscapedString:filterExpression] : nil);
     });
 }
 
 - (NSString *)escapedFilterExpression {
     
     __block NSString *expression = nil;
-    pn_safe_property_read(self.resourceAccessQueue, ^{ expression = _escapedFilterExpression; });
+    pn_safe_property_read(self.resourceAccessQueue, ^{ expression = self->_escapedFilterExpression; });
     
     return expression;
 }

@@ -373,27 +373,27 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
 - (BOOL)writeToConsole {
     
     __block BOOL writeToConsole = NO;
-    pn_lock(&_accessLock, ^{ writeToConsole = _writeToConsole; });
+    pn_lock(&_accessLock, ^{ writeToConsole = self->_writeToConsole; });
     
     return writeToConsole;
 }
 
 - (void)setWriteToConsole:(BOOL)writeToConsole {
     
-    pn_lock(&_accessLock, ^{ _writeToConsole = writeToConsole; });
+    pn_lock(&_accessLock, ^{ self->_writeToConsole = writeToConsole; });
 }
 
 - (BOOL)writeToFile {
     
     __block BOOL writeToFile = NO;
-    pn_lock(&_accessLock, ^{ writeToFile = _writeToFile; });
+    pn_lock(&_accessLock, ^{ writeToFile = self->_writeToFile; });
     
     return writeToFile;
 }
 
 - (void)setWriteToFile:(BOOL)writeToFile {
     
-    pn_lock(&_accessLock, ^{ _writeToFile = writeToFile; });
+    pn_lock(&_accessLock, ^{ self->_writeToFile = writeToFile; });
 }
 
 - (void)setMaximumLogFileSize:(NSUInteger)maximumLogFileSize {
@@ -401,8 +401,8 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
     __block BOOL changed = NO;
     pn_lock(&_accessLock, ^{
         
-        changed = (_maximumLogFileSize != maximumLogFileSize);
-        _maximumLogFileSize = maximumLogFileSize;
+        changed = (self->_maximumLogFileSize != maximumLogFileSize);
+        self->_maximumLogFileSize = maximumLogFileSize;
     });
     if (changed) { dispatch_async(self.queue, ^{ @autoreleasepool { [self rollRecentLogFileIfRequired]; }}); }
 }
@@ -411,8 +411,8 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
     
     __block BOOL changed = NO;
     pn_lock(&_accessLock, ^{
-        changed = (_maximumNumberOfLogFiles != maximumNumberOfLogFiles);
-        _maximumNumberOfLogFiles = maximumNumberOfLogFiles;
+        changed = (self->_maximumNumberOfLogFiles != maximumNumberOfLogFiles);
+        self->_maximumNumberOfLogFiles = maximumNumberOfLogFiles;
     });
     if (changed) { dispatch_async(self.queue, ^{ @autoreleasepool { [self deleteOldLogsIfRequired]; }}); }
 }
@@ -421,20 +421,20 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
     
     pn_trylock(&_accessLock, ^{
         
-        if (_currentLogInformation == nil) {
+        if (self->_currentLogInformation == nil) {
             
             [self rollRecentLogFileIfRequired];
             PNLLogFileInformation *recentLogInfomration = self.logFilesInformation.firstObject;
             if (recentLogInfomration && !recentLogInfomration.isArchived) {
                 
-                _currentLogInformation = recentLogInfomration;
+                self->_currentLogInformation = recentLogInfomration;
             }
             else {
                 
                 NSString *logFilePath = [self createLogFile];
                 PNLLogFileInformation *information = [PNLLogFileInformation informationForFileAtPath:logFilePath];
-                _currentLogInformation = information;
-                [self.logFilesInformation insertObject:_currentLogInformation atIndex:0];
+                self->_currentLogInformation = information;
+                [self.logFilesInformation insertObject:self->_currentLogInformation atIndex:0];
             }
         }
     });
@@ -446,22 +446,22 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
     
     pn_trylock(&_accessLock, ^{
         
-        if (_currentLogHandler == nil) {
+        if (self->_currentLogHandler == nil) {
             
-            _currentLogHandler = [NSFileHandle fileHandleForWritingAtPath:self.currentLogInformation.path];
-            [_currentLogHandler seekToEndOfFile];
-            if (_currentLogHandler) {
+            self->_currentLogHandler = [NSFileHandle fileHandleForWritingAtPath:self.currentLogInformation.path];
+            [self->_currentLogHandler seekToEndOfFile];
+            if (self->_currentLogHandler) {
                 
-                _logFileWatchdog = dispatch_source_create(DISPATCH_SOURCE_TYPE_VNODE, 
-                                                          [_currentLogHandler fileDescriptor], 
-                                                          DISPATCH_VNODE_DELETE | DISPATCH_VNODE_RENAME, 
-                                                          _queue);
-                dispatch_source_set_event_handler(_logFileWatchdog, ^{
+                self->_logFileWatchdog = dispatch_source_create(DISPATCH_SOURCE_TYPE_VNODE,
+                                                                [self->_currentLogHandler fileDescriptor],
+                                                                DISPATCH_VNODE_DELETE | DISPATCH_VNODE_RENAME,
+                                                                self->_queue);
+                dispatch_source_set_event_handler(self->_logFileWatchdog, ^{
                     
                     @autoreleasepool { [self rollCurrentLogFileOnMove:YES]; }
                 });
                 
-                dispatch_resume(_logFileWatchdog);
+                dispatch_resume(self->_logFileWatchdog);
             }
         }
     });
@@ -533,16 +533,16 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
 
 - (void)setEnabled:(BOOL)enabled {
     
-    pn_lock(&_accessLock, ^{ _enabled = enabled; });
+    pn_lock(&_accessLock, ^{ self->_enabled = enabled; });
 }
 
 - (void)enableLogLevel:(NSUInteger)level {
     
     pn_lock(&_accessLock, ^{
         
-        BOOL notifyChange = (_logLevel != (_logLevel | level) && _logLevelChangeHandler);
-        _logLevel |= level;
-        if (notifyChange) { dispatch_async(dispatch_get_main_queue(), _logLevelChangeHandler); }
+        BOOL notifyChange = (self->_logLevel != (self->_logLevel | level) && self->_logLevelChangeHandler);
+        self->_logLevel |= level;
+        if (notifyChange) { dispatch_async(dispatch_get_main_queue(), self->_logLevelChangeHandler); }
     });
 }
 
@@ -550,9 +550,9 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
     
     pn_lock(&_accessLock, ^{
         
-        BOOL notifyChange = (_logLevel != (_logLevel & ~level) && _logLevelChangeHandler);
-        _logLevel &= ~level;
-        if (notifyChange) { dispatch_async(dispatch_get_main_queue(), _logLevelChangeHandler); }
+        BOOL notifyChange = (self->_logLevel != (self->_logLevel & ~level) && self->_logLevelChangeHandler);
+        self->_logLevel &= ~level;
+        if (notifyChange) { dispatch_async(dispatch_get_main_queue(), self->_logLevelChangeHandler); }
     });
 }
 
@@ -560,10 +560,10 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
     
     pn_lock(&_accessLock, ^{
         
-        BOOL notifyChange = (_logLevel != level && _logLevelChangeHandler);
-        _logLevel = level;
-        if (level == 0) { _enabled = NO; }
-        if (notifyChange) { dispatch_async(dispatch_get_main_queue(), _logLevelChangeHandler); }
+        BOOL notifyChange = (self->_logLevel != level && self->_logLevelChangeHandler);
+        self->_logLevel = level;
+        if (level == 0) { self->_enabled = NO; }
+        if (notifyChange) { dispatch_async(dispatch_get_main_queue(), self->_logLevelChangeHandler); }
     });
 }
 
@@ -574,7 +574,7 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
 
 #ifndef PUBNUB_DISABLE_LOGGER
     __block BOOL shouldHandleLog = NO;
-    pn_lock(&_accessLock, ^{ shouldHandleLog = (_logLevel & level); });
+    pn_lock(&_accessLock, ^{ shouldHandleLog = (self->_logLevel & level); });
     if (shouldHandleLog && format.length) {
         
         va_list args;
@@ -610,9 +610,9 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
                 struct iovec vector[10];
                 vector[0] = (struct iovec){.iov_base = timestamp, .iov_len = timestampLength};
                 vector[1] = (struct iovec){.iov_base = " ", .iov_len = 1};
-                vector[2] = (struct iovec){.iov_base = _applicationCName, .iov_len = _applicationNameLength};
+                vector[2] = (struct iovec){.iov_base = self->_applicationCName, .iov_len = self->_applicationNameLength};
                 vector[3] = (struct iovec){.iov_base = "[", .iov_len = 1};
-                vector[4] = (struct iovec){.iov_base = _applicationProcessCID, .iov_len = _applicationProcessIDLength};
+                vector[4] = (struct iovec){.iov_base = self->_applicationProcessCID, .iov_len = self->_applicationProcessIDLength};
                 vector[5] = (struct iovec){.iov_base = ":", .iov_len = 1};
                 vector[6] = (struct iovec){.iov_base = tid, .iov_len = threadIDLength};
                 vector[7] = (struct iovec){.iov_base = "] ", .iov_len = 2};
@@ -626,7 +626,7 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
             if (self.writeToFile) {
                 
                 NSString *formattedMessage = [NSString stringWithFormat:@"%s %@[%@:%@] %@%@", timestamp, 
-                                              _applicationName, _applicationProcessID, threadID, message,
+                                              self->_applicationName, self->_applicationProcessID, threadID, message,
                                               ([message hasSuffix:@"\n"] ? @"" : @"\n")];
                 NSData *messageData = [formattedMessage dataUsingEncoding:NSUTF8StringEncoding];
                 @try {
@@ -712,10 +712,10 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
         PNLLogFileInformation *recentLogInfomration = self.logFilesInformation.firstObject;
         if (recentLogInfomration && !recentLogInfomration.archived) {
             
-            BOOL isCurrentLog = (_currentLogInformation && [_currentLogInformation isEqual:recentLogInfomration]);
+            BOOL isCurrentLog = (self->_currentLogInformation && [self->_currentLogInformation isEqual:recentLogInfomration]);
             unsigned long long size = recentLogInfomration.size;
-            if (isCurrentLog && _currentLogHandler) { size = _currentLogHandler.offsetInFile; }
-            if (_maximumLogFileSize > 0 && size >= _maximumLogFileSize) {
+            if (isCurrentLog && self->_currentLogHandler) { size = self->_currentLogHandler.offsetInFile; }
+            if (self->_maximumLogFileSize > 0 && size >= self->_maximumLogFileSize) {
                 
                 if (isCurrentLog) { [self rollCurrentLogFileOnMove:NO]; }
                 else { recentLogInfomration.archived = YES; }
@@ -728,25 +728,25 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
     
     pn_trylock(&_accessLock, ^{
         
-        if (_currentLogHandler) {
+        if (self->_currentLogHandler) {
             
-            unsigned long long logFileSize = _currentLogHandler.offsetInFile;
-            [_currentLogHandler synchronizeFile];
-            [_currentLogHandler closeFile];
-            _currentLogHandler = nil;
+            unsigned long long logFileSize = self->_currentLogHandler.offsetInFile;
+            [self->_currentLogHandler synchronizeFile];
+            [self->_currentLogHandler closeFile];
+            self->_currentLogHandler = nil;
             
             if (!rollOnFileMove) {
                 
-                _currentLogInformation.size = logFileSize;
-                _currentLogInformation.archived = YES;
+                self->_currentLogInformation.size = logFileSize;
+                self->_currentLogInformation.archived = YES;
             }
-            else { [self.logFilesInformation removeObject:_currentLogInformation]; }
-            _currentLogInformation = nil;
+            else { [self.logFilesInformation removeObject:self->_currentLogInformation]; }
+            self->_currentLogInformation = nil;
             
-            if (_logFileWatchdog) {
+            if (self->_logFileWatchdog) {
                 
-                dispatch_source_cancel(_logFileWatchdog);
-                _logFileWatchdog = NULL;
+                dispatch_source_cancel(self->_logFileWatchdog);
+                self->_logFileWatchdog = NULL;
             }
         }
     });
@@ -757,10 +757,10 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
     pn_trylock(&_accessLock, ^{
         
         NSMutableArray<PNLLogFileInformation *> *informationsForRemoval = [NSMutableArray new];
-        if (_maximumNumberOfLogFiles > 0 && self.logFilesInformation.count >= _maximumNumberOfLogFiles) {
+        if (self->_maximumNumberOfLogFiles > 0 && self.logFilesInformation.count >= self->_maximumNumberOfLogFiles) {
             
             NSUInteger filesCount = self.logFilesInformation.count;
-            for (NSUInteger infoIndex = _maximumNumberOfLogFiles - 1; infoIndex < filesCount; infoIndex++) {
+            for (NSUInteger infoIndex = self->_maximumNumberOfLogFiles - 1; infoIndex < filesCount; infoIndex++) {
                 
                 PNLLogFileInformation *informationForRemoval = self.logFilesInformation[infoIndex];
                 [[NSFileManager defaultManager] removeItemAtPath:informationForRemoval.path error:nil];
@@ -773,21 +773,21 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
         if (self.logFilesInformation.count) {
             
             NSNumber *logsFileSize = [self.logFilesInformation valueForKeyPath:@"@sum.size"];
-            if ([logsFileSize compare:@(_logFilesDiskQuota)] == NSOrderedDescending) {
+            if ([logsFileSize compare:@(self->_logFilesDiskQuota)] == NSOrderedDescending) {
                 
                 NSUInteger filesCount = self.logFilesInformation.count;
                 unsigned long long currentLogsFileSize = logsFileSize.unsignedLongLongValue;
                 for (NSInteger infoIndex = filesCount - 1; infoIndex >= 0; infoIndex--) {
                     
                     PNLLogFileInformation *informationForRemoval = self.logFilesInformation[infoIndex];
-                    if (!_currentLogInformation || ![informationForRemoval isEqual:_currentLogInformation]) {
+                    if (!self->_currentLogInformation || ![informationForRemoval isEqual:self->_currentLogInformation]) {
                         
                         currentLogsFileSize -= informationForRemoval.size;
                         [[NSFileManager defaultManager] removeItemAtPath:informationForRemoval.path error:nil];
                         [informationsForRemoval addObject:informationForRemoval];
                     }
                     
-                    if (currentLogsFileSize < _logFilesDiskQuota) { break; }
+                    if (currentLogsFileSize < self->_logFilesDiskQuota) { break; }
                 }
                 [self.logFilesInformation removeObjectsInArray:informationsForRemoval];
             }
