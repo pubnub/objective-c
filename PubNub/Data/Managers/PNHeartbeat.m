@@ -181,24 +181,6 @@ NS_ASSUME_NONNULL_END
     return channelGroups;
 }
 
-- (void)removeChannels:(NSArray<NSString *> *)channels {
-
-    if ([channels isKindOfClass:[NSArray class]]) {
-        pn_safe_property_write(self.resourceAccessQueue, ^{
-            [self->_presenceChannels removeObjectsInArray:channels];
-        });
-    }
-}
-
-- (void)removeChannelGroups:(NSArray<NSString *> *)channelGroups {
-
-    if ([channelGroups isKindOfClass:[NSArray class]]) {
-        pn_safe_property_write(self.resourceAccessQueue, ^{
-            [self->_presenceChannelGroups removeObjectsInArray:channelGroups];
-        });
-    }
-}
-
 - (void)setConnected:(BOOL)connected forChannels:(NSArray<NSString *> *)channels {
 
     if ([channels isKindOfClass:[NSArray class]]) {

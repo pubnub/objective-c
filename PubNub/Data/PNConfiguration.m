@@ -159,6 +159,7 @@ NS_ASSUME_NONNULL_END
         _TLSEnabled = kPNDefaultIsTLSEnabled;
         _heartbeatNotificationOptions = kPNDefaultHeartbeatNotificationOptions;
         _suppressLeaveEvents = kPNDefaultShouldSuppressLeaveEvents;
+        _managePresenceListManually = kPNDefaultShouldManagePresenceListManually;
         _keepTimeTokenOnListChange = kPNDefaultShouldKeepTimeTokenOnListChange;
         _catchUpOnSubscriptionRestore = kPNDefaultShouldTryCatchUpOnSubscriptionRestore;
         _requestMessageCountThreshold = kPNDefaultRequestMessageCountThreshold;
@@ -187,6 +188,7 @@ NS_ASSUME_NONNULL_END
     configuration.presenceHeartbeatValue = self.presenceHeartbeatValue;
     configuration.presenceHeartbeatInterval = self.presenceHeartbeatInterval;
     configuration.heartbeatNotificationOptions = self.heartbeatNotificationOptions;
+    configuration.managePresenceListManually = self.shouldManagePresenceListManually;
     configuration.suppressLeaveEvents = self.shouldSuppressLeaveEvents;
     configuration.TLSEnabled = self.isTLSEnabled;
     configuration.keepTimeTokenOnListChange = self.shouldKeepTimeTokenOnListChange;

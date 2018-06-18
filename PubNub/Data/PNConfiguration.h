@@ -162,6 +162,16 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign, getter = shouldSuppressLeaveEvents) BOOL suppressLeaveEvents NS_SWIFT_NAME(suppressLeaveEvents);
 
 /**
+ * @brief      Stores whether heartbeat list managed manually or not.
+ * @discussion By default client automatically manage list of channels and/or groups used in heartbeat requests when
+ *             subscribe or unsubscribe.
+ *             With manual management special methods can be used to add channels and/or groups to heartbeat list.
+ *
+ * @since 4.8.0
+ */
+@property (nonatomic, assign, getter = shouldManagePresenceListManually) BOOL managePresenceListManually NS_SWIFT_NAME(managePresenceListManually);
+
+/**
  @brief   Stores whether client should communicate with \b PubNub services using secured connection or not.
  
  @default By default client use \b YES to secure communication with \b PubNub services.
