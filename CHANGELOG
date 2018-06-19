@@ -1,3 +1,7 @@
+19-06-2018 - 6f93055 - 4.8.0
+. changed presence API flow and added client configuration option to enable manual presence list management.
+. fixed implicit 'self' retain in block warnings.
+
 14-02-2018 - 0e9968f - 4.7.7
 . fixed issue because of which channel(s) and/or group(s) wasn't able to maintain user's presence with heartbeat.
 . fixed log file attributes to prevent their backup locally or to iCloud.

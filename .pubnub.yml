@@ -1,9 +1,19 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.7.7"
+version: "4.8.0"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Changed presence API flow and added client configuration option to enable manual presence list management."
+        type: improvement
+      -
+        text: "Fixed implicit 'self' retain in block warnings."
+        type: improvement
+    date: Jun 19, 18
+    version: v4.8.0
   -
     changes:
       -
