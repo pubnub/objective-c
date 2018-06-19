@@ -17,6 +17,16 @@ changelog:
   -
     changes:
       -
+        text: "Added listeners collection access serialization on queue to prevent access to property during non-atomic store"
+        type: bug
+      -
+        text: "Silenced implicit self usage in blocks."
+        type: improvement
+    date: May 7, 18
+    version: v4.7.8
+  -
+    changes:
+      -
         text: "Fixed issue because of which channel(s) and/or group(s) wasn't able to maintain user's presence with heartbeat."
         type: bug
       -
