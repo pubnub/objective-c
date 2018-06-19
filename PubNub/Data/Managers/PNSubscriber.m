@@ -1519,6 +1519,17 @@ NS_ASSUME_NONNULL_END
                                                                      forObjects:fullObjectsList];
     [self.client.clientStateManager mergeWithState:mergedState];
     
+    // Extract state information only for channels and groups which is used in subscribe loop.
+    if (self.client.configuration.shouldManagePresenceListManually) {
+        NSMutableDictionary *filteredState = [NSMutableDictionary dictionaryWithDictionary:mergedState];
+        NSMutableArray *mergedStateKeys = [NSMutableArray arrayWithArray:mergedState.allKeys];
+        
+        [mergedStateKeys removeObjectsInArray:fullObjectsList];
+        [filteredState removeObjectsForKeys:mergedStateKeys];
+        
+        mergedState = filteredState;
+    }
+    
     PNRequestParameters *parameters = [PNRequestParameters new];
     [parameters addPathComponent:channelsList forPlaceholder:@"{channels}"];
     [parameters addQueryParameter:self.currentTimeToken.stringValue forFieldName:@"tt"];
@@ -1527,11 +1538,12 @@ NS_ASSUME_NONNULL_END
         [parameters addQueryParameter:self.currentTimeTokenRegion.stringValue forFieldName:@"tr"];
     }
     
-    if (self.client.configuration.presenceHeartbeatValue > 0 ) {
+    if (!self.client.configuration.shouldManagePresenceListManually && self.client.configuration.presenceHeartbeatValue > 0) {
         
         [parameters addQueryParameter:@(self.client.configuration.presenceHeartbeatValue).stringValue
                          forFieldName:@"heartbeat"];
     }
+    
     if (groupsList.length) { [parameters addQueryParameter:groupsList forFieldName:@"channel-group"]; }
     if (mergedState.count) {
         

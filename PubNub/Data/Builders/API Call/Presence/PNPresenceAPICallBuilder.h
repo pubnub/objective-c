@@ -59,6 +59,8 @@ NS_ASSUME_NONNULL_BEGIN
  *             for access to client's connected presence state management.
  * @discussion On block call return block which consume client's \c connected state flag and
  *             provide interface to access client's connected presence state management.
+ * @discussion \b Important: since \b 4.8.0 this API work only if \c managePresenceListManually client configuration property is set to
+ *             \c YES.
  *
  * @since 4.7.5
  */
