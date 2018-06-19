@@ -68,28 +68,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSArray<NSString *> *)channelGroups;
 
 /**
- * @brief      Remove from presence channels list passed channels.
- * @discussion This method used during clean up operation to make sure what presence channels list
- *             doesn't contain any channels on which client currently subscribed.
- *
- * @param channels Reference on list of channels which should be removed.
- *
- * @since 4.7.5
- */
-- (void)removeChannels:(NSArray<NSString *> *)channels;
-
-/**
- * @brief      Remove from presence channel groups list passed channel groups.
- * @discussion This method used during clean up operation to make sure what presence channel groups
- *             list doesn't contain any channel groups on which client currently subscribed.
- *
- * @param channelGroups Reference on list of channel groups which should be removed.
- *
- * @since 4.7.5
- */
-- (void)removeChannelGroups:(NSArray<NSString *> *)channelGroups;
-
-/**
  * @brief      Update client's presence connected state for \c channels.
  * @discussion Mark client as \c connected or \c leaved for remote subscribers which is listening for
  *             events on \c channels.

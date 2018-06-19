@@ -121,6 +121,8 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  @brief      Stores reference on subscribe API access \c builder construction block.
  @discussion On block call return builder which allow to configure parameters for subscribe API access.
+ @discussion \b Important: since \b 4.8.0 if \c managePresenceListManually client configuration property is set to \c YES this API won't
+             add channels and/or channel groups to presence heartbeat list.
  
  @since 4.5.4
  */
@@ -143,6 +145,8 @@ NS_ASSUME_NONNULL_BEGIN
  @brief      Try subscribe on specified set of channels.
  @discussion Using subscribe API client is able to subscribe of remote data objects live feed and listen for 
              new events from them.
+ @discussion \b Important: since \b 4.8.0 if \c managePresenceListManually client configuration property is set to \c YES this API won't
+             add channels to presence heartbeat list.
  @discussion \b Example:
  
  @code
@@ -165,6 +169,8 @@ self.client = [PubNub clientWithConfiguration:configuration];
              new events from them.
  @discussion Extension to \c -subscribeToChannels:withPresence: and allow to specify arbitrarily which should 
              be used during subscription.
+ @discussion \b Important: since \b 4.8.0 if \c managePresenceListManually client configuration property is set to \c YES this API won't
+             add channels to presence heartbeat list.
  @discussion \b Example:
  
  @code
@@ -190,6 +196,8 @@ NSNumber *timeToken = @([[NSDate dateWithTimeIntervalSinceNow:-2.0] timeInterval
              new events from them.
  @discussion Extension to \c -subscribeToChannels:withPresence: and allow to specify client state information 
              which should be passed to \b PubNub service along with subscription.
+ @discussion \b Important: since \b 4.8.0 if \c managePresenceListManually client configuration property is set to \c YES this API won't
+             add channels to presence heartbeat list.
  @discussion \b Example:
  
  @code
@@ -216,6 +224,8 @@ self.client = [PubNub clientWithConfiguration:configuration];
              new events from them.
  @discussion Extension to \c -subscribeToChannels:withPresence:usingTimeToken: and allow to specify client 
              state information which should be passed to \b PubNub service along with subscription.
+ @discussion \b Important: since \b 4.8.0 if \c managePresenceListManually client configuration property is set to \c YES this API won't
+             add channels to presence heartbeat list.
  @discussion \b Example:
  
  @code
@@ -243,6 +253,8 @@ NSNumber *timeToken = @([[NSDate dateWithTimeIntervalSinceNow:-2.0] timeInterval
  @brief      Try subscribe on specified set of channel groups.
  @discussion Using subscribe API client is able to subscribe of remote data objects live feed and listen for 
              new events from them.
+ @discussion \b Important: since \b 4.8.0 if \c managePresenceListManually client configuration property is set to \c YES this API won't
+             add channel groups to presence heartbeat list.
  @discussion \b Example:
  
  @code
@@ -265,6 +277,8 @@ self.client = [PubNub clientWithConfiguration:configuration];
              new events from them.
  @discussion Extension to \c -subscribeToChannelGroups:withPresence: and allow to specify arbitrarily which 
              should be used during subscription.
+ @discussion \b Important: since \b 4.8.0 if \c managePresenceListManually client configuration property is set to \c YES this API won't
+             add channel groups to presence heartbeat list.
  @discussion \b Example:
  
  @code
@@ -290,6 +304,8 @@ NSNumber *timeToken = @([[NSDate dateWithTimeIntervalSinceNow:-2.0] timeInterval
              new events from them.
  @discussion Extension to \c -subscribeToChannelGroups:withPresence: and allow to specify client state 
              information which should be passed to \b PubNub service along with subscription.
+ @discussion \b Important: since \b 4.8.0 if \c managePresenceListManually client configuration property is set to \c YES this API won't
+             add channel groups to presence heartbeat list.
  @discussion \b Example:
  
  @code
@@ -316,6 +332,8 @@ self.client = [PubNub clientWithConfiguration:configuration];
              new events from them.
  @discussion Extension to \c -subscribeToChannelGroups:withPresence:usingTimeToken: and allow to specify 
              client state information which should be passed to \b PubNub service along with subscription.
+ @discussion \b Important: since \b 4.8.0 if \c managePresenceListManually client configuration property is set to \c YES this API won't
+             add channel groups to presence heartbeat list.
  @discussion \b Example:
  
  @code

@@ -735,7 +735,7 @@ NS_ASSUME_NONNULL_END
 
         BOOL isApplicationExtension = NO;
         if (@available(macOS 10.10, iOS 8.0, *)) {
-            isApplicationExtension = _configuration.applicationExtensionSharedGroupIdentifier != nil;
+            isApplicationExtension = self->_configuration.applicationExtensionSharedGroupIdentifier != nil;
         }
 
         if (isApplicationExtension) {
@@ -978,8 +978,8 @@ NS_ASSUME_NONNULL_END
     
     pn_lock(&_lock, ^{
         
-        [_session invalidateAndCancel];
-        _session = nil;
+        [self->_session invalidateAndCancel];
+        self->_session = nil;
     });
 }
 
@@ -1328,7 +1328,7 @@ NS_ASSUME_NONNULL_END
         
         NSTimeInterval latency = [transaction.responseEndDate timeIntervalSince1970] - [transaction.requestStartDate timeIntervalSince1970];
         if (latency > 0.f) {
-            pn_lock(&_lock, ^{
+            pn_lock(&self->_lock, ^{
                 NSString *taskIdentifier = [self.sessionIdentifier stringByAppendingString:@(task.taskIdentifier).stringValue];
 
                 if (taskIdentifier) {
