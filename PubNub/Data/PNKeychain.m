@@ -26,7 +26,7 @@ static os_unfair_lock keychainAccessLock = OS_UNFAIR_LOCK_INIT;
 @interface PNKeychain ()
 
 
-#pragma mark - Temporary storage
+#pragma mark - Storage
 
 /**
  @brief      Reference on storage which is used for environment where Keychain access DB not
@@ -111,6 +111,15 @@ static os_unfair_lock keychainAccessLock = OS_UNFAIR_LOCK_INIT;
 #pragma mark - Misc
 
 /**
+ * @brief  Location where Keychain replacement for macOS will be stored.
+ *
+ * @since 4.8.1
+ *
+ * @return Full path to the file.
+ */
++ (NSString *)fileBasedStoragePath;
+
+/**
  @brief Check whether system is able to provide access to Keychain (even locked) or not.
  
  @return \c NO in case if client is used in milti-user macOS environment and user not authorized 
@@ -138,13 +147,27 @@ static os_unfair_lock keychainAccessLock = OS_UNFAIR_LOCK_INIT;
 @implementation PNKeychain
 
 
-#pragma mark - Temporary storage
+#pragma mark - Storage
 
 + (NSMutableDictionary *)inMemoryStorage {
     
     static NSMutableDictionary *_inMemoryStorage;
     static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{ _inMemoryStorage = [NSMutableDictionary new]; });
+    dispatch_once(&onceToken, ^{
+#if TARGET_OS_OSX
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        NSString *workingDirectory = [[self fileBasedStoragePath] stringByDeletingLastPathComponent];
+        
+        if (![fileManager fileExistsAtPath:workingDirectory isDirectory:NULL]) {
+            [fileManager createDirectoryAtPath:workingDirectory withIntermediateDirectories:YES attributes:nil error:nil];
+        }
+        
+        NSDictionary *storedData = [NSDictionary dictionaryWithContentsOfFile:[self fileBasedStoragePath]];
+        _inMemoryStorage = [NSMutableDictionary dictionaryWithDictionary:storedData];
+#else
+        _inMemoryStorage = [NSMutableDictionary new];
+#endif // TARGET_OS_OSX
+    });
     
     return _inMemoryStorage;
 }
@@ -154,47 +177,72 @@ static os_unfair_lock keychainAccessLock = OS_UNFAIR_LOCK_INIT;
 
 + (void)storeValue:(id)value forKey:(NSString *)key withCompletionBlock:(void(^)(BOOL stored))block {
     
-    if ([self isKeychainAvailable]) {
-        
+    BOOL keychainAvailable = [self isKeychainAvailable];
+    BOOL shouldWriteInMemory = !keychainAvailable;
+#if TARGET_OS_OSX
+    shouldWriteInMemory = YES;
+#endif // TARGET_OS_OSX
+    
+    if (!shouldWriteInMemory) {
         [self update:value usingQuery:[self baseInformationForItemWithKey:key] completionBlock:block];
     } else {
-        
         pn_trylock(&keychainAccessLock, ^{
-            
             [self inMemoryStorage][key] = value;
-            if (block) { block(YES); }
+            
+            if (keychainAvailable) {
+                [[self inMemoryStorage] writeToFile:[self fileBasedStoragePath] atomically:YES];
+            }
+            
+            if (block) {
+                block(YES);
+            }
         });
     }
 }
 
 + (void)valueForKey:(NSString *)key withCompletionBlock:(void(^)(id value))block {
     
-    if ([self isKeychainAvailable]) {
-        
+    BOOL shouldReadFromMemory = ![self isKeychainAvailable];
+#if TARGET_OS_OSX
+    shouldReadFromMemory = YES;
+#endif // TARGET_OS_OSX
+    
+    if (!shouldReadFromMemory) {
         [self searchWithQuery:[self baseInformationForItemWithKey:key] fetchData:YES
               completionBlock:^(id data, BOOL error) { if (block) { block(data); } }];
-    } else { pn_trylock(&keychainAccessLock, ^{ block([self inMemoryStorage][key]); }); }
+    } else {
+        pn_trylock(&keychainAccessLock, ^{
+            block([self inMemoryStorage][key]);
+        });
+    }
 }
 
 + (void)removeValueForKey:(NSString *)key withCompletionBlock:(void(^)(BOOL))block {
     
-    if ([self isKeychainAvailable]) {
-        
-        [self checkExistingDataWithQuery:[self baseInformationForItemWithKey:key]
-                         completionBlock:^(BOOL exists) {
-                             
+    BOOL keychainAvailable = [self isKeychainAvailable];
+    BOOL shouldWriteInMemory = !keychainAvailable;
+#if TARGET_OS_OSX
+    shouldWriteInMemory = YES;
+#endif // TARGET_OS_OSX
+    
+    if (!shouldWriteInMemory) {
+        [self checkExistingDataWithQuery:[self baseInformationForItemWithKey:key] completionBlock:^(BOOL exists) {
             if (exists) {
-
                 [self update:nil usingQuery:[self baseInformationForItemWithKey:key]
              completionBlock:block];
             }
         }];
     } else {
-        
         pn_trylock(&keychainAccessLock, ^{
-            
             [[self inMemoryStorage] removeObjectForKey:key];
-            if (block) { block(YES); }
+            
+            if (keychainAvailable) {
+                [[self inMemoryStorage] writeToFile:[self fileBasedStoragePath] atomically:YES];
+            }
+            
+            if (block) {
+                block(YES);
+            }
         });
     }
 }
@@ -339,6 +387,21 @@ static os_unfair_lock keychainAccessLock = OS_UNFAIR_LOCK_INIT;
 
 
 #pragma mark - Misc
+
++ (NSString *)fileBasedStoragePath {
+    
+    static NSString *_fileBasedStoragePath;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSArray<NSString *> *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+        NSString *applicationName = [[NSProcessInfo processInfo] processName]?: [[NSBundle mainBundle] bundleIdentifier];
+        NSString *baseDirectory = (paths.count > 0 ? paths.firstObject : NSTemporaryDirectory());
+        
+        _fileBasedStoragePath = [[baseDirectory stringByAppendingPathComponent:applicationName] stringByAppendingPathComponent:@"pnkc.db"];
+    });
+    
+    return _fileBasedStoragePath;
+}
 
 + (BOOL)isKeychainAvailable {
     static BOOL available;
