@@ -454,7 +454,7 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
                 
                 self->_logFileWatchdog = dispatch_source_create(DISPATCH_SOURCE_TYPE_VNODE,
                                                                 [self->_currentLogHandler fileDescriptor],
-                                                          DISPATCH_VNODE_DELETE | DISPATCH_VNODE_RENAME, 
+                                                                DISPATCH_VNODE_DELETE | DISPATCH_VNODE_RENAME,
                                                                 self->_queue);
                 dispatch_source_set_event_handler(self->_logFileWatchdog, ^{
                     
