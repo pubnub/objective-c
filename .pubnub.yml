@@ -1,9 +1,16 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.8.0"
+version: "4.8.1"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Changed client's data storage on macOS from Keychain to file-based."
+        type: improvement
+    date: Jun 21, 18
+    version: v4.8.1
   -
     changes:
       -
