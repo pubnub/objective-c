@@ -66,3 +66,9 @@ Icon?
 ehthumbs.db
 Thumbs.db
 .idea/
+
+# Swift Package Manager
+.DS_Store
+/.build
+/Packages
+/*.xcodeproj
