@@ -1,0 +1,12 @@
+OTHER_LDFLAGS = -ObjC -lz -framework Foundation -framework Security
+OTHER_LDFLAGS[sdk=macosx*] = $(inherited) -framework IOKit -framework AppKit
+OTHER_LDFLAGS[sdk=iphoneos*] = $(inherited) -weak_framework UIKit
+OTHER_LDFLAGS[sdk=iphonesimulator*] = $(inherited) -weak_framework UIKit
+OTHER_LDFLAGS[sdk=appletvos*] = $(inherited) -weak_framework UIKit
+OTHER_LDFLAGS[sdk=appletvsimulator*] = $(inherited) -weak_framework UIKit
+OTHER_LDFLAGS[sdk=watchos*] = $(inherited) -weak_framework UIKit
+OTHER_LDFLAGS[sdk=watchsimulator*] = $(inherited) -weak_framework UIKit
+IPHONEOS_DEPLOYMENT_TARGET = 8.0
+TVOS_DEPLOYMENT_TARGET = 9.0
+WATCHOS_DEPLOYMENT_TARGET = 2.0
+FRAMEWORK_SEARCH_PATHS = 
