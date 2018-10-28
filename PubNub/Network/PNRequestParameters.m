@@ -122,7 +122,6 @@
 
 - (void)addQueryParameters:(NSDictionary *)parameters {
     
-    NSParameterAssert(parameters);
     [self.queryFields addEntriesFromDictionary:parameters];
 }
 

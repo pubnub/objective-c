@@ -1,14 +1,13 @@
 /**
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2009-2017 PubNub, Inc.
+ * @author Serhii Mamontov
+ * @since 4.0
+ * @copyright © 2009-2017 PubNub, Inc.
  */
 #import "PubNub+ChannelGroup.h"
 #import "PNAPICallBuilder+Private.h"
 #import "PNRequestParameters.h"
 #import "PubNub+CorePrivate.h"
 #import "PNStatus+Private.h"
-#import "PNLogMacro.h"
 #import "PNHelpers.h"
 
 
@@ -19,21 +18,42 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PubNub  (ChannelGroupProtected)
 
 
+#pragma mark - Channel group audition
+
+/**
+ * @brief Fetch list of channels which is registered in specified \c group.
+ *
+ * @param group Name of the group from which channels should be fetched.
+ * @param queryParameters List arbitrary query parameters which should be sent along with original
+ *     API call.
+ * @param block Channels audition completion block.
+ *
+ * @since 4.8.2
+ */
+- (void)channelsForGroup:(NSString *)group
+     withQueryParameters:(nullable NSDictionary *)queryParameters
+              completion:(PNGroupChannelsAuditCompletionBlock)block;
+
+
 #pragma mark - Channel group content manipulation
 
 /**
- @brief  Add or remove channels to/from the \c group.
- 
- @param shouldAdd Whether provided \c channels should be added to the \c group or removed.
- @param channels  List of channels names which should be used for \c group modification.
- @param group     Name of the group which should be modified with list of passed \c objects.
- @param block     Channel group list modification process completion block which pass only one
-                  argument - request processing status to report about how data pushing was successful or not.
- 
- @since 4.0
+ * @brief Add or remove channels to / from the \c group.
+ *
+ * @param shouldAdd Whether provided \c channels should be added to the \c group or removed.
+ * @param channels List of channels names which should be used for \c group modification.
+ * @param group Name of the group which should be modified with list of passed \c objects.
+ * @param queryParameters List arbitrary query parameters which should be sent along with original
+ *     API call.
+ * @param block Channel group list modification completion block.
+ *
+ * @since 4.8.2
  */
-- (void)     add:(BOOL)shouldAdd channels:(nullable NSArray<NSString *> *)channels toGroup:(NSString *)group
-  withCompletion:(nullable PNChannelGroupChangeCompletionBlock)block;
+- (void)add:(BOOL)shouldAdd
+           channels:(nullable NSArray<NSString *> *)channels
+            toGroup:(NSString *)group
+    queryParameters:(nullable NSDictionary *)queryParameters
+     withCompletion:(nullable PNChannelGroupChangeCompletionBlock)block;
 
 #pragma mark -
 
@@ -50,58 +70,76 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - API Builder support
 
-- (PNStreamAPICallBuilder *(^)(void))stream {
+- (PNStreamAPICallBuilder * (^)(void))stream {
     
     PNStreamAPICallBuilder *builder = nil;
     builder = [PNStreamAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
                                                                   NSDictionary *parameters) {
                                
         NSString *group = parameters[NSStringFromSelector(@selector(channelGroup))];
+        NSDictionary *queryParam = parameters[@"queryParam"];
         id block = parameters[@"block"];
+        
         if ([flags containsObject:NSStringFromSelector(@selector(audit))]) {
-            
-            [self channelsForGroup:group withCompletion:block];
-        }
-        else {
-            
+            [self channelsForGroup:group withQueryParameters:queryParam completion:block];
+        } else {
             NSArray<NSString *> *channels = parameters[NSStringFromSelector(@selector(channels))];
             BOOL adding = [flags containsObject:NSStringFromSelector(@selector(add))];
-            [self add:adding channels:(channels.count ? channels : nil) toGroup:group withCompletion:block];
+
+            [self add:adding
+                     channels:(channels.count ? channels : nil)
+                      toGroup:group
+              queryParameters:queryParam
+               withCompletion:block];
         }
     }];
     
-    return ^PNStreamAPICallBuilder *{ return builder; };
+    return ^PNStreamAPICallBuilder * {
+        return builder;
+    };
 }
 
 
 #pragma mark - Channel group audition
 
-- (void)channelGroupsWithCompletion:(PNGroupAuditCompletionBlock)block {
-    
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wnonnull"
-    [self channelsForGroup:nil withCompletion:(id)block];
-    #pragma clang diagnostic pop
+- (void)channelsForGroup:(NSString *)group
+          withCompletion:(PNGroupChannelsAuditCompletionBlock)block {
+
+    [self channelsForGroup:group withQueryParameters:nil completion:block];
 }
 
-- (void)channelsForGroup:(NSString *)group withCompletion:(PNGroupChannelsAuditCompletionBlock)block {
-
-    PNOperationType operationType = (group ? PNChannelsForGroupOperation : PNChannelGroupsOperation);
+- (void)channelsForGroup:(NSString *)group
+     withQueryParameters:(NSDictionary *)queryParameters
+              completion:(PNGroupChannelsAuditCompletionBlock)block {
+    
+    PNOperationType operationType = (group ? PNChannelsForGroupOperation
+                                           : PNChannelGroupsOperation);
     PNRequestParameters *parameters = [PNRequestParameters new];
+
+    [parameters addQueryParameters:queryParameters];
+    
     if (group.length) {
+        [parameters addPathComponent:[PNString percentEscapedString:group]
+                      forPlaceholder:@"{channel-group}"];
 
-        [parameters addPathComponent:[PNString percentEscapedString:group] forPlaceholder:@"{channel-group}"];
         PNLogAPICall(self.logger, @"<PubNub::API> Request channels for '%@' channel group.", group);
+    } else {
+        PNLogAPICall(self.logger, @"<PubNub::API> Request channel groups list.");
     }
-    else { PNLogAPICall(self.logger, @"<PubNub::API> Request channel groups list."); }
-
+    
     __weak __typeof(self) weakSelf = self;
-    [self processOperation:operationType withParameters:parameters
+    [self processOperation:operationType
+            withParameters:parameters
            completionBlock:^(PNResult *result, PNStatus *status) {
+               
         if (status.isError) {
-
-            status.retryBlock = ^{ [weakSelf channelsForGroup:group withCompletion:block]; };
+            status.retryBlock = ^{
+                [weakSelf channelsForGroup:group
+                       withQueryParameters:queryParameters
+                                completion:block];
+            };
         }
+
         [weakSelf callBlock:block status:NO withResult:result andStatus:status];
     }];
 }
@@ -109,58 +147,78 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Channel group content manipulation
 
-- (void)addChannels:(NSArray<NSString *> *)channels toGroup:(NSString *)group
+- (void)addChannels:(NSArray<NSString *> *)channels
+            toGroup:(NSString *)group
      withCompletion:(PNChannelGroupChangeCompletionBlock)block {
     
-    [self add:YES channels:channels toGroup:group withCompletion:block];
+    [self add:YES channels:channels toGroup:group queryParameters:nil withCompletion:block];
 }
 
-- (void)removeChannels:(NSArray<NSString *> *)channels fromGroup:(NSString *)group
+- (void)removeChannels:(NSArray<NSString *> *)channels
+             fromGroup:(NSString *)group
         withCompletion:(PNChannelGroupChangeCompletionBlock)block {
     
-    [self add:NO channels:(channels.count ? channels : nil) toGroup:group withCompletion:block];
+    [self add:NO
+           channels:(channels.count ? channels : nil)
+            toGroup:group
+    queryParameters:nil
+     withCompletion:block];
 }
 
-- (void)removeChannelsFromGroup:(NSString *)group withCompletion:(PNChannelGroupChangeCompletionBlock)block {
+- (void)removeChannelsFromGroup:(NSString *)group
+                 withCompletion:(PNChannelGroupChangeCompletionBlock)block {
     
     [self removeChannels:@[] fromGroup:group withCompletion:block];
 }
 
-- (void)     add:(BOOL)shouldAdd channels:(NSArray<NSString *> *)channels toGroup:(NSString *)group
-  withCompletion:(PNChannelGroupChangeCompletionBlock)block {
+- (void)add:(BOOL)shouldAdd
+           channels:(NSArray<NSString *> *)channels
+            toGroup:(NSString *)group
+    queryParameters:(NSDictionary *)queryParameters
+     withCompletion:(PNChannelGroupChangeCompletionBlock)block {
 
-    BOOL removeAllObjects = (!shouldAdd && !channels.count);
-    PNOperationType operationType = PNRemoveGroupOperation;
     PNRequestParameters *parameters = [PNRequestParameters new];
-    if (group.length) {
+    PNOperationType operationType = PNRemoveGroupOperation;
+    BOOL removeAllObjects = !shouldAdd && !channels.count;
 
-        [parameters addPathComponent:[PNString percentEscapedString:group] forPlaceholder:@"{channel-group}"];
+    [parameters addQueryParameters:queryParameters];
+    
+    if (group.length) {
+        [parameters addPathComponent:[PNString percentEscapedString:group]
+                      forPlaceholder:@"{channel-group}"];
     }
 
     if (!removeAllObjects){
-
-        operationType = (shouldAdd ? PNAddChannelsToGroupOperation : PNRemoveChannelsFromGroupOperation);
+        operationType = (shouldAdd ? PNAddChannelsToGroupOperation
+                                   : PNRemoveChannelsFromGroupOperation);
+        
         if (channels.count) {
-
             [parameters addQueryParameter:[PNChannel namesForRequest:channels]
                              forFieldName:(shouldAdd ? @"add":@"remove")];
         }
 
         PNLogAPICall(self.logger, @"<PubNub::API> %@ channels %@ '%@' channel group: %@",
-                     (shouldAdd ? @"Add" : @"Remove"), (shouldAdd ? @"to" : @"from"),
-                     (group?: @"<error>"), ([PNChannel namesForRequest:channels]?: @"<error>"));
+            (shouldAdd ? @"Add" : @"Remove"), (shouldAdd ? @"to" : @"from"),
+            (group?: @"<error>"), ([PNChannel namesForRequest:channels]?: @"<error>"));
+    } else {
+        PNLogAPICall(self.logger, @"<PubNub::API> Remove '%@' channel group", (group?: @"<error>"));
     }
-    else { PNLogAPICall(self.logger, @"<PubNub::API> Remove '%@' channel group", (group?: @"<error>")); }
 
     __weak __typeof(self) weakSelf = self;
-    [self processOperation:operationType withParameters:parameters completionBlock:^(PNStatus *status){
+    [self processOperation:operationType
+            withParameters:parameters
+           completionBlock:^(PNStatus *status) {
+
         if (status.isError) {
-
             status.retryBlock = ^{
-
-                [weakSelf add:shouldAdd channels:channels toGroup:group withCompletion:block];
+                [weakSelf add:shouldAdd
+                     channels:channels
+                      toGroup:group
+              queryParameters:queryParameters
+               withCompletion:block];
             };
         }
+        
         [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
     }];
 }

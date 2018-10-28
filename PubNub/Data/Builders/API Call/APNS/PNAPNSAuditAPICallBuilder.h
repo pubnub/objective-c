@@ -4,46 +4,54 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /**
- @brief      APNS state audit API call builder.
- @discussion Class describe interface which allow to audit current push notification state (retrieve push
-             notification enabled channels list).
- 
- @author Sergey Mamontov
- @since 4.5.4
- @copyright © 2009-2017 PubNub, Inc.
+ * @brief APNS state audit API call builder.
+ *
+ * @author Serhii Mamontov
+ * @since 4.5.4
+ * @copyright © 2009-2017 PubNub, Inc.
  */
 @interface PNAPNSAuditAPICallBuilder : PNAPNSAPICallBuilder
 
 
-///------------------------------------------------
-/// @name Configuration
-///------------------------------------------------
+#pragma mark - Configuration
 
 /**
- @brief      Specify device push token against which push notification state manipulation should be done.
- @discussion On block call return block consume \a NSData which represent received from APNS device push 
-             token.
- 
- @since 4.5.4
+ * @brief Device push token addition block.
+ *
+ * @param token Device push token against which search on \b PubNub service should be performed.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.5.4
  */
-@property (nonatomic, readonly, strong) PNAPNSAuditAPICallBuilder *(^token)(NSData *token);
+@property (nonatomic, readonly, strong) PNAPNSAuditAPICallBuilder * (^token)(NSData *token);
 
 
-///------------------------------------------------
-/// @name Execution
-///------------------------------------------------
+#pragma mark - Execution
 
 /**
- @brief      Perform composed API call.
- @discussion Execute API call and report processing results through passed comnpletion block.
- @discussion On block call return block which consume (\b required) push notifications status processing 
-             completion block which pass two arguments: \c result - in case of successful request processing 
-             \c data field will contain results of push notifications audit operation; \c status - in case if 
-             error occurred during request processing.
- 
- @since 4.5.4
+ * @brief Perform API call.
+ *
+ * @param block Push notifications status audition completion block.
+ *
+ * @since 4.5.4
  */
 @property (nonatomic, readonly, strong) void(^performWithCompletion)(PNPushNotificationsStateAuditCompletionBlock block);
+
+
+#pragma mark - Misc
+
+/**
+ * @brief Arbitrary query parameters addition block.
+ *
+ * @param params List of arbitrary percent encoded query parameters which should be sent along with
+ *     original API call.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.8.2
+ */
+@property (nonatomic, readonly, strong) PNAPNSAuditAPICallBuilder * (^queryParam)(NSDictionary *params);
 
 #pragma mark -
 

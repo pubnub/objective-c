@@ -1,7 +1,7 @@
 /**
- @author Sergey Mamontov
- @since 4.5.4
- @copyright © 2009-2017 PubNub, Inc.
+ * @author SErhii Mamontov
+ * @since 4.5.4
+ * @copyright © 2009-2017 PubNub, Inc.
  */
 #import "PNAPICallBuilder+Private.h"
 #import <objc/runtime.h>
@@ -15,27 +15,27 @@
 #pragma mark - Properties
 
 /**
- @brief      Stores reference on list of user-configured API call flags.
- @discussion Usually stores flahs which allow to identify API type (if there is group of API available for 
-             single endpoint). Flags also used in cased when default state should be adjusted. 
- 
- @since 4.5.4
+ * @brief      Stores reference on list of user-configured API call flags.
+ * @discussion Usually stores flahs which allow to identify API type (if there is group of API available for
+ *             single endpoint). Flags also used in cased when default state should be adjusted.
+ *
+ * @since 4.5.4
  */
 @property (nonatomic, strong) NSMutableArray<NSString *> *flags;
 
 /**
- @brief      Stores reference on API call parameter-values dictionary.
- @discussion Parameters allow to configure particular API call with values which should be passed to \b PubNub
-             service.
- 
- @since 4.5.4
+ * @brief      Stores reference on API call parameter-values dictionary.
+ * @discussion Parameters allow to configure particular API call with values which should be passed to \b PubNub
+ *             service.
+ *
+ * @since 4.5.4
  */
 @property (nonatomic, strong) NSMutableDictionary<NSString *, id> *parameters;
 
 /**
- @brief Stores reference on block which will be called in response \c -performWithBlock: method call.
- 
- @since 4.5.4
+ * @brief Stores reference on block which will be called in response \c -performWithBlock: method call.
+ *
+ * @since 4.5.4
  */
 @property (nonatomic, copy) PNAPICallCompletionBlock executionBlock;
 
@@ -43,16 +43,16 @@
 #pragma mark - Initialization and Configuration
 
 /**
- @brief  Initialize builder which will be able to handle API \c parotocol and accept user provided argument
-         values.
- 
- @since 4.5.4
- 
- @param block Reference on block which will be called in response \c -performWithBlock: method call. Block 
-              pass two arguments: \c flags - list of user-configured API flags; \c parameters - list of API 
-              request query and URI parameter-value pairs.
- 
- @return Initialized and ready to use API call builder instance.
+ * @brief  Initialize builder which will be able to handle API \c parotocol and accept user provided argument
+ *         values.
+ *
+ * @since 4.5.4
+ *
+ * @param block Reference on block which will be called in response \c -performWithBlock: method call. Block
+ *              pass two arguments: \c flags - list of user-configured API flags; \c parameters - list of API
+ *              request query and URI parameter-value pairs.
+ *
+ * @return Initialized and ready to use API call builder instance.
  */
 - (instancetype)initWithExecutionBlock:(PNAPICallCompletionBlock)block;
 
@@ -121,6 +121,20 @@
     
     self.parameters[@"block"] = block;
     self.executionBlock(self.flags, self.parameters);
+}
+
+
+#pragma mark - Misc
+
+- (id (^)(NSDictionary *queryParam))queryParam {
+    
+    return ^id (NSDictionary *queryParam) {
+        if (queryParam.count) {
+            self.parameters[@"queryParam"] = queryParam;
+        }
+        
+        return self;
+    };
 }
 
 #pragma mark -

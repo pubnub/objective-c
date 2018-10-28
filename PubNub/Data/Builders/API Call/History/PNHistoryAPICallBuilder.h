@@ -5,110 +5,138 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /**
- @brief      History / storage API call builder.
- @discussion Class describe interface which provide access to history / storage API.
- 
- @author Sergey Mamontov
- @since 4.5.4
- @copyright © 2009-2017 PubNub, Inc.
+ * @brief History / storage API call builder.
+ *
+ * @author Serhii Mamontov
+ * @since 4.5.4
+ * @copyright © 2009-2017 PubNub, Inc.
  */
 @interface PNHistoryAPICallBuilder : PNAPICallBuilder
 
 
-///------------------------------------------------
-/// @name Configuration
-///------------------------------------------------
+#pragma mark - Configuration
 
 /**
- @brief      Specify target channel name.
- @discussion On block call return block which consume (\b required) name of \c channel for which access to 
-             history / storage should be done.
- 
- @since 4.5.4
+ * @brief Channel name addition block.
+ *
+ * @param channel Name of the channel for which events should be pulled out from storage.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.5.4
  */
-@property (nonatomic, readonly, strong) PNHistoryAPICallBuilder *(^channel)(NSString *channel);
+@property (nonatomic, readonly, strong) PNHistoryAPICallBuilder * (^channel)(NSString *channel);
 
 /**
- @brief      Specify list of channels for which history should be returned.
- @discussion On block call return block which consume (\b required) name of channels for which access to 
-             history / storage should be done.
- @discussion \b Important: if history retrieved for list of channels, then \c limit may be changed to equal
-             maximum number of messages for channel (\b 25).  
- @discussion \b Important: maximum \b 500 channels can be used at once.
- 
- @since 4.5.6
+ * @brief Channel names list addition block.
+ *
+ * @param channels List of channel names for which events should be pulled out from storage.
+ *     Maximum \c 500 channels.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.5.6
  */
-@property (nonatomic, readonly, strong) PNHistoryAPICallBuilder *(^channels)(NSArray<NSString *> *channels);
+@property (nonatomic, readonly, strong) PNHistoryAPICallBuilder * (^channels)(NSArray<NSString *> *channels);
 
 /**
- @brief      Specify start of interval from \c channel history from which events should be returned.
- @discussion On block call return block which consume time token for oldest event starting from which next 
-             should be returned events.
- @note       Value will be converted to required precision internally.
- @note       Ignored in case if history for multiple channels should be retrieved.
- 
- @since 4.5.4
+ * @brief Search interval start timetoken addition block.
+ *
+ * @note Ignored in case if \c channels is set.
+ *
+ * @param start Timetoken for oldest event starting from which next should be returned events.
+ *     Value will be converted to required precision internally.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.5.4
  */
-@property (nonatomic, readonly, strong) PNHistoryAPICallBuilder *(^start)(NSNumber *start);
+@property (nonatomic, readonly, strong) PNHistoryAPICallBuilder * (^start)(NSNumber *start);
 
 /**
- @brief      Specify \c end of interval from \c channel history from which events should be returned.
- @discussion On block call return block which consume time token for latest event till which events should be 
-             pulled out.
- @note       Value will be converted to required precision internally.
- @note       Ignored in case if history for multiple channels should be retrieved.
- 
- @since 4.5.4
+ * @brief Search interval end timetoken addition block.
+ *
+ * @note Ignored in case if \c channels is set.
+ *
+ * @param end Timetoken for latest event till which events should be pulled out.
+ *     Value will be converted to required precision internally.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.5.4
  */
-@property (nonatomic, readonly, strong) PNHistoryAPICallBuilder *(^end)(NSNumber *end);
+@property (nonatomic, readonly, strong) PNHistoryAPICallBuilder * (^end)(NSNumber *end);
 
 /**
- @brief      Specify how many events should be returned at once.
- @discussion On block call return block which consume maximum number of events which should be returned in
-             response (not more then \b 100).
- @discussion \b Important: if history requested for multiple channels then maximum \c limit can be set to 
-             \b 25 messages per-channel and by default is \b 1.
- 
- @since 4.5.4
+ * @brief Maximum number of events addition block.
+ *
+ * @note If limit addition not used it will be assigned default value depending from used
+ * parameters: \c 100 if \c channel is set and \c 1 if \c channels is set.
+ *
+ * @param limit Maximum number of events which should be returned in response.
+ *     Maximum \c 100 if \c channel is set and \c 25 if \c channels is set.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.5.4
  */
-@property (nonatomic, readonly, strong) PNHistoryAPICallBuilder *(^limit)(NSUInteger limit);
+@property (nonatomic, readonly, strong) PNHistoryAPICallBuilder * (^limit)(NSUInteger limit);
 
 /**
- @brief      Specify whether events' time tokens should be retrieved or not.
- @discussion On block call return block which consume \a BOOL and specify wheter events' time tokens should be
-             retrieved as well or not.
- @note       Ignored in case if history for multiple channels should be retrieved.
- 
- @since 4.5.4
+ * @brief Events' time tokens presence flag addition block.
+ *
+ * @note Ignored in case if \c channels is set.
+ *
+ * @param includeTimeToken Whether event dates (time tokens) should be included in response or
+ *     not.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.5.4
  */
-@property (nonatomic, readonly, strong) PNHistoryAPICallBuilder *(^includeTimeToken)(BOOL includeTimeToken); 
+@property (nonatomic, readonly, strong) PNHistoryAPICallBuilder * (^includeTimeToken)(BOOL includeTimeToken);
 
 /**
- @brief      Specify whether events order in response should be reversed or not.
- @discussion On block call return block which consume \a BOOL and specify whether events order in response 
-             should be reversed or not.
- @note       Ignored in case if history for multiple channels should be retrieved.
- 
- @since 4.5.4
+ * @brief Events sorting order reverse flag addition block.
+ *
+ * @note Ignored in case if \c channels is set.
+ *
+ * @param reverse Whether events order in response should be reversed or not.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.5.4
  */
-@property (nonatomic, readonly, strong) PNHistoryAPICallBuilder *(^reverse)(BOOL reverse);
+@property (nonatomic, readonly, strong) PNHistoryAPICallBuilder * (^reverse)(BOOL reverse);
 
 
-///------------------------------------------------
-/// @name Execution
-///------------------------------------------------
+#pragma mark - Execution
 
 /**
- @brief      Perform composed API call.
- @discussion Method will execute API call and report processing results through passed comnpletion block.
- @discussion On block call return block which consume (\b required) history pull processing completion block 
-             which pass two arguments: \c result - in case of successful request processing \c data field will
-             contain results of history request operation; \c status - in case if error occurred during 
-             request processing.
- 
- @since 4.5.4
+ * @brief Perform API call.
+ *
+ * @param block History pull completion block.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.5.4
  */
 @property (nonatomic, readonly, strong) void(^performWithCompletion)(PNHistoryCompletionBlock block);
+
+
+#pragma mark - Misc
+
+/**
+ * @brief Arbitrary query parameters addition block.
+ *
+ * @param params List of arbitrary percent encoded query parameters which should be sent along with
+ *     original API call.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.8.2
+ */
+@property (nonatomic, readonly, strong) PNHistoryAPICallBuilder * (^queryParam)(NSDictionary *params);
 
 #pragma mark -
 

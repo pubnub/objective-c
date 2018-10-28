@@ -4,55 +4,65 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /**
- @brief      Stream modification API call builder.
- @discussion Class describe interface which allow to \b add channel(s) to channel \c group.
- 
- @author Sergey Mamontov
- @since 4.5.4
- @copyright © 2009-2017 PubNub, Inc.
+ * @brief Stream modification API call builder.
+ *
+ * @author Serhii Mamontov
+ * @since 4.5.4
+ * @copyright © 2009-2017 PubNub, Inc.
  */
 @interface PNStreamModificationAPICallBuilder : PNStreamAPICallBuilder
 
 
-///------------------------------------------------
-/// @name Configuration
-///------------------------------------------------
+#pragma mark - Configuration
 
 /**
- @brief      Specify channel \c group for modification.
- @discussion On block call return block which consume (\b required) name of channel \c group for which list of
-             registered channels should be modified.
- 
- @since 4.5.4
+ * @brief Channel group addition block.
+ *
+ * @param channelGroup Name of the group which should be used for manipulation.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.5.4
  */
-@property (nonatomic, readonly, strong) PNStreamModificationAPICallBuilder *(^channelGroup)(NSString *channelGroup);
+@property (nonatomic, readonly, strong) PNStreamModificationAPICallBuilder * (^channelGroup)(NSString *channelGroup);
 
 /**
- @brief      Specify channel name(s) list.
- @discussion On block call return block which consume channel name(s) list which should be used  during
-             channel \c group registered channels list modification.
- @warning    \b PubNub client will remove specified channel \c group if \c nil or \c empty list will be passed
-             during \c remove.
- 
- @since 4.5.4
+ * @brief Channel names list addition block.
+ *
+ * @note It is possible to remove all channels from group by passing \c nil during \c remove.
+ *
+ * @param channels List of channels names which should be used for \c group modification.
+ *
+ * @since 4.5.4
  */
-@property (nonatomic, readonly, strong) PNStreamModificationAPICallBuilder *(^channels)(NSArray<NSString *> *channels);
+@property (nonatomic, readonly, strong) PNStreamModificationAPICallBuilder * (^channels)(NSArray<NSString *> *channels);
 
 
-///------------------------------------------------
-/// @name Execution
-///------------------------------------------------
+#pragma mark - Execution
 
 /**
- @brief      Perform composed API call.
- @discussion Execute API call and report processing results through passed comnpletion block.
- @discussion On block call return block which consume (\b not required) channel group modification process 
-             completion block which pass only one argument - request processing status to report about how 
-             data pushing was successful or not.
- 
- @since 4.5.4
+ * @brief Perform API call.
+ *
+ * @param block Channel group manipulation completion block.
+ *
+ * @since 4.5.4
  */
 @property (nonatomic, readonly, strong) void(^performWithCompletion)(PNChannelGroupChangeCompletionBlock _Nullable block);
+
+
+#pragma mark - Misc
+
+/**
+ * @brief Arbitrary query parameters addition block.
+ *
+ * @param params List of arbitrary percent encoded query parameters which should be sent along with
+ *     original API call.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.8.2
+ */
+@property (nonatomic, readonly, strong) PNStreamModificationAPICallBuilder * (^queryParam)(NSDictionary *params);
 
 #pragma mark -
 

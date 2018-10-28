@@ -4,55 +4,69 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /**
- @brief      APNS state modification API call builder.
- @discussion Class describe interface which allow to modify push notification enabled channels list.
- 
- @author Sergey Mamontov
- @since 4.5.4
- @copyright © 2009-2017 PubNub, Inc.
+ * @brief APNS state modification API call builder.
+ *
+ * @author Serhii Mamontov
+ * @since 4.5.4
+ * @copyright © 2009-2017 PubNub, Inc.
  */
 @interface PNAPNSModificationAPICallBuilder : PNAPNSAPICallBuilder
 
 
-///------------------------------------------------
-/// @name Configuration
-///------------------------------------------------
+#pragma mark - Configuration
 
 /**
- @brief      Specify device push token against which push notification state manipulation should be done.
- @discussion On block call return block which consume \a NSData which represent received from APNS device push
-             token.
- 
- @since 4.5.4
+ * @brief Device push token addition block.
+ *
+ * @param token Device push token which should be used to change notifications state on specified
+ *     set of channels.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.5.4
  */
-@property (nonatomic, readonly, strong) PNAPNSModificationAPICallBuilder *(^token)(NSData *token);
+@property (nonatomic, readonly, strong) PNAPNSModificationAPICallBuilder * (^token)(NSData *token);
 
 /**
- @brief      Specify list of channels for APNS state manupulation.
- @discussion On block call return block which consume list of channel names for which APNS state manipulation
-             should be perfored.
- @warning    \b PubNub client will remove push notification state for all channels which is registered with 
-             passed \c token if \c nil or \c empty list will be passed during \c disable.
- 
- @since 4.5.4
+ * @brief List of target channels addition block.
+ *
+ * @note Use valid \c token and \c nil for this property to disable all push notifications for
+ * device.
+ *
+ * @param channel List of channels for which APNS state should be changed.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNAPNSModificationAPICallBuilder *(^channels)(NSArray<NSString *> * _Nullable channels);
 
 
-///------------------------------------------------
-/// @name Execution
-///------------------------------------------------
+#pragma mark - Execution
 
 /**
- @brief      Perform composed API call.
- @discussion Execute API call and report processing results through passed comnpletion block.
- @discussion On block call return block which consume (\b not required) push notifications state modification 
-             processing completion block which pass only one argument - request processing status to report
-             about how data pushing was successful or not.
- 
- @since 4.5.4
+ * @brief Perform API call.
+ *
+ * @param block Push notifications status modification completion block.
+ *
+ * @since 4.5.4
  */
 @property (nonatomic, readonly, strong) void(^performWithCompletion)(PNPushNotificationsStateModificationCompletionBlock _Nullable block);
+
+
+#pragma mark - Misc
+
+/**
+ * @brief Arbitrary query parameters addition block.
+ *
+ * @param params List of arbitrary percent encoded query parameters which should be sent along with
+ *     original API call.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.8.2
+ */
+@property (nonatomic, readonly, strong) PNAPNSModificationAPICallBuilder * (^queryParam)(NSDictionary *params);
 
 #pragma mark -
 

@@ -1,7 +1,7 @@
 /**
- @author Sergey Mamontov
- @since 4.5.4
- @copyright © 2009-2017 PubNub, Inc.
+ * @author Serhii Mamontov
+ * @since 4.5.4
+ * @copyright © 2009-2017 PubNub, Inc.
  */
 #import "PNPresenceWhereNowAPICallBuilder.h"
 #import "PNAPICallBuilder+Private.h"
@@ -12,14 +12,17 @@
 @implementation PNPresenceWhereNowAPICallBuilder
 
 
+#pragma mark - Information
+
+@dynamic queryParam;
+
+
 #pragma mark - Configuration
 
-- (PNPresenceWhereNowAPICallBuilder *(^)(NSString *uuid))uuid {
+- (PNPresenceWhereNowAPICallBuilder * (^)(NSString *uuid))uuid {
     
-    return ^PNPresenceWhereNowAPICallBuilder* (NSString *uuid) {
-        
+    return ^PNPresenceWhereNowAPICallBuilder * (NSString *uuid) {
         [self setValue:uuid forParameter:NSStringFromSelector(_cmd)];
-        
         return self;
     };
 }
@@ -29,7 +32,9 @@
 
 - (void(^)(PNWhereNowCompletionBlock block))performWithCompletion {
     
-    return ^(PNWhereNowCompletionBlock block){ [super performWithBlock:block]; };
+    return ^(PNWhereNowCompletionBlock block) {
+        [super performWithBlock:block];
+    };
 }
 
 #pragma mark -

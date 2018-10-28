@@ -1,7 +1,7 @@
 /**
- @author Sergey Mamontov
- @since 4.5.4
- @copyright © 2009-2017 PubNub, Inc.
+ * @author Serhii Mamontov
+ * @since 4.5.4
+ * @copyright © 2009-2017 PubNub, Inc.
  */
 #import "PNSubscribeAPIBuilder.h"
 #import "PNSubscribeChannelsOrGroupsAPIBuilder.h"
@@ -14,12 +14,16 @@
 @implementation PNSubscribeAPIBuilder
 
 
+#pragma mark - Information
+
+@dynamic queryParam;
+
+
 #pragma mark - Initialization
 
 + (void)initialize {
     
     if (self == [PNSubscribeAPIBuilder class]) {
-        
         [self copyMethodsFromClasses:@[[PNSubscribeChannelsOrGroupsAPIBuilder class]]];
     }
 }
@@ -27,24 +31,22 @@
 
 #pragma mark - Channels and Channel Groups
 
-- (PNSubscribeChannelsOrGroupsAPIBuilder *(^)(NSArray<NSString *> *channels))channels {
+- (PNSubscribeChannelsOrGroupsAPIBuilder * (^)(NSArray<NSString *> *channels))channels {
     
-    return ^PNSubscribeChannelsOrGroupsAPIBuilder* (NSArray<NSString *> *channels) {
-        
+    return ^PNSubscribeChannelsOrGroupsAPIBuilder * (NSArray<NSString *> *channels) {
         object_setClass(self, [PNSubscribeChannelsOrGroupsAPIBuilder class]);
+
         [self setValue:channels forParameter:NSStringFromSelector(_cmd)];
-        
         return (PNSubscribeChannelsOrGroupsAPIBuilder *)self;
     };
 }
 
-- (PNSubscribeChannelsOrGroupsAPIBuilder *(^)(NSArray<NSString *> *channelGroups))channelGroups {
+- (PNSubscribeChannelsOrGroupsAPIBuilder * (^)(NSArray<NSString *> *channelGroups))channelGroups {
     
-    return ^PNSubscribeChannelsOrGroupsAPIBuilder* (NSArray<NSString *> *channelGroups) {
-        
+    return ^PNSubscribeChannelsOrGroupsAPIBuilder * (NSArray<NSString *> *channelGroups) {
         object_setClass(self, [PNSubscribeChannelsOrGroupsAPIBuilder class]);
+
         [self setValue:channelGroups forParameter:NSStringFromSelector(_cmd)];
-        
         return (PNSubscribeChannelsOrGroupsAPIBuilder *)self;
     };
 }
@@ -52,12 +54,10 @@
 
 #pragma mark - Presence
 
-- (PNSubscribeAPIBuilder *(^)(NSArray<NSString *> *presenceChannels))presenceChannels {
+- (PNSubscribeAPIBuilder * (^)(NSArray<NSString *> *presenceChannels))presenceChannels {
     
-    return ^PNSubscribeAPIBuilder* (NSArray<NSString *> *presenceChannels) {
-        
+    return ^PNSubscribeAPIBuilder * (NSArray<NSString *> *presenceChannels) {
         [self setValue:presenceChannels forParameter:NSStringFromSelector(_cmd)];
-        
         return self;
     };
 }
@@ -67,7 +67,9 @@
 
 - (void(^)(void))perform {
     
-    return ^{ [super performWithBlock:nil]; };
+    return ^{
+        [super performWithBlock:nil];
+    };
 }
 
 #pragma mark -

@@ -40,7 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @since 4.5.0
  */
-@property (nonatomic, readonly, assign) NSUInteger logLevel;
+@property (nonatomic, assign) NSUInteger logLevel;
 
 /**
  @brief  Stores whether passed messages should be sent to console (if enabled) and file (if enabled) or not.

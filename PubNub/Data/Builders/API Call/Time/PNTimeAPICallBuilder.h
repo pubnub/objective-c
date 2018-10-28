@@ -5,31 +5,40 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /**
- @brief      Time API call builder.
- @discussion Class describe interface which allow to use time API endpoint.
- 
- @author Sergey Mamontov
- @since 4.5.4
- @copyright © 2009-2017 PubNub, Inc.
+ * @brief Time API call builder.
+ *
+ * @author Serhii Mamontov
+ * @since 4.5.4
+ * @copyright © 2009-2017 PubNub, Inc.
  */
 @interface PNTimeAPICallBuilder : PNAPICallBuilder
 
 
-///------------------------------------------------
-/// @name Execution
-///------------------------------------------------
+#pragma mark - Execution
 
 /**
- @brief      Perform composed API call.
- @discussion Execute API call and report processing results through passed comnpletion block.
- @discussion On block call return block which consume (\b required) time request process results handling 
-             block which pass two arguments: \c result - in case of successful request processing \c data 
-             field will contain server-provided time token; \c status - in case if error occurred during 
-             request processing.
- 
- @since 4.5.4
+ * @brief Perform API call.
+ *
+ * @param block Time request completion block.
+ *
+ * @since 4.5.4
  */
 @property (nonatomic, readonly, strong) void(^performWithCompletion)(PNTimeCompletionBlock block);
+
+
+#pragma mark - Misc
+
+/**
+ * @brief Arbitrary query parameters addition block.
+ *
+ * @param params List of arbitrary percent encoded query parameters which should be sent along with
+ *     original API call.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.8.2
+ */
+@property (nonatomic, readonly, strong) PNTimeAPICallBuilder * (^queryParam)(NSDictionary *params);
 
 #pragma mark -
 

@@ -1,7 +1,7 @@
 /**
- @author Sergey Mamontov
- @since 4.5.4
- @copyright © 2009-2017 PubNub, Inc.
+ * @author Serhii Mamontov
+ * @since 4.5.4
+ * @copyright © 2009-2017 PubNub, Inc.
  */
 #import "PNPublishSizeAPICallBuilder.h"
 #import "PNAPICallBuilder+Private.h"
@@ -12,74 +12,65 @@
 @implementation PNPublishSizeAPICallBuilder
 
 
+#pragma mark - Information
+
+@dynamic queryParam;
+
+
 #pragma mark - Configuration
 
-- (PNPublishSizeAPICallBuilder *(^)(NSString *channel))channel {
+- (PNPublishSizeAPICallBuilder * (^)(NSString *channel))channel {
     
-    return ^PNPublishSizeAPICallBuilder* (NSString *channel) {
-        
+    return ^PNPublishSizeAPICallBuilder * (NSString *channel) {
         [self setValue:channel forParameter:NSStringFromSelector(_cmd)];
-        
         return self;
     };
 }
 
-- (PNPublishSizeAPICallBuilder *(^)(id message))message {
+- (PNPublishSizeAPICallBuilder * (^)(id message))message {
     
-    return ^PNPublishSizeAPICallBuilder* (id message) {
-        
+    return ^PNPublishSizeAPICallBuilder * (id message) {
         [self setValue:message forParameter:NSStringFromSelector(_cmd)];
-        
         return self;
     };
 }
 
-- (PNPublishSizeAPICallBuilder *(^)(NSDictionary *metadata))metadata {
+- (PNPublishSizeAPICallBuilder * (^)(NSDictionary *metadata))metadata {
     
-    return ^PNPublishSizeAPICallBuilder* (NSDictionary *metadata) {
-        
+    return ^PNPublishSizeAPICallBuilder * (NSDictionary *metadata) {
         [self setValue:metadata forParameter:NSStringFromSelector(_cmd)];
-        
         return self;
     };
 }
 
-- (PNPublishSizeAPICallBuilder *(^)(BOOL shouldStore))shouldStore {
+- (PNPublishSizeAPICallBuilder * (^)(BOOL shouldStore))shouldStore {
     
-    return ^PNPublishSizeAPICallBuilder* (BOOL shouldStore) {
-        
+    return ^PNPublishSizeAPICallBuilder * (BOOL shouldStore) {
         [self setValue:@(shouldStore) forParameter:NSStringFromSelector(_cmd)];
-        
         return self;
     };
 }
 
-- (PNPublishSizeAPICallBuilder *(^)(NSUInteger ttl))ttl {
+- (PNPublishSizeAPICallBuilder * (^)(NSUInteger ttl))ttl {
     
-    return ^PNPublishSizeAPICallBuilder* (NSUInteger ttl) {
-        
+    return ^PNPublishSizeAPICallBuilder * (NSUInteger ttl) {
         [self setValue:@(ttl) forParameter:NSStringFromSelector(_cmd)];
-        
         return self;
     };
 }
 
-- (PNPublishSizeAPICallBuilder *(^)(BOOL compress))compress {
+- (PNPublishSizeAPICallBuilder * (^)(BOOL compress))compress {
     
-    return ^PNPublishSizeAPICallBuilder* (BOOL compress) {
-        
+    return ^PNPublishSizeAPICallBuilder * (BOOL compress) {
         [self setValue:@(compress) forParameter:NSStringFromSelector(_cmd)];
-        
         return self;
     };
 }
 
-- (PNPublishSizeAPICallBuilder *(^)(BOOL))replicate {
+- (PNPublishSizeAPICallBuilder * (^)(BOOL))replicate {
     
-    return ^PNPublishSizeAPICallBuilder* (BOOL replicate) {
-        
+    return ^PNPublishSizeAPICallBuilder * (BOOL replicate) {
         [self setValue:@(replicate) forParameter:NSStringFromSelector(_cmd)];
-        
         return self;
     };
 }
@@ -89,7 +80,9 @@
 
 - (void(^)(PNMessageSizeCalculationCompletionBlock block))performWithCompletion {
     
-    return ^(PNMessageSizeCalculationCompletionBlock block){ [super performWithBlock:block]; };
+    return ^(PNMessageSizeCalculationCompletionBlock block) {
+        [super performWithBlock:block];
+    };
 }
 
 

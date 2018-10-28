@@ -176,19 +176,23 @@ typedef void(^PNSubscriberCompletionBlock)(PNSubscribeStatus * _Nullable status)
 ///------------------------------------------------
 
 /**
- @brief      Perform initial subscription with \b 0 timetoken.
- @discussion Subscription with \b 0 timetoken "register" client in \b PubNub network and allow to receive live
-             updates from remote data objects live feed.
- 
- @param timeToken Time from which client should try to catch up on messages.
- @param state     Reference on client state which should be bound to channels on which client has been 
-                  subscribed or will subscribe now.
- @param block     Reference on subscription completion block which is used to notify code.
- 
- @since 4.0
+ * @brief Perform initial subscription with \b 0 timetoken.
+ *
+ * @discussion Subscription with \b 0 timetoken "register" client in \b PubNub network and allow to
+ * receive live updates from remote data objects live feed.
+ *
+ * @param timeToken Time from which client should try to catch up on messages.
+ * @param state Reference on client state which should be bound to channels on which client has been
+ *     subscribed or will subscribe now.
+ * @param queryParameters List arbitrary query paramters which should be sent along with original
+ *     API call.
+ * @param block Reference on subscription completion block which is used to notify code.
+ *
+ * @since 4.8.2
  */
 - (void)subscribeUsingTimeToken:(nullable NSNumber *)timeToken 
-                      withState:(nullable NSDictionary<NSString *, id> *)state 
+                      withState:(nullable NSDictionary<NSString *, id> *)state
+                queryParameters:(nullable NSDictionary *)queryParameters
                      completion:(nullable PNSubscriberCompletionBlock)block;
 
 /**
@@ -216,48 +220,37 @@ typedef void(^PNSubscriberCompletionBlock)(PNSubscribeStatus * _Nullable status)
 ///------------------------------------------------
 
 /**
- @brief      Perform unsubscription operation.
- @discussion Client will as \b PubNub presence service to trigger \c 'leave' for all channels and groups 
-             (except presence) on which client was subscribed earlier.
- 
- @param block - Reference on block which should be called at the end of unsubscription process. Block pass only
-                one argument - unsubscription completion status object.
- 
- @since 4.7.2
- */
-- (void)unsubscribeFromAllWithCompletion:(void(^__nullable)(PNStatus *status))block;
-
-/**
- @brief      Perform unsubscription operation.
- @discussion If suitable objects has been passed, then client will ask \b PubNub presence service to trigger 
-             \c 'leave' presence events on passed objects.
- 
- @param channels List of channels from which client should unsubscribe.
- @param groups   List of channel groups from which client should unsubscribe.
- @param block    Reference on unsubscription completion block which is used to notify code.
- 
- @since 4.5.6
- */
-- (void)unsubscribeFromChannels:(nullable NSArray<NSString *> *)channels 
-                         groups:(nullable NSArray<NSString *> *)groups
-                     completion:(nullable PNSubscriberCompletionBlock)block;
-
-/**
  * @brief      Perform unsubscription operation.
+ * @discussion Client will as \b PubNub presence service to trigger \c 'leave' for all channels and groups
+ *             (except presence) on which client was subscribed earlier.
+ *
+ * @param queryParameters List arbitrary query parameters which should be sent along with original
+ *     API call.
+ * @param block Reference on unsubscription completion block which is used to notify code.
+ *
+ * @since 4.7.2
+ */
+- (void)unsubscribeFromAllWithQueryParameters:(NSDictionary *)queryParameters completion:(void (^)(PNStatus *status))block;
+
+/**
+ * @brief Perform unsubscription operation.
+ *
  * @discussion If suitable objects has been passed, then client will ask \b PubNub presence service
- *             to trigger \c 'leave' presence events on passed objects.
+ * to trigger \c 'leave' presence events on passed objects.
  *
- * @param channels             List of channels from which client should unsubscribe.
- * @param groups               List of channel groups from which client should unsubscribe.
+ * @param channels List of channels from which client should unsubscribe.
+ * @param groups List of channel groups from which client should unsubscribe.
  * @param shouldInformListener Whether listener should be informed at the end of operation or not.
- * @param block                Reference on unsubscription completion block which is used to notify
- *                             code.
+ * @param queryParameters List arbitrary query paramters which should be sent along with original
+ *     API call.
+ * @param block Reference on unsubscription completion block which is used to notify code.
  *
- * @since 4.7.6
+ * @since 4.8.2
  */
 - (void)unsubscribeFromChannels:(nullable NSArray<NSString *> *)channels
                          groups:(nullable NSArray<NSString *> *)groups
-              informingListener:(BOOL)shouldInformListener
+            withQueryParameters:(nullable NSDictionary *)queryParameters
+          listenersNotification:(BOOL)shouldInformListener
                      completion:(nullable PNSubscriberCompletionBlock)block;
 
 #pragma mark -
