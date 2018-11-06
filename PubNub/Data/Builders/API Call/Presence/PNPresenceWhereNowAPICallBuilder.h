@@ -4,45 +4,54 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /**
- @brief      \b User 'where now' API call builder.
- @discussion Class describe interface which provide access to \b user 'where now' API.
- 
- @author Sergey Mamontov
- @since 4.5.4
- @copyright © 2009-2017 PubNub, Inc.
+ * @brief Presence 'where now' API call builder.
+ *
+ * @author Serhii Mamontov
+ * @since 4.5.4
+ * @copyright © 2009-2017 PubNub, Inc.
  */
 @interface PNPresenceWhereNowAPICallBuilder : PNPresenceAPICallBuilder
 
 
-///------------------------------------------------
-/// @name Configuration
-///------------------------------------------------
+#pragma mark - Configuration
 
 /**
- @brief      Specify unique \c user idetifier.
- @discussion On block call return block which consume unique \c user idetifier for which should be retireved 
-             presence information (list of channels on which \c user subscribed).
- 
- @since 4.5.4
+ * @brief Unique user identifier addition block.
+ *
+ * @param uuid UUID for which request should be performed.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.5.4
  */
-@property (nonatomic, readonly, strong) PNPresenceWhereNowAPICallBuilder *(^uuid)(NSString *uuid);
+@property (nonatomic, readonly, strong) PNPresenceWhereNowAPICallBuilder * (^uuid)(NSString *uuid);
 
 
-///------------------------------------------------
-/// @name Execution
-///------------------------------------------------
+#pragma mark - Execution
 
 /**
- @brief      Perform composed API call.
- @discussion Execute API call and report processing results through passed comnpletion block.
- @discussion On block call return block which consume (\b required) where now processing completion block 
-             which pass two arguments: \c result - in case of successful request processing \c data field will
-             contain results of where now operation; \c status - in case if error occurred during request 
-             processing.
- 
- @since 4.5.4
+ * @brief Perform API call.
+ *
+ * @param block Where now fetch completion block.
+ *
+ * @since 4.5.4
  */
 @property (nonatomic, readonly, strong) void(^performWithCompletion)(PNWhereNowCompletionBlock block);
+
+
+#pragma mark - Misc
+
+/**
+ * @brief Arbitrary query parameters addition block.
+ *
+ * @param params List of arbitrary percent encoded query parameters which should be sent along with
+ *     original API call.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.8.2
+ */
+@property (nonatomic, readonly, strong) PNPresenceWhereNowAPICallBuilder * (^queryParam)(NSDictionary *params);
 
 #pragma mark -
 

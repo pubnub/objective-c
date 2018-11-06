@@ -13,6 +13,7 @@
 			buildPhases = (
 				791582011BD705130084FC70 /* Build Universal Binary */,
 				798842151C18B26D003E8948 /* Update module map */,
+				79258C052186461C009C5FBE /* Cleanup CocoaPods scripts */,
 			);
 			dependencies = (
 			);
@@ -25,6 +26,7 @@
 			buildPhases = (
 				798842F01C190DF5003E8948 /* Build Universal Binary */,
 				798842F11C190DF5003E8948 /* Update module map */,
+				79258C0721864627009C5FBE /* Cleanup CocoaPods scripts */,
 			);
 			dependencies = (
 			);
@@ -37,6 +39,7 @@
 			buildPhases = (
 				79A8BDB81C58FC2E00015BDE /* Build Universal Binary */,
 				79A8BDB91C58FC2E00015BDE /* Update module map */,
+				79258C0421864617009C5FBE /* Cleanup CocoaPods scripts */,
 			);
 			dependencies = (
 			);
@@ -49,6 +52,7 @@
 			buildPhases = (
 				79ACC4921C11BC620056523A /* Build Universal Binary */,
 				798842161C18B272003E8948 /* Update module map */,
+				79258C0621864621009C5FBE /* Cleanup CocoaPods scripts */,
 			);
 			dependencies = (
 			);
@@ -61,6 +65,7 @@
 			buildPhases = (
 				79CBB1D71BD04308001FC34D /* Build Universal Binary */,
 				798842141C18B265003E8948 /* Update module map */,
+				79258C0321864610009C5FBE /* Cleanup CocoaPods scripts */,
 			);
 			dependencies = (
 			);
@@ -3284,6 +3289,7 @@
 				791582A71BD709C60084FC70 /* Resources */,
 				791582A81BD709C60084FC70 /* Copy Products */,
 				7988420F1C18AF98003E8948 /* Update module map */,
+				79258BFC218645D5009C5FBE /* Cleanup CocoaPods scripts */,
 			);
 			buildRules = (
 			);
@@ -3304,6 +3310,7 @@
 				791583501BD709D10084FC70 /* Resources */,
 				791583511BD709D10084FC70 /* Copy Products */,
 				798842111C18B236003E8948 /* Update module map */,
+				79258BFE218645E5009C5FBE /* Cleanup CocoaPods scripts */,
 			);
 			buildRules = (
 			);
@@ -3324,6 +3331,7 @@
 				798842191C18EDA7003E8948 /* CopyFiles */,
 				798842EB1C18FBC8003E8948 /* Copy Products */,
 				798842ED1C1907C2003E8948 /* Update module map */,
+				79258C01218645FF009C5FBE /* Cleanup CocoaPods scripts */,
 			);
 			buildRules = (
 			);
@@ -3344,6 +3352,7 @@
 				798843991C191579003E8948 /* CopyFiles */,
 				7988439B1C191579003E8948 /* Copy Products */,
 				7988439C1C191579003E8948 /* Update module map */,
+				79258C0221864606009C5FBE /* Cleanup CocoaPods scripts */,
 			);
 			buildRules = (
 			);
@@ -3364,6 +3373,7 @@
 				79A8BCBE1C58F93900015BDE /* Resources */,
 				79A8BCBF1C58F93900015BDE /* Copy Products */,
 				79A8BCC01C58F93900015BDE /* Update module map */,
+				79258BFD218645DC009C5FBE /* Cleanup CocoaPods scripts */,
 			);
 			buildRules = (
 			);
@@ -3384,6 +3394,7 @@
 				79ACC48A1C11BC4D0056523A /* Resources */,
 				79ACC48B1C11BC4D0056523A /* Copy Products */,
 				798842131C18B24B003E8948 /* Update module map */,
+				79258C00218645F8009C5FBE /* Cleanup CocoaPods scripts */,
 			);
 			buildRules = (
 			);
@@ -3404,6 +3415,7 @@
 				79CBB03C1BD03D3F001FC34D /* Resources */,
 				79CBB1D21BD04299001FC34D /* Copy Products */,
 				798842121C18B23F003E8948 /* Update module map */,
+				79258BFF218645EC009C5FBE /* Cleanup CocoaPods scripts */,
 			);
 			buildRules = (
 			);
@@ -3545,6 +3557,222 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"${SRCROOT}/scripts/copy_products.sh\"";
+		};
+		79258BFC218645D5009C5FBE /* Cleanup CocoaPods scripts */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Cleanup CocoaPods scripts";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "find \"${TARGET_TEMP_DIR}\" -name 'Script-*.sh' -exec rm -rf {} \\;\n";
+		};
+		79258BFD218645DC009C5FBE /* Cleanup CocoaPods scripts */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Cleanup CocoaPods scripts";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "find \"${TARGET_TEMP_DIR}\" -name 'Script-*.sh' -exec rm -rf {} \\;\n";
+		};
+		79258BFE218645E5009C5FBE /* Cleanup CocoaPods scripts */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Cleanup CocoaPods scripts";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "find \"${TARGET_TEMP_DIR}\" -name 'Script-*.sh' -exec rm -rf {} \\;\n";
+		};
+		79258BFF218645EC009C5FBE /* Cleanup CocoaPods scripts */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Cleanup CocoaPods scripts";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "find \"${TARGET_TEMP_DIR}\" -name 'Script-*.sh' -exec rm -rf {} \\;\n";
+		};
+		79258C00218645F8009C5FBE /* Cleanup CocoaPods scripts */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Cleanup CocoaPods scripts";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "find \"${TARGET_TEMP_DIR}\" -name 'Script-*.sh' -exec rm -rf {} \\;\n";
+		};
+		79258C01218645FF009C5FBE /* Cleanup CocoaPods scripts */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Cleanup CocoaPods scripts";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "find \"${TARGET_TEMP_DIR}\" -name 'Script-*.sh' -exec rm -rf {} \\;\n";
+		};
+		79258C0221864606009C5FBE /* Cleanup CocoaPods scripts */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Cleanup CocoaPods scripts";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "find \"${TARGET_TEMP_DIR}\" -name 'Script-*.sh' -exec rm -rf {} \\;\n";
+		};
+		79258C0321864610009C5FBE /* Cleanup CocoaPods scripts */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Cleanup CocoaPods scripts";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "find \"${TARGET_TEMP_DIR}\" -name 'Script-*.sh' -exec rm -rf {} \\;\n";
+		};
+		79258C0421864617009C5FBE /* Cleanup CocoaPods scripts */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Cleanup CocoaPods scripts";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "find \"${TARGET_TEMP_DIR}\" -name 'Script-*.sh' -exec rm -rf {} \\;\n";
+		};
+		79258C052186461C009C5FBE /* Cleanup CocoaPods scripts */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Cleanup CocoaPods scripts";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "find \"${TARGET_TEMP_DIR}\" -name 'Script-*.sh' -exec rm -rf {} \\;\n";
+		};
+		79258C0621864621009C5FBE /* Cleanup CocoaPods scripts */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Cleanup CocoaPods scripts";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "find \"${TARGET_TEMP_DIR}\" -name 'Script-*.sh' -exec rm -rf {} \\;\n";
+		};
+		79258C0721864627009C5FBE /* Cleanup CocoaPods scripts */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Cleanup CocoaPods scripts";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "find \"${TARGET_TEMP_DIR}\" -name 'Script-*.sh' -exec rm -rf {} \\;\n";
 		};
 		7988420F1C18AF98003E8948 /* Update module map */ = {
 			isa = PBXShellScriptBuildPhase;

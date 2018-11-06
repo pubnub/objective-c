@@ -4,73 +4,83 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /**
- @brief      Presence state modification API call builder.
- @discussion Class describe interface which allow to modify \c user's presence state for \c channel and / or
-             channel \c group.
- 
- @author Sergey Mamontov
- @since 4.5.4
- @copyright © 2009-2017 PubNub, Inc.
+ * @brief Presence state modification API call builder.
+ *
+ * @author Serhii Mamontov
+ * @since 4.5.4
+ * @copyright © 2009-2017 PubNub, Inc.
  */
 @interface PNStateModificationAPICallBuilder : PNStateAPICallBuilder
 
 
-///------------------------------------------------
-/// @name Configuration
-///------------------------------------------------
+#pragma mark Configuration
 
 /**
- @brief      Specify unique \c user identifier.
- @discussion On block call return block which consume (\b required) unique \c user identifier for which 
-             presence state should be modified on provided \c channel or channel \c group.
- 
- @since 4.5.4
+ * @brief Unique user identifier addition block.
+ *
+ * @param uuid Unique user identifier for which state should be bound.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.5.4
  */
-@property (nonatomic, readonly, strong) PNStateModificationAPICallBuilder *(^uuid)(NSString *uuid);
-
+@property (nonatomic, readonly, strong) PNStateModificationAPICallBuilder * (^uuid)(NSString *uuid);
 
 /**
- @brief      Specify \c user's presence state.
- @discussion On block call return block which consume dictionary which should be bound to \c uuid on specified
-             \c channel or channel \c group.
- 
- @since 4.5.4
+ * @brief User's presence state addition block.
+ *
+ * @param state \a NSDictionary with data which should be bound to \c uuid on
+ *     channel / channel group.
+ *
+ * @since 4.5.4
  */
-@property (nonatomic, readonly, strong) PNStateModificationAPICallBuilder *(^state)(NSDictionary * _Nullable state); 
+@property (nonatomic, readonly, strong) PNStateModificationAPICallBuilder * (^state)(NSDictionary * _Nullable state);
 
 /**
- @brief      Specify \c channel name.
- @discussion On block call return block which consume name of \c channel for which \c user's presence state 
-             should be modified.
- 
- @since 4.5.4
+ * @brief Channel name addition block.
+ *
+ * @param channel Name of the channel which will store provided state information for \c uuid.
+ *
+ * @since 4.5.4
  */
-@property (nonatomic, readonly, strong) PNStateModificationAPICallBuilder *(^channel)(NSString *channel);
+@property (nonatomic, readonly, strong) PNStateModificationAPICallBuilder * (^channel)(NSString *channel);
 
 /**
- @brief      Specify channel \c group name.
- @discussion On block call return block which consume name of channel \c group for which \c user's presence 
-             state should be modified.
- 
- @since 4.5.4
+ * @brief Channel group name addition block.
+ *
+ * @param channelGroup Name of channel group which will store provided state information for
+ *     \c uuid.
+ *
+ * @since 4.5.4
  */
-@property (nonatomic, readonly, strong) PNStateModificationAPICallBuilder *(^channelGroup)(NSString *channelGroup);
+@property (nonatomic, readonly, strong) PNStateModificationAPICallBuilder * (^channelGroup)(NSString *channelGroup);
 
 
-///------------------------------------------------
-/// @name Execution
-///------------------------------------------------
+#pragma mark - Execution
 
 /**
- @brief      Perform composed API call.
- @discussion Execute API call and report processing results through passed comnpletion block.
- @discussion On block call return block which consume (\b not required) state modification for user on channel
-             processing completion block which pass only one argument - request processing status to report 
-             about how data pushing was successful or not.
- 
- @since 4.5.4
+ * @brief Perform API call.
+ *
+ * @param block State modification for user on channel completion block.
+ *
+ * @since 4.5.4
  */
 @property (nonatomic, readonly, strong) void(^performWithCompletion)(PNSetStateCompletionBlock _Nullable block);
+
+
+#pragma mark - Misc
+
+/**
+ * @brief Arbitrary query parameters addition block.
+ *
+ * @param params List of arbitrary percent encoded query parameters which should be sent along with
+ *     original API call.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.8.2
+ */
+@property (nonatomic, readonly, strong) PNStateModificationAPICallBuilder * (^queryParam)(NSDictionary *params);
 
 #pragma mark -
 

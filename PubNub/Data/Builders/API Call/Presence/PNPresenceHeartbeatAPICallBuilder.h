@@ -4,11 +4,12 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /**
- * @brief      Client's presence management API call builder.
- * @discussion Class describe interface which provide access to endpoints which allow to manager
- *             subscriber's presence (outside of subscription cycle, virtual).
+ * @brief Client's presence management API call builder.
  *
- * @author Sergey Mamontov
+ * @discussion Builder interface which provide access to endpoints which allow to manager
+ * subscriber's presence (outside of subscription cycle, virtual).
+ *
+ * @author Serhii Mamontov
  * @since 4.7.5
  * @copyright © 2009-2017 PubNub, Inc.
  */
@@ -16,45 +17,62 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PNPresenceHeartbeatAPICallBuilder : PNPresenceAPICallBuilder
 
 
-///------------------------------------------------
-/// @name Configuration
-///------------------------------------------------
+#pragma mark - Configuration
 
 /**
- * @brief      Specify list of \c channels.
- * @discussion On block call return block which consume list of \c channels for which client's presence
- *             state should be changed according to passed \c connected value.
+ * @brief  Channel names addition block.
+ *
+ * @param channels List of \c channels for which client should change it's presence state according
+ *     to \c connected flag value.
+ *
+ * @return API call configuration builder.
  */
-@property (nonatomic, readonly, strong) PNPresenceHeartbeatAPICallBuilder *(^channels)(NSArray<NSString *> *channels);
+@property (nonatomic, readonly, strong) PNPresenceHeartbeatAPICallBuilder * (^channels)(NSArray<NSString *> *channels);
 
 /**
- * @brief      Specify list of \c groups.
- * @discussion On block call return block which consume list of \c groups for which client's presence
- *             state should be changed according to passed \c connected value.
+ * @brief  Channel group names addition block.
+ *
+ * @param channelGroups List of channel \c groups for which client should change it's presence state
+ *     according to \c connected flag value.
+ *
+ * @return API call configuration builder.
  */
-@property (nonatomic, readonly, strong) PNPresenceHeartbeatAPICallBuilder *(^channelGroups)(NSArray<NSString *> *channelGroups);
+@property (nonatomic, readonly, strong) PNPresenceHeartbeatAPICallBuilder * (^channelGroups)(NSArray<NSString *> *channelGroups);
 
 /**
- * @brief      Specify client's \c state.
- * @discussion On block call return block which consume client's \c state for passed objects (channels
- *             and/or groups) which will be set with heartbeat request (identical to passing state during
- *             subscription).
+ * @brief User's state for channel / groups addition block.
+ *
+ * @param state Client's state which should be set for passed objects (same as state passed during
+ *     subscription or using state change API).
+ *
+ * @return API call configuration builder.
  */
-@property (nonatomic, readonly, strong) PNPresenceHeartbeatAPICallBuilder *(^state)(NSDictionary<NSString *, NSDictionary *> *state);
+@property (nonatomic, readonly, strong) PNPresenceHeartbeatAPICallBuilder * (^state)(NSDictionary<NSString *, NSDictionary *> *state);
 
 
-///------------------------------------------------
-/// @name Execution
-///------------------------------------------------
+#pragma mark - Execution
 
 /**
- * @brief      Perform composed API call.
- * @discussion Will perform request with passed to builder values. In case if error will occur, it will be
- *             reported to event listener's callback.
- * @discussion On block call return block which consume (\b required) presence change completion block
- *             which pass only one argument - operation processing status object.
+ * @brief Perform API call.
+ *
+ * @param block Client's presence modification completion block.
  */
 @property (nonatomic, readonly, strong) void(^performWithCompletion)(PNStatusBlock __nullable block);
+
+
+#pragma mark - Misc
+
+/**
+ * @brief Arbitrary query parameters addition block.
+ *
+ * @param params List of arbitrary percent encoded query parameters which should be sent along with
+ *     original API call.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.8.2
+ */
+@property (nonatomic, readonly, strong) PNPresenceHeartbeatAPICallBuilder * (^queryParam)(NSDictionary *params);
 
 #pragma mark -
 

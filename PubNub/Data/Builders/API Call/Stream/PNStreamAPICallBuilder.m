@@ -1,7 +1,7 @@
 /**
- @author Sergey Mamontov
- @since 4.5.4
- @copyright © 2009-2017 PubNub, Inc.
+ * @author Serhii Mamontov
+ * @since 4.5.4
+ * @copyright © 2009-2017 PubNub, Inc.
  */
 #import "PNStreamAPICallBuilder.h"
 #import "PNStreamModificationAPICallBuilder.h"
@@ -20,7 +20,6 @@
 + (void)initialize {
     
     if (self == [PNStreamAPICallBuilder class]) {
-        
         [self copyMethodsFromClasses:@[[PNStreamModificationAPICallBuilder class], 
                                        [PNStreamAuditAPICallBuilder class]]];
     }
@@ -29,24 +28,22 @@
 
 #pragma mark - Stream state manipulation
 
-- (PNStreamModificationAPICallBuilder *(^)(void))add {
+- (PNStreamModificationAPICallBuilder * (^)(void))add {
     
-    return ^PNStreamModificationAPICallBuilder* {
-        
+    return ^PNStreamModificationAPICallBuilder * {
         object_setClass(self, [PNStreamModificationAPICallBuilder class]);
+
         [self setFlag:NSStringFromSelector(_cmd)];
-        
         return (PNStreamModificationAPICallBuilder *)self;
     };
 }
 
-- (PNStreamModificationAPICallBuilder *(^)(void))remove {
+- (PNStreamModificationAPICallBuilder * (^)(void))remove {
     
-    return ^PNStreamModificationAPICallBuilder* {
-        
+    return ^PNStreamModificationAPICallBuilder * {
         object_setClass(self, [PNStreamModificationAPICallBuilder class]);
+
         [self setFlag:NSStringFromSelector(_cmd)];
-        
         return (PNStreamModificationAPICallBuilder *)self;
     };
 }
@@ -54,13 +51,12 @@
 
 #pragma mark - Stream state audit
 
-- (PNStreamAuditAPICallBuilder *(^)(void))audit {
+- (PNStreamAuditAPICallBuilder * (^)(void))audit {
     
-    return ^PNStreamAuditAPICallBuilder* {
-        
+    return ^PNStreamAuditAPICallBuilder * {
         object_setClass(self, [PNStreamAuditAPICallBuilder class]);
+
         [self setFlag:NSStringFromSelector(_cmd)];
-        
         return (PNStreamAuditAPICallBuilder *)self;
     };
 }

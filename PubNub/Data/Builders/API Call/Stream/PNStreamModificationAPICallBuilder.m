@@ -1,7 +1,7 @@
 /**
- @author Sergey Mamontov
- @since 4.5.4
- @copyright © 2009-2017 PubNub, Inc.
+ * @author Serhii Mamontov
+ * @since 4.5.4
+ * @copyright © 2009-2017 PubNub, Inc.
  */
 #import "PNStreamModificationAPICallBuilder.h"
 #import "PNAPICallBuilder+Private.h"
@@ -12,24 +12,25 @@
 @implementation PNStreamModificationAPICallBuilder
 
 
+#pragma mark - Information
+
+@dynamic queryParam;
+
+
 #pragma mark - Configuration
 
-- (PNStreamModificationAPICallBuilder *(^)(NSString *channelGroup))channelGroup {
+- (PNStreamModificationAPICallBuilder * (^)(NSString *channelGroup))channelGroup {
     
-    return ^PNStreamModificationAPICallBuilder* (NSString *channelGroup) {
-        
+    return ^PNStreamModificationAPICallBuilder * (NSString *channelGroup) {
         [self setValue:channelGroup forParameter:NSStringFromSelector(_cmd)];
-        
         return self;
     };
 }
 
-- (PNStreamModificationAPICallBuilder *(^)(NSArray<NSString *> *channels))channels {
+- (PNStreamModificationAPICallBuilder * (^)(NSArray<NSString *> *channels))channels {
     
-    return ^PNStreamModificationAPICallBuilder* (NSArray<NSString *> *channels) {
-        
+    return ^PNStreamModificationAPICallBuilder * (NSArray<NSString *> *channels) {
         [self setValue:channels forParameter:NSStringFromSelector(_cmd)];
-        
         return self;
     };
 }
@@ -39,7 +40,9 @@
 
 - (void(^)(PNChannelGroupChangeCompletionBlock block))performWithCompletion {
     
-    return ^(PNChannelGroupChangeCompletionBlock block){ [super performWithBlock:block]; };
+    return ^(PNChannelGroupChangeCompletionBlock block) {
+        [super performWithBlock:block];
+    };
 }
 
 #pragma mark -

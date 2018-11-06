@@ -4,45 +4,54 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /**
- @brief      Stream audit API call builder.
- @discussion Protocol describe interface which provide access to stream audition endpoints.
- 
- @author Sergey Mamontov
- @since 4.5.4
- @copyright © 2009-2017 PubNub, Inc.
+ * @brief Stream audit API call builder.
+ *
+ * @author Serhii Mamontov
+ * @since 4.5.4
+ * @copyright © 2009-2017 PubNub, Inc.
  */
 @interface PNStreamAuditAPICallBuilder : PNStreamAPICallBuilder
 
 
-///------------------------------------------------
-/// @name Configuration
-///------------------------------------------------
+#pragma mark - Configuration
 
 /**
- @brief      Specify channel \c group for audition.
- @discussion On block call return block which consume (\b required) name of channel \c group for which list of
-             registered channels should be received.
- 
- @since 4.5.4
+ * @brief Channel group addition block.
+ *
+ * @param channelGroup Name of the group from which channels should be fetched.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.5.4
  */
-@property (nonatomic, readonly, strong) PNStreamAuditAPICallBuilder *(^channelGroup)(NSString *channelGroup);
+@property (nonatomic, readonly, strong) PNStreamAuditAPICallBuilder * (^channelGroup)(NSString *channelGroup);
 
 
-///------------------------------------------------
-/// @name Execution
-///------------------------------------------------
+#pragma mark - Execution
 
 /**
- @brief      Perform composed API call.
- @discussion Execute API call and report processing results through passed comnpletion block.
- @discussion On block call return block which consume (\b required) channels audition process completion block
-             which pass two arguments: \c result - in case of successful request processing \c data field will
-             contain results of channel groups channels audition operation; \c status - in case if error 
-             occurred during request processing.
- 
- @since 4.5.4
+ * @brief Perform API call.
+ *
+ * @param block Channels audition completion block.
+ *
+ * @since 4.5.4
  */
 @property (nonatomic, readonly, strong) void(^performWithCompletion)(PNGroupChannelsAuditCompletionBlock block);
+
+
+#pragma mark - Misc
+
+/**
+ * @brief Arbitrary query parameters addition block.
+ *
+ * @param params List of arbitrary percent encoded query parameters which should be sent along with
+ *     original API call.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.8.2
+ */
+@property (nonatomic, readonly, strong) PNStreamAuditAPICallBuilder * (^queryParam)(NSDictionary *params);
 
 #pragma mark -
 

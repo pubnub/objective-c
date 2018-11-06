@@ -1,7 +1,7 @@
 /**
- @author Sergey Mamontov
- @since 4.5.4
- @copyright © 2009-2017 PubNub, Inc.
+ * @author Serhii Mamontov
+ * @since 4.5.4
+ * @copyright © 2009-2017 PubNub, Inc.
  */
 #import "PNAPNSAuditAPICallBuilder.h"
 #import "PNAPICallBuilder+Private.h"
@@ -12,14 +12,17 @@
 @implementation PNAPNSAuditAPICallBuilder
 
 
+#pragma mark - Information
+
+@dynamic queryParam;
+
+
 #pragma mark - Configuration
 
-- (PNAPNSAuditAPICallBuilder *(^)(NSData *token))token {
+- (PNAPNSAuditAPICallBuilder * (^)(NSData *token))token {
     
-    return ^PNAPNSAuditAPICallBuilder* (NSData *token) {
-        
+    return ^PNAPNSAuditAPICallBuilder * (NSData *token) {
         [self setValue:token forParameter:NSStringFromSelector(_cmd)];
-        
         return self;
     };
 }
@@ -29,7 +32,9 @@
 
 - (void(^)(PNPushNotificationsStateAuditCompletionBlock block))performWithCompletion {
     
-    return ^(PNPushNotificationsStateAuditCompletionBlock block) { [super performWithBlock:block]; };
+    return ^(PNPushNotificationsStateAuditCompletionBlock block) {
+        [super performWithBlock:block];
+    };
 }
 
 #pragma mark -
