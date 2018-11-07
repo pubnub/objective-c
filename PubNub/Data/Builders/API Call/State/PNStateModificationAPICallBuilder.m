@@ -1,7 +1,7 @@
 /**
- @author Sergey Mamontov
- @since 4.5.4
- @copyright © 2009-2017 PubNub, Inc.
+ * @author Serhii Mamontov
+ * @since 4.5.4
+ * @copyright © 2009-2017 PubNub, Inc.
  */
 #import "PNStateModificationAPICallBuilder.h"
 #import "PNAPICallBuilder+Private.h"
@@ -12,44 +12,41 @@
 @implementation PNStateModificationAPICallBuilder
 
 
+#pragma mark - Information
+
+@dynamic queryParam;
+
+
 #pragma mark - Configuration
 
-- (PNStateModificationAPICallBuilder *(^)(NSString *uuid))uuid {
+- (PNStateModificationAPICallBuilder * (^)(NSString *uuid))uuid {
     
-    return ^PNStateModificationAPICallBuilder* (NSString *uuid) {
-        
+    return ^PNStateModificationAPICallBuilder * (NSString *uuid) {
         [self setValue:uuid forParameter:NSStringFromSelector(_cmd)];
-        
         return self;
     };
 }
 
-- (PNStateModificationAPICallBuilder *(^)(NSDictionary *state))state {
+- (PNStateModificationAPICallBuilder * (^)(NSDictionary *state))state {
     
-    return ^PNStateModificationAPICallBuilder* (NSDictionary *state) {
-        
+    return ^PNStateModificationAPICallBuilder * (NSDictionary *state) {
         [self setValue:state forParameter:NSStringFromSelector(_cmd)];
-        
         return self;
     };
 }
 
-- (PNStateModificationAPICallBuilder *(^)(NSString *channel))channel {
+- (PNStateModificationAPICallBuilder * (^)(NSString *channel))channel {
     
-    return ^PNStateModificationAPICallBuilder* (NSString *channel) {
-        
+    return ^PNStateModificationAPICallBuilder * (NSString *channel) {
         [self setValue:channel forParameter:NSStringFromSelector(_cmd)];
-        
         return self;
     };
 }
 
-- (PNStateModificationAPICallBuilder *(^)(NSString *channelGroup))channelGroup {
+- (PNStateModificationAPICallBuilder * (^)(NSString *channelGroup))channelGroup {
     
-    return ^PNStateModificationAPICallBuilder* (NSString *channelGroup) {
-        
+    return ^PNStateModificationAPICallBuilder * (NSString *channelGroup) {
         [self setValue:channelGroup forParameter:NSStringFromSelector(_cmd)];
-        
         return self;
     };
 }
@@ -59,7 +56,9 @@
 
 - (void(^)(PNSetStateCompletionBlock block))performWithCompletion {
     
-    return ^(PNSetStateCompletionBlock block){ [super performWithBlock:block]; };
+    return ^(PNSetStateCompletionBlock block) {
+        [super performWithBlock:block];
+    };
 }
 
 #pragma mark - 

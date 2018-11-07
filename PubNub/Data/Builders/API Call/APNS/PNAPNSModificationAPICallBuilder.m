@@ -1,7 +1,7 @@
 /**
- @author Sergey Mamontov
- @since 4.5.4
- @copyright © 2009-2017 PubNub, Inc.
+ * @author Serhii Mamontov
+ * @since 4.5.4
+ * @copyright © 2009-2017 PubNub, Inc.
  */
 #import "PNAPNSModificationAPICallBuilder.h"
 #import "PNAPICallBuilder+Private.h"
@@ -12,24 +12,25 @@
 @implementation PNAPNSModificationAPICallBuilder
 
 
+#pragma mark - Information
+
+@dynamic queryParam;
+
+
 #pragma mark - Configuration
 
-- (PNAPNSModificationAPICallBuilder *(^)(NSData *token))token {
+- (PNAPNSModificationAPICallBuilder * (^)(NSData *token))token {
     
-    return ^PNAPNSModificationAPICallBuilder* (NSData *token) {
-        
+    return ^PNAPNSModificationAPICallBuilder * (NSData *token) {
         [self setValue:token forParameter:NSStringFromSelector(_cmd)];
-        
         return self;
     };
 }
 
-- (PNAPNSModificationAPICallBuilder *(^)(NSArray<NSString *> *channels))channels {
+- (PNAPNSModificationAPICallBuilder * (^)(NSArray<NSString *> *channels))channels {
     
-    return ^PNAPNSModificationAPICallBuilder* (NSArray<NSString *> *channels) {
-        
+    return ^PNAPNSModificationAPICallBuilder * (NSArray<NSString *> *channels) {
         [self setValue:channels forParameter:NSStringFromSelector(_cmd)];
-        
         return self;
     };
 }
@@ -39,7 +40,9 @@
 
 - (void(^)(PNPushNotificationsStateModificationCompletionBlock block))performWithCompletion {
     
-    return ^(PNPushNotificationsStateModificationCompletionBlock block){ [super performWithBlock:block]; };
+    return ^(PNPushNotificationsStateModificationCompletionBlock block) {
+        [super performWithBlock:block];
+    };
 }
 
 #pragma mark -

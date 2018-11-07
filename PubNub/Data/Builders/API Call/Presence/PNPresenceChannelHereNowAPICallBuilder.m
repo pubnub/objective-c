@@ -1,7 +1,7 @@
 /**
- @author Sergey Mamontov
- @since 4.5.4
- @copyright © 2009-2017 PubNub, Inc.
+ * @author Serhii Mamontov
+ * @since 4.5.4
+ * @copyright © 2009-2017 PubNub, Inc.
  */
 #import "PNPresenceChannelHereNowAPICallBuilder.h"
 #import "PNAPICallBuilder+Private.h"
@@ -12,14 +12,17 @@
 @implementation PNPresenceChannelHereNowAPICallBuilder
 
 
+#pragma mark - Information
+
+@dynamic queryParam;
+
+
 #pragma mark - Configuration
 
-- (PNPresenceChannelHereNowAPICallBuilder *(^)(PNHereNowVerbosityLevel verbosity))verbosity {
+- (PNPresenceChannelHereNowAPICallBuilder * (^)(PNHereNowVerbosityLevel verbosity))verbosity {
     
-    return ^PNPresenceChannelHereNowAPICallBuilder* (PNHereNowVerbosityLevel verbosity) {
-        
+    return ^PNPresenceChannelHereNowAPICallBuilder * (PNHereNowVerbosityLevel verbosity) {
         [self setValue:@(verbosity) forParameter:NSStringFromSelector(_cmd)];
-        
         return self;
     };
 }
@@ -29,7 +32,9 @@
 
 - (void(^)(PNHereNowCompletionBlock block))performWithCompletion {
     
-    return ^(PNHereNowCompletionBlock block){ [super performWithBlock:block]; };
+    return ^(PNHereNowCompletionBlock block) {
+        [super performWithBlock:block];
+    };
 }
 
 

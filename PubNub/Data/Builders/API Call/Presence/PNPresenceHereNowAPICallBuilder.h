@@ -9,68 +9,80 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /**
- @brief      Presence 'here now' API call builder.
- @discussion Class describe interface which provide access to various 'here now' presence endpoints.
- 
- @author Sergey Mamontov
- @since 4.5.4
- @copyright © 2009-2017 PubNub, Inc.
+ * @brief Presence 'here now' API call builder.
+ *
+ * @author Serhii Mamontov
+ * @since 4.5.4
+ * @copyright © 2009-2017 PubNub, Inc.
  */
 @interface PNPresenceHereNowAPICallBuilder : PNPresenceAPICallBuilder
 
 
-///------------------------------------------------
-/// @name Channel
-///------------------------------------------------
+#pragma mark - Channel
 
 /**
- @brief      Stores reference on builder which is responsible for access to \c channel 'here now' API.
- @discussion Returned block consume name of \c channel for which 'here now' presence information should be 
-             requested.
- 
- @since 4.5.4
+ * @brief On channel users' presence API access builder block.
+ *
+ * @param channel Channel for which here now information should be received.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.5.4
  */
-@property (nonatomic, readonly, strong) PNPresenceChannelHereNowAPICallBuilder *(^channel)(NSString *channel);
+@property (nonatomic, readonly, strong) PNPresenceChannelHereNowAPICallBuilder * (^channel)(NSString *channel);
 
 
-///------------------------------------------------
-/// @name Channel Group
-///------------------------------------------------
+#pragma mark - Channel Group
 
 /**
- @brief      Stores reference on builder which is responsible for access to channel \c group 'here now' API.
- @discussion On block call return block which consume name of channel \c group for which 'here now' presence 
-             information should be requested.
- 
- @since 4.5.4
+ * @brief On channel group users' presence API access builder block.
+ *
+ * @param channelGroup Channel group name for which here now information should be received.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.5.4
  */
-@property (nonatomic, readonly, strong) PNPresenceChannelGroupHereNowAPICallBuilder *(^channelGroup)(NSString *channelGroup);
+@property (nonatomic, readonly, strong) PNPresenceChannelGroupHereNowAPICallBuilder * (^channelGroup)(NSString *channelGroup);
 
 
-///------------------------------------------------
-/// @name Global
-///------------------------------------------------
+#pragma mark - Global
 
 /**
- @brief      Specify exact type of data which should be received.
- @discussion On block call return block which consume one of \b PNHereNowVerbosityLevel fields to instruct 
-             what exactly data it expected in response.
- 
- @since 4.5.4
+ * @brief Users' state information detalization level addition block.
+ *
+ * @param verbosity One of \b PNHereNowVerbosityLevel fields to instruct what exactly data it
+ *     expected in response.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.5.4
  */
-@property (nonatomic, readonly, strong) PNPresenceHereNowAPICallBuilder *(^verbosity)(PNHereNowVerbosityLevel verbosity);
+@property (nonatomic, readonly, strong) PNPresenceHereNowAPICallBuilder * (^verbosity)(PNHereNowVerbosityLevel verbosity);
 
 /**
- @brief      Perform composed API call.
- @discussion Execute API call and report processing results through passed comnpletion block.
- @discussion On block call return block which consume (\b required) here now processing completion block which
-             pass two arguments: \c result - in case of successful request processing \c data field will 
-             contain results of here now operation; \c status - in case if error occurred during request 
-             processing.
- 
- @since 4.5.4
+ * @brief Perform API call.
+ *
+ * @param block Here now fetch completion block.
+ *
+ * @since 4.5.4
  */
 @property (nonatomic, readonly, strong) void(^performWithCompletion)(PNGlobalHereNowCompletionBlock block);
+
+
+#pragma mark - Misc
+
+/**
+ * @brief Arbitrary query parameters addition block.
+ *
+ * @param params List of arbitrary percent encoded query parameters which should be sent along with
+ *     original API call.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.8.2
+ */
+@property (nonatomic, readonly, strong) PNPresenceHereNowAPICallBuilder * (^queryParam)(NSDictionary *params);
 
 #pragma mark -
 

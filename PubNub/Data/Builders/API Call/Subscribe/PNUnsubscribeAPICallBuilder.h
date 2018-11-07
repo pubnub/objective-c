@@ -10,68 +10,80 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /**
- @brief      Unsubscribe API call builder.
- @discussion Class describe interface which provide access to various unsubscription endpoints.
- 
- @author Sergey Mamontov
- @since 4.5.4
- @copyright © 2009-2017 PubNub, Inc.
+ * @brief Unsubscribe API call builder.
+ *
+ * @author Serhii Mamontov
+ * @since 4.5.4
+ * @copyright © 2009-2017 PubNub, Inc.
  */
 @interface PNUnsubscribeAPICallBuilder : PNAPICallBuilder
 
 
-///------------------------------------------------
-/// @name Channels and Channel Groups
-///------------------------------------------------
+#pragma mark - Channels and Channel Groups
 
 /**
- @brief      Stores reference on construction block which return \c builder which is responsible for access to
-             unsubscription API.
- @discussion On block call return block which consume list of \c channel name(s) from which \b PubNub client 
-             should unsubscribe.
- 
- @since 4.5.4
+ * @brief Channels un-subscription API access builder block.
+ *
+ * @param channels List of channel names from which client should try to unsubscribe.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.5.4
  */
-@property (nonatomic, readonly, strong) PNUnsubscribeChannelsOrGroupsAPICallBuilder *(^channels)(NSArray<NSString *> *channels);
+@property (nonatomic, readonly, strong) PNUnsubscribeChannelsOrGroupsAPICallBuilder * (^channels)(NSArray<NSString *> *channels);
 
 /**
- @brief      Stores reference on construction block which return \c builder which is responsible for access to
-             unsubscription API.
- @discussion On block call return block which consume list of channel \c group name(s) from which \b PubNub 
-             client should unsubscribe.
- 
- @since 4.5.4
+ * @brief Channel groups un-subscription API access builder block.
+ *
+ * @param channelGroups List of channel group names from which client should try to unsubscribe.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.5.4
  */
-@property (nonatomic, readonly, strong) PNUnsubscribeChannelsOrGroupsAPICallBuilder *(^channelGroups)(NSArray<NSString *> *channelGroups);
+@property (nonatomic, readonly, strong) PNUnsubscribeChannelsOrGroupsAPICallBuilder * (^channelGroups)(NSArray<NSString *> *channelGroups);
 
 
-///------------------------------------------------
-/// @name Presence
-///------------------------------------------------
+#pragma mark - Presence
 
 /**
- @brief      Specify list of presence \c channel(s).
- @discussion On block call return block which consume list of presence \c channel name(s) from which \b PubNub
-             client should unsubscribe.
- 
- @since 4.5.4
+ * @brief Presence channel names addition block.
+ *
+ * @param presenceChannels List of channel names for which client should try to unsubscribe from
+ *     presence observing channels.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.5.4
  */
-@property (nonatomic, readonly, strong) PNUnsubscribeAPICallBuilder *(^presenceChannels)(NSArray<NSString *> *presenceChannels);
+@property (nonatomic, readonly, strong) PNUnsubscribeAPICallBuilder * (^presenceChannels)(NSArray<NSString *> *presenceChannels);
 
 
-///------------------------------------------------
-/// @name Execution
-///------------------------------------------------
+#pragma mark - Execution
 
 /**
- @brief   Perform composed API call.
- @warning If no list of \c channel(s) or channel \c group(s) has been specified before method call - \b PubNub
-          client will unsubscribed from all \c channel(s) and channel \c group(s) (including presence 
-          \c channel(s) and channel \c group(s)).
- 
- @since 4.5.4
+ * @brief Perform API call.
+ *
+ * @note Client will unsubscribe from all channels if none of channel / groups options is set.
+ *
+ * @since 4.5.4
  */
 @property (nonatomic, readonly, strong) dispatch_block_t perform;
+
+
+#pragma mark - Misc
+
+/**
+ * @brief Arbitrary query parameters addition block.
+ *
+ * @param params List of arbitrary percent encoded query parameters which should be sent along with
+ *     original API call.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.8.2
+ */
+@property (nonatomic, readonly, strong) PNUnsubscribeAPICallBuilder * (^queryParam)(NSDictionary *params);
 
 #pragma mark -
 

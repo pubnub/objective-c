@@ -1,7 +1,7 @@
 /**
- @author Sergey Mamontov
- @since 4.7.5
- @copyright © 2009-2017 PubNub, Inc.
+ * @author Serhii Mamontov
+ * @since 4.7.5
+ * @copyright © 2009-2017 PubNub, Inc.
  */
 #import "PNPresenceHeartbeatAPICallBuilder.h"
 #import "PNAPICallBuilder+Private.h"
@@ -10,6 +10,11 @@
 #pragma mark Interface implementation
 
 @implementation PNPresenceHeartbeatAPICallBuilder
+
+
+#pragma mark - Information
+
+@dynamic queryParam;
 
 
 #pragma mark - Configuration

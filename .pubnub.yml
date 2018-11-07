@@ -1,9 +1,16 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.8.1"
+version: "4.8.2"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Added ability to set arbitrary query parameters during API call."
+        type: feature
+    date: Nov 07, 18
+    version: v4.8.2
   -
     changes:
       -

@@ -4,64 +4,77 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /**
- @brief      Presence state audit API call builder.
- @discussion Class describe interface which allow to audit user's presence state (retrieve state information 
-             which has been set for user on \c channel and / or channel \c group).
- 
- @author Sergey Mamontov
- @since 4.5.4
- @copyright © 2009-2017 PubNub, Inc.
+ * @brief Presence state audit API call builder.
+ *
+ * @author Serhii Mamontov
+ * @since 4.5.4
+ * @copyright © 2009-2017 PubNub, Inc.
  */
 @interface PNStateAuditAPICallBuilder : PNStateAPICallBuilder
 
 
-///------------------------------------------------
-/// @name Configuration
-///------------------------------------------------
+#pragma mark - Configuration
 
 /**
- @brief      Specify unique \c user identifier.
- @discussion On block call return block which consume (\b required) unique \c user identifier for which 
-             presence state audition should be done for provided \c channel or channel \c group.
- 
- @since 4.5.4
+ * @brief Unique user identifier addition block.
+ *
+ * @param uuid Unique user identifier for which state should be retrieved.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.5.4
  */
-@property (nonatomic, readonly, strong) PNStateAuditAPICallBuilder *(^uuid)(NSString *uuid);
+@property (nonatomic, readonly, strong) PNStateAuditAPICallBuilder * (^uuid)(NSString *uuid);
 
 /**
- @brief      Specify \c channel name.
- @discussion On block call return block which consume name of \c channel for which \c user's presence state 
-             should be audited.
- 
- @since 4.5.4
+ * @brief Channel name addition block.
+ *
+ * @param channel Name of channel from which state information for \c uuid will be pulled out.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.5.4
  */
-@property (nonatomic, readonly, strong) PNStateAuditAPICallBuilder *(^channel)(NSString *channel);
+@property (nonatomic, readonly, strong) PNStateAuditAPICallBuilder * (^channel)(NSString *channel);
 
 /**
- @brief      Specify channel \c group name.
- @discussion On block call return block which consume name of channel \c group for which \c user's presence 
-             state should be audited.
- 
- @since 4.5.4
+ * @brief Channel group name addition block.
+ *
+ * @param channelGroup Name of channel group from which state information for \c uuid will be
+ *     pulled out.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.5.4
  */
-@property (nonatomic, readonly, strong) PNStateAuditAPICallBuilder *(^channelGroup)(NSString *channelGroup);
+@property (nonatomic, readonly, strong) PNStateAuditAPICallBuilder * (^channelGroup)(NSString *channelGroup);
 
 
-///------------------------------------------------
-/// @name Execution
-///------------------------------------------------
+#pragma mark - Execution
 
 /**
- @brief      Perform composed API call.
- @discussion Execute API call and report processing results through passed comnpletion block.
- @discussion On block call return block which consume (\b required) state audition for user on channel 
-             processing completion block which pass two arguments: \c result - in case of successful request 
-             processing \c data field will contain results of client state retrieve operation; \c status - in 
-             case if error occurred during request processing.
- 
- @since 4.5.4
+ * @brief Perform API call.
+ *
+ * @param block State audition for user on channel / channel group completion block.
+ *
+ * @since 4.5.4
  */
 @property (nonatomic, readonly, strong) void(^performWithCompletion)(PNChannelStateCompletionBlock block);
+
+
+#pragma mark - Misc
+
+/**
+ * @brief Arbitrary query parameters addition block.
+ *
+ * @param params List of arbitrary percent encoded query parameters which should be sent along with
+ *     original API call.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.8.2
+ */
+@property (nonatomic, readonly, strong) PNStateAuditAPICallBuilder * (^queryParam)(NSDictionary *params);
 
 #pragma mark -
 

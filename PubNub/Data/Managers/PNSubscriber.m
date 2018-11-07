@@ -268,21 +268,26 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Subscription
 
 /**
- @brief      Perform initial subscription with \b 0 timetoken.
- @discussion Subscription with \b 0 timetoken "register" client in \b PubNub network and allow to receive live
-             updates from remote data objects live feed.
- 
- @param initialSubscribe Stores whether client trying to subscriber using \b 0 time token and trigger all
-                         required presence notifications or not.
- @param timeToken        Time from which client should try to catch up on messages.
- @param state            Reference on client state which should be bound to channels on which client has been
-                         subscribed or will subscribe now.
- @param block            Reference on subscription completion block which is used to notify code.
- 
- @since 4.3.0
+ * @brief Perform initial subscription with \b 0 timetoken.
+ *
+ * @discussion Subscription with \b 0 timetoken "register" client in \b PubNub network and allow to
+ * receive live updates from remote data objects live feed.
+ *
+ * @param initialSubscribe Stores whether client trying to subscriber using \b 0 time token and
+ *     trigger all required presence notifications or not.
+ * @param timeToken Time from which client should try to catch up on messages.
+ * @param state Reference on client state which should be bound to channels on which client has been
+ *     subscribed or will subscribe now.
+ * @param queryParameters List arbitrary query paramters which should be sent along with original
+ *     API call.
+ * @param block Reference on subscription completion block which is used to notify code.
+ *
+ * @since 4.8.2
  */
-- (void)subscribe:(BOOL)initialSubscribe usingTimeToken:(nullable NSNumber *)timeToken 
-        withState:(nullable NSDictionary<NSString *, id> *)state 
+- (void)subscribe:(BOOL)initialSubscribe
+   usingTimeToken:(nullable NSNumber *)timeToken
+        withState:(nullable NSDictionary<NSString *, id> *)state
+  queryParameters:(nullable NSDictionary *)queryParameters
        completion:(nullable PNSubscriberCompletionBlock)block;
 
 /**
@@ -322,8 +327,10 @@ NS_ASSUME_NONNULL_BEGIN
  @since 4.5.6
  */
 - (void)unsubscribeFromChannels:(nullable NSArray<NSString *> *)channels 
-                         groups:(nullable NSArray<NSString *> *)groups 
-              informingListener:(BOOL)shouldInformListener subscribeOnRest:(BOOL)subscribeOnRestChannels
+                         groups:(nullable NSArray<NSString *> *)groups
+            withQueryParameters:(NSDictionary *)queryParameters
+          listenersNotification:(BOOL)shouldInformListener
+                subscribeOnRest:(BOOL)subscribeOnRestChannels
                      completion:(nullable PNSubscriberCompletionBlock)block;
 
 
@@ -874,14 +881,23 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Subscription
 
-- (void)subscribeUsingTimeToken:(NSNumber *)timeToken withState:(NSDictionary<NSString *, id> *)state 
+- (void)subscribeUsingTimeToken:(NSNumber *)timeToken
+                      withState:(NSDictionary<NSString *, id> *)state
+                queryParameters:(NSDictionary *)queryParameters
                      completion:(PNSubscriberCompletionBlock)block {
     
-    [self subscribe:YES usingTimeToken:timeToken withState:state completion:block];
+    [self subscribe:YES
+     usingTimeToken:timeToken
+          withState:state
+    queryParameters:queryParameters
+         completion:block];
 }
 
-- (void)subscribe:(BOOL)initialSubscribe usingTimeToken:(NSNumber *)timeToken 
-        withState:(NSDictionary<NSString *, id> *)state completion:(PNSubscriberCompletionBlock)block {
+- (void)subscribe:(BOOL)initialSubscribe
+   usingTimeToken:(NSNumber *)timeToken
+        withState:(NSDictionary<NSString *, id> *)state
+  queryParameters:(NSDictionary *)queryParameters
+       completion:(PNSubscriberCompletionBlock)block; {
     
     [self stopRetryTimer];
 
@@ -892,35 +908,37 @@ NS_ASSUME_NONNULL_END
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
     if ([self allObjects].count) {
-
         // Storing time token override
         self.overrideTimeToken = timeToken;
         
         // In case if block is passed, it mean what subscription has been requested by user or
         // internal logic (like unsubscribe and re-subscribe on the rest of the channels/groups).
         if (initialSubscribe) {
-            
             self.mayRequireSubscriptionRestore = NO;
+            
             pn_safe_property_write(self.resourceAccessQueue, ^{
-                
-                if (self->_currentTimeToken && [self->_currentTimeToken compare:@0] != NSOrderedSame) {
-                    
+                if (self->_currentTimeToken &&
+                    [self->_currentTimeToken compare:@0] != NSOrderedSame) {
                     self->_lastTimeToken = self->_currentTimeToken;
                 }
-                if (self->_currentTimeTokenRegion && [self->_currentTimeTokenRegion compare:@0] != NSOrderedSame &&
+                
+                if (self->_currentTimeTokenRegion &&
+                    [self->_currentTimeTokenRegion compare:@0] != NSOrderedSame &&
                     [self->_currentTimeTokenRegion compare:@(-1)] == NSOrderedDescending) {
                     
                     self->_lastTimeTokenRegion = self->_currentTimeTokenRegion;
                 }
+                
                 self->_currentTimeToken = @0;
                 self->_currentTimeTokenRegion = @(-1);
             });
         }
         
         PNRequestParameters *parameters = [self subscribeRequestParametersWithState:state];
+
+        [parameters addQueryParameters:queryParameters];
         
         if (initialSubscribe) {
-            
             PNLogAPICall(self.client.logger, @"<PubNub::API> Subscribe (channels: %@; groups: %@)%@",
                          parameters.pathComponents[@"{channels}"], parameters.query[@"channel-group"],
                          (timeToken ? [NSString stringWithFormat:@" with catch up from %@.", timeToken] : @"."));
@@ -932,29 +950,34 @@ NS_ASSUME_NONNULL_END
                           
               __strong __typeof(self) strongSelf = weakSelf;
               [strongSelf handleSubscriptionStatus:(PNSubscribeStatus *)status];
+                          
               if (block) {
-                  
-                  pn_dispatch_async(weakSelf.client.callbackQueue, ^{ block((PNSubscribeStatus *)status); });
+                  pn_dispatch_async(weakSelf.client.callbackQueue, ^{
+                      block((PNSubscribeStatus *)status);
+                  });
               }
           }];
-    }
-    else {
-        
-        PNStatus *status = [PNStatus statusForOperation:PNSubscribeOperation category:PNDisconnectedCategory
+    } else {
+        PNStatus *status = [PNStatus statusForOperation:PNSubscribeOperation
+                                               category:PNDisconnectedCategory
                                     withProcessingError:nil];
         [self.client appendClientInformation:status];
+        
         pn_safe_property_write(self.resourceAccessQueue, ^{
-            
             self->_lastTimeToken = @0;
             self->_currentTimeToken = @0;
             self->_lastTimeTokenRegion = @(-1);
             self->_currentTimeTokenRegion = @(-1);
         });
+        
         if (block) {
-            
-            pn_dispatch_async(self.client.callbackQueue, ^{ block((PNSubscribeStatus *)status); });
+            pn_dispatch_async(self.client.callbackQueue, ^{
+                block((PNSubscribeStatus *)status);
+            });
         }
-        [self updateStateTo:PNDisconnectedSubscriberState withStatus:(PNSubscribeStatus *)status 
+        
+        [self updateStateTo:PNDisconnectedSubscriberState
+                 withStatus:(PNSubscribeStatus *)status
                  completion:^(PNStatusCategory category) {
             
             [self.client cancelSubscribeOperations];
@@ -978,17 +1001,18 @@ NS_ASSUME_NONNULL_END
     });
     if (shouldRestore && ableToRestore) {
         
-        [self subscribeUsingTimeToken:nil withState:nil completion:block];
+        [self subscribeUsingTimeToken:nil withState:nil queryParameters:nil completion:block];
     }
     else if (block) { block(nil); }
 }
 
 - (void)continueSubscriptionCycleIfRequiredWithCompletion:(PNSubscriberCompletionBlock)block {
 
-    [self subscribe:NO usingTimeToken:nil withState:nil completion:block];
+    [self subscribe:NO usingTimeToken:nil withState:nil queryParameters:nil completion:block];
 }
 
-- (void)unsubscribeFromAllWithCompletion:(void(^)(PNStatus *status))block {
+- (void)unsubscribeFromAllWithQueryParameters:(NSDictionary *)queryParameters
+                                   completion:(void (^)(PNStatus *status))block {
     
     NSArray *channels = [self.channels copy];
     NSArray *channelGroups = [self.channelGroups copy]; 
@@ -999,30 +1023,35 @@ NS_ASSUME_NONNULL_END
         [self removeChannels:channels];
         [self removePresenceChannels:self.presenceChannels];
         [self removeChannelGroups:channelGroups];
-        [self unsubscribeFromChannels:channels groups:channelGroups informingListener:YES subscribeOnRest:NO
+        [self unsubscribeFromChannels:channels
+                               groups:channelGroups
+                  withQueryParameters:queryParameters
+                listenersNotification:YES
+                      subscribeOnRest:NO
                            completion:block];
     }
 }
 
-- (void)unsubscribeFromChannels:(NSArray<NSString *> *)channels groups:(NSArray<NSString *> *)groups
+- (void)unsubscribeFromChannels:(NSArray<NSString *> *)channels
+                         groups:(NSArray<NSString *> *)groups
+            withQueryParameters:(NSDictionary *)queryParameters
+          listenersNotification:(BOOL)shouldInformListener
                      completion:(PNSubscriberCompletionBlock)block {
     
-    [self unsubscribeFromChannels:channels groups:groups informingListener:YES subscribeOnRest:YES 
+    [self unsubscribeFromChannels:channels
+                           groups:groups
+              withQueryParameters:queryParameters
+            listenersNotification:shouldInformListener
+                  subscribeOnRest:YES
                        completion:block];
 }
 
 - (void)unsubscribeFromChannels:(NSArray<NSString *> *)channels
                          groups:(NSArray<NSString *> *)groups
-              informingListener:(BOOL)shouldInformListener
-                     completion:(PNSubscriberCompletionBlock)block {
-    
-    [self unsubscribeFromChannels:channels groups:groups informingListener:shouldInformListener subscribeOnRest:YES
-                       completion:block];
-}
-
-- (void)unsubscribeFromChannels:(NSArray<NSString *> *)channels groups:(NSArray<NSString *> *)groups
-              informingListener:(BOOL)shouldInformListener subscribeOnRest:(BOOL)subscribeOnRestChannels
-                     completion:(PNSubscriberCompletionBlock)block {
+            withQueryParameters:(NSDictionary *)queryParameters
+          listenersNotification:(BOOL)shouldInformListener
+                subscribeOnRest:(BOOL)subscribeOnRestChannels
+                     completion:(nullable PNSubscriberCompletionBlock)block {
     
     // Silence static analyzer warnings.
     // Code is aware about this case and at the end will simply call on 'nil' object method.
@@ -1033,9 +1062,16 @@ NS_ASSUME_NONNULL_END
     [self.client.clientStateManager removeStateForObjects:channels];
     [self.client.clientStateManager removeStateForObjects:groups];
     NSArray *channelsWithOutPresence = nil;
-    if (channels.count) { channelsWithOutPresence = [PNChannel objectsWithOutPresenceFrom:channels]; }
     NSArray *groupsWithOutPresence = nil;
-    if (groups.count) { groupsWithOutPresence = [PNChannel objectsWithOutPresenceFrom:groups]; }
+
+    if (channels.count) {
+        channelsWithOutPresence = [PNChannel objectsWithOutPresenceFrom:channels];
+    }
+
+    if (groups.count) {
+        groupsWithOutPresence = [PNChannel objectsWithOutPresenceFrom:groups];
+    }
+
     PNAcknowledgmentStatus *successStatus = [PNAcknowledgmentStatus statusForOperation:PNUnsubscribeOperation
                                                                               category:PNAcknowledgmentCategory
                                                                    withProcessingError:nil];
@@ -1059,9 +1095,10 @@ NS_ASSUME_NONNULL_END
     }
     
     if (channelsWithOutPresence.count || groupsWithOutPresence.count) {
-        
         NSString *channelsList = [PNChannel namesForRequest:channelsWithOutPresence defaultString:@","];
         PNRequestParameters *parameters = [PNRequestParameters new];
+
+        [parameters addQueryParameters:queryParameters];
         [parameters addPathComponent:channelsList forPlaceholder:@"{channels}"];
         if (groupsWithOutPresence.count) {
             
@@ -1076,7 +1113,11 @@ NS_ASSUME_NONNULL_END
             BOOL listChanged = ![[NSSet setWithArray:[weakSelf allObjects]] isEqualToSet:subscriptionObjects];
             if (subscribeOnRestChannels && (subscriptionObjects.count > 0 && !listChanged)) {
 
-                [weakSelf subscribe:NO usingTimeToken:nil withState:nil completion:nil];
+                [weakSelf subscribe:NO
+                     usingTimeToken:nil
+                          withState:nil
+                    queryParameters:nil
+                         completion:nil];
             }
             
             if (block) {
@@ -1103,7 +1144,10 @@ NS_ASSUME_NONNULL_END
     }
     else {
         
-        [self subscribe:YES usingTimeToken:nil withState:nil
+        [self subscribe:YES
+         usingTimeToken:nil
+              withState:nil
+        queryParameters:nil
              completion:^(__unused PNSubscribeStatus *status) {
             
             if (block) {
@@ -1531,6 +1575,7 @@ NS_ASSUME_NONNULL_END
     }
     
     PNRequestParameters *parameters = [PNRequestParameters new];
+
     [parameters addPathComponent:channelsList forPlaceholder:@"{channels}"];
     [parameters addQueryParameter:self.currentTimeToken.stringValue forFieldName:@"tt"];
     if ([self.currentTimeTokenRegion compare:@(-1)] == NSOrderedDescending) {

@@ -144,8 +144,6 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
  */
 @property (nonatomic, strong) dispatch_source_t logFileWatchdog;
 
-@property (nonatomic, assign) NSUInteger logLevel;
-
 /**
  @brief  Stores bit fields of calendar units which take part in timetoken composition.
  

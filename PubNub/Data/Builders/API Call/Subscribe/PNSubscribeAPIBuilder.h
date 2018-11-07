@@ -10,65 +10,76 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /**
- @brief      Subscribe API call builder.
- @discussion Class describe interface which provide access to various subscription endpoints.
- 
- @author Sergey Mamontov
- @since 4.5.4
- @copyright © 2009-2017 PubNub, Inc.
+ * @brief Subscribe API call builder.
+ *
+ * @author Serhii Mamontov
+ * @since 4.5.4
+ * @copyright © 2009-2017 PubNub, Inc.
  */
 @interface PNSubscribeAPIBuilder : PNAPICallBuilder
 
 
-///------------------------------------------------
-/// @name Channels and Channel Groups
-///------------------------------------------------
+#pragma mark - Channels and Channel Groups
 
 /**
- @brief      Stores reference on construction block which return \c builder which is responsible for access to
-             subscription API.
- @discussion On block call return block which consume list of \c channel name(s) from which \b PubNub client 
-             should subscribe.
- 
- @since 4.5.4
+ * @brief Channels subscription API access builder block.
+ *
+ * @param channels List of channel names on which client should try to subscribe.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.5.4
  */
-@property (nonatomic, readonly, strong) PNSubscribeChannelsOrGroupsAPIBuilder *(^channels)(NSArray<NSString *> *channels); 
+@property (nonatomic, readonly, strong) PNSubscribeChannelsOrGroupsAPIBuilder * (^channels)(NSArray<NSString *> *channels);
 
 /**
- @brief      Stores reference on construction block which return \c builder which is responsible for access to
-             subscription API.
- @discussion On block call return block which consume list of channel \c group name(s) from which \b PubNub 
-             client should subscribe.
- 
- @since 4.5.4
+ * @brief Channel groups subscription API access builder block.
+ *
+ * @param channelGroups List of channel group names on which client should try to subscribe.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.5.4
  */
-@property (nonatomic, readonly, strong) PNSubscribeChannelsOrGroupsAPIBuilder *(^channelGroups)(NSArray<NSString *> *channelGroups);
+@property (nonatomic, readonly, strong) PNSubscribeChannelsOrGroupsAPIBuilder * (^channelGroups)(NSArray<NSString *> *channelGroups);
 
 
-///------------------------------------------------
-/// @name Presence
-///------------------------------------------------
+#pragma mark - Presence
 
 /**
- @brief      Specify list of presence \c channel name(s).
- @discussion On block call return block which consume list of presence \c channel name(s) for which \b PubNub 
-             client should subscribe.
- 
- @since 4.5.4
+ * @brief Presence channel names addition block.
+ *
+ * @param channels List of channel names for which client should try to subscribe on presence
+ *     observing channels.
+ *
+ * @since 4.5.4
  */
-@property (nonatomic, readonly, strong) PNSubscribeAPIBuilder *(^presenceChannels)(NSArray<NSString *> *presenceChannels); 
+@property (nonatomic, readonly, strong) PNSubscribeAPIBuilder * (^presenceChannels)(NSArray<NSString *> *presenceChannels);
 
 
-///------------------------------------------------
-/// @name Execution
-///------------------------------------------------
+#pragma mark - Execution
 
 /**
- @brief  Perform composed API call.
- 
- @since 4.5.4
+ * @brief Perform API call.
+ *
+ * @since 4.5.4
  */
 @property (nonatomic, readonly, strong) dispatch_block_t perform;
+
+
+#pragma mark - Misc
+
+/**
+ * @brief Arbitrary query parameters addition block.
+ *
+ * @param params List of arbitrary percent encoded query parameters which should be sent along with
+ *     original API call.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.8.2
+ */
+@property (nonatomic, readonly, strong) PNSubscribeAPIBuilder * (^queryParam)(NSDictionary *params);
 
 #pragma mark -
 

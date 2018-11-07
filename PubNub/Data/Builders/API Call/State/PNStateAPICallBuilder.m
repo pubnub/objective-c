@@ -1,7 +1,7 @@
 /**
- @author Sergey Mamontov
- @since 4.5.4
- @copyright © 2009-2017 PubNub, Inc.
+ * @author Serhii Mamontov
+ * @since 4.5.4
+ * @copyright © 2009-2017 PubNub, Inc.
  */
 #import "PNStateAPICallBuilder.h"
 #import "PNStateModificationAPICallBuilder.h"
@@ -20,7 +20,6 @@
 + (void)initialize {
     
     if (self == [PNStateAPICallBuilder class]) {
-        
         [self copyMethodsFromClasses:@[[PNStateModificationAPICallBuilder class], 
                                        [PNStateAuditAPICallBuilder class]]];
     }
@@ -29,13 +28,12 @@
 
 #pragma mark - Presence state manipulation
 
-- (PNStateModificationAPICallBuilder *(^)(void))set {
+- (PNStateModificationAPICallBuilder * (^)(void))set {
     
-    return ^PNStateModificationAPICallBuilder* {
-        
+    return ^PNStateModificationAPICallBuilder * {
         object_setClass(self, [PNStateModificationAPICallBuilder class]);
+
         [self setFlag:NSStringFromSelector(_cmd)];
-        
         return (PNStateModificationAPICallBuilder *)self;
     };
 }
@@ -43,13 +41,12 @@
 
 #pragma mark - Presence state audition
 
-- (PNStateAuditAPICallBuilder *(^)(void))audit {
+- (PNStateAuditAPICallBuilder * (^)(void))audit {
     
-    return ^PNStateAuditAPICallBuilder* {
-        
+    return ^PNStateAuditAPICallBuilder * {
         object_setClass(self, [PNStateAuditAPICallBuilder class]);
+
         [self setFlag:NSStringFromSelector(_cmd)];
-        
         return (PNStateAuditAPICallBuilder *)self;
     };
 }

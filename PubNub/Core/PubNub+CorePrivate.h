@@ -16,193 +16,184 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /**
- @brief      \b PubNub client core extension which expose private fields and methods to support other 
-             extensions.
- @discussion Core class manage client configuration as well as access to networking layer through which passed
-             request will be sent to \b PubNub service.
- 
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2009-2017 PubNub, Inc.
+ * @brief \b PubNub client core extension which expose private fields and methods to support other
+ * extensions.
+ *
+ * @discussion Core class manage client configuration as well as access to networking layer through
+ * which passed request will be sent to \b PubNub service.
+ *
+ * @author Serhii Mamontov
+ * @since 4.0
+ * @copyright © 2009-2017 PubNub, Inc.
  */
 @interface PubNub (Private)
 
 
-///------------------------------------------------
-/// @name Properties
-///------------------------------------------------
+#pragma mark - Properties
 
 /**
-@brief  Stores reference on active \b PubNub client configuration.
-
-@since 4.0
-*/
+ * @brief Current \b PubNub client configuration.
+ *
+ * @since 4.0
+ */
 @property (nonatomic, readonly, copy) PNConfiguration *configuration;
 
 /**
- @brief      Stores reference on unique instance identifier.
- @discussion Identifier used by presence service to track multiple clients which is configured for same 
-             \c uuid and trigger events like \c leave only if all client instances not subscribed for
-             particular channel. \c timeout event can be triggered only if all clients went \c offline 
-             (w/o unsubscription)
-
- @since 4.5.4
+ * @brief Unique instance identifier.
+ *
+ * @since 4.5.4
  */
 @property (nonatomic, readonly, copy) NSString *instanceID;
 
 /**
- @brief  Stores reference on instance which manage all subscribe loop logic and help to deliver updates from 
-         remote data objects live feed to the client.
- 
- @since 4.0
+ * @brief Subscription loop manager.
+ *
+ * @since 4.0
  */
 @property (nonatomic, readonly, strong) PNSubscriber *subscriberManager;
 
 /**
- @brief  Stores reference on instance which manage currently published message sequence number.
- 
- @since 4.5.2
+ * @brief Publish sequence manager.
+ *
+ * @since 4.5.2
  */
 @property (nonatomic, readonly, strong) PNPublishSequence *sequenceManager;
 
 /**
- @brief  Stores reference on instance which is responsible for cached client state management.
- 
- @since 4.0
+ * @brief Client's state manager to store user's state for chats and group.
+ *
+ * @since 4.0
  */
 @property (nonatomic, readonly, strong) PNClientState *clientStateManager;
 
 /**
- @brief  Stores reference on instance which is responsible for subscriber listeners management.
- 
- @since 4.0
+ * @brief Subscribe event listeners manager.
+ *
+ * @since 4.0
  */
 @property (nonatomic, readonly, strong) PNStateListener *listenersManager;
 
 /**
- @brief  Stores reference on instance which is responsible for presence heartbeat management.
- 
- @since 4.0
+ * @brief Client's presence heartbeat manager.
+ *
+ * @since 4.0
  */
 @property (nonatomic, readonly, strong) PNHeartbeat *heartbeatManager;
 
 /**
- @brief Stores reference on \b PubNub network manager configured to be used for 'subscription' API 
-        group with long-polling.
- 
- @since 4.0
+ * @brief Network manager configured to be used for 'subscription' API group with long-polling.
+ *
+ * @since 4.0
  */
 @property (nonatomic, strong, nullable) PNNetwork *subscriptionNetwork;
 
 /**
- @brief Stores reference on \b PubNub network manager configured to be used for 'non-subscription'
-        API group.
- 
- @since 4.0
+ * @brief Network manager configured to be used for 'non-subscription' API group.
+ *
+ * @since 4.0
  */
 @property (nonatomic, strong, nullable) PNNetwork *serviceNetwork;
 
 /**
- @brief  Stores reference on instance which is responsible for client telemetry gathering and sending.
- 
- @since 4.6.2
+ * @brief Client telemetry gather and publish manager.
+ *
+ * @since 4.6.2
  */
 @property (nonatomic, readonly, strong) PNTelemetry *telemetryManager;
 
 /**
- @brief  Stores reference about recent client state (whether it was connected or not).
- 
- @since 4.0
+ * @brief Recent client state (whether it was connected or not).
+ *
+ * @since 4.0
  */
 @property (nonatomic, readonly, assign) PNStatusCategory recentClientStatus;
 
 /**
- @brief      Reference on queue on which completion/processing blocks will be called.
- @discussion At the end of each operation completion blocks will be called asynchronously on provided queue.
- 
- @default    By default all callback blocks will be called on main queue (\c dispatch_get_main_queue()).
- 
- @since 4.0
+ * @brief Queue on which completion / processing blocks will be called.
+ *
+ * @since 4.0
  */
 @property (nonatomic, readonly, strong) dispatch_queue_t callbackQueue;
 
 
-///------------------------------------------------
-/// @name Operation processing
-///------------------------------------------------
+#pragma mark - Operation processing
 
 /**
- @brief  Compose request to \b PubNub network basing on operation type and passed \c parameters.
-
- @param operationType One of \b PNOperationType enum fields which represent type of operation which should be 
-                      issued to \b PubNub network.
- @param parameters    Resource and query path fields wrapped into object.
- @param block         Reference on operation processing completion block.
-
- @since 4.0
+ * @brief Compose request to \b PubNub network basing on operation type and passed \c parameters.
+ *
+ * @param operationType One of \b PNOperationType enum fields which represent type of operation
+ *     which should be issued to \b PubNub network.
+ * @param parameters Resource and query path fields wrapped into object.
+ * @param block Operation processing completion block.
+ *
+ * @since 4.0
  */
-- (void)processOperation:(PNOperationType)operationType withParameters:(PNRequestParameters *)parameters
+- (void)processOperation:(PNOperationType)operationType
+          withParameters:(PNRequestParameters *)parameters
          completionBlock:(nullable id)block;
 
 /**
- @brief  Compose request to \b PubNub network basing on operation type and passed \c parameters.
-
- @param operationType One of \b PNOperationType enum fields which represent type of operation which be issued 
-                      to \b PubNub network.
- @param parameters    Resource and query path fields wrapped into object.
- @param data          Reference on data which should be pushed to \b PubNub network.
- @param block         Reference on operation processing completion block.
-
- @since 4.0
+ * @brief Compose request to \b PubNub network basing on operation type and passed \c parameters.
+ *
+ * @param operationType One of \b PNOperationType enum fields which represent type of operation
+ *     which be issued to \b PubNub network.
+ * @param parameters Resource and query path fields wrapped into object.
+ * @param data Data which should be pushed to \b PubNub network.
+ * @param block Operation processing completion block.
+ *
+ * @since 4.0
  */
-- (void)processOperation:(PNOperationType)operationType withParameters:(PNRequestParameters *)parameters 
-                    data:(nullable NSData *)data completionBlock:(nullable id)block;
+- (void)processOperation:(PNOperationType)operationType
+          withParameters:(PNRequestParameters *)parameters
+                    data:(nullable NSData *)data
+         completionBlock:(nullable id)block;
 
 
-///------------------------------------------------
-/// @name Operation information
-///------------------------------------------------
+#pragma mark - Operation information
 
 /**
- @brief  Calculate actual size of packet for passed \c operationType which will be sent to \b PubNub network.
- 
- @param operationType One of \b PNOperationType enum fields which specify for what kind of operation packet 
-                      size should be calculated.
- @param parameters    List of passed parameters which should be passed to URL builder.
- @param data          Data which can be pushed along with request to \b PubNub network if required.
- 
- @return Size of the packet which include request string, host, headers and HTTP post body.
- 
- @since 4.0
+ * @brief Calculate actual size of packet for passed \c operationType which will be sent to
+ * \b PubNub network.
+ *
+ * @param operationType One of \b PNOperationType enum fields which specify for what kind of
+ *     operation packet size should be calculated.
+ * @param parameters List of passed parameters which should be passed to URL builder.
+ * @param data Data which can be pushed along with request to \b PubNub network if required.
+ *
+ * @return Size of the packet which include request string, host, headers and HTTP post body.
+ *
+ * @since 4.0
  */
 - (NSInteger)packetSizeForOperation:(PNOperationType)operationType
-                     withParameters:(PNRequestParameters *)parameters data:(NSData *)data;
+                     withParameters:(PNRequestParameters *)parameters
+                               data:(NSData *)data;
 
 /**
- @brief  Add available client information to object instance subclassed from \b PNResult (\b PNStatus)
- 
- @param result Reference on object which should be updated with client information.
- 
- @since 4.0
+ * @brief Add available client information to object instance subclassed from \b PNResult
+ * (\b PNStatus)
+ *
+ * @param result Reference on object which should be updated with client information.
+ *
+ * @since 4.0
  */
 - (void)appendClientInformation:(PNResult *)result;
 
 
-///------------------------------------------------
-/// @name Events notification
-///------------------------------------------------
+#pragma mark - Events notification
 
 /**
- @brief  Notify user about processing results by calling completion block with specified result and status on 
-         callback queue.
-
- @param block  Reference on completion block which has been passed by user during API call.
- @param result Reference on API request processing results.
- @param status Reference on API request processing status (mostly reports about errors).
-
- @since 4.0
+ * @brief Notify user about processing results by calling completion block with specified result and
+ * status on callback queue.
+ *
+ * @param block Completion block which has been passed by user during API call.
+ * @param result API request processing results.
+ * @param status API request processing status (mostly reports about errors).
+ *
+ * @since 4.0
  */
-- (void)callBlock:(nullable id)block status:(BOOL)callingStatusBlock withResult:(nullable PNResult *)result
+- (void)callBlock:(nullable id)block
+           status:(BOOL)callingStatusBlock
+       withResult:(nullable PNResult *)result
         andStatus:(nullable PNStatus *)status;
 
 #pragma mark -
