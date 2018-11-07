@@ -1,3 +1,6 @@
+07-11-2018 - cc3e18c - 4.8.2
+. added ability to set arbitrary query parameters during API call.
+
 21-06-2018 - 9215030 - 4.8.1
 . changed client's data storage on macOS from Keychain to file-based.
 
