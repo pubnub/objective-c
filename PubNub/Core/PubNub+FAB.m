@@ -1,7 +1,7 @@
 /**
  @author Sergey Mamontov
  @since 4.2.2
- @copyright © 2009-2016 PubNub, Inc.
+ @copyright © 2010-2018 PubNub, Inc.
  */
 #import "PubNub+FAB.h"
 #import "PNConfiguration.h"

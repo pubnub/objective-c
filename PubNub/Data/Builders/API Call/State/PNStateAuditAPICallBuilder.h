@@ -8,7 +8,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @author Serhii Mamontov
  * @since 4.5.4
- * @copyright © 2009-2017 PubNub, Inc.
+ * @copyright © 2010-2018 PubNub, Inc.
  */
 @interface PNStateAuditAPICallBuilder : PNStateAPICallBuilder
 
@@ -18,7 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Unique user identifier addition block.
  *
- * @param uuid Unique user identifier for which state should be retrieved.
+ * @param uuid Unique user identifier for which state should be retrieved. Current \b {PubNub} user
+ *     id will be used by default if not set or set to \c nil.
  *
  * @return API call configuration builder.
  *
@@ -33,9 +34,23 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @return API call configuration builder.
  *
- * @since 4.5.4
+ * @deprecated 4.8.3
  */
-@property (nonatomic, readonly, strong) PNStateAuditAPICallBuilder * (^channel)(NSString *channel);
+@property (nonatomic, readonly, strong) PNStateAuditAPICallBuilder * (^channel)(NSString *channel)
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since 4.8.3. Please use 'channels' "
+                             "method instead.");
+
+/**
+ * @brief Channel names addition block.
+ *
+ * @param channel List of the channel names from which state information for \c uuid will be
+ *     pulled out.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.8.3
+ */
+@property (nonatomic, readonly, strong) PNStateAuditAPICallBuilder * (^channels)(NSArray<NSString *> *channels);
 
 /**
  * @brief Channel group name addition block.
@@ -45,9 +60,23 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @return API call configuration builder.
  *
- * @since 4.5.4
+ * @deprecated 4.8.3
  */
-@property (nonatomic, readonly, strong) PNStateAuditAPICallBuilder * (^channelGroup)(NSString *channelGroup);
+@property (nonatomic, readonly, strong) PNStateAuditAPICallBuilder * (^channelGroup)(NSString *channelGroup)
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since 4.8.3. Please use 'channelGroups' "
+                             "method instead.");
+
+/**
+ * @brief Channel group names addition block.
+ *
+ * @param channelGroup List of channel group names from which state information for \c uuid will be
+ *     pulled out.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.8.3
+ */
+@property (nonatomic, readonly, strong) PNStateAuditAPICallBuilder * (^channelGroups)(NSArray<NSString *> *channelGroups);
 
 
 #pragma mark - Execution
@@ -59,7 +88,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @since 4.5.4
  */
-@property (nonatomic, readonly, strong) void(^performWithCompletion)(PNChannelStateCompletionBlock block);
+@property (nonatomic, readonly, strong) void(^performWithCompletion)(PNGetStateCompletionBlock block);
 
 
 #pragma mark - Misc

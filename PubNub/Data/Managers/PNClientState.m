@@ -1,7 +1,7 @@
 /**
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2017 PubNub, Inc.
+ @copyright © 2010-2018 PubNub, Inc.
  */
 #import "PNClientState.h"
 #import "PubNub+CorePrivate.h"
@@ -147,12 +147,17 @@ NS_ASSUME_NONNULL_END
     }
 }
 
-- (void)setState:(NSDictionary<NSString *, id> *)state forObject:(NSString *)object {
+- (void)setState:(nullable NSDictionary<NSString *, id> *)state
+      forObjects:(NSArray<NSString *> *)objects {
 
     dispatch_barrier_async(self.resourceAccessQueue, ^{
-        
-        if (state.count) { self.stateCache[object] = state; }
-        else { [self.stateCache removeObjectForKey:object]; }
+        for (NSString *object in objects) {
+            if (state.count) {
+                self.stateCache[object] = state;
+            } else {
+                [self.stateCache removeObjectForKey:object];
+            }
+        }
     });
 }
 

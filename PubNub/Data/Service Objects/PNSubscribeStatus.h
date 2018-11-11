@@ -9,7 +9,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2017 PubNub, Inc.
+ @copyright © 2010-2018 PubNub, Inc.
  */
 @interface PNSubscriberData : PNServiceData
 
@@ -31,22 +31,6 @@ NS_ASSUME_NONNULL_BEGIN
  @since 4.5.2
  */
 @property (nonatomic, nullable, readonly, strong) NSString *subscription;
-
-/**
- @brief  Name of regular channel or channel group.
- 
- @since 4.0
- */
-@property (nonatomic, nullable, readonly, strong) NSString *subscribedChannel 
-          DEPRECATED_MSG_ATTRIBUTE("Property will be removed soon. Use 'subscription' property instead.");
-
-/**
- @brief  Name of channel in case if \c -subscribedChannel represent channel group.
- 
- @since 4.0
- */
-@property (nonatomic, nullable, readonly, strong) NSString *actualChannel 
-          DEPRECATED_MSG_ATTRIBUTE("Property will be removed soon. Use 'channel' property instead.");
 
 /**
  @brief  Time at which event arrived.
@@ -73,7 +57,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2017 PubNub, Inc.
+ @copyright © 2010-2018 PubNub, Inc.
  */
 @interface PNSubscribeStatus : PNErrorStatus
 

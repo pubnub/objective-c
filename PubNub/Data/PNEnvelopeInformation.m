@@ -1,7 +1,7 @@
 /**
  @author Sergey Mamontov
  @since 4.3.0
- @copyright © 2009-15 PubNub Inc.
+ @copyright © 2010-2018 PubNub Inc.
  */
 #import "PNEnvelopeInformation.h"
 #import "PNJSON.h"

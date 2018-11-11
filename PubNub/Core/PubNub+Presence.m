@@ -1,7 +1,7 @@
 /**
  * @author Serhii Mamontov
  * @since 4.0
- * @copyright © 2009-2017 PubNub, Inc.
+ * @copyright © 2010-2018 PubNub, Inc.
  */
 #import "PubNub+PresencePrivate.h"
 #import "PNAPICallBuilder+Private.h"
@@ -361,7 +361,7 @@ NS_ASSUME_NONNULL_END
 
     if (states != nil) {
         for (NSString *object in allPresenceObjects) {
-            [self.clientStateManager setState:states[object] forObject:object];
+            [self.clientStateManager setState:states[object] forObjects:@[object]];
         }
     }
 
