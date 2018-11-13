@@ -8,7 +8,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @author Serhii Mamontov
  * @since 4.5.4
- * @copyright © 2009-2017 PubNub, Inc.
+ * @copyright © 2010-2018 PubNub, Inc.
  */
 @interface PNStateModificationAPICallBuilder : PNStateAPICallBuilder
 
@@ -18,7 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Unique user identifier addition block.
  *
- * @param uuid Unique user identifier for which state should be bound.
+ * @param uuid Unique user identifier for which state should be bound. Current \b {PubNub} user id
+ *     will be used by default if not set or set to \c nil.
  *
  * @return API call configuration builder.
  *
@@ -41,9 +42,20 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @param channel Name of the channel which will store provided state information for \c uuid.
  *
- * @since 4.5.4
+ * @deprecated 4.8.3
  */
-@property (nonatomic, readonly, strong) PNStateModificationAPICallBuilder * (^channel)(NSString *channel);
+@property (nonatomic, readonly, strong) PNStateModificationAPICallBuilder * (^channel)(NSString *channel)
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since 4.8.3. Please use 'channels' "
+                             "method instead.");
+
+/**
+ * @brief Channel names addition block.
+ *
+ * @param channel List of the channel names which will store provided state information for \c uuid.
+ *
+ * @since 4.8.3
+ */
+@property (nonatomic, readonly, strong) PNStateModificationAPICallBuilder * (^channels)(NSArray<NSString *> *channels);
 
 /**
  * @brief Channel group name addition block.
@@ -51,9 +63,21 @@ NS_ASSUME_NONNULL_BEGIN
  * @param channelGroup Name of channel group which will store provided state information for
  *     \c uuid.
  *
- * @since 4.5.4
+ * @deprecated 4.8.3
  */
-@property (nonatomic, readonly, strong) PNStateModificationAPICallBuilder * (^channelGroup)(NSString *channelGroup);
+@property (nonatomic, readonly, strong) PNStateModificationAPICallBuilder * (^channelGroup)(NSString *channelGroup)
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since 4.8.3. Please use 'channelGroups' "
+                             "method instead.");
+
+/**
+ * @brief Channel group names addition block.
+ *
+ * @param channelGroups List of channel group names which will store provided state information for
+ *     \c uuid.
+ *
+ * @since 4.8.3
+ */
+@property (nonatomic, readonly, strong) PNStateModificationAPICallBuilder * (^channelGroups)(NSArray<NSString *> *channelGroups);
 
 
 #pragma mark - Execution

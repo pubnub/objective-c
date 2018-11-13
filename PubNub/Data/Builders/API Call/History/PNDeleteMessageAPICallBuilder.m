@@ -1,7 +1,7 @@
 /**
  * @author Serhii Mamontov
  * @since 4.7.0
- * @copyright © 2009-2017 PubNub, Inc.
+ * @copyright © 2010-2018 PubNub, Inc.
  */
 #import "PNDeleteMessageAPICallBuilder.h"
 #import "PNAPICallBuilder+Private.h"

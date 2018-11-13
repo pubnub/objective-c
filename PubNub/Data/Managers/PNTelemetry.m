@@ -1,7 +1,7 @@
 /**
  @author Sergey Mamontov
  @since 4.6.1
- @copyright © 2009-2017 PubNub, Inc.
+ @copyright © 2010-2018 PubNub, Inc.
  */
 #import "PNTelemetry.h"
 #import "PNPrivateStructures.h"

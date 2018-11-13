@@ -3,7 +3,7 @@
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2017 PubNub, Inc.
+ @copyright © 2010-2018 PubNub, Inc.
  */
 #import "PNStructures.h"
 
@@ -21,7 +21,7 @@ extern NSString * const kPNConfigurationUUIDKey;
 
  @since 4.0
  */
-static NSString * const PNOperationTypeStrings[24] = {
+static NSString * const PNOperationTypeStrings[25] = {
     [PNSubscribeOperation] = @"Subscribe",
     [PNUnsubscribeOperation] = @"Unsubscribe",
     [PNPublishOperation] = @"Publish",
@@ -34,6 +34,7 @@ static NSString * const PNOperationTypeStrings[24] = {
     [PNHereNowForChannelGroupOperation] = @"Here Now for Channel Group",
     [PNHeartbeatOperation] = @"Heartbeat",
     [PNSetStateOperation] = @"Set State",
+    [PNGetStateOperation] = @"Get State for Channels and / or Channel Groups",
     [PNStateForChannelOperation] = @"Get State for Channel",
     [PNStateForChannelGroupOperation] = @"Get State for Channel Group",
     [PNAddChannelsToGroupOperation] = @"Add Channels To Group",
@@ -48,13 +49,14 @@ static NSString * const PNOperationTypeStrings[24] = {
     [PNTimeOperation] = @"Time",
 };
 
-static NSString * const PNOperationResultClasses[24] = {
+static NSString * const PNOperationResultClasses[25] = {
     [PNHistoryOperation] = @"PNHistoryResult",
     [PNHistoryForChannelsOperation] = @"PNHistoryResult",
     [PNWhereNowOperation] = @"PNPresenceWhereNowResult",
     [PNHereNowGlobalOperation] = @"PNPresenceGlobalHereNowResult",
     [PNHereNowForChannelOperation] = @"PNPresenceChannelHereNowResult",
     [PNHereNowForChannelGroupOperation] = @"PNPresenceChannelGroupHereNowResult",
+    [PNGetStateOperation] = @"PNClientStateGetResult",
     [PNStateForChannelOperation] = @"PNChannelClientStateResult",
     [PNStateForChannelGroupOperation] = @"PNChannelGroupClientStateResult",
     [PNChannelGroupsOperation] = @"PNChannelGroupsResult",
@@ -63,7 +65,7 @@ static NSString * const PNOperationResultClasses[24] = {
     [PNTimeOperation] = @"PNTimeResult",
 };
 
-static NSString * const PNOperationStatusClasses[24] = {
+static NSString * const PNOperationStatusClasses[25] = {
     [PNSubscribeOperation] = @"PNSubscribeStatus",
     [PNUnsubscribeOperation] = @"PNAcknowledgmentStatus",
     [PNPublishOperation] = @"PNPublishStatus",
@@ -76,6 +78,7 @@ static NSString * const PNOperationStatusClasses[24] = {
     [PNHereNowForChannelGroupOperation] = @"PNErrorStatus",
     [PNHeartbeatOperation] = @"PNAcknowledgmentStatus",
     [PNSetStateOperation] = @"PNClientStateUpdateStatus",
+    [PNGetStateOperation] = @"PNErrorStatus",
     [PNStateForChannelOperation] = @"PNErrorStatus",
     [PNStateForChannelGroupOperation] = @"PNErrorStatus",
     [PNAddChannelsToGroupOperation] = @"PNAcknowledgmentStatus",

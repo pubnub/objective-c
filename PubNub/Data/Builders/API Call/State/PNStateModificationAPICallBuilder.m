@@ -1,7 +1,7 @@
 /**
  * @author Serhii Mamontov
  * @since 4.5.4
- * @copyright © 2009-2017 PubNub, Inc.
+ * @copyright © 2010-2018 PubNub, Inc.
  */
 #import "PNStateModificationAPICallBuilder.h"
 #import "PNAPICallBuilder+Private.h"
@@ -36,9 +36,16 @@
 }
 
 - (PNStateModificationAPICallBuilder * (^)(NSString *channel))channel {
-    
+
     return ^PNStateModificationAPICallBuilder * (NSString *channel) {
-        [self setValue:channel forParameter:NSStringFromSelector(_cmd)];
+        return self.channels(@[channel]);
+    };
+}
+
+- (PNStateModificationAPICallBuilder * (^)(NSArray<NSString *> *channels))channels {
+
+    return ^PNStateModificationAPICallBuilder * (NSArray<NSString *> *channels) {
+        [self setValue:channels forParameter:NSStringFromSelector(_cmd)];
         return self;
     };
 }
@@ -46,7 +53,14 @@
 - (PNStateModificationAPICallBuilder * (^)(NSString *channelGroup))channelGroup {
     
     return ^PNStateModificationAPICallBuilder * (NSString *channelGroup) {
-        [self setValue:channelGroup forParameter:NSStringFromSelector(_cmd)];
+        return self.channelGroups(@[channelGroup]);
+    };
+}
+
+- (PNStateModificationAPICallBuilder * (^)(NSArray<NSString *> *channelGroups))channelGroups {
+
+    return ^PNStateModificationAPICallBuilder * (NSArray<NSString *> *channelGroups) {
+        [self setValue:channelGroups forParameter:NSStringFromSelector(_cmd)];
         return self;
     };
 }

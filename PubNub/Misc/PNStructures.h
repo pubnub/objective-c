@@ -3,7 +3,7 @@
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2017 PubNub, Inc.
+ @copyright © 2010-2018 PubNub, Inc.
  */
 #import <Foundation/Foundation.h>
 #import "PNDefines.h"
@@ -11,38 +11,15 @@
 
 #pragma mark Class forward
 
-@class PNPresenceChannelGroupHereNowResult, PNChannelGroupClientStateResult, PNPresenceChannelHereNowResult; 
-@class PNPresenceGlobalHereNowResult, PNAPNSEnabledChannelsResult, PNChannelGroupChannelsResult;
-@class PNPresenceWhereNowResult, PNChannelClientStateResult, PNClientStateUpdateStatus;
-@class PNAcknowledgmentStatus, PNChannelGroupsResult, PNHistoryResult, PNAPICallBuilder, PNPublishStatus;
-@class PNErrorStatus, PNTimeResult, PNResult, PNStatus;
+@class PNPresenceChannelGroupHereNowResult, PNChannelGroupClientStateResult;
+@class PNPresenceChannelHereNowResult, PNPresenceGlobalHereNowResult, PNAPNSEnabledChannelsResult;
+@class PNChannelGroupChannelsResult, PNPresenceWhereNowResult, PNChannelClientStateResult;
+@class PNClientStateGetResult, PNClientStateUpdateStatus, PNAcknowledgmentStatus;
+@class PNChannelGroupsResult, PNHistoryResult, PNAPICallBuilder, PNPublishStatus, PNErrorStatus;
+@class PNTimeResult, PNResult, PNStatus;
 
 #ifndef PNStructures_h
 #define PNStructures_h
-
-/**
- @breif      Description of define to shorten builder constructors declaration.
- @discussion Define describe block with specified \c protocol which provide interface for concrete API methods
-             family.
- 
- @since 4.5.4
- 
- @param _protocol_ Reference on protocol for which \c builder should provide interface.
- */
-#define PNBuilder(_protocol_) PNBuilderWithArgument(_protocol_, void)
-
-/**
- @breif      Description of define to shorten builder constructors declaration.
- @discussion Define describe block with specified \c protocol which provide interface for concrete API methods
-             family.
- 
- @since 4.5.4
- 
- @param _protocol_ Reference on protocol for which \c builder should provide interface.
- @param _argument_ Reference on argument type (including nullability) which is expected from user and will be
-                   passed later by builder to corresponding API call. 
- */
-#define PNBuilderWithArgument(_protocol_, _argument_) PNAPICallBuilder <_protocol_> * (^)( _argument_ )
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -244,6 +221,17 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
 typedef void(^PNSetStateCompletionBlock)(PNClientStateUpdateStatus *status);
 
 /**
+ * @brief Channels / channel groups channels state audition completion block.
+ *
+ * @param result Result object state audit request results.
+ * @param status Status instance which hold information about processing error.
+ *
+ * @since 4.8.3
+ */
+typedef void(^PNGetStateCompletionBlock)(PNClientStateGetResult * _Nullable result,
+                                         PNErrorStatus * _Nullable status);
+
+/**
  @brief  Channel state audition completion block.
  
  @param result Reference on result object which describe service response on channel state audit request.
@@ -433,6 +421,7 @@ typedef NS_ENUM(NSInteger, PNOperationType){
     PNHereNowForChannelGroupOperation,
     PNHeartbeatOperation,
     PNSetStateOperation,
+    PNGetStateOperation,
     PNStateForChannelOperation,
     PNStateForChannelGroupOperation,
     PNAddChannelsToGroupOperation,

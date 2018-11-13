@@ -11,7 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2017 PubNub, Inc.
+ @copyright © 2010-2018 PubNub, Inc.
  */
 @interface PNConfiguration : NSObject
 
@@ -189,21 +189,8 @@ NS_ASSUME_NONNULL_BEGIN
  
  @since 4.0
  */
-@property (nonatomic, assign, getter = shouldKeepTimeTokenOnListChange) BOOL keepTimeTokenOnListChange NS_SWIFT_NAME(keepTimeTokenOnListChange);
-
-/**
- @brief      Stores whether client should restore subscription on remote data objects live feed after network 
-             connection restoring or not.
- @discussion If set to \c YES as soon as network connection will be restored client will restore subscription
-             to previously subscribed remote data objects live feeds.
- 
- @default    By default client use \b YES to restore subscription on remote data objects live feeds.
- 
- @since 4.0
- */
-@property (nonatomic, assign, getter = shouldRestoreSubscription) BOOL restoreSubscription NS_SWIFT_NAME(restoreSubscription) 
-          DEPRECATED_MSG_ATTRIBUTE("This option will be deprecated in upcoming releases. Client will restore "
-                                   "it's subscription after network issues automatically.");
+@property (nonatomic, assign, getter = shouldKeepTimeTokenOnListChange) BOOL keepTimeTokenOnListChange
+    NS_SWIFT_NAME(keepTimeTokenOnListChange);
 
 /**
  @brief      Stores whether client should try to catch up for events which occurred on previously subscribed 
@@ -219,7 +206,8 @@ NS_ASSUME_NONNULL_BEGIN
  
  @since 4.0
  */
-@property (nonatomic, assign, getter = shouldTryCatchUpOnSubscriptionRestore) BOOL catchUpOnSubscriptionRestore NS_SWIFT_NAME(catchUpOnSubscriptionRestore);
+@property (nonatomic, assign, getter = shouldTryCatchUpOnSubscriptionRestore) BOOL catchUpOnSubscriptionRestore
+    NS_SWIFT_NAME(catchUpOnSubscriptionRestore);
 
 /**
  @brief      Stores reference on group identifier which is used to share request cache between application 

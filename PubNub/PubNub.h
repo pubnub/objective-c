@@ -18,6 +18,7 @@
 #import "PNClientStateUpdateStatus.h"
 #import "PNPresenceWhereNowResult.h"
 #import "PNAcknowledgmentStatus.h"
+#import "PNClientStateGetResult.h"
 #import "PNChannelGroupsResult.h"
 #import "PNClientInformation.h"
 #import "PNSubscriberResults.h"

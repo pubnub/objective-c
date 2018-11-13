@@ -1,7 +1,7 @@
 /**
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2017 PubNub, Inc.
+ @copyright © 2010-2018 PubNub, Inc.
  */
 #import "PNSubscribeStatus+Private.h"
 #import "PNEnvelopeInformation.h"
@@ -24,16 +24,6 @@
 - (NSString *)subscription {
     
     return self.serviceData[@"subscription"];
-}
-
-- (NSString *)subscribedChannel {
-    
-    return self.subscription;
-}
-
-- (NSString *)actualChannel {
-    
-    return self.channel;
 }
 
 - (NSNumber *)timetoken {

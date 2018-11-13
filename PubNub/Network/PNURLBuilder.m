@@ -1,7 +1,7 @@
 /**
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2017 PubNub, Inc.
+ @copyright © 2010-2018 PubNub, Inc.
  */
 #import "PNURLBuilder.h"
 #import "PNRequestParameters.h"
@@ -15,7 +15,7 @@
  
  @since 4.0
  */
-static NSString * const PNOperationRequestTemplate[24] = {
+static NSString * const PNOperationRequestTemplate[25] = {
     [PNSubscribeOperation] = @"/v2/subscribe/{sub-key}/{channels}/0",
     [PNUnsubscribeOperation] = @"/v2/presence/sub_key/{sub-key}/channel/{channels}/leave",
     [PNPublishOperation] = @"/publish/{pub-key}/{sub-key}/0/{channel}/0/{message}",
@@ -28,6 +28,7 @@ static NSString * const PNOperationRequestTemplate[24] = {
     [PNHereNowForChannelGroupOperation] = @"/v2/presence/sub-key/{sub-key}/channel/{channel}",
     [PNHeartbeatOperation] = @"/v2/presence/sub-key/{sub-key}/channel/{channels}/heartbeat",
     [PNSetStateOperation] = @"/v2/presence/sub-key/{sub-key}/channel/{channel}/uuid/{uuid}/data",
+    [PNGetStateOperation] = @"/v2/presence/sub-key/{sub-key}/channel/{channel}/uuid/{uuid}",
     [PNStateForChannelOperation] = @"/v2/presence/sub-key/{sub-key}/channel/{channel}/uuid/{uuid}",
     [PNStateForChannelGroupOperation] = @"/v2/presence/sub-key/{sub-key}/channel/{channel}/uuid/{uuid}",
     [PNAddChannelsToGroupOperation] = @"/v1/channel-registration/sub-key/{sub-key}/channel-group/{channel-group}",
