@@ -1,9 +1,16 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.8.2"
+version: "4.8.3"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Added ability to get / set presence state for multiple channel / groups (at once)."
+        type: feature
+    date: Nov 13, 18
+    version: v4.8.3
   -
     changes:
       -
