@@ -7,7 +7,7 @@
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2017 PubNub, Inc.
+ @copyright © 2010-2018 PubNub, Inc.
  */
 @interface PNClientStateUpdateData : PNChannelClientStateData
 
@@ -23,7 +23,7 @@
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2017 PubNub, Inc.
+ @copyright © 2010-2018 PubNub, Inc.
  */
 @interface PNClientStateUpdateStatus : PNErrorStatus
 

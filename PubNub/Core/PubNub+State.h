@@ -8,7 +8,7 @@
 #pragma mark Class forward
 
 @class PNChannelGroupClientStateResult, PNChannelClientStateResult, PNClientStateUpdateStatus,
-       PNErrorStatus;
+       PNClientStateGetResult, PNErrorStatus;
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @author Serhii Mamontov
  * @since 4.0
- * @copyright © 2009-2017 PubNub, Inc.
+ * @copyright © 2010-2018 PubNub, Inc.
  */
 @interface PubNub (State)
 

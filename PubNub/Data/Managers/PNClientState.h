@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2017 PubNub, Inc.
+ @copyright © 2010-2018 PubNub, Inc.
  */
 @interface PNClientState : NSObject
 
@@ -91,11 +91,12 @@ NS_ASSUME_NONNULL_BEGIN
  @brief  Overwrite client state information bound to specified \c object.
 
  @param state  State which should replace cached information.
- @param object Name of the object for which new data should be applied.
+ @param objects List of object names for which new data should be applied.
 
- @since 4.0
+ @since 4.8.3
  */
-- (void)setState:(nullable NSDictionary<NSString *, id> *)state forObject:(NSString *)object;
+- (void)setState:(nullable NSDictionary<NSString *, id> *)state
+      forObjects:(NSArray<NSString *> *)objects;
 
 /**
  @brief  Clear client state cache from specified objects data.

@@ -1,3 +1,6 @@
+13-11-2018 - 524e722 - 4.8.3
+. added ability to get / set presence state for multiple channel / groups (at once).
+
 07-11-2018 - cc3e18c - 4.8.2
 . added ability to set arbitrary query parameters during API call.
 

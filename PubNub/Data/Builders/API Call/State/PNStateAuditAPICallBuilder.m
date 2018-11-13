@@ -1,7 +1,7 @@
 /**
  * @author Serhii Mamontov
  * @since 4.5.4
- * @copyright © 2009-2017 PubNub, Inc.
+ * @copyright © 2010-2018 PubNub, Inc.
  */
 #import "PNStateAuditAPICallBuilder.h"
 #import "PNAPICallBuilder+Private.h"
@@ -28,9 +28,16 @@
 }
 
 - (PNStateAuditAPICallBuilder * (^)(NSString *channel))channel {
-    
+
     return ^PNStateAuditAPICallBuilder * (NSString *channel) {
-        [self setValue:channel forParameter:NSStringFromSelector(_cmd)];
+        return self.channels(@[channel]);
+    };
+}
+
+- (PNStateAuditAPICallBuilder * (^)(NSArray<NSString *> *channels))channels {
+
+    return ^PNStateAuditAPICallBuilder * (NSArray<NSString *> *channels) {
+        [self setValue:channels forParameter:NSStringFromSelector(_cmd)];
         return self;
     };
 }
@@ -38,7 +45,14 @@
 - (PNStateAuditAPICallBuilder * (^)(NSString *channelGroup))channelGroup {
     
     return ^PNStateAuditAPICallBuilder * (NSString *channelGroup) {
-        [self setValue:channelGroup forParameter:NSStringFromSelector(_cmd)];
+        return self.channelGroups(@[channelGroup]);
+    };
+}
+
+- (PNStateAuditAPICallBuilder * (^)(NSArray<NSString *> *channelGroups))channelGroups {
+
+    return ^PNStateAuditAPICallBuilder * (NSArray<NSString *> *channelGroups) {
+        [self setValue:channelGroups forParameter:NSStringFromSelector(_cmd)];
         return self;
     };
 }
@@ -46,9 +60,9 @@
 
 #pragma mark - Execution
 
-- (void(^)(PNChannelStateCompletionBlock block))performWithCompletion {
+- (void(^)(PNGetStateCompletionBlock block))performWithCompletion {
     
-    return ^(PNChannelStateCompletionBlock block) {
+    return ^(PNGetStateCompletionBlock block) {
         [super performWithBlock:block];
     };
 }

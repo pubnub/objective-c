@@ -1,7 +1,7 @@
 /**
  @author Sergey Mamontov
  @since 4.0
- @copyright © 2009-2017 PubNub, Inc.
+ @copyright © 2010-2018 PubNub, Inc.
  */
 #import "PNSubscriber.h"
 #import "PNSubscribeStatus+Private.h"
@@ -1535,7 +1535,7 @@ NS_ASSUME_NONNULL_END
         // Check whether state has been changed for current client or not.
         if ([data.data.presence.uuid isEqualToString:self.client.configuration.uuid]) {
             
-            [self.client.clientStateManager setState:data.data.presence.state forObject:data.data.channel];
+            [self.client.clientStateManager setState:data.data.presence.state forObjects:@[data.data.channel]];
         }
     }
     [self.client.listenersManager notifyPresenceEvent:data];

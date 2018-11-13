@@ -1,7 +1,7 @@
 /**
  * @author SErhii Mamontov
  * @since 4.5.4
- * @copyright © 2009-2017 PubNub, Inc.
+ * @copyright © 2010-2018 PubNub, Inc.
  */
 #import "PNAPICallBuilder+Private.h"
 #import <objc/runtime.h>
