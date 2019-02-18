@@ -24,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PubNub (HistoryProtected)
 
 
-#pragma mark - History in frame with extended response
+#pragma mark - History audition
 
 /**
  * @brief Allow to fetch events from specified \c channel's history within specified time frame.
@@ -56,6 +56,23 @@ NS_ASSUME_NONNULL_BEGIN
           includeTimeToken:(nullable NSNumber *)shouldIncludeTimeToken
            queryParameters:(nullable NSDictionary *)queryParameters
             withCompletion:(PNHistoryCompletionBlock)block;
+
+/**
+ * @brief Allow to fetch number of messages for specified channels from specific dates (timetokens).
+ *
+ * @param channels List of channel names for which persist messages count should be fetched.
+ * @param timetokens List with timetokens, where each timetoken's position in correspond to target
+ *     \c channel location in channel names list.
+ * @param queryParameters List arbitrary query parameters which should be sent along with original
+ *     API call.
+ * @param block Messages count pull completion block.
+ *
+ * @since 4.8.4
+ */
+- (void)messageCountForChannels:(NSArray<NSString *> *)channels
+                     timetokens:(nullable NSArray<NSNumber *> *)timetokens
+                queryParameters:(nullable NSDictionary *)queryParameters
+                 withCompletion:(PNMessageCountCompletionBlock)block;
 
 
 #pragma mark - History manipulation
@@ -163,6 +180,28 @@ NS_ASSUME_NONNULL_END
     }];
     
     return ^PNDeleteMessageAPICallBuilder * {
+        return builder;
+    };
+}
+
+- (PNMessageCountAPICallBuilder * (^)(void))messageCounts {
+    
+    PNMessageCountAPICallBuilder *builder = nil;
+    builder = [PNMessageCountAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
+                                                                              NSDictionary *parameters) {
+        
+        NSArray<NSNumber *> *timetokens = parameters[NSStringFromSelector(@selector(timetokens))];
+        NSArray<NSString *> *channels = parameters[NSStringFromSelector(@selector(channels))];
+        NSDictionary *queryParam = parameters[@"queryParam"];
+        id block = parameters[@"block"];
+        
+        [self messageCountForChannels:channels
+                           timetokens:timetokens
+                      queryParameters:queryParam
+                       withCompletion:block];
+    }];
+    
+    return ^PNMessageCountAPICallBuilder * {
         return builder;
     };
 }
@@ -361,6 +400,62 @@ NS_ASSUME_NONNULL_END
         }
 
         [weakSelf handleHistoryResult:result withStatus:status completion:block];
+    }];
+}
+
+- (void)messageCountForChannels:(NSArray<NSString *> *)channels
+                     timetokens:(NSArray<NSNumber *> *)timetokens
+                queryParameters:(NSDictionary *)queryParameters
+                 withCompletion:(PNMessageCountCompletionBlock)block {
+    
+    PNRequestParameters *parameters = [PNRequestParameters new];
+    NSUInteger timetokensCount = timetokens.count;
+    NSNumber *timetoken = timetokens.firstObject;
+    
+    [parameters addQueryParameters:queryParameters];
+    
+    if (channels.count && (timetokensCount == 1 || timetokensCount == channels.count)) {
+        [parameters addPathComponent:[PNChannel namesForRequest:channels]
+                      forPlaceholder:@"{channels}"];
+    }
+    
+    if (timetokensCount > 0) {
+        if (timetokensCount == 1) {
+            [parameters addQueryParameter:[PNNumber timeTokenFromNumber:timetoken].stringValue
+                             forFieldName:@"timetoken"];
+        } else {
+            NSMutableArray *pubNubTimetokens = [NSMutableArray arrayWithCapacity:timetokensCount];
+            
+            for (NSNumber *timetoken in timetokens) {
+                [pubNubTimetokens addObject:[PNNumber timeTokenFromNumber:timetoken].stringValue];
+            }
+            
+            [parameters addQueryParameter:[pubNubTimetokens componentsJoinedByString:@","]
+                             forFieldName:@"channelsTimetoken"];
+        }
+    }
+    
+    PNLogAPICall(self.logger, @"<PubNub::API> Messages count fetch for '%@' channels%@%@.",
+        (channels != nil ? [channels componentsJoinedByString:@", "] : @"<error>"),
+        (timetokensCount == 1 ? [NSString stringWithFormat:@" starting from %@", timetoken] : @""),
+        (timetokensCount > 1 ? [NSString stringWithFormat:@" with per-channel starting point %@",
+                                [timetokens componentsJoinedByString:@","]] : @""));
+    
+    __weak __typeof(self) weakSelf = self;
+    [self processOperation:PNMessageCountOperation
+            withParameters:parameters
+           completionBlock:^(PNResult *result, PNStatus *status) {
+
+        if (status.isError) {
+            status.retryBlock = ^{
+                [weakSelf messageCountForChannels:channels
+                                       timetokens:timetokens
+                                  queryParameters:queryParameters
+                                   withCompletion:block];
+            };
+        }
+
+        [weakSelf callBlock:block status:NO withResult:(status ? nil : result) andStatus:status];
     }];
 }
 

@@ -776,7 +776,8 @@ NS_ASSUME_NONNULL_END
 
     dispatch_once(&onceToken, ^{
         _resultExpectingOperations = @[
-                   @(PNHistoryOperation), @(PNHistoryForChannelsOperation), @(PNWhereNowOperation), 
+                   @(PNHistoryOperation), @(PNHistoryForChannelsOperation),
+                   @(PNMessageCountOperation), @(PNWhereNowOperation),
                    @(PNHereNowGlobalOperation), @(PNHereNowForChannelOperation), 
                    @(PNHereNowForChannelGroupOperation), @(PNGetStateOperation),
                    @(PNStateForChannelOperation), @(PNStateForChannelGroupOperation),
@@ -796,8 +797,8 @@ NS_ASSUME_NONNULL_END
         NSArray<NSString *> *parserNames = @[
             @"PNChannelGroupAuditionParser", @"PNChannelGroupModificationParser",
             @"PNClientStateParser", @"PNErrorParser", @"PNHeartbeatParser", @"PNHistoryParser",
-            @"PNMessageDeleteParser", @"PNLeaveParser", @"PNMessagePublishParser",
-            @"PNPresenceHereNowParser", @"PNPresenceWhereNowParser",
+            @"PNMessageCountParser", @"PNMessageDeleteParser", @"PNLeaveParser",
+            @"PNMessagePublishParser", @"PNPresenceHereNowParser", @"PNPresenceWhereNowParser",
             @"PNPushNotificationsAuditParser", @"PNPushNotificationsStateModificationParser",
             @"PNSubscribeParser",@"PNTimeParser"];
         NSMutableDictionary *parsers = [NSMutableDictionary new];

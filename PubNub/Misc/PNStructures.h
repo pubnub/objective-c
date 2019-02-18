@@ -15,8 +15,8 @@
 @class PNPresenceChannelHereNowResult, PNPresenceGlobalHereNowResult, PNAPNSEnabledChannelsResult;
 @class PNChannelGroupChannelsResult, PNPresenceWhereNowResult, PNChannelClientStateResult;
 @class PNClientStateGetResult, PNClientStateUpdateStatus, PNAcknowledgmentStatus;
-@class PNChannelGroupsResult, PNHistoryResult, PNAPICallBuilder, PNPublishStatus, PNErrorStatus;
-@class PNTimeResult, PNResult, PNStatus;
+@class PNChannelGroupsResult, PNMessageCountResult, PNHistoryResult, PNAPICallBuilder;
+@class PNPublishStatus, PNErrorStatus, PNTimeResult, PNResult, PNStatus;
 
 #ifndef PNStructures_h
 #define PNStructures_h
@@ -139,6 +139,17 @@ typedef void(^PNHistoryCompletionBlock)(PNHistoryResult * _Nullable result, PNEr
  @since 4.7.0
  */
 typedef void(^PNMessageDeleteCompletionBlock)(PNAcknowledgmentStatus *status);
+
+/**
+ * @brief Messages count fetch completion block.
+ *
+ * @param result Result object which describe service response on messages count request.
+ * @param status Status instance which hold information about processing results.
+ *
+ * @since 4.8.4
+ */
+typedef void(^PNMessageCountCompletionBlock)(PNMessageCountResult * _Nullable result,
+                                             PNErrorStatus * _Nullable status);
 
 
 #pragma mark - Completion blocks :: Presence
@@ -415,6 +426,7 @@ typedef NS_ENUM(NSInteger, PNOperationType){
     PNHistoryOperation,
     PNHistoryForChannelsOperation,
     PNDeleteMessageOperation,
+    PNMessageCountOperation,
     PNWhereNowOperation,
     PNHereNowGlobalOperation,
     PNHereNowForChannelOperation,

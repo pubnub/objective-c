@@ -260,7 +260,7 @@ NS_ASSUME_NONNULL_END
 + (instancetype)clientWithConfiguration:(PNConfiguration *)configuration
                           callbackQueue:(dispatch_queue_t)callbackQueue {
     
-    dispatch_queue_t queue = (callbackQueue?: dispatch_get_main_queue());
+    dispatch_queue_t queue = (callbackQueue ?: dispatch_get_main_queue());
 
     if (@available(macOS 10.10, iOS 8.0, *)) {
         if (configuration.applicationExtensionSharedGroupIdentifier) {

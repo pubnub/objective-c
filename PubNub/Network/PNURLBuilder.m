@@ -15,13 +15,14 @@
  
  @since 4.0
  */
-static NSString * const PNOperationRequestTemplate[25] = {
+static NSString * const PNOperationRequestTemplate[26] = {
     [PNSubscribeOperation] = @"/v2/subscribe/{sub-key}/{channels}/0",
     [PNUnsubscribeOperation] = @"/v2/presence/sub_key/{sub-key}/channel/{channels}/leave",
     [PNPublishOperation] = @"/publish/{pub-key}/{sub-key}/0/{channel}/0/{message}",
     [PNHistoryOperation] = @"/v2/history/sub-key/{sub-key}/channel/{channel}",
     [PNHistoryForChannelsOperation] = @"/v3/history/sub-key/{sub-key}/channel/{channels}",
     [PNDeleteMessageOperation] = @"/v3/history/sub-key/{sub-key}/channel/{channel}",
+    [PNMessageCountOperation] = @"/v3/history/sub-key/{sub-key}/channels-with-messages/{channels}",
     [PNWhereNowOperation] = @"/v2/presence/sub-key/{sub-key}/uuid/{uuid}",
     [PNHereNowGlobalOperation] = @"/v2/presence/sub-key/{sub-key}",
     [PNHereNowForChannelOperation] = @"/v2/presence/sub-key/{sub-key}/channel/{channel}",
@@ -40,7 +41,7 @@ static NSString * const PNOperationRequestTemplate[25] = {
     [PNAddPushNotificationsOnChannelsOperation] = @"/v1/push/sub-key/{sub-key}/devices/{token}",
     [PNRemovePushNotificationsFromChannelsOperation] = @"/v1/push/sub-key/{sub-key}/devices/{token}",
     [PNRemoveAllPushNotificationsOperation] = @"/v1/push/sub-key/{sub-key}/devices/{token}/remove",
-    [PNTimeOperation] = @"/time/0",
+    [PNTimeOperation] = @"/time/0"
 };
 
 
