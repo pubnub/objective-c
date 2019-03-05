@@ -63,8 +63,9 @@
     
     NSArray<NSString *> *channels = @[[NSUUID UUID].UUIDString];
     NSDictionary<NSString *, NSArray<NSNumber *> *> *timetokensData = nil;
-    timetokensData = [self publishMessages:2 toChannels:channels];
-    NSNumber *timetoken = timetokensData[channels.firstObject].lastObject;
+    timetokensData = [self publishMessages:3 toChannels:channels];
+    NSArray<NSNumber *> *channelTimetokens = timetokensData[channels.firstObject];
+    NSNumber *timetoken = channelTimetokens[channelTimetokens.count - 2];
     NSDictionary *expected = @{ channels.firstObject: @(1) };
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
@@ -81,9 +82,10 @@
     
     NSArray<NSString *> *channels = @[[NSUUID UUID].UUIDString, [NSUUID UUID].UUIDString];
     NSDictionary<NSString *, NSArray<NSNumber *> *> *timetokensData = nil;
-    timetokensData = [self publishMessages:2 toChannels:channels];
-    NSNumber *timetoken = timetokensData[channels.firstObject].lastObject;
-    NSDictionary *expected = @{ channels.firstObject: @(1), channels.lastObject: @(2) };
+    timetokensData = [self publishMessages:3 toChannels:channels];
+    NSArray<NSNumber *> *channelTimetokens = timetokensData[channels.firstObject];
+    NSNumber *timetoken = channelTimetokens[channelTimetokens.count - 2];
+    NSDictionary *expected = @{ channels.firstObject: @(1), channels.lastObject: @(3) };
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         self.client.messageCounts().channels(channels).timetokens(@[timetoken])
@@ -99,9 +101,12 @@
     
     NSArray<NSString *> *channels = @[[NSUUID UUID].UUIDString, [NSUUID UUID].UUIDString];
     NSDictionary<NSString *, NSArray<NSNumber *> *> *timetokensData = nil;
-    timetokensData = [self publishMessages:2 toChannels:channels];
-    NSArray<NSNumber *> *timetokens = @[timetokensData[channels.firstObject].lastObject,
-                                        timetokensData[channels.lastObject].lastObject];
+    timetokensData = [self publishMessages:3 toChannels:channels];
+    NSArray<NSNumber *> *channelTimetokens1 = timetokensData[channels.firstObject];
+    NSArray<NSNumber *> *channelTimetokens2 = timetokensData[channels.lastObject];
+    NSNumber *timetoken1 = channelTimetokens1[channelTimetokens1.count - 2];
+    NSNumber *timetoken2 = channelTimetokens2[channelTimetokens2.count - 2];
+    NSArray<NSNumber *> *timetokens = @[timetoken1, timetoken2];
     NSDictionary *expected = @{ channels.firstObject: @(1), channels.lastObject: @(1) };
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
