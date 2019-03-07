@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import "PNDeleteMessageAPICallBuilder.h"
+#import "PNMessageCountAPICallBuilder.h"
 #import "PNHistoryAPICallBuilder.h"
 #import "PubNub+Core.h"
 
@@ -45,6 +46,15 @@ NS_ASSUME_NONNULL_BEGIN
  * @since 4.7.0
  */
 @property (nonatomic, readonly, strong) PNDeleteMessageAPICallBuilder * (^deleteMessage)(void);
+
+/**
+ * @brief Storage messages count audition API call builder.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.8.4
+ */
+@property (nonatomic, readonly, strong) PNMessageCountAPICallBuilder * (^messageCounts)(void);
 
 
 #pragma mark - Full history

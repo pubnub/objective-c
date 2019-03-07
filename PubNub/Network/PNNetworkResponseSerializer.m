@@ -116,8 +116,7 @@ NSString * const kPNNetworkErrorResponseDataKey = @"PNNetworkErrorResponseDataKe
             description = [NSString stringWithFormat:@"Request completed but unexpected data type "
                            "received in response: %@", [response MIMEType]];
             statusCode = NSURLErrorCannotDecodeContentData;
-        }
-        else if (response.statusCode != 200) {
+        } else if (response.statusCode != 200) {
             
             // Construct error description.
             description = [NSString stringWithFormat:@"Request failed: %@ (%ld)",
@@ -126,7 +125,9 @@ NSString * const kPNNetworkErrorResponseDataKey = @"PNNetworkErrorResponseDataKe
             statusCode = NSURLErrorBadServerResponse;
         }
         
-        if (description) { userInfo[NSLocalizedDescriptionKey] = description; }
+        if (description) {
+            userInfo[NSLocalizedDescriptionKey] = description;
+        }
     }
     
     if ([userInfo count]) {

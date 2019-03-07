@@ -18,6 +18,7 @@ end
 target 'iOS ObjC Tests' do
   platform :ios, "8.0"
   project 'Tests/PubNub Tests'
+  pod 'OCMock', '~> 3.4'
   pod "BeKindRewind"
   pod "PubNub", :path => "."
 end
@@ -32,6 +33,7 @@ end
 target 'OSX ObjC Tests' do
   platform :osx, '10.9'
   project 'Tests/PubNub Tests'
+  pod 'OCMock', '~> 3.4'
   pod "BeKindRewind"
   pod "PubNub", :path => "."
 end
@@ -39,6 +41,7 @@ end
 target 'tvOS ObjC Tests' do
   platform :tvos, '9.0'
   project 'Tests/PubNub Tests'
+  pod 'OCMock', '~> 3.4'
   pod "BeKindRewind"
   pod "PubNub", :path => "."
 end

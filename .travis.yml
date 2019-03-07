@@ -1,6 +1,7 @@
 language: objective-c
+osx_image: xcode10.1
+os: osx
 sudo: true
-osx_image: xcode9.3
 cache: 
   - bundler
   - cocoapods
@@ -13,22 +14,21 @@ env:
 
 matrix:
   include:
-    - env: NAME='[ObjC] iOS' SCHEME='iOS Tests (ObjC)' DESTINATION='platform=iOS Simulator,name=iPhone 7 Plus,OS=11.3'
-    - env: NAME='[ObjC] tvOS' SCHEME='tvOS Tests (ObjC)' DESTINATION='platform=tvOS Simulator,name=Apple TV 4K (at 1080p),OS=11.3'
+    - env: NAME='[ObjC] iOS' SCHEME='iOS Tests (ObjC)' DESTINATION='platform=iOS Simulator,name=iPhone 7 Plus,OS=12.1'
     - env: NAME='[ObjC] macOS' SCHEME='OSX Tests (ObjC)' DESTINATION='platform=macOS'
 
 before_install:
-  - sudo gem install cocoapods -v '1.5.0'
-  - sudo gem install xcpretty
   - sudo gem install xcpretty-travis-formatter
+  - sudo gem install cocoapods --pre
 
 script:
-  - set -o pipefail && xcodebuild -workspace ./PubNub.xcworkspace -scheme "${SCHEME}" -destination "${DESTINATION}" clean build test | xcpretty -f `xcpretty-travis-formatter`
+  - set -o pipefail
+  - xcodebuild -workspace ./PubNub.xcworkspace -scheme "${SCHEME}" -destination "${DESTINATION}" clean build test | xcpretty -f `xcpretty-travis-formatter`
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
 
 after_failure:
+ - cat -n ~/Library/Logs/scan/*
  - cat -n $TMPDIR/com.apple.dt.XCTest-status/Session*.log
  - cat -n ~/Library/Logs/DiagnosticReports/xctest*.crash
-
-notifications:
-  flowdock:
-    secure: kOxa/6eB6+bQumvYSh7yf/uPNQ5xRastjSkRbUrqVbYEiMiguCuoe8xkmU5JJxmNMpvFjYL9yowPo9LELMceVsWVflNEEWFQE5sJe9qifZu/SpOD8RUWfHmZ2jZBELmnLSDSAIxaAjQMb1LEedkBHGMVJknbb+DRs4fT31ilMUM=

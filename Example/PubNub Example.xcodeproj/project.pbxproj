@@ -342,13 +342,9 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputFileListPaths = (
-			);
 			inputPaths = (
 			);
 			name = "Cleanup CocoaPods scripts";
-			outputFileListPaths = (
-			);
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -360,13 +356,9 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputFileListPaths = (
-			);
 			inputPaths = (
 			);
 			name = "Cleanup CocoaPods scripts";
-			outputFileListPaths = (
-			);
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -379,7 +371,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-PubNub_Example/Pods-PubNub_Example-frameworks.sh",
+				"${SRCROOT}/../Pods/Target Support Files/Pods-PubNub_Example/Pods-PubNub_Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/PubNub-iOS/PubNub.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -388,7 +380,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PubNub_Example/Pods-PubNub_Example-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-PubNub_Example/Pods-PubNub_Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		C72A9617749671FFC3BCD85C /* [CP] Embed Pods Frameworks */ = {
@@ -397,7 +389,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-PubNub Mac Example/Pods-PubNub Mac Example-frameworks.sh",
+				"${SRCROOT}/../Pods/Target Support Files/Pods-PubNub Mac Example/Pods-PubNub Mac Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/PubNub-macOS/PubNub.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -406,7 +398,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PubNub Mac Example/Pods-PubNub Mac Example-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-PubNub Mac Example/Pods-PubNub Mac Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */

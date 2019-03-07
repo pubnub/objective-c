@@ -38,25 +38,30 @@
         
         NSMutableDictionary *errorData = [NSMutableDictionary new];
         if (response[@"message"] || response[@"error"]) {
+            id errorDescription = response[@"error"];
             
-            id errorDescription = response[@"error"]?: response[@"error_message"];
+            if (!errorDescription ||
+                ([errorDescription isKindOfClass:[NSNumber class]] && response[@"error_message"])) {
+                
+                errorDescription = response[@"error_message"];
+            }
+            
             errorData[@"information"] = response[@"message"]?: errorDescription;
         }
         
         if (response[@"payload"]) {
+            errorData[@"channels"] = (response[@"payload"][@"channels"] ?: @[]);
+            errorData[@"channelGroups"] = (response[@"payload"][@"channel-groups"] ?: @[]);
             
-            errorData[@"channels"] = (response[@"payload"][@"channels"]?: @[]);
-            errorData[@"channelGroups"] = (response[@"payload"][@"channel-groups"]?: @[]);
             if (!response[@"payload"][@"channels"] && !response[@"payload"][@"channel-groups"]) {
-                
                 errorData[@"data"] = response[@"payload"];
             }
         }
         
         if ([response[@"status"] isKindOfClass:[NSNumber class]]) {
-            
             errorData[@"status"] = response[@"status"];
         }
+        
         processedResponse = errorData;
     }
     
