@@ -371,7 +371,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/../Pods/Target Support Files/Pods-PubNub_Example/Pods-PubNub_Example-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-PubNub_Example/Pods-PubNub_Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/PubNub-iOS/PubNub.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -380,7 +380,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-PubNub_Example/Pods-PubNub_Example-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PubNub_Example/Pods-PubNub_Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		C72A9617749671FFC3BCD85C /* [CP] Embed Pods Frameworks */ = {
@@ -389,7 +389,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/../Pods/Target Support Files/Pods-PubNub Mac Example/Pods-PubNub Mac Example-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-PubNub Mac Example/Pods-PubNub Mac Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/PubNub-macOS/PubNub.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -398,7 +398,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-PubNub Mac Example/Pods-PubNub Mac Example-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PubNub Mac Example/Pods-PubNub Mac Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */

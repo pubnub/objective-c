@@ -1,3 +1,7 @@
+11-03-2019 - 0731f99 - 4.8.4
+. added ability to retrieve number of messages in specified channels using timetoken as reference date.
+. removed channel names sorting from utility class (because of which new API wasn't able to work properly).
+
 13-11-2018 - 524e722 - 4.8.3
 . added ability to get / set presence state for multiple channel / groups (at once).
 
