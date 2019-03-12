@@ -1,4 +1,3 @@
-source 'https://github.com/CocoaPods/Specs.git'
 workspace 'PubNub.xcworkspace'
 install! 'cocoapods', :lock_pod_sources => false
 use_frameworks!
