@@ -1,9 +1,19 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.8.3"
+version: "4.8.4"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Added ability to retrieve number of messages in specified channels using timetoken as reference date."
+        type: feature
+      -
+        text: "Removed channel names sorting from utility class (because of which new API wasn't able to work properly)."
+        type: improvement
+    date: Mar 11, 19
+    version: v4.8.4
   -
     changes:
       -
@@ -785,6 +795,7 @@ features:
     - STORAGE-START-END
     - STORAGE-COUNT
     - HISTORY-DELETE
+    - STORAGE-MESSAGE-COUNT
   time:
     - TIME-TIME
   subscribe:

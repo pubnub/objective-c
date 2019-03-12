@@ -39,6 +39,7 @@ static NSString * const kPubNubPresenceChannelNameSuffix = @"-pnpres";
             
             return [PNString percentEscapedString:object];
         }];
+        
         namesForRequest = [escapedNames componentsJoinedByString:@","];
     }
     

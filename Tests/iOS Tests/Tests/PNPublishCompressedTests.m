@@ -94,7 +94,7 @@
                   }];
 }
 
-- (void)testPublishDictionaryCompressed {
+- (void)disabled_testPublishDictionaryCompressed {
     [self performVerifiedPublish:@{@"test" : @"test"}
                        onChannel:[self publishChannelString]
                       compressed:YES
@@ -111,7 +111,7 @@
                   }];
 }
 
-- (void)testPublishDictionaryNotCompressed {
+- (void)disabled_testPublishDictionaryNotCompressed {
     [self performVerifiedPublish:@{@"test" : @"test"}
                        onChannel:[self publishChannelString]
                       compressed:NO

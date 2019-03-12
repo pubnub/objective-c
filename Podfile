@@ -4,41 +4,44 @@ install! 'cocoapods', :lock_pod_sources => false
 use_frameworks!
 
 target 'PubNub_Example' do
-  platform :ios, '8.0'
+  platform :ios, '9.0'
   project 'Example/PubNub Example'
   pod "PubNub", :path => "."
 end
 
 target 'PubNub Mac Example' do
-  platform :osx, '10.9'
+  platform :osx, '10.11'
   project 'Example/PubNub Example'
   pod "PubNub", :path => "."
 end
   
 target 'iOS ObjC Tests' do
-  platform :ios, "8.0"
+  platform :ios, "9.0"
   project 'Tests/PubNub Tests'
+  pod 'OCMock', '~> 3.4'
   pod "BeKindRewind"
   pod "PubNub", :path => "."
 end
 
 #  target 'iOS Swift Tests' do
-#    platform :ios, "8.0"
+#    platform :ios, "9.0"
 #    project 'Tests/PubNub Tests'
 #    pod "BeKindRewind"
 #    pod "PubNub", :path => "."
 #  end
 
 target 'OSX ObjC Tests' do
-  platform :osx, '10.9'
+  platform :osx, '10.11'
   project 'Tests/PubNub Tests'
+  pod 'OCMock', '~> 3.4'
   pod "BeKindRewind"
   pod "PubNub", :path => "."
 end
 
 target 'tvOS ObjC Tests' do
-  platform :tvos, '9.0'
+  platform :tvos, '10.0'
   project 'Tests/PubNub Tests'
+  pod 'OCMock', '~> 3.4'
   pod "BeKindRewind"
   pod "PubNub", :path => "."
 end

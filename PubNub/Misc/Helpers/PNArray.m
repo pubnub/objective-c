@@ -19,12 +19,14 @@
     if (objects.count) {
         
         mappedObjects = [[NSMutableArray alloc] initWithCapacity:objects.count];
-        objects = [objects sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
         [objects enumerateObjectsUsingBlock:^(id object, __unused NSUInteger objectIdx,
                                               __unused BOOL *objectEnumeratorStop) {
             
             id mappedObject = mappingBlock(object);
-            if (mappedObject) { [mappedObjects addObject:mappedObject]; }
+            
+            if (mappedObject) {
+                [mappedObjects addObject:mappedObject];
+            }
         }];
     }
     

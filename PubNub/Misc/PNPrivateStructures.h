@@ -21,13 +21,14 @@ extern NSString * const kPNConfigurationUUIDKey;
 
  @since 4.0
  */
-static NSString * const PNOperationTypeStrings[25] = {
+static NSString * const PNOperationTypeStrings[26] = {
     [PNSubscribeOperation] = @"Subscribe",
     [PNUnsubscribeOperation] = @"Unsubscribe",
     [PNPublishOperation] = @"Publish",
     [PNHistoryOperation] = @"History",
     [PNHistoryForChannelsOperation] = @"History for Channels",
     [PNDeleteMessageOperation] = @"Delete message from History",
+    [PNMessageCountOperation] = @"Message count for Channels",
     [PNWhereNowOperation] = @"Where Now",
     [PNHereNowGlobalOperation] = @"Global Here Now",
     [PNHereNowForChannelOperation] = @"Here Now for Channel",
@@ -49,9 +50,10 @@ static NSString * const PNOperationTypeStrings[25] = {
     [PNTimeOperation] = @"Time",
 };
 
-static NSString * const PNOperationResultClasses[25] = {
+static NSString * const PNOperationResultClasses[26] = {
     [PNHistoryOperation] = @"PNHistoryResult",
     [PNHistoryForChannelsOperation] = @"PNHistoryResult",
+    [PNMessageCountOperation] = @"PNMessageCountResult",
     [PNWhereNowOperation] = @"PNPresenceWhereNowResult",
     [PNHereNowGlobalOperation] = @"PNPresenceGlobalHereNowResult",
     [PNHereNowForChannelOperation] = @"PNPresenceChannelHereNowResult",
@@ -65,13 +67,14 @@ static NSString * const PNOperationResultClasses[25] = {
     [PNTimeOperation] = @"PNTimeResult",
 };
 
-static NSString * const PNOperationStatusClasses[25] = {
+static NSString * const PNOperationStatusClasses[26] = {
     [PNSubscribeOperation] = @"PNSubscribeStatus",
     [PNUnsubscribeOperation] = @"PNAcknowledgmentStatus",
     [PNPublishOperation] = @"PNPublishStatus",
     [PNHistoryOperation] = @"PNErrorStatus",
     [PNHistoryForChannelsOperation] = @"PNErrorStatus",
     [PNDeleteMessageOperation] = @"PNAcknowledgmentStatus",
+    [PNMessageCountOperation] = @"PNErrorStatus",
     [PNWhereNowOperation] = @"PNErrorStatus",
     [PNHereNowGlobalOperation] = @"PNErrorStatus",
     [PNHereNowForChannelOperation] = @"PNErrorStatus",
