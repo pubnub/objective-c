@@ -1,9 +1,16 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.8.4"
+version: "4.8.5"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Changed message count result object header file visibility for frameworks from project to public."
+        type: bug
+    date: Mar 16, 19
+    version: v4.8.5
   -
     changes:
       -

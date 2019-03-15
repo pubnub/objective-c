@@ -1,3 +1,6 @@
+16-03-2019 - 4db70c3 - 4.8.5
+. changed message count result object header file visibility for frameworks from project to public.
+
 11-03-2019 - 0731f99 - 4.8.4
 . added ability to retrieve number of messages in specified channels using timetoken as reference date.
 . removed channel names sorting from utility class (because of which new API wasn't able to work properly).
