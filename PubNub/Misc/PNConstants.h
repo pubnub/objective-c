@@ -18,7 +18,7 @@
 static NSString * const kPNLibraryVersion = @"4.8.5";
 
 // Stores information about SDK codebase
-static NSString * const kPNCommit = @"4db70c336c0af87ff75d12afd3f9905ae27a15af";
+static NSString * const kPNCommit = @"12eda1bf144b085889a134c0e8a27de81eb3cedd";
 
 /**
  @brief  Stores reference on unique identifier which is used to identify \b PubNub client among other 
