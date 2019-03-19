@@ -21,12 +21,13 @@ BOOL _pn_os_unfair_lock_functions_visible() {
     static BOOL visible;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-#if PN_OS_UNFAIR_LOCK_AVAILABLE
-        visible = YES;
-#else
-        void (*lock_func)(void *) = dlsym(dlopen(NULL, RTLD_NOW | RTLD_GLOBAL), "os_unfair_lock_lock");
-        visible = lock_func != NULL;
-#endif // PN_OS_UNFAIR_LOCK_AVAILABLE
+        #if PN_OS_VERSION_10_SDK_API_IS_SAFE
+            visible = YES;
+        #else
+            void (*lock_func)(void *) = dlsym(dlopen(NULL, RTLD_NOW | RTLD_GLOBAL),
+                                              "os_unfair_lock_lock");
+            visible = lock_func != NULL;
+        #endif // PN_OS_VERSION_10_SDK_API_IS_SAFE
     });
     
     return visible;
