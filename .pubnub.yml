@@ -9,7 +9,10 @@ changelog:
       -
         text: "Changed message count result object header file visibility for frameworks from project to public."
         type: bug
-    date: Mar 16, 19
+      -
+        text: "Moved Keychain records update calls to secondary queue."
+        type: improvement
+    date: Mar 19, 19
     version: v4.8.5
   -
     changes:
