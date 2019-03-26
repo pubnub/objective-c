@@ -1,9 +1,16 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.8.5"
+version: "4.8.6"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Changed builder API interface visibility for frameworks from project to public."
+        type: bug
+    date: Mar 26, 19
+    version: v4.8.6
   -
     changes:
       -
@@ -822,16 +829,16 @@ features:
     - UNSUBSCRIBE-ALL
 supported-platforms:
   -
-    version: PubNub Objective-C 4.6.0
+    version: PubNub Objective-C 4.8.6
     platforms:
-      - iOS 7.0 or higher.
-      - watchOS 2.0 or higher.
-      - tvOS 9.0 or higher.
-      - macOS 10.9 or higher.
+      - iOS 9.0 or higher.
+      - watchOS 4.0 or higher.
+      - tvOS 10.0 or higher.
+      - macOS 10.11 or higher.
   -
-    version: PubNub Swift 4.6.0
+    version: PubNub Swift 4.8.6
     platforms:
-      - iOS 7.0 or higher.
-      - watchOS 2.0 or higher.
-      - tvOS 9.0 or higher.
-      - macOS 10.9 or higher.
+      - iOS 9.0 or higher.
+      - watchOS 4.0 or higher.
+      - tvOS 10.0 or higher.
+      - macOS 10.11 or higher.
