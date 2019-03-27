@@ -1,3 +1,6 @@
+26-03-2019 - 010655a - 4.8.6
+. changed builder API interface visibility for frameworks from project to public.
+
 16-03-2019 - 12eda1b - 4.8.5
 . changed message count result object header file visibility for frameworks from project to public.
 . moved Keychain records update calls to secondary queue (sometime Keychain take too much time to update and block main queue).
