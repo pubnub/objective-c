@@ -1,9 +1,16 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.8.6"
+version: "4.8.7"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Resolved project warnings, which caused issues with Carthage framework build."
+        type: improvement
+    date: Mar 28, 19
+    version: v4.8.7
   -
     changes:
       -
