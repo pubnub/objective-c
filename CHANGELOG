@@ -1,3 +1,6 @@
+28-03-2019 - 4966f7d - 4.8.7
+. resolved project warnings, which caused issues with Carthage framework build.
+
 26-03-2019 - 010655a - 4.8.6
 . changed builder API interface visibility for frameworks from project to public.
 
