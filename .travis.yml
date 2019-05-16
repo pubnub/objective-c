@@ -23,7 +23,7 @@ before_install:
 install: 
   - npm config set strict-ssl false
   - sudo gem install xcpretty-travis-formatter
-  - sudo gem install cocoapods --pre
+  - sudo gem install cocoapods
 
 before_script:
   - pushd Tests/Resources/ && npm init --yes && npm install glob && node .create-keysset.js && popd
