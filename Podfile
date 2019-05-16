@@ -12,4 +12,3 @@ target 'PubNub Mac Example' do
   platform :osx, '10.11'
   project 'Example/PubNub Example'
   pod "PubNub", :path => "."
-end

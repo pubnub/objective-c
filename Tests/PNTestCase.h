@@ -57,7 +57,6 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, readonly, strong) NSString *publishKey;
 
-
 #pragma mark - Mocking
 
 /**
