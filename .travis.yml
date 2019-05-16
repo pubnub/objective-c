@@ -18,12 +18,9 @@ matrix:
     - env: NAME='[ObjC] macOS' SCHEME='OSX Tests (ObjC)' DESTINATION='platform=macOS'
 
 before_install: 
-  - brew update
-  - gem install bundler
+  - brew ls --versions node && brew upgrade node || brew install node
 
 install: 
-  - bundle install
-  - brew ls --versions node && brew upgrade node || brew install node
   - npm config set strict-ssl false
   - sudo gem install xcpretty-travis-formatter
   - sudo gem install cocoapods --pre
