@@ -25,10 +25,11 @@ before_install:
 
 before_script:
   - pushd Tests/Resources/ && npm init --yes && npm install glob && node .create-keysset.js && popd
+  - pushd Tests/ && pod install && popd
 
 script:
   - set -o pipefail
-  - xcodebuild -workspace ./PubNub.xcworkspace -scheme "${SCHEME}" -destination "${DESTINATION}" clean build test | xcpretty -f `xcpretty-travis-formatter`
+  - xcodebuild -workspace "Tests/PubNub Tests.xcworkspace" -scheme "${SCHEME}" -destination "${DESTINATION}" clean build test | xcpretty -f `xcpretty-travis-formatter`
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
