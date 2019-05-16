@@ -39,7 +39,7 @@
                           NSLog(@"status.data.information: %@", status.data.information);
                           NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                           XCTAssertEqualObjects(status.data.information, @"Sent");
-                          XCTAssertEqualObjects(status.data.timetoken, @14737054442643779);
+                          XCTAssertEqualObjects(status.data.timetoken, @15579290210619794);
                       }];
 }
 
@@ -56,7 +56,7 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @14737054445444510);
+                      XCTAssertEqualObjects(status.data.timetoken, @15579290221180226);
                   }];
 }
 
@@ -94,7 +94,7 @@
                   }];
 }
 
-- (void)disabled_testPublishDictionaryCompressed {
+- (void)DISABLED_testPublishDictionaryCompressed {
     [self performVerifiedPublish:@{@"test" : @"test"}
                        onChannel:[self publishChannelString]
                       compressed:YES
@@ -107,11 +107,11 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @14737054436300432);
+                      XCTAssertEqualObjects(status.data.timetoken, @15579290196609123);
                   }];
 }
 
-- (void)disabled_testPublishDictionaryNotCompressed {
+- (void)DISABLED_testPublishDictionaryNotCompressed {
     [self performVerifiedPublish:@{@"test" : @"test"}
                        onChannel:[self publishChannelString]
                       compressed:NO
@@ -124,7 +124,7 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @14737054439376241);
+                      XCTAssertEqualObjects(status.data.timetoken, @15579290199143275);
                   }];
 }
 

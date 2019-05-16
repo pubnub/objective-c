@@ -119,12 +119,9 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Information
 
 - (void)setPresenceHeartbeatValue:(NSInteger)presenceHeartbeatValue {
-    
-    _presenceHeartbeatValue = presenceHeartbeatValue;
-    if (self.presenceHeartbeatInterval == 0) { 
-        
-        _presenceHeartbeatInterval = (NSInteger)(_presenceHeartbeatValue * 0.5f) - 1;
-    }
+  
+  _presenceHeartbeatValue = presenceHeartbeatValue < 20 ? 20 : presenceHeartbeatValue;
+  _presenceHeartbeatInterval = (NSInteger)(_presenceHeartbeatValue * 0.5f) - 1;
 }
 
 

@@ -33,7 +33,8 @@
 
 - (void)setUp {
     [super setUp];
-    PNConfiguration *config = [PNConfiguration configurationWithPublishKey:@"demo-36" subscribeKey:@"demo-36"];
+    PNConfiguration *config = [PNConfiguration configurationWithPublishKey:self.publishKey
+                                                              subscribeKey:self.subscribeKey];
     config.uuid = @"58A6FB32-4323-45BE-97BF-2D070A3F8912";
     config.origin = @"ps.pndsn.com";
     config.presenceHeartbeatValue = 0;

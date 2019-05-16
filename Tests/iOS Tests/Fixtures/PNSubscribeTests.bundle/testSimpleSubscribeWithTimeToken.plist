@@ -1476,7 +1476,7 @@
 						<key>BKRSceneUUIDKey</key>
 						<string>6BF44719-93AA-482F-9A1D-4A404613EADA</string>
 						<key>NSErrorFailingURLKey</key>
-						<string>https://ps.pndsn.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14583348415400172&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;instanceid=58EB05C9-9DE4-4118-B5D7-EE059FBF19A9&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.3</string>
+						<string>https://ps.pndsn.com/v2/subscribe/demo/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14583348415400172&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;instanceid=58EB05C9-9DE4-4118-B5D7-EE059FBF19A9&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.3</string>
 						<key>NSErrorFailingURLStringKey</key>
 						<string>https://ps.pndsn.com/v2/subscribe/demo-36/322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C/0?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;tt=14583348415400172&amp;tr=1&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;instanceid=58EB05C9-9DE4-4118-B5D7-EE059FBF19A9&amp;pnsdk=PubNub-ObjC-iOS%2F4.3.3</string>
 						<key>NSLocalizedDescription</key>

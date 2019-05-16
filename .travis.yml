@@ -17,9 +17,19 @@ matrix:
     - env: NAME='[ObjC] iOS' SCHEME='iOS Tests (ObjC)' DESTINATION='platform=iOS Simulator,name=iPhone 7 Plus,OS=12.1'
     - env: NAME='[ObjC] macOS' SCHEME='OSX Tests (ObjC)' DESTINATION='platform=macOS'
 
-before_install:
+before_install: 
+  - brew update
+  - gem install bundler
+
+install: 
+  - bundle install
+  - brew ls --versions node && brew upgrade node || brew install node
+  - npm config set strict-ssl false
   - sudo gem install xcpretty-travis-formatter
   - sudo gem install cocoapods --pre
+
+before_script:
+  - pushd Tests/Resources/ && npm init --yes && npm install glob && node .create-keysset.js && popd
 
 script:
   - set -o pipefail
