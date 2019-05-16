@@ -1,7 +1,7 @@
 /**
  @author Sergey Mamontov
- @version 4.2.0
- @copyright © 2010-2018 PubNub, Inc.
+ @version 4.8.4
+ @copyright © 2010-2019 PubNub, Inc.
  */
 #import <Foundation/Foundation.h>
 
@@ -32,6 +32,7 @@ FOUNDATION_EXPORT const unsigned char PubNubVersionString[];
 #import "PNAcknowledgmentStatus.h"
 #import "PNClientStateGetResult.h"
 #import "PNChannelGroupsResult.h"
+#import "PNMessageCountResult.h"
 #import "PNClientInformation.h"
 #import "PNSubscriberResults.h"
 #import "PNSubscribeStatus.h"

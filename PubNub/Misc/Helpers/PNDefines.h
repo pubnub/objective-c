@@ -29,7 +29,7 @@
 // Whether iOS/tvOS 10.0, watchOS 3.0 and macOS 10.12 SDK API can be used safely basing on minimum allowed OS
 // version which is set in project.
 #define PN_OS_VERSION_10_SDK_API_IS_SAFE 0
-    #if (TARGET_OS_IOS && __IPHONE_OS_VERSION_MIN_REQUIRED >= 100000) || \
+#if (TARGET_OS_IOS && __IPHONE_OS_VERSION_MIN_REQUIRED >= 100000) || \
     (TARGET_OS_WATCH && __WATCH_OS_VERSION_MIN_REQUIRED >= 30000) || \
     (TARGET_OS_TV && __TV_OS_VERSION_MIN_REQUIRED >= 100000) || \
     (TARGET_OS_OSX && __MAC_OS_X_VERSION_MIN_REQUIRED >= 101200)

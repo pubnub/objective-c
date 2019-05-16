@@ -29,6 +29,34 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, readonly, assign) NSTimeInterval falseTestCompletionDelay;
 
+/**
+ * @brief Loaded from \c 'Resources/keysset.plist' file PAM enabled PubNub subscribe key.
+ *
+ * @since 4.8.8
+ */
+@property (nonatomic, readonly, strong) NSString *pamSubscribeKey;
+
+/**
+ * @brief Loaded from \c 'Resources/keysset.plist' file PAM enabled PubNub publish key.
+ *
+ * @since 4.8.8
+ */
+@property (nonatomic, readonly, strong) NSString *pamPublishKey;
+
+/**
+ * @brief Loaded from \c 'Resources/keysset.plist' file PubNub subscribe key.
+ *
+ * @since 4.8.8
+ */
+@property (nonatomic, readonly, strong) NSString *subscribeKey;
+
+/**
+ * @brief Loaded from \c 'Resources/keysset.plist' file PubNub publish key.
+ *
+ * @since 4.8.8
+ */
+@property (nonatomic, readonly, strong) NSString *publishKey;
+
 
 #pragma mark - Mocking
 

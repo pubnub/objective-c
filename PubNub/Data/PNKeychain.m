@@ -1,7 +1,6 @@
 /**
- @author Sergey Mamontov
- @since 4.x.1
- @copyright © 2010-2018 PubNub, Inc.
+ * @author Serhii Mamontov
+ * @copyright © 2010-2019 PubNub, Inc.
  */
 #import "PNKeychain.h"
 #import <Security/Security.h>
@@ -11,9 +10,9 @@
 #pragma mark Static
 
 /**
- @brief  Spin-lock which is used to protect access to shared resources from multiple threads.
- 
- @since 4.6.2
+ * @brief Spin-lock which is used to protect access to shared resources from multiple threads.
+ *
+ * @since 4.6.2
  */
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"
@@ -21,7 +20,9 @@ static os_unfair_lock keychainAccessLock = OS_UNFAIR_LOCK_INIT;
 #pragma clang diagnostic pop
 
 
-#pragma mark Private interface declaration
+NS_ASSUME_NONNULL_BEGIN
+
+#pragma mark - Private interface declaration
 
 @interface PNKeychain ()
 
@@ -29,16 +30,16 @@ static os_unfair_lock keychainAccessLock = OS_UNFAIR_LOCK_INIT;
 #pragma mark - Storage
 
 /**
- @brief      Reference on storage which is used for environment where Keychain access DB not
-             available.
- @discussion In multi-user systems before user authorize system is unable to provide information 
-             about Keychain because it doesn't know for which user. Used only by macOS because iOS 
-             is always single user.
- 
- @since 4.6.2
- 
- @return Reference on dictionary which should be used as temporary in-memory Keychain access DB
-         replacement.
+ * @brief Storage which is used for environment where Keychain access DB not available.
+ *
+ * @discussion In multi-user systems before user authorize system is unable to provide information
+ * about Keychain because it doesn't know for which user. Used only by macOS because iOS is always
+ * single user.
+ *
+ * @return \a NSDictionary which should be used as temporary in-memory Keychain access DB
+ * replacement.
+ *
+ * @since 4.6.2
  */
 + (NSMutableDictionary *)inMemoryStorage;
 
@@ -46,64 +47,70 @@ static os_unfair_lock keychainAccessLock = OS_UNFAIR_LOCK_INIT;
 #pragma mark - Keychain query
 
 /**
- @brief  Help to debug Keychain query error status.
- 
- @param status One of \c OSStatus types.
+ * @brief Help to debug Keychain query error status.
+ *
+ * @param status One of \c OSStatus types.
  */
 + (void)debugKeychainQueryStatus:(OSStatus)status;
 
 /**
- @brief  Check whether item described with query already exist in Keychain or not.
- 
- @param query Reference on dictionary which contain base item information which should be checked.
- @param block Reference on block which will be called when check will be completed. Block pass only
-              one argument - whether item exist or not.
+ * @brief Check whether item described with query already exist in Keychain or not.
+ *
+ * @param query \a NSDictionary which contain base item information which should be checked.
+ * @param block GCD block / closure which will be called when check will be completed.
+ *     GCD block / closure pass only one argument - whether item exist or not.
  */
-+ (void)checkExistingDataWithQuery:(NSMutableDictionary *)query completionBlock:(void(^)(BOOL))block;
++ (void)checkExistingDataWithQuery:(NSMutableDictionary *)query
+                   completionBlock:(void(^)(BOOL))block;
 
 /**
- @brief  Allow to search for item in Keychain and if requested will pull out values which it stores.
- 
- @param query           Reference on dictionary which contain base item information which should be
-                        found.
- @param shouldFetchData Flag which specify whether item's data should be returned or not.
- @param block           Reference on block which will be called when search will be completed. Block
-                        pass two arguments: \c value - searched item stored value if requested;
-                        \c error - whether error occurred or not.
+ * @brief Allow to search for item in Keychain and if requested will pull out values which it
+ * stores.
+ *
+ * @param query \a NSDictionary which contain base item information which should be found.
+ * @param shouldFetchData Flag which specify whether item's data should be returned or not.
+ * @param block GCD block / closure which will be called when search will be completed.
+ *     GCD block / closure pass two arguments: \c value - searched item stored value if requested;
+ *     \c error - whether error occurred or not.
  */
-+ (void)searchWithQuery:(NSMutableDictionary *)query fetchData:(BOOL)shouldFetchData
++ (void)searchWithQuery:(NSMutableDictionary *)query
+              fetchData:(BOOL)shouldFetchData
         completionBlock:(void(^)(id, BOOL))block;
 
 /**
- @brief  Update item value.
- 
- @param value Reference on value which should be stored for the item in Keychain.
- @param query Reference on dictionary which contain base item information which should be updated.
- @param block Reference on block which will be called when update will be completed. Block pass only
-              one argument - whether error occurred or not.
+ * @brief Update item value.
+ *
+ * @param value Value which should be stored for the item in Keychain.
+ * @param query \a NSDictionary which contain base item information which should be updated.
+ * @param block GCD block / closure on block which will be called when update will be completed.
+ *     GCD block / closure pass only one argument - whether error occurred or not.
  */
-+ (void)update:(id)value usingQuery:(NSMutableDictionary *)query completionBlock:(void(^)(BOOL))block;
++ (void)update:(nullable id)value
+         usingQuery:(NSMutableDictionary *)query
+    completionBlock:(void(^)(BOOL))block;
 
 
 #pragma mark - Keychain data archiving
 
 /**
- @brief      Allow to pack passed value to bytes.
- @discussion This method is used to store values in Keychain which accept only binaries for value.
- 
- @param data Reference on object which should be packed to binary.
- 
- @return Packed binary object.
+ * @brief Allow to pack passed value to bytes.
+ *
+ * @discussion This method is used to store values in Keychain which accept only binaries for value.
+ *
+ * @param data Object which should be packed to binary.
+ *
+ * @return Packed binary object.
  */
 + (NSData *)packedData:(id)data;
 
 /**
- @brief      Allow to unpack stored value to native objects.
- @discussion This method is used to extract data stored in Keychain and return native objects.
- 
- @param data Reference on binary object which should be unpacked.
- 
- @return Unpacked foundation object.
+ * @brief Allow to unpack stored value to native objects.
+ *
+ * @discussion This method is used to extract data stored in Keychain and return native objects.
+ *
+ * @param data Binary object which should be unpacked.
+ *
+ * @return Unpacked foundation object.
  */
 + (id)unpackedData:(NSData *)data;
 
@@ -111,28 +118,28 @@ static os_unfair_lock keychainAccessLock = OS_UNFAIR_LOCK_INIT;
 #pragma mark - Misc
 
 /**
- * @brief  Location where Keychain replacement for macOS will be stored.
- *
- * @since 4.8.1
+ * @brief Location where Keychain replacement for macOS will be stored.
  *
  * @return Full path to the file.
+ *
+ * @since 4.8.1
  */
 + (NSString *)fileBasedStoragePath;
 
 /**
- @brief Check whether system is able to provide access to Keychain (even locked) or not.
- 
- @return \c NO in case if client is used in milti-user macOS environment and user not authorized 
-         yet.
+ * @brief Check whether system is able to provide access to Keychain (even locked) or not.
+ *
+ * @return \c NO in case if client is used in milti-user macOS environment and user not authorized
+ * yet.
  */
 + (BOOL)isKeychainAvailable;
 
 /**
- @brief  Construct dictionary which will describe item storage or access information.
- 
- @param key Reference on key under which item should be stored or searched.
- 
- @return Prepared base item description.
+ * @brief Construct dictionary which will describe item storage or access information.
+ *
+ * @param key Key under which item should be stored or searched.
+ *
+ * @return Prepared base item description.
  */
 + (NSMutableDictionary *)baseInformationForItemWithKey:(NSString *)key;
 
@@ -140,6 +147,8 @@ static os_unfair_lock keychainAccessLock = OS_UNFAIR_LOCK_INIT;
 
 
 @end
+
+NS_ASSUME_NONNULL_END
 
 
 #pragma mark - Interface implementation
@@ -156,13 +165,17 @@ static os_unfair_lock keychainAccessLock = OS_UNFAIR_LOCK_INIT;
     dispatch_once(&onceToken, ^{
 #if TARGET_OS_OSX
         NSFileManager *fileManager = [NSFileManager defaultManager];
-        NSString *workingDirectory = [[self fileBasedStoragePath] stringByDeletingLastPathComponent];
+        NSString *filePath = [self fileBasedStoragePath];
+        NSString *workingDirectory = [filePath stringByDeletingLastPathComponent];
         
         if (![fileManager fileExistsAtPath:workingDirectory isDirectory:NULL]) {
-            [fileManager createDirectoryAtPath:workingDirectory withIntermediateDirectories:YES attributes:nil error:nil];
+            [fileManager createDirectoryAtPath:workingDirectory
+                   withIntermediateDirectories:YES
+                                    attributes:nil
+                                         error:nil];
         }
         
-        NSDictionary *storedData = [NSDictionary dictionaryWithContentsOfFile:[self fileBasedStoragePath]];
+        NSDictionary *storedData = [NSDictionary dictionaryWithContentsOfFile:filePath];
         _inMemoryStorage = [NSMutableDictionary dictionaryWithDictionary:storedData];
 #else
         _inMemoryStorage = [NSMutableDictionary new];
@@ -175,23 +188,26 @@ static os_unfair_lock keychainAccessLock = OS_UNFAIR_LOCK_INIT;
 
 #pragma mark - Storage manipulation
 
-+ (void)storeValue:(id)value forKey:(NSString *)key withCompletionBlock:(void(^)(BOOL stored))block {
++ (void)storeValue:(id)value
+                 forKey:(NSString *)key
+    withCompletionBlock:(void(^)(BOOL stored))block {
     
     BOOL keychainAvailable = [self isKeychainAvailable];
     BOOL shouldWriteInMemory = !keychainAvailable;
-#if TARGET_OS_OSX
-    shouldWriteInMemory = YES;
-#endif // TARGET_OS_OSX
     
     if (!shouldWriteInMemory) {
-        [self update:value usingQuery:[self baseInformationForItemWithKey:key] completionBlock:block];
+        NSMutableDictionary *query = [self baseInformationForItemWithKey:key];
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [self update:value usingQuery:query completionBlock:block];
+        });
     } else {
         pn_trylock(&keychainAccessLock, ^{
             [self inMemoryStorage][key] = value;
             
-            if (keychainAvailable) {
-                [[self inMemoryStorage] writeToFile:[self fileBasedStoragePath] atomically:YES];
-            }
+#if TARGET_OS_OSX
+            [[self inMemoryStorage] writeToFile:[self fileBasedStoragePath] atomically:YES];
+#endif // TARGET_OS_OSX
             
             if (block) {
                 block(YES);
@@ -208,8 +224,14 @@ static os_unfair_lock keychainAccessLock = OS_UNFAIR_LOCK_INIT;
 #endif // TARGET_OS_OSX
     
     if (!shouldReadFromMemory) {
-        [self searchWithQuery:[self baseInformationForItemWithKey:key] fetchData:YES
-              completionBlock:^(id data, BOOL error) { if (block) { block(data); } }];
+        [self searchWithQuery:[self baseInformationForItemWithKey:key]
+                    fetchData:YES
+              completionBlock:^(id data, BOOL error) {
+
+            if (block) {
+                block(data);
+            }
+        }];
     } else {
         pn_trylock(&keychainAccessLock, ^{
             block([self inMemoryStorage][key]);
@@ -221,24 +243,26 @@ static os_unfair_lock keychainAccessLock = OS_UNFAIR_LOCK_INIT;
     
     BOOL keychainAvailable = [self isKeychainAvailable];
     BOOL shouldWriteInMemory = !keychainAvailable;
-#if TARGET_OS_OSX
-    shouldWriteInMemory = YES;
-#endif // TARGET_OS_OSX
     
     if (!shouldWriteInMemory) {
-        [self checkExistingDataWithQuery:[self baseInformationForItemWithKey:key] completionBlock:^(BOOL exists) {
+        __block NSMutableDictionary *query = [self baseInformationForItemWithKey:key];
+        
+        [self checkExistingDataWithQuery:query completionBlock:^(BOOL exists) {
             if (exists) {
-                [self update:nil usingQuery:[self baseInformationForItemWithKey:key]
-             completionBlock:block];
+                query = [self baseInformationForItemWithKey:key];
+                
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    [self update:nil usingQuery:query completionBlock:block];
+                });
             }
         }];
     } else {
         pn_trylock(&keychainAccessLock, ^{
             [[self inMemoryStorage] removeObjectForKey:key];
             
-            if (keychainAvailable) {
-                [[self inMemoryStorage] writeToFile:[self fileBasedStoragePath] atomically:YES];
-            }
+#if TARGET_OS_OSX
+            [[self inMemoryStorage] writeToFile:[self fileBasedStoragePath] atomically:YES];
+#endif // TARGET_OS_OSX
             
             if (block) {
                 block(YES);
@@ -270,79 +294,88 @@ static os_unfair_lock keychainAccessLock = OS_UNFAIR_LOCK_INIT;
 #endif
 }
 
-+ (void)checkExistingDataWithQuery:(NSMutableDictionary *)query completionBlock:(void(^)(BOOL))block {
++ (void)checkExistingDataWithQuery:(NSMutableDictionary *)query
+                   completionBlock:(void(^)(BOOL))block {
     
     [self searchWithQuery:query fetchData:NO completionBlock:^(id value, BOOL error) {
-        
-        if (block) { block(value || !error); }
+        if (block) {
+            block(value || !error);
+        }
     }];
 }
 
-+ (void)searchWithQuery:(NSMutableDictionary *)query fetchData:(BOOL)shouldFetchData
++ (void)searchWithQuery:(NSMutableDictionary *)query
+              fetchData:(BOOL)shouldFetchData
         completionBlock:(void(^)(id, BOOL))block {
     
+    CFDictionaryRef searchedItem = NULL;
+    id data = nil;
+    
     if (shouldFetchData) {
-        
         query[(__bridge id)kSecReturnData] = (__bridge id)kCFBooleanTrue;
         query[(__bridge id)kSecReturnAttributes] = (__bridge id)kCFBooleanTrue;
     }
     
-    // Run search query
-    CFDictionaryRef searchedItem = NULL;
     OSStatus searchStatus = SecItemCopyMatching((__bridge CFDictionaryRef)query,
-                                                (shouldFetchData ? (CFTypeRef *)&searchedItem : NULL));
+                                                (shouldFetchData ? (CFTypeRef *)&searchedItem
+                                                                 : NULL));
     [query removeObjectsForKeys:@[(__bridge id)kSecReturnData, (__bridge id)kSecReturnAttributes]];
     
-    // Processing keychain query results.
-    id data = nil;
-    [self debugKeychainQueryStatus:searchStatus];
-    // Check whether search performed w/o any errors or not.
-    if (searchStatus == errSecSuccess && searchedItem && CFDictionaryContainsKey(searchedItem, kSecValueData)) {
+    if (searchStatus != errSecItemNotFound) {
+        [self debugKeychainQueryStatus:searchStatus];
+    }
+    
+    if (searchedItem && searchStatus == errSecSuccess &&
+        CFDictionaryContainsKey(searchedItem, kSecValueData)) {
         
-        // Extract fetched data.
-        data = [self unpackedData:((__bridge NSDictionary *)searchedItem)[(__bridge id)kSecValueData]];
+        NSData *packedData = ((__bridge NSDictionary *)searchedItem)[(__bridge id)kSecValueData];
+        data = [self unpackedData:packedData];
     }
     
     if (searchedItem) {
-        
         CFRelease(searchedItem);
     }
     
-    if (block) { block(data, (searchStatus != errSecSuccess)); }
+    if (block) {
+        block(data, (searchStatus != errSecSuccess));
+    }
 }
 
-+ (void)update:(id)value usingQuery:(NSMutableDictionary *)query completionBlock:(void(^)(BOOL))block {
++ (void)update:(id)value
+         usingQuery:(NSMutableDictionary *)query
+    completionBlock:(void(^)(BOOL))block {
     
     NSData *packedData = [self packedData:value];
+    
     if (packedData) {
-        
-        // Checking whether value under specified key already stored in keychain or not.
         [self checkExistingDataWithQuery:query completionBlock:^(BOOL exist) {
-            
-            NSDictionary *data = @{(__bridge id)(kSecValueData): packedData};
+            NSDictionary *data = @{ (__bridge id)(kSecValueData): packedData };
             OSStatus updateStatus = errSecParam;
+            
             if (exist) {
-                
-                updateStatus = SecItemUpdate((__bridge CFDictionaryRef)query, (__bridge CFDictionaryRef)data);
-            }
-            else {
-                
+                updateStatus = SecItemUpdate((__bridge CFDictionaryRef)query,
+                                             (__bridge CFDictionaryRef)data);
+            } else {
                 [query addEntriesFromDictionary:data];
+                
                 updateStatus = SecItemAdd((__bridge CFDictionaryRef)query, NULL);
                 [query removeObjectsForKeys:data.allKeys];
             }
             
             [self debugKeychainQueryStatus:updateStatus];
             
-            if (block) { block((updateStatus == errSecSuccess)); }
+            if (block) {
+                block((updateStatus == errSecSuccess));
+            }
         }];
-    }
-    else if(value == nil) {
-        
+    } else if (value == nil) {
         OSStatus deleteStatus = SecItemDelete((__bridge CFDictionaryRef)query);
+        
         [self debugKeychainQueryStatus:deleteStatus];
         
-        if (block) { block((deleteStatus == errSecSuccess)); }
+        if (block) {
+            block((deleteStatus == errSecSuccess));
+        }
     }
 }
 
@@ -352,16 +385,18 @@ static os_unfair_lock keychainAccessLock = OS_UNFAIR_LOCK_INIT;
 + (NSData *)packedData:(id)data {
     
     NSData *packedData = nil;
+    NSError *error = nil;
+    
     if (data) {
-        
         if ([data respondsToSelector:@selector(count)]) {
-            
-            NSError *error = nil;
-            packedData = [NSJSONSerialization dataWithJSONObject:data options:(NSJSONWritingOptions)0
+            packedData = [NSJSONSerialization dataWithJSONObject:data
+                                                         options:(NSJSONWritingOptions)0
                                                            error:&error];
+        } else if ([data isKindOfClass:NSData.class]) {
+            packedData = data;
+        } else {
+            packedData = [(NSString *)data dataUsingEncoding:NSUTF8StringEncoding];
         }
-        else if ([data isKindOfClass:NSData.class]) { packedData = data; }
-        else { packedData = [(NSString *)data dataUsingEncoding:NSUTF8StringEncoding]; }
     }
     
     return packedData;
@@ -373,16 +408,16 @@ static os_unfair_lock keychainAccessLock = OS_UNFAIR_LOCK_INIT;
     id unpackedData = nil;
     
     if (data) {
-        
-        unpackedData = [NSJSONSerialization JSONObjectWithData:data options:(NSJSONReadingOptions)0
+        unpackedData = [NSJSONSerialization JSONObjectWithData:data
+                                                       options:(NSJSONReadingOptions)0
                                                          error:&error];
+        
         if (error != nil) {
-            
             unpackedData = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
         }
     }
     
-    return (unpackedData?: data);
+    return unpackedData ?: data;
 }
 
 
@@ -392,25 +427,36 @@ static os_unfair_lock keychainAccessLock = OS_UNFAIR_LOCK_INIT;
     
     static NSString *_fileBasedStoragePath;
     static dispatch_once_t onceToken;
+    
     dispatch_once(&onceToken, ^{
-        NSArray<NSString *> *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
-        NSString *applicationName = [[NSProcessInfo processInfo] processName]?: [[NSBundle mainBundle] bundleIdentifier];
-        NSString *baseDirectory = (paths.count > 0 ? paths.firstObject : NSTemporaryDirectory());
+        NSSearchPathDirectory searchPath = NSApplicationSupportDirectory;
+        NSProcessInfo *processInfo = NSProcessInfo.processInfo;
+        NSBundle *mainBundle = NSBundle.mainBundle;
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(searchPath, NSUserDomainMask, YES);
         
-        _fileBasedStoragePath = [[baseDirectory stringByAppendingPathComponent:applicationName] stringByAppendingPathComponent:@"pnkc.db"];
+        NSString *baseDirectory = (paths.count > 0 ? paths.firstObject : NSTemporaryDirectory());
+        NSString *applicationName = processInfo.processName ?: mainBundle.bundleIdentifier;
+        
+        NSString *storeDirectory = [baseDirectory stringByAppendingPathComponent:applicationName];
+        _fileBasedStoragePath = [storeDirectory stringByAppendingPathComponent:@"pnkc.db"];
     });
     
     return _fileBasedStoragePath;
 }
 
 + (BOOL)isKeychainAvailable {
+    
     static BOOL available;
     static dispatch_once_t onceToken;
+    
     dispatch_once(&onceToken, ^{
 #if TARGET_OS_OSX
         SecKeychainRef keychain;
         available = SecKeychainCopyDefault(&keychain) == errSecSuccess;
-        if(available) { CFRelease(keychain); }
+        
+        if(available) {
+            CFRelease(keychain);
+        }
 #else
         available = YES;
 #endif
@@ -421,12 +467,13 @@ static os_unfair_lock keychainAccessLock = OS_UNFAIR_LOCK_INIT;
 
 + (NSMutableDictionary *)baseInformationForItemWithKey:(NSString *)key {
     
-    // Compose base item description query.
     NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
-    // In case if we client used from tests environment configuration should use specified
-    // device identifier.
-    if (NSClassFromString(@"XCTestExpectation")) { bundleIdentifier = @"com.pubnub.objc-tests"; }
     NSMutableDictionary *query = [NSMutableDictionary new];
+    
+    if (NSClassFromString(@"XCTestExpectation")) {
+        bundleIdentifier = @"com.pubnub.objc-tests";
+    }
+    
     query[(__bridge id)(kSecClass)] = (__bridge id)(kSecClassGenericPassword);
     query[(__bridge id)(kSecAttrSynchronizable)] = (__bridge id)(kCFBooleanFalse);
     query[(__bridge id)(kSecAttrAccessible)] = (__bridge id)(kSecAttrAccessibleAlways);

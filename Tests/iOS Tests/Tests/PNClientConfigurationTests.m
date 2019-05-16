@@ -20,19 +20,18 @@
 }
 
 - (NSArray *)subscriptionChannels {
-    return @[
-             @"a"
-             ];
+    return @[@"a"];
 }
 
 - (void)setUp {
     [super setUp];
-    if (
-        (self.invocation.selector != @selector(testCopyConfigurationWithSubscribedChannels)) &&
-        (self.invocation.selector != @selector(testCopyConfigurationWithSubscribedChannelsAndCallbackQueue))
-        ) {
+  
+    if (self.invocation.selector != @selector(testCopyConfigurationWithSubscribedChannels) &&
+        self.invocation.selector != @selector(testCopyConfigurationWithSubscribedChannelsAndCallbackQueue)) {
+      
         return;
     }
+  
     PNWeakify(self);
     self.didReceiveStatusAssertions = ^void (PubNub *client, PNSubscribeStatus *status) {
         PNStrongify(self);
@@ -59,8 +58,39 @@
     self.didReceiveStatusAssertions = nil;
 }
 
+- (void)testHeartbeatValue_ShouldWrap_WhenValueSmallerThan20 {
+  PNConfiguration *config = [PNConfiguration configurationWithPublishKey:self.publishKey
+                                                            subscribeKey:self.subscribeKey];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+  config.stripMobilePayload = NO;
+#pragma clang diagnostic pop
+  config.presenceHeartbeatValue = 10;
+  
+  XCTAssertEqual(config.presenceHeartbeatValue, 20);
+  XCTAssertEqual(config.presenceHeartbeatInterval, 9);
+}
+
+- (void)testHeartbeatValue_ShouldNotWrap_WhenValueEqualOrGreaterThan20 {
+  PNConfiguration *config = [PNConfiguration configurationWithPublishKey:self.publishKey
+                                                            subscribeKey:self.subscribeKey];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+  config.stripMobilePayload = NO;
+#pragma clang diagnostic pop
+  
+  config.presenceHeartbeatValue = 20;
+  XCTAssertEqual(config.presenceHeartbeatValue, 20);
+  XCTAssertEqual(config.presenceHeartbeatInterval, 9);
+  
+  config.presenceHeartbeatValue = 30;
+  XCTAssertEqual(config.presenceHeartbeatValue, 30);
+  XCTAssertEqual(config.presenceHeartbeatInterval, 14);
+}
+
 - (void)testCreateClientWithBasicConfiguration {
-    PNConfiguration *config = [PNConfiguration configurationWithPublishKey:@"demo-36" subscribeKey:@"demo-36"];
+  PNConfiguration *config = [PNConfiguration configurationWithPublishKey:self.publishKey
+                                                            subscribeKey:self.subscribeKey];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     config.stripMobilePayload = NO;
@@ -71,7 +101,8 @@
 }
 
 - (void)testCreateClientWithCallbackQueue {
-    PNConfiguration *config = [PNConfiguration configurationWithPublishKey:@"demo-36" subscribeKey:@"demo-36"];
+  PNConfiguration *config = [PNConfiguration configurationWithPublishKey:self.publishKey
+                                                            subscribeKey:self.subscribeKey];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     config.stripMobilePayload = NO;

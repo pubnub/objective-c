@@ -28,8 +28,8 @@
 }
 
 - (void)testSimpleHeartbeat {
-    PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo-36"
-                                                                     subscribeKey:@"demo-36"];
+    PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:self.publishKey
+                                                                     subscribeKey:self.subscribeKey];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     configuration.stripMobilePayload = NO;

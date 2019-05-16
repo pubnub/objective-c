@@ -1,3 +1,17 @@
+28-03-2019 - 4966f7d - 4.8.7
+. resolved project warnings, which caused issues with Carthage framework build.
+
+26-03-2019 - 010655a - 4.8.6
+. changed builder API interface visibility for frameworks from project to public.
+
+16-03-2019 - 12eda1b - 4.8.5
+. changed message count result object header file visibility for frameworks from project to public.
+. moved Keychain records update calls to secondary queue (sometime Keychain take too much time to update and block main queue).
+
+11-03-2019 - 0731f99 - 4.8.4
+. added ability to retrieve number of messages in specified channels using timetoken as reference date.
+. removed channel names sorting from utility class (because of which new API wasn't able to work properly).
+
 13-11-2018 - 524e722 - 4.8.3
 . added ability to get / set presence state for multiple channel / groups (at once).
 

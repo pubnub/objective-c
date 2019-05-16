@@ -1,9 +1,43 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.8.3"
+version: "4.8.7"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Resolved project warnings, which caused issues with Carthage framework build."
+        type: improvement
+    date: Mar 28, 19
+    version: v4.8.7
+  -
+    changes:
+      -
+        text: "Changed builder API interface visibility for frameworks from project to public."
+        type: bug
+    date: Mar 26, 19
+    version: v4.8.6
+  -
+    changes:
+      -
+        text: "Changed message count result object header file visibility for frameworks from project to public."
+        type: bug
+      -
+        text: "Moved Keychain records update calls to secondary queue."
+        type: improvement
+    date: Mar 19, 19
+    version: v4.8.5
+  -
+    changes:
+      -
+        text: "Added ability to retrieve number of messages in specified channels using timetoken as reference date."
+        type: feature
+      -
+        text: "Removed channel names sorting from utility class (because of which new API wasn't able to work properly)."
+        type: improvement
+    date: Mar 11, 19
+    version: v4.8.4
   -
     changes:
       -
@@ -785,6 +819,7 @@ features:
     - STORAGE-START-END
     - STORAGE-COUNT
     - HISTORY-DELETE
+    - STORAGE-MESSAGE-COUNT
   time:
     - TIME-TIME
   subscribe:
@@ -801,16 +836,16 @@ features:
     - UNSUBSCRIBE-ALL
 supported-platforms:
   -
-    version: PubNub Objective-C 4.6.0
+    version: PubNub Objective-C 4.8.6
     platforms:
-      - iOS 7.0 or higher.
-      - watchOS 2.0 or higher.
-      - tvOS 9.0 or higher.
-      - macOS 10.9 or higher.
+      - iOS 9.0 or higher.
+      - watchOS 4.0 or higher.
+      - tvOS 10.0 or higher.
+      - macOS 10.11 or higher.
   -
-    version: PubNub Swift 4.6.0
+    version: PubNub Swift 4.8.6
     platforms:
-      - iOS 7.0 or higher.
-      - watchOS 2.0 or higher.
-      - tvOS 9.0 or higher.
-      - macOS 10.9 or higher.
+      - iOS 9.0 or higher.
+      - watchOS 4.0 or higher.
+      - tvOS 10.0 or higher.
+      - macOS 10.11 or higher.

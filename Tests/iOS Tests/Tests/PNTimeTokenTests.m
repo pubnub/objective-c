@@ -27,7 +27,7 @@
         XCTAssertNotNil(result);
         XCTAssertEqual(result.operation, PNTimeOperation);
         XCTAssertEqual(result.statusCode, 200);
-        XCTAssertEqualObjects(result.data.timetoken, @14583231369024013);
+        XCTAssertEqualObjects(result.data.timetoken, @15579918206106789);
         [timeTokenExpectation fulfill];
     }];
     [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {

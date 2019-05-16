@@ -14,7 +14,8 @@
 - (void)setUp {
     [super setUp];
     
-    self.cryptedConfiguration = [PNConfiguration configurationWithPublishKey:@"demo-36" subscribeKey:@"demo-36"];
+    self.cryptedConfiguration = [PNConfiguration configurationWithPublishKey:self.publishKey
+                                                                subscribeKey:self.subscribeKey];
     self.cryptedConfiguration.uuid = @"322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C";
     self.cryptedConfiguration.cipherKey = @"chiper key";
 #pragma clang diagnostic push
