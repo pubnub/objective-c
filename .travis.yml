@@ -18,12 +18,10 @@ matrix:
     - env: NAME='[ObjC] macOS' SCHEME='OSX Tests (ObjC)' DESTINATION='platform=macOS'
 
 before_install: 
-  - brew ls --versions node && brew upgrade node || brew install node
-
-install: 
-  - npm config set strict-ssl false
   - sudo gem install xcpretty-travis-formatter
   - sudo gem install cocoapods
+  - brew ls --versions node && brew upgrade node || brew install node
+  - npm config set strict-ssl false
 
 before_script:
   - pushd Tests/Resources/ && npm init --yes && npm install glob && node .create-keysset.js && popd
