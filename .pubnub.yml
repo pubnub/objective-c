@@ -1,9 +1,22 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.8.7"
+version: "4.8.8"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Add value wrapping around heartbeat 'value'."
+        type: feature
+      -
+        text: "Fix universal Frameworks build script."
+        type: bug
+      -
+        text: "Separate tests project from main workspace."
+        type: improvement
+    date: May 16, 19
+    version: v4.8.8
   -
     changes:
       -

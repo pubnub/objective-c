@@ -1,3 +1,8 @@
+16-05-2019 - af57b0f - 4.8.8
+. add value wrapping around heartbeat 'value'.
+. fix universal Frameworks build script.
+. separate tests project from main workspace.
+
 28-03-2019 - 4966f7d - 4.8.7
 . resolved project warnings, which caused issues with Carthage framework build.
 
