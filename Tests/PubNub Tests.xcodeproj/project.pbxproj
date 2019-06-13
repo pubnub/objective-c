@@ -679,6 +679,67 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		79A3E4462215783200F2ADB9 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				79A3E4482215783200F2ADB9 /* NSInvocation+PNTest.h */,
+				79A3E4472215783200F2ADB9 /* NSInvocation+PNTest.m */,
+			);
+			name = Categories;
+			path = "iOS Tests/Helpers/Categories";
+			sourceTree = "<group>";
+		};
+		79A3E4552215A42C00F2ADB9 /* Unit */ = {
+			isa = PBXGroup;
+			children = (
+				79A3E4562215A42C00F2ADB9 /* Core */,
+			);
+			name = Unit;
+			path = Tests/Unit;
+			sourceTree = "<group>";
+		};
+		79A3E4562215A42C00F2ADB9 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				79A3E4572215A42C00F2ADB9 /* History */,
+				79A3E4592215A42C00F2ADB9 /* Interfaces */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		79A3E4572215A42C00F2ADB9 /* History */ = {
+			isa = PBXGroup;
+			children = (
+				79A3E4582215A42C00F2ADB9 /* PNMessageCountTest.m */,
+			);
+			path = History;
+			sourceTree = "<group>";
+		};
+		79A3E4592215A42C00F2ADB9 /* Interfaces */ = {
+			isa = PBXGroup;
+			children = (
+				79A3E45A2215A42C00F2ADB9 /* History */,
+			);
+			path = Interfaces;
+			sourceTree = "<group>";
+		};
+		79A3E45A2215A42C00F2ADB9 /* History */ = {
+			isa = PBXGroup;
+			children = (
+				79A3E45B2215A42C00F2ADB9 /* PNMessageCountAPICallBuilderTest.m */,
+			);
+			path = History;
+			sourceTree = "<group>";
+		};
+		79A3E4622215A44000F2ADB9 /* Integration */ = {
+			isa = PBXGroup;
+			children = (
+				79A3E4632215A47600F2ADB9 /* PNPubNubHistoryIntegrationTest.m */,
+			);
+			name = Integration;
+			path = Tests/Integration;
+			sourceTree = "<group>";
+		};
 		969714371B32F08E001DECD1 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
@@ -1140,8 +1201,6 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputFileListPaths = (
-			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-OSX ObjC Tests/Pods-OSX ObjC Tests-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/BeKindRewind-macOS/BeKindRewind.framework",
@@ -1167,8 +1226,6 @@
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			inputFileListPaths = (
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iOS ObjC Tests/Pods-iOS ObjC Tests-frameworks.sh",
