@@ -18,6 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Device push token addition block.
  *
+ * @note This method will forward call to 'apnsToken' block.
+ *
  * @param token Device push token against which search on \b PubNub service should be performed.
  *
  * @return API call configuration builder.
@@ -25,6 +27,30 @@ NS_ASSUME_NONNULL_BEGIN
  * @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNAPNSAuditAPICallBuilder * (^token)(NSData *token);
+
+/**
+ * @brief Device APNS push token addition block.
+ *
+ * @param token Device APNS-provided push token against which search on \b PubNub service should be
+ *     performed.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.8.9
+ */
+@property (nonatomic, readonly, strong) PNAPNSAuditAPICallBuilder * (^apnsToken)(NSData *token);
+
+/**
+ * @brief Device FCM push token addition block.
+ *
+ * @param token Device FCM-provided push token against which search on \b PubNub service should be
+ *     performed.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.8.9
+ */
+@property (nonatomic, readonly, strong) PNAPNSAuditAPICallBuilder * (^fcmToken)(NSString *token);
 
 
 #pragma mark - Execution

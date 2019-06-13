@@ -18,6 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Device push token addition block.
  *
+ * @note This method will forward call to 'apnsToken' block.
+ *
  * @param token Device push token which should be used to change notifications state on specified
  *     set of channels.
  *
@@ -26,6 +28,30 @@ NS_ASSUME_NONNULL_BEGIN
  * @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNAPNSModificationAPICallBuilder * (^token)(NSData *token);
+
+/**
+ * @brief Device APNS push token addition block.
+ *
+ * @param token Device APNS-provided push token against which search on \b PubNub service should be
+ *     performed.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.8.9
+ */
+@property (nonatomic, readonly, strong) PNAPNSModificationAPICallBuilder * (^apnsToken)(NSData *token);
+
+/**
+ * @brief Device FCM push token addition block.
+ *
+ * @param token Device FCM-provided push token against which search on \b PubNub service should be
+ *     performed.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.8.9
+ */
+@property (nonatomic, readonly, strong) PNAPNSModificationAPICallBuilder * (^fcmToken)(NSString *token);
 
 /**
  * @brief List of target channels addition block.
