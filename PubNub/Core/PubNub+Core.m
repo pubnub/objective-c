@@ -60,13 +60,8 @@ void pn_safe_property_write(dispatch_queue_t queue, dispatch_block_t block) {
 
 NSString * pn_operating_system_version(void) {
 
-    NSString *versionString = [NSProcessInfo processInfo].operatingSystemVersionString;
-    NSString *osVersion = [versionString componentsSeparatedByString:@" "][1];
-    NSMutableArray *versionComponents = [[osVersion componentsSeparatedByString:@"."] mutableCopy];
-
-    if (versionComponents.count == 2) {
-        [versionComponents addObject:@"0"];
-    }
+    NSOperatingSystemVersion ver = NSProcessInfo.processInfo.operatingSystemVersion;
+    NSArray *versionComponents = @[@(ver.majorVersion), @(ver.minorVersion), @(ver.patchVersion)];
 
     return [versionComponents componentsJoinedByString:@"."];
 }
