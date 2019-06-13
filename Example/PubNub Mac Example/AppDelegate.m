@@ -57,8 +57,8 @@
     self.channel1 = @"bot";
     self.channel2 = @"myCh";
     self.channelGroup1 = @"myChannelGroup";
-    self.pubKey = @"demo-36";
-    self.subKey = @"demo-36";
+    self.pubKey = @"demo";
+    self.subKey = @"demo";
     self.authKey = @"myAuthKey";
     
     

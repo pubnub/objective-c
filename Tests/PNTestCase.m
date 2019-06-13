@@ -53,6 +53,14 @@ NS_ASSUME_NONNULL_BEGIN
  */
 + (NSMutableArray *)invocationObjects;
 
+/**
+ * @brief Content of \c 'Resources/keysset.plist' which is used with this test.
+ *
+ * @return \a NSDictionary with 'pam' and 'regula' set of 'publish'/'subscribe' keys.
+ *
+ * @since 4.8.8
+ */
++ (NSDictionary *)testKeysSet;
 
 #pragma mark - Handlers
 
@@ -97,6 +105,40 @@ NS_ASSUME_NONNULL_END
     });
     
     return _invocationObjects;
+}
+
++ (NSDictionary *)testKeysSet {
+  
+  static NSDictionary *_testKeysSet;
+  static dispatch_once_t onceToken;
+  
+  dispatch_once(&onceToken, ^{
+    NSBundle *testBundle = [NSBundle bundleForClass:self];
+    NSString *keysPath = [testBundle pathForResource:@"keysset" ofType:@"plist"];
+    _testKeysSet = [NSDictionary dictionaryWithContentsOfFile:keysPath];
+  });
+  
+  return _testKeysSet;
+}
+
+- (NSString *)pamSubscribeKey {
+  
+  return [[[self class] testKeysSet] valueForKeyPath:@"pam.subscribe"];
+}
+
+- (NSString *)pamPublishKey {
+  
+  return [[[self class] testKeysSet] valueForKeyPath:@"pam.publish"];
+}
+
+- (NSString *)subscribeKey {
+  
+  return [[[self class] testKeysSet] valueForKeyPath:@"regular.subscribe"];
+}
+
+- (NSString *)publishKey {
+  
+  return [[[self class] testKeysSet] valueForKeyPath:@"regular.publish"];
 }
 
 

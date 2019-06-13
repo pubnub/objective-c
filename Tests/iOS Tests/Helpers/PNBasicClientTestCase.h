@@ -25,8 +25,36 @@ typedef void (^PNChannelGroupAssertions)(PNAcknowledgmentStatus *status);
 @interface PNBasicClientTestCase : BKRTestCase <PNObjectEventListener>
 
 @property (nonatomic) PNConfiguration *configuration;
-@property (nonatomic) PubNub *client;
+@property (nonatomic, strong) PubNub *client;
 @property (nonatomic, strong) XCTestExpectation *publishExpectation;
+
+/**
+ * @brief Loaded from \c 'Resources/keysset.plist' file PAM enabled PubNub subscribe key.
+ *
+ * @since 4.8.8
+ */
+@property (nonatomic, readonly, strong) NSString *pamSubscribeKey;
+
+/**
+ * @brief Loaded from \c 'Resources/keysset.plist' file PAM enabled PubNub publish key.
+ *
+ * @since 4.8.8
+ */
+@property (nonatomic, readonly, strong) NSString *pamPublishKey;
+
+/**
+ * @brief Loaded from \c 'Resources/keysset.plist' file PubNub subscribe key.
+ *
+ * @since 4.8.8
+ */
+@property (nonatomic, readonly, strong) NSString *subscribeKey;
+
+/**
+ * @brief Loaded from \c 'Resources/keysset.plist' file PubNub publish key.
+ *
+ * @since 4.8.8
+ */
+@property (nonatomic, readonly, strong) NSString *publishKey;
 
 - (PNConfiguration *)overrideClientConfiguration:(PNConfiguration *)configuration;
 

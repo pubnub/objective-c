@@ -2,13 +2,10 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:Example/PubNub Example.xcodeproj">
-   </FileRef>
-   <FileRef
       location = "group:Framework/PubNub Framework.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:Tests/PubNub Tests.xcodeproj">
+      location = "group:Example/PubNub Example.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">

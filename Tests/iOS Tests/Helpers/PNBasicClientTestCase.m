@@ -12,12 +12,75 @@
 #import "PNDeviceIndependentMatcher.h"
 #import "PNBasicClientTestCase.h"
 
+
+NS_ASSUME_NONNULL_BEGIN
+
+#pragma mark Protected interface declaration
+
+@interface PNBasicClientTestCase ()
+
+/**
+ * @brief Content of \c 'Resources/keysset.plist' which is used with this test.
+ *
+ * @return \a NSDictionary with 'pam' and 'regula' set of 'publish'/'subscribe' keys.
+ *
+ * @since 4.8.8
+ */
++ (NSDictionary *)testKeysSet;
+
+#pragma mark -
+
+
+@end
+
+NS_ASSUME_NONNULL_END
+
+
 @implementation PNBasicClientTestCase
+
+
+#pragma mark - Information
+
++ (NSDictionary *)testKeysSet {
+  
+  static NSDictionary *_testKeysSet;
+  static dispatch_once_t onceToken;
+  
+  dispatch_once(&onceToken, ^{
+    NSBundle *testBundle = [NSBundle bundleForClass:self];
+    NSString *keysPath = [testBundle pathForResource:@"keysset" ofType:@"plist"];
+    _testKeysSet = [NSDictionary dictionaryWithContentsOfFile:keysPath];
+  });
+  
+  return _testKeysSet;
+}
+
+- (NSString *)pamSubscribeKey {
+  
+  return [[[self class] testKeysSet] valueForKeyPath:@"pam.subscribe"];
+}
+
+- (NSString *)pamPublishKey {
+  
+  return [[[self class] testKeysSet] valueForKeyPath:@"pam.publish"];
+}
+
+- (NSString *)subscribeKey {
+  
+  return [[[self class] testKeysSet] valueForKeyPath:@"regular.subscribe"];
+}
+
+- (NSString *)publishKey {
+  
+  return [[[self class] testKeysSet] valueForKeyPath:@"regular.publish"];
+}
 
 - (void)setUp {
     [super setUp];
-    
-    self.configuration = [PNConfiguration configurationWithPublishKey:@"demo-36" subscribeKey:@"demo-36"];
+  
+    dispatch_queue_t callbackQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    self.configuration = [PNConfiguration configurationWithPublishKey:self.publishKey
+                                                         subscribeKey:self.subscribeKey];
     self.configuration.uuid = @"322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C";
     self.configuration.origin = @"ps.pndsn.com";
     self.configuration = [self overrideClientConfiguration:self.configuration];
@@ -25,7 +88,7 @@
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     self.configuration.stripMobilePayload = NO;
 #pragma clang diagnostic pop
-    self.client = [PubNub clientWithConfiguration:self.configuration];
+    self.client = [PubNub clientWithConfiguration:self.configuration callbackQueue:callbackQueue];
     self.client.logger.enabled = NO;
     [self.client.logger setLogLevel:PNVerboseLogLevel];
 }

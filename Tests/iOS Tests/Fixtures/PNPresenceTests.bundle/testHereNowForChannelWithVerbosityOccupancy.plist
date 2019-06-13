@@ -190,7 +190,7 @@
 				<key>MIMEType</key>
 				<string>text/javascript</string>
 				<key>URL</key>
-				<string>https://ps.pndsn.com/v2/presence/sub-key/demo-36/channel/2EC925F0-B996-47A4-AF54-A605E1A9AEBA?pnsdk=PubNub-ObjC-iOS%2F4.2.0&amp;state=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;instanceid=58EB05C9-9DE4-4118-B5D7-EE059FBF19A9&amp;disable_uuids=1&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
+				<string>https://ps.pndsn.com/v2/presence/sub-key/demo/channel/2EC925F0-B996-47A4-AF54-A605E1A9AEBA?pnsdk=PubNub-ObjC-iOS%2F4.2.0&amp;state=0&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;instanceid=58EB05C9-9DE4-4118-B5D7-EE059FBF19A9&amp;disable_uuids=1&amp;uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C</string>
 				<key>allHeaderFields</key>
 				<dict>
 					<key>Accept-Ranges</key>
