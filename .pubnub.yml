@@ -1,9 +1,19 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.8.8"
+version: "4.8.9"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Add ability to pass FCM token for channel add / remove and audition APNS API endpoints."
+        type: feature
+      -
+        text: "Fix crash caused by code, which performed OS version parsing using older API which provides localized string (include additional information in addition to version information)."
+        type: bug
+    date: Jun 17, 19
+    version: v4.8.9
   -
     changes:
       -
