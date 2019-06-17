@@ -12,16 +12,6 @@
 #import "PNHelpers.h"
 
 
-#pragma mark Static
-
-/**
- * @brief Name of key under which previous device push token is stored in persistent storage.
- *
- * @since 4.x.1
- */
-static NSString * const kPNAPNSDevicePushTokenStoreKey = @"PNAPNSDevicePushToken";
-
-
 NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Protected interface declaration
@@ -37,6 +27,8 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @param shouldEnabled Whether push notification should be enabled or disabled on \c channels.
  * @param channels List of channels for which notification state should be changed.
+ * @param gateway Name / type of service for which channels modification should be done
+ *     ('apns' or 'gcm').
  * @param token Device push token for which on specified \c channels push notifications will be
  *     enabled or disabled.
  * @param queryParameters List arbitrary query parameters which should be sent along with original
@@ -47,7 +39,8 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)enablePushNotification:(BOOL)shouldEnabled
                     onChannels:(nullable NSArray<NSString *> *)channels
-           withDevicePushToken:(NSData *)token
+                   withGateway:(NSString *)gateway
+                   deviceToken:(id)token
                queryParameters:(nullable NSDictionary *)queryParameters
                  andCompletion:(nullable PNPushNotificationsStateModificationCompletionBlock)block;
 
@@ -58,7 +51,8 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief Request for all channels on which push notification has been enabled using specified
  * \c pushToken.
  *
- * @param pushToken Device push token against which search should be performed.
+ * @param gateway Name / type of service for which channels audit should be done ('apns' or 'gcm').
+ * @param token Device push token against which search should be performed.
  * @param queryParameters List arbitrary query parameters which should be sent along with original
  *     API call.
  *     \b Required: optional
@@ -66,22 +60,10 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @since 4.8.2
  */
-- (void)pushNotificationEnabledChannelsForDeviceWithPushToken:(NSData *)pushToken
-                               queryParameters:(nullable NSDictionary *)queryParameters
-                                 andCompletion:(PNPushNotificationsStateAuditCompletionBlock)block;
-
-
-#pragma mark - Misc
-
-/**
- * @brief Receive device push token stored in persistent storage.
- *
- * @discussion Try to receive device push token which has been during previous channels registration
- * from Keychain storage.
- *
- * @since 4.x.1
- */
-- (NSData *)storedDevicePushToken;
+- (void)pushNotificationEnabledChannelsForGateway:(NSString *)gateway
+                                  withDeviceToken:(id)token
+                                  queryParameters:(nullable NSDictionary *)queryParameters
+                                    andCompletion:(PNPushNotificationsStateAuditCompletionBlock)block;
 
 #pragma mark - 
 
@@ -104,21 +86,24 @@ NS_ASSUME_NONNULL_END
     builder = [PNAPNSAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
                                                                 NSDictionary *parameters) {
         
-        NSData *pushToken = parameters[NSStringFromSelector(@selector(token))];
+        NSData *apnsToken = parameters[NSStringFromSelector(@selector(apnsToken))];
+        NSString *fcmToken = parameters[NSStringFromSelector(@selector(fcmToken))];
         NSDictionary *queryParam = parameters[@"queryParam"];
         id block = parameters[@"block"];
         
         if ([flags containsObject:NSStringFromSelector(@selector(audit))]) {
-            [self pushNotificationEnabledChannelsForDeviceWithPushToken:pushToken
-                                                        queryParameters:queryParam
-                                                          andCompletion:block];
+            [self pushNotificationEnabledChannelsForGateway:(apnsToken ? @"apns" : @"gcm")
+                                            withDeviceToken:(apnsToken ?: fcmToken)
+                                            queryParameters:queryParam
+                                              andCompletion:block];
         } else {
             NSArray<NSString *> *channels = parameters[NSStringFromSelector(@selector(channels))];
             BOOL enabling = [flags containsObject:NSStringFromSelector(@selector(enable))];
             
             [self enablePushNotification:enabling
                               onChannels:(channels.count ? channels : nil)
-                     withDevicePushToken:pushToken
+                             withGateway:(apnsToken ? @"apns" : @"gcm")
+                             deviceToken:(apnsToken ?: fcmToken)
                          queryParameters:queryParam
                            andCompletion:block];
         }
@@ -138,7 +123,8 @@ NS_ASSUME_NONNULL_END
     
     [self enablePushNotification:YES
                       onChannels:channels
-             withDevicePushToken:pushToken
+                     withGateway:@"apns"
+                     deviceToken:pushToken
                  queryParameters:nil
                    andCompletion:block];
 }
@@ -149,7 +135,8 @@ NS_ASSUME_NONNULL_END
     
     [self enablePushNotification:NO
                       onChannels:channels
-             withDevicePushToken:pushToken
+                     withGateway:@"apns"
+                     deviceToken:pushToken
                  queryParameters:nil
                    andCompletion:block];
 }
@@ -159,27 +146,34 @@ NS_ASSUME_NONNULL_END
     
     [self enablePushNotification:NO
                       onChannels:nil
-             withDevicePushToken:pushToken
+                     withGateway:@"apns"
+                     deviceToken:pushToken
                  queryParameters:nil
                    andCompletion:block];
 }
 
 - (void)enablePushNotification:(BOOL)shouldEnabled
                     onChannels:(NSArray<NSString *> *)channels
-           withDevicePushToken:(NSData *)token
+                   withGateway:(NSString *)gateway
+                   deviceToken:(id)token
                queryParameters:(NSDictionary *)queryParameters
-                 andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block {
+                 andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block{
 
     PNOperationType operationType = PNRemoveAllPushNotificationsOperation;
     PNRequestParameters *parameters = [PNRequestParameters new];
     BOOL removeAllChannels = !shouldEnabled && !channels.count;
+    NSString *deviceToken = token;
+    gateway = gateway ?: @"apns";
 
+    [parameters addQueryParameters:@{@"type": gateway.lowercaseString}];
     [parameters addQueryParameters:queryParameters];
     
-    if (token.length) {
-        NSString *tokenHEX = [PNData HEXFromDevicePushToken:token].lowercaseString;
-
-        [parameters addPathComponent:tokenHEX forPlaceholder:@"{token}"];
+    if ([gateway.lowercaseString isEqualToString:@"apns"] && ((NSData *)token).length) {
+        deviceToken = [PNData HEXFromDevicePushToken:token];
+    }
+    
+    if (deviceToken.length) {
+        [parameters addPathComponent:deviceToken.lowercaseString forPlaceholder:@"{token}"];
     }
 
     if (!removeAllChannels) {
@@ -189,27 +183,17 @@ NS_ASSUME_NONNULL_END
         if (channels.count) {
             [parameters addQueryParameter:[PNChannel namesForRequest:channels]
                              forFieldName:(shouldEnabled ? @"add" : @"remove")];
-            
-            if (operationType == PNAddPushNotificationsOnChannelsOperation) {
-                NSData *oldToken = [self storedDevicePushToken];
-                
-                if (oldToken && ![token isEqual:oldToken]) {
-                    NSString *tokenHEX = [PNData HEXFromDevicePushToken:oldToken].lowercaseString;
-
-                    [parameters addQueryParameter:tokenHEX forFieldName:@"old_token"];
-                }
-            }
         } else if (operationType == PNAddPushNotificationsOnChannelsOperation) {
             [parameters removePathComponentForPlaceholder:@"{token}"];
         }
 
         PNLogAPICall(self.logger, @"<PubNub::API> %@ push notifications for device '%@': %@.",
             (shouldEnabled ? @"Enable" : @"Disable"),
-            [PNData HEXFromDevicePushToken:token].lowercaseString,
+            deviceToken.lowercaseString,
             [PNChannel namesForRequest:channels]);
     } else {
         PNLogAPICall(self.logger, @"<PubNub::API> Disable push notifications for device '%@'.",
-            [[PNData HEXFromDevicePushToken:token] lowercaseString]);
+            deviceToken.lowercaseString);
     }
 
     __weak __typeof(self) weakSelf = self;
@@ -221,14 +205,11 @@ NS_ASSUME_NONNULL_END
             status.retryBlock = ^{
                 [weakSelf enablePushNotification:shouldEnabled
                                       onChannels:channels
-                             withDevicePushToken:token
+                                     withGateway:gateway
+                                     deviceToken:token
                                  queryParameters:queryParameters
                                    andCompletion:block];
             };
-        } else if (operationType == PNAddPushNotificationsOnChannelsOperation) {
-            [PNKeychain storeValue:token
-                            forKey:kPNAPNSDevicePushTokenStoreKey
-               withCompletionBlock:NULL];
         }
         
         [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
@@ -241,26 +222,34 @@ NS_ASSUME_NONNULL_END
 - (void)pushNotificationEnabledChannelsForDeviceWithPushToken:(NSData *)pushToken
                                  andCompletion:(PNPushNotificationsStateAuditCompletionBlock)block {
 
-    [self pushNotificationEnabledChannelsForDeviceWithPushToken:pushToken
-                                                queryParameters:nil
-                                                  andCompletion:block];
+    [self pushNotificationEnabledChannelsForGateway:@"apns"
+                                    withDeviceToken:pushToken
+                                    queryParameters:nil
+                                      andCompletion:block];
 }
 
-- (void)pushNotificationEnabledChannelsForDeviceWithPushToken:(NSData *)pushToken
-                               queryParameters:(NSDictionary *)queryParameters
-                                 andCompletion:(PNPushNotificationsStateAuditCompletionBlock)block {
+- (void)pushNotificationEnabledChannelsForGateway:(NSString *)gateway
+                                  withDeviceToken:(id)token
+                                  queryParameters:(NSDictionary *)queryParameters
+                                    andCompletion:(PNPushNotificationsStateAuditCompletionBlock)block {
 
     PNRequestParameters *parameters = [PNRequestParameters new];
+    NSString *deviceToken = token;
+    gateway = gateway ?: @"apns";
 
+    [parameters addQueryParameters:@{@"type": gateway.lowercaseString}];
     [parameters addQueryParameters:queryParameters];
     
-    if (pushToken.length) {
-        [parameters addPathComponent:[PNData HEXFromDevicePushToken:pushToken].lowercaseString
-                      forPlaceholder:@"{token}"];
+    if ([gateway.lowercaseString isEqualToString:@"apns"] && ((NSData *)token).length) {
+        deviceToken = [PNData HEXFromDevicePushToken:token];
     }
-
+    
+    if (deviceToken.length) {
+        [parameters addPathComponent:deviceToken.lowercaseString forPlaceholder:@"{token}"];
+    }
+    
     PNLogAPICall(self.logger, @"<PubNub::API> Push notification enabled channels for device '%@'.",
-        [PNData HEXFromDevicePushToken:pushToken].lowercaseString);
+        deviceToken.lowercaseString);
 
     __weak __typeof(self) weakSelf = self;
     [self processOperation:PNPushNotificationEnabledChannelsOperation
@@ -269,32 +258,15 @@ NS_ASSUME_NONNULL_END
                
         if (status.isError) {
             status.retryBlock = ^{
-                [weakSelf pushNotificationEnabledChannelsForDeviceWithPushToken:pushToken
-                                                                queryParameters:queryParameters
-                                                                  andCompletion:block];
+                [weakSelf pushNotificationEnabledChannelsForGateway:gateway
+                                                    withDeviceToken:token
+                                                    queryParameters:queryParameters
+                                                      andCompletion:block];
             };
         }
 
         [weakSelf callBlock:block status:NO withResult:result andStatus:status];
     }];
-}
-
-
-#pragma mark - Misc
-
-- (NSData *)storedDevicePushToken {
-    
-    __block NSData *token = nil;
-
-    [PNKeychain valueForKey:kPNAPNSDevicePushTokenStoreKey withCompletionBlock:^(id value) {
-        if ([value isKindOfClass:NSString.class]) {
-            token = [(NSString *)value dataUsingEncoding:NSUTF8StringEncoding];
-        } else if ([value isKindOfClass:NSData.class]) {
-            token = value;
-        }
-    }];
-    
-    return token;
 }
 
 #pragma mark -

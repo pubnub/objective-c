@@ -88,6 +88,7 @@
 		794B6B8A228D492400489D37 /* PNTimeTokenTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 794B6B89228D492400489D37 /* PNTimeTokenTests.bundle */; };
 		794B6B8B228D492400489D37 /* PNTimeTokenTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 794B6B89228D492400489D37 /* PNTimeTokenTests.bundle */; };
 		794B6B8C228D492400489D37 /* PNTimeTokenTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 794B6B89228D492400489D37 /* PNTimeTokenTests.bundle */; };
+		794C300A22B2C64000FE054B /* PNAPNSIntegrationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 794C300922B2C64000FE054B /* PNAPNSIntegrationTest.m */; };
 		795CED0A1BCF002900D421BB /* PNHeartbeatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 795CED091BCF002900D421BB /* PNHeartbeatTests.swift */; };
 		796502F31C0E3709001F7782 /* PNDeviceIndependentMatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A6E5FF1BE421DC00C20B77 /* PNDeviceIndependentMatcher.m */; };
 		797BDCCA1C1F5091006EF006 /* PNPublishWithMobilePayloadTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF049F1B4EAAB7007478CB /* PNPublishWithMobilePayloadTests.m */; };
@@ -279,6 +280,7 @@
 		794B5666228D4AA2007AB94F /* PNAPNSTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = PNAPNSTests.bundle; path = Fixtures/PNAPNSTests.bundle; sourceTree = "<group>"; };
 		794B566A228D4B19007AB94F /* PNPublishSizeOfMessage.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = PNPublishSizeOfMessage.bundle; path = Fixtures/PNPublishSizeOfMessage.bundle; sourceTree = "<group>"; };
 		794B6B89228D492400489D37 /* PNTimeTokenTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = PNTimeTokenTests.bundle; path = Fixtures/PNTimeTokenTests.bundle; sourceTree = "<group>"; };
+		794C300922B2C64000FE054B /* PNAPNSIntegrationTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNAPNSIntegrationTest.m; sourceTree = "<group>"; };
 		795CED091BCF002900D421BB /* PNHeartbeatTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNHeartbeatTests.swift; sourceTree = "<group>"; };
 		797BDD021C1F5091006EF006 /* watchOS ObjC Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "watchOS ObjC Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		797BDD3F1C1F5176006EF006 /* tvOS ObjC Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "tvOS ObjC Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -652,6 +654,7 @@
 			isa = PBXGroup;
 			children = (
 				79A3E4632215A47600F2ADB9 /* PNPubNubHistoryIntegrationTest.m */,
+				794C300922B2C64000FE054B /* PNAPNSIntegrationTest.m */,
 			);
 			name = Integration;
 			path = Tests/Integration;
@@ -675,69 +678,7 @@
 				DEF30C57C474ED0F4ABE8DA0 /* Pods-tvOS ObjC Tests.debug.xcconfig */,
 				856325838D88FF13AF9E0F81 /* Pods-tvOS ObjC Tests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
-			sourceTree = "<group>";
-		};
-		79A3E4462215783200F2ADB9 /* Categories */ = {
-			isa = PBXGroup;
-			children = (
-				79A3E4482215783200F2ADB9 /* NSInvocation+PNTest.h */,
-				79A3E4472215783200F2ADB9 /* NSInvocation+PNTest.m */,
-			);
-			name = Categories;
-			path = "iOS Tests/Helpers/Categories";
-			sourceTree = "<group>";
-		};
-		79A3E4552215A42C00F2ADB9 /* Unit */ = {
-			isa = PBXGroup;
-			children = (
-				79A3E4562215A42C00F2ADB9 /* Core */,
-			);
-			name = Unit;
-			path = Tests/Unit;
-			sourceTree = "<group>";
-		};
-		79A3E4562215A42C00F2ADB9 /* Core */ = {
-			isa = PBXGroup;
-			children = (
-				79A3E4572215A42C00F2ADB9 /* History */,
-				79A3E4592215A42C00F2ADB9 /* Interfaces */,
-			);
-			path = Core;
-			sourceTree = "<group>";
-		};
-		79A3E4572215A42C00F2ADB9 /* History */ = {
-			isa = PBXGroup;
-			children = (
-				79A3E4582215A42C00F2ADB9 /* PNMessageCountTest.m */,
-			);
-			path = History;
-			sourceTree = "<group>";
-		};
-		79A3E4592215A42C00F2ADB9 /* Interfaces */ = {
-			isa = PBXGroup;
-			children = (
-				79A3E45A2215A42C00F2ADB9 /* History */,
-			);
-			path = Interfaces;
-			sourceTree = "<group>";
-		};
-		79A3E45A2215A42C00F2ADB9 /* History */ = {
-			isa = PBXGroup;
-			children = (
-				79A3E45B2215A42C00F2ADB9 /* PNMessageCountAPICallBuilderTest.m */,
-			);
-			path = History;
-			sourceTree = "<group>";
-		};
-		79A3E4622215A44000F2ADB9 /* Integration */ = {
-			isa = PBXGroup;
-			children = (
-				79A3E4632215A47600F2ADB9 /* PNPubNubHistoryIntegrationTest.m */,
-			);
-			name = Integration;
-			path = Tests/Integration;
 			sourceTree = "<group>";
 		};
 		969714371B32F08E001DECD1 /* Helpers */ = {
@@ -1081,8 +1022,6 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputFileListPaths = (
-			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-tvOS ObjC Tests/Pods-tvOS ObjC Tests-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/BeKindRewind-tvOS/BeKindRewind.framework",
@@ -1091,8 +1030,6 @@
 				"${BUILT_PRODUCTS_DIR}/PubNub-tvOS/PubNub.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-			);
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BeKindRewind.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OCMock.framework",
@@ -1209,8 +1146,6 @@
 				"${BUILT_PRODUCTS_DIR}/PubNub-macOS/PubNub.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-			);
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BeKindRewind.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OCMock.framework",
@@ -1235,8 +1170,6 @@
 				"${BUILT_PRODUCTS_DIR}/PubNub-iOS/PubNub.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-			);
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BeKindRewind.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OCMock.framework",
@@ -1318,6 +1251,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				794C300A22B2C64000FE054B /* PNAPNSIntegrationTest.m in Sources */,
 				79EF04B21B4EAAB7007478CB /* PNPublishWithMobilePayloadTests.m in Sources */,
 				9652F3E51BA31F7D001E940A /* PNConfigurationChiperKeyTests.m in Sources */,
 				79EF04B01B4EAAB7007478CB /* PNPublishTests.m in Sources */,
