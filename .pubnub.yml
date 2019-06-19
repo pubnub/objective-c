@@ -849,14 +849,14 @@ features:
     - UNSUBSCRIBE-ALL
 supported-platforms:
   -
-    version: PubNub Objective-C 4.8.6
+    version: PubNub Objective-C 4.8.8
     platforms:
       - iOS 9.0 or higher.
       - watchOS 4.0 or higher.
       - tvOS 10.0 or higher.
       - macOS 10.11 or higher.
   -
-    version: PubNub Swift 4.8.6
+    version: PubNub Swift 4.8.8
     platforms:
       - iOS 9.0 or higher.
       - watchOS 4.0 or higher.
