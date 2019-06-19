@@ -21,7 +21,20 @@
 
 - (PNAPNSAuditAPICallBuilder * (^)(NSData *token))token {
     
+    return self.apnsToken;
+}
+
+- (PNAPNSAuditAPICallBuilder * (^)(NSData *token))apnsToken {
+    
     return ^PNAPNSAuditAPICallBuilder * (NSData *token) {
+        [self setValue:token forParameter:NSStringFromSelector(_cmd)];
+        return self;
+    };
+}
+
+- (PNAPNSAuditAPICallBuilder * (^)(NSString *token))fcmToken {
+    
+    return ^PNAPNSAuditAPICallBuilder * (NSString *token) {
         [self setValue:token forParameter:NSStringFromSelector(_cmd)];
         return self;
     };

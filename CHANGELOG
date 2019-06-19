@@ -1,3 +1,7 @@
+17-07-2019 - 8c3d797 - 4.8.9
+. fix system version parsing when OS language set to Japanese.
+. add ability to specify FCM token for APNS API.
+
 16-05-2019 - af57b0f - 4.8.8
 . add value wrapping around heartbeat 'value'.
 . fix universal Frameworks build script.
