@@ -36,7 +36,7 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @15579309706510371);
+                      XCTAssertNotNil(status.data.timetoken);
                   }];
 }
 
@@ -66,7 +66,7 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @15579309675380331);
+                      XCTAssertNotNil(status.data.timetoken);
                   }];
 }
 
@@ -94,7 +94,7 @@
         NSLog(@"status.data.information: %@", status.data.information);
         NSLog(@"status.data.timeToken: %@", status.data.timetoken);
         XCTAssertEqualObjects(status.data.information, @"Sent");
-        XCTAssertEqualObjects(status.data.timetoken, @15579309677819067);
+        XCTAssertNotNil(status.data.timetoken);
     }];
 }
 
@@ -110,7 +110,7 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @15579309680941913);
+                      XCTAssertNotNil(status.data.timetoken);
                   }];
 }
 
@@ -126,7 +126,7 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @15579309669122726);
+                      XCTAssertNotNil(status.data.timetoken);
                   }];
 }
 
@@ -142,7 +142,7 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @15579309671612776);
+                      XCTAssertNotNil(status.data.timetoken);
                   }];
 }
 
@@ -202,7 +202,7 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @15579309664230353);
+                      XCTAssertNotNil(status.data.timetoken);
                   }];
 }
 
@@ -222,7 +222,7 @@
                       NSLog(@"status.data.information: %@", status.data.information);
                       NSLog(@"status.data.timeToken: %@", status.data.timetoken);
                       XCTAssertEqualObjects(status.data.information, @"Sent");
-                      XCTAssertEqualObjects(status.data.timetoken, @15579309683556526);
+                      XCTAssertNotNil(status.data.timetoken);
                   }];
 }
 
@@ -247,7 +247,7 @@
               NSLog(@"status.data.information: %@", status.data.information);
               NSLog(@"status.data.timeToken: %@", status.data.timetoken);
               XCTAssertEqualObjects(status.data.information, @"Sent");
-              XCTAssertEqualObjects(status.data.timetoken, @15579309686166447);
+              XCTAssertNotNil(status.data.timetoken);
               
               [networkExpectation fulfill];
           }];
@@ -278,7 +278,7 @@
               NSLog(@"status.data.information: %@", status.data.information);
               NSLog(@"status.data.timeToken: %@", status.data.timetoken);
               XCTAssertEqualObjects(status.data.information, @"Sent");
-              XCTAssertEqualObjects(status.data.timetoken, @15579309696139899);
+              XCTAssertNotNil(status.data.timetoken);
               
               [networkExpectation fulfill];
           }];
@@ -309,7 +309,7 @@
               NSLog(@"status.data.information: %@", status.data.information);
               NSLog(@"status.data.timeToken: %@", status.data.timetoken);
               XCTAssertEqualObjects(status.data.information, @"Sent");
-              XCTAssertEqualObjects(status.data.timetoken, @15579309652322208);
+              XCTAssertNotNil(status.data.timetoken);
               
               [networkExpectation fulfill];
           }];
@@ -372,7 +372,7 @@
               NSLog(@"status.data.information: %@", status.data.information);
               NSLog(@"status.data.timeToken: %@", status.data.timetoken);
               XCTAssertEqualObjects(status.data.information, @"Sent");
-              XCTAssertEqualObjects(status.data.timetoken, @15579309688874229);
+              XCTAssertNotNil(status.data.timetoken);
               
               [networkExpectation fulfill];
           }];
@@ -404,7 +404,7 @@
               NSLog(@"status.data.information: %@", status.data.information);
               NSLog(@"status.data.timeToken: %@", status.data.timetoken);
               XCTAssertEqualObjects(status.data.information, @"Sent");
-              XCTAssertEqualObjects(status.data.timetoken, @15579309698842761);
+              XCTAssertNotNil(status.data.timetoken);
               
               [networkExpectation fulfill];
           }];
@@ -436,7 +436,7 @@
               NSLog(@"status.data.information: %@", status.data.information);
               NSLog(@"status.data.timeToken: %@", status.data.timetoken);
               XCTAssertEqualObjects(status.data.information, @"Sent");
-              XCTAssertEqualObjects(status.data.timetoken, @15579309654727293);
+              XCTAssertNotNil(status.data.timetoken);
               
               [networkExpectation fulfill];
           }];
@@ -500,7 +500,7 @@
               NSLog(@"status.data.information: %@", status.data.information);
               NSLog(@"status.data.timeToken: %@", status.data.timetoken);
               XCTAssertEqualObjects(status.data.information, @"Sent");
-              XCTAssertEqualObjects(status.data.timetoken, @15579309691443739);
+              XCTAssertNotNil(status.data.timetoken);
               
               [networkExpectation fulfill];
           }];
@@ -532,7 +532,7 @@
               NSLog(@"status.data.information: %@", status.data.information);
               NSLog(@"status.data.timeToken: %@", status.data.timetoken);
               XCTAssertEqualObjects(status.data.information, @"Sent");
-              XCTAssertEqualObjects(status.data.timetoken, @15579309701199838);
+              XCTAssertNotNil(status.data.timetoken);
               
               [networkExpectation fulfill];
           }];
@@ -564,7 +564,7 @@
               NSLog(@"status.data.information: %@", status.data.information);
               NSLog(@"status.data.timeToken: %@", status.data.timetoken);
               XCTAssertEqualObjects(status.data.information, @"Sent");
-              XCTAssertEqualObjects(status.data.timetoken, @15579309657266143);
+              XCTAssertNotNil(status.data.timetoken);
               
               [networkExpectation fulfill];
           }];
@@ -629,7 +629,7 @@
               NSLog(@"status.data.information: %@", status.data.information);
               NSLog(@"status.data.timeToken: %@", status.data.timetoken);
               XCTAssertEqualObjects(status.data.information, @"Sent");
-              XCTAssertEqualObjects(status.data.timetoken, @15579309693711291);
+              XCTAssertNotNil(status.data.timetoken);
               
               [networkExpectation fulfill];
           }];
@@ -662,7 +662,7 @@
               NSLog(@"status.data.information: %@", status.data.information);
               NSLog(@"status.data.timeToken: %@", status.data.timetoken);
               XCTAssertEqualObjects(status.data.information, @"Sent");
-              XCTAssertEqualObjects(status.data.timetoken, @15579309703645034);
+              XCTAssertNotNil(status.data.timetoken);
               
               [networkExpectation fulfill];
           }];
@@ -695,7 +695,7 @@
               NSLog(@"status.data.information: %@", status.data.information);
               NSLog(@"status.data.timeToken: %@", status.data.timetoken);
               XCTAssertEqualObjects(status.data.information, @"Sent");
-              XCTAssertEqualObjects(status.data.timetoken, @15579309659595591);
+              XCTAssertNotNil(status.data.timetoken);
               
               [networkExpectation fulfill];
           }];
