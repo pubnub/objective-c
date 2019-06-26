@@ -1,7 +1,6 @@
 /**
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2010-2018 PubNub, Inc.
+ * @author Serhii Mamontov
+ * @copyright © 2010-2019 PubNub, Inc.
  */
 #import "PNStatus+Private.h"
 #import "PNNetworkResponseSerializer.h"
@@ -19,33 +18,32 @@
 #pragma mark - Initialization and configuration
 
 /**
- @brief  Initializr minimal object to describe state using operation type and status category information.
- 
- @param operation Type of operation for which this status report.
- @param category  Operation processing status category.
- @param error     Reference on processing error.
- 
- @return Initialized and ready to use status object.
- 
- @since 4.0
+ * @brief Initializr minimal object to describe state using operation type and status category
+ * information.
+ *
+ * @param operation Type of operation for which this status report.
+ * @param category Operation processing status category.
+ * @param error Processing error.
+ *
+ * @return Initialized and ready to use status object.
  */
-- (instancetype)initForOperation:(PNOperationType)operation category:(PNStatusCategory)category
+- (instancetype)initForOperation:(PNOperationType)operation
+                        category:(PNStatusCategory)category
              withProcessingError:(NSError *)error;
 
 /**
- @brief  Initialize result instance in response to successful task completion.
- 
- @param operation     One of \b PNOperationType enum fields to describe what kind of operation has been 
-                      processed.
- @param task          Reference on data task which has been used to communicate with \b PubNub network.
- @param processedData Reference on data which has been loaded and pre-processed by corresponding parser.
- @param error         Reference on processing error.
- 
- @return Initialized and ready to use result instance.
- 
- @since 4.0
+ * @brief Initialize result instance in response to successful task completion.
+ *
+ * @param operation One of \b PNOperationType enum fields to describe what kind of operation has
+ *     been processed.
+ * @param task Data task which has been used to communicate with \b PubNub network.
+ * @param processedData Data which has been loaded and pre-processed by corresponding parser.
+ * @param error Processing error.
+ *
+ * @return Initialized and ready to use result instance.
  */
-- (instancetype)initForOperation:(PNOperationType)operation completedWithTask:(NSURLSessionDataTask *)task
+- (instancetype)initForOperation:(PNOperationType)operation
+               completedWithTask:(NSURLSessionDataTask *)task
                    processedData:(NSDictionary<NSString *, id> *)processedData 
                  processingError:(NSError *)error;
 
@@ -53,29 +51,23 @@
 #pragma mark - Interpretation
 
 /**
- @brief Try interpret response status code meaningful status object state.
-
- @param statusCode HTTP response status code which should be used during interpretation.
-
- @since 4.0
+ * @brief Try interpret response status code meaningful status object state.
+ *
+ * @param statusCode HTTP response status code which should be used during interpretation.
  */
 - (PNStatusCategory)categoryTypeFromStatusCode:(NSInteger)statusCode;
 
 /**
- @brief Try interpret error object to meaningful status object state.
-
- @param error Reference on error which should be used during interpretation.
-
- @since 4.0
+ * @brief Try interpret error object to meaningful status object state.
+ *
+ * @param error Reference on error which should be used during interpretation.
  */
 - (PNStatusCategory)categoryTypeFromError:(NSError *)error;
 
 /**
- @brief Try extract useful data from error object (in case if service provided some feedback).
-
- @param error Reference on error from which data should be pulled out.
-
- @since 4.0
+ * @brief Try extract useful data from error object (in case if service provided some feedback).
+ *
+ * @param error Reference on error from which data should be pulled out.
  */
 - (NSDictionary<NSString *, id> *)dataFromError:(NSError *)error;
 
@@ -105,9 +97,10 @@
 - (void)setCategory:(PNStatusCategory)category {
     
     _category = category;
-    if (_category == PNDecryptionErrorCategory) { self.error = YES; }
-    else if (_category == PNConnectedCategory || _category == PNReconnectedCategory ||
-             _category == PNDisconnectedCategory || _category == PNUnexpectedDisconnectCategory) {
+    if (_category == PNDecryptionErrorCategory) {
+        self.error = YES;
+    } else if (_category == PNConnectedCategory || _category == PNReconnectedCategory ||
+               _category == PNDisconnectedCategory || _category == PNUnexpectedDisconnectCategory) {
         
         self.error = NO;
     }
@@ -116,29 +109,32 @@
 
 #pragma mark - Initialization and configuration
 
-+ (instancetype)statusForOperation:(PNOperationType)operation category:(PNStatusCategory)category
++ (instancetype)statusForOperation:(PNOperationType)operation
+                          category:(PNStatusCategory)category
                withProcessingError:(NSError *)error {
     
     return [[self alloc] initForOperation:operation category:category withProcessingError:error];
 }
 
-- (instancetype)initForOperation:(PNOperationType)operation category:(PNStatusCategory)category
+- (instancetype)initForOperation:(PNOperationType)operation
+                        category:(PNStatusCategory)category
              withProcessingError:(NSError *)error {
     
     // Check whether initialization was successful or not.
-    if ((self = [super initForOperation:operation completedWithTask:nil processedData:nil
+    if ((self = [super initForOperation:operation
+                      completedWithTask:nil
+                          processedData:nil
                         processingError:error])) {
         
         _category = category;
+        
         if (_category == PNConnectedCategory || _category == PNReconnectedCategory ||
             _category == PNDisconnectedCategory || _category == PNUnexpectedDisconnectCategory ||
             _category == PNCancelledCategory || _category == PNAcknowledgmentCategory) {
             
             _error = NO;
             self.statusCode = 200;
-        }
-        else if (_category != PNUnknownCategory) {
-            
+        } else if (_category != PNUnknownCategory) {
             _error = YES;
             self.statusCode = (_category == PNAccessDeniedCategory ? 403 : 400);
         }
@@ -147,7 +143,8 @@
     return self;
 }
 
-- (instancetype)initForOperation:(PNOperationType)operation completedWithTask:(NSURLSessionDataTask *)task
+- (instancetype)initForOperation:(PNOperationType)operation
+               completedWithTask:(NSURLSessionDataTask *)task
                    processedData:(NSDictionary<NSString *, id> *)processedData 
                  processingError:(NSError *)error {
     
@@ -156,18 +153,15 @@
                         processingError:error])) {
         
         _error = (error != nil || self.statusCode != 200);
+        
         if (_error && ![self.serviceData count]) {
-            
             [self updateData:[self dataFromError:error]];
         }
         
         // Check whether status should represent acknowledgment or not.
         if (self.statusCode == 200 && !_error) {
-            
             _category = PNAcknowledgmentCategory;
-        }
-        else if (_category == PNUnknownCategory) {
-            
+        } else if (_category == PNUnknownCategory) {
             // Try extract category basing on response status codes.
             _category = [self categoryTypeFromStatusCode:self.statusCode];
             
@@ -178,7 +172,6 @@
         }
         
         if (_category == PNCancelledCategory) {
-            
             _error = NO;
         }
     }
@@ -189,6 +182,7 @@
 - (id)copyWithZone:(NSZone *)zone {
     
     PNStatus *status = [super copyWithZone:zone];
+    status.requireNetworkAvailabilityCheck = self.requireNetworkAvailabilityCheck;
     status.category = self.category;
     status.subscribedChannels = self.subscribedChannels;
     status.subscribedChannelGroups = self.subscribedChannelGroups;
@@ -209,12 +203,16 @@
 
 - (void)retry {
 
-    if (self.retryBlock) { self.retryBlock(); }
+    if (self.retryBlock) {
+        self.retryBlock();
+    }
 }
 
 - (void)cancelAutomaticRetry {
 
-    if (self.retryCancelBlock) { self.retryCancelBlock(); }
+    if (self.retryCancelBlock) {
+        self.retryCancelBlock();
+    }
 }
 
 
@@ -223,9 +221,14 @@
 - (PNStatusCategory)categoryTypeFromStatusCode:(NSInteger)statusCode {
     
     PNStatusCategory category = PNUnknownCategory;
-    if (statusCode == 403) { category = PNAccessDeniedCategory; }
-    else if (statusCode == 414) { category = PNRequestURITooLongCategory; }
-    else if (statusCode == 481) { category = PNMalformedFilterExpressionCategory; }
+    
+    if (statusCode == 403) {
+        category = PNAccessDeniedCategory;
+    } else if (statusCode == 414) {
+        category = PNRequestURITooLongCategory;
+    } else if (statusCode == 481) {
+        category = PNMalformedFilterExpressionCategory;
+    }
     
     return category;
 }
@@ -233,11 +236,10 @@
 - (PNStatusCategory)categoryTypeFromError:(NSError *)error {
 
     PNStatusCategory category = PNUnknownCategory;
+    
     if ([error.domain isEqualToString:NSURLErrorDomain]) {
-        
         switch (error.code) {
             case NSURLErrorTimedOut:
-                
                 category = PNTimeoutCategory;
                 break;
             case NSURLErrorCannotFindHost:
@@ -245,39 +247,30 @@
             case NSURLErrorNetworkConnectionLost:
             case NSURLErrorDNSLookupFailed:
             case NSURLErrorNotConnectedToInternet:
-
                 category = PNNetworkIssuesCategory;
                 break;
             case NSURLErrorCannotDecodeContentData:
             case NSURLErrorBadServerResponse:
-
                 category = PNMalformedResponseCategory;
                 break;
             case NSURLErrorBadURL:
-
                 category = PNBadRequestCategory;
                 break;
             case NSURLErrorCancelled:
-
                 category = PNCancelledCategory;
                 break;
             case NSURLErrorSecureConnectionFailed:
-
                 category = PNTLSConnectionFailedCategory;
                 break;
             case NSURLErrorServerCertificateUntrusted:
-                
                 category = PNTLSUntrustedCertificateCategory;
                 break;
             default:
                 break;
         }
-    }
-    else if ([error.domain isEqualToString:NSCocoaErrorDomain]) {
-        
+    } else if ([error.domain isEqualToString:NSCocoaErrorDomain]) {
         switch (error.code) {
             case NSPropertyListReadCorruptError:
-                
                 category = PNMalformedResponseCategory;
                 break;
                 
@@ -304,21 +297,27 @@
         
         // Check whether JSON de-serialization failed and try to pull regular string from response.
         if (!errorDetails) {
-            
             errorDetails = [[NSString alloc] initWithData:errorData encoding:NSUTF8StringEncoding];
         }
-        if (deSerializationError) { error = deSerializationError; }
+        
+        if (deSerializationError) {
+            error = deSerializationError;
+        }
     }
     
     if (!errorDetails) {
-        
         NSString *information = error.userInfo[NSLocalizedDescriptionKey];
-        if (!information) { information = error.userInfo[@"NSDebugDescription"]; }
-        if (information) { errorDetails = @{@"information": information}; }
+        
+        if (!information) {
+            information = error.userInfo[@"NSDebugDescription"];
+        }
+        
+        if (information) {
+            errorDetails = @{@"information": information};
+        }
     }
     // Check whether error details represented with expected format or not.
     else if (![errorDetails isKindOfClass:[NSDictionary class]]) {
-        
         errorDetails = @{@"information": errorDetails};
     }
     
@@ -333,19 +332,19 @@
     NSMutableDictionary *status = [[super dictionaryRepresentation] mutableCopy];
     [status addEntriesFromDictionary:@{@"Category": PNStatusCategoryStrings[self.category],
                                        @"Error": (self.isError ? @"YES" : @"NO")}];
+    
     if ([self.subscribedChannels count] || [self.subscribedChannelGroups count]) {
-        
         status[@"Time"] = @{@"Current": (self.currentTimetoken?: @(0)),
                             @"Previous": (self.lastTimeToken?: @(0))};
         status[@"Region"] = @{@"Current": (self.currentTimeTokenRegion?: @"<empty>"),
                             @"Previous": (self.lastTimeTokenRegion?: @"<empty>")};
         status[@"Objects"] = [NSMutableDictionary new];
+        
         if ([self.subscribedChannels count]) {
-            
             status[@"Objects"][@"Channels"] = self.subscribedChannels;
         }
+        
         if ([self.subscribedChannelGroups count]) {
-            
             status[@"Objects"][@"Channel groups"] = self.subscribedChannelGroups;
         }
     }

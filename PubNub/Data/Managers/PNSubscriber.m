@@ -1,7 +1,6 @@
 /**
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2010-2018 PubNub, Inc.
+ * @author Serhii Mamontov
+ * @copyright © 2010-2019 PubNub, Inc.
  */
 #import "PNSubscriber.h"
 #import "PNSubscribeStatus+Private.h"
@@ -24,10 +23,7 @@
 #pragma mark Static
 
 /**
- @brief  Reference on time which should be used by retry timer as interval between subscription
-         retry attempts.
- 
- @since 4.0
+ * @brief Time which should be used by retry timer as interval between subscription  retry attempts.
  */
 static NSTimeInterval const kPubNubSubscriptionRetryInterval = 1.0f;
 
@@ -35,57 +31,46 @@ static NSTimeInterval const kPubNubSubscriptionRetryInterval = 1.0f;
 #pragma mark - Structures
 
 typedef NS_OPTIONS(NSUInteger, PNSubscriberState) {
-    
     /**
-     @brief  State set when subscriber has been just initialized.
-     
-     @since 4.0
+     * @brief State set when subscriber has been just initialized.
      */
     PNInitializedSubscriberState,
     
     /**
-     @brief  State set at the moment when client received response on 'leave' request and not subscribed to 
-             any remote data objects live feed.
-     
-     @since 4.0
+     * @brief State set at the moment when client received response on 'leave' request and not
+     * subscribed to any remote data objects live feed.
      */
     PNDisconnectedSubscriberState,
     
     /**
-     @brief  State set at the moment when client lost connection or experienced other issues with
-             communication established with \b PubNub service.
-     
-     @since 4.0
+     * @brief State set at the moment when client lost connection or experienced other issues with
+     * communication established with \b PubNub service.
      */
     PNDisconnectedUnexpectedlySubscriberState,
     
     /**
-     @brief  State set at the moment when client received response with 200 status code for subscribe request
-             with TT 0.
-     
-     @since 4.0
+     * @brief State set at the moment when client received response with 200 status code for
+     * subscribe request with TT 0.
      */
     PNConnectedSubscriberState,
     
     /**
-     @brief  State set at the moment when client received response with 403 status code for subscribe request.
-     
-     @since 4.0
+     * @brief State set at the moment when client received response with 403 status code for
+     * subscribe request.
      */
     PNAccessRightsErrorSubscriberState,
     
     /**
-     @brief  State set at the moment when client received response with 481 status code for subscribe request.
-     
-     @since 4.0
+     * @brief State set at the moment when client received response with 481 status code for
+     * subscribe request.
      */
     PNMalformedFilterExpressionErrorSubscriberState,
     
     /**
-     @brief  State set at the moment when client received response with 414 status code for 
-             subscribe/unsubscribe requests.
-     
-     @since 4.6.2
+     * @brief State set at the moment when client received response with 414 status code for
+     * subscribe / unsubscribe requests.
+     *
+     * @since 4.6.2
      */
     PNPNRequestURITooLongErrorSubscriberState
 };
@@ -101,133 +86,119 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Information
 
 /**
- @brief  Weak reference on client for which subscribe manager manage subscribe loop.
- 
- @since 4.0
+ * @brief Client for which subscribe manager manage subscribe loop.
  */
 @property (nonatomic, weak) PubNub *client; 
 
 /**
- @brief  Stores reference on current subscriber state.
- 
- @since 4.0
+ * @brief Current subscriber state.
  */
 @property (nonatomic, assign) PNSubscriberState currentState;
 
 /**
- @brief  Stores whether subscriber potentially should expect for subscription restore call or not.
- @discussion In case if client tried to connect and failed or disconnected because of network issues
-             this flag should be set to \c YES
- 
- @since 4.0
+ * @brief Whether subscriber potentially should expect for subscription restore call or not.
+ *
+ * @discussion In case if client tried to connect and failed or disconnected because of network
+ * issues this flag should be set to \c YES.
  */
 @property (nonatomic, assign) BOOL mayRequireSubscriptionRestore;
 
 /**
- @brief  Actual storage for list of channels on which client subscribed at this moment and listen 
-         for updates from live feeds.
- 
- @since 4.0
+ * @brief Actual storage for list of channels on which client subscribed at this moment and listen
+ * for updates from live feeds.
  */
 @property (nonatomic, strong) NSMutableSet<NSString *> *channelsSet;
 
 /**
- @brief  Actual storage for list of channel groups on which client subscribed at this moment and 
-         listen for updates from live feeds.
- 
- @since 4.0
+ * @brief Actual storage for list of channel groups on which client subscribed at this moment and
+ * listen for updates from live feeds.
  */
 @property (nonatomic, strong) NSMutableSet<NSString *> *channelGroupsSet;
 
 /**
- @brief  Actual storage for list of presence channels on which client subscribed at this moment and
-         listen for presence updates.
- 
- @since 4.0
+ * @brief Actual storage for list of presence channels on which client subscribed at this moment and
+ * listen for presence updates.
  */
 @property (nonatomic, strong) NSMutableSet<NSString *> *presenceChannelsSet;
 
 /**
- @brief  Stores reference on dictionary which is used in messages 'de-dupe' logic to prevent same messages 
-         or prsence events delivering to objects event listeners.
- 
- @since 4.5.8
+ * @brief Dictionary which is used in messages 'de-dupe' logic to prevent same messages or prsence
+ * events delivering to objects event listeners.
+ *
+ * @since 4.5.8
  */
 @property (nonatomic, strong) NSMutableDictionary<NSString *, NSMutableArray<NSDictionary *> *> *cachedObjects;
 
 /**
- @brief      Stores reference on list of cached object identifiers.
- @discussion Array used every time when maximum cached objects count has been reached to clean up cache 
-             from older entries.
- 
- @since 4.5.8
+ * @brief List of cached object identifiers.
+ *
+ * @discussion Array used every time when maximum cached objects count has been reached to clean up
+ * cache from older entries.
+ *
+ * @since 4.5.8
  */
 @property (nonatomic, strong) NSMutableArray<NSString *> *cachedObjectIdentifiers;
 
 /**
- @brief  Stores reference on percent-escaped message filtering expression.
- 
- @since 4.3.0
+ * @brief Percent-escaped message filtering expression.
+ *
+ * @since 4.3.0
  */
 @property (nonatomic, nullable, copy) NSString *escapedFilterExpression;
 
 /**
- @brief      Reference on time token which is used for current subscribe loop iteration.
- @discussion \b 0 for initial subscription loop and non-zero for long-poll requests.
- 
- @since 4.0
+ * @brief Time token which is used for current subscribe loop iteration.
+ *
+ * @discussion \b 0 for initial subscription loop and non-zero for long-poll requests.
  */
 @property (nonatomic, strong) NSNumber *currentTimeToken;
 
 /**
- @brief      Reference on time token which should be used after initial subscription with \b 0
-             timetoken.
- @discussion Override token used by subscribe API which allow to subscribe on arbitrarily time token
-             and will be used in logic which decide which time token should be used for next 
-             subscription cycle.
- 
- @since 4.2.0
+ * @brief Time token which should be used after initial subscription with \b 0 timetoken.
+ *
+ * @discussion Override token used by subscribe API which allow to subscribe on arbitrarily time
+ * token and will be used in logic which decide which time token should be used for next
+ * subscription cycle.
+ *
+ * @since 4.2.0
  */
 @property (nonatomic, nullable, strong) NSNumber *overrideTimeToken;
 
 /**
- @brief      Reference on time token which has been used for previous subscribe loop iteration.
- @discussion \b 0 for initial subscription loop and non-zero for long-poll requests.
- 
- @since 4.0
+ * @brief Time token which has been used for previous subscribe loop iteration.
+ *
+ * @discussion \b 0 for initial subscription loop and non-zero for long-poll requests.
  */
 @property (nonatomic, strong) NSNumber *lastTimeToken;
 
 /**
- @brief      Stores reference on \b PubNub server region identifier (which generated \c currentTimeToken value).
- @discussion \b 0 for initial subscription loop and non-zero for long-poll requests.
- 
- @since 4.3.0
+ * @brief \b PubNub server region identifier (which generated \c currentTimeToken value).
+ *
+ * @discussion \b 0 for initial subscription loop and non-zero for long-poll requests.
+ *
+ * @since 4.3.0
  */
 @property (nonatomic, readonly, copy) NSNumber *currentTimeTokenRegion;
 
 /**
- @brief      Reference on time token region which has been used for previous subscribe loop iteration.
- @discussion \b 0 for initial subscription loop and non-zero for long-poll requests.
- 
- @since 4.3.0
+ * @brief Time token region which has been used for previous subscribe loop iteration.
+ *
+ * @discussion \b 0 for initial subscription loop and non-zero for long-poll requests.
+ *
+ * @since 4.3.0
  */
 @property (nonatomic, readonly, copy) NSNumber *lastTimeTokenRegion;
 
 /**
- @brief  Stores reference on queue which is used to serialize access to shared subscriber 
-         information.
- 
- @since 4.0
+ * @brief Queue which is used to serialize access to shared subscriber information.
  */
 @property (nonatomic, strong) dispatch_queue_t resourceAccessQueue;
 
 /**
- @brief      Stores reference on GCD timer used to re-issue subscribe request.
- @discussion Timer activated in cases if previous subscribe loop failed with category type which
-             can be temporary.
- 
- @since 4.0
+ * @brief GCD timer used to re-issue subscribe request.
+ *
+ * @discussion Timer activated in cases if previous subscribe loop failed with category type which
+ * can be temporary.
  */
 @property (nonatomic, nullable, strong) dispatch_source_t retryTimer;
 
@@ -235,13 +206,11 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Initialization and Configuration
 
 /**
- @brief  Initialize subscribe loop manager for concrete \b PubNub client.
- 
- @param client Reference on client which will be weakly stored in subscriber.
- 
- @return Initialized and ready to use subscribe manager instance.
- 
- @since 4.0
+ * @brief Initialize subscribe loop manager for concrete \b PubNub client.
+ *
+ * @param client Reference on client which will be weakly stored in subscriber.
+ *
+ * @return Initialized and ready to use subscribe manager instance.
  */
 - (instancetype)initForClient:(PubNub *)client;
 
@@ -249,17 +218,18 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Subscription information modification
 
 /**
- @brief      Update current subscriber state.
- @discussion If possible, state transition will be reported to the listeners.
- 
- @param state  New state from \b PNSubscriberState enum fields.
- @param status Reference on status object which should be passed along to listeners.
- @param block  Reference on block which will be called at the end of subscriber's state update process. Block
-               pass only one argument - reference on one of \c PNStatusCategory enum fields which represent 
-               calculated status category (may differ from the one, which is passed into method because of
-               current and expected subscriber's state).
- 
- @since 4.5.15
+ * @brief Update current subscriber state.
+ *
+ * @discussion If possible, state transition will be reported to the listeners.
+ *
+ * @param state New state from \b PNSubscriberState enum fields.
+ * @param status Status object which should be passed along to listeners.
+ * @param block Bblock which will be called at the end of subscriber's state update process. Block
+ *     pass only one argument - reference on one of \c PNStatusCategory enum fields which represent
+ *     calculated status category (may differ from the one, which is passed into method because of
+ *     current and expected subscriber's state).
+ *
+ * @since 4.5.15
  */
 - (void)updateStateTo:(PNSubscriberState)state withStatus:(PNSubscribeStatus *)status 
            completion:(nullable void(^)(PNStatusCategory category))block;
@@ -273,14 +243,14 @@ NS_ASSUME_NONNULL_BEGIN
  * @discussion Subscription with \b 0 timetoken "register" client in \b PubNub network and allow to
  * receive live updates from remote data objects live feed.
  *
- * @param initialSubscribe Stores whether client trying to subscriber using \b 0 time token and
- *     trigger all required presence notifications or not.
+ * @param initialSubscribe Whether client trying to subscriber using \b 0 time token and trigger all
+ *     required presence notifications or not.
  * @param timeToken Time from which client should try to catch up on messages.
- * @param state Reference on client state which should be bound to channels on which client has been
- *     subscribed or will subscribe now.
+ * @param state Cclient state which should be bound to channels on which client has been subscribed
+ *     or will subscribe now.
  * @param queryParameters List arbitrary query paramters which should be sent along with original
  *     API call.
- * @param block Reference on subscription completion block which is used to notify code.
+ * @param block Subscription completion block which is used to notify code.
  *
  * @since 4.8.2
  */
@@ -291,21 +261,19 @@ NS_ASSUME_NONNULL_BEGIN
        completion:(nullable PNSubscriberCompletionBlock)block;
 
 /**
- @brief      Launch subscription retry timer.
- @discussion Launch timer with default 1 second interval after each subscribe attempt. In most of cases timer
-             used to retry subscription after PubNub Access Manager denial because of client doesn't has 
-             enough rights.
-
- @since 4.0
+ * @brief Launch subscription retry timer.
+ *
+ * @discussion Launch timer with default 1 second interval after each subscribe attempt. In most of
+ * cases timer used to retry subscription after PubNub Access Manager denial because of client
+ * doesn't has enough rights.
  */
 - (void)startRetryTimer;
 
 /**
- @brief      Terminate previously launched subscription retry counter.
- @discussion In case if another subscribe request from user client better to stop retry timer to eliminate 
-             race of conditions.
-
- @since 4.0
+ * @brief Terminate previously launched subscription retry counter.
+ *
+ * @discussion In case if another subscribe request from user client better to stop retry timer to
+ * eliminate race of conditions.
  */
 - (void)stopRetryTimer;
 
@@ -313,18 +281,19 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Unsubscription
 
 /**
- @brief      Perform unsubscription operation.
- @discussion If suitable objects has been passed, then client will ask \b PubNub presence service to trigger 
-             \c 'leave' presence events on passed objects.
- 
- @param channels                List of channels from which client should unsubscribe.
- @param groups                  List of channel groups from which client should unsubscribe.
- @param shouldInformListener    Whether listener should be informed at the end of operation or not.
- @param subscribeOnRestChannels Whether client should try to subscribe on channels which may be left after 
-                                unsubscription.
- @param block                   Reference on unsubscription completion block which is used to notify code.
- 
- @since 4.5.6
+ * @brief Perform unsubscription operation.
+ *
+ * @discussion If suitable objects has been passed, then client will ask \b PubNub presence service
+ * to trigger \c 'leave' presence events on passed objects.
+ *
+ * @param channels List of channels from which client should unsubscribe.
+ * @param groups List of channel groups from which client should unsubscribe.
+ * @param shouldInformListener Whether listener should be informed at the end of operation or not.
+ * @param subscribeOnRestChannels Whether client should try to subscribe on channels which may be
+ *     left after unsubscription.
+ * @param block Unsubscription completion block which is used to notify code.
+ *
+ * @since 4.5.6
  */
 - (void)unsubscribeFromChannels:(nullable NSArray<NSString *> *)channels 
                          groups:(nullable NSArray<NSString *> *)groups
@@ -337,83 +306,75 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Handlers
 
 /**
- @brief      Handle subscription status update.
- @discussion Depending on passed status category and whether it is error it will be sent for processing to
-             corresponding methods.
- 
- @param status Reference on status object which has been received from \b PubNub network.
- 
- @since 4.0
+ * @brief Handle subscription status update.
+ *
+ * @discussion Depending on passed status category and whether it is error it will be sent for
+ * processing to corresponding methods.
+ *
+ * @param status Status object which has been received from \b PubNub network.
  */
 - (void)handleSubscriptionStatus:(PNSubscribeStatus *)status;
 
 /**
- @brief      Process successful subscription status.
- @discussion Success can be called as result of initial subscription successful ACK response as well as 
-             long-poll response with events from remote data objects live feed.
- 
- @param status Reference on status object which has been received from \b PubNub network.
- 
- @since 4.0
+ * @brief Process successful subscription status.
+ *
+ * @discussion Success can be called as result of initial subscription successful ACK response as
+ * well as long-poll response with events from remote data objects live feed.
+ *
+ * @param status Status object which has been received from \b PubNub network.
  */
 - (void)handleSuccessSubscriptionStatus:(PNSubscribeStatus *)status;
 
 /**
- @brief      Process failed subscription status.
- @discussion Failure can be cause by Access Denied error, network issues or called when last subscribe request
-             has been canceled (to execute new subscription for example).
- 
- @param status Reference on status object which has been received from \b PubNub network.
- 
- @since 4.0
+ * @brief Process failed subscription status.
+ *
+ * @discussion Failure can be cause by Access Denied error, network issues or called when last
+ * subscribe request has been canceled (to execute new subscription for example).
+ *
+ * @param status Status object which has been received from \b PubNub network.
  */
 - (void)handleFailedSubscriptionStatus:(PNSubscribeStatus *)status;
 
 /**
- @brief  Handle subscription time token received from \b PubNub network.
- 
- @param initialSubscription Whether subscription is initial or received time token on long-poll request.
- @param timeToken           Reference on time token which has been received from \b PubNub network.
- @param region              Reference on \b PubNub server region identifier (which generated \c timeToken 
-                            value).
- 
- @since 4.0
+ * @brief Handle subscription time token received from \b PubNub network.
+ *
+ * @param initialSubscription Whether subscription is initial or received time token on long-poll
+ *     request.
+ * @param timeToken Time token which has been received from \b PubNub network.
+ * @param region \b PubNub server region identifier (which generated \c timeToken value).
  */
-- (void)handleSubscription:(BOOL)initialSubscription timeToken:(nullable NSNumber *)timeToken 
+- (void)handleSubscription:(BOOL)initialSubscription
+                 timeToken:(nullable NSNumber *)timeToken
                     region:(nullable NSNumber *)region;
 
 /**
- @brief  Handle long-poll service response and deliver events to listeners if required.
- 
- @param status              Reference on status object which has been received from \b PubNub network.
- @param initialSubscription Whether message has been received in response on initial subscription request.
- @param overrideTimeToken   Reference on timetoken which is used to override timetoken which has been received
-                            during initial subscription.
- 
- @since 4.0
+ * @brief Handle long-poll service response and deliver events to listeners if required.
+ *
+ * @param status Status object which has been received from \b PubNub network.
+ * @param initialSubscription Whether message has been received in response on initial subscription
+ *     request.
+ * @param overrideTimeToken Timetoken which is used to override timetoken which has been received
+ *     during initial subscription.
  */
-- (void)handleLiveFeedEvents:(PNSubscribeStatus *)status forInitialSubscription:(BOOL)initialSubscription 
+- (void)handleLiveFeedEvents:(PNSubscribeStatus *)status
+      forInitialSubscription:(BOOL)initialSubscription
            overrideTimeToken:(nullable NSNumber *)overrideTimeToken;
 
 /**
- @brief  Process message which just has been received from \b PubNub service through live feed on which client
-         subscribed at this moment.
- 
- @param data Reference on result data which hold information about request on which this response has been 
-             received and message itself.
- 
- @since 4.0
+ * @brief Process message which just has been received from \b PubNub service through live feed on
+ * which client subscribed at this moment.
+ *
+ * @param data Result data which hold information about request on which this response has been
+ * received and message itself.
  */
 - (void)handleNewMessage:(PNMessageResult *)data;
 
 /**
- @brief  Process presence event which just has been received from \b PubNub service through presence live
-         feeds on which client subscribed at this moment.
- 
- @param data Reference on result data which hold information about request on which this response has been 
-             received and presence event itself.
- 
- @since 4.0
+ * @brief Process presence event which just has been received from \b PubNub service through
+ * presence live feeds on which client subscribed at this moment.
+ *
+ * @param data Result data which hold information about request on which this response has been
+ * received and presence event itself.
  */
 - (void)handleNewPresenceEvent:(PNPresenceEventResult *)data;
 
@@ -421,70 +382,72 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Misc
 
 /**
- @brief  Compose request parameters instance basing on current subscriber state.
- 
- @param state Reference on merged client state which should be used in request.
- 
- @return Configured and ready to use parameters instance.
- 
- @since 4.0
+ * @brief Compose request parameters instance basing on current subscriber state.
+ *
+ * @param state Merged client state which should be used in request.
+ *
+ * @return Configured and ready to use parameters instance.
  */
 - (PNRequestParameters *)subscribeRequestParametersWithState:(nullable NSDictionary<NSString *, id> *)state;
 
 /**
- @brief      Clean up \c events list from messages which has been already received.
- @discussion Use messages cache to identify message duplicates and remove them from input \c events list so 
-             listeners won't receive them through callback methods again.
- @warning    Method should be called within resource access queue to prevent race of conditions.
- 
- @since 4.5.8
- 
- @param events Reference on list of received events from real-time channels and should be clean up from
-               message duplicates.
+ * @brief Clean up \c events list from messages which has been already received.
+ *
+ * @discussion Use messages cache to identify message duplicates and remove them from input
+ * \c events list so listeners won't receive them through callback methods again.
+ *
+ * @warning Method should be called within resource access queue to prevent race of conditions.
+ *
+ * @param events List of received events from real-time channels and should be clean up from message
+ * duplicates.
+ *
+ * @since 4.5.8
  */
 - (void)deDuplicateMessages:(NSMutableArray<NSDictionary *> *)events;
 
 /**
- @brief      Remove from messages cache those who has date same or newer than passed \c timetoken.
- @discussion Method used for subscriptions where user pass specific \c timetoken to which client should catch
-             up. It expensive to run, but subscriptions to specific \c timetoken pretty rare and shouldn't 
-             affect overall performance. 
- @warning    Method should be called within resource access queue to prevent race of conditions.
+ * @brief Remove from messages cache those who has date same or newer than passed \c timetoken.
+ *
+ * @discussion Method used for subscriptions where user pass specific \c timetoken to which client
+ * should catch up. It expensive to run, but subscriptions to specific \c timetoken pretty rare and
+ * shouldn't affect overall performance.
+ *
+ * @warning Method should be called within resource access queue to prevent race of conditions.
  */
 - (void)clearCacheFromMessagesNewerThan:(NSNumber *)timetoken;
 
 /**
- @brief      Store to cache passed \c object.
- @discussion This method used by 'de-dupe' logic to identify unique objects about which object listeners 
-             should be notified.
- @warning    Method should be called within resource access queue to prevent race of conditions.
+ * @brief Store to cache passed \c object.
  
- @since 4.5.8
+ * @discussion This method used by 'de-dupe' logic to identify unique objects about which object
+ * listeners should be notified.
  
- @param object Reference on object which client should try to store in cache.
- @param size   Maximum number of objects which can be stored in cache and used during messages de-dpublication
-               process.
- 
- @return \c YES in case if object successfuly stored in cache and object listeners should be notified about 
-         it.
+ * @warning Method should be called within resource access queue to prevent race of conditions.
+ *
+ * @param object Reference on object which client should try to store in cache.
+ * @param size Maximum number of objects which can be stored in cache and used during messages
+ *     de-dpublication process.
+ *
+ * @return \c YES in case if object successfuly stored in cache and object listeners should be
+ * notified about it.
+ *
+ * @since 4.5.8
  */
 - (BOOL)cacheObjectIfPossible:(NSDictionary *)object withMaximumCacheSize:(NSUInteger)size;
 
 /**
- @brief  Shrink messages cache size to specified size if required.
- 
- @since 4.5.8
- 
- @param maximumCacheSize Messages cache maximum size.
+ * @brief Shrink messages cache size to specified size if required.
+ *
+ * @param maximumCacheSize Messages cache maximum size.
+ *
+ * @since 4.5.8
  */
 - (void)cleanUpCachedObjectsIfRequired:(NSUInteger)maximumCacheSize;
 
 /**
- @brief  Append subscriber information to status object.
- 
- @param status Reference on status object which should be updated with subscriber information.
- 
- @since 4.0
+ * @brief Append subscriber information to status object.
+ *
+ * @param status Reference on status object which should be updated with subscriber information.
  */
 - (void)appendSubscriberInformation:(PNStatus *)status;
 
@@ -514,14 +477,19 @@ NS_ASSUME_NONNULL_END
 - (dispatch_source_t)retryTimer {
     
     __block dispatch_source_t retryTimer = nil;
-    pn_safe_property_read(self.resourceAccessQueue, ^{ retryTimer = self->_retryTimer; });
+    
+    pn_safe_property_read(self.resourceAccessQueue, ^{
+        retryTimer = self->_retryTimer;
+    });
     
     return retryTimer;
 }
 
 - (void)setRetryTimer:(dispatch_source_t)retryTimer {
     
-    pn_safe_property_write(self.resourceAccessQueue, ^{ self->_retryTimer = retryTimer; });
+    pn_safe_property_write(self.resourceAccessQueue, ^{
+        self->_retryTimer = retryTimer;
+    });
 }
 
 
@@ -536,7 +504,10 @@ NS_ASSUME_NONNULL_END
 - (NSArray<NSString *> *)channels {
     
     __block NSArray *channels = nil;
-    pn_safe_property_read(self.resourceAccessQueue, ^{ channels = self.channelsSet.allObjects; });
+    
+    pn_safe_property_read(self.resourceAccessQueue, ^{
+        channels = self.channelsSet.allObjects;
+    });
     
     return channels;
 }
@@ -544,15 +515,14 @@ NS_ASSUME_NONNULL_END
 - (void)addChannels:(NSArray<NSString *> *)channels {
     
     pn_safe_property_write(self.resourceAccessQueue, ^{
-        
         NSArray *channelsOnly = [PNChannel objectsWithOutPresenceFrom:channels];
+        
         if ([channelsOnly count] != [channels count]) {
-            
-            // Add presence channels to corresponding storage.
             NSMutableSet *channelsSet = [NSMutableSet setWithArray:channels];
             [channelsSet minusSet:[NSSet setWithArray:channelsOnly]];
             [self.presenceChannelsSet unionSet:channelsSet];
         }
+        
         [self.channelsSet addObjectsFromArray:channelsOnly];
     });
 }
@@ -560,7 +530,6 @@ NS_ASSUME_NONNULL_END
 - (void)removeChannels:(NSArray<NSString *> *)channels {
     
     pn_safe_property_write(self.resourceAccessQueue, ^{
-        
         NSSet *channelsSet = [NSSet setWithArray:channels];
         [self.presenceChannelsSet minusSet:channelsSet];
         [self.channelsSet minusSet:channelsSet];
@@ -570,15 +539,17 @@ NS_ASSUME_NONNULL_END
 - (NSArray<NSString *> *)channelGroups {
     
     __block NSArray *channelGroups = nil;
-    pn_safe_property_read(self.resourceAccessQueue, ^{ channelGroups = self.channelGroupsSet.allObjects; });
+    
+    pn_safe_property_read(self.resourceAccessQueue, ^{
+        channelGroups = self.channelGroupsSet.allObjects;
+    });
     
     return channelGroups;
 }
 
 - (void)addChannelGroups:(NSArray<NSString *> *)groups {
     
-    pn_safe_property_write(self.resourceAccessQueue, ^{ 
-        
+    pn_safe_property_write(self.resourceAccessQueue, ^{
         [self.channelGroupsSet addObjectsFromArray:groups];
     });
 }
@@ -586,7 +557,6 @@ NS_ASSUME_NONNULL_END
 - (void)removeChannelGroups:(NSArray<NSString *> *)groups {
     
     pn_safe_property_write(self.resourceAccessQueue, ^{
-        
         [self.channelGroupsSet minusSet:[NSSet setWithArray:groups]];
     });
 }
@@ -594,8 +564,8 @@ NS_ASSUME_NONNULL_END
 - (NSArray<NSString *> *)presenceChannels {
     
     __block NSArray *presenceChannels = nil;
+    
     pn_safe_property_read(self.resourceAccessQueue, ^{
-        
         presenceChannels = self.presenceChannelsSet.allObjects;
     });
     
@@ -605,7 +575,6 @@ NS_ASSUME_NONNULL_END
 - (void)addPresenceChannels:(NSArray<NSString *> *)presenceChannels {
     
     pn_safe_property_write(self.resourceAccessQueue, ^{
-        
         [self.presenceChannelsSet addObjectsFromArray:presenceChannels];
     });
 }
@@ -613,7 +582,6 @@ NS_ASSUME_NONNULL_END
 - (void)removePresenceChannels:(NSArray<NSString *> *)presenceChannels {
     
     pn_safe_property_write(self.resourceAccessQueue, ^{
-        
         [self.presenceChannelsSet minusSet:[NSSet setWithArray:presenceChannels]];
     });
 }
@@ -621,33 +589,46 @@ NS_ASSUME_NONNULL_END
 - (NSNumber *)currentTimeToken {
     
     __block NSNumber *currentTimeToken = nil;
-    pn_safe_property_read(self.resourceAccessQueue, ^{ currentTimeToken = self->_currentTimeToken; });
+    
+    pn_safe_property_read(self.resourceAccessQueue, ^{
+        currentTimeToken = self->_currentTimeToken;
+    });
     
     return currentTimeToken;
 }
 
 - (void)setCurrentTimeToken:(NSNumber *)currentTimeToken {
     
-    pn_safe_property_write(self.resourceAccessQueue, ^{ self->_currentTimeToken = currentTimeToken; });
+    pn_safe_property_write(self.resourceAccessQueue, ^{
+        self->_currentTimeToken = currentTimeToken;
+    });
 }
 
 - (NSNumber *)lastTimeToken {
     
     __block NSNumber *lastTimeToken = nil;
-    pn_safe_property_read(self.resourceAccessQueue, ^{ lastTimeToken = self->_lastTimeToken; });
+    
+    pn_safe_property_read(self.resourceAccessQueue, ^{
+        lastTimeToken = self->_lastTimeToken;
+    });
     
     return lastTimeToken;
 }
 
 - (void)setLastTimeToken:(NSNumber *)lastTimeToken {
     
-    pn_safe_property_write(self.resourceAccessQueue, ^{ self->_lastTimeToken = lastTimeToken; });
+    pn_safe_property_write(self.resourceAccessQueue, ^{
+        self->_lastTimeToken = lastTimeToken;
+    });
 }
 
 - (NSNumber *)overrideTimeToken {
     
     __block NSNumber *overrideTimeToken = nil;
-    pn_safe_property_read(self.resourceAccessQueue, ^{ overrideTimeToken = self->_overrideTimeToken; });
+    
+    pn_safe_property_read(self.resourceAccessQueue, ^{
+        overrideTimeToken = self->_overrideTimeToken;
+    });
     
     return overrideTimeToken;
 }
@@ -655,7 +636,6 @@ NS_ASSUME_NONNULL_END
 - (void)setOverrideTimeToken:(NSNumber *)overrideTimeToken {
     
     pn_safe_property_write(self.resourceAccessQueue, ^{
-        
         self->_overrideTimeToken = [PNNumber timeTokenFromNumber:overrideTimeToken];
     });
 }
@@ -663,34 +643,44 @@ NS_ASSUME_NONNULL_END
 - (NSNumber *)currentTimeTokenRegion {
     
     __block NSNumber *currentTimeTokenRegion = nil;
-    pn_safe_property_read(self.resourceAccessQueue, ^{ currentTimeTokenRegion = self->_currentTimeTokenRegion; });
+    
+    pn_safe_property_read(self.resourceAccessQueue, ^{
+        currentTimeTokenRegion = self->_currentTimeTokenRegion;
+    });
     
     return currentTimeTokenRegion;
 }
 
 - (void)setCurrentTimeTokenRegion:(NSNumber *)currentTimeTokenRegion {
     
-    pn_safe_property_write(self.resourceAccessQueue, ^{ self->_currentTimeTokenRegion = currentTimeTokenRegion; });
+    pn_safe_property_write(self.resourceAccessQueue, ^{
+        self->_currentTimeTokenRegion = currentTimeTokenRegion;
+    });
 }
 
 - (NSNumber *)lastTimeTokenRegion {
     
     __block NSNumber *lastTimeTokenRegion = nil;
-    pn_safe_property_read(self.resourceAccessQueue, ^{ lastTimeTokenRegion = self->_lastTimeTokenRegion; });
+    
+    pn_safe_property_read(self.resourceAccessQueue, ^{
+        lastTimeTokenRegion = self->_lastTimeTokenRegion;
+    });
     
     return lastTimeTokenRegion;
 }
 
 - (void)setLastTimeTokenRegion:(NSNumber *)lastTimeTokenRegion {
     
-    pn_safe_property_write(self.resourceAccessQueue, ^{ self->_lastTimeTokenRegion = lastTimeTokenRegion; });
+    pn_safe_property_write(self.resourceAccessQueue, ^{
+        self->_lastTimeTokenRegion = lastTimeTokenRegion;
+    });
 }
 
-- (void)updateStateTo:(PNSubscriberState)state withStatus:(PNSubscribeStatus *)status
+- (void)updateStateTo:(PNSubscriberState)state
+           withStatus:(PNSubscribeStatus *)status
            completion:(void(^)(PNStatusCategory category))block {
 
     pn_safe_property_write(self.resourceAccessQueue, ^{
-        
         // Compose status object to report state change to listeners.
         PNStatusCategory category = PNUnknownCategory;
         PNSubscriberState targetState = state;
@@ -699,8 +689,8 @@ NS_ASSUME_NONNULL_END
         
         // Check whether transit to 'connected' state.
         if (targetState == PNConnectedSubscriberState) {
-            
             self.mayRequireSubscriptionRestore = YES;
+            category = PNConnectedCategory;
             
             // Check whether client transit from 'disconnected' -> 'connected' state.
             shouldHandleTransition = (currentState == PNInitializedSubscriberState ||
@@ -709,14 +699,11 @@ NS_ASSUME_NONNULL_END
             
             // Check whether client transit from 'access denied' -> 'connected' state.
             if (!shouldHandleTransition) {
-                
-                shouldHandleTransition = (currentState == PNAccessRightsErrorSubscriberState);
+                shouldHandleTransition = currentState == PNAccessRightsErrorSubscriberState;
             }
-            category = PNConnectedCategory;
             
             // Check whether client transit from 'unexpected disconnect' -> 'connected' state
             if (!shouldHandleTransition && currentState == PNDisconnectedUnexpectedlySubscriberState) {
-                
                 // Change state to 'reconnected'
                 targetState = PNConnectedSubscriberState;
                 category = PNReconnectedCategory;
@@ -746,14 +733,12 @@ NS_ASSUME_NONNULL_END
         }
         // Check whether transit to 'access denied' state.
         else if (targetState == PNAccessRightsErrorSubscriberState) {
-            
             self.mayRequireSubscriptionRestore = NO;
             shouldHandleTransition = YES;
             category = PNAccessDeniedCategory;
         }
         // Check whether transit to 'malformed filter expression' state.
         else if (targetState == PNMalformedFilterExpressionErrorSubscriberState) {
-            
             // Change state to 'Unexpected disconnect'
             targetState = PNDisconnectedUnexpectedlySubscriberState;
             
@@ -763,7 +748,6 @@ NS_ASSUME_NONNULL_END
         }
         // Check whether transit to 'request URI too long' state.
         else if (targetState == PNPNRequestURITooLongErrorSubscriberState) {
-            
             // Change state to 'Unexpected disconnect'
             targetState = PNDisconnectedUnexpectedlySubscriberState;
             
@@ -774,17 +758,16 @@ NS_ASSUME_NONNULL_END
         
         // Check whether allowed state transition has been issued or not.
         if (shouldHandleTransition) {
-
             self->_currentState = targetState;
             
             // Build status object in case if update has been called as transition between two
             // different states.
             PNStatus *targetStatus = [(PNStatus *)status copy];
             if (!targetStatus) {
-                
                 targetStatus = [PNStatus statusForOperation:PNSubscribeOperation
                                                    category:category withProcessingError:nil];
             }
+            
             [targetStatus updateCategory:category];
             [self appendSubscriberInformation:targetStatus];
             // Silence static analyzer warnings.
@@ -794,12 +777,18 @@ NS_ASSUME_NONNULL_END
             #pragma clang diagnostic push
             #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
             [self.client.listenersManager notifyWithBlock:^{
-                
                 [self.client.listenersManager notifyStatusChange:(PNSubscribeStatus *)targetStatus];
             }];
             #pragma clang diagnostic pop
-        } else { category = (status ? status.category : PNUnknownCategory); }
-        if (block) { pn_dispatch_async(self.client.callbackQueue, ^{ block(category); }); }
+        } else {
+            category = (status ? status.category : PNUnknownCategory);
+        }
+        
+        if (block) {
+            pn_dispatch_async(self.client.callbackQueue, ^{
+                block(category);
+            });
+        }
     });
 }
 
@@ -815,7 +804,6 @@ NS_ASSUME_NONNULL_END
     
     // Check whether initialization was successful or not.
     if ((self = [super init])) {
-        
         _client = client;
         [_client.logger enableLogLevel:PNAPICallLogLevel];
         _channelsSet = [NSMutableSet new];
@@ -837,10 +825,11 @@ NS_ASSUME_NONNULL_END
     _channelsSet = [subscriber.channelsSet mutableCopy];
     _channelGroupsSet = [subscriber.channelGroupsSet mutableCopy];
     _presenceChannelsSet = [subscriber.presenceChannelsSet mutableCopy];
+    
     if (_channelsSet.count || _channelGroupsSet.count || _presenceChannelsSet.count) {
-        
         _currentState = PNDisconnectedSubscriberState;
     }
+    
     _cachedObjects = [subscriber.cachedObjects mutableCopy];
     _cachedObjectIdentifiers = [subscriber.cachedObjectIdentifiers mutableCopy];
     _currentTimeToken = subscriber.currentTimeToken;
@@ -856,7 +845,10 @@ NS_ASSUME_NONNULL_END
 - (NSString *)filterExpression {
     
     __block NSString *expression = nil;
-    pn_safe_property_read(self.resourceAccessQueue, ^{ expression = self->_filterExpression; });
+    
+    pn_safe_property_read(self.resourceAccessQueue, ^{
+        expression = self->_filterExpression;
+    });
 
     return expression;
 }
@@ -864,16 +856,19 @@ NS_ASSUME_NONNULL_END
 - (void)setFilterExpression:(NSString *)filterExpression {
     
     pn_safe_property_write(self.resourceAccessQueue, ^{
-        
         self->_filterExpression = [filterExpression copy];
-        self->_escapedFilterExpression = (filterExpression? [PNString percentEscapedString:filterExpression] : nil);
+        self->_escapedFilterExpression = (filterExpression ? [PNString percentEscapedString:filterExpression]
+                                                           : nil);
     });
 }
 
 - (NSString *)escapedFilterExpression {
     
     __block NSString *expression = nil;
-    pn_safe_property_read(self.resourceAccessQueue, ^{ expression = self->_escapedFilterExpression; });
+    
+    pn_safe_property_read(self.resourceAccessQueue, ^{
+        expression = self->_escapedFilterExpression;
+    });
     
     return expression;
 }
@@ -945,7 +940,8 @@ NS_ASSUME_NONNULL_END
         }
         
         __weak __typeof(self) weakSelf = self;
-        [self.client processOperation:PNSubscribeOperation withParameters:parameters
+        [self.client processOperation:PNSubscribeOperation
+                       withParameters:parameters
                       completionBlock:^(PNStatus *status){
                           
               __strong __typeof(self) strongSelf = weakSelf;
@@ -992,18 +988,19 @@ NS_ASSUME_NONNULL_END
     
     __block BOOL shouldRestore;
     __block BOOL ableToRestore;
+    
     pn_safe_property_read(self.resourceAccessQueue, ^{
-        
         shouldRestore = (self.currentState == PNDisconnectedUnexpectedlySubscriberState &&
                          self.mayRequireSubscriptionRestore);
         ableToRestore = ([self.channelsSet count] || [self.channelGroupsSet count] ||
                          [self.presenceChannelsSet count]);
     });
+    
     if (shouldRestore && ableToRestore) {
-        
         [self subscribeUsingTimeToken:nil withState:nil queryParameters:nil completion:block];
+    } else if (block) {
+        block(nil);
     }
-    else if (block) { block(nil); }
 }
 
 - (void)continueSubscriptionCycleIfRequiredWithCompletion:(PNSubscriberCompletionBlock)block {
@@ -1015,9 +1012,9 @@ NS_ASSUME_NONNULL_END
                                    completion:(void (^)(PNStatus *status))block {
     
     NSArray *channels = [self.channels copy];
-    NSArray *channelGroups = [self.channelGroups copy]; 
+    NSArray *channelGroups = [self.channelGroups copy];
+    
     if (channels.count || channelGroups.count) {
-        
         PNLogAPICall(self.client.logger, @"<PubNub::API> Unsubscribe from all");
         
         [self removeChannels:channels];
@@ -1083,10 +1080,9 @@ NS_ASSUME_NONNULL_END
                  [groupsWithOutPresence componentsJoinedByString:@","]);
     
     NSSet *subscriptionObjects = [NSSet setWithArray:[self allObjects]];
+    
     if (subscriptionObjects.count == 0) {
-        
         pn_safe_property_write(self.resourceAccessQueue, ^{
-            
             self->_lastTimeToken = @0;
             self->_currentTimeToken = @0;
             self->_lastTimeTokenRegion = @(-1);
@@ -1100,19 +1096,18 @@ NS_ASSUME_NONNULL_END
 
         [parameters addQueryParameters:queryParameters];
         [parameters addPathComponent:channelsList forPlaceholder:@"{channels}"];
+        
         if (groupsWithOutPresence.count) {
-            
             [parameters addQueryParameter:[PNChannel namesForRequest:groupsWithOutPresence]
                              forFieldName:@"channel-group"];
         }
 
         void(^updateCompletion)(PNStatusCategory) = ^(PNStatusCategory category) {
-
             [successStatus updateCategory:category];
             [weakSelf.client callBlock:nil status:YES withResult:nil andStatus:successStatus];
             BOOL listChanged = ![[NSSet setWithArray:[weakSelf allObjects]] isEqualToSet:subscriptionObjects];
+            
             if (subscribeOnRestChannels && (subscriptionObjects.count > 0 && !listChanged)) {
-
                 [weakSelf subscribe:NO
                      usingTimeToken:nil
                           withState:nil
@@ -1121,7 +1116,6 @@ NS_ASSUME_NONNULL_END
             }
             
             if (block) {
-
                 pn_dispatch_async(weakSelf.client.callbackQueue, ^{
                     block((PNSubscribeStatus *)successStatus);
                 });
@@ -1132,7 +1126,9 @@ NS_ASSUME_NONNULL_END
             if (shouldInformListener) {
                 [weakSelf updateStateTo:PNDisconnectedSubscriberState
                              withStatus:(PNSubscribeStatus *)successStatus completion:updateCompletion];
-            } else { updateCompletion(successStatus.category); }
+            } else {
+                updateCompletion(successStatus.category);
+            }
         };
 
         if (!self.client.configuration.shouldSuppressLeaveEvents) {
@@ -1141,9 +1137,7 @@ NS_ASSUME_NONNULL_END
         } else {
             unsubscribeCompletionBlock(nil);
         }
-    }
-    else {
-        
+    } else {
         [self subscribe:YES
          usingTimeToken:nil
               withState:nil
@@ -1151,22 +1145,23 @@ NS_ASSUME_NONNULL_END
              completion:^(__unused PNSubscribeStatus *status) {
             
             if (block) {
-                
                 pn_dispatch_async(weakSelf.client.callbackQueue, ^{
-                
                     block((PNSubscribeStatus *)successStatus);
                 });
             }
+                 
             void(^updateCompletion)(PNStatusCategory) = ^(PNStatusCategory category) {
-                
                 [successStatus updateCategory:category];
+                
                 [weakSelf.client callBlock:nil status:YES withResult:nil andStatus:successStatus];
             };
+                 
             if (shouldInformListener) {
-                
                 [weakSelf updateStateTo:PNDisconnectedSubscriberState
                              withStatus:(PNSubscribeStatus *)successStatus completion:updateCompletion];
-            } else { updateCompletion(successStatus.category); }
+            } else {
+                updateCompletion(successStatus.category);
+            }
         }];
     }
     #pragma clang diagnostic pop
@@ -1179,19 +1174,26 @@ NS_ASSUME_NONNULL_END
     __weak __typeof(self) weakSelf = self;
     dispatch_queue_t timerQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_source_t timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, timerQueue);
+    
     dispatch_source_set_event_handler(timer, ^{
-        [weakSelf continueSubscriptionCycleIfRequiredWithCompletion:nil];
+        [weakSelf restoreSubscriptionCycleIfRequiredWithCompletion:nil];
     });
+    
     dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(kPubNubSubscriptionRetryInterval * NSEC_PER_SEC));
     dispatch_source_set_timer(timer, start, (uint64_t)(kPubNubSubscriptionRetryInterval * NSEC_PER_SEC), NSEC_PER_SEC);
     self.retryTimer = timer;
+    
     dispatch_resume(timer);
 }
 
 - (void)stopRetryTimer {
     
     dispatch_source_t timer = [self retryTimer];
-    if (timer != NULL && dispatch_source_testcancel(timer) == 0) { dispatch_source_cancel(timer); }
+    
+    if (timer != NULL && dispatch_source_testcancel(timer) == 0) {
+        dispatch_source_cancel(timer);
+    }
+    
     self.retryTimer = nil;
 }
 
@@ -1201,11 +1203,12 @@ NS_ASSUME_NONNULL_END
 - (void)handleSubscriptionStatus:(PNSubscribeStatus *)status {
 
     [self stopRetryTimer];
+    
     if (!status.isError && status.category != PNCancelledCategory) {
-        
         [self handleSuccessSubscriptionStatus:status];
+    } else {
+        [self handleFailedSubscriptionStatus:status];
     }
-    else { [self handleFailedSubscriptionStatus:status]; }
 }
 
 - (void)handleSuccessSubscriptionStatus:(PNSubscribeStatus *)status {
@@ -1221,7 +1224,6 @@ NS_ASSUME_NONNULL_END
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
     if (status.data.timetoken != nil && status.clientRequest.URL != nil) {
-        
         [self handleSubscription:isInitialSubscription timeToken:status.data.timetoken
                           region:status.data.region];
     }
@@ -1234,9 +1236,8 @@ NS_ASSUME_NONNULL_END
     [self.client.heartbeatManager startHeartbeatIfRequired];
     
     if (status.clientRequest.URL != nil && isInitialSubscription) {
-        
         [self updateStateTo:PNConnectedSubscriberState withStatus:status 
-                 completion:^(PNStatusCategory category){
+                 completion:^(PNStatusCategory category) {
             
             [status updateCategory:category];
             [self.client callBlock:nil status:YES withResult:nil andStatus:(PNStatus *)status];
@@ -1247,6 +1248,8 @@ NS_ASSUME_NONNULL_END
 
 - (void)handleFailedSubscriptionStatus:(PNSubscribeStatus *)status {
     
+    PNStatusCategory statusCategory = status.category;
+    
     // Silence static analyzer warnings.
     // Code is aware about this case and at the end will simply call on 'nil' object method.
     // In most cases if referenced object become 'nil' it mean what there is no more need in
@@ -1256,7 +1259,7 @@ NS_ASSUME_NONNULL_END
     // Looks like subscription request has been cancelled.
     // Cancelling can happen because of: user changed subscriber sensitive configuration or
     // another subscribe/unsubscribe request has been issued.
-    if (status.category == PNCancelledCategory) {
+    if (statusCategory == PNCancelledCategory) {
         
         // Stop heartbeat for now and wait further actions.
         [self.client.heartbeatManager stopHeartbeatIfPossible];
@@ -1267,44 +1270,48 @@ NS_ASSUME_NONNULL_END
     else {
         
         // Check whether status category declare subscription retry or not.
-        if (status.category == PNAccessDeniedCategory || status.category == PNTimeoutCategory ||
-            status.category == PNMalformedFilterExpressionCategory ||
-            status.category == PNMalformedResponseCategory ||
-            status.category == PNRequestURITooLongCategory ||
-            status.category == PNTLSConnectionFailedCategory) {
+        if (statusCategory == PNAccessDeniedCategory || statusCategory == PNTimeoutCategory ||
+            statusCategory == PNMalformedFilterExpressionCategory ||
+            statusCategory == PNMalformedResponseCategory ||
+            statusCategory == PNRequestURITooLongCategory ||
+            statusCategory == PNTLSConnectionFailedCategory) {
             
             __weak __typeof(self) weakSelf = self;
-            ((PNStatus *)status).automaticallyRetry = (status.category != PNMalformedFilterExpressionCategory &&
-                                                       status.category != PNRequestURITooLongCategory);
+            ((PNStatus *)status).automaticallyRetry = (statusCategory != PNMalformedFilterExpressionCategory &&
+                                                       statusCategory != PNRequestURITooLongCategory);
+            PNSubscriberState subscriberState = PNAccessRightsErrorSubscriberState;
             ((PNStatus *)status).retryCancelBlock = ^{
-                
                 PNLogAPICall(weakSelf.client.logger, @"<PubNub::API> Cancel retry");
                 [weakSelf stopRetryTimer];
             };
-            if (((PNStatus *)status).willAutomaticallyRetry) { [self startRetryTimer]; }
             
-            PNSubscriberState subscriberState = PNAccessRightsErrorSubscriberState;
-            if (status.category == PNMalformedFilterExpressionCategory) {
+            if (((PNStatus *)status).willAutomaticallyRetry) {
+                ((PNStatus *)status).requireNetworkAvailabilityCheck = NO;
                 
-                subscriberState = PNMalformedFilterExpressionErrorSubscriberState;
+                [self startRetryTimer];
             }
-            else if(status.category == PNRequestURITooLongCategory) {
-                
+            
+            if (statusCategory == PNMalformedFilterExpressionCategory) {
+                subscriberState = PNMalformedFilterExpressionErrorSubscriberState;
+            } else if(statusCategory == PNRequestURITooLongCategory) {
                 subscriberState = PNPNRequestURITooLongErrorSubscriberState;
             }
-            if (status.category != PNAccessDeniedCategory &&
-                status.category != PNMalformedFilterExpressionCategory &&
-                status.category != PNRequestURITooLongCategory) {
+            
+            if (statusCategory != PNAccessDeniedCategory &&
+                statusCategory != PNMalformedFilterExpressionCategory &&
+                statusCategory != PNRequestURITooLongCategory) {
                 
                 subscriberState = PNDisconnectedUnexpectedlySubscriberState;
                 [(PNStatus *)status updateCategory:PNUnexpectedDisconnectCategory];
             }
+            
             [self updateStateTo:subscriberState withStatus:status completion:nil];
         }
         // Looks like client lost connection with internet or has any other connection
         // related issues.
         else {
             
+            ((PNStatus *)status).requireNetworkAvailabilityCheck = YES;
             ((PNStatus *)status).automaticallyRetry = YES;
             ((PNStatus *)status).retryCancelBlock = ^{
             /* Do nothing, because we can't stop auto-retry in case of network issues.
@@ -1350,7 +1357,6 @@ NS_ASSUME_NONNULL_END
                     region:(NSNumber *)region {
 
     pn_safe_property_write(self.resourceAccessQueue, ^{
-        
         // Whether new time token from response should be applied for next subscription cycle or
         // not.
         BOOL shouldAcceptNewTimeToken = YES;
@@ -1366,14 +1372,14 @@ NS_ASSUME_NONNULL_END
         #pragma clang diagnostic push
         #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
         if (initialSubscription) {
-            
             // 'shouldKeepTimeTokenOnListChange' property should never allow to reset time tokens in
             // case if there is a few more subscribe requests is waiting for their turn to be sent.
             BOOL shouldUseLastTimeToken = self.client.configuration.shouldKeepTimeTokenOnListChange;
+            
             if (!shouldUseLastTimeToken) {
-                
                 shouldUseLastTimeToken = self.client.configuration.shouldTryCatchUpOnSubscriptionRestore;
             }
+            
             shouldUseLastTimeToken = (shouldUseLastTimeToken && !shouldOverrideTimeToken);
             
             // Ensure what we already don't use value from previous time token assigned during
@@ -1430,6 +1436,7 @@ NS_ASSUME_NONNULL_END
                                                     self->_overrideTimeToken] : @""));
             self->_currentTimeTokenRegion = region;
         }
+        
         self->_overrideTimeToken = nil;
     });
 }
@@ -1440,13 +1447,12 @@ NS_ASSUME_NONNULL_END
     NSMutableArray *events = [(NSArray *)(status.serviceData)[@"events"] mutableCopy];
     NSUInteger eventsCount = events.count;
     NSUInteger messageCountThreshold = self.client.configuration.requestMessageCountThreshold;
+    
     if (events.count) {
         [self.client.listenersManager notifyWithBlock:^{
-            
             // Check whether after initial subscription client should use user-provided timetoken to catch up on
             // messages since specified date.
             if (initialSubscription && overrideTimeToken && [overrideTimeToken compare:@0] != NSOrderedSame) {
-                
                 [self clearCacheFromMessagesNewerThan:overrideTimeToken]; 
             }
             
@@ -1456,7 +1462,6 @@ NS_ASSUME_NONNULL_END
             
             // Check whether number of messages exceed specified threshold or not.
             if (messageCountThreshold > 0 && eventsCount >= messageCountThreshold) {
-                
                 PNSubscribeStatus *exceedStatus = [status copyWithMutatedData:nil];
                 [exceedStatus updateCategory:PNRequestMessageCountExceededCategory];
                 [self.client.listenersManager notifyStatusChange:exceedStatus];
@@ -1465,17 +1470,13 @@ NS_ASSUME_NONNULL_END
             // Iterate through array with notifications and report back using callback blocks to the
             // user.
             for (NSMutableDictionary<NSString *, id> *event in events) {
-                
                 id eventResultObject = [status copyWithMutatedData:event];
                 
                 // Check whether event has been triggered on presence channel or channel group.
                 if (event[@"presenceEvent"] != nil) {
-                    
                     object_setClass(eventResultObject, [PNPresenceEventResult class]);
                     [self handleNewPresenceEvent:((PNPresenceEventResult *)eventResultObject)];
-                }
-                else {
-                    
+                } else {
                     object_setClass(eventResultObject, [PNMessageResult class]);
                     [self handleNewMessage:(PNMessageResult *)eventResultObject];
                 }
@@ -1484,18 +1485,20 @@ NS_ASSUME_NONNULL_END
     } else {
         [self continueSubscriptionCycleIfRequiredWithCompletion:nil];
     }
+    
     [status updateData:[status.serviceData dictionaryWithValuesForKeys:@[@"timetoken", @"region"]]];
 }
 
 - (void)handleNewMessage:(PNMessageResult *)data {
     
     PNErrorStatus *status = nil;
+    
     if (data) {
-        
         PNLogResult(self.client.logger, @"<PubNub> %@", [(PNResult *)data stringifiedRepresentation]);
+        
         if ([data.serviceData[@"decryptError"] boolValue]) {
-            
-            status = [PNErrorStatus statusForOperation:PNSubscribeOperation category:PNDecryptionErrorCategory
+            status = [PNErrorStatus statusForOperation:PNSubscribeOperation
+                                              category:PNDecryptionErrorCategory
                                    withProcessingError:nil];
 
             NSMutableDictionary *updatedData = [data.serviceData mutableCopy];
@@ -1504,21 +1507,24 @@ NS_ASSUME_NONNULL_END
             [status updateData:updatedData];
         }
     }
+    
     // Silence static analyzer warnings.
     // Code is aware about this case and at the end will simply call on 'nil' object method.
     // In most cases if referenced object become 'nil' it mean what there is no more need in
     // it and probably whole client instance has been deallocated.
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
-    if (status) { [self.client.listenersManager notifyStatusChange:(id)status]; }
-    else if (data) { [self.client.listenersManager notifyMessage:data]; }
+    if (status) {
+        [self.client.listenersManager notifyStatusChange:(id)status];
+    } else if (data) {
+        [self.client.listenersManager notifyMessage:data];
+    }
     #pragma clang diagnostic pop
 }
 
 - (void)handleNewPresenceEvent:(PNPresenceEventResult *)data {
     
     if (data) {
-        
         PNLogResult(self.client.logger, @"<PubNub> %@", [(PNResult *)data stringifiedRepresentation]);
     }
     
@@ -1531,13 +1537,12 @@ NS_ASSUME_NONNULL_END
     // Check whether state modification event arrived or not.
     // In case of state modification event for current client it should be applied on local storage.
     if ([data.data.presenceEvent isEqualToString:@"state-change"]) {
-        
         // Check whether state has been changed for current client or not.
         if ([data.data.presence.uuid isEqualToString:self.client.configuration.uuid]) {
-            
             [self.client.clientStateManager setState:data.data.presence.state forObjects:@[data.data.channel]];
         }
     }
+    
     [self.client.listenersManager notifyPresenceEvent:data];
     #pragma clang diagnostic pop
 }
@@ -1578,29 +1583,30 @@ NS_ASSUME_NONNULL_END
 
     [parameters addPathComponent:channelsList forPlaceholder:@"{channels}"];
     [parameters addQueryParameter:self.currentTimeToken.stringValue forFieldName:@"tt"];
+    
     if ([self.currentTimeTokenRegion compare:@(-1)] == NSOrderedDescending) {
-        
         [parameters addQueryParameter:self.currentTimeTokenRegion.stringValue forFieldName:@"tr"];
     }
     
     if (!self.client.configuration.shouldManagePresenceListManually && self.client.configuration.presenceHeartbeatValue > 0) {
-        
         [parameters addQueryParameter:@(self.client.configuration.presenceHeartbeatValue).stringValue
                          forFieldName:@"heartbeat"];
     }
     
-    if (groupsList.length) { [parameters addQueryParameter:groupsList forFieldName:@"channel-group"]; }
+    if (groupsList.length) {
+        [parameters addQueryParameter:groupsList forFieldName:@"channel-group"];
+    }
+    
     if (mergedState.count) {
-        
         NSString *mergedStateString = [PNJSON JSONStringFrom:mergedState withError:nil];
+        
         if (mergedStateString.length) {
-            
             [parameters addQueryParameter:[PNString percentEscapedString:mergedStateString]
                              forFieldName:@"state"];
         }
     }
+    
     if (self.escapedFilterExpression) {
-        
         [parameters addQueryParameter:self.escapedFilterExpression forFieldName:@"filter-expr"];
     }
     #pragma clang diagnostic pop
@@ -1611,8 +1617,8 @@ NS_ASSUME_NONNULL_END
 - (void)deDuplicateMessages:(NSMutableArray<NSDictionary *> *)events {
     
     NSUInteger maximumMessagesCacheSize = self.client.configuration.maximumMessagesCacheSize;
+    
     if (maximumMessagesCacheSize > 0) {
-        
         NSMutableIndexSet *duplicateMessagesIndices = [NSMutableIndexSet indexSet];
         [events enumerateObjectsUsingBlock:^(NSDictionary<NSString *, id> *event, NSUInteger eventIdx, 
                                              BOOL *eventsEnumeratorStop) {
@@ -1623,7 +1629,11 @@ NS_ASSUME_NONNULL_END
                 [duplicateMessagesIndices addIndex:eventIdx];
             }
         }];
-        if (duplicateMessagesIndices.count) { [events removeObjectsAtIndexes:duplicateMessagesIndices]; }
+        
+        if (duplicateMessagesIndices.count) {
+            [events removeObjectsAtIndexes:duplicateMessagesIndices];
+        }
+        
         [self cleanUpCachedObjectsIfRequired:maximumMessagesCacheSize];
     }
 }
@@ -1631,8 +1641,8 @@ NS_ASSUME_NONNULL_END
 - (void)clearCacheFromMessagesNewerThan:(NSNumber *)timetoken {
     
     NSUInteger maximumMessagesCacheSize = self.client.configuration.maximumMessagesCacheSize;
+    
     if (maximumMessagesCacheSize > 0) {
-        
         SEL sortSelector = @selector(localizedCaseInsensitiveCompare:);
         NSArray<NSString *> *identifiers = [[_cachedObjects allKeys] sortedArrayUsingSelector:sortSelector];
         NSString *timetokenString = timetoken.stringValue;
@@ -1642,12 +1652,15 @@ NS_ASSUME_NONNULL_END
             
             NSString *cachedTimetoken = [identifier componentsSeparatedByString:@"_"][0];
             NSComparisonResult result = [timetokenString compare:cachedTimetoken options:NSNumericSearch];
-            if (result == NSOrderedSame || result == NSOrderedAscending) { indexOfMessage = identifierIdx; }
+            
+            if (result == NSOrderedSame || result == NSOrderedAscending) {
+                indexOfMessage = identifierIdx;
+            }
+            
             *identifiersEnumeratorStop = (indexOfMessage != NSNotFound);
         }];
         
         if (indexOfMessage != NSNotFound) {
-            
             NSRange messagesRange = NSMakeRange(indexOfMessage, identifiers.count - indexOfMessage);
             identifiers = [identifiers subarrayWithRange:messagesRange];
             [_cachedObjects removeObjectsForKeys:identifiers];
@@ -1665,13 +1678,16 @@ NS_ASSUME_NONNULL_END
     
     // Cache objects if required.
     id data = object[@"message"];
+    
     if (objects.count == 0 || [objects indexOfObject:data] == NSNotFound) {
-        
         cached = YES; 
         [objects addObject:data];
         [_cachedObjectIdentifiers addObject:identifier];
     }
-    if (cachedMessagesCount == 0) { _cachedObjects[identifier] = objects; }
+    
+    if (cachedMessagesCount == 0) {
+        _cachedObjects[identifier] = objects;
+    }
     
     return cached;
 }
@@ -1679,11 +1695,15 @@ NS_ASSUME_NONNULL_END
 - (void)cleanUpCachedObjectsIfRequired:(NSUInteger)maximumCacheSize {
     
     if (_cachedObjectIdentifiers.count > maximumCacheSize) {
-        
         NSString *identifier = [_cachedObjectIdentifiers objectAtIndex:0];
         NSMutableArray *objects = _cachedObjects[identifier];
-        if (objects.count == 1) { [_cachedObjects removeObjectForKey:identifier]; }
-        else { [objects removeObjectAtIndex:0]; }
+        
+        if (objects.count == 1) {
+            [_cachedObjects removeObjectForKey:identifier];
+        } else {
+            [objects removeObjectAtIndex:0];
+        }
+        
         [_cachedObjectIdentifiers removeObjectAtIndex:0];
     }
 }

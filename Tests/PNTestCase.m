@@ -3,11 +3,24 @@
  * @copyright © 2009-2018 PubNub, Inc.
  */
 #import "PNTestCase.h"
+#import <PubNub/PubNub+CorePrivate.h>
 #import "NSInvocation+PNTest.h"
 #import <OCMock/OCMock.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
+
+#pragma mark Types and structures
+
+/**
+ * @brief Type used to describe block for any PubNub callback.
+ *
+ * @param client \b PubNub client which used delegate callback.
+ * @param data Data which has been passed with callback.
+ * @param shouldRemove Whether handling block should be removed after call or not.
+ */
+typedef void (^PNTClientCallbackHandler)(PubNub *client, id data, BOOL *shouldRemove);
+
 
 #pragma mark Protected interface declaration
 
@@ -37,6 +50,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, nullable, strong) dispatch_queue_t resourceAccessQueue;
 
 /**
+ * @brief PubNub handlers list.
+ */
+@property (nonatomic, nullable, strong) NSMutableDictionary<NSString *, NSMutableDictionary<NSString *, NSMutableArray<PNTClientCallbackHandler> *> *> *pubNubHandlers;
+
+/**
  * @brief Stores reference on previously created mocking objects.
  */
 @property (nonatomic, strong) NSMutableArray *classMocks;
@@ -61,6 +79,38 @@ NS_ASSUME_NONNULL_BEGIN
  * @since 4.8.8
  */
 + (NSDictionary *)testKeysSet;
+
+
+#pragma mark - Listeners
+
+/**
+ * @brief Add block which will be called for callbacks from \c client.
+ *
+ * @param type One of known event listener callback types: \c status, \c message or \c presence.
+ * @param client \b PubNub client for which block should be added.
+ * @param handler Block which should be called for specified callback \c type.
+ */
+- (void)addHandlerOfType:(NSString *)type forClient:(PubNub *)client withBlock:(PNTClientCallbackHandler)handler;
+
+/**
+ * @brief Removed list of blocks for callbacks from \c client.
+ *
+ * @param handlers List of handler blocks which should be removed for specified callback \c type.
+ * @param type One of known event listener callback types: \c status, \c message or \c presence.
+ * @param client \b PubNub client for which blocks should be removed.
+ */
+- (void)removeHandlers:(NSArray<PNTClientCallbackHandler> *)handlers ofType:(NSString *)type forClient:(PubNub *)client;
+
+/**
+ * @brief Receive block which will be called for callbacks from \c client.
+ *
+ * @param type One of known event listener callback types: \c status, \c message or \c presence.
+ * @param client \b PubNub client for which block should be retrieved for specified \c type.
+ *
+ * @return List of callback handler blocks which can be called.
+ */
+- (nullable NSArray<PNTClientCallbackHandler> *)handlersOfType:(NSString *)type forClient:(PubNub *)client;
+
 
 #pragma mark - Handlers
 
@@ -150,6 +200,7 @@ NS_ASSUME_NONNULL_END
     
     
     self.resourceAccessQueue = dispatch_queue_create("test-case", DISPATCH_QUEUE_SERIAL);
+    self.pubNubHandlers = [NSMutableDictionary new];
     self.testCompletionDelay = 15.f;
     self.delayedCheck = 0.25f;
     self.falseTestCompletionDelay = 0.25f;
@@ -160,6 +211,10 @@ NS_ASSUME_NONNULL_END
 - (void)tearDown {
 
     NSLog(@"\nTest completed.\n");
+    
+    dispatch_sync(self.resourceAccessQueue, ^{
+        [self.pubNubHandlers removeAllObjects];
+    });
     
     if (self.instanceMocks.count || self.classMocks.count) {
         [self.instanceMocks makeObjectsPerformSelector:@selector(stopMocking)];
@@ -197,7 +252,80 @@ NS_ASSUME_NONNULL_END
 }
 
 
-#pragma mark - Helpers
+#pragma mark - Listeners
+
+
+- (void)addHandlerOfType:(NSString *)type forClient:(PubNub *)client withBlock:(PNTClientCallbackHandler)handler {
+    
+    NSString *instanceID = client.instanceID;
+    
+    dispatch_async(self.resourceAccessQueue, ^{
+        NSMutableDictionary *handlersByType = self.pubNubHandlers[instanceID];
+        
+        if (!handlersByType) {
+            handlersByType = [NSMutableDictionary new];
+            self.pubNubHandlers[instanceID] = handlersByType;
+        }
+        
+        NSMutableArray *handlers = handlersByType[type];
+        
+        if (!handlers) {
+            handlers = [NSMutableArray new];
+            handlersByType[type] = handlers;
+        }
+        
+        [handlers addObject:handler];
+    });
+}
+
+- (void)removeHandlers:(NSArray<PNTClientCallbackHandler> *)handlers ofType:(NSString *)type forClient:(PubNub *)client {
+    
+    NSString *instanceID = client.instanceID;
+    
+    dispatch_async(self.resourceAccessQueue, ^{
+        NSMutableDictionary *handlersByType = self.pubNubHandlers[instanceID];
+        [handlersByType[type] removeObjectsInArray:handlers];
+    });
+}
+
+- (NSArray<PNTClientCallbackHandler> *)handlersOfType:(NSString *)type forClient:(PubNub *)client {
+    
+    __block NSArray<PNTClientCallbackHandler> *handlers = nil;
+    NSString *instanceID = client.instanceID;
+    
+    dispatch_sync(self.resourceAccessQueue, ^{
+        handlers = [self.pubNubHandlers[instanceID][type] copy];
+    });
+    
+    return handlers;
+}
+
+- (void)addStatusHandlerForClient:(PubNub *)client withBlock:(PNTClientDidReceiveStatusHandler)handler {
+    
+    [self addHandlerOfType:@"status" forClient:client withBlock:handler];
+}
+
+- (void)addMessageHandlerForClient:(PubNub *)client withBlock:(PNTClientDidReceiveMessageHandler)handler {
+    
+    [self addHandlerOfType:@"message" forClient:client withBlock:handler];
+}
+
+- (void)addPresenceHandlerForClient:(PubNub *)client withBlock:(PNTClientDidReceiveMessageHandler)handler {
+    
+    [self addHandlerOfType:@"presence" forClient:client withBlock:handler];
+}
+
+- (void)removeAllHandlersForClient:(PubNub *)client {
+    
+    NSString *instanceID = client.instanceID;
+    
+    dispatch_sync(self.resourceAccessQueue, ^{
+        [self.pubNubHandlers removeObjectForKey:instanceID];
+    });
+}
+
+
+#pragma mark - Handlers
 
 - (void)waitForObject:(id)object
     recordedInvocation:(id)invocation
@@ -359,6 +487,60 @@ NS_ASSUME_NONNULL_END
     [self waitForExpectations:@[waitExpectation] timeout:(seconds + 0.3f)];
     
     return waitExpectation;
+}
+
+- (void)client:(PubNub *)client didReceiveStatus:(PNStatus *)status {
+    
+    NSMutableArray<PNTClientCallbackHandler> *handlersForRemoval = [NSMutableArray new];
+    NSArray<PNTClientCallbackHandler> *handlers = [self handlersOfType:@"status" forClient:client];
+    
+    for (PNTClientCallbackHandler handler in handlers) {
+        BOOL shouldRemoved = NO;
+        
+        handler(client, status, &shouldRemoved);
+        
+        if (shouldRemoved) {
+            [handlersForRemoval addObject:handler];
+        }
+    }
+    
+    [self removeHandlers:handlersForRemoval ofType:@"status" forClient:client];
+}
+
+- (void)client:(PubNub *)client didReceiveMessage:(PNMessageResult *)message {
+    
+    NSMutableArray<PNTClientCallbackHandler> *handlersForRemoval = [NSMutableArray new];
+    NSArray<PNTClientCallbackHandler> *handlers = [self handlersOfType:@"message" forClient:client];
+    
+    for (PNTClientCallbackHandler handler in handlers) {
+        BOOL shouldRemoved = NO;
+        
+        handler(client, message, &shouldRemoved);
+        
+        if (shouldRemoved) {
+            [handlersForRemoval addObject:handler];
+        }
+    }
+    
+    [self removeHandlers:handlersForRemoval ofType:@"message" forClient:client];
+}
+
+- (void)client:(PubNub *)client didReceivePresenceEvent:(PNPresenceEventResult *)event {
+    
+    NSMutableArray<PNTClientCallbackHandler> *handlersForRemoval = [NSMutableArray new];
+    NSArray<PNTClientCallbackHandler> *handlers = [self handlersOfType:@"presence" forClient:client];
+    
+    for (PNTClientCallbackHandler handler in handlers) {
+        BOOL shouldRemoved = NO;
+        
+        handler(client, event, &shouldRemoved);
+        
+        if (shouldRemoved) {
+            [handlersForRemoval addObject:handler];
+        }
+    }
+    
+    [self removeHandlers:handlersForRemoval ofType:@"presence" forClient:client];
 }
 
 
