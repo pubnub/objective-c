@@ -1,9 +1,9 @@
 /**
- @brief Global client constants declared here.
-
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2010-2018 PubNub, Inc.
+ * @brief Global client constants declared here.
+ *
+ * @author Serhii Mamontov
+ * @since 4.0
+ * @copyright © 2010-2019 PubNub, Inc.
  */
 #import <Foundation/Foundation.h>
 #import "PNStructures.h"
@@ -15,10 +15,10 @@
 #pragma mark General information constants
 
 // Stores client library version number
-static NSString * const kPNLibraryVersion = @"4.8.9";
+static NSString * const kPNLibraryVersion = @"4.8.10";
 
 // Stores information about SDK codebase
-static NSString * const kPNCommit = @"8c3d7977935692cadd3bef87226d9d5dbac746ed";
+static NSString * const kPNCommit = @"f56621893b475c1cd8a92b2c70e197e1d8b6058a";
 
 /**
  @brief  Stores reference on unique identifier which is used to identify \b PubNub client among other 

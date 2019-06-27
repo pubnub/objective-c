@@ -1,9 +1,22 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.8.9"
+version: "4.8.10"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Fix subscribe request timeout missing 'reconnect' event."
+        type: bug
+      -
+        text: "Fix empty heartbeat value set to minimum on configuration copy."
+        type: bug
+      -
+        text: "Update outdated configuration object inline help documentation"
+        type: improvement
+    date: Jun 27, 19
+    version: v4.8.10
   -
     changes:
       -
