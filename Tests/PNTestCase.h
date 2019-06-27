@@ -1,7 +1,38 @@
 #import <XCTest/XCTest.h>
+#import <PubNub/PubNub.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
+
+#pragma mark Types and structures
+
+/**
+ * @brief Type used to describe block for message handling.
+ *
+ * @param client \b PubNub client which used delegate callback.
+ * @param message Object with information about received message.
+ * @param shouldRemove Whether handling block should be removed after call or not.
+ */
+typedef void (^PNTClientDidReceiveMessageHandler)(PubNub *client, PNMessageResult *message, BOOL *shouldRemove);
+
+/**
+ * @brief Type used to describe block for presence event handling.
+ *
+ * @param client \b PubNub client which used delegate callback.
+ * @param message Object with information about received presence event.
+ * @param shouldRemove Whether handling block should be removed after call or not.
+ */
+typedef void (^PNTClientDidReceivePresenceEventHandler)(PubNub *client, PNPresenceEventResult *event, BOOL *shouldRemove);
+
+/**
+ * @brief Type used to describe block for status change handling.
+ *
+ * @param client \b PubNub client which used delegate callback.
+ * @param message Object with information about last client status change.
+ * @param shouldRemove Whether handling block should be removed after call or not.
+ */
+typedef void (^PNTClientDidReceiveStatusHandler)(PubNub *client, PNSubscribeStatus *status, BOOL *shouldRemove);
+
 
 /**
  * @brief Base class for all test cases which provide initial setup.
@@ -9,7 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @author Serhii Mamontov
  * @copyright © 2009-2019 PubNub, Inc.
  */
-@interface PNTestCase : XCTestCase
+@interface PNTestCase : XCTestCase <PNObjectEventListener>
 
 
 #pragma mark - Information
@@ -76,6 +107,40 @@ NS_ASSUME_NONNULL_BEGIN
  * @return Object mock.
  */
 - (id)mockForObject:(id)object;
+
+
+#pragma mark - Listeners
+
+/**
+ * @brief Add block which will be called for each client status change.
+ *
+ * @param client \b PubNub client for which state should be tracked.
+ * @param handler Block which should be called each client's status change.
+ */
+- (void)addStatusHandlerForClient:(PubNub *)client withBlock:(PNTClientDidReceiveStatusHandler)handler;
+
+/**
+ * @brief Add block which will be called for each received message.
+ *
+ * @param client \b PubNub client for which messages should be tracked.
+ * @param handler Block which should be called each received message.
+ */
+- (void)addMessageHandlerForClient:(PubNub *)client withBlock:(PNTClientDidReceiveMessageHandler)handler;
+
+/**
+ * @brief Add block which will be called for each received presence change.
+ *
+ * @param client \b PubNub client for which presence change should be tracked.
+ * @param handler Block which should be called each presence change.
+ */
+- (void)addPresenceHandlerForClient:(PubNub *)client withBlock:(PNTClientDidReceiveMessageHandler)handler;
+
+/**
+ * @brief Remove all handler for specified \c client.
+ *
+ * @param client \b PubNub client for which listeners should be removed.
+ */
+- (void)removeAllHandlersForClient:(PubNub *)client;
 
 
 #pragma mark - Handlers

@@ -1,7 +1,6 @@
 /**
  * @author Serhii Mamontov
- * @since 4.0
- * @copyright © 2010-2018 PubNub, Inc.
+ * @copyright © 2010-2019 PubNub, Inc.
  */
 #import "PubNub+CorePrivate.h"
 #define PN_CORE_PROTOCOLS PNObjectEventListener
@@ -116,8 +115,6 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @discussion Helper used by client to know about when something happened with network and when it
  * is safe to issue requests to \b PubNub network.
- *
- * @since 4.0
  */
 @property (nonatomic, strong) PNReachability *reachability;
 
@@ -136,19 +133,28 @@ NS_ASSUME_NONNULL_BEGIN
  *     delegate calls.
  *
  * @return Initialized and ready to use \b PubNub client.
- *
- * @since 4.0
 */
 - (instancetype)initWithConfiguration:(PNConfiguration *)configuration
                         callbackQueue:(nullable dispatch_queue_t)callbackQueue;
+
+/**
+ * @brief Update current client state.
+ *
+ * @discussion Use subscription status to translate it to proper client state and launch service
+ * reachability check if will be required.
+ *
+ * @param recentClientStatus Recent subscriber state which should be used to set proper client
+ *     state.
+ * @param shouldCheckReachability Whether service reachability check should be started or not.
+ */
+- (void)setRecentClientStatus:(PNStatusCategory)recentClientStatus
+        withReachabilityCheck:(BOOL)shouldCheckReachability;
 
 
 #pragma mark - Reachability
 
 /**
  * @brief Complete reachability helper configuration.
- *
- * @since 4.0
  */
 - (void)prepareReachability;
 
@@ -157,8 +163,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  * @brief Initialize and configure required \b PubNub network managers.
- *
- * @since 4.0
  */
 - (void)prepareNetworkManagers;
 
@@ -270,17 +274,15 @@ NS_ASSUME_NONNULL_END
                         callbackQueue:(dispatch_queue_t)callbackQueue {
 
     if ((self = [super init])) {
-        
         [self storeUUID:configuration.uuid];
         [self setupClientLogger];
+        
         PNLogClientInfo(self.logger, @"<PubNub> PubNub SDK %@ (%@)", kPNLibraryVersion, kPNCommit);
         
         _configuration = [configuration copy];
         _callbackQueue = callbackQueue;
         _instanceID = [[[NSUUID UUID] UUIDString] copy];
 
-        // In case if we client used from tests environment configuration should use specified
-        // device and instance identifier.
         if (NSClassFromString(@"XCTestExpectation")) {
             _instanceID = [@"58EB05C9-9DE4-4118-B5D7-EE059FBF19A9" copy];
         }
@@ -380,33 +382,35 @@ NS_ASSUME_NONNULL_END
     }
 }
 
-- (void)setRecentClientStatus:(PNStatusCategory)recentClientStatus {
-
+- (void)setRecentClientStatus:(PNStatusCategory)recentClientStatus
+        withReachabilityCheck:(BOOL)shouldCheckReachability {
+    
     PNStatusCategory previousState = self.recentClientStatus;
     PNStatusCategory currentState = recentClientStatus;
-
+    
     if (currentState == PNReconnectedCategory) {
         currentState = PNConnectedCategory;
     }
-
+    
     if (currentState == PNDisconnectedCategory && ([[self channels] count] ||
                                                    [[self channelGroups] count] ||
                                                    [[self presenceChannels] count])) {
         
         currentState = PNConnectedCategory;
     }
-
+    
     self->_recentClientStatus = currentState;
-
-    if (currentState == PNUnexpectedDisconnectCategory) {
-        if (previousState != PNDisconnectedCategory) {
-            __weak __typeof(self) weakSelf = self;
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)),
-                           dispatch_get_main_queue(), ^{
-
-                [weakSelf.reachability startServicePing];
-            });
+    
+    if (currentState == PNUnexpectedDisconnectCategory && shouldCheckReachability) {
+        if (previousState == PNDisconnectedCategory) {
+            return;
         }
+        
+        __weak __typeof(self) weakSelf = self;
+        dispatch_time_t delay = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC));
+        dispatch_after(delay, self.callbackQueue, ^{
+            [weakSelf.reachability startServicePing];
+        });
     }
 }
 
@@ -430,8 +434,7 @@ NS_ASSUME_NONNULL_END
 - (void)prepareReachability {
 
     __weak __typeof(self) weakSelf = self;
-    _reachability = [PNReachability reachabilityForClient:self
-                                           withPingStatus:^(BOOL pingSuccessful) {
+    _reachability = [PNReachability reachabilityForClient:self withPingStatus:^(BOOL pingSuccessful) {
         
         if (pingSuccessful) {
             // Silence static analyzer warnings.
@@ -441,6 +444,7 @@ NS_ASSUME_NONNULL_END
             #pragma clang diagnostic push
             #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
             [weakSelf.reachability stopServicePing];
+            [weakSelf cancelSubscribeOperations];
             [weakSelf.subscriberManager restoreSubscriptionCycleIfRequiredWithCompletion:nil];
             #pragma clang diagnostic pop
         }
@@ -464,12 +468,10 @@ NS_ASSUME_NONNULL_END
     }
 
     if (shouldCreateSubscriptionNetwork) {
-        
         _subscriptionNetwork = [PNNetwork networkForClient:self
                                             requestTimeout:_configuration.subscribeMaximumIdleTime
                                         maximumConnections:1 longPoll:YES];
     }
-
 
     _serviceNetwork = [PNNetwork networkForClient:self
                                    requestTimeout:_configuration.nonSubscribeRequestTimeout
@@ -565,7 +567,8 @@ NS_ASSUME_NONNULL_END
         status.category == PNDisconnectedCategory ||
         status.category == PNUnexpectedDisconnectCategory) {
         
-        self.recentClientStatus = status.category;
+        [self setRecentClientStatus:status.category
+              withReachabilityCheck:status.requireNetworkAvailabilityCheck];
     }
 }
 

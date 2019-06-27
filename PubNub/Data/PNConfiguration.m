@@ -1,7 +1,6 @@
 /**
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2010-2018 PubNub, Inc.
+ * @author Sergey Mamontov
+ * @copyright © 2010-2019 PubNub, Inc.
  */
 #import <Foundation/Foundation.h>
 #if TARGET_OS_IOS
@@ -21,7 +20,7 @@
 #pragma mark Static
 
 /**
- @brief  Stores reference on key under which device ID will be stored persistently.
+ * @brief Key under which device ID will be stored persistently.
  */
 static NSString * const kPNConfigurationDeviceIDKey = @"PNConfigurationDeviceID";
 
@@ -40,14 +39,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *deviceID;
 
 /**
- @brief  Initialize configuration instance using minimal required data.
- 
- @param publishKey   Key which allow client to use data push API.
- @param subscribeKey Key which allow client to subscribe on live feeds pushed from \b PubNub service.
- 
- @return Configured and ready to se configuration instance.
- 
- @since 4.0
+ * @brief Initialize configuration instance using minimal required data.
+ *
+ * @param publishKey Key which allow client to use data push API.
+ * @param subscribeKey Key which allow client to subscribe on live feeds pushed from \b PubNub
+ *     service.
+ *
+ * @return Configured and ready to se configuration instance.
  */
 - (instancetype)initWithPublishKey:(NSString *)publishKey subscribeKey:(NSString *)subscribeKey;
 
@@ -55,50 +53,52 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Misc
 
 /**
- @brief      Fetch unique user identifier from keychain or generate new one.
- @discussion This value updates with every client configuration (if different from previous one). If user 
-             doesn't provide custom \c uuid during client configuration, client will generate and store new 
-             unique value which will be re-used during next client configuration (if not provided custom 
-             \c uuid).
- 
- @return Unique user identifier.
+ * @brief Fetch unique user identifier from keychain or generate new one.
+ *
+ * @discussion This value updates with every client configuration (if different from previous one).
+ * If user doesn't provide custom \c uuid during client configuration, client will generate and
+ * store new unique value which will be re-used during next client configuration (if not provided
+ * custom \c uuid).
+ *
+ * @return Unique user identifier.
  */
 - (NSString *)uniqueUserIdentifier;
 
 /**
- @brief  Fetch unique device idenrifier from keychain or generate new one.
- 
- @return Unique device identifier which depends on platform for which client has been compiled.
- 
- @since 4.0.2
+ * @brief Fetch unique device idenrifier from keychain or generate new one.
+ *
+ * @return Unique device identifier which depends on platform for which client has been compiled.
+ *
+ * @since 4.0.2
  */
 - (nullable NSString *)uniqueDeviceIdentifier;
 
 /**
- @brief  Extract unique identifier for current platform.
- 
- @return Unique device identifier which depends on platform for which client has been compiled.
- 
- @since 4.1.1
+ * @brief Extract unique identifier for current platform.
+ *
+ * @return Unique device identifier which depends on platform for which client has been compiled.
+ *
+ * @since 4.1.1
  */
 - (nullable NSString *)generateUniqueDeviceIdentifier;
 
 #if TARGET_OS_OSX
 /**
- @brief  Try to fetch device serial number information.
- 
- @return Serial number or \c nil in case if it has been lost (there is way for hardware to loose it).
- 
- @since 4.0.2
+ * @brief Try to fetch device serial number information.
+ *
+ * @return Serial number or \c nil in case if it has been lost (there is way for hardware to loose
+ * it).
+ *
+ * @since 4.0.2
  */
 - (nullable NSString *)serialNumber;
 
 /**
- @brief  Try to receive MAC address for any current interfaces.
- 
- @return Network interface MAC address.
- 
- @since 4.0.2
+ * @brief Try to receive MAC address for any current interfaces.
+ *
+ * @return Network interface MAC address.
+ *
+ * @since 4.0.2
  */
 - (nullable NSString *)macAddress;
 #endif // TARGET_OS_OSX
@@ -120,14 +120,15 @@ NS_ASSUME_NONNULL_END
 
 - (void)setPresenceHeartbeatValue:(NSInteger)presenceHeartbeatValue {
   
-  _presenceHeartbeatValue = presenceHeartbeatValue < 20 ? 20 : presenceHeartbeatValue;
+  _presenceHeartbeatValue = presenceHeartbeatValue < 20 ? 20 : MIN(presenceHeartbeatValue, 300);
   _presenceHeartbeatInterval = (NSInteger)(_presenceHeartbeatValue * 0.5f) - 1;
 }
 
 
 #pragma mark - Initialization and Configuration
 
-+ (instancetype)configurationWithPublishKey:(NSString *)publishKey subscribeKey:(NSString *)subscribeKey {
++ (instancetype)configurationWithPublishKey:(NSString *)publishKey
+                               subscribeKey:(NSString *)subscribeKey {
     
     NSParameterAssert(publishKey);
     NSParameterAssert(subscribeKey);
@@ -137,16 +138,13 @@ NS_ASSUME_NONNULL_END
 
 - (instancetype)initWithPublishKey:(NSString *)publishKey subscribeKey:(NSString *)subscribeKey {
     
-    // Check whether initialization successful or not.
     if ((self = [super init])) {
-        
         _deviceID = [[self uniqueDeviceIdentifier] copy];
-        // In case if we client used from tests environment configuration should use specified
-        // device and instance identifier.
+        
         if (NSClassFromString(@"XCTestExpectation")) {
-            
             _deviceID = [@"3650F534-FC54-4EE8-884C-EF1B83188BB7" copy];
         }
+        
         _origin = [kPNDefaultOrigin copy];
         _publishKey = [publishKey copy];
         _subscribeKey = [subscribeKey copy];
@@ -182,7 +180,7 @@ NS_ASSUME_NONNULL_END
     configuration.cipherKey = self.cipherKey;
     configuration.subscribeMaximumIdleTime = self.subscribeMaximumIdleTime;
     configuration.nonSubscribeRequestTimeout = self.nonSubscribeRequestTimeout;
-    configuration.presenceHeartbeatValue = self.presenceHeartbeatValue;
+    configuration->_presenceHeartbeatValue = self.presenceHeartbeatValue;
     configuration.presenceHeartbeatInterval = self.presenceHeartbeatInterval;
     configuration.heartbeatNotificationOptions = self.heartbeatNotificationOptions;
     configuration.managePresenceListManually = self.shouldManagePresenceListManually;
@@ -190,9 +188,11 @@ NS_ASSUME_NONNULL_END
     configuration.TLSEnabled = self.isTLSEnabled;
     configuration.keepTimeTokenOnListChange = self.shouldKeepTimeTokenOnListChange;
     configuration.catchUpOnSubscriptionRestore = self.shouldTryCatchUpOnSubscriptionRestore;
+    
     if (@available(macOS 10.10, iOS 8.0, *)) {
         configuration.applicationExtensionSharedGroupIdentifier = self.applicationExtensionSharedGroupIdentifier;
     }
+    
     configuration.requestMessageCountThreshold = self.requestMessageCountThreshold;
     configuration.maximumMessagesCacheSize = self.maximumMessagesCacheSize;
 #if TARGET_OS_IOS
@@ -212,15 +212,17 @@ NS_ASSUME_NONNULL_END
 - (NSString *)uniqueUserIdentifier {
     
     __block NSString *identifier = nil;
+    
     [PNKeychain valueForKey:kPNConfigurationUUIDKey withCompletionBlock:^(id value) {
-        
         if (!value) {
+            identifier = [@"pn-" stringByAppendingString:[NSUUID UUID].UUIDString];
             
-            identifier = [@"pn-" stringByAppendingString:[[NSUUID UUID] UUIDString]];
-            [PNKeychain storeValue:identifier forKey:kPNConfigurationUUIDKey
+            [PNKeychain storeValue:identifier
+                            forKey:kPNConfigurationUUIDKey
                withCompletionBlock:NULL];
+        } else {
+            identifier = value;
         }
-        else { identifier = value; }
     }];
     
     return identifier;
@@ -229,15 +231,17 @@ NS_ASSUME_NONNULL_END
 - (NSString *)uniqueDeviceIdentifier {
     
     __block NSString *identifier = nil;
+    
     [PNKeychain valueForKey:kPNConfigurationDeviceIDKey withCompletionBlock:^(id value) {
-        
         if (!value) {
-            
             identifier = [self generateUniqueDeviceIdentifier];
-            [PNKeychain storeValue:identifier forKey:kPNConfigurationDeviceIDKey
+            
+            [PNKeychain storeValue:identifier
+                            forKey:kPNConfigurationDeviceIDKey
                withCompletionBlock:NULL];
+        } else {
+            identifier = value;
         }
-        else { identifier = value; }
     }];
     
     return identifier;
@@ -247,12 +251,12 @@ NS_ASSUME_NONNULL_END
     
     NSString *identifier = nil;
 #if TARGET_OS_IOS
-    identifier = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+    identifier = UIDevice.currentDevice.identifierForVendor.UUIDString;
 #elif TARGET_OS_OSX
-    identifier = ([self serialNumber]?: [self macAddress]);
+    identifier = [self serialNumber] ?: [self macAddress];
 #endif // TARGET_OS_OSX
     
-    return (identifier?: [[[NSUUID UUID] UUIDString] copy]);
+    return identifier ?: [[NSUUID UUID].UUIDString copy];
 }
 
 #if TARGET_OS_OSX
@@ -261,12 +265,14 @@ NS_ASSUME_NONNULL_END
     NSString *serialNumber = nil;
     io_service_t service = IOServiceGetMatchingService(kIOMasterPortDefault,
                                                        IOServiceMatching("IOPlatformExpertDevice"));
+    
     if (service) {
+        CFTypeRef cfSerialNumber = IORegistryEntryCreateCFProperty(service,
+                                                                   CFSTR(kIOPlatformSerialNumberKey),
+                                                                   kCFAllocatorDefault,
+                                                                   0);
         
-        CFTypeRef cfSerialNumber = IORegistryEntryCreateCFProperty(service, CFSTR(kIOPlatformSerialNumberKey),
-                                                                   kCFAllocatorDefault, 0);
         if (cfSerialNumber) {
-            
             serialNumber = [(__bridge NSString *)(cfSerialNumber) copy];
         }
         
@@ -281,11 +287,11 @@ NS_ASSUME_NONNULL_END
     NSString *macAddress = nil;
     size_t length = 0;
     int mib[6] = {CTL_NET, AF_ROUTE, 0, AF_LINK, NET_RT_IFLIST, if_nametoindex("en0")};
+    
     if (mib[5] != 0 && sysctl(mib, 6, NULL, &length, NULL, 0) >= 0 && length > 0) {
-        
         NSMutableData *data = [NSMutableData dataWithLength:length];
+        
         if (sysctl(mib, 6, [data mutableBytes], &length, NULL, 0) >= 0) {
-            
             struct sockaddr_dl *address = ([data mutableBytes] + sizeof(struct if_msghdr));
             unsigned char *mac = (unsigned char *)LLADDR(address);
             macAddress = [[NSString alloc] initWithFormat:@"%02X:%02X:%02X:%02X:%02X:%02X",
