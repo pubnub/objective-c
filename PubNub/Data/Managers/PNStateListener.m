@@ -139,10 +139,14 @@ NS_ASSUME_NONNULL_END
         return;
     }
     
+    NSHashTable *messageListeners = [listener listenersCopyFrom:listener.messageListeners];
+    NSHashTable *presenceEventListeners = [listener listenersCopyFrom:listener.presenceEventListeners];
+    NSHashTable *stateListeners = [listener listenersCopyFrom:listener.stateListeners];
+    
     dispatch_async(self.resourceAccessQueue, ^{
-        self.messageListeners = [listener listenersCopyFrom:listener.messageListeners];
-        self.presenceEventListeners = [listener listenersCopyFrom:listener.presenceEventListeners];
-        self.stateListeners = [listener listenersCopyFrom:listener.stateListeners];
+        self.messageListeners = messageListeners;
+        self.presenceEventListeners = presenceEventListeners;
+        self.stateListeners = stateListeners;
     });
 }
 

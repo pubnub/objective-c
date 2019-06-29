@@ -1,7 +1,6 @@
 /**
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2010-2018 PubNub, Inc.
+ * @author Serhii Mamontov
+ * @copyright © 2010-2019 PubNub, Inc.
  */
 #import "PNReachability.h"
 #import "PubNub+CorePrivate.h"
@@ -20,40 +19,29 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Information
 
 /**
- @brief  Reference on client which created this reachability helper instance and will be used to
-         call \b time API for \c ping requests.
- 
- @since 4.0
+ * @brief Client which created this reachability helper instance and will be used to call \b time
+ * API for \c ping requests.
  */
 @property (nonatomic, weak) PubNub *client;
 
 /**
- @brief  Stores reference on queue which is used to serialize access to shared reachability helper
-         resources.
- 
- @since 4.0
+ * @brief Queue which is used to serialize access to shared reachability helper resources.
  */
 @property (nonatomic, strong) dispatch_queue_t resourceAccessQueue;
 
 /**
- @brief  Stores whether remote service ping active at this moment or not.
- 
- @since 4.0
+ * @brief Whether remote service ping active at this moment or not.
  */
 @property (nonatomic, assign, getter = pingingRemoteService) BOOL pingRemoteService;
 
 /**
- @brief  Stores reference on copy of block which should be called every time when \b ping API
-         receives response from \b PubNub network or network sub-system.
- 
- @since 4.0
+ * @brief Copy of block which should be called every time when \b ping API receives response from
+ * \b PubNub network or network sub-system.
  */
 @property (nonatomic, copy) void(^pingCompleteBlock)(BOOL pingSuccessful);
 
 /**
- @brief  Stores reference on reachability monitor used to track state of network connection.
- 
- @since 4.0
+ * @brief Reachability monitor used to track state of network connection.
  */
 @property (nonatomic, assign) BOOL reachable;
 
@@ -61,15 +49,13 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Initialization and Configuration
 
 /**
- @brief  Initialize reachability helper which will allow to identify current \b PubNub network state.
- 
- @param client Reference on \b PubNub client for which this helper has been created.
- @param block  Reference on block which is called by helper to inform about current ping round
-               results.
- 
- @return Initialized and ready to use reachability helper instance.
- 
- @since 4.0
+ * @brief Initialize reachability helper which will allow to identify current \b PubNub network
+ * state.
+ *
+ * @param client \b PubNub client for which this helper has been created.
+ * @param block Block which is called by helper to inform about current ping round results.
+ *
+ * @return Initialized and ready to use reachability helper instance.
  */
 - (instancetype)initForClient:(PubNub *)client withPingStatus:(void(^)(BOOL pingSuccessful))block;
 
@@ -77,11 +63,12 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Handlers
 
 /**
- @brief  Process service response.
- @note   In case if there is no response object or it's content malformed reachability will be set 
-         to 'not available'.
- 
- @param result Time API calling result object.
+ * @brief Process service response.
+ *
+ * @note In case if there is no response object or it's content malformed reachability will be set
+ * to 'not available'.
+ *
+ * @param result Time API calling result object.
  */
 - (void)handleServicePingResult:(PNTimeResult *)result;
 
@@ -111,7 +98,6 @@ NS_ASSUME_NONNULL_END
     
     // Check whether initialization was successful or not.
     if ((self = [super init])) {
-        
         _client = client;
         [_client.logger enableLogLevel:PNReachabilityLogLevel];
         _pingCompleteBlock = [block copy];
@@ -126,14 +112,19 @@ NS_ASSUME_NONNULL_END
 - (BOOL)pingingRemoteService {
     
     __block BOOL pingingRemoteService = NO;
-    dispatch_sync(self.resourceAccessQueue, ^{ pingingRemoteService = self->_pingRemoteService; });
+    
+    dispatch_sync(self.resourceAccessQueue, ^{
+        pingingRemoteService = self->_pingRemoteService;
+    });
     
     return pingingRemoteService;
 }
 
 - (void)setPingRemoteService:(BOOL)pingRemoteService {
     
-    dispatch_barrier_async(self.resourceAccessQueue, ^{ self->_pingRemoteService = pingRemoteService; });
+    dispatch_barrier_async(self.resourceAccessQueue, ^{
+        self->_pingRemoteService = pingRemoteService;
+    });
 }
 
 
@@ -142,12 +133,11 @@ NS_ASSUME_NONNULL_END
 - (void)startServicePing {
     
     if (!self.pingingRemoteService) {
-        
         self.pingRemoteService = YES;
         // Try to request 'time' API to ensure what network really available.
         __weak __typeof(self) weakSelf = self;
+        
         [self.client timeWithCompletion:^(PNTimeResult *result, __unused PNErrorStatus *status) {
-            
             [weakSelf handleServicePingResult:result];
         }];
     }
@@ -163,18 +153,21 @@ NS_ASSUME_NONNULL_END
 
 - (void)handleServicePingResult:(PNTimeResult *)result {
     
-    BOOL successfulPing = (result.data != nil);
+    BOOL successfulPing = result.data != nil;
+    
     if (self.reachable && !successfulPing) {
-        
         PNLogReachability(self.client.logger, @"<PubNub::Reachability> Connection went down.");
     }
+    
     if (!self.reachable && successfulPing) {
-        
         PNLogReachability(self.client.logger, @"<PubNub::Reachability> Connection restored.");
     }
-    if (self.pingCompleteBlock) { self.pingCompleteBlock(successfulPing); }
+    
+    if (self.pingCompleteBlock) {
+        self.pingCompleteBlock(successfulPing);
+    }
+    
     if (self.pingingRemoteService) {
-        
         NSTimeInterval delay = ((self.reachable && !successfulPing) ? 1.f : 10.0f);
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)),
                        dispatch_get_main_queue(), ^{

@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @author Serhii Mamontov
  * @since 4.0
- * @copyright © 2010-2018 PubNub, Inc.
+ * @copyright © 2010-2019 PubNub, Inc.
  */
 @interface PubNub : NSObject
 
@@ -45,8 +45,6 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief Retrieve current client's configuration.
  *
  * @return Copy of currently used configuration.
- *
- * @since 4.0
  */
 - (PNConfiguration *)currentConfiguration;
 
@@ -54,8 +52,6 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief Retrieve UUID which has been used during client initialization.
  *
  * @return User-provided or generated unique user identifier.
- *
- * @since 4.0
  */
 - (NSString *)uuid;
 
@@ -84,8 +80,6 @@ NS_ASSUME_NONNULL_BEGIN
  * @param configuration User-provided information about how client should operate and handle events.
  *
  * @return Configured and ready to use \b PubNub client.
- *
- * @since 4.0
 */
 + (instancetype)clientWithConfiguration:(PNConfiguration *)configuration
     NS_SWIFT_NAME(clientWithConfiguration(_:));
@@ -117,8 +111,6 @@ NS_ASSUME_NONNULL_BEGIN
  *     \b Default: main
  *
  * @return Configured and ready to use \b PubNub client.
- *
- * @since 4.0
 */
 + (instancetype)clientWithConfiguration:(PNConfiguration *)configuration
                           callbackQueue:(nullable dispatch_queue_t)callbackQueue
@@ -153,8 +145,6 @@ NS_ASSUME_NONNULL_BEGIN
  * @param configuration User-provided information about how client should operate and handle events.
  * @param block Copy completion block which will pass new \b PubNub client instance with updated
  *     configuration.
- *
- * @since 4.0
  */
 - (void)copyWithConfiguration:(PNConfiguration *)configuration
                    completion:(void(^)(PubNub *client))block
@@ -195,8 +185,6 @@ NS_ASSUME_NONNULL_BEGIN
  *     \b Default: main
  * @param block Copy completion block which will pass new \b PubNub client instance with updated
  *     configuration.
- *
- * @since 4.0
  */
 - (void)copyWithConfiguration:(PNConfiguration *)configuration
                 callbackQueue:(nullable dispatch_queue_t)callbackQueue

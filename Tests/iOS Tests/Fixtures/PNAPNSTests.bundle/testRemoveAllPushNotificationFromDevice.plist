@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>creationDate</key>
-	<date>2019-05-16T07:36:48Z</date>
+	<date>2019-06-21T08:48:36Z</date>
 	<key>scenes</key>
 	<array>
 		<dict>
@@ -17,7 +17,7 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
-					<string>https://ps.pndsn.com/v1/push/sub-key/rsub-c-00000000-0000-0000-0000-000000000000/devices/6652cff7f17536c86bc353527017741ec07a91699661abaf68c5977a83013091/remove?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;instanceid=58EB05C9-9DE4-4118-B5D7-EE059FBF19A9&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.8.7</string>
+					<string>https://ps.pndsn.com/v1/push/sub-key/rsub-c-00000000-0000-0000-0000-000000000000/devices/6652cff7f17536c86bc353527017741ec07a91699661abaf68c5977a83013091/remove?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;instanceid=58EB05C9-9DE4-4118-B5D7-EE059FBF19A9&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;type=apns&amp;pnsdk=PubNub-ObjC-iOS%2F4.8.9</string>
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -27,18 +27,18 @@
 						<key>Connection</key>
 						<string>keep-alive</string>
 						<key>User-Agent</key>
-						<string>iPhone; CPU iPhone OS 12.1.0 Version</string>
+						<string>iPhone; CPU iPhone OS 12.2.0 Version</string>
 					</dict>
 					<key>allowsCellularAccess</key>
 					<true/>
 					<key>class</key>
 					<string>BKROriginalRequestFrame</string>
 					<key>creationDate</key>
-					<real>1557992208.938206</real>
+					<real>1561106916.882332</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
-					<string>F3854270-4995-42AA-97B9-510984C89FBF</string>
+					<string>F514BAB8-26EC-4E1B-A0EE-86065AC5320C</string>
 				</dict>
 				<dict>
 					<key>HTTPMethod</key>
@@ -48,7 +48,7 @@
 					<key>HTTPShouldUsePipelining</key>
 					<false/>
 					<key>URL</key>
-					<string>https://ps.pndsn.com/v1/push/sub-key/rsub-c-00000000-0000-0000-0000-000000000000/devices/6652cff7f17536c86bc353527017741ec07a91699661abaf68c5977a83013091/remove?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;instanceid=58EB05C9-9DE4-4118-B5D7-EE059FBF19A9&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.8.7</string>
+					<string>https://ps.pndsn.com/v1/push/sub-key/rsub-c-00000000-0000-0000-0000-000000000000/devices/6652cff7f17536c86bc353527017741ec07a91699661abaf68c5977a83013091/remove?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;instanceid=58EB05C9-9DE4-4118-B5D7-EE059FBF19A9&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;type=apns&amp;pnsdk=PubNub-ObjC-iOS%2F4.8.9</string>
 					<key>allHTTPHeaderFields</key>
 					<dict>
 						<key>Accept</key>
@@ -60,24 +60,24 @@
 						<key>Connection</key>
 						<string>keep-alive</string>
 						<key>User-Agent</key>
-						<string>iPhone; CPU iPhone OS 12.1.0 Version</string>
+						<string>iPhone; CPU iPhone OS 12.2.0 Version</string>
 					</dict>
 					<key>allowsCellularAccess</key>
 					<true/>
 					<key>class</key>
 					<string>BKRCurrentRequestFrame</string>
 					<key>creationDate</key>
-					<real>1557992208.9384089</real>
+					<real>1561106916.882649</real>
 					<key>timeoutInterval</key>
 					<real>60</real>
 					<key>uniqueIdentifier</key>
-					<string>F3854270-4995-42AA-97B9-510984C89FBF</string>
+					<string>F514BAB8-26EC-4E1B-A0EE-86065AC5320C</string>
 				</dict>
 				<dict>
 					<key>MIMEType</key>
 					<string>text/javascript</string>
 					<key>URL</key>
-					<string>https://ps.pndsn.com/v1/push/sub-key/rsub-c-00000000-0000-0000-0000-000000000000/devices/6652cff7f17536c86bc353527017741ec07a91699661abaf68c5977a83013091/remove?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;instanceid=58EB05C9-9DE4-4118-B5D7-EE059FBF19A9&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;pnsdk=PubNub-ObjC-iOS%2F4.8.7</string>
+					<string>https://ps.pndsn.com/v1/push/sub-key/rsub-c-00000000-0000-0000-0000-000000000000/devices/6652cff7f17536c86bc353527017741ec07a91699661abaf68c5977a83013091/remove?uuid=322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C&amp;instanceid=58EB05C9-9DE4-4118-B5D7-EE059FBF19A9&amp;deviceid=3650F534-FC54-4EE8-884C-EF1B83188BB7&amp;type=apns&amp;pnsdk=PubNub-ObjC-iOS%2F4.8.9</string>
 					<key>allHeaderFields</key>
 					<dict>
 						<key>Accept-Ranges</key>
@@ -95,36 +95,34 @@
 						<key>Content-Length</key>
 						<string>21</string>
 						<key>Content-Type</key>
-						<string>text/javascript; charset="UTF-8"</string>
+						<string>text/javascript; charset=&quot;UTF-8&quot;</string>
 						<key>Date</key>
-						<string>Thu, 16 May 2019 07:36:49 GMT</string>
+						<string>Fri, 21 Jun 2019 08:48:37 GMT</string>
 						<key>Server</key>
 						<string>Pubnub</string>
 					</dict>
 					<key>class</key>
 					<string>BKRResponseFrame</string>
 					<key>creationDate</key>
-					<real>1557992209.1913729</real>
+					<real>1561106917.8787</real>
 					<key>statusCode</key>
 					<integer>200</integer>
 					<key>uniqueIdentifier</key>
-					<string>F3854270-4995-42AA-97B9-510984C89FBF</string>
+					<string>F514BAB8-26EC-4E1B-A0EE-86065AC5320C</string>
 				</dict>
 				<dict>
 					<key>class</key>
 					<string>BKRDataFrame</string>
 					<key>creationDate</key>
-					<real>1557992209.1914001</real>
+					<real>1561106917.878746</real>
 					<key>data</key>
-					<data>
-					WzEsICJSZW1vdmVkIERldmljZSJd
-					</data>
+					<data>WzEsICJSZW1vdmVkIERldmljZSJd</data>
 					<key>uniqueIdentifier</key>
-					<string>F3854270-4995-42AA-97B9-510984C89FBF</string>
+					<string>F514BAB8-26EC-4E1B-A0EE-86065AC5320C</string>
 				</dict>
 			</array>
 			<key>uniqueIdentifier</key>
-			<string>F3854270-4995-42AA-97B9-510984C89FBF</string>
+			<string>F514BAB8-26EC-4E1B-A0EE-86065AC5320C</string>
 		</dict>
 	</array>
 	<key>version</key>

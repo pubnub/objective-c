@@ -91,6 +91,9 @@
 		794C300A22B2C64000FE054B /* PNAPNSIntegrationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 794C300922B2C64000FE054B /* PNAPNSIntegrationTest.m */; };
 		795CED0A1BCF002900D421BB /* PNHeartbeatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 795CED091BCF002900D421BB /* PNHeartbeatTests.swift */; };
 		796502F31C0E3709001F7782 /* PNDeviceIndependentMatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A6E5FF1BE421DC00C20B77 /* PNDeviceIndependentMatcher.m */; };
+		797A333C22C32B3D0036D28C /* PNSubscribeIntegrationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 797A333B22C32B3D0036D28C /* PNSubscribeIntegrationTest.m */; };
+		797A333D22C32B3D0036D28C /* PNSubscribeIntegrationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 797A333B22C32B3D0036D28C /* PNSubscribeIntegrationTest.m */; };
+		797A333E22C32B470036D28C /* PNSubscribeIntegrationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 797A333B22C32B3D0036D28C /* PNSubscribeIntegrationTest.m */; };
 		797BDCCA1C1F5091006EF006 /* PNPublishWithMobilePayloadTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF049F1B4EAAB7007478CB /* PNPublishWithMobilePayloadTests.m */; };
 		797BDCCB1C1F5091006EF006 /* PNConfigurationChiperKeyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9652F3E41BA31F7D001E940A /* PNConfigurationChiperKeyTests.m */; };
 		797BDCCC1C1F5091006EF006 /* PNPublishTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 79EF049D1B4EAAB7007478CB /* PNPublishTests.m */; };
@@ -282,6 +285,7 @@
 		794B6B89228D492400489D37 /* PNTimeTokenTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = PNTimeTokenTests.bundle; path = Fixtures/PNTimeTokenTests.bundle; sourceTree = "<group>"; };
 		794C300922B2C64000FE054B /* PNAPNSIntegrationTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNAPNSIntegrationTest.m; sourceTree = "<group>"; };
 		795CED091BCF002900D421BB /* PNHeartbeatTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNHeartbeatTests.swift; sourceTree = "<group>"; };
+		797A333B22C32B3D0036D28C /* PNSubscribeIntegrationTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNSubscribeIntegrationTest.m; sourceTree = "<group>"; };
 		797BDD021C1F5091006EF006 /* watchOS ObjC Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "watchOS ObjC Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		797BDD3F1C1F5176006EF006 /* tvOS ObjC Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "tvOS ObjC Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		799CE2E11C45A76100AAEBDC /* PNChannelGroupFilteringSubscribeTests.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = PNChannelGroupFilteringSubscribeTests.bundle; path = Fixtures/PNChannelGroupFilteringSubscribeTests.bundle; sourceTree = "<group>"; };
@@ -654,6 +658,7 @@
 			isa = PBXGroup;
 			children = (
 				79A3E4632215A47600F2ADB9 /* PNPubNubHistoryIntegrationTest.m */,
+				797A333B22C32B3D0036D28C /* PNSubscribeIntegrationTest.m */,
 				794C300922B2C64000FE054B /* PNAPNSIntegrationTest.m */,
 			);
 			name = Integration;
@@ -1226,6 +1231,7 @@
 				517A9EDC1BE3185800FAA43A /* PNChannelGroupSubscribeTests.m in Sources */,
 				79A3E44B2215783200F2ADB9 /* NSInvocation+PNTest.m in Sources */,
 				517A9EE21BE3185800FAA43A /* PNHeartbeatTests.m in Sources */,
+				797A333D22C32B3D0036D28C /* PNSubscribeIntegrationTest.m in Sources */,
 				517A9EEF1BE3185800FAA43A /* PNConfigurationChiperKeyTests.m in Sources */,
 				517A9EDB1BE3185800FAA43A /* PNAPNSTests.m in Sources */,
 				79A3E4612215A42C00F2ADB9 /* PNMessageCountAPICallBuilderTest.m in Sources */,
@@ -1274,6 +1280,7 @@
 				799CE2F01C45B89F00AAEBDC /* PNChannelGroupPresenceEventTests.m in Sources */,
 				799CE2FB1C45BA3000AAEBDC /* PNPresenceChannelGroupTests.m in Sources */,
 				79EF04A71B4EAAB7007478CB /* PNChannelGroupUnsubscribeTests.m in Sources */,
+				797A333C22C32B3D0036D28C /* PNSubscribeIntegrationTest.m in Sources */,
 				967707F71B8F4A80002B8E84 /* PNPresenceEventTests.m in Sources */,
 				799CE2F31C45B8FD00AAEBDC /* PNBasicPresenceTestCase.m in Sources */,
 				79EF04AA1B4EAAB7007478CB /* PNClientStateChannelTests.m in Sources */,
@@ -1367,6 +1374,7 @@
 				797BDD121C1F5176006EF006 /* PNBasicSubscribeTestCase.m in Sources */,
 				79A3E44A2215783200F2ADB9 /* NSInvocation+PNTest.m in Sources */,
 				797BDD131C1F5176006EF006 /* PNChannelGroupSubscribeTests.m in Sources */,
+				797A333E22C32B470036D28C /* PNSubscribeIntegrationTest.m in Sources */,
 				797BDD141C1F5176006EF006 /* PNBasicClientCryptTestCase.m in Sources */,
 				797BDD151C1F5176006EF006 /* PNClientStateChannelGroupTests.m in Sources */,
 				79A3E4602215A42C00F2ADB9 /* PNMessageCountAPICallBuilderTest.m in Sources */,
