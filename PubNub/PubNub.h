@@ -26,6 +26,7 @@
 #import "PNSubscribeStatus.h"
 #import "PNPublishStatus.h"
 #import "PNHistoryResult.h"
+#import "PNSignalStatus.h"
 #import "PNServiceData.h"
 #import "PNErrorStatus.h"
 #import "PNTimeResult.h"

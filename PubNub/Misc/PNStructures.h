@@ -17,6 +17,7 @@
 @class PNClientStateGetResult, PNClientStateUpdateStatus, PNAcknowledgmentStatus;
 @class PNChannelGroupsResult, PNMessageCountResult, PNHistoryResult, PNAPICallBuilder;
 @class PNPublishStatus, PNErrorStatus, PNTimeResult, PNResult, PNStatus;
+@class PNSignalStatus;
 
 #ifndef PNStructures_h
 #define PNStructures_h
@@ -200,6 +201,15 @@ typedef void(^PNWhereNowCompletionBlock)(PNPresenceWhereNowResult * _Nullable re
 
 
 #pragma mark - Completion blocks :: Messaging
+
+/**
+ * @brief Signal sending completion block.
+ *
+ * @param status Status instance which hold information about processing results.
+ *
+ * @since 4.9.0
+ */
+typedef void(^PNSignalCompletionBlock)(PNSignalStatus *status);
 
 /**
  @brief  Message publish completion block.
@@ -423,6 +433,7 @@ typedef NS_ENUM(NSInteger, PNOperationType){
     PNSubscribeOperation,
     PNUnsubscribeOperation,
     PNPublishOperation,
+    PNSignalOperation,
     PNHistoryOperation,
     PNHistoryForChannelsOperation,
     PNDeleteMessageOperation,

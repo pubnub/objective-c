@@ -21,10 +21,11 @@ extern NSString * const kPNConfigurationUUIDKey;
 
  @since 4.0
  */
-static NSString * const PNOperationTypeStrings[26] = {
+static NSString * const PNOperationTypeStrings[27] = {
     [PNSubscribeOperation] = @"Subscribe",
     [PNUnsubscribeOperation] = @"Unsubscribe",
     [PNPublishOperation] = @"Publish",
+    [PNSignalOperation] = @"Signal",
     [PNHistoryOperation] = @"History",
     [PNHistoryForChannelsOperation] = @"History for Channels",
     [PNDeleteMessageOperation] = @"Delete message from History",
@@ -50,7 +51,7 @@ static NSString * const PNOperationTypeStrings[26] = {
     [PNTimeOperation] = @"Time",
 };
 
-static NSString * const PNOperationResultClasses[26] = {
+static NSString * const PNOperationResultClasses[27] = {
     [PNHistoryOperation] = @"PNHistoryResult",
     [PNHistoryForChannelsOperation] = @"PNHistoryResult",
     [PNMessageCountOperation] = @"PNMessageCountResult",
@@ -67,10 +68,11 @@ static NSString * const PNOperationResultClasses[26] = {
     [PNTimeOperation] = @"PNTimeResult",
 };
 
-static NSString * const PNOperationStatusClasses[26] = {
+static NSString * const PNOperationStatusClasses[27] = {
     [PNSubscribeOperation] = @"PNSubscribeStatus",
     [PNUnsubscribeOperation] = @"PNAcknowledgmentStatus",
     [PNPublishOperation] = @"PNPublishStatus",
+    [PNSignalOperation] = @"PNSignalStatus",
     [PNHistoryOperation] = @"PNErrorStatus",
     [PNHistoryForChannelsOperation] = @"PNErrorStatus",
     [PNDeleteMessageOperation] = @"PNAcknowledgmentStatus",

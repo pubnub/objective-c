@@ -658,7 +658,10 @@ NS_ASSUME_NONNULL_END
     
     [parameters addPathComponents:self.defaultPathComponents];
     [parameters addQueryParameters:self.defaultQueryComponents];
-    [parameters addQueryParameters:[self.client.telemetryManager operationsLatencyForRequest]];
+    
+    if (parameters.shouldIncludeTelemetry) {
+        [parameters addQueryParameters:[self.client.telemetryManager operationsLatencyForRequest]];
+    }
 
     static BOOL isTestEnvironment;
     static dispatch_once_t onceToken;

@@ -57,6 +57,32 @@ NS_ASSUME_NONNULL_BEGIN
            completion:(nullable PNPublishCompletionBlock)block;
 
 
+#pragma mark - Signal
+
+/**
+ * @brief Send provided Foundation object to \b PubNub service.
+ *
+ * @discussion Provided object will be serialized into JSON string before pushing to \b PubNub
+ * service. If client has been configured with cipher key message will be encrypted as well.
+ *
+ * @param message Object (\a NSString, \a NSNumber, \a NSArray, \a NSDictionary) which will be
+ *     sent with signal.
+ * @param channel Name of the channel to which signal should be sent.
+ * @param metadata \b NSDictionary with values which should be used by \b PubNub service to filter
+ *     messages.
+ * @param queryParameters List arbitrary query parameters which should be sent along with original
+ *     API call.
+ * @param block Signal completion block.
+ *
+ * @since 4.9.0
+ */
+- (void)signal:(id)message
+            channel:(NSString *)channel
+       withMetadata:(nullable NSDictionary<NSString *, id> *)metadata
+    queryParameters:(nullable NSDictionary *)queryParameters
+        completion:(nullable PNSignalCompletionBlock)block;
+
+
 #pragma mark - Message helper
 
 /**
@@ -222,6 +248,31 @@ NS_ASSUME_NONNULL_END
     [builder setValue:@NO forParameter:NSStringFromSelector(@selector(replicate))];
     
     return ^PNPublishAPICallBuilder * {
+        return builder;
+    };
+}
+
+- (PNSignalAPICallBuilder * (^)(void))signal {
+    
+    PNSignalAPICallBuilder * builder = nil;
+    __weak __typeof(self) weakSelf = self;
+    builder = [PNSignalAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
+                                                                  NSDictionary *parameters) {
+        
+        id message = parameters[NSStringFromSelector(@selector(message))];
+        NSString *channel = parameters[NSStringFromSelector(@selector(channel))];
+        NSDictionary *metadata = parameters[NSStringFromSelector(@selector(metadata))];
+        NSDictionary *queryParam = parameters[@"queryParam"];
+        id block = parameters[@"block"];
+        
+        [weakSelf signal:message
+                 channel:channel
+            withMetadata:metadata
+         queryParameters:queryParam
+              completion:block];
+    }];
+    
+    return ^PNSignalAPICallBuilder * {
         return builder;
     };
 }
@@ -583,6 +634,105 @@ NS_ASSUME_NONNULL_END
                          
            [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
        }];
+    });
+}
+
+
+#pragma mark - Signal
+
+- (void)signal:(id)message
+           channel:(NSString *)channel
+    withCompletion:(PNSignalCompletionBlock)block {
+    
+    [self signal:message channel:channel withMetadata:nil completion:block];
+}
+
+- (void)signal:(id)message
+         channel:(NSString *)channel
+    withMetadata:(NSDictionary<NSString *,id> *)metadata
+      completion:(PNSignalCompletionBlock)block {
+    
+    [self signal:message
+            channel:channel
+       withMetadata:metadata
+    queryParameters:nil
+         completion:block];
+}
+
+- (void)signal:(id)message
+            channel:(NSString *)channel
+       withMetadata:(NSDictionary<NSString *, id> *)metadata
+    queryParameters:(NSDictionary *)queryParameters
+         completion:(PNSignalCompletionBlock)block {
+    
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    __weak __typeof(self) weakSelf = self;
+    
+    if (@available(macOS 10.10, iOS 8.0, *)) {
+        if (self.configuration.applicationExtensionSharedGroupIdentifier) {
+            queue = dispatch_get_main_queue();
+        }
+    }
+    
+    dispatch_async(queue, ^{
+        __strong __typeof__(weakSelf) strongSelf = weakSelf;
+        BOOL isEncrypted = NO;
+        NSError *signalError = nil;
+        NSString *messageForSignal = [PNJSON JSONStringFrom:message withError:&signalError];
+        NSString *metadataForSignal = nil;
+        
+        if (!signalError && strongSelf.configuration.cipherKey) {
+            NSString *encrypted = [strongSelf encryptedMessage:messageForSignal
+                                                 withCipherKey:strongSelf.configuration.cipherKey
+                                                         error:&signalError];
+            isEncrypted = ![messageForSignal isEqualToString:encrypted];
+            messageForSignal = [encrypted copy];
+        }
+        
+        NSData *signalData = [messageForSignal dataUsingEncoding:NSUTF8StringEncoding];
+        
+        if (metadata) {
+            metadataForSignal = [PNJSON JSONStringFrom:metadata withError:&signalError];
+        }
+        
+        PNRequestParameters *parameters = [PNRequestParameters new];
+        parameters.HTTPMethod = @"POST";
+        [parameters disableTelemetry];
+        
+        [parameters addQueryParameters:queryParameters];
+        
+        if (channel.length) {
+            [parameters addPathComponent:[PNString percentEscapedString:channel]
+                          forPlaceholder:@"{channel}"];
+        }
+        
+        if ([metadataForSignal isKindOfClass:[NSString class]] && metadataForSignal.length) {
+            [parameters addQueryParameter:[PNString percentEscapedString:metadataForSignal]
+                             forFieldName:@"meta"];
+        }
+        
+        PNLogAPICall(strongSelf.logger, @"<PubNub::API> Signal to '%@' channel%@.",
+                     (channel?: @"<error>"),
+                     (metadata ? [NSString stringWithFormat:@" with metadata (%@)",
+                                  metadataForSignal] : @""));
+        
+        [strongSelf processOperation:PNSignalOperation
+                      withParameters:parameters
+                                data:signalData
+                     completionBlock:^(PNStatus *status) {
+                         
+            if (status.isError) {
+                status.retryBlock = ^{
+                    [weakSelf signal:message
+                             channel:channel
+                        withMetadata:metadata
+                     queryParameters:queryParameters
+                          completion:block];
+                };
+            }
+
+            [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
+        }];
     });
 }
 
