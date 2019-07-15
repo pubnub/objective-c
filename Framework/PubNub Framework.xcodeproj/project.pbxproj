@@ -4989,7 +4989,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.pubnub.pubnub-objc";
 				PRODUCT_NAME = PubNub;
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
 				SWIFT_VERSION = 3.0;
 				TVOS_DEPLOYMENT_TARGET = 10.0;
 				WATCHOS_DEPLOYMENT_TARGET = 4.0;
@@ -5018,7 +5018,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.pubnub.pubnub-objc";
 				PRODUCT_NAME = PubNub;
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
 				SWIFT_VERSION = 3.0;
 				TVOS_DEPLOYMENT_TARGET = 10.0;
 				WATCHOS_DEPLOYMENT_TARGET = 4.0;
@@ -5102,6 +5102,7 @@
 				PUBLIC_HEADERS_FOLDER_PATH = Headers;
 				SEPARATE_STRIP = NO;
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
 				TVOS_DEPLOYMENT_TARGET = 10.0;
 				WATCHOS_DEPLOYMENT_TARGET = 4.0;
 			};
@@ -5126,6 +5127,7 @@
 				PUBLIC_HEADERS_FOLDER_PATH = Headers;
 				SEPARATE_STRIP = NO;
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
 				TVOS_DEPLOYMENT_TARGET = 10.0;
 				WATCHOS_DEPLOYMENT_TARGET = 4.0;
 			};
@@ -5142,7 +5144,7 @@
 				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "Universal Static Framework";
 				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
 				TVOS_DEPLOYMENT_TARGET = 10.0;
 				WATCHOS_DEPLOYMENT_TARGET = 4.0;
 			};
@@ -5159,7 +5161,7 @@
 				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "Universal Static Framework";
 				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
 				TVOS_DEPLOYMENT_TARGET = 10.0;
 				WATCHOS_DEPLOYMENT_TARGET = 4.0;
 			};
@@ -5337,7 +5339,7 @@
 				PRODUCT_NAME = PubNub;
 				SEPARATE_STRIP = YES;
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
 				TVOS_DEPLOYMENT_TARGET = 10.0;
 				WATCHOS_DEPLOYMENT_TARGET = 4.0;
 			};
@@ -5366,7 +5368,7 @@
 				PRODUCT_NAME = PubNub;
 				SEPARATE_STRIP = YES;
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
 				TVOS_DEPLOYMENT_TARGET = 10.0;
 				WATCHOS_DEPLOYMENT_TARGET = 4.0;
 			};
@@ -5387,7 +5389,7 @@
 				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "Universal Framework";
 				SEPARATE_STRIP = YES;
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
 				TVOS_DEPLOYMENT_TARGET = 10.0;
 				WATCHOS_DEPLOYMENT_TARGET = 4.0;
 			};
@@ -5404,7 +5406,7 @@
 				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "Universal Framework";
 				SEPARATE_STRIP = YES;
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
 				TVOS_DEPLOYMENT_TARGET = 10.0;
 				WATCHOS_DEPLOYMENT_TARGET = 4.0;
 			};
@@ -5593,7 +5595,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "Universal Framework";
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
 				TVOS_DEPLOYMENT_TARGET = 10.0;
 				WATCHOS_DEPLOYMENT_TARGET = 4.0;
 			};
@@ -5608,7 +5610,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "Universal Framework";
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
 				TVOS_DEPLOYMENT_TARGET = 10.0;
 				WATCHOS_DEPLOYMENT_TARGET = 4.0;
 			};

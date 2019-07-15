@@ -1,9 +1,12 @@
-27-07-2019 - f566218 - 4.8.10
+15-07-2019 - 92928ca - 4.8.10
+. add macOS support for iOS frameworks.
+
+27-06-2019 - f566218 - 4.8.10
 . fix subscribe request timeout missing 'reconnect' event.
 . fix empty heartbeat value set to minimum on configuration copy.
 . update outdated configuration object inline help documentation.
 
-17-07-2019 - 8c3d797 - 4.8.9
+17-06-2019 - 8c3d797 - 4.8.9
 . fix system version parsing when OS language set to Japanese.
 . add ability to specify FCM token for APNS API.
 

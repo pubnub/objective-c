@@ -5,11 +5,7 @@ set -e
 if [[ ${BUILDING_UNIVERSAL_FRAMEWORK:=0} == 0 ]]; then
 
     PRODUCTS_PATH="${SRCROOT}/Products"
-    if [[ $PLATFORM_NAME =~ (macosx) ]]; then
-        ARTIFACTS_PATH="${BUILD_DIR}/${CONFIGURATION}"
-    else
-        ARTIFACTS_PATH="${BUILD_DIR}/${CONFIGURATION}-${PLATFORM_NAME}"
-    fi
+    ARTIFACTS_PATH="${TARGET_BUILD_DIR}"
 
     # Clean up from previous builds
     [[ -d "${PRODUCTS_PATH}" ]] && rm -R "${PRODUCTS_PATH}"
