@@ -1,9 +1,16 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.8.10"
+version: "4.8.11"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Add macOS support for iOS frameworks."
+        type: feature
+    date: Jul 15, 19
+    version: v4.8.11
   -
     changes:
       -
