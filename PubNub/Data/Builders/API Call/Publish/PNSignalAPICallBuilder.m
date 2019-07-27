@@ -1,5 +1,7 @@
 /**
  * @author Serhii Mamontov
+ * @version 4.9.0
+ * @since 4.9.0
  * @copyright © 2010-2019 PubNub, Inc.
  */
 #import "PNSignalAPICallBuilder.h"
@@ -33,17 +35,6 @@
     
     return ^PNSignalAPICallBuilder * (id message) {
         [self setValue:message forParameter:NSStringFromSelector(_cmd)];
-        return self;
-    };
-}
-
-- (PNSignalAPICallBuilder * (^)(NSDictionary *metadata))metadata {
-    
-    return ^PNSignalAPICallBuilder * (NSDictionary *metadata) {
-        if ([metadata isKindOfClass:[NSDictionary class]]) {
-            [self setValue:metadata forParameter:NSStringFromSelector(_cmd)];
-        }
-        
         return self;
     };
 }

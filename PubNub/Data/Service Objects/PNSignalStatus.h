@@ -8,11 +8,12 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief Class which is used to provide access to additional data available to describe signal
  * sending status.
  *
- * @author Sergey Mamontov
+ * @author Serhii Mamontov
+ * @version 4.9.0
  * @since 4.9.0
  * @copyright © 2010-2019 PubNub, Inc.
  */
-@interface PNSignalData : PNServiceData
+@interface PNSignalStatusData : PNServiceData
 
 
 #pragma mark - Information
@@ -36,7 +37,8 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Class which is used to provide information about request processing.
  *
- * @author Sergey Mamontov
+ * @author Serhii Mamontov
+ * @version 4.9.0
  * @since 4.9.0
  * @copyright © 2010-2019 PubNub, Inc.
  */
@@ -49,7 +51,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Stores reference on publish request processing status information.
  */
-@property (nonatomic, readonly, strong) PNSignalData *data;
+@property (nonatomic, readonly, strong) PNSignalStatusData *data;
 
 
 #pragma mark -

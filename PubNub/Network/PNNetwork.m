@@ -1051,18 +1051,15 @@ NS_ASSUME_NONNULL_END
 - (NSURLSessionConfiguration *)configurationWithRequestTimeout:(NSTimeInterval)timeout
                                             maximumConnections:(NSInteger)maximumConnections {
 
-    BOOL shouldUsePipelining = !self.forLongPollRequests;
     NSURLSessionConfiguration *configuration = nil;
     configuration = [NSURLSessionConfiguration pn_ephemeralSessionConfigurationWithIdentifier:self.identifier];
     if (@available(macOS 10.10, iOS 8.0, *)) {
         if (self.configuration.applicationExtensionSharedGroupIdentifier) {
             configuration = [NSURLSessionConfiguration pn_backgroundSessionConfigurationWithIdentifier:self.identifier];
             configuration.sharedContainerIdentifier = _configuration.applicationExtensionSharedGroupIdentifier;
-            shouldUsePipelining = NO;
         }
     }
     
-    configuration.HTTPShouldUsePipelining = shouldUsePipelining;
     configuration.timeoutIntervalForRequest = timeout;
     configuration.HTTPMaximumConnectionsPerHost = maximumConnections;
     

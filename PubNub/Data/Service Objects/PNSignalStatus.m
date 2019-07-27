@@ -9,8 +9,20 @@
 
 #pragma mark Interface implementation
 
-@implementation PNSignalData
+@implementation PNSignalStatusData
 
+
+#pragma mark - Information
+
+- (NSNumber *)timetoken {
+    
+    return (self.serviceData[@"timetoken"] ?: @0);
+}
+
+- (NSString *)information {
+    
+    return (self.serviceData[@"information"] ?: @"No Information");
+}
 
 #pragma mark -
 
@@ -25,7 +37,7 @@
 
 #pragma mark - Properties
 
-@property (nonatomic, nonnull, strong) PNSignalData *data;
+@property (nonatomic, nonnull, strong) PNSignalStatusData *data;
 
 #pragma mark -
 
@@ -40,10 +52,10 @@
 
 #pragma mark - Information
 
-- (PNSignalData *)data {
+- (PNSignalStatusData *)data {
     
     if (!_data) {
-        _data = [PNSignalData dataWithServiceResponse:self.serviceData];
+        _data = [PNSignalStatusData dataWithServiceResponse:self.serviceData];
     }
     
     return _data;

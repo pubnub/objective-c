@@ -193,7 +193,7 @@ NS_ASSUME_NONNULL_END
     return @{@"Operation": PNOperationTypeStrings[[self operation]],
              @"Request": @{@"Method": (self.clientRequest.HTTPMethod?: @"GET"),
                            @"URL": ([self.clientRequest.URL absoluteString]?: @"null"),
-                           @"POST Body size": [self.clientRequest valueForHTTPHeaderField:@"content-length"],
+                           @"POST Body size": [self.clientRequest valueForHTTPHeaderField:@"content-length"] ?: @0,
                            @"Secure": (self.isTLSEnabled ? @"YES" : @"NO"),
                            @"UUID": (self.uuid?: @"unknown"),
                            @"Authorization": (self.authKey?: @"not set"),

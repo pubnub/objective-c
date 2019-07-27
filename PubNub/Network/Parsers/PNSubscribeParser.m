@@ -55,7 +55,10 @@ struct PNEventTimeTokenStructure {
      @brief  Stores reference on key under which stored numeric region identier.
      */
     __unsafe_unretained NSString *region;
-} PNEventTimeToken = { .timeToken = @"t", .region = @"r" };
+} PNEventTimeToken = {
+    .timeToken = @"t",
+    .region = @"r"
+};
 
 /**
  @brief  Describes overall real-time event format.

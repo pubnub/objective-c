@@ -4,6 +4,7 @@
  */
 #import <PubNub/PNRequestParameters.h>
 #import <PubNub/PubNub+CorePrivate.h>
+#import <PubNub/PNString.h>
 #import <PubNub/PubNub.h>
 #import <OCMock/OCMock.h>
 #import "PNTestCase.h"
@@ -62,8 +63,7 @@
 - (void)testSignal_ShouldProcessOperation_WhenCalled {
     
     id message = @"Hello real-time world!";
-    NSData *expectedData = [[NSString stringWithFormat:@"\"%@\"", message]
-                            dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *expectedMessage = [PNString percentEscapedString:[NSString stringWithFormat:@"\"%@\"", message]];
     NSString *expectedChannel = [NSUUID UUID].UUIDString;
     
     
@@ -72,10 +72,9 @@
                                                     data:[OCMArg any] completionBlock:[OCMArg any]])
         .andDo(^(NSInvocation *invocation) {
             PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
-            NSData *postData = [self objectForInvocation:invocation argumentAtIndex:3];
             
             XCTAssertEqualObjects(parameters.pathComponents[@"{channel}"], expectedChannel);
-            XCTAssertEqualObjects(postData, expectedData);
+            XCTAssertEqualObjects(parameters.pathComponents[@"{message}"], expectedMessage);
         });
     
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
@@ -87,11 +86,10 @@
 - (void)testSignal_ShouldEncrypt_WhenCalledWithCipherKey {
     
     id message = @{ @"such": @"object" };
-    NSData *expectedData = [@"\"toDEeIZkmIyoiLpSojGu7n3+2t1rn7/DsrEZ1r8JKR4=\"" dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *expectedMessage = [PNString percentEscapedString:@"\"toDEeIZkmIyoiLpSojGu7n3+2t1rn7/DsrEZ1r8JKR4=\""];
     NSString *expectedChannel = [NSUUID UUID].UUIDString;
     NSDictionary *meta = @{ @"hello": @"real-time" };
     NSData *metaData = [NSJSONSerialization dataWithJSONObject:meta options:(NSJSONWritingOptions)0 error:nil];
-    NSString *expectedMeta = [[NSString alloc] initWithData:metaData encoding:NSUTF8StringEncoding];
     
     
     id clientMock = [self mockForObject:self.client];
@@ -99,15 +97,13 @@
                                                     data:[OCMArg any] completionBlock:[OCMArg any]])
         .andDo(^(NSInvocation *invocation) {
             PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
-            NSData *postData = [self objectForInvocation:invocation argumentAtIndex:3];
 
             XCTAssertEqualObjects(parameters.pathComponents[@"{channel}"], expectedChannel);
-            XCTAssertEqualObjects([parameters.query[@"meta"] stringByRemovingPercentEncoding], expectedMeta);
-            XCTAssertEqualObjects(postData, expectedData);
+            XCTAssertEqualObjects(parameters.pathComponents[@"{message}"], expectedMessage);
         });
     
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
-        self.client.signal().channel(expectedChannel).message(message).metadata(meta)
+        self.client.signal().channel(expectedChannel).message(message)
             .performWithCompletion(^(PNSignalStatus * status) { });
     }];
 }

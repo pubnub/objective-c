@@ -12,12 +12,29 @@
 #define PNPrivateStructures_h
 
 /**
- @brief  Stores reference on key under which unique user identifier will be stored persistently.
+ * @brief Stores reference on key under which unique user identifier will be stored persistently.
  */
 extern NSString * const kPNConfigurationUUIDKey;
 
 /**
- @brief  Helper to stringify operation type in result and status objects.
+ * @brief Options describe object's message type.
+ *
+ * @since 4.9.0
+ */
+typedef NS_OPTIONS(NSUInteger, PNMessageType) {
+    /**
+     @brief Type which represent regular message object.
+     */
+    PNRegularMessageType = 0,
+    
+    /**
+     @brief Type which represent signal object.
+     */
+    PNSignalMessageType = 1
+};
+
+/**
+ @brief Helper to stringify operation type in result and status objects.
 
  @since 4.0
  */

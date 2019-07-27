@@ -725,42 +725,6 @@ NS_ASSUME_NONNULL_BEGIN
     withCompletion:(nullable PNSignalCompletionBlock)block
     NS_SWIFT_NAME(signal(_:channel:withCompletion:));
 
-/**
- * @brief Send provided Foundation object to \b PubNub service with filtering metadata.
- *
- * @discussion Provided object will be serialized into JSON string before pushing to \b PubNub
- * service. If client has been configured with cipher key message will be encrypted as well.
- *
- * @code
- * [self.client signal:@{ @"Hello": @"world" } channel:@"announcement"
- *        withMetadata:@{ @"to": @"John Doe" } completion:^(PNSignalStatus *status) {
- *
- *     if (!status.isError) {
- *         // Signal successfully sent to specified channel.
- *     } else {
- *         // Handle signal sending error. Check 'category' property to find out possible issue
- *         // because of which request did fail.
- *         //
- *         // Request can be resent using: [status retry];
- *     }
- * }];
- * @endcode
- *
- * @param message Object (\a NSString, \a NSNumber, \a NSArray, \a NSDictionary) which will be
- *     sent with signal.
- * @param channel Name of the channel to which signal should be sent.
- * @param metadata \b NSDictionary with values which should be used by \b PubNub service to filter
- *     messages.
- * @param block Signal completion block.
- *
- * @since 4.9.0
- */
-- (void)signal:(id)message
-         channel:(NSString *)channel
-    withMetadata:(nullable NSDictionary<NSString *, id> *)metadata
-      completion:(nullable PNSignalCompletionBlock)block
-    NS_SWIFT_NAME(signal(_:channel:withMetadata:completion:));
-
 
 #pragma mark - Message helper
 

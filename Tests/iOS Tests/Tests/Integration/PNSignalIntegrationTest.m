@@ -44,6 +44,7 @@
 - (void)tearDown {
     
     [self removeAllHandlersForClient:self.client];
+    [self.client removeListener:self];
     
     
     [super tearDown];
@@ -61,6 +62,7 @@
         self.client.signal().message(message).channel(channel)
         .performWithCompletion(^(PNSignalStatus *status) {
             XCTAssertFalse(status.isError);
+            XCTAssertNotNil(status.data.timetoken);
             handler();
         });
     }];
@@ -68,38 +70,32 @@
 
 - (void)testSignal_ShouldPassFilter_WhenMetaPassed {
     
-    self.client.filterExpression = @"(senderID=='PubNub')";
     NSString *channel = [NSUUID UUID].UUIDString;
     id message = @{ @"hello": @"real-time!" };
+    [self.client addListener:self];
+    
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self addMessageHandlerForClient:self.client
-                               withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
-                                   *shouldRemove = YES;
-                                   handler();
-                               }];
+        [self addStatusHandlerForClient:self.client withBlock:^(PubNub * client, PNSubscribeStatus * status, BOOL * shouldRemove) {
+            if (status.category == PNConnectedCategory) {
+                *shouldRemove = YES;
+                
+                handler();
+            }
+        }];
         
-        self.client.signal().message(message).channel(channel).metadata(@{ @"senderID": @"PubNub" })
-            .performWithCompletion(^(PNSignalStatus *status) {
-                XCTAssertFalse(status.isError);
-            });
+        self.client.subscribe().channels(@[channel]).perform();
     }];
-}
-
-- (void)testSignal_ShouldNotPassFilter_WhenMetaConditionsNotMet {
     
-    self.client.filterExpression = @"(senderID=='PubNub')";
-    NSString *channel = [NSUUID UUID].UUIDString;
-    id message = @{ @"hello": @"real-time!" };
-    
-    [self waitToNotCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self addMessageHandlerForClient:self.client
-                               withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
-                                   *shouldRemove = YES;
-                                   handler();
-                               }];
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        [self addSignalHandlerForClient:self.client
+                              withBlock:^(PubNub *client, PNSignalResult *signal, BOOL *shouldRemove) {
+            *shouldRemove = YES;
+                                  
+            handler();
+        }];
         
-        self.client.signal().message(message).channel(channel).metadata(@{ @"senderID": @"Serhii" })
+        self.client.signal().message(message).channel(channel)
             .performWithCompletion(^(PNSignalStatus *status) {
                 XCTAssertFalse(status.isError);
             });

@@ -1517,7 +1517,11 @@ NS_ASSUME_NONNULL_END
     if (status) {
         [self.client.listenersManager notifyStatusChange:(id)status];
     } else if (data) {
-        [self.client.listenersManager notifyMessage:data];
+        if (data.data.envelope.messageType == PNRegularMessageType) {
+            [self.client.listenersManager notifyMessage:data];
+        } else if (data.data.envelope.messageType == PNSignalMessageType) {
+            [self.client.listenersManager notifySignal:(PNSignalResult *)data];
+        }
     }
     #pragma clang diagnostic pop
 }

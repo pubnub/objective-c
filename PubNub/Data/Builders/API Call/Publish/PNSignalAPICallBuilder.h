@@ -8,6 +8,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief Signal API call builder.
  *
  * @author Serhii Mamontov
+ * @version 4.9.0
  * @since 4.9.0
  * @copyright © 2010-2019 PubNub, Inc.
  */
@@ -37,16 +38,6 @@ NS_ASSUME_NONNULL_BEGIN
  * @return API call configuration builder.
  */
 @property (nonatomic, readonly, strong) PNSignalAPICallBuilder * (^message)(id message);
-
-/**
- * @brief Signal metadata addition block.
- *
- * @param metadata \b NSDictionary with values which should be used by \b PubNub service to filter
- *     signals.
- *
- * @return API call configuration builder.
- */
-@property (nonatomic, readonly, strong) PNSignalAPICallBuilder * (^metadata)(NSDictionary *metadata);
 
 
 #pragma mark - Execution

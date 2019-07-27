@@ -68,8 +68,6 @@ NS_ASSUME_NONNULL_BEGIN
  * @param message Object (\a NSString, \a NSNumber, \a NSArray, \a NSDictionary) which will be
  *     sent with signal.
  * @param channel Name of the channel to which signal should be sent.
- * @param metadata \b NSDictionary with values which should be used by \b PubNub service to filter
- *     messages.
  * @param queryParameters List arbitrary query parameters which should be sent along with original
  *     API call.
  * @param block Signal completion block.
@@ -77,10 +75,9 @@ NS_ASSUME_NONNULL_BEGIN
  * @since 4.9.0
  */
 - (void)signal:(id)message
-            channel:(NSString *)channel
-       withMetadata:(nullable NSDictionary<NSString *, id> *)metadata
-    queryParameters:(nullable NSDictionary *)queryParameters
-        completion:(nullable PNSignalCompletionBlock)block;
+                channel:(NSString *)channel
+    withQueryParameters:(nullable NSDictionary *)queryParameters
+             completion:(nullable PNSignalCompletionBlock)block;
 
 
 #pragma mark - Message helper
@@ -261,15 +258,10 @@ NS_ASSUME_NONNULL_END
         
         id message = parameters[NSStringFromSelector(@selector(message))];
         NSString *channel = parameters[NSStringFromSelector(@selector(channel))];
-        NSDictionary *metadata = parameters[NSStringFromSelector(@selector(metadata))];
         NSDictionary *queryParam = parameters[@"queryParam"];
         id block = parameters[@"block"];
         
-        [weakSelf signal:message
-                 channel:channel
-            withMetadata:metadata
-         queryParameters:queryParam
-              completion:block];
+        [weakSelf signal:message channel:channel withQueryParameters:queryParam completion:block];
     }];
     
     return ^PNSignalAPICallBuilder * {
@@ -644,26 +636,13 @@ NS_ASSUME_NONNULL_END
            channel:(NSString *)channel
     withCompletion:(PNSignalCompletionBlock)block {
     
-    [self signal:message channel:channel withMetadata:nil completion:block];
+    [self signal:message channel:channel withQueryParameters:nil completion:block];
 }
 
 - (void)signal:(id)message
-         channel:(NSString *)channel
-    withMetadata:(NSDictionary<NSString *,id> *)metadata
-      completion:(PNSignalCompletionBlock)block {
-    
-    [self signal:message
-            channel:channel
-       withMetadata:metadata
-    queryParameters:nil
-         completion:block];
-}
-
-- (void)signal:(id)message
-            channel:(NSString *)channel
-       withMetadata:(NSDictionary<NSString *, id> *)metadata
-    queryParameters:(NSDictionary *)queryParameters
-         completion:(PNSignalCompletionBlock)block {
+                channel:(NSString *)channel
+    withQueryParameters:(NSDictionary *)queryParameters
+             completion:(PNSignalCompletionBlock)block {
     
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     __weak __typeof(self) weakSelf = self;
@@ -679,7 +658,6 @@ NS_ASSUME_NONNULL_END
         BOOL isEncrypted = NO;
         NSError *signalError = nil;
         NSString *messageForSignal = [PNJSON JSONStringFrom:message withError:&signalError];
-        NSString *metadataForSignal = nil;
         
         if (!signalError && strongSelf.configuration.cipherKey) {
             NSString *encrypted = [strongSelf encryptedMessage:messageForSignal
@@ -689,16 +667,7 @@ NS_ASSUME_NONNULL_END
             messageForSignal = [encrypted copy];
         }
         
-        NSData *signalData = [messageForSignal dataUsingEncoding:NSUTF8StringEncoding];
-        
-        if (metadata) {
-            metadataForSignal = [PNJSON JSONStringFrom:metadata withError:&signalError];
-        }
-        
         PNRequestParameters *parameters = [PNRequestParameters new];
-        parameters.HTTPMethod = @"POST";
-        [parameters disableTelemetry];
-        
         [parameters addQueryParameters:queryParameters];
         
         if (channel.length) {
@@ -706,27 +675,26 @@ NS_ASSUME_NONNULL_END
                           forPlaceholder:@"{channel}"];
         }
         
-        if ([metadataForSignal isKindOfClass:[NSString class]] && metadataForSignal.length) {
-            [parameters addQueryParameter:[PNString percentEscapedString:metadataForSignal]
-                             forFieldName:@"meta"];
+        if (([messageForSignal isKindOfClass:[NSString class]] && messageForSignal.length) ||
+            messageForSignal) {
+            
+            [parameters addPathComponent:[PNString percentEscapedString:messageForSignal]
+                          forPlaceholder:@"{message}"];
         }
         
-        PNLogAPICall(strongSelf.logger, @"<PubNub::API> Signal to '%@' channel%@.",
-                     (channel?: @"<error>"),
-                     (metadata ? [NSString stringWithFormat:@" with metadata (%@)",
-                                  metadataForSignal] : @""));
+        PNLogAPICall(strongSelf.logger, @"<PubNub::API> Signal to '%@' channel.",
+                     (channel ?: @"<error>"));
         
         [strongSelf processOperation:PNSignalOperation
                       withParameters:parameters
-                                data:signalData
+                                data:nil
                      completionBlock:^(PNStatus *status) {
                          
             if (status.isError) {
                 status.retryBlock = ^{
                     [weakSelf signal:message
                              channel:channel
-                        withMetadata:metadata
-                     queryParameters:queryParameters
+                 withQueryParameters:queryParameters
                           completion:block];
                 };
             }
