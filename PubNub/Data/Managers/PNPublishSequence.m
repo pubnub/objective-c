@@ -299,24 +299,24 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)saveToPersistentStorage {
-    
+    // Perform data manipulation only if PubNub client, for which manager has been created, still
+    // available, otherwise skip locking.
+    if (self.client == nil) {
+        return;
+    }
+
     pn_lock_async(&publishSequenceKeychainAccessLock, ^(dispatch_block_t completion) {
-        
-        // Perform data maniupulation only if PubNub client, for which manager has been created, still 
-        // available. 
-        if (self.client != nil) {
-            
-            [PNKeychain valueForKey:kPNPublishSequenceDataKey withCompletionBlock:^(NSDictionary *sequences) {
-                
-                NSMutableDictionary *mutableSequences = [(sequences?: @{}) mutableCopy];
-                NSMutableDictionary *sequenceData = [(mutableSequences[self.publishKey]?: @{}) mutableCopy];
-                sequenceData[PNPublishSequenceData.sequence] = @(self.sequenceNumber);
-                sequenceData[PNPublishSequenceData.lastSaveDate] = @([NSDate date].timeIntervalSince1970);
-                mutableSequences[self.publishKey] = sequenceData;
-                [PNKeychain storeValue:mutableSequences forKey:kPNPublishSequenceDataKey
-                   withCompletionBlock:^(BOOL stored) { completion(); }];
-            }];
-        }
+
+        [PNKeychain valueForKey:kPNPublishSequenceDataKey withCompletionBlock:^(NSDictionary *sequences) {
+
+            NSMutableDictionary *mutableSequences = [(sequences?: @{}) mutableCopy];
+            NSMutableDictionary *sequenceData = [(mutableSequences[self.publishKey]?: @{}) mutableCopy];
+            sequenceData[PNPublishSequenceData.sequence] = @(self.sequenceNumber);
+            sequenceData[PNPublishSequenceData.lastSaveDate] = @([NSDate date].timeIntervalSince1970);
+            mutableSequences[self.publishKey] = sequenceData;
+            [PNKeychain storeValue:mutableSequences forKey:kPNPublishSequenceDataKey
+               withCompletionBlock:^(BOOL stored) { completion(); }];
+        }];
     });
 }
 
