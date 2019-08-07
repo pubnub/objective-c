@@ -655,18 +655,8 @@ NS_ASSUME_NONNULL_END
     
     dispatch_async(queue, ^{
         __strong __typeof__(weakSelf) strongSelf = weakSelf;
-        BOOL isEncrypted = NO;
         NSError *signalError = nil;
         NSString *messageForSignal = [PNJSON JSONStringFrom:message withError:&signalError];
-        
-        if (!signalError && strongSelf.configuration.cipherKey) {
-            NSString *encrypted = [strongSelf encryptedMessage:messageForSignal
-                                                 withCipherKey:strongSelf.configuration.cipherKey
-                                                         error:&signalError];
-            isEncrypted = ![messageForSignal isEqualToString:encrypted];
-            messageForSignal = [encrypted copy];
-        }
-        
         PNRequestParameters *parameters = [PNRequestParameters new];
         [parameters addQueryParameters:queryParameters];
         
@@ -965,7 +955,7 @@ NS_ASSUME_NONNULL_END
     // delivery service provider data will be added.
     NSDictionary *originalMessage = message ?: @{};
     if (message && ![message isKindOfClass:[NSDictionary class]]) {
-        originalMessage = @{ @"pn_other":message };
+        originalMessage = @{ @"pn_other": message };
     }
 
     NSMutableDictionary *mergedMessage = [originalMessage mutableCopy];

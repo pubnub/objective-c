@@ -924,10 +924,6 @@ NS_ASSUME_NONNULL_END
         parseCompletion(data ? [parser parsedServiceResponse:data] : nil);
     } else {
         NSMutableDictionary *additionalData = [NSMutableDictionary new];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        additionalData[@"stripMobilePayload"] = @(self.configuration.shouldStripMobilePayload);
-#pragma clang diagnostic pop
 
         if ([self.configuration.cipherKey length]) {
             additionalData[@"cipherKey"] = self.configuration.cipherKey;

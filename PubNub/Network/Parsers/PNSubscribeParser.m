@@ -1,7 +1,8 @@
 /**
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2010-2018 PubNub, Inc.
+ * @author Serhii Mamontov
+ * @version 4.9.0
+ * @since 4.0.0
+ * @copyright © 2010-2019 PubNub, Inc.
  */
 #import "PNSubscribeParser.h"
 #import "PNEnvelopeInformation.h"
@@ -16,23 +17,23 @@
 #pragma mark Static
 
 /**
- @brief  Stores reference on key under which request status is stored.
+ * @brief Key under which request status is stored.
  */
 static NSString * const kPNResponseStatusKey = @"s";
 
 /**
- @brief  Stores reference on key under which service advisory information stored.
+ * @brief Key under which service advisory information stored.
  */
 static NSString * const kPNResponseAdvisoryKey = @"a";
 
 /**
- @brief  Stores reference on key under which stored information about when event has been triggered by server 
-         and from which region.
+ * @brief Key under which stored information about when event has been triggered by server and from
+ * which region.
  */
 static NSString * const kPNResponseEventTimeKey = @"t";
 
 /**
- @brief  Stores reference on key under which list of events is stored.
+ * @brief Key under which list of events is stored.
  */
 static NSString * const kPNResponseEventsListKey = @"m";
 
@@ -40,19 +41,18 @@ static NSString * const kPNResponseEventsListKey = @"m";
 #pragma mark - Structures
 
 /**
- @brief  Describe structure with keys under which sotred information about when event has been triggered and 
-         in which region (to which region client subscribed at this moment).
+ * @brief Structure with keys under which stored information about when event has been triggered and
+ * in which region (to which region client subscribed at this moment).
  */
 struct PNEventTimeTokenStructure {
-    
     /**
-     @brief  Stores reference on key under which stored high precision time token (on linuxtimestamp in case
-             of presence events) on when event has been triggered.
+     * @brief Key under which stored high precision time token (on linuxtimestamp in case of
+     * presence events) on when event has been triggered.
      */
     __unsafe_unretained NSString *timeToken;
     
     /**
-     @brief  Stores reference on key under which stored numeric region identier.
+     * @brief Key under which stored numeric region identifier.
      */
     __unsafe_unretained NSString *region;
 } PNEventTimeToken = {
@@ -61,119 +61,119 @@ struct PNEventTimeTokenStructure {
 };
 
 /**
- @brief  Describes overall real-time event format.
+ * @brief Overall real-time event format.
  */
 struct PNEventEnvelopeStructure {
-    
     /**
-     @brief  Describes structure to represent local time token (unixtimestamp casted to high precision).
+     * @brief Describes structure to represent local time token (unixtimestamp casted to high
+     * precision).
      */
     struct {
-        
         /**
-         @brief  Stores reference on key under which sender time token information is stored.
+         * @brief Key under which sender time token information is stored.
          */
         __unsafe_unretained NSString *key;
         
         /**
-         @brief  Describes time token information.
+         * @brief Time token information.
          */
         struct PNEventTimeTokenStructure token;
     } senderTimeToken;
     
     /**
-     @brief  Describes structure to represent represent time when message has been received by \b PubNub 
-             service and passed to subscribers.
+     * @brief Represent time when message has been received by \b PubNub  service and passed to
+     * subscribers.
      */
     struct {
-        
         /**
-         @brief  Stores reference on key under which publish time token information is stored.
+         * @brief Key under which publish time token information is stored.
          */
         __unsafe_unretained NSString *key;
         
         /**
-         @brief  Describes time token information.
+         * @brief Time token information.
          */
         struct PNEventTimeTokenStructure token;
     } publishTimeToken;
     
     /**
-     @brief  Stores reference on key under which actual channel name on which event has been triggered.
+     * @brief Key under which actual channel name on which event has been triggered.
      */
     __unsafe_unretained NSString *channel;
     
     /**
-     @brief  Stores reference on key under which stored name of the object on which client subscribed at this 
-             moment (can be: \c channel, \c group or \c wildcard).
+     * @brief Key under which stored name of the object on which client subscribed at this moment
+     * (can be: \c channel, \c group or \c wildcard).
      */
     __unsafe_unretained NSString *subscriptionMatch;
     
     /**
-     @brief  Stores reference on key under which stored event object data (can be user message for publish
-             message or presence dictionary with information about event).
+     * @brief Key under which stored event object data (can be user message for publish message or
+     * presence dictionary with information about event).
      */
     __unsafe_unretained NSString *payload;
     
     struct {
-        
         /**
-         @brief  Stores reference on key under which stored information about presence event type.
+         * @brief Key under which stored information about presence event type.
          */
         __unsafe_unretained NSString *action;
         
         /**
-         @brief  Stores reference on key under which stores information about client state on channel which
-                 triggered presence event.
+         * @brief Key under which stores information about client state on channel which triggered
+         * presence event.
          */
         __unsafe_unretained NSString *data;
         
         /**
-         @brief  Stores reference on key under which stored information about occupancy in channel which
-                 triggered event.
+         * @brief Key under which stored information about occupancy in channel which triggered
+         * event.
          */
         __unsafe_unretained NSString *occupancy;
         
         /**
-         @brief  Stores reference on key under which stored event triggering time token (unixtimestamp).
+         * @brief Key under which stored event triggering time token (unixtimestamp).
          */
         __unsafe_unretained NSString *timestamp;
         
         /**
-         @brief  Stores reference on unique client identifier which caused presence event triggering.
+         * @brief Unique client identifier which caused presence event triggering.
          */
         __unsafe_unretained NSString *uuid;
         
         /**
-         @brief      Stores reference on key under which stored difference in active subscribers (UUIDs) since 
-                     last presence event has been triggered.
-         @discussion Presence service after specified number of channel participants will send presence events
-                     at configured intervals and provide list of subscribers which joined since last interval 
-                     or regular presence event has been sent.
-         
-         @since 4.5.16
+         * @brief Key under which stored difference in active subscribers (UUIDs) since last
+         * presence event has been triggered.
+         *
+         * @discussion Presence service after specified number of channel participants will send
+         * presence events at configured intervals and provide list of subscribers which joined
+         * since last interval or regular presence event has been sent.
+         *
+         * @since 4.5.16
          */
         __unsafe_unretained NSString *joined;
         
         /**
-         @brief      Stores reference on key under which stored difference in active subscribers (UUIDs) since 
-                     last presence event has been triggered.
-         @discussion Presence service after specified number of channel participants will send presence events
-                     at configured intervals and provide list of subscribers which leaved since last interval 
-                     or regular presence event has been sent.
-         
-         @since 4.5.16
+         * @brief Key under which stored difference in active subscribers (UUIDs) since last
+         * presence event has been triggered.
+         *
+         * @discussion Presence service after specified number of channel participants will send
+         * presence events at configured intervals and provide list of subscribers which leaved
+         * since last interval or regular presence event has been sent.
+         *
+         * @since 4.5.16
          */
         __unsafe_unretained NSString *leaved;
         
         /**
-         @brief      Stores reference on key under which stored difference in active subscribers (UUIDs) since 
-                     last presence event has been triggered.
-         @discussion Presence service after specified number of channel participants will send presence events
-                     at configured intervals and provide list of subscribers which leaved by timeout since 
-                     last interval or regular presence event has been sent.
-         
-         @since 4.5.16
+         * @brief Key under which stored difference in active subscribers (UUIDs) since last
+         * presence event has been triggered.
+         *
+         * @discussion Presence service after specified number of channel participants will send
+         * presence events at configured intervals and provide list of subscribers which leaved by
+         * timeout since last interval or regular presence event has been sent.
+         *
+         * @since 4.5.16
          */
         __unsafe_unretained NSString *timeouted;
     } presence;
@@ -199,39 +199,35 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Events processing
 
 /**
- @brief  Parse real-time event received from data object live feed.
- 
- @param data           Reference on service-provided data about event.
- @param additionalData Additional information provided by client to complete parsing.
- 
- @return Pre-processed event information (depending on stored data).
- 
- @since 4.3.0
+ * @brief Parse real-time event received from data object live feed.
+ *
+ * @param data Service-provided data about event.
+ * @param additionalData Additional information provided by client to complete parsing.
+ *
+ * @return Pre-processed event information (depending on stored data).
+ *
+ * @since 4.3.0
  */
 + (NSMutableDictionary *)eventFromData:(NSDictionary<NSString *, id> *)data
               withAdditionalParserData:(nullable NSDictionary<NSString *, id> *)additionalData;
 
 /**
- @brief  Parse provided data as new message event.
- 
- @param data           Data which should be parsed to required 'message' object format.
- @param additionalData Additional information provided by client to complete parsing.
- 
- @return Processed and parsed 'message' object.
- 
- @since 4.0
+ * @brief Parse provided data as new message event.
+ *
+ * @param data Data which should be parsed to required 'message' object format.
+ * @param additionalData Additional information provided by client to complete parsing.
+ *
+ * @return Processed and parsed 'message' object.
  */
 + (NSMutableDictionary *)messageFromData:(id)data
                 withAdditionalParserData:(nullable NSDictionary<NSString *, id> *)additionalData;
 
 /**
- @brief  Parse provded data as presence event.
- 
- @param data Data which should be parsed to required 'presence event' object format.
- 
- @return Processed and parsed 'presence event' object.
- 
- @since 4.0
+ * @brief Parse provided data as presence event.
+ *
+ * @param data Data which should be parsed to required 'presence event' object format.
+ *
+ * @return Processed and parsed 'presence event' object.
  */
 + (NSMutableDictionary *)presenceFromData:(NSDictionary<NSString *, id> *)data;
 
@@ -251,48 +247,45 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Identification
 
 + (NSArray<NSNumber *> *)operations {
-    
-    return @[@(PNSubscribeOperation)];
+    return @[ @(PNSubscribeOperation) ];
 }
 
 + (BOOL)requireAdditionalData {
-    
     return YES;
 }
 
 
 #pragma mark - Parsing
 
-+ (NSDictionary<NSString *, id> *)parsedServiceResponse:(id)response 
-   withData:(NSDictionary<NSString *, id> *)additionalData {
-    
-    // To handle case when response is unexpected for this type of operation processed value sent
-    // through 'nil' initialized local variable.
++ (NSDictionary<NSString *, id> *)parsedServiceResponse:(id)response
+                                               withData:(NSDictionary<NSString *, id> *)additionalData {
+
     NSDictionary *processedResponse = nil;
-    
-    // Array will arrive in case of subscription event
+
     if ([response isKindOfClass:[NSDictionary class]]) {
-        
         NSDictionary<NSString *, NSString *> *timeTokenDictionary = response[kPNResponseEventTimeKey];
         NSNumber *timeToken = @(timeTokenDictionary[PNEventTimeToken.timeToken].longLongValue);
         NSNumber *region = @(timeTokenDictionary[PNEventTimeToken.region].longLongValue);
-        
-        // Checking whether at least one event arrived or not.
         NSArray<NSDictionary *> *feedEvents = response[kPNResponseEventsListKey];
+
         if (feedEvents.count) {
-            
             NSMutableArray<NSDictionary *> *events = [[NSMutableArray alloc] initWithCapacity:feedEvents.count];
+
             for (NSUInteger eventIdx = 0; eventIdx < [feedEvents count]; eventIdx++) {
-                
-                // Fetching remote data object name on which event fired.
                 NSMutableDictionary *event = [self eventFromData:feedEvents[eventIdx]
                                         withAdditionalParserData:additionalData];
-                if (!event[@"timetoken"]) { event[@"timetoken"] = timeToken; }
+
+                if (!event[@"timetoken"]) {
+                    event[@"timetoken"] = timeToken;
+                }
+
                 [events addObject:event];
             }
+
             feedEvents = [events copy];
         }
-        processedResponse = @{@"events": feedEvents, @"timetoken": timeToken, @"region": region};
+
+        processedResponse = @{ @"events": feedEvents, @"timetoken": timeToken, @"region": region };
     }
     
     return processedResponse;
@@ -307,15 +300,22 @@ NS_ASSUME_NONNULL_END
     NSMutableDictionary *event = [NSMutableDictionary new];
     NSString *channel = data[PNEventEnvelope.channel];
     NSString *subscriptionMatch = data[PNEventEnvelope.subscriptionMatch];
-    if ([channel isEqualToString:subscriptionMatch]) { subscriptionMatch = nil; }
-    event[@"envelope"] = [PNEnvelopeInformation envelopeInformationWithPayload:data];
-    event[@"subscription"] = (subscriptionMatch?: channel);
-    event[@"channel"] = channel;
 
-    id timeTokenData = (data[PNEventEnvelope.senderTimeToken.key]?:
+    if ([channel isEqualToString:subscriptionMatch]) {
+        subscriptionMatch = nil;
+    }
+
+    event[@"envelope"] = [PNEnvelopeInformation envelopeInformationWithPayload:data];
+
+    event[@"subscription"] = (subscriptionMatch ?: channel);
+    event[@"channel"] = channel;
+    PNMessageType messageType = ((PNEnvelopeInformation *)event[@"envelope"]).messageType;
+    BOOL isEncryptionSupported = messageType == PNRegularMessageType;
+
+    id timeTokenData = (data[PNEventEnvelope.senderTimeToken.key] ?:
                         data[PNEventEnvelope.publishTimeToken.key]);
+
     if ([timeTokenData isKindOfClass:[NSDictionary class]]) {
-        
         NSDictionary<NSString *, NSString *> *timeToken = timeTokenData;
         event[@"timetoken"] = @(timeToken[PNEventTimeToken.timeToken].longLongValue);
         event[@"region"] = @(timeToken[PNEventTimeToken.region].longLongValue);
@@ -327,11 +327,11 @@ NS_ASSUME_NONNULL_END
         [event addEntriesFromDictionary:[self presenceFromData:data[PNEventEnvelope.payload]]];
         event[@"subscription"] = [PNChannel channelForPresence:event[@"subscription"]];
         event[@"channel"] = [PNChannel channelForPresence:event[@"channel"]];
-    }
-    else {
-        
+    } else {
+        NSDictionary *parserData = isEncryptionSupported ? additionalData : nil;
+
         [event addEntriesFromDictionary:[self messageFromData:data[PNEventEnvelope.payload]
-                                     withAdditionalParserData:additionalData]];
+                                     withAdditionalParserData:parserData]];
     }
     
     return event;
@@ -339,111 +339,88 @@ NS_ASSUME_NONNULL_END
 
 + (NSMutableDictionary *)messageFromData:(id)data 
                 withAdditionalParserData:(NSDictionary<NSString *, id> *)additionalData {
-    
-    BOOL shouldStripMobilePayload = ((NSNumber *)additionalData[@"stripMobilePayload"]).boolValue;
+
     NSMutableDictionary *message = nil;
-    
-    // Try decrypt message body if possible.
+
     if (((NSString *)additionalData[@"cipherKey"]).length){
-        
+        BOOL isDictionary = [data isKindOfClass:[NSDictionary class]];
         NSError *decryptionError;
         id decryptedEvent = nil;
         message = [NSMutableDictionary new];
-        id dataForDecryption = ([data isKindOfClass:[NSDictionary class]] ? ((NSDictionary *)data)[@"pn_other"] : data);
+        id dataForDecryption = isDictionary ? ((NSDictionary *)data)[@"pn_other"] : data;
+
         if ([dataForDecryption isKindOfClass:[NSString class]]) {
-            
-            NSData *eventData = [PNAES decrypt:dataForDecryption withKey:additionalData[@"cipherKey"]
+            NSData *eventData = [PNAES decrypt:dataForDecryption
+                                       withKey:additionalData[@"cipherKey"]
                                       andError:&decryptionError];
             NSString *decryptedEventData = nil;
+
             if (eventData) {
-                
                 decryptedEventData = [[NSString alloc] initWithData:eventData encoding:NSUTF8StringEncoding];
             }
-            
-            // In case if after encryption another object has been received client should try to de-serialize
-            // it again as JSON object.
+
             if (decryptedEventData && ![decryptedEventData isEqualToString:dataForDecryption]) {
-                
                 decryptedEvent = [PNJSON JSONObjectFrom:decryptedEventData withError:nil];
             }
         }
         
         if (decryptionError || !decryptedEvent) {
-            
             PNLLogger *logger = [PNLLogger loggerWithIdentifier:kPNClientIdentifier];
             [logger enableLogLevel:PNAESErrorLogLevel];
             PNLogAESError(logger, @"<PubNub::AES> Message decryption error: %@", decryptionError);
             message[@"decryptError"] = @YES;
             message[@"message"] = dataForDecryption;
-        }
-        else {
-            
-            if (!shouldStripMobilePayload && [data isKindOfClass:[NSDictionary class]]) {
-                
-                NSMutableDictionary *mutableData = [data mutableCopy];
+        } else {
+            if (isDictionary) {
+                NSMutableDictionary *mutableData = [(NSDictionary *)data mutableCopy];
                 [mutableData removeObjectForKey:@"pn_other"];
+
                 if (![decryptedEvent isKindOfClass:[NSDictionary class]]) {
-                    
                     mutableData[@"pn_other"] = decryptedEvent;
-                } else { [mutableData addEntriesFromDictionary:decryptedEvent]; }
+                } else {
+                    [mutableData addEntriesFromDictionary:decryptedEvent];
+                }
+
                 decryptedEvent = [mutableData copy];
             }            
             
             message[@"message"] = decryptedEvent;
         }
-    }
-    else {
-        
-        if (shouldStripMobilePayload && [data isKindOfClass:[NSDictionary class]] && 
-            (data[@"pn_apns"] || data[@"pn_gcm"] || data[@"pn_mpns"])) {
-            
-            id decomposedMessage = data;
-            if (!data[@"pn_other"]) {
-                
-                NSMutableDictionary *dictionaryData = [data mutableCopy];
-                [dictionaryData removeObjectsForKeys:@[@"pn_apns", @"pn_gcm", @"pn_mpns"]];
-                decomposedMessage = dictionaryData;
-            }
-            else { decomposedMessage = data[@"pn_other"]; }
-            message = [@{@"message": decomposedMessage} mutableCopy];
-        }
-        else { message = [@{@"message": data} mutableCopy]; } 
+    } else {
+        message = [@{ @"message": data } mutableCopy];
     }
     
     return message;
 }
 
 + (NSMutableDictionary *)presenceFromData:(NSDictionary<NSString *, id> *)data {
-    
     NSMutableDictionary *presence = [NSMutableDictionary new];
     
     // Processing common for all presence events data.
     presence[@"presenceEvent"] = (data[PNEventEnvelope.presence.action]?: @"interval");
     presence[@"presence"] = [NSMutableDictionary new];
     presence[@"presence"][@"timetoken"] = data[PNEventEnvelope.presence.timestamp];
-    if (data[@"uuid"]) { presence[@"presence"][@"uuid"] = data[PNEventEnvelope.presence.uuid]; }
-    
-    // Check whether this is not state modification event.
-    presence[@"presence"][@"occupancy"] = (data[PNEventEnvelope.presence.occupancy]?: @0);
+
+    if (data[@"uuid"]) {
+        presence[@"presence"][@"uuid"] = data[PNEventEnvelope.presence.uuid];
+    }
+
+    presence[@"presence"][@"occupancy"] = (data[PNEventEnvelope.presence.occupancy] ?: @0);
+
     if (data[PNEventEnvelope.presence.data]) {
-     
         presence[@"presence"][@"state"] = data[PNEventEnvelope.presence.data];
     }
     
     if ([presence[@"presenceEvent"] isEqualToString:@"interval"]) {
-        
         if (data[PNEventEnvelope.presence.joined]) {
-            
             presence[@"presence"][@"join"] = data[PNEventEnvelope.presence.joined];
         }
         
         if (data[PNEventEnvelope.presence.leaved]) {
-            
             presence[@"presence"][@"leave"] = data[PNEventEnvelope.presence.leaved];
         }
         
         if (data[PNEventEnvelope.presence.timeouted]) {
-            
             presence[@"presence"][@"timeout"] = data[PNEventEnvelope.presence.timeouted];
         }
     }

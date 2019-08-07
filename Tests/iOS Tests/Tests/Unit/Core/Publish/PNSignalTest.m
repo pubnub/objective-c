@@ -33,14 +33,12 @@
 #pragma mark - Setup / Tear down
 
 - (void)setUp {
-    
     [super setUp];
     
     
     dispatch_queue_t callbackQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:self.publishKey
                                                                      subscribeKey:self.subscribeKey];
-    configuration.stripMobilePayload = NO;
     
     if ([self.name rangeOfString:@"Encrypt"].location != NSNotFound) {
         configuration.cipherKey = @"myCipherKey";
@@ -53,7 +51,6 @@
 #pragma mark - Tests :: Builder
 
 - (void)testSignal_ShouldReturnBuilder {
-    
     XCTAssertTrue([self.client.signal() isKindOfClass:[PNSignalAPICallBuilder class]]);
 }
 
@@ -61,7 +58,6 @@
 #pragma mark - Tests :: Call
 
 - (void)testSignal_ShouldProcessOperation_WhenCalled {
-    
     id message = @"Hello real-time world!";
     NSString *expectedMessage = [PNString percentEscapedString:[NSString stringWithFormat:@"\"%@\"", message]];
     NSString *expectedChannel = [NSUUID UUID].UUIDString;
@@ -83,13 +79,10 @@
     }];
 }
 
-- (void)testSignal_ShouldEncrypt_WhenCalledWithCipherKey {
-    
+- (void)testSignal_ShouldNotEncrypt_WhenCalledWithCipherKey {
     id message = @{ @"such": @"object" };
-    NSString *expectedMessage = [PNString percentEscapedString:@"\"toDEeIZkmIyoiLpSojGu7n3+2t1rn7/DsrEZ1r8JKR4=\""];
+    NSString *expectedMessage = [PNString percentEscapedString:@"{\"such\":\"object\"}"];
     NSString *expectedChannel = [NSUUID UUID].UUIDString;
-    NSDictionary *meta = @{ @"hello": @"real-time" };
-    NSData *metaData = [NSJSONSerialization dataWithJSONObject:meta options:(NSJSONWritingOptions)0 error:nil];
     
     
     id clientMock = [self mockForObject:self.client];
@@ -112,13 +105,12 @@
 #pragma mark - Tests :: Retry
 
 - (void)testMessageCounts_ShouldCallMethodAgain_WhenRetryOnFailureCalled {
-    
-    NSString *expectedChannel = [NSUUID UUID].UUIDString;
     __block PNErrorStatus *errorStatus = nil;
     id message = @"Hello real-time world!";
-    
+
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.signal().channel(expectedChannel).message(message)
+        self.client.signal().message(message)
             .performWithCompletion(^(PNSignalStatus * status) {
                 errorStatus = status;
                 handler();

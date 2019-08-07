@@ -785,8 +785,6 @@
     self.myConfig.uuid = [self randomString];
     self.myConfig.origin = @"pubsub.pubnub.com";
     self.myConfig.authKey = _authKey;
-    
-    self.myConfig.stripMobilePayload = NO;
 
     // Presence Settings
     self.myConfig.presenceHeartbeatValue = 120;

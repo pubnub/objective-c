@@ -57,6 +57,5 @@ static NSUInteger const kPNDefaultMaximumMessagesCacheSize = 100;
 #if TARGET_OS_IOS
 static BOOL const kPNDefaultShouldCompleteRequestsBeforeSuspension = YES;
 #endif // TARGET_OS_IOS
-static BOOL const kPNDefaultShouldStripMobilePayload = YES;
 
 #endif // PNConstants_h

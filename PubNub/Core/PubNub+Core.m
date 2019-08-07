@@ -204,13 +204,6 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)printLogVerbosityInformation;
 
-/**
- * @brief Check client configuration and notify about outdated API and options.
- *
- * @since 4.5.13
- */
-- (void)notifyDeprecatedAPI;
-
 #pragma mark -
 
 
@@ -288,7 +281,6 @@ NS_ASSUME_NONNULL_END
         }
 
         [self prepareNetworkManagers];
-        [self notifyDeprecatedAPI];
         
         _subscriberManager = [PNSubscriber subscriberForClient:self];
         _sequenceManager = [PNPublishSequence sequenceForClient:self];
@@ -693,63 +685,6 @@ NS_ASSUME_NONNULL_END
     
     PNLogClientInfo(self.logger, @"<PubNub::Logger> Enabled verbosity level flags: %@",
         [enabledFlags componentsJoinedByString:@", "]);
-}
-
-- (void)notifyDeprecatedAPI {
-    
-    NSMutableString *deprecation = [NSMutableString new];
-    [deprecation appendString:@"\n\n\n--------------------------------------------\n "];
-    [deprecation appendString:@"PubNub deprecated API usage notification "];
-    [deprecation appendString:@"\n--------------------------------------------\n\n"];
-
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    if (self.configuration.shouldStripMobilePayload) {
-#pragma clang diagnostic pop
-        [deprecation appendString:@"- Deprecated: PNConfiguration.shouldStripMobilePayload property.-\n"
-         "When set to YES SDK automatically stripped out original message\nfrom payload which combined message"
-         " and push notification payloads.\n\n"];
-        [deprecation appendString:@"!!! To disable this warning set stripMobilePayload to NO.\n\n"];
-        [deprecation appendString:@"This deprecation may affect application in case if it used\npublish API "
-         "to send messages along with push notification payloads.\nProperty completely will be deprecated "
-         "with next 'major' SDK update.\n\n"];
-        
-        [deprecation appendString:@"If application's code rely on automatic messages clean up (send\nmobile "
-         "push notifications along with messages or store message\ninside payload) it is suggested to update "
-         "this code before property\nwill be completely removed from SDK.\nAt first "
-         "`shouldStripMobilePayload` should be set to NO (YES by\ndefault). Next will be update callback "
-         "which handle new messages:\n\n"
-         "\t- (void)client:(PubNub *)client didReceiveMessage:(PNMessageResult *)message {\n\n"
-         "\t\tid messageData = message.data.message;\n"
-         "\t\tif ([messageData isKindOfClass:[NSDictionary class]]) {\n\n"
-         "\t\t\t// It will be better to access cipher key directly, because 'currentConfiguration'\n"
-         "\t\t\t// make copy of PNConfiguration each time.\n"
-         "\t\t\tNSString *cipherKey = [client currentConfiguration].cipherKey;\n"
-         "\t\t\tNSMutableDictionary *messagePayload = [messageData mutableCopy];\n"
-         "\t\t\tif (cipherKey.length && messagePayload[@\"pn_other\"]) {\n\n"
-         "\t\t\t\tNSError *parseError = nil;\n"
-         "\t\t\t\tid decryptedMessageData = [PNAES decrypt:messagePayload[@\"pn_other\"] withKey:cipherKey \n"
-         "\t\t\t\t                                andError:&parseError];\n"
-         "\t\t\t\tif (decryptedMessageData) {\n\n"
-         "\t\t\t\t\tmessageData = [NSJSONSerialization JSONObjectWithData:decryptedMessageData\n"
-         "\t\t\t\t\t                                              options:NSJSONReadingAllowFragments\n"
-         "\t\t\t\t\t                                                error:&parseError];\n"
-         "\t\t\t\t}\n"
-         "\t\t\t\tif (!parseError) {\n\n"
-         "\t\t\t\t\tif (![messageData isKindOfClass:[NSDictionary class]]) {\n\n"
-         "\t\t\t\t\t\tmessagePayload[@\"pn_other\"] = messageData;\n"
-         "\t\t\t\t\t} else { [messagePayload addEntriesFromDictionary:messageData]; }\n"
-         "\t\t\t\t}\n"
-         "\t\t\t\telse { /* Handle message decryption and JSON decode. */ }\n"
-         "\t\t\t}\n"
-         "\t\t\t// Remove keys for any used push notification provider.\n"
-         "\t\t\t[messagePayload removeObjectsForKeys:@[@\"pn_apns\", @\"pn_gcm\", @\"pn_mpns\"]];\n"
-         "\t\t\tmessageData = (messagePayload[@\"pn_other\"]?: messagePayload);\n"
-         "\t\t}\n"
-         "\t\tNSLog(@\"Received message: %@\", messageData);\n"
-         "\t}\n\n\n"];
-        NSLog(@"%@", deprecation);
-    }
 }
 
 - (void)dealloc {
