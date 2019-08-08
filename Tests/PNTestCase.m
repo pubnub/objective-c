@@ -310,6 +310,11 @@ NS_ASSUME_NONNULL_END
     [self addHandlerOfType:@"message" forClient:client withBlock:handler];
 }
 
+- (void)addSignalHandlerForClient:(PubNub *)client withBlock:(PNTClientDidReceiveSignalHandler)handler {
+    
+    [self addHandlerOfType:@"signal" forClient:client withBlock:handler];
+}
+
 - (void)addPresenceHandlerForClient:(PubNub *)client withBlock:(PNTClientDidReceiveMessageHandler)handler {
     
     [self addHandlerOfType:@"presence" forClient:client withBlock:handler];
@@ -523,6 +528,23 @@ NS_ASSUME_NONNULL_END
     }
     
     [self removeHandlers:handlersForRemoval ofType:@"message" forClient:client];
+}
+
+- (void)client:(PubNub *)client didReceiveSignal:(PNSignalResult *)signal {
+    NSMutableArray<PNTClientCallbackHandler> *handlersForRemoval = [NSMutableArray new];
+    NSArray<PNTClientCallbackHandler> *handlers = [self handlersOfType:@"signal" forClient:client];
+    
+    for (PNTClientCallbackHandler handler in handlers) {
+        BOOL shouldRemoved = NO;
+        
+        handler(client, signal, &shouldRemoved);
+        
+        if (shouldRemoved) {
+            [handlersForRemoval addObject:handler];
+        }
+    }
+    
+    [self removeHandlers:handlersForRemoval ofType:@"signal" forClient:client];
 }
 
 - (void)client:(PubNub *)client didReceivePresenceEvent:(PNPresenceEventResult *)event {

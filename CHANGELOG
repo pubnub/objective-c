@@ -1,4 +1,11 @@
-15-07-2019 - 92928ca - 4.8.10
+08-08-2019 - c2d7714 - 4.8.12
+. add support for signal API.
+. add new callback to 'PNObjectEventListener', so existing listeners may start receiving 'signal' objects by adding new callback implementation.
+. disable pipelining for requests.
+. remove deprecated 'stripMobilePayload' configuration option from SDK along with code, which used it.
+. fixed crash which is caused by attempt to de-duplicate message which PubNub client wasn't able to decrypt with configured 'cipherKey'.
+
+15-07-2019 - 92928ca - 4.8.11
 . add macOS support for iOS frameworks.
 
 27-06-2019 - f566218 - 4.8.10

@@ -12,19 +12,37 @@
 #define PNPrivateStructures_h
 
 /**
- @brief  Stores reference on key under which unique user identifier will be stored persistently.
+ * @brief Stores reference on key under which unique user identifier will be stored persistently.
  */
 extern NSString * const kPNConfigurationUUIDKey;
 
 /**
- @brief  Helper to stringify operation type in result and status objects.
+ * @brief Options describe object's message type.
+ *
+ * @since 4.9.0
+ */
+typedef NS_OPTIONS(NSUInteger, PNMessageType) {
+    /**
+     @brief Type which represent regular message object.
+     */
+    PNRegularMessageType = 0,
+    
+    /**
+     @brief Type which represent signal object.
+     */
+    PNSignalMessageType = 1
+};
+
+/**
+ @brief Helper to stringify operation type in result and status objects.
 
  @since 4.0
  */
-static NSString * const PNOperationTypeStrings[26] = {
+static NSString * const PNOperationTypeStrings[27] = {
     [PNSubscribeOperation] = @"Subscribe",
     [PNUnsubscribeOperation] = @"Unsubscribe",
     [PNPublishOperation] = @"Publish",
+    [PNSignalOperation] = @"Signal",
     [PNHistoryOperation] = @"History",
     [PNHistoryForChannelsOperation] = @"History for Channels",
     [PNDeleteMessageOperation] = @"Delete message from History",
@@ -50,7 +68,7 @@ static NSString * const PNOperationTypeStrings[26] = {
     [PNTimeOperation] = @"Time",
 };
 
-static NSString * const PNOperationResultClasses[26] = {
+static NSString * const PNOperationResultClasses[27] = {
     [PNHistoryOperation] = @"PNHistoryResult",
     [PNHistoryForChannelsOperation] = @"PNHistoryResult",
     [PNMessageCountOperation] = @"PNMessageCountResult",
@@ -67,10 +85,11 @@ static NSString * const PNOperationResultClasses[26] = {
     [PNTimeOperation] = @"PNTimeResult",
 };
 
-static NSString * const PNOperationStatusClasses[26] = {
+static NSString * const PNOperationStatusClasses[27] = {
     [PNSubscribeOperation] = @"PNSubscribeStatus",
     [PNUnsubscribeOperation] = @"PNAcknowledgmentStatus",
     [PNPublishOperation] = @"PNPublishStatus",
+    [PNSignalOperation] = @"PNSignalStatus",
     [PNHistoryOperation] = @"PNErrorStatus",
     [PNHistoryForChannelsOperation] = @"PNErrorStatus",
     [PNDeleteMessageOperation] = @"PNAcknowledgmentStatus",

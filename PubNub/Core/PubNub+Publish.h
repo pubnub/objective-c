@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "PNPublishSizeAPICallBuilder.h"
 #import "PNPublishAPICallBuilder.h"
+#import "PNSignalAPICallBuilder.h"
 #import "PubNub+Core.h"
 
 
@@ -48,6 +49,15 @@ NS_ASSUME_NONNULL_BEGIN
  * @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNPublishAPICallBuilder * (^fire)(void);
+
+/**
+ * @brief Signal API access builder.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.9.0
+ */
+@property (nonatomic, readonly, strong) PNSignalAPICallBuilder * (^signal)(void);
 
 /**
  * @brief Publish message size calculation builder.
@@ -677,6 +687,43 @@ NS_ASSUME_NONNULL_BEGIN
          withMetadata:(nullable NSDictionary<NSString *, id> *)metadata
            completion:(nullable PNPublishCompletionBlock)block
     NS_SWIFT_NAME(publish(_:toChannel:mobilePushPayload:storeInHistory:compressed:withMetadata:completion:));
+
+
+
+#pragma mark - Signal
+
+/**
+ * @brief Send provided Foundation object to \b PubNub service.
+ *
+ * @discussion Provided object will be serialized into JSON string before pushing to \b PubNub
+ * service. If client has been configured with cipher key message will be encrypted as well.
+ *
+ * @code
+ * [self.client signal:@{ @"Hello": @"world" } channel:@"announcement"
+ *      withCompletion:^(PNSignalStatus *status) {
+ *
+ *     if (!status.isError) {
+ *         // Signal successfully sent to specified channel.
+ *     } else {
+ *         // Handle signal sending error. Check 'category' property to find out possible issue
+ *         // because of which request did fail.
+ *         //
+ *         // Request can be resent using: [status retry];
+ *     }
+ * }];
+ * @endcode
+ *
+ * @param message Object (\a NSString, \a NSNumber, \a NSArray, \a NSDictionary) which will be
+ *     sent with signal.
+ * @param channel Name of the channel to which signal should be sent.
+ * @param block Signal completion block.
+ *
+ * @since 4.9.0
+ */
+- (void)signal:(id)message
+           channel:(NSString *)channel
+    withCompletion:(nullable PNSignalCompletionBlock)block
+    NS_SWIFT_NAME(signal(_:channel:withCompletion:));
 
 
 #pragma mark - Message helper

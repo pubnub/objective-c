@@ -658,7 +658,10 @@ NS_ASSUME_NONNULL_END
     
     [parameters addPathComponents:self.defaultPathComponents];
     [parameters addQueryParameters:self.defaultQueryComponents];
-    [parameters addQueryParameters:[self.client.telemetryManager operationsLatencyForRequest]];
+    
+    if (parameters.shouldIncludeTelemetry) {
+        [parameters addQueryParameters:[self.client.telemetryManager operationsLatencyForRequest]];
+    }
 
     static BOOL isTestEnvironment;
     static dispatch_once_t onceToken;
@@ -921,10 +924,6 @@ NS_ASSUME_NONNULL_END
         parseCompletion(data ? [parser parsedServiceResponse:data] : nil);
     } else {
         NSMutableDictionary *additionalData = [NSMutableDictionary new];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        additionalData[@"stripMobilePayload"] = @(self.configuration.shouldStripMobilePayload);
-#pragma clang diagnostic pop
 
         if ([self.configuration.cipherKey length]) {
             additionalData[@"cipherKey"] = self.configuration.cipherKey;
@@ -1048,18 +1047,15 @@ NS_ASSUME_NONNULL_END
 - (NSURLSessionConfiguration *)configurationWithRequestTimeout:(NSTimeInterval)timeout
                                             maximumConnections:(NSInteger)maximumConnections {
 
-    BOOL shouldUsePipelining = !self.forLongPollRequests;
     NSURLSessionConfiguration *configuration = nil;
     configuration = [NSURLSessionConfiguration pn_ephemeralSessionConfigurationWithIdentifier:self.identifier];
     if (@available(macOS 10.10, iOS 8.0, *)) {
         if (self.configuration.applicationExtensionSharedGroupIdentifier) {
             configuration = [NSURLSessionConfiguration pn_backgroundSessionConfigurationWithIdentifier:self.identifier];
             configuration.sharedContainerIdentifier = _configuration.applicationExtensionSharedGroupIdentifier;
-            shouldUsePipelining = NO;
         }
     }
     
-    configuration.HTTPShouldUsePipelining = shouldUsePipelining;
     configuration.timeoutIntervalForRequest = timeout;
     configuration.HTTPMaximumConnectionsPerHost = maximumConnections;
     
