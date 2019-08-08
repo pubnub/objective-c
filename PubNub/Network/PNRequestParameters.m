@@ -1,7 +1,6 @@
 /**
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2010-2018 PubNub, Inc.
+ * @author Serhii Mamontov
+ * @copyright © 2010-2019 PubNub, Inc.
  */
 #import "PNRequestParameters.h"
 
@@ -14,18 +13,21 @@
 #pragma mark - Properties
 
 /**
- @brief  Stores reference on key/value pairs which should be expanded in remote resource path.
- 
- @since 4.0
+ * @brief Stores reference on key/value pairs which should be expanded in remote resource path.
  */
 @property (nonatomic, strong) NSMutableDictionary<NSString *, NSString *> *resourcePathComponents;
 
 /**
- @brief  Stores reference on key/value pairs which should be expanded in query string.
- 
- @since 4.0
+ * @brief Stores reference on key/value pairs which should be expanded in query string.
  */
 @property (nonatomic, strong) NSMutableDictionary<NSString *, NSString *> *queryFields;
+
+/**
+ * @brief Whether relemetry data should be appeanded to request or not.
+ *
+ * @since 4.9.0
+ */
+@property (nonatomic, assign, getter = shouldIncludeTelemetry) BOOL includeTelemetry;
 
 #pragma mark -
 
@@ -129,6 +131,11 @@
     
     NSParameterAssert(parameters);
     [self.queryFields removeObjectsForKeys:parameters];
+}
+
+- (void)disableTelemetry {
+    
+    self.includeTelemetry = NO;
 }
 
 #pragma mark - 

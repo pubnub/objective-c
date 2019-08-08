@@ -1,7 +1,6 @@
 /**
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2010-2018 PubNub, Inc.
+ * @author Sergey Mamontov
+ * @copyright © 2010-2019 PubNub, Inc.
  */
 #import "PNURLBuilder.h"
 #import "PNRequestParameters.h"
@@ -11,14 +10,13 @@
 #pragma mark Static
 
 /**
- @brief  API endpoints description basing on operation type.
- 
- @since 4.0
+ * @brief API endpoints description basing on operation type.
  */
-static NSString * const PNOperationRequestTemplate[26] = {
+static NSString * const PNOperationRequestTemplate[27] = {
     [PNSubscribeOperation] = @"/v2/subscribe/{sub-key}/{channels}/0",
     [PNUnsubscribeOperation] = @"/v2/presence/sub_key/{sub-key}/channel/{channels}/leave",
     [PNPublishOperation] = @"/publish/{pub-key}/{sub-key}/0/{channel}/0/{message}",
+    [PNSignalOperation] = @"/signal/{pub-key}/{sub-key}/0/{channel}/0/{message}",
     [PNHistoryOperation] = @"/v2/history/sub-key/{sub-key}/channel/{channel}",
     [PNHistoryForChannelsOperation] = @"/v3/history/sub-key/{sub-key}/channel/{channels}",
     [PNDeleteMessageOperation] = @"/v3/history/sub-key/{sub-key}/channel/{channel}",
@@ -65,17 +63,16 @@ static NSString * const PNOperationRequestTemplate[26] = {
     }];
     
     if ([requestURLString rangeOfString:@"{"].location == NSNotFound) {
-        
         if ([requestURLString hasSuffix:@"/"]) {
-            
             NSRange lastSlashRange = NSMakeRange(requestURLString.length - 2, 2);
             [requestURLString replaceOccurrencesOfString:@"/" withString:@"" options:NSBackwardsSearch 
                                                    range:lastSlashRange];
         }
+        
         if (parameters.query.count) {
-            
             [requestURLString appendFormat:@"?%@", [PNDictionary queryStringFrom:parameters.query]];
         }
+        
         requestURL = [NSURL URLWithString:requestURLString];
     }
     
@@ -88,8 +85,8 @@ static NSString * const PNOperationRequestTemplate[26] = {
 + (BOOL)isURL:(NSURL *)url forOperation:(PNOperationType)operation {
     
     BOOL result = NO;
+    
     if (url) {
-        
         NSString *requestURLPrefixString = [PNOperationRequestTemplate[operation] componentsSeparatedByString:@"{"].firstObject;
         result = ([url.absoluteString rangeOfString:requestURLPrefixString].location != NSNotFound);
     }

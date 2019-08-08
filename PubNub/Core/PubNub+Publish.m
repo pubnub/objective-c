@@ -57,6 +57,29 @@ NS_ASSUME_NONNULL_BEGIN
            completion:(nullable PNPublishCompletionBlock)block;
 
 
+#pragma mark - Signal
+
+/**
+ * @brief Send provided Foundation object to \b PubNub service.
+ *
+ * @discussion Provided object will be serialized into JSON string before pushing to \b PubNub
+ * service. If client has been configured with cipher key message will be encrypted as well.
+ *
+ * @param message Object (\a NSString, \a NSNumber, \a NSArray, \a NSDictionary) which will be
+ *     sent with signal.
+ * @param channel Name of the channel to which signal should be sent.
+ * @param queryParameters List arbitrary query parameters which should be sent along with original
+ *     API call.
+ * @param block Signal completion block.
+ *
+ * @since 4.9.0
+ */
+- (void)signal:(id)message
+                channel:(NSString *)channel
+    withQueryParameters:(nullable NSDictionary *)queryParameters
+             completion:(nullable PNSignalCompletionBlock)block;
+
+
 #pragma mark - Message helper
 
 /**
@@ -222,6 +245,26 @@ NS_ASSUME_NONNULL_END
     [builder setValue:@NO forParameter:NSStringFromSelector(@selector(replicate))];
     
     return ^PNPublishAPICallBuilder * {
+        return builder;
+    };
+}
+
+- (PNSignalAPICallBuilder * (^)(void))signal {
+    
+    PNSignalAPICallBuilder * builder = nil;
+    __weak __typeof(self) weakSelf = self;
+    builder = [PNSignalAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
+                                                                  NSDictionary *parameters) {
+        
+        id message = parameters[NSStringFromSelector(@selector(message))];
+        NSString *channel = parameters[NSStringFromSelector(@selector(channel))];
+        NSDictionary *queryParam = parameters[@"queryParam"];
+        id block = parameters[@"block"];
+        
+        [weakSelf signal:message channel:channel withQueryParameters:queryParam completion:block];
+    }];
+    
+    return ^PNSignalAPICallBuilder * {
         return builder;
     };
 }
@@ -587,6 +630,71 @@ NS_ASSUME_NONNULL_END
 }
 
 
+#pragma mark - Signal
+
+- (void)signal:(id)message
+           channel:(NSString *)channel
+    withCompletion:(PNSignalCompletionBlock)block {
+    
+    [self signal:message channel:channel withQueryParameters:nil completion:block];
+}
+
+- (void)signal:(id)message
+                channel:(NSString *)channel
+    withQueryParameters:(NSDictionary *)queryParameters
+             completion:(PNSignalCompletionBlock)block {
+    
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    __weak __typeof(self) weakSelf = self;
+    
+    if (@available(macOS 10.10, iOS 8.0, *)) {
+        if (self.configuration.applicationExtensionSharedGroupIdentifier) {
+            queue = dispatch_get_main_queue();
+        }
+    }
+    
+    dispatch_async(queue, ^{
+        __strong __typeof__(weakSelf) strongSelf = weakSelf;
+        NSError *signalError = nil;
+        NSString *messageForSignal = [PNJSON JSONStringFrom:message withError:&signalError];
+        PNRequestParameters *parameters = [PNRequestParameters new];
+        [parameters addQueryParameters:queryParameters];
+        
+        if (channel.length) {
+            [parameters addPathComponent:[PNString percentEscapedString:channel]
+                          forPlaceholder:@"{channel}"];
+        }
+        
+        if (([messageForSignal isKindOfClass:[NSString class]] && messageForSignal.length) ||
+            messageForSignal) {
+            
+            [parameters addPathComponent:[PNString percentEscapedString:messageForSignal]
+                          forPlaceholder:@"{message}"];
+        }
+        
+        PNLogAPICall(strongSelf.logger, @"<PubNub::API> Signal to '%@' channel.",
+                     (channel ?: @"<error>"));
+        
+        [strongSelf processOperation:PNSignalOperation
+                      withParameters:parameters
+                                data:nil
+                     completionBlock:^(PNStatus *status) {
+                         
+            if (status.isError) {
+                status.retryBlock = ^{
+                    [weakSelf signal:message
+                             channel:channel
+                 withQueryParameters:queryParameters
+                          completion:block];
+                };
+            }
+
+            [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
+        }];
+    });
+}
+
+
 #pragma mark - Message helper
 
 - (void)sizeOfMessage:(id)message
@@ -847,7 +955,7 @@ NS_ASSUME_NONNULL_END
     // delivery service provider data will be added.
     NSDictionary *originalMessage = message ?: @{};
     if (message && ![message isKindOfClass:[NSDictionary class]]) {
-        originalMessage = @{ @"pn_other":message };
+        originalMessage = @{ @"pn_other": message };
     }
 
     NSMutableDictionary *mergedMessage = [originalMessage mutableCopy];

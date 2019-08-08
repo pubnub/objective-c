@@ -25,10 +25,6 @@
     [super setUp];
     PNConfiguration *config = [PNConfiguration configurationWithPublishKey:self.publishKey
                                                               subscribeKey:self.subscribeKey];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    config.stripMobilePayload = NO;
-#pragma clang diagnostic pop
     config.uuid = @"322A70B3-F0EA-48CD-9BB0-D3F0F5DE996C";
     self.client = [PubNub clientWithConfiguration:config];
 }

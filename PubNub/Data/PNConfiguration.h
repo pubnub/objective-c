@@ -271,20 +271,9 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @since 4.5.0
  */
-@property (nonatomic, assign, getter = shouldCompleteRequestsBeforeSuspension) BOOL completeRequestsBeforeSuspension NS_SWIFT_NAME(completeRequestsBeforeSuspension);
+@property (nonatomic, assign, getter = shouldCompleteRequestsBeforeSuspension) BOOL completeRequestsBeforeSuspension
+    NS_SWIFT_NAME(completeRequestsBeforeSuspension);
 #endif // TARGET_OS_IOS
-
-/**
- * @brief Stores whether client should strip out received messages (real-time and history) from data
- * which has been appended by \c client (like mobile payload for push notifications).
- *
- * @default By default \c client use \b YES to strip client's data from message and return object
- * with same data type and content as it has been sent.
- *
- * @since 4.5.0
- */
-@property (nonatomic, assign, getter = shouldStripMobilePayload) BOOL stripMobilePayload
-    NS_SWIFT_NAME(stripMobilePayload);
 
 /**
  * @brief Construct configuration instance using minimal required data.

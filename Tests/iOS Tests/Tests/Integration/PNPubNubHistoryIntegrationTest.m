@@ -51,7 +51,6 @@
     dispatch_queue_t callbackQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:self.publishKey
                                                                      subscribeKey:self.subscribeKey];
-    configuration.stripMobilePayload = NO;
     
     self.client = [PubNub clientWithConfiguration:configuration callbackQueue:callbackQueue];
 }

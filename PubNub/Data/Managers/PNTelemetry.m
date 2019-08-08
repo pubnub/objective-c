@@ -139,7 +139,7 @@ NS_ASSUME_NONNULL_END
 
             NSString *averageLatencyKey = [@"l_" stringByAppendingString:latencyKey];
             NSNumber *averageLatency = [latencies valueForKeyPath:averageKeyPath];
-            latenciesForRequest[averageLatencyKey] = [NSString stringWithFormat:@"%.10f", averageLatency.doubleValue];
+            latenciesForRequest[averageLatencyKey] = averageLatency.stringValue;
         }];
     });
     
@@ -198,7 +198,7 @@ NS_ASSUME_NONNULL_END
             
             [latencies addObject:@{
                 kPNOperationDateKey: date,
-                kPNOperationLatencyKey: @(latency)
+                kPNOperationLatencyKey: @((NSInteger)(latency * 1000))
             }];
         });
     }

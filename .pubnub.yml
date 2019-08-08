@@ -875,8 +875,11 @@ features:
     - SUBSCRIBE-FILTER-EXPRESSION
     - SUBSCRIBE-PUBLISHER-UUID
     - SUBSCRIBE-MESSAGE-DEDUPE
+    - SUBSCRIBE-SIGNAL-LISTENER
   unsubscribe:
     - UNSUBSCRIBE-ALL
+  signal:
+    - SIGNAL-SEND
 supported-platforms:
   -
     version: PubNub Objective-C SDK

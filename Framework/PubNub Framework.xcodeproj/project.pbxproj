@@ -447,6 +447,34 @@
 		79650C3E1E775EA100006F66 /* PNLockSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 79650C2B1E775E8300006F66 /* PNLockSupport.m */; };
 		79650C3F1E775EA100006F66 /* PNLockSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 79650C2B1E775E8300006F66 /* PNLockSupport.m */; };
 		79650C401E775EA200006F66 /* PNLockSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 79650C2B1E775E8300006F66 /* PNLockSupport.m */; };
+		797D605A22D2E41100E64C94 /* PNSignalAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 797D605822D2E41000E64C94 /* PNSignalAPICallBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		797D605B22D2E41100E64C94 /* PNSignalAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 797D605822D2E41000E64C94 /* PNSignalAPICallBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		797D605C22D2E41100E64C94 /* PNSignalAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 797D605822D2E41000E64C94 /* PNSignalAPICallBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		797D605D22D2E41100E64C94 /* PNSignalAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 797D605822D2E41000E64C94 /* PNSignalAPICallBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		797D605E22D2E41100E64C94 /* PNSignalAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 797D605822D2E41000E64C94 /* PNSignalAPICallBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		797D605F22D2E41100E64C94 /* PNSignalAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 797D605822D2E41000E64C94 /* PNSignalAPICallBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		797D606022D2E41100E64C94 /* PNSignalAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 797D605822D2E41000E64C94 /* PNSignalAPICallBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		797D606122D2E41100E64C94 /* PNSignalAPICallBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 797D605922D2E41000E64C94 /* PNSignalAPICallBuilder.m */; };
+		797D606222D2E41100E64C94 /* PNSignalAPICallBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 797D605922D2E41000E64C94 /* PNSignalAPICallBuilder.m */; };
+		797D606322D2E41100E64C94 /* PNSignalAPICallBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 797D605922D2E41000E64C94 /* PNSignalAPICallBuilder.m */; };
+		797D606422D2E41100E64C94 /* PNSignalAPICallBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 797D605922D2E41000E64C94 /* PNSignalAPICallBuilder.m */; };
+		797D606522D2E41100E64C94 /* PNSignalAPICallBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 797D605922D2E41000E64C94 /* PNSignalAPICallBuilder.m */; };
+		797D606622D2E41100E64C94 /* PNSignalAPICallBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 797D605922D2E41000E64C94 /* PNSignalAPICallBuilder.m */; };
+		797D606722D2E41100E64C94 /* PNSignalAPICallBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 797D605922D2E41000E64C94 /* PNSignalAPICallBuilder.m */; };
+		797D606A22D2E44000E64C94 /* PNSignalStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 797D606822D2E43F00E64C94 /* PNSignalStatus.m */; };
+		797D606B22D2E44000E64C94 /* PNSignalStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 797D606822D2E43F00E64C94 /* PNSignalStatus.m */; };
+		797D606C22D2E44000E64C94 /* PNSignalStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 797D606822D2E43F00E64C94 /* PNSignalStatus.m */; };
+		797D606D22D2E44000E64C94 /* PNSignalStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 797D606822D2E43F00E64C94 /* PNSignalStatus.m */; };
+		797D606E22D2E44000E64C94 /* PNSignalStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 797D606822D2E43F00E64C94 /* PNSignalStatus.m */; };
+		797D606F22D2E44000E64C94 /* PNSignalStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 797D606822D2E43F00E64C94 /* PNSignalStatus.m */; };
+		797D607022D2E44000E64C94 /* PNSignalStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = 797D606822D2E43F00E64C94 /* PNSignalStatus.m */; };
+		797D607122D2E44000E64C94 /* PNSignalStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = 797D606922D2E44000E64C94 /* PNSignalStatus.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		797D607222D2E44000E64C94 /* PNSignalStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = 797D606922D2E44000E64C94 /* PNSignalStatus.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		797D607322D2E44000E64C94 /* PNSignalStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = 797D606922D2E44000E64C94 /* PNSignalStatus.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		797D607422D2E44000E64C94 /* PNSignalStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = 797D606922D2E44000E64C94 /* PNSignalStatus.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		797D607522D2E44000E64C94 /* PNSignalStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = 797D606922D2E44000E64C94 /* PNSignalStatus.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		797D607622D2E44000E64C94 /* PNSignalStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = 797D606922D2E44000E64C94 /* PNSignalStatus.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		797D607722D2E44000E64C94 /* PNSignalStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = 797D606922D2E44000E64C94 /* PNSignalStatus.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		798842281C18F02F003E8948 /* PubNub+APNS.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0561BD03DE4001FC34D /* PubNub+APNS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		798842291C18F071003E8948 /* PubNub+PresencePrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0611BD03DE4001FC34D /* PubNub+PresencePrivate.h */; };
 		7988422A1C18F07B003E8948 /* PubNub+SubscribePrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0681BD03DE4001FC34D /* PubNub+SubscribePrivate.h */; };
@@ -1691,6 +1719,10 @@
 		79650C291E775E8300006F66 /* PNDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNDefines.h; sourceTree = "<group>"; };
 		79650C2A1E775E8300006F66 /* PNLockSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNLockSupport.h; sourceTree = "<group>"; };
 		79650C2B1E775E8300006F66 /* PNLockSupport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNLockSupport.m; sourceTree = "<group>"; };
+		797D605822D2E41000E64C94 /* PNSignalAPICallBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNSignalAPICallBuilder.h; sourceTree = "<group>"; };
+		797D605922D2E41000E64C94 /* PNSignalAPICallBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNSignalAPICallBuilder.m; sourceTree = "<group>"; };
+		797D606822D2E43F00E64C94 /* PNSignalStatus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNSignalStatus.m; sourceTree = "<group>"; };
+		797D606922D2E44000E64C94 /* PNSignalStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNSignalStatus.h; sourceTree = "<group>"; };
 		798842101C18AFE0003E8948 /* update_modulemap.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = update_modulemap.sh; sourceTree = "<group>"; };
 		7988421B1C18EDA7003E8948 /* PubNub.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = PubNub.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		798843A11C191579003E8948 /* PubNub.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = PubNub.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2084,10 +2116,12 @@
 		79A0D8201DC22C950039A264 /* Publish */ = {
 			isa = PBXGroup;
 			children = (
-				79A0D8211DC22C950039A264 /* PNPublishAPICallBuilder.h */,
-				79A0D8221DC22C950039A264 /* PNPublishAPICallBuilder.m */,
 				79A0D8231DC22C950039A264 /* PNPublishSizeAPICallBuilder.h */,
 				79A0D8241DC22C950039A264 /* PNPublishSizeAPICallBuilder.m */,
+				79A0D8211DC22C950039A264 /* PNPublishAPICallBuilder.h */,
+				79A0D8221DC22C950039A264 /* PNPublishAPICallBuilder.m */,
+				797D605822D2E41000E64C94 /* PNSignalAPICallBuilder.h */,
+				797D605922D2E41000E64C94 /* PNSignalAPICallBuilder.m */,
 			);
 			path = Publish;
 			sourceTree = "<group>";
@@ -2310,6 +2344,8 @@
 				79CBB08E1BD03DE4001FC34D /* PNHistoryResult.h */,
 				79CBB08F1BD03DE4001FC34D /* PNHistoryResult.m */,
 				79CBB09D1BD03DE4001FC34D /* PNServiceData+Private.h */,
+				797D606922D2E44000E64C94 /* PNSignalStatus.h */,
+				797D606822D2E43F00E64C94 /* PNSignalStatus.m */,
 				79CBB09E1BD03DE4001FC34D /* PNServiceData.h */,
 				79CBB09F1BD03DE4001FC34D /* PNServiceData.m */,
 				79CBB08B1BD03DE4001FC34D /* PNErrorStatus+Private.h */,
@@ -2514,6 +2550,7 @@
 				791582A61BD709C60084FC70 /* PNErrorStatus+Private.h in Headers */,
 				791582871BD709C60084FC70 /* PNServiceData+Private.h in Headers */,
 				7915825E1BD709C60084FC70 /* PNObjectEventListener.h in Headers */,
+				797D605A22D2E41100E64C94 /* PNSignalAPICallBuilder.h in Headers */,
 				7915825C1BD709C60084FC70 /* PNChannelGroupsResult.h in Headers */,
 				79E20D151C8AEC3A001BC9CC /* PNEnvelopeInformation.h in Headers */,
 				7925DB951D3FFCAC00857C0D /* PNLLogFileInformation.h in Headers */,
@@ -2535,6 +2572,7 @@
 				79A0D8681DC22C950039A264 /* PNUnsubscribeAPICallBuilder.h in Headers */,
 				791582861BD709C60084FC70 /* PNHeartbeatParser.h in Headers */,
 				79A0D8641DC22C950039A264 /* PNSubscribeAPIBuilder.h in Headers */,
+				797D607122D2E44000E64C94 /* PNSignalStatus.h in Headers */,
 				791582821BD709C60084FC70 /* PNSubscribeParser.h in Headers */,
 				791582631BD709C60084FC70 /* PNSubscribeStatus.h in Headers */,
 				7915829E1BD709C60084FC70 /* PNResult+Private.h in Headers */,
@@ -2642,6 +2680,7 @@
 				7915834F1BD709D10084FC70 /* PNErrorStatus+Private.h in Headers */,
 				79A0D90E1DC230760039A264 /* PNStateAuditAPICallBuilder.h in Headers */,
 				791583301BD709D10084FC70 /* PNServiceData+Private.h in Headers */,
+				797D605C22D2E41100E64C94 /* PNSignalAPICallBuilder.h in Headers */,
 				791583071BD709D10084FC70 /* PNObjectEventListener.h in Headers */,
 				791583051BD709D10084FC70 /* PNChannelGroupsResult.h in Headers */,
 				79E20D181C8AEC43001BC9CC /* PNEnvelopeInformation.h in Headers */,
@@ -2663,6 +2702,7 @@
 				79A0D8901DC22F690039A264 /* PNAPNSAuditAPICallBuilder.h in Headers */,
 				7915832B1BD709D10084FC70 /* PNSubscribeParser.h in Headers */,
 				7915830C1BD709D10084FC70 /* PNSubscribeStatus.h in Headers */,
+				797D607322D2E44000E64C94 /* PNSignalStatus.h in Headers */,
 				791583471BD709D10084FC70 /* PNResult+Private.h in Headers */,
 				7915832D1BD709D10084FC70 /* PNStatus+Private.h in Headers */,
 				7915830B1BD709D10084FC70 /* PubNub+Subscribe.h in Headers */,
@@ -2762,6 +2802,7 @@
 				79A0D8D01DC22FFC0039A264 /* PNPresenceWhereNowAPICallBuilder.h in Headers */,
 				798842421C18F146003E8948 /* PNClientStateUpdateStatus.h in Headers */,
 				79A0D8AB1DC22FA70039A264 /* PNHistoryAPICallBuilder.h in Headers */,
+				797D605F22D2E41100E64C94 /* PNSignalAPICallBuilder.h in Headers */,
 				798842AE1C18F2D5003E8948 /* PNPresenceWhereNowParser.h in Headers */,
 				7960B6691F68122200FFAEBB /* PNDeleteMessageAPICallBuilder.h in Headers */,
 				798842491C18F16A003E8948 /* PNPresenceWhereNowResult.h in Headers */,
@@ -2848,6 +2889,7 @@
 				79ABD8961F01636B007634E0 /* PNTelemetry.h in Headers */,
 				7988427F1C18F286003E8948 /* PNNumber.h in Headers */,
 				7988427E1C18F272003E8948 /* PNParser.h in Headers */,
+				797D607622D2E44000E64C94 /* PNSignalStatus.h in Headers */,
 				798842751C18F1FE003E8948 /* PNStatus.h in Headers */,
 				798842881C18F287003E8948 /* PNString.h in Headers */,
 				7988424C1C18F179003E8948 /* PNResult.h in Headers */,
@@ -2870,6 +2912,7 @@
 				798843801C191579003E8948 /* PNPushNotificationsStateModificationParser.h in Headers */,
 				79A238D61D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.h in Headers */,
 				79A0D8AC1DC22FA70039A264 /* PNHistoryAPICallBuilder.h in Headers */,
+				797D606022D2E41100E64C94 /* PNSignalAPICallBuilder.h in Headers */,
 				7988437C1C191579003E8948 /* PNPresenceChannelGroupHereNowResult.h in Headers */,
 				79A0D9121DC230780039A264 /* PNStateAuditAPICallBuilder.h in Headers */,
 				798843571C191579003E8948 /* PNChannelGroupModificationParser.h in Headers */,
@@ -2883,6 +2926,7 @@
 				798843711C191579003E8948 /* PNChannelGroupChannelsResult.h in Headers */,
 				798843591C191579003E8948 /* PNChannelGroupAuditionParser.h in Headers */,
 				798843921C191579003E8948 /* PNAPNSEnabledChannelsResult.h in Headers */,
+				797D607722D2E44000E64C94 /* PNSignalStatus.h in Headers */,
 				798843631C191579003E8948 /* PNNetworkResponseSerializer.h in Headers */,
 				79A0D9301DC230AD0039A264 /* PNStreamAPICallBuilder.h in Headers */,
 				798843851C191579003E8948 /* PNChannelClientStateResult.h in Headers */,
@@ -3026,6 +3070,7 @@
 				79A8BCBD1C58F93900015BDE /* PNErrorStatus+Private.h in Headers */,
 				79A0D90D1DC230760039A264 /* PNStateAuditAPICallBuilder.h in Headers */,
 				79A8BC9E1C58F93900015BDE /* PNServiceData+Private.h in Headers */,
+				797D605B22D2E41100E64C94 /* PNSignalAPICallBuilder.h in Headers */,
 				79A8BC741C58F93900015BDE /* PNObjectEventListener.h in Headers */,
 				79A8BC721C58F93900015BDE /* PNChannelGroupsResult.h in Headers */,
 				79E20D171C8AEC43001BC9CC /* PNEnvelopeInformation.h in Headers */,
@@ -3047,6 +3092,7 @@
 				79A0D88F1DC22F690039A264 /* PNAPNSAuditAPICallBuilder.h in Headers */,
 				79A8BC991C58F93900015BDE /* PNSubscribeParser.h in Headers */,
 				79A8BC791C58F93900015BDE /* PNSubscribeStatus.h in Headers */,
+				797D607222D2E44000E64C94 /* PNSignalStatus.h in Headers */,
 				79A8BCB61C58F93900015BDE /* PNResult+Private.h in Headers */,
 				79A8BC9B1C58F93900015BDE /* PNStatus+Private.h in Headers */,
 				79A8BC781C58F93900015BDE /* PubNub+Subscribe.h in Headers */,
@@ -3127,6 +3173,7 @@
 				79ACC4591C11BC4D0056523A /* PNPushNotificationsStateModificationParser.h in Headers */,
 				79A238D41D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.h in Headers */,
 				79A0D8AA1DC22FA70039A264 /* PNHistoryAPICallBuilder.h in Headers */,
+				797D605E22D2E41100E64C94 /* PNSignalAPICallBuilder.h in Headers */,
 				79ACC4341C11BC4D0056523A /* PNPresenceChannelGroupHereNowResult.h in Headers */,
 				79A0D9101DC230770039A264 /* PNStateAuditAPICallBuilder.h in Headers */,
 				79ACC4851C11BC4D0056523A /* PNChannelGroupModificationParser.h in Headers */,
@@ -3140,6 +3187,7 @@
 				79ACC4831C11BC4D0056523A /* PNChannelGroupAuditionParser.h in Headers */,
 				79ACC4381C11BC4D0056523A /* PNChannelGroupChannelsResult.h in Headers */,
 				79ACC46A1C11BC4D0056523A /* PNNetworkResponseSerializer.h in Headers */,
+				797D607522D2E44000E64C94 /* PNSignalStatus.h in Headers */,
 				79ACC4391C11BC4D0056523A /* PNAPNSEnabledChannelsResult.h in Headers */,
 				79A0D92E1DC230AC0039A264 /* PNStreamAPICallBuilder.h in Headers */,
 				79ACC43B1C11BC4D0056523A /* PNChannelClientStateResult.h in Headers */,
@@ -3283,6 +3331,7 @@
 				79CBB12A1BD03DE4001FC34D /* PNErrorStatus+Private.h in Headers */,
 				79A0D90F1DC230760039A264 /* PNStateAuditAPICallBuilder.h in Headers */,
 				79CBB13C1BD03DE4001FC34D /* PNServiceData+Private.h in Headers */,
+				797D605D22D2E41100E64C94 /* PNSignalAPICallBuilder.h in Headers */,
 				79CBB1661BD03DE4001FC34D /* PNObjectEventListener.h in Headers */,
 				79CBB1261BD03DE4001FC34D /* PNChannelGroupsResult.h in Headers */,
 				79E20D191C8AEC44001BC9CC /* PNEnvelopeInformation.h in Headers */,
@@ -3304,6 +3353,7 @@
 				79A0D8911DC22F690039A264 /* PNAPNSAuditAPICallBuilder.h in Headers */,
 				79CBB1441BD03DE4001FC34D /* PNSubscribeStatus.h in Headers */,
 				79CBB1391BD03DE4001FC34D /* PNResult+Private.h in Headers */,
+				797D607422D2E44000E64C94 /* PNSignalStatus.h in Headers */,
 				79CBB13F1BD03DE4001FC34D /* PNStatus+Private.h in Headers */,
 				79CBB1081BD03DE4001FC34D /* PubNub+Subscribe.h in Headers */,
 				79CBB1111BD03DE4001FC34D /* PNStateListener.h in Headers */,
@@ -4257,11 +4307,13 @@
 				79A3E4082215699900F2ADB9 /* PNMessageCountAPICallBuilder.m in Sources */,
 				79A0D84F1DC22C950039A264 /* PNPresenceChannelHereNowAPICallBuilder.m in Sources */,
 				79A0D84B1DC22C950039A264 /* PNPresenceAPICallBuilder.m in Sources */,
+				797D606A22D2E44000E64C94 /* PNSignalStatus.m in Sources */,
 				79E2D0F41C56434700BAA244 /* PNKeychain.m in Sources */,
 				791582281BD709C60084FC70 /* PNChannel.m in Sources */,
 				791582391BD709C60084FC70 /* PNNetwork.m in Sources */,
 				79A3E41F221569BA00F2ADB9 /* PNMessageCountResult.m in Sources */,
 				7925DB8E1D3FFCAC00857C0D /* PNLLogger.m in Sources */,
+				797D606122D2E41100E64C94 /* PNSignalAPICallBuilder.m in Sources */,
 				79A0D85D1DC22C950039A264 /* PNStateModificationAPICallBuilder.m in Sources */,
 				7915820B1BD709C60084FC70 /* PNString.m in Sources */,
 				79A3E42F221569DA00F2ADB9 /* PNMessageCountParser.m in Sources */,
@@ -4365,11 +4417,13 @@
 				79A3E40A2215699900F2ADB9 /* PNMessageCountAPICallBuilder.m in Sources */,
 				79A0D9441DC230E30039A264 /* PNStreamAuditAPICallBuilder.m in Sources */,
 				791582C11BD709D10084FC70 /* PubNub+APNS.m in Sources */,
+				797D606C22D2E44000E64C94 /* PNSignalStatus.m in Sources */,
 				791582B51BD709D10084FC70 /* PubNub+Core.m in Sources */,
 				79E2D0F51C56434700BAA244 /* PNKeychain.m in Sources */,
 				791582E21BD709D10084FC70 /* PNNetwork.m in Sources */,
 				79A3E421221569BA00F2ADB9 /* PNMessageCountResult.m in Sources */,
 				791582D11BD709D10084FC70 /* PNChannel.m in Sources */,
+				797D606322D2E41100E64C94 /* PNSignalAPICallBuilder.m in Sources */,
 				7925DB901D3FFCAC00857C0D /* PNLLogger.m in Sources */,
 				791582F11BD709D10084FC70 /* PNResult.m in Sources */,
 				79A3E431221569DA00F2ADB9 /* PNMessageCountParser.m in Sources */,
@@ -4473,11 +4527,13 @@
 				79A3E40D2215699900F2ADB9 /* PNMessageCountAPICallBuilder.m in Sources */,
 				79A0D9471DC230E50039A264 /* PNStreamAuditAPICallBuilder.m in Sources */,
 				7988425A1C18F1C8003E8948 /* PNHeartbeat.m in Sources */,
+				797D606F22D2E44000E64C94 /* PNSignalStatus.m in Sources */,
 				798842581C18F1C0003E8948 /* PubNub+Time.m in Sources */,
 				79E2D0F81C56434700BAA244 /* PNKeychain.m in Sources */,
 				7988428C1C18F291003E8948 /* PNChannel.m in Sources */,
 				79A3E424221569BA00F2ADB9 /* PNMessageCountResult.m in Sources */,
 				798842A01C18F2C2003E8948 /* PNNetwork.m in Sources */,
+				797D606622D2E41100E64C94 /* PNSignalAPICallBuilder.m in Sources */,
 				7925DB931D3FFCAC00857C0D /* PNLLogger.m in Sources */,
 				7988426E1C18F1E3003E8948 /* PNResult.m in Sources */,
 				79A3E434221569DA00F2ADB9 /* PNMessageCountParser.m in Sources */,
@@ -4520,6 +4576,7 @@
 				79A0D8821DC22F480039A264 /* PNAPICallBuilder.m in Sources */,
 				798843371C191579003E8948 /* PNAPNSEnabledChannelsResult.m in Sources */,
 				798843101C191579003E8948 /* PNNetworkResponseSerializer.m in Sources */,
+				797D606722D2E41100E64C94 /* PNSignalAPICallBuilder.m in Sources */,
 				798843121C191579003E8948 /* PNChannelClientStateResult.m in Sources */,
 				798843231C191579003E8948 /* PNClientStateUpdateStatus.m in Sources */,
 				798843241C191579003E8948 /* PNPresenceWhereNowParser.m in Sources */,
@@ -4582,6 +4639,7 @@
 				79F90F211FDEC1DC007132A3 /* PNPresenceHeartbeatAPICallBuilder.m in Sources */,
 				79A0D8B21DC22FB60039A264 /* PNHistoryAPICallBuilder.m in Sources */,
 				79E2D0F91C56434700BAA244 /* PNKeychain.m in Sources */,
+				797D607022D2E44000E64C94 /* PNSignalStatus.m in Sources */,
 				79A3E435221569DA00F2ADB9 /* PNMessageCountParser.m in Sources */,
 				798843291C191579003E8948 /* PNChannel.m in Sources */,
 				7988430D1C191579003E8948 /* PNNetwork.m in Sources */,
@@ -4690,11 +4748,13 @@
 				79A3E4092215699900F2ADB9 /* PNMessageCountAPICallBuilder.m in Sources */,
 				79A0D9431DC230E20039A264 /* PNStreamAuditAPICallBuilder.m in Sources */,
 				79A8BC2D1C58F93900015BDE /* PubNub+APNS.m in Sources */,
+				797D606B22D2E44000E64C94 /* PNSignalStatus.m in Sources */,
 				79A8BC211C58F93900015BDE /* PubNub+Core.m in Sources */,
 				79A8BC491C58F93900015BDE /* PNKeychain.m in Sources */,
 				79A8BC4F1C58F93900015BDE /* PNNetwork.m in Sources */,
 				79A3E420221569BA00F2ADB9 /* PNMessageCountResult.m in Sources */,
 				79A8BC3D1C58F93900015BDE /* PNChannel.m in Sources */,
+				797D606222D2E41100E64C94 /* PNSignalAPICallBuilder.m in Sources */,
 				7925DB8F1D3FFCAC00857C0D /* PNLLogger.m in Sources */,
 				79A8BC5E1C58F93900015BDE /* PNResult.m in Sources */,
 				79A3E430221569DA00F2ADB9 /* PNMessageCountParser.m in Sources */,
@@ -4737,6 +4797,7 @@
 				79A0D8801DC22F470039A264 /* PNAPICallBuilder.m in Sources */,
 				79ACC4291C11BC4D0056523A /* PNAPNSEnabledChannelsResult.m in Sources */,
 				79ACC4271C11BC4D0056523A /* PNNetworkResponseSerializer.m in Sources */,
+				797D606522D2E41100E64C94 /* PNSignalAPICallBuilder.m in Sources */,
 				79ACC4071C11BC4D0056523A /* PNChannelClientStateResult.m in Sources */,
 				79ACC4181C11BC4D0056523A /* PNClientStateUpdateStatus.m in Sources */,
 				79ACC4081C11BC4D0056523A /* PNPresenceWhereNowParser.m in Sources */,
@@ -4799,6 +4860,7 @@
 				79F90F231FDEC1DD007132A3 /* PNPresenceHeartbeatAPICallBuilder.m in Sources */,
 				79A0D8B01DC22FB50039A264 /* PNHistoryAPICallBuilder.m in Sources */,
 				79E2D0F71C56434700BAA244 /* PNKeychain.m in Sources */,
+				797D606E22D2E44000E64C94 /* PNSignalStatus.m in Sources */,
 				79A3E433221569DA00F2ADB9 /* PNMessageCountParser.m in Sources */,
 				79ACC41A1C11BC4D0056523A /* PNNetwork.m in Sources */,
 				79ACC4091C11BC4D0056523A /* PNChannel.m in Sources */,
@@ -4907,11 +4969,13 @@
 				79A3E40B2215699900F2ADB9 /* PNMessageCountAPICallBuilder.m in Sources */,
 				79A0D9451DC230E30039A264 /* PNStreamAuditAPICallBuilder.m in Sources */,
 				79CBB0FD1BD03DE4001FC34D /* PubNub+Core.m in Sources */,
+				797D606D22D2E44000E64C94 /* PNSignalStatus.m in Sources */,
 				79CBB0F91BD03DE4001FC34D /* PubNub+APNS.m in Sources */,
 				79E2D0F61C56434700BAA244 /* PNKeychain.m in Sources */,
 				79CBB1871BD03DE4001FC34D /* PNNetwork.m in Sources */,
 				79A3E422221569BA00F2ADB9 /* PNMessageCountResult.m in Sources */,
 				79CBB14B1BD03DE4001FC34D /* PNChannel.m in Sources */,
+				797D606422D2E41100E64C94 /* PNSignalAPICallBuilder.m in Sources */,
 				7925DB911D3FFCAC00857C0D /* PNLLogger.m in Sources */,
 				793887091BEAD4E100DCC662 /* PNNumber.m in Sources */,
 				79A3E432221569DA00F2ADB9 /* PNMessageCountParser.m in Sources */,

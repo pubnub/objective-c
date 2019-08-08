@@ -16,6 +16,15 @@ NS_ASSUME_NONNULL_BEGIN
 typedef void (^PNTClientDidReceiveMessageHandler)(PubNub *client, PNMessageResult *message, BOOL *shouldRemove);
 
 /**
+ * @brief Type used to describe block for signal handling.
+ *
+ * @param client \b PubNub client which used delegate callback.
+ * @param signal Object with information about received signal.
+ * @param shouldRemove Whether handling block should be removed after call or not.
+ */
+typedef void (^PNTClientDidReceiveSignalHandler)(PubNub *client, PNSignalResult *signal, BOOL *shouldRemove);
+
+/**
  * @brief Type used to describe block for presence event handling.
  *
  * @param client \b PubNub client which used delegate callback.
@@ -126,6 +135,14 @@ typedef void (^PNTClientDidReceiveStatusHandler)(PubNub *client, PNSubscribeStat
  * @param handler Block which should be called each received message.
  */
 - (void)addMessageHandlerForClient:(PubNub *)client withBlock:(PNTClientDidReceiveMessageHandler)handler;
+
+/**
+ * @brief Add block which will be called for each received signal.
+ *
+ * @param client \b PubNub client for which signal should be tracked.
+ * @param handler Block which should be called each received signal.
+ */
+- (void)addSignalHandlerForClient:(PubNub *)client withBlock:(PNTClientDidReceiveSignalHandler)handler;
 
 /**
  * @brief Add block which will be called for each received presence change.

@@ -61,10 +61,6 @@
 - (void)testHeartbeatValue_ShouldWrap_WhenValueSmallerThan20 {
   PNConfiguration *config = [PNConfiguration configurationWithPublishKey:self.publishKey
                                                             subscribeKey:self.subscribeKey];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-  config.stripMobilePayload = NO;
-#pragma clang diagnostic pop
   config.presenceHeartbeatValue = 10;
   
   XCTAssertEqual(config.presenceHeartbeatValue, 20);
@@ -74,10 +70,6 @@
 - (void)testHeartbeatValue_ShouldNotWrap_WhenValueEqualOrGreaterThan20 {
   PNConfiguration *config = [PNConfiguration configurationWithPublishKey:self.publishKey
                                                             subscribeKey:self.subscribeKey];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-  config.stripMobilePayload = NO;
-#pragma clang diagnostic pop
   
   config.presenceHeartbeatValue = 20;
   XCTAssertEqual(config.presenceHeartbeatValue, 20);
@@ -91,10 +83,6 @@
 - (void)testCreateClientWithBasicConfiguration {
   PNConfiguration *config = [PNConfiguration configurationWithPublishKey:self.publishKey
                                                             subscribeKey:self.subscribeKey];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    config.stripMobilePayload = NO;
-#pragma clang diagnostic pop
     XCTAssertNotNil(config);
     PubNub *simpleClient = [PubNub clientWithConfiguration:config];
     XCTAssertNotNil(simpleClient);
@@ -103,10 +91,6 @@
 - (void)testCreateClientWithCallbackQueue {
   PNConfiguration *config = [PNConfiguration configurationWithPublishKey:self.publishKey
                                                             subscribeKey:self.subscribeKey];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    config.stripMobilePayload = NO;
-#pragma clang diagnostic pop
     XCTAssertNotNil(config);
     dispatch_queue_t callbackQueue = dispatch_queue_create("com.testCreateClientWithCallbackQueue", DISPATCH_QUEUE_SERIAL);
     PubNub *simpleClient = [PubNub clientWithConfiguration:config callbackQueue:callbackQueue];
