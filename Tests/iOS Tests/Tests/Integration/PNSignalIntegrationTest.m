@@ -96,6 +96,22 @@
         self.client2.subscribe().channels(@[channel]).perform();
     }];
     
+    // Ensure encryption key cause error for regular messages.
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        [self addStatusHandlerForClient:self.client2 withBlock:^(PubNub *client, PNSubscribeStatus *status, BOOL *shouldRemove) {
+            *shouldRemove = YES;
+#pragma GCC diagnostic push
+#pragma clang diagnostic ignored "-Warc-retain-cycles"
+            XCTAssertTrue(status.isError);
+#pragma GCC diagnostic pop
+            handler();
+        }];
+        
+        self.client.publish().message(message).channel(channel)
+            .performWithCompletion(^(PNPublishStatus *status) {
+                XCTAssertFalse(status.isError);
+            });
+    }];
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addSignalHandlerForClient:self.client2
                               withBlock:^(PubNub *client, PNSignalResult *signal, BOOL *shouldRemove) {

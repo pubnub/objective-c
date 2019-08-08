@@ -1626,8 +1626,10 @@ NS_ASSUME_NONNULL_END
         NSMutableIndexSet *duplicateMessagesIndices = [NSMutableIndexSet indexSet];
         [events enumerateObjectsUsingBlock:^(NSDictionary<NSString *, id> *event, NSUInteger eventIdx, 
                                              BOOL *eventsEnumeratorStop) {
+            BOOL isPresenceEvent = event[@"presenceEvent"] != nil;
+            BOOL isDecryptionError = ((NSNumber *)event[@"decryptError"]).boolValue;
             
-            if (event[@"presenceEvent"] == nil && 
+            if (!isPresenceEvent && !isDecryptionError &&
                 ![self cacheObjectIfPossible:event withMaximumCacheSize:maximumMessagesCacheSize]) {
                 
                 [duplicateMessagesIndices addIndex:eventIdx];
