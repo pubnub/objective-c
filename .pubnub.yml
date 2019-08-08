@@ -1,9 +1,28 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.8.11"
+version: "4.9.0"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Add support for signal API."
+        type: feature
+      -
+        text: "Add new callback to 'PNObjectEventListener', so existing listeners may start receiving 'signal' objects by adding new callback implementation."
+        type: feature
+      -
+        text: "Disable pipelining for requests, because there is no guarantee, what responses will arrive in same order as they has been requested - this may lead to unexpected response in used API."
+        type: improvement
+      -
+        text: "Remove deprecated 'stripMobilePayload' configuration option from SDK along with code, which used it."
+        type: improvement
+      -
+        text: "Fixed crash which is caused by attempt to de-duplicate message which PubNub client wasn't able to decrypt with configured 'cipherKey'."
+        type: bug
+    date: Aug 8, 19
+    version: v4.9.0
   -
     changes:
       -
