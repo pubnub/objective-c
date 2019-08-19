@@ -370,6 +370,24 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)handleNewMessage:(PNMessageResult *)data;
 
 /**
+ * @brief Process \c signal which just has been received from \b PubNub service through live feed on
+ * which client subscribed at this moment.
+ *
+ * @param data Result data which hold information about request on which this response has been
+ * received and message itself.
+ */
+- (void)handleNewSignal:(PNSignalResult *)data;
+
+/**
+ * @brief Process \c objects API event which just has been received from \b PubNub service through
+ * live feed on which client subscribed at this moment.
+ *
+ * @param data Result data which hold information about request on which this response has been
+ * received and message itself.
+ */
+- (void)handleNewObjectsEvent:(PNResult *)data;
+
+/**
  * @brief Process presence event which just has been received from \b PubNub service through
  * presence live feeds on which client subscribed at this moment.
  *
@@ -1216,13 +1234,7 @@ NS_ASSUME_NONNULL_END
     // Try fetch time token from passed result/status objects.
     BOOL isInitialSubscription = ([status.clientRequest.URL.query rangeOfString:@"tt=0"].location != NSNotFound);
     NSNumber *overrideTimeToken = self.overrideTimeToken;
-    
-    // Silence static analyzer warnings.
-    // Code is aware about this case and at the end will simply call on 'nil' object method.
-    // In most cases if referenced object become 'nil' it mean what there is no more need in
-    // it and probably whole client instance has been deallocated.
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
+
     if (status.data.timetoken != nil && status.clientRequest.URL != nil) {
         [self handleSubscription:isInitialSubscription timeToken:status.data.timetoken
                           region:status.data.region];
@@ -1243,7 +1255,6 @@ NS_ASSUME_NONNULL_END
             [self.client callBlock:nil status:YES withResult:nil andStatus:(PNStatus *)status];
         }];
     }
-    #pragma clang diagnostic pop
 }
 
 - (void)handleFailedSubscriptionStatus:(PNSubscribeStatus *)status {
@@ -1477,8 +1488,18 @@ NS_ASSUME_NONNULL_END
                     object_setClass(eventResultObject, [PNPresenceEventResult class]);
                     [self handleNewPresenceEvent:((PNPresenceEventResult *)eventResultObject)];
                 } else {
-                    object_setClass(eventResultObject, [PNMessageResult class]);
-                    [self handleNewMessage:(PNMessageResult *)eventResultObject];
+                    PNEnvelopeInformation *envelope = event[@"envelope"];
+                    PNMessageType messageType = envelope.messageType;
+                    
+                    if (messageType == PNObjectMessageType) {
+                        [self handleNewObjectsEvent:eventResultObject];
+                    } else if (messageType == PNRegularMessageType) {
+                        object_setClass(eventResultObject, [PNMessageResult class]);
+                        [self handleNewMessage:(PNMessageResult *)eventResultObject];
+                    }else if (messageType == PNRegularMessageType) {
+                        object_setClass(eventResultObject, [PNSignalResult class]);
+                        [self handleNewSignal:(PNSignalResult *)eventResultObject];
+                    }
                 }
             }
         }];
@@ -1490,7 +1511,6 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)handleNewMessage:(PNMessageResult *)data {
-    
     PNErrorStatus *status = nil;
     
     if (data) {
@@ -1507,23 +1527,41 @@ NS_ASSUME_NONNULL_END
             [status updateData:updatedData];
         }
     }
-    
-    // Silence static analyzer warnings.
-    // Code is aware about this case and at the end will simply call on 'nil' object method.
-    // In most cases if referenced object become 'nil' it mean what there is no more need in
-    // it and probably whole client instance has been deallocated.
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
+
     if (status) {
         [self.client.listenersManager notifyStatusChange:(id)status];
     } else if (data) {
-        if (data.data.envelope.messageType == PNRegularMessageType) {
-            [self.client.listenersManager notifyMessage:data];
-        } else if (data.data.envelope.messageType == PNSignalMessageType) {
-            [self.client.listenersManager notifySignal:(PNSignalResult *)data];
-        }
+        [self.client.listenersManager notifyMessage:data];
     }
-    #pragma clang diagnostic pop
+}
+
+- (void)handleNewSignal:(PNSignalResult *)data {
+    if (!data) {
+        return;
+    }
+    
+    PNLogResult(self.client.logger, @"<PubNub> %@", [data stringifiedRepresentation]);
+    
+    [self.client.listenersManager notifySignal:(PNSignalResult *)data];
+}
+
+- (void)handleNewObjectsEvent:(PNResult *)data {
+    if (!data) {
+        return;
+    }
+
+    PNLogResult(self.client.logger, @"<PubNub> %@", [data stringifiedRepresentation]);
+
+    if ([data.serviceData[@"type"] isEqualToString:@"membership"]) {
+        object_setClass(data, [PNMembershipEventResult class]);
+        [self.client.listenersManager notifyMembershipEvent:(PNMembershipEventResult *)data];
+    } else if ([data.serviceData[@"type"] isEqualToString:@"space"]) {
+        object_setClass(data, [PNSpaceEventResult class]);
+        [self.client.listenersManager notifySpaceEvent:(PNSpaceEventResult *)data];
+    } else if ([data.serviceData[@"type"] isEqualToString:@"user"]) {
+        object_setClass(data, [PNUserEventResult class]);
+        [self.client.listenersManager notifyUserEvent:(PNUserEventResult *)data];
+    }
 }
 
 - (void)handleNewPresenceEvent:(PNPresenceEventResult *)data {
@@ -1531,13 +1569,7 @@ NS_ASSUME_NONNULL_END
     if (data) {
         PNLogResult(self.client.logger, @"<PubNub> %@", [(PNResult *)data stringifiedRepresentation]);
     }
-    
-    // Silence static analyzer warnings.
-    // Code is aware about this case and at the end will simply call on 'nil' object method.
-    // In most cases if referenced object become 'nil' it mean what there is no more need in
-    // it and probably whole client instance has been deallocated.
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
+
     // Check whether state modification event arrived or not.
     // In case of state modification event for current client it should be applied on local storage.
     if ([data.data.presenceEvent isEqualToString:@"state-change"]) {
@@ -1548,7 +1580,6 @@ NS_ASSUME_NONNULL_END
     }
     
     [self.client.listenersManager notifyPresenceEvent:data];
-    #pragma clang diagnostic pop
 }
 
 
@@ -1561,13 +1592,7 @@ NS_ASSUME_NONNULL_END
     NSString *channelsList = [PNChannel namesForRequest:channels defaultString:@","];
     NSString *groupsList = [PNChannel namesForRequest:[self channelGroups]];
     NSArray *fullObjectsList = [channels arrayByAddingObjectsFromArray:[self channelGroups]];
-    
-    // Silence static analyzer warnings.
-    // Code is aware about this case and at the end will simply call on 'nil' object method.
-    // In most cases if referenced object become 'nil' it mean what there is no more need in
-    // it and probably whole client instance has been deallocated.
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
+
     NSDictionary *mergedState = [self.client.clientStateManager stateMergedWith:state
                                                                      forObjects:fullObjectsList];
     [self.client.clientStateManager mergeWithState:mergedState];
@@ -1613,7 +1638,6 @@ NS_ASSUME_NONNULL_END
     if (self.escapedFilterExpression) {
         [parameters addQueryParameter:self.escapedFilterExpression forFieldName:@"filter-expr"];
     }
-    #pragma clang diagnostic pop
     
     return parameters;
 }
@@ -1626,10 +1650,12 @@ NS_ASSUME_NONNULL_END
         NSMutableIndexSet *duplicateMessagesIndices = [NSMutableIndexSet indexSet];
         [events enumerateObjectsUsingBlock:^(NSDictionary<NSString *, id> *event, NSUInteger eventIdx, 
                                              BOOL *eventsEnumeratorStop) {
+            PNMessageType messageType = ((PNEnvelopeInformation *)event[@"envelope"]).messageType;
+            BOOL isObjectEvent = messageType == PNObjectMessageType;
             BOOL isPresenceEvent = event[@"presenceEvent"] != nil;
             BOOL isDecryptionError = ((NSNumber *)event[@"decryptError"]).boolValue;
             
-            if (!isPresenceEvent && !isDecryptionError &&
+            if (!isPresenceEvent && !isDecryptionError && !isObjectEvent &&
                 ![self cacheObjectIfPossible:event withMaximumCacheSize:maximumMessagesCacheSize]) {
                 
                 [duplicateMessagesIndices addIndex:eventIdx];
@@ -1685,7 +1711,7 @@ NS_ASSUME_NONNULL_END
     // Cache objects if required.
     id data = object[@"message"];
     
-    if (objects.count == 0 || [objects indexOfObject:data] == NSNotFound) {
+    if (data && (objects.count == 0 || [objects indexOfObject:data] == NSNotFound)) {
         cached = YES; 
         [objects addObject:data];
         [_cachedObjectIdentifiers addObject:identifier];

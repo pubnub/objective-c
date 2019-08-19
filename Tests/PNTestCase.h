@@ -28,10 +28,37 @@ typedef void (^PNTClientDidReceiveSignalHandler)(PubNub *client, PNSignalResult 
  * @brief Type used to describe block for presence event handling.
  *
  * @param client \b PubNub client which used delegate callback.
- * @param message Object with information about received presence event.
+ * @param event Object with information about received presence event.
  * @param shouldRemove Whether handling block should be removed after call or not.
  */
 typedef void (^PNTClientDidReceivePresenceEventHandler)(PubNub *client, PNPresenceEventResult *event, BOOL *shouldRemove);
+
+/**
+ * @brief Type used to describe block for \c user event handling.
+ *
+ * @param client \b PubNub client which used delegate callback.
+ * @param event Object with information about received \c user event.
+ * @param shouldRemove Whether handling block should be removed after call or not.
+ */
+typedef void (^PNTClientDidReceiveUserEventHandler)(PubNub *client, PNUserEventResult *event, BOOL *shouldRemove);
+
+/**
+ * @brief Type used to describe block for \c space event handling.
+ *
+ * @param client \b PubNub client which used delegate callback.
+ * @param event Object with information about received \c space event.
+ * @param shouldRemove Whether handling block should be removed after call or not.
+ */
+typedef void (^PNTClientDidReceiveSpaceEventHandler)(PubNub *client, PNSpaceEventResult *event, BOOL *shouldRemove);
+
+/**
+ * @brief Type used to describe block for \c membership event handling.
+ *
+ * @param client \b PubNub client which used delegate callback.
+ * @param event Object with information about received \c membership event.
+ * @param shouldRemove Whether handling block should be removed after call or not.
+ */
+typedef void (^PNTClientDidReceiveMembershipEventHandler)(PubNub *client, PNMembershipEventResult *event, BOOL *shouldRemove);
 
 /**
  * @brief Type used to describe block for status change handling.
@@ -150,7 +177,31 @@ typedef void (^PNTClientDidReceiveStatusHandler)(PubNub *client, PNSubscribeStat
  * @param client \b PubNub client for which presence change should be tracked.
  * @param handler Block which should be called each presence change.
  */
-- (void)addPresenceHandlerForClient:(PubNub *)client withBlock:(PNTClientDidReceiveMessageHandler)handler;
+- (void)addPresenceHandlerForClient:(PubNub *)client withBlock:(PNTClientDidReceivePresenceEventHandler)handler;
+
+/**
+ * @brief Add block which will be called for each received \c user event.
+ *
+ * @param client \b PubNub client for which \c user events should be tracked.
+ * @param handler Block which should be called each \c user event.
+ */
+- (void)addUserHandlerForClient:(PubNub *)client withBlock:(PNTClientDidReceiveUserEventHandler)handler;
+
+/**
+ * @brief Add block which will be called for each received \c space event.
+ *
+ * @param client \b PubNub client for which \c space events should be tracked.
+ * @param handler Block which should be called each \c space event.
+ */
+- (void)addSpaceHandlerForClient:(PubNub *)client withBlock:(PNTClientDidReceiveSpaceEventHandler)handler;
+
+/**
+ * @brief Add block which will be called for each received \c membership event.
+ *
+ * @param client \b PubNub client for which \c membership events should be tracked.
+ * @param handler Block which should be called each \c membership event.
+ */
+- (void)addMembershipHandlerForClient:(PubNub *)client withBlock:(PNTClientDidReceiveMembershipEventHandler)handler;
 
 /**
  * @brief Remove all handler for specified \c client.

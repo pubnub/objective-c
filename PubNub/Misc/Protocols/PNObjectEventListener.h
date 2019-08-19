@@ -5,6 +5,7 @@
 #pragma mark Class forward
 
 @class PNPresenceEventResult, PNSubscribeStatus, PNMessageResult, PNSignalResult, PNErrorStatus;
+@class PNMembershipEventResult, PNSpaceEventResult, PNUserEventResult;
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -40,8 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
  * on which client subscribed at this moment.
  *
  * @param client \b PubNub client which triggered this callback method call.
- * @param signal Instance which store signal information in \c data
- * property.
+ * @param signal Instance which store signal information in \c data property.
  */
 - (void)client:(PubNub *)client didReceiveSignal:(PNSignalResult *)signal;
 
@@ -53,6 +53,33 @@ NS_ASSUME_NONNULL_BEGIN
  * @param event Instance which store presence event information in \c data property.
  */
 - (void)client:(PubNub *)client didReceivePresenceEvent:(PNPresenceEventResult *)event;
+
+/**
+ * @brief Notify listener about new \c user events which arrived from one of remote data object's
+ * presence live feed on which client subscribed at this moment.
+ *
+ * @param client \b PubNub client which triggered this callback method call.
+ * @param event Instance which store \c user event information in \c data property.
+ */
+- (void)client:(PubNub *)client didReceiveUserEvent:(PNUserEventResult *)event;
+
+/**
+ * @brief Notify listener about new \c space events which arrived from one of remote data object's
+ * presence live feed on which client subscribed at this moment.
+ *
+ * @param client \b PubNub client which triggered this callback method call.
+ * @param event Instance which store \c space event information in \c data property.
+ */
+- (void)client:(PubNub *)client didReceiveSpaceEvent:(PNSpaceEventResult *)event;
+
+/**
+ * @brief Notify listener about new \c membership events which arrived from one of remote data
+ * object's presence live feed on which client subscribed at this moment.
+ *
+ * @param client \b PubNub client which triggered this callback method call.
+ * @param event Instance which store \c membership event information in \c data property.
+ */
+- (void)client:(PubNub *)client didReceiveMembershipEvent:(PNMembershipEventResult *)event;
 
 
 #pragma mark -  Status change handler.

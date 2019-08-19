@@ -12,7 +12,7 @@
 /**
  * @brief API endpoints description basing on operation type.
  */
-static NSString * const PNOperationRequestTemplate[27] = {
+static NSString * const PNOperationRequestTemplate[41] = {
     [PNSubscribeOperation] = @"/v2/subscribe/{sub-key}/{channels}/0",
     [PNUnsubscribeOperation] = @"/v2/presence/sub_key/{sub-key}/channel/{channels}/leave",
     [PNPublishOperation] = @"/publish/{pub-key}/{sub-key}/0/{channel}/0/{message}",
@@ -39,6 +39,20 @@ static NSString * const PNOperationRequestTemplate[27] = {
     [PNAddPushNotificationsOnChannelsOperation] = @"/v1/push/sub-key/{sub-key}/devices/{token}",
     [PNRemovePushNotificationsFromChannelsOperation] = @"/v1/push/sub-key/{sub-key}/devices/{token}",
     [PNRemoveAllPushNotificationsOperation] = @"/v1/push/sub-key/{sub-key}/devices/{token}/remove",
+    [PNCreateUserOperation] = @"/v1/objects/{sub-key}/users",
+    [PNUpdateUserOperation] = @"/v1/objects/{sub-key}/users/{user_id}",
+    [PNDeleteUserOperation] = @"/v1/objects/{sub-key}/users/{user_id}",
+    [PNFetchUserOperation] = @"/v1/objects/{sub-key}/users/{user_id}",
+    [PNFetchUsersOperation] = @"/v1/objects/{sub-key}/users",
+    [PNCreateSpaceOperation] = @"/v1/objects/{sub-key}/spaces",
+    [PNUpdateSpaceOperation] = @"/v1/objects/{sub-key}/spaces/{space_id}",
+    [PNDeleteSpaceOperation] = @"/v1/objects/{sub-key}/spaces/{space_id}",
+    [PNFetchSpaceOperation] = @"/v1/objects/{sub-key}/spaces/{space_id}",
+    [PNFetchSpacesOperation] = @"/v1/objects/{sub-key}/spaces",
+    [PNUpdateMembershipsOperation] = @"/v1/objects/{sub-key}/users/{user_id}/spaces",
+    [PNFetchMembershipsOperation] = @"/v1/objects/{sub-key}/users/{user_id}/spaces",
+    [PNUpdateMembersOperation] = @"/v1/objects/{sub-key}/spaces/{space_id}/users",
+    [PNFetchMembersOperation] = @"/v1/objects/{sub-key}/spaces/{space_id}/users",
     [PNTimeOperation] = @"/time/0"
 };
 

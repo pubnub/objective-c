@@ -28,15 +28,14 @@
 #pragma mark - Parsing
 
 + (NSDictionary<NSString *, id> *)parsedServiceResponse:(id)response {
-    
     // To handle case when response is unexpected for this type of operation processed value sent through 
     // 'nil' initialized local variable.
     NSDictionary *processedResponse = nil;
     
     // Dictionary is valid response type for operation error.
     if ([response isKindOfClass:[NSDictionary class]]) {
-        
         NSMutableDictionary *errorData = [NSMutableDictionary new];
+        
         if (response[@"message"] || response[@"error"]) {
             id errorDescription = response[@"error"];
             
@@ -46,12 +45,38 @@
                 errorDescription = response[@"error_message"];
             }
             
-            errorData[@"information"] = response[@"message"]?: errorDescription;
+            if ([errorDescription isKindOfClass:[NSDictionary class]] &&
+                errorDescription[@"message"]) {
+                NSMutableArray<NSDictionary *> *errorDetails = errorDescription[@"details"];
+                errorDescription = errorDescription[@"message"];
+                
+                if (errorDetails.count) {
+                    NSMutableArray<NSString *> *detailStrings = [NSMutableArray new];
+                    
+                    for (NSDictionary *details in errorDetails) {
+                        NSString *detailString = [@"- " stringByAppendingString:details[@"message"]];
+                        
+                        if (details[@"location"]) {
+                            detailString = [detailString stringByAppendingFormat:@" Location: %@",
+                                            details[@"location"]];
+                        }
+                        
+                        [detailStrings addObject:detailString];
+                    }
+                    
+                    if (detailStrings.count) {
+                        errorDescription = [errorDescription stringByAppendingFormat:@" Details:\n%@",
+                                            [detailStrings componentsJoinedByString:@"\n"]];
+                    }
+                }
+            }
+            
+            errorData[@"information"] = response[@"message"] ?: errorDescription;
         }
         
         if (response[@"payload"]) {
-            errorData[@"channels"] = (response[@"payload"][@"channels"] ?: @[]);
-            errorData[@"channelGroups"] = (response[@"payload"][@"channel-groups"] ?: @[]);
+            errorData[@"channels"] = response[@"payload"][@"channels"] ?: @[];
+            errorData[@"channelGroups"] = response[@"payload"][@"channel-groups"] ?: @[];
             
             if (!response[@"payload"][@"channels"] && !response[@"payload"][@"channel-groups"]) {
                 errorData[@"data"] = response[@"payload"];
