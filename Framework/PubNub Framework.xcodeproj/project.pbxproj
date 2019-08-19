@@ -1386,7 +1386,6 @@
 		79ACC42C1C11BC4D0056523A /* PNClientStateParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0D51BD03DE4001FC34D /* PNClientStateParser.m */; };
 		79ACC42D1C11BC4D0056523A /* PubNub+Publish.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0631BD03DE4001FC34D /* PubNub+Publish.m */; };
 		79ACC42E1C11BC4D0056523A /* PNPresenceHereNowParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0E11BD03DE4001FC34D /* PNPresenceHereNowParser.m */; };
-		79ACC4311C11BC4D0056523A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79CBB19E1BD03EE4001FC34D /* UIKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		79ACC4321C11BC4D0056523A /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 79CBB1A01BD03EEA001FC34D /* libz.tbd */; };
 		79ACC4341C11BC4D0056523A /* PNPresenceChannelGroupHereNowResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0901BD03DE4001FC34D /* PNPresenceChannelGroupHereNowResult.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		79ACC4351C11BC4D0056523A /* PNPresenceChannelHereNowResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0921BD03DE4001FC34D /* PNPresenceChannelHereNowResult.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1995,7 +1994,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				79ACC4311C11BC4D0056523A /* UIKit.framework in Frameworks */,
 				79ACC4321C11BC4D0056523A /* libz.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
