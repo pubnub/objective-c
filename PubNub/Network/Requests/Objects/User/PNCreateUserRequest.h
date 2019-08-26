@@ -16,6 +16,20 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PNCreateUserRequest : PNManageUserDataRequest
 
 
+#pragma mark - Information
+
+/**
+ * @brief Bitfield set to fields which should be returned with response.
+ *
+ * @discussion Additional \c user object fields which should be returned in response (by default
+ * set to \b PNUserCustomField).
+ *
+ * @note Supported keys specified in \b PNUserFields enum.
+ * @note Default value can be reset by setting \c 0.
+ */
+@property (nonatomic, assign) PNUserFields includeFields;
+
+
 #pragma mark - Initialization & Configuration
 
 /**
@@ -26,7 +40,8 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @return Configured and ready to use \c create \c user request.
  */
-+ (instancetype)requestWithUserID:(NSString *)identifier name:(NSString *)name;
++ (instancetype)requestWithUserID:(NSString *)identifier name:(NSString *)name
+    NS_SWIFT_NAME(init(userID:name:));
 
 /**
  * @brief Forbids request initialization.
@@ -35,7 +50,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @return Initialized request.
  */
-- (nullable instancetype)init NS_UNAVAILABLE;
+- (instancetype)init NS_UNAVAILABLE;
 
 #pragma mark -
 

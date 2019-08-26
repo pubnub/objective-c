@@ -20,14 +20,6 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Information
 
 /**
- * @brief Bitfield set to fields which should be returned with response.
- *
- * @note Supported keys specified in \b PNSpaceFields enum.
- * @note Omit this property if you don't want to retrieve additional attributes.
- */
-@property (nonatomic, assign) PNSpaceFields includeFields;
-
-/**
  * @brief \c Space description information.
  */
 @property (nonatomic, nullable, copy) NSString *information;

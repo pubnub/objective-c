@@ -24,7 +24,8 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @note Will be set to \c NO (by default total count of objects not returned).
  */
-@property (nonatomic, assign, getter = shouldIncludeCount) BOOL includeCount;
+@property (nonatomic, assign, getter = shouldIncludeCount) BOOL includeCount
+    NS_SWIFT_NAME(includeCount);
 
 /**
  * @brief Previously-returned cursor bookmark for fetching the next page.

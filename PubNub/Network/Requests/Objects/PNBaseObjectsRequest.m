@@ -19,6 +19,16 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Information
 
 /**
+ * @brief Bitfield set to fields which should be returned with response.
+ *
+ * @note Available values depends from object type for which request created. So far following
+ *   helper \a types available: \b PNMembershipFields, \b PNMemberFields,
+ *   \b PNSpaceFields, \b PNUserFields.
+ * @note Omit this property if you don't want to retrieve additional attributes.
+ */
+@property (nonatomic, assign) NSUInteger includeFields;
+
+/**
  * @brief Unique \c object identifier.
  */
 @property (nonatomic, copy) NSString *identifier;

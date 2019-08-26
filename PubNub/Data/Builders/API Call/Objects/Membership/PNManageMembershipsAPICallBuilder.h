@@ -7,14 +7,14 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark Interface declaration
 
 /**
- * @brief \c Update \c memberships API call builder.
+ * @brief \c Manage \c memberships API call builder.
  *
  * @author Serhii Mamontov
  * @version 4.10.0
  * @since 4.10.0
  * @copyright © 2010-2019 PubNub, Inc.
  */
-@interface PNUpdateMembershipsAPICallBuilder : PNAPICallBuilder
+@interface PNManageMembershipsAPICallBuilder : PNAPICallBuilder
 
 
 #pragma mark - Configuration
@@ -26,7 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @return API call configuration builder.
  */
-@property (nonatomic, readonly, strong) PNUpdateMembershipsAPICallBuilder * (^includeFields)(PNMembershipFields includeFields);
+@property (nonatomic, readonly, strong) PNManageMembershipsAPICallBuilder * (^includeFields)(PNMembershipFields includeFields);
 
 /**
  * @brief List of \c spaces for which additional information associated with \c user should be
@@ -40,7 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @return API call configuration builder.
  */
-@property (nonatomic, readonly, strong) PNUpdateMembershipsAPICallBuilder * (^update)(NSArray<NSDictionary *> *spaces);
+@property (nonatomic, readonly, strong) PNManageMembershipsAPICallBuilder * (^update)(NSArray<NSDictionary *> *spaces);
 
 /**
  * @brief Whether total count of \c memberships should be included in response or not.
@@ -49,7 +49,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @return API call configuration builder.
  */
-@property (nonatomic, readonly, strong) PNUpdateMembershipsAPICallBuilder * (^includeCount)(BOOL shouldIncludeCount);
+@property (nonatomic, readonly, strong) PNManageMembershipsAPICallBuilder * (^includeCount)(BOOL shouldIncludeCount);
 
 /**
  * @brief List of \c spaces which should be added to \c user's memberships.
@@ -62,16 +62,16 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @return API call configuration builder.
  */
-@property (nonatomic, readonly, strong) PNUpdateMembershipsAPICallBuilder * (^add)(NSArray<NSDictionary *> *spaces);
+@property (nonatomic, readonly, strong) PNManageMembershipsAPICallBuilder * (^add)(NSArray<NSDictionary *> *spaces);
 
 /**
- * @brief List of \c spaces which \c user should leave.
+ * @brief List of \c spaces (their identifiers) which should be removed from \c user's memberships.
  *
  * @param spaces List of \c space identifiers.
  *
  * @return API call configuration builder.
  */
-@property (nonatomic, readonly, strong) PNUpdateMembershipsAPICallBuilder * (^remove)(NSArray<NSString *> *spaces);
+@property (nonatomic, readonly, strong) PNManageMembershipsAPICallBuilder * (^remove)(NSArray<NSString *> *spaces);
 
 /**
  * @brief Target \c user identifier.
@@ -80,10 +80,10 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @return API call configuration builder.
  */
-@property (nonatomic, readonly, strong) PNUpdateMembershipsAPICallBuilder * (^userId)(NSString *userId);
+@property (nonatomic, readonly, strong) PNManageMembershipsAPICallBuilder * (^userId)(NSString *userId);
 
 /**
- * @brief Maximum number of \c memberships per fetched page.
+ * @brief Maximum number of \c memberships per response page.
  *
  * @note Will be set to \c 100 (which is also maximum value) if not specified.
  *
@@ -91,7 +91,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @return API call configuration builder.
  */
-@property (nonatomic, readonly, strong) PNUpdateMembershipsAPICallBuilder * (^limit)(NSUInteger limit);
+@property (nonatomic, readonly, strong) PNManageMembershipsAPICallBuilder * (^limit)(NSUInteger limit);
 
 /**
  * @brief Cursor value to navigate to next fetched result page.
@@ -100,7 +100,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @return API call configuration builder.
  */
-@property (nonatomic, readonly, strong) PNUpdateMembershipsAPICallBuilder * (^start)(NSString *start);
+@property (nonatomic, readonly, strong) PNManageMembershipsAPICallBuilder * (^start)(NSString *start);
 
 /**
  * @brief Cursor value to navigate to previous fetched result page.
@@ -111,7 +111,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @return API call configuration builder.
  */
-@property (nonatomic, readonly, strong) PNUpdateMembershipsAPICallBuilder * (^end)(NSString *end);
+@property (nonatomic, readonly, strong) PNManageMembershipsAPICallBuilder * (^end)(NSString *end);
 
 
 #pragma mark - Execution
@@ -121,7 +121,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @param block \c Memberships \c update completion handler block.
  */
-@property (nonatomic, readonly, strong) void(^performWithCompletion)(PNUpdateMembershipsCompletionBlock block);
+@property (nonatomic, readonly, strong) void(^performWithCompletion)(PNManageMembershipsCompletionBlock block);
 
 
 #pragma mark - Misc
@@ -134,7 +134,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @return API call configuration builder.
  */
-@property (nonatomic, readonly, strong) PNUpdateMembershipsAPICallBuilder * (^queryParam)(NSDictionary *params);
+@property (nonatomic, readonly, strong) PNManageMembershipsAPICallBuilder * (^queryParam)(NSDictionary *params);
 
 #pragma mark -
 

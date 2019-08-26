@@ -8,7 +8,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark Interfaces declaration
 
 /**
- * @brief Object which is used to represent Objects API response for fetch user request.
+ * @brief Object which is used to represent Objects API response for \c fetch \c user request.
  *
  * @author Serhii Mamontov
  * @version 4.10.0
@@ -31,7 +31,8 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 /**
- * @brief Object which is used to represent Objects API response for fetch all users request.
+ * @brief Object which is used to represent Objects API response for \c fetch \c all \c users
+ * request.
  *
  * @author Serhii Mamontov
  * @version 4.10.0
@@ -72,7 +73,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 /**
- * @brief Object which is used to provide access to user object fetch request response.
+ * @brief Object which is used to provide access to \c fetch \c user request response.
  *
  * @author Serhii Mamontov
  * @version 4.10.0
@@ -85,7 +86,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Information
 
 /**
- * @brief Fetch user request processed information.
+ * @brief \c Fetch \c user request processed information.
  */
 @property (nonatomic, readonly, strong) PNFetchUserData *data;
 
@@ -96,7 +97,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 /**
- * @brief Object which is used to provide access to fetch all user objects request response.
+ * @brief Object which is used to provide access to \c fetch \c all \c users request response.
  *
  * @author Serhii Mamontov
  * @version 4.10.0
@@ -109,7 +110,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Information
 
 /**
- * @brief Fetch all users request processed information.
+ * @brief \c Fetch \c all \c users request processed information.
  */
 @property (nonatomic, readonly, strong) PNFetchUsersData *data;
 

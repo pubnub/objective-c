@@ -202,7 +202,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, nullable, readonly, strong) NSDate *created;
 
 /**
- * @brief \c Membership modification date.
+ * @brief \c Membership modification date or \c nil if removed.
  */
 @property (nonatomic, nullable, readonly, strong) NSDate *updated;
 
@@ -219,7 +219,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, strong) NSString *spaceId;
 
 /**
- * @brief Identifier of \c user for which \c membership has been \c created / \c updated.
+ * @brief Identifier of \c user for which \c membership has been \c created / \c updated /
+ * \c deleted.
  */
 @property (nonatomic, readonly, strong) NSString *userId;
 
@@ -273,6 +274,16 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, nullable, readonly, copy) NSString *information;
 
 /**
+ * @brief \c Space data modification date or \c nil if removed.
+ */
+@property (nonatomic, nullable, readonly, strong) NSDate *updated;
+
+/**
+ * @brief Name which has been associated with \c user.
+ */
+@property (nonatomic, nullable, readonly, copy) NSString *name;
+
+/**
  * @brief \c Space identifier.
  */
 @property (nonatomic, readonly, strong) NSString *identifier;
@@ -288,16 +299,6 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief Name of action for which \c user event has been sent.
  */
 @property (nonatomic, readonly, assign) NSString *event;
-
-/**
- * @brief \c Space data modification date.
- */
-@property (nonatomic, readonly, strong) NSDate *updated;
-
-/**
- * @brief Name which has been associated with \c user.
- */
-@property (nonatomic, readonly, copy) NSString *name;
 
 /**
  * @brief \c User object version identifier.
@@ -365,8 +366,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  * @brief Time when \c user event has been triggered.
- *
- * @return Number with unsugned long long timestamp.
  */
 @property (nonatomic, readonly, strong) NSNumber *timestamp;
 

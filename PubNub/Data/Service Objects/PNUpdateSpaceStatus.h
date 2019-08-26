@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Information
 
 /**
- * @brief Updated user object.
+ * @brief Updated space object.
  */
 @property (nonatomic, nullable, readonly, strong) PNSpace *space;
 

@@ -182,6 +182,15 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Misc
 
 /**
+ * @brief Status class which should be used to represent request error.
+ *
+ * @param request Request with information which should be used to decide on class.
+ *
+ * @return Class for error status presentation.
+ */
+- (Class)errorStatusClassForRequest:(PNRequest *)request;
+
+/**
  * @brief Store provided unique user identifier in keychain.
  *
  * @param uuid Unique user identifier which has been provided with \b PNConfiguration instance.
@@ -472,6 +481,67 @@ NS_ASSUME_NONNULL_END
 }
 
 
+#pragma mark - Requests helper
+
+- (void)performRequest:(PNRequest *)request withCompletion:(id)block {
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    __weak __typeof(self) weakSelf = self;
+    
+    if (@available(macOS 10.10, iOS 8.0, *)) {
+        if (self.configuration.applicationExtensionSharedGroupIdentifier) {
+            queue = dispatch_get_main_queue();
+        }
+    }
+    
+    dispatch_async(queue, ^{
+        __strong __typeof__(weakSelf) strongSelf = weakSelf;
+        NSString *httpMethod = request.httpMethod.lowercaseString;
+        BOOL hasBody = [@[@"post", @"patch"] indexOfObject:httpMethod] != NSNotFound;
+        PNRequestParameters *parameters = request.requestParameters;
+        parameters.HTTPMethod = request.httpMethod;
+        NSData *data = hasBody ? request.bodyData : nil;
+        
+        NSError *error = request.parametersError;
+        id requestCompletionBlock = nil;
+        id errorStatus = nil;
+        
+        if (error) {
+            Class errorStatusClass = [self errorStatusClassForRequest:request];
+            errorStatus = [errorStatusClass objectForOperation:request.operation
+                                             completedWithTask:nil
+                                                 processedData:nil
+                                               processingError:error];
+            [(PNStatus *)errorStatus updateCategory:PNBadRequestCategory];
+        }
+        
+        if ([request.httpMethod isEqualToString:@"GET"]) {
+            requestCompletionBlock = ^(PNResult *result, PNStatus *status) {
+                [strongSelf callBlock:block status:NO withResult:result andStatus:status];
+            };
+        } else {
+            requestCompletionBlock = ^(PNStatus *status) {
+                [strongSelf callBlock:block status:YES withResult:nil andStatus:status];
+            };
+        }
+        
+        if (errorStatus) {
+            if ([request.httpMethod isEqualToString:@"GET"]) {
+                [strongSelf callBlock:block status:NO withResult:nil andStatus:errorStatus];
+            } else {
+                [strongSelf callBlock:block status:YES withResult:nil andStatus:errorStatus];
+            }
+            
+            return;
+        }
+        
+        [self processOperation:request.operation
+                withParameters:parameters
+                          data:data
+               completionBlock:requestCompletionBlock];
+    });
+}
+
+
 #pragma mark - Operation processing
 
 - (void)processOperation:(PNOperationType)operationType
@@ -606,6 +676,16 @@ NS_ASSUME_NONNULL_END
 
 
 #pragma mark - Misc
+
+- (Class)errorStatusClassForRequest:(PNRequest *)request {
+    Class class = [PNErrorStatus class];
+    
+    if (PNOperationStatusClasses[request.operation]) {
+        class = NSClassFromString(PNOperationStatusClasses[request.operation]);
+    }
+    
+    return class;
+}
 
 - (void)storeUUID:(NSString *)uuid {
     

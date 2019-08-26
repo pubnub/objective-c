@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @since 4.10.0
  * @copyright © 2010-2019 PubNub, Inc.
  */
-@interface PNUpdateMembersRequest : PNObjectsPaginatedRequest
+@interface PNManageMembersRequest : PNObjectsPaginatedRequest
 
 
 #pragma mark - Information
@@ -59,11 +59,11 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Initialization & Configuration
 
 /**
- * @brief Create and configure \c update \c space's members request.
+ * @brief Create and configure \c manage \c space's members request.
  *
  * @param identifier Identifier of \c space for which members list should be updated.
  *
- * @return Configured and ready to use \c update \c space's members request.
+ * @return Configured and ready to use \c manage \c space's members request.
  */
 + (instancetype)requestWithSpaceID:(NSString *)identifier;
 
@@ -74,7 +74,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @return Initialized request.
  */
-- (nullable instancetype)init NS_UNAVAILABLE;
+- (instancetype)init NS_UNAVAILABLE;
 
 #pragma mark -
 

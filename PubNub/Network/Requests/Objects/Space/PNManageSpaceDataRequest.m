@@ -18,9 +18,6 @@
 
 #pragma mark - Information
 
-@dynamic includeFields;
-
-
 - (void)setName:(NSString *)name {
     if (_name.length == 0 && name.length) {
         _name = [name copy];

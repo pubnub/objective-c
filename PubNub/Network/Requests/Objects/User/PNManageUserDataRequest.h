@@ -20,14 +20,6 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Information
 
 /**
- * @brief Bitfield set to fields which should be returned with response.
- *
- * @note Supported keys specified in \b PNUserFields enum.
- * @note Omit this property if you don't want to retrieve additional attributes.
- */
-@property (nonatomic, assign) PNUserFields includeFields;
-
-/**
  * @brief \c User identifier from external service (database, auth service).
  */
 @property (nonatomic, nullable, copy) NSString *externalId;

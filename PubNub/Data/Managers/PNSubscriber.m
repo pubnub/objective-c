@@ -1496,7 +1496,7 @@ NS_ASSUME_NONNULL_END
                     } else if (messageType == PNRegularMessageType) {
                         object_setClass(eventResultObject, [PNMessageResult class]);
                         [self handleNewMessage:(PNMessageResult *)eventResultObject];
-                    }else if (messageType == PNRegularMessageType) {
+                    } else if (messageType == PNSignalMessageType) {
                         object_setClass(eventResultObject, [PNSignalResult class]);
                         [self handleNewSignal:(PNSignalResult *)eventResultObject];
                     }

@@ -8,7 +8,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark Interfaces declaration
 
 /**
- * @brief Object which is used to represent Objects API response for create space request.
+ * @brief Object which is used to represent Objects API response for \c create \c space request.
  *
  * @author Serhii Mamontov
  * @version 4.10.0
@@ -30,8 +30,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+
 /**
- * @brief Object which is used to provide access to processed create space request results.
+ * @brief Object which is used to provide access to processed \c create \c space request results.
  *
  * @author Serhii Mamontov
  * @version 4.10.0
@@ -44,7 +45,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Information
 
 /**
- * @brief Create users request processed information.
+ * @brief \c Create \c space request processed information.
  */
 @property (nonatomic, readonly, strong) PNCreateSpaceData *data;
 

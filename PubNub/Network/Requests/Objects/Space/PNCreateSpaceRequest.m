@@ -60,6 +60,7 @@ NS_ASSUME_NONNULL_END
 
 - (instancetype)initWithSpaceID:(NSString *)identifier name:(NSString *)name {
     if ((self = [super initWithObject:@"Space" identifier:identifier])) {
+        self.includeFields = PNSpaceCustomField;
         self.name = name;
 
         if (!name.length) {

@@ -5,7 +5,7 @@
  * @copyright © 2010-2019 PubNub, Inc.
  */
 #import "PNBaseObjectsRequest+Private.h"
-#import "PNUpdateMembershipsRequest.h"
+#import "PNManageMembersRequest.h"
 #import "PNRequest+Private.h"
 #import "PNErrorCodes.h"
 #import "PNDictionary.h"
@@ -15,23 +15,23 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Protected interface declaration
 
-@interface PNUpdateMembershipsRequest ()
+@interface PNManageMembersRequest ()
 
 
 #pragma mark - Serialization
 
 /**
- * @brief Serialize input array of \c space dictionaries into structure required by API.
+ * @brief Serialize input array of \c user dictionaries into structure required by API.
  *
  * @note This method check provided \c custom field value and create \b parametersError if it
  * contain not allowed data types. If \b parametersError is set, method won't process passed
  * \c spaces.
  *
- * @param spaces List of \c space dictionaries which should be serialized.
+ * @param users List of \c user dictionaries which should be serialized.
  *
- * @return Objects which describe \c spaces in required by Objects API structure.
+ * @return Objects which describe \c users in required by Objects API structure.
  */
-- (NSArray *)serializedSpacesFromArray:(NSArray<NSDictionary *> *)spaces;
+- (NSArray *)serializedUsersFromArray:(NSArray<NSDictionary *> *)users;
 
 #pragma mark -
 
@@ -43,7 +43,7 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Interface implementation
 
-@implementation PNUpdateMembershipsRequest
+@implementation PNManageMembersRequest
 
 
 #pragma mark - Information
@@ -52,7 +52,7 @@ NS_ASSUME_NONNULL_END
 
 
 - (PNOperationType)operation {
-    return PNUpdateMembershipsOperation;
+    return PNManageMembersOperation;
 }
 
 - (NSString *)httpMethod {
@@ -60,12 +60,12 @@ NS_ASSUME_NONNULL_END
 }
 
 - (NSData *)bodyData {
-    NSArray *updatedSpaces = [self serializedSpacesFromArray:self.updateSpaces];
-    NSArray *addSpaces = [self serializedSpacesFromArray:self.joinSpaces];
-    NSMutableArray *removedSpaces = [NSMutableArray new];
+    NSArray *updatedMembers = [self serializedUsersFromArray:self.updateMembers];
+    NSArray *addMembers = [self serializedUsersFromArray:self.addMembers];
+    NSMutableArray *removedMembers = [NSMutableArray new];
     
-    for (NSString *spaceId in self.leaveSpaces) {
-        [removedSpaces addObject:@{ @"id": spaceId }];
+    for (NSString *memberId in self.removeMembers) {
+        [removedMembers addObject:@{ @"id": memberId }];
     }
     
     if (self.parametersError) {
@@ -76,16 +76,16 @@ NS_ASSUME_NONNULL_END
     NSError *error = nil;
     NSData *data = nil;
     
-    if (addSpaces.count) {
-        update[@"add"] = addSpaces;
+    if (addMembers.count) {
+        update[@"add"] = addMembers;
     }
     
-    if (updatedSpaces.count) {
-        update[@"update"] = updatedSpaces;
+    if (updatedMembers.count) {
+        update[@"update"] = updatedMembers;
     }
     
-    if (removedSpaces.count) {
-        update[@"remove"] = removedSpaces;
+    if (removedMembers.count) {
+        update[@"remove"] = removedMembers;
     }
     
     if ([NSJSONSerialization isValidJSONObject:update]) {
@@ -106,7 +106,7 @@ NS_ASSUME_NONNULL_END
     
     if (error) {
         NSDictionary *errorInformation = @{
-            NSLocalizedDescriptionKey: @"Memberships update information serialization did fail",
+            NSLocalizedDescriptionKey: @"Members update information serialization did fail",
             NSUnderlyingErrorKey: error
         };
         
@@ -121,8 +121,8 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Initialization & Configuration
 
-+ (instancetype)requestWithUserID:(NSString *)identifier {
-    return [[self alloc] initWithObject:@"User" identifier:identifier];
++ (instancetype)requestWithSpaceID:(NSString *)identifier {
+    return [[self alloc] initWithObject:@"Space" identifier:identifier];
 }
 
 - (instancetype)init {
@@ -134,25 +134,25 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Serialization
 
-- (NSArray *)serializedSpacesFromArray:(NSArray<NSDictionary *> *)spaces {
+- (NSArray *)serializedUsersFromArray:(NSArray<NSDictionary *> *)users {
     NSArray<Class> *clss = @[[NSString class], [NSNumber class]];
-    NSMutableArray *serializedSpaces = [NSMutableArray new];
+    NSMutableArray *serializedMembers = [NSMutableArray new];
     
-    for (NSDictionary *space in spaces) {
-        if (((NSString *)space[@"spaceId"]).length) {
-            NSMutableDictionary *spaceData = [@{ @"id": space[@"spaceId"] } mutableCopy];
-            BOOL isValidCustom = [PNDictionary isDictionary:space[@"custom"]
+    for (NSDictionary *user in users) {
+        if (((NSString *)user[@"userId"]).length) {
+            NSMutableDictionary *userData = [@{ @"id": user[@"userId"] } mutableCopy];
+            BOOL isValidCustom = [PNDictionary isDictionary:user[@"custom"]
                                       containValueOfClasses:clss];
             
-            if (((NSDictionary *)space[@"custom"]).count) {
+            if (((NSDictionary *)user[@"custom"]).count) {
                 if (isValidCustom) {
-                    spaceData[@"custom"] = space[@"custom"];
+                    userData[@"custom"] = user[@"custom"];
                 } else {
-                    NSString *reason = [NSString stringWithFormat:@"'custom' object for '%@' space "
-                                        "membership contain not allowed data types (only NSString "
-                                        "and NSNumber allowed).", space[@"spaceId"]];
+                    NSString *reason = [NSString stringWithFormat:@"'custom' object for '%@' "
+                                        "medmber contain not allowed data types (only NSString "
+                                        "and NSNumber allowed).", user[@"userId"]];
                     NSDictionary *errorInformation = @{
-                        NSLocalizedDescriptionKey: @"User additional membership information "
+                        NSLocalizedDescriptionKey: @"User additional member information "
                                                     "serialization did fail",
                         NSLocalizedFailureReasonErrorKey: reason,
                     };
@@ -167,11 +167,11 @@ NS_ASSUME_NONNULL_END
                 break;
             }
             
-            [serializedSpaces addObject:spaceData];
+            [serializedMembers addObject:userData];
         }
     }
     
-    return serializedSpaces;
+    return serializedMembers;
 }
 
 #pragma mark -

@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @since 4.10.0
  * @copyright © 2010-2019 PubNub, Inc.
  */
-@interface PNUpdateMembershipsRequest : PNObjectsPaginatedRequest
+@interface PNManageMembershipsRequest : PNObjectsPaginatedRequest
 
 
 #pragma mark - Information
@@ -59,11 +59,11 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Initialization & Configuration
 
 /**
- * @brief Create and configure \c update \c user's memberships request.
+ * @brief Create and configure \c manage \c user's memberships request.
  *
- * @param identifier Identifier of \c user for which memberships should be updated.
+ * @param identifier Identifier of \c user for which memberships should be managed.
  *
- * @return Configured and ready to use \c update \c user's memberships request.
+ * @return Configured and ready to use \c manage \c user's memberships request.
  */
 + (instancetype)requestWithUserID:(NSString *)identifier;
 
@@ -74,7 +74,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @return Initialized request.
  */
-- (nullable instancetype)init NS_UNAVAILABLE;
+- (instancetype)init NS_UNAVAILABLE;
 
 #pragma mark -
 

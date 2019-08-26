@@ -5,7 +5,6 @@
  * @copyright © 2010-2019 PubNub, Inc.
  */
 #import "PNFetchUsersRequest.h"
-#import "PNRequest+Private.h"
 
 
 #pragma mark Interface implementation

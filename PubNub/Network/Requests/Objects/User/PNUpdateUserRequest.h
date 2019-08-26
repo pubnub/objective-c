@@ -16,6 +16,18 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PNUpdateUserRequest : PNManageUserDataRequest
 
 
+#pragma mark - Information
+
+/**
+ * @brief Bitfield set to fields which should be returned with response.
+ *
+ * @note Supported keys specified in \b PNUserFields enum.
+ * @note Omit this property or set to \c 0 if you don't want to retrieve additional attributes.
+ * @note By default set to \b PNSpaceCustomField.
+ */
+@property (nonatomic, assign) PNUserFields includeFields;
+
+
 #pragma mark - Initialization & Configuration
 
 /**
@@ -34,7 +46,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @return Initialized request.
  */
-- (nullable instancetype)init NS_UNAVAILABLE;
+- (instancetype)init NS_UNAVAILABLE;
 
 #pragma mark -
 

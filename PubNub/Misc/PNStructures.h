@@ -18,7 +18,7 @@
 @class PNPublishStatus, PNSignalStatus, PNErrorStatus, PNTimeResult, PNResult, PNStatus;
 @class PNCreateUserStatus, PNUpdateUserStatus, PNFetchUserResult, PNFetchUsersResult;
 @class PNCreateSpaceStatus, PNUpdateSpaceStatus, PNFetchSpaceResult, PNFetchSpacesResult;
-@class PNUpdateMembershipsStatus, PNFetchMembershipsResult, PNUpdateMembersStatus, PNFetchMembersResult;
+@class PNManageMembershipsStatus, PNFetchMembershipsResult, PNManageMembersStatus, PNFetchMembersResult;
 
 #ifndef PNStructures_h
 #define PNStructures_h
@@ -219,12 +219,12 @@ typedef void(^PNFetchSpaceCompletionBlock)(PNFetchSpaceResult *result, PNErrorSt
 typedef void(^PNFetchSpacesCompletionBlock)(PNFetchSpacesResult *result, PNErrorStatus *status);
 
 /**
- * @brief \c Update \c memberships completion handler block.
+ * @brief \c Manage \c memberships completion handler block.
  *
- * @param status Object with information about \c update \c memberships request results and service
+ * @param status Object with information about \c manage \c memberships request results and service
  * response.
  */
-typedef void(^PNUpdateMembershipsCompletionBlock)(PNUpdateMembershipsStatus *status);
+typedef void(^PNManageMembershipsCompletionBlock)(PNManageMembershipsStatus *status);
 
 /**
  * @brief \c Fetch \c memberships completion handler block.
@@ -236,12 +236,12 @@ typedef void(^PNFetchMembershipsCompletionBlock)(PNFetchMembershipsResult *resul
                                                  PNErrorStatus *status);
 
 /**
- * @brief \c Update \c members completion handler block.
+ * @brief \c Manage \c members completion handler block.
  *
- * @param status Object with information about \c update \c members request results and service
+ * @param status Object with information about \c manage \c members request results and service
  * response.
  */
-typedef void(^PNUpdateMembersCompletionBlock)(PNUpdateMembersStatus *status);
+typedef void(^PNManageMembersCompletionBlock)(PNManageMembersStatus *status);
 
 /**
  * @brief \c Fetch \c members completion handler block.
@@ -378,7 +378,7 @@ NS_ASSUME_NONNULL_END
 typedef NS_OPTIONS(NSUInteger, PNMembershipFields) {
     /**
      * @brief Field with additional information which has been associated with \c user during
-     * \c space \c membership \c create / \c update requests.
+     * \c membership \c create / \c update requests.
      */
     PNMembershipCustomField = 1 << 2,
     /**
@@ -625,9 +625,9 @@ typedef NS_ENUM(NSInteger, PNOperationType){
     PNDeleteSpaceOperation,
     PNFetchSpaceOperation,
     PNFetchSpacesOperation,
-    PNUpdateMembershipsOperation,
+    PNManageMembershipsOperation,
     PNFetchMembershipsOperation,
-    PNUpdateMembersOperation,
+    PNManageMembersOperation,
     PNFetchMembersOperation,
     PNTimeOperation
 };

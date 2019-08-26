@@ -63,13 +63,13 @@ NS_ASSUME_NONNULL_END
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client1.memberships().userId(users[0][@"id"])
+        self.client1.manageMemberships().userId(users[0][@"id"])
             .includeFields(PNMembershipCustomField)
             .add(@[
                 @{ @"spaceId": spaces[0][@"id"], @"custom": customs[0] },
                 @{ @"spaceId": spaces[1][@"id"], @"custom": customs[1] }
             ])
-            .performWithCompletion(^(PNUpdateMembershipsStatus *status) {
+            .performWithCompletion(^(PNManageMembershipsStatus *status) {
                 NSArray<PNMembership *> *memberships = status.data.memberships;
                 
                 for (PNMembership *membership in memberships) {
@@ -94,10 +94,10 @@ NS_ASSUME_NONNULL_END
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client1.memberships().userId(users[0][@"id"])
+        self.client1.manageMemberships().userId(users[0][@"id"])
             .includeFields(PNMembershipSpaceField|PNMembershipSpaceCustomField)
             .add(@[@{ @"spaceId": spaces[0][@"id"] }, @{ @"spaceId": spaces[1][@"id"] }])
-            .performWithCompletion(^(PNUpdateMembershipsStatus *status) {
+            .performWithCompletion(^(PNManageMembershipsStatus *status) {
                 NSArray<PNMembership *> *memberships = status.data.memberships;
                 
                 for (PNMembership *membership in memberships) {
@@ -119,8 +119,8 @@ NS_ASSUME_NONNULL_END
 - (void)testCreate_ShouldTriggerCreateEventOnUserChannel_WhenNewMembershipCreated {
     NSArray<NSDictionary *> *spaces = [self createTestSpaces];
     NSArray<NSDictionary *> *users = [self createTestUsers];
-    NSString *channel = [@[@"pnuser", users[0][@"id"]] componentsJoinedByString:@"-"];
     NSMutableArray *createdMemberships = [NSMutableArray new];
+    NSString *channel = users[0][@"id"];
     [self.client2 addListener:self];
     
     
@@ -148,10 +148,10 @@ NS_ASSUME_NONNULL_END
 #pragma GCC diagnostic pop
         }];
         
-        self.client1.memberships().userId(users[0][@"id"])
+        self.client1.manageMemberships().userId(users[0][@"id"])
             .includeFields(PNMembershipSpaceField|PNMembershipSpaceCustomField)
             .add(@[@{ @"spaceId": spaces[0][@"id"] }, @{ @"spaceId": spaces[1][@"id"] }])
-            .performWithCompletion(^(PNUpdateMembershipsStatus *status) { });
+            .performWithCompletion(^(PNManageMembershipsStatus *status) { });
     }];
 }
 
@@ -179,10 +179,10 @@ NS_ASSUME_NONNULL_END
 #pragma GCC diagnostic pop
         }];
         
-        self.client1.memberships().userId(users[0][@"id"])
+        self.client1.manageMemberships().userId(users[0][@"id"])
             .includeFields(PNMembershipSpaceField|PNMembershipSpaceCustomField)
             .add(@[@{ @"spaceId": spaces[0][@"id"] }, @{ @"spaceId": spaces[1][@"id"] }])
-            .performWithCompletion(^(PNUpdateMembershipsStatus *status) { });
+            .performWithCompletion(^(PNManageMembershipsStatus *status) { });
     }];
 }
 
@@ -192,19 +192,19 @@ NS_ASSUME_NONNULL_END
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client1.memberships().userId(users[0][@"id"])
+        self.client1.manageMemberships().userId(users[0][@"id"])
             .add(@[ @{ @"spaceId": spaces[0][@"id"] }, @{ @"spaceId": spaces[1][@"id"] }])
-            .performWithCompletion(^(PNUpdateMembershipsStatus *status) {
+            .performWithCompletion(^(PNManageMembershipsStatus *status) {
                 XCTAssertFalse(status.isError);
                 handler();
             });
     }];
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client1.memberships().userId(users[0][@"id"])
+        self.client1.manageMemberships().userId(users[0][@"id"])
             .includeFields(PNMembershipCustomField)
             .add(@[ @{ @"spaceId": spaces[0][@"id"] }, @{ @"spaceId": spaces[1][@"id"] }])
-            .performWithCompletion(^(PNUpdateMembershipsStatus *status) {
+            .performWithCompletion(^(PNManageMembershipsStatus *status) {
                 XCTAssertTrue(status.isError);
                 XCTAssertEqual(status.statusCode, 400);
                 handler();
@@ -231,13 +231,13 @@ NS_ASSUME_NONNULL_END
     [self createUsersMembership:users inSpaces:spaces withCustoms:customs];
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client1.memberships().userId(users[0][@"id"])
+        self.client1.manageMemberships().userId(users[0][@"id"])
             .includeFields(PNMembershipCustomField)
             .update(@[
                 @{ @"spaceId": spaces[0][@"id"], @"custom": expectedCustoms[0] },
                 @{ @"spaceId": spaces[1][@"id"], @"custom": expectedCustoms[1] }
             ])
-            .performWithCompletion(^(PNUpdateMembershipsStatus *status) {
+            .performWithCompletion(^(PNManageMembershipsStatus *status) {
                 NSArray<PNMembership *> *memberships = status.data.memberships;
                 
                 for (PNMembership *membership in memberships) {
@@ -268,13 +268,13 @@ NS_ASSUME_NONNULL_END
     [self createUsersMembership:users inSpaces:spaces withCustoms:nil];
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client1.memberships().userId(users[0][@"id"])
+        self.client1.manageMemberships().userId(users[0][@"id"])
             .includeFields(PNMembershipSpaceField|PNMembershipSpaceCustomField)
             .update(@[
                 @{ @"spaceId": spaces[0][@"id"], @"custom": customs[0] },
                 @{ @"spaceId": spaces[1][@"id"], @"custom": customs[1] }
             ])
-            .performWithCompletion(^(PNUpdateMembershipsStatus *status) {
+            .performWithCompletion(^(PNManageMembershipsStatus *status) {
                 NSArray<PNMembership *> *memberships = status.data.memberships;
                 
                 for (PNMembership *membership in memberships) {
@@ -296,12 +296,12 @@ NS_ASSUME_NONNULL_END
 - (void)testUpdate_ShouldTriggerUpdateEventOnUserChannel_WhenMembershipUpdated {
     NSArray<NSDictionary *> *spaces = [self createTestSpaces];
     NSArray<NSDictionary *> *users = [self createTestUsers];
-    NSString *channel = [@[@"pnuser", users[0][@"id"]] componentsJoinedByString:@"-"];
     NSMutableArray *updatedMemberships = [NSMutableArray new];
     NSArray<NSDictionary *> *customs = @[
         @{ @"user-membership-custom": [NSUUID UUID].UUIDString },
         @{ @"user-membership-custom": [NSUUID UUID].UUIDString }
     ];
+    NSString *channel = users[0][@"id"];
     [self.client2 addListener:self];
     
     
@@ -330,13 +330,13 @@ NS_ASSUME_NONNULL_END
 #pragma GCC diagnostic pop
         }];
         
-        self.client1.memberships().userId(users[0][@"id"])
+        self.client1.manageMemberships().userId(users[0][@"id"])
             .includeFields(PNMembershipSpaceField|PNMembershipSpaceCustomField)
             .update(@[
                 @{ @"spaceId": spaces[0][@"id"], @"custom": customs[0] },
                 @{ @"spaceId": spaces[1][@"id"], @"custom": customs[1] }
             ])
-            .performWithCompletion(^(PNUpdateMembershipsStatus *status) { });
+            .performWithCompletion(^(PNManageMembershipsStatus *status) { });
     }];
 }
 
@@ -369,11 +369,11 @@ NS_ASSUME_NONNULL_END
 #pragma GCC diagnostic pop
         }];
         
-        self.client1.memberships().userId(users[0][@"id"]).update(@[
+        self.client1.manageMemberships().userId(users[0][@"id"]).update(@[
                 @{ @"spaceId": spaces[0][@"id"], @"custom": customs[0] },
                 @{ @"spaceId": spaces[1][@"id"], @"custom": customs[1] }
             ])
-            .performWithCompletion(^(PNUpdateMembershipsStatus *status) { });
+            .performWithCompletion(^(PNManageMembershipsStatus *status) { });
     }];
 }
 
@@ -387,13 +387,13 @@ NS_ASSUME_NONNULL_END
     
    
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client1.memberships().userId(users[0][@"id"])
+        self.client1.manageMemberships().userId(users[0][@"id"])
             .includeFields(PNMembershipCustomField)
             .update(@[
                 @{ @"spaceId": spaces[0][@"id"], @"custom": customs[0] },
                 @{ @"spaceId": spaces[1][@"id"], @"custom": customs[1] }
             ])
-            .performWithCompletion(^(PNUpdateMembershipsStatus *status) {
+            .performWithCompletion(^(PNManageMembershipsStatus *status) {
                 XCTAssertTrue(status.isError);
                 XCTAssertEqual(status.statusCode, 400);
                 handler();
@@ -412,10 +412,10 @@ NS_ASSUME_NONNULL_END
     [self createUsersMembership:users inSpaces:spaces withCustoms:nil];
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client1.memberships().userId(users[0][@"id"])
+        self.client1.manageMemberships().userId(users[0][@"id"])
             .includeFields(PNMembershipCustomField)
             .remove(@[ spaces[0][@"id"] ])
-            .performWithCompletion(^(PNUpdateMembershipsStatus *status) {
+            .performWithCompletion(^(PNManageMembershipsStatus *status) {
                 XCTAssertFalse(status.isError);
                 XCTAssertEqual(status.data.memberships.count, 1);
                 XCTAssertEqualObjects(status.data.memberships[0].spaceId, spaces[1][@"id"]);
@@ -434,10 +434,10 @@ NS_ASSUME_NONNULL_END
     [self createUsersMembership:users inSpaces:spaces withCustoms:nil];
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client1.memberships().userId(users[0][@"id"])
+        self.client1.manageMemberships().userId(users[0][@"id"])
             .includeFields(PNMembershipSpaceField|PNMembershipSpaceCustomField)
             .remove(@[ spaces[0][@"id"] ])
-            .performWithCompletion(^(PNUpdateMembershipsStatus *status) {
+            .performWithCompletion(^(PNManageMembershipsStatus *status) {
                 XCTAssertFalse(status.isError);
                 XCTAssertEqual(status.data.memberships.count, 1);
                 XCTAssertNotNil(status.data.memberships[0].space);
@@ -452,8 +452,8 @@ NS_ASSUME_NONNULL_END
 - (void)testDelete_ShouldTriggerDeleteEventOnUserChannel_WhenMembershipRemoved {
     NSArray<NSDictionary *> *spaces = [self createTestSpaces];
     NSArray<NSDictionary *> *users = [self createTestUsers];
-    NSString *channel = [@[@"pnuser", users[0][@"id"]] componentsJoinedByString:@"-"];
     NSMutableArray *deletedMemberships = [NSMutableArray new];
+    NSString *channel = users[0][@"id"];
     [self.client2 addListener:self];
     
     
@@ -481,10 +481,10 @@ NS_ASSUME_NONNULL_END
 #pragma GCC diagnostic pop
         }];
         
-        self.client1.memberships().userId(users[0][@"id"])
+        self.client1.manageMemberships().userId(users[0][@"id"])
             .includeFields(PNMembershipSpaceField|PNMembershipSpaceCustomField)
             .remove(@[ spaces[0][@"id"], spaces[1][@"id"] ])
-            .performWithCompletion(^(PNUpdateMembershipsStatus *status) { });
+            .performWithCompletion(^(PNManageMembershipsStatus *status) { });
     }];
 }
 
@@ -512,10 +512,10 @@ NS_ASSUME_NONNULL_END
 #pragma GCC diagnostic pop
         }];
         
-        self.client1.memberships().userId(users[0][@"id"])
+        self.client1.manageMemberships().userId(users[0][@"id"])
             .includeFields(PNMembershipSpaceField|PNMembershipSpaceCustomField)
             .remove(@[ spaces[0][@"id"], spaces[1][@"id"] ])
-            .performWithCompletion(^(PNUpdateMembershipsStatus *status) { });
+            .performWithCompletion(^(PNManageMembershipsStatus *status) { });
     }];
 }
 
@@ -597,6 +597,38 @@ NS_ASSUME_NONNULL_END
                 
                 handler();
             });
+    }];
+}
+
+
+#pragma mark - Tests :: Member events
+
+- (void)testUser_ShouldTriggerDeleteEventOnSpaceChannel_WhenUserFromMembershipsDeleted {
+    NSArray<NSDictionary *> *spaces = [self createTestSpaces];
+    NSArray<NSDictionary *> *users = [self createTestUsers];
+    NSString *channel = spaces[0][@"id"];
+    [self.client2 addListener:self];
+    
+    
+    [self createUsersMembership:users inSpaces:spaces withCustoms:nil];
+    [self subscribeOnObjectChannels:@[channel]];
+    
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        [self addUserHandlerForClient:self.client2
+                            withBlock:^(PubNub *client, PNUserEventResult *event, BOOL *remove) {
+            *remove = YES;
+#pragma GCC diagnostic push
+#pragma clang diagnostic ignored "-Warc-retain-cycles"
+            XCTAssertEqualObjects(event.data.event, @"delete");
+            XCTAssertEqualObjects(event.data.identifier, users[0][@"id"]);
+            XCTAssertNotNil(event.data.timestamp);
+                                
+            handler();
+#pragma GCC diagnostic pop
+        }];
+        
+        self.client1.deleteUser().userId(users[0][@"id"])
+            .performWithCompletion(^(PNAcknowledgmentStatus *status) { });
     }];
 }
 

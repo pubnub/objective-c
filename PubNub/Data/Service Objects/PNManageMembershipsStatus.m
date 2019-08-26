@@ -4,7 +4,7 @@
  * @since 4.10.0
  * @copyright © 2010-2019 PubNub, Inc.
  */
-#import "PNUpdateMembershipsStatus.h"
+#import "PNManageMembershipsStatus.h"
 #import "PNServiceData+Private.h"
 #import "PNMembership+Private.h"
 #import "PNResult+Private.h"
@@ -14,12 +14,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Protected interfaces declaration
 
-@interface PNUpdateMembershipsStatus ()
+@interface PNManageMembershipsStatus ()
 
 
 #pragma mark - Information
 
-@property (nonatomic, nonnull, strong) PNUpdateMembershipsData *data;
+@property (nonatomic, nonnull, strong) PNManageMembershipsData *data;
 
 #pragma mark -
 
@@ -27,7 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 
-@interface PNUpdateMembershipsData ()
+@interface PNManageMembershipsData ()
 
 
 #pragma mark - Information
@@ -44,7 +44,7 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Interfaces implementation
 
-@implementation PNUpdateMembershipsData
+@implementation PNManageMembershipsData
 
 
 #pragma mark - Information
@@ -81,14 +81,14 @@ NS_ASSUME_NONNULL_END
 @end
 
 
-@implementation PNUpdateMembershipsStatus
+@implementation PNManageMembershipsStatus
 
 
 #pragma mark - Information
 
-- (PNUpdateMembershipsData *)data {
+- (PNManageMembershipsData *)data {
     if (!_data) {
-        _data = [PNUpdateMembershipsData dataWithServiceResponse:self.serviceData];
+        _data = [PNManageMembershipsData dataWithServiceResponse:self.serviceData];
     }
     
     return _data;

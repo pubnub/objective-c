@@ -4,13 +4,13 @@
  * @since 4.10.0
  * @copyright © 2010-2019 PubNub, Inc.
  */
-#import "PNUpdateMembersAPICallBuilder.h"
+#import "PNManageMembersAPICallBuilder.h"
 #import "PNAPICallBuilder+Private.h"
 
 
 #pragma mark Interface implementation
 
-@implementation PNUpdateMembersAPICallBuilder
+@implementation PNManageMembersAPICallBuilder
 
 
 #pragma mark - Information
@@ -20,15 +20,15 @@
 
 #pragma mark - Configuration
 
-- (PNUpdateMembersAPICallBuilder * (^)(PNMemberFields includeFields))includeFields {
-    return ^PNUpdateMembersAPICallBuilder * (PNMemberFields includeFields) {
+- (PNManageMembersAPICallBuilder * (^)(PNMemberFields includeFields))includeFields {
+    return ^PNManageMembersAPICallBuilder * (PNMemberFields includeFields) {
         [self setValue:@(includeFields) forParameter:NSStringFromSelector(_cmd)];
         return self;
     };
 }
 
-- (PNUpdateMembersAPICallBuilder * (^)(NSArray<NSDictionary *> *users))update {
-    return ^PNUpdateMembersAPICallBuilder * (NSArray<NSDictionary *> *users) {
+- (PNManageMembersAPICallBuilder * (^)(NSArray<NSDictionary *> *users))update {
+    return ^PNManageMembersAPICallBuilder * (NSArray<NSDictionary *> *users) {
         if ([users isKindOfClass:[NSArray class]] && users.count) {
             [self setValue:users forParameter:NSStringFromSelector(_cmd)];
         }
@@ -37,15 +37,15 @@
     };
 }
 
-- (PNUpdateMembersAPICallBuilder * (^)(BOOL shouldIncludeCount))includeCount {
-    return ^PNUpdateMembersAPICallBuilder * (BOOL shouldIncludeCount) {
+- (PNManageMembersAPICallBuilder * (^)(BOOL shouldIncludeCount))includeCount {
+    return ^PNManageMembersAPICallBuilder * (BOOL shouldIncludeCount) {
         [self setValue:@(shouldIncludeCount) forParameter:NSStringFromSelector(_cmd)];
         return self;
     };
 }
 
-- (PNUpdateMembersAPICallBuilder * (^)(NSArray<NSDictionary *> *users))add {
-    return ^PNUpdateMembersAPICallBuilder * (NSArray<NSDictionary *> *users) {
+- (PNManageMembersAPICallBuilder * (^)(NSArray<NSDictionary *> *users))add {
+    return ^PNManageMembersAPICallBuilder * (NSArray<NSDictionary *> *users) {
         if ([users isKindOfClass:[NSArray class]] && users.count) {
             [self setValue:users forParameter:NSStringFromSelector(_cmd)];
         }
@@ -54,8 +54,8 @@
     };
 }
 
-- (PNUpdateMembersAPICallBuilder * (^)(NSArray<NSString *> *users))remove {
-    return ^PNUpdateMembersAPICallBuilder * (NSArray<NSString *> *users) {
+- (PNManageMembersAPICallBuilder * (^)(NSArray<NSString *> *users))remove {
+    return ^PNManageMembersAPICallBuilder * (NSArray<NSString *> *users) {
         if ([users isKindOfClass:[NSArray class]] && users.count) {
             [self setValue:users forParameter:NSStringFromSelector(_cmd)];
         }
@@ -64,8 +64,8 @@
     };
 }
 
-- (PNUpdateMembersAPICallBuilder * (^)(NSString *spaceId))spaceId {
-    return ^PNUpdateMembersAPICallBuilder * (NSString *spaceId) {
+- (PNManageMembersAPICallBuilder * (^)(NSString *spaceId))spaceId {
+    return ^PNManageMembersAPICallBuilder * (NSString *spaceId) {
         if ([spaceId isKindOfClass:[NSString class]] && spaceId.length) {
             [self setValue:spaceId forParameter:NSStringFromSelector(_cmd)];
         }
@@ -74,15 +74,15 @@
     };
 }
 
-- (PNUpdateMembersAPICallBuilder * (^)(NSUInteger limit))limit {
-    return ^PNUpdateMembersAPICallBuilder * (NSUInteger limit) {
+- (PNManageMembersAPICallBuilder * (^)(NSUInteger limit))limit {
+    return ^PNManageMembersAPICallBuilder * (NSUInteger limit) {
         [self setValue:@(limit) forParameter:NSStringFromSelector(_cmd)];
         return self;
     };
 }
 
-- (PNUpdateMembersAPICallBuilder * (^)(NSString *name))start {
-    return ^PNUpdateMembersAPICallBuilder * (NSString *start) {
+- (PNManageMembersAPICallBuilder * (^)(NSString *name))start {
+    return ^PNManageMembersAPICallBuilder * (NSString *start) {
         if ([start isKindOfClass:[NSString class]] && start.length) {
             [self setValue:start forParameter:NSStringFromSelector(_cmd)];
         }
@@ -91,8 +91,8 @@
     };
 }
 
-- (PNUpdateMembersAPICallBuilder * (^)(NSString *end))end {
-    return ^PNUpdateMembersAPICallBuilder * (NSString *end) {
+- (PNManageMembersAPICallBuilder * (^)(NSString *end))end {
+    return ^PNManageMembersAPICallBuilder * (NSString *end) {
         if ([end isKindOfClass:[NSString class]] && end.length) {
             [self setValue:end forParameter:NSStringFromSelector(_cmd)];
         }
@@ -104,8 +104,8 @@
 
 #pragma mark - Execution
 
-- (void(^)(PNUpdateMembersCompletionBlock block))performWithCompletion {
-    return ^(PNUpdateMembersCompletionBlock block) {
+- (void(^)(PNManageMembersCompletionBlock block))performWithCompletion {
+    return ^(PNManageMembersCompletionBlock block) {
         [super performWithBlock:block];
     };
 }

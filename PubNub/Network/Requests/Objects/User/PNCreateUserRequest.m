@@ -60,6 +60,7 @@ NS_ASSUME_NONNULL_END
 
 - (instancetype)initWithUserID:(NSString *)identifier name:(NSString *)name {
     if ((self = [super initWithObject:@"User" identifier:identifier])) {
+        self.includeFields = PNUserCustomField;
         self.name = name;
 
         if (!name.length) {

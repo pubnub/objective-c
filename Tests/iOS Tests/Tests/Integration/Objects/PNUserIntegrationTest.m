@@ -169,11 +169,11 @@ NS_ASSUME_NONNULL_END
 - (void)testUpdate_ShouldTriggerUpdateEvent_WhenUpdatingExistingUser {
     NSString *userId = [NSUUID UUID].UUIDString;
     NSString *name = [NSUUID UUID].UUIDString;
-    NSString *channel = [@[@"pnuser", userId] componentsJoinedByString:@"-"];
     NSDictionary *custom = @{ @"user-custom": [NSUUID UUID].UUIDString };
     NSDictionary *expectedCustom = @{ @"user-custom": [NSUUID UUID].UUIDString };
     NSString *expectedName = [NSUUID UUID].UUIDString;
     [self.client2 addListener:self];
+    NSString *channel = userId;
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
@@ -263,8 +263,8 @@ NS_ASSUME_NONNULL_END
 - (void)testDelete_ShouldTriggerDeleteEvent_WhenDeletingExistingUser {
     NSString *userId = [NSUUID UUID].UUIDString;
     NSString *name = [NSUUID UUID].UUIDString;
-    NSString *channel = [@[@"pnuser", userId] componentsJoinedByString:@"-"];
     [self.client2 addListener:self];
+    NSString *channel = userId;
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {

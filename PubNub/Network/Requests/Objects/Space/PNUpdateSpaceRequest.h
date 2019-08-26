@@ -16,6 +16,17 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PNUpdateSpaceRequest : PNManageSpaceDataRequest
 
 
+#pragma mark - Information
+
+/**
+ * @brief Bitfield set to fields which should be returned with response.
+ *
+ * @note Supported keys specified in \b PNSpaceFields enum.
+ * @note Omit this property if you don't want to retrieve additional attributes.
+ */
+@property (nonatomic, assign) PNSpaceFields includeFields;
+
+
 #pragma mark - Initialization & Configuration
 
 /**
@@ -34,7 +45,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @return Initialized request.
  */
-- (nullable instancetype)init NS_UNAVAILABLE;
+- (instancetype)init NS_UNAVAILABLE;
 
 #pragma mark -
 

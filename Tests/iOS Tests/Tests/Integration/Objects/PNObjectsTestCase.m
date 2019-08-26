@@ -153,8 +153,8 @@ NS_ASSUME_NONNULL_END
     
     for (NSDictionary *user in users) {
         [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-            self.client1.memberships().userId(user[@"id"]).add(spacesForMembership)
-                .performWithCompletion(^(PNUpdateMembershipsStatus *status) {
+            self.client1.manageMemberships().userId(user[@"id"]).add(spacesForMembership)
+                .performWithCompletion(^(PNManageMembershipsStatus *status) {
                     XCTAssertFalse(status.isError);
                     XCTAssertNotNil(status.data.memberships);
                     handler();
@@ -181,8 +181,8 @@ NS_ASSUME_NONNULL_END
     
     for (NSDictionary *space in spaces) {
         [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-            self.client1.members().spaceId(space[@"id"]).add(spaceMembers)
-                .performWithCompletion(^(PNUpdateMembersStatus *status) {
+            self.client1.manageMembers().spaceId(space[@"id"]).add(spaceMembers)
+                .performWithCompletion(^(PNManageMembersStatus *status) {
                     XCTAssertFalse(status.isError);
                     XCTAssertNotNil(status.data.members);
                     handler();

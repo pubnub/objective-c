@@ -49,9 +49,9 @@ static NSString * const PNOperationRequestTemplate[41] = {
     [PNDeleteSpaceOperation] = @"/v1/objects/{sub-key}/spaces/{space_id}",
     [PNFetchSpaceOperation] = @"/v1/objects/{sub-key}/spaces/{space_id}",
     [PNFetchSpacesOperation] = @"/v1/objects/{sub-key}/spaces",
-    [PNUpdateMembershipsOperation] = @"/v1/objects/{sub-key}/users/{user_id}/spaces",
+    [PNManageMembershipsOperation] = @"/v1/objects/{sub-key}/users/{user_id}/spaces",
     [PNFetchMembershipsOperation] = @"/v1/objects/{sub-key}/users/{user_id}/spaces",
-    [PNUpdateMembersOperation] = @"/v1/objects/{sub-key}/spaces/{space_id}/users",
+    [PNManageMembersOperation] = @"/v1/objects/{sub-key}/spaces/{space_id}/users",
     [PNFetchMembersOperation] = @"/v1/objects/{sub-key}/spaces/{space_id}/users",
     [PNTimeOperation] = @"/time/0"
 };

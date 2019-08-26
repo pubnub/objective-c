@@ -282,7 +282,6 @@
 		A52DC1E223059898001F20B0 /* PNMembershipIntegrationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A52DC1DF23059898001F20B0 /* PNMembershipIntegrationTest.m */; };
 		A52DC1F4230811E8001F20B0 /* PNSpaceIntegrationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A525EA72230483EF00ABFDC2 /* PNSpaceIntegrationTest.m */; };
 		A55260532309555800CB4ACF /* PNUserIntegrationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A525EA642303EF7200ABFDC2 /* PNUserIntegrationTest.m */; };
-		A5526054230956E000CB4ACF /* PNMembershipIntegrationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A52DC1DF23059898001F20B0 /* PNMembershipIntegrationTest.m */; };
 		A55260572309DF1900CB4ACF /* PNMemberIntegrationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A55260552309DF1900CB4ACF /* PNMemberIntegrationTest.m */; };
 		A55260582309DF1900CB4ACF /* PNMemberIntegrationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A55260552309DF1900CB4ACF /* PNMemberIntegrationTest.m */; };
 		A552605A2309EF7700CB4ACF /* PNMemberIntegrationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A55260552309DF1900CB4ACF /* PNMemberIntegrationTest.m */; };
@@ -295,6 +294,7 @@
 		A589756522FE711C0093BD9A /* PNSpaceObjectsAPICallBuilderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A589756422FE711C0093BD9A /* PNSpaceObjectsAPICallBuilderTest.m */; };
 		A589756622FE711C0093BD9A /* PNSpaceObjectsAPICallBuilderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A589756422FE711C0093BD9A /* PNSpaceObjectsAPICallBuilderTest.m */; };
 		A589756722FE711C0093BD9A /* PNSpaceObjectsAPICallBuilderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A589756422FE711C0093BD9A /* PNSpaceObjectsAPICallBuilderTest.m */; };
+		A5E323F5230B0109001FB7AE /* PNMembershipIntegrationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A52DC1DF23059898001F20B0 /* PNMembershipIntegrationTest.m */; };
 		A5F62C3423017E88001CC2A5 /* PNMembershipsObjectsAPICallBuilderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F62C3323017E88001CC2A5 /* PNMembershipsObjectsAPICallBuilderTest.m */; };
 		A5F62C3523017E88001CC2A5 /* PNMembershipsObjectsAPICallBuilderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F62C3323017E88001CC2A5 /* PNMembershipsObjectsAPICallBuilderTest.m */; };
 		A5F62C3623017E88001CC2A5 /* PNMembershipsObjectsAPICallBuilderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F62C3323017E88001CC2A5 /* PNMembershipsObjectsAPICallBuilderTest.m */; };
@@ -1409,6 +1409,7 @@
 				79A3E4492215783200F2ADB9 /* NSInvocation+PNTest.m in Sources */,
 				79EF04AC1B4EAAB7007478CB /* PNHistoryTests.m in Sources */,
 				A525EA582302A79000ABFDC2 /* PNMemberObjectsTest.m in Sources */,
+				A5E323F5230B0109001FB7AE /* PNMembershipIntegrationTest.m in Sources */,
 				A55A889922FD83B9002D0A72 /* PNUserObjectsTest.m in Sources */,
 				79EF04B31B4EAAB7007478CB /* PNSubscribeTests.m in Sources */,
 				79EF04BC1B4EAAE4007478CB /* PNBasicSubscribeTestCase.m in Sources */,
@@ -1449,7 +1450,6 @@
 				A5F62C3423017E88001CC2A5 /* PNMembershipsObjectsAPICallBuilderTest.m in Sources */,
 				7933B4DA22D666B70097458F /* PNSignalTest.m in Sources */,
 				799CE2F71C45B95400AAEBDC /* PNChannelGroupFilteringSubscribeTests.m in Sources */,
-				A5526054230956E000CB4ACF /* PNMembershipIntegrationTest.m in Sources */,
 				A55260532309555800CB4ACF /* PNUserIntegrationTest.m in Sources */,
 				79A3E45F2215A42C00F2ADB9 /* PNMessageCountAPICallBuilderTest.m in Sources */,
 				A5F62C3823017E95001CC2A5 /* PNMembersObjectsAPICallBuilderTest.m in Sources */,

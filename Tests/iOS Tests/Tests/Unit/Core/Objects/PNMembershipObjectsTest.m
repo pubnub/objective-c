@@ -43,16 +43,16 @@
 }
 
 
-#pragma mark - Tests :: Update
+#pragma mark - Tests :: Manage
 
-- (void)testUpdateMemberships_ShouldReturnBuilder {
-    XCTAssertTrue([self.client.memberships() isKindOfClass:[PNUpdateMembershipsAPICallBuilder class]]);
+- (void)testManageMemberships_ShouldReturnBuilder {
+    XCTAssertTrue([self.client.manageMemberships() isKindOfClass:[PNManageMembershipsAPICallBuilder class]]);
 }
 
 
-#pragma mark - Tests :: Update :: Call
+#pragma mark - Tests :: Manage :: Call
 
-- (void)testUpdateMemberships_ShouldProcessOperation_WhenCalled {
+- (void)testManageMemberships_ShouldProcessOperation_WhenCalled {
     NSString *expectedId = [NSUUID UUID].UUIDString;
     NSArray *addSpaces = @[
         @{ @"spaceId": [NSUUID UUID].UUIDString, @"custom": @{ @"space": [NSUUID UUID].UUIDString } }
@@ -72,7 +72,7 @@
     
     
     id clientMock = [self mockForObject:self.client];
-    id recorded = OCMExpect([clientMock processOperation:PNUpdateMembershipsOperation
+    id recorded = OCMExpect([clientMock processOperation:PNManageMembershipsOperation
                                           withParameters:[OCMArg any]
                                                     data:[OCMArg any]
                                          completionBlock:[OCMArg any]])
@@ -86,18 +86,18 @@
     });
     
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
-        self.client.memberships()
+        self.client.manageMemberships()
             .userId(expectedId)
             .add(addSpaces).update(updateSpaces).remove(removeSpaces)
             .includeFields(PNMembershipCustomField|PNMembershipSpaceCustomField)
-            .performWithCompletion(^(PNUpdateMembershipsStatus *status) {});
+            .performWithCompletion(^(PNManageMembershipsStatus *status) {});
     }];
 }
 
-- (void)testUpdateMemberships_ShouldReturnError_WhenUserIdIsMissing {
+- (void)testManageMemberships_ShouldReturnError_WhenUserIdIsMissing {
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.memberships().includeFields(PNMembershipCustomField)
-            .performWithCompletion(^(PNUpdateMembershipsStatus *status) {
+        self.client.manageMemberships().includeFields(PNMembershipCustomField)
+            .performWithCompletion(^(PNManageMembershipsStatus *status) {
                 XCTAssertTrue(status.isError);
                 XCTAssertNotEqual([status.errorData.information rangeOfString:@"'user_id'"].location,
                                   NSNotFound);
@@ -107,18 +107,18 @@
     }];
 }
 
-- (void)testUpdateMemberships_ShouldReturnError_WhenUnsupportedDataTypeInCustom {
+- (void)testManageMemberships_ShouldReturnError_WhenUnsupportedDataTypeInCustom {
     NSString *expectedId = [NSUUID UUID].UUIDString;
     NSArray *updateSpaces = @[
         @{ @"spaceId": [NSUUID UUID].UUIDString, @"custom": @{ @"space": [NSDate date] } }
     ];
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.memberships()
+        self.client.manageMemberships()
             .userId(expectedId)
             .update(updateSpaces)
             .includeFields(PNMembershipCustomField)
-                .performWithCompletion(^(PNUpdateMembershipsStatus *status) {
+                .performWithCompletion(^(PNManageMembershipsStatus *status) {
                     XCTAssertTrue(status.isError);
                     XCTAssertNotEqual([status.errorData.information rangeOfString:@"'custom'"].location,
                                       NSNotFound);

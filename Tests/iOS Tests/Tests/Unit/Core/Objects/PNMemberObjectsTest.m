@@ -43,16 +43,16 @@
 }
 
 
-#pragma mark - Tests :: Update
+#pragma mark - Tests :: Manage
 
-- (void)testUpdateMembers_ShouldReturnBuilder {
-    XCTAssertTrue([self.client.members() isKindOfClass:[PNUpdateMembersAPICallBuilder class]]);
+- (void)testManageMembers_ShouldReturnBuilder {
+    XCTAssertTrue([self.client.manageMembers() isKindOfClass:[PNManageMembersAPICallBuilder class]]);
 }
 
 
-#pragma mark - Tests :: Update :: Call
+#pragma mark - Tests :: Manage :: Call
 
-- (void)testUpdateMembers_ShouldProcessOperation_WhenCalled {
+- (void)testManageMembers_ShouldProcessOperation_WhenCalled {
     NSString *expectedId = [NSUUID UUID].UUIDString;
     NSArray *addMembers = @[
         @{ @"userId": [NSUUID UUID].UUIDString, @"custom": @{ @"user": [NSUUID UUID].UUIDString } }
@@ -72,7 +72,7 @@
     
     
     id clientMock = [self mockForObject:self.client];
-    id recorded = OCMExpect([clientMock processOperation:PNUpdateMembersOperation
+    id recorded = OCMExpect([clientMock processOperation:PNManageMembersOperation
                                           withParameters:[OCMArg any]
                                                     data:[OCMArg any]
                                          completionBlock:[OCMArg any]])
@@ -86,18 +86,18 @@
         });
     
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
-        self.client.members()
+        self.client.manageMembers()
             .spaceId(expectedId)
             .add(addMembers).update(updateMembers).remove(removeMembers)
             .includeFields(PNMemberCustomField|PNMemberUserCustomField)
-            .performWithCompletion(^(PNUpdateMembersStatus *status) {});
+            .performWithCompletion(^(PNManageMembersStatus *status) {});
     }];
 }
 
-- (void)testUpdateMembers_ShouldReturnError_WhenSpaceIdIsMissing {
+- (void)testManageMembers_ShouldReturnError_WhenSpaceIdIsMissing {
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.members().includeFields(PNMemberCustomField)
-        .performWithCompletion(^(PNUpdateMembersStatus *status) {
+        self.client.manageMembers().includeFields(PNMemberCustomField)
+        .performWithCompletion(^(PNManageMembersStatus *status) {
             XCTAssertTrue(status.isError);
             XCTAssertNotEqual([status.errorData.information rangeOfString:@"'space_id'"].location,
                               NSNotFound);
@@ -107,18 +107,18 @@
     }];
 }
 
-- (void)testUpdateMembers_ShouldReturnError_WhenUnsupportedDataTypeInCustom {
+- (void)testManageMembers_ShouldReturnError_WhenUnsupportedDataTypeInCustom {
     NSString *expectedId = [NSUUID UUID].UUIDString;
     NSArray *updateSpaces = @[
         @{ @"userId": [NSUUID UUID].UUIDString, @"custom": @{ @"user": [NSDate date] } }
     ];
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.members()
+        self.client.manageMembers()
             .spaceId(expectedId)
             .update(updateSpaces)
             .includeFields(PNMemberCustomField)
-            .performWithCompletion(^(PNUpdateMembersStatus *status) {
+            .performWithCompletion(^(PNManageMembersStatus *status) {
                 XCTAssertTrue(status.isError);
                 XCTAssertNotEqual([status.errorData.information rangeOfString:@"'custom'"].location,
                                   NSNotFound);

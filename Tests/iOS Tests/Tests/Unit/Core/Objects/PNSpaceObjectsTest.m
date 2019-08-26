@@ -49,6 +49,14 @@
     XCTAssertTrue([self.client.createSpace() isKindOfClass:[PNCreateSpaceAPICallBuilder class]]);
 }
 
+- (void)testCreateSpace_ShouldSetDefaultIncludeFields {
+    PNCreateSpaceRequest *request = [PNCreateSpaceRequest requestWithSpaceID:[NSUUID UUID].UUIDString
+                                                                        name:[NSUUID UUID].UUIDString];
+    
+    
+    XCTAssertEqual(request.includeFields, PNSpaceCustomField);
+}
+
 
 #pragma mark - Tests :: Create :: Call
 
@@ -86,6 +94,24 @@
         self.client.createSpace()
             .spaceId(expectedId).name(expectedName).information(expectedInformation)
             .custom(@{ @"space": expectedSpaceData }).includeFields(PNSpaceCustomField)
+            .performWithCompletion(^(PNCreateSpaceStatus *status) {});
+    }];
+}
+
+- (void)testCreateSpace_ShouldNotSetDefaultIncludeFields_WhenCalledWithOutIncludeFields {
+    id clientMock = [self mockForObject:self.client];
+    id recorded = OCMExpect([clientMock processOperation:PNCreateSpaceOperation
+                                          withParameters:[OCMArg any]
+                                                    data:[OCMArg any]
+                                         completionBlock:[OCMArg any]])
+        .andDo(^(NSInvocation *invocation) {
+            PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
+            
+            XCTAssertNil(parameters.query[@"include"]);
+        });
+    
+    [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
+        self.client.createSpace().spaceId([NSUUID UUID].UUIDString).name([NSUUID UUID].UUIDString)
             .performWithCompletion(^(PNCreateSpaceStatus *status) {});
     }];
 }
@@ -168,6 +194,13 @@
     XCTAssertTrue([self.client.updateSpace() isKindOfClass:[PNUpdateSpaceAPICallBuilder class]]);
 }
 
+- (void)testUpdateSpace_ShouldNotSetDefaultIncludeFields {
+    PNUpdateSpaceRequest *request = [PNUpdateSpaceRequest requestWithSpaceID:[NSUUID UUID].UUIDString];
+    
+    
+    XCTAssertEqual(request.includeFields, 0);
+}
+
 
 #pragma mark - Tests :: Update :: Call
 
@@ -208,6 +241,24 @@
     }];
 }
 
+- (void)testUpdateSpace_ShouldNotSetDefaultIncludeFields_WhenCalledWithOutIncludeFields {
+    id clientMock = [self mockForObject:self.client];
+    id recorded = OCMExpect([clientMock processOperation:PNUpdateSpaceOperation
+                                          withParameters:[OCMArg any]
+                                                    data:[OCMArg any]
+                                         completionBlock:[OCMArg any]])
+        .andDo(^(NSInvocation *invocation) {
+            PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
+            
+            XCTAssertNil(parameters.query[@"include"]);
+        });
+    
+    [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
+        self.client.updateSpace().spaceId([NSUUID UUID].UUIDString)
+            .performWithCompletion(^(PNUpdateSpaceStatus *status) {});
+    }];
+}
+
 - (void)testUpdateSpace_ShouldReturnError_WhenSpaceIdIsMissing {
     NSString *expectedName = [NSUUID UUID].UUIDString;
     
@@ -227,13 +278,14 @@
 - (void)testUpdateSpace_ShouldNotReturnError_WhenNameIsMissing {
     NSString *expectedId = [NSUUID UUID].UUIDString;
     
-    
-    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+    id clientMock = [self mockForObject:self.client];
+    id recorded = OCMExpect([clientMock processOperation:PNUpdateSpaceOperation
+                                          withParameters:[OCMArg any]
+                                                    data:[OCMArg any]
+                                         completionBlock:[OCMArg any]]).andDo(nil);
+    [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
         self.client.updateSpace().spaceId(expectedId)
-            .includeFields(PNSpaceCustomField).performWithCompletion(^(PNUpdateSpaceStatus *status) {
-                XCTAssertFalse(status.isError);
-                handler();
-            });
+            .includeFields(PNSpaceCustomField).performWithCompletion(^(PNUpdateSpaceStatus *status) { });
     }];
 }
 
@@ -304,6 +356,13 @@
     XCTAssertTrue([self.client.fetchSpace() isKindOfClass:[PNFetchSpaceAPICallBuilder class]]);
 }
 
+- (void)testFetchSpace_ShouldNotSetDefaultIncludeFields {
+    PNFetchSpaceRequest *request = [PNFetchSpaceRequest requestWithSpaceID:[NSUUID UUID].UUIDString];
+    
+    
+    XCTAssertEqual(request.includeFields, 0);
+}
+
 
 #pragma mark - Tests :: Fetch :: Call
 
@@ -329,6 +388,24 @@
     }];
 }
 
+- (void)testFetchSpace_ShouldNotSetDefaultIncludeFields_WhenCalledWithOutIncludeFields {
+    id clientMock = [self mockForObject:self.client];
+    id recorded = OCMExpect([clientMock processOperation:PNFetchSpaceOperation
+                                          withParameters:[OCMArg any]
+                                                    data:[OCMArg any]
+                                         completionBlock:[OCMArg any]])
+        .andDo(^(NSInvocation *invocation) {
+            PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
+            
+            XCTAssertNil(parameters.query[@"include"]);
+        });
+    
+    [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
+        self.client.fetchSpace().spaceId([NSUUID UUID].UUIDString)
+            .performWithCompletion(^(PNFetchSpaceResult *result, PNErrorStatus *status) {});
+    }];
+}
+
 - (void)testFetchSpace_ShouldReturnError_WhenSpaceIdIsMissing {
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         self.client.fetchSpace()
@@ -347,6 +424,13 @@
 
 - (void)testFetchSpaces_ShouldReturnBuilder {
     XCTAssertTrue([self.client.fetchSpaces() isKindOfClass:[PNFetchSpacesAPICallBuilder class]]);
+}
+
+- (void)testFetchSpaces_ShouldNotSetDefaultIncludeFields {
+    PNFetchSpacesRequest *request = [PNFetchSpacesRequest new];
+    
+    
+    XCTAssertEqual(request.includeFields, 0);
 }
 
 
@@ -377,6 +461,24 @@
         self.client.fetchSpaces()
             .start(expectedStart).end(expectedEnd).limit(expectedLimit.unsignedIntegerValue)
             .includeFields(PNSpaceCustomField)
+            .performWithCompletion(^(PNFetchSpacesResult *result, PNErrorStatus *status) {});
+    }];
+}
+
+- (void)testFetchSpaces_ShouldNotSetDefaultIncludeFields_WhenCalledWithOutIncludeFields {
+    id clientMock = [self mockForObject:self.client];
+    id recorded = OCMExpect([clientMock processOperation:PNFetchSpacesOperation
+                                          withParameters:[OCMArg any]
+                                                    data:[OCMArg any]
+                                         completionBlock:[OCMArg any]])
+        .andDo(^(NSInvocation *invocation) {
+            PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
+            
+            XCTAssertNil(parameters.query[@"include"]);
+        });
+    
+    [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
+        self.client.fetchSpaces()
             .performWithCompletion(^(PNFetchSpacesResult *result, PNErrorStatus *status) {});
     }];
 }

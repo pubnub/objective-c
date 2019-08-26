@@ -8,7 +8,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark Interfaces declaration
 
 /**
- * @brief Object which is used to represent Objects API response for fetch space request.
+ * @brief Object which is used to represent Objects API response for \c fetch \c space request.
  *
  * @author Serhii Mamontov
  * @version 4.10.0
@@ -30,8 +30,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+
 /**
- * @brief Object which is used to represent Objects API response for fetch all spaces request.
+ * @brief Object which is used to represent Objects API response for \c fetch \c all \c spaces
+ * request.
  *
  * @author Serhii Mamontov
  * @version 4.10.0
@@ -72,7 +74,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 /**
- * @brief Object which is used to provide access to space object fetch request response.
+ * @brief Object which is used to provide access to \c fetch \c space request response.
  *
  * @author Serhii Mamontov
  * @version 4.10.0
@@ -85,7 +87,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Information
 
 /**
- * @brief Fetch space request processed information.
+ * @brief \c Fetch \c space request processed information.
  */
 @property (nonatomic, readonly, strong) PNFetchSpaceData *data;
 
@@ -96,7 +98,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 /**
- * @brief Object which is used to provide access to fetch all space objects request response.
+ * @brief Object which is used to provide access to \c fetch \c all \c spaces request response.
  *
  * @author Serhii Mamontov
  * @version 4.10.0
@@ -109,7 +111,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Information
 
 /**
- * @brief Fetch spaces request processed information.
+ * @brief \c Fetch \c all \c spaces request processed information.
  */
 @property (nonatomic, readonly, strong) PNFetchSpacesData *data;
 

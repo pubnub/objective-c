@@ -15,7 +15,7 @@
 #pragma mark - Identification
 
 + (NSArray<NSNumber *> *)operations {
-    return @[@(PNUpdateMembersOperation), @(PNFetchMembersOperation)];
+    return @[@(PNManageMembersOperation), @(PNFetchMembersOperation)];
 }
 
 + (BOOL)requireAdditionalData {

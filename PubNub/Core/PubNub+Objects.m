@@ -5,43 +5,13 @@
  * @copyright © 2010-2019 PubNub, Inc.
  */
 #import "PNAPICallBuilder+Private.h"
-#import "PNPrivateStructures.h"
 #import "PubNub+CorePrivate.h"
-#import "PNRequest+Private.h"
 #import "PNResult+Private.h"
 #import "PNStatus+Private.h"
-#import "PNConfiguration.h"
 #import "PubNub+Objects.h"
 
 
-NS_ASSUME_NONNULL_BEGIN
-
-#pragma mark Protected interface declaration
-
-@interface PubNub (ObjectsProtected)
-
-
-#pragma mark - Requests helper
-
-/**
- * @brief Perform network request.
- *
- * @param request Object which contain all required information to perform request.
- * @param block Request processing completion block.
- */
-- (void)performRequest:(PNRequest *)request withCompletion:(id)block;
-
-- (Class)errorStatusClassForRequest:(PNRequest *)request;
-
-#pragma mark -
-
-
-@end
-
-NS_ASSUME_NONNULL_END
-
-
-#pragma mark - Interface implementation
+#pragma mark Interface implementation
 
 @implementation PubNub (Objects)
 
@@ -286,11 +256,11 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Membership objects
 
-- (PNUpdateMembershipsAPICallBuilder * (^)(void))memberships {
-    PNUpdateMembershipsAPICallBuilder *builder = nil;
+- (PNManageMembershipsAPICallBuilder * (^)(void))manageMemberships {
+    PNManageMembershipsAPICallBuilder *builder = nil;
     __weak __typeof(self) weakSelf = self;
     
-    builder = [PNUpdateMembershipsAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
+    builder = [PNManageMembershipsAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
                                                                              NSDictionary *parameters) {
 
         NSNumber *includeFields = parameters[NSStringFromSelector(@selector(includeFields))];
@@ -298,7 +268,7 @@ NS_ASSUME_NONNULL_END
         NSNumber *limit = parameters[NSStringFromSelector(@selector(limit))] ?: @(100);
         NSString *userId = parameters[NSStringFromSelector(@selector(userId))];
         
-        PNUpdateMembershipsRequest *request = [PNUpdateMembershipsRequest requestWithUserID:userId];
+        PNManageMembershipsRequest *request = [PNManageMembershipsRequest requestWithUserID:userId];
         request.updateSpaces = parameters[NSStringFromSelector(@selector(update))];
         request.leaveSpaces = parameters[NSStringFromSelector(@selector(remove))];
         request.joinSpaces = parameters[NSStringFromSelector(@selector(add))];
@@ -308,10 +278,10 @@ NS_ASSUME_NONNULL_END
         request.includeCount = includeCount.boolValue;
         request.limit = limit.unsignedIntegerValue;
         
-        [weakSelf updateMembershipsWithRequest:request completion:parameters[@"block"]];
+        [weakSelf manageMembershipsWithRequest:request completion:parameters[@"block"]];
     }];
     
-    return ^PNUpdateMembershipsAPICallBuilder * {
+    return ^PNManageMembershipsAPICallBuilder * {
         return builder;
     };
 }
@@ -343,11 +313,11 @@ NS_ASSUME_NONNULL_END
     };
 }
 
-- (PNUpdateMembersAPICallBuilder * (^)(void))members {
-    PNUpdateMembersAPICallBuilder *builder = nil;
+- (PNManageMembersAPICallBuilder * (^)(void))manageMembers {
+    PNManageMembersAPICallBuilder *builder = nil;
     __weak __typeof(self) weakSelf = self;
     
-    builder = [PNUpdateMembersAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
+    builder = [PNManageMembersAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
                                                                          NSDictionary *parameters) {
 
         NSNumber *includeFields = parameters[NSStringFromSelector(@selector(includeFields))];
@@ -355,7 +325,7 @@ NS_ASSUME_NONNULL_END
         NSNumber *limit = parameters[NSStringFromSelector(@selector(limit))] ?: @(100);
         NSString *spaceId = parameters[NSStringFromSelector(@selector(spaceId))];
         
-        PNUpdateMembersRequest *request = [PNUpdateMembersRequest requestWithSpaceID:spaceId];
+        PNManageMembersRequest *request = [PNManageMembersRequest requestWithSpaceID:spaceId];
         request.updateMembers = parameters[NSStringFromSelector(@selector(update))];
         request.removeMembers = parameters[NSStringFromSelector(@selector(remove))];
         request.addMembers = parameters[NSStringFromSelector(@selector(add))];
@@ -365,10 +335,10 @@ NS_ASSUME_NONNULL_END
         request.includeCount = includeCount.boolValue;
         request.limit = limit.unsignedIntegerValue;
         
-        [weakSelf updateMembersWithRequest:request completion:parameters[@"block"]];
+        [weakSelf manageMembersWithRequest:request completion:parameters[@"block"]];
     }];
     
-    return ^PNUpdateMembersAPICallBuilder * {
+    return ^PNManageMembersAPICallBuilder * {
         return builder;
     };
 }
@@ -406,31 +376,89 @@ NS_ASSUME_NONNULL_END
 - (void)createUserWithRequest:(PNCreateUserRequest *)request
                    completion:(PNCreateUserCompletionBlock)block {
     
-    [self performRequest:request withCompletion:block];
+    __weak __typeof(self) weakSelf = self;
+    
+    [self performRequest:request withCompletion:^(PNCreateUserStatus *status) {
+        if (status.isError) {
+            status.retryBlock = ^{
+                [weakSelf createUserWithRequest:request completion:block];
+            };
+        }
+        
+        block(status);
+    }];
 }
 
 - (void)updateUserWithRequest:(PNUpdateUserRequest *)request
                    completion:(PNUpdateUserCompletionBlock)block {
     
-    [self performRequest:request withCompletion:block];
+    __weak __typeof(self) weakSelf = self;
+    
+    [self performRequest:request withCompletion:^(PNUpdateUserStatus *status) {
+        if (block && status.isError) {
+            status.retryBlock = ^{
+                [weakSelf updateUserWithRequest:request completion:block];
+            };
+        }
+        
+        if (block) {
+            block(status);
+        }
+    }];
 }
 
 - (void)deleteUserWithRequest:(PNDeleteUserRequest *)request
                    completion:(PNDeleteUserCompletionBlock)block {
     
-    [self performRequest:request withCompletion:block];
+    __weak __typeof(self) weakSelf = self;
+    
+    [self performRequest:request withCompletion:^(PNAcknowledgmentStatus *status) {
+        if (block && status.isError) {
+            status.retryBlock = ^{
+                [weakSelf deleteUserWithRequest:request completion:block];
+            };
+        }
+        
+        if (block) {
+            block(status);
+        }
+    }];
 }
 
 - (void)fetchUserWithRequest:(PNFetchUserRequest *)request
                   completion:(PNFetchUserCompletionBlock)block {
     
-    [self performRequest:request withCompletion:block];
+    __weak __typeof(self) weakSelf = self;
+    
+    [self performRequest:request
+          withCompletion:^(PNFetchUserResult *result, PNErrorStatus *status) {
+              
+        if (status.isError) {
+            status.retryBlock = ^{
+                [weakSelf fetchUserWithRequest:request completion:block];
+            };
+        }
+
+        block(result, status);
+    }];
 }
 
 - (void)fetchUsersWithRequest:(PNFetchUsersRequest *)request
                    completion:(PNFetchUsersCompletionBlock)block {
     
-    [self performRequest:request withCompletion:block];
+    __weak __typeof(self) weakSelf = self;
+    
+    [self performRequest:request
+          withCompletion:^(PNFetchUsersResult *result, PNErrorStatus *status) {
+        
+        if (status.isError) {
+            status.retryBlock = ^{
+                [weakSelf fetchUsersWithRequest:request completion:block];
+            };
+        }
+        
+        block(result, status);
+    }];
 }
 
 #pragma mark - Space object
@@ -438,129 +466,166 @@ NS_ASSUME_NONNULL_END
 - (void)createSpaceWithRequest:(PNCreateSpaceRequest *)request
                     completion:(PNCreateSpaceCompletionBlock)block {
     
-    [self performRequest:request withCompletion:block];
+    __weak __typeof(self) weakSelf = self;
+    
+    [self performRequest:request withCompletion:^(PNCreateSpaceStatus *status) {
+        if (block && status.isError) {
+            status.retryBlock = ^{
+                [weakSelf createSpaceWithRequest:request completion:block];
+            };
+        }
+        
+        if (block) {
+            block(status);
+        }
+    }];
 }
 
 - (void)updateSpaceWithRequest:(PNUpdateSpaceRequest *)request
                     completion:(PNUpdateSpaceCompletionBlock)block {
     
-    [self performRequest:request withCompletion:block];
+    __weak __typeof(self) weakSelf = self;
+    
+    [self performRequest:request withCompletion:^(PNUpdateSpaceStatus *status) {
+        if (block && status.isError) {
+            status.retryBlock = ^{
+                [weakSelf updateSpaceWithRequest:request completion:block];
+            };
+        }
+        
+        if (block) {
+            block(status);
+        }
+    }];
 }
 
 - (void)deleteSpaceWithRequest:(PNDeleteSpaceRequest *)request
                     completion:(PNDeleteSpaceCompletionBlock)block {
     
-    [self performRequest:request withCompletion:block];
+    __weak __typeof(self) weakSelf = self;
+    
+    [self performRequest:request withCompletion:^(PNAcknowledgmentStatus *status) {
+        if (block && status.isError) {
+            status.retryBlock = ^{
+                [weakSelf deleteSpaceWithRequest:request completion:block];
+            };
+        }
+        
+        if (block) {
+            block(status);
+        }
+    }];
 }
 
 - (void)fetchSpaceWithRequest:(PNFetchSpaceRequest *)request
                    completion:(PNFetchSpaceCompletionBlock)block {
     
-    [self performRequest:request withCompletion:block];
+    __weak __typeof(self) weakSelf = self;
+    
+    [self performRequest:request
+          withCompletion:^(PNFetchSpaceResult *result, PNErrorStatus *status) {
+        
+        if (status.isError) {
+            status.retryBlock = ^{
+                [weakSelf fetchSpaceWithRequest:request completion:block];
+            };
+        }
+        
+        block(result, status);
+    }];
 }
 
 - (void)fetchSpacesWithRequest:(PNFetchSpacesRequest *)request
                     completion:(PNFetchSpacesCompletionBlock)block {
     
-    [self performRequest:request withCompletion:block];
+    __weak __typeof(self) weakSelf = self;
+    
+    [self performRequest:request
+          withCompletion:^(PNFetchSpacesResult *result, PNErrorStatus *status) {
+        
+        if (status.isError) {
+            status.retryBlock = ^{
+                [weakSelf fetchSpacesWithRequest:request completion:block];
+            };
+        }
+        
+        block(result, status);
+    }];
 }
 
 
 #pragma mark - Membership objects
 
-- (void)updateMembershipsWithRequest:(PNUpdateMembershipsRequest *)request
-                          completion:(PNUpdateMembershipsCompletionBlock)block {
+- (void)manageMembershipsWithRequest:(PNManageMembershipsRequest *)request
+                          completion:(PNManageMembershipsCompletionBlock)block {
     
-    [self performRequest:request withCompletion:block];
+    __weak __typeof(self) weakSelf = self;
+    
+    [self performRequest:request withCompletion:^(PNManageMembershipsStatus *status) {
+        if (block && status.isError) {
+            status.retryBlock = ^{
+                [weakSelf manageMembershipsWithRequest:request completion:block];
+            };
+        }
+        
+        if (block) {
+            block(status);
+        }
+    }];
 }
 
 - (void)fetchMembershipsWithRequest:(PNFetchMembershipsRequest *)request
                          completion:(PNFetchMembershipsCompletionBlock)block {
     
-    [self performRequest:request withCompletion:block];
+    __weak __typeof(self) weakSelf = self;
+    
+    [self performRequest:request
+          withCompletion:^(PNFetchMembershipsResult *result, PNErrorStatus *status) {
+        
+        if (status.isError) {
+            status.retryBlock = ^{
+                [weakSelf fetchMembershipsWithRequest:request completion:block];
+            };
+        }
+        
+        block(result, status);
+    }];
 }
 
-- (void)updateMembersWithRequest:(PNUpdateMembersRequest *)request
-                      completion:(PNUpdateMembersCompletionBlock)block {
+- (void)manageMembersWithRequest:(PNManageMembersRequest *)request
+                      completion:(PNManageMembersCompletionBlock)block {
     
-    [self performRequest:request withCompletion:block];
+    __weak __typeof(self) weakSelf = self;
+    
+    [self performRequest:request withCompletion:^(PNManageMembersStatus *status) {
+        if (block && status.isError) {
+            status.retryBlock = ^{
+                [weakSelf manageMembersWithRequest:request completion:block];
+            };
+        }
+        
+        if (block) {
+            block(status);
+        }
+    }];
 }
 
 - (void)fetchMembersWithRequest:(PNFetchMembersRequest *)request
                      completion:(PNFetchMembersCompletionBlock)block {
     
-    [self performRequest:request withCompletion:block];
-}
-
-
-#pragma mark - Misc
-
-- (void)performRequest:(PNRequest *)request withCompletion:(id)block {
-    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     __weak __typeof(self) weakSelf = self;
     
-    if (@available(macOS 10.10, iOS 8.0, *)) {
-        if (self.configuration.applicationExtensionSharedGroupIdentifier) {
-            queue = dispatch_get_main_queue();
-        }
-    }
-    
-    dispatch_async(queue, ^{
-        __strong __typeof__(weakSelf) strongSelf = weakSelf;
-        NSString *httpMethod = request.httpMethod.lowercaseString;
-        BOOL hasBody = [@[@"post", @"patch"] indexOfObject:httpMethod] != NSNotFound;
-        PNRequestParameters *parameters = request.requestParameters;
-        parameters.HTTPMethod = request.httpMethod;
-        NSData *data = hasBody ? request.bodyData : nil;
+    [self performRequest:request
+          withCompletion:^(PNFetchMembersResult *result, PNErrorStatus *status) {
         
-        NSError *error = request.parametersError;
-        id requestCompletionBlock = nil;
-        id errorStatus = nil;
-        
-        if (error) {
-            Class errorStatusClass = [self errorStatusClassForRequest:request];
-            errorStatus = [errorStatusClass objectForOperation:request.operation
-                                             completedWithTask:nil
-                                                 processedData:nil
-                                               processingError:error];
-            [(PNStatus *)errorStatus updateCategory:PNBadRequestCategory];
-        }
-        
-        if ([request.httpMethod isEqualToString:@"GET"]) {
-            requestCompletionBlock = ^(PNResult *result, PNStatus *status) {
-                [strongSelf callBlock:block status:NO withResult:result andStatus:status];
-            };
-        } else {
-            requestCompletionBlock = ^(PNStatus *status) {
-                [strongSelf callBlock:block status:YES withResult:nil andStatus:status];
+        if (status.isError) {
+            status.retryBlock = ^{
+                [weakSelf fetchMembersWithRequest:request completion:block];
             };
         }
         
-        if (errorStatus) {
-            if ([request.httpMethod isEqualToString:@"GET"]) {
-                [strongSelf callBlock:block status:NO withResult:nil andStatus:errorStatus];
-            } else {
-                [strongSelf callBlock:block status:YES withResult:nil andStatus:errorStatus];
-            }
-            
-            return;
-        }
-        
-        [self processOperation:request.operation
-                withParameters:parameters
-                          data:data
-               completionBlock:requestCompletionBlock];
-    });
-}
-
-- (Class)errorStatusClassForRequest:(PNRequest *)request {
-    Class class = [PNErrorStatus class];
-    
-    if (PNOperationStatusClasses[request.operation]) {
-        class = NSClassFromString(PNOperationStatusClasses[request.operation]);
-    }
-    
-    return class;
+        block(result, status);
+    }];
 }
 
 #pragma mark -

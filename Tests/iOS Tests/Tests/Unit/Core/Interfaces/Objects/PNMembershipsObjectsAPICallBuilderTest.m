@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Misc
 
-- (PNUpdateMembershipsAPICallBuilder *)updateBuilder;
+- (PNManageMembershipsAPICallBuilder *)manageBuilder;
 - (PNFetchMembershipsAPICallBuilder *)fetchBuilder;
 
 - (void)expect:(BOOL)shouldCall mock:(id)mockedObject toSetValue:(id)value toParameter:(NSString *)parameter;
@@ -33,17 +33,17 @@ NS_ASSUME_NONNULL_END
 @implementation PNMembershipsObjectsAPICallBuilderTest
 
 
-#pragma mark - Tests :: update :: userId
+#pragma mark - Tests :: manage :: userId
 
-- (void)testUpdateUserId_ShouldReturnCreateBuilder_WhenCalled {
-    id builder = [self updateBuilder];
+- (void)testManageUserId_ShouldReturnManageBuilder_WhenCalled {
+    id builder = [self manageBuilder];
 
-    id updateBuilder = ((PNUpdateMembershipsAPICallBuilder *)builder).userId(@"id");
-    XCTAssertEqual(updateBuilder, builder);
+    id manageBuilder = ((PNManageMembershipsAPICallBuilder *)builder).userId(@"id");
+    XCTAssertEqual(manageBuilder, builder);
 }
 
-- (void)testUpdate_ShouldSetUserId_WhenNSStringPassed {
-    PNUpdateMembershipsAPICallBuilder *builder = [self updateBuilder];
+- (void)testManage_ShouldSetUserId_WhenNSStringPassed {
+    PNManageMembershipsAPICallBuilder *builder = [self manageBuilder];
     NSString *expected = @"OpenID";
 
 
@@ -55,8 +55,8 @@ NS_ASSUME_NONNULL_END
     OCMVerify(builderMock);
 }
 
-- (void)testUpdate_ShouldNotSetUserId_WhenEmptyNSStringPassed {
-    PNUpdateMembershipsAPICallBuilder *builder = [self updateBuilder];
+- (void)testManage_ShouldNotSetUserId_WhenEmptyNSStringPassed {
+    PNManageMembershipsAPICallBuilder *builder = [self manageBuilder];
     NSString *expected = @"";
 
 
@@ -68,8 +68,8 @@ NS_ASSUME_NONNULL_END
     OCMVerify(builderMock);
 }
 
-- (void)testUpdate_ShouldNotSetUserId_WhenNonNSStringPassed {
-    PNUpdateMembershipsAPICallBuilder *builder = [self updateBuilder];
+- (void)testManage_ShouldNotSetUserId_WhenNonNSStringPassed {
+    PNManageMembershipsAPICallBuilder *builder = [self manageBuilder];
     NSString *expected = (id)@2010;
 
 
@@ -82,17 +82,17 @@ NS_ASSUME_NONNULL_END
 }
 
 
-#pragma mark - Tests :: update :: add
+#pragma mark - Tests :: manage :: add
 
-- (void)testUpdateAdd_ShouldReturnCreateBuilder_WhenCalled {
-    id builder = [self updateBuilder];
+- (void)testManageAdd_ShouldReturnManageBuilder_WhenCalled {
+    id builder = [self manageBuilder];
 
-    id updateBuilder = ((PNUpdateMembershipsAPICallBuilder *)builder).add(@[@{ @"id": @"identifier" }]);
-    XCTAssertEqual(updateBuilder, builder);
+    id manageBuilder = ((PNManageMembershipsAPICallBuilder *)builder).add(@[@{ @"id": @"identifier" }]);
+    XCTAssertEqual(manageBuilder, builder);
 }
 
-- (void)testUpdate_ShouldSetAdd_WhenNSArrayPassed {
-    PNUpdateMembershipsAPICallBuilder *builder = [self updateBuilder];
+- (void)testManage_ShouldSetAdd_WhenNSArrayPassed {
+    PNManageMembershipsAPICallBuilder *builder = [self manageBuilder];
     NSArray<NSDictionary *> *expected = @[@{ @"id": @"identifier" }];
 
 
@@ -104,8 +104,8 @@ NS_ASSUME_NONNULL_END
     OCMVerify(builderMock);
 }
 
-- (void)testUpdate_ShouldNotSetAdd_WhenEmptyNSArrayPassed {
-    PNUpdateMembershipsAPICallBuilder *builder = [self updateBuilder];
+- (void)testManage_ShouldNotSetAdd_WhenEmptyNSArrayPassed {
+    PNManageMembershipsAPICallBuilder *builder = [self manageBuilder];
     NSArray<NSDictionary *> *expected = @[];
 
 
@@ -117,8 +117,8 @@ NS_ASSUME_NONNULL_END
     OCMVerify(builderMock);
 }
 
-- (void)testUpdate_ShouldNotSetAdd_WhenNonNSArrayPassed {
-    PNUpdateMembershipsAPICallBuilder *builder = [self updateBuilder];
+- (void)testManage_ShouldNotSetAdd_WhenNonNSArrayPassed {
+    PNManageMembershipsAPICallBuilder *builder = [self manageBuilder];
     NSArray<NSDictionary *> *expected = (id)@2010;
 
 
@@ -131,17 +131,17 @@ NS_ASSUME_NONNULL_END
 }
 
 
-#pragma mark - Tests :: update :: update
+#pragma mark - Tests :: manage :: update
 
-- (void)testUpdateUpdate_ShouldReturnCreateBuilder_WhenCalled {
-    id builder = [self updateBuilder];
+- (void)testManageUpdate_ShouldReturnManageBuilder_WhenCalled {
+    id builder = [self manageBuilder];
 
-    id updateBuilder = ((PNUpdateMembershipsAPICallBuilder *)builder).update(@[@{ @"id": @"identifier" }]);
-    XCTAssertEqual(updateBuilder, builder);
+    id manageBuilder = ((PNManageMembershipsAPICallBuilder *)builder).update(@[@{ @"id": @"identifier" }]);
+    XCTAssertEqual(manageBuilder, builder);
 }
 
-- (void)testUpdate_ShouldSetUpdate_WhenNSArrayPassed {
-    PNUpdateMembershipsAPICallBuilder *builder = [self updateBuilder];
+- (void)testManage_ShouldSetUpdate_WhenNSArrayPassed {
+    PNManageMembershipsAPICallBuilder *builder = [self manageBuilder];
     NSArray<NSDictionary *> *expected = @[@{ @"id": @"identifier" }];
 
 
@@ -153,8 +153,8 @@ NS_ASSUME_NONNULL_END
     OCMVerify(builderMock);
 }
 
-- (void)testUpdate_ShouldNotSetUpdate_WhenEmptyNSArrayPassed {
-    PNUpdateMembershipsAPICallBuilder *builder = [self updateBuilder];
+- (void)testManage_ShouldNotSetUpdate_WhenEmptyNSArrayPassed {
+    PNManageMembershipsAPICallBuilder *builder = [self manageBuilder];
     NSArray<NSDictionary *> *expected = @[];
 
 
@@ -166,8 +166,8 @@ NS_ASSUME_NONNULL_END
     OCMVerify(builderMock);
 }
 
-- (void)testUpdate_ShouldNotSetUpdate_WhenNonNSArrayPassed {
-    PNUpdateMembershipsAPICallBuilder *builder = [self updateBuilder];
+- (void)testManage_ShouldNotSetUpdate_WhenNonNSArrayPassed {
+    PNManageMembershipsAPICallBuilder *builder = [self manageBuilder];
     NSArray<NSDictionary *> *expected = (id)@2010;
 
 
@@ -180,17 +180,17 @@ NS_ASSUME_NONNULL_END
 }
 
 
-#pragma mark - Tests :: update :: remove
+#pragma mark - Tests :: manage :: remove
 
-- (void)testUpdateRemove_ShouldReturnCreateBuilder_WhenCalled {
-    id builder = [self updateBuilder];
+- (void)testManageRemove_ShouldReturnManageBuilder_WhenCalled {
+    id builder = [self manageBuilder];
 
-    id updateBuilder = ((PNUpdateMembershipsAPICallBuilder *)builder).remove(@[ @"identifier" ]);
-    XCTAssertEqual(updateBuilder, builder);
+    id manageBuilder = ((PNManageMembershipsAPICallBuilder *)builder).remove(@[ @"identifier" ]);
+    XCTAssertEqual(manageBuilder, builder);
 }
 
-- (void)testUpdate_ShouldSetRemove_WhenNSArrayPassed {
-    PNUpdateMembershipsAPICallBuilder *builder = [self updateBuilder];
+- (void)testManage_ShouldSetRemove_WhenNSArrayPassed {
+    PNManageMembershipsAPICallBuilder *builder = [self manageBuilder];
     NSArray<NSString *> *expected = @[ @"identifier" ];
 
 
@@ -202,8 +202,8 @@ NS_ASSUME_NONNULL_END
     OCMVerify(builderMock);
 }
 
-- (void)testUpdate_ShouldNotSetRemove_WhenEmptyNSArrayPassed {
-    PNUpdateMembershipsAPICallBuilder *builder = [self updateBuilder];
+- (void)testManage_ShouldNotSetRemove_WhenEmptyNSArrayPassed {
+    PNManageMembershipsAPICallBuilder *builder = [self manageBuilder];
     NSArray<NSString *> *expected = @[];
 
 
@@ -215,8 +215,8 @@ NS_ASSUME_NONNULL_END
     OCMVerify(builderMock);
 }
 
-- (void)testUpdate_ShouldNotSetRemove_WhenNonNSArrayPassed {
-    PNUpdateMembershipsAPICallBuilder *builder = [self updateBuilder];
+- (void)testManage_ShouldNotSetRemove_WhenNonNSArrayPassed {
+    PNManageMembershipsAPICallBuilder *builder = [self manageBuilder];
     NSArray<NSString *> *expected = (id)@2010;
 
 
@@ -229,17 +229,17 @@ NS_ASSUME_NONNULL_END
 }
 
 
-#pragma mark - Tests :: update :: start
+#pragma mark - Tests :: manage :: start
 
-- (void)testUpdateStart_ShouldReturnUpdateBuilder_WhenCalled {
-    id builder = [self updateBuilder];
+- (void)testManageStart_ShouldReturnManageBuilder_WhenCalled {
+    id builder = [self manageBuilder];
 
-    id fetchBuilder = ((PNUpdateMembershipsAPICallBuilder *)builder).start(@"NjA");
+    id fetchBuilder = ((PNManageMembershipsAPICallBuilder *)builder).start(@"NjA");
     XCTAssertEqual(fetchBuilder, builder);
 }
 
-- (void)testUpdate_ShouldSetStart_WhenNSStringPassed {
-    PNUpdateMembershipsAPICallBuilder *builder = [self updateBuilder];
+- (void)testManage_ShouldSetStart_WhenNSStringPassed {
+    PNManageMembershipsAPICallBuilder *builder = [self manageBuilder];
     NSString *expected = @"NjA";
 
 
@@ -251,8 +251,8 @@ NS_ASSUME_NONNULL_END
     OCMVerify(builderMock);
 }
 
-- (void)testUpdate_ShouldNotSetStart_WhenEmptyNSStringPassed {
-    PNUpdateMembershipsAPICallBuilder *builder = [self updateBuilder];
+- (void)testManage_ShouldNotSetStart_WhenEmptyNSStringPassed {
+    PNManageMembershipsAPICallBuilder *builder = [self manageBuilder];
     NSString *expected = @"";
 
 
@@ -264,8 +264,8 @@ NS_ASSUME_NONNULL_END
     OCMVerify(builderMock);
 }
 
-- (void)testUpdate_ShouldNotSetStart_WhenNonNSStringPassed {
-    PNUpdateMembershipsAPICallBuilder *builder = [self updateBuilder];
+- (void)testManage_ShouldNotSetStart_WhenNonNSStringPassed {
+    PNManageMembershipsAPICallBuilder *builder = [self manageBuilder];
     NSString *expected = (id)@2010;
 
 
@@ -278,17 +278,17 @@ NS_ASSUME_NONNULL_END
 }
 
 
-#pragma mark - Tests :: update :: end
+#pragma mark - Tests :: manage :: end
 
-- (void)testUpdateEnd_ShouldReturnUpdateBuilder_WhenCalled {
-    id builder = [self updateBuilder];
+- (void)testManageEnd_ShouldReturnManageBuilder_WhenCalled {
+    id builder = [self manageBuilder];
 
-    id updateBuilder = ((PNUpdateMembershipsAPICallBuilder *)builder).end(@"NjA");
-    XCTAssertEqual(updateBuilder, builder);
+    id manageBuilder = ((PNManageMembershipsAPICallBuilder *)builder).end(@"NjA");
+    XCTAssertEqual(manageBuilder, builder);
 }
 
-- (void)testUpdate_ShouldSetEnd_WhenNSStringPassed {
-    PNUpdateMembershipsAPICallBuilder *builder = [self updateBuilder];
+- (void)testManage_ShouldSetEnd_WhenNSStringPassed {
+    PNManageMembershipsAPICallBuilder *builder = [self manageBuilder];
     NSString *expected = @"NjA";
 
 
@@ -300,8 +300,8 @@ NS_ASSUME_NONNULL_END
     OCMVerify(builderMock);
 }
 
-- (void)testUpdate_ShouldNotSetEnd_WhenEmptyNSStringPassed {
-    PNUpdateMembershipsAPICallBuilder *builder = [self updateBuilder];
+- (void)testManage_ShouldNotSetEnd_WhenEmptyNSStringPassed {
+    PNManageMembershipsAPICallBuilder *builder = [self manageBuilder];
     NSString *expected = @"";
 
 
@@ -313,8 +313,8 @@ NS_ASSUME_NONNULL_END
     OCMVerify(builderMock);
 }
 
-- (void)testUpdate_ShouldNotSetEnd_WhenNonNSStringPassed {
-    PNUpdateMembershipsAPICallBuilder *builder = [self updateBuilder];
+- (void)testManage_ShouldNotSetEnd_WhenNonNSStringPassed {
+    PNManageMembershipsAPICallBuilder *builder = [self manageBuilder];
     NSString *expected = (id)@2010;
 
 
@@ -327,17 +327,17 @@ NS_ASSUME_NONNULL_END
 }
 
 
-#pragma mark - Tests :: update :: limit
+#pragma mark - Tests :: manage :: limit
 
-- (void)testUpdateLimit_ShouldReturnUpdateBuilder_WhenCalled {
-    id builder = [self updateBuilder];
+- (void)testManageLimit_ShouldReturnManageBuilder_WhenCalled {
+    id builder = [self manageBuilder];
 
-    id fetchBuilder = ((PNUpdateMembershipsAPICallBuilder *)builder).limit(20);
+    id fetchBuilder = ((PNManageMembershipsAPICallBuilder *)builder).limit(20);
     XCTAssertEqual(fetchBuilder, builder);
 }
 
-- (void)testUpdate_ShouldSetLimit_WhenCalled {
-    PNUpdateMembershipsAPICallBuilder *builder = [self updateBuilder];
+- (void)testManage_ShouldSetLimit_WhenCalled {
+    PNManageMembershipsAPICallBuilder *builder = [self manageBuilder];
     NSNumber *expected = @YES;
 
 
@@ -350,17 +350,17 @@ NS_ASSUME_NONNULL_END
 }
 
 
-#pragma mark - Tests :: update :: includeCount
+#pragma mark - Tests :: manage :: includeCount
 
-- (void)testUpdateIncludeCount_ShouldReturnUpdateBuilder_WhenCalled {
-    id builder = [self updateBuilder];
+- (void)testManageIncludeCount_ShouldReturnManageBuilder_WhenCalled {
+    id builder = [self manageBuilder];
 
-    id updateBuilder = ((PNUpdateMembershipsAPICallBuilder *)builder).includeCount(YES);
-    XCTAssertEqual(updateBuilder, builder);
+    id manageBuilder = ((PNManageMembershipsAPICallBuilder *)builder).includeCount(YES);
+    XCTAssertEqual(manageBuilder, builder);
 }
 
-- (void)testUpdate_ShouldSetIncludeCount_WhenCalled {
-    PNUpdateMembershipsAPICallBuilder *builder = [self updateBuilder];
+- (void)testManage_ShouldSetIncludeCount_WhenCalled {
+    PNManageMembershipsAPICallBuilder *builder = [self manageBuilder];
     NSNumber *expected = @YES;
 
 
@@ -373,17 +373,17 @@ NS_ASSUME_NONNULL_END
 }
 
 
-#pragma mark - Tests :: update :: includeFields
+#pragma mark - Tests :: manage :: includeFields
 
-- (void)testUpdateIncludeFields_ShouldReturnUpdateBuilder_WhenCalled {
-    id builder = [self updateBuilder];
+- (void)testManageIncludeFields_ShouldReturnManageBuilder_WhenCalled {
+    id builder = [self manageBuilder];
 
-    id updateBuilder = ((PNUpdateMembershipsAPICallBuilder *)builder).includeFields(PNMembershipCustomField);
-    XCTAssertEqual(updateBuilder, builder);
+    id manageBuilder = ((PNManageMembershipsAPICallBuilder *)builder).includeFields(PNMembershipCustomField);
+    XCTAssertEqual(manageBuilder, builder);
 }
 
-- (void)testUpdate_ShouldSetIncludeFields_WhenCalled {
-    PNUpdateMembershipsAPICallBuilder *builder = [self updateBuilder];
+- (void)testManage_ShouldSetIncludeFields_WhenCalled {
+    PNManageMembershipsAPICallBuilder *builder = [self manageBuilder];
     PNMembershipFields expected = PNMembershipCustomField | PNMembershipSpaceField;
 
 
@@ -614,8 +614,8 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Misc
 
-- (PNUpdateMembershipsAPICallBuilder *)updateBuilder {
-    return [PNUpdateMembershipsAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
+- (PNManageMembershipsAPICallBuilder *)manageBuilder {
+    return [PNManageMembershipsAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
                                                                           NSDictionary *arguments) {
     }];
 }

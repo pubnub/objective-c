@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Information
 
-@property (nonatomic, nonnull, strong) PNCreateUserData *data;
+@property (nonatomic, strong) PNCreateUserData *data;
 
 #pragma mark -
 
@@ -32,7 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Information
 
-@property (nonatomic, nullable, strong) PNUser *user;
+@property (nonatomic, strong) PNUser *user;
 
 #pragma mark -
 

@@ -80,9 +80,9 @@ static NSString * const PNOperationTypeStrings[41] = {
     [PNDeleteSpaceOperation] = @"Delete Space",
     [PNFetchSpaceOperation] = @"Fetch Space",
     [PNFetchSpacesOperation] = @"Fetch All Spaces",
-    [PNUpdateMembershipsOperation] = @"Update Memberships",
+    [PNManageMembershipsOperation] = @"Manage Memberships",
     [PNFetchMembershipsOperation] = @"Fetch Memberships",
-    [PNUpdateMembersOperation] = @"Update Members",
+    [PNManageMembersOperation] = @"Manage Members",
     [PNFetchMembersOperation] = @"Fetch Members",
     [PNTimeOperation] = @"Time",
 };
@@ -147,9 +147,9 @@ static NSString * const PNOperationStatusClasses[41] = {
     [PNDeleteSpaceOperation] = @"PNAcknowledgmentStatus",
     [PNFetchSpaceOperation] = @"PNErrorStatus",
     [PNFetchSpacesOperation] = @"PNErrorStatus",
-    [PNUpdateMembershipsOperation] = @"PNUpdateMembershipsStatus",
+    [PNManageMembershipsOperation] = @"PNManageMembershipsStatus",
     [PNFetchMembershipsOperation] = @"PNErrorStatus",
-    [PNUpdateMembersOperation] = @"PNUpdateMembersStatus",
+    [PNManageMembersOperation] = @"PNManageMembersStatus",
     [PNFetchMembersOperation] = @"PNErrorStatus",
     [PNTimeOperation] = @"PNErrorStatus",
 };

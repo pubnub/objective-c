@@ -49,6 +49,14 @@
     XCTAssertTrue([self.client.createUser() isKindOfClass:[PNCreateUserAPICallBuilder class]]);
 }
 
+- (void)testCreateUser_ShouldSetDefaultIncludeFields {
+    PNCreateUserRequest *request = [PNCreateUserRequest requestWithUserID:[NSUUID UUID].UUIDString
+                                                                     name:[NSUUID UUID].UUIDString];
+    
+    
+    XCTAssertEqual(request.includeFields, PNUserCustomField);
+}
+
 
 #pragma mark - Tests :: Create :: Call
 
@@ -84,6 +92,24 @@
         self.client.createUser()
             .userId(expectedId).name(expectedName).custom(@{ @"user": expectedUserData })
             .includeFields(PNUserCustomField).performWithCompletion(^(PNCreateUserStatus *status) {});
+    }];
+}
+
+- (void)testCreateUser_ShouldNotSetDefaultIncludeFields_WhenCalledWithOutIncludeFields {
+    id clientMock = [self mockForObject:self.client];
+    id recorded = OCMExpect([clientMock processOperation:PNCreateUserOperation
+                                          withParameters:[OCMArg any]
+                                                    data:[OCMArg any]
+                                         completionBlock:[OCMArg any]])
+        .andDo(^(NSInvocation *invocation) {
+            PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
+            
+            XCTAssertNil(parameters.query[@"include"]);
+        });
+    
+    [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
+        self.client.createUser().userId([NSUUID UUID].UUIDString).name([NSUUID UUID].UUIDString)
+            .performWithCompletion(^(PNCreateUserStatus *status) {});
     }];
 }
 
@@ -165,6 +191,13 @@
     XCTAssertTrue([self.client.updateUser() isKindOfClass:[PNUpdateUserAPICallBuilder class]]);
 }
 
+- (void)testUpdateUser_ShouldNotSetDefaultIncludeFields {
+    PNUpdateUserRequest *request = [PNUpdateUserRequest requestWithUserID:[NSUUID UUID].UUIDString];
+    
+    
+    XCTAssertEqual(request.includeFields, 0);
+}
+
 
 #pragma mark - Tests :: Update :: Call
 
@@ -203,6 +236,24 @@
     }];
 }
 
+- (void)testUpdateUser_ShouldNotSetDefaultIncludeFields_WhenCalledWithOutIncludeFields {
+    id clientMock = [self mockForObject:self.client];
+    id recorded = OCMExpect([clientMock processOperation:PNUpdateUserOperation
+                                          withParameters:[OCMArg any]
+                                                    data:[OCMArg any]
+                                         completionBlock:[OCMArg any]])
+        .andDo(^(NSInvocation *invocation) {
+            PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
+            
+            XCTAssertNil(parameters.query[@"include"]);
+        });
+    
+    [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
+        self.client.updateUser().userId([NSUUID UUID].UUIDString)
+            .performWithCompletion(^(PNUpdateUserStatus *status) {});
+    }];
+}
+
 - (void)testUpdateUser_ShouldReturnError_WhenUserIdIsMissing {
     NSString *expectedName = [NSUUID UUID].UUIDString;
     
@@ -223,12 +274,14 @@
     NSString *expectedId = [NSUUID UUID].UUIDString;
     
     
-    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+    id clientMock = [self mockForObject:self.client];
+    id recorded = OCMExpect([clientMock processOperation:PNUpdateUserOperation
+                                          withParameters:[OCMArg any]
+                                                    data:[OCMArg any]
+                                         completionBlock:[OCMArg any]]).andDo(nil);
+    [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
         self.client.updateUser().userId(expectedId)
-            .includeFields(PNUserCustomField).performWithCompletion(^(PNUpdateUserStatus *status) {
-                XCTAssertFalse(status.isError);
-                handler();
-            });
+            .includeFields(PNUserCustomField).performWithCompletion(^(PNUpdateUserStatus *status) { });
     }];
 }
 
@@ -299,6 +352,13 @@
     XCTAssertTrue([self.client.fetchUser() isKindOfClass:[PNFetchUserAPICallBuilder class]]);
 }
 
+- (void)testFetchUser_ShouldNotSetDefaultIncludeFields {
+    PNFetchUserRequest *request = [PNFetchUserRequest requestWithUserID:[NSUUID UUID].UUIDString];
+    
+    
+    XCTAssertEqual(request.includeFields, 0);
+}
+
 
 #pragma mark - Tests :: Fetch :: Call
 
@@ -324,6 +384,24 @@
     }];
 }
 
+- (void)testFetchUser_ShouldNotSetDefaultIncludeFields_WhenCalledWithOutIncludeFields {
+    id clientMock = [self mockForObject:self.client];
+    id recorded = OCMExpect([clientMock processOperation:PNFetchUserOperation
+                                          withParameters:[OCMArg any]
+                                                    data:[OCMArg any]
+                                         completionBlock:[OCMArg any]])
+        .andDo(^(NSInvocation *invocation) {
+            PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
+            
+            XCTAssertNil(parameters.query[@"include"]);
+        });
+    
+    [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
+        self.client.fetchUser().userId([NSUUID UUID].UUIDString)
+            .performWithCompletion(^(PNFetchUserResult *result, PNErrorStatus *status) {});
+    }];
+}
+
 - (void)testFetchUser_ShouldReturnError_WhenUserIdIsMissing {
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         self.client.fetchUser()
@@ -342,6 +420,13 @@
 
 - (void)testFetchUsers_ShouldReturnBuilder {
     XCTAssertTrue([self.client.fetchUsers() isKindOfClass:[PNFetchUsersAPICallBuilder class]]);
+}
+
+- (void)testFetchUserS_ShouldNotSetDefaultIncludeFields {
+    PNFetchUsersRequest *request = [PNFetchUsersRequest new];
+    
+    
+    XCTAssertEqual(request.includeFields, 0);
 }
 
 
@@ -372,6 +457,24 @@
         self.client.fetchUsers()
             .start(expectedStart).end(expectedEnd).limit(expectedLimit.unsignedIntegerValue)
             .includeFields(PNUserCustomField)
+            .performWithCompletion(^(PNFetchUsersResult *result, PNErrorStatus *status) {});
+    }];
+}
+
+- (void)testFetchUsers_ShouldNotSetDefaultIncludeFields_WhenCalledWithOutIncludeFields {
+    id clientMock = [self mockForObject:self.client];
+    id recorded = OCMExpect([clientMock processOperation:PNFetchUsersOperation
+                                          withParameters:[OCMArg any]
+                                                    data:[OCMArg any]
+                                         completionBlock:[OCMArg any]])
+        .andDo(^(NSInvocation *invocation) {
+            PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
+            
+            XCTAssertNil(parameters.query[@"include"]);
+        });
+    
+    [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
+        self.client.fetchUsers()
             .performWithCompletion(^(PNFetchUsersResult *result, PNErrorStatus *status) {});
     }];
 }

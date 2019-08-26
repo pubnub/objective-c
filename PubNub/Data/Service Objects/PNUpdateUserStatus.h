@@ -8,7 +8,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark Interfaces declaration
 
 /**
- * @brief Object which is used to represent Objects API response for update user request.
+ * @brief Object which is used to represent Objects API response for \c update \c user request.
  *
  * @author Serhii Mamontov
  * @version 4.10.0
@@ -32,7 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 /**
- * @brief Object which is used to provide access to processed update user request results.
+ * @brief Object which is used to provide access to processed \c update \c user request results.
  *
  * @author Serhii Mamontov
  * @version 4.10.0
@@ -45,7 +45,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Information
 
 /**
- * @brief Update users request processed information.
+ * @brief \c Update \c user request processed information.
  */
 @property (nonatomic, readonly, strong) PNUpdateUserData *data;
 
