@@ -39,7 +39,8 @@ Pod::Spec.new do |spec|
             'PubNub/Misc/Logger/PNLogMacro.h',
             'PubNub/Misc/Logger/Data/*.h',
             'PubNub/Misc/Protocols/PNParser.h',
-            'PubNub/Network/**/*.h',
+            'PubNub/Network/{PNNetwork,PNNetworkResponseSerializer,PNReachability,PNRequestParameters,PNURLBuilder}.h',
+            'PubNub/Network/Parsers/**/*.h'
         ]
         core.exclude_files = 'PubNub/Core/PubNub+FAB.{h,m}'
         core.pod_target_xcconfig = { 'APPLICATION_EXTENSION_API_ONLY' => 'YES' }

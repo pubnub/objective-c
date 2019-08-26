@@ -177,6 +177,34 @@ struct PNEventEnvelopeStructure {
          */
         __unsafe_unretained NSString *timeouted;
     } presence;
+    
+    struct {
+        /**
+         * @brief Key under which stored object event (\c create / \c update / \c delete).
+         */
+        __unsafe_unretained NSString *event;
+        
+        /**
+         * @brief Key under which stored type of object for which \c action has been triggered
+         * (\c user / \c space / \c membership).
+         */
+        __unsafe_unretained NSString *type;
+        
+        /**
+         * @brief Key under which stored \c user's identifier.
+         */
+        __unsafe_unretained NSString *userId;
+        
+        /**
+         * @brief Key under which stored \c space's identifier.
+         */
+        __unsafe_unretained NSString *spaceId;
+        
+        /**
+         * @brief Key under which stored event triggering time token (unixtimestamp).
+         */
+        __unsafe_unretained NSString *timestamp;
+    } object;
 } PNEventEnvelope = {
     .senderTimeToken = { .key = @"o" },
     .publishTimeToken = { .key = @"p" },
@@ -185,7 +213,9 @@ struct PNEventEnvelopeStructure {
     .payload = @"d",
     .presence = { .action = @"action", .data = @"data", .occupancy = @"occupancy",
         .timestamp = @"timestamp", .uuid = @"uuid", .joined = @"join", .leaved = @"leave", 
-        .timeouted = @"timeout" }
+        .timeouted = @"timeout"
+    },
+    .object = { .event = @"event", .type = @"type", .userId = @"userId", .spaceId = @"spaceId" }
 };
 
 
@@ -221,6 +251,15 @@ NS_ASSUME_NONNULL_BEGIN
  */
 + (NSMutableDictionary *)messageFromData:(id)data
                 withAdditionalParserData:(nullable NSDictionary<NSString *, id> *)additionalData;
+
+/**
+ * @brief Parse provided data as \c object event.
+ *
+ * @param data Data which should be parsed to required 'object event' object format.
+ *
+ * @return Processed and parsed 'object event' object.
+ */
++ (NSMutableDictionary *)objectFromData:(NSDictionary<NSString *, id> *)data;
 
 /**
  * @brief Parse provided data as presence event.
@@ -259,7 +298,7 @@ NS_ASSUME_NONNULL_END
 
 + (NSDictionary<NSString *, id> *)parsedServiceResponse:(id)response
                                                withData:(NSDictionary<NSString *, id> *)additionalData {
-
+    
     NSDictionary *processedResponse = nil;
 
     if ([response isKindOfClass:[NSDictionary class]]) {
@@ -327,6 +366,8 @@ NS_ASSUME_NONNULL_END
         [event addEntriesFromDictionary:[self presenceFromData:data[PNEventEnvelope.payload]]];
         event[@"subscription"] = [PNChannel channelForPresence:event[@"subscription"]];
         event[@"channel"] = [PNChannel channelForPresence:event[@"channel"]];
+    } else if (messageType == PNObjectMessageType) {
+        [event addEntriesFromDictionary:[self objectFromData:data[PNEventEnvelope.payload]]];
     } else {
         NSDictionary *parserData = isEncryptionSupported ? additionalData : nil;
 
@@ -393,11 +434,44 @@ NS_ASSUME_NONNULL_END
     return message;
 }
 
++ (NSMutableDictionary *)objectFromData:(NSDictionary<NSString *, id> *)data {
+    NSMutableDictionary *object = [NSMutableDictionary new];
+    
+    if (![data[@"source"] isEqualToString:@"objects"]) {
+        return object;
+    }
+    
+    NSArray *eventKeys = @[@"event", @"source", @"type", @"version"];
+    [object addEntriesFromDictionary:[data dictionaryWithValuesForKeys:eventKeys]];
+    
+    // Identify fields which has been modified.
+    NSMutableArray *updatedFieldNames = [[data[@"data"] allKeys] mutableCopy];
+    [updatedFieldNames removeObjectsInArray:@[@"id", @"eTag", @"updated"]];
+    
+    if (updatedFieldNames.count) {
+        object[@"updatedFields"] = updatedFieldNames;
+    }
+    
+    if ([data[@"type"] isEqualToString:@"membership"]) {
+        object[@"membership"] = data[@"data"];
+    }
+    
+    if ([data[@"type"] isEqualToString:@"user"]) {
+        object[@"user"] = data[@"data"];
+    }
+    
+    if ([data[@"type"] isEqualToString:@"space"]) {
+        object[@"space"] = data[@"data"];
+    }
+    
+    return object;
+}
+
 + (NSMutableDictionary *)presenceFromData:(NSDictionary<NSString *, id> *)data {
     NSMutableDictionary *presence = [NSMutableDictionary new];
     
     // Processing common for all presence events data.
-    presence[@"presenceEvent"] = (data[PNEventEnvelope.presence.action]?: @"interval");
+    presence[@"presenceEvent"] = (data[PNEventEnvelope.presence.action] ?: @"interval");
     presence[@"presence"] = [NSMutableDictionary new];
     presence[@"presence"][@"timetoken"] = data[PNEventEnvelope.presence.timestamp];
 

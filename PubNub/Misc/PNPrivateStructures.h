@@ -30,7 +30,12 @@ typedef NS_OPTIONS(NSUInteger, PNMessageType) {
     /**
      @brief Type which represent signal object.
      */
-    PNSignalMessageType = 1
+    PNSignalMessageType = 1,
+    
+    /**
+     @brief Type which represent \c user / \c space / \c membership object.
+     */
+    PNObjectMessageType = 2
 };
 
 /**
@@ -38,7 +43,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessageType) {
 
  @since 4.0
  */
-static NSString * const PNOperationTypeStrings[27] = {
+static NSString * const PNOperationTypeStrings[41] = {
     [PNSubscribeOperation] = @"Subscribe",
     [PNUnsubscribeOperation] = @"Unsubscribe",
     [PNPublishOperation] = @"Publish",
@@ -65,10 +70,24 @@ static NSString * const PNOperationTypeStrings[27] = {
     [PNAddPushNotificationsOnChannelsOperation] = @"Enable Push Notifications On Channels",
     [PNRemovePushNotificationsFromChannelsOperation] = @"Remove Push Notifications From Channels",
     [PNRemoveAllPushNotificationsOperation] = @"Remove All Push Notifications",
+    [PNCreateUserOperation] = @"Create User",
+    [PNUpdateUserOperation] = @"Update User",
+    [PNDeleteUserOperation] = @"Delete User",
+    [PNFetchUserOperation] = @"Fetch User",
+    [PNFetchUsersOperation] = @"Fetch All Users",
+    [PNCreateSpaceOperation] = @"Create Space",
+    [PNUpdateSpaceOperation] = @"Update Space",
+    [PNDeleteSpaceOperation] = @"Delete Space",
+    [PNFetchSpaceOperation] = @"Fetch Space",
+    [PNFetchSpacesOperation] = @"Fetch All Spaces",
+    [PNManageMembershipsOperation] = @"Manage Memberships",
+    [PNFetchMembershipsOperation] = @"Fetch Memberships",
+    [PNManageMembersOperation] = @"Manage Members",
+    [PNFetchMembersOperation] = @"Fetch Members",
     [PNTimeOperation] = @"Time",
 };
 
-static NSString * const PNOperationResultClasses[27] = {
+static NSString * const PNOperationResultClasses[41] = {
     [PNHistoryOperation] = @"PNHistoryResult",
     [PNHistoryForChannelsOperation] = @"PNHistoryResult",
     [PNMessageCountOperation] = @"PNMessageCountResult",
@@ -82,10 +101,16 @@ static NSString * const PNOperationResultClasses[27] = {
     [PNChannelGroupsOperation] = @"PNChannelGroupsResult",
     [PNChannelsForGroupOperation] = @"PNChannelGroupChannelsResult",
     [PNPushNotificationEnabledChannelsOperation] = @"PNAPNSEnabledChannelsResult",
+    [PNFetchUserOperation] = @"PNFetchUserResult",
+    [PNFetchUsersOperation] = @"PNFetchUsersResult",
+    [PNFetchSpaceOperation] = @"PNFetchSpaceResult",
+    [PNFetchSpacesOperation] = @"PNFetchSpacesResult",
+    [PNFetchMembershipsOperation] = @"PNFetchMembershipsResult",
+    [PNFetchMembersOperation] = @"PNFetchMembersResult",
     [PNTimeOperation] = @"PNTimeResult",
 };
 
-static NSString * const PNOperationStatusClasses[27] = {
+static NSString * const PNOperationStatusClasses[41] = {
     [PNSubscribeOperation] = @"PNSubscribeStatus",
     [PNUnsubscribeOperation] = @"PNAcknowledgmentStatus",
     [PNPublishOperation] = @"PNPublishStatus",
@@ -112,6 +137,20 @@ static NSString * const PNOperationStatusClasses[27] = {
     [PNAddPushNotificationsOnChannelsOperation] = @"PNAcknowledgmentStatus",
     [PNRemovePushNotificationsFromChannelsOperation] = @"PNAcknowledgmentStatus",
     [PNRemoveAllPushNotificationsOperation] = @"PNAcknowledgmentStatus",
+    [PNCreateUserOperation] = @"PNCreateUserStatus",
+    [PNUpdateUserOperation] = @"PNUpdateUserStatus",
+    [PNDeleteUserOperation] = @"PNAcknowledgmentStatus",
+    [PNFetchUserOperation] = @"PNErrorStatus",
+    [PNFetchUsersOperation] = @"PNErrorStatus",
+    [PNCreateSpaceOperation] = @"PNCreateSpaceStatus",
+    [PNUpdateSpaceOperation] = @"PNUpdateSpaceStatus",
+    [PNDeleteSpaceOperation] = @"PNAcknowledgmentStatus",
+    [PNFetchSpaceOperation] = @"PNErrorStatus",
+    [PNFetchSpacesOperation] = @"PNErrorStatus",
+    [PNManageMembershipsOperation] = @"PNManageMembershipsStatus",
+    [PNFetchMembershipsOperation] = @"PNErrorStatus",
+    [PNManageMembersOperation] = @"PNManageMembersStatus",
+    [PNFetchMembersOperation] = @"PNErrorStatus",
     [PNTimeOperation] = @"PNErrorStatus",
 };
 

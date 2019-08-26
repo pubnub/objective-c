@@ -310,6 +310,9 @@
         
         if (!information) {
             information = error.userInfo[@"NSDebugDescription"];
+        } else if (error.userInfo[NSLocalizedFailureReasonErrorKey]) {
+            information = [NSString stringWithFormat:@"%@: %@", information,
+                           error.userInfo[NSLocalizedFailureReasonErrorKey]];
         }
         
         if (information) {

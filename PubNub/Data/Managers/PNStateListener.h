@@ -4,7 +4,8 @@
 
 #pragma mark Class forward
 
-@class PNPresenceEventResult, PNMessageResult, PNSignalResult, PNErrorStatus, PubNub;
+@class PNMembershipEventResult, PNPresenceEventResult, PNSpaceEventResult, PNUserEventResult;
+@class PNMessageResult, PNSignalResult, PNErrorStatus, PubNub;
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -19,7 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
  * unexpected disconnect and etc).
  *
  * @author Serhii Mamontov
- * @version 4.9.0
+ * @version 4.10.0
  * @since 4.0.0
  * @copyright © 2010-2019 PubNub, Inc.
  */
@@ -97,7 +98,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)notifyMessage:(PNMessageResult *)message;
 
 /**
- * @brief Notify all signal listeners about new signal.
+ * @brief Notify all \c signal listeners about new signal.
  *
  * @warning Method should be called within \b -notifyWithBlock: block to shift execution to private
  * protected queue.
@@ -117,6 +118,39 @@ NS_ASSUME_NONNULL_BEGIN
  * it.
  */
 - (void)notifyPresenceEvent:(PNPresenceEventResult *)event;
+
+/**
+ * @brief Notify all \c membership listeners about new signal.
+ *
+ * @warning Method should be called within \b -notifyWithBlock: block to shift execution to private
+ * protected queue.
+ *
+ * @param event Event object which provide information about operation type and service response
+ * for it.
+ */
+- (void)notifyMembershipEvent:(PNMembershipEventResult *)event;
+
+/**
+ * @brief Notify all \c space listeners about new signal.
+ *
+ * @warning Method should be called within \b -notifyWithBlock: block to shift execution to private
+ * protected queue.
+ *
+ * @param event Event object which provide information about operation type and service response
+ * for it.
+ */
+- (void)notifySpaceEvent:(PNSpaceEventResult *)event;
+
+/**
+ * @brief Notify all \c user listeners about new signal.
+ *
+ * @warning Method should be called within \b -notifyWithBlock: block to shift execution to private
+ * protected queue.
+ *
+ * @param event Event object which provide information about operation type and service response
+ * for it.
+ */
+- (void)notifyUserEvent:(PNUserEventResult *)event;
 
 /**
  * @brief Notify all state change listeners about changes in subscriber state.

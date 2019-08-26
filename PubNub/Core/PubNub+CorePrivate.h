@@ -1,5 +1,6 @@
 #import "PubNub+Core.h"
 #import "PNPublishSequence.h"
+#import "PNRequest+Private.h"
 #import "PNStateListener.h"
 #import "PNClientState.h"
 #import "PNSubscriber.h"
@@ -95,6 +96,17 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief Queue on which completion / processing blocks will be called.
  */
 @property (nonatomic, readonly, strong) dispatch_queue_t callbackQueue;
+
+
+#pragma mark - Requests helper
+
+/**
+ * @brief Perform network request.
+ *
+ * @param request Object which contain all required information to perform request.
+ * @param block Request processing completion block.
+ */
+- (void)performRequest:(PNRequest *)request withCompletion:(id)block;
 
 
 #pragma mark - Operation processing
