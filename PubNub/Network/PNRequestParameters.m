@@ -46,7 +46,7 @@
 
     static NSArray<NSString *> *_allowedHTTPMethods;
     static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{ _allowedHTTPMethods = @[@"GET", @"POST", @"DELETE"]; });
+    dispatch_once(&onceToken, ^{ _allowedHTTPMethods = @[@"GET", @"POST", @"PATCH", @"DELETE"]; });
     if (method && [_allowedHTTPMethods indexOfObjectIdenticalTo:method] != NSNotFound) {
         _HTTPMethod = [method copy];
     }

@@ -1,9 +1,31 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.9.0"
+version: "4.10.0"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Add support for Space Objects API."
+        type: feature
+      -
+        text: "Add support for User Objects API."
+        type: feature
+      -
+        text: "Add support for Membership/Member Objects API."
+        type: feature
+      -
+        text: "Add new callback to 'PNObjectEventListener', so existing listeners may start receiving 'space' events by adding new callback implementation."
+        type: feature
+      -
+        text: "Add new callback to 'PNObjectEventListener', so existing listeners may start receiving 'user' events by adding new callback implementation."
+        type: feature
+      -
+        text: "Add new callback to 'PNObjectEventListener', so existing listeners may start receiving 'membership' events by adding new callback implementation."
+        type: feature
+    date: Aug 27, 19
+    version: v4.10.0
   -
     changes:
       -
@@ -895,10 +917,31 @@ features:
     - SUBSCRIBE-PUBLISHER-UUID
     - SUBSCRIBE-MESSAGE-DEDUPE
     - SUBSCRIBE-SIGNAL-LISTENER
+    - SUBSCRIBE-MEMBERSHIP-LISTENER
+    - SUBSCRIBE-SPACE-LISTENER
+    - SUBSCRIBE-USER-LISTENER
   unsubscribe:
     - UNSUBSCRIBE-ALL
+    - UNSUBSCRIBE-SUPPRESS-LEAVE-EVENTS
   signal:
     - SIGNAL-SEND
+  objects:
+    - OBJECTS-CREATE-USER
+    - OBJECTS-UPDATE-USER
+    - OBJECTS-DELETE-USER
+    - OBJECTS-GET-USER
+    - OBJECTS-GET-USERS
+    - OBJECTS-CREATE-SPACE
+    - OBJECTS-UPDATE-SPACE
+    - OBJECTS-DELETE-SPACE
+    - OBJECTS-GET-SPACE
+    - OBJECTS-GET-SPACES
+    - OBJECTS-GET-MEMBERSHIPS
+    - OBJECTS-MANAGE-MEMBERSHIPS
+    - OBJECTS-GET-MEMBERS
+    - OBJECTS-MANAGE-MEMBERS
+  others:
+    - TELEMETRY
 supported-platforms:
   -
     version: PubNub Objective-C SDK

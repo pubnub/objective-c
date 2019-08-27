@@ -315,9 +315,21 @@ NS_ASSUME_NONNULL_END
     [self addHandlerOfType:@"signal" forClient:client withBlock:handler];
 }
 
-- (void)addPresenceHandlerForClient:(PubNub *)client withBlock:(PNTClientDidReceiveMessageHandler)handler {
+- (void)addPresenceHandlerForClient:(PubNub *)client withBlock:(PNTClientDidReceivePresenceEventHandler)handler {
     
     [self addHandlerOfType:@"presence" forClient:client withBlock:handler];
+}
+
+- (void)addUserHandlerForClient:(PubNub *)client withBlock:(PNTClientDidReceiveUserEventHandler)handler {
+    [self addHandlerOfType:@"user" forClient:client withBlock:handler];
+}
+
+- (void)addSpaceHandlerForClient:(PubNub *)client withBlock:(PNTClientDidReceiveSpaceEventHandler)handler {
+    [self addHandlerOfType:@"space" forClient:client withBlock:handler];
+}
+
+- (void)addMembershipHandlerForClient:(PubNub *)client withBlock:(PNTClientDidReceiveMembershipEventHandler)handler {
+    [self addHandlerOfType:@"membership" forClient:client withBlock:handler];
 }
 
 - (void)removeAllHandlersForClient:(PubNub *)client {
@@ -563,6 +575,57 @@ NS_ASSUME_NONNULL_END
     }
     
     [self removeHandlers:handlersForRemoval ofType:@"presence" forClient:client];
+}
+
+- (void)client:(PubNub *)client didReceiveUserEvent:(PNUserEventResult *)event {
+    NSMutableArray<PNTClientCallbackHandler> *handlersForRemoval = [NSMutableArray new];
+    NSArray<PNTClientCallbackHandler> *handlers = [self handlersOfType:@"user" forClient:client];
+    
+    for (PNTClientCallbackHandler handler in handlers) {
+        BOOL shouldRemoved = NO;
+        
+        handler(client, event, &shouldRemoved);
+        
+        if (shouldRemoved) {
+            [handlersForRemoval addObject:handler];
+        }
+    }
+    
+    [self removeHandlers:handlersForRemoval ofType:@"user" forClient:client];
+}
+
+- (void)client:(PubNub *)client didReceiveSpaceEvent:(PNSpaceEventResult *)event {
+    NSMutableArray<PNTClientCallbackHandler> *handlersForRemoval = [NSMutableArray new];
+    NSArray<PNTClientCallbackHandler> *handlers = [self handlersOfType:@"space" forClient:client];
+    
+    for (PNTClientCallbackHandler handler in handlers) {
+        BOOL shouldRemoved = NO;
+        
+        handler(client, event, &shouldRemoved);
+        
+        if (shouldRemoved) {
+            [handlersForRemoval addObject:handler];
+        }
+    }
+    
+    [self removeHandlers:handlersForRemoval ofType:@"space" forClient:client];
+}
+
+- (void)client:(PubNub *)client didReceiveMembershipEvent:(PNMembershipEventResult *)event {
+    NSMutableArray<PNTClientCallbackHandler> *handlersForRemoval = [NSMutableArray new];
+    NSArray<PNTClientCallbackHandler> *handlers = [self handlersOfType:@"membership" forClient:client];
+    
+    for (PNTClientCallbackHandler handler in handlers) {
+        BOOL shouldRemoved = NO;
+        
+        handler(client, event, &shouldRemoved);
+        
+        if (shouldRemoved) {
+            [handlersForRemoval addObject:handler];
+        }
+    }
+    
+    [self removeHandlers:handlersForRemoval ofType:@"membership" forClient:client];
 }
 
 

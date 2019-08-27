@@ -785,7 +785,10 @@ NS_ASSUME_NONNULL_END
                    @(PNHereNowForChannelGroupOperation), @(PNGetStateOperation),
                    @(PNStateForChannelOperation), @(PNStateForChannelGroupOperation),
                    @(PNChannelGroupsOperation), @(PNChannelsForGroupOperation),
-                   @(PNPushNotificationEnabledChannelsOperation), @(PNTimeOperation)];
+                   @(PNPushNotificationEnabledChannelsOperation), @(PNTimeOperation),
+                   @(PNFetchMembershipsOperation), @(PNFetchSpaceOperation),
+                   @(PNFetchSpacesOperation), @(PNFetchUserOperation), @(PNFetchUsersOperation),
+                   @(PNFetchMembersOperation)];
     });
     
     return [_resultExpectingOperations containsObject:@(operation)];
@@ -803,7 +806,9 @@ NS_ASSUME_NONNULL_END
             @"PNMessageCountParser", @"PNMessageDeleteParser", @"PNLeaveParser",
             @"PNMessagePublishParser", @"PNPresenceHereNowParser", @"PNPresenceWhereNowParser",
             @"PNPushNotificationsAuditParser", @"PNPushNotificationsStateModificationParser",
-            @"PNSubscribeParser",@"PNTimeParser"];
+            @"PNSubscribeParser",@"PNTimeParser", @"PNSpaceDataChangeParser",
+            @"PNUserDataChangeParser", @"PNObjectsDeleteParser", @"PNMembershipsParser",
+            @"PNFetchSpacesParser", @"PNFetchUsersParser", @"PNMembersParser"];
         NSMutableDictionary *parsers = [NSMutableDictionary new];
 
         for (NSString *className in parserNames) {
@@ -822,8 +827,8 @@ NS_ASSUME_NONNULL_END
 }
 
 - (Class)resultClassForOperation:(PNOperationType)operation {
-    
     Class class = [PNResult class];
+    
     if (PNOperationResultClasses[operation]) {
         class = NSClassFromString(PNOperationResultClasses[operation]);
     }
@@ -832,8 +837,8 @@ NS_ASSUME_NONNULL_END
 }
 
 - (Class)statusClassForOperation:(PNOperationType)operation {
-    
     Class class = [PNStatus class];
+    
     if (PNOperationStatusClasses[operation]) {
         class = NSClassFromString(PNOperationStatusClasses[operation]);
     }
@@ -848,7 +853,7 @@ NS_ASSUME_NONNULL_END
     
     [self appendRequiredParametersTo:parameters];
     NSURL *requestURL = [PNURLBuilder URLForOperation:operationType withParameters:parameters];
-
+    
     if (requestURL) {
         PNLogRequest(self.client.logger, @"<PubNub::Network> %@ %@", parameters.HTTPMethod,
             requestURL.absoluteString);

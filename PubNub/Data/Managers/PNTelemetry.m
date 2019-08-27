@@ -237,11 +237,27 @@ NS_ASSUME_NONNULL_END
         case PNChannelsForGroupOperation: 
             operation = @"cg";
             break;
-        case PNPushNotificationEnabledChannelsOperation: 
-        case PNAddPushNotificationsOnChannelsOperation: 
-        case PNRemovePushNotificationsFromChannelsOperation: 
-        case PNRemoveAllPushNotificationsOperation: 
+        case PNPushNotificationEnabledChannelsOperation:
+        case PNAddPushNotificationsOnChannelsOperation:
+        case PNRemovePushNotificationsFromChannelsOperation:
+        case PNRemoveAllPushNotificationsOperation:
             operation = @"push";
+            break;
+        case PNCreateUserOperation:
+        case PNUpdateUserOperation:
+        case PNDeleteUserOperation:
+        case PNFetchUserOperation:
+        case PNFetchUsersOperation:
+        case PNCreateSpaceOperation:
+        case PNUpdateSpaceOperation:
+        case PNDeleteSpaceOperation:
+        case PNFetchSpaceOperation:
+        case PNFetchSpacesOperation:
+        case PNManageMembershipsOperation:
+        case PNFetchMembershipsOperation:
+        case PNManageMembersOperation:
+        case PNFetchMembersOperation:
+            operation = @"obj";
             break;
         default:
             operation = @"time";

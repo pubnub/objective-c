@@ -1,7 +1,8 @@
 /**
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2010-2018 PubNub, Inc.
+ * @author Serhii Mamontov
+ * @version 4.10.0
+ * @since 4.0.0
+ * @copyright © 2010-2019 PubNub, Inc.
  */
 #import "PNStateListener.h"
 #import "PNObjectEventListener.h"
@@ -48,6 +49,29 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, strong) NSHashTable<id <PNObjectEventListener>> *presenceEventListeners;
 
+/**
+ * @brief Stores list of listeners which would like to be notified when new \c membership event
+ * arrive from remote data feed objects on which client subscribed at this moment.
+ *
+ * @return Hash table with list of \c membership event listeners.
+ */
+@property (nonatomic, strong) NSHashTable<id <PNObjectEventListener>> *membershipEventListeners;
+
+/**
+ * @brief Stores list of listeners which would like to be notified when new \c space event arrive
+ * from remote data feed objects on which client subscribed at this moment.
+ *
+ * @return Hash table with list of \c space event listeners.
+ */
+@property (nonatomic, strong) NSHashTable<id <PNObjectEventListener>> *spaceEventListeners;
+
+/**
+ * @brief Stores list of listeners which would like to be notified when new \c user event arrive
+ * from remote data feed objects on which client subscribed at this moment.
+ *
+ * @return Hash table with list of \c user event listeners.
+ */
+@property (nonatomic, strong) NSHashTable<id <PNObjectEventListener>> *userEventListeners;
 
 /**
  * @brief Stores list of listeners which would like to be notified when on subscription state
@@ -119,6 +143,9 @@ NS_ASSUME_NONNULL_END
         _messageListeners = [NSHashTable weakObjectsHashTable];
         _signalListeners = [NSHashTable weakObjectsHashTable];
         _presenceEventListeners = [NSHashTable weakObjectsHashTable];
+        _membershipEventListeners = [NSHashTable weakObjectsHashTable];
+        _spaceEventListeners = [NSHashTable weakObjectsHashTable];
+        _userEventListeners = [NSHashTable weakObjectsHashTable];
         _stateListeners = [NSHashTable weakObjectsHashTable];
         _resourceAccessQueue = dispatch_queue_create("com.pubnub.listener", DISPATCH_QUEUE_SERIAL);
     }
@@ -134,12 +161,18 @@ NS_ASSUME_NONNULL_END
     NSHashTable *messageListeners = [listener listenersCopyFrom:listener.messageListeners];
     NSHashTable *signalListeners = [listener listenersCopyFrom:listener.signalListeners];
     NSHashTable *presenceEventListeners = [listener listenersCopyFrom:listener.presenceEventListeners];
+    NSHashTable *membershipEventListeners = [listener listenersCopyFrom:listener.membershipEventListeners];
+    NSHashTable *spaceEventListeners = [listener listenersCopyFrom:listener.spaceEventListeners];
+    NSHashTable *userEventListeners = [listener listenersCopyFrom:listener.userEventListeners];
     NSHashTable *stateListeners = [listener listenersCopyFrom:listener.stateListeners];
     
     dispatch_async(self.resourceAccessQueue, ^{
         self.messageListeners = messageListeners;
         self.signalListeners = signalListeners;
         self.presenceEventListeners = presenceEventListeners;
+        self.membershipEventListeners = membershipEventListeners;
+        self.spaceEventListeners = spaceEventListeners;
+        self.userEventListeners = userEventListeners;
         self.stateListeners = stateListeners;
     });
 }
@@ -161,6 +194,18 @@ NS_ASSUME_NONNULL_END
             [self.presenceEventListeners addObject:listener];
         }
         
+        if ([listener respondsToSelector:@selector(client:didReceiveMembershipEvent:)]) {
+            [self.membershipEventListeners addObject:listener];
+        }
+        
+        if ([listener respondsToSelector:@selector(client:didReceiveSpaceEvent:)]) {
+            [self.spaceEventListeners addObject:listener];
+        }
+        
+        if ([listener respondsToSelector:@selector(client:didReceiveUserEvent:)]) {
+            [self.userEventListeners addObject:listener];
+        }
+        
         if ([listener respondsToSelector:@selector(client:didReceiveStatus:)]) {
             [self.stateListeners addObject:listener];
         }
@@ -172,6 +217,9 @@ NS_ASSUME_NONNULL_END
         [self.messageListeners removeObject:listener];
         [self.signalListeners removeObject:listener];
         [self.presenceEventListeners removeObject:listener];
+        [self.membershipEventListeners removeObject:listener];
+        [self.spaceEventListeners removeObject:listener];
+        [self.userEventListeners removeObject:listener];
         [self.stateListeners removeObject:listener];
     });
 }
@@ -181,6 +229,9 @@ NS_ASSUME_NONNULL_END
         [self.messageListeners removeAllObjects];
         [self.signalListeners removeAllObjects];
         [self.presenceEventListeners removeAllObjects];
+        [self.membershipEventListeners removeAllObjects];
+        [self.spaceEventListeners removeAllObjects];
+        [self.userEventListeners removeAllObjects];
         [self.stateListeners removeAllObjects];
     });
 }
@@ -213,40 +264,52 @@ NS_ASSUME_NONNULL_END
 
 - (void)notifySignal:(PNSignalResult *)signal {
     NSArray<id <PNObjectEventListener>> *listeners = self.signalListeners.allObjects;
-    
-    /**
-     * Silence static analyzer warnings.
-     * Code is aware about this case and at the end will simply call on 'nil' object method.
-     * In most cases if referenced object become 'nil' it mean what there is no more need in
-     * it and probably whole client instance has been deallocated.
-     */
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
+
     pn_dispatch_async(self.client.callbackQueue, ^{
         for (id <PNObjectEventListener> listener in listeners) {
             [listener client:self.client didReceiveSignal:signal];
         }
     });
-#pragma clang diagnostic pop
 }
 
 - (void)notifyPresenceEvent:(PNPresenceEventResult *)event {
     NSArray<id <PNObjectEventListener>> *listeners = self.presenceEventListeners.allObjects;
-    
-    /**
-     * Silence static analyzer warnings.
-     * Code is aware about this case and at the end will simply call on 'nil' object method.
-     * In most cases if referenced object become 'nil' it mean what there is no more need in
-     * it and probably whole client instance has been deallocated.
-     */
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
+
     pn_dispatch_async(self.client.callbackQueue, ^{
         for (id <PNObjectEventListener> listener in listeners) {
             [listener client:self.client didReceivePresenceEvent:event];
         }
     });
-    #pragma clang diagnostic pop
+}
+
+- (void)notifyMembershipEvent:(PNMembershipEventResult *)event {
+    NSArray<id <PNObjectEventListener>> *listeners = self.membershipEventListeners.allObjects;
+
+    pn_dispatch_async(self.client.callbackQueue, ^{
+        for (id <PNObjectEventListener> listener in listeners) {
+            [listener client:self.client didReceiveMembershipEvent:event];
+        }
+    });
+}
+
+- (void)notifySpaceEvent:(PNSpaceEventResult *)event {
+    NSArray<id <PNObjectEventListener>> *listeners = self.spaceEventListeners.allObjects;
+    
+    pn_dispatch_async(self.client.callbackQueue, ^{
+        for (id <PNObjectEventListener> listener in listeners) {
+            [listener client:self.client didReceiveSpaceEvent:event];
+        }
+    });
+}
+
+- (void)notifyUserEvent:(PNUserEventResult *)event {
+    NSArray<id <PNObjectEventListener>> *listeners = self.userEventListeners.allObjects;
+
+    pn_dispatch_async(self.client.callbackQueue, ^{
+        for (id <PNObjectEventListener> listener in listeners) {
+            [listener client:self.client didReceiveUserEvent:event];
+        }
+    });
 }
 
 - (void)notifyStatusChange:(PNSubscribeStatus *)status {
@@ -262,21 +325,12 @@ NS_ASSUME_NONNULL_END
 
 - (void)notifyStatusObservers:(PNStatus *)status {
     NSArray<id <PNObjectEventListener>> *listeners = self.stateListeners.allObjects;
-    
-    /**
-     * Silence static analyzer warnings.
-     * Code is aware about this case and at the end will simply call on 'nil' object method.
-     * In most cases if referenced object become 'nil' it mean what there is no more need in
-     * it and probably whole client instance has been deallocated.
-     */
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
+
     pn_dispatch_async(self.client.callbackQueue, ^{
         for (id <PNObjectEventListener> listener in listeners) {
             [listener client:self.client didReceiveStatus:status];
         }
     });
-    #pragma clang diagnostic pop
 }
 
 
