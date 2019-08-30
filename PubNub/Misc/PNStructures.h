@@ -370,6 +370,31 @@ typedef void(^PNTimeCompletionBlock)(PNTimeResult * _Nullable result,
 NS_ASSUME_NONNULL_END
 
 /**
+ * @brief Enum which specify possible message action types.
+ *
+ * @discussion These fields allow to identify what kind of action has been performed on target
+ * message.
+ *
+ * @since 4.11.0
+ */
+typedef NS_ENUM(NSUInteger, PNMessageActionTypes) {
+    /**
+     * @brief Reaction on target message (with emoji or any other visual object).
+     */
+    PNMessageReactionAction,
+    
+    /**
+     * @brief Mark received message as \c seen and notify with message action.
+     */
+    PNMessageReceiptAction,
+    
+    /**
+     * @brief Custom message action.
+     */
+    PNMessageCustomAction,
+};
+
+/**
  * @brief Options with possible additional \c space / \c membership fields which can be included to
  * response.
  *
@@ -496,7 +521,6 @@ typedef NS_ENUM(NSUInteger, PNObjectActionType) {
     PNDeleteObjectAction,
 };
 
-
 /**
  * @brief \b PubNub client logging levels available for manipulations.
  */
@@ -593,6 +617,9 @@ typedef NS_ENUM(NSInteger, PNOperationType){
     PNUnsubscribeOperation,
     PNPublishOperation,
     PNSignalOperation,
+    PNAddMessageActionOperation,
+    PNRemoveMessageActionOperation,
+    PNFetchMessageActionsOperation,
     PNHistoryOperation,
     PNHistoryForChannelsOperation,
     PNDeleteMessageOperation,

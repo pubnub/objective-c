@@ -12,11 +12,14 @@
 /**
  * @brief API endpoints description basing on operation type.
  */
-static NSString * const PNOperationRequestTemplate[41] = {
+static NSString * const PNOperationRequestTemplate[44] = {
     [PNSubscribeOperation] = @"/v2/subscribe/{sub-key}/{channels}/0",
     [PNUnsubscribeOperation] = @"/v2/presence/sub_key/{sub-key}/channel/{channels}/leave",
     [PNPublishOperation] = @"/publish/{pub-key}/{sub-key}/0/{channel}/0/{message}",
     [PNSignalOperation] = @"/signal/{pub-key}/{sub-key}/0/{channel}/0/{message}",
+    [PNAddMessageActionOperation] = @"/v1/actions/{sub-key}/channel/{channel}/message/{message-timetoken}",
+    [PNRemoveMessageActionOperation] = @"/v1/actions/{sub-key}/channel/{channel}/message/{message-timetoken}/action/{action-timetoken}",
+    [PNFetchMessageActionsOperation] = @"/v1/actions/{sub-key}/channel/{channel}",
     [PNHistoryOperation] = @"/v2/history/sub-key/{sub-key}/channel/{channel}",
     [PNHistoryForChannelsOperation] = @"/v3/history/sub-key/{sub-key}/channel/{channels}",
     [PNDeleteMessageOperation] = @"/v3/history/sub-key/{sub-key}/channel/{channel}",
@@ -40,19 +43,19 @@ static NSString * const PNOperationRequestTemplate[41] = {
     [PNRemovePushNotificationsFromChannelsOperation] = @"/v1/push/sub-key/{sub-key}/devices/{token}",
     [PNRemoveAllPushNotificationsOperation] = @"/v1/push/sub-key/{sub-key}/devices/{token}/remove",
     [PNCreateUserOperation] = @"/v1/objects/{sub-key}/users",
-    [PNUpdateUserOperation] = @"/v1/objects/{sub-key}/users/{user_id}",
-    [PNDeleteUserOperation] = @"/v1/objects/{sub-key}/users/{user_id}",
-    [PNFetchUserOperation] = @"/v1/objects/{sub-key}/users/{user_id}",
+    [PNUpdateUserOperation] = @"/v1/objects/{sub-key}/users/{user-id}",
+    [PNDeleteUserOperation] = @"/v1/objects/{sub-key}/users/{user-id}",
+    [PNFetchUserOperation] = @"/v1/objects/{sub-key}/users/{user-id}",
     [PNFetchUsersOperation] = @"/v1/objects/{sub-key}/users",
     [PNCreateSpaceOperation] = @"/v1/objects/{sub-key}/spaces",
-    [PNUpdateSpaceOperation] = @"/v1/objects/{sub-key}/spaces/{space_id}",
-    [PNDeleteSpaceOperation] = @"/v1/objects/{sub-key}/spaces/{space_id}",
-    [PNFetchSpaceOperation] = @"/v1/objects/{sub-key}/spaces/{space_id}",
+    [PNUpdateSpaceOperation] = @"/v1/objects/{sub-key}/spaces/{space-id}",
+    [PNDeleteSpaceOperation] = @"/v1/objects/{sub-key}/spaces/{space-id}",
+    [PNFetchSpaceOperation] = @"/v1/objects/{sub-key}/spaces/{space-id}",
     [PNFetchSpacesOperation] = @"/v1/objects/{sub-key}/spaces",
-    [PNManageMembershipsOperation] = @"/v1/objects/{sub-key}/users/{user_id}/spaces",
-    [PNFetchMembershipsOperation] = @"/v1/objects/{sub-key}/users/{user_id}/spaces",
-    [PNManageMembersOperation] = @"/v1/objects/{sub-key}/spaces/{space_id}/users",
-    [PNFetchMembersOperation] = @"/v1/objects/{sub-key}/spaces/{space_id}/users",
+    [PNManageMembershipsOperation] = @"/v1/objects/{sub-key}/users/{user-id}/spaces",
+    [PNFetchMembershipsOperation] = @"/v1/objects/{sub-key}/users/{user-id}/spaces",
+    [PNManageMembersOperation] = @"/v1/objects/{sub-key}/spaces/{space-id}/users",
+    [PNFetchMembersOperation] = @"/v1/objects/{sub-key}/spaces/{space-id}/users",
     [PNTimeOperation] = @"/time/0"
 };
 

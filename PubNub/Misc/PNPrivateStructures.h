@@ -35,7 +35,12 @@ typedef NS_OPTIONS(NSUInteger, PNMessageType) {
     /**
      @brief Type which represent \c user / \c space / \c membership object.
      */
-    PNObjectMessageType = 2
+    PNObjectMessageType = 2,
+    
+    /**
+     @brief Type which represent \c message \c action object.
+     */
+    PNActionMessageType = 3
 };
 
 /**
@@ -43,11 +48,14 @@ typedef NS_OPTIONS(NSUInteger, PNMessageType) {
 
  @since 4.0
  */
-static NSString * const PNOperationTypeStrings[41] = {
+static NSString * const PNOperationTypeStrings[44] = {
     [PNSubscribeOperation] = @"Subscribe",
     [PNUnsubscribeOperation] = @"Unsubscribe",
     [PNPublishOperation] = @"Publish",
     [PNSignalOperation] = @"Signal",
+    [PNAddMessageActionOperation] = @"Add Message Action",
+    [PNRemoveMessageActionOperation] = @"Remove Message Action",
+    [PNFetchMessageActionsOperation] = @"Fetch Message Actions",
     [PNHistoryOperation] = @"History",
     [PNHistoryForChannelsOperation] = @"History for Channels",
     [PNDeleteMessageOperation] = @"Delete message from History",
@@ -87,7 +95,7 @@ static NSString * const PNOperationTypeStrings[41] = {
     [PNTimeOperation] = @"Time",
 };
 
-static NSString * const PNOperationResultClasses[41] = {
+static NSString * const PNOperationResultClasses[44] = {
     [PNHistoryOperation] = @"PNHistoryResult",
     [PNHistoryForChannelsOperation] = @"PNHistoryResult",
     [PNMessageCountOperation] = @"PNMessageCountResult",
@@ -101,6 +109,7 @@ static NSString * const PNOperationResultClasses[41] = {
     [PNChannelGroupsOperation] = @"PNChannelGroupsResult",
     [PNChannelsForGroupOperation] = @"PNChannelGroupChannelsResult",
     [PNPushNotificationEnabledChannelsOperation] = @"PNAPNSEnabledChannelsResult",
+    [PNFetchMessageActionsOperation] = @"PNFetchMessageActionsResult",
     [PNFetchUserOperation] = @"PNFetchUserResult",
     [PNFetchUsersOperation] = @"PNFetchUsersResult",
     [PNFetchSpaceOperation] = @"PNFetchSpaceResult",
@@ -110,11 +119,14 @@ static NSString * const PNOperationResultClasses[41] = {
     [PNTimeOperation] = @"PNTimeResult",
 };
 
-static NSString * const PNOperationStatusClasses[41] = {
+static NSString * const PNOperationStatusClasses[44] = {
     [PNSubscribeOperation] = @"PNSubscribeStatus",
     [PNUnsubscribeOperation] = @"PNAcknowledgmentStatus",
     [PNPublishOperation] = @"PNPublishStatus",
     [PNSignalOperation] = @"PNSignalStatus",
+    [PNAddMessageActionOperation] = @"PNAddMessageActionStatus",
+    [PNRemoveMessageActionOperation] = @"PNAcknowledgmentStatus",
+    [PNFetchMessageActionsOperation] = @"PNErrorStatus",
     [PNHistoryOperation] = @"PNErrorStatus",
     [PNHistoryForChannelsOperation] = @"PNErrorStatus",
     [PNDeleteMessageOperation] = @"PNAcknowledgmentStatus",
