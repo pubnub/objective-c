@@ -26,56 +26,74 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, weak) PubNub *client;
 
 /**
- * @brief Stores list of listeners which would like to be notified when new message arrive from
- * remote data feed objects on which client subscribed at this moment.
+ * @brief List of listeners which would like to be notified when new message arrive from remote data
+ * feed objects on which client subscribed at this moment.
  *
  * @return Hash table with list of new message listeners.
  */
 @property (nonatomic, strong) NSHashTable<id <PNObjectEventListener>> *messageListeners;
 
 /**
- * @brief Stores list of listeners which would like to be notified when new signal arrive from
- * remote data feed objects on which client subscribed at this moment.
+ * @brief List of listeners which would like to be notified when new signal arrive from remote data
+ * feed objects on which client subscribed at this moment.
  *
- * @return Hash table with list of new message listeners.
+ * @return Hash table with list of new \c signal listeners.
+ *
+ * @since 4.9.0
  */
 @property (nonatomic, strong) NSHashTable<id <PNObjectEventListener>> *signalListeners;
 
 /**
- * @brief Stores list of listeners which would like to be notified when new presence event arrive
- * from remote data feed objects on which client subscribed at this moment.
+ * @brief List of listeners which would like to be notified when new \c message \c actions
+ * arrive from remote data feed objects on which client subscribed at this moment.
+ *
+ * @return Hash table with list of new \c action listeners.
+ *
+ * @since 4.11.0
+ */
+@property (nonatomic, strong) NSHashTable<id <PNObjectEventListener>> *messageActionListeners;
+
+/**
+ * @brief List of listeners which would like to be notified when new presence event arrive from
+ * remote data feed objects on which client subscribed at this moment.
  *
  * @return Hash table with list of presence event listeners.
  */
 @property (nonatomic, strong) NSHashTable<id <PNObjectEventListener>> *presenceEventListeners;
 
 /**
- * @brief Stores list of listeners which would like to be notified when new \c membership event
- * arrive from remote data feed objects on which client subscribed at this moment.
+ * @brief List of listeners which would like to be notified when new \c membership event arrive from
+ * remote data feed objects on which client subscribed at this moment.
  *
  * @return Hash table with list of \c membership event listeners.
+ *
+ * @since 4.10.0
  */
 @property (nonatomic, strong) NSHashTable<id <PNObjectEventListener>> *membershipEventListeners;
 
 /**
- * @brief Stores list of listeners which would like to be notified when new \c space event arrive
- * from remote data feed objects on which client subscribed at this moment.
+ * @brief List of listeners which would like to be notified when new \c space event arrive from
+ * remote data feed objects on which client subscribed at this moment.
  *
  * @return Hash table with list of \c space event listeners.
+ *
+ * @since 4.10.0
  */
 @property (nonatomic, strong) NSHashTable<id <PNObjectEventListener>> *spaceEventListeners;
 
 /**
- * @brief Stores list of listeners which would like to be notified when new \c user event arrive
- * from remote data feed objects on which client subscribed at this moment.
+ * @brief List of listeners which would like to be notified when new \c user event arrive from
+ * remote data feed objects on which client subscribed at this moment.
  *
  * @return Hash table with list of \c user event listeners.
+ *
+ * @since 4.10.0
  */
 @property (nonatomic, strong) NSHashTable<id <PNObjectEventListener>> *userEventListeners;
 
 /**
- * @brief Stores list of listeners which would like to be notified when on subscription state
- * changes (connection, access rights error, disconnection and unexpected disconnection).
+ * @brief List of listeners which would like to be notified when on subscription state changes
+ * (connection, access rights error, disconnection and unexpected disconnection).
  */
 @property (nonatomic, strong) NSHashTable<id <PNObjectEventListener>> *stateListeners;
 
@@ -142,6 +160,7 @@ NS_ASSUME_NONNULL_END
         _client = client;
         _messageListeners = [NSHashTable weakObjectsHashTable];
         _signalListeners = [NSHashTable weakObjectsHashTable];
+        _messageActionListeners = [NSHashTable weakObjectsHashTable];
         _presenceEventListeners = [NSHashTable weakObjectsHashTable];
         _membershipEventListeners = [NSHashTable weakObjectsHashTable];
         _spaceEventListeners = [NSHashTable weakObjectsHashTable];
@@ -160,6 +179,7 @@ NS_ASSUME_NONNULL_END
     
     NSHashTable *messageListeners = [listener listenersCopyFrom:listener.messageListeners];
     NSHashTable *signalListeners = [listener listenersCopyFrom:listener.signalListeners];
+    NSHashTable *actionListeners = [listener listenersCopyFrom:listener.messageActionListeners];
     NSHashTable *presenceEventListeners = [listener listenersCopyFrom:listener.presenceEventListeners];
     NSHashTable *membershipEventListeners = [listener listenersCopyFrom:listener.membershipEventListeners];
     NSHashTable *spaceEventListeners = [listener listenersCopyFrom:listener.spaceEventListeners];
@@ -169,6 +189,7 @@ NS_ASSUME_NONNULL_END
     dispatch_async(self.resourceAccessQueue, ^{
         self.messageListeners = messageListeners;
         self.signalListeners = signalListeners;
+        self.messageActionListeners = actionListeners;
         self.presenceEventListeners = presenceEventListeners;
         self.membershipEventListeners = membershipEventListeners;
         self.spaceEventListeners = spaceEventListeners;
@@ -188,6 +209,10 @@ NS_ASSUME_NONNULL_END
         
         if ([listener respondsToSelector:@selector(client:didReceiveSignal:)]) {
             [self.signalListeners addObject:listener];
+        }
+        
+        if ([listener respondsToSelector:@selector(client:didReceiveMessageAction:)]) {
+            [self.messageActionListeners addObject:listener];
         }
         
         if ([listener respondsToSelector:@selector(client:didReceivePresenceEvent:)]) {
@@ -216,6 +241,7 @@ NS_ASSUME_NONNULL_END
     dispatch_async(self.resourceAccessQueue, ^{
         [self.messageListeners removeObject:listener];
         [self.signalListeners removeObject:listener];
+        [self.messageActionListeners removeObject:listener];
         [self.presenceEventListeners removeObject:listener];
         [self.membershipEventListeners removeObject:listener];
         [self.spaceEventListeners removeObject:listener];
@@ -228,6 +254,7 @@ NS_ASSUME_NONNULL_END
     dispatch_async(self.resourceAccessQueue, ^{
         [self.messageListeners removeAllObjects];
         [self.signalListeners removeAllObjects];
+        [self.messageActionListeners removeAllObjects];
         [self.presenceEventListeners removeAllObjects];
         [self.membershipEventListeners removeAllObjects];
         [self.spaceEventListeners removeAllObjects];
@@ -268,6 +295,16 @@ NS_ASSUME_NONNULL_END
     pn_dispatch_async(self.client.callbackQueue, ^{
         for (id <PNObjectEventListener> listener in listeners) {
             [listener client:self.client didReceiveSignal:signal];
+        }
+    });
+}
+
+- (void)notifyMessageAction:(PNMessageActionResult *)action {
+    NSArray<id <PNObjectEventListener>> *listeners = self.messageActionListeners.allObjects;
+
+    pn_dispatch_async(self.client.callbackQueue, ^{
+        for (id <PNObjectEventListener> listener in listeners) {
+            [listener client:self.client didReceiveMessageAction:action];
         }
     });
 }

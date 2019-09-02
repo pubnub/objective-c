@@ -839,7 +839,7 @@
 }
 
 
-#pragma mark - Tests :: fetch all :: start
+#pragma mark - Tests :: fetch all :: end
 
 - (void)testFetchAllEnd_ShouldReturnFetchAllBuilder_WhenCalled {
     id builder = [self fetchAllBuilder];

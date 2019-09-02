@@ -1,5 +1,5 @@
+#import "PNBaseMessageActionRequest.h"
 #import "PNStructures.h"
-#import "PNRequest.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -14,22 +14,46 @@ NS_ASSUME_NONNULL_BEGIN
  * @since 4.11.0
  * @copyright © 2010-2019 PubNub, Inc.
  */
-@interface PNAddMessageActionRequest : PNRequest
+@interface PNAddMessageActionRequest : PNBaseMessageActionRequest
+
+
+#pragma mark - Information
+
+/**
+ * @brief What feature this \c message \c action represents.
+ *
+ * @note Maximum \b 15 characters.
+ */
+@property (nonatomic, copy) NSString *type;
+
+/**
+ * @brief Value which should be added with \c message \c action \b type.
+ */
+@property (nonatomic, copy) NSString *value;
 
 
 #pragma mark - Initialization & Configuration
 
 /**
- * @brief Create and configure \c create \c user request.
+ * @brief Create and configure \c add \c message \c action request.
  *
- * @param identifier Unique identifier for new \c user entry.
- * @param name Name which should be associated with new \c user entry.
+ * @param channel Name of channel which store \c message for which \c action should be added.
+ * @param messageTimetoken Timetoken (\b PubNub's high precision timestamp) of \c message to which
+ * \c action should be added.
  *
- * @return Configured and ready to use \c create \c user request.
+ * @return Configured and ready to use \c add \c message \c action request.
  */
-+ (instancetype)requestWithUserID:(NSString *)identifier name:(NSString *)name
-    NS_SWIFT_NAME(init(userID:name:));
-+ (instancetype)e;
++ (instancetype)requestWithChannel:(NSString *)channel messageTimetoken:(NSNumber *)messageTimetoken
+    NS_SWIFT_NAME(init(channel:messageTimetoken:));
+
+/**
+ * @brief Forbids request initialization.
+ *
+ * @throws Interface not available exception and requirement to use provided constructor method.
+ *
+ * @return Initialized request.
+ */
+- (instancetype)init NS_UNAVAILABLE;
 
 #pragma mark -
 

@@ -83,7 +83,7 @@
             PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
             NSData *sentData = [self objectForInvocation:invocation argumentAtIndex:3];
             
-            XCTAssertEqualObjects(parameters.pathComponents[@"{user_id}"], expectedId);
+            XCTAssertEqualObjects(parameters.pathComponents[@"{user-id}"], expectedId);
             XCTAssertEqualObjects(parameters.query[@"include"], @"custom");
             XCTAssertEqualObjects(sentData, expectedPayload);
         });
@@ -121,7 +121,7 @@
         self.client.createUser().name(expectedName).includeFields(PNUserCustomField)
             .performWithCompletion(^(PNCreateUserStatus *status) {
                 XCTAssertTrue(status.isError);
-                XCTAssertNotEqual([status.errorData.information rangeOfString:@"'user_id'"].location,
+                XCTAssertNotEqual([status.errorData.information rangeOfString:@"'user-id'"].location,
                                   NSNotFound);
                 
                 handler();
@@ -224,7 +224,7 @@
             PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
             NSData *sentData = [self objectForInvocation:invocation argumentAtIndex:3];
             
-            XCTAssertEqualObjects(parameters.pathComponents[@"{user_id}"], expectedId);
+            XCTAssertEqualObjects(parameters.pathComponents[@"{user-id}"], expectedId);
             XCTAssertEqualObjects(parameters.query[@"include"], @"custom");
             XCTAssertEqualObjects(sentData, expectedPayload);
         });
@@ -262,7 +262,7 @@
         self.client.updateUser().name(expectedName).includeFields(PNUserCustomField)
             .performWithCompletion(^(PNUpdateUserStatus *status) {
                 XCTAssertTrue(status.isError);
-                XCTAssertNotEqual([status.errorData.information rangeOfString:@"'user_id'"].location,
+                XCTAssertNotEqual([status.errorData.information rangeOfString:@"'user-id'"].location,
                                   NSNotFound);
                 
                 handler();
@@ -324,7 +324,7 @@
     .andDo(^(NSInvocation *invocation) {
         PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
         
-        XCTAssertEqualObjects(parameters.pathComponents[@"{user_id}"], expectedId);
+        XCTAssertEqualObjects(parameters.pathComponents[@"{user-id}"], expectedId);
     });
     
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
@@ -337,7 +337,7 @@
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         self.client.updateUser().performWithCompletion(^(PNAcknowledgmentStatus *status) {
             XCTAssertTrue(status.isError);
-            XCTAssertNotEqual([status.errorData.information rangeOfString:@"'user_id'"].location,
+            XCTAssertNotEqual([status.errorData.information rangeOfString:@"'user-id'"].location,
                               NSNotFound);
             
             handler();
@@ -374,7 +374,7 @@
         .andDo(^(NSInvocation *invocation) {
             PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
             
-            XCTAssertEqualObjects(parameters.pathComponents[@"{user_id}"], expectedId);
+            XCTAssertEqualObjects(parameters.pathComponents[@"{user-id}"], expectedId);
             XCTAssertEqualObjects(parameters.query[@"include"], @"custom");
         });
     
@@ -407,7 +407,7 @@
         self.client.fetchUser()
             .performWithCompletion(^(PNFetchUserResult *result, PNErrorStatus *status) {
                 XCTAssertTrue(status.isError);
-                XCTAssertNotEqual([status.errorData.information rangeOfString:@"'user_id'"].location,
+                XCTAssertNotEqual([status.errorData.information rangeOfString:@"'user-id'"].location,
                                   NSNotFound);
                 
                 handler();

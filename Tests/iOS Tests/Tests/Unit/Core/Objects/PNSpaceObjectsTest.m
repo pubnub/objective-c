@@ -85,7 +85,7 @@
             PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
             NSData *sentData = [self objectForInvocation:invocation argumentAtIndex:3];
             
-            XCTAssertEqualObjects(parameters.pathComponents[@"{space_id}"], expectedId);
+            XCTAssertEqualObjects(parameters.pathComponents[@"{space-id}"], expectedId);
             XCTAssertEqualObjects(parameters.query[@"include"], @"custom");
             XCTAssertEqualObjects(sentData, expectedPayload);
         });
@@ -124,7 +124,7 @@
         self.client.createSpace().name(expectedName).includeFields(PNSpaceCustomField)
             .performWithCompletion(^(PNCreateSpaceStatus *status) {
                 XCTAssertTrue(status.isError);
-                XCTAssertNotEqual([status.errorData.information rangeOfString:@"'space_id'"].location,
+                XCTAssertNotEqual([status.errorData.information rangeOfString:@"'space-id'"].location,
                                   NSNotFound);
                 
                 handler();
@@ -229,7 +229,7 @@
             PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
             NSData *sentData = [self objectForInvocation:invocation argumentAtIndex:3];
             
-            XCTAssertEqualObjects(parameters.pathComponents[@"{space_id}"], expectedId);
+            XCTAssertEqualObjects(parameters.pathComponents[@"{space-id}"], expectedId);
             XCTAssertEqualObjects(parameters.query[@"include"], @"custom");
             XCTAssertEqualObjects(sentData, expectedPayload);
         });
@@ -267,7 +267,7 @@
         self.client.updateSpace().name(expectedName).includeFields(PNSpaceCustomField)
             .performWithCompletion(^(PNUpdateSpaceStatus *status) {
                 XCTAssertTrue(status.isError);
-                XCTAssertNotEqual([status.errorData.information rangeOfString:@"'space_id'"].location,
+                XCTAssertNotEqual([status.errorData.information rangeOfString:@"'space-id'"].location,
                                   NSNotFound);
                 
                 handler();
@@ -328,7 +328,7 @@
     .andDo(^(NSInvocation *invocation) {
         PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
         
-        XCTAssertEqualObjects(parameters.pathComponents[@"{space_id}"], expectedId);
+        XCTAssertEqualObjects(parameters.pathComponents[@"{space-id}"], expectedId);
     });
     
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
@@ -341,7 +341,7 @@
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         self.client.deleteSpace().performWithCompletion(^(PNAcknowledgmentStatus *status) {
             XCTAssertTrue(status.isError);
-            XCTAssertNotEqual([status.errorData.information rangeOfString:@"'space_id'"].location,
+            XCTAssertNotEqual([status.errorData.information rangeOfString:@"'space-id'"].location,
                               NSNotFound);
             
             handler();
@@ -378,7 +378,7 @@
         .andDo(^(NSInvocation *invocation) {
             PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
             
-            XCTAssertEqualObjects(parameters.pathComponents[@"{space_id}"], expectedId);
+            XCTAssertEqualObjects(parameters.pathComponents[@"{space-id}"], expectedId);
             XCTAssertEqualObjects(parameters.query[@"include"], @"custom");
         });
     
@@ -411,7 +411,7 @@
         self.client.fetchSpace()
             .performWithCompletion(^(PNFetchSpaceResult *result, PNErrorStatus *status) {
                 XCTAssertTrue(status.isError);
-                XCTAssertNotEqual([status.errorData.information rangeOfString:@"'space_id'"].location,
+                XCTAssertNotEqual([status.errorData.information rangeOfString:@"'space-id'"].location,
                                   NSNotFound);
                 
                 handler();

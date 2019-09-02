@@ -12,16 +12,17 @@
 /**
  * @brief API endpoints description basing on operation type.
  */
-static NSString * const PNOperationRequestTemplate[44] = {
+static NSString * const PNOperationRequestTemplate[45] = {
     [PNSubscribeOperation] = @"/v2/subscribe/{sub-key}/{channels}/0",
     [PNUnsubscribeOperation] = @"/v2/presence/sub_key/{sub-key}/channel/{channels}/leave",
     [PNPublishOperation] = @"/publish/{pub-key}/{sub-key}/0/{channel}/0/{message}",
     [PNSignalOperation] = @"/signal/{pub-key}/{sub-key}/0/{channel}/0/{message}",
-    [PNAddMessageActionOperation] = @"/v1/actions/{sub-key}/channel/{channel}/message/{message-timetoken}",
-    [PNRemoveMessageActionOperation] = @"/v1/actions/{sub-key}/channel/{channel}/message/{message-timetoken}/action/{action-timetoken}",
-    [PNFetchMessageActionsOperation] = @"/v1/actions/{sub-key}/channel/{channel}",
+    [PNAddMessageActionOperation] = @"/v1/message-actions/{sub-key}/channel/{channel}/message/{message-timetoken}",
+    [PNRemoveMessageActionOperation] = @"/v1/message-actions/{sub-key}/channel/{channel}/message/{message-timetoken}/action/{action-timetoken}",
+    [PNFetchMessagesActionsOperation] = @"/v1/message-actions/{sub-key}/channel/{channel}",
     [PNHistoryOperation] = @"/v2/history/sub-key/{sub-key}/channel/{channel}",
     [PNHistoryForChannelsOperation] = @"/v3/history/sub-key/{sub-key}/channel/{channels}",
+    [PNHistoryWithActionsOperation] = @"/v3/history-with-actions/sub-key/{sub-key}/channel/{channel}",
     [PNDeleteMessageOperation] = @"/v3/history/sub-key/{sub-key}/channel/{channel}",
     [PNMessageCountOperation] = @"/v3/history/sub-key/{sub-key}/message-counts/{channels}",
     [PNWhereNowOperation] = @"/v2/presence/sub-key/{sub-key}/uuid/{uuid}",

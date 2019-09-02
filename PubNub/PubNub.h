@@ -35,6 +35,7 @@
 
 // API
 #import "PubNub+Core.h"
+#import "PubNub+MessageActions.h"
 #import "PubNub+ChannelGroup.h"
 #import "PubNub+Subscribe.h"
 #import "PNConfiguration.h"

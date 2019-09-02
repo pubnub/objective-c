@@ -35,6 +35,23 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSMutableDictionary *)processedMessagesFrom:(nullable NSArray *)messages
                                       withData:(nullable NSDictionary<NSString *, id> *)additionalData;
 
+
+#pragma mark - Misc
+
+/**
+ * @brief Iterate through action senders and replace \a NSString \c actionTimetoken with \a NSNumber
+ * value.
+ *
+ * @param actionsForTypes List contains set of values for various \c action type (\c receip,
+ * \c reaction and \c custom).
+ *
+ * @since 4.11.0
+ */
++ (void)normalizeActionTimetokens:(NSArray<NSMutableDictionary *> *)actionsForTypes;
+
+#pragma mark -
+
+
 @end
 
 NS_ASSUME_NONNULL_END
@@ -48,7 +65,11 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Identification
 
 + (NSArray<NSNumber *> *)operations {
-    return @[ @(PNHistoryOperation), @(PNHistoryForChannelsOperation) ];
+    return @[
+        @(PNHistoryOperation),
+        @(PNHistoryForChannelsOperation),
+        @(PNHistoryWithActionsOperation)
+    ];
 }
 
 + (BOOL)requireAdditionalData {
@@ -113,16 +134,22 @@ NS_ASSUME_NONNULL_END
     [messages enumerateObjectsUsingBlock:^(id messageObject, __unused NSUInteger messageObjectIdx,
                                            __unused BOOL *messageObjectEnumeratorStop) {
         
-        NSNumber *timeToken = nil;
+        NSArray<NSDictionary *> *actions = nil;
+        NSDictionary *metadata = nil;
         id message = messageObject;
+        NSNumber *timeToken = nil;
 
-        if ([messageObject isKindOfClass:[NSDictionary class]] &&
-            messageObject[@"message"] &&
-            messageObject[@"timetoken"]) {
+        if ([messageObject isKindOfClass:[NSDictionary class]] && messageObject[@"message"] &&
+            (messageObject[@"timetoken"] || messageObject[@"meta"] || messageObject[@"actions"])) {
             
             timeToken = messageObject[@"timetoken"];
             message = messageObject[@"message"];
+            actions = messageObject[@"actions"];
+            metadata = messageObject[@"meta"];
             messageObject = message;
+            
+            timeToken = timeToken ? @(((NSString *)timeToken).longLongValue) : nil;
+            [self normalizeActionTimetokens:((NSDictionary *)actions).allValues];
         }
 
         if (((NSString *)additionalData[@"cipherKey"]).length){
@@ -179,12 +206,41 @@ NS_ASSUME_NONNULL_END
         }
         
         if (message) {
-            message = timeToken ? @{ @"message": message, @"timetoken": timeToken } : message;
+            if (timeToken || metadata || actions) {
+                NSMutableDictionary *messageWithInfo = [@{ @"message": message } mutableCopy];
+                
+                if (timeToken) {
+                    messageWithInfo[@"timetoken"] = timeToken;
+                }
+                
+                if (metadata) {
+                    messageWithInfo[@"metadata"] = metadata;
+                }
+                
+                if (actions) {
+                    messageWithInfo[@"actions"] = actions;
+                }
+                
+                message = messageWithInfo;
+            }
+            
             [data[@"messages"] addObject:message];
         }
     }];
     
     return data;
+}
+
+#pragma mark - Misc
+
++ (void)normalizeActionTimetokens:(NSArray<NSMutableDictionary *> *)actionsForTypes {
+    for (NSMutableDictionary *actionValues in actionsForTypes) {
+        for (NSString *actionValue in actionValues) {
+            for (NSMutableDictionary *action in actionValues[actionValue]) {
+                action[@"actionTimetoken"] = @(((NSString *)action[@"actionTimetoken"]).longLongValue);
+            }
+        }
+    }
 }
 
 #pragma mark -

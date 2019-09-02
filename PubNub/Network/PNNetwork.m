@@ -779,16 +779,18 @@ NS_ASSUME_NONNULL_END
 
     dispatch_once(&onceToken, ^{
         _resultExpectingOperations = @[
-                   @(PNHistoryOperation), @(PNHistoryForChannelsOperation),
-                   @(PNMessageCountOperation), @(PNWhereNowOperation),
-                   @(PNHereNowGlobalOperation), @(PNHereNowForChannelOperation), 
-                   @(PNHereNowForChannelGroupOperation), @(PNGetStateOperation),
-                   @(PNStateForChannelOperation), @(PNStateForChannelGroupOperation),
-                   @(PNChannelGroupsOperation), @(PNChannelsForGroupOperation),
-                   @(PNPushNotificationEnabledChannelsOperation), @(PNTimeOperation),
-                   @(PNFetchMembershipsOperation), @(PNFetchSpaceOperation),
-                   @(PNFetchSpacesOperation), @(PNFetchUserOperation), @(PNFetchUsersOperation),
-                   @(PNFetchMembersOperation)];
+            @(PNHistoryOperation), @(PNHistoryForChannelsOperation),
+            @(PNHistoryWithActionsOperation), @(PNMessageCountOperation),
+            @(PNWhereNowOperation), @(PNHereNowGlobalOperation),
+            @(PNHereNowForChannelOperation), @(PNHereNowForChannelGroupOperation),
+            @(PNGetStateOperation), @(PNStateForChannelOperation),
+            @(PNStateForChannelGroupOperation), @(PNChannelGroupsOperation),
+            @(PNChannelsForGroupOperation), @(PNPushNotificationEnabledChannelsOperation),
+            @(PNTimeOperation), @(PNFetchMessagesActionsOperation),
+            @(PNFetchMembershipsOperation), @(PNFetchSpaceOperation),
+            @(PNFetchSpacesOperation), @(PNFetchUserOperation),
+            @(PNFetchUsersOperation), @(PNFetchMembersOperation)
+        ];
     });
     
     return [_resultExpectingOperations containsObject:@(operation)];
@@ -808,7 +810,9 @@ NS_ASSUME_NONNULL_END
             @"PNPushNotificationsAuditParser", @"PNPushNotificationsStateModificationParser",
             @"PNSubscribeParser",@"PNTimeParser", @"PNSpaceDataChangeParser",
             @"PNUserDataChangeParser", @"PNObjectsDeleteParser", @"PNMembershipsParser",
-            @"PNFetchSpacesParser", @"PNFetchUsersParser", @"PNMembersParser"];
+            @"PNFetchSpacesParser", @"PNFetchUsersParser", @"PNMembersParser",
+            @"PNAddMessageActionParser", @"PNRemoveMessageActionParser",
+            @"PNFetchMessagesActionsParser"];
         NSMutableDictionary *parsers = [NSMutableDictionary new];
 
         for (NSString *className in parserNames) {
@@ -1240,7 +1244,7 @@ NS_ASSUME_NONNULL_END
 
         if (errorData) {
             errorDetails = [NSJSONSerialization JSONObjectWithData:errorData
-                                                           options:(NSJSONReadingOptions)0
+                                                           options:NSJSONReadingMutableContainers
                                                              error:NULL];
         }
 

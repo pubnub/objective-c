@@ -301,17 +301,14 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)addStatusHandlerForClient:(PubNub *)client withBlock:(PNTClientDidReceiveStatusHandler)handler {
-    
     [self addHandlerOfType:@"status" forClient:client withBlock:handler];
 }
 
 - (void)addMessageHandlerForClient:(PubNub *)client withBlock:(PNTClientDidReceiveMessageHandler)handler {
-    
     [self addHandlerOfType:@"message" forClient:client withBlock:handler];
 }
 
 - (void)addSignalHandlerForClient:(PubNub *)client withBlock:(PNTClientDidReceiveSignalHandler)handler {
-    
     [self addHandlerOfType:@"signal" forClient:client withBlock:handler];
 }
 
@@ -330,6 +327,10 @@ NS_ASSUME_NONNULL_END
 
 - (void)addMembershipHandlerForClient:(PubNub *)client withBlock:(PNTClientDidReceiveMembershipEventHandler)handler {
     [self addHandlerOfType:@"membership" forClient:client withBlock:handler];
+}
+
+- (void)addActionHandlerForClient:(PubNub *)client withBlock:(PNTClientDidReceiveMessageActionHandler)handler {
+    [self addHandlerOfType:@"actions" forClient:client withBlock:handler];
 }
 
 - (void)removeAllHandlersForClient:(PubNub *)client {
@@ -557,6 +558,23 @@ NS_ASSUME_NONNULL_END
     }
     
     [self removeHandlers:handlersForRemoval ofType:@"signal" forClient:client];
+}
+
+- (void)client:(PubNub *)client didReceiveMessageAction:(PNMessageActionResult *)action {
+    NSMutableArray<PNTClientCallbackHandler> *handlersForRemoval = [NSMutableArray new];
+    NSArray<PNTClientCallbackHandler> *handlers = [self handlersOfType:@"actions" forClient:client];
+    
+    for (PNTClientCallbackHandler handler in handlers) {
+        BOOL shouldRemoved = NO;
+        
+        handler(client, action, &shouldRemoved);
+        
+        if (shouldRemoved) {
+            [handlersForRemoval addObject:handler];
+        }
+    }
+    
+    [self removeHandlers:handlersForRemoval ofType:@"actions" forClient:client];
 }
 
 - (void)client:(PubNub *)client didReceivePresenceEvent:(PNPresenceEventResult *)event {

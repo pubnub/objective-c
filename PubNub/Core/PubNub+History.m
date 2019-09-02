@@ -41,6 +41,8 @@ NS_ASSUME_NONNULL_BEGIN
  * @param shouldReverseOrder Whether events order in response should be reversed or not.
  * @param shouldIncludeTimeToken Whether event dates (time tokens) should be included in response or
  *     not.
+ * @param shouldIncludeMessageActions Whether event actions should be included in response or not.
+ * @param shouldIncludeMetadata Whether event metadata should be included in response or not.
  * @param queryParameters List arbitrary query parameters which should be sent along with original
  *     API call.
  * @param block History pull completion block.
@@ -52,8 +54,10 @@ NS_ASSUME_NONNULL_BEGIN
                      start:(nullable NSNumber *)startDate
                        end:(nullable NSNumber *)endDate
                      limit:(nullable NSNumber *)limit
-                   reverse:(nullable NSNumber *)shouldReverseOrder 
+                   reverse:(nullable NSNumber *)shouldReverseOrder
           includeTimeToken:(nullable NSNumber *)shouldIncludeTimeToken
+     includeMessageActions:(nullable NSNumber *)shouldIncludeMessageActions
+           includeMetadata:(nullable NSNumber *)shouldIncludeMetadata
            queryParameters:(nullable NSDictionary *)queryParameters
             withCompletion:(PNHistoryCompletionBlock)block;
 
@@ -142,16 +146,20 @@ NS_ASSUME_NONNULL_END
         NSNumber *end = parameters[NSStringFromSelector(@selector(end))];
         NSNumber *reverse = parameters[NSStringFromSelector(@selector(reverse))];
         NSNumber *includeTimeToken = parameters[NSStringFromSelector(@selector(includeTimeToken))];
+        NSNumber *includeMetadata = parameters[NSStringFromSelector(@selector(includeMetadata))];
+        NSNumber *includeActions = parameters[NSStringFromSelector(@selector(includeMessageActions))];
         NSDictionary *queryParam = parameters[@"queryParam"];
         id block = parameters[@"block"];
 
         [self historyForChannels:(channels != nil)
-                          object:(channels?: channel)
+                          object:(channels ?: channel)
                            start:start
                              end:end
                            limit:limit
                          reverse:reverse
                 includeTimeToken:includeTimeToken
+           includeMessageActions:includeActions
+                 includeMetadata:includeMetadata
                  queryParameters:queryParam
                   withCompletion:block];
     }];
@@ -214,6 +222,36 @@ NS_ASSUME_NONNULL_END
     [self historyForChannel:channel start:nil end:nil withCompletion:block];
 }
 
+- (void)historyForChannel:(NSString *)channel
+             withMetadata:(BOOL)shouldIncludeMetadata
+               completion:(PNHistoryCompletionBlock)block {
+    
+    [self historyForChannel:channel withMetadata:shouldIncludeMetadata messageActions:NO completion:block];
+}
+
+- (void)historyForChannel:(NSString *)channel
+       withMessageActions:(BOOL)shouldIncludeMessageActions
+               completion:(PNHistoryCompletionBlock)block {
+    
+    [self historyForChannel:channel
+               withMetadata:NO
+             messageActions:shouldIncludeMessageActions
+                 completion:block];
+}
+
+- (void)historyForChannel:(NSString *)channel
+             withMetadata:(BOOL)shouldIncludeMetadata
+           messageActions:(BOOL)shouldIncludeMessageActions
+               completion:(PNHistoryCompletionBlock)block {
+    
+    [self historyForChannel:channel
+                      start:nil
+                        end:nil
+            includeMetadata:shouldIncludeMetadata
+      includeMessageActions:shouldIncludeMessageActions
+             withCompletion:block];
+}
+
 
 #pragma mark - History in specified frame
 
@@ -223,6 +261,55 @@ NS_ASSUME_NONNULL_END
            withCompletion:(PNHistoryCompletionBlock)block {
     
     [self historyForChannel:channel start:startDate end:endDate limit:100 withCompletion:block];
+}
+
+- (void)historyForChannel:(NSString *)channel
+                    start:(NSNumber *)startDate
+                      end:(NSNumber *)endDate
+          includeMetadata:(BOOL)shouldIncludeMetadata
+           withCompletion:(PNHistoryCompletionBlock)block {
+    
+    [self historyForChannel:channel
+                      start:startDate
+                        end:endDate
+            includeMetadata:shouldIncludeMetadata
+      includeMessageActions:NO
+             withCompletion:block];
+}
+
+- (void)historyForChannel:(NSString *)channel
+                    start:(NSNumber *)startDate
+                      end:(NSNumber *)endDate
+    includeMessageActions:(BOOL)shouldIncludeMessageActions
+           withCompletion:(PNHistoryCompletionBlock)block {
+    
+    [self historyForChannel:channel
+                      start:startDate
+                        end:endDate
+            includeMetadata:NO
+      includeMessageActions:shouldIncludeMessageActions
+             withCompletion:block];
+}
+
+- (void)historyForChannel:(NSString *)channel
+                    start:(NSNumber *)startDate
+                      end:(NSNumber *)endDate
+          includeMetadata:(BOOL)shouldIncludeMetadata
+    includeMessageActions:(BOOL)shouldIncludeMessageActions
+           withCompletion:(PNHistoryCompletionBlock)block {
+    
+    [self historyForChannels:NO
+                      object:channel
+                       start:startDate
+                         end:endDate
+                       limit:nil
+                     reverse:@NO
+            includeTimeToken:@NO
+       includeMessageActions:@(shouldIncludeMetadata)
+             includeMetadata:@(shouldIncludeMessageActions)
+             queryParameters:nil
+              withCompletion:block];
+    
 }
 
 - (void)historyForChannel:(NSString *)channel
@@ -303,6 +390,8 @@ NS_ASSUME_NONNULL_END
                        limit:@(limit)
                      reverse:@(shouldReverseOrder)
             includeTimeToken:@(shouldIncludeTimeToken)
+       includeMessageActions:nil
+             includeMetadata:nil
              queryParameters:nil
               withCompletion:block];
 }
@@ -314,22 +403,52 @@ NS_ASSUME_NONNULL_END
                      limit:(NSNumber *)limit
                    reverse:(NSNumber *)shouldReverseOrder
           includeTimeToken:(NSNumber *)shouldIncludeTimeToken
+     includeMessageActions:(NSNumber *)shouldIncludeMessageActions
+           includeMetadata:(NSNumber *)shouldIncludeMetadata
            queryParameters:(NSDictionary *)queryParameters
             withCompletion:(PNHistoryCompletionBlock)block {
 
     PNRequestParameters *parameters = [PNRequestParameters new];
+    [parameters addQueryParameters:queryParameters];
 
     if (startDate && endDate && [startDate compare:endDate] == NSOrderedDescending) {
         NSNumber *_startDate = startDate;
         startDate = endDate;
         endDate = _startDate;
     }
+    
+    if (!limit || limit.unsignedIntValue == 0) {
+        limit = nil;
+    }
 
-    limit = (limit?: @(multipleChannels ? 1 : 100));
     unsigned int limitValue = MIN(limit.unsignedIntValue, (multipleChannels ? 25 : 100));
 
-
-    [parameters addQueryParameters:queryParameters];
+    PNOperationType operation = (!multipleChannels ? PNHistoryOperation
+                                                   : PNHistoryForChannelsOperation);
+    
+    if (shouldIncludeMessageActions && shouldIncludeMessageActions.boolValue) {
+        operation = PNHistoryWithActionsOperation;
+        
+        if (limit) {
+            limitValue = limit.unsignedIntValue;
+        }
+        
+        if (multipleChannels) {
+            NSArray<NSString *> *channels = object;
+            object = channels.count ? channels.firstObject : nil;
+            multipleChannels = NO;
+            
+            if (channels.count > 1) {
+                NSString *reason = @"History can return actions data for a single channel only. "
+                                    "Either pass a single channel or disable the "
+                                    "includeMessageActions flag";
+                
+                @throw [NSException exceptionWithName:@"PNUnacceptableParametersInput"
+                                               reason:reason
+                                             userInfo:nil];
+            }
+        }
+    }
     
     if (startDate) {
         [parameters addQueryParameter:[PNNumber timeTokenFromNumber:startDate].stringValue
@@ -341,13 +460,24 @@ NS_ASSUME_NONNULL_END
                          forFieldName:@"end"];
     }
     
+    if (shouldReverseOrder && shouldReverseOrder.boolValue) {
+        [parameters addQueryParameter:@"true" forFieldName:@"reverse"];
+    }
+    
+    if (shouldIncludeMetadata && shouldIncludeMetadata.boolValue) {
+        [parameters addQueryParameter:@"true" forFieldName:@"include_meta"];
+    }
+    
     if (!multipleChannels) {
-        [parameters addQueryParameter:[NSString stringWithFormat:@"%d", limitValue]
-                         forFieldName:@"count"];
-        [parameters addQueryParameter:(shouldReverseOrder.boolValue ? @"true" : @"false")
-                         forFieldName:@"reverse"];
-        [parameters addQueryParameter:(shouldIncludeTimeToken.boolValue ? @"true" : @"false")
-                         forFieldName:@"include_token"];
+        if (limit) {
+            [parameters addQueryParameter:[NSString stringWithFormat:@"%d", limitValue]
+                             forFieldName:(operation == PNHistoryOperation ? @"count" : @"max")];
+        }
+        
+        if (shouldIncludeTimeToken && shouldIncludeTimeToken.boolValue) {
+            [parameters addQueryParameter:@"true" forFieldName:@"include_token"];
+        }
+        
         NSString *channel = object;
         
         if (channel.length) {
@@ -359,12 +489,14 @@ NS_ASSUME_NONNULL_END
             (shouldReverseOrder ? @"Reversed history" : @"History"), (channel?: @"<error>"),
             (startDate ? [NSString stringWithFormat:@" from %@", startDate] : @""),
             (endDate ? [NSString stringWithFormat:@" to %@", endDate] : @""), @(limitValue),
-            (shouldIncludeTimeToken ? @" (including message time tokens)" : @""));
+            (shouldIncludeTimeToken.boolValue ? @" (including: message time tokens" : @""));
     } else {
         NSArray<NSString *> *channels = object;
-
-        [parameters addQueryParameter:[NSString stringWithFormat:@"%d", limitValue]
-                         forFieldName:@"max"];
+        
+        if (limit) {
+            [parameters addQueryParameter:[NSString stringWithFormat:@"%d", limitValue]
+                             forFieldName:@"max"];
+        }
         
         if (channels.count) {
             [parameters addPathComponent:[PNChannel namesForRequest:channels]
@@ -376,9 +508,6 @@ NS_ASSUME_NONNULL_END
             (startDate ? [NSString stringWithFormat:@" from %@", startDate] : @""),
             (endDate ? [NSString stringWithFormat:@" to %@", endDate] : @""), @(limitValue));
     }
-    
-    PNOperationType operation = (!multipleChannels ? PNHistoryOperation
-                                                   : PNHistoryForChannelsOperation);
 
     __weak __typeof(self) weakSelf = self;
     [self processOperation:operation
@@ -394,6 +523,8 @@ NS_ASSUME_NONNULL_END
                                        limit:limit
                                      reverse:shouldReverseOrder
                             includeTimeToken:shouldIncludeTimeToken
+                       includeMessageActions:shouldIncludeMessageActions
+                             includeMetadata:shouldIncludeMetadata
                              queryParameters:queryParameters
                               withCompletion:block];
             };

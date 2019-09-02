@@ -152,14 +152,14 @@
     if ((self = [super initForOperation:operation completedWithTask:task processedData:processedData
                         processingError:error])) {
         
-        _error = (error != nil || self.statusCode != 200);
+        _error = (error != nil || self.statusCode >= 400);
         
         if (_error && ![self.serviceData count]) {
             [self updateData:[self dataFromError:error]];
         }
         
         // Check whether status should represent acknowledgment or not.
-        if (self.statusCode == 200 && !_error) {
+        if (self.statusCode < 400 && !_error) {
             _category = PNAcknowledgmentCategory;
         } else if (_category == PNUnknownCategory) {
             // Try extract category basing on response status codes.
