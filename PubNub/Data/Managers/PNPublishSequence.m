@@ -316,6 +316,8 @@ NS_ASSUME_NONNULL_END
                 [PNKeychain storeValue:mutableSequences forKey:kPNPublishSequenceDataKey
                    withCompletionBlock:^(BOOL stored) { completion(); }];
             }];
+        } else {
+            completion();
         }
     });
 }
