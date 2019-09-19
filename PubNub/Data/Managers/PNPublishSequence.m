@@ -353,8 +353,9 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Handlers
 
 - (void)handleContextTransition:(NSNotification *)notification {
-    
-    [self saveToPersistentStorage];
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0), ^{
+        [self saveToPersistentStorage];
+    });
 }
 
 
