@@ -1,7 +1,8 @@
 /**
- @author Sergey Mamontov
- @version 4.2.0
- @copyright © 2010-2018 PubNub, Inc.
+ * @author Serhii Mamontov
+ * @version 4.10.1
+ * @since 4.2.0
+ * @copyright © 2010-2018 PubNub, Inc.
  */
 #import <Foundation/Foundation.h>
 
@@ -54,6 +55,7 @@ FOUNDATION_EXPORT const unsigned char PubNubVersionString[];
 #import "PubNub+Presence.h"
 #import "PubNub+Publish.h"
 #import "PubNub+History.h"
+#import "PubNub+Objects.h"
 #import "PubNub+State.h"
 #import "PNErrorCodes.h"
 #import "PNStructures.h"

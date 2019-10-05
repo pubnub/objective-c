@@ -1,9 +1,16 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.10.0"
+version: "4.10.1"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Add missing import of Objects API interface to frameworks umbrella header."
+        type: bug
+    date: Aug 30, 19
+    version: v4.10.1
   -
     changes:
       -
@@ -13,7 +20,7 @@ changelog:
         text: "Add support for User Objects API."
         type: feature
       -
-        text: "Add support for Membership/Member Objects API."
+        text: "Add support for Membership / Member Objects API."
         type: feature
       -
         text: "Add new callback to 'PNObjectEventListener', so existing listeners may start receiving 'space' events by adding new callback implementation."
