@@ -1,9 +1,25 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.10.1"
+version: "4.11.0"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Add Message Actions API support which allow to: add, remove and fetch previously added actions."
+        type: feature
+      -
+        text: "Add new method to simple interface and argument to builder pattern interface which allow to fetch previously added actions and message metadata."
+        type: feature
+      -
+        text: "Modify 'PNObjectEventListener' with new callback which can be used to track message actions addition / removal events."
+        type: feature
+      -
+        text: "Enhance publish sequence manager performance by making save only if any change has been done."
+        type: improvement
+    date: Oct 80, 19
+    version: v4.11.0
   -
     changes:
       -
