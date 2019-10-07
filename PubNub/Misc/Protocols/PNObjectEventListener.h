@@ -5,7 +5,7 @@
 #pragma mark Class forward
 
 @class PNPresenceEventResult, PNSubscribeStatus, PNMessageResult, PNSignalResult, PNErrorStatus;
-@class PNMembershipEventResult, PNSpaceEventResult, PNUserEventResult;
+@class PNMembershipEventResult, PNMessageActionResult, PNSpaceEventResult, PNUserEventResult;
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -24,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @optional
 
-#pragma mark - Message, Signals and Events handler callbacks
+#pragma mark - Message, Actions, Signals and Events handler callbacks
 
 /**
  * @brief Notify listener about new message which arrived from one of remote data object's live feed
@@ -44,6 +44,15 @@ NS_ASSUME_NONNULL_BEGIN
  * @param signal Instance which store signal information in \c data property.
  */
 - (void)client:(PubNub *)client didReceiveSignal:(PNSignalResult *)signal;
+
+/**
+ * @brief Notify listener about new \c action which arrived from one of remote data object's live
+ * feed on which client subscribed at this moment.
+ *
+ * @param client \b PubNub client which triggered this callback method call.
+ * @param action Instance which store \c action information in \c data property.
+ */
+- (void)client:(PubNub *)client didReceiveMessageAction:(PNMessageActionResult *)action;
 
 /**
  * @brief Notify listener about new presence events which arrived from one of remote data object's
@@ -82,7 +91,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)client:(PubNub *)client didReceiveMembershipEvent:(PNMembershipEventResult *)event;
 
 
-#pragma mark -  Status change handler.
+#pragma mark - Status change handler.
 
 /**
  * @brief Notify listener about subscription state changes.

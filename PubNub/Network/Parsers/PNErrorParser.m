@@ -54,11 +54,15 @@
                     NSMutableArray<NSString *> *detailStrings = [NSMutableArray new];
                     
                     for (NSDictionary *details in errorDetails) {
-                        NSString *detailString = [@"- " stringByAppendingString:details[@"message"]];
+                        NSString *detailString = @"";
+                        
+                        if (details[@"message"]) {
+                            detailString = [@"- " stringByAppendingString:details[@"message"]];
+                        }
                         
                         if (details[@"location"]) {
-                            detailString = [detailString stringByAppendingFormat:@" Location: %@",
-                                            details[@"location"]];
+                            detailString = [detailString stringByAppendingFormat:@"%@ Location: %@",
+                                            detailString.length ? @"" : @"-", details[@"location"]];
                         }
                         
                         [detailStrings addObject:detailString];

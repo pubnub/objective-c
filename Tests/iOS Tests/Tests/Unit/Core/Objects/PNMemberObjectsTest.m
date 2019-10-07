@@ -80,7 +80,7 @@
             PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
             NSData *sentData = [self objectForInvocation:invocation argumentAtIndex:3];
             
-            XCTAssertEqualObjects(parameters.pathComponents[@"{space_id}"], expectedId);
+            XCTAssertEqualObjects(parameters.pathComponents[@"{space-id}"], expectedId);
             XCTAssertEqualObjects(parameters.query[@"include"], @"custom,user.custom");
             XCTAssertEqualObjects(sentData, expectedPayload);
         });
@@ -99,7 +99,7 @@
         self.client.manageMembers().includeFields(PNMemberCustomField)
         .performWithCompletion(^(PNManageMembersStatus *status) {
             XCTAssertTrue(status.isError);
-            XCTAssertNotEqual([status.errorData.information rangeOfString:@"'space_id'"].location,
+            XCTAssertNotEqual([status.errorData.information rangeOfString:@"'space-id'"].location,
                               NSNotFound);
             
             handler();
@@ -155,7 +155,7 @@
     .andDo(^(NSInvocation *invocation) {
         PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
         
-        XCTAssertEqualObjects(parameters.pathComponents[@"{space_id}"], expectedId);
+        XCTAssertEqualObjects(parameters.pathComponents[@"{space-id}"], expectedId);
         XCTAssertEqualObjects(parameters.query[@"include"], @"custom");
         XCTAssertEqualObjects(parameters.query[@"start"], expectedStart);
         XCTAssertEqualObjects(parameters.query[@"end"], expectedEnd);
@@ -179,7 +179,7 @@
         self.client.fetchMembers()
         .performWithCompletion(^(PNFetchMembersResult *result, PNErrorStatus *status) {
             XCTAssertTrue(status.isError);
-            XCTAssertNotEqual([status.errorData.information rangeOfString:@"'space_id'"].location,
+            XCTAssertNotEqual([status.errorData.information rangeOfString:@"'space-id'"].location,
                               NSNotFound);
             
             handler();

@@ -258,8 +258,23 @@ NS_ASSUME_NONNULL_BEGIN
  * @param data Data which should be parsed to required 'object event' object format.
  *
  * @return Processed and parsed 'object event' object.
+ *
+ * @since 4.10.0
  */
 + (NSMutableDictionary *)objectFromData:(NSDictionary<NSString *, id> *)data;
+
+/**
+ * @brief Parse provided data as \c action event.
+ *
+ * @param data Data which should be parsed to required 'action event' object format.
+ * @param envelope Object with additional information about parsed \c data.
+ *
+ * @return Processed and parsed 'action event' object.
+ *
+ * @since 4.11.0
+ */
++ (NSMutableDictionary *)actionFromData:(NSDictionary<NSString *, id> *)data
+                           withEnvelope:(PNEnvelopeInformation *)envelope;
 
 /**
  * @brief Parse provided data as presence event.
@@ -368,6 +383,11 @@ NS_ASSUME_NONNULL_END
         event[@"channel"] = [PNChannel channelForPresence:event[@"channel"]];
     } else if (messageType == PNObjectMessageType) {
         [event addEntriesFromDictionary:[self objectFromData:data[PNEventEnvelope.payload]]];
+    } else if (messageType == PNMessageActionType) {
+        NSDictionary *action = [self actionFromData:data[PNEventEnvelope.payload]
+                                       withEnvelope:event[@"envelope"]];
+        
+        [event addEntriesFromDictionary:action];
     } else {
         NSDictionary *parserData = isEncryptionSupported ? additionalData : nil;
 
@@ -465,6 +485,23 @@ NS_ASSUME_NONNULL_END
     }
     
     return object;
+}
+
++ (NSMutableDictionary *)actionFromData:(NSDictionary<NSString *, id> *)data
+                           withEnvelope:(PNEnvelopeInformation *)envelope {
+    
+    NSMutableDictionary *action = [@{ @"action": data[@"data"] } mutableCopy];
+    NSString *messageTimetoken = action[@"action"][@"messageTimetoken"];
+    NSString *actionTimetoken = action[@"action"][@"actionTimetoken"];
+    
+    action[@"action"][@"messageTimetoken"] = @(messageTimetoken.longLongValue);
+    action[@"action"][@"actionTimetoken"] = @(actionTimetoken.longLongValue);
+    action[@"action"][@"uuid"] = envelope.senderIdentifier;
+    
+    NSArray *eventKeys = @[@"event", @"source", @"version"];
+    [action addEntriesFromDictionary:[data dictionaryWithValuesForKeys:eventKeys]];
+    
+    return action;
 }
 
 + (NSMutableDictionary *)presenceFromData:(NSDictionary<NSString *, id> *)data {

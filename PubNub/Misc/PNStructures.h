@@ -19,6 +19,7 @@
 @class PNCreateUserStatus, PNUpdateUserStatus, PNFetchUserResult, PNFetchUsersResult;
 @class PNCreateSpaceStatus, PNUpdateSpaceStatus, PNFetchSpaceResult, PNFetchSpacesResult;
 @class PNManageMembershipsStatus, PNFetchMembershipsResult, PNManageMembersStatus, PNFetchMembersResult;
+@class PNAddMessageActionStatus, PNFetchMessageActionsResult;
 
 #ifndef PNStructures_h
 #define PNStructures_h
@@ -143,8 +144,10 @@ typedef void(^PNMessageCountCompletionBlock)(PNMessageCountResult * _Nullable re
 /**
  * @brief \c Create \c user completion handler block.
  *
- * @param status Object with information about \c reate \c user request results and service
+ * @param status Object with information about \c create \c user request results and service
  * response.
+ *
+ * @since 4.10.0
  */
 typedef void(^PNCreateUserCompletionBlock)(PNCreateUserStatus *status);
 
@@ -153,6 +156,8 @@ typedef void(^PNCreateUserCompletionBlock)(PNCreateUserStatus *status);
  *
  * @param status Object with information about \c update \c user request results and service
  * response.
+ *
+ * @since 4.10.0
  */
 typedef void(^PNUpdateUserCompletionBlock)(PNUpdateUserStatus *status);
 
@@ -160,6 +165,8 @@ typedef void(^PNUpdateUserCompletionBlock)(PNUpdateUserStatus *status);
  * @brief \c Delete \c user completion handler block.
  *
  * @param status Object with information about \c delete \c user request results.
+ *
+ * @since 4.10.0
  */
 typedef void(^PNDeleteUserCompletionBlock)(PNAcknowledgmentStatus *status);
 
@@ -168,22 +175,30 @@ typedef void(^PNDeleteUserCompletionBlock)(PNAcknowledgmentStatus *status);
  *
  * @param result Object with information about \c fetch \c user request results.
  * @param status Object with information about \c fetch \c user request error.
+ *
+ * @since 4.10.0
  */
-typedef void(^PNFetchUserCompletionBlock)(PNFetchUserResult *result, PNErrorStatus *status);
+typedef void(^PNFetchUserCompletionBlock)(PNFetchUserResult * _Nullable result,
+                                          PNErrorStatus * _Nullable status);
 
 /**
  * @brief \c Fetch \c all \c users completion handler block.
  *
  * @param result Object with information about \c fetch \c all \c users request results.
  * @param status Object with information about \c fetch \c all \c users request error.
+ *
+ * @since 4.10.0
  */
-typedef void(^PNFetchUsersCompletionBlock)(PNFetchUsersResult *result, PNErrorStatus *status);
+typedef void(^PNFetchUsersCompletionBlock)(PNFetchUsersResult * _Nullable result,
+                                           PNErrorStatus * _Nullable status);
 
 /**
  * @brief \c Create \c space completion handler block.
  *
- * @param status Object with information about \c reate \c space request results and service
+ * @param status Object with information about \c create \c space request results and service
  * response.
+ *
+ * @since 4.10.0
  */
 typedef void(^PNCreateSpaceCompletionBlock)(PNCreateSpaceStatus *status);
 
@@ -192,6 +207,8 @@ typedef void(^PNCreateSpaceCompletionBlock)(PNCreateSpaceStatus *status);
  *
  * @param status Object with information about \c update \c space request results and service
  * response.
+ *
+ * @since 4.10.0
  */
 typedef void(^PNUpdateSpaceCompletionBlock)(PNUpdateSpaceStatus *status);
 
@@ -199,6 +216,8 @@ typedef void(^PNUpdateSpaceCompletionBlock)(PNUpdateSpaceStatus *status);
  * @brief \c Delete \c space completion handler block.
  *
  * @param status Object with information about \c delete \c space request results.
+ *
+ * @since 4.10.0
  */
 typedef void(^PNDeleteSpaceCompletionBlock)(PNAcknowledgmentStatus *status);
 
@@ -207,22 +226,30 @@ typedef void(^PNDeleteSpaceCompletionBlock)(PNAcknowledgmentStatus *status);
  *
  * @param result Object with information about \c fetch \c space request results.
  * @param status Object with information about \c fetch \c user request error.
+ *
+ * @since 4.10.0
  */
-typedef void(^PNFetchSpaceCompletionBlock)(PNFetchSpaceResult *result, PNErrorStatus *status);
+typedef void(^PNFetchSpaceCompletionBlock)(PNFetchSpaceResult * _Nullable result,
+                                           PNErrorStatus * _Nullable status);
 
 /**
  * @brief \c Fetch \c all \c spaces completion handler block.
  *
  * @param result Object with information about \c fetch \c all \c spaces request results.
  * @param status Object with information about \c fetch \c all \c spaces request error.
+ *
+ * @since 4.10.0
  */
-typedef void(^PNFetchSpacesCompletionBlock)(PNFetchSpacesResult *result, PNErrorStatus *status);
+typedef void(^PNFetchSpacesCompletionBlock)(PNFetchSpacesResult * _Nullable result,
+                                            PNErrorStatus * _Nullable status);
 
 /**
  * @brief \c Manage \c memberships completion handler block.
  *
  * @param status Object with information about \c manage \c memberships request results and service
  * response.
+ *
+ * @since 4.10.0
  */
 typedef void(^PNManageMembershipsCompletionBlock)(PNManageMembershipsStatus *status);
 
@@ -231,15 +258,19 @@ typedef void(^PNManageMembershipsCompletionBlock)(PNManageMembershipsStatus *sta
  *
  * @param result Object with information about \c fetch \c memberships request results.
  * @param status Object with information about \c fetch \c memberships request error.
+ *
+ * @since 4.10.0
  */
-typedef void(^PNFetchMembershipsCompletionBlock)(PNFetchMembershipsResult *result,
-                                                 PNErrorStatus *status);
+typedef void(^PNFetchMembershipsCompletionBlock)(PNFetchMembershipsResult * _Nullable result,
+                                                 PNErrorStatus * _Nullable status);
 
 /**
  * @brief \c Manage \c members completion handler block.
  *
  * @param status Object with information about \c manage \c members request results and service
  * response.
+ *
+ * @since 4.10.0
  */
 typedef void(^PNManageMembersCompletionBlock)(PNManageMembersStatus *status);
 
@@ -248,8 +279,11 @@ typedef void(^PNManageMembersCompletionBlock)(PNManageMembersStatus *status);
  *
  * @param result Object with information about \c fetch \c members request results.
  * @param status Object with information about \c fetch \c members request error.
+ *
+ * @since 4.10.0
  */
-typedef void(^PNFetchMembersCompletionBlock)(PNFetchMembersResult *result, PNErrorStatus *status);
+typedef void(^PNFetchMembersCompletionBlock)(PNFetchMembersResult * _Nullable result,
+                                             PNErrorStatus * _Nullable status);
 
 
 #pragma mark - Completion blocks :: Presence
@@ -356,6 +390,39 @@ typedef void(^PNChannelGroupStateCompletionBlock)(PNChannelGroupClientStateResul
                                                   PNErrorStatus * _Nullable status);
 
 
+#pragma mark - Completion blocks :: Message action
+
+/**
+ * @brief \c Add \c message \c action completion handler block.
+ *
+ * @param status Object with information about \c add \c message \c action request results and
+ * service response.
+ *
+ * @since 4.11.0
+ */
+typedef void(^PNAddMessageActionCompletionBlock)(PNAddMessageActionStatus *status);
+
+/**
+ * @brief \c Remove \c message \c action completion handler block.
+ *
+ * @param status Object with information about \c remove \c message \c action request results.
+ *
+ * @since 4.11.0
+ */
+typedef void(^PNRemoveMessageActionCompletionBlock)(PNAcknowledgmentStatus *status);
+
+/**
+ * @brief \c Fetch \c messages \c actions completion handler block.
+ *
+ * @param result Object with information about \c fetch \c messages \c actions request results.
+ * @param status Object with information about \c fetch \c messages \c actions request error.
+ *
+ * @since 4.11.0
+ */
+typedef void(^PNFetchMessageActionsCompletionBlock)(PNFetchMessageActionsResult * _Nullable result,
+                                             PNErrorStatus * _Nullable status);
+
+
 #pragma mark - Completion blocks :: Time
 
 /**
@@ -368,6 +435,7 @@ typedef void(^PNTimeCompletionBlock)(PNTimeResult * _Nullable result,
                                      PNErrorStatus * _Nullable status);
 
 NS_ASSUME_NONNULL_END
+
 
 /**
  * @brief Options with possible additional \c space / \c membership fields which can be included to
@@ -496,7 +564,6 @@ typedef NS_ENUM(NSUInteger, PNObjectActionType) {
     PNDeleteObjectAction,
 };
 
-
 /**
  * @brief \b PubNub client logging levels available for manipulations.
  */
@@ -593,8 +660,12 @@ typedef NS_ENUM(NSInteger, PNOperationType){
     PNUnsubscribeOperation,
     PNPublishOperation,
     PNSignalOperation,
+    PNAddMessageActionOperation,
+    PNRemoveMessageActionOperation,
+    PNFetchMessagesActionsOperation,
     PNHistoryOperation,
     PNHistoryForChannelsOperation,
+    PNHistoryWithActionsOperation,
     PNDeleteMessageOperation,
     PNMessageCountOperation,
     PNWhereNowOperation,

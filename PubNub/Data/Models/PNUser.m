@@ -154,7 +154,6 @@ NS_ASSUME_NONNULL_END
     return [[self dictionaryRepresentation] description];
 }
 
-
 #pragma mark -
 
 

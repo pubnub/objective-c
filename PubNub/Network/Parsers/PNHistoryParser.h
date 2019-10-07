@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @discussion Handle and pre-process provided server data to fetch operation result from it.
  *
  * @author Serhii Mamontov
- * @version 4.9.0
+ * @version 4.11.0
  * @since 4.0.0
  * @copyright © 2010-2019 PubNub, Inc.
  */

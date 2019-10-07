@@ -71,7 +71,7 @@ NS_ASSUME_NONNULL_END
     }
     
     if (self.identifier) {
-        NSString *idKeyName = [@[self.objectType, @"id"] componentsJoinedByString:@"_"];
+        NSString *idKeyName = [@[self.objectType, @"id"] componentsJoinedByString:@"-"];
         NSString *placeholder = [@[@"{", idKeyName, @"}"] componentsJoinedByString:@""];
         
         [parameters addPathComponent:self.identifier forPlaceholder:placeholder];
@@ -87,7 +87,7 @@ NS_ASSUME_NONNULL_END
     if ((self = [super init])) {
         _identifier = [identifier copy];
         _objectType = [objectType.lowercaseString copy];
-        NSString *idKey = [@[self.objectType, @"id"] componentsJoinedByString:@"_"];
+        NSString *idKey = [@[self.objectType, @"id"] componentsJoinedByString:@"-"];
         
         if (!_identifier.length) {
             self.parametersError = [self missingParameterError:idKey forObjectRequest:objectType];

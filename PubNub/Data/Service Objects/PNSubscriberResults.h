@@ -3,6 +3,12 @@
 #import "PNResult.h"
 
 
+#pragma mark Class forward
+
+@class PNMessageAction;
+
+
+
 NS_ASSUME_NONNULL_BEGIN
 
 /**
@@ -168,6 +174,36 @@ NS_ASSUME_NONNULL_BEGIN
  * @copyright © 2010-2019 PubNub, Inc.
  */
 @interface PNSignalData : PNMessageData
+
+
+#pragma mark -
+
+
+@end
+
+
+/**
+ * @brief Class which allow to get access to \c action body received from remote object live feed.
+ *
+ * @author Serhii Mamontov
+ * @version 4.11.0
+ * @since 4.11.0
+ * @copyright © 2010-2019 PubNub, Inc.
+ */
+@interface PNMessageActionData : PNSubscriberData
+
+
+#pragma mark - Information
+
+/**
+ * @brief \c Action for which event has been received.
+ */
+@property (nonatomic, readonly, strong) PNMessageAction *action;
+
+/**
+ * @brief Name of action for which \c message \c action event has been sent.
+ */
+@property (nonatomic, readonly, copy) NSString *event;
 
 
 #pragma mark -
@@ -431,6 +467,30 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief Signal object from live feed.
  */
 @property (nonatomic, readonly, strong) PNSignalData *data;
+
+#pragma mark -
+
+
+@end
+
+
+/**
+ * @brief Class which is used to provide access to subscribe request processing results.
+ *
+ * @author Serhii Mamontov
+ * @version 4.11.0
+ * @since 4.11.0
+ * @copyright © 2010-2019 PubNub, Inc.
+ */
+@interface PNMessageActionResult : PNResult
+
+
+#pragma mark - Information
+
+/**
+ * @brief \c Message \c action object from live feed.
+ */
+@property (nonatomic, readonly, strong) PNMessageActionData *data;
 
 #pragma mark -
 
