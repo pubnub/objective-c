@@ -148,6 +148,10 @@ NS_ASSUME_NONNULL_END
             metadata = messageObject[@"meta"];
             messageObject = message;
             
+            if (![metadata isKindOfClass:[NSDictionary class]]) {
+                metadata = nil;
+            }
+            
             timeToken = timeToken ? @(((NSString *)timeToken).longLongValue) : nil;
             [self normalizeActionTimetokens:((NSDictionary *)actions).allValues];
         }

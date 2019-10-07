@@ -168,7 +168,6 @@ NS_ASSUME_NONNULL_END
             .type(expectedType)
             .value(expectedValue)
             .performWithCompletion(^(PNAddMessageActionStatus *status) {
-                NSLog(@">>> %@", [status debugDescription]);
                 XCTAssertFalse(status.isError);
             });
     }];

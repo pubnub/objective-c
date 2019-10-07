@@ -190,7 +190,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @since 4.11.0
  * @copyright © 2010-2019 PubNub, Inc.
  */
-@interface PNActionData : PNSubscriberData
+@interface PNMessageActionData : PNSubscriberData
 
 
 #pragma mark - Information
@@ -198,12 +198,12 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief \c Action for which event has been received.
  */
-@property (nonatomic, nullable, readonly, strong) PNMessageAction *action;
+@property (nonatomic, readonly, strong) PNMessageAction *action;
 
 /**
- * @brief Name of action for which \c action event has been sent.
+ * @brief Name of action for which \c message \c action event has been sent.
  */
-@property (nonatomic, readonly, assign) NSString *event;
+@property (nonatomic, readonly, copy) NSString *event;
 
 
 #pragma mark -
@@ -488,9 +488,9 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Information
 
 /**
- * @brief \c Action object from live feed.
+ * @brief \c Message \c action object from live feed.
  */
-@property (nonatomic, readonly, strong) PNActionData *data;
+@property (nonatomic, readonly, strong) PNMessageActionData *data;
 
 #pragma mark -
 

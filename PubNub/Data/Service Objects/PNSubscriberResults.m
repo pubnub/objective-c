@@ -45,7 +45,7 @@
 
 #pragma mark - Properties
 
-@property (nonatomic, strong) PNActionData *data;
+@property (nonatomic, strong) PNMessageActionData *data;
 
 #pragma mark -
 
@@ -191,7 +191,7 @@
 @end
 
 
-@implementation PNActionData
+@implementation PNMessageActionData
 
 
 #pragma mark - Information
@@ -406,9 +406,9 @@
 
 #pragma mark - Information
 
-- (PNActionData *)data {
+- (PNMessageActionData *)data {
     if (!_data) {
-        _data = [PNActionData dataWithServiceResponse:self.serviceData];
+        _data = [PNMessageActionData dataWithServiceResponse:self.serviceData];
     }
     
     return _data;
