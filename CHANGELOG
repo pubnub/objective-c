@@ -1,3 +1,10 @@
+08-10-2019 - baef53b - 4.11.0
+. add Message Actions API support which allow to: add, remove and fetch previously added actions.
+. add new method to simple interface and argument to builder pattern interface which allow to fetch previously added actions and message metadata.
+. modify 'PNObjectEventListener' with new callback which can be used to track message actions addition / removal events.
+. add new argument to history builder pattern to fetch message metadata.
+. enhance publish sequence manager performance by making save only if any change has been done.
+
 30-08-2019 - 3a15d7f - 4.10.1
 . add missing import of Objects API interface to frameworks umbrella header.
 

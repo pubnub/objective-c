@@ -56,10 +56,10 @@
             JSONObject = [object stringByTrimmingCharactersInSet:trimCharSet];
         }
         else {
-
+            NSJSONReadingOptions options = NSJSONReadingAllowFragments|NSJSONReadingMutableContainers;
             NSData *JSONData = [object dataUsingEncoding:NSUTF8StringEncoding];
             JSONObject = [NSJSONSerialization JSONObjectWithData:JSONData
-                                                         options:NSJSONReadingAllowFragments
+                                                         options:options
                                                            error:&parsingError];
         }
 

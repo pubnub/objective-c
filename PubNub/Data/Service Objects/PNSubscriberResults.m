@@ -6,6 +6,7 @@
  */
 #import "NSDateFormatter+PNCacheable.h"
 #import "PNSubscribeStatus+Private.h"
+#import "PNMessageAction+Private.h"
 #import "PNServiceData+Private.h"
 #import "PNSubscriberResults.h"
 #import "PNResult+Private.h"
@@ -32,6 +33,19 @@
 #pragma mark - Properties
 
 @property (nonatomic, strong) PNSignalData *data;
+
+#pragma mark -
+
+
+@end
+
+
+@interface PNMessageActionResult ()
+
+
+#pragma mark - Properties
+
+@property (nonatomic, strong) PNMessageActionData *data;
 
 #pragma mark -
 
@@ -106,15 +120,15 @@
     return self.serviceData[@"uuid"];
 }
 
-- (NSString *)join {
+- (NSArray<NSString *> *)join {
     return self.serviceData[@"join"];
 }
 
-- (NSString *)leave {
+- (NSArray<NSString *> *)leave {
     return self.serviceData[@"leave"];
 }
 
-- (NSString *)timeout {
+- (NSArray<NSString *> *)timeout {
     return self.serviceData[@"timeout"];
 }
 
@@ -173,6 +187,25 @@
 @implementation PNSignalData
 
 #pragma mark -
+
+@end
+
+
+@implementation PNMessageActionData
+
+
+#pragma mark - Information
+
+- (PNMessageAction *)action {
+    return [PNMessageAction actionFromDictionary:self.serviceData[@"action"]];
+}
+
+- (NSString *)event {
+    return self.serviceData[@"event"];
+}
+
+#pragma mark -
+
 
 @end
 
@@ -357,6 +390,25 @@
 - (PNSignalData *)data {
     if (!_data) {
         _data = [PNSignalData dataWithServiceResponse:self.serviceData];
+    }
+    
+    return _data;
+}
+
+#pragma mark -
+
+
+@end
+
+
+@implementation PNMessageActionResult
+
+
+#pragma mark - Information
+
+- (PNMessageActionData *)data {
+    if (!_data) {
+        _data = [PNMessageActionData dataWithServiceResponse:self.serviceData];
     }
     
     return _data;

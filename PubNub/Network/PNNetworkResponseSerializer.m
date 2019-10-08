@@ -86,7 +86,7 @@ NSString * const kPNNetworkErrorResponseDataKey = @"PNNetworkErrorResponseDataKe
                 
                 NSError *JSONSerializationError = nil;
                 serializedResponse = [NSJSONSerialization JSONObjectWithData:data
-                                                                     options:(NSJSONReadingOptions)0
+                                                                     options:NSJSONReadingMutableContainers
                                                                        error:&JSONSerializationError];
             }
         }
@@ -116,7 +116,7 @@ NSString * const kPNNetworkErrorResponseDataKey = @"PNNetworkErrorResponseDataKe
             description = [NSString stringWithFormat:@"Request completed but unexpected data type "
                            "received in response: %@", [response MIMEType]];
             statusCode = NSURLErrorCannotDecodeContentData;
-        } else if (response.statusCode != 200) {
+        } else if (response.statusCode >= 400) {
             
             // Construct error description.
             description = [NSString stringWithFormat:@"Request failed: %@ (%ld)",

@@ -1,47 +1,14 @@
 /**
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2010-2018 PubNub, Inc.
+ * @author Serhii Mamontov
+ * @copyright © 2010-2019 PubNub, Inc.
  */
 #import "PNHistoryResult.h"
 #import "PNServiceData+Private.h"
 #import "PNResult+Private.h"
+#import "PNStructures.h"
 
 
-#pragma mark Interface implementation
-
-@implementation PNHistoryData
-
-
-#pragma mark - Information
-
-- (NSArray *)messages {
-    
-    return (self.serviceData[@"messages"]?: @[]);
-}
-
-- (NSDictionary<NSString *,NSArray *> *)channels {
-    
-    return (self.serviceData[@"channels"]?: @{});
-}
-
-- (NSNumber *)start {
-    
-    return (self.serviceData[@"start"]?: @0);
-}
-
-- (NSNumber *)end {
-    
-    return (self.serviceData[@"end"]?: @0);
-}
-
-#pragma mark -
-
-
-@end
-
-
-#pragma mark - Private interface declaration
+#pragma mark Private interface declaration
 
 @interface PNHistoryResult ()
 
@@ -56,7 +23,34 @@
 @end
 
 
-#pragma mark - Interface implementation
+#pragma mark - Interfaces implementation
+
+@implementation PNHistoryData
+
+
+#pragma mark - Information
+
+- (NSArray *)messages {
+    return self.serviceData[@"messages"] ?: @[];
+}
+
+- (NSDictionary<NSString *,NSArray *> *)channels {
+    return self.serviceData[@"channels"] ?: @{};
+}
+
+- (NSNumber *)start {
+    return self.serviceData[@"start"] ?: @0;
+}
+
+- (NSNumber *)end {
+    return self.serviceData[@"end"] ?: @0;
+}
+
+#pragma mark -
+
+
+@end
+
 
 @implementation PNHistoryResult
 
@@ -64,8 +58,10 @@
 #pragma mark - Information
 
 - (PNHistoryData *)data {
+    if (!_data) {
+        _data = [PNHistoryData dataWithServiceResponse:self.serviceData];
+    }
     
-    if (!_data) { _data = [PNHistoryData dataWithServiceResponse:self.serviceData]; }
     return _data;
 }
 

@@ -217,7 +217,6 @@ NS_ASSUME_NONNULL_END
         self.client1.updateUser().userId(userId).name(expectedName).custom(expectedCustom)
             .performWithCompletion(^(PNUpdateUserStatus *status) { });
     }];
-    
 }
 
 - (void)testUpdate_ShouldFail_WhenUserNotExist {

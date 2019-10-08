@@ -12,6 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface PNObjectsTestCase ()
 
+
 #pragma mark - Information
 
 /**
@@ -35,6 +36,9 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Interface implementation
 
 @implementation PNObjectsTestCase
+
+
+#pragma mark - Setup / Tear down
 
 - (void)setUp {
     [super setUp];

@@ -5,7 +5,7 @@
 #pragma mark Class forward
 
 @class PNMembershipEventResult, PNPresenceEventResult, PNSpaceEventResult, PNUserEventResult;
-@class PNMessageResult, PNSignalResult, PNErrorStatus, PubNub;
+@class PNMessageActionResult, PNMessageResult, PNSignalResult, PNErrorStatus, PubNub;
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -107,6 +107,17 @@ NS_ASSUME_NONNULL_BEGIN
  * for it.
  */
 - (void)notifySignal:(PNSignalResult *)signal;
+
+/**
+ * @brief Notify all \c message \c actions listeners about new signal.
+ *
+ * @warning Method should be called within \b -notifyWithBlock: block to shift execution to private
+ * protected queue.
+ *
+ * @param action Event object which provide information about operation type and service response
+ * for it.
+ */
+- (void)notifyMessageAction:(PNMessageActionResult *)action;
 
 /**
  * @brief Notify all presence event listeners about new event.

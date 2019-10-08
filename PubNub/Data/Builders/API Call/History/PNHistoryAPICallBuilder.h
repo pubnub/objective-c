@@ -8,8 +8,9 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief History / storage API call builder.
  *
  * @author Serhii Mamontov
+ * @version 4.11.0
  * @since 4.5.4
- * @copyright © 2010-2018 PubNub, Inc.
+ * @copyright © 2010-2019 PubNub, Inc.
  */
 @interface PNHistoryAPICallBuilder : PNAPICallBuilder
 
@@ -42,8 +43,6 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Search interval start timetoken addition block.
  *
- * @note Ignored in case if \c channels is set.
- *
  * @param start Timetoken for oldest event starting from which next should be returned events.
  *     Value will be converted to required precision internally.
  *
@@ -55,8 +54,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  * @brief Search interval end timetoken addition block.
- *
- * @note Ignored in case if \c channels is set.
  *
  * @param end Timetoken for latest event till which events should be pulled out.
  *     Value will be converted to required precision internally.
@@ -70,9 +67,6 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Maximum number of events addition block.
  *
- * @note If limit addition not used it will be assigned default value depending from used
- * parameters: \c 100 if \c channel is set and \c 1 if \c channels is set.
- *
  * @param limit Maximum number of events which should be returned in response.
  *     Maximum \c 100 if \c channel is set and \c 25 if \c channels is set.
  *
@@ -85,7 +79,8 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Events' time tokens presence flag addition block.
  *
- * @note Ignored in case if \c channels is set.
+ * @note Each fetched entry will contain published data under 'message' key and message publish
+ * \c timetoken will be available under 'timetoken' key.
  *
  * @param includeTimeToken Whether event dates (time tokens) should be included in response or
  *     not.
@@ -97,9 +92,37 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, strong) PNHistoryAPICallBuilder * (^includeTimeToken)(BOOL includeTimeToken);
 
 /**
- * @brief Events sorting order reverse flag addition block.
+ * @brief Events' metadata presence flag addition block.
  *
- * @note Ignored in case if \c channels is set.
+ * @note Each fetched entry will contain published data under 'message' key and published message
+ * \c meta will be available under 'metadata' key.
+ *
+ * @param includeMetadata Whether event metadata should be included in response or not.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.11.0
+ */
+@property (nonatomic, readonly, strong) PNHistoryAPICallBuilder * (^includeMetadata)(BOOL includeMetadata);
+
+/**
+ * @brief Events' actions presence flag addition block.
+ *
+ * @note Each fetched entry will contain published data under 'message' key and added \c message
+ * \c actions will be available under 'actions' key.
+ *
+ * @throw Exception in case if API called with more than one channel.
+ *
+ * @param includeMessageActions Whether event actions should be included in response or not.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.11.0
+ */
+@property (nonatomic, readonly, strong) PNHistoryAPICallBuilder * (^includeMessageActions)(BOOL includeMessageActions);
+
+/**
+ * @brief Events sorting order reverse flag addition block.
  *
  * @param reverse Whether events order in response should be reversed or not.
  *

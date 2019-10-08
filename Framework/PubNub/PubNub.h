@@ -48,6 +48,7 @@ FOUNDATION_EXPORT const unsigned char PubNubVersionString[];
 
 // API
 #import "PubNub+Core.h"
+#import "PubNub+MessageActions.h"
 #import "PubNub+ChannelGroup.h"
 #import "PubNub+Subscribe.h"
 #import "PNConfiguration.h"

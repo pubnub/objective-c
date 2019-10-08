@@ -25,6 +25,15 @@ typedef void (^PNTClientDidReceiveMessageHandler)(PubNub *client, PNMessageResul
 typedef void (^PNTClientDidReceiveSignalHandler)(PubNub *client, PNSignalResult *signal, BOOL *shouldRemove);
 
 /**
+ * @brief Type used to describe block for \c action handling.
+ *
+ * @param client \b PubNub client which used delegate callback.
+ * @param action Object with information about received \c action.
+ * @param shouldRemove Whether handling block should be removed after call or not.
+ */
+typedef void (^PNTClientDidReceiveMessageActionHandler)(PubNub *client, PNMessageActionResult *action, BOOL *shouldRemove);
+
+/**
  * @brief Type used to describe block for presence event handling.
  *
  * @param client \b PubNub client which used delegate callback.
@@ -202,6 +211,14 @@ typedef void (^PNTClientDidReceiveStatusHandler)(PubNub *client, PNSubscribeStat
  * @param handler Block which should be called each \c membership event.
  */
 - (void)addMembershipHandlerForClient:(PubNub *)client withBlock:(PNTClientDidReceiveMembershipEventHandler)handler;
+
+/**
+ * @brief Add block which will be called for each received \c action event.
+ *
+ * @param client \b PubNub client for which \c action events should be tracked.
+ * @param handler Block which should be called each \c action event.
+ */
+- (void)addActionHandlerForClient:(PubNub *)client withBlock:(PNTClientDidReceiveMessageActionHandler)handler;
 
 /**
  * @brief Remove all handler for specified \c client.

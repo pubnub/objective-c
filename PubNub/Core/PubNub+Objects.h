@@ -47,14 +47,12 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-
-#pragma mark - API group interface
+#pragma mark API group interface
 
 /**
  * @brief \b PubNub client core class extension to provide access to 'Objects' API group.
  *
- * @discussion Set of API which allow to fetch events which has been moved from remote data object
- * live feed to persistent storage.
+ * @discussion Set of API which allow to manage space / user objects and their relationships.
  *
  * @author Serhii Mamontov
  * @version 4.10.0

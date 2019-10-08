@@ -80,7 +80,7 @@
         PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
         NSData *sentData = [self objectForInvocation:invocation argumentAtIndex:3];
         
-        XCTAssertEqualObjects(parameters.pathComponents[@"{user_id}"], expectedId);
+        XCTAssertEqualObjects(parameters.pathComponents[@"{user-id}"], expectedId);
         XCTAssertEqualObjects(parameters.query[@"include"], @"custom,space.custom");
         XCTAssertEqualObjects(sentData, expectedPayload);
     });
@@ -99,7 +99,7 @@
         self.client.manageMemberships().includeFields(PNMembershipCustomField)
             .performWithCompletion(^(PNManageMembershipsStatus *status) {
                 XCTAssertTrue(status.isError);
-                XCTAssertNotEqual([status.errorData.information rangeOfString:@"'user_id'"].location,
+                XCTAssertNotEqual([status.errorData.information rangeOfString:@"'user-id'"].location,
                                   NSNotFound);
                 
                 handler();
@@ -155,7 +155,7 @@
         .andDo(^(NSInvocation *invocation) {
             PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
             
-            XCTAssertEqualObjects(parameters.pathComponents[@"{user_id}"], expectedId);
+            XCTAssertEqualObjects(parameters.pathComponents[@"{user-id}"], expectedId);
             XCTAssertEqualObjects(parameters.query[@"include"], @"custom");
             XCTAssertEqualObjects(parameters.query[@"start"], expectedStart);
             XCTAssertEqualObjects(parameters.query[@"end"], expectedEnd);
@@ -179,7 +179,7 @@
         self.client.fetchMemberships()
             .performWithCompletion(^(PNFetchMembershipsResult *result, PNErrorStatus *status) {
                 XCTAssertTrue(status.isError);
-                XCTAssertNotEqual([status.errorData.information rangeOfString:@"'user_id'"].location,
+                XCTAssertNotEqual([status.errorData.information rangeOfString:@"'user-id'"].location,
                                   NSNotFound);
                 
                 handler();

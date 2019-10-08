@@ -216,6 +216,7 @@ NS_ASSUME_NONNULL_END
             break;
         case PNHistoryOperation:
         case PNHistoryForChannelsOperation:
+        case PNHistoryWithActionsOperation:
         case PNDeleteMessageOperation:
             operation = @"hist";
             break;
@@ -258,6 +259,11 @@ NS_ASSUME_NONNULL_END
         case PNManageMembersOperation:
         case PNFetchMembersOperation:
             operation = @"obj";
+            break;
+        case PNAddMessageActionOperation:
+        case PNRemoveMessageActionOperation:
+        case PNFetchMessagesActionsOperation:
+            operation = @"msga";
             break;
         default:
             operation = @"time";

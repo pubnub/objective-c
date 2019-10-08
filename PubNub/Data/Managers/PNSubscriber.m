@@ -375,8 +375,21 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @param data Result data which hold information about request on which this response has been
  * received and message itself.
+ *
+ * @since 4.9.0
  */
 - (void)handleNewSignal:(PNSignalResult *)data;
+
+/**
+ * @brief Process \c message \c action which just has been received from \b PubNub service
+ * through live feed on which client subscribed at this moment.
+ *
+ * @param data Result data which hold information about request on which this response has been
+ * received and message itself.
+ *
+ * @since 4.11.0
+ */
+- (void)handleNewMessageAction:(PNMessageActionResult *)data;
 
 /**
  * @brief Process \c objects API event which just has been received from \b PubNub service through
@@ -384,6 +397,8 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @param data Result data which hold information about request on which this response has been
  * received and message itself.
+ *
+ * @since 4.10.0
  */
 - (void)handleNewObjectsEvent:(PNResult *)data;
 
@@ -1499,6 +1514,9 @@ NS_ASSUME_NONNULL_END
                     } else if (messageType == PNSignalMessageType) {
                         object_setClass(eventResultObject, [PNSignalResult class]);
                         [self handleNewSignal:(PNSignalResult *)eventResultObject];
+                    } else if (messageType == PNMessageActionType) {
+                        object_setClass(eventResultObject, [PNMessageActionResult class]);
+                        [self handleNewMessageAction:(PNMessageActionResult *)eventResultObject];
                     }
                 }
             }
@@ -1543,6 +1561,16 @@ NS_ASSUME_NONNULL_END
     PNLogResult(self.client.logger, @"<PubNub> %@", [data stringifiedRepresentation]);
     
     [self.client.listenersManager notifySignal:(PNSignalResult *)data];
+}
+
+- (void)handleNewMessageAction:(PNMessageActionResult *)data {
+    if (!data) {
+        return;
+    }
+    
+    PNLogResult(self.client.logger, @"<PubNub> %@", [data stringifiedRepresentation]);
+    
+    [self.client.listenersManager notifyMessageAction:(PNMessageActionResult *)data];
 }
 
 - (void)handleNewObjectsEvent:(PNResult *)data {
@@ -1651,11 +1679,12 @@ NS_ASSUME_NONNULL_END
         [events enumerateObjectsUsingBlock:^(NSDictionary<NSString *, id> *event, NSUInteger eventIdx, 
                                              BOOL *eventsEnumeratorStop) {
             PNMessageType messageType = ((PNEnvelopeInformation *)event[@"envelope"]).messageType;
-            BOOL isObjectEvent = messageType == PNObjectMessageType;
+            BOOL isMessageEvent = (messageType != PNObjectMessageType &&
+                                   messageType != PNMessageActionType);
             BOOL isPresenceEvent = event[@"presenceEvent"] != nil;
             BOOL isDecryptionError = ((NSNumber *)event[@"decryptError"]).boolValue;
             
-            if (!isPresenceEvent && !isDecryptionError && !isObjectEvent &&
+            if (!isPresenceEvent && !isDecryptionError && isMessageEvent &&
                 ![self cacheObjectIfPossible:event withMaximumCacheSize:maximumMessagesCacheSize]) {
                 
                 [duplicateMessagesIndices addIndex:eventIdx];
