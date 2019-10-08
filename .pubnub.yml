@@ -18,7 +18,7 @@ changelog:
       -
         text: "Enhance publish sequence manager performance by making save only if any change has been done."
         type: improvement
-    date: Oct 80, 19
+    date: Oct 08, 19
     version: v4.11.0
   -
     changes:
