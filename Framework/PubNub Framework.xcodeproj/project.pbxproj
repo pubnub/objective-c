@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXAggregateTarget section */
-		791582001BD705130084FC70 /* Universal Framework (watchOS) */ = {
+		791582001BD705130084FC70 /* XCFramework (watchOS) */ = {
 			isa = PBXAggregateTarget;
-			buildConfigurationList = 791582021BD705130084FC70 /* Build configuration list for PBXAggregateTarget "Universal Framework (watchOS)" */;
+			buildConfigurationList = 791582021BD705130084FC70 /* Build configuration list for PBXAggregateTarget "XCFramework (watchOS)" */;
 			buildPhases = (
 				791582011BD705130084FC70 /* Build Universal Binary */,
 				798842151C18B26D003E8948 /* Update module map */,
@@ -17,7 +17,7 @@
 			);
 			dependencies = (
 			);
-			name = "Universal Framework (watchOS)";
+			name = "XCFramework (watchOS)";
 			productName = "Universal Framework";
 		};
 		798842EF1C190DF5003E8948 /* Universal Static Framework (iOS) */ = {
@@ -33,9 +33,9 @@
 			name = "Universal Static Framework (iOS)";
 			productName = "Universal Framework";
 		};
-		79A8BDB71C58FC2E00015BDE /* Universal Framework (tvOS) */ = {
+		79A8BDB71C58FC2E00015BDE /* XCFramework (tvOS) */ = {
 			isa = PBXAggregateTarget;
-			buildConfigurationList = 79A8BDBA1C58FC2E00015BDE /* Build configuration list for PBXAggregateTarget "Universal Framework (tvOS)" */;
+			buildConfigurationList = 79A8BDBA1C58FC2E00015BDE /* Build configuration list for PBXAggregateTarget "XCFramework (tvOS)" */;
 			buildPhases = (
 				79A8BDB81C58FC2E00015BDE /* Build Universal Binary */,
 				79A8BDB91C58FC2E00015BDE /* Update module map */,
@@ -43,12 +43,12 @@
 			);
 			dependencies = (
 			);
-			name = "Universal Framework (tvOS)";
+			name = "XCFramework (tvOS)";
 			productName = "Universal Framework";
 		};
-		79ACC4911C11BC620056523A /* Universal Framework (Fabric) */ = {
+		79ACC4911C11BC620056523A /* XCFramework (Fabric) */ = {
 			isa = PBXAggregateTarget;
-			buildConfigurationList = 79ACC4931C11BC620056523A /* Build configuration list for PBXAggregateTarget "Universal Framework (Fabric)" */;
+			buildConfigurationList = 79ACC4931C11BC620056523A /* Build configuration list for PBXAggregateTarget "XCFramework (Fabric)" */;
 			buildPhases = (
 				79ACC4921C11BC620056523A /* Build Universal Binary */,
 				798842161C18B272003E8948 /* Update module map */,
@@ -56,20 +56,31 @@
 			);
 			dependencies = (
 			);
-			name = "Universal Framework (Fabric)";
+			name = "XCFramework (Fabric)";
 			productName = "Universal Framework";
 		};
-		79CBB1D31BD042FB001FC34D /* Universal Framework (iOS) */ = {
+		79CBB1D31BD042FB001FC34D /* XCFramework (iOS) */ = {
 			isa = PBXAggregateTarget;
-			buildConfigurationList = 79CBB1D41BD042FB001FC34D /* Build configuration list for PBXAggregateTarget "Universal Framework (iOS)" */;
+			buildConfigurationList = 79CBB1D41BD042FB001FC34D /* Build configuration list for PBXAggregateTarget "XCFramework (iOS)" */;
 			buildPhases = (
 				79CBB1D71BD04308001FC34D /* Build Universal Binary */,
-				798842141C18B265003E8948 /* Update module map */,
 				79258C0321864610009C5FBE /* Cleanup CocoaPods scripts */,
 			);
 			dependencies = (
 			);
-			name = "Universal Framework (iOS)";
+			name = "XCFramework (iOS)";
+			productName = "Universal Framework";
+		};
+		A57A2FF3238A04F500DE8C68 /* XCFramework (Catalyst) */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = A57A2FF6238A04F500DE8C68 /* Build configuration list for PBXAggregateTarget "XCFramework (Catalyst)" */;
+			buildPhases = (
+				A57A2FF4238A04F500DE8C68 /* Build Universal Binary */,
+				A57A2FF5238A04F500DE8C68 /* Cleanup CocoaPods scripts */,
+			);
+			dependencies = (
+			);
+			name = "XCFramework (Catalyst)";
 			productName = "Universal Framework";
 		};
 /* End PBXAggregateTarget section */
@@ -2250,13 +2261,13 @@
 		A55A888F22FD8272002D0A72 /* PNRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = A55A877222FD8272002D0A72 /* PNRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A55A889022FD8272002D0A72 /* PNRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = A55A877222FD8272002D0A72 /* PNRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A55A889122FD8272002D0A72 /* PNRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = A55A877222FD8272002D0A72 /* PNRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A55BCCA22319243F0019DB68 /* PNAddMessageActionStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCA02319243F0019DB68 /* PNAddMessageActionStatus.h */; };
-		A55BCCA32319243F0019DB68 /* PNAddMessageActionStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCA02319243F0019DB68 /* PNAddMessageActionStatus.h */; };
-		A55BCCA42319243F0019DB68 /* PNAddMessageActionStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCA02319243F0019DB68 /* PNAddMessageActionStatus.h */; };
-		A55BCCA52319243F0019DB68 /* PNAddMessageActionStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCA02319243F0019DB68 /* PNAddMessageActionStatus.h */; };
-		A55BCCA62319243F0019DB68 /* PNAddMessageActionStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCA02319243F0019DB68 /* PNAddMessageActionStatus.h */; };
-		A55BCCA72319243F0019DB68 /* PNAddMessageActionStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCA02319243F0019DB68 /* PNAddMessageActionStatus.h */; };
-		A55BCCA82319243F0019DB68 /* PNAddMessageActionStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCA02319243F0019DB68 /* PNAddMessageActionStatus.h */; };
+		A55BCCA22319243F0019DB68 /* PNAddMessageActionStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCA02319243F0019DB68 /* PNAddMessageActionStatus.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A55BCCA32319243F0019DB68 /* PNAddMessageActionStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCA02319243F0019DB68 /* PNAddMessageActionStatus.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A55BCCA42319243F0019DB68 /* PNAddMessageActionStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCA02319243F0019DB68 /* PNAddMessageActionStatus.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A55BCCA52319243F0019DB68 /* PNAddMessageActionStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCA02319243F0019DB68 /* PNAddMessageActionStatus.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A55BCCA62319243F0019DB68 /* PNAddMessageActionStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCA02319243F0019DB68 /* PNAddMessageActionStatus.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A55BCCA72319243F0019DB68 /* PNAddMessageActionStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCA02319243F0019DB68 /* PNAddMessageActionStatus.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A55BCCA82319243F0019DB68 /* PNAddMessageActionStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCA02319243F0019DB68 /* PNAddMessageActionStatus.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A55BCCA92319243F0019DB68 /* PNAddMessageActionStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = A55BCCA12319243F0019DB68 /* PNAddMessageActionStatus.m */; };
 		A55BCCAA2319243F0019DB68 /* PNAddMessageActionStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = A55BCCA12319243F0019DB68 /* PNAddMessageActionStatus.m */; };
 		A55BCCAB2319243F0019DB68 /* PNAddMessageActionStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = A55BCCA12319243F0019DB68 /* PNAddMessageActionStatus.m */; };
@@ -2264,13 +2275,13 @@
 		A55BCCAD2319243F0019DB68 /* PNAddMessageActionStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = A55BCCA12319243F0019DB68 /* PNAddMessageActionStatus.m */; };
 		A55BCCAE2319243F0019DB68 /* PNAddMessageActionStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = A55BCCA12319243F0019DB68 /* PNAddMessageActionStatus.m */; };
 		A55BCCAF2319243F0019DB68 /* PNAddMessageActionStatus.m in Sources */ = {isa = PBXBuildFile; fileRef = A55BCCA12319243F0019DB68 /* PNAddMessageActionStatus.m */; };
-		A55BCCE6231D21840019DB68 /* PNAddMessageActionAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCE4231D21840019DB68 /* PNAddMessageActionAPICallBuilder.h */; };
-		A55BCCE7231D21840019DB68 /* PNAddMessageActionAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCE4231D21840019DB68 /* PNAddMessageActionAPICallBuilder.h */; };
-		A55BCCE8231D21840019DB68 /* PNAddMessageActionAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCE4231D21840019DB68 /* PNAddMessageActionAPICallBuilder.h */; };
-		A55BCCE9231D21840019DB68 /* PNAddMessageActionAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCE4231D21840019DB68 /* PNAddMessageActionAPICallBuilder.h */; };
-		A55BCCEA231D21840019DB68 /* PNAddMessageActionAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCE4231D21840019DB68 /* PNAddMessageActionAPICallBuilder.h */; };
-		A55BCCEB231D21840019DB68 /* PNAddMessageActionAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCE4231D21840019DB68 /* PNAddMessageActionAPICallBuilder.h */; };
-		A55BCCEC231D21840019DB68 /* PNAddMessageActionAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCE4231D21840019DB68 /* PNAddMessageActionAPICallBuilder.h */; };
+		A55BCCE6231D21840019DB68 /* PNAddMessageActionAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCE4231D21840019DB68 /* PNAddMessageActionAPICallBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A55BCCE7231D21840019DB68 /* PNAddMessageActionAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCE4231D21840019DB68 /* PNAddMessageActionAPICallBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A55BCCE8231D21840019DB68 /* PNAddMessageActionAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCE4231D21840019DB68 /* PNAddMessageActionAPICallBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A55BCCE9231D21840019DB68 /* PNAddMessageActionAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCE4231D21840019DB68 /* PNAddMessageActionAPICallBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A55BCCEA231D21840019DB68 /* PNAddMessageActionAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCE4231D21840019DB68 /* PNAddMessageActionAPICallBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A55BCCEB231D21840019DB68 /* PNAddMessageActionAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCE4231D21840019DB68 /* PNAddMessageActionAPICallBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A55BCCEC231D21840019DB68 /* PNAddMessageActionAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCE4231D21840019DB68 /* PNAddMessageActionAPICallBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A55BCCED231D21840019DB68 /* PNAddMessageActionAPICallBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = A55BCCE5231D21840019DB68 /* PNAddMessageActionAPICallBuilder.m */; };
 		A55BCCEE231D21840019DB68 /* PNAddMessageActionAPICallBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = A55BCCE5231D21840019DB68 /* PNAddMessageActionAPICallBuilder.m */; };
 		A55BCCEF231D21840019DB68 /* PNAddMessageActionAPICallBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = A55BCCE5231D21840019DB68 /* PNAddMessageActionAPICallBuilder.m */; };
@@ -2278,13 +2289,13 @@
 		A55BCCF1231D21840019DB68 /* PNAddMessageActionAPICallBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = A55BCCE5231D21840019DB68 /* PNAddMessageActionAPICallBuilder.m */; };
 		A55BCCF2231D21840019DB68 /* PNAddMessageActionAPICallBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = A55BCCE5231D21840019DB68 /* PNAddMessageActionAPICallBuilder.m */; };
 		A55BCCF3231D21840019DB68 /* PNAddMessageActionAPICallBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = A55BCCE5231D21840019DB68 /* PNAddMessageActionAPICallBuilder.m */; };
-		A55BCCF6231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCF4231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.h */; };
-		A55BCCF7231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCF4231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.h */; };
-		A55BCCF8231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCF4231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.h */; };
-		A55BCCF9231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCF4231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.h */; };
-		A55BCCFA231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCF4231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.h */; };
-		A55BCCFB231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCF4231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.h */; };
-		A55BCCFC231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCF4231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.h */; };
+		A55BCCF6231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCF4231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A55BCCF7231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCF4231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A55BCCF8231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCF4231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A55BCCF9231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCF4231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A55BCCFA231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCF4231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A55BCCFB231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCF4231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A55BCCFC231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCCF4231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A55BCCFD231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = A55BCCF5231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.m */; };
 		A55BCCFE231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = A55BCCF5231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.m */; };
 		A55BCCFF231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = A55BCCF5231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.m */; };
@@ -2292,13 +2303,13 @@
 		A55BCD01231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = A55BCCF5231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.m */; };
 		A55BCD02231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = A55BCCF5231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.m */; };
 		A55BCD03231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = A55BCCF5231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.m */; };
-		A55BCD06231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCD04231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.h */; };
-		A55BCD07231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCD04231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.h */; };
-		A55BCD08231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCD04231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.h */; };
-		A55BCD09231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCD04231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.h */; };
-		A55BCD0A231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCD04231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.h */; };
-		A55BCD0B231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCD04231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.h */; };
-		A55BCD0C231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCD04231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.h */; };
+		A55BCD06231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCD04231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A55BCD07231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCD04231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A55BCD08231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCD04231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A55BCD09231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCD04231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A55BCD0A231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCD04231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A55BCD0B231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCD04231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A55BCD0C231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCD04231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A55BCD0D231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = A55BCD05231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.m */; };
 		A55BCD0E231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = A55BCD05231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.m */; };
 		A55BCD0F231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = A55BCD05231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.m */; };
@@ -2306,13 +2317,13 @@
 		A55BCD11231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = A55BCD05231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.m */; };
 		A55BCD12231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = A55BCD05231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.m */; };
 		A55BCD13231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = A55BCD05231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.m */; };
-		A55BCD16231D26110019DB68 /* PNMessageAction.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCD14231D26110019DB68 /* PNMessageAction.h */; };
-		A55BCD17231D26110019DB68 /* PNMessageAction.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCD14231D26110019DB68 /* PNMessageAction.h */; };
-		A55BCD18231D26110019DB68 /* PNMessageAction.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCD14231D26110019DB68 /* PNMessageAction.h */; };
-		A55BCD19231D26110019DB68 /* PNMessageAction.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCD14231D26110019DB68 /* PNMessageAction.h */; };
-		A55BCD1A231D26110019DB68 /* PNMessageAction.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCD14231D26110019DB68 /* PNMessageAction.h */; };
-		A55BCD1B231D26110019DB68 /* PNMessageAction.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCD14231D26110019DB68 /* PNMessageAction.h */; };
-		A55BCD1C231D26110019DB68 /* PNMessageAction.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCD14231D26110019DB68 /* PNMessageAction.h */; };
+		A55BCD16231D26110019DB68 /* PNMessageAction.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCD14231D26110019DB68 /* PNMessageAction.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A55BCD17231D26110019DB68 /* PNMessageAction.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCD14231D26110019DB68 /* PNMessageAction.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A55BCD18231D26110019DB68 /* PNMessageAction.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCD14231D26110019DB68 /* PNMessageAction.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A55BCD19231D26110019DB68 /* PNMessageAction.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCD14231D26110019DB68 /* PNMessageAction.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A55BCD1A231D26110019DB68 /* PNMessageAction.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCD14231D26110019DB68 /* PNMessageAction.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A55BCD1B231D26110019DB68 /* PNMessageAction.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCD14231D26110019DB68 /* PNMessageAction.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A55BCD1C231D26110019DB68 /* PNMessageAction.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCD14231D26110019DB68 /* PNMessageAction.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A55BCD1D231D26110019DB68 /* PNMessageAction.m in Sources */ = {isa = PBXBuildFile; fileRef = A55BCD15231D26110019DB68 /* PNMessageAction.m */; };
 		A55BCD1E231D26110019DB68 /* PNMessageAction.m in Sources */ = {isa = PBXBuildFile; fileRef = A55BCD15231D26110019DB68 /* PNMessageAction.m */; };
 		A55BCD1F231D26110019DB68 /* PNMessageAction.m in Sources */ = {isa = PBXBuildFile; fileRef = A55BCD15231D26110019DB68 /* PNMessageAction.m */; };
@@ -2460,13 +2471,13 @@
 		A56865F4230176760014E17C /* PNMembersParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A56865E8230176760014E17C /* PNMembersParser.m */; };
 		A56865F5230176760014E17C /* PNMembersParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A56865E8230176760014E17C /* PNMembersParser.m */; };
 		A56865F6230176760014E17C /* PNMembersParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A56865E8230176760014E17C /* PNMembersParser.m */; };
-		A56FAEF2233161570072ADD6 /* PubNub+MessageActions.h in Headers */ = {isa = PBXBuildFile; fileRef = A56FAEF0233161560072ADD6 /* PubNub+MessageActions.h */; };
-		A56FAEF3233161570072ADD6 /* PubNub+MessageActions.h in Headers */ = {isa = PBXBuildFile; fileRef = A56FAEF0233161560072ADD6 /* PubNub+MessageActions.h */; };
-		A56FAEF4233161570072ADD6 /* PubNub+MessageActions.h in Headers */ = {isa = PBXBuildFile; fileRef = A56FAEF0233161560072ADD6 /* PubNub+MessageActions.h */; };
-		A56FAEF5233161570072ADD6 /* PubNub+MessageActions.h in Headers */ = {isa = PBXBuildFile; fileRef = A56FAEF0233161560072ADD6 /* PubNub+MessageActions.h */; };
-		A56FAEF6233161570072ADD6 /* PubNub+MessageActions.h in Headers */ = {isa = PBXBuildFile; fileRef = A56FAEF0233161560072ADD6 /* PubNub+MessageActions.h */; };
-		A56FAEF7233161570072ADD6 /* PubNub+MessageActions.h in Headers */ = {isa = PBXBuildFile; fileRef = A56FAEF0233161560072ADD6 /* PubNub+MessageActions.h */; };
-		A56FAEF8233161570072ADD6 /* PubNub+MessageActions.h in Headers */ = {isa = PBXBuildFile; fileRef = A56FAEF0233161560072ADD6 /* PubNub+MessageActions.h */; };
+		A56FAEF2233161570072ADD6 /* PubNub+MessageActions.h in Headers */ = {isa = PBXBuildFile; fileRef = A56FAEF0233161560072ADD6 /* PubNub+MessageActions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A56FAEF3233161570072ADD6 /* PubNub+MessageActions.h in Headers */ = {isa = PBXBuildFile; fileRef = A56FAEF0233161560072ADD6 /* PubNub+MessageActions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A56FAEF4233161570072ADD6 /* PubNub+MessageActions.h in Headers */ = {isa = PBXBuildFile; fileRef = A56FAEF0233161560072ADD6 /* PubNub+MessageActions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A56FAEF5233161570072ADD6 /* PubNub+MessageActions.h in Headers */ = {isa = PBXBuildFile; fileRef = A56FAEF0233161560072ADD6 /* PubNub+MessageActions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A56FAEF6233161570072ADD6 /* PubNub+MessageActions.h in Headers */ = {isa = PBXBuildFile; fileRef = A56FAEF0233161560072ADD6 /* PubNub+MessageActions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A56FAEF7233161570072ADD6 /* PubNub+MessageActions.h in Headers */ = {isa = PBXBuildFile; fileRef = A56FAEF0233161560072ADD6 /* PubNub+MessageActions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A56FAEF8233161570072ADD6 /* PubNub+MessageActions.h in Headers */ = {isa = PBXBuildFile; fileRef = A56FAEF0233161560072ADD6 /* PubNub+MessageActions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A56FAEF9233161570072ADD6 /* PubNub+MessageActions.m in Sources */ = {isa = PBXBuildFile; fileRef = A56FAEF1233161570072ADD6 /* PubNub+MessageActions.m */; };
 		A56FAEFA233161570072ADD6 /* PubNub+MessageActions.m in Sources */ = {isa = PBXBuildFile; fileRef = A56FAEF1233161570072ADD6 /* PubNub+MessageActions.m */; };
 		A56FAEFB233161570072ADD6 /* PubNub+MessageActions.m in Sources */ = {isa = PBXBuildFile; fileRef = A56FAEF1233161570072ADD6 /* PubNub+MessageActions.m */; };
@@ -2481,13 +2492,13 @@
 		A586A9E92337E581008856D2 /* PNFetchMessageActionsResult.m in Sources */ = {isa = PBXBuildFile; fileRef = A586A9E32337E581008856D2 /* PNFetchMessageActionsResult.m */; };
 		A586A9EA2337E581008856D2 /* PNFetchMessageActionsResult.m in Sources */ = {isa = PBXBuildFile; fileRef = A586A9E32337E581008856D2 /* PNFetchMessageActionsResult.m */; };
 		A586A9EB2337E581008856D2 /* PNFetchMessageActionsResult.m in Sources */ = {isa = PBXBuildFile; fileRef = A586A9E32337E581008856D2 /* PNFetchMessageActionsResult.m */; };
-		A586A9EC2337E581008856D2 /* PNFetchMessageActionsResult.h in Headers */ = {isa = PBXBuildFile; fileRef = A586A9E42337E581008856D2 /* PNFetchMessageActionsResult.h */; };
-		A586A9ED2337E581008856D2 /* PNFetchMessageActionsResult.h in Headers */ = {isa = PBXBuildFile; fileRef = A586A9E42337E581008856D2 /* PNFetchMessageActionsResult.h */; };
-		A586A9EE2337E581008856D2 /* PNFetchMessageActionsResult.h in Headers */ = {isa = PBXBuildFile; fileRef = A586A9E42337E581008856D2 /* PNFetchMessageActionsResult.h */; };
-		A586A9EF2337E581008856D2 /* PNFetchMessageActionsResult.h in Headers */ = {isa = PBXBuildFile; fileRef = A586A9E42337E581008856D2 /* PNFetchMessageActionsResult.h */; };
-		A586A9F02337E581008856D2 /* PNFetchMessageActionsResult.h in Headers */ = {isa = PBXBuildFile; fileRef = A586A9E42337E581008856D2 /* PNFetchMessageActionsResult.h */; };
-		A586A9F12337E581008856D2 /* PNFetchMessageActionsResult.h in Headers */ = {isa = PBXBuildFile; fileRef = A586A9E42337E581008856D2 /* PNFetchMessageActionsResult.h */; };
-		A586A9F22337E581008856D2 /* PNFetchMessageActionsResult.h in Headers */ = {isa = PBXBuildFile; fileRef = A586A9E42337E581008856D2 /* PNFetchMessageActionsResult.h */; };
+		A586A9EC2337E581008856D2 /* PNFetchMessageActionsResult.h in Headers */ = {isa = PBXBuildFile; fileRef = A586A9E42337E581008856D2 /* PNFetchMessageActionsResult.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A586A9ED2337E581008856D2 /* PNFetchMessageActionsResult.h in Headers */ = {isa = PBXBuildFile; fileRef = A586A9E42337E581008856D2 /* PNFetchMessageActionsResult.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A586A9EE2337E581008856D2 /* PNFetchMessageActionsResult.h in Headers */ = {isa = PBXBuildFile; fileRef = A586A9E42337E581008856D2 /* PNFetchMessageActionsResult.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A586A9EF2337E581008856D2 /* PNFetchMessageActionsResult.h in Headers */ = {isa = PBXBuildFile; fileRef = A586A9E42337E581008856D2 /* PNFetchMessageActionsResult.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A586A9F02337E581008856D2 /* PNFetchMessageActionsResult.h in Headers */ = {isa = PBXBuildFile; fileRef = A586A9E42337E581008856D2 /* PNFetchMessageActionsResult.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A586A9F12337E581008856D2 /* PNFetchMessageActionsResult.h in Headers */ = {isa = PBXBuildFile; fileRef = A586A9E42337E581008856D2 /* PNFetchMessageActionsResult.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A586A9F22337E581008856D2 /* PNFetchMessageActionsResult.h in Headers */ = {isa = PBXBuildFile; fileRef = A586A9E42337E581008856D2 /* PNFetchMessageActionsResult.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A589756922FEF0F70093BD9A /* PNBaseObjectsRequest+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A589756822FEF0F70093BD9A /* PNBaseObjectsRequest+Private.h */; };
 		A589756A22FEF0F70093BD9A /* PNBaseObjectsRequest+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A589756822FEF0F70093BD9A /* PNBaseObjectsRequest+Private.h */; };
 		A589756B22FEF0F70093BD9A /* PNBaseObjectsRequest+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A589756822FEF0F70093BD9A /* PNBaseObjectsRequest+Private.h */; };
@@ -3096,6 +3107,7 @@
 		A56865E8230176760014E17C /* PNMembersParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNMembersParser.m; sourceTree = "<group>"; };
 		A56FAEF0233161560072ADD6 /* PubNub+MessageActions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PubNub+MessageActions.h"; sourceTree = "<group>"; };
 		A56FAEF1233161570072ADD6 /* PubNub+MessageActions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "PubNub+MessageActions.m"; sourceTree = "<group>"; };
+		A57A2FF22389FA8700DE8C68 /* build_xcframework.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build_xcframework.sh; sourceTree = "<group>"; };
 		A586A9E32337E581008856D2 /* PNFetchMessageActionsResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNFetchMessageActionsResult.m; sourceTree = "<group>"; };
 		A586A9E42337E581008856D2 /* PNFetchMessageActionsResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNFetchMessageActionsResult.h; sourceTree = "<group>"; };
 		A589756822FEF0F70093BD9A /* PNBaseObjectsRequest+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PNBaseObjectsRequest+Private.h"; sourceTree = "<group>"; };
@@ -3728,6 +3740,7 @@
 				79CBB1DC1BD043BD001FC34D /* build_universal.sh */,
 				79CBB1DD1BD043BD001FC34D /* copy_products.sh */,
 				798842101C18AFE0003E8948 /* update_modulemap.sh */,
+				A57A2FF22389FA8700DE8C68 /* build_xcframework.sh */,
 			);
 			path = scripts;
 			sourceTree = "<group>";
@@ -5623,12 +5636,13 @@
 				791582AE1BD709D10084FC70 /* PubNub (watchOS) */,
 				79CBB03D1BD03D3F001FC34D /* PubNub (OSX) */,
 				79ACC3E61C11BC4D0056523A /* PubNub (Fabric) */,
+				79CBB1D31BD042FB001FC34D /* XCFramework (iOS) */,
+				79A8BDB71C58FC2E00015BDE /* XCFramework (tvOS) */,
+				791582001BD705130084FC70 /* XCFramework (watchOS) */,
+				A57A2FF3238A04F500DE8C68 /* XCFramework (Catalyst) */,
+				79ACC4911C11BC620056523A /* XCFramework (Fabric) */,
 				7988421A1C18EDA7003E8948 /* Static PubNub (iOS) */,
 				798842F81C191579003E8948 /* Static PubNub (Fabric) */,
-				79CBB1D31BD042FB001FC34D /* Universal Framework (iOS) */,
-				79A8BDB71C58FC2E00015BDE /* Universal Framework (tvOS) */,
-				791582001BD705130084FC70 /* Universal Framework (watchOS) */,
-				79ACC4911C11BC620056523A /* Universal Framework (Fabric) */,
 				798842EF1C190DF5003E8948 /* Universal Static Framework (iOS) */,
 			);
 		};
@@ -5685,7 +5699,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Make all scripts aware what universal binary is built.\nexport BUILDING_UNIVERSAL_FRAMEWORK=1\n\n/bin/sh \"${SRCROOT}/scripts/build_universal.sh\"";
+			shellScript = "# Make all scripts aware what universal binary is built.\nexport BUILDING_UNIVERSAL_FRAMEWORK=1\n\n/bin/bash \"${SRCROOT}/scripts/build_xcframework.sh\"\n";
 		};
 		791582A81BD709C60084FC70 /* Copy Products */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -5699,7 +5713,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/bin/sh \"${SRCROOT}/scripts/copy_products.sh\"";
+			shellScript = "/bin/sh \"${SRCROOT}/scripts/copy_products.sh\"\n";
 		};
 		791583511BD709D10084FC70 /* Copy Products */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -5943,7 +5957,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/bin/sh \"${SRCROOT}/scripts/update_modulemap.sh\"";
+			shellScript = "/bin/sh \"${SRCROOT}/scripts/update_modulemap.sh\"\n";
 		};
 		798842111C18B236003E8948 /* Update module map */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -5971,7 +5985,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/bin/sh \"${SRCROOT}/scripts/update_modulemap.sh\"";
+			shellScript = "/bin/sh \"${SRCROOT}/scripts/update_modulemap.sh\"\n";
 		};
 		798842131C18B24B003E8948 /* Update module map */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -5986,20 +6000,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"${SRCROOT}/scripts/update_modulemap.sh\"";
-		};
-		798842141C18B265003E8948 /* Update module map */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Update module map";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Leaving universal framework build phase.\nexport BUILDING_UNIVERSAL_FRAMEWORK=0\n\n/bin/sh \"${SRCROOT}/scripts/update_modulemap.sh\"";
 		};
 		798842151C18B26D003E8948 /* Update module map */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -6027,7 +6027,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Leaving universal framework build phase.\nexport BUILDING_UNIVERSAL_FRAMEWORK=0\n\n# Make all scripts aware what static binary is built.\nexport BUILDING_STATIC_FRAMEWORK=1\n\n/bin/sh \"${SRCROOT}/scripts/update_modulemap.sh\"";
+			shellScript = "# Leaving universal framework build phase.\nexport BUILDING_UNIVERSAL_FRAMEWORK=0\n\n# Make all scripts aware what static binary is built.\nexport BUILDING_STATIC_FRAMEWORK=1\n\n/bin/sh \"${SRCROOT}/scripts/update_modulemap.sh\"\n";
 		};
 		798842EB1C18FBC8003E8948 /* Copy Products */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -6069,7 +6069,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Make all scripts aware what universal binary is built.\nexport BUILDING_UNIVERSAL_FRAMEWORK=1\n\n# Make all scripts aware what static binary is built.\nexport BUILDING_STATIC_FRAMEWORK=1\n\n/bin/sh \"${SRCROOT}/scripts/build_universal.sh\"";
+			shellScript = "# Make all scripts aware what universal binary is built.\nexport BUILDING_UNIVERSAL_FRAMEWORK=1\n\n# Make all scripts aware what static binary is built.\nexport BUILDING_STATIC_FRAMEWORK=1\n\n/bin/sh \"${SRCROOT}/scripts/build_universal.sh\"\n";
 		};
 		798842F11C190DF5003E8948 /* Update module map */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -6111,7 +6111,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Make all scripts aware what static binary is built.\nexport BUILDING_STATIC_FRAMEWORK=1\n\n/bin/sh \"${SRCROOT}/scripts/update_modulemap.sh\"";
+			shellScript = "# Make all scripts aware what static binary is built.\nexport BUILDING_STATIC_FRAMEWORK=1\n\n/bin/sh \"${SRCROOT}/scripts/update_modulemap.sh\"\n";
 		};
 		79A8BCBF1C58F93900015BDE /* Copy Products */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -6125,7 +6125,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/bin/sh \"${SRCROOT}/scripts/copy_products.sh\"";
+			shellScript = "/bin/sh \"${SRCROOT}/scripts/copy_products.sh\"\n";
 		};
 		79A8BCC01C58F93900015BDE /* Update module map */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -6139,7 +6139,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/bin/sh \"${SRCROOT}/scripts/update_modulemap.sh\"";
+			shellScript = "/bin/sh \"${SRCROOT}/scripts/update_modulemap.sh\"\n";
 		};
 		79A8BDB81C58FC2E00015BDE /* Build Universal Binary */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -6153,7 +6153,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Make all scripts aware what universal binary is built.\nexport BUILDING_UNIVERSAL_FRAMEWORK=1\n\n/bin/sh \"${SRCROOT}/scripts/build_universal.sh\"";
+			shellScript = "# Make all scripts aware what universal binary is built.\nexport BUILDING_UNIVERSAL_FRAMEWORK=1\n\n/bin/bash \"${SRCROOT}/scripts/build_xcframework.sh\"\n";
 		};
 		79A8BDB91C58FC2E00015BDE /* Update module map */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -6167,7 +6167,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Leaving universal framework build phase.\nexport BUILDING_UNIVERSAL_FRAMEWORK=0\n\n/bin/sh \"${SRCROOT}/scripts/update_modulemap.sh\"";
+			shellScript = "# Leaving universal framework build phase.\nexport BUILDING_UNIVERSAL_FRAMEWORK=0\n\n/bin/sh \"${SRCROOT}/scripts/update_modulemap.sh\"\n";
 		};
 		79ACC48B1C11BC4D0056523A /* Copy Products */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -6195,7 +6195,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Make all scripts aware what universal binary is built.\nexport BUILDING_UNIVERSAL_FRAMEWORK=1\n\n# Make all scripts aware what static binary is built.\nexport BUILDING_STATIC_FRAMEWORK=1\n\n/bin/sh \"${SRCROOT}/scripts/build_universal.sh\"";
+			shellScript = "# Make all scripts aware what universal binary is built.\nexport BUILDING_UNIVERSAL_FRAMEWORK=1\n\n/bin/bash \"${SRCROOT}/scripts/build_xcframework.sh\"\n";
 		};
 		79CBB1D21BD04299001FC34D /* Copy Products */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -6223,7 +6223,39 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Make all scripts aware what universal binary is built.\nexport BUILDING_UNIVERSAL_FRAMEWORK=1\n\n/bin/sh \"${SRCROOT}/scripts/build_universal.sh\"";
+			shellScript = "# Make all scripts aware what universal binary is built.\nexport BUILDING_UNIVERSAL_FRAMEWORK=1\n\n/bin/bash \"${SRCROOT}/scripts/build_xcframework.sh\"\n";
+		};
+		A57A2FF4238A04F500DE8C68 /* Build Universal Binary */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Build Universal Binary";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Make all scripts aware what universal binary is built.\nexport BUILDING_UNIVERSAL_FRAMEWORK=1\n\n/bin/bash \"${SRCROOT}/scripts/build_xcframework.sh\"\n";
+		};
+		A57A2FF5238A04F500DE8C68 /* Cleanup CocoaPods scripts */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Cleanup CocoaPods scripts";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "find \"${TARGET_TEMP_DIR}\" -name 'Script-*.sh' -exec rm -rf {} \\;\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -7497,14 +7529,22 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
-				BITCODE_GENERATION_MODE = bitcode;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "Universal Framework";
 				SDKROOT = watchos;
+				STRIP_STYLE = debugging;
 				SUPPORTED_PLATFORMS = "watchsimulator watchos";
+				TARGETED_DEVICE_FAMILY = 4;
 				TVOS_DEPLOYMENT_TARGET = 10.0;
 				WATCHOS_DEPLOYMENT_TARGET = 4.0;
 			};
@@ -7514,14 +7554,21 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
-				BITCODE_GENERATION_MODE = bitcode;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "Universal Framework";
 				SDKROOT = watchos;
+				STRIP_STYLE = debugging;
 				SUPPORTED_PLATFORMS = "watchsimulator watchos";
+				TARGETED_DEVICE_FAMILY = 4;
 				TVOS_DEPLOYMENT_TARGET = 10.0;
 				WATCHOS_DEPLOYMENT_TARGET = 4.0;
 			};
@@ -7532,24 +7579,33 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = bitcode;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_COMMA = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "PubNub/PubNub-iOS-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.pubnub.pubnub-objc";
 				PRODUCT_NAME = PubNub;
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 3.0;
 				TVOS_DEPLOYMENT_TARGET = 10.0;
 				WATCHOS_DEPLOYMENT_TARGET = 4.0;
@@ -7561,13 +7617,20 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = bitcode;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_COMMA = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "PubNub/PubNub-iOS-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -7578,7 +7641,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.pubnub.pubnub-objc";
 				PRODUCT_NAME = PubNub;
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 3.0;
 				TVOS_DEPLOYMENT_TARGET = 10.0;
 				WATCHOS_DEPLOYMENT_TARGET = 4.0;
@@ -7589,17 +7653,22 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
-				BITCODE_GENERATION_MODE = bitcode;
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "PubNub/PubNub-watchOS-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				OTHER_CFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.pubnub.pubnub-objc";
 				PRODUCT_NAME = PubNub;
@@ -7616,12 +7685,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
-				BITCODE_GENERATION_MODE = bitcode;
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "PubNub/PubNub-watchOS-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -7644,9 +7717,17 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = bitcode;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_ANALYZER_SECURITY_FLOATLOOPCOUNTER = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_MODULE_DEBUGGING = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				DEFINES_MODULE = YES;
 				EXECUTABLE_EXTENSION = a;
 				EXECUTABLE_PREFIX = "";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -7656,13 +7737,13 @@
 				GENERATE_MASTER_OBJECT_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = PubNub;
 				PUBLIC_HEADERS_FOLDER_PATH = Headers;
-				SEPARATE_STRIP = NO;
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				TVOS_DEPLOYMENT_TARGET = 10.0;
 				WATCHOS_DEPLOYMENT_TARGET = 4.0;
 			};
@@ -7673,9 +7754,17 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = bitcode;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_ANALYZER_SECURITY_FLOATLOOPCOUNTER = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_MODULE_DEBUGGING = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				DEFINES_MODULE = YES;
 				EXECUTABLE_EXTENSION = a;
 				EXECUTABLE_PREFIX = "";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = "PN_STATIC_LIBRARY=1";
 				GENERATE_MASTER_OBJECT_FILE = YES;
@@ -7685,9 +7774,8 @@
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = PubNub;
 				PUBLIC_HEADERS_FOLDER_PATH = Headers;
-				SEPARATE_STRIP = NO;
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				TVOS_DEPLOYMENT_TARGET = 10.0;
 				WATCHOS_DEPLOYMENT_TARGET = 4.0;
 			};
@@ -7698,13 +7786,18 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = bitcode;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GENERATE_MASTER_OBJECT_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "Universal Static Framework";
 				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				TVOS_DEPLOYMENT_TARGET = 10.0;
 				WATCHOS_DEPLOYMENT_TARGET = 4.0;
 			};
@@ -7715,13 +7808,17 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = bitcode;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GENERATE_MASTER_OBJECT_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "Universal Static Framework";
 				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				TVOS_DEPLOYMENT_TARGET = 10.0;
 				WATCHOS_DEPLOYMENT_TARGET = 4.0;
 			};
@@ -7732,9 +7829,16 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = bitcode;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_MODULE_DEBUGGING = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				DEFINES_MODULE = YES;
 				EXECUTABLE_EXTENSION = a;
 				EXECUTABLE_PREFIX = "";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -7745,11 +7849,11 @@
 				GENERATE_MASTER_OBJECT_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = PubNub;
 				PUBLIC_HEADERS_FOLDER_PATH = Headers;
-				SEPARATE_STRIP = YES;
 				SKIP_INSTALL = YES;
 				TVOS_DEPLOYMENT_TARGET = 10.0;
 				WATCHOS_DEPLOYMENT_TARGET = 4.0;
@@ -7761,9 +7865,16 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = bitcode;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_MODULE_DEBUGGING = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				DEFINES_MODULE = YES;
 				EXECUTABLE_EXTENSION = a;
 				EXECUTABLE_PREFIX = "";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"PN_STATIC_LIBRARY=1",
@@ -7776,7 +7887,6 @@
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = PubNub;
 				PUBLIC_HEADERS_FOLDER_PATH = Headers;
-				SEPARATE_STRIP = YES;
 				SKIP_INSTALL = YES;
 				TVOS_DEPLOYMENT_TARGET = 10.0;
 				WATCHOS_DEPLOYMENT_TARGET = 4.0;
@@ -7787,17 +7897,24 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
-				BITCODE_GENERATION_MODE = bitcode;
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "PubNub/PubNub-tvOS-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.pubnub.pubnub-objc";
@@ -7815,12 +7932,18 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
-				BITCODE_GENERATION_MODE = bitcode;
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "PubNub/PubNub-tvOS-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -7843,14 +7966,23 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
-				BITCODE_GENERATION_MODE = bitcode;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "Universal Framework";
 				SDKROOT = appletvos;
+				STRIP_STYLE = debugging;
 				SUPPORTED_PLATFORMS = "appletvsimulator appletvos";
+				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 10.0;
 				WATCHOS_DEPLOYMENT_TARGET = 4.0;
 			};
@@ -7860,14 +7992,22 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
-				BITCODE_GENERATION_MODE = bitcode;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "Universal Framework";
 				SDKROOT = appletvos;
+				STRIP_STYLE = debugging;
 				SUPPORTED_PLATFORMS = "appletvsimulator appletvos";
+				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 10.0;
 				WATCHOS_DEPLOYMENT_TARGET = 4.0;
 			};
@@ -7878,12 +8018,20 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = bitcode;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = NO;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"FABRIC_SUPPORT=1",
@@ -7894,12 +8042,13 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				OTHER_CFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.pubnub.pubnub-objc";
 				PRODUCT_NAME = PubNub;
-				SEPARATE_STRIP = YES;
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SUPPORTS_MACCATALYST = NO;
 				TVOS_DEPLOYMENT_TARGET = 10.0;
 				WATCHOS_DEPLOYMENT_TARGET = 4.0;
 			};
@@ -7910,13 +8059,21 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = bitcode;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = NO;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_PREPROCESSOR_DEFINITIONS = "FABRIC_SUPPORT=1";
 				INFOPLIST_FILE = "PubNub/PubNub-Fabric-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -7926,9 +8083,9 @@
 				OTHER_CFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.pubnub.pubnub-objc";
 				PRODUCT_NAME = PubNub;
-				SEPARATE_STRIP = YES;
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SUPPORTS_MACCATALYST = NO;
 				TVOS_DEPLOYMENT_TARGET = 10.0;
 				WATCHOS_DEPLOYMENT_TARGET = 4.0;
 			};
@@ -7939,6 +8096,13 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = bitcode;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"FABRIC_SUPPORT=1",
@@ -7946,10 +8110,11 @@
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "Universal Framework";
-				SEPARATE_STRIP = YES;
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
+				STRIP_STYLE = debugging;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				TVOS_DEPLOYMENT_TARGET = 10.0;
 				WATCHOS_DEPLOYMENT_TARGET = 4.0;
 			};
@@ -7960,13 +8125,20 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = bitcode;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = "FABRIC_SUPPORT=1";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "Universal Framework";
-				SEPARATE_STRIP = YES;
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
+				STRIP_STYLE = debugging;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				TVOS_DEPLOYMENT_TARGET = 10.0;
 				WATCHOS_DEPLOYMENT_TARGET = 4.0;
 			};
@@ -7976,6 +8148,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				BITCODE_GENERATION_MODE = bitcode;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -8001,10 +8174,10 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEFINES_MODULE = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -8022,7 +8195,8 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				MTL_ENABLE_DEBUG_INFO = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -8035,6 +8209,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				BITCODE_GENERATION_MODE = bitcode;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -8060,10 +8235,10 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -8075,6 +8250,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -8088,17 +8264,25 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
-				BITCODE_GENERATION_MODE = bitcode;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = PubNub/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -8119,12 +8303,19 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
-				BITCODE_GENERATION_MODE = bitcode;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = PubNub/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -8151,11 +8342,21 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = bitcode;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "Universal Framework";
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
+				STRIP_STYLE = debugging;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				TVOS_DEPLOYMENT_TARGET = 10.0;
 				WATCHOS_DEPLOYMENT_TARGET = 4.0;
 			};
@@ -8166,11 +8367,69 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				BITCODE_GENERATION_MODE = bitcode;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "Universal Framework";
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
+				STRIP_STYLE = debugging;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				TVOS_DEPLOYMENT_TARGET = 10.0;
+				WATCHOS_DEPLOYMENT_TARGET = 4.0;
+			};
+			name = Release;
+		};
+		A57A2FF7238A04F500DE8C68 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				BITCODE_GENERATION_MODE = bitcode;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				OTHER_CFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIP_STYLE = debugging;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				TVOS_DEPLOYMENT_TARGET = 10.0;
+				WATCHOS_DEPLOYMENT_TARGET = 4.0;
+			};
+			name = Debug;
+		};
+		A57A2FF8238A04F500DE8C68 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				BITCODE_GENERATION_MODE = bitcode;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				OTHER_CFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIP_STYLE = debugging;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				TVOS_DEPLOYMENT_TARGET = 10.0;
 				WATCHOS_DEPLOYMENT_TARGET = 4.0;
 			};
@@ -8179,7 +8438,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		791582021BD705130084FC70 /* Build configuration list for PBXAggregateTarget "Universal Framework (watchOS)" */ = {
+		791582021BD705130084FC70 /* Build configuration list for PBXAggregateTarget "XCFramework (watchOS)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				791582031BD705130084FC70 /* Debug */,
@@ -8242,7 +8501,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		79A8BDBA1C58FC2E00015BDE /* Build configuration list for PBXAggregateTarget "Universal Framework (tvOS)" */ = {
+		79A8BDBA1C58FC2E00015BDE /* Build configuration list for PBXAggregateTarget "XCFramework (tvOS)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				79A8BDBB1C58FC2E00015BDE /* Debug */,
@@ -8260,7 +8519,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		79ACC4931C11BC620056523A /* Build configuration list for PBXAggregateTarget "Universal Framework (Fabric)" */ = {
+		79ACC4931C11BC620056523A /* Build configuration list for PBXAggregateTarget "XCFramework (Fabric)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				79ACC4941C11BC620056523A /* Debug */,
@@ -8287,11 +8546,20 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		79CBB1D41BD042FB001FC34D /* Build configuration list for PBXAggregateTarget "Universal Framework (iOS)" */ = {
+		79CBB1D41BD042FB001FC34D /* Build configuration list for PBXAggregateTarget "XCFramework (iOS)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				79CBB1D51BD042FB001FC34D /* Debug */,
 				79CBB1D61BD042FB001FC34D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A57A2FF6238A04F500DE8C68 /* Build configuration list for PBXAggregateTarget "XCFramework (Catalyst)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A57A2FF7238A04F500DE8C68 /* Debug */,
+				A57A2FF8238A04F500DE8C68 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
