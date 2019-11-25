@@ -1,9 +1,22 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.11.0"
+version: "4.11.1"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Added proper Catalyst framework support with separate build target 'XCFramework (Catalyst)' which is bundled with binaries which allow it to be used for: device / simulator and macOS"
+        type: feature
+      -
+        text: "Changed build scripts which now produce XCFrameworks with separate slices for device and simulator instead of 'fat' binaries created with 'lipo'."
+        type: improvement
+      -
+        text: "Changed headers visibility in frameworks project from 'project' to 'public'."
+        type: bug
+    date: Nov 25, 19
+    version: v4.11.1
   -
     changes:
       -

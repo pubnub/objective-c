@@ -1,4 +1,4 @@
-# PubNub 4.11.0 for iOS 9+
+# PubNub 4.11.1 for iOS 9+
 [![Twitter](https://img.shields.io/badge/twitter-%40PubNub-blue.svg?style=flat)](https://twitter.com/PubNub)
 [![Twitter Releases](https://img.shields.io/badge/twitter-%40PubNubRelease-blue.svg?style=flat)](https://twitter.com/PubNubRelease)
 [![License](https://img.shields.io/github/license/pubnub/objective-c.svg?style=flat)](https://img.shields.io/github/license/pubnub/objective-c.svg)
@@ -216,6 +216,6 @@ In 4.0, [we provide Example](Example) as a generic reference on how to set confi
 The Example app is used as a simple reference app. It will evolve over time, along with other example apps -- stay tuned for that!
 
 ## Complete Docs
-Check out our [official docs page](http://www.pubnub.com/docs/ios-objective-c/pubnub-objective-c-sdk-v4).
+Check out our [official docs page](https://www.pubnub.com/docs/ios-objective-c/pubnub-objective-c-sdk).
 
 # Please direct all Support Questions and Concerns to Support@PubNub.com
