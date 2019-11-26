@@ -4,7 +4,7 @@ use_frameworks!
 target 'iOS ObjC Tests' do
   platform :ios, "9.0"
   project 'PubNub Tests'
-  pod 'OCMock', '~> 3.4'
+  pod 'OCMock', '= 3.4.3'
   pod "BeKindRewind"
   pod "PubNub", :path => "../"
 end
@@ -19,7 +19,7 @@ end
 target 'OSX ObjC Tests' do
   platform :osx, '10.11'
   project 'PubNub Tests'
-  pod 'OCMock', '~> 3.4'
+  pod 'OCMock', '= 3.4.3'
   pod "BeKindRewind"
   pod "PubNub", :path => "../"
 end
@@ -27,7 +27,7 @@ end
 target 'tvOS ObjC Tests' do
   platform :tvos, '10.0'
   project 'PubNub Tests'
-  pod 'OCMock', '~> 3.4'
+  pod 'OCMock', '= 3.4.3'
   pod "BeKindRewind"
   pod "PubNub", :path => "../"
 end

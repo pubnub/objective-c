@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "791582001BD705130084FC70"
-               BuildableName = "Universal Framework (watchOS)"
-               BlueprintName = "Universal Framework (watchOS)"
+               BuildableName = "XCFramework (watchOS)"
+               BlueprintName = "XCFramework (watchOS)"
                ReferencedContainer = "container:PubNub Framework.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -29,8 +29,6 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
       </Testables>
-      <AdditionalOptions>
-      </AdditionalOptions>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -46,13 +44,11 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "791582001BD705130084FC70"
-            BuildableName = "Universal Framework (watchOS)"
-            BlueprintName = "Universal Framework (watchOS)"
+            BuildableName = "XCFramework (watchOS)"
+            BlueprintName = "XCFramework (watchOS)"
             ReferencedContainer = "container:PubNub Framework.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
-      <AdditionalOptions>
-      </AdditionalOptions>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -64,8 +60,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "791582001BD705130084FC70"
-            BuildableName = "Universal Framework (watchOS)"
-            BlueprintName = "Universal Framework (watchOS)"
+            BuildableName = "XCFramework (watchOS)"
+            BlueprintName = "XCFramework (watchOS)"
             ReferencedContainer = "container:PubNub Framework.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
