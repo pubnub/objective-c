@@ -10,10 +10,9 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @discussion Track various client parameters which can be used for service performance analysis.
  *
- * @since 4.6.2
- *
  * @author Serhii Mamontov
- * @version 4.8.4
+ * @version 4.12.0
+ * @since 4.6.2
  * @copyright © 2010-2019 PubNub, Inc.
  */
 @interface PNTelemetry : NSObject

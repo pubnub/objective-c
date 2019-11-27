@@ -172,10 +172,10 @@
                                            PNStrongify(self);
                                            
                                            XCTAssertNotNil(status);
-                                           XCTAssertFalse(status.isError);
-                                           XCTAssertEqual(status.operation, PNRemoveAllPushNotificationsOperation, @"Wrong operation.");
+                                           XCTAssertTrue(status.isError);
+                                           XCTAssertEqual(status.operation, PNRemovePushNotificationsFromChannelsOperation, @"Wrong operation.");
                                            
-                                           XCTAssertEqual(status.statusCode, 200, @"Response status code is not 200");
+                                           XCTAssertEqual(status.statusCode, 400, @"Response status code is not 400");
                                            
                                            [self.testExpectation fulfill];
                                        }];
@@ -201,7 +201,7 @@
                                            
                                            XCTAssertNotNil(status);
                                            XCTAssertTrue(status.isError);
-                                           XCTAssertEqual(status.operation, PNRemoveAllPushNotificationsOperation, @"Wrong operation.");
+                                           XCTAssertEqual(status.operation, PNRemovePushNotificationsFromChannelsOperation, @"Wrong operation.");
                                            
                                            XCTAssertEqual(status.statusCode, 400, @"Response status code is not 400");
                                            

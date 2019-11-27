@@ -476,7 +476,7 @@ NS_ASSUME_NONNULL_END
     
     query[(__bridge id)(kSecClass)] = (__bridge id)(kSecClassGenericPassword);
     query[(__bridge id)(kSecAttrSynchronizable)] = (__bridge id)(kCFBooleanFalse);
-    query[(__bridge id)(kSecAttrAccessible)] = (__bridge id)(kSecAttrAccessibleAlways);
+    query[(__bridge id)(kSecAttrAccessible)] = (__bridge id)(kSecAttrAccessibleAfterFirstUnlock);
     query[(__bridge id)(kSecAttrService)] = bundleIdentifier;
     query[(__bridge id)(kSecAttrAccount)] = key;
     

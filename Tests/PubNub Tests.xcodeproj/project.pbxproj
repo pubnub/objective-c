@@ -255,6 +255,10 @@
 		96E383931BAAC12F00560991 /* PNConfigurationChiperKeyTests.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 9652F3E61BA6E90B001E940A /* PNConfigurationChiperKeyTests.bundle */; };
 		96F0239E1B580D0000C4A581 /* NSArray+PNTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 96F0239D1B580D0000C4A581 /* NSArray+PNTest.m */; };
 		9722C2761B68A24C00A7CB44 /* PNPublishTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9722C2751B68A24C00A7CB44 /* PNPublishTests.swift */; };
+		A5105B60238F08FB00CB693D /* PNNotificationPayloadBuilderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A5105B5F238F08FB00CB693D /* PNNotificationPayloadBuilderTest.m */; };
+		A5105B61238F08FB00CB693D /* PNNotificationPayloadBuilderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A5105B5F238F08FB00CB693D /* PNNotificationPayloadBuilderTest.m */; };
+		A5105B62238F08FB00CB693D /* PNNotificationPayloadBuilderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A5105B5F238F08FB00CB693D /* PNNotificationPayloadBuilderTest.m */; };
+		A5105B63238F08FB00CB693D /* PNNotificationPayloadBuilderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A5105B5F238F08FB00CB693D /* PNNotificationPayloadBuilderTest.m */; };
 		A525EA502301E69300ABFDC2 /* PNSpaceObjectsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A525EA4F2301E69300ABFDC2 /* PNSpaceObjectsTest.m */; };
 		A525EA512301E69300ABFDC2 /* PNSpaceObjectsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A525EA4F2301E69300ABFDC2 /* PNSpaceObjectsTest.m */; };
 		A525EA522301E69300ABFDC2 /* PNSpaceObjectsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A525EA4F2301E69300ABFDC2 /* PNSpaceObjectsTest.m */; };
@@ -420,6 +424,7 @@
 		96F0239C1B580D0000C4A581 /* NSArray+PNTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSArray+PNTest.h"; path = "iOS Tests/Helpers/NSArray+PNTest.h"; sourceTree = "<group>"; };
 		96F0239D1B580D0000C4A581 /* NSArray+PNTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSArray+PNTest.m"; path = "iOS Tests/Helpers/NSArray+PNTest.m"; sourceTree = "<group>"; };
 		9722C2751B68A24C00A7CB44 /* PNPublishTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PNPublishTests.swift; sourceTree = "<group>"; };
+		A5105B5F238F08FB00CB693D /* PNNotificationPayloadBuilderTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNNotificationPayloadBuilderTest.m; sourceTree = "<group>"; };
 		A525EA4F2301E69300ABFDC2 /* PNSpaceObjectsTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNSpaceObjectsTest.m; sourceTree = "<group>"; };
 		A525EA532302A77A00ABFDC2 /* PNMembershipObjectsTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNMembershipObjectsTest.m; sourceTree = "<group>"; };
 		A525EA572302A79000ABFDC2 /* PNMemberObjectsTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNMemberObjectsTest.m; sourceTree = "<group>"; };
@@ -710,6 +715,7 @@
 		79A3E4552215A42C00F2ADB9 /* Unit */ = {
 			isa = PBXGroup;
 			children = (
+				A5105B5E238F08AB00CB693D /* Helpers */,
 				79A3E4562215A42C00F2ADB9 /* Core */,
 			);
 			name = Unit;
@@ -814,6 +820,14 @@
 				96F0239D1B580D0000C4A581 /* NSArray+PNTest.m */,
 			);
 			name = Categories;
+			sourceTree = "<group>";
+		};
+		A5105B5E238F08AB00CB693D /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				A5105B5F238F08FB00CB693D /* PNNotificationPayloadBuilderTest.m */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 		A525EA5F2303EF2400ABFDC2 /* Objects */ = {
@@ -1449,6 +1463,7 @@
 				79A3E4542215806D00F2ADB9 /* PNTestCase.m in Sources */,
 				517A9EF31BE318B400FAA43A /* NSDictionary+PNTest.m in Sources */,
 				517A9EDC1BE3185800FAA43A /* PNChannelGroupSubscribeTests.m in Sources */,
+				A5105B63238F08FB00CB693D /* PNNotificationPayloadBuilderTest.m in Sources */,
 				79A3E44B2215783200F2ADB9 /* NSInvocation+PNTest.m in Sources */,
 				A589756722FE711C0093BD9A /* PNSpaceObjectsAPICallBuilderTest.m in Sources */,
 				A5F62C3623017E88001CC2A5 /* PNMembershipsObjectsAPICallBuilderTest.m in Sources */,
@@ -1521,6 +1536,7 @@
 				79878FC122D924F100F0096D /* PNSignalAPIBuilderTest.m in Sources */,
 				967707F71B8F4A80002B8E84 /* PNPresenceEventTests.m in Sources */,
 				799CE2F31C45B8FD00AAEBDC /* PNBasicPresenceTestCase.m in Sources */,
+				A5105B60238F08FB00CB693D /* PNNotificationPayloadBuilderTest.m in Sources */,
 				79EF04AA1B4EAAB7007478CB /* PNClientStateChannelTests.m in Sources */,
 				79A238E91D2EB6BA00D080CD /* NSURLSessionConfigurationCategoryTest.m in Sources */,
 				79EF04BB1B4EAAE4007478CB /* PNBasicClientTestCase.m in Sources */,
@@ -1591,6 +1607,7 @@
 				797BDCD91C1F5091006EF006 /* PNDeviceIndependentMatcher.m in Sources */,
 				797BDCDA1C1F5091006EF006 /* PNChannelGroupUnsubscribeTests.m in Sources */,
 				797BDCDB1C1F5091006EF006 /* PNPresenceEventTests.m in Sources */,
+				A5105B61238F08FB00CB693D /* PNNotificationPayloadBuilderTest.m in Sources */,
 				797BDCDC1C1F5091006EF006 /* PNClientStateChannelTests.m in Sources */,
 				797BDCDD1C1F5091006EF006 /* PNBasicClientTestCase.m in Sources */,
 				797BDCDE1C1F5091006EF006 /* NSString+PNTest.m in Sources */,
@@ -1631,6 +1648,7 @@
 				79A3E4532215806D00F2ADB9 /* PNTestCase.m in Sources */,
 				797BDD111C1F5176006EF006 /* PNSubscribeTests.m in Sources */,
 				797BDD121C1F5176006EF006 /* PNBasicSubscribeTestCase.m in Sources */,
+				A5105B62238F08FB00CB693D /* PNNotificationPayloadBuilderTest.m in Sources */,
 				79A3E44A2215783200F2ADB9 /* NSInvocation+PNTest.m in Sources */,
 				A589756622FE711C0093BD9A /* PNSpaceObjectsAPICallBuilderTest.m in Sources */,
 				A5F62C3523017E88001CC2A5 /* PNMembershipsObjectsAPICallBuilderTest.m in Sources */,

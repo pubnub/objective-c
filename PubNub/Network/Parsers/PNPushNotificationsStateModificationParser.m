@@ -1,7 +1,8 @@
 /**
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2010-2018 PubNub, Inc.
+ * @author Serhii Mamontov
+ * @version 4.12.0
+ * @since 4.0.0
+ * @copyright © 2010-2019 PubNub, Inc.
  */
 #import "PNPushNotificationsStateModificationParser.h"
 
@@ -17,7 +18,10 @@
     
     return @[@(PNAddPushNotificationsOnChannelsOperation),
              @(PNRemovePushNotificationsFromChannelsOperation),
-             @(PNRemoveAllPushNotificationsOperation)];
+             @(PNRemoveAllPushNotificationsOperation),
+             @(PNAddPushNotificationsOnChannelsV2Operation),
+             @(PNRemovePushNotificationsFromChannelsV2Operation),
+             @(PNRemoveAllPushNotificationsV2Operation)];
 }
 
 + (BOOL)requireAdditionalData {

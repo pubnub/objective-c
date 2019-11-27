@@ -1,5 +1,7 @@
 /**
  * @author Serhii Mamontov
+ * @version 4.12.0
+ * @since 4.0.0
  * @copyright © 2010-2019 PubNub, Inc.
  */
 #import "PubNub+CorePrivate.h"
@@ -514,8 +516,8 @@ NS_ASSUME_NONNULL_END
             [(PNStatus *)errorStatus updateCategory:PNBadRequestCategory];
         }
         
-        if ([request.httpMethod isEqualToString:@"GET"]) {
-            requestCompletionBlock = ^(PNResult *result, PNStatus *status) {
+        if ([request.httpMethod isEqualToString:@"GET"] && request.returnsResponse) {
+             requestCompletionBlock = ^(PNResult *result, PNStatus *status) {
                 [strongSelf callBlock:block status:NO withResult:result andStatus:status];
             };
         } else {
@@ -525,7 +527,7 @@ NS_ASSUME_NONNULL_END
         }
         
         if (errorStatus) {
-            if ([request.httpMethod isEqualToString:@"GET"]) {
+            if ([request.httpMethod isEqualToString:@"GET"] && request.returnsResponse) {
                 [strongSelf callBlock:block status:NO withResult:nil andStatus:errorStatus];
             } else {
                 [strongSelf callBlock:block status:YES withResult:nil andStatus:errorStatus];

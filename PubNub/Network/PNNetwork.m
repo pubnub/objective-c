@@ -1,7 +1,8 @@
 /**
  * @author Serhii Mamontov
- * @since 4.0
- * @copyright © 2010-2018 PubNub, Inc.
+ * @version 4.12.0
+ * @since 4.0.0 
+ * @copyright © 2010-2019 PubNub, Inc.
  */
 #import "PNNetwork.h"
 #import "NSURLSessionConfiguration+PNConfigurationPrivate.h"
@@ -786,10 +787,11 @@ NS_ASSUME_NONNULL_END
             @(PNGetStateOperation), @(PNStateForChannelOperation),
             @(PNStateForChannelGroupOperation), @(PNChannelGroupsOperation),
             @(PNChannelsForGroupOperation), @(PNPushNotificationEnabledChannelsOperation),
-            @(PNTimeOperation), @(PNFetchMessagesActionsOperation),
-            @(PNFetchMembershipsOperation), @(PNFetchSpaceOperation),
-            @(PNFetchSpacesOperation), @(PNFetchUserOperation),
-            @(PNFetchUsersOperation), @(PNFetchMembersOperation)
+            @(PNPushNotificationEnabledChannelsV2Operation), @(PNTimeOperation),
+            @(PNFetchMessagesActionsOperation), @(PNFetchMembershipsOperation),
+            @(PNFetchSpaceOperation), @(PNFetchSpacesOperation),
+            @(PNFetchUserOperation), @(PNFetchUsersOperation),
+            @(PNFetchMembersOperation)
         ];
     });
     

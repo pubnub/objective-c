@@ -1,6 +1,6 @@
 /**
  * @author Serhii Mamontov
- * @version 4.10.0
+ * @version 4.12.0
  * @since 4.10.0
  * @copyright © 2010-2019 PubNub, Inc.
  */
@@ -15,6 +15,13 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PNRequest ()
 
 #pragma mark - Information
+
+/**
+ * @brief Object with information which should be used for request URI composition.
+ *
+ * @since 4.12.0
+ */
+@property (nonatomic, strong) PNRequestParameters *requestParameters;
 
 /**
  * @brief Error which represent any request parameters error.
@@ -40,6 +47,10 @@ NS_ASSUME_NONNULL_END
     return @"GET";
 }
 
+- (BOOL)returnsResponse {
+    return [self.httpMethod.uppercaseString isEqualToString:@"GET"] ? YES : NO;
+}
+
 - (void)setParametersError:(NSError *)parametersError {
     if (!_parametersError) {
         _parametersError = parametersError;
@@ -47,23 +58,15 @@ NS_ASSUME_NONNULL_END
 }
 
 - (PNRequestParameters *)requestParameters {
-    return [PNRequestParameters new];
+    if (!_requestParameters) {
+        _requestParameters = [PNRequestParameters new];
+    }
+    
+    return _requestParameters;
 }
 
 
 #pragma mark - Misc
-
-- (void)addIncludedFields:(NSArray<NSString *> *)fields
-                toRequest:(PNRequestParameters *)requestParameters {
-    
-    NSString *include = [requestParameters query][@"include"];
-    NSMutableArray *includeFields = [[include componentsSeparatedByString:@","] ?: @[] mutableCopy];
-    [includeFields addObjectsFromArray:fields];
-
-    [requestParameters removeQueryParameterWithFieldName:@"include"];
-    [requestParameters addQueryParameter:[includeFields componentsJoinedByString:@","]
-                            forFieldName:@"include"];
-}
 
 - (NSError *)missingParameterError:(NSString *)parameter forObjectRequest:(NSString *)objectType {
     NSString *reason = [NSString stringWithFormat:@"%@'s '%@' parameter is missing or empty.",
