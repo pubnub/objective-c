@@ -1279,7 +1279,7 @@
 		79A8BC911C58F93900015BDE /* PNJSON.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0B91BD03DE4001FC34D /* PNJSON.h */; };
 		79A8BC921C58F93900015BDE /* PNTimeParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0EC1BD03DE4001FC34D /* PNTimeParser.h */; };
 		79A8BC931C58F93900015BDE /* PNGZIP.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0B61BD03DE4001FC34D /* PNGZIP.h */; };
-		79A8BC941C58F93900015BDE /* PNKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = 79E2D0EC1C56434700BAA244 /* PNKeychain.h */; };
+		79A8BC941C58F93900015BDE /* PNKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = 79E2D0EC1C56434700BAA244 /* PNKeychain.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		79A8BC951C58F93900015BDE /* PNURLBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0F61BD03DE4001FC34D /* PNURLBuilder.h */; };
 		79A8BC961C58F93900015BDE /* PNHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0B81BD03DE4001FC34D /* PNHelpers.h */; };
 		79A8BC981C58F93900015BDE /* PNReachability.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0F21BD03DE4001FC34D /* PNReachability.h */; };
@@ -1642,12 +1642,12 @@
 		79E20D2A1C8AEFF5001BC9CC /* PNSubscribeStatus+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79E20D231C8AEC5B001BC9CC /* PNSubscribeStatus+Private.h */; };
 		79E20D2B1C8B0A70001BC9CC /* PNPresenceChannelGroupHereNowResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0901BD03DE4001FC34D /* PNPresenceChannelGroupHereNowResult.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		79E20D2C1C8B0AD5001BC9CC /* PNPushNotificationsStateModificationParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0E61BD03DE4001FC34D /* PNPushNotificationsStateModificationParser.h */; };
-		79E2D0EE1C56434700BAA244 /* PNKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = 79E2D0EC1C56434700BAA244 /* PNKeychain.h */; };
-		79E2D0EF1C56434700BAA244 /* PNKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = 79E2D0EC1C56434700BAA244 /* PNKeychain.h */; };
-		79E2D0F01C56434700BAA244 /* PNKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = 79E2D0EC1C56434700BAA244 /* PNKeychain.h */; };
-		79E2D0F11C56434700BAA244 /* PNKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = 79E2D0EC1C56434700BAA244 /* PNKeychain.h */; };
-		79E2D0F21C56434700BAA244 /* PNKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = 79E2D0EC1C56434700BAA244 /* PNKeychain.h */; };
-		79E2D0F31C56434700BAA244 /* PNKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = 79E2D0EC1C56434700BAA244 /* PNKeychain.h */; };
+		79E2D0EE1C56434700BAA244 /* PNKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = 79E2D0EC1C56434700BAA244 /* PNKeychain.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79E2D0EF1C56434700BAA244 /* PNKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = 79E2D0EC1C56434700BAA244 /* PNKeychain.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79E2D0F01C56434700BAA244 /* PNKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = 79E2D0EC1C56434700BAA244 /* PNKeychain.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79E2D0F11C56434700BAA244 /* PNKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = 79E2D0EC1C56434700BAA244 /* PNKeychain.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79E2D0F21C56434700BAA244 /* PNKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = 79E2D0EC1C56434700BAA244 /* PNKeychain.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		79E2D0F31C56434700BAA244 /* PNKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = 79E2D0EC1C56434700BAA244 /* PNKeychain.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		79E2D0F41C56434700BAA244 /* PNKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 79E2D0ED1C56434700BAA244 /* PNKeychain.m */; };
 		79E2D0F51C56434700BAA244 /* PNKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 79E2D0ED1C56434700BAA244 /* PNKeychain.m */; };
 		79E2D0F61C56434700BAA244 /* PNKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 79E2D0ED1C56434700BAA244 /* PNKeychain.m */; };
@@ -2352,6 +2352,13 @@
 		A55BCD29231D27F00019DB68 /* PNMessageAction+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCD24231D27F00019DB68 /* PNMessageAction+Private.h */; };
 		A55BCD2A231D27F00019DB68 /* PNMessageAction+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCD24231D27F00019DB68 /* PNMessageAction+Private.h */; };
 		A55BCD2B231D27F00019DB68 /* PNMessageAction+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A55BCD24231D27F00019DB68 /* PNMessageAction+Private.h */; };
+		A55CA69D2397389100B24E02 /* PNKeychain+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A55CA69C2397389100B24E02 /* PNKeychain+Private.h */; };
+		A55CA69E2397389100B24E02 /* PNKeychain+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A55CA69C2397389100B24E02 /* PNKeychain+Private.h */; };
+		A55CA69F2397389100B24E02 /* PNKeychain+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A55CA69C2397389100B24E02 /* PNKeychain+Private.h */; };
+		A55CA6A02397389100B24E02 /* PNKeychain+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A55CA69C2397389100B24E02 /* PNKeychain+Private.h */; };
+		A55CA6A12397389100B24E02 /* PNKeychain+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A55CA69C2397389100B24E02 /* PNKeychain+Private.h */; };
+		A55CA6A22397389100B24E02 /* PNKeychain+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A55CA69C2397389100B24E02 /* PNKeychain+Private.h */; };
+		A55CA6A32397389100B24E02 /* PNKeychain+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A55CA69C2397389100B24E02 /* PNKeychain+Private.h */; };
 		A56865602300622C0014E17C /* PNMember+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A568655F2300622C0014E17C /* PNMember+Private.h */; };
 		A56865612300622C0014E17C /* PNMember+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A568655F2300622C0014E17C /* PNMember+Private.h */; };
 		A56865622300622C0014E17C /* PNMember+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A568655F2300622C0014E17C /* PNMember+Private.h */; };
@@ -3298,6 +3305,7 @@
 		A55BCD14231D26110019DB68 /* PNMessageAction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNMessageAction.h; sourceTree = "<group>"; };
 		A55BCD15231D26110019DB68 /* PNMessageAction.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNMessageAction.m; sourceTree = "<group>"; };
 		A55BCD24231D27F00019DB68 /* PNMessageAction+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PNMessageAction+Private.h"; sourceTree = "<group>"; };
+		A55CA69C2397389100B24E02 /* PNKeychain+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PNKeychain+Private.h"; sourceTree = "<group>"; };
 		A568655F2300622C0014E17C /* PNMember+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PNMember+Private.h"; sourceTree = "<group>"; };
 		A56865672300709F0014E17C /* PNFetchMembershipsResult.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNFetchMembershipsResult.h; sourceTree = "<group>"; };
 		A56865682300709F0014E17C /* PNFetchMembershipsResult.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNFetchMembershipsResult.m; sourceTree = "<group>"; };
@@ -3724,6 +3732,7 @@
 				79CBB0781BD03DE4001FC34D /* PNClientInformation.m */,
 				79CBB07A1BD03DE4001FC34D /* PNConfiguration.h */,
 				79CBB07B1BD03DE4001FC34D /* PNConfiguration.m */,
+				A55CA69C2397389100B24E02 /* PNKeychain+Private.h */,
 				79E2D0EC1C56434700BAA244 /* PNKeychain.h */,
 				79E2D0ED1C56434700BAA244 /* PNKeychain.m */,
 				79CBB0751BD03DE4001FC34D /* PNAES.h */,
@@ -4338,6 +4347,7 @@
 				A57A30DA238DC87400DE8C68 /* PNAPNSNotificationTarget.h in Headers */,
 				7915825C1BD709C60084FC70 /* PNChannelGroupsResult.h in Headers */,
 				79E20D151C8AEC3A001BC9CC /* PNEnvelopeInformation.h in Headers */,
+				A55CA69D2397389100B24E02 /* PNKeychain+Private.h in Headers */,
 				A55A864122FD80B9002D0A72 /* PNFetchUsersAPICallBuilder.h in Headers */,
 				7925DB951D3FFCAC00857C0D /* PNLLogFileInformation.h in Headers */,
 				A55A87FF22FD8272002D0A72 /* PNUpdateSpaceRequest.h in Headers */,
@@ -4563,6 +4573,7 @@
 				A57A30DC238DC87400DE8C68 /* PNAPNSNotificationTarget.h in Headers */,
 				791583071BD709D10084FC70 /* PNObjectEventListener.h in Headers */,
 				791583051BD709D10084FC70 /* PNChannelGroupsResult.h in Headers */,
+				A55CA69F2397389100B24E02 /* PNKeychain+Private.h in Headers */,
 				A55A864322FD80B9002D0A72 /* PNFetchUsersAPICallBuilder.h in Headers */,
 				79E20D181C8AEC43001BC9CC /* PNEnvelopeInformation.h in Headers */,
 				A55A880122FD8272002D0A72 /* PNUpdateSpaceRequest.h in Headers */,
@@ -4840,6 +4851,7 @@
 				798842301C18F0A2003E8948 /* PubNub+CorePrivate.h in Headers */,
 				A55A86CB22FD817E002D0A72 /* PNUser.h in Headers */,
 				A56865EE230176760014E17C /* PNMembersParser.h in Headers */,
+				A55CA6A22397389100B24E02 /* PNKeychain+Private.h in Headers */,
 				798842B21C18F2D6003E8948 /* PNSubscribeParser.h in Headers */,
 				798842A91C18F2D4003E8948 /* PNHeartbeatParser.h in Headers */,
 				798842771C18F208003E8948 /* PNSubscribeStatus.h in Headers */,
@@ -5050,6 +5062,7 @@
 				A55A882822FD8272002D0A72 /* PNFetchSpaceRequest.h in Headers */,
 				7988434B1C191579003E8948 /* PNHeartbeatParser.h in Headers */,
 				798843451C191579003E8948 /* PNSubscribeStatus.h in Headers */,
+				A55CA6A32397389100B24E02 /* PNKeychain+Private.h in Headers */,
 				A55A86BE22FD817E002D0A72 /* PNSpace.h in Headers */,
 				7988438B1C191579003E8948 /* PNResult+Private.h in Headers */,
 				A57A30C8238DC71800DE8C68 /* PNAPNSNotificationConfiguration.h in Headers */,
@@ -5238,6 +5251,7 @@
 				A57A30DB238DC87400DE8C68 /* PNAPNSNotificationTarget.h in Headers */,
 				79A8BC741C58F93900015BDE /* PNObjectEventListener.h in Headers */,
 				79A8BC721C58F93900015BDE /* PNChannelGroupsResult.h in Headers */,
+				A55CA69E2397389100B24E02 /* PNKeychain+Private.h in Headers */,
 				A55A864222FD80B9002D0A72 /* PNFetchUsersAPICallBuilder.h in Headers */,
 				79E20D171C8AEC43001BC9CC /* PNEnvelopeInformation.h in Headers */,
 				A55A880022FD8272002D0A72 /* PNUpdateSpaceRequest.h in Headers */,
@@ -5501,6 +5515,7 @@
 				A55A882622FD8272002D0A72 /* PNFetchSpaceRequest.h in Headers */,
 				79ACC4641C11BC4D0056523A /* PNSubscribeParser.h in Headers */,
 				79ACC4451C11BC4D0056523A /* PNSubscribeStatus.h in Headers */,
+				A55CA6A12397389100B24E02 /* PNKeychain+Private.h in Headers */,
 				A55A86BC22FD817E002D0A72 /* PNSpace.h in Headers */,
 				79ACC4811C11BC4D0056523A /* PNResult+Private.h in Headers */,
 				A57A30C6238DC71800DE8C68 /* PNAPNSNotificationConfiguration.h in Headers */,
@@ -5689,6 +5704,7 @@
 				A57A30DD238DC87400DE8C68 /* PNAPNSNotificationTarget.h in Headers */,
 				79CBB1661BD03DE4001FC34D /* PNObjectEventListener.h in Headers */,
 				79CBB1261BD03DE4001FC34D /* PNChannelGroupsResult.h in Headers */,
+				A55CA6A02397389100B24E02 /* PNKeychain+Private.h in Headers */,
 				A55A864422FD80B9002D0A72 /* PNFetchUsersAPICallBuilder.h in Headers */,
 				79E20D191C8AEC44001BC9CC /* PNEnvelopeInformation.h in Headers */,
 				A55A880222FD8272002D0A72 /* PNUpdateSpaceRequest.h in Headers */,

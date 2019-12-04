@@ -44,7 +44,9 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief Create and configure APNS over HTTP/2 notification configuration.
  *
  * @param collapseId Notification group / collapse identifier.
+ *     Value will be used in APNs POST request as \a apns-collapse-id header value.
  * @param date Date till which APNS will try to deliver notification to target device.
+ *     Value will be used in APNs POST request as \a apns-expiration header value.
  * @param targets List of topics which should receive this notification.
  *     Default target with \b NSBundle.mainBundle.bundleIdentifier topic and \b PNAPNSDevelopment
  *     environment will be used if list is empty.

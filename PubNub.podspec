@@ -32,7 +32,7 @@ Pod::Spec.new do |spec|
         core.source_files = 'PubNub/{Core,Data,Misc,Network}/**/*', 'PubNub/PubNub.h'
         core.private_header_files = [
             'PubNub/**/*Private.h',
-            'PubNub/Data/{PNEnvelopeInformation,PNKeychain}.h',
+            'PubNub/Data/{PNEnvelopeInformation}.h',
             'PubNub/Data/Managers/**/*.h',
             'PubNub/Misc/{PNConstants,PNPrivateStructures}.h',
             'PubNub/Misc/Helpers/{PNArray,PNChannel,PNData,PNDate,PNDictionary,PNGZIP,PNHelpers,PNJSON,PNLockSupport,PNNumber,PNString,PNURLRequest}.h',

@@ -1,3 +1,8 @@
+25-11-2019 - 9baf80c - 4.11.1
+. changed headers visibility in frameworks project from 'project' to 'public'.
+. changed build scripts which now produce XCFrameworks with separate slices for device and simulator instead of 'fat' binaries created with 'lipo'.
+. Added proper Catalyst framework support with separate build target 'XCFramework (Catalyst)' which is bundled with binaries which allow it to be used for: device / simulator and macOS.
+
 08-10-2019 - baef53b - 4.11.0
 . add Message Actions API support which allow to: add, remove and fetch previously added actions.
 . add new method to simple interface and argument to builder pattern interface which allow to fetch previously added actions and message metadata.

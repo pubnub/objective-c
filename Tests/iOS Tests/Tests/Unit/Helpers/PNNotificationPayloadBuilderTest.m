@@ -165,6 +165,7 @@ NS_ASSUME_NONNULL_END
             },
             @"pn_push": @[
                 @{
+                    @"auth_method": @"token",
                     @"targets": @[
                         @{
                             @"environment": @"development",
@@ -373,13 +374,14 @@ NS_ASSUME_NONNULL_END
         },
         @"pn_push": @[
             @{
-                @"version": @"v2",
+                @"auth_method": @"token",
                 @"targets": @[
                     @{
                         @"environment": @"development",
                         @"topic": NSBundle.mainBundle.bundleIdentifier
                     }
-                ]
+                ],
+                @"version": @"v2"
             }
         ]
     };
@@ -401,13 +403,14 @@ NS_ASSUME_NONNULL_END
 
 - (void)testAPNSConfigurationConstructor_ShouldCreateWithDefaultTarget_WhenCalledDefault {
     NSDictionary *expectedConfiguration = @{
-        @"version": @"v2",
+        @"auth_method": @"token",
         @"targets": @[
             @{
                 @"environment": @"development",
                 @"topic": NSBundle.mainBundle.bundleIdentifier
             }
-        ]
+        ],
+        @"version": @"v2"
     };
     
     
@@ -418,13 +421,14 @@ NS_ASSUME_NONNULL_END
 
 - (void)testAPNSConfigurationConstructor_ShouldCreateWithDefaultTarget_WhenCalledWithEmptyTargetsList {
     NSDictionary *expectedConfiguration = @{
-        @"version": @"v2",
+        @"auth_method": @"token",
         @"targets": @[
             @{
                 @"environment": @"development",
                 @"topic": NSBundle.mainBundle.bundleIdentifier
             }
-        ]
+        ],
+        @"version": @"v2"
     };
     
     
@@ -439,13 +443,14 @@ NS_ASSUME_NONNULL_END
     NSString *expectedTopic = [NSUUID UUID].UUIDString;
     PNAPNSNotificationTarget *target = [PNAPNSNotificationTarget targetForTopic:expectedTopic];
     NSDictionary *expectedConfiguration = @{
-        @"version": @"v2",
+        @"auth_method": @"token",
         @"targets": @[
             @{
                 @"environment": @"development",
                 @"topic": expectedTopic
             }
-        ]
+        ],
+        @"version": @"v2"
     };
     
     
@@ -459,15 +464,16 @@ NS_ASSUME_NONNULL_END
     NSDate *expectedExpirationDate = [NSDate dateWithTimeIntervalSince1970:1574892507];
     NSString *expectedCollapseID = [NSUUID UUID].UUIDString;
     NSDictionary *expectedConfiguration = @{
+        @"auth_method": @"token",
         @"collapse_id": expectedCollapseID,
         @"expiration": @"2019-11-27T22:08:27Z",
-        @"version": @"v2",
         @"targets": @[
             @{
                 @"environment": @"development",
                 @"topic": NSBundle.mainBundle.bundleIdentifier
             }
-        ]
+        ],
+        @"version": @"v2"
     };
     
     PNAPNSNotificationConfiguration *configuration = [PNAPNSNotificationConfiguration configurationWithCollapseID:expectedCollapseID

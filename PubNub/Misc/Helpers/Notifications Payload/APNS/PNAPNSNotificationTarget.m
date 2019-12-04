@@ -19,6 +19,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  * @brief Notifications topic name (usually it is application's bundle identifier).
+ *
+ * @note Value will be used in APNs POST request as \a apns-topic header value.
  */
 @property (nonatomic, copy) NSString *topic;
 
@@ -40,6 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief Initialize and configure notification target.
  *
  * @param topic Notifications topic name (usually it is application's bundle identifier).
+ *     Value will be used in APNs POST request as \a apns-topic header value. 
  * @param environment One of \b PNAPNSEnvironment fields which specify environment within which
  *     registered devices to which notifications should be delivered
  * @param excludedDevices List of devices (their push tokens) to which this notification shouldn't

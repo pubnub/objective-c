@@ -22,11 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Static
 
-/**
- * @brief Key under which in Keychain stored information about previously used sequence number for
- * message publish.
- */
-static NSString * const kPNPublishSequenceDataKey = @"pn_publishSequence";
+NSString * const kPNPublishSequenceDataKey = @"pn_publishSequence";
 
 /**
  * @brief Maximum age of \c publish key inactivity after which it will be removed and count for it

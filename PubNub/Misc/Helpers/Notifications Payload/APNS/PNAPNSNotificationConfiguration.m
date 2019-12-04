@@ -25,11 +25,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  * @brief Notification group / collapse identifier.
+ * 
+ * @note Value will be used in APNs POST request as \a apns-collapse-id header value.
  */
 @property (nonatomic, nullable, copy) NSString *collapseId;
 
 /**
  * @brief Date till which APNS will try to deliver notification to target device.
+ *
+ * @note Value will be used in APNs POST request as \a apns-expiration header value.
  */
 @property (nonatomic, nullable, strong) NSDate *date;
 
@@ -40,7 +44,9 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief Create and configure APNS over HTTP/2 notification configuration.
  *
  * @param collapseId Notification group / collapse identifier.
+ *     Value will be used in APNs POST request as \a apns-collapse-id header value. 
  * @param date Date till which APNS will try to deliver notification to target device.
+ *     Value will be used in APNs POST request as \a apns-expiration header value. 
  * @param targets List of topics which should receive this notification.
  *
  * @return Configured and ready to use APNS over HTTP/2 notification configuration.
@@ -98,7 +104,11 @@ NS_ASSUME_NONNULL_END
 - (NSDictionary *)dictionaryRepresentation {
     NSArray<PNAPNSNotificationTarget *> *configurationTargets = self.targets;
     NSMutableArray *targets = [NSMutableArray new];
-    NSMutableDictionary *dictionary = [@{ @"targets": targets, @"version": @"v2" } mutableCopy];
+    NSMutableDictionary *dictionary = [@{
+        @"auth_method": @"token",
+        @"targets": targets,
+        @"version": @"v2"
+    } mutableCopy];
     
     if (self.collapseId.length) {
         dictionary[@"collapse_id"] = self.collapseId;

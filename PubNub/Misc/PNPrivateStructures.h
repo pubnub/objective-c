@@ -13,7 +13,18 @@
 #define PNPrivateStructures_h
 
 /**
- * @brief Stores reference on key under which unique user identifier will be stored persistently.
+ * @brief Key under which device ID will be stored persistently.
+ */
+extern NSString * const kPNConfigurationDeviceIDKey;
+
+/**
+ * @brief Key under which in Keychain stored information about previously used sequence number for
+ * message publish.
+ */
+extern NSString * const kPNPublishSequenceDataKey;
+
+/**
+ * @brief Key under which unique user identifier will be stored persistently.
  */
 extern NSString * const kPNConfigurationUUIDKey;
 
