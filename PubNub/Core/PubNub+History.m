@@ -670,14 +670,20 @@ NS_ASSUME_NONNULL_END
                  withStatus:(PNErrorStatus *)status
                  completion:(PNHistoryCompletionBlock)block {
 
-    if (result && result.serviceData[@"decryptError"]) {
+    if (result && (result.serviceData[@"decryptError"] || result.serviceData[@"apiError"])) {
+        PNStatusCategory category = result.serviceData[@"decryptError"] ? PNDecryptionErrorCategory
+                                                                        : PNAccessDeniedCategory;
         status = [PNErrorStatus statusForOperation:PNHistoryOperation
-                category:PNDecryptionErrorCategory
+                                          category:category
                                withProcessingError:nil];
 
         NSMutableDictionary *updatedData = [result.serviceData mutableCopy];
-        [updatedData removeObjectsForKeys:@[@"decryptError", @"envelope"]];
-        status.associatedObject = [PNHistoryData dataWithServiceResponse:updatedData];
+        [updatedData removeObjectsForKeys:@[@"decryptError", @"apiError", @"envelope"]];
+        
+        if (category == PNDecryptionErrorCategory) {
+            status.associatedObject = [PNHistoryData dataWithServiceResponse:updatedData];
+        }
+        
         [status updateData:updatedData];
     }
 
