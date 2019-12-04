@@ -285,6 +285,7 @@ NS_ASSUME_NONNULL_END
     NSNumber *firstPublishedActionTimetoken = actionTimetokens[0];
     NSNumber *lastPublishedActionTimetoken = actionTimetokens[actionTimetokens.count - 1];
     
+    [self waitTask:@"actionsStore" completionFor:2.f];
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         self.client1.fetchMessageActions()
             .channel(expectedChannel)
@@ -324,6 +325,7 @@ NS_ASSUME_NONNULL_END
     NSNumber *middlePublishedActionTimetoken = actionTimetokens[halfSize];
     NSNumber *middleMinusOnePublishedActionTimetoken = actionTimetokens[halfSize - 1];
     
+    [self waitTask:@"actionsStore" completionFor:2.f];
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         self.client1.fetchMessageActions()
             .channel(expectedChannel)

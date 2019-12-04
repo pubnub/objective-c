@@ -18,7 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
  * communication with \b PubNub service and share user-specified configuration.
  *
  * @author Serhii Mamontov
- * @since 4.0
+ * @version 4.12.0
+ * @since 4.0.0 
  * @copyright © 2010-2019 PubNub, Inc.
  */
 @interface PubNub : NSObject

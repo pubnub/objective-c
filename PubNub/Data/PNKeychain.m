@@ -2,7 +2,7 @@
  * @author Serhii Mamontov
  * @copyright © 2010-2019 PubNub, Inc.
  */
-#import "PNKeychain.h"
+#import "PNKeychain+Private.h"
 #import <Security/Security.h>
 #import "PNHelpers.h"
 
@@ -423,6 +423,42 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Misc
 
++ (void)updateEntries:(NSArray<NSString *> *)entryNames accessibilityTo:(CFStringRef)accessibility {
+    for (NSString *entryKey in entryNames) {
+        NSMutableDictionary *query = [self baseInformationForItemWithKey:entryKey];
+        query[(__bridge id)kSecReturnAttributes] = (__bridge id)(kCFBooleanTrue);
+        query[(__bridge id)kSecReturnData] = (__bridge id)kCFBooleanTrue;
+        [query removeObjectForKey:(__bridge id)(kSecAttrAccessible)];
+        CFDictionaryRef searchedItem = NULL;
+        id data = nil;
+        
+        OSStatus searchStatus = SecItemCopyMatching((__bridge CFDictionaryRef)query,
+                                                    (CFTypeRef *)&searchedItem);
+        
+        if (searchedItem && searchStatus == errSecSuccess) {
+            NSDictionary *entryAttributes = (__bridge NSDictionary *)searchedItem;
+            NSString *itemAccessibility = entryAttributes[(__bridge id)(kSecAttrAccessible)];
+            
+            if (![itemAccessibility isEqualToString:(__bridge id)accessibility]) {
+                if (CFDictionaryContainsKey(searchedItem, kSecValueData)) {
+                    NSData *packedData = ((__bridge NSDictionary *)searchedItem)[(__bridge id)kSecValueData];
+                    data = [self unpackedData:packedData];
+                }
+                
+                SecItemDelete((__bridge CFDictionaryRef)query);
+            }
+            
+            if (data) {
+                [self storeValue:data forKey:entryKey withCompletionBlock:nil];
+            }
+        }
+        
+        if (searchedItem) {
+            CFRelease(searchedItem);
+        }
+    }
+}
+
 + (NSString *)fileBasedStoragePath {
     
     static NSString *_fileBasedStoragePath;
@@ -476,7 +512,7 @@ NS_ASSUME_NONNULL_END
     
     query[(__bridge id)(kSecClass)] = (__bridge id)(kSecClassGenericPassword);
     query[(__bridge id)(kSecAttrSynchronizable)] = (__bridge id)(kCFBooleanFalse);
-    query[(__bridge id)(kSecAttrAccessible)] = (__bridge id)(kSecAttrAccessibleAlways);
+    query[(__bridge id)(kSecAttrAccessible)] = (__bridge id)(kSecAttrAccessibleAfterFirstUnlock);
     query[(__bridge id)(kSecAttrService)] = bundleIdentifier;
     query[(__bridge id)(kSecAttrAccount)] = key;
     

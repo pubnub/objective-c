@@ -2,6 +2,8 @@
  * @brief Set of types and structures which is used as part of API calls in \b PubNub client.
  *
  * @author Serhii Mamontov
+ * @version 4.12.0
+ * @since 4.0.0
  * @copyright © 2010-2019 PubNub, Inc.
  */
 #import <Foundation/Foundation.h>
@@ -437,6 +439,56 @@ typedef void(^PNTimeCompletionBlock)(PNTimeResult * _Nullable result,
 NS_ASSUME_NONNULL_END
 
 
+
+#pragma mark - Push Notifications options and enums
+
+/**
+ * @brief Enum which specify possible push notification delivery services.
+ *
+ * @since 4.12.0
+ */
+typedef NS_OPTIONS(NSUInteger, PNPushType) {
+    /**
+     * @brief Apple Push Notification Service used to deliver notifications to specified device.
+     */
+    PNAPNSPush = 1 << 0,
+    /**
+     * @brief Apple Push Notification Service used over HTTP/2 to deliver notifications to specified
+     * device.
+     */
+    PNAPNS2Push = 1 << 1,
+    /**
+     * @brief Firebase Cloud Messaging (Google Cloud Messaging) used to deliver notifications to
+     * specified device.
+     */
+    PNFCMPush = 1 << 2,
+    /**
+     * @brief Microsoft Push Notification Service used to deliver notifications to specified device.
+     */
+    PNMPNSPush = 1 << 3
+};
+
+/**
+ * @brief Options with possible APNS environments.
+ *
+ * @note Available only for APNS2.
+ *
+ * @since 4.12.0
+ */
+typedef NS_ENUM(NSUInteger, PNAPNSEnvironment) {
+    /**
+     * @brief Environment which allow to use APNS sandbox gateway for remote notifications.
+     */
+    PNAPNSDevelopment,
+    /**
+     * @brief Environment which allow to use APNS gateway for remote notifications.
+     */
+    PNAPNSProduction
+};
+
+
+#pragma mark - Objects API options and enums
+
 /**
  * @brief Options with possible additional \c space / \c membership fields which can be included to
  * response.
@@ -686,6 +738,10 @@ typedef NS_ENUM(NSInteger, PNOperationType){
     PNAddPushNotificationsOnChannelsOperation,
     PNRemovePushNotificationsFromChannelsOperation,
     PNRemoveAllPushNotificationsOperation,
+    PNPushNotificationEnabledChannelsV2Operation,
+    PNAddPushNotificationsOnChannelsV2Operation,
+    PNRemovePushNotificationsFromChannelsV2Operation,
+    PNRemoveAllPushNotificationsV2Operation,
     PNCreateUserOperation,
     PNUpdateUserOperation,
     PNDeleteUserOperation,

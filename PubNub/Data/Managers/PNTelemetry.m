@@ -1,5 +1,7 @@
 /**
  * @author Serhii Mamontov
+ * @version 4.12.0
+ * @since 4.6.2 
  * @copyright © 2010-2019 PubNub, Inc.
  */
 #import "PNTelemetry.h"
@@ -242,6 +244,10 @@ NS_ASSUME_NONNULL_END
         case PNAddPushNotificationsOnChannelsOperation:
         case PNRemovePushNotificationsFromChannelsOperation:
         case PNRemoveAllPushNotificationsOperation:
+        case PNPushNotificationEnabledChannelsV2Operation:
+        case PNAddPushNotificationsOnChannelsV2Operation:
+        case PNRemovePushNotificationsFromChannelsV2Operation:
+        case PNRemoveAllPushNotificationsV2Operation:
             operation = @"push";
             break;
         case PNCreateUserOperation:

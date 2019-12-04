@@ -1,7 +1,8 @@
 /**
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2010-2018 PubNub, Inc.
+ * @author Serhii Mamontov
+ * @version 4.12.0
+ * @since 4.0.0
+ * @copyright © 2010-2019 PubNub, Inc.
  */
 #import "PNPushNotificationsAuditParser.h"
 #import "PNDictionary.h"
@@ -16,7 +17,8 @@
 
 + (NSArray<NSNumber *> *)operations {
     
-    return @[@(PNPushNotificationEnabledChannelsOperation)];
+    return @[@(PNPushNotificationEnabledChannelsOperation),
+             @(PNPushNotificationEnabledChannelsV2Operation)];
 }
 
 + (BOOL)requireAdditionalData {

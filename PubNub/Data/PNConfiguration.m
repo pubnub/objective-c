@@ -3,6 +3,9 @@
  * @copyright © 2010-2019 PubNub, Inc.
  */
 #import <Foundation/Foundation.h>
+#import <Security/Security.h>
+#import "PNPrivateStructures.h"
+#import "PNKeychain+Private.h"
 #if TARGET_OS_IOS
     #import <UIKit/UIKit.h>
 #elif TARGET_OS_OSX
@@ -14,16 +17,11 @@
 #endif // TARGET_OS_OSX
 #import "PNConfiguration.h"
 #import "PNConstants.h"
-#import "PNKeychain.h"
 
 
 #pragma mark Static
 
-/**
- * @brief Key under which device ID will be stored persistently.
- */
-static NSString * const kPNConfigurationDeviceIDKey = @"PNConfigurationDeviceID";
-
+NSString * const kPNConfigurationDeviceIDKey = @"PNConfigurationDeviceID";
 NSString * const kPNConfigurationUUIDKey = @"PNConfigurationUUID";
 
 
@@ -139,6 +137,10 @@ NS_ASSUME_NONNULL_END
 - (instancetype)initWithPublishKey:(NSString *)publishKey subscribeKey:(NSString *)subscribeKey {
     
     if ((self = [super init])) {
+        [PNKeychain updateEntries:@[kPNConfigurationUUIDKey, kPNConfigurationDeviceIDKey, kPNPublishSequenceDataKey]
+                  accessibilityTo:kSecAttrAccessibleAfterFirstUnlock];
+        
+        
         _deviceID = [[self uniqueDeviceIdentifier] copy];
         
         if (NSClassFromString(@"XCTestExpectation")) {

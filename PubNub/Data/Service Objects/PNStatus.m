@@ -103,6 +103,8 @@
                _category == PNDisconnectedCategory || _category == PNUnexpectedDisconnectCategory) {
         
         self.error = NO;
+    } else if (_category == PNBadRequestCategory) {
+        self.statusCode = 400;
     }
 }
 

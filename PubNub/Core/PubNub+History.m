@@ -486,7 +486,8 @@ NS_ASSUME_NONNULL_END
         }
         
         PNLogAPICall(self.logger, @"<PubNub::API> %@ for '%@' channel%@%@ with %@ limit%@.",
-            (shouldReverseOrder ? @"Reversed history" : @"History"), (channel?: @"<error>"),
+            (shouldReverseOrder && shouldReverseOrder.boolValue ? @"Reversed history" : @"History"),
+            (channel?: @"<error>"),
             (startDate ? [NSString stringWithFormat:@" from %@", startDate] : @""),
             (endDate ? [NSString stringWithFormat:@" to %@", endDate] : @""), @(limitValue),
             (shouldIncludeTimeToken.boolValue ? @" (including: message time tokens" : @""));
