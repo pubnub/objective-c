@@ -91,15 +91,21 @@ NS_ASSUME_NONNULL_END
             @"end": (NSArray *)response[2],
             @"messages": [NSMutableArray new]
         } mutableCopy];
-        NSMutableDictionary *processedMessages = [self processedMessagesFrom:messages
-                                                                    withData:additionalData];
+        
+        if ([messages isKindOfClass:[NSArray class]]) {
+            NSMutableDictionary *processedMessages = [self processedMessagesFrom:messages
+                                                                        withData:additionalData];
 
-        if (processedMessages[@"messages"]) {
-            data[@"messages"] = processedMessages[@"messages"];
-        }
+            if (processedMessages[@"messages"]) {
+                data[@"messages"] = processedMessages[@"messages"];
+            }
 
-        if (processedMessages[@"decryptError"]) {
-            data[@"decryptError"] = @YES;
+            if (processedMessages[@"decryptError"]) {
+                data[@"decryptError"] = @YES;
+            }
+        } else if ([messages isKindOfClass:[NSString class]]) {
+            data = [@{ @"status": @(403), @"information": messages, @"error": @YES } mutableCopy];
+            data[@"apiError"] = @YES;
         }
 
         processedResponse = data;
