@@ -50,24 +50,21 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, readonly, strong) NSString *httpMethod;
 
+/**
+ * @brief Whether request is expected to return service response (with data) or not.
+ *
+ * @since 4.12.0
+ */
+@property (nonatomic, readonly, assign) BOOL returnsResponse;
+
 
 #pragma mark - Misc
-
-/**
- * @brief Add another data field to 'include' query fields set.
- *
- * @param fields List of names of data fields which should be added to 'include' list.
- * @param requestParameters Request's parameters object which is used to build actual network
- * request.
- */
-- (void)addIncludedFields:(NSArray<NSString *> *)fields
-                toRequest:(PNRequestParameters *)requestParameters;
 
 /**
  * @brief Create error which will provide information about missing required request parameter.
  *
  * @param parameter Name of missed of empty parameter.
- * @param objectType Name of object type (so far known: \c Space and \c User).
+ * @param objectType Name of object type.
  *
  * @return Error with information about missing parameter.
  */
@@ -78,7 +75,7 @@ NS_ASSUME_NONNULL_BEGIN
  * too long.
  *
  * @param parameter Name of parameter who's length exceed maximum value.
- * @param objectType Name of object type (so far known: \c Space and \c User).
+ * @param objectType Name of object type.
  * @param actualLength Actual value length.
  * @param maximumLength Maximum allowed value length.
  *

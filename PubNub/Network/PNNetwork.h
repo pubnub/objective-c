@@ -16,8 +16,9 @@ NS_ASSUME_NONNULL_BEGIN
  * to send network request to \b PubNub service.
  *
  * @author Serhii Mamontov
- * @since 4.0
- * @copyright © 2010-2018 PubNub, Inc.
+ * @version 4.12.0
+ * @since 4.0.0
+ * @copyright © 2010-2019 PubNub, Inc.
  */
 @interface PNNetwork : NSObject
 

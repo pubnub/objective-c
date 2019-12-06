@@ -1,9 +1,10 @@
 /**
- @brief Set of types and structures which is used as part of private API in \b PubNub client.
- 
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2010-2018 PubNub, Inc.
+ * @brief Set of types and structures which is used as part of private API in \b PubNub client.
+ *
+ * @author Serhii Mamontov
+ * @version 4.12.0
+ * @since 4.0.0 
+ * @copyright © 2010-2019 PubNub, Inc.
  */
 #import "PNStructures.h"
 
@@ -12,7 +13,18 @@
 #define PNPrivateStructures_h
 
 /**
- * @brief Stores reference on key under which unique user identifier will be stored persistently.
+ * @brief Key under which device ID will be stored persistently.
+ */
+extern NSString * const kPNConfigurationDeviceIDKey;
+
+/**
+ * @brief Key under which in Keychain stored information about previously used sequence number for
+ * message publish.
+ */
+extern NSString * const kPNPublishSequenceDataKey;
+
+/**
+ * @brief Key under which unique user identifier will be stored persistently.
  */
 extern NSString * const kPNConfigurationUUIDKey;
 
@@ -48,7 +60,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessageType) {
 
  @since 4.0
  */
-static NSString * const PNOperationTypeStrings[45] = {
+static NSString * const PNOperationTypeStrings[49] = {
     [PNSubscribeOperation] = @"Subscribe",
     [PNUnsubscribeOperation] = @"Unsubscribe",
     [PNPublishOperation] = @"Publish",
@@ -79,6 +91,10 @@ static NSString * const PNOperationTypeStrings[45] = {
     [PNAddPushNotificationsOnChannelsOperation] = @"Enable Push Notifications On Channels",
     [PNRemovePushNotificationsFromChannelsOperation] = @"Remove Push Notifications From Channels",
     [PNRemoveAllPushNotificationsOperation] = @"Remove All Push Notifications",
+    [PNPushNotificationEnabledChannelsV2Operation] = @"Get Push Notification Enabled Channels (v2)",
+    [PNAddPushNotificationsOnChannelsV2Operation] = @"Enable Push Notifications On Channels (v2)",
+    [PNRemovePushNotificationsFromChannelsV2Operation] = @"Remove Push Notifications From Channels (v2)",
+    [PNRemoveAllPushNotificationsV2Operation] = @"Remove All Push Notifications (v2)",
     [PNCreateUserOperation] = @"Create User",
     [PNUpdateUserOperation] = @"Update User",
     [PNDeleteUserOperation] = @"Delete User",
@@ -96,7 +112,7 @@ static NSString * const PNOperationTypeStrings[45] = {
     [PNTimeOperation] = @"Time",
 };
 
-static NSString * const PNOperationResultClasses[45] = {
+static NSString * const PNOperationResultClasses[49] = {
     [PNHistoryOperation] = @"PNHistoryResult",
     [PNHistoryForChannelsOperation] = @"PNHistoryResult",
     [PNHistoryWithActionsOperation] = @"PNHistoryResult",
@@ -111,6 +127,7 @@ static NSString * const PNOperationResultClasses[45] = {
     [PNChannelGroupsOperation] = @"PNChannelGroupsResult",
     [PNChannelsForGroupOperation] = @"PNChannelGroupChannelsResult",
     [PNPushNotificationEnabledChannelsOperation] = @"PNAPNSEnabledChannelsResult",
+    [PNPushNotificationEnabledChannelsV2Operation] = @"PNAPNSEnabledChannelsResult",
     [PNFetchMessagesActionsOperation] = @"PNFetchMessageActionsResult",
     [PNFetchUserOperation] = @"PNFetchUserResult",
     [PNFetchUsersOperation] = @"PNFetchUsersResult",
@@ -121,7 +138,7 @@ static NSString * const PNOperationResultClasses[45] = {
     [PNTimeOperation] = @"PNTimeResult",
 };
 
-static NSString * const PNOperationStatusClasses[45] = {
+static NSString * const PNOperationStatusClasses[49] = {
     [PNSubscribeOperation] = @"PNSubscribeStatus",
     [PNUnsubscribeOperation] = @"PNAcknowledgmentStatus",
     [PNPublishOperation] = @"PNPublishStatus",
@@ -152,6 +169,10 @@ static NSString * const PNOperationStatusClasses[45] = {
     [PNAddPushNotificationsOnChannelsOperation] = @"PNAcknowledgmentStatus",
     [PNRemovePushNotificationsFromChannelsOperation] = @"PNAcknowledgmentStatus",
     [PNRemoveAllPushNotificationsOperation] = @"PNAcknowledgmentStatus",
+    [PNPushNotificationEnabledChannelsV2Operation] = @"PNErrorStatus",
+    [PNAddPushNotificationsOnChannelsV2Operation] = @"PNAcknowledgmentStatus",
+    [PNRemovePushNotificationsFromChannelsV2Operation] = @"PNAcknowledgmentStatus",
+    [PNRemoveAllPushNotificationsV2Operation] = @"PNAcknowledgmentStatus",
     [PNCreateUserOperation] = @"PNCreateUserStatus",
     [PNUpdateUserOperation] = @"PNUpdateUserStatus",
     [PNDeleteUserOperation] = @"PNAcknowledgmentStatus",

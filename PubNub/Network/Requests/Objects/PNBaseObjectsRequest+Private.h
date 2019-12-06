@@ -1,4 +1,6 @@
 #import "PNBaseObjectsRequest.h"
+#import "PNRequestParameters.h"
+
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -9,7 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
  * initialization.
  *
  * @author Serhii Mamontov
- * @version 4.10.0
+ * @version 4.12.0
  * @since 4.10.0
  * @copyright © 2010-2019 PubNub, Inc.
  */
@@ -45,6 +47,19 @@ NS_ASSUME_NONNULL_BEGIN
  * @return Initialized and ready to use \c request.
  */
 - (instancetype)initWithObject:(NSString *)objectType identifier:(NSString *)identifier;
+
+
+#pragma mark - Misc
+
+/**
+ * @brief Add another data field to 'include' query fields set.
+ *
+ * @param fields List of names of data fields which should be added to 'include' list.
+ * @param requestParameters Request's parameters object which is used to build actual network
+ * request.
+ */
+- (void)addIncludedFields:(NSArray<NSString *> *)fields
+                toRequest:(PNRequestParameters *)requestParameters;
 
 #pragma mark -
 

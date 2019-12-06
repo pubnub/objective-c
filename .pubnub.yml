@@ -1,13 +1,29 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.11.1"
+version: "4.12.0"
 schema: 1
 changelog: 
   -
     changes:
       -
-        text: "Added proper Catalyst framework support with separate build target 'XCFramework (Catalyst)' which is bundled with binaries which allow it to be used for: device / simulator and macOS"
+        text: "Added new interfaces (builder-based API also has been modified) which allow pass device push token / identifier (not only NSData) using specific push service type."
+        type: feature
+      -
+        text: "Added class which simplify basic notifications composition for multiple platforms / providers at once."
+        type: feature
+      -
+        text: "Exposed utility class which allow to manage data in Keychain (iOS)."
+        type: improvement
+      -
+        text: "Fixed non-JSON response handling from History v2 endpoints when storage add-on not enabled for used keys."
+        type: bug
+    date: Dec 5, 19
+    version: v4.12.0
+  -
+    changes:
+      -
+        text: "Added proper Catalyst framework support with separate build target 'XCFramework (Catalyst)' which is bundled with binaries which allow it to be used for: device / simulator and macOS."
         type: feature
       -
         text: "Changed build scripts which now produce XCFrameworks with separate slices for device and simulator instead of 'fat' binaries created with 'lipo'."

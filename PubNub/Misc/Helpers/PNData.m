@@ -11,7 +11,7 @@
 @implementation PNData
 
 
-#pragma mark - Convertion
+#pragma mark - Conversion
 
 + (NSString *)HEXFrom:(NSData *)data {
     

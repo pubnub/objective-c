@@ -1,7 +1,8 @@
 /**
  * @author Serhii Mamontov
+ * @version 4.12.0
  * @since 4.5.4
- * @copyright © 2010-2018 PubNub, Inc.
+ * @copyright © 2010-2019 PubNub, Inc.
  */
 #import "PNAPNSAPICallBuilder.h"
 #import "PNAPNSModificationAPICallBuilder.h"
@@ -18,7 +19,6 @@
 #pragma mark - Initialization
 
 + (void)initialize {
-    
     if (self == [PNAPNSAPICallBuilder class]) {
         [self copyMethodsFromClasses:@[[PNAPNSModificationAPICallBuilder class],
                                        [PNAPNSAuditAPICallBuilder class]]];
@@ -29,7 +29,6 @@
 #pragma mark - APNS state manipulation
 
 - (PNAPNSModificationAPICallBuilder * (^)(void))enable {
-    
     return ^PNAPNSModificationAPICallBuilder * {
         object_setClass(self, [PNAPNSModificationAPICallBuilder class]);
 
@@ -39,7 +38,15 @@
 }
 
 - (PNAPNSModificationAPICallBuilder * (^)(void))disable {
-    
+    return ^PNAPNSModificationAPICallBuilder * {
+        object_setClass(self, [PNAPNSModificationAPICallBuilder class]);
+
+        [self setFlag:NSStringFromSelector(_cmd)];
+        return (PNAPNSModificationAPICallBuilder *)self;
+    };
+}
+
+- (PNAPNSModificationAPICallBuilder * (^)(void))disableAll {
     return ^PNAPNSModificationAPICallBuilder * {
         object_setClass(self, [PNAPNSModificationAPICallBuilder class]);
 
@@ -52,7 +59,6 @@
 #pragma mark - APNS state audition
 
 - (PNAPNSAuditAPICallBuilder * (^)(void))audit {
-    
     return ^PNAPNSAuditAPICallBuilder * {
         object_setClass(self, [PNAPNSAuditAPICallBuilder class]);
 

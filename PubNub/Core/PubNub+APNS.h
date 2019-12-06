@@ -1,6 +1,11 @@
 #import <Foundation/Foundation.h>
+#import "PNRemoveAllPushNotificationsRequest.h"
+#import "PNRemovePushNotificationsRequest.h"
 #import "PNAPNSModificationAPICallBuilder.h"
+#import "PNAuditPushNotificationsRequest.h"
+#import "PNAddPushNotificationsRequest.h"
 #import "PNAPNSAuditAPICallBuilder.h"
+#import "PNNotificationsPayload.h"
 #import "PNAPNSAPICallBuilder.h"
 #import "PubNub+Core.h"
 
@@ -22,8 +27,9 @@ NS_ASSUME_NONNULL_BEGIN
  * device inactive.
  *
  * @author Serhii Mamontov
- * @since 4.0
- * @copyright © 2010-2018 PubNub, Inc.
+ * @version 4.12.0
+ * @since 4.0.0
+ * @copyright © 2010-2019 PubNub, Inc.
  */
 @interface PubNub (APNS)
 
@@ -51,7 +57,7 @@ NS_ASSUME_NONNULL_BEGIN
  *                               andCompletion:^(PNAcknowledgmentStatus *status) {
  *
  *     if (!status.isError) {
- *        // Handle successful push notification enabling on passed channels.
+ *        // Push notifications successful enabled on passed channels.
  *     } else {
  *        // Handle modification error. Check 'category' property to find out possible issue because
  *        // of which request did fail.
@@ -74,6 +80,85 @@ NS_ASSUME_NONNULL_BEGIN
     NS_SWIFT_NAME(addPushNotificationsOnChannels(_:withDevicePushToken:andCompletion:));
 
 /**
+ * @brief Enable push notifications (sent using legacy APNs, FCM or MPNS) on provided set of
+ * \c channels.
+ *
+ * @code
+ * [self.client addPushNotificationsOnChannels:@[@"wwdc",@"google.io"]
+ *                         withDevicePushToken:self.devicePushToken
+ *                                    pushType:PNAPNSPush
+ *                               andCompletion:^(PNAcknowledgmentStatus *status) {
+ *
+ *     if (!status.isError) {
+ *        // Push notifications successful enabled on passed channels.
+ *     } else {
+ *        // Handle modification error. Check 'category' property to find out possible issue because
+ *        // of which request did fail.
+ *        //
+ *        // Request can be resent using: [status retry];
+ *     }
+ * }];
+ * @endcode
+ *
+ * @param channels List of channel names for which push notifications should be enabled.
+ * @param pushToken Device token / identifier which depending from passed \c pushType should be
+ *     \a NSData (for \b PNAPNS2Push and \b PNAPNSPush) or \a NSString for other.
+ * @param pushType One of \b PNPushType fields which specify service to manage notifications for
+ *     device specified with \c pushToken.
+ * @param block \c Add \c notifications \c for \c channels request completion block.
+ *
+ * @since 4.12.0
+ */
+- (void)addPushNotificationsOnChannels:(NSArray<NSString *> *)channels
+             withDevicePushToken:(id)pushToken
+                        pushType:(PNPushType)pushType
+                   andCompletion:(nullable PNPushNotificationsStateModificationCompletionBlock)block
+    NS_SWIFT_NAME(addPushNotificationsOnChannels(_:withDevicePushToken:pushType:andCompletion:));
+
+/**
+ * @brief Enable push notifications (sent using APNs over HTTP/2) on provided set of \c channels.
+ *
+ * @code
+ * [self.client addPushNotificationsOnChannels:@[@"wwdc",@"google.io"]
+ *                         withDevicePushToken:self.devicePushToken
+ *                                    pushType:PNAPNS2Push
+ *                                 environment:PNAPNSProduction
+ *                                       topic:@"com.my-application.bundle"
+ *                               andCompletion:^(PNAcknowledgmentStatus *status) {
+ *
+ *     if (!status.isError) {
+ *        // Push notifications successful enabled on passed channels.
+ *     } else {
+ *        // Handle modification error. Check 'category' property to find out possible issue because
+ *        // of which request did fail.
+ *        //
+ *        // Request can be resent using: [status retry];
+ *     }
+ * }];
+ * @endcode
+ *
+ * @param channels List of channel names for which push notifications should be enabled.
+ * @param pushToken Device token / identifier which depending from passed \c pushType should be
+ *     \a NSData (for \b PNAPNS2Push and \b PNAPNSPush) or \a NSString for other.
+ * @param pushType One of \b PNPushType fields which specify service to manage notifications for
+ *     device specified with \c pushToken.
+ * @param environment One of \b PNAPNSEnvironment fields which specify environment within which
+ *     device should manage list of channels with enabled notifications (works only if \c pushType
+ *     set to \b PNAPNS2Push).
+ * @param topic Notifications topic name (usually it is application's bundle identifier).
+ * @param block \c Add \c notifications \c for \c channels request completion block.
+ *
+ * @since 4.12.0
+ */
+- (void)addPushNotificationsOnChannels:(NSArray<NSString *> *)channels
+             withDevicePushToken:(id)pushToken
+                        pushType:(PNPushType)pushType
+                     environment:(PNAPNSEnvironment)environment
+                           topic:(NSString *)topic
+                   andCompletion:(nullable PNPushNotificationsStateModificationCompletionBlock)block
+    NS_SWIFT_NAME(addPushNotificationsOnChannels(_:withDevicePushToken:pushType:environment:topic:andCompletion:));
+
+/**
  * @brief Disable push notifications on provided set of \c channels.
  *
  * @code
@@ -82,7 +167,7 @@ NS_ASSUME_NONNULL_BEGIN
  *                                    andCompletion:^(PNAcknowledgmentStatus *status) {
  *
  *     if (!status.isError) {
- *        // Handle successful push notification enabling on passed channels.
+ *        // Push notification successfully disabled on passed channels.
  *     } else {
  *        // Handle modification error. Check 'category' property to find out possible issue because
  *        // of which request did fail.
@@ -105,6 +190,85 @@ NS_ASSUME_NONNULL_BEGIN
     NS_SWIFT_NAME(removePushNotificationsFromChannels(_:withDevicePushToken:andCompletion:));
 
 /**
+ * @brief Disable push notifications (sent using legacy APNs, FCM or MPNS) on provided set of
+ * \c channels.
+ *
+ * @code
+ * [self.client removePushNotificationsFromChannels:@[@"wwdc",@"google.io"]
+ *                              withDevicePushToken:self.devicePushToken
+ *                                         pushType:PNAPNSPush
+ *                                    andCompletion:^(PNAcknowledgmentStatus *status) {
+ *
+ *     if (!status.isError) {
+ *        // Push notification successfully disabled on passed channels.
+ *     } else {
+ *        // Handle modification error. Check 'category' property to find out possible issue because
+ *        // of which request did fail.
+ *        //
+ *        // Request can be resent using: [status retry];
+ *     }
+ * }];
+ * @endcode
+ *
+ * @param channels List of channel names for which push notifications should be disabled.
+ * @param pushToken Device token / identifier which depending from passed \c pushType should be
+ *     \a NSData (for \b PNAPNS2Push and \b PNAPNSPush) or \a NSString for other.
+ * @param pushType One of \b PNPushType fields which specify service to manage notifications for
+ *     device specified with \c pushToken.
+ * @param block \c Remove \c notifications \c from \c channels request completion block.
+ *
+ * @since 4.12.0
+ */
+- (void)removePushNotificationsFromChannels:(NSArray<NSString *> *)channels
+             withDevicePushToken:(id)pushToken
+                        pushType:(PNPushType)pushType
+                   andCompletion:(nullable PNPushNotificationsStateModificationCompletionBlock)block
+    NS_SWIFT_NAME(removePushNotificationsFromChannels(_:withDevicePushToken:pushType:andCompletion:));
+
+/**
+ * @brief Disable push notifications (sent using APNs over HTTP/2) on provided set of \c channels.
+ *
+ * @code
+ * [self.client removePushNotificationsFromChannels:@[@"wwdc",@"google.io"]
+ *                              withDevicePushToken:self.devicePushToken
+ *                                         pushType:PNAPNS2Push
+ *                                      environment:PNAPNSDevelopment
+ *                                            topic:@"com.my-application.bundle"
+ *                                    andCompletion:^(PNAcknowledgmentStatus *status) {
+ *
+ *     if (!status.isError) {
+ *        // Push notification successfully disabled on passed channels.
+ *     } else {
+ *        // Handle modification error. Check 'category' property to find out possible issue because
+ *        // of which request did fail.
+ *        //
+ *        // Request can be resent using: [status retry];
+ *     }
+ * }];
+ * @endcode
+ *
+ * @param channels List of channel names for which push notifications should be disabled.
+ * @param pushToken Device token / identifier which depending from passed \c pushType should be
+ *     \a NSData (for \b PNAPNS2Push and \b PNAPNSPush) or \a NSString for other.
+ * @param pushType One of \b PNPushType fields which specify service to manage notifications for
+ *     device specified with \c pushToken.
+ * @param environment One of \b PNAPNSEnvironment fields which specify environment within which
+ *     device should manage list of channels with enabled notifications (works only if \c pushType
+ *     set to \b PNAPNS2Push).
+ * @param topic Notifications topic name (usually it is application's bundle identifier).
+ * @param block \c Remove \c notifications \c from \c channels request completion block.
+ *
+ * @since 4.12.0
+ */
+- (void)removePushNotificationsFromChannels:(NSArray<NSString *> *)channels
+             withDevicePushToken:(id)pushToken
+                        pushType:(PNPushType)pushType
+                     environment:(PNAPNSEnvironment)environment
+                           topic:(NSString *)topic
+                   andCompletion:(nullable PNPushNotificationsStateModificationCompletionBlock)block
+    NS_SWIFT_NAME(removePushNotificationsFromChannels(_:withDevicePushToken:pushType:environment:topic:andCompletion:));
+
+/**
  * @brief Disable push notifications from all channels which is registered with specified
  * \c pushToken.
  *
@@ -113,8 +277,8 @@ NS_ASSUME_NONNULL_BEGIN
  *                                                 andCompletion:^(PNAcknowledgmentStatus *status) {
  *
  *     if (!status.isError) {
- *        // Handle successful push notification disabling for all channels associated with
- *        // specified device push token.
+ *        // Push notification successfully disabled for all channels associated with specified
+ *        // device push token.
  *     } else {
  *        // Handle modification error. Check 'category' property to find out possible issue because
  *        // of which request did fail.
@@ -133,6 +297,82 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)removeAllPushNotificationsFromDeviceWithPushToken:(NSData *)pushToken
                    andCompletion:(nullable PNPushNotificationsStateModificationCompletionBlock)block
     NS_SWIFT_NAME(removeAllPushNotificationsFromDeviceWithPushToken(_:andCompletion:));
+
+/**
+ * @brief Disable push notifications (sent using legacy APNs, FCM or MPNS) from all channels which
+ * is registered with specified \c pushToken.
+ *
+ * @code
+ * [self.client removeAllPushNotificationsFromDeviceWithPushToken:self.devicePushToken
+ *                                                       pushType:PNAPNSPush
+ *                                                  andCompletion:^(PNAcknowledgmentStatus *status) {
+ *
+ *     if (!status.isError) {
+ *        // Push notification successfully disabled for all channels associated with specified
+ *        // device push token.
+ *     } else {
+ *        // Handle modification error. Check 'category' property to find out possible issue because
+ *        // of which request did fail.
+ *        //
+ *        // Request can be resent using: [status retry];
+ *     }
+ * }];
+ * @endcode
+ *
+ * @param pushToken Device token / identifier which depending from passed \c pushType should be
+ *     \a NSData (for \b PNAPNS2Push and \b PNAPNSPush) or \a NSString for other.
+ * @param pushType One of \b PNPushType fields which specify service to manage notifications for
+ *     device specified with \c pushToken.
+ * @param block \c Remove \c all \c notifications request completion block.
+ *
+ * @since 4.12.0
+ */
+- (void)removeAllPushNotificationsFromDeviceWithPushToken:(id)pushToken
+                        pushType:(PNPushType)pushType
+                   andCompletion:(nullable PNPushNotificationsStateModificationCompletionBlock)block
+    NS_SWIFT_NAME(removeAllPushNotificationsFromDeviceWithPushToken(_:pushType:andCompletion:));
+
+/**
+ * @brief Disable push notifications (sent using APNs over HTTP/2) from all channels
+ * which is registered with specified \c pushToken.
+ *
+ * @code
+ * [self.client removeAllPushNotificationsFromDeviceWithPushToken:self.devicePushToken
+ *                                                      pushType:PNAPNS2Push
+ *                                                   environment:PNAPNSDevelopment
+ *                                                         topic:@"com.my-application.bundle"
+ *                                                 andCompletion:^(PNAcknowledgmentStatus *status) {
+ *
+ *     if (!status.isError) {
+ *        // Push notification successfully disabled for all channels associated with specified
+ *        // device push token.
+ *     } else {
+ *        // Handle modification error. Check 'category' property to find out possible issue because
+ *        // of which request did fail.
+ *        //
+ *        // Request can be resent using: [status retry];
+ *     }
+ * }];
+ * @endcode
+ *
+ * @param pushToken Device token / identifier which depending from passed \c pushType should be
+ *     \a NSData (for \b PNAPNS2Push and \b PNAPNSPush) or \a NSString for other.
+ * @param pushType One of \b PNPushType fields which specify service to manage notifications for
+ *     device specified with \c pushToken.
+ * @param environment One of \b PNAPNSEnvironment fields which specify environment within which
+ *     device should manage list of channels with enabled notifications (works only if \c pushType
+ *     set to \b PNAPNS2Push).
+ * @param topic Notifications topic name (usually it is application's bundle identifier).
+ * @param block \c Remove \c all \c notifications request completion block.
+ *
+ * @since 4.12.0
+ */
+- (void)removeAllPushNotificationsFromDeviceWithPushToken:(id)pushToken
+                        pushType:(PNPushType)pushType
+                     environment:(PNAPNSEnvironment)environment
+                           topic:(NSString *)topic
+                   andCompletion:(nullable PNPushNotificationsStateModificationCompletionBlock)block
+    NS_SWIFT_NAME(removeAllPushNotificationsFromDeviceWithPushToken(_:pushType:environment:topic:andCompletion:));
 
 
 #pragma mark - Push notifications state audit
@@ -164,6 +404,86 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)pushNotificationEnabledChannelsForDeviceWithPushToken:(NSData *)pushToken
                                    andCompletion:(PNPushNotificationsStateAuditCompletionBlock)block
     NS_SWIFT_NAME(pushNotificationEnabledChannelsForDeviceWithPushToken(_:andCompletion:));
+
+/**
+ * @brief Request for all channels on which push notification (sent using legacy APNs, FCM or MPNS)
+ * has been enabled using specified \c pushToken.
+ *
+ * @code
+ * [self.client pushNotificationEnabledChannelsForDeviceWithPushToken:self.devicePushToken
+ *                          pushType:PNAPNSPush
+ *                     andCompletion:^(PNAPNSEnabledChannelsResult *result, PNErrorStatus *status) {
+ *
+ *     if (!status.isError) {
+ *        // Handle downloaded list of channels using: result.data.channels
+ *     } else {
+ *        // Handle audition error. Check 'category' property to find out possible issue because of
+ *        // which request did fail.
+ *        //
+ *        // Request can be resent using: [status retry];
+ *     }
+ * }];
+ * @endcode
+ *
+ * @param pushToken Device token / identifier which depending from passed \c pushType should be
+ *     \a NSData (for \b PNAPNS2Push and \b PNAPNSPush) or \a NSString for other.
+ * @param pushType One of \b PNPushType fields which specify service to manage notifications for
+ *     device specified with \c pushToken.
+ * @param block \c Audit \c notifications \c enabled \c channels request completion block.
+ *
+ * @since 4.12.0
+ */
+- (void)pushNotificationEnabledChannelsForDeviceWithPushToken:(id)pushToken
+                                        pushType:(PNPushType)pushType
+                                   andCompletion:(PNPushNotificationsStateAuditCompletionBlock)block
+    NS_SWIFT_NAME(pushNotificationEnabledChannelsForDeviceWithPushToken(_:pushType:andCompletion:));
+
+/**
+ * @brief Request for all channels on which push notification (sent using APNs over HTTP/2) has been
+ * enabled using specified \c pushToken.
+ *
+ * @code
+ * PNAuditPushNotificationsRequest *request = nil;
+ * request = [PNAuditPushNotificationsRequest requestWithDevicePushToken:self.devicePushToken
+ *                                                              pushType:PNAPNS2Push];
+ * request.topic = @"com.my-application.bundle";
+ * request.environment = PNAPNSProduction;
+ *
+ * [self.client pushNotificationEnabledChannelsForDeviceWithPushToken:self.devicePushToken
+ *                          pushType:PNAPNS2Push
+ *                       environment:PNAPNSDevelopment
+ *                             topic:@"com.my-application.bundle"
+ *                     andCompletion:^(PNAPNSEnabledChannelsResult *result, PNErrorStatus *status) {
+ *
+ *     if (!status.isError) {
+ *        // Handle downloaded list of channels using: result.data.channels
+ *     } else {
+ *        // Handle audition error. Check 'category' property to find out possible issue because of
+ *        // which request did fail.
+ *        //
+ *        // Request can be resent using: [status retry];
+ *     }
+ * }];
+ * @endcode
+ *
+ * @param pushToken Device token / identifier which depending from passed \c pushType should be
+ *     \a NSData (for \b PNAPNS2Push and \b PNAPNSPush) or \a NSString for other.
+ * @param pushType One of \b PNPushType fields which specify service to manage notifications for
+ *     device specified with \c pushToken.
+ * @param environment One of \b PNAPNSEnvironment fields which specify environment within which
+ *     device should manage list of channels with enabled notifications (works only if \c pushType
+ *     set to \b PNAPNS2Push).
+ * @param topic Notifications topic name (usually it is application's bundle identifier).
+ * @param block \c Audit \c notifications \c enabled \c channels request completion block.
+ *
+ * @since 4.12.0
+ */
+- (void)pushNotificationEnabledChannelsForDeviceWithPushToken:(id)pushToken
+                                        pushType:(PNPushType)pushType
+                                     environment:(PNAPNSEnvironment)environment
+                                           topic:(NSString *)topic
+                                   andCompletion:(PNPushNotificationsStateAuditCompletionBlock)block
+    NS_SWIFT_NAME(pushNotificationEnabledChannelsForDeviceWithPushToken(_:pushType:environment:topic:andCompletion:));
 
 #pragma mark -
 

@@ -1,5 +1,7 @@
 /**
  * @author Sergey Mamontov
+ * @version 4.12.0
+ * @since 4.0.0 
  * @copyright © 2010-2019 PubNub, Inc.
  */
 #import "PNURLBuilder.h"
@@ -12,7 +14,7 @@
 /**
  * @brief API endpoints description basing on operation type.
  */
-static NSString * const PNOperationRequestTemplate[45] = {
+static NSString * const PNOperationRequestTemplate[49] = {
     [PNSubscribeOperation] = @"/v2/subscribe/{sub-key}/{channels}/0",
     [PNUnsubscribeOperation] = @"/v2/presence/sub_key/{sub-key}/channel/{channels}/leave",
     [PNPublishOperation] = @"/publish/{pub-key}/{sub-key}/0/{channel}/0/{message}",
@@ -43,6 +45,10 @@ static NSString * const PNOperationRequestTemplate[45] = {
     [PNAddPushNotificationsOnChannelsOperation] = @"/v1/push/sub-key/{sub-key}/devices/{token}",
     [PNRemovePushNotificationsFromChannelsOperation] = @"/v1/push/sub-key/{sub-key}/devices/{token}",
     [PNRemoveAllPushNotificationsOperation] = @"/v1/push/sub-key/{sub-key}/devices/{token}/remove",
+    [PNPushNotificationEnabledChannelsV2Operation] = @"/v2/push/sub-key/{sub-key}/devices-apns2/{token}",
+    [PNAddPushNotificationsOnChannelsV2Operation] = @"/v2/push/sub-key/{sub-key}/devices-apns2/{token}",
+    [PNRemovePushNotificationsFromChannelsV2Operation] = @"/v2/push/sub-key/{sub-key}/devices-apns2/{token}",
+    [PNRemoveAllPushNotificationsV2Operation] = @"/v2/push/sub-key/{sub-key}/devices-apns2/{token}/remove",
     [PNCreateUserOperation] = @"/v1/objects/{sub-key}/users",
     [PNUpdateUserOperation] = @"/v1/objects/{sub-key}/users/{user-id}",
     [PNDeleteUserOperation] = @"/v1/objects/{sub-key}/users/{user-id}",

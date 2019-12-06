@@ -9,7 +9,7 @@
 
 Pod::Spec.new do |spec|
     spec.name     = 'PubNub'
-    spec.version  = '4.11.1'
+    spec.version  = '4.12.0'
     spec.summary  = 'The PubNub Real-Time Network. Build real-time apps quickly and scale them globally.'
     spec.homepage = 'https://github.com/pubnub/objective-c'
 
@@ -32,10 +32,10 @@ Pod::Spec.new do |spec|
         core.source_files = 'PubNub/{Core,Data,Misc,Network}/**/*', 'PubNub/PubNub.h'
         core.private_header_files = [
             'PubNub/**/*Private.h',
-            'PubNub/Data/{PNEnvelopeInformation,PNKeychain}.h',
+            'PubNub/Data/{PNEnvelopeInformation}.h',
             'PubNub/Data/Managers/**/*.h',
             'PubNub/Misc/{PNConstants,PNPrivateStructures}.h',
-            'PubNub/Misc/Helpers/{PNArray,PNChannel,PNData,PNDictionary,PNGZIP,PNHelpers,PNJSON,PNLockSupport,PNNumber,PNString,PNURLRequest}.h',
+            'PubNub/Misc/Helpers/{PNArray,PNChannel,PNData,PNDate,PNDictionary,PNGZIP,PNHelpers,PNJSON,PNLockSupport,PNNumber,PNString,PNURLRequest}.h',
             'PubNub/Misc/Logger/PNLogMacro.h',
             'PubNub/Misc/Logger/Data/*.h',
             'PubNub/Misc/Protocols/PNParser.h',

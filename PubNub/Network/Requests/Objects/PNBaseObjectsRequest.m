@@ -1,6 +1,6 @@
 /**
  * @author Serhii Mamontov
- * @version 4.10.0
+ * @version 4.12.0
  * @since 4.10.0
  * @copyright © 2010-2019 PubNub, Inc.
  */
@@ -146,9 +146,23 @@ NS_ASSUME_NONNULL_END
             [fields addObject:@"user.custom"];
         }
     }
-    
-    
+
     return fields;
+}
+
+
+#pragma mark - Misc
+
+- (void)addIncludedFields:(NSArray<NSString *> *)fields
+                toRequest:(PNRequestParameters *)requestParameters {
+    
+    NSString *include = [requestParameters query][@"include"];
+    NSMutableArray *includeFields = [[include componentsSeparatedByString:@","] ?: @[] mutableCopy];
+    [includeFields addObjectsFromArray:fields];
+
+    [requestParameters removeQueryParameterWithFieldName:@"include"];
+    [requestParameters addQueryParameter:[includeFields componentsJoinedByString:@","]
+                            forFieldName:@"include"];
 }
 
 #pragma mark -

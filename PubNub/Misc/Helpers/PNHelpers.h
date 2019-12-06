@@ -15,6 +15,7 @@
 #import "PNNumber.h"
 #import "PNArray.h"
 #import "PNData.h"
+#import "PNDate.h"
 #import "PNJSON.h"
 #import "PNGZIP.h"
 

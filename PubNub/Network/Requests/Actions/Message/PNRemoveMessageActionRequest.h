@@ -10,7 +10,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief \c Remove \c message \c action request.
  *
  * @author Serhii Mamontov
- * @version 4.11.0
+ * @version 4.12.0 
  * @since 4.11.0
  * @copyright © 2010-2019 PubNub, Inc.
  */

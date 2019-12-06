@@ -13,8 +13,9 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief APNS API call builder.
  *
  * @author Serhii Mamontov
+ * @version 4.12.0
  * @since 4.5.4
- * @copyright © 2010-2018 PubNub, Inc.
+ * @copyright © 2010-2019 PubNub, Inc.
  */
 @interface PNAPNSAPICallBuilder : PNAPICallBuilder
 
@@ -38,6 +39,15 @@ NS_ASSUME_NONNULL_BEGIN
  * @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNAPNSModificationAPICallBuilder * (^disable)(void);
+
+/**
+ * @brief Push notifications state manipulation API access builder block.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.12.0
+ */
+@property (nonatomic, readonly, strong) PNAPNSModificationAPICallBuilder * (^disableAll)(void);
 
 
 #pragma mark - APNS state audition
