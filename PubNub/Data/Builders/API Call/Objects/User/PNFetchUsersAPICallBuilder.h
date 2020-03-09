@@ -38,6 +38,29 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, strong) PNFetchUsersAPICallBuilder * (^includeCount)(BOOL shouldIncludeCount);
 
 /**
+ * @brief Results sorting order.
+ *
+ * @param sort List of criteria (name of field) which should be used for sorting in ascending order.
+ *     To change sorting order, append \c :asc (for ascending) or \c :desc (descending) to field name.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.13.0
+ */
+@property (nonatomic, readonly, strong) PNFetchUsersAPICallBuilder * (^sort)(NSArray<NSString*> *sort);
+
+/**
+ * @brief Expression to filter out results basing on specified criteria.
+ *
+ * @param filter Users filter expression.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.13.0
+ */
+@property (nonatomic, readonly, strong) PNFetchUsersAPICallBuilder * (^filter)(NSString *filter);
+
+/**
  * @brief Maximum number of \c users per fetched page.
  *
  * @note Will be set to \c 100 (which is also maximum value) if not specified.

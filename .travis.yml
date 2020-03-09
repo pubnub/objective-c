@@ -1,38 +1,32 @@
+podfile: Tests/Podfile
 language: objective-c
-osx_image: xcode10.2
+osx_image: xcode11.3
 os: osx
-sudo: true
+
 cache: 
-  - bundler
-  - cocoapods
-rvm:  
-  - 2.5.3
+  cocoapods: true
+
 env:
-    global:
-        - LC_CTYPE=en_US.UTF-8
-        - LANG=en_US.UTF-8
-
-matrix:
-  include:
-    - env: NAME='[ObjC] iOS' SCHEME='iOS Tests (ObjC)' DESTINATION='platform=iOS Simulator,name=iPhone 7 Plus,OS=12.1'
-    - env: NAME='[ObjC] macOS' SCHEME='OSX Tests (ObjC)' DESTINATION='platform=macOS'
-
-before_install: 
-  - sudo gem install xcpretty-travis-formatter
-  - sudo gem install cocoapods
-  - brew ls --versions node && brew upgrade node || brew install node
-  - npm config set strict-ssl false
+  global:
+    - LC_CTYPE=en_US.UTF-8
+    - LANG=en_US.UTF-8
 
 before_script:
-  - pushd Tests/Resources/ && npm init --yes && npm install glob && node .create-keysset.js && popd
-  - pushd Tests/ && pod install && popd
+  - sudo gem install xcpretty
+  - ./.travis/repo-scripts/create-configuration.sh
 
-script:
-  - set -o pipefail
-  - xcodebuild -workspace "Tests/PubNub Tests.xcworkspace" -scheme "${SCHEME}" -destination "${DESTINATION}" clean build test | xcpretty -f `xcpretty-travis-formatter`
+stages:
+  - name: test
 
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
+jobs:
+  include:
+    - stage: "test"
+      name: "[iOS] Mocked Integration test"
+      script: ./.travis/repo-scripts/tests-runner.sh ios
+    - name: "[macOS] Mocked Integration test"
+      script: ./.travis/repo-scripts/tests-runner.sh macos
+    - name: "[tvOS] Mocked Integration test"
+      script: ./.travis/repo-scripts/tests-runner.sh tvos
 
 after_failure:
  - cat -n ~/Library/Logs/scan/*

@@ -168,10 +168,12 @@ NS_ASSUME_NONNULL_END
            forUUID:(NSString *)uuid
          onChannel:(NSString *)channel
     withCompletion:(PNSetStateCompletionBlock)block {
+    
+    NSArray *channels = channel ? @[channel] : nil;
 
     [self setState:state
                 forUUID:uuid
-             onChannels:@[channel]
+             onChannels:channels
                  groups:nil
     withQueryParameters:nil
              completion:block];
@@ -181,11 +183,13 @@ NS_ASSUME_NONNULL_END
            forUUID:(NSString *)uuid
     onChannelGroup:(NSString *)group
     withCompletion:(PNSetStateCompletionBlock)block {
+        
+    NSArray *groups = group ? @[group] : nil;
 
     [self setState:state
                 forUUID:uuid
              onChannels:nil
-                 groups:@[group]
+                 groups:groups
     withQueryParameters:nil
              completion:block];
 }
@@ -198,7 +202,6 @@ NS_ASSUME_NONNULL_END
              completion:(PNSetStateCompletionBlock)block {
 
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    uuid = uuid ?: self.configuration.uuid;
     __weak __typeof(self) weakSelf = self;
     
     if (@available(macOS 10.10, iOS 8.0, *)) {
@@ -206,7 +209,29 @@ NS_ASSUME_NONNULL_END
             queue = dispatch_get_main_queue();
         }
     }
+    
+    // State set retry block.
+    dispatch_block_t retryBlock = ^{
+         [weakSelf setState:state
+                    forUUID:uuid
+                 onChannels:channels
+                     groups:groups
+        withQueryParameters:queryParameters
+                 completion:block];
+    };
+    
+    if ((!channels.count && !groups.count) || !uuid.length) {
+        PNErrorStatus *badRequestStatus = [PNErrorStatus statusForOperation:PNSetStateOperation
+                                                                   category:PNBadRequestCategory
+                                                        withProcessingError:nil];
 
+        badRequestStatus.retryBlock = retryBlock;
+        [self appendClientInformation:badRequestStatus];
+        
+        [self callBlock:block status:YES withResult:nil andStatus:badRequestStatus];
+        return;
+    }
+    
     dispatch_async(queue, ^{
         __strong __typeof__(weakSelf) strongSelf = weakSelf;
         NSString *stateString = [PNJSON JSONStringFrom:state withError:NULL] ?: @"{}";
@@ -217,11 +242,7 @@ NS_ASSUME_NONNULL_END
         [parameters addQueryParameter:[PNString percentEscapedString:stateString]
                          forFieldName:@"state"];
         [parameters addQueryParameters:queryParameters];
-        
-        if (uuid.length) {
-            [parameters addPathComponent:[PNString percentEscapedString:uuid]
-                          forPlaceholder:@"{uuid}"];
-        }
+        [parameters addPathComponent:[PNString percentEscapedString:uuid] forPlaceholder:@"{uuid}"];
         
         if (groups.count) {
             [parameters addQueryParameter:[PNChannel namesForRequest:groups]
@@ -241,14 +262,7 @@ NS_ASSUME_NONNULL_END
                      completionBlock:^(PNStatus *status) {
                          
            if (status.isError) {
-               status.retryBlock = ^{
-                   [weakSelf setState:state
-                              forUUID:uuid
-                           onChannels:channels
-                               groups:groups
-                  withQueryParameters:queryParameters
-                           completion:block];
-               };
+               status.retryBlock = retryBlock;
            }
 
            [weakSelf handleSetStateStatus:(PNClientStateUpdateStatus *)status
@@ -267,8 +281,10 @@ NS_ASSUME_NONNULL_END
            onChannel:(NSString *)channel
       withCompletion:(PNChannelStateCompletionBlock)block {
     
+    NSArray *channels = channel ? @[channel] : nil;
+    
     [self stateForUUID:uuid
-             onChannels:@[channel]
+             onChannels:channels
                  groups:nil
             fromBuilder:NO
     withQueryParameters:nil
@@ -278,10 +294,12 @@ NS_ASSUME_NONNULL_END
 - (void)stateForUUID:(NSString *)uuid
       onChannelGroup:(NSString *)group
       withCompletion:(PNChannelGroupStateCompletionBlock)block {
+          
+    NSArray *groups = group ? @[group] : nil;
     
     [self stateForUUID:uuid
              onChannels:nil
-                 groups:@[group]
+                 groups:groups
             fromBuilder:NO
     withQueryParameters:nil
              completion:block];
@@ -295,24 +313,43 @@ NS_ASSUME_NONNULL_END
              completion:(id)block {
     
     PNRequestParameters *parameters = [PNRequestParameters new];
-    uuid = uuid ?: self.configuration.uuid;
     PNOperationType operation = PNGetStateOperation;
+    __weak __typeof(self) weakSelf = self;
+
+    if (!apiCallBuilder) {
+        operation = groups.count ? PNStateForChannelGroupOperation : PNStateForChannelOperation;
+    }
+    
+    // State fetch retry block.
+    dispatch_block_t retryBlock = ^{
+        [weakSelf stateForUUID:uuid
+                    onChannels:channels
+                        groups:groups
+                   fromBuilder:apiCallBuilder
+           withQueryParameters:queryParameters
+                    completion:block];
+    };
+    
+    if ((!channels.count && !groups.count) || !uuid.length) {
+        PNErrorStatus *badRequestStatus = [PNErrorStatus statusForOperation:operation
+                                                                   category:PNBadRequestCategory
+                                                        withProcessingError:nil];
+
+        badRequestStatus.retryBlock = retryBlock;
+        [self appendClientInformation:badRequestStatus];
+        
+        [self callBlock:block status:NO withResult:nil andStatus:badRequestStatus];
+        return;
+    }
 
     [parameters addPathComponent:(channels.count ? [PNChannel namesForRequest:channels] : @",")
                   forPlaceholder:@"{channel}"];
     [parameters addQueryParameters:queryParameters];
-    
-    if (uuid.length) {
-        [parameters addPathComponent:[PNString percentEscapedString:uuid] forPlaceholder:@"{uuid}"];
-    }
+    [parameters addPathComponent:[PNString percentEscapedString:uuid] forPlaceholder:@"{uuid}"];
     
     if (groups.count) {
         [parameters addQueryParameter:[PNChannel namesForRequest:groups]
                          forFieldName:@"channel-group"];
-    }
-
-    if (!apiCallBuilder) {
-        operation = groups.count ? PNStateForChannelGroupOperation : PNStateForChannelOperation;
     }
     
     PNLogAPICall(self.logger, @"<PubNub::API> State request on %@%@ for %@.",
@@ -323,20 +360,12 @@ NS_ASSUME_NONNULL_END
                              [groups componentsJoinedByString:@","]] : @""),
             uuid);
     
-    __weak __typeof(self) weakSelf = self;
     [self processOperation:operation
             withParameters:parameters 
            completionBlock:^(PNResult *result, PNStatus *status) {
                
         if (status.isError) {
-            status.retryBlock = ^{
-                [weakSelf stateForUUID:uuid
-                            onChannels:channels
-                                groups:groups
-                           fromBuilder:apiCallBuilder
-                   withQueryParameters:queryParameters
-                            completion:block];
-            };
+            status.retryBlock = retryBlock;
         }
 
         [weakSelf handleStateResult:(PNChannelClientStateResult *)result

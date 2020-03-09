@@ -52,6 +52,7 @@ MACOS_FRAMEWORK_PATH="${MACOS_ARCHIVE_PATH}/Products/Library/Frameworks/PubNub.f
 DEVICE_FRAMEWORK_PATH="${DEVICE_ARCHIVE_PATH}/Products/Library/Frameworks/PubNub.framework"
 SIMULATOR_FRAMEWORK_PATH="${SIMULATOR_ARCHIVE_PATH}/Products/Library/Frameworks/PubNub.framework"
 XCFRAMEWORK_PATH="$PRODUCTS_PATH/PubNub.xcframework"
+echo "[XCFramework] Archives path: $ARCHIVES_PATH"
 
 # Clean up framework build products repository.
 [[ -d "$PRODUCTS_PATH" ]] && rm -R "$PRODUCTS_PATH"
@@ -68,6 +69,8 @@ xcodebuild archive \
     ONLY_ACTIVE_ARCH=NO \
     SUPPORTS_MACCATALYST=NO \
     clean
+    
+echo "[XCFramework] Archive has been created for '$DEVICE_SDK': $DEVICE_ARCHIVE_PATH"
 
 # Build framework for simulator
 xcodebuild archive \
@@ -83,18 +86,24 @@ xcodebuild archive \
     SUPPORTS_MACCATALYST=NO \
     clean
 
+echo "[XCFramework] Archive has been created for '$SIMULATOR_SDK': $SIMULATOR_ARCHIVE_PATH"
+
 # Build iOS for macOS framework if Catalyst support required.
 if [ "$BUILD_WITH_CATALYST_SUPPORT" == 1 ]; then
+
     xcodebuild archive \
         -scheme "${TARGET_NAME:2}" \
         -sdk macosx \
         -archivePath "$MACOS_ARCHIVE_PATH" \
         -derivedDataPath "$DERIVED_DATA_PATH" \
+        -destination 'platform=macOS,arch=x86_64,variant=Mac Catalyst' \
         SKIP_INSTALL=NO \
         BUILD_LIBRARIES_FOR_DISTRIBUTION=YES \
         ONLY_ACTIVE_ARCH=NO \
         SUPPORTS_MACCATALYST=YES \
         clean
+        
+    echo "[XCFramework] Archive has been created for 'macosx': $MACOS_ARCHIVE_PATH"
 fi
 
 # Update modules map
@@ -109,6 +118,8 @@ if [ "$BUILD_WITH_CATALYST_SUPPORT" == 0 ]; then
         -output "$XCFRAMEWORK_PATH"
 else
     write_module_map "$MACOS_FRAMEWORK_PATH/Modules/module.modulemap"
+            
+    echo "[XCFramework] Adding frameworks to XCFramework..."
     
     # Pack built device / simulator / Catalyst slices into XCFramework
     xcodebuild -create-xcframework \
@@ -116,4 +127,8 @@ else
         -framework "$SIMULATOR_FRAMEWORK_PATH" \
         -framework "$MACOS_FRAMEWORK_PATH" \
         -output "$XCFRAMEWORK_PATH"
+            
+    echo "[XCFramework] Frameworks added to XCFramework: $XCFRAMEWORK_PATH"
 fi
+
+rm -rf "$ARCHIVES_PATH"

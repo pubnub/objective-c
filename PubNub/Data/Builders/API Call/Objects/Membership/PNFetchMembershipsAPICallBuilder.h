@@ -28,6 +28,29 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, strong) PNFetchMembershipsAPICallBuilder * (^includeCount)(BOOL shouldIncludeCount);
 
 /**
+ * @brief Results sorting order.
+ *
+ * @param sort List of criteria (name of field) which should be used for sorting in ascending order.
+ *     To change sorting order, append \c :asc (for ascending) or \c :desc (descending) to field name.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.13.0
+ */
+@property (nonatomic, readonly, strong) PNFetchMembershipsAPICallBuilder * (^sort)(NSArray<NSString*> *sort);
+
+/**
+ * @brief Expression to filter out results basing on specified criteria.
+ *
+ * @param filter Memberships filter expression.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.13.0
+ */
+@property (nonatomic, readonly, strong) PNFetchMembershipsAPICallBuilder * (^filter)(NSString *filter);
+
+/**
  * @brief Target \c user identifier.
  *
  * @param userId Identifier of \c user for which memberships will be fetched.

@@ -1,36 +1,43 @@
+workspace 'PubNub Tests'
 install! 'cocoapods', :lock_pod_sources => false
 use_frameworks!
-  
-target 'iOS ObjC Tests' do
-  platform :ios, "9.0"
-  project 'PubNub Tests'
-  pod 'OCMock', '= 3.4.3'
-  pod "BeKindRewind"
-  pod "PubNub", :path => "../"
+
+abstract_target 'MockableTests' do
+  pod 'PubNub', :path => '../'
+  pod 'OCMock', '= 3.6'
+  pod 'YAHTTPVCR'
+ 
+  target '[macOS] Mocked Integration Tests' do
+    platform :osx, '10.11'
+  end
+
+  target '[tvOS] Mocked Integration Tests' do
+    platform :tvos, '10.0'
+  end
+
+  target '[iOS] Mocked Integration Tests' do
+    platform :ios, '9.0'
+  end
+
+  target '[macOS] Unit Tests' do
+    platform :osx, '10.11'
+  end
+
+  target '[tvOS] Unit Tests' do
+    platform :tvos, '10.0'
+  end
+
+  target '[iOS] Unit Tests' do
+    platform :ios, '9.0'
+  end
 end
 
-#  target 'iOS Swift Tests' do
-#    platform :ios, "9.0"
-#    project 'Tests/PubNub Tests'
-#    pod "BeKindRewind"
-#    pod "PubNub", :path => "."
-#  end
-
-target 'OSX ObjC Tests' do
-  platform :osx, '10.11'
-  project 'PubNub Tests'
-  pod 'OCMock', '= 3.4.3'
-  pod "BeKindRewind"
-  pod "PubNub", :path => "../"
+target '[iOS] Integration Tests' do
+  platform :ios, '9.0'
+  pod 'PubNub', :path => '../'
 end
 
-target 'tvOS ObjC Tests' do
-  platform :tvos, '10.0'
-  project 'PubNub Tests'
-  pod 'OCMock', '= 3.4.3'
-  pod "BeKindRewind"
-  pod "PubNub", :path => "../"
-end
+
 
 # Making all interfaces visible for all targets on explicit import
 pre_install do |installer_representation|
@@ -46,9 +53,9 @@ end
 post_install do |installer_representation|
     installer_representation.pods_project.targets.each do |target|
         target.build_configurations.each do |config|
-            config.build_settings['GCC_INSTRUMENT_PROGRAM_FLOW_ARCS'] = 'YES'
-            config.build_settings['GCC_GENERATE_TEST_COVERAGE_FILES'] = 'YES'
-            config.build_settings['GCC_WARN_INHIBIT_ALL_WARNINGS'] = 'YES' unless target.name =~ /PubNub/
+            config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] = '$(inherited) PUBNUB_DISABLE_LOGGER=1'
+            config.build_settings['CLANG_ENABLE_CODE_COVERAGE'] = target.name =~ /PubNub/ ? 'YES' : 'NO'
+            
         end
     end
 end

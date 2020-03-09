@@ -1,9 +1,40 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.12.0"
+version: "4.13.0"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Add additional functionality which allow to filter out received Objects (memberships, members, spaces or users) by specified criteria."
+        type: feature
+      -
+        text: "Add new parameters which allow specify criteria (list of field names with sort direction `:asc` / `:desc` for each) order in which objects appear in response."
+        type: feature
+      -
+        text: "Add scripts which is responsible for SDK release roll out from tag in private repository."
+        type: feature
+      -
+        text: "Presence state should set / fetch fail w/o actual request to server when list of channels / groups and uuid is missing."
+        type: improvement
+      -
+        text: "Fix issue because of which `connected` interface didn't called completion block when `managePresenceListManually` is set to `NO`."
+        type: bug
+      -
+        text: "Fix issue because of which `includeMetadata` and `includeMessageActions` flags has been swapped."
+        type: bug
+      -
+        text: "Fix issue because of which actual retry never happened in case if subscription failed because PAM reported that client with current `authKey` doesn't have access rights to channels / groups."
+        type: bug
+      -
+        text: "Fix issue which didn't reset subscribe time-token when `keepTimeTokenOnListChange` is set to `NO` and `tryCatchUpOnSubscriptionRestore` is set to `YES`."
+        type: bug
+      -
+        text: "Remove 'macOS' from supported platforms in iOS Framework targets and rely on command-line specified flags to build Framework with Catalyst support."
+        type: bug
+    date: Feb, 9 20
+    version: v4.13.0
   -
     changes:
       -
@@ -601,7 +632,8 @@ changelog:
         text: "mobile push payload removed from received message."
         type: improvement
       - 
-        text: "'pn_other' key has been removed and original object will be returned in delegate callback (this field used with message encryption and/or mobile push payload).\n"
+        text: "'pn_other' key has been removed and original object will be returned in delegate callback (this field used with message encryption and/or mobile push payload).
+"
         type: improvement
     date: May 12, 16
     version: v4.3.1
@@ -996,6 +1028,8 @@ features:
     - OBJECTS-MANAGE-MEMBERSHIPS
     - OBJECTS-GET-MEMBERS
     - OBJECTS-MANAGE-MEMBERS
+    - OBJECTS-FILTERING
+    - OBJECTS-SORTING
   message-actions:
     - MESSAGE-ACTIONS-GET
     - MESSAGE-ACTIONS-ADD

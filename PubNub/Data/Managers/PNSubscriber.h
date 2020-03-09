@@ -150,7 +150,7 @@ typedef void(^PNSubscriberCompletionBlock)(PNSubscribeStatus * _Nullable status)
  * @param timeToken Time from which client should try to catch up on messages.
  * @param state Client state which should be bound to channels on which client has been subscribed
  *     or will subscribe now.
- * @param queryParameters List arbitrary query paramters which should be sent along with original
+ * @param queryParameters List arbitrary query parameters which should be sent along with original
  *     API call.
  * @param block Subscription completion block which is used to notify code.
  *
@@ -165,14 +165,14 @@ typedef void(^PNSubscriberCompletionBlock)(PNSubscribeStatus * _Nullable status)
  * @brief Try restore subscription cycle by using \b 0 time token and if required try to catch up on
  * previous subscribe time token (basing on user configuration).
  *
- * @param block Unsubscription completion block which is used to notify code.
+ * @param block Subscription completion block which is used to notify code.
  */
 - (void)restoreSubscriptionCycleIfRequiredWithCompletion:(nullable PNSubscriberCompletionBlock)block;
 
 /**
  * @brief Continue subscription cycle using \c currentTimeToken value and channels, stored in cache.
  *
- * @param block Unsubscription completion block which is used to notify code.
+ * @param block Subscription completion block which is used to notify code.
  */
 - (void)continueSubscriptionCycleIfRequiredWithCompletion:(nullable PNSubscriberCompletionBlock)block;
 
@@ -203,7 +203,7 @@ typedef void(^PNSubscriberCompletionBlock)(PNSubscribeStatus * _Nullable status)
  * @param channels List of channels from which client should unsubscribe.
  * @param groups List of channel groups from which client should unsubscribe.
  * @param shouldInformListener Whether listener should be informed at the end of operation or not.
- * @param queryParameters List arbitrary query paramters which should be sent along with original
+ * @param queryParameters List arbitrary query parameters which should be sent along with original
  *     API call.
  * @param block Unsubscription completion block which is used to notify code.
  *

@@ -28,6 +28,23 @@ NS_ASSUME_NONNULL_BEGIN
     NS_SWIFT_NAME(includeCount);
 
 /**
+ * @brief Results sorting order.
+ *
+ * @discussion List of criteria (name of field) which should be used for sorting in ascending order.
+ * To change sorting order, append \c :asc (for ascending) or \c :desc (descending) to field name.
+ *
+ * @since 4.13.0
+ */
+@property (nonatomic, nullable, strong) NSArray<NSString *> *sort;
+
+/**
+ * @brief Expression to filter out results basing on specified criteria.
+ *
+ * @since 4.13.0
+ */
+@property (nonatomic, nullable, copy) NSString *filter;
+
+/**
  * @brief Previously-returned cursor bookmark for fetching the next page.
  */
 @property (nonatomic, nullable, copy) NSString *start;

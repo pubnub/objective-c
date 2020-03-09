@@ -82,7 +82,7 @@ NS_ASSUME_NONNULL_END
     
     if (self.pushType == PNAPNS2Push) {
         NSString *environment = self.environment == PNAPNSDevelopment ? @"development" : @"production";
-        NSString *topic = self.topic ?: NSBundle.mainBundle.bundleIdentifier;
+        NSString *topic = self.topic.length ? self.topic : NSBundle.mainBundle.bundleIdentifier;
         
         [parameters addQueryParameter:environment forFieldName:@"environment"];
         [parameters addQueryParameter:topic forFieldName:@"topic"];

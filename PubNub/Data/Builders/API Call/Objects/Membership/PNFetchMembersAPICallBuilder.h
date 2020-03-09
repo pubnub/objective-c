@@ -28,6 +28,18 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, strong) PNFetchMembersAPICallBuilder * (^includeCount)(BOOL shouldIncludeCount);
 
 /**
+ * @brief Results sorting order.
+ *
+ * @param sort List of criteria (name of field) which should be used for sorting in ascending order.
+ *     To change sorting order, append \c :asc (for ascending) or \c :desc (descending) to field name.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.13.0
+ */
+@property (nonatomic, readonly, strong) PNFetchMembersAPICallBuilder * (^sort)(NSArray<NSString*> *sort);
+
+/**
  * @brief Target \c space identifier.
  *
  * @param spaceId Identifier of \c space for which list of members will be fetched.
@@ -35,6 +47,17 @@ NS_ASSUME_NONNULL_BEGIN
  * @return API call configuration builder.
  */
 @property (nonatomic, readonly, strong) PNFetchMembersAPICallBuilder * (^spaceId)(NSString *spaceId);
+
+/**
+ * @brief Expression to filter out results basing on specified criteria.
+ *
+ * @param filter Members filter expression.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.13.0
+ */
+@property (nonatomic, readonly, strong) PNFetchMembersAPICallBuilder * (^filter)(NSString *filter);
 
 /**
  * @brief Maximum number of \c members per fetched page.

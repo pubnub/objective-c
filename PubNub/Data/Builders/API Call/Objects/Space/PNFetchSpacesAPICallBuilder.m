@@ -34,6 +34,26 @@
     };
 }
 
+- (PNFetchSpacesAPICallBuilder * (^)(NSArray<NSString*> *sort))sort {
+    return ^PNFetchSpacesAPICallBuilder * (NSArray<NSString*> *sort) {
+        if ([sort isKindOfClass:[NSArray class]] && sort.count) {
+            [self setValue:sort forParameter:NSStringFromSelector(_cmd)];
+        }
+        
+        return self;
+    };
+}
+
+- (PNFetchSpacesAPICallBuilder * (^)(NSString *filter))filter {
+    return ^PNFetchSpacesAPICallBuilder * (NSString *filter) {
+        if ([filter isKindOfClass:[NSString class]] && filter.length) {
+            [self setValue:filter forParameter:NSStringFromSelector(_cmd)];
+        }
+        
+        return self;
+    };
+}
+
 - (PNFetchSpacesAPICallBuilder * (^)(NSUInteger limit))limit {
     return ^PNFetchSpacesAPICallBuilder * (NSUInteger limit) {
         [self setValue:@(limit) forParameter:NSStringFromSelector(_cmd)];

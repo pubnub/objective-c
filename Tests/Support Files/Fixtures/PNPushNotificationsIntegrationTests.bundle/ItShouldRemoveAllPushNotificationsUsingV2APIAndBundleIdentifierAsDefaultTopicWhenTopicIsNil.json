@@ -1,0 +1,272 @@
+[
+  {
+    "id" : "54F41B5E-5DBB-4059-B4B5-F5CABFDD8B6D",
+    "data" : {
+      "method" : "get",
+      "cls" : "NSURLRequest",
+      "cellular" : true,
+      "cache" : 1,
+      "timeout" : 60,
+      "cookies" : true,
+      "headers" : {
+        "User-Agent" : "iPhone; CPU iPhone OS 12.2.0 Version",
+        "Accept" : "*\/*",
+        "Connection" : "keep-alive",
+        "Accept-Encoding" : "gzip,deflate"
+      },
+      "pipeline" : false,
+      "network" : 0,
+      "url" : "https:\/\/ps.pndsn.com\/v2\/push\/sub-key\/demo\/devices-apns2\/6652cff7f17536c86bc353527017741ec07a91699661abaf68c5977a83013091\/remove?uuid=Serhii&environment=development&pnsdk=PubNub-ObjC-iOS\/4.x.x&topic=com.apple.dt.xctest.tool&type=apns"
+    },
+    "type" : 0
+  },
+  {
+    "id" : "54F41B5E-5DBB-4059-B4B5-F5CABFDD8B6D",
+    "data" : {
+      "status" : 200,
+      "cls" : "NSHTTPURLResponse",
+      "url" : "https:\/\/ps.pndsn.com\/v2\/push\/sub-key\/demo\/devices-apns2\/6652cff7f17536c86bc353527017741ec07a91699661abaf68c5977a83013091\/remove?uuid=Serhii&environment=development&pnsdk=PubNub-ObjC-iOS\/4.x.x&topic=com.apple.dt.xctest.tool&type=apns",
+      "headers" : {
+        "Access-Control-Allow-Methods" : "GET, POST, DELETE, OPTIONS",
+        "Content-Type" : "text\/javascript; charset=\"UTF-8\"",
+        "Server" : "Pubnub",
+        "Access-Control-Allow-Origin" : "*",
+        "Age" : "0",
+        "Date" : "Mon, 06 Jan 2020 00:25:57 GMT",
+        "Accept-Ranges" : "bytes",
+        "Content-Length" : "21",
+        "Cache-Control" : "no-cache",
+        "Connection" : "keep-alive"
+      }
+    },
+    "type" : 1
+  },
+  {
+    "id" : "54F41B5E-5DBB-4059-B4B5-F5CABFDD8B6D",
+    "data" : {
+      "cls" : "NSData",
+      "base64" : "WzEsICJSZW1vdmVkIERldmljZSJd"
+    },
+    "type" : 2
+  },
+  {
+    "id" : "54F41B5E-5DBB-4059-B4B5-F5CABFDD8B6D",
+    "type" : 4
+  },
+  {
+    "id" : "D1AC60D4-6826-4475-AB44-73C7216E3369",
+    "data" : {
+      "method" : "get",
+      "cls" : "NSURLRequest",
+      "cellular" : true,
+      "cache" : 1,
+      "timeout" : 60,
+      "cookies" : true,
+      "headers" : {
+        "User-Agent" : "iPhone; CPU iPhone OS 12.2.0 Version",
+        "Accept" : "*\/*",
+        "Connection" : "keep-alive",
+        "Accept-Encoding" : "gzip,deflate"
+      },
+      "pipeline" : false,
+      "network" : 0,
+      "url" : "https:\/\/ps.pndsn.com\/v2\/push\/sub-key\/demo\/devices-apns2\/6652cff7f17536c86bc353527017741ec07a91699661abaf68c5977a83013091?environment=development&pnsdk=PubNub-ObjC-iOS\/4.x.x&topic=com.apple.dt.xctest.tool&type=apns&uuid=Serhii&add=test-channel1,test-channel2"
+    },
+    "type" : 0
+  },
+  {
+    "id" : "D1AC60D4-6826-4475-AB44-73C7216E3369",
+    "data" : {
+      "status" : 200,
+      "cls" : "NSHTTPURLResponse",
+      "url" : "https:\/\/ps.pndsn.com\/v2\/push\/sub-key\/demo\/devices-apns2\/6652cff7f17536c86bc353527017741ec07a91699661abaf68c5977a83013091?environment=development&pnsdk=PubNub-ObjC-iOS\/4.x.x&topic=com.apple.dt.xctest.tool&type=apns&uuid=Serhii&add=test-channel1,test-channel2",
+      "headers" : {
+        "Access-Control-Allow-Methods" : "GET, POST, DELETE, OPTIONS",
+        "Content-Type" : "text\/javascript; charset=\"UTF-8\"",
+        "Server" : "Pubnub",
+        "Access-Control-Allow-Origin" : "*",
+        "Age" : "0",
+        "Date" : "Mon, 06 Jan 2020 00:25:57 GMT",
+        "Accept-Ranges" : "bytes",
+        "Content-Length" : "24",
+        "Cache-Control" : "no-cache",
+        "Connection" : "keep-alive"
+      }
+    },
+    "type" : 1
+  },
+  {
+    "id" : "D1AC60D4-6826-4475-AB44-73C7216E3369",
+    "data" : {
+      "cls" : "NSData",
+      "base64" : "WzEsICJNb2RpZmllZCBDaGFubmVscyJd"
+    },
+    "type" : 2
+  },
+  {
+    "id" : "D1AC60D4-6826-4475-AB44-73C7216E3369",
+    "type" : 4
+  },
+  {
+    "id" : "1465B646-2830-4748-B0F5-D9C3DFD7397E",
+    "data" : {
+      "method" : "get",
+      "cls" : "NSURLRequest",
+      "cellular" : true,
+      "cache" : 1,
+      "timeout" : 60,
+      "cookies" : true,
+      "headers" : {
+        "User-Agent" : "iPhone; CPU iPhone OS 12.2.0 Version",
+        "Accept" : "*\/*",
+        "Connection" : "keep-alive",
+        "Accept-Encoding" : "gzip,deflate"
+      },
+      "pipeline" : false,
+      "network" : 0,
+      "url" : "https:\/\/ps.pndsn.com\/v2\/push\/sub-key\/demo\/devices-apns2\/6652cff7f17536c86bc353527017741ec07a91699661abaf68c5977a83013091?uuid=Serhii&environment=development&pnsdk=PubNub-ObjC-iOS\/4.x.x&topic=com.apple.dt.xctest.tool&type=apns"
+    },
+    "type" : 0
+  },
+  {
+    "id" : "1465B646-2830-4748-B0F5-D9C3DFD7397E",
+    "data" : {
+      "status" : 200,
+      "cls" : "NSHTTPURLResponse",
+      "url" : "https:\/\/ps.pndsn.com\/v2\/push\/sub-key\/demo\/devices-apns2\/6652cff7f17536c86bc353527017741ec07a91699661abaf68c5977a83013091?uuid=Serhii&environment=development&pnsdk=PubNub-ObjC-iOS\/4.x.x&topic=com.apple.dt.xctest.tool&type=apns",
+      "headers" : {
+        "Access-Control-Allow-Methods" : "GET, POST, DELETE, OPTIONS",
+        "Content-Type" : "text\/javascript; charset=\"UTF-8\"",
+        "Server" : "Pubnub",
+        "Access-Control-Allow-Origin" : "*",
+        "Age" : "0",
+        "Date" : "Mon, 06 Jan 2020 00:25:58 GMT",
+        "Accept-Ranges" : "bytes",
+        "Content-Length" : "62",
+        "Cache-Control" : "no-cache",
+        "Connection" : "keep-alive"
+      }
+    },
+    "type" : 1
+  },
+  {
+    "id" : "1465B646-2830-4748-B0F5-D9C3DFD7397E",
+    "data" : {
+      "cls" : "NSData",
+      "base64" : "WyJ0ZXN0LWNoYW5uZWwyIiwgInRlc3QtY2hhbm5lbDEiXQ=="
+    },
+    "type" : 2
+  },
+  {
+    "id" : "1465B646-2830-4748-B0F5-D9C3DFD7397E",
+    "type" : 4
+  },
+  {
+    "id" : "8D483190-A33C-4227-BCA3-75742A34545E",
+    "data" : {
+      "method" : "get",
+      "cls" : "NSURLRequest",
+      "cellular" : true,
+      "cache" : 1,
+      "timeout" : 60,
+      "cookies" : true,
+      "headers" : {
+        "User-Agent" : "iPhone; CPU iPhone OS 12.2.0 Version",
+        "Accept" : "*\/*",
+        "Connection" : "keep-alive",
+        "Accept-Encoding" : "gzip,deflate"
+      },
+      "pipeline" : false,
+      "network" : 0,
+      "url" : "https:\/\/ps.pndsn.com\/v2\/push\/sub-key\/demo\/devices-apns2\/6652cff7f17536c86bc353527017741ec07a91699661abaf68c5977a83013091\/remove?uuid=Serhii&environment=development&pnsdk=PubNub-ObjC-iOS\/4.x.x&topic=com.apple.dt.xctest.tool&type=apns"
+    },
+    "type" : 0
+  },
+  {
+    "id" : "8D483190-A33C-4227-BCA3-75742A34545E",
+    "data" : {
+      "status" : 200,
+      "cls" : "NSHTTPURLResponse",
+      "url" : "https:\/\/ps.pndsn.com\/v2\/push\/sub-key\/demo\/devices-apns2\/6652cff7f17536c86bc353527017741ec07a91699661abaf68c5977a83013091\/remove?uuid=Serhii&environment=development&pnsdk=PubNub-ObjC-iOS\/4.x.x&topic=com.apple.dt.xctest.tool&type=apns",
+      "headers" : {
+        "Access-Control-Allow-Methods" : "GET, POST, DELETE, OPTIONS",
+        "Content-Type" : "text\/javascript; charset=\"UTF-8\"",
+        "Server" : "Pubnub",
+        "Access-Control-Allow-Origin" : "*",
+        "Age" : "0",
+        "Date" : "Mon, 06 Jan 2020 00:25:58 GMT",
+        "Accept-Ranges" : "bytes",
+        "Content-Length" : "21",
+        "Cache-Control" : "no-cache",
+        "Connection" : "keep-alive"
+      }
+    },
+    "type" : 1
+  },
+  {
+    "id" : "8D483190-A33C-4227-BCA3-75742A34545E",
+    "data" : {
+      "cls" : "NSData",
+      "base64" : "WzEsICJSZW1vdmVkIERldmljZSJd"
+    },
+    "type" : 2
+  },
+  {
+    "id" : "8D483190-A33C-4227-BCA3-75742A34545E",
+    "type" : 4
+  },
+  {
+    "id" : "DA43024F-28D8-47BB-B0DC-BDD9CC6C4952",
+    "data" : {
+      "method" : "get",
+      "cls" : "NSURLRequest",
+      "cellular" : true,
+      "cache" : 1,
+      "timeout" : 60,
+      "cookies" : true,
+      "headers" : {
+        "User-Agent" : "iPhone; CPU iPhone OS 12.2.0 Version",
+        "Accept" : "*\/*",
+        "Connection" : "keep-alive",
+        "Accept-Encoding" : "gzip,deflate"
+      },
+      "pipeline" : false,
+      "network" : 0,
+      "url" : "https:\/\/ps.pndsn.com\/v2\/push\/sub-key\/demo\/devices-apns2\/6652cff7f17536c86bc353527017741ec07a91699661abaf68c5977a83013091?uuid=Serhii&environment=development&pnsdk=PubNub-ObjC-iOS\/4.x.x&topic=com.apple.dt.xctest.tool&type=apns"
+    },
+    "type" : 0
+  },
+  {
+    "id" : "DA43024F-28D8-47BB-B0DC-BDD9CC6C4952",
+    "data" : {
+      "status" : 200,
+      "cls" : "NSHTTPURLResponse",
+      "url" : "https:\/\/ps.pndsn.com\/v2\/push\/sub-key\/demo\/devices-apns2\/6652cff7f17536c86bc353527017741ec07a91699661abaf68c5977a83013091?uuid=Serhii&environment=development&pnsdk=PubNub-ObjC-iOS\/4.x.x&topic=com.apple.dt.xctest.tool&type=apns",
+      "headers" : {
+        "Access-Control-Allow-Methods" : "GET, POST, DELETE, OPTIONS",
+        "Content-Type" : "text\/javascript; charset=\"UTF-8\"",
+        "Server" : "Pubnub",
+        "Access-Control-Allow-Origin" : "*",
+        "Age" : "0",
+        "Date" : "Mon, 06 Jan 2020 00:25:58 GMT",
+        "Accept-Ranges" : "bytes",
+        "Content-Length" : "2",
+        "Cache-Control" : "no-cache",
+        "Connection" : "keep-alive"
+      }
+    },
+    "type" : 1
+  },
+  {
+    "id" : "DA43024F-28D8-47BB-B0DC-BDD9CC6C4952",
+    "data" : {
+      "cls" : "NSData",
+      "base64" : "W10="
+    },
+    "type" : 2
+  },
+  {
+    "id" : "DA43024F-28D8-47BB-B0DC-BDD9CC6C4952",
+    "type" : 4
+  }
+]

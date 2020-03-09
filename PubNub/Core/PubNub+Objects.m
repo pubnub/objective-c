@@ -122,7 +122,9 @@
         NSNumber *limit = parameters[NSStringFromSelector(@selector(limit))] ?: @(100);
         
         PNFetchUsersRequest *request = [PNFetchUsersRequest new];
+        request.filter = parameters[NSStringFromSelector(@selector(filter))];
         request.start = parameters[NSStringFromSelector(@selector(start))];
+        request.sort = parameters[NSStringFromSelector(@selector(sort))];
         request.end = parameters[NSStringFromSelector(@selector(end))];
         request.includeFields = includeFields.unsignedIntegerValue;
         request.includeCount = includeCount.boolValue;
@@ -239,7 +241,9 @@
         NSNumber *limit = parameters[NSStringFromSelector(@selector(limit))] ?: @(100);
         
         PNFetchSpacesRequest *request = [PNFetchSpacesRequest new];
+        request.filter = parameters[NSStringFromSelector(@selector(filter))];
         request.start = parameters[NSStringFromSelector(@selector(start))];
+        request.sort = parameters[NSStringFromSelector(@selector(sort))];
         request.end = parameters[NSStringFromSelector(@selector(end))];
         request.includeFields = includeFields.unsignedIntegerValue;
         request.includeCount = includeCount.boolValue;
@@ -272,7 +276,9 @@
         request.updateSpaces = parameters[NSStringFromSelector(@selector(update))];
         request.leaveSpaces = parameters[NSStringFromSelector(@selector(remove))];
         request.joinSpaces = parameters[NSStringFromSelector(@selector(add))];
+        request.filter = parameters[NSStringFromSelector(@selector(filter))];
         request.start = parameters[NSStringFromSelector(@selector(start))];
+        request.sort = parameters[NSStringFromSelector(@selector(sort))];
         request.end = parameters[NSStringFromSelector(@selector(end))];
         request.includeFields = includeFields.unsignedIntegerValue;
         request.includeCount = includeCount.boolValue;
@@ -299,7 +305,9 @@
         NSString *userId = parameters[NSStringFromSelector(@selector(userId))];
         
         PNFetchMembershipsRequest *request = [PNFetchMembershipsRequest requestWithUserID:userId];
+        request.filter = parameters[NSStringFromSelector(@selector(filter))];
         request.start = parameters[NSStringFromSelector(@selector(start))];
+        request.sort = parameters[NSStringFromSelector(@selector(sort))];
         request.end = parameters[NSStringFromSelector(@selector(end))];
         request.includeFields = includeFields.unsignedIntegerValue;
         request.includeCount = includeCount.boolValue;
@@ -329,7 +337,9 @@
         request.updateMembers = parameters[NSStringFromSelector(@selector(update))];
         request.removeMembers = parameters[NSStringFromSelector(@selector(remove))];
         request.addMembers = parameters[NSStringFromSelector(@selector(add))];
+        request.filter = parameters[NSStringFromSelector(@selector(filter))];
         request.start = parameters[NSStringFromSelector(@selector(start))];
+        request.sort = parameters[NSStringFromSelector(@selector(sort))];
         request.end = parameters[NSStringFromSelector(@selector(end))];
         request.includeFields = includeFields.unsignedIntegerValue;
         request.includeCount = includeCount.boolValue;
@@ -356,7 +366,9 @@
         NSString *spaceId = parameters[NSStringFromSelector(@selector(spaceId))];
         
         PNFetchMembersRequest *request = [PNFetchMembersRequest requestWithSpaceID:spaceId];
+        request.filter = parameters[NSStringFromSelector(@selector(filter))];
         request.start = parameters[NSStringFromSelector(@selector(start))];
+        request.sort = parameters[NSStringFromSelector(@selector(sort))];
         request.end = parameters[NSStringFromSelector(@selector(end))];
         request.includeFields = includeFields.unsignedIntegerValue;
         request.includeCount = includeCount.boolValue;

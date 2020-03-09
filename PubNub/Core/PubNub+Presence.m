@@ -11,6 +11,7 @@
 #import "PubNub+CorePrivate.h"
 #import "PNStatus+Private.h"
 #import "PNConfiguration.h"
+#import "PNErrorStatus.h"
 #import "PNLogMacro.h"
 #import "PNHelpers.h"
 
@@ -347,7 +348,30 @@ NS_ASSUME_NONNULL_END
            withState:(NSDictionary<NSString*, NSDictionary *> *)states
      completionBlock:(PNStatusBlock)block {
     
+    PNErrorStatus *(^errorStatus)(PNStatusCategory) = ^(PNStatusCategory category) {
+        PNOperationType operation = connected ? PNHeartbeatOperation : PNUnsubscribeOperation;
+        PNErrorStatus *badRequestStatus = [PNErrorStatus statusForOperation:operation
+                                                                   category:category
+                                                        withProcessingError:nil];
+
+        __weak __typeof(self) weakSelf = self;
+        badRequestStatus.retryBlock = ^{
+            [weakSelf setConnected:connected
+                       forChannels:channels
+                     channelGroups:channelGroups
+                         withState:states
+                   completionBlock:block];
+        };
+        
+        [self appendClientInformation:badRequestStatus];
+        
+        return badRequestStatus;
+    };
+    
     if (!self.configuration.shouldManagePresenceListManually) {
+        PNErrorStatus *badRequestStatus = errorStatus(PNCancelledCategory);
+        
+        [self callBlock:block status:YES withResult:nil andStatus:badRequestStatus];
         return;
     }
 
@@ -382,6 +406,10 @@ NS_ASSUME_NONNULL_END
                 }
             }];
         }
+    } else {
+        PNErrorStatus *badRequestStatus = errorStatus(PNBadRequestCategory);
+        
+        [self callBlock:block status:YES withResult:nil andStatus:badRequestStatus];
     }
 }
 
@@ -412,13 +440,11 @@ NS_ASSUME_NONNULL_END
                 if (self.configuration.shouldManagePresenceListManually) {
                     NSMutableArray *allObjects = [NSMutableArray arrayWithArray:channels];
                     [allObjects addObjectsFromArray:groups];
-                    NSMutableDictionary *filteredState = [(state ?: @{}) mutableCopy];
-                    NSMutableArray *stateKeys = [NSMutableArray arrayWithArray:state.allKeys];
                     
-                    [stateKeys removeObjectsInArray:allObjects];
-                    [filteredState removeObjectsForKeys:stateKeys];
-                    
-                    state = filteredState;
+                    /**
+                     * Keep state only for channels / groups specified during manual presence manipulation method.
+                     */
+                    state = [state dictionaryWithValuesForKeys:allObjects];
                 }
                 
                 NSString *stateString = [PNJSON JSONStringFrom:state withError:nil];

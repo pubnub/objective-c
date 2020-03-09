@@ -141,16 +141,11 @@ NS_ASSUME_NONNULL_END
                   accessibilityTo:kSecAttrAccessibleAfterFirstUnlock];
         
         
-        _deviceID = [[self uniqueDeviceIdentifier] copy];
-        
-        if (NSClassFromString(@"XCTestExpectation")) {
-            _deviceID = [@"3650F534-FC54-4EE8-884C-EF1B83188BB7" copy];
-        }
-        
         _origin = [kPNDefaultOrigin copy];
         _publishKey = [publishKey copy];
         _subscribeKey = [subscribeKey copy];
         _uuid = [[self uniqueUserIdentifier] copy];
+        _deviceID = [[self uniqueDeviceIdentifier] copy];
         _subscribeMaximumIdleTime = kPNDefaultSubscribeMaximumIdleTime;
         _nonSubscribeRequestTimeout = kPNDefaultNonSubscribeRequestTimeout;
         _TLSEnabled = kPNDefaultIsTLSEnabled;

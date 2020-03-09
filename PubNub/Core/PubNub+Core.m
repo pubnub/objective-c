@@ -287,10 +287,6 @@ NS_ASSUME_NONNULL_END
         _callbackQueue = callbackQueue;
         _instanceID = [[[NSUUID UUID] UUIDString] copy];
 
-        if (NSClassFromString(@"XCTestExpectation")) {
-            _instanceID = [@"58EB05C9-9DE4-4118-B5D7-EE059FBF19A9" copy];
-        }
-
         [self prepareNetworkManagers];
         
         _subscriberManager = [PNSubscriber subscriberForClient:self];

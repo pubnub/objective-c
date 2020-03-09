@@ -45,4 +45,11 @@
     #define PN_OS_UNFAIR_LOCK_AVAILABLE 0
 #endif
 
+#define PNWeakify(variable) __weak __typeof(variable) PNWeak_##variable = variable;
+#define PNStrongify(variable) \
+_Pragma("clang diagnostic push") \
+_Pragma("clang diagnostic ignored \"-Wshadow\"") \
+__strong __typeof(variable) variable = PNWeak_##variable; \
+_Pragma("clang diagnostic pop")
+
 #endif // PNDefines_h

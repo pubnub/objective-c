@@ -1,0 +1,253 @@
+[
+  {
+    "id" : "6BAC75A2-CD03-430D-B02D-BE50267169C3",
+    "data" : {
+      "method" : "get",
+      "cls" : "NSURLRequest",
+      "cellular" : true,
+      "cache" : 1,
+      "timeout" : 60,
+      "cookies" : true,
+      "headers" : {
+        "User-Agent" : "iPhone; CPU iPhone OS 12.2.0 Version",
+        "Accept" : "*\/*",
+        "Connection" : "keep-alive",
+        "Accept-Encoding" : "gzip,deflate"
+      },
+      "pipeline" : false,
+      "network" : 0,
+      "url" : "https:\/\/ps.pndsn.com\/v2\/subscribe\/demo\/test-channel\/0?tt=0&uuid=david&pnsdk=PubNub-ObjC-iOS\/4.x.x"
+    },
+    "type" : 0
+  },
+  {
+    "id" : "6BAC75A2-CD03-430D-B02D-BE50267169C3",
+    "data" : {
+      "status" : 200,
+      "cls" : "NSHTTPURLResponse",
+      "url" : "https:\/\/ps.pndsn.com\/v2\/subscribe\/demo\/test-channel\/0?tt=0&uuid=david&pnsdk=PubNub-ObjC-iOS\/4.x.x",
+      "headers" : {
+        "Access-Control-Allow-Methods" : "GET",
+        "Content-Type" : "text\/javascript; charset=\"UTF-8\"",
+        "Access-Control-Allow-Origin" : "*",
+        "Date" : "Mon, 06 Jan 2020 00:23:58 GMT",
+        "Content-Length" : "45",
+        "Cache-Control" : "no-cache",
+        "Connection" : "keep-alive"
+      }
+    },
+    "type" : 1
+  },
+  {
+    "id" : "6BAC75A2-CD03-430D-B02D-BE50267169C3",
+    "data" : {
+      "cls" : "NSData",
+      "base64" : "eyJ0Ijp7InQiOiIxNTc4MjcwMjM4MjE1NzY2MCIsInIiOjEyfSwibSI6W119"
+    },
+    "type" : 2
+  },
+  {
+    "id" : "6BAC75A2-CD03-430D-B02D-BE50267169C3",
+    "type" : 4
+  },
+  {
+    "id" : "5DF30312-4417-41A0-9F94-8ECB987BB5C6",
+    "data" : {
+      "method" : "get",
+      "cls" : "NSURLRequest",
+      "cellular" : true,
+      "cache" : 1,
+      "timeout" : 60,
+      "cookies" : true,
+      "headers" : {
+        "User-Agent" : "iPhone; CPU iPhone OS 12.2.0 Version",
+        "Accept" : "*\/*",
+        "Connection" : "keep-alive",
+        "Accept-Encoding" : "gzip,deflate"
+      },
+      "pipeline" : false,
+      "network" : 0,
+      "url" : "https:\/\/ps.pndsn.com\/v2\/subscribe\/demo\/test-channel\/0?uuid=david&pnsdk=PubNub-ObjC-iOS\/4.x.x&tt=15782702382157660&tr=12"
+    },
+    "type" : 0
+  },
+  {
+    "id" : "D50B7C64-4F56-4FA1-B057-5650D0B407C2",
+    "data" : {
+      "method" : "get",
+      "cls" : "NSURLRequest",
+      "cellular" : true,
+      "cache" : 1,
+      "timeout" : 60,
+      "cookies" : true,
+      "headers" : {
+        "User-Agent" : "iPhone; CPU iPhone OS 12.2.0 Version",
+        "Accept" : "*\/*",
+        "Connection" : "keep-alive",
+        "Accept-Encoding" : "gzip,deflate"
+      },
+      "pipeline" : false,
+      "network" : 0,
+      "url" : "https:\/\/ps.pndsn.com\/publish\/demo\/demo\/0\/test-channel\/0\/%22hello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-thereh%22?uuid=serhii&pnsdk=PubNub-ObjC-iOS\/4.x.x&seqn=1"
+    },
+    "type" : 0
+  },
+  {
+    "id" : "5DF30312-4417-41A0-9F94-8ECB987BB5C6",
+    "data" : {
+      "status" : 200,
+      "cls" : "NSHTTPURLResponse",
+      "url" : "https:\/\/ps.pndsn.com\/v2\/subscribe\/demo\/test-channel\/0?uuid=david&pnsdk=PubNub-ObjC-iOS\/4.x.x&tt=15782702382157660&tr=12",
+      "headers" : {
+        "Access-Control-Allow-Methods" : "GET",
+        "Content-Type" : "text\/javascript; charset=\"UTF-8\"",
+        "Access-Control-Allow-Origin" : "*",
+        "Connection" : "keep-alive",
+        "Date" : "Mon, 06 Jan 2020 00:23:58 GMT",
+        "Content-Encoding" : "gzip",
+        "Cache-Control" : "no-cache",
+        "Transfer-Encoding" : "Identity"
+      }
+    },
+    "type" : 1
+  },
+  {
+    "id" : "D50B7C64-4F56-4FA1-B057-5650D0B407C2",
+    "data" : {
+      "status" : 200,
+      "cls" : "NSHTTPURLResponse",
+      "url" : "https:\/\/ps.pndsn.com\/publish\/demo\/demo\/0\/test-channel\/0\/%22hello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-thereh%22?pnsdk=PubNub-ObjC-iOS\/4.x.x&seqn=1&uuid=serhii",
+      "headers" : {
+        "Access-Control-Allow-Methods" : "GET",
+        "Content-Type" : "text\/javascript; charset=\"UTF-8\"",
+        "Access-Control-Allow-Origin" : "*",
+        "Date" : "Mon, 06 Jan 2020 00:23:58 GMT",
+        "Content-Length" : "30",
+        "Cache-Control" : "no-cache",
+        "Connection" : "keep-alive"
+      }
+    },
+    "type" : 1
+  },
+  {
+    "id" : "5DF30312-4417-41A0-9F94-8ECB987BB5C6",
+    "data" : {
+      "cls" : "NSData",
+      "base64" : "eyJ0Ijp7InQiOiIxNTc4MjcwMjM4NjE1NjgzNiIsInIiOjEyfSwibSI6W3siYSI6IjUiLCJmIjowLCJpIjoic2VyaGlpIiwicyI6MTU3LCJwIjp7InQiOiIxNTc4MjcwMjM4NjE2MDEyNSIsInIiOjEyfSwiayI6ImRlbW8iLCJjIjoidGVzdC1jaGFubmVsIiwiZCI6ImhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJl"
+    },
+    "type" : 2
+  },
+  {
+    "id" : "5DF30312-4417-41A0-9F94-8ECB987BB5C6",
+    "data" : {
+      "cls" : "NSData",
+      "base64" : "aGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWhlbGxvLXRoZXJlaGVsbG8tdGhlcmVoZWxsby10aGVyZWgifV19"
+    },
+    "type" : 2
+  },
+  {
+    "id" : "D50B7C64-4F56-4FA1-B057-5650D0B407C2",
+    "data" : {
+      "cls" : "NSData",
+      "base64" : "WzEsIlNlbnQiLCIxNTc4MjcwMjM4NjE2MDEyNSJd"
+    },
+    "type" : 2
+  },
+  {
+    "id" : "5DF30312-4417-41A0-9F94-8ECB987BB5C6",
+    "type" : 4
+  },
+  {
+    "id" : "D50B7C64-4F56-4FA1-B057-5650D0B407C2",
+    "type" : 4
+  },
+  {
+    "id" : "A955C241-3D91-4331-82DC-F1666DBF616B",
+    "data" : {
+      "method" : "get",
+      "cls" : "NSURLRequest",
+      "cellular" : true,
+      "cache" : 1,
+      "timeout" : 60,
+      "cookies" : true,
+      "headers" : {
+        "User-Agent" : "iPhone; CPU iPhone OS 12.2.0 Version",
+        "Accept" : "*\/*",
+        "Connection" : "keep-alive",
+        "Accept-Encoding" : "gzip,deflate"
+      },
+      "pipeline" : false,
+      "network" : 0,
+      "url" : "https:\/\/ps.pndsn.com\/v2\/subscribe\/demo\/test-channel\/0?uuid=david&pnsdk=PubNub-ObjC-iOS\/4.x.x&tt=15782702386156836&tr=12"
+    },
+    "type" : 0
+  },
+  {
+    "id" : "A955C241-3D91-4331-82DC-F1666DBF616B",
+    "data" : {
+      "code" : -999,
+      "info" : {
+        "NSErrorFailingURLStringKey" : "https:\/\/ps.pndsn.com\/v2\/subscribe\/demo\/test-channel\/0?uuid=david&pnsdk=PubNub-ObjC-iOS\/4.x.x&tt=15782702386156836&tr=12",
+        "NSLocalizedDescription" : "cancelled",
+        "NSErrorFailingURLKey" : "https:\/\/ps.pndsn.com\/v2\/subscribe\/demo\/test-channel\/0?uuid=david&pnsdk=PubNub-ObjC-iOS\/4.x.x&tt=15782702386156836&tr=12"
+      },
+      "cls" : "NSError",
+      "domain" : "NSURLErrorDomain"
+    },
+    "type" : 3
+  },
+  {
+    "id" : "89AB86A5-A187-4FAA-B1CA-3C7FEC5B1625",
+    "data" : {
+      "method" : "get",
+      "cls" : "NSURLRequest",
+      "cellular" : true,
+      "cache" : 1,
+      "timeout" : 60,
+      "cookies" : true,
+      "headers" : {
+        "User-Agent" : "iPhone; CPU iPhone OS 12.2.0 Version",
+        "Accept" : "*\/*",
+        "Connection" : "keep-alive",
+        "Accept-Encoding" : "gzip,deflate"
+      },
+      "pipeline" : false,
+      "network" : 0,
+      "url" : "https:\/\/ps.pndsn.com\/v2\/presence\/sub_key\/demo\/channel\/test-channel\/leave?uuid=david&pnsdk=PubNub-ObjC-iOS\/4.x.x"
+    },
+    "type" : 0
+  },
+  {
+    "id" : "89AB86A5-A187-4FAA-B1CA-3C7FEC5B1625",
+    "data" : {
+      "status" : 200,
+      "cls" : "NSHTTPURLResponse",
+      "url" : "https:\/\/ps.pndsn.com\/v2\/presence\/sub_key\/demo\/channel\/test-channel\/leave?uuid=david&pnsdk=PubNub-ObjC-iOS\/4.x.x",
+      "headers" : {
+        "Access-Control-Allow-Methods" : "OPTIONS, GET, POST",
+        "Content-Type" : "text\/javascript; charset=\"UTF-8\"",
+        "Server" : "Pubnub Presence",
+        "Access-Control-Allow-Origin" : "*",
+        "Age" : "0",
+        "Date" : "Mon, 06 Jan 2020 00:23:58 GMT",
+        "Accept-Ranges" : "bytes",
+        "Content-Length" : "74",
+        "Cache-Control" : "no-cache",
+        "Connection" : "keep-alive"
+      }
+    },
+    "type" : 1
+  },
+  {
+    "id" : "89AB86A5-A187-4FAA-B1CA-3C7FEC5B1625",
+    "data" : {
+      "cls" : "NSData",
+      "base64" : "eyJzdGF0dXMiOiAyMDAsICJtZXNzYWdlIjogIk9LIiwgImFjdGlvbiI6ICJsZWF2ZSIsICJzZXJ2aWNlIjogIlByZXNlbmNlIn0="
+    },
+    "type" : 2
+  },
+  {
+    "id" : "89AB86A5-A187-4FAA-B1CA-3C7FEC5B1625",
+    "type" : 4
+  }
+]

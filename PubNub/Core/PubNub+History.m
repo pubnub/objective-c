@@ -305,8 +305,8 @@ NS_ASSUME_NONNULL_END
                        limit:nil
                      reverse:@NO
             includeTimeToken:@NO
-       includeMessageActions:@(shouldIncludeMetadata)
-             includeMetadata:@(shouldIncludeMessageActions)
+       includeMessageActions:@(shouldIncludeMessageActions)
+             includeMetadata:@(shouldIncludeMetadata)
              queryParameters:nil
               withCompletion:block];
     

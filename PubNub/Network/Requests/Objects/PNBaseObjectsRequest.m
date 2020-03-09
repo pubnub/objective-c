@@ -157,11 +157,12 @@ NS_ASSUME_NONNULL_END
                 toRequest:(PNRequestParameters *)requestParameters {
     
     NSString *include = [requestParameters query][@"include"];
-    NSMutableArray *includeFields = [[include componentsSeparatedByString:@","] ?: @[] mutableCopy];
+    NSArray *existingFields = [include componentsSeparatedByString:@","] ?: @[];
+    NSMutableSet *includeFields = [NSMutableSet setWithArray:existingFields];
     [includeFields addObjectsFromArray:fields];
 
     [requestParameters removeQueryParameterWithFieldName:@"include"];
-    [requestParameters addQueryParameter:[includeFields componentsJoinedByString:@","]
+    [requestParameters addQueryParameter:[includeFields.allObjects componentsJoinedByString:@","]
                             forFieldName:@"include"];
 }
 

@@ -593,6 +593,7 @@ NS_ASSUME_NONNULL_END
             NSData *messageData = [messageForPublish dataUsingEncoding:NSUTF8StringEncoding];
             NSData *compressedBody = [PNGZIP GZIPDeflatedData:messageData];
             publishData = (compressedBody?: [@"" dataUsingEncoding:NSUTF8StringEncoding]);
+            parameters.POSTBodyCompressed = YES;
             parameters.HTTPMethod = @"POST";
         }
         
@@ -848,7 +849,8 @@ NS_ASSUME_NONNULL_END
             PNRequestParameters *parameters = [self requestParametersForMessage:messageForPublish
                                                                       toChannel:channel
                                                                      compressed:compressMessage
-                                                                 storeInHistory:shouldStore ttl:ttl
+                                                                 storeInHistory:shouldStore
+                                                                            ttl:ttl
                                                                       replicate:replicate
                                                                        metadata:metadataForPublish 
                                                                  sequenceNumber:nextSequenceNumber

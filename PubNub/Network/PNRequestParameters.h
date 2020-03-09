@@ -38,9 +38,16 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, assign, getter = shouldIncludeTelemetry) BOOL includeTelemetry;
 
 /**
- * @brief Kkey/value pairs which should be expanded in query string.
+ * @brief Key/value pairs which should be expanded in query string.
  */
 @property (nonatomic, nullable, readonly) NSDictionary<NSString *, NSString *> *query;
+
+/**
+ * @brief Whether passed request parameters represent compressed POST body or not.
+ *
+ * @since 4.13.0
+ */
+@property (nonatomic, assign, getter=isPOSTBodyCompressed) BOOL POSTBodyCompressed;
 
 
 #pragma mark - Path components manipulation

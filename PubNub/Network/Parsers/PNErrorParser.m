@@ -92,6 +92,11 @@
         }
         
         processedResponse = errorData;
+    } else if ([response isKindOfClass:[NSArray class]]) {
+        // Signals API error handling.
+        if (((NSArray *)response).count == 3) {
+            processedResponse = @{ @"information": (NSArray *)response[1] };
+        }
     }
     
     return processedResponse;

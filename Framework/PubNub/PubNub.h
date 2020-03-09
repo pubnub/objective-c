@@ -43,6 +43,7 @@ FOUNDATION_EXPORT const unsigned char PubNubVersionString[];
 #import "PNServiceData.h"
 #import "PNErrorStatus.h"
 #import "PNTimeResult.h"
+#import "PNKeychain.h"
 #import "PNResult.h"
 #import "PNStatus.h"
 

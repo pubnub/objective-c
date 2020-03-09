@@ -1,0 +1,104 @@
+[
+  {
+    "id" : "37F15534-27B7-40BA-8AD6-0EC8C39E3D46",
+    "data" : {
+      "method" : "get",
+      "cls" : "NSURLRequest",
+      "cellular" : true,
+      "cache" : 1,
+      "timeout" : 60,
+      "cookies" : true,
+      "headers" : {
+        "User-Agent" : "iPhone; CPU iPhone OS 12.2.0 Version",
+        "Accept" : "*\/*",
+        "Connection" : "keep-alive",
+        "Accept-Encoding" : "gzip,deflate"
+      },
+      "pipeline" : false,
+      "network" : 0,
+      "url" : "https:\/\/ps.pndsn.com\/signal\/demo\/demo\/0\/test-channel\/0\/%22hello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehe%22?uuid=serhii&pnsdk=PubNub-ObjC-iOS\/4.x.x"
+    },
+    "type" : 0
+  },
+  {
+    "id" : "37F15534-27B7-40BA-8AD6-0EC8C39E3D46",
+    "data" : {
+      "status" : 400,
+      "cls" : "NSHTTPURLResponse",
+      "url" : "https:\/\/ps.pndsn.com\/signal\/demo\/demo\/0\/test-channel\/0\/%22hello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehe%22?uuid=serhii&pnsdk=PubNub-ObjC-iOS\/4.x.x",
+      "headers" : {
+        "Access-Control-Allow-Methods" : "GET",
+        "Content-Type" : "text\/javascript; charset=\"UTF-8\"",
+        "Access-Control-Allow-Origin" : "*",
+        "Date" : "Mon, 06 Jan 2020 00:23:57 GMT",
+        "Content-Length" : "47",
+        "Cache-Control" : "no-cache",
+        "Connection" : "keep-alive"
+      }
+    },
+    "type" : 1
+  },
+  {
+    "id" : "37F15534-27B7-40BA-8AD6-0EC8C39E3D46",
+    "data" : {
+      "cls" : "NSData",
+      "base64" : "WzAsIlNpZ25hbCBzaXplIHRvbyBsYXJnZSIsIjE1NzgyNzAyMzc1MDQ4NzYzIl0="
+    },
+    "type" : 2
+  },
+  {
+    "id" : "37F15534-27B7-40BA-8AD6-0EC8C39E3D46",
+    "type" : 4
+  },
+  {
+    "id" : "B0563233-3C08-4E1A-82ED-44C2ACC137A0",
+    "data" : {
+      "method" : "get",
+      "cls" : "NSURLRequest",
+      "cellular" : true,
+      "cache" : 1,
+      "timeout" : 60,
+      "cookies" : true,
+      "headers" : {
+        "User-Agent" : "iPhone; CPU iPhone OS 12.2.0 Version",
+        "Accept" : "*\/*",
+        "Connection" : "keep-alive",
+        "Accept-Encoding" : "gzip,deflate"
+      },
+      "pipeline" : false,
+      "network" : 0,
+      "url" : "https:\/\/ps.pndsn.com\/signal\/demo\/demo\/0\/test-channel\/0\/%22hello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehe%22?uuid=serhii&pnsdk=PubNub-ObjC-iOS\/4.x.x"
+    },
+    "type" : 0
+  },
+  {
+    "id" : "B0563233-3C08-4E1A-82ED-44C2ACC137A0",
+    "data" : {
+      "status" : 400,
+      "cls" : "NSHTTPURLResponse",
+      "url" : "https:\/\/ps.pndsn.com\/signal\/demo\/demo\/0\/test-channel\/0\/%22hello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehello-therehe%22?uuid=serhii&pnsdk=PubNub-ObjC-iOS\/4.x.x",
+      "headers" : {
+        "Access-Control-Allow-Methods" : "GET",
+        "Content-Type" : "text\/javascript; charset=\"UTF-8\"",
+        "Access-Control-Allow-Origin" : "*",
+        "Date" : "Mon, 06 Jan 2020 00:23:57 GMT",
+        "Content-Length" : "47",
+        "Cache-Control" : "no-cache",
+        "Connection" : "keep-alive"
+      }
+    },
+    "type" : 1
+  },
+  {
+    "id" : "B0563233-3C08-4E1A-82ED-44C2ACC137A0",
+    "data" : {
+      "cls" : "NSData",
+      "base64" : "WzAsIlNpZ25hbCBzaXplIHRvbyBsYXJnZSIsIjE1NzgyNzAyMzc1NjE0NzA0Il0="
+    },
+    "type" : 2
+  },
+  {
+    "id" : "B0563233-3C08-4E1A-82ED-44C2ACC137A0",
+    "type" : 4
+  }
+]

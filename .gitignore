@@ -5,6 +5,10 @@
 #reports
 reports/
 
+# Tests
+##################
+tests-configuration.json
+
 ## Build generated
 build/
 DerivedData
@@ -19,14 +23,17 @@ Framework/Products
 !default.mode2v3
 *.perspectivev3
 !default.perspectivev3
-xcuserdata
+xcuserdata/
 
 ## Other
-*.xccheckout
-*.moved-aside
+*.xcscmblueprint
 *.xcuserstate
+*.moved-aside
+*.xccheckout
 
 ## Obj-C/Swift specific
+*.dSYM.zip
+*.dSYM
 *.hmap
 *.ipa
 
@@ -44,15 +51,15 @@ Podfile.lock
 # Add this line if you want to avoid checking in source code from Carthage dependencies.
 # Carthage/Checkouts
 
-Carthage/Build
+Carthage
 
 # Fastlane
 ##########
-fastlane/README.md
-fastlane/report.xml
-fastlane/Preview.html
-fastlane/screenshots
-fastlane/test*output/*
+.fastlane/README.md
+.fastlane/report.xml
+.fastlane/Preview.html
+.fastlane/screenshots
+.fastlane/test_output
 
 
 # OS generated files #
@@ -66,3 +73,6 @@ Icon?
 ehthumbs.db
 Thumbs.db
 .idea/
+
+deployment_keys
+deployment_keys.pub

@@ -213,13 +213,17 @@ NS_ASSUME_NONNULL_END
     
     NSString *operation = nil;
     switch (operationType) {
-        case PNPublishOperation: 
+        case PNPublishOperation:
             operation = @"pub";
+            break;
+        case PNSignalOperation:
+            operation = @"sig";
             break;
         case PNHistoryOperation:
         case PNHistoryForChannelsOperation:
         case PNHistoryWithActionsOperation:
         case PNDeleteMessageOperation:
+        case PNMessageCountOperation:
             operation = @"hist";
             break;
         case PNUnsubscribeOperation: 

@@ -290,6 +290,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param requestURL Reference on complete remote resource URL which should be used for request.
  * @param method Reference on string with HTTP method which should be used to send request.
  * @param postData Reference on data which should be sent as POST body (if passed).
+ * @param isDataCompressed Whether POST body has been compressed or not.
  *
  * @return Constructed and ready to use request object.
  *
@@ -297,7 +298,8 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (NSURLRequest *)requestWithURL:(NSURL *)requestURL
                           method:(NSString *)method
-                            data:(NSData *)postData;
+                            data:(NSData *)postData
+                      compressed:(BOOL)isDataCompressed;
 
 /**
  * @brief Construct data task which should be used to process provided request.
@@ -656,34 +658,24 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Request helper
 
 - (void)appendRequiredParametersTo:(PNRequestParameters *)parameters {
-    
     [parameters addPathComponents:self.defaultPathComponents];
     [parameters addQueryParameters:self.defaultQueryComponents];
     
     if (parameters.shouldIncludeTelemetry) {
         [parameters addQueryParameters:[self.client.telemetryManager operationsLatencyForRequest]];
     }
-
-    static BOOL isTestEnvironment;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        isTestEnvironment = NSClassFromString(@"XCTestExpectation") != nil;
-    });
-
-    if (!isTestEnvironment) {
-        [parameters addQueryParameter:[[NSUUID UUID] UUIDString] forFieldName:@"requestid"];
-    }
+    
+    [parameters addQueryParameter:[[NSUUID UUID] UUIDString] forFieldName:@"requestid"];
 }
 
 - (void)prepareRequiredParameters {
-    
     _defaultPathComponents = @{@"{sub-key}": (self.configuration.subscribeKey?: @""),
                                @"{pub-key}": (self.configuration.publishKey?: @"")};
     NSMutableDictionary *queryComponents = [@{
         @"uuid": [PNString percentEscapedString:(self.configuration.uuid?: @"")],
         @"deviceid": (self.configuration.deviceID?: @""),
         @"instanceid": self.client.instanceID,
-        @"pnsdk":[NSString stringWithFormat:@"PubNub-%@%%2F%@", kPNClientName, kPNLibraryVersion]
+        @"pnsdk":[NSString stringWithFormat:@"PubNFub-%@%%2F%@", kPNClientName, kPNLibraryVersion]
     } mutableCopy];
 
     if (self.configuration.authKey.length) { 
@@ -695,7 +687,8 @@ NS_ASSUME_NONNULL_END
 
 - (NSURLRequest *)requestWithURL:(NSURL *)requestURL
                           method:(NSString *)method
-                            data:(NSData *)postData {
+                            data:(NSData *)postData
+                      compressed:(BOOL)isDataCompressed {
     
     NSURL *fullURL = [NSURL URLWithString:requestURL.absoluteString relativeToURL:self.baseURL];
     NSMutableURLRequest *httpRequest = [NSMutableURLRequest requestWithURL:fullURL];
@@ -708,10 +701,14 @@ NS_ASSUME_NONNULL_END
 
     if (postData) {
         NSMutableDictionary *allHeaders = [httpRequest.allHTTPHeaderFields mutableCopy];
-        [allHeaders addEntriesFromDictionary:@{@"Content-Encoding":@"gzip",
-                                               @"Content-Type":@"application/json;charset=UTF-8",
+        [allHeaders addEntriesFromDictionary:@{@"Content-Type":@"application/json;charset=UTF-8",
                                                @"Content-Length":[NSString stringWithFormat:@"%@",
                                                                   @(postData.length)]}];
+        
+        if (isDataCompressed) {
+            allHeaders[@"Content-Encoding"] = @"gzip";
+        }
+        
         httpRequest.allHTTPHeaderFields = allHeaders;
         [httpRequest setHTTPBody:postData];
     }
@@ -867,7 +864,8 @@ NS_ASSUME_NONNULL_END
         __weak __typeof(self) weakSelf = self;
         NSURLRequest *request = [self requestWithURL:requestURL
                                               method:parameters.HTTPMethod
-                                                data:data];
+                                                data:data
+                                          compressed:parameters.isPOSTBodyCompressed];
         NSURLSessionDataTask *task = [self dataTaskWithRequest:request
                                                   forOperation:operationType
                                                        success:^(NSURLSessionDataTask *completedTask,
@@ -1030,7 +1028,8 @@ NS_ASSUME_NONNULL_END
     if (requestURL) {
         NSURLRequest *request = [self requestWithURL:requestURL
                                               method:parameters.HTTPMethod
-                                                data:data];
+                                                data:data
+                                          compressed:parameters.isPOSTBodyCompressed];
         size = [PNURLRequest packetSizeForRequest:request];
     }
     
