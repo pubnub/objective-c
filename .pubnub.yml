@@ -632,8 +632,7 @@ changelog:
         text: "mobile push payload removed from received message."
         type: improvement
       - 
-        text: "'pn_other' key has been removed and original object will be returned in delegate callback (this field used with message encryption and/or mobile push payload).
-"
+        text: "'pn_other' key has been removed and original object will be returned in delegate callback (this field used with message encryption and/or mobile push payload)."
         type: improvement
     date: May 12, 16
     version: v4.3.1
