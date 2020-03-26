@@ -13,7 +13,7 @@ env:
 
 before_script:
   - sudo gem install xcpretty
-  - ./.travis/repo-scripts/create-configuration.sh
+  - . "./Tests/Support Files/Scripts/create-configuration.sh"
 
 stages:
   - name: test
@@ -22,11 +22,11 @@ jobs:
   include:
     - stage: "test"
       name: "[iOS] Mocked Integration test"
-      script: ./.travis/repo-scripts/tests-runner.sh ios
+      script: . "./Tests/Support Files/Scripts/tests-runner.sh" ios
     - name: "[macOS] Mocked Integration test"
-      script: ./.travis/repo-scripts/tests-runner.sh macos
+      script: . "./Tests/Support Files/Scripts/tests-runner.sh" macos
     - name: "[tvOS] Mocked Integration test"
-      script: ./.travis/repo-scripts/tests-runner.sh tvos
+      script: . "./Tests/Support Files/Scripts/tests-runner.sh" tvos
 
 after_failure:
  - cat -n ~/Library/Logs/scan/*

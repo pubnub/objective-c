@@ -7,13 +7,6 @@
 #import "PubNub+CorePrivate.h"
 #define PN_CORE_PROTOCOLS PNObjectEventListener
 
-// Fabric
-#ifdef FABRIC_SUPPORT
-    #import "FABKitProtocol.h"
-    #undef PN_CORE_PROTOCOLS
-    #define PN_CORE_PROTOCOLS PNObjectEventListener, FABKit
-#endif
-
 #if TARGET_OS_IOS
     #import <UIKit/UIKit.h>
 #elif TARGET_OS_OSX
@@ -412,20 +405,6 @@ NS_ASSUME_NONNULL_END
         });
     }
 }
-
-
-#pragma mark - Fabric support
-#ifdef FABRIC_SUPPORT
-+ (NSString *)bundleIdentifier {
-    
-    return kPNClientIdentifier;
-}
-
-+ (NSString *)kitDisplayVersion {
-    
-    return [self information].version;
-}
-#endif
 
 
 #pragma mark - Reachability

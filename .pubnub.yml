@@ -1,9 +1,16 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.13.0"
+version: "4.13.1"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Remove Fabric components from `PubNub.podspec` because they have been removed from SDK with latest release."
+        type: bug
+    date: Mar 26, 20
+    version: v4.13.1
   -
     changes:
       -
@@ -33,10 +40,13 @@ changelog:
       -
         text: "Remove 'macOS' from supported platforms in iOS Framework targets and rely on command-line specified flags to build Framework with Catalyst support."
         type: bug
-    date: Feb, 9 20
+    date: Mar 9, 20
     version: v4.13.0
   -
     changes:
+      -
+        text: "Added support for new endpoint which allow register and use devices with APNS2."
+        type: feature
       -
         text: "Added new interfaces (builder-based API also has been modified) which allow pass device push token / identifier (not only NSData) using specific push service type."
         type: feature
@@ -632,8 +642,7 @@ changelog:
         text: "mobile push payload removed from received message."
         type: improvement
       - 
-        text: "'pn_other' key has been removed and original object will be returned in delegate callback (this field used with message encryption and/or mobile push payload).
-"
+        text: "'pn_other' key has been removed and original object will be returned in delegate callback (this field used with message encryption and/or mobile push payload)."
         type: improvement
     date: May 12, 16
     version: v4.3.1

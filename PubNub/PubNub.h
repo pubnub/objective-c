@@ -53,9 +53,4 @@
 #import "PNStatus.h"
 #import "PNAES.h"
 
-// Fabric
-#ifdef FABRIC_SUPPORT
-    #import "PubNub+FAB.h"
-#endif
-
 #endif

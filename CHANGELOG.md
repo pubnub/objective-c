@@ -1,5 +1,16 @@
+## [v4.13.1](https://github.com/pubnub/objective-c/releases/tag/v4.13.1)
+March 26 2020
+
+[Full Changelog](https://github.com/pubnub/objective-c/compare/v4.13.0...v4.13.1)
+
+#### Modified
+- Remove line breaks which affect change log generator. Addresses the following PRs from [@samiahmedsiddiqui](https://github.com/samiahmedsiddiqui): [#423](https://github.com/pubnub/objective-c/pull/423).
+
+#### Fixed
+- Remove Fabric components from `PubNub.podspec` because they have been removed from SDK with latest release. 
+
 ## [v4.13.0](https://github.com/pubnub/objective-c/releases/tag/v4.13.0)
-February 9 2020
+March 9 2020
 
 [Full Changelog](https://github.com/pubnub/objective-c/compare/v4.12.0...v4.13.0)
 
@@ -25,6 +36,7 @@ December 5 2019
 [Full Changelog](https://github.com/pubnub/objective-c/compare/v4.11.1...v4.12.0)
 
 #### Added
+- Add support for new endpoint which allow register and use devices with APNS2.
 - Add new interfaces (builder-based API also has been modified) which allow pass device push token / identifier (not only NSData) using specific push service type.
 - Add class which simplify basic notifications composition for multiple platforms / providers at once.
 #### Modified
