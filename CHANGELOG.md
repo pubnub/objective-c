@@ -1,3 +1,14 @@
+## [v4.13.2](https://github.com/pubnub/objective-c/releases/tag/v4.13.2)
+May 18 2020
+
+[Full Changelog](https://github.com/pubnub/objective-c/compare/v4.13.1...v4.13.2)
+
+#### Modified
+- Update `.pubnub.yml` features matrix with missing features. 
+
+#### Fixed
+- Don't create lowercase string when FCM device registration token provided to PubNub notifications API. 
+
 ## [v4.13.1](https://github.com/pubnub/objective-c/releases/tag/v4.13.1)
 March 26 2020
 

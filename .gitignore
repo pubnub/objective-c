@@ -73,10 +73,3 @@ Icon?
 ehthumbs.db
 Thumbs.db
 .idea/
-
-.travis/README.md
-.travis/scripts
-
-deployment_keys
-deployment_keys-private
-deployment_keys.tar

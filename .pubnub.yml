@@ -1,9 +1,16 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.13.1"
+version: "4.13.2"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Don't create lowercase string when FCM device registration token provided to PubNub notifications API."
+        type: bug
+    date: May 18, 20
+    version: v4.13.2
   -
     changes:
       -
@@ -973,6 +980,10 @@ features:
     - PUSH-REMOVE-DEVICE-FROM-CHANNELS
     - PUSH-LIST-CHANNELS-FROM-DEVICE
     - PUSH-REMOVE-DEVICE
+    - PUSH-TYPE-APNS2
+    - PUSH-TYPE-APNS
+    - PUSH-TYPE-FCM
+    - PUSH-TYPE-MPNS
   presence:
     - PRESENCE-HERE-NOW
     - PRESENCE-WHERE-NOW
@@ -985,6 +996,7 @@ features:
     - PUBLISH-RAW-JSON
     - PUBLISH-WITH-METADATA
     - PUBLISH-GET
+    - PUBLISH-POST
     - PUBLISH-COMPRESS-MESSAGE    
     - PUBLISH-ASYNC
     - PUBLISH-FIRE
@@ -995,7 +1007,8 @@ features:
     - STORAGE-INCLUDE-TIMETOKEN
     - STORAGE-START-END
     - STORAGE-COUNT
-    - HISTORY-DELETE
+    - STORAGE-DELETE-MESSAGES
+    - STORAGE-FETCH-MESSAGES
     - STORAGE-MESSAGE-COUNT
     - STORAGE-HISTORY-WITH-META
     - STORAGE-FETCH-WITH-META
@@ -1011,6 +1024,8 @@ features:
     - SUBSCRIBE-WILDCARD
     - SUBSCRIBE-FILTER-EXPRESSION
     - SUBSCRIBE-PUBLISHER-UUID
+    - SUBSCRIBE-WITH-USERSTATE
+    - SUBSCRIBE-PUBSUB-V2
     - SUBSCRIBE-MESSAGE-DEDUPE
     - SUBSCRIBE-SIGNAL-LISTENER
     - SUBSCRIBE-MEMBERSHIP-LISTENER
@@ -1033,10 +1048,16 @@ features:
     - OBJECTS-DELETE-SPACE
     - OBJECTS-GET-SPACE
     - OBJECTS-GET-SPACES
-    - OBJECTS-GET-MEMBERSHIPS
+    - OBJECTS-JOIN-SPACES
+    - OBJECTS-UPDATE-MEMBERSHIPS
+    - OBJECTS-LEAVE-SPACES
     - OBJECTS-MANAGE-MEMBERSHIPS
-    - OBJECTS-GET-MEMBERS
+    - OBJECTS-GET-MEMBERSHIPS
+    - OBJECTS-ADD-MEMBERS
+    - OBJECTS-UPDATE-MEMBERS
+    - OBJECTS-REMOVE-MEMBERS
     - OBJECTS-MANAGE-MEMBERS
+    - OBJECTS-GET-MEMBERS
     - OBJECTS-FILTERING
     - OBJECTS-SORTING
   message-actions:
@@ -1045,6 +1066,9 @@ features:
     - MESSAGE-ACTIONS-REMOVE
   others:
     - TELEMETRY
+    - PN-OTHER-PROCESSING
+    - QUERY-PARAM
+    - CREATE-PUSH-PAYLOAD
 supported-platforms:
   -
     version: PubNub Objective-C SDK

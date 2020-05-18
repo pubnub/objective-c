@@ -25,7 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) id pushToken;
 
 /**
- * @brief One of \b PNPushType fields which specify spervide to manage notifications for device
+ * @brief One of \b PNPushType fields which specify provider to manage notifications for device
  * specified with \c pushToken.
  */
 @property (nonatomic, assign) PNPushType pushType;
@@ -71,7 +71,7 @@ NS_ASSUME_NONNULL_END
     NSString *tokenType = @"apns";
     
     if (self.pushType == PNAPNSPush || self.pushType == PNAPNS2Push) {
-        token = [PNData HEXFromDevicePushToken:self.pushToken];
+        token = [PNData HEXFromDevicePushToken:self.pushToken].lowercaseString;
     }
     
     if (self.pushType == PNFCMPush) {
@@ -88,7 +88,7 @@ NS_ASSUME_NONNULL_END
         [parameters addQueryParameter:topic forFieldName:@"topic"];
     }
     
-    [parameters addPathComponent:token.lowercaseString forPlaceholder:@"{token}"];
+    [parameters addPathComponent:[PNString percentEscapedString:token] forPlaceholder:@"{token}"];
     [parameters addQueryParameter:tokenType forFieldName:@"type"];
     
     return parameters;
