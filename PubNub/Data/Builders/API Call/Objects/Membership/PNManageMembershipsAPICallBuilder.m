@@ -1,8 +1,8 @@
 /**
  * @author Serhii Mamontov
- * @version 4.10.0
- * @since 4.10.0
- * @copyright © 2010-2019 PubNub, Inc.
+ * @version 4.14.0
+ * @since 4.14.0
+ * @copyright © 2010-2020 PubNub, Inc.
  */
 #import "PNManageMembershipsAPICallBuilder.h"
 #import "PNAPICallBuilder+Private.h"
@@ -27,10 +27,10 @@
     };
 }
 
-- (PNManageMembershipsAPICallBuilder * (^)(NSArray<NSDictionary *> *spaces))update {
-    return ^PNManageMembershipsAPICallBuilder * (NSArray<NSDictionary *> *spaces) {
-        if ([spaces isKindOfClass:[NSArray class]] && spaces.count) {
-            [self setValue:spaces forParameter:NSStringFromSelector(_cmd)];
+- (PNManageMembershipsAPICallBuilder * (^)(NSArray<NSDictionary *> *channels))set {
+    return ^PNManageMembershipsAPICallBuilder * (NSArray<NSDictionary *> *channels) {
+        if ([channels isKindOfClass:[NSArray class]] && channels.count) {
+            [self setValue:channels forParameter:NSStringFromSelector(_cmd)];
         }
 
         return self;
@@ -44,28 +44,18 @@
     };
 }
 
-- (PNManageMembershipsAPICallBuilder * (^)(NSArray<NSDictionary *> *spaces))add {
-    return ^PNManageMembershipsAPICallBuilder * (NSArray<NSDictionary *> *spaces) {
-        if ([spaces isKindOfClass:[NSArray class]] && spaces.count) {
-            [self setValue:spaces forParameter:NSStringFromSelector(_cmd)];
+- (PNManageMembershipsAPICallBuilder * (^)(NSArray<NSString *> *channels))remove {
+    return ^PNManageMembershipsAPICallBuilder * (NSArray<NSString *> *channels) {
+        if ([channels isKindOfClass:[NSArray class]] && channels.count) {
+            [self setValue:channels forParameter:NSStringFromSelector(_cmd)];
         }
 
         return self;
     };
 }
 
-- (PNManageMembershipsAPICallBuilder * (^)(NSArray<NSString *> *spaces))remove {
-    return ^PNManageMembershipsAPICallBuilder * (NSArray<NSString *> *spaces) {
-        if ([spaces isKindOfClass:[NSArray class]] && spaces.count) {
-            [self setValue:spaces forParameter:NSStringFromSelector(_cmd)];
-        }
-
-        return self;
-    };
-}
-
-- (PNManageMembershipsAPICallBuilder * (^)(NSArray<NSString*> *sort))sort {
-    return ^PNManageMembershipsAPICallBuilder * (NSArray<NSString*> *sort) {
+- (PNManageMembershipsAPICallBuilder * (^)(NSArray<NSString *> *sort))sort {
+    return ^PNManageMembershipsAPICallBuilder * (NSArray<NSString *> *sort) {
         if ([sort isKindOfClass:[NSArray class]] && sort.count) {
             [self setValue:sort forParameter:NSStringFromSelector(_cmd)];
         }
@@ -84,16 +74,6 @@
     };
 }
 
-- (PNManageMembershipsAPICallBuilder * (^)(NSString *userId))userId {
-    return ^PNManageMembershipsAPICallBuilder * (NSString *userId) {
-        if ([userId isKindOfClass:[NSString class]] && userId.length) {
-            [self setValue:userId forParameter:NSStringFromSelector(_cmd)];
-        }
-        
-        return self;
-    };
-}
-
 - (PNManageMembershipsAPICallBuilder * (^)(NSUInteger limit))limit {
     return ^PNManageMembershipsAPICallBuilder * (NSUInteger limit) {
         [self setValue:@(limit) forParameter:NSStringFromSelector(_cmd)];
@@ -105,6 +85,16 @@
     return ^PNManageMembershipsAPICallBuilder * (NSString *start) {
         if ([start isKindOfClass:[NSString class]] && start.length) {
             [self setValue:start forParameter:NSStringFromSelector(_cmd)];
+        }
+
+        return self;
+    };
+}
+
+- (PNManageMembershipsAPICallBuilder *(^)(NSString *uuid))uuid {
+    return ^PNManageMembershipsAPICallBuilder * (NSString *uuid) {
+        if ([uuid isKindOfClass:[NSString class]] && uuid.length) {
+            [self setValue:uuid forParameter:NSStringFromSelector(_cmd)];
         }
 
         return self;

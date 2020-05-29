@@ -1,9 +1,19 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.13.2"
+version: "4.14.0"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Add simplified Objects API support with UUID and Channel metadata / membership management."
+        type: feature
+      -
+        text: "Deprecate and replace old `PNObjectEventListener` protocol with new one `PNEventsListener`."
+        type: improvement
+    date: May 29, 20
+    version: v4.14.0
   -
     changes:
       -
@@ -1060,6 +1070,22 @@ features:
     - OBJECTS-GET-MEMBERS
     - OBJECTS-FILTERING
     - OBJECTS-SORTING
+    - OBJECTS-GET-ALL-UUID-METADATA
+    - OBJECTS-GET-UUID-METADATA
+    - OBJECTS-SET-UUID-METADATA
+    - OBJECTS-REMOVE-UUID-METADATA
+    - OBJECTS-GET-ALL-CHANNEL-METADATA
+    - OBJECTS-GET-CHANNEL-METADATA
+    - OBJECTS-SET-CHANNEL-METADATA
+    - OBJECTS-REMOVE-CHANNEL-METADATA
+    - OBJECTS-GET-MEMBERSHIPS-V2
+    - OBJECTS-SET-MEMBERSHIPS-V2
+    - OBJECTS-REMOVE-MEMBERSHIPS-V2
+    - OBJECTS-MANAGE-MEMBERSHIPS-V2
+    - OBJECTS-GET-MEMBERS-V2
+    - OBJECTS-SET-MEMBERS-V2
+    - OBJECTS-REMOVE-MEMBERS-V2
+    - OBJECTS-MANAGE-MEMBERS-V2
   message-actions:
     - MESSAGE-ACTIONS-GET
     - MESSAGE-ACTIONS-ADD

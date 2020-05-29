@@ -1,7 +1,7 @@
 /**
-* @author Serhii Mamontov
-* @copyright © 2010-2020 PubNub, Inc.
-*/
+ * @author Serhii Mamontov
+ * @copyright © 2010-2020 PubNub, Inc.
+ */
 #import <PubNub/PNAPICallBuilder+Private.h>
 #import <XCTest/XCTest.h>
 #import <PubNub/PubNub.h>
@@ -17,6 +17,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Misc
 
+- (PNSetMembershipsAPICallBuilder *)setBuilder;
+- (PNRemoveMembershipsAPICallBuilder *)removeBuilder;
 - (PNManageMembershipsAPICallBuilder *)manageBuilder;
 - (PNFetchMembershipsAPICallBuilder *)fetchBuilder;
 
@@ -39,50 +41,776 @@ NS_ASSUME_NONNULL_END
 #pragma clang diagnostic ignored "-Warc-retain-cycles"
 
 
-#pragma mark - Tests :: manage :: userId
+#pragma mark - Tests :: set :: uuid
 
-- (void)testItShouldReturnManageBuilderWhenUserIdSpecifiedInChain {
+- (void)testItShouldReturnSetBuilderWhenUUIDSpecifiedInChain {
+    id builder = [self setBuilder];
+
+    id setBuilder = ((PNSetMembershipsAPICallBuilder *)builder).uuid(@"id");
+    XCTAssertEqual(setBuilder, builder);
+}
+
+- (void)testItShouldSetUUIDWhenNSStringPassedAsSetUUID {
+    PNSetMembershipsAPICallBuilder *builder = [self setBuilder];
+    NSString *expected = @"OpenID";
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:YES mock:builderMock toSetValue:expected toParameter:@"uuid"];
+
+    builder.uuid(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+- (void)testItShouldNotSetUUIDWhenEmptyNSStringPassedAsSetUUID {
+    PNSetMembershipsAPICallBuilder *builder = [self setBuilder];
+    NSString *expected = @"";
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"uuid"];
+
+    builder.uuid(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+- (void)testItShouldNotSetUUIDWhenNonNSStringPassedAsSetUUID {
+    PNSetMembershipsAPICallBuilder *builder = [self setBuilder];
+    NSString *expected = (id)@2010;
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"uuid"];
+
+    builder.uuid(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+
+#pragma mark - Tests :: set :: filter
+
+- (void)testItShouldReturnSetBuilderWhenFilterSpecifiedInChain {
+    id builder = [self setBuilder];
+
+    id setBuilder = ((PNSetMembershipsAPICallBuilder *)builder).filter(@"custom.name == 'lobby'");
+    XCTAssertEqual(setBuilder, builder);
+}
+
+- (void)testItShouldSetFilterWhenNSStringPassedAsSetFilter {
+    PNSetMembershipsAPICallBuilder *builder = [self setBuilder];
+    NSString *expected = @"custom.name like 'secret-*'";
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:YES mock:builderMock toSetValue:expected toParameter:@"filter"];
+
+    builder.filter(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+- (void)testItShouldNotSetFilterWhenEmptyNSStringPassedAsSetFilter {
+    PNSetMembershipsAPICallBuilder *builder = [self setBuilder];
+    NSString *expected = @"";
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"filter"];
+
+    builder.filter(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+- (void)testItShouldNotSetFilterWhenNonNSStringPassedAsSetFilter {
+    PNSetMembershipsAPICallBuilder *builder = [self setBuilder];
+    NSString *expected = (id)@2010;
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"filter"];
+
+    builder.filter(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+
+#pragma mark - Tests :: set :: sort
+
+- (void)testItShouldReturnSetBuilderWhenSortSpecifiedInChain {
+    id builder = [self setBuilder];
+
+    id setBuilder = ((PNSetMembershipsAPICallBuilder *)builder).sort(@[@"name"]);
+    XCTAssertEqual(setBuilder, builder);
+}
+
+- (void)testItShouldSetFilterWhenNSArrayPassedAsSetSort {
+    PNSetMembershipsAPICallBuilder *builder = [self setBuilder];
+    NSArray *expected = @[@"name", @"created:desc"];
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:YES mock:builderMock toSetValue:expected toParameter:@"sort"];
+
+    builder.sort(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+- (void)testItShouldNotSetFilterWhenEmptyNSArrayPassedAsSetSort {
+    PNSetMembershipsAPICallBuilder *builder = [self setBuilder];
+    NSArray *expected = @[];
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"sort"];
+
+    builder.sort(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+- (void)testItShouldNotSetFilterWhenNonNSArrayPassedAsSetSort {
+    PNSetMembershipsAPICallBuilder *builder = [self setBuilder];
+    NSArray *expected = (id)@2010;
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"sort"];
+
+    builder.sort(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+
+#pragma mark - Tests :: set :: channels
+
+- (void)testItShouldReturnSetBuilderWhenChannelsSpecifiedInChain {
+    id builder = [self setBuilder];
+
+    id setBuilder = ((PNSetMembershipsAPICallBuilder *)builder).channels(@[@{@"channel": @"identifier" }]);
+    XCTAssertEqual(setBuilder, builder);
+}
+
+- (void)testItShouldSetChannelsWhenNSArrayPassedAsSetChannels {
+    PNSetMembershipsAPICallBuilder *builder = [self setBuilder];
+    NSArray<NSDictionary *> *expected = @[@{ @"channel": @"identifier" }];
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:YES mock:builderMock toSetValue:expected toParameter:@"channels"];
+
+    builder.channels(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+- (void)testItShouldNotSetChannelsWhenEmptyNSArrayPassedAsSetChannels {
+    PNSetMembershipsAPICallBuilder *builder = [self setBuilder];
+    NSArray<NSDictionary *> *expected = @[];
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"channels"];
+
+    builder.channels(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+- (void)testItShouldNotSetChannelsWhenNonNSArrayPassedAsSetChannels {
+    PNSetMembershipsAPICallBuilder *builder = [self setBuilder];
+    NSArray<NSDictionary *> *expected = (id)@2010;
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"channels"];
+
+    builder.channels(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+
+#pragma mark - Tests :: set :: start
+
+- (void)testItShouldReturnSetBuilderWhenStartTokenSpecifiedInChain {
+    id builder = [self setBuilder];
+
+    id setBuilder = ((PNSetMembershipsAPICallBuilder *)builder).start(@"NjA");
+    XCTAssertEqual(setBuilder, builder);
+}
+
+- (void)testItShouldSetStartWhenNSStringPassedAsSetStartToken {
+    PNSetMembershipsAPICallBuilder *builder = [self setBuilder];
+    NSString *expected = @"NjA";
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:YES mock:builderMock toSetValue:expected toParameter:@"start"];
+
+    builder.start(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+- (void)testItShouldNotSetStartWhenEmptyNSStringPassedAsSetStartToken {
+    PNSetMembershipsAPICallBuilder *builder = [self setBuilder];
+    NSString *expected = @"";
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"start"];
+
+    builder.start(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+- (void)testItShouldNotSetStartWhenNonNSStringPassedAsSetStartToken {
+    PNSetMembershipsAPICallBuilder *builder = [self setBuilder];
+    NSString *expected = (id)@2010;
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"start"];
+
+    builder.start(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+
+#pragma mark - Tests :: set :: end
+
+- (void)testItShouldReturnSetBuilderWhenEndTokenSpecifiedInChain {
+    id builder = [self setBuilder];
+
+    id setBuilder = ((PNSetMembershipsAPICallBuilder *)builder).end(@"NjA");
+    XCTAssertEqual(setBuilder, builder);
+}
+
+- (void)testItShouldSetEndWhenNSStringPassedAsSetEndToken {
+    PNSetMembershipsAPICallBuilder *builder = [self setBuilder];
+    NSString *expected = @"NjA";
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:YES mock:builderMock toSetValue:expected toParameter:@"end"];
+
+    builder.end(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+- (void)testItShouldNotSetEndWhenEmptyNSStringPassedAsSetEndToken {
+    PNSetMembershipsAPICallBuilder *builder = [self setBuilder];
+    NSString *expected = @"";
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"end"];
+
+    builder.end(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+- (void)testItShouldNotSetEndWhenNonNSStringPassedAsSetEndToken {
+    PNSetMembershipsAPICallBuilder *builder = [self setBuilder];
+    NSString *expected = (id)@2010;
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"end"];
+
+    builder.end(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+
+#pragma mark - Tests :: set :: limit
+
+- (void)testItShouldReturnSetBuilderWhenLimitSpecifiedInChain {
+    id builder = [self setBuilder];
+
+    id setBuilder = ((PNSetMembershipsAPICallBuilder *)builder).limit(20);
+    XCTAssertEqual(setBuilder, builder);
+}
+
+- (void)testItShouldSetLimitWhenSetLimitSpecifiedInChain {
+    PNSetMembershipsAPICallBuilder *builder = [self setBuilder];
+    NSNumber *expected = @35;
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:YES mock:builderMock toSetValue:expected toParameter:@"limit"];
+
+    builder.limit(35);
+
+    OCMVerifyAll(builderMock);
+}
+
+
+#pragma mark - Tests :: set :: includeCount
+
+- (void)testItShouldReturnSetBuilderWhenIncludeCountSpecifiedInChain {
+    id builder = [self setBuilder];
+
+    id setBuilder = ((PNSetMembershipsAPICallBuilder *)builder).includeCount(YES);
+    XCTAssertEqual(setBuilder, builder);
+}
+
+- (void)testItShouldSetIncludeCountWhenSetIncludeCountSpecifiedInChain {
+    PNSetMembershipsAPICallBuilder *builder = [self setBuilder];
+    NSNumber *expected = @YES;
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:YES mock:builderMock toSetValue:expected toParameter:@"includeCount"];
+
+    builder.includeCount(YES);
+
+    OCMVerifyAll(builderMock);
+}
+
+
+#pragma mark - Tests :: set :: includeFields
+
+- (void)testItShouldReturnSetBuilderWhenIncludeFieldsSpecifiedInChain {
+    id builder = [self setBuilder];
+
+    id setBuilder = ((PNSetMembershipsAPICallBuilder *)builder).includeFields(PNMembershipCustomField);
+    XCTAssertEqual(setBuilder, builder);
+}
+
+- (void)testItShouldSetIncludeFieldsWhenSetIncludeFieldsSpecifiedInChain {
+    PNSetMembershipsAPICallBuilder *builder = [self setBuilder];
+    PNMembershipFields expected = PNMembershipCustomField | PNMembershipChannelField;
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:YES mock:builderMock toSetValue:@(expected) toParameter:@"includeFields"];
+
+    builder.includeFields(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+
+#pragma mark - Tests :: remove :: uuid
+
+- (void)testItShouldReturnRemoveBuilderWhenUUIDSpecifiedInChain {
+    id builder = [self removeBuilder];
+
+    id removeBuilder = ((PNRemoveMembershipsAPICallBuilder *)builder).uuid(@"id");
+    XCTAssertEqual(removeBuilder, builder);
+}
+
+- (void)testItShouldSetUUIDWhenNSStringPassedAsRemoveUUID {
+    PNRemoveMembershipsAPICallBuilder *builder = [self removeBuilder];
+    NSString *expected = @"OpenID";
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:YES mock:builderMock toSetValue:expected toParameter:@"uuid"];
+
+    builder.uuid(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+- (void)testItShouldNotSetUUIDWhenEmptyNSStringPassedAsRemoveUUID {
+    PNRemoveMembershipsAPICallBuilder *builder = [self removeBuilder];
+    NSString *expected = @"";
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"uuid"];
+
+    builder.uuid(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+- (void)testItShouldNotSetUUIDWhenNonNSStringPassedAsRemoveUUID {
+    PNRemoveMembershipsAPICallBuilder *builder = [self removeBuilder];
+    NSString *expected = (id)@2010;
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"uuid"];
+
+    builder.uuid(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+
+#pragma mark - Tests :: remove :: filter
+
+- (void)testItShouldReturnRemoveBuilderWhenFilterSpecifiedInChain {
+    id builder = [self removeBuilder];
+
+    id removeBuilder = ((PNRemoveMembershipsAPICallBuilder *)builder).filter(@"custom.name == 'lobby'");
+    XCTAssertEqual(removeBuilder, builder);
+}
+
+- (void)testItShouldSetFilterWhenNSStringPassedAsRemoveFilter {
+    PNRemoveMembershipsAPICallBuilder *builder = [self removeBuilder];
+    NSString *expected = @"custom.name like 'secret-*'";
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:YES mock:builderMock toSetValue:expected toParameter:@"filter"];
+
+    builder.filter(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+- (void)testItShouldNotSetFilterWhenEmptyNSStringPassedAsRemoveFilter {
+    PNRemoveMembershipsAPICallBuilder *builder = [self removeBuilder];
+    NSString *expected = @"";
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"filter"];
+
+    builder.filter(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+- (void)testItShouldNotSetFilterWhenNonNSStringPassedAsRemoveFilter {
+    PNRemoveMembershipsAPICallBuilder *builder = [self removeBuilder];
+    NSString *expected = (id)@2010;
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"filter"];
+
+    builder.filter(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+
+#pragma mark - Tests :: remove :: sort
+
+- (void)testItShouldReturnRemoveBuilderWhenSortSpecifiedInChain {
+    id builder = [self removeBuilder];
+
+    id removeBuilder = ((PNRemoveMembershipsAPICallBuilder *)builder).sort(@[@"name"]);
+    XCTAssertEqual(removeBuilder, builder);
+}
+
+- (void)testItShouldSetFilterWhenNSArrayPassedAsRemoveSort {
+    PNRemoveMembershipsAPICallBuilder *builder = [self removeBuilder];
+    NSArray *expected = @[@"name", @"created:desc"];
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:YES mock:builderMock toSetValue:expected toParameter:@"sort"];
+
+    builder.sort(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+- (void)testItShouldNotSetFilterWhenEmptyNSArrayPassedAsRemoveSort {
+    PNRemoveMembershipsAPICallBuilder *builder = [self removeBuilder];
+    NSArray *expected = @[];
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"sort"];
+
+    builder.sort(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+- (void)testItShouldNotSetFilterWhenNonNSArrayPassedAsRemoveSort {
+    PNRemoveMembershipsAPICallBuilder *builder = [self removeBuilder];
+    NSArray *expected = (id)@2010;
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"sort"];
+
+    builder.sort(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+
+#pragma mark - Tests :: remove :: channels
+
+- (void)testItShouldReturnRemoveBuilderWhenChannelsSpecifiedInChain {
+    id builder = [self removeBuilder];
+
+    id removeBuilder = ((PNRemoveMembershipsAPICallBuilder *)builder).channels(@[@"identifier"]);
+    XCTAssertEqual(removeBuilder, builder);
+}
+
+- (void)testItShouldSetChannelsWhenNSArrayPassedAsRemoveChannels {
+    PNRemoveMembershipsAPICallBuilder *builder = [self removeBuilder];
+    NSArray<NSString *> *expected = @[@"identifier"];
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:YES mock:builderMock toSetValue:expected toParameter:@"channels"];
+
+    builder.channels(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+- (void)testItShouldNotSetChannelsWhenEmptyNSArrayPassedAsRemoveChannels {
+    PNRemoveMembershipsAPICallBuilder *builder = [self removeBuilder];
+    NSArray<NSString *> *expected = @[];
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"channels"];
+
+    builder.channels(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+- (void)testItShouldNotSetChannelsWhenNonNSArrayPassedAsRemoveChannels {
+    PNRemoveMembershipsAPICallBuilder *builder = [self removeBuilder];
+    NSArray<NSString *> *expected = (id)@2010;
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"channels"];
+
+    builder.channels(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+
+#pragma mark - Tests :: remove :: start
+
+- (void)testItShouldReturnRemoveBuilderWhenStartTokenSpecifiedInChain {
+    id builder = [self removeBuilder];
+
+    id removeBuilder = ((PNRemoveMembershipsAPICallBuilder *)builder).start(@"NjA");
+    XCTAssertEqual(removeBuilder, builder);
+}
+
+- (void)testItShouldSetStartWhenNSStringPassedAsRemoveStartToken {
+    PNRemoveMembershipsAPICallBuilder *builder = [self removeBuilder];
+    NSString *expected = @"NjA";
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:YES mock:builderMock toSetValue:expected toParameter:@"start"];
+
+    builder.start(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+- (void)testItShouldNotSetStartWhenEmptyNSStringPassedAsRemoveStartToken {
+    PNRemoveMembershipsAPICallBuilder *builder = [self removeBuilder];
+    NSString *expected = @"";
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"start"];
+
+    builder.start(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+- (void)testItShouldNotSetStartWhenNonNSStringPassedAsRemoveStartToken {
+    PNRemoveMembershipsAPICallBuilder *builder = [self removeBuilder];
+    NSString *expected = (id)@2010;
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"start"];
+
+    builder.start(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+
+#pragma mark - Tests :: remove :: end
+
+- (void)testItShouldReturnRemoveBuilderWhenEndTokenSpecifiedInChain {
+    id builder = [self removeBuilder];
+
+    id removeBuilder = ((PNRemoveMembershipsAPICallBuilder *)builder).end(@"NjA");
+    XCTAssertEqual(removeBuilder, builder);
+}
+
+- (void)testItShouldSetEndWhenNSStringPassedAsRemoveEndToken {
+    PNRemoveMembershipsAPICallBuilder *builder = [self removeBuilder];
+    NSString *expected = @"NjA";
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:YES mock:builderMock toSetValue:expected toParameter:@"end"];
+
+    builder.end(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+- (void)testItShouldNotSetEndWhenEmptyNSStringPassedAsRemoveEndToken {
+    PNRemoveMembershipsAPICallBuilder *builder = [self removeBuilder];
+    NSString *expected = @"";
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"end"];
+
+    builder.end(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+- (void)testItShouldNotSetEndWhenNonNSStringPassedAsRemoveEndToken {
+    PNRemoveMembershipsAPICallBuilder *builder = [self removeBuilder];
+    NSString *expected = (id)@2010;
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"end"];
+
+    builder.end(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+
+#pragma mark - Tests :: remove :: limit
+
+- (void)testItShouldReturnRemoveBuilderWhenLimitSpecifiedInChain {
+    id builder = [self removeBuilder];
+
+    id removeBuilder = ((PNRemoveMembershipsAPICallBuilder *)builder).limit(20);
+    XCTAssertEqual(removeBuilder, builder);
+}
+
+- (void)testItShouldSetLimitWhenRemoveLimitSpecifiedInChain {
+    PNRemoveMembershipsAPICallBuilder *builder = [self removeBuilder];
+    NSNumber *expected = @35;
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:YES mock:builderMock toSetValue:expected toParameter:@"limit"];
+
+    builder.limit(35);
+
+    OCMVerifyAll(builderMock);
+}
+
+
+#pragma mark - Tests :: remove :: includeCount
+
+- (void)testItShouldReturnRemoveBuilderWhenIncludeCountSpecifiedInChain {
+    id builder = [self removeBuilder];
+
+    id removeBuilder = ((PNRemoveMembershipsAPICallBuilder *)builder).includeCount(YES);
+    XCTAssertEqual(removeBuilder, builder);
+}
+
+- (void)testItShouldSetIncludeCountWhenRemoveIncludeCountSpecifiedInChain {
+    PNRemoveMembershipsAPICallBuilder *builder = [self removeBuilder];
+    NSNumber *expected = @YES;
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:YES mock:builderMock toSetValue:expected toParameter:@"includeCount"];
+
+    builder.includeCount(YES);
+
+    OCMVerifyAll(builderMock);
+}
+
+
+#pragma mark - Tests :: remove :: includeFields
+
+- (void)testItShouldReturnRemoveBuilderWhenIncludeFieldsSpecifiedInChain {
+    id builder = [self removeBuilder];
+
+    id removeBuilder = ((PNRemoveMembershipsAPICallBuilder *)builder).includeFields(PNMembershipCustomField);
+    XCTAssertEqual(removeBuilder, builder);
+}
+
+- (void)testItShouldSetIncludeFieldsWhenRemoveIncludeFieldsSpecifiedInChain {
+    PNRemoveMembershipsAPICallBuilder *builder = [self removeBuilder];
+    PNMembershipFields expected = PNMembershipCustomField | PNMembershipChannelField;
+
+
+    id builderMock = OCMPartialMock(builder);
+    [self expect:YES mock:builderMock toSetValue:@(expected) toParameter:@"includeFields"];
+
+    builder.includeFields(expected);
+
+    OCMVerifyAll(builderMock);
+}
+
+
+#pragma mark - Tests :: manage :: uuid
+
+- (void)testItShouldReturnManageBuilderWhenUUIDSpecifiedInChain {
     id builder = [self manageBuilder];
 
-    id manageBuilder = ((PNManageMembershipsAPICallBuilder *)builder).userId(@"id");
+    id manageBuilder = ((PNManageMembershipsAPICallBuilder *)builder).uuid(@"id");
     XCTAssertEqual(manageBuilder, builder);
 }
 
-- (void)testItShouldSetUserIdWhenNSStringPassedAsManageUserId {
+- (void)testItShouldSetUUIDWhenNSStringPassedAsManageUUID {
     PNManageMembershipsAPICallBuilder *builder = [self manageBuilder];
     NSString *expected = @"OpenID";
 
 
     id builderMock = OCMPartialMock(builder);
-    [self expect:YES mock:builderMock toSetValue:expected toParameter:@"userId"];
+    [self expect:YES mock:builderMock toSetValue:expected toParameter:@"uuid"];
 
-    builder.userId(expected);
+    builder.uuid(expected);
 
     OCMVerifyAll(builderMock);
 }
 
-- (void)testItShouldNotSetUserIdWhenEmptyNSStringPassedAsManageUserId {
+- (void)testItShouldNotSetUUIDWhenEmptyNSStringPassedAsManageUUID {
     PNManageMembershipsAPICallBuilder *builder = [self manageBuilder];
     NSString *expected = @"";
 
 
     id builderMock = OCMPartialMock(builder);
-    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"userId"];
+    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"uuid"];
 
-    builder.userId(expected);
+    builder.uuid(expected);
 
     OCMVerifyAll(builderMock);
 }
 
-- (void)testItShouldNotSetUserIdWhenNonNSStringPassedAsManageUserId {
+- (void)testItShouldNotSetUUIDWhenNonNSStringPassedAsManageUUID {
     PNManageMembershipsAPICallBuilder *builder = [self manageBuilder];
     NSString *expected = (id)@2010;
 
 
     id builderMock = OCMPartialMock(builder);
-    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"userId"];
+    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"uuid"];
 
-    builder.userId(expected);
+    builder.uuid(expected);
 
     OCMVerifyAll(builderMock);
 }
@@ -186,99 +914,50 @@ NS_ASSUME_NONNULL_END
 }
 
 
-#pragma mark - Tests :: manage :: add
+#pragma mark - Tests :: manage :: set
 
-- (void)testItShouldReturnManageBuilderWhenAddSpacesSpecifiedInChain {
+- (void)testItShouldReturnManageBuilderWhenSetChannelsSpecifiedInChain {
     id builder = [self manageBuilder];
 
-    id manageBuilder = ((PNManageMembershipsAPICallBuilder *)builder).add(@[@{ @"id": @"identifier" }]);
+    id manageBuilder = ((PNManageMembershipsAPICallBuilder *)builder).set(@[@{ @"channel": @"identifier" }]);
     XCTAssertEqual(manageBuilder, builder);
 }
 
-- (void)testItShouldSetAddWhenNSArrayPassedAsManageSpaces {
+- (void)testItShouldSetSetWhenNSArrayPassedAsManageSetChannels {
     PNManageMembershipsAPICallBuilder *builder = [self manageBuilder];
-    NSArray<NSDictionary *> *expected = @[@{ @"id": @"identifier" }];
+    NSArray<NSDictionary *> *expected = @[@{ @"channel": @"identifier" }];
 
 
     id builderMock = OCMPartialMock(builder);
-    [self expect:YES mock:builderMock toSetValue:expected toParameter:@"add"];
+    [self expect:YES mock:builderMock toSetValue:expected toParameter:@"set"];
 
-    builder.add(expected);
+    builder.set(expected);
 
     OCMVerifyAll(builderMock);
 }
 
-- (void)testItShouldNotSetAddWhenEmptyNSArrayPassedAsManageSpaces {
+- (void)testItShouldNotSetSetWhenEmptyNSArrayPassedAsManageSetChannels {
     PNManageMembershipsAPICallBuilder *builder = [self manageBuilder];
     NSArray<NSDictionary *> *expected = @[];
 
 
     id builderMock = OCMPartialMock(builder);
-    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"add"];
+    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"set"];
 
-    builder.add(expected);
+    builder.set(expected);
 
     OCMVerifyAll(builderMock);
 }
 
-- (void)testItShouldNotSetAddWhenNonNSArrayPassedAsManageSpaces {
+- (void)testItShouldNotSetSetWhenNonNSArrayPassedAsManageSetChannels {
     PNManageMembershipsAPICallBuilder *builder = [self manageBuilder];
     NSArray<NSDictionary *> *expected = (id)@2010;
 
 
     id builderMock = OCMPartialMock(builder);
-    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"add"];
+    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"set"];
 
-    builder.add(expected);
-
-    OCMVerifyAll(builderMock);
-}
-
-
-#pragma mark - Tests :: manage :: update
-
-- (void)testItShouldReturnManageBuilderWhenUpdateSpacesSpecifiedInChain {
-    id builder = [self manageBuilder];
-
-    id manageBuilder = ((PNManageMembershipsAPICallBuilder *)builder).update(@[@{ @"id": @"identifier" }]);
-    XCTAssertEqual(manageBuilder, builder);
-}
-
-- (void)testItShouldSetUpdateWhenNSArrayPassedAsManageSpaces {
-    PNManageMembershipsAPICallBuilder *builder = [self manageBuilder];
-    NSArray<NSDictionary *> *expected = @[@{ @"id": @"identifier" }];
-
-
-    id builderMock = OCMPartialMock(builder);
-    [self expect:YES mock:builderMock toSetValue:expected toParameter:@"update"];
-
-    builder.update(expected);
-
-    OCMVerifyAll(builderMock);
-}
-
-- (void)testItShouldNotSetUpdateWhenEmptyNSArrayPassedAsManageSpaces {
-    PNManageMembershipsAPICallBuilder *builder = [self manageBuilder];
-    NSArray<NSDictionary *> *expected = @[];
-
-
-    id builderMock = OCMPartialMock(builder);
-    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"update"];
-
-    builder.update(expected);
-
-    OCMVerifyAll(builderMock);
-}
-
-- (void)testItShouldNotSetUpdateWhenNonNSArrayPassedAsManageSpaces {
-    PNManageMembershipsAPICallBuilder *builder = [self manageBuilder];
-    NSArray<NSDictionary *> *expected = (id)@2010;
-
-
-    id builderMock = OCMPartialMock(builder);
-    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"update"];
-
-    builder.update(expected);
+    builder.set(expected);
 
     OCMVerifyAll(builderMock);
 }
@@ -286,14 +965,14 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Tests :: manage :: remove
 
-- (void)testItShouldReturnManageBuilderWhenRemoveSpacesSpecifiedInChain {
+- (void)testItShouldReturnManageBuilderWhenRemoveChannelsSpecifiedInChain {
     id builder = [self manageBuilder];
 
     id manageBuilder = ((PNManageMembershipsAPICallBuilder *)builder).remove(@[ @"identifier" ]);
     XCTAssertEqual(manageBuilder, builder);
 }
 
-- (void)testItShouldSetRemoveWhenNSArrayPassedAsManageSpaces {
+- (void)testItShouldSetRemoveWhenNSArrayPassedAsManageRemoveChannels {
     PNManageMembershipsAPICallBuilder *builder = [self manageBuilder];
     NSArray<NSString *> *expected = @[ @"identifier" ];
 
@@ -306,7 +985,7 @@ NS_ASSUME_NONNULL_END
     OCMVerifyAll(builderMock);
 }
 
-- (void)testItShouldNotSetRemoveWhenEmptyNSArrayPassedAsManageSpaces {
+- (void)testItShouldNotSetRemoveWhenEmptyNSArrayPassedAsManageRemoveChannels {
     PNManageMembershipsAPICallBuilder *builder = [self manageBuilder];
     NSArray<NSString *> *expected = @[];
 
@@ -319,7 +998,7 @@ NS_ASSUME_NONNULL_END
     OCMVerifyAll(builderMock);
 }
 
-- (void)testItShouldNotSetRemoveWhenNonNSArrayPassedAsManageSpaces {
+- (void)testItShouldNotSetRemoveWhenNonNSArrayPassedAsManageRemoveChannels {
     PNManageMembershipsAPICallBuilder *builder = [self manageBuilder];
     NSArray<NSString *> *expected = (id)@2010;
 
@@ -488,7 +1167,7 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldSetIncludeFieldsWhenManageIncludeFieldsSpecifiedInChain {
     PNManageMembershipsAPICallBuilder *builder = [self manageBuilder];
-    PNMembershipFields expected = PNMembershipCustomField | PNMembershipSpaceField;
+    PNMembershipFields expected = PNMembershipCustomField | PNMembershipChannelField;
 
 
     id builderMock = OCMPartialMock(builder);
@@ -500,50 +1179,50 @@ NS_ASSUME_NONNULL_END
 }
 
 
-#pragma mark - Tests :: fetch :: userId
+#pragma mark - Tests :: fetch :: uuid
 
-- (void)testItShouldReturnFetchBuilderWhenUserIdSpecifiedInChain {
+- (void)testItShouldReturnFetchBuilderWhenUUIDSpecifiedInChain {
     id builder = [self fetchBuilder];
 
-    id fetchBuilder = ((PNFetchMembershipsAPICallBuilder *)builder).userId(@"id");
+    id fetchBuilder = ((PNFetchMembershipsAPICallBuilder *)builder).uuid(@"id");
     XCTAssertEqual(fetchBuilder, builder);
 }
 
-- (void)testItShouldSetUserIdWhenNSStringPassedAsFetchUserId {
+- (void)testItShouldSetUUIDWhenNSStringPassedAsFetchUUID {
     PNFetchMembershipsAPICallBuilder *builder = [self fetchBuilder];
     NSString *expected = @"OpenID";
 
 
     id builderMock = OCMPartialMock(builder);
-    [self expect:YES mock:builderMock toSetValue:expected toParameter:@"userId"];
+    [self expect:YES mock:builderMock toSetValue:expected toParameter:@"uuid"];
 
-    builder.userId(expected);
+    builder.uuid(expected);
 
     OCMVerifyAll(builderMock);
 }
 
-- (void)testItShouldNotSetUserIdWhenEmptyNSStringPassedAsFetchUserId {
+- (void)testItShouldNotSetUUIDWhenEmptyNSStringPassedAsFetchUUID {
     PNFetchMembershipsAPICallBuilder *builder = [self fetchBuilder];
     NSString *expected = @"";
 
 
     id builderMock = OCMPartialMock(builder);
-    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"userId"];
+    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"uuid"];
 
-    builder.userId(expected);
+    builder.uuid(expected);
 
     OCMVerifyAll(builderMock);
 }
 
-- (void)testItShouldNotSetUserIdWhenNonNSStringPassedAsFetchUserId {
+- (void)testItShouldNotSetUUIDWhenNonNSStringPassedAsFetchUUID {
     PNFetchMembershipsAPICallBuilder *builder = [self fetchBuilder];
     NSString *expected = (id)@2010;
 
 
     id builderMock = OCMPartialMock(builder);
-    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"userId"];
+    [self expect:NO mock:builderMock toSetValue:expected toParameter:@"uuid"];
 
-    builder.userId(expected);
+    builder.uuid(expected);
 
     OCMVerifyAll(builderMock);
 }
@@ -802,7 +1481,7 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldSetIncludeFieldsWhenFetchIncludeFieldsSpecifiedInChain {
     PNFetchMembershipsAPICallBuilder *builder = [self fetchBuilder];
-    PNMembershipFields expected = PNMembershipCustomField | PNMembershipSpaceCustomField;
+    PNMembershipFields expected = PNMembershipCustomField | PNMembershipChannelField;
 
 
     id builderMock = OCMPartialMock(builder);
@@ -815,6 +1494,18 @@ NS_ASSUME_NONNULL_END
 
 
 #pragma mark - Misc
+
+- (PNSetMembershipsAPICallBuilder *)setBuilder {
+    return [PNSetMembershipsAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
+                                                                       NSDictionary *arguments) {
+    }];
+}
+
+- (PNRemoveMembershipsAPICallBuilder *)removeBuilder {
+    return [PNRemoveMembershipsAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
+                                                                          NSDictionary *arguments) {
+    }];
+}
 
 - (PNManageMembershipsAPICallBuilder *)manageBuilder {
     return [PNManageMembershipsAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,

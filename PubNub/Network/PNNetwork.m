@@ -786,8 +786,8 @@ NS_ASSUME_NONNULL_END
             @(PNChannelsForGroupOperation), @(PNPushNotificationEnabledChannelsOperation),
             @(PNPushNotificationEnabledChannelsV2Operation), @(PNTimeOperation),
             @(PNFetchMessagesActionsOperation), @(PNFetchMembershipsOperation),
-            @(PNFetchSpaceOperation), @(PNFetchSpacesOperation),
-            @(PNFetchUserOperation), @(PNFetchUsersOperation),
+            @(PNFetchChannelMetadataOperation), @(PNFetchAllChannelsMetadataOperation),
+            @(PNFetchUUIDMetadataOperation), @(PNFetchAllUUIDMetadataOperation),
             @(PNFetchMembersOperation)
         ];
     });
@@ -807,9 +807,9 @@ NS_ASSUME_NONNULL_END
             @"PNMessageCountParser", @"PNMessageDeleteParser", @"PNLeaveParser",
             @"PNMessagePublishParser", @"PNPresenceHereNowParser", @"PNPresenceWhereNowParser",
             @"PNPushNotificationsAuditParser", @"PNPushNotificationsStateModificationParser",
-            @"PNSubscribeParser",@"PNTimeParser", @"PNSpaceDataChangeParser",
-            @"PNUserDataChangeParser", @"PNObjectsDeleteParser", @"PNMembershipsParser",
-            @"PNFetchSpacesParser", @"PNFetchUsersParser", @"PNMembersParser",
+            @"PNSubscribeParser",@"PNTimeParser", @"PNChannelMetadataChangeParser",
+            @"PNUUIDMetadataChangeParser", @"PNObjectsRemoveParser", @"PNMembershipsParser",
+            @"PNFetchChannelsMetadataParser", @"PNFetchUUIDMetadataParser", @"PNMembersParser",
             @"PNAddMessageActionParser", @"PNRemoveMessageActionParser",
             @"PNFetchMessagesActionsParser"];
         NSMutableDictionary *parsers = [NSMutableDictionary new];

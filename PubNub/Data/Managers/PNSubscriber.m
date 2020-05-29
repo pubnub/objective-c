@@ -1576,23 +1576,22 @@ NS_ASSUME_NONNULL_END
     if (!data) {
         return;
     }
+    
+    static NSArray *_knownTypesOfObjectEvents;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _knownTypesOfObjectEvents = @[@"membership", @"channel", @"uuid"];
+    });
 
     PNLogResult(self.client.logger, @"<PubNub> %@", [data stringifiedRepresentation]);
-
-    if ([data.serviceData[@"type"] isEqualToString:@"membership"]) {
-        object_setClass(data, [PNMembershipEventResult class]);
-        [self.client.listenersManager notifyMembershipEvent:(PNMembershipEventResult *)data];
-    } else if ([data.serviceData[@"type"] isEqualToString:@"space"]) {
-        object_setClass(data, [PNSpaceEventResult class]);
-        [self.client.listenersManager notifySpaceEvent:(PNSpaceEventResult *)data];
-    } else if ([data.serviceData[@"type"] isEqualToString:@"user"]) {
-        object_setClass(data, [PNUserEventResult class]);
-        [self.client.listenersManager notifyUserEvent:(PNUserEventResult *)data];
+    
+    if ([_knownTypesOfObjectEvents containsObject:data.serviceData[@"type"]]) {
+        object_setClass(data, [PNObjectEventResult class]);
+        [self.client.listenersManager notifyObjectEvent:(PNObjectEventResult *)data];
     }
 }
 
 - (void)handleNewPresenceEvent:(PNPresenceEventResult *)data {
-    
     if (data) {
         PNLogResult(self.client.logger, @"<PubNub> %@", [(PNResult *)data stringifiedRepresentation]);
     }

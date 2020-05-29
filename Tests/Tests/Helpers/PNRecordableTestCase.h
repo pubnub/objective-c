@@ -43,31 +43,13 @@ typedef void (^PNTClientDidReceiveMessageActionHandler)(PubNub *client, PNMessag
 typedef void (^PNTClientDidReceivePresenceEventHandler)(PubNub *client, PNPresenceEventResult *event, BOOL *shouldRemove);
 
 /**
- * @brief Type used to describe block for \c user event handling.
+ * @brief Type used to describe block for \c object event handling.
  *
  * @param client \b PubNub client which used delegate callback.
- * @param event Object with information about received \c user event.
+ * @param event Object with information about received \c object event.
  * @param shouldRemove Whether handling block should be removed after call or not.
  */
-typedef void (^PNTClientDidReceiveUserEventHandler)(PubNub *client, PNUserEventResult *event, BOOL *shouldRemove);
-
-/**
- * @brief Type used to describe block for \c space event handling.
- *
- * @param client \b PubNub client which used delegate callback.
- * @param event Object with information about received \c space event.
- * @param shouldRemove Whether handling block should be removed after call or not.
- */
-typedef void (^PNTClientDidReceiveSpaceEventHandler)(PubNub *client, PNSpaceEventResult *event, BOOL *shouldRemove);
-
-/**
- * @brief Type used to describe block for \c membership event handling.
- *
- * @param client \b PubNub client which used delegate callback.
- * @param event Object with information about received \c membership event.
- * @param shouldRemove Whether handling block should be removed after call or not.
- */
-typedef void (^PNTClientDidReceiveMembershipEventHandler)(PubNub *client, PNMembershipEventResult *event, BOOL *shouldRemove);
+typedef void (^PNTClientDidReceiveObjectEventHandler)(PubNub *client, PNObjectEventResult *event, BOOL *shouldRemove);
 
 /**
  * @brief Type used to describe block for status change handling.
@@ -430,320 +412,313 @@ typedef void (^PNTClientDidReceiveStatusHandler)(PubNub *client, PNSubscribeStat
 - (void)removeAllObjects;
 
 /**
- * @brief Create set of random user objects.
+ * @brief Set random \c metadata for random \c UUIDs.
  *
- * @param objectsCount How many user objects should be created.
- * @param client \b PubNub client which should be used to manage user objects. Will use
+ * @param objectsCount For how many \c UUID \c metadata should be set.
+ * @param client \b PubNub client which should be used to manage \c UUID \c metadata. Will use
  *     \c self.client if passed \c nil.
  *
- * @return List of created user objects.
+ * @return List of \c UUIDs \c metadata objects.
  */
-- (NSArray<PNUser *> *)createObjectForUsers:(NSUInteger)objectsCount
-                                usingClient:(nullable PubNub *)client;
+- (NSArray<PNUUIDMetadata *> *)setUUIDMetadata:(NSUInteger)objectsCount
+                                   usingClient:(nullable PubNub *)client;
 
 /**
- * @brief Use Objects API to create single user object with name used to create identifier and
- * custom data.
+ * @brief Set \c metadata for specified \c UUID.
  *
- * @param name Name which should be associated with new user object entry and used to create unique
- *     identifier.
- * @param client \b PubNub client which should be used to manage user objects. Will use
+ * @param uuid Identifier which should be used to associate \c metadata with it.
+ * @param client \b PubNub client which should be used to manage \c UUID \c metadata. Will use
  *     \c self.client if passed \c nil.
  *
- * @return Created user object.
+ * @return \c UUID \c metadata object.
  */
-- (PNUser *)createObjectForUserWithName:(NSString *)name usingClient:(nullable PubNub *)client;
+- (PNUUIDMetadata *)setMetadataForUUID:(NSString *)uuid usingClient:(nullable PubNub *)client;
 
 /**
- * @brief Use Objects API to create set of user objects using provided names to create identifier
- * and custom data.
+ * @brief Set \c metadata using provided \c UUIDs to create identifier and custom data.
  *
- * @param names Names which should be associated with new user objects entries and used to create
- *     unique identifier.
- * @param client \b PubNub client which should be used to manage user objects. Will use
+ * @param uuids Identifiers which should be used to associate \c metadata with.
+ * @param client \b PubNub client which should be used to manage \c UUID \c metadata. Will use
  *     \c self.client if passed \c nil.
  *
- * @return List of created user objects.
+ * @return List of \c UUIDs \c metadata objects.
  */
-- (NSArray<PNUser *> *)createObjectForUsersWithNames:(NSArray<NSString *> *)names
-                                         usingClient:(nullable PubNub *)client;
+- (NSArray<PNUUIDMetadata *> *)setMetadataForUUIDs:(NSArray<NSString *> *)uuids
+                                       usingClient:(nullable PubNub *)client;
 
 /**
- * @brief Ensure that specified number of user objects created for current publish / subscribe
- * keys.
+ * @brief Ensure that specified number of \c UUIDs has been associated with \c metadata for current
+ * publish / subscribe keys.
  *
- * @param count Expected number of user objects.
- * @param client \b PubNub client which should be used to audit user objects. Will use
+ * @param count Expected number of \c UUID which has associated \c metadata.
+ * @param client \b PubNub client which should be used to audit \c UUID \c metadata. Will use
  *     \c self.client if passed \c nil.
  */
-- (void)verifyUsersCountShouldEqualTo:(NSUInteger)count usingClient:(nullable PubNub *)client;
+- (void)verifyUUIDMetadataCountShouldEqualTo:(NSUInteger)count usingClient:(nullable PubNub *)client;
 
 /**
- * @brief Create membership for each \c user entry with every passed \c space.
+ * @brief Create \c membership for each \c UUID entry with every passed \c channel.
  *
- * @param users List of user objects for which membership with target space should be created.
- * @param spaces List of spaces to which new members will be added.
- * @param customs List of custom data which should be bound to created membership.
- * @param client \b PubNub client which should be used to manage user objects. Will use
+ * @param uuids List of identifiers for which \c membership with target channel should be created.
+ * @param channels List of channel names to which new members will be added.
+ * @param customs List of custom data which should be bound to created \c membership.
+ * @param client \b PubNub client which should be used to manage \c memberships. Will use
  *     \c self.client if passed \c nil.
  *
- * @return List of created memberships.
+ * @return List of created \c memberships.
  */
-- (NSArray<PNMembership *> *)createUsersMembership:(NSArray<PNUser *> *)users
-                                          inSpaces:(NSArray<PNSpace *> *)spaces
+- (NSArray<PNMembership *> *)createUUIDsMembership:(NSArray<NSString *> *)uuids
+                                        inChannels:(NSArray<NSString *> *)channels
                                        withCustoms:(nullable NSArray<NSDictionary *> *)customs
                                        usingClient:(nullable PubNub *)client;
 
 /**
- * @brief Create membership for each \c user entry with every passed \c space.
+ * @brief Create \c membership for each \c UUID entry with every passed \c channel.
  *
- * @param users List of user objects for which membership with target space should be created.
- * @param spaces List of spaces to which new members will be added.
- * @param customs List of custom data which should be bound to created membership.
- * @param shouldIncludeSpaceInformation Whether space information should be added to response.
- * @param client \b PubNub client which should be used to manage user objects. Will use
+ * @param uuids List of identifiers for which \c membership with target channel should be created.
+ * @param channels List of channel names to which new members will be added.
+ * @param customs List of custom data which should be bound to created \c membership.
+ * @param shouldIncludeChannelMetadata Whether channel information should be added to
+ *     response.
+ * @param client \b PubNub client which should be used to manage \c memberships. Will use
  *     \c self.client if passed \c nil.
  *
- * @return List of created memberships.
+ * @return List of created \c memberships.
  */
-- (NSArray<PNMembership *> *)createUsersMembership:(NSArray<PNUser *> *)users
-                                          inSpaces:(NSArray<PNSpace *> *)spaces
+- (NSArray<PNMembership *> *)createUUIDsMembership:(NSArray<NSString *> *)uuids
+                                        inChannels:(NSArray<NSString *> *)channels
                                        withCustoms:(nullable NSArray<NSDictionary *> *)customs
-                                  spaceInformation:(BOOL)shouldIncludeSpaceInformation
+                                   channelMetadata:(BOOL)shouldIncludeChannelMetadata
                                        usingClient:(nullable PubNub *)client;
 
 /**
- * @brief Ensure that specified \c user has exact number of memberships.
+ * @brief Ensure that specified \c UUID has exact number of \c memberships.
  *
- * @param user Unique user identifier which should be used with objects API to audit memberships.
- * @param count Expected number of user's memberships.
- * @param client \b PubNub client which should be used to audit user objects. Will use
+ * @param uuid Identifier which should be used with Objects API to audit \c memberships.
+ * @param count Expected number of \c UUID's \c memberships.
+ * @param client \b PubNub client which should be used to audit \c UUID \c memberships. Will use
  *     \c self.client if passed \c nil.
  */
-- (void)verifyUserMembershipsCount:(NSString *)user
+- (void)verifyUUIDMembershipsCount:(NSString *)uuid
                      shouldEqualTo:(NSUInteger)count
                        usingClient:(nullable PubNub *)client;
 
 /**
- * @brief Remove local cache of user membership Object which has been created during test case run.
+ * @brief Remove local cache of \c UUID \c membership objects which has been created during test
+ * case run.
  *
- * @param user Unique identifier of user for which membership objects should be removed from local
- *     cache.
- * @param space Unique identifier of space with which \c user membership should be removed.
+ * @param uuid Identifier for which \c membership objects should be removed from local cache.
+ * @param channel Name of channel with which \c UUID's \c membership should be removed.
  */
-- (void)deleteUser:(NSString *)user cachedMembershipForSpace:(NSString *)space;
+- (void)removeUUID:(NSString *)uuid cachedMembershipForChannel:(NSString *)channel;
 
 /**
- * @brief Remove list of user's membership Objects which has been created during test case run.
+ * @brief Remove list of \c UUID's \c memberships which has been created during test case run.
  *
- * @param user Unique identifier of user for which membership objects should be removed.
- * @param memberships List of membership Objects which should be removed for \c user.
- * @param client \b PubNub client which should be used to manage user objects. Will use
+ * @param uuid Identifier for which \c membership objects should be removed.
+ * @param memberships List of \c membership objects which should be removed for \c UUID.
+ * @param client \b PubNub client which should be used to manage \c UUID \c memberships. Will use
  *     \c self.client if passed \c nil.
  */
-- (void)deleteUser:(NSString *)user
+- (void)removeUUID:(NSString *)uuid
  membershipObjects:(NSArray<PNMembership *> *)memberships
        usingClient:(nullable PubNub *)client;
 
 /**
- * @brief Remove all users membership Objects which has been created during test case run.
+ * @brief Remove all \c UUIDs \c membership which has been created during test case run.
  *
- * @param users List of unique identifier of users for which membership objects should be removed.
+ * @param uuids List of identifiers for which \c memberships should be removed.
+ * @param client \b PubNub client which should be used to manage \c UUID \c membership. Will use
+ *     \c self.client if passed \c nil.
+ */
+- (void)removeUUIDs:(NSArray<NSString *> *)uuids membershipObjectsUsingClient:(nullable PubNub *)client;
+
+/**
+ * @brief Remove all \c UUID \c memberships which has been created during test case run.
+ *
+ * @param uuid Identifier for which \c memberships should be removed.
+ * @param client \b PubNub client which should be used to manage \c UUID \c membership. Will use
+ *     \c self.client if passed \c nil.
+ */
+- (void)removeUUID:(NSString *)uuid membershipObjectsUsingClient:(nullable PubNub *)client;
+
+/**
+ * @brief Remove local cache of \c UUID \c metadata which has been created during test case run.
+ *
+ * @param uuid Identifier which \c metadata should be removed from local cache.
+ */
+- (void)removeCachedUUIDMetadata:(NSString *)uuid;
+
+/**
+ * @brief Delete \c UUID \c metadata objects associated with passed list of identifiers.
+ *
+ * @param uuids List of identifiers for which associated \c metadata should be removed.
  * @param client \b PubNub client which should be used to manage user objects. Will use
  *     \c self.client if passed \c nil.
  */
-- (void)deleteUsers:(NSArray<NSString *> *)users membershipObjectsUsingClient:(nullable PubNub *)client;
+- (void)removeUUIDsMetadata:(NSArray<NSString *> *)uuids usingClient:(nullable PubNub *)client;
 
 /**
- * @brief Remove all user membership Objects which has been created during test case run.
+ * @brief Delete all \c UUIDs \c metadata objects which has been created during test case run.
  *
- * @param user Unique identifier of user for which membership objects should be removed.
- * @param client \b PubNub client which should be used to manage user objects. Will use
+ * @param client \b PubNub client which should be used to manage \c UUID \c metadata. Will use
  *     \c self.client if passed \c nil.
  */
-- (void)deleteUser:(NSString *)user membershipObjectsUsingClient:(nullable PubNub *)client;
+- (void)removeAllUUIDMetadataUsingClient:(nullable PubNub *)client;
 
 /**
- * @brief Remove local cache of user Object which has been created during test case run.
+ * @brief Set random \c metadata for random \c channels.
  *
- * @param user Unique identifier of user which should be removed from local cache.
- */
-- (void)deleteCachedUser:(NSString *)user;
-
-/**
- * @brief Delete user objects associated with passed list of identifiers.
- *
- * @param users List of unique user object identifiers which should be removed.
- * @param client \b PubNub client which should be used to manage user objects. Will use
- *     \c self.client if passed \c nil.
- */
-- (void)deleteUsers:(NSArray<NSString *> *)users usingClient:(nullable PubNub *)client;
-
-/**
- * @brief Delete all user Objects which has been created during test case run.
- *
- * @param client \b PubNub client which should be used to manage user objects. Will use
- *     \c self.client if passed \c nil.
- */
-- (void)deleteUserObjectsUsingClient:(nullable PubNub *)client;
-
-/**
- * @brief Create set of random space objects.
- *
- * @param objectsCount How many space objects should be created.
- * @param client \b PubNub client which should be used to manage space objects. Will use
+ * @param objectsCount For how many \c channel \c metadata should be set.
+ * @param client \b PubNub client which should be used to audit \c channel \c metadata. Will use
  *     \c self.client if passed \c nil.
  *
- * @return List of created space objects.
+ * @return List of \c channels \c metadata objects.
  */
-- (NSArray<PNSpace *> *)createObjectForSpaces:(NSUInteger)objectsCount
-                                  usingClient:(nullable PubNub *)client;
+- (NSArray<PNChannelMetadata *> *)setChannelsMetadata:(NSUInteger)objectsCount
+                                          usingClient:(nullable PubNub *)client;
 
 /**
- * @brief Use Objects API to create single space object with name used to create identifier and
- * custom data.
+ * @brief Set \c metadata for specified \c channel.
  *
- * @param name Name which should be associated with new space object entry and used to create unique
- *     identifier.
- * @param client \b PubNub client which should be used to manage space objects. Will use
+ * @param channel Name of channel which should be used to associate \c metadata with.
+ * @param client \b PubNub client which should be used to audit \c channel \c metadata. Will use
  *     \c self.client if passed \c nil.
  *
- * @return Created space object.
+ * @return \c Channel \c metadata object.
  */
-- (PNSpace *)createObjectForSpaceWithName:(NSString *)name usingClient:(nullable PubNub *)client;
+- (PNChannelMetadata *)setMetadataForChannel:(NSString *)channel usingClient:(nullable PubNub *)client;
 
 /**
- * @brief Use Objects API to create set of space objects using provided names to create identifier
- * and custom data.
+ * @brief Set \c metadata using provided \c channels to create identifier and custom data.
  *
- * @param names Names which should be associated with new space objects entries and used to create
- *     unique identifier.
- * @param client \b PubNub client which should be used to manage space objects. Will use
+ * @param channels Name of channels which should be used to associate \c metadata with.
+ * @param client \b PubNub client which should be used to audit \c channel \c metadata. Will use
  *     \c self.client if passed \c nil.
  *
- * @return List of created space objects.
+ * @return List of \c channels \c metadata objects.
  */
-- (NSArray<PNSpace *> *)createObjectForSpacesWithNames:(NSArray<NSString *> *)names
-                                           usingClient:(nullable PubNub *)client;
+- (NSArray<PNChannelMetadata *> *)setMetadataForChannels:(NSArray<NSString *> *)channels
+                                             usingClient:(nullable PubNub *)client;
 
 /**
- * @brief Ensure that specified number of space objects created for current publish / subscribe
- * keys.
+ * @brief Ensure that specified number of \c channels has been associated with \c metadata for
+ * current publish / subscribe keys.
  *
- * @param count Expected number of space objects.
- * @param client \b PubNub client which should be used to audit space objects. Will use
+ * @param count Expected number of \c channels which has associated \c metadata.
+ * @param client \b PubNub client which should be used to audit \c channel \c metadata. Will use
  *     \c self.client if passed \c nil.
  */
-- (void)verifySpacesCountShouldEqualTo:(NSUInteger)count usingClient:(nullable PubNub *)client;
+- (void)verifyChannelsMetadataCountShouldEqualTo:(NSUInteger)count usingClient:(nullable PubNub *)client;
 
 /**
- * @brief Add set of user objects as members to each of passed space objects.
+ * @brief Add set of \c UUIDs as members to each of passed \c channel.
  *
- * @param members List of user objects which should be added to each space entry.
- * @param spaces List of spaces to which set of \c members should be added.
+ * @param uuids List of identifiers which should be added to each \c channel entry.
+ * @param channels List of channel names to which set of \c uuids should be added.
  * @param customs Custom data which should be associated with created membership.
- * @param client \b PubNub client which should be used to manage membership objects. Will use
- *     \c self.client if passed \c nil.
+ * @param client \b PubNub client which should be used to manage \c members. Will use \c self.client
+ *     if passed \c nil.
  *
- * @return List of created spaces member objects.
+ * @return List of created \c member objects.
  */
-- (NSArray<PNMember *> *)addMembers:(NSArray<PNUser *> *)members
-                           toSpaces:(NSArray<PNSpace *> *)spaces
+- (NSArray<PNMember *> *)addMembers:(NSArray<NSString *> *)uuids
+                         toChannels:(NSArray<NSString *> *)channels
                         withCustoms:(nullable NSArray<NSDictionary *> *)customs
                         usingClient:(nullable PubNub *)client;
 
 /**
- * @brief Add set of user objects as members to each of passed space objects.
+ * @brief Add set of \c UUIDs as members to each of passed \c channel.
  *
- * @param members List of user objects which should be added to each space entry.
- * @param spaces List of spaces to which set of \c members should be added.
+ * @param uuids List of identifiers which should be added to each \c channel entry.
+ * @param channels List of channel names to which set of \c uuids should be added.
  * @param customs Custom data which should be associated with created membership.
- * @param shouldIncludeUserInformation Whether user information should be added to response.
- * @param client \b PubNub client which should be used to manage membership objects. Will use
- *     \c self.client if passed \c nil.
+ * @param shouldIncludeUUIDMetadata Whether \c channel \c metadata information should be added to
+ *     response.
+ * @param client \b PubNub client which should be used to manage \c members. Will use \c self.client
+ *     if passed \c nil.
  *
- * @return List of created spaces member objects.
+ * @return List of created \c member objects.
  */
-- (NSArray<PNMember *> *)addMembers:(NSArray<PNUser *> *)members
-                           toSpaces:(NSArray<PNSpace *> *)spaces
+- (NSArray<PNMember *> *)addMembers:(NSArray<NSString *> *)uuids
+                         toChannels:(NSArray<NSString *> *)channels
                         withCustoms:(nullable NSArray<NSDictionary *> *)customs
-                    userInformation:(BOOL)shouldIncludeUserInformation
+                       uuidMetadata:(BOOL)shouldIncludeUUIDMetadata
                         usingClient:(nullable PubNub *)client;
 
 /**
- * @brief Ensure that specified \c space has exact number of members.
+ * @brief Ensure that specified \c channel has exact number of \c members.
  *
- * @param space Unique space identifier which should be used with objects API to audit members.
- * @param count Expected number of space members.
- * @param client \b PubNub client which should be used to audit space objects. Will use
+ * @param channel Name of channel which should be used with Objects API to audit \c members.
+ * @param count Expected number of \c channel \c members.
+ * @param client \b PubNub client which should be used to audit \c channel \c members. Will use
  *     \c self.client if passed \c nil.
  */
-- (void)verifySpaceMembersCount:(NSString *)space
-                  shouldEqualTo:(NSUInteger)count
-                    usingClient:(nullable PubNub *)client;
+- (void)verifyChannelMembersCount:(NSString *)channel
+                    shouldEqualTo:(NSUInteger)count
+                      usingClient:(nullable PubNub *)client;
 
 /**
- * @brief Remove local cache of space member Object which has been created during test case run.
+ * @brief Remove local cache of \c channel \c members which has been created during test case run.
  *
- * @param space Unique identifier of space for which member objects should be removed from local
- *     cache.
- * @param user Unique identifier of user which should be removed from \c space members list.
+ * @param channel Name of channel for which \c member objects should be removed from local cache.
+ * @param uuid Identifier which should be removed from \c channel \c members list.
  */
-- (void)deleteSpace:(NSString *)space cachedMemberForUser:(NSString *)user;
+- (void)removeChannel:(NSString *)channel cachedMemberForUUID:(NSString *)uuid;
 
 /**
- * @brief Remove all spaces members Objects which has been created during test case run.
+ * @brief Remove all \c channels \c members which has been created during test case run.
  *
- * @param spaces List of unique identifier of space for which members objects should be removed.
- * @param client \b PubNub client which should be used to manage user objects. Will use
+ * @param channels List of channel names for which \c member objects should be removed.
+ * @param client \b PubNub client which should be used to manage \c members. Will use \c self.client
+ *     if passed \c nil.
+ */
+- (void)removeChannels:(NSArray<NSString *> *)channels membersObjectsUsingClient:(nullable PubNub *)client;
+
+/**
+ * @brief Remove list of \c channel \c member objects which has been created during test case run.
+ *
+ * @param channel Name of channel for which \c member objects should be removed.
+ * @param members List of member objects which should be removed from \c channel.
+ * @param client \b PubNub client which should be used to manage \c members. Will use \c self.client
+ *     if passed \c nil.
+ */
+- (void)removeChannel:(NSString *)channel
+        memberObjects:(NSArray<PNMember *> *)members
+          usingClient:(nullable PubNub *)client;
+
+/**
+ * @brief Remove all \c channel \c members which has been created during test case run.
+ *
+ * @param channel Name of channel for which \c members should be removed.
+ * @param client \b PubNub client which should be used to manage \c members. Will use \c self.client
+ *     if passed \c nil.
+ */
+- (void)removeChannel:(NSString *)channel membersObjectsUsingClient:(nullable PubNub *)client;
+
+/**
+ * @brief Remove local cache of \c channel \c metadata which has been created during test case run.
+ *
+ * @param channels Name of channel which \c metadata should be removed from local cache.
+ */
+- (void)removeCachedChannelsMetadata:(NSString *)channels;
+
+/**
+ * @brief Delete \c metadata objects associated with passed \c channels.
+ *
+ * @param channels List of channel names for which associated \c metadata should be removed.
+ * @param client \b PubNub client which should be used to manage \c channel \c metadata. Will use
  *     \c self.client if passed \c nil.
  */
-- (void)deleteSpaces:(NSArray<NSString *> *)spaces membersObjectsUsingClient:(nullable PubNub *)client;
+- (void)removeChannelsMetadata:(NSArray<NSString *> *)channels usingClient:(nullable PubNub *)client;
 
 /**
- * @brief Remove list of space member Objects which has been created during test case run.
+ * @brief Delete all \c channel \c metadata objects which has been created during test case run.
  *
- * @param space Unique identifier of space for which member objects should be removed.
- * @param members List of member Objects which should be removed from \c space.
- * @param client \b PubNub client which should be used to manage space objects. Will use
+ * @param client \b PubNub client which should be used to manage \c channel \c metadata. Will use
  *     \c self.client if passed \c nil.
  */
-- (void)deleteSpace:(NSString *)space
-      memberObjects:(NSArray<PNMember *> *)members
-        usingClient:(nullable PubNub *)client;
-
-/**
- * @brief Remove all space members Objects which has been created during test case run.
- *
- * @param space Unique space identifier for which members should be removed.
- * @param client \b PubNub client which should be used to manage space objects. Will use
- *     \c self.client if passed \c nil.
- */
-- (void)deleteSpace:(NSString *)space membersObjectsUsingClient:(nullable PubNub *)client;
-
-/**
- * @brief Remove local cache of space Object which has been created during test case run.
- *
- * @param space Unique identifier of space which should be removed from local cache.
- */
-- (void)deleteCachedSpace:(NSString *)space;
-
-/**
- * @brief Delete space objects associated with passed list of identifiers.
- *
- * @param spaces List of unique space object identifiers which should be removed.
- * @param client \b PubNub client which should be used to manage space objects. Will use
- *     \c self.client if passed \c nil.
- */
-- (void)deleteSpaces:(NSArray<NSString *> *)spaces usingClient:(nullable PubNub *)client;
-
-/**
- * @brief Delete all space Objects which has been created during test case run.
- *
- * @param client \b PubNub client which should be used to manage space objects. Will use
- *     \c self.client if passed \c nil.
- */
-- (void)deleteSpaceObjectsUsingClient:(nullable PubNub *)client;
+- (void)removeChannelsMetadataUsingClient:(nullable PubNub *)client;
 
 
 #pragma mark - Mocking
@@ -802,28 +777,12 @@ typedef void (^PNTClientDidReceiveStatusHandler)(PubNub *client, PNSubscribeStat
 - (void)addPresenceHandlerForClient:(PubNub *)client withBlock:(PNTClientDidReceivePresenceEventHandler)handler;
 
 /**
- * @brief Add block which will be called for each received \c user event.
+ * @brief Add block which will be called for each received \c object event.
  *
- * @param client \b PubNub client for which \c user events should be tracked.
+ * @param client \b PubNub client for which \c object events should be tracked.
  * @param handler Block which should be called each \c user event.
  */
-- (void)addUserHandlerForClient:(PubNub *)client withBlock:(PNTClientDidReceiveUserEventHandler)handler;
-
-/**
- * @brief Add block which will be called for each received \c space event.
- *
- * @param client \b PubNub client for which \c space events should be tracked.
- * @param handler Block which should be called each \c space event.
- */
-- (void)addSpaceHandlerForClient:(PubNub *)client withBlock:(PNTClientDidReceiveSpaceEventHandler)handler;
-
-/**
- * @brief Add block which will be called for each received \c membership event.
- *
- * @param client \b PubNub client for which \c membership events should be tracked.
- * @param handler Block which should be called each \c membership event.
- */
-- (void)addMembershipHandlerForClient:(PubNub *)client withBlock:(PNTClientDidReceiveMembershipEventHandler)handler;
+- (void)addObjectHandlerForClient:(PubNub *)client withBlock:(PNTClientDidReceiveObjectEventHandler)handler;
 
 /**
  * @brief Add block which will be called for each received \c action event.

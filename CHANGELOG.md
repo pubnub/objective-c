@@ -1,3 +1,15 @@
+## [v4.14.0](https://github.com/pubnub/objective-c/releases/tag/v4.14.0)
+May 29 2020
+
+[Full Changelog](https://github.com/pubnub/objective-c/compare/v4.13.2...v4.14.0)
+
+#### Added
+- Add simplified Objects API support with UUID and Channel metadata / membership management. 
+
+#### Modified
+- Deprecate and replace old `PNObjectEventListener` protocol with new one `PNEventsListener`. 
+- Update tests which has been used for previous Objects API version to test simplified Objects. 
+
 ## [v4.13.2](https://github.com/pubnub/objective-c/releases/tag/v4.13.2)
 May 18 2020
 

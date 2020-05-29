@@ -14,7 +14,7 @@
 /**
  * @brief API endpoints description basing on operation type.
  */
-static NSString * const PNOperationRequestTemplate[49] = {
+static NSString * const PNOperationRequestTemplate[51] = {
     [PNSubscribeOperation] = @"/v2/subscribe/{sub-key}/{channels}/0",
     [PNUnsubscribeOperation] = @"/v2/presence/sub_key/{sub-key}/channel/{channels}/leave",
     [PNPublishOperation] = @"/publish/{pub-key}/{sub-key}/0/{channel}/0/{message}",
@@ -49,25 +49,27 @@ static NSString * const PNOperationRequestTemplate[49] = {
     [PNAddPushNotificationsOnChannelsV2Operation] = @"/v2/push/sub-key/{sub-key}/devices-apns2/{token}",
     [PNRemovePushNotificationsFromChannelsV2Operation] = @"/v2/push/sub-key/{sub-key}/devices-apns2/{token}",
     [PNRemoveAllPushNotificationsV2Operation] = @"/v2/push/sub-key/{sub-key}/devices-apns2/{token}/remove",
-    [PNCreateUserOperation] = @"/v1/objects/{sub-key}/users",
-    [PNUpdateUserOperation] = @"/v1/objects/{sub-key}/users/{user-id}",
-    [PNDeleteUserOperation] = @"/v1/objects/{sub-key}/users/{user-id}",
-    [PNFetchUserOperation] = @"/v1/objects/{sub-key}/users/{user-id}",
-    [PNFetchUsersOperation] = @"/v1/objects/{sub-key}/users",
-    [PNCreateSpaceOperation] = @"/v1/objects/{sub-key}/spaces",
-    [PNUpdateSpaceOperation] = @"/v1/objects/{sub-key}/spaces/{space-id}",
-    [PNDeleteSpaceOperation] = @"/v1/objects/{sub-key}/spaces/{space-id}",
-    [PNFetchSpaceOperation] = @"/v1/objects/{sub-key}/spaces/{space-id}",
-    [PNFetchSpacesOperation] = @"/v1/objects/{sub-key}/spaces",
-    [PNManageMembershipsOperation] = @"/v1/objects/{sub-key}/users/{user-id}/spaces",
-    [PNFetchMembershipsOperation] = @"/v1/objects/{sub-key}/users/{user-id}/spaces",
-    [PNManageMembersOperation] = @"/v1/objects/{sub-key}/spaces/{space-id}/users",
-    [PNFetchMembersOperation] = @"/v1/objects/{sub-key}/spaces/{space-id}/users",
+    [PNSetUUIDMetadataOperation] = @"/v2/objects/{sub-key}/uuids/{uuid}",
+    [PNRemoveUUIDMetadataOperation] = @"/v2/objects/{sub-key}/uuids/{uuid}",
+    [PNFetchUUIDMetadataOperation] = @"/v2/objects/{sub-key}/uuids/{uuid}",
+    [PNFetchAllUUIDMetadataOperation] = @"/v2/objects/{sub-key}/uuids",
+    [PNSetChannelMetadataOperation] = @"/v2/objects/{sub-key}/channels/{channel}",
+    [PNRemoveChannelMetadataOperation] = @"/v2/objects/{sub-key}/channels/{channel}",
+    [PNFetchChannelMetadataOperation] = @"/v2/objects/{sub-key}/channels/{channel}",
+    [PNFetchAllChannelsMetadataOperation] = @"/v2/objects/{sub-key}/channels",
+    [PNSetMembershipsOperation] = @"/v2/objects/{sub-key}/uuids/{uuid}/channels",
+    [PNRemoveMembershipsOperation] = @"/v2/objects/{sub-key}/uuids/{uuid}/channels",
+    [PNManageMembershipsOperation] = @"/v2/objects/{sub-key}/uuids/{uuid}/channels",
+    [PNFetchMembershipsOperation] = @"/v2/objects/{sub-key}/uuids/{uuid}/channels",
+    [PNSetMembersOperation] = @"/v2/objects/{sub-key}/channels/{channel}/uuids",
+    [PNRemoveMembersOperation] = @"/v2/objects/{sub-key}/channels/{channel}/uuids",
+    [PNManageMembersOperation] = @"/v2/objects/{sub-key}/channels/{channel}/uuids",
+    [PNFetchMembersOperation] = @"/v2/objects/{sub-key}/channels/{channel}/uuids",
     [PNTimeOperation] = @"/time/0"
 };
 
 
-#pragma mark - Inerface implementation
+#pragma mark - Interface implementation
 
 @implementation PNURLBuilder
 

@@ -72,6 +72,22 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  * @brief Create error which will provide information about that one of request parameter values is
+ * too short.
+ *
+ * @param parameter Name of parameter who's length smaller than minimum value.
+ * @param objectType Name of object type.
+ * @param actualLength Actual value length.
+ * @param minimumLength Minimum allowed value length.
+ *
+ * @return Error with information about short parameter.
+ */
+- (NSError *)valueTooShortErrorForParameter:(NSString *)parameter
+                            ofObjectRequest:(NSString *)objectType
+                                 withLength:(NSUInteger)actualLength
+                              minimumLength:(NSUInteger)minimumLength;
+
+/**
+ * @brief Create error which will provide information about that one of request parameter values is
  * too long.
  *
  * @param parameter Name of parameter who's length exceed maximum value.
@@ -79,7 +95,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param actualLength Actual value length.
  * @param maximumLength Maximum allowed value length.
  *
- * @return Error with information about missing parameter.
+ * @return Error with information about long parameter.
  */
 - (NSError *)valueTooLongErrorForParameter:(NSString *)parameter
                            ofObjectRequest:(NSString *)objectType

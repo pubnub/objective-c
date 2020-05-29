@@ -11,7 +11,7 @@
 
 #pragma mark Private interface declaration
 
-@interface PNAppDelegate () <PNObjectEventListener>
+@interface PNAppDelegate () <PNEventsListener>
 
 #pragma mark - Properties
 

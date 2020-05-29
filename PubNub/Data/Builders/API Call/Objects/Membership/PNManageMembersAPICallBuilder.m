@@ -1,8 +1,8 @@
 /**
  * @author Serhii Mamontov
- * @version 4.10.0
- * @since 4.10.0
- * @copyright © 2010-2019 PubNub, Inc.
+ * @version 4.14.0
+ * @since 4.14.0
+ * @copyright © 2010-2020 PubNub, Inc.
  */
 #import "PNManageMembersAPICallBuilder.h"
 #import "PNAPICallBuilder+Private.h"
@@ -27,16 +27,6 @@
     };
 }
 
-- (PNManageMembersAPICallBuilder * (^)(NSArray<NSDictionary *> *users))update {
-    return ^PNManageMembersAPICallBuilder * (NSArray<NSDictionary *> *users) {
-        if ([users isKindOfClass:[NSArray class]] && users.count) {
-            [self setValue:users forParameter:NSStringFromSelector(_cmd)];
-        }
-
-        return self;
-    };
-}
-
 - (PNManageMembersAPICallBuilder * (^)(BOOL shouldIncludeCount))includeCount {
     return ^PNManageMembersAPICallBuilder * (BOOL shouldIncludeCount) {
         [self setValue:@(shouldIncludeCount) forParameter:NSStringFromSelector(_cmd)];
@@ -44,40 +34,30 @@
     };
 }
 
-- (PNManageMembersAPICallBuilder * (^)(NSArray<NSDictionary *> *users))add {
-    return ^PNManageMembersAPICallBuilder * (NSArray<NSDictionary *> *users) {
-        if ([users isKindOfClass:[NSArray class]] && users.count) {
-            [self setValue:users forParameter:NSStringFromSelector(_cmd)];
+- (PNManageMembersAPICallBuilder * (^)(NSArray<NSDictionary *> *uuids))set {
+    return ^PNManageMembersAPICallBuilder * (NSArray<NSDictionary *> *uuids) {
+        if ([uuids isKindOfClass:[NSArray class]] && uuids.count) {
+            [self setValue:uuids forParameter:NSStringFromSelector(_cmd)];
         }
 
         return self;
     };
 }
 
-- (PNManageMembersAPICallBuilder * (^)(NSArray<NSString *> *users))remove {
-    return ^PNManageMembersAPICallBuilder * (NSArray<NSString *> *users) {
-        if ([users isKindOfClass:[NSArray class]] && users.count) {
-            [self setValue:users forParameter:NSStringFromSelector(_cmd)];
+- (PNManageMembersAPICallBuilder * (^)(NSArray<NSString *> *uuids))remove {
+    return ^PNManageMembersAPICallBuilder * (NSArray<NSString *> *uuids) {
+        if ([uuids isKindOfClass:[NSArray class]] && uuids.count) {
+            [self setValue:uuids forParameter:NSStringFromSelector(_cmd)];
         }
 
         return self;
     };
 }
 
-- (PNManageMembersAPICallBuilder * (^)(NSArray<NSString*> *sort))sort {
-    return ^PNManageMembersAPICallBuilder * (NSArray<NSString*> *sort) {
+- (PNManageMembersAPICallBuilder * (^)(NSArray<NSString *> *sort))sort {
+    return ^PNManageMembersAPICallBuilder * (NSArray<NSString *> *sort) {
         if ([sort isKindOfClass:[NSArray class]] && sort.count) {
             [self setValue:sort forParameter:NSStringFromSelector(_cmd)];
-        }
-        
-        return self;
-    };
-}
-
-- (PNManageMembersAPICallBuilder * (^)(NSString *spaceId))spaceId {
-    return ^PNManageMembersAPICallBuilder * (NSString *spaceId) {
-        if ([spaceId isKindOfClass:[NSString class]] && spaceId.length) {
-            [self setValue:spaceId forParameter:NSStringFromSelector(_cmd)];
         }
         
         return self;

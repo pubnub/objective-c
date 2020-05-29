@@ -1,10 +1,18 @@
-#import "PNAPICallBuilder.h"
+#import "PNObjectsAPICallBuilder.h"
 #import "PNStructures.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface PNFetchMembershipsAPICallBuilder : PNAPICallBuilder
+/**
+ * @brief \c Fetch \c memberships API call builder.
+ *
+ * @author Serhii Mamontov
+ * @version 4.14.0
+ * @since 4.14.0
+ * @copyright © 2010-2020 PubNub, Inc.
+ */
+@interface PNFetchMembershipsAPICallBuilder : PNObjectsAPICallBuilder
 
 
 #pragma mark - Configuration
@@ -19,9 +27,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, strong) PNFetchMembershipsAPICallBuilder * (^includeFields)(PNMembershipFields includeFields);
 
 /**
- * @brief Whether total count of \c memberships should be included in response or not.
+ * @brief Whether total count of objects should be included in response or not.
  *
- * @param shouldIncludeCount Whether total count of \c memberships should be requested or not.
+ * @param shouldIncludeCount Whether total count of objects should be requested or not.
  *
  * @return API call configuration builder.
  */
@@ -31,13 +39,12 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief Results sorting order.
  *
  * @param sort List of criteria (name of field) which should be used for sorting in ascending order.
- *     To change sorting order, append \c :asc (for ascending) or \c :desc (descending) to field name.
+ *     To change sorting order, append \c :asc (for ascending) or \c :desc (descending) to field
+ *     name.
  *
  * @return API call configuration builder.
- *
- * @since 4.13.0
  */
-@property (nonatomic, readonly, strong) PNFetchMembershipsAPICallBuilder * (^sort)(NSArray<NSString*> *sort);
+@property (nonatomic, readonly, strong) PNFetchMembershipsAPICallBuilder * (^sort)(NSArray<NSString *> *sort);
 
 /**
  * @brief Expression to filter out results basing on specified criteria.
@@ -45,22 +52,11 @@ NS_ASSUME_NONNULL_BEGIN
  * @param filter Memberships filter expression.
  *
  * @return API call configuration builder.
- *
- * @since 4.13.0
  */
 @property (nonatomic, readonly, strong) PNFetchMembershipsAPICallBuilder * (^filter)(NSString *filter);
 
 /**
- * @brief Target \c user identifier.
- *
- * @param userId Identifier of \c user for which memberships will be fetched.
- *
- * @return API call configuration builder.
- */
-@property (nonatomic, readonly, strong) PNFetchMembershipsAPICallBuilder * (^userId)(NSString *userId);
-
-/**
- * @brief Maximum number of \c memberships per fetched page.
+ * @brief Maximum number of objects per fetched page.
  *
  * @note Will be set to \c 100 (which is also maximum value) if not specified.
  *
@@ -78,6 +74,17 @@ NS_ASSUME_NONNULL_BEGIN
  * @return API call configuration builder.
  */
 @property (nonatomic, readonly, strong) PNFetchMembershipsAPICallBuilder * (^start)(NSString *start);
+
+/**
+ * @brief Identifier for which memberships should be fetched.
+
+ * @note Will be set to current \b PubNub configuration \c uuid if \a nil is set.
+ *
+ * @param uuid Unique identifier for membership.
+ *
+ * @return API call configuration builder.
+ */
+@property (nonatomic, readonly, strong) PNFetchMembershipsAPICallBuilder * (^uuid)(NSString *uuid);
 
 /**
  * @brief Cursor value to navigate to previous fetched result page.

@@ -4,8 +4,8 @@
 
 #pragma mark Class forward
 
-@class PNMembershipEventResult, PNPresenceEventResult, PNSpaceEventResult, PNUserEventResult;
 @class PNMessageActionResult, PNMessageResult, PNSignalResult, PNErrorStatus, PubNub;
+@class PNPresenceEventResult, PNObjectEventResult;
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -50,15 +50,15 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Listeners list modification
 
 /**
- * @brief Add observer which conform to \b PNObjectEventListener protocol and would like to receive
+ * @brief Add observer which conform to \b PNEventsListener protocol and would like to receive
  * updates based on live feed events and status change.
  *
- * @discussion Listener can implement only required callbacks from \b PNObjectEventListener protocol
+ * @discussion Listener can implement only required callbacks from \b PNEventsListener protocol
  * and called only when desired type of event arrive.
  *
  * @param listener Listener which would like to receive updates.
  */
-- (void)addListener:(id <PNObjectEventListener>)listener;
+- (void)addListener:(id <PNEventsListener>)listener;
 
 /**
  * @brief Remove listener from list for callback calls.
@@ -68,7 +68,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @param listener Listener which doesn't want to receive updates anymore.
  */
-- (void)removeListener:(id <PNObjectEventListener>)listener;
+- (void)removeListener:(id <PNEventsListener>)listener;
 
 /**
  * @brief Remove all registered listeners (for message, presence event and client state change).
@@ -131,7 +131,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)notifyPresenceEvent:(PNPresenceEventResult *)event;
 
 /**
- * @brief Notify all \c membership listeners about new signal.
+ * @brief Notify all \c object listeners about new event.
  *
  * @warning Method should be called within \b -notifyWithBlock: block to shift execution to private
  * protected queue.
@@ -139,29 +139,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param event Event object which provide information about operation type and service response
  * for it.
  */
-- (void)notifyMembershipEvent:(PNMembershipEventResult *)event;
-
-/**
- * @brief Notify all \c space listeners about new signal.
- *
- * @warning Method should be called within \b -notifyWithBlock: block to shift execution to private
- * protected queue.
- *
- * @param event Event object which provide information about operation type and service response
- * for it.
- */
-- (void)notifySpaceEvent:(PNSpaceEventResult *)event;
-
-/**
- * @brief Notify all \c user listeners about new signal.
- *
- * @warning Method should be called within \b -notifyWithBlock: block to shift execution to private
- * protected queue.
- *
- * @param event Event object which provide information about operation type and service response
- * for it.
- */
-- (void)notifyUserEvent:(PNUserEventResult *)event;
+- (void)notifyObjectEvent:(PNObjectEventResult *)event;
 
 /**
  * @brief Notify all state change listeners about changes in subscriber state.

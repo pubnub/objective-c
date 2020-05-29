@@ -48,7 +48,7 @@ NS_ASSUME_NONNULL_END
 }
 
 - (BOOL)returnsResponse {
-    return [self.httpMethod.uppercaseString isEqualToString:@"GET"] ? YES : NO;
+    return [self.httpMethod.uppercaseString isEqualToString:@"GET"];
 }
 
 - (void)setParametersError:(NSError *)parametersError {
@@ -81,10 +81,29 @@ NS_ASSUME_NONNULL_END
                            userInfo:errorInformation];
 }
 
+- (NSError *)valueTooShortErrorForParameter:(NSString *)parameter
+                            ofObjectRequest:(NSString *)objectType
+                                 withLength:(NSUInteger)actualLength
+                              minimumLength:(NSUInteger)minimumLength {
+
+    NSString *reason = [NSString stringWithFormat:@"%@'s '%@' parameter is too shorty (%@ when %@ "
+                        "minimum allowed).", objectType.capitalizedString, parameter,
+                        @(actualLength), @(minimumLength)];
+    NSDictionary *errorInformation = @{
+            NSLocalizedDescriptionKey: @"Request parameters error",
+            NSLocalizedFailureReasonErrorKey: reason
+    };
+
+    return [NSError errorWithDomain:kPNAPIErrorDomain
+                               code:kPNAPIUnacceptableParameters
+                           userInfo:errorInformation];
+}
+
 - (NSError *)valueTooLongErrorForParameter:(NSString *)parameter
                            ofObjectRequest:(NSString *)objectType
                                 withLength:(NSUInteger)actualLength
                              maximumLength:(NSUInteger)maximumLength {
+
     NSString *reason = [NSString stringWithFormat:@"%@'s '%@' parameter is too long (%@ when %@ "
                         "maximum allowed).", objectType.capitalizedString, parameter,
                         @(actualLength), @(maximumLength)];

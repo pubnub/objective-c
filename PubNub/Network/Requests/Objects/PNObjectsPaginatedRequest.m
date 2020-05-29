@@ -1,9 +1,10 @@
 /**
  * @author Serhii Mamontov
- * @version 4.10.0
- * @since 4.10.0
- * @copyright © 2010-2019 PubNub, Inc.
+ * @version 4.14.0
+ * @since 4.14.0
+ * @copyright © 2010-2020 PubNub, Inc. 
  */
+#import "PNBaseObjectsRequest+Private.h"
 #import "PNObjectsPaginatedRequest.h"
 #import "PNRequest+Private.h"
 #import "PNHelpers.h"
@@ -19,7 +20,15 @@
 - (PNRequestParameters *)requestParameters {
     PNRequestParameters *parameters = [super requestParameters];
 
-    if (self.shouldIncludeCount) {
+    if (self.parametersError) {
+        return parameters;
+    }
+    
+    if ((self.includeFields & PNChannelTotalCountField) == PNChannelTotalCountField ||
+        (self.includeFields & PNUUIDTotalCountField) == PNUUIDTotalCountField ||
+        (self.includeFields & PNMembershipTotalCountField) == PNMembershipTotalCountField ||
+        (self.includeFields & PNMemberTotalCountField) == PNMemberTotalCountField) {
+
         [parameters addQueryParameter:@"1" forFieldName:@"count"];
     }
 

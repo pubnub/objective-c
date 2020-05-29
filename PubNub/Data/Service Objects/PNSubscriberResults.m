@@ -5,12 +5,14 @@
  * @copyright © 2010-2019 PubNub, Inc.
  */
 #import "NSDateFormatter+PNCacheable.h"
+#import "PNChannelMetadata+Private.h"
 #import "PNSubscribeStatus+Private.h"
 #import "PNMessageAction+Private.h"
+#import "PNUUIDMetadata+Private.h"
 #import "PNServiceData+Private.h"
+#import "PNMembership+Private.h"
 #import "PNSubscriberResults.h"
 #import "PNResult+Private.h"
-
 
 #pragma mark Protected interfaces declaration
 
@@ -66,38 +68,12 @@
 @end
 
 
-@interface PNMembershipEventResult ()
+@interface PNObjectEventResult ()
 
 
 #pragma mark - Properties
 
-@property (nonatomic, strong) PNMembershipEventData *data;
-
-#pragma mark -
-
-
-@end
-
-
-@interface PNSpaceEventResult ()
-
-
-#pragma mark - Properties
-
-@property (nonatomic, strong) PNSpaceEventData *data;
-
-#pragma mark -
-
-
-@end
-
-
-@interface PNUserEventResult ()
-
-
-#pragma mark - Properties
-
-@property (nonatomic, strong) PNUserEventData *data;
+@property (nonatomic, strong) PNObjectEventData *data;
 
 #pragma mark -
 
@@ -210,151 +186,45 @@
 @end
 
 
-@implementation PNMembershipEventData
+@implementation PNObjectEventData
 
 
 #pragma mark - Information
 
+- (PNChannelMetadata *)channelMetadata {
+    if (![self.type isEqualToString:@"channel"]) {
+        return nil;
+    }
+
+    return [PNChannelMetadata channelMetadataFromDictionary:self.serviceData[@"channel"]];
+}
+
+- (PNUUIDMetadata *)uuidMetadata {
+    if (![self.type isEqualToString:@"uuid"]) {
+        return nil;
+    }
+
+    return [PNUUIDMetadata uuidMetadataFromDictionary:self.serviceData[@"uuid"]];
+}
+
+- (PNMembership *)membership {
+    if (![self.type isEqualToString:@"membership"]) {
+        return nil;
+    }
+    
+    return [PNMembership membershipFromDictionary:self.serviceData[@"membership"]];
+}
+
 - (NSNumber *)timestamp {
-    return @(((NSNumber *)self.serviceData[@"timetoken"]).unsignedLongLongValue/10000000);
-}
-
-- (NSString *)spaceId {
-    return self.serviceData[@"membership"][@"spaceId"];
-}
-
-- (NSString *)userId {
-    return self.serviceData[@"membership"][@"userId"];
-}
-
-- (NSDictionary *)custom {
-    return self.serviceData[@"membership"][@"custom"];
-}
-
-- (NSDate *)created {
-    NSString *dateString = self.serviceData[@"membership"][@"created"];
-    
-    return dateString ? [[NSDateFormatter pn_objectsDateFormatter] dateFromString:dateString] : nil;
-}
-
-- (NSDate *)updated {
-    NSString *dateString = self.serviceData[@"membership"][@"updated"];
-    
-    return dateString ? [[NSDateFormatter pn_objectsDateFormatter] dateFromString:dateString] : nil;
+    return @(((NSNumber *)self.serviceData[@"timetoken"]).unsignedLongLongValue / 10000000);
 }
 
 - (NSString *)event {
     return self.serviceData[@"event"];
 }
 
-- (NSString *)eTag {
-    return self.serviceData[@"membership"][@"eTag"];
-}
-
-#pragma mark -
-
-
-@end
-
-
-@implementation PNSpaceEventData
-
-
-#pragma mark - Information
-
-- (NSArray<NSString *> *)modifiedFields {
-    return self.serviceData[@"updatedFields"];
-}
-
-- (NSDictionary *)custom {
-    return self.serviceData[@"space"][@"custom"];
-}
-
-- (NSString *)information {
-    return self.serviceData[@"space"][@"information"];
-}
-
-- (NSString *)identifier {
-    return self.serviceData[@"space"][@"id"];
-}
-
-- (NSNumber *)timestamp {
-    return @(((NSNumber *)self.serviceData[@"timetoken"]).unsignedLongLongValue/10000000);
-}
-
-- (NSString *)event {
-    return self.serviceData[@"event"];
-}
-
-- (NSDate *)updated {
-    NSString *dateString = self.serviceData[@"space"][@"updated"];
-    
-    return dateString ? [[NSDateFormatter pn_objectsDateFormatter] dateFromString:dateString] : nil;
-}
-
-- (NSString *)name {
-    return self.serviceData[@"space"][@"name"];
-}
-
-- (NSString *)eTag {
-    return self.serviceData[@"space"][@"eTag"];
-}
-
-#pragma mark -
-
-
-@end
-
-
-@implementation PNUserEventData
-
-
-#pragma mark - Information
-
-- (NSArray<NSString *> *)modifiedFields {
-    return self.serviceData[@"updatedFields"];
-}
-
-- (NSString *)externalId {
-    return self.serviceData[@"user"][@"externalId"];
-}
-
-- (NSString *)profileUrl {
-    return self.serviceData[@"user"][@"profileUrl"];
-}
-
-- (NSDictionary *)custom {
-    return self.serviceData[@"user"][@"custom"];
-}
-
-- (NSString *)identifier {
-    return self.serviceData[@"user"][@"id"];
-}
-
-- (NSNumber *)timestamp {
-    return @(((NSNumber *)self.serviceData[@"timetoken"]).unsignedLongLongValue/10000000);
-}
-
-- (NSString *)email {
-    return self.serviceData[@"user"][@"email"];
-}
-
-- (NSString *)event {
-    return self.serviceData[@"event"];
-}
-
-- (NSDate *)updated {
-    NSString *dateString = self.serviceData[@"user"][@"updated"];
-    
-    return dateString ? [[NSDateFormatter pn_objectsDateFormatter] dateFromString:dateString] : nil;
-}
-
-- (NSString *)name {
-    return self.serviceData[@"user"][@"name"];
-}
-
-- (NSString *)eTag {
-    return self.serviceData[@"user"][@"eTag"];
+- (NSString *)type {
+    return self.serviceData[@"type"];
 }
 
 #pragma mark -
@@ -439,58 +309,19 @@
 @end
 
 
-@implementation PNMembershipEventResult
+@implementation PNObjectEventResult
 
 
 #pragma mark - Information
 
-- (PNMembershipEventData *)data {
+- (PNObjectEventData *)data {
     if (!_data) {
-        _data = [PNMembershipEventData dataWithServiceResponse:self.serviceData];
+        _data = [PNObjectEventData dataWithServiceResponse:self.serviceData];
     }
-    
+
     return _data;
 }
 
 #pragma mark -
-
-
-@end
-
-
-@implementation PNSpaceEventResult
-
-
-#pragma mark - Information
-
-- (PNSpaceEventData *)data {
-    if (!_data) {
-        _data = [PNSpaceEventData dataWithServiceResponse:self.serviceData];
-    }
-    
-    return _data;
-}
-
-#pragma mark -
-
-
-@end
-
-
-@implementation PNUserEventResult
-
-
-#pragma mark - Information
-
-- (PNUserEventData *)data {
-    if (!_data) {
-        _data = [PNUserEventData dataWithServiceResponse:self.serviceData];
-    }
-    
-    return _data;
-}
-
-#pragma mark -
-
 
 @end

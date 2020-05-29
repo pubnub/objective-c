@@ -45,7 +45,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessageType) {
     PNSignalMessageType = 1,
     
     /**
-     @brief Type which represent \c user / \c space / \c membership object.
+     @brief Type which represent \c uuid / \c channel  \c metadata or \c membership object.
      */
     PNObjectMessageType = 2,
     
@@ -56,11 +56,11 @@ typedef NS_OPTIONS(NSUInteger, PNMessageType) {
 };
 
 /**
- @brief Helper to stringify operation type in result and status objects.
-
- @since 4.0
+ * @brief Helper to stringify operation type in result and status objects.
+ *
+ * @since 4.0.0
  */
-static NSString * const PNOperationTypeStrings[49] = {
+static NSString * const PNOperationTypeStrings[51] = {
     [PNSubscribeOperation] = @"Subscribe",
     [PNUnsubscribeOperation] = @"Unsubscribe",
     [PNPublishOperation] = @"Publish",
@@ -95,24 +95,26 @@ static NSString * const PNOperationTypeStrings[49] = {
     [PNAddPushNotificationsOnChannelsV2Operation] = @"Enable Push Notifications On Channels (v2)",
     [PNRemovePushNotificationsFromChannelsV2Operation] = @"Remove Push Notifications From Channels (v2)",
     [PNRemoveAllPushNotificationsV2Operation] = @"Remove All Push Notifications (v2)",
-    [PNCreateUserOperation] = @"Create User",
-    [PNUpdateUserOperation] = @"Update User",
-    [PNDeleteUserOperation] = @"Delete User",
-    [PNFetchUserOperation] = @"Fetch User",
-    [PNFetchUsersOperation] = @"Fetch All Users",
-    [PNCreateSpaceOperation] = @"Create Space",
-    [PNUpdateSpaceOperation] = @"Update Space",
-    [PNDeleteSpaceOperation] = @"Delete Space",
-    [PNFetchSpaceOperation] = @"Fetch Space",
-    [PNFetchSpacesOperation] = @"Fetch All Spaces",
+    [PNSetUUIDMetadataOperation] = @"Set UUID Metadata",
+    [PNRemoveUUIDMetadataOperation] = @"Remove UUID Metadata",
+    [PNFetchUUIDMetadataOperation] = @"Fetch UUID Metadata",
+    [PNFetchAllUUIDMetadataOperation] = @"Fetch All UUIDs Metadata",
+    [PNSetChannelMetadataOperation] = @"Update Channel Metadata",
+    [PNRemoveChannelMetadataOperation] = @"Remove Channel Metadata",
+    [PNFetchChannelMetadataOperation] = @"Fetch Channel Metadata",
+    [PNFetchAllChannelsMetadataOperation] = @"Fetch All Channels Metadata",
+    [PNSetMembershipsOperation] = @"Update Memberships",
+    [PNRemoveMembershipsOperation] = @"Remove Memberships",
     [PNManageMembershipsOperation] = @"Manage Memberships",
     [PNFetchMembershipsOperation] = @"Fetch Memberships",
+    [PNSetMembersOperation] = @"Update Members",
+    [PNRemoveMembersOperation] = @"Remove Members",
     [PNManageMembersOperation] = @"Manage Members",
     [PNFetchMembersOperation] = @"Fetch Members",
     [PNTimeOperation] = @"Time",
 };
 
-static NSString * const PNOperationResultClasses[49] = {
+static NSString * const PNOperationResultClasses[51] = {
     [PNHistoryOperation] = @"PNHistoryResult",
     [PNHistoryForChannelsOperation] = @"PNHistoryResult",
     [PNHistoryWithActionsOperation] = @"PNHistoryResult",
@@ -129,16 +131,16 @@ static NSString * const PNOperationResultClasses[49] = {
     [PNPushNotificationEnabledChannelsOperation] = @"PNAPNSEnabledChannelsResult",
     [PNPushNotificationEnabledChannelsV2Operation] = @"PNAPNSEnabledChannelsResult",
     [PNFetchMessagesActionsOperation] = @"PNFetchMessageActionsResult",
-    [PNFetchUserOperation] = @"PNFetchUserResult",
-    [PNFetchUsersOperation] = @"PNFetchUsersResult",
-    [PNFetchSpaceOperation] = @"PNFetchSpaceResult",
-    [PNFetchSpacesOperation] = @"PNFetchSpacesResult",
+    [PNFetchUUIDMetadataOperation] = @"PNFetchUUIDMetadataResult",
+    [PNFetchAllUUIDMetadataOperation] = @"PNFetchAllUUIDMetadataResult",
+    [PNFetchChannelMetadataOperation] = @"PNFetchChannelMetadataResult",
+    [PNFetchAllChannelsMetadataOperation] = @"PNFetchAllChannelsMetadataResult",
     [PNFetchMembershipsOperation] = @"PNFetchMembershipsResult",
     [PNFetchMembersOperation] = @"PNFetchMembersResult",
     [PNTimeOperation] = @"PNTimeResult",
 };
 
-static NSString * const PNOperationStatusClasses[49] = {
+static NSString * const PNOperationStatusClasses[51] = {
     [PNSubscribeOperation] = @"PNSubscribeStatus",
     [PNUnsubscribeOperation] = @"PNAcknowledgmentStatus",
     [PNPublishOperation] = @"PNPublishStatus",
@@ -173,27 +175,29 @@ static NSString * const PNOperationStatusClasses[49] = {
     [PNAddPushNotificationsOnChannelsV2Operation] = @"PNAcknowledgmentStatus",
     [PNRemovePushNotificationsFromChannelsV2Operation] = @"PNAcknowledgmentStatus",
     [PNRemoveAllPushNotificationsV2Operation] = @"PNAcknowledgmentStatus",
-    [PNCreateUserOperation] = @"PNCreateUserStatus",
-    [PNUpdateUserOperation] = @"PNUpdateUserStatus",
-    [PNDeleteUserOperation] = @"PNAcknowledgmentStatus",
-    [PNFetchUserOperation] = @"PNErrorStatus",
-    [PNFetchUsersOperation] = @"PNErrorStatus",
-    [PNCreateSpaceOperation] = @"PNCreateSpaceStatus",
-    [PNUpdateSpaceOperation] = @"PNUpdateSpaceStatus",
-    [PNDeleteSpaceOperation] = @"PNAcknowledgmentStatus",
-    [PNFetchSpaceOperation] = @"PNErrorStatus",
-    [PNFetchSpacesOperation] = @"PNErrorStatus",
+    [PNSetUUIDMetadataOperation] = @"PNSetUUIDMetadataStatus",
+    [PNRemoveUUIDMetadataOperation] = @"PNAcknowledgmentStatus",
+    [PNFetchUUIDMetadataOperation] = @"PNErrorStatus",
+    [PNFetchAllUUIDMetadataOperation] = @"PNErrorStatus",
+    [PNSetChannelMetadataOperation] = @"PNSetChannelMetadataStatus",
+    [PNRemoveChannelMetadataOperation] = @"PNAcknowledgmentStatus",
+    [PNFetchChannelMetadataOperation] = @"PNErrorStatus",
+    [PNFetchAllChannelsMetadataOperation] = @"PNErrorStatus",
+    [PNSetMembershipsOperation] = @"PNManageMembershipsStatus",
+    [PNRemoveMembershipsOperation] = @"PNManageMembershipsStatus",
     [PNManageMembershipsOperation] = @"PNManageMembershipsStatus",
     [PNFetchMembershipsOperation] = @"PNErrorStatus",
+    [PNSetMembersOperation] = @"PNManageMembersStatus",
+    [PNRemoveMembersOperation] = @"PNManageMembersStatus",
     [PNManageMembersOperation] = @"PNManageMembersStatus",
     [PNFetchMembersOperation] = @"PNErrorStatus",
     [PNTimeOperation] = @"PNErrorStatus",
 };
 
 /**
- @brief  Helper to stringify status category.
-
- @since 4.0
+ * @brief Helper to stringify status category.
+ *
+ * @since 4.0.0
  */
 static NSString * const PNStatusCategoryStrings[18] = {
     [PNUnknownCategory] = @"Unknown",
@@ -217,9 +221,9 @@ static NSString * const PNStatusCategoryStrings[18] = {
 };
 
 /**
- @brief  Helper to stringify here now data set information.
-
- @since 4.0
+ * @brief Helper to stringify here now data set information.
+ *
+ * @since 4.0.0
  */
 static NSString * const PNHereNowDataStrings[3] = {
     [PNHereNowOccupancy] = @"occupancy only",

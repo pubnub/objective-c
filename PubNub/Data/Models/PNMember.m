@@ -1,12 +1,12 @@
 /**
  * @author Serhii Mamontov
- * @version 4.10.0
- * @since 4.10.0
- * @copyright © 2010-2019 PubNub, Inc.
+ * @version 4.14.0
+ * @since 4.14.0
+ * @copyright © 2010-2020 PubNub, Inc.
  */
 #import "NSDateFormatter+PNCacheable.h"
+#import "PNUUIDMetadata+Private.h"
 #import "PNMember+Private.h"
-#import "PNUser+Private.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -19,24 +19,20 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Information
 
 /**
- * @brief Additional information associated with \c user in context of his membership in \c space.
+ * @brief \c Metadata associated with \c UUID which is listed in \c channel's members list.
+ */
+@property (nonatomic, nullable, strong) PNUUIDMetadata *metadata;
+
+/**
+ * @brief Additional information from \c metadata which has been associated with \c UUID during
+ * \c channel \c member \c add requests.
  */
 @property (nonatomic, nullable, strong) NSDictionary *custom;
 
 /**
- * @brief \c User which is listed in \c space's members list.
+ * @brief \c Member data modification date.
  */
-@property (nonatomic, nullable, strong) PNUser *user;
-
-/**
- * @brief \c Space creation date.
- */
-@property (nonatomic, copy) NSDate *created;
-
-/**
- * @brief \c Space data modification date.
- */
-@property (nonatomic, copy) NSDate *updated;
+@property (nonatomic, strong) NSDate *updated;
 
 /**
  * @brief \c Member object version identifier.
@@ -49,12 +45,11 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Initialize \c member data model.
  *
- * @param identifier Identifier of \c user which is listed in \c space's members list.
- * @param user \c User listed in \c space's members list.
+ * @param metadata \c Metadata which associated with specified \c UUID in context of \c channel.
  *
  * @return Initialized and ready to use \c member representation model.
  */
-- (instancetype)initWithUserId:(NSString *)identifier user:(nullable PNUser *)user;
+- (instancetype)initWithUUIDMetadata:(PNUUIDMetadata *)metadata;
 
 #pragma mark -
 
@@ -73,19 +68,10 @@ NS_ASSUME_NONNULL_END
 
 + (instancetype)memberFromDictionary:(NSDictionary *)data {
     NSDateFormatter *formatter = [NSDateFormatter pn_objectsDateFormatter];
-    PNUser *user = nil;
-    
-    if (data[@"user"]) {
-        user = [PNUser userFromDictionary:data[@"user"]];
-    }
-    
-    PNMember *member = [PNMember memberWithUserId:data[@"id"] user:user];
+    PNUUIDMetadata *uuidMetadata = [PNUUIDMetadata uuidMetadataFromDictionary:data[@"uuid"]];
+    PNMember *member = [PNMember memberWithUUIDMetadata:uuidMetadata];
     member.custom = data[@"custom"];
     member.eTag = data[@"eTag"];
-    
-    if (data[@"created"]) {
-        member.created = [formatter dateFromString:data[@"created"]];
-    }
     
     if (data[@"updated"]) {
         member.updated = [formatter dateFromString:data[@"updated"]];
@@ -94,16 +80,16 @@ NS_ASSUME_NONNULL_END
     return member;
 }
 
-+ (instancetype)memberWithUserId:(NSString *)identifier user:(PNUser *)user {
-    return [[self alloc] initWithUserId:identifier user:user];
++ (instancetype)memberWithUUIDMetadata:(PNUUIDMetadata *)metadata {
+    return [[self alloc] initWithUUIDMetadata:metadata];
 }
 
-- (instancetype)initWithUserId:(NSString *)identifier user:(nullable PNUser *)user {
+- (instancetype)initWithUUIDMetadata:(PNUUIDMetadata *)metadata {
     if ((self = [super init])) {
-        _userId = [identifier copy];
-        _user = user;
+        _uuid = [metadata.uuid copy];
+        _metadata = metadata;
     }
-    
+
     return self;
 }
 

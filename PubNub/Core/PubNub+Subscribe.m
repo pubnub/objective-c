@@ -143,13 +143,13 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Listeners
 
-- (void)addListener:(id <PNObjectEventListener>)listener {
+- (void)addListener:(id <PNEventsListener>)listener {
     
     // Forwarding calls to listener manager.
     [self.listenersManager addListener:listener];
 }
 
-- (void)removeListener:(id <PNObjectEventListener>)listener {
+- (void)removeListener:(id <PNEventsListener>)listener {
     
     // Forwarding calls to listener manager.
     [self.listenersManager removeListener:listener];

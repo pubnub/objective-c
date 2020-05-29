@@ -1,7 +1,7 @@
 /**
  * @author Serhii Mamontov
- * @version 4.10.0
- * @since 4.10.0
+ * @version 4.14.0
+ * @since 4.14.0
  * @copyright © 2010-2019 PubNub, Inc.
  */
 #import "PNManageMembershipsStatus.h"

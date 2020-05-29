@@ -1,10 +1,18 @@
-#import "PNAPICallBuilder.h"
+#import "PNObjectsAPICallBuilder.h"
 #import "PNStructures.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface PNManageMembersAPICallBuilder : PNAPICallBuilder
+/**
+ * @brief \c Manage \c members API call builder.
+ *
+ * @author Serhii Mamontov
+ * @version 4.14.0
+ * @since 4.14.0
+ * @copyright © 2010-2020 PubNub, Inc.
+ */
+@interface PNManageMembersAPICallBuilder : PNObjectsAPICallBuilder
 
 
 #pragma mark - Configuration
@@ -19,70 +27,46 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, strong) PNManageMembersAPICallBuilder * (^includeFields)(PNMemberFields includeFields);
 
 /**
- * @brief List of \c users for which additional information associated with each of them in context
- * of \c space should be updated.
+ * @brief Whether total count of objects should be included in response or not.
  *
- * @param users List with \c users and additional information which should be changed for each of
- * them in context of specified \c space.
- *
- * @note Each entry is dictionary with \c userId and \b optional \c custom fields. \c custom should
- * be dictionary with simple objects: \a NSString and \a NSNumber.
- *
- * @return API call configuration builder.
- */
-@property (nonatomic, readonly, strong) PNManageMembersAPICallBuilder * (^update)(NSArray<NSDictionary *> *users);
-
-/**
- * @brief Whether total count of \c members should be included in response or not.
- *
- * @param shouldIncludeCount Whether total count of \c members should be requested or not.
+ * @param shouldIncludeCount Whether total count of objects should be requested or not.
  *
  * @return API call configuration builder.
  */
 @property (nonatomic, readonly, strong) PNManageMembersAPICallBuilder * (^includeCount)(BOOL shouldIncludeCount);
 
 /**
- * @brief List of \c users which should be added to \c space's members list.
+ * @brief List of \c UUIDs which should be added to \c channel's members list.
  *
- * @param users List of \c users and additional information which should be associated with each of
- * them in context of specified \c space (if \c custom field is set).
- *
- * @note Each entry is dictionary with \c userId and \b optional \c custom fields. \c custom should
+ * @note Each entry is dictionary with \c UUID and \b optional \c custom fields. \c custom should
  * be dictionary with simple objects: \a NSString and \a NSNumber.
  *
+ * @param uuids List with identifiers and additional information which should be associated for each
+ * of them in context of specified \c channel.
+ *
  * @return API call configuration builder.
  */
-@property (nonatomic, readonly, strong) PNManageMembersAPICallBuilder * (^add)(NSArray<NSDictionary *> *users);
+@property (nonatomic, readonly, strong) PNManageMembersAPICallBuilder * (^set)(NSArray<NSDictionary *> *uuids);
 
 /**
- * @brief List of \c users which should be removed from \c members list.
+ * @brief List of \c UUIDs which should be removed from \c channel's list.
  *
- * @param spaces List of \c user identifiers.
+ * @param uuids List of identifiers.
  *
  * @return API call configuration builder.
  */
-@property (nonatomic, readonly, strong) PNManageMembersAPICallBuilder * (^remove)(NSArray<NSString *> *users);
+@property (nonatomic, readonly, strong) PNManageMembersAPICallBuilder * (^remove)(NSArray<NSString *> *uuids);
 
 /**
  * @brief Results sorting order.
  *
  * @param sort List of criteria (name of field) which should be used for sorting in ascending order.
- *     To change sorting order, append \c :asc (for ascending) or \c :desc (descending) to field name.
- *
- * @return API call configuration builder.
- *
- * @since 4.13.0
- */
-@property (nonatomic, readonly, strong) PNManageMembersAPICallBuilder * (^sort)(NSArray<NSString*> *sort);
-
-/**
- * @brief Target \c space identifier.
- *
- * @param spaceId Identifier of \c space for which list of members will be updated.
+ *     To change sorting order, append \c :asc (for ascending) or \c :desc (descending) to field
+ *     name.
  *
  * @return API call configuration builder.
  */
-@property (nonatomic, readonly, strong) PNManageMembersAPICallBuilder * (^spaceId)(NSString *spaceId);
+@property (nonatomic, readonly, strong) PNManageMembersAPICallBuilder * (^sort)(NSArray<NSString *> *sort);
 
 /**
  * @brief Expression to filter out results basing on specified criteria.
@@ -90,13 +74,11 @@ NS_ASSUME_NONNULL_BEGIN
  * @param filter Members filter expression.
  *
  * @return API call configuration builder.
- *
- * @since 4.13.0
  */
 @property (nonatomic, readonly, strong) PNManageMembersAPICallBuilder * (^filter)(NSString *filter);
 
 /**
- * @brief Maximum number of \c members per fetched page.
+ * @brief Maximum number of objects per fetched page.
  *
  * @note Will be set to \c 100 (which is also maximum value) if not specified.
  *

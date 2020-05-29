@@ -183,27 +183,25 @@ struct PNEventEnvelopeStructure {
          * @brief Key under which stored object event (\c create / \c update / \c delete).
          */
         __unsafe_unretained NSString *event;
+        /**
+         * @brief Key under which stored event source name (service which triggered event).
+         */
+        __unsafe_unretained NSString *source;
         
         /**
          * @brief Key under which stored type of object for which \c action has been triggered
-         * (\c user / \c space / \c membership).
+         * (\c uuid / \c channel / \c membership).
          */
         __unsafe_unretained NSString *type;
+        /**
+         * @brief Key under which version of service which triggered event.
+         */
+        __unsafe_unretained NSString *version;
         
         /**
-         * @brief Key under which stored \c user's identifier.
+         * @brief Key under which stored object's event data.
          */
-        __unsafe_unretained NSString *userId;
-        
-        /**
-         * @brief Key under which stored \c space's identifier.
-         */
-        __unsafe_unretained NSString *spaceId;
-        
-        /**
-         * @brief Key under which stored event triggering time token (unixtimestamp).
-         */
-        __unsafe_unretained NSString *timestamp;
+        __unsafe_unretained NSString *data;
     } object;
 } PNEventEnvelope = {
     .senderTimeToken = { .key = @"o" },
@@ -215,7 +213,13 @@ struct PNEventEnvelopeStructure {
         .timestamp = @"timestamp", .uuid = @"uuid", .joined = @"join", .leaved = @"leave", 
         .timeouted = @"timeout"
     },
-    .object = { .event = @"event", .type = @"type", .userId = @"userId", .spaceId = @"spaceId" }
+    .object = {
+        .event = @"event",
+        .source = @"source",
+        .type = @"type",
+        .version = @"version",
+        .data = @"data"
+    }
 };
 
 
@@ -382,7 +386,11 @@ NS_ASSUME_NONNULL_END
         event[@"subscription"] = [PNChannel channelForPresence:event[@"subscription"]];
         event[@"channel"] = [PNChannel channelForPresence:event[@"channel"]];
     } else if (messageType == PNObjectMessageType) {
-        [event addEntriesFromDictionary:[self objectFromData:data[PNEventEnvelope.payload]]];
+        NSDictionary *objectData = [self objectFromData:data[PNEventEnvelope.payload]];
+        
+        if (objectData.count) {
+            [event addEntriesFromDictionary:objectData];
+        }
     } else if (messageType == PNMessageActionType) {
         NSDictionary *action = [self actionFromData:data[PNEventEnvelope.payload]
                                        withEnvelope:event[@"envelope"]];
@@ -455,33 +463,36 @@ NS_ASSUME_NONNULL_END
 }
 
 + (NSMutableDictionary *)objectFromData:(NSDictionary<NSString *, id> *)data {
+    NSString *sourceVersion = data[PNEventEnvelope.object.version];
     NSMutableDictionary *object = [NSMutableDictionary new];
     
-    if (![data[@"source"] isEqualToString:@"objects"]) {
+    if (![data[PNEventEnvelope.object.source] isEqualToString:@"objects"]) {
         return object;
     }
     
-    NSArray *eventKeys = @[@"event", @"source", @"type", @"version"];
-    [object addEntriesFromDictionary:[data dictionaryWithValuesForKeys:eventKeys]];
-    
-    // Identify fields which has been modified.
-    NSMutableArray *updatedFieldNames = [[data[@"data"] allKeys] mutableCopy];
-    [updatedFieldNames removeObjectsInArray:@[@"id", @"eTag", @"updated"]];
-    
-    if (updatedFieldNames.count) {
-        object[@"updatedFields"] = updatedFieldNames;
+    // Check whether minimum supported event source version is present (at moment of release - 2).
+    if ([sourceVersion componentsSeparatedByString:@"."].firstObject.integerValue < 2) {
+        return object;
     }
     
-    if ([data[@"type"] isEqualToString:@"membership"]) {
+    NSArray *eventKeys = @[
+        PNEventEnvelope.object.event,
+        PNEventEnvelope.object.source,
+        PNEventEnvelope.object.type,
+        PNEventEnvelope.object.version
+    ];
+    [object addEntriesFromDictionary:[data dictionaryWithValuesForKeys:eventKeys]];
+    
+    if ([data[PNEventEnvelope.object.type] isEqualToString:@"membership"]) {
         object[@"membership"] = data[@"data"];
     }
     
-    if ([data[@"type"] isEqualToString:@"user"]) {
-        object[@"user"] = data[@"data"];
+    if ([data[PNEventEnvelope.object.type] isEqualToString:@"uuid"]) {
+        object[@"uuid"] = data[@"data"];
     }
     
-    if ([data[@"type"] isEqualToString:@"space"]) {
-        object[@"space"] = data[@"data"];
+    if ([data[PNEventEnvelope.object.type] isEqualToString:@"channel"]) {
+        object[@"channel"] = data[@"data"];
     }
     
     return object;

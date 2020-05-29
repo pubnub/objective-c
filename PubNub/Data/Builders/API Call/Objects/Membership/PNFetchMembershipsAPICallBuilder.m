@@ -1,8 +1,8 @@
 /**
  * @author Serhii Mamontov
- * @version 4.10.0
- * @since 4.10.0
- * @copyright © 2010-2019 PubNub, Inc.
+ * @version 4.14.0
+ * @since 4.14.0
+ * @copyright © 2010-2020 PubNub, Inc.
  */
 #import "PNFetchMembershipsAPICallBuilder.h"
 #import "PNAPICallBuilder+Private.h"
@@ -34,8 +34,8 @@
     };
 }
 
-- (PNFetchMembershipsAPICallBuilder * (^)(NSArray<NSString*> *sort))sort {
-    return ^PNFetchMembershipsAPICallBuilder * (NSArray<NSString*> *sort) {
+- (PNFetchMembershipsAPICallBuilder * (^)(NSArray<NSString *> *sort))sort {
+    return ^PNFetchMembershipsAPICallBuilder * (NSArray<NSString *> *sort) {
         if ([sort isKindOfClass:[NSArray class]] && sort.count) {
             [self setValue:sort forParameter:NSStringFromSelector(_cmd)];
         }
@@ -54,16 +54,6 @@
     };
 }
 
-- (PNFetchMembershipsAPICallBuilder * (^)(NSString *userId))userId {
-    return ^PNFetchMembershipsAPICallBuilder * (NSString *userId) {
-        if ([userId isKindOfClass:[NSString class]] && userId.length) {
-            [self setValue:userId forParameter:NSStringFromSelector(_cmd)];
-        }
-        
-        return self;
-    };
-}
-
 - (PNFetchMembershipsAPICallBuilder * (^)(NSUInteger limit))limit {
     return ^PNFetchMembershipsAPICallBuilder * (NSUInteger limit) {
         [self setValue:@(limit) forParameter:NSStringFromSelector(_cmd)];
@@ -76,7 +66,17 @@
         if ([start isKindOfClass:[NSString class]] && start.length) {
             [self setValue:start forParameter:NSStringFromSelector(_cmd)];
         }
-        
+
+        return self;
+    };
+}
+
+- (PNFetchMembershipsAPICallBuilder * (^)(NSString *uuid))uuid {
+    return ^PNFetchMembershipsAPICallBuilder * (NSString *uuid) {
+        if ([uuid isKindOfClass:[NSString class]] && uuid.length) {
+            [self setValue:uuid forParameter:NSStringFromSelector(_cmd)];
+        }
+
         return self;
     };
 }

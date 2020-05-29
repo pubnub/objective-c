@@ -18,8 +18,8 @@
 @class PNClientStateGetResult, PNClientStateUpdateStatus, PNAcknowledgmentStatus;
 @class PNChannelGroupsResult, PNMessageCountResult, PNHistoryResult, PNAPICallBuilder;
 @class PNPublishStatus, PNSignalStatus, PNErrorStatus, PNTimeResult, PNResult, PNStatus;
-@class PNCreateUserStatus, PNUpdateUserStatus, PNFetchUserResult, PNFetchUsersResult;
-@class PNCreateSpaceStatus, PNUpdateSpaceStatus, PNFetchSpaceResult, PNFetchSpacesResult;
+@class PNSetUUIDMetadataStatus, PNFetchUUIDMetadataResult, PNFetchAllUUIDMetadataResult;
+@class PNSetChannelMetadataStatus, PNFetchChannelMetadataResult, PNFetchAllChannelsMetadataResult;
 @class PNManageMembershipsStatus, PNFetchMembershipsResult, PNManageMembersStatus, PNFetchMembersResult;
 @class PNAddMessageActionStatus, PNFetchMessageActionsResult;
 
@@ -144,106 +144,86 @@ typedef void(^PNMessageCountCompletionBlock)(PNMessageCountResult * _Nullable re
 #pragma mark - Completion blocks :: Objects
 
 /**
- * @brief \c Create \c user completion handler block.
+ * @brief \c Set \c UUID \c metadata completion handler block.
  *
- * @param status Object with information about \c create \c user request results and service
+ * @param status Object with information about \c UUID \c metadata \c set request results and service
  * response.
  *
- * @since 4.10.0
+ * @since 4.14.0
  */
-typedef void(^PNCreateUserCompletionBlock)(PNCreateUserStatus *status);
+typedef void(^PNSetUUIDMetadataCompletionBlock)(PNSetUUIDMetadataStatus *status);
 
 /**
- * @brief \c Update \c user completion handler block.
+ * @brief \c Remove \c UUID \c metadata completion handler block.
  *
- * @param status Object with information about \c update \c user request results and service
+ * @param status Object with information about \c UUID \c metadata \c delete request results.
+ *
+ * @since 4.14.0
+ */
+typedef void(^PNRemoveUUIDMetadataCompletionBlock)(PNAcknowledgmentStatus *status);
+
+/**
+ * @brief \c Fetch \c UUID \c metadata completion handler block.
+ *
+ * @param result Object with information about \c UUID \c metadata \c fetch request results.
+ * @param status Object with information about \c UUID \c metadata \c fetch request error.
+ *
+ * @since 4.14.0
+ */
+typedef void(^PNFetchUUIDMetadataCompletionBlock)(PNFetchUUIDMetadataResult * _Nullable result,
+                                                  PNErrorStatus * _Nullable status);
+
+/**
+ * @brief \c Fetch \c all \c UUIDs \c metadata completion handler block.
+ *
+ * @param result Object with information about \c fetch \c all \c UUIDs \c metadata request results.
+ * @param status Object with information about \c fetch \c all \c UUIDs \c metadata request error.
+ *
+ * @since 4.14.0
+ */
+typedef void(^PNFetchAllUUIDMetadataCompletionBlock)(PNFetchAllUUIDMetadataResult * _Nullable result,
+                                                     PNErrorStatus * _Nullable status);
+
+/**
+ * @brief \c Set \c channel \c metadata completion handler block.
+ *
+ * @param status Object with information about \c channel \c metadata \c set request results and service
  * response.
  *
- * @since 4.10.0
+ * @since 4.14.0
  */
-typedef void(^PNUpdateUserCompletionBlock)(PNUpdateUserStatus *status);
+typedef void(^PNSetChannelMetadataCompletionBlock)(PNSetChannelMetadataStatus *status);
 
 /**
- * @brief \c Delete \c user completion handler block.
+ * @brief \c Remove \c channel \c metadata completion handler block.
  *
- * @param status Object with information about \c delete \c user request results.
+ * @param status Object with information about \c channel \c metadata \c delete request results.
  *
- * @since 4.10.0
+ * @since 4.14.0
  */
-typedef void(^PNDeleteUserCompletionBlock)(PNAcknowledgmentStatus *status);
+typedef void(^PNRemoveChannelMetadataCompletionBlock)(PNAcknowledgmentStatus *status);
 
 /**
- * @brief \c Fetch \c user completion handler block.
+ * @brief \c Fetch \c channel \c metadata completion handler block.
  *
- * @param result Object with information about \c fetch \c user request results.
- * @param status Object with information about \c fetch \c user request error.
+ * @param result Object with information about \c fetch \c channel \c metadata request results.
+ * @param status Object with information about \c fetch \c channel \c metadata request error.
  *
- * @since 4.10.0
+ * @since 4.14.0
  */
-typedef void(^PNFetchUserCompletionBlock)(PNFetchUserResult * _Nullable result,
-                                          PNErrorStatus * _Nullable status);
+typedef void(^PNFetchChannelMetadataCompletionBlock)(PNFetchChannelMetadataResult * _Nullable result,
+                                                     PNErrorStatus * _Nullable status);
 
 /**
- * @brief \c Fetch \c all \c users completion handler block.
+ * @brief \c Fetch \c all \c channels \c metadata completion handler block.
  *
- * @param result Object with information about \c fetch \c all \c users request results.
- * @param status Object with information about \c fetch \c all \c users request error.
+ * @param result Object with information about \c fetch \c all \c channels \c metadata request results.
+ * @param status Object with information about \c fetch \c all \c channels \c metadata request error.
  *
- * @since 4.10.0
+ * @since 4.14.0
  */
-typedef void(^PNFetchUsersCompletionBlock)(PNFetchUsersResult * _Nullable result,
-                                           PNErrorStatus * _Nullable status);
-
-/**
- * @brief \c Create \c space completion handler block.
- *
- * @param status Object with information about \c create \c space request results and service
- * response.
- *
- * @since 4.10.0
- */
-typedef void(^PNCreateSpaceCompletionBlock)(PNCreateSpaceStatus *status);
-
-/**
- * @brief \c Update \c space completion handler block.
- *
- * @param status Object with information about \c update \c space request results and service
- * response.
- *
- * @since 4.10.0
- */
-typedef void(^PNUpdateSpaceCompletionBlock)(PNUpdateSpaceStatus *status);
-
-/**
- * @brief \c Delete \c space completion handler block.
- *
- * @param status Object with information about \c delete \c space request results.
- *
- * @since 4.10.0
- */
-typedef void(^PNDeleteSpaceCompletionBlock)(PNAcknowledgmentStatus *status);
-
-/**
- * @brief \c Fetch \c space completion handler block.
- *
- * @param result Object with information about \c fetch \c space request results.
- * @param status Object with information about \c fetch \c user request error.
- *
- * @since 4.10.0
- */
-typedef void(^PNFetchSpaceCompletionBlock)(PNFetchSpaceResult * _Nullable result,
-                                           PNErrorStatus * _Nullable status);
-
-/**
- * @brief \c Fetch \c all \c spaces completion handler block.
- *
- * @param result Object with information about \c fetch \c all \c spaces request results.
- * @param status Object with information about \c fetch \c all \c spaces request error.
- *
- * @since 4.10.0
- */
-typedef void(^PNFetchSpacesCompletionBlock)(PNFetchSpacesResult * _Nullable result,
-                                            PNErrorStatus * _Nullable status);
+typedef void(^PNFetchAllChannelsMetadataCompletionBlock)(PNFetchAllChannelsMetadataResult * _Nullable result,
+                                                         PNErrorStatus * _Nullable status);
 
 /**
  * @brief \c Manage \c memberships completion handler block.
@@ -422,7 +402,7 @@ typedef void(^PNRemoveMessageActionCompletionBlock)(PNAcknowledgmentStatus *stat
  * @since 4.11.0
  */
 typedef void(^PNFetchMessageActionsCompletionBlock)(PNFetchMessageActionsResult * _Nullable result,
-                                             PNErrorStatus * _Nullable status);
+                                                    PNErrorStatus * _Nullable status);
 
 
 #pragma mark - Completion blocks :: Time
@@ -490,75 +470,91 @@ typedef NS_ENUM(NSUInteger, PNAPNSEnvironment) {
 #pragma mark - Objects API options and enums
 
 /**
- * @brief Options with possible additional \c space / \c membership fields which can be included to
- * response.
+ * @brief Options with possible additional \c channel / \c membership fields which can be included
+ * to response.
  *
- * @since 4.10.0
+ * @since 4.14.0
  */
 typedef NS_OPTIONS(NSUInteger, PNMembershipFields) {
     /**
-     * @brief Field with additional information which has been associated with \c user during
-     * \c membership \c create / \c update requests.
+     * @brief Include how many memberships \c UUID has.
      */
-    PNMembershipCustomField = 1 << 2,
+    PNMembershipTotalCountField = 1 << 4,
     /**
-     * @brief Include \c space's information into response (not only \c spaceId).
+     * @brief Include field with additional information from \c metadata which has been associated
+     * with \c UUID during \c membership \c set requests.
      */
-    PNMembershipSpaceField = 1 << 3,
+    PNMembershipCustomField = 1 << 5,
     /**
-     * @brief Include \c space's additional information which has been used during \c space
-     * \c create / \c update requests.
+     * @brief Include \c channel's \c metadata into response (not only name).
      */
-    PNMembershipSpaceCustomField = 1 << 4
+    PNMembershipChannelField = 1 << 6,
+    /**
+     * @brief Include \c channel's additional information which has been used during \c channel
+     * \c metadata \c set requests.
+     */
+    PNMembershipChannelCustomField = 1 << 7
 };
 
 /**
- * @brief Options with possible additional \c user / \c member fields which can be included to
+ * @brief Options with possible additional \c UUID / \c member fields which can be included to
  * response.
  *
- * @since 4.10.0
+ * @since 4.14.0
  */
 typedef NS_OPTIONS(NSUInteger, PNMemberFields) {
     /**
-     * @brief Field with additional information which has been associated with \c user during
-     * \a add / \c update of \c space's users list requests.
+     * @brief Include how many members \c channel has.
      */
-    PNMemberCustomField = 1 << 5,
+    PNMemberTotalCountField = 1 << 8,
     /**
-     * @brief Include \c user's information into response (not only \c userId).
+     * @brief Include field with additional information from \c metadata which has been associated
+     * with \c UUID during \c channel \c member \c set requests.
      */
-    PNMemberUserField = 1 << 6,
+    PNMemberCustomField = 1 << 9,
     /**
-     * @brief Include \c user's additional information which has been used during \c user
-     * \c create / \c update requests.
+     * @brief Include \c UUID's \c metadata into response (not only identifier).
      */
-    PNMemberUserCustomField = 1 << 7
+    PNMemberUUIDField = 1 << 10,
+    /**
+     * @brief Include \c UUID's additional information which has been used during \c UUID
+     * \c metadata \c set requests.
+     */
+    PNMemberUUIDCustomField = 1 << 11
 };
 
 /**
- * @brief Options with possible additional \c space fields which can be included to response.
+ * @brief Options with possible additional \c channel fields which can be included to response.
  *
- * @since 4.10.0
+ * @since 4.14.0
  */
-typedef NS_OPTIONS(NSUInteger, PNSpaceFields) {
+typedef NS_OPTIONS(NSUInteger, PNChannelFields) {
     /**
-     * @brief Field with additional information which has been used during \c space
-     * \c create / \c update requests.
+     * @brief Include how many \c channels has been associated with \c metadata.
      */
-    PNSpaceCustomField = 1 << 1
+    PNChannelTotalCountField = 1 << 0,
+    /**
+     * @brief Include field with additional information from \c metadata which has been used during
+     * \c channel \c metadata \c set requests.
+     */
+    PNChannelCustomField = 1 << 1
 };
 
 /**
- * @brief Options with possible additional \c user fields which can be included to response.
+ * @brief Options with possible additional \c UUID fields which can be included to response.
  *
- * @since 4.10.0
+ * @since 4.14.0
  */
-typedef NS_OPTIONS(NSUInteger, PNUserFields) {
+typedef NS_OPTIONS(NSUInteger, PNUUIDFields) {
     /**
-     * @brief Field with additional information which has been used during \c user
-     * \c create / \c update requests.
+     * @brief Include how many \c UUID has been associated with \c metadata.
      */
-    PNUserCustomField = 1
+    PNUUIDTotalCountField = 1 << 2,
+    /**
+     * @brief Include field with additional information from \c metadata which has been used during
+     * \c UUID \c metadata \c set requests.
+     */
+    PNUUIDCustomField = 1 << 3
 };
 
 /**
@@ -742,18 +738,20 @@ typedef NS_ENUM(NSInteger, PNOperationType){
     PNAddPushNotificationsOnChannelsV2Operation,
     PNRemovePushNotificationsFromChannelsV2Operation,
     PNRemoveAllPushNotificationsV2Operation,
-    PNCreateUserOperation,
-    PNUpdateUserOperation,
-    PNDeleteUserOperation,
-    PNFetchUserOperation,
-    PNFetchUsersOperation,
-    PNCreateSpaceOperation,
-    PNUpdateSpaceOperation,
-    PNDeleteSpaceOperation,
-    PNFetchSpaceOperation,
-    PNFetchSpacesOperation,
+    PNSetUUIDMetadataOperation,
+    PNRemoveUUIDMetadataOperation,
+    PNFetchUUIDMetadataOperation,
+    PNFetchAllUUIDMetadataOperation,
+    PNSetChannelMetadataOperation,
+    PNRemoveChannelMetadataOperation,
+    PNFetchChannelMetadataOperation,
+    PNFetchAllChannelsMetadataOperation,
+    PNSetMembershipsOperation,
+    PNRemoveMembershipsOperation,
     PNManageMembershipsOperation,
     PNFetchMembershipsOperation,
+    PNSetMembersOperation,
+    PNRemoveMembersOperation,
     PNManageMembersOperation,
     PNFetchMembersOperation,
     PNTimeOperation

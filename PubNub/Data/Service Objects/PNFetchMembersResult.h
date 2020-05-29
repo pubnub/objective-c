@@ -11,9 +11,9 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief Object which is used to represent Objects API response for \c fetch \c members request.
  *
  * @author Serhii Mamontov
- * @version 4.10.0
- * @since 4.10.0
- * @copyright © 2010-2019 PubNub, Inc.
+ * @version 4.14.0
+ * @since 4.14.0
+ * @copyright © 2010-2020 PubNub, Inc.
  */
 @interface PNFetchMembersData : PNServiceData
 
@@ -36,7 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, nullable, readonly, strong) NSString *prev;
 
 /**
- * @brief Total number of \c members in \c space's memebrs list.
+ * @brief Total number of \c members in \c channel's members list.
  *
  * @note Value will be \c 0 in case if \c includeCount of \b PNFetchMembersRequest is set to
  * \c NO.
@@ -53,9 +53,9 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief Object which is used to provide access to processed \c fetch \c members request results.
  *
  * @author Serhii Mamontov
- * @version 4.10.0
- * @since 4.10.0
- * @copyright © 2010-2019 PubNub, Inc.
+ * @version 4.14.0
+ * @since 4.14.0
+ * @copyright © 2010-2020 PubNub, Inc.
  */
 @interface PNFetchMembersResult : PNResult
 

@@ -4,412 +4,487 @@
  * @since 4.10.0
  * @copyright © 2010-2019 PubNub, Inc.
  */
+#import "PNBaseObjectsRequest+Private.h"
 #import "PNAPICallBuilder+Private.h"
 #import "PubNub+CorePrivate.h"
 #import "PNResult+Private.h"
 #import "PNStatus+Private.h"
+#import "PNConfiguration.h"
 #import "PubNub+Objects.h"
 
 
-#pragma mark Interface implementation
+NS_ASSUME_NONNULL_BEGIN
+
+#pragma mark Protected interface declaration
+
+@interface PubNub (ObjectsProtected)
+
+
+#pragma mark - API Builder support
+
+/**
+ * @brief Process information provider by user with builder API call and use it to send request
+ * which will set UUID's metadata.
+ *
+ * @param parameters Dictionary with information passed to builder-based API.
+ */
+- (void)sendSetUUIDMetadataRequestUsingBuilderParameters:(NSDictionary *)parameters;
+
+/**
+ * @brief Process information provider by user with builder API call and use it to send request
+ * which will remove UUID's metadata.
+ *
+ * @param parameters Dictionary with information passed to builder-based API.
+ */
+- (void)sendRemoveUUIDMetadataRequestUsingBuilderParameters:(NSDictionary *)parameters;
+
+/**
+ * @brief Process information provider by user with builder API call and use it to send request
+ * which will fetch specific UUID's metadata.
+ *
+ * @param parameters Dictionary with information passed to builder-based API.
+ */
+- (void)sendFetchUUIDMetadataRequestUsingBuilderParameters:(NSDictionary *)parameters;
+
+/**
+ * @brief Process information provider by user with builder API call and use it to send request
+ * which will fetch all UUIDs metadata.
+ *
+ * @param parameters Dictionary with information passed to builder-based API.
+ */
+- (void)sendFetchAllUUIDsMetadataRequestUsingBuilderParameters:(NSDictionary *)parameters;
+
+/**
+ * @brief Process information provider by user with builder API call and use it to send request
+ * which will set channel's metadata.
+ *
+ * @param parameters Dictionary with information passed to builder-based API.
+ */
+- (void)sendSetChannelMetadataRequestUsingBuilderParameters:(NSDictionary *)parameters;
+
+/**
+ * @brief Process information provider by user with builder API call and use it to send request
+ * which will remove channel's metadata.
+ *
+ * @param parameters Dictionary with information passed to builder-based API.
+ */
+- (void)sendRemoveChannelMetadataRequestUsingBuilderParameters:(NSDictionary *)parameters;
+
+/**
+ * @brief Process information provider by user with builder API call and use it to send request
+ * which will fetch specific channel's metadata.
+ *
+ * @param parameters Dictionary with information passed to builder-based API.
+ */
+- (void)sendFetchChannelMetadataRequestUsingBuilderParameters:(NSDictionary *)parameters;
+
+/**
+ * @brief Process information provider by user with builder API call and use it to send request
+ * which will fetch all channels metadata.
+ *
+ * @param parameters Dictionary with information passed to builder-based API.
+ */
+- (void)sendFetchAllChannelsMetadataRequestUsingBuilderParameters:(NSDictionary *)parameters;
+
+/**
+ * @brief Process information provider by user with builder API call and use it to send request
+ * which will set UUID's memberships.
+ *
+ * @param parameters Dictionary with information passed to builder-based API.
+ */
+- (void)sendSetMembershipsRequestUsingBuilderParameters:(NSDictionary *)parameters;
+
+/**
+ * @brief Process information provider by user with builder API call and use it to send request
+ * which will remove UUID's memberships.
+ *
+ * @param parameters Dictionary with information passed to builder-based API.
+ */
+- (void)sendRemoveMembershipsRequestUsingBuilderParameters:(NSDictionary *)parameters;
+
+/**
+ * @brief Process information provider by user with builder API call and use it to send request
+ * which will manage UUID's memberships.
+ *
+ * @param parameters Dictionary with information passed to builder-based API.
+ */
+- (void)sendManageMembershipsRequestUsingBuilderParameters:(NSDictionary *)parameters;
+
+/**
+ * @brief Process information provider by user with builder API call and use it to send request
+ * which will fetch UUID's memberships.
+ *
+ * @param parameters Dictionary with information passed to builder-based API.
+ */
+- (void)sendFetchMembershipsRequestUsingBuilderParameters:(NSDictionary *)parameters;
+
+/**
+ * @brief Process information provider by user with builder API call and use it to send request
+ * which will set channel's members.
+ *
+ * @param parameters Dictionary with information passed to builder-based API.
+ */
+- (void)sendSetMembersRequestUsingBuilderParameters:(NSDictionary *)parameters;
+
+/**
+ * @brief Process information provider by user with builder API call and use it to send request
+ * which will remove channel's members.
+ *
+ * @param parameters Dictionary with information passed to builder-based API.
+ */
+- (void)sendRemoveMembersRequestUsingBuilderParameters:(NSDictionary *)parameters;
+
+/**
+ * @brief Process information provider by user with builder API call and use it to send request
+ * which will manage channel's members.
+ *
+ * @param parameters Dictionary with information passed to builder-based API.
+ */
+- (void)sendManageMembersRequestUsingBuilderParameters:(NSDictionary *)parameters;
+
+/**
+ * @brief Process information provider by user with builder API call and use it to send request
+ * which will fetch channel's members.
+ *
+ * @param parameters Dictionary with information passed to builder-based API.
+ */
+- (void)sendFetchMembersRequestUsingBuilderParameters:(NSDictionary *)parameters;
+
+
+#pragma mark - Misc
+
+/**
+ * @brief Add common parameters for multi-paged request suing information passed to
+ * builder-based API.
+ *
+ * @param request Request for which properties should be set.
+ * @param parameters Dictionary with information passed to builder-based API.
+ */
+- (void)addObjectsPaginationOptionsToRequest:(PNObjectsPaginatedRequest *)request
+                      usingBuilderParameters:(NSDictionary *)parameters;
+
+#pragma mark -
+
+
+@end
+
+NS_ASSUME_NONNULL_END
+
+
+#pragma mark - Interface implementation
 
 @implementation PubNub (Objects)
 
 
-#pragma mark - User Objects API builder support
+#pragma mark - API Builder support
 
-- (PNCreateUserAPICallBuilder * (^)(void))createUser {
-    PNCreateUserAPICallBuilder *builder = nil;
+- (PNObjectsAPICallBuilder *(^)(void))objects {
+    PNObjectsAPICallBuilder *builder = nil;
     __weak __typeof(self) weakSelf = self;
-    
-    builder = [PNCreateUserAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
-                                                                      NSDictionary *parameters) {
+
+    builder = [PNObjectsAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
+                                                                   NSDictionary *parameters) {
         
-        NSNumber *includeFields = parameters[NSStringFromSelector(@selector(includeFields))];
-        NSString *identifier = parameters[NSStringFromSelector(@selector(userId))];
-        NSString *name = parameters[NSStringFromSelector(@selector(name))];
-        
-        PNCreateUserRequest *request = [PNCreateUserRequest requestWithUserID:identifier
-                                                                         name:name];
-        request.externalId = parameters[NSStringFromSelector(@selector(externalId))];
-        request.profileUrl = parameters[NSStringFromSelector(@selector(profileUrl))];
-        request.custom = parameters[NSStringFromSelector(@selector(custom))];
-        request.email = parameters[NSStringFromSelector(@selector(email))];
-        request.includeFields = includeFields.unsignedIntegerValue;
-        
-        [weakSelf createUserWithRequest:request completion:parameters[@"block"]];
+        if ([flags containsObject:NSStringFromSelector(@selector(setUUIDMetadata))]) {
+            [weakSelf sendSetUUIDMetadataRequestUsingBuilderParameters:parameters];
+        } else if ([flags containsObject:NSStringFromSelector(@selector(removeUUIDMetadata))]) {
+            [weakSelf sendRemoveUUIDMetadataRequestUsingBuilderParameters:parameters];
+        } else if ([flags containsObject:NSStringFromSelector(@selector(uuidMetadata))]) {
+            [weakSelf sendFetchUUIDMetadataRequestUsingBuilderParameters:parameters];
+        } else if ([flags containsObject:NSStringFromSelector(@selector(allUUIDMetadata))]) {
+            [weakSelf sendFetchAllUUIDsMetadataRequestUsingBuilderParameters:parameters];
+        } else if ([flags containsObject:NSStringFromSelector(@selector(setChannelMetadata))]) {
+            [weakSelf sendSetChannelMetadataRequestUsingBuilderParameters:parameters];
+        } else if ([flags containsObject:NSStringFromSelector(@selector(removeChannelMetadata))]) {
+            [weakSelf sendRemoveChannelMetadataRequestUsingBuilderParameters:parameters];
+        } else if ([flags containsObject:NSStringFromSelector(@selector(channelMetadata))]) {
+            [weakSelf sendFetchChannelMetadataRequestUsingBuilderParameters:parameters];
+        } else if ([flags containsObject:NSStringFromSelector(@selector(allChannelsMetadata))]) {
+            [weakSelf sendFetchAllChannelsMetadataRequestUsingBuilderParameters:parameters];
+        } else if ([flags containsObject:NSStringFromSelector(@selector(setMemberships))]) {
+            [weakSelf sendSetMembershipsRequestUsingBuilderParameters:parameters];
+        } else if ([flags containsObject:NSStringFromSelector(@selector(removeMemberships))]) {
+            [weakSelf sendRemoveMembershipsRequestUsingBuilderParameters:parameters];
+        } else if ([flags containsObject:NSStringFromSelector(@selector(manageMemberships))]) {
+            [weakSelf sendManageMembershipsRequestUsingBuilderParameters:parameters];
+        } else if ([flags containsObject:NSStringFromSelector(@selector(memberships))]) {
+            [weakSelf sendFetchMembershipsRequestUsingBuilderParameters:parameters];
+        } else if ([flags containsObject:NSStringFromSelector(@selector(setMembers))]) {
+            [weakSelf sendSetMembersRequestUsingBuilderParameters:parameters];
+        } else if ([flags containsObject:NSStringFromSelector(@selector(removeMembers))]) {
+            [weakSelf sendRemoveMembersRequestUsingBuilderParameters:parameters];
+        } else if ([flags containsObject:NSStringFromSelector(@selector(manageMembers))]) {
+            [weakSelf sendManageMembersRequestUsingBuilderParameters:parameters];
+        } else if ([flags containsObject:NSStringFromSelector(@selector(members))]) {
+            [weakSelf sendFetchMembersRequestUsingBuilderParameters:parameters];
+        }
     }];
-    
-    return ^PNCreateUserAPICallBuilder * {
+
+    return ^PNObjectsAPICallBuilder * {
         return builder;
     };
 }
 
-- (PNUpdateUserAPICallBuilder * (^)(void))updateUser {
-    PNUpdateUserAPICallBuilder *builder = nil;
-    __weak __typeof(self) weakSelf = self;
-    
-    builder = [PNUpdateUserAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
-                                                                      NSDictionary *parameters) {
+- (void)sendSetUUIDMetadataRequestUsingBuilderParameters:(NSDictionary *)parameters {
+    NSNumber *includeFields = parameters[NSStringFromSelector(@selector(includeFields))];
+    NSString *uuid = parameters[NSStringFromSelector(@selector(uuid))];
 
-        NSNumber *includeFields = parameters[NSStringFromSelector(@selector(includeFields))];
-        NSString *identifier = parameters[NSStringFromSelector(@selector(userId))];
-        
-        PNUpdateUserRequest *request = [PNUpdateUserRequest requestWithUserID:identifier];
-        request.externalId = parameters[NSStringFromSelector(@selector(externalId))];
-        request.profileUrl = parameters[NSStringFromSelector(@selector(profileUrl))];
-        request.custom = parameters[NSStringFromSelector(@selector(custom))];
-        request.email = parameters[NSStringFromSelector(@selector(email))];
-        request.name = parameters[NSStringFromSelector(@selector(name))];
-        request.includeFields = includeFields.unsignedIntegerValue;
-        
-        [weakSelf updateUserWithRequest:request completion:parameters[@"block"]];
-    }];
+    PNSetUUIDMetadataRequest *request = [PNSetUUIDMetadataRequest requestWithUUID:uuid];
+    request.externalId = parameters[NSStringFromSelector(@selector(externalId))];
+    request.profileUrl = parameters[NSStringFromSelector(@selector(profileUrl))];
+    request.custom = parameters[NSStringFromSelector(@selector(custom))];
+    request.email = parameters[NSStringFromSelector(@selector(email))];
+    request.name = parameters[NSStringFromSelector(@selector(name))];
+    request.arbitraryQueryParameters = parameters[@"queryParam"];
     
-    return ^PNUpdateUserAPICallBuilder * {
-        return builder;
-    };
+    if (includeFields) {
+        request.includeFields = (PNUUIDFields)includeFields.unsignedIntegerValue;
+    }
+
+    [self setUUIDMetadataWithRequest:request completion:parameters[@"block"]];
 }
 
-- (PNDeleteUserAPICallBuilder * (^)(void))deleteUser {
-    PNDeleteUserAPICallBuilder *builder = nil;
-    __weak __typeof(self) weakSelf = self;
-    
-    builder = [PNDeleteUserAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
-                                                                      NSDictionary *parameters) {
-        
-        NSString *identifier = parameters[NSStringFromSelector(@selector(userId))];
-        PNDeleteUserRequest *request = [PNDeleteUserRequest requestWithUserID:identifier];
-        
-        [weakSelf deleteUserWithRequest:request completion:parameters[@"block"]];
-    }];
-    
-    return ^PNDeleteUserAPICallBuilder * {
-        return builder;
-    };
+- (void)sendRemoveUUIDMetadataRequestUsingBuilderParameters:(NSDictionary *)parameters {
+    NSString *uuid = parameters[NSStringFromSelector(@selector(uuid))];
+    PNRemoveUUIDMetadataRequest *request = [PNRemoveUUIDMetadataRequest requestWithUUID:uuid];
+    request.arbitraryQueryParameters = parameters[@"queryParam"];
+
+    [self removeUUIDMetadataWithRequest:request completion:parameters[@"block"]];
 }
 
-- (PNFetchUserAPICallBuilder * (^)(void))fetchUser {
-    PNFetchUserAPICallBuilder *builder = nil;
-    __weak __typeof(self) weakSelf = self;
+- (void)sendFetchUUIDMetadataRequestUsingBuilderParameters:(NSDictionary *)parameters {
+    NSNumber *includeFields = parameters[NSStringFromSelector(@selector(includeFields))];
+    NSString *uuid = parameters[NSStringFromSelector(@selector(uuid))];
+
+    PNFetchUUIDMetadataRequest *request = [PNFetchUUIDMetadataRequest requestWithUUID:uuid];
+    request.arbitraryQueryParameters = parameters[@"queryParam"];
     
-    builder = [PNFetchUserAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
-                                                                     NSDictionary *parameters) {
-        
-        NSNumber *includeFields = parameters[NSStringFromSelector(@selector(includeFields))];
-        NSString *identifier = parameters[NSStringFromSelector(@selector(userId))];
-        
-        PNFetchUserRequest *request = [PNFetchUserRequest requestWithUserID:identifier];
-        request.includeFields = includeFields.unsignedIntegerValue;
-        
-        [weakSelf fetchUserWithRequest:request completion:parameters[@"block"]];
-    }];
-    
-    return ^PNFetchUserAPICallBuilder * {
-        return builder;
-    };
+    if (includeFields) {
+        request.includeFields = (PNUUIDFields)includeFields.unsignedIntegerValue;
+    }
+
+    [self uuidMetadataWithRequest:request completion:parameters[@"block"]];
 }
 
-- (PNFetchUsersAPICallBuilder * (^)(void))fetchUsers {
-    PNFetchUsersAPICallBuilder *builder = nil;
-    __weak __typeof(self) weakSelf = self;
+- (void)sendFetchAllUUIDsMetadataRequestUsingBuilderParameters:(NSDictionary *)parameters {
+    NSNumber *includeCount = parameters[NSStringFromSelector(@selector(includeCount))];
+    PNFetchAllUUIDMetadataRequest *request = [PNFetchAllUUIDMetadataRequest new];
+    request.arbitraryQueryParameters = parameters[@"queryParam"];
     
-    builder = [PNFetchUsersAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
-                                                                      NSDictionary *parameters) {
-        
-        NSNumber *includeFields = parameters[NSStringFromSelector(@selector(includeFields))];
-        NSNumber *includeCount = parameters[NSStringFromSelector(@selector(includeCount))];
-        NSNumber *limit = parameters[NSStringFromSelector(@selector(limit))] ?: @(100);
-        
-        PNFetchUsersRequest *request = [PNFetchUsersRequest new];
-        request.filter = parameters[NSStringFromSelector(@selector(filter))];
-        request.start = parameters[NSStringFromSelector(@selector(start))];
-        request.sort = parameters[NSStringFromSelector(@selector(sort))];
-        request.end = parameters[NSStringFromSelector(@selector(end))];
-        request.includeFields = includeFields.unsignedIntegerValue;
-        request.includeCount = includeCount.boolValue;
-        request.limit = limit.unsignedIntegerValue;
-        
-        [weakSelf fetchUsersWithRequest:request completion:parameters[@"block"]];
-    }];
+    [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
     
-    return ^PNFetchUsersAPICallBuilder * {
-        return builder;
-    };
+    if (includeCount && includeCount.boolValue) {
+        request.includeFields |= PNUUIDTotalCountField;
+    }
+
+    [self allUUIDMetadataWithRequest:request completion:parameters[@"block"]];
 }
 
+- (void)sendSetChannelMetadataRequestUsingBuilderParameters:(NSDictionary *)parameters {
+    NSNumber *includeFields = parameters[NSStringFromSelector(@selector(includeFields))];
+    NSString *channel = parameters[NSStringFromSelector(@selector(channel))];
 
-#pragma mark - Space Objects API builder support
+    PNSetChannelMetadataRequest *request = [PNSetChannelMetadataRequest requestWithChannel:channel];
+    request.information = parameters[NSStringFromSelector(@selector(information))];
+    request.custom = parameters[NSStringFromSelector(@selector(custom))];
+    request.name = parameters[NSStringFromSelector(@selector(name))];
+    request.arbitraryQueryParameters = parameters[@"queryParam"];
+    
+    if (includeFields) {
+        request.includeFields = (PNChannelFields)includeFields.unsignedIntegerValue;
+    }
 
-- (PNCreateSpaceAPICallBuilder * (^)(void))createSpace {
-    PNCreateSpaceAPICallBuilder *builder = nil;
-    __weak __typeof(self) weakSelf = self;
-    
-    builder = [PNCreateSpaceAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
-                                                                       NSDictionary *parameters) {
-        
-        NSNumber *includeFields = parameters[NSStringFromSelector(@selector(includeFields))];
-        NSString *identifier =parameters[NSStringFromSelector(@selector(spaceId))];
-        NSString *name = parameters[NSStringFromSelector(@selector(name))];
-        
-        PNCreateSpaceRequest *request = [PNCreateSpaceRequest requestWithSpaceID:identifier
-                                                                            name:name];
-        request.information = parameters[NSStringFromSelector(@selector(information))];
-        request.custom = parameters[NSStringFromSelector(@selector(custom))];
-        request.includeFields = includeFields.unsignedIntegerValue;
-        
-        [weakSelf createSpaceWithRequest:request completion:parameters[@"block"]];
-    }];
-    
-    return ^PNCreateSpaceAPICallBuilder * {
-        return builder;
-    };
+    [self setChannelMetadataWithRequest:request completion:parameters[@"block"]];
 }
 
-- (PNUpdateSpaceAPICallBuilder * (^)(void))updateSpace {
-    PNUpdateSpaceAPICallBuilder *builder = nil;
-    __weak __typeof(self) weakSelf = self;
-    
-    builder = [PNUpdateSpaceAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
-                                                                       NSDictionary *parameters) {
-        
-        NSNumber *includeFields = parameters[NSStringFromSelector(@selector(includeFields))];
-        NSString *identifier = parameters[NSStringFromSelector(@selector(spaceId))];
-        
-        PNUpdateSpaceRequest *request = [PNUpdateSpaceRequest requestWithSpaceID:identifier];
-        request.information = parameters[NSStringFromSelector(@selector(information))];
-        request.custom = parameters[NSStringFromSelector(@selector(custom))];
-        request.name = parameters[NSStringFromSelector(@selector(name))];
-        request.includeFields = includeFields.unsignedIntegerValue;
-        
-        [weakSelf updateSpaceWithRequest:request completion:parameters[@"block"]];
-    }];
-    
-    return ^PNUpdateSpaceAPICallBuilder * {
-        return builder;
-    };
+- (void)sendRemoveChannelMetadataRequestUsingBuilderParameters:(NSDictionary *)parameters {
+    NSString *channel = parameters[NSStringFromSelector(@selector(channel))];
+    PNRemoveChannelMetadataRequest *request = [PNRemoveChannelMetadataRequest requestWithChannel:channel];
+    request.arbitraryQueryParameters = parameters[@"queryParam"];
+
+    [self removeChannelMetadataWithRequest:request completion:parameters[@"block"]];
 }
 
-- (PNDeleteSpaceAPICallBuilder * (^)(void))deleteSpace {
-    PNDeleteSpaceAPICallBuilder *builder = nil;
-    __weak __typeof(self) weakSelf = self;
+- (void)sendFetchChannelMetadataRequestUsingBuilderParameters:(NSDictionary *)parameters {
+    NSNumber *includeFields = parameters[NSStringFromSelector(@selector(includeFields))];
+    NSString *channel = parameters[NSStringFromSelector(@selector(channel))];
+
+    PNFetchChannelMetadataRequest *request = [PNFetchChannelMetadataRequest requestWithChannel:channel];
+    request.arbitraryQueryParameters = parameters[@"queryParam"];
     
-    builder = [PNDeleteSpaceAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
-                                                                       NSDictionary *parameters) {
-        
-        NSString *identifier = parameters[NSStringFromSelector(@selector(spaceId))];
-        PNDeleteSpaceRequest *request = [PNDeleteSpaceRequest requestWithSpaceID:identifier];
-        
-        [weakSelf deleteSpaceWithRequest:request completion:parameters[@"block"]];
-    }];
-    
-    return ^PNDeleteSpaceAPICallBuilder * {
-        return builder;
-    };
+    if (includeFields) {
+        request.includeFields = (PNChannelFields)includeFields.unsignedIntegerValue;
+    }
+
+    [self channelMetadataWithRequest:request completion:parameters[@"block"]];
 }
 
-- (PNFetchSpaceAPICallBuilder * (^)(void))fetchSpace {
-    PNFetchSpaceAPICallBuilder *builder = nil;
-    __weak __typeof(self) weakSelf = self;
-    
-    builder = [PNFetchSpaceAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
-                                                                      NSDictionary *parameters) {
-        
-        NSNumber *includeFields = parameters[NSStringFromSelector(@selector(includeFields))];
-        NSString *identifier = parameters[NSStringFromSelector(@selector(spaceId))];
-        
-        PNFetchSpaceRequest *request = [PNFetchSpaceRequest requestWithSpaceID:identifier];
-        request.includeFields = includeFields.unsignedIntegerValue;
-        
-        [weakSelf fetchSpaceWithRequest:request completion:parameters[@"block"]];
-    }];
-    
-    return ^PNFetchSpaceAPICallBuilder * {
-        return builder;
-    };
-}
+- (void)sendFetchAllChannelsMetadataRequestUsingBuilderParameters:(NSDictionary *)parameters {
+    PNFetchAllChannelsMetadataRequest *request = [PNFetchAllChannelsMetadataRequest new];
+    NSNumber *includeCount = parameters[NSStringFromSelector(@selector(includeCount))];
+    request.arbitraryQueryParameters = parameters[@"queryParam"];
 
-- (PNFetchSpacesAPICallBuilder * (^)(void))fetchSpaces {
-    PNFetchSpacesAPICallBuilder *builder = nil;
-    __weak __typeof(self) weakSelf = self;
+    [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
     
-    builder = [PNFetchSpacesAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
-                                                                       NSDictionary *parameters) {
-        
-        NSNumber *includeFields = parameters[NSStringFromSelector(@selector(includeFields))];
-        NSNumber *includeCount = parameters[NSStringFromSelector(@selector(includeCount))];
-        NSNumber *limit = parameters[NSStringFromSelector(@selector(limit))] ?: @(100);
-        
-        PNFetchSpacesRequest *request = [PNFetchSpacesRequest new];
-        request.filter = parameters[NSStringFromSelector(@selector(filter))];
-        request.start = parameters[NSStringFromSelector(@selector(start))];
-        request.sort = parameters[NSStringFromSelector(@selector(sort))];
-        request.end = parameters[NSStringFromSelector(@selector(end))];
-        request.includeFields = includeFields.unsignedIntegerValue;
-        request.includeCount = includeCount.boolValue;
-        request.limit = limit.unsignedIntegerValue;
-        
-        [weakSelf fetchSpacesWithRequest:request completion:parameters[@"block"]];
-    }];
+    if (includeCount && includeCount.boolValue) {
+        request.includeFields |= PNChannelTotalCountField;
+    }
     
-    return ^PNFetchSpacesAPICallBuilder * {
-        return builder;
-    };
+    [self allChannelsMetadataWithRequest:request completion:parameters[@"block"]];
 }
 
 
 #pragma mark - Membership objects
 
-- (PNManageMembershipsAPICallBuilder * (^)(void))manageMemberships {
-    PNManageMembershipsAPICallBuilder *builder = nil;
-    __weak __typeof(self) weakSelf = self;
-    
-    builder = [PNManageMembershipsAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
-                                                                             NSDictionary *parameters) {
+- (void)sendSetMembershipsRequestUsingBuilderParameters:(NSDictionary *)parameters {
+    NSNumber *includeCount = parameters[NSStringFromSelector(@selector(includeCount))];
+    NSArray *channels = parameters[NSStringFromSelector(@selector(channels))];
+    NSString *uuid = parameters[NSStringFromSelector(@selector(uuid))];
 
-        NSNumber *includeFields = parameters[NSStringFromSelector(@selector(includeFields))];
-        NSNumber *includeCount = parameters[NSStringFromSelector(@selector(includeCount))];
-        NSNumber *limit = parameters[NSStringFromSelector(@selector(limit))] ?: @(100);
-        NSString *userId = parameters[NSStringFromSelector(@selector(userId))];
-        
-        PNManageMembershipsRequest *request = [PNManageMembershipsRequest requestWithUserID:userId];
-        request.updateSpaces = parameters[NSStringFromSelector(@selector(update))];
-        request.leaveSpaces = parameters[NSStringFromSelector(@selector(remove))];
-        request.joinSpaces = parameters[NSStringFromSelector(@selector(add))];
-        request.filter = parameters[NSStringFromSelector(@selector(filter))];
-        request.start = parameters[NSStringFromSelector(@selector(start))];
-        request.sort = parameters[NSStringFromSelector(@selector(sort))];
-        request.end = parameters[NSStringFromSelector(@selector(end))];
-        request.includeFields = includeFields.unsignedIntegerValue;
-        request.includeCount = includeCount.boolValue;
-        request.limit = limit.unsignedIntegerValue;
-        
-        [weakSelf manageMembershipsWithRequest:request completion:parameters[@"block"]];
-    }];
+    PNSetMembershipsRequest *request = [PNSetMembershipsRequest requestWithUUID:uuid channels:channels];
+    request.arbitraryQueryParameters = parameters[@"queryParam"];
+
+    [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
     
-    return ^PNManageMembershipsAPICallBuilder * {
-        return builder;
-    };
+    if (includeCount && includeCount.boolValue) {
+        request.includeFields |= PNMembershipTotalCountField;
+    }
+    
+    [self setMembershipsWithRequest:request completion:parameters[@"block"]];
 }
 
-- (PNFetchMembershipsAPICallBuilder * (^)(void))fetchMemberships {
-    PNFetchMembershipsAPICallBuilder *builder = nil;
-    __weak __typeof(self) weakSelf = self;
+- (void)sendRemoveMembershipsRequestUsingBuilderParameters:(NSDictionary *)parameters {
+    NSNumber *includeCount = parameters[NSStringFromSelector(@selector(includeCount))];
+    NSArray *channels = parameters[NSStringFromSelector(@selector(channels))];
+    NSString *uuid = parameters[NSStringFromSelector(@selector(uuid))];
+
+    PNRemoveMembershipsRequest *request = [PNRemoveMembershipsRequest requestWithUUID:uuid channels:channels];
+    request.arbitraryQueryParameters = parameters[@"queryParam"];
+
+    [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
     
-    builder = [PNFetchMembershipsAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
-                                                                            NSDictionary *parameters) {
-        
-        NSNumber *includeFields = parameters[NSStringFromSelector(@selector(includeFields))];
-        NSNumber *includeCount = parameters[NSStringFromSelector(@selector(includeCount))];
-        NSNumber *limit = parameters[NSStringFromSelector(@selector(limit))] ?: @(100);
-        NSString *userId = parameters[NSStringFromSelector(@selector(userId))];
-        
-        PNFetchMembershipsRequest *request = [PNFetchMembershipsRequest requestWithUserID:userId];
-        request.filter = parameters[NSStringFromSelector(@selector(filter))];
-        request.start = parameters[NSStringFromSelector(@selector(start))];
-        request.sort = parameters[NSStringFromSelector(@selector(sort))];
-        request.end = parameters[NSStringFromSelector(@selector(end))];
-        request.includeFields = includeFields.unsignedIntegerValue;
-        request.includeCount = includeCount.boolValue;
-        request.limit = limit.unsignedIntegerValue;
-        
-        [weakSelf fetchMembershipsWithRequest:request completion:parameters[@"block"]];
-    }];
+    if (includeCount && includeCount.boolValue) {
+        request.includeFields |= PNMembershipTotalCountField;
+    }
     
-    return ^PNFetchMembershipsAPICallBuilder * {
-        return builder;
-    };
+    [self removeMembershipsWithRequest:request completion:parameters[@"block"]];
 }
 
-- (PNManageMembersAPICallBuilder * (^)(void))manageMembers {
-    PNManageMembersAPICallBuilder *builder = nil;
-    __weak __typeof(self) weakSelf = self;
-    
-    builder = [PNManageMembersAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
-                                                                         NSDictionary *parameters) {
+- (void)sendManageMembershipsRequestUsingBuilderParameters:(NSDictionary *)parameters {
+    NSNumber *includeCount = parameters[NSStringFromSelector(@selector(includeCount))];
+    NSString *uuid = parameters[NSStringFromSelector(@selector(uuid))];
 
-        NSNumber *includeFields = parameters[NSStringFromSelector(@selector(includeFields))];
-        NSNumber *includeCount = parameters[NSStringFromSelector(@selector(includeCount))];
-        NSNumber *limit = parameters[NSStringFromSelector(@selector(limit))] ?: @(100);
-        NSString *spaceId = parameters[NSStringFromSelector(@selector(spaceId))];
-        
-        PNManageMembersRequest *request = [PNManageMembersRequest requestWithSpaceID:spaceId];
-        request.updateMembers = parameters[NSStringFromSelector(@selector(update))];
-        request.removeMembers = parameters[NSStringFromSelector(@selector(remove))];
-        request.addMembers = parameters[NSStringFromSelector(@selector(add))];
-        request.filter = parameters[NSStringFromSelector(@selector(filter))];
-        request.start = parameters[NSStringFromSelector(@selector(start))];
-        request.sort = parameters[NSStringFromSelector(@selector(sort))];
-        request.end = parameters[NSStringFromSelector(@selector(end))];
-        request.includeFields = includeFields.unsignedIntegerValue;
-        request.includeCount = includeCount.boolValue;
-        request.limit = limit.unsignedIntegerValue;
-        
-        [weakSelf manageMembersWithRequest:request completion:parameters[@"block"]];
-    }];
+    PNManageMembershipsRequest *request = [PNManageMembershipsRequest requestWithUUID:uuid];
+    request.removeChannels = parameters[NSStringFromSelector(@selector(remove))];
+    request.setChannels = parameters[NSStringFromSelector(@selector(set))];
+    request.arbitraryQueryParameters = parameters[@"queryParam"];
+
+    [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
     
-    return ^PNManageMembersAPICallBuilder * {
-        return builder;
-    };
+    if (includeCount && includeCount.boolValue) {
+        request.includeFields |= PNMembershipTotalCountField;
+    }
+    
+    [self manageMembershipsWithRequest:request completion:parameters[@"block"]];
 }
 
-- (PNFetchMembersAPICallBuilder * (^)(void))fetchMembers {
-    PNFetchMembersAPICallBuilder *builder = nil;
-    __weak __typeof(self) weakSelf = self;
+- (void)sendFetchMembershipsRequestUsingBuilderParameters:(NSDictionary *)parameters {
+    NSNumber *includeCount = parameters[NSStringFromSelector(@selector(includeCount))];
+    NSString *uuid = parameters[NSStringFromSelector(@selector(uuid))];
+
+    PNFetchMembershipsRequest *request = [PNFetchMembershipsRequest requestWithUUID:uuid];
+    request.arbitraryQueryParameters = parameters[@"queryParam"];
+
+    [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
     
-    builder = [PNFetchMembersAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
-                                                                        NSDictionary *parameters) {
-        
-        NSNumber *includeFields = parameters[NSStringFromSelector(@selector(includeFields))];
-        NSNumber *includeCount = parameters[NSStringFromSelector(@selector(includeCount))];
-        NSNumber *limit = parameters[NSStringFromSelector(@selector(limit))] ?: @(100);
-        NSString *spaceId = parameters[NSStringFromSelector(@selector(spaceId))];
-        
-        PNFetchMembersRequest *request = [PNFetchMembersRequest requestWithSpaceID:spaceId];
-        request.filter = parameters[NSStringFromSelector(@selector(filter))];
-        request.start = parameters[NSStringFromSelector(@selector(start))];
-        request.sort = parameters[NSStringFromSelector(@selector(sort))];
-        request.end = parameters[NSStringFromSelector(@selector(end))];
-        request.includeFields = includeFields.unsignedIntegerValue;
-        request.includeCount = includeCount.boolValue;
-        request.limit = limit.unsignedIntegerValue;
-        
-        [weakSelf fetchMembersWithRequest:request completion:parameters[@"block"]];
-    }];
+    if (includeCount && includeCount.boolValue) {
+        request.includeFields |= PNMembershipTotalCountField;
+    }
     
-    return ^PNFetchMembersAPICallBuilder * {
-        return builder;
-    };
+    [self membershipsWithRequest:request completion:parameters[@"block"]];
+}
+
+- (void)sendSetMembersRequestUsingBuilderParameters:(NSDictionary *)parameters {
+    NSNumber *includeCount = parameters[NSStringFromSelector(@selector(includeCount))];
+    NSString *channel = parameters[NSStringFromSelector(@selector(channel))];
+    NSArray *uuids = parameters[NSStringFromSelector(@selector(uuids))];
+
+    PNSetMembersRequest *request = [PNSetMembersRequest requestWithChannel:channel uuids:uuids];
+    request.arbitraryQueryParameters = parameters[@"queryParam"];
+
+    [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
+    
+    if (includeCount && includeCount.boolValue) {
+        request.includeFields |= PNMemberTotalCountField;
+    }
+    
+    [self setMembersWithRequest:request completion:parameters[@"block"]];
+}
+
+- (void)sendRemoveMembersRequestUsingBuilderParameters:(NSDictionary *)parameters {
+    NSNumber *includeCount = parameters[NSStringFromSelector(@selector(includeCount))];
+    NSString *channel = parameters[NSStringFromSelector(@selector(channel))];
+    NSArray *uuids = parameters[NSStringFromSelector(@selector(uuids))];
+
+    PNRemoveMembersRequest *request = [PNRemoveMembersRequest requestWithChannel:channel uuids:uuids];
+    request.arbitraryQueryParameters = parameters[@"queryParam"];
+
+    [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
+    
+    if (includeCount && includeCount.boolValue) {
+        request.includeFields |= PNMemberTotalCountField;
+    }
+    
+    [self removeMembersWithRequest:request completion:parameters[@"block"]];
+}
+
+- (void)sendManageMembersRequestUsingBuilderParameters:(NSDictionary *)parameters {
+    NSNumber *includeCount = parameters[NSStringFromSelector(@selector(includeCount))];
+    NSString *channel = parameters[NSStringFromSelector(@selector(channel))];
+
+    PNManageMembersRequest *request = [PNManageMembersRequest requestWithChannel:channel];
+    request.removeMembers = parameters[NSStringFromSelector(@selector(remove))];
+    request.setMembers = parameters[NSStringFromSelector(@selector(set))];
+    request.arbitraryQueryParameters = parameters[@"queryParam"];
+
+    [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
+    
+    if (includeCount && includeCount.boolValue) {
+        request.includeFields |= PNMemberTotalCountField;
+    }
+    
+    [self manageMembersWithRequest:request completion:parameters[@"block"]];
+}
+
+- (void)sendFetchMembersRequestUsingBuilderParameters:(NSDictionary *)parameters {
+    NSNumber *includeCount = parameters[NSStringFromSelector(@selector(includeCount))];
+    NSString *channel = parameters[NSStringFromSelector(@selector(channel))];
+
+    PNFetchMembersRequest *request = [PNFetchMembersRequest requestWithChannel:channel];
+    request.arbitraryQueryParameters = parameters[@"queryParam"];
+
+    [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
+    
+    if (includeCount && includeCount.boolValue) {
+        request.includeFields |= PNMemberTotalCountField;
+    }
+    
+    [self membersWithRequest:request completion:parameters[@"block"]];
 }
 
 
-#pragma mark - User object
+#pragma mark - UUID metadata object
 
-- (void)createUserWithRequest:(PNCreateUserRequest *)request
-                   completion:(PNCreateUserCompletionBlock)block {
-    
+- (void)setUUIDMetadataWithRequest:(PNSetUUIDMetadataRequest *)request
+                        completion:(nullable PNSetUUIDMetadataCompletionBlock)block {
+
+    request.identifier = request.identifier ?: self.configuration.uuid;
     __weak __typeof(self) weakSelf = self;
     
-    [self performRequest:request withCompletion:^(PNCreateUserStatus *status) {
-        if (status.isError) {
-            status.retryBlock = ^{
-                [weakSelf createUserWithRequest:request completion:block];
-            };
-        }
-        
-        block(status);
-    }];
-}
-
-- (void)updateUserWithRequest:(PNUpdateUserRequest *)request
-                   completion:(PNUpdateUserCompletionBlock)block {
-    
-    __weak __typeof(self) weakSelf = self;
-    
-    [self performRequest:request withCompletion:^(PNUpdateUserStatus *status) {
+    [self performRequest:request withCompletion:^(PNSetUUIDMetadataStatus *status) {
         if (block && status.isError) {
             status.retryBlock = ^{
-                [weakSelf updateUserWithRequest:request completion:block];
+                [weakSelf setUUIDMetadataWithRequest:request completion:block];
             };
         }
         
@@ -419,15 +494,16 @@
     }];
 }
 
-- (void)deleteUserWithRequest:(PNDeleteUserRequest *)request
-                   completion:(PNDeleteUserCompletionBlock)block {
-    
+- (void)removeUUIDMetadataWithRequest:(PNRemoveUUIDMetadataRequest *)request
+                           completion:(nullable PNRemoveUUIDMetadataCompletionBlock)block {
+
+    request.identifier = request.identifier ?: self.configuration.uuid;
     __weak __typeof(self) weakSelf = self;
     
     [self performRequest:request withCompletion:^(PNAcknowledgmentStatus *status) {
         if (block && status.isError) {
             status.retryBlock = ^{
-                [weakSelf deleteUserWithRequest:request completion:block];
+                [weakSelf removeUUIDMetadataWithRequest:request completion:block];
             };
         }
         
@@ -437,17 +513,18 @@
     }];
 }
 
-- (void)fetchUserWithRequest:(PNFetchUserRequest *)request
-                  completion:(PNFetchUserCompletionBlock)block {
-    
+- (void)uuidMetadataWithRequest:(PNFetchUUIDMetadataRequest *)request
+                     completion:(PNFetchUUIDMetadataCompletionBlock)block {
+
+    request.identifier = request.identifier ?: self.configuration.uuid;
     __weak __typeof(self) weakSelf = self;
     
     [self performRequest:request
-          withCompletion:^(PNFetchUserResult *result, PNErrorStatus *status) {
+          withCompletion:^(PNFetchUUIDMetadataResult *result, PNErrorStatus *status) {
               
         if (status.isError) {
             status.retryBlock = ^{
-                [weakSelf fetchUserWithRequest:request completion:block];
+                [weakSelf uuidMetadataWithRequest:request completion:block];
             };
         }
 
@@ -455,17 +532,17 @@
     }];
 }
 
-- (void)fetchUsersWithRequest:(PNFetchUsersRequest *)request
-                   completion:(PNFetchUsersCompletionBlock)block {
+- (void)allUUIDMetadataWithRequest:(PNFetchAllUUIDMetadataRequest *)request
+                        completion:(PNFetchAllUUIDMetadataCompletionBlock)block {
     
     __weak __typeof(self) weakSelf = self;
     
     [self performRequest:request
-          withCompletion:^(PNFetchUsersResult *result, PNErrorStatus *status) {
+          withCompletion:^(PNFetchAllUUIDMetadataResult *result, PNErrorStatus *status) {
         
         if (status.isError) {
             status.retryBlock = ^{
-                [weakSelf fetchUsersWithRequest:request completion:block];
+                [weakSelf allUUIDMetadataWithRequest:request completion:block];
             };
         }
         
@@ -473,17 +550,17 @@
     }];
 }
 
-#pragma mark - Space object
+#pragma mark - Channel metadata object
 
-- (void)createSpaceWithRequest:(PNCreateSpaceRequest *)request
-                    completion:(PNCreateSpaceCompletionBlock)block {
+- (void)setChannelMetadataWithRequest:(PNSetChannelMetadataRequest *)request
+                           completion:(nullable PNSetChannelMetadataCompletionBlock)block {
     
     __weak __typeof(self) weakSelf = self;
     
-    [self performRequest:request withCompletion:^(PNCreateSpaceStatus *status) {
+    [self performRequest:request withCompletion:^(PNSetChannelMetadataStatus *status) {
         if (block && status.isError) {
             status.retryBlock = ^{
-                [weakSelf createSpaceWithRequest:request completion:block];
+                [weakSelf setChannelMetadataWithRequest:request completion:block];
             };
         }
         
@@ -493,33 +570,15 @@
     }];
 }
 
-- (void)updateSpaceWithRequest:(PNUpdateSpaceRequest *)request
-                    completion:(PNUpdateSpaceCompletionBlock)block {
-    
-    __weak __typeof(self) weakSelf = self;
-    
-    [self performRequest:request withCompletion:^(PNUpdateSpaceStatus *status) {
-        if (block && status.isError) {
-            status.retryBlock = ^{
-                [weakSelf updateSpaceWithRequest:request completion:block];
-            };
-        }
-        
-        if (block) {
-            block(status);
-        }
-    }];
-}
-
-- (void)deleteSpaceWithRequest:(PNDeleteSpaceRequest *)request
-                    completion:(PNDeleteSpaceCompletionBlock)block {
+- (void)removeChannelMetadataWithRequest:(PNRemoveChannelMetadataRequest *)request
+                              completion:(nullable PNRemoveChannelMetadataCompletionBlock)block {
     
     __weak __typeof(self) weakSelf = self;
     
     [self performRequest:request withCompletion:^(PNAcknowledgmentStatus *status) {
         if (block && status.isError) {
             status.retryBlock = ^{
-                [weakSelf deleteSpaceWithRequest:request completion:block];
+                [weakSelf removeChannelMetadataWithRequest:request completion:block];
             };
         }
         
@@ -529,17 +588,17 @@
     }];
 }
 
-- (void)fetchSpaceWithRequest:(PNFetchSpaceRequest *)request
-                   completion:(PNFetchSpaceCompletionBlock)block {
+- (void)channelMetadataWithRequest:(PNFetchChannelMetadataRequest *)request
+                        completion:(PNFetchChannelMetadataCompletionBlock)block {
     
     __weak __typeof(self) weakSelf = self;
     
     [self performRequest:request
-          withCompletion:^(PNFetchSpaceResult *result, PNErrorStatus *status) {
+          withCompletion:^(PNFetchChannelMetadataResult *result, PNErrorStatus *status) {
         
         if (status.isError) {
             status.retryBlock = ^{
-                [weakSelf fetchSpaceWithRequest:request completion:block];
+                [weakSelf channelMetadataWithRequest:request completion:block];
             };
         }
         
@@ -547,17 +606,17 @@
     }];
 }
 
-- (void)fetchSpacesWithRequest:(PNFetchSpacesRequest *)request
-                    completion:(PNFetchSpacesCompletionBlock)block {
+- (void)allChannelsMetadataWithRequest:(PNFetchAllChannelsMetadataRequest *)request
+                            completion:(PNFetchAllChannelsMetadataCompletionBlock)block {
     
     __weak __typeof(self) weakSelf = self;
     
     [self performRequest:request
-          withCompletion:^(PNFetchSpacesResult *result, PNErrorStatus *status) {
+          withCompletion:^(PNFetchAllChannelsMetadataResult *result, PNErrorStatus *status) {
         
         if (status.isError) {
             status.retryBlock = ^{
-                [weakSelf fetchSpacesWithRequest:request completion:block];
+                [weakSelf allChannelsMetadataWithRequest:request completion:block];
             };
         }
         
@@ -567,10 +626,49 @@
 
 
 #pragma mark - Membership objects
+
+- (void)setMembershipsWithRequest:(PNSetMembershipsRequest *)request
+                       completion:(nullable PNManageMembershipsCompletionBlock)block {
+    
+    request.identifier = request.identifier ?: self.configuration.uuid;
+    __weak __typeof(self) weakSelf = self;
+
+    [self performRequest:request withCompletion:^(PNManageMembershipsStatus *status) {
+        if (block && status.isError) {
+            status.retryBlock = ^{
+                [weakSelf setMembershipsWithRequest:request completion:block];
+            };
+        }
+
+        if (block) {
+            block(status);
+        }
+    }];
+}
+
+- (void)removeMembershipsWithRequest:(PNRemoveMembershipsRequest *)request
+                          completion:(PNManageMembershipsCompletionBlock)block {
+    
+    request.identifier = request.identifier ?: self.configuration.uuid;
+    __weak __typeof(self) weakSelf = self;
+
+    [self performRequest:request withCompletion:^(PNManageMembershipsStatus *status) {
+        if (block && status.isError) {
+            status.retryBlock = ^{
+                [weakSelf removeMembershipsWithRequest:request completion:block];
+            };
+        }
+
+        if (block) {
+            block(status);
+        }
+    }];
+}
 
 - (void)manageMembershipsWithRequest:(PNManageMembershipsRequest *)request
                           completion:(PNManageMembershipsCompletionBlock)block {
     
+    request.identifier = request.identifier ?: self.configuration.uuid;
     __weak __typeof(self) weakSelf = self;
     
     [self performRequest:request withCompletion:^(PNManageMembershipsStatus *status) {
@@ -586,9 +684,10 @@
     }];
 }
 
-- (void)fetchMembershipsWithRequest:(PNFetchMembershipsRequest *)request
-                         completion:(PNFetchMembershipsCompletionBlock)block {
+- (void)membershipsWithRequest:(PNFetchMembershipsRequest *)request
+                    completion:(PNFetchMembershipsCompletionBlock)block {
     
+    request.identifier = request.identifier ?: self.configuration.uuid;
     __weak __typeof(self) weakSelf = self;
     
     [self performRequest:request
@@ -596,11 +695,47 @@
         
         if (status.isError) {
             status.retryBlock = ^{
-                [weakSelf fetchMembershipsWithRequest:request completion:block];
+                [weakSelf membershipsWithRequest:request completion:block];
             };
         }
         
         block(result, status);
+    }];
+}
+
+- (void)setMembersWithRequest:(PNSetMembersRequest *)request
+                   completion:(PNManageMembersCompletionBlock)block {
+
+    __weak __typeof(self) weakSelf = self;
+
+    [self performRequest:request withCompletion:^(PNManageMembersStatus *status) {
+        if (block && status.isError) {
+            status.retryBlock = ^{
+                [weakSelf setMembersWithRequest:request completion:block];
+            };
+        }
+
+        if (block) {
+            block(status);
+        }
+    }];
+}
+
+- (void)removeMembersWithRequest:(PNRemoveMembersRequest *)request
+                      completion:(PNManageMembersCompletionBlock)block {
+
+    __weak __typeof(self) weakSelf = self;
+
+    [self performRequest:request withCompletion:^(PNManageMembersStatus *status) {
+        if (block && status.isError) {
+            status.retryBlock = ^{
+                [weakSelf removeMembersWithRequest:request completion:block];
+            };
+        }
+
+        if (block) {
+            block(status);
+        }
     }];
 }
 
@@ -622,8 +757,8 @@
     }];
 }
 
-- (void)fetchMembersWithRequest:(PNFetchMembersRequest *)request
-                     completion:(PNFetchMembersCompletionBlock)block {
+- (void)membersWithRequest:(PNFetchMembersRequest *)request
+                completion:(PNFetchMembersCompletionBlock)block {
     
     __weak __typeof(self) weakSelf = self;
     
@@ -632,12 +767,28 @@
         
         if (status.isError) {
             status.retryBlock = ^{
-                [weakSelf fetchMembersWithRequest:request completion:block];
+                [weakSelf membersWithRequest:request completion:block];
             };
         }
         
         block(result, status);
     }];
+}
+
+
+#pragma mark - Misc
+
+- (void)addObjectsPaginationOptionsToRequest:(PNObjectsPaginatedRequest *)request
+                      usingBuilderParameters:(NSDictionary *)parameters {
+
+    NSNumber *includeFields = parameters[NSStringFromSelector(@selector(includeFields))];
+    NSNumber *limit = parameters[NSStringFromSelector(@selector(limit))] ?: @(100);
+    request.filter = parameters[NSStringFromSelector(@selector(filter))];
+    request.start = parameters[NSStringFromSelector(@selector(start))];
+    request.sort = parameters[NSStringFromSelector(@selector(sort))];
+    request.end = parameters[NSStringFromSelector(@selector(end))];
+    request.includeFields = includeFields.unsignedIntegerValue;
+    request.limit = limit.unsignedIntegerValue;
 }
 
 #pragma mark -

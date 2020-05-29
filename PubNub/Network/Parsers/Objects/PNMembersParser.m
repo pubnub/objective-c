@@ -1,8 +1,8 @@
 /**
  * @author Serhii Mamontov
- * @version 4.10.0
- * @since 4.10.0
- * @copyright © 2010-2019 PubNub, Inc.
+ * @version 4.14.0
+ * @since 4.14.0
+ * @copyright © 2010-2020 PubNub, Inc.
  */
 #import "PNMembersParser.h"
 
@@ -15,7 +15,12 @@
 #pragma mark - Identification
 
 + (NSArray<NSNumber *> *)operations {
-    return @[@(PNManageMembersOperation), @(PNFetchMembersOperation)];
+    return @[
+        @(PNSetMembersOperation),
+        @(PNRemoveMembersOperation),
+        @(PNManageMembersOperation),
+        @(PNFetchMembersOperation)
+    ];
 }
 
 + (BOOL)requireAdditionalData {

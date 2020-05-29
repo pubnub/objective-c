@@ -6,12 +6,12 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark Interface declaration
 
 /**
- * @brief \c Fetch \c user's memberships request.
+ * @brief \c Fetch \c UUID memberships request.
  *
  * @author Serhii Mamontov
- * @version 4.10.0
- * @since 4.10.0
- * @copyright © 2010-2019 PubNub, Inc.
+ * @version 4.14.0
+ * @since 4.14.0
+ * @copyright © 2010-2020 PubNub, Inc.
  */
 @interface PNFetchMembershipsRequest : PNObjectsPaginatedRequest
 
@@ -22,7 +22,6 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief Bitfield set to fields which should be returned with response.
  *
  * @note Supported keys specified in \b PNMembershipFields enum.
- * @note Omit this property if you don't want to retrieve additional attributes.
  */
 @property (nonatomic, assign) PNMembershipFields includeFields;
 
@@ -30,13 +29,14 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Initialization & Configuration
 
 /**
- * @brief Create and configure \c fetch \c user's memberships request.
+ * @brief Create and configure \c fetch \c UUID's memberships request.
  *
- * @param identifier Identifier of \c user for which memberships in \c spaces should be fetched.
+ * @param uuid Identifier for which memberships in \c channels should be fetched.
+ * Will be set to current \b PubNub configuration \c uuid if \a nil is set.
  *
- * @return Configured and ready to use \c fetch \c user's memberships request.
+ * @return Configured and ready to use \c fetch \c UUID's memberships request.
  */
-+ (instancetype)requestWithUserID:(NSString *)identifier;
++ (instancetype)requestWithUUID:(nullable NSString *)uuid;
 
 /**
  * @brief Forbids request initialization.

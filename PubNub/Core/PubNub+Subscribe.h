@@ -13,7 +13,7 @@
 
 #pragma mark - Protocols
 
-@protocol PNObjectEventListener;
+@protocol PNEventsListener;
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -75,17 +75,17 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Listeners
 
 /**
- * @brief Add observer which conform to \b PNObjectEventListener protocol and would like to receive
+ * @brief Add observer which conform to \b PNEventsListener protocol and would like to receive
  * updates based on live feed events and status change.
  *
- * @discussion Listener can implement only required callbacks from \b PNObjectEventListener protocol
+ * @discussion Listener can implement only required callbacks from \b PNEventsListener protocol
  * and called only when desired type of event arrive.
  *
  * @param listener Listener which would like to receive updates.
  *
  * @since 4.0
  */
-- (void)addListener:(id <PNObjectEventListener>)listener NS_SWIFT_NAME(addListener(_:));
+- (void)addListener:(id <PNEventsListener>)listener NS_SWIFT_NAME(addListener(_:));
 
 /**
  * @brief Remove listener from list for callback calls.
@@ -97,7 +97,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @since 4.0
  */
-- (void)removeListener:(id <PNObjectEventListener>)listener NS_SWIFT_NAME(removeListener(_:));
+- (void)removeListener:(id <PNEventsListener>)listener NS_SWIFT_NAME(removeListener(_:));
 
 
 #pragma mark - Filtering
@@ -106,7 +106,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief String representation of filtering expression which should be applied to decide which
  * updates should reach client.
  *
- * @warning If your filter expression is malformed, \b PNObjectEventListener won't receive any
+ * @warning If your filter expression is malformed, \b PNEventsListener won't receive any
  * messages and presence events from service (only error status).
  */
 @property (nonatomic, nullable, copy) NSString *filterExpression;

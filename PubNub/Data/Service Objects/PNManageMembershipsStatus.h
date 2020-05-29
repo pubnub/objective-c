@@ -8,12 +8,12 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark Interfaces declaration
 
 /**
- * @brief Object which is used to represent Objects API response for \c manage \c memberships
- * request.
+ * @brief Object which is used to represent Objects API response for \c memberships
+ * \c set / \c remove / \c manage request.
  *
  * @author Serhii Mamontov
- * @version 4.10.0
- * @since 4.10.0
+ * @version 4.14.0
+ * @since 4.14.0
  * @copyright © 2010-2019 PubNub, Inc.
  */
 @interface PNManageMembershipsData : PNServiceData
@@ -22,7 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Information
 
 /**
- * @brief List of updated \c memberships.
+ * @brief List of existing \c memberships.
  */
 @property (nonatomic, readonly, strong) NSArray<PNMembership *> *memberships;
 
@@ -37,10 +37,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, nullable, readonly, strong) NSString *prev;
 
 /**
- * @brief Total number of \c updated \c memberships.
+ * @brief Total number of existing objects.
  *
- * @note Value will be \c 0 in case if \c includeCount of \b PNManageMembershipsRequest is set to
- * \c NO.
+ * @note Value will be \c 0 in case if \b PNMembershipTotalCountField not added to \c includeFields
+ * of \b PNSetMembershipsRequest / \b PNRemoveMembershipsRequest / \b PNManageMembershipsRequest or
+ * \b PNFetchMembershipsRequest.
  */
 @property (nonatomic, readonly, assign) NSUInteger totalCount;
 
@@ -51,12 +52,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 /**
- * @brief Object which is used to provide access to processed \c manage \c memberships request
+ * @brief Object which is used to provide access to processed \c memberships
+ * \c set / \c remove / \c manage request
  * results.
  *
  * @author Serhii Mamontov
- * @version 4.10.0
- * @since 4.10.0
+ * @version 4.14.0
+ * @since 4.14.0
  * @copyright © 2010-2019 PubNub, Inc.
  */
 @interface PNManageMembershipsStatus : PNAcknowledgmentStatus
@@ -65,7 +67,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Information
 
 /**
- * @brief \c Manage \c memberships request processed information.
+ * @brief \c Memberships \c set / \c remove / \c manage request processed information.
  */
 @property (nonatomic, readonly, strong) PNManageMembershipsData *data;
 

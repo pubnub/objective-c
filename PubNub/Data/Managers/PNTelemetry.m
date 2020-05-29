@@ -254,18 +254,20 @@ NS_ASSUME_NONNULL_END
         case PNRemoveAllPushNotificationsV2Operation:
             operation = @"push";
             break;
-        case PNCreateUserOperation:
-        case PNUpdateUserOperation:
-        case PNDeleteUserOperation:
-        case PNFetchUserOperation:
-        case PNFetchUsersOperation:
-        case PNCreateSpaceOperation:
-        case PNUpdateSpaceOperation:
-        case PNDeleteSpaceOperation:
-        case PNFetchSpaceOperation:
-        case PNFetchSpacesOperation:
+        case PNSetUUIDMetadataOperation:
+        case PNRemoveUUIDMetadataOperation:
+        case PNFetchUUIDMetadataOperation:
+        case PNFetchAllUUIDMetadataOperation:
+        case PNSetChannelMetadataOperation:
+        case PNRemoveChannelMetadataOperation:
+        case PNFetchChannelMetadataOperation:
+        case PNFetchAllChannelsMetadataOperation:
+        case PNSetMembershipsOperation:
+        case PNRemoveMembershipsOperation:
         case PNManageMembershipsOperation:
         case PNFetchMembershipsOperation:
+        case PNSetMembersOperation:
+        case PNRemoveMembersOperation:
         case PNManageMembersOperation:
         case PNFetchMembersOperation:
             operation = @"obj";

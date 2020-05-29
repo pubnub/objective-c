@@ -5,7 +5,7 @@
  * @copyright © 2010-2019 PubNub, Inc.
  */
 #import "PubNub+CorePrivate.h"
-#define PN_CORE_PROTOCOLS PNObjectEventListener
+#define PN_CORE_PROTOCOLS PNEventsListener
 
 #if TARGET_OS_IOS
     #import <UIKit/UIKit.h>
@@ -13,11 +13,11 @@
     #import <AppKit/AppKit.h>
 #endif // TARGET_OS_OSX
 #import "PubNub+SubscribePrivate.h"
-#import "PNObjectEventListener.h"
 #import "PNPrivateStructures.h"
 #import "PNClientInformation.h"
 #import "PNRequestParameters.h"
 #import "PNSubscribeStatus.h"
+#import "PNEventsListener.h"
 #import "PNResult+Private.h"
 #import "PNStatus+Private.h"
 #import "PNConfiguration.h"

@@ -1,8 +1,8 @@
 /**
  * @author Serhii Mamontov
- * @version 4.10.0
- * @since 4.10.0
- * @copyright © 2010-2019 PubNub, Inc.
+ * @version 4.14.0
+ * @since 4.14.0
+ * @copyright © 2010-2020 PubNub, Inc.
  */
 #import "PNFetchMembersAPICallBuilder.h"
 #import "PNAPICallBuilder+Private.h"
@@ -34,20 +34,10 @@
     };
 }
 
-- (PNFetchMembersAPICallBuilder * (^)(NSArray<NSString*> *sort))sort {
-    return ^PNFetchMembersAPICallBuilder * (NSArray<NSString*> *sort) {
+- (PNFetchMembersAPICallBuilder * (^)(NSArray<NSString *> *sort))sort {
+    return ^PNFetchMembersAPICallBuilder * (NSArray<NSString *> *sort) {
         if ([sort isKindOfClass:[NSArray class]] && sort.count) {
             [self setValue:sort forParameter:NSStringFromSelector(_cmd)];
-        }
-        
-        return self;
-    };
-}
-
-- (PNFetchMembersAPICallBuilder * (^)(NSString *spaceId))spaceId {
-    return ^PNFetchMembersAPICallBuilder * (NSString *spaceId) {
-        if ([spaceId isKindOfClass:[NSString class]] && spaceId.length) {
-            [self setValue:spaceId forParameter:NSStringFromSelector(_cmd)];
         }
         
         return self;

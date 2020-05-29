@@ -15,7 +15,7 @@ FOUNDATION_EXPORT const unsigned char PubNubVersionString[];
 
 
 // Protocols
-#import "PNObjectEventListener.h"
+#import "PNEventsListener.h"
 
 // Categories
 #import "NSURLSessionConfiguration+PNConfiguration.h"
@@ -25,11 +25,17 @@ FOUNDATION_EXPORT const unsigned char PubNubVersionString[];
 #import "PNChannelGroupClientStateResult.h"
 #import "PNPresenceChannelHereNowResult.h"
 #import "PNPresenceGlobalHereNowResult.h"
+#import "PNFetchChannelsMetadataResult.h"
 #import "PNChannelGroupChannelsResult.h"
+#import "PNFetchMessageActionsResult.h"
 #import "PNAPNSEnabledChannelsResult.h"
+#import "PNSetChannelMetadataStatus.h"
 #import "PNChannelClientStateResult.h"
+#import "PNManageMembershipsStatus.h"
 #import "PNClientStateUpdateStatus.h"
+#import "PNFetchUUIDMetadataResult.h"
 #import "PNPresenceWhereNowResult.h"
+#import "PNAddMessageActionStatus.h"
 #import "PNAcknowledgmentStatus.h"
 #import "PNClientStateGetResult.h"
 #import "PNChannelGroupsResult.h"

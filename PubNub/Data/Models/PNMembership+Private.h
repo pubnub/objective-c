@@ -8,9 +8,9 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief Private \c membership extension to provide ability to set data from service response.
  *
  * @author Serhii Mamontov
- * @version 4.10.0
- * @since 4.10.0
- * @copyright © 2010-2019 PubNub, Inc.
+ * @version 4.14.0
+ * @since 4.14.0
+ * @copyright © 2010-2020 PubNub, Inc.
  */
 @interface PNMembership (Private)
 
@@ -22,19 +22,18 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @param data Dictionary with information about \c membership from Objects API.
  *
- * @return Configured and ready to use \c space membership model.
+ * @return Configured and ready to use \c membership data model.
  */
 + (instancetype)membershipFromDictionary:(NSDictionary *)data;
 
 /**
  * @brief Create and configure \c membership data model.
  *
- * @param identifier Identifier of \c space with which \c user has membership.
- * @param space \c Space with which \c user has membership.
+ * @param metadata \c Metadata which associated with \c UUID in context of \c channel.
  *
  * @return Configured and ready to use \c membership representation model.
  */
-+ (instancetype)membershipWithSpaceId:(NSString *)identifier space:(nullable PNSpace *)space;
++ (instancetype)membershipWithChannelMetadata:(PNChannelMetadata *)metadata;
 
 #pragma mark -
 

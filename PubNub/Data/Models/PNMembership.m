@@ -1,12 +1,12 @@
 /**
  * @author Serhii Mamontov
- * @version 4.10.0
- * @since 4.10.0
- * @copyright © 2010-2019 PubNub, Inc.
+ * @version 4.14.0
+ * @since 4.14.0
+ * @copyright © 2010-2020 PubNub, Inc.
  */
 #import "NSDateFormatter+PNCacheable.h"
+#import "PNChannelMetadata+Private.h"
 #import "PNMembership+Private.h"
-#import "PNSpace+Private.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -19,32 +19,32 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Information
 
 /**
- * @brief Additional information associated with \c user in context of his membership in \c space.
+ * @brief \c Metadata associated with \c channel which is listed in \c UUID's memberships list.
+ */
+@property (nonatomic, nullable, strong) PNChannelMetadata *metadata;
+
+/**
+ * @brief Additional information from \c metadata which has been associated with \c UUID during
+ * \c UUID \c membership \c add requests.
  */
 @property (nonatomic, nullable, strong) NSDictionary *custom;
 
 /**
- * @brief \c Space with which \c user linked through membership.
+ * @brief \c UUID's for which membership has been created / removed.
  *
- * @note This property will be set only if \b PNMembershipsIncludeFields.space has been added to
- * \c includeFields list during request.
+ * @note This value is set only when object received as one of subscription events.
  */
-@property (nonatomic, nullable, strong) PNSpace *space;
+@property (nonatomic, nullable, copy) NSString *uuid;
 
 /**
- * @brief Identifier of \c space with which \c user linked through membership.
+ * @brief Name of channel which is listed in \c UUID's memberships list.
  */
-@property (nonatomic, strong) NSString *spaceId;
-
-/**
- * @brief \c Membership creation date.
- */
-@property (nonatomic, copy) NSDate *created;
+@property (nonatomic, copy) NSString *channel;
 
 /**
  * @brief \c Membership data modification date.
  */
-@property (nonatomic, copy) NSDate *updated;
+@property (nonatomic, strong) NSDate *updated;
 
 /**
  * @brief \c Membership object version identifier.
@@ -57,12 +57,19 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Initialize \c membership data model.
  *
- * @param identifier Identifier of \c space with which \c user has membership.
- * @param space \c Space with which \c user has membership.
+ * @param metadata \c Metadata which associated with \c UUID in context of \c channel.
  *
  * @return Initialized and ready to use \c membership representation model.
  */
-- (instancetype)initWithSpaceId:(NSString *)identifier space:(nullable PNSpace *)space;
+- (instancetype)initWithChannelMetadata:(PNChannelMetadata *)metadata;
+
+
+#pragma mark - Misc
+
+/**
+ * @brief Translate \c channel \c metadata data model to dictionary.
+ */
+- (NSDictionary *)dictionaryRepresentation;
 
 #pragma mark -
 
@@ -80,39 +87,52 @@ NS_ASSUME_NONNULL_END
 
 + (instancetype)membershipFromDictionary:(NSDictionary *)data {
     NSDateFormatter *formatter = [NSDateFormatter pn_objectsDateFormatter];
-    PNSpace *space = nil;
-    
-    if (data[@"space"]) {
-        space = [PNSpace spaceFromDictionary:data[@"space"]];
-    }
-    
-    PNMembership *membership = [PNMembership membershipWithSpaceId:data[@"id"] space:space];
+    PNChannelMetadata *channelMetadata = [PNChannelMetadata channelMetadataFromDictionary:data[@"channel"]];
+    PNMembership *membership = [PNMembership membershipWithChannelMetadata:channelMetadata];
     membership.custom = data[@"custom"];
     membership.eTag = data[@"eTag"];
-    
-    if (data[@"created"]) {
-        membership.created = [formatter dateFromString:data[@"created"]];
-    }
     
     if (data[@"updated"]) {
         membership.updated = [formatter dateFromString:data[@"updated"]];
     }
     
+    if (data[@"uuid"]) {
+        membership.uuid = data[@"uuid"][@"id"];
+    }
+    
     return membership;
 }
 
-+ (instancetype)membershipWithSpaceId:(NSString *)identifier space:(PNSpace *)space {
-    
-    return [[self alloc] initWithSpaceId:identifier space:space];
++ (instancetype)membershipWithChannelMetadata:(PNChannelMetadata *)metadata {
+    return [[self alloc] initWithChannelMetadata:metadata];
 }
 
-- (instancetype)initWithSpaceId:(NSString *)identifier space:(PNSpace *)space {
+- (instancetype)initWithChannelMetadata:(PNChannelMetadata *)metadata {
     if ((self = [super init])) {
-        _spaceId = [identifier copy];
-        _space = space;
+        _channel = [metadata.channel copy];
+        _metadata = metadata;
     }
-    
+
     return self;
+}
+
+
+#pragma mark - Misc
+
+- (NSDictionary *)dictionaryRepresentation {
+    NSMutableDictionary *dictionary = [@{ @"type": @"membership" } mutableCopy];
+
+    dictionary[@"metadata"] = self.metadata.debugDescription;
+    dictionary[@"channel"] = self.channel;
+    dictionary[@"custom"] = self.custom;
+    dictionary[@"uuid"] = self.uuid;
+    dictionary[@"eTag"] = self.eTag;
+
+    return dictionary;
+}
+
+- (NSString *)debugDescription {
+    return [self dictionaryRepresentation].description;
 }
 
 #pragma mark -

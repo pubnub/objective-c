@@ -133,7 +133,7 @@ typedef void(^PNSubscriberCompletionBlock)(PNSubscribeStatus * _Nullable status)
  * @brief Stores reference on string representation of filtering expression which should be applied
  * to decide which updates should reach client.
  *
- * @warning If your filter expression is malformed, \b PNObjectEventListener won't receive any
+ * @warning If your filter expression is malformed, \b PNEventsListener won't receive any
  * messages and presence events from service (only error status).
  */
 @property (nonatomic, nullable, copy) NSString *filterExpression;

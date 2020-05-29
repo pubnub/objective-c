@@ -2,7 +2,7 @@
 #define PubNub_h
 
 // Protocols
-#import "PNObjectEventListener.h"
+#import "PNEventsListener.h"
 
 // Categories
 #import "NSURLSessionConfiguration+PNConfiguration.h"

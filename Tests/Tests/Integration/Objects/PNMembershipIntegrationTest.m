@@ -16,11 +16,11 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Misc
 
 /**
- * @brief Flatten membership objects by extracting from it name of space and creation date.
+ * @brief Flatten membership objects by extracting from channel metadata name and update date.
  *
  * @param memberships List of memberships which should be flattened.
  *
- * @return List of dictionaries which contain name of space and membership creation date.
+ * @return List of dictionaries which contain name from channel metadata and membership update date.
  */
 - (NSArray<NSDictionary *> *)flattenedMemberships:(NSArray<PNMembership *> *)memberships;
 
@@ -62,76 +62,77 @@ NS_ASSUME_NONNULL_END
 }
 
 
-#pragma mark - Tests :: Builder pattern-based create membership
+#pragma mark - Tests :: Builder pattern-based set membership
 
-- (void)testItShouldCreateMembershipAndReceiveStatusWithExpectedOperationAndCategory {
-    NSArray<PNSpace *> *spaces = [self createObjectForSpaces:2 usingClient:nil];
-    NSArray<PNUser *> *users = [self createObjectForUsers:1 usingClient:nil];
-    NSArray<NSDictionary *> *membershipSpaces = @[
+- (void)testItShouldSetMembershipAndReceiveStatusWithExpectedOperationAndCategory {
+    NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:2 usingClient:nil];
+    NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:nil];
+    NSArray<NSDictionary *> *channels = @[
         @{
-            @"spaceId": spaces[0].identifier,
-            @"custom": @{ @"user-membership-custom": [@[spaces[0].identifier, @"custom", @"data", @"1"] componentsJoinedByString:@"-"] }
+            @"channel": channelsMetadata[0].channel,
+            @"custom": @{ @"uuid-membership-custom": [@[channelsMetadata[0].channel, @"custom", @"data", @"1"] componentsJoinedByString:@"-"] }
         },
         @{
-            @"spaceId": spaces[1].identifier,
-            @"custom": @{ @"user-membership-custom": [@[spaces[1].identifier, @"custom", @"data", @"2"] componentsJoinedByString:@"-"] }
+            @"channel": channelsMetadata[1].channel,
+            @"custom": @{ @"uuid-membership-custom": [@[channelsMetadata[1].channel, @"custom", @"data", @"2"] componentsJoinedByString:@"-"] }
         }
     ];
     __block NSArray *memberships = nil;
-    
-    
+
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.manageMemberships()
-            .userId(users.firstObject.identifier)
+        self.client.objects().setMemberships()
+            .uuid(uuidsMetadata.firstObject.uuid)
             .includeFields(PNMembershipCustomField)
-            .add(membershipSpaces).performWithCompletion(^(PNManageMembershipsStatus *status) {
+            .channels(channels)
+            .performWithCompletion(^(PNManageMembershipsStatus *status) {
                 memberships = status.data.memberships;
                 XCTAssertFalse(status.isError);
                 XCTAssertNotNil(memberships);
-                XCTAssertEqual(status.operation, PNManageMembershipsOperation);
+                XCTAssertEqual(status.operation, PNSetMembershipsOperation);
                 XCTAssertEqual(status.category, PNAcknowledgmentCategory);
-                
+
                 for (PNMembership *membership in memberships) {
-                    for (NSUInteger spaceIdx = 0; spaceIdx < spaces.count; spaceIdx++) {
-                        PNSpace *space = spaces[spaceIdx];
-                        
-                        if ([membership.spaceId isEqualToString:space.identifier]) {
-                            XCTAssertEqualObjects(membership.custom, membershipSpaces[spaceIdx][@"custom"]);
+                    for (NSUInteger idx = 0; idx < channelsMetadata.count; idx++) {
+                        PNChannelMetadata *metadata = channelsMetadata[idx];
+
+                        if ([membership.channel isEqualToString:metadata.channel]) {
+                            XCTAssertEqualObjects(membership.custom, channels[idx][@"custom"]);
                             break;
                         }
                     }
                 }
-                
+
                 handler();
             });
     }];
-    
-    [self deleteUser:users.firstObject.identifier membershipObjects:memberships usingClient:nil];
-    [self deleteUserObjectsUsingClient:nil];
-    [self deleteSpaceObjectsUsingClient:nil];
+
+    [self removeUUID:uuidsMetadata.firstObject.uuid membershipObjects:memberships usingClient:nil];
+    [self removeAllUUIDMetadataUsingClient:nil];
+    [self removeChannelsMetadataUsingClient:nil];
 }
 
-- (void)testItShouldCreateMembershipAndReturnFilteredSpacesInformationWhenFilterIsSet {
-    NSArray<PNSpace *> *spaces = [self createObjectForSpaces:2 usingClient:nil];
-    NSArray<PNUser *> *users = [self createObjectForUsers:1 usingClient:nil];
-    NSUInteger halfNameLength = (NSUInteger)(spaces.lastObject.name.length * 0.5f);
-    NSString *filterExpression = [NSString stringWithFormat:@"space.name like '%@*'",
-                                  [spaces.lastObject.name substringToIndex:halfNameLength]];
+- (void)testItShouldSetMembershipAndReturnFilteredMembershipsInformationWhenFilterIsSet {
+    NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:2 usingClient:nil];
+    NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:nil];
+    NSUInteger halfNameLength = (NSUInteger)(channelsMetadata.lastObject.name.length * 0.5f);
+    NSString *filterExpression = [NSString stringWithFormat:@"channel.name like '%@*'",
+                                  [channelsMetadata.lastObject.name substringToIndex:halfNameLength]];
     NSString *expectedFilterExpression = [PNString percentEscapedString:filterExpression];
-    NSArray<NSDictionary *> *membershipSpaces = @[
-        @{ @"spaceId": spaces[0].identifier },
-        @{ @"spaceId": spaces[1].identifier }
+    NSArray<NSDictionary *> *channels = @[
+        @{ @"channel": channelsMetadata[0].channel },
+        @{ @"channel": channelsMetadata[1].channel }
     ];
     __block NSArray<PNMembership *> *memberships = nil;
-    
-    
+
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.manageMemberships()
-            .userId(users.firstObject.identifier)
-            .includeFields(PNMembershipSpaceField|PNMembershipSpaceCustomField)
+        self.client.objects().setMemberships()
+            .uuid(uuidsMetadata.firstObject.uuid)
+            .includeFields(PNMembershipChannelField|PNMembershipChannelCustomField)
             .includeCount(YES)
             .filter(filterExpression)
-            .add(membershipSpaces)
+            .channels(channels)
             .performWithCompletion(^(PNManageMembershipsStatus *status) {
                 NSURLRequest *request = [status valueForKey:@"clientRequest"];
                 memberships = status.data.memberships;
@@ -143,40 +144,352 @@ NS_ASSUME_NONNULL_END
                 XCTAssertNotNil(memberships);
                 XCTAssertNotEqual([request.URL.absoluteString rangeOfString:expectedFilterExpression].location,
                                   NSNotFound);
-                XCTAssertNotNil(memberships.firstObject.space);
-                XCTAssertEqualObjects(memberships.firstObject.space.custom, spaces.lastObject.custom);
-                
+                XCTAssertNotEqual([memberships.debugDescription rangeOfString:@"eTag"].location, NSNotFound);
+                XCTAssertNotNil(memberships.firstObject.metadata);
+                XCTAssertEqualObjects(memberships.firstObject.metadata.custom, channelsMetadata.lastObject.custom);
+
                 handler();
             });
     }];
-    
-    [self deleteUser:users.firstObject.identifier membershipObjects:memberships usingClient:nil];
-    [self deleteUserObjectsUsingClient:nil];
-    [self deleteSpaceObjectsUsingClient:nil];
+
+    [self removeUUID:uuidsMetadata.firstObject.uuid membershipObjects:memberships usingClient:nil];
+    [self removeAllUUIDMetadataUsingClient:nil];
+    [self removeChannelsMetadataUsingClient:nil];
 }
 
-- (void)testItShouldCreateMembershipAndReturnSortedSpacesInformationWhenSortIsSet {
-    NSArray<PNSpace *> *spaces = [self createObjectForSpaces:2 usingClient:nil];
-    NSArray<PNUser *> *users = [self createObjectForUsers:1 usingClient:nil];
-    NSString *expectedSort = @"space.name%3Adesc";
-    NSArray<NSDictionary *> *membershipSpaces = @[
-        @{ @"spaceId": spaces[0].identifier },
-        @{ @"spaceId": spaces[1].identifier }
+/**
+ * @brief To test 'retry' functionality
+ *  'ItShouldSetMembershipAndReturnSortedMembershipsInformationWhenSortIsSet.json' should
+ *  be modified after cassette recording. Find first mention of membership set and copy paste
+ *  4 entries which belong to it. For new entries change 'id' field to be different from source. For
+ *  original response entry change status code to 404.
+ */
+- (void)testItShouldSetMembershipAndReturnSortedMembershipsInformationWhenSortIsSet {
+    if ([self shouldSkipTestWithManuallyModifiedMockedResponse]) {
+        NSLog(@"'%@' requires special conditions (modified mocked response). Skip", self.name);
+        return;
+    }
+    
+    NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:2 usingClient:nil];
+    NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:nil];
+    NSString *expectedSort = @"channel.name%3Adesc";
+    NSArray<NSDictionary *> *channels = @[
+        @{ @"channel": channelsMetadata[0].channel },
+        @{ @"channel": channelsMetadata[1].channel }
     ];
     __block NSArray<PNMembership *> *memberships = nil;
-    
-    NSArray<PNSpace *> *expectedMembershipSpacesOrder = [spaces sortedArrayUsingDescriptors:@[
+    __block BOOL retried = NO;
+
+    NSArray<PNChannelMetadata *> *expectedMembershipMembershipsOrder = [channelsMetadata sortedArrayUsingDescriptors:@[
         [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:NO]
     ]];
-    
-    
+
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.manageMemberships()
-            .userId(users.firstObject.identifier)
-            .includeFields(PNMembershipSpaceField|PNMembershipSpaceCustomField)
+        self.client.objects().setMemberships()
+            .uuid(uuidsMetadata.firstObject.uuid)
+            .includeFields(PNMembershipChannelField|PNMembershipChannelCustomField)
             .includeCount(YES)
-            .sort(@[@"space.name:desc"])
-            .add(membershipSpaces)
+            .sort(@[@"channel.name:desc"])
+            .channels(channels)
+            .performWithCompletion(^(PNManageMembershipsStatus *status) {
+                if (!retried && !YHVVCR.cassette.isNewCassette) {
+                    XCTAssertTrue(status.error);
+                    XCTAssertEqual(status.operation, PNSetMembershipsOperation);
+                    XCTAssertEqual(status.category, PNMalformedResponseCategory);
+
+                    retried = YES;
+                    [status retry];
+                } else {
+                    NSURLRequest *request = [status valueForKey:@"clientRequest"];
+                    memberships = status.data.memberships;
+                    XCTAssertNil(status.data.prev);
+                    XCTAssertNotNil(status.data.next);
+                    XCTAssertNotNil(memberships);
+                    XCTAssertNotEqual([request.URL.absoluteString rangeOfString:expectedSort].location,
+                                      NSNotFound);
+
+                    for (NSUInteger idx = 0; idx < memberships.count; idx++) {
+                        XCTAssertEqualObjects(memberships[idx].channel,
+                                              expectedMembershipMembershipsOrder[idx].channel);
+                    }
+
+                    XCTAssertNotEqualObjects([memberships valueForKeyPath:@"metadata.name"],
+                                             [channelsMetadata valueForKeyPath:@"name"]);
+
+                    handler();
+                }
+            });
+    }];
+
+    [self removeUUID:uuidsMetadata.firstObject.uuid membershipObjects:memberships usingClient:nil];
+    [self removeAllUUIDMetadataUsingClient:nil];
+    [self removeChannelsMetadataUsingClient:nil];
+}
+
+- (void)testItShouldSetMembershipAndReturnMembershipInformationWhenIncludeFlagIsSet {
+    NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:2 usingClient:nil];
+    NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:nil];
+    NSArray<NSDictionary *> *channels = @[
+        @{ @"channel": channelsMetadata[0].channel },
+        @{ @"channel": channelsMetadata[1].channel }
+    ];
+    __block NSArray *memberships = nil;
+
+
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        self.client.objects().setMemberships()
+            .uuid(uuidsMetadata.firstObject.uuid)
+            .includeFields(PNMembershipChannelField|PNMembershipChannelCustomField)
+            .channels(channels)
+            .performWithCompletion(^(PNManageMembershipsStatus *status) {
+                memberships = status.data.memberships;
+                XCTAssertFalse(status.isError);
+                XCTAssertNotNil(memberships);
+
+                for (PNMembership *membership in memberships) {
+                    XCTAssertNotNil(membership.metadata);
+
+                    for (NSUInteger idx = 0; idx < channelsMetadata.count; idx++) {
+                        PNChannelMetadata *metadata = channelsMetadata[idx];
+
+                        if ([membership.metadata.channel isEqualToString:metadata.channel]) {
+                            XCTAssertEqualObjects(membership.metadata.custom, metadata.custom);
+                            break;
+                        }
+                    }
+                }
+
+                handler();
+            });
+    }];
+
+    [self removeUUID:uuidsMetadata.firstObject.uuid membershipObjects:memberships usingClient:nil];
+    [self removeAllUUIDMetadataUsingClient:nil];
+    [self removeChannelsMetadataUsingClient:nil];
+}
+
+- (void)testItShouldSetMembershipAndTriggerSetEventOnUUIDChannel {
+    NSMutableArray *createdMemberships = [NSMutableArray new];
+    PubNub *client1 = [self createPubNubForUser:@"serhii"];
+    PubNub *client2 = [self createPubNubForUser:@"david"];
+    NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:2 usingClient:client1];
+    NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:client1];
+    NSString *channel = uuidsMetadata.firstObject.uuid;
+    NSArray<NSDictionary *> *channels = @[
+        @{ @"channel": channelsMetadata[0].channel },
+        @{ @"channel": channelsMetadata[1].channel }
+    ];
+    __block NSArray *memberships = nil;
+
+    [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
+
+
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        [self addObjectHandlerForClient:client2
+                              withBlock:^(PubNub *client, PNObjectEventResult *event, BOOL *remove) {
+            
+            XCTAssertEqualObjects(event.data.event, @"set");
+            XCTAssertEqualObjects(event.data.type, @"membership");
+            XCTAssertNotNil(event.data.membership.updated);
+            XCTAssertNotNil(event.data.timestamp);
+
+            if ([createdMemberships indexOfObject:event.data.membership.channel] == NSNotFound) {
+                [createdMemberships addObject:event.data.membership.channel];
+            }
+
+            if (createdMemberships.count == channelsMetadata.count) {
+                XCTAssertNotEqual([createdMemberships indexOfObject:channelsMetadata[0].channel], NSNotFound);
+                XCTAssertNotEqual([createdMemberships indexOfObject:channelsMetadata[1].channel], NSNotFound);
+                *remove = YES;
+
+                handler();
+            }
+        }];
+
+        client1.objects().setMemberships()
+            .uuid(uuidsMetadata.firstObject.uuid)
+            .includeFields(PNMembershipChannelField|PNMembershipChannelCustomField)
+            .channels(channels)
+            .performWithCompletion(^(PNManageMembershipsStatus *status) {
+                memberships = status.data.memberships;
+                XCTAssertFalse(status.isError);
+            });
+    }];
+
+    [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
+
+
+    [self verifyUUIDMembershipsCount:uuidsMetadata.firstObject.uuid shouldEqualTo:channels.count
+                         usingClient:client1];
+
+    [self removeUUID:uuidsMetadata.firstObject.uuid membershipObjects:memberships usingClient:client1];
+    [self removeAllUUIDMetadataUsingClient:client1];
+    [self removeChannelsMetadataUsingClient:client1];
+}
+
+- (void)testItShouldSetMembershipAndTriggerSetEventOnChannel {
+    PubNub *client1 = [self createPubNubForUser:@"serhii"];
+    PubNub *client2 = [self createPubNubForUser:@"david"];
+    NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:2 usingClient:client1];
+    NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:client1];
+    NSString *channel = channelsMetadata.firstObject.channel;
+    NSArray<NSDictionary *> *channels = @[
+        @{ @"channel": channelsMetadata[0].channel },
+        @{ @"channel": channelsMetadata[1].channel }
+    ];
+    __block NSArray *memberships = nil;
+
+    [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
+
+
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        [self addObjectHandlerForClient:client2
+                              withBlock:^(PubNub *client, PNObjectEventResult *event, BOOL *remove) {
+            
+            XCTAssertEqualObjects(event.data.event, @"set");
+            XCTAssertEqualObjects(event.data.type, @"membership");
+            XCTAssertNotNil(event.data.membership.updated);
+            XCTAssertNotNil(event.data.timestamp);
+            *remove = YES;
+
+            handler();
+        }];
+
+        client1.objects().setMemberships()
+            .uuid(uuidsMetadata.firstObject.uuid)
+            .includeFields(PNMembershipChannelField|PNMembershipChannelCustomField)
+            .channels(channels)
+            .performWithCompletion(^(PNManageMembershipsStatus *status) {
+                memberships = status.data.memberships;
+                XCTAssertFalse(status.isError);
+            });
+    }];
+
+    [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
+
+    [self removeUUID:uuidsMetadata.firstObject.uuid membershipObjects:memberships usingClient:client1];
+    [self removeAllUUIDMetadataUsingClient:client1];
+    [self removeChannelsMetadataUsingClient:client1];
+}
+
+
+#pragma mark - Tests :: Builder pattern-based manage set membership
+
+- (void)testItShouldSetMembershipUsingManageAndReceiveStatusWithExpectedOperationAndCategory {
+    NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:2 usingClient:nil];
+    NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:nil];
+    NSArray<NSDictionary *> *channels = @[
+        @{
+            @"channel": channelsMetadata[0].channel,
+            @"custom": @{ @"uuid-membership-custom": [@[channelsMetadata[0].channel, @"custom", @"data", @"1"] componentsJoinedByString:@"-"] }
+        },
+        @{
+            @"channel": channelsMetadata[1].channel,
+            @"custom": @{ @"uuid-membership-custom": [@[channelsMetadata[1].channel, @"custom", @"data", @"2"] componentsJoinedByString:@"-"] }
+        }
+    ];
+    __block NSArray *memberships = nil;
+
+
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        self.client.objects().manageMemberships()
+            .uuid(uuidsMetadata.firstObject.uuid)
+            .includeFields(PNMembershipCustomField)
+            .set(channels)
+            .performWithCompletion(^(PNManageMembershipsStatus *status) {
+                memberships = status.data.memberships;
+                XCTAssertFalse(status.isError);
+                XCTAssertNotNil(memberships);
+                XCTAssertEqual(status.operation, PNManageMembershipsOperation);
+                XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+
+                for (PNMembership *membership in memberships) {
+                    for (NSUInteger idx = 0; idx < channelsMetadata.count; idx++) {
+                        PNChannelMetadata *metadata = channelsMetadata[idx];
+
+                        if ([membership.channel isEqualToString:metadata.channel]) {
+                            XCTAssertEqualObjects(membership.custom, channels[idx][@"custom"]);
+                            break;
+                        }
+                    }
+                }
+
+                handler();
+            });
+    }];
+
+    [self removeUUID:uuidsMetadata.firstObject.uuid membershipObjects:memberships usingClient:nil];
+    [self removeAllUUIDMetadataUsingClient:nil];
+    [self removeChannelsMetadataUsingClient:nil];
+}
+
+- (void)testItShouldSetMembershipUsingManageAndReturnFilteredMembershipsInformationWhenFilterIsSet {
+    NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:2 usingClient:nil];
+    NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:nil];
+    NSUInteger halfNameLength = (NSUInteger)(channelsMetadata.lastObject.name.length * 0.5f);
+    NSString *filterExpression = [NSString stringWithFormat:@"channel.name like '%@*'",
+                                  [channelsMetadata.lastObject.name substringToIndex:halfNameLength]];
+    NSString *expectedFilterExpression = [PNString percentEscapedString:filterExpression];
+    NSArray<NSDictionary *> *channels = @[
+        @{ @"channel": channelsMetadata[0].channel },
+        @{ @"channel": channelsMetadata[1].channel }
+    ];
+    __block NSArray<PNMembership *> *memberships = nil;
+
+
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        self.client.objects().manageMemberships()
+            .uuid(uuidsMetadata.firstObject.uuid)
+            .includeFields(PNMembershipChannelField|PNMembershipChannelCustomField)
+            .includeCount(YES)
+            .filter(filterExpression)
+            .set(channels)
+            .performWithCompletion(^(PNManageMembershipsStatus *status) {
+                NSURLRequest *request = [status valueForKey:@"clientRequest"];
+                memberships = status.data.memberships;
+                XCTAssertEqual(status.data.totalCount, 1);
+                XCTAssertEqual(memberships.count, status.data.totalCount);
+                XCTAssertNil(status.data.prev);
+                XCTAssertNotNil(status.data.next);
+                XCTAssertFalse(status.isError);
+                XCTAssertNotNil(memberships);
+                XCTAssertNotEqual([request.URL.absoluteString rangeOfString:expectedFilterExpression].location,
+                                  NSNotFound);
+                XCTAssertNotNil(memberships.firstObject.metadata);
+                XCTAssertEqualObjects(memberships.firstObject.metadata.custom, channelsMetadata.lastObject.custom);
+
+                handler();
+            });
+    }];
+
+    [self removeUUID:uuidsMetadata.firstObject.uuid membershipObjects:memberships usingClient:nil];
+    [self removeAllUUIDMetadataUsingClient:nil];
+    [self removeChannelsMetadataUsingClient:nil];
+}
+
+- (void)testItShouldSetMembershipUsingManageAndReturnSortedMembershipsInformationWhenSortIsSet {
+    NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:2 usingClient:nil];
+    NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:nil];
+    NSString *expectedSort = @"channel.name%3Adesc";
+    NSArray<NSDictionary *> *channels = @[
+        @{ @"channel": channelsMetadata[0].channel },
+        @{ @"channel": channelsMetadata[1].channel }
+    ];
+    __block NSArray<PNMembership *> *memberships = nil;
+
+    NSArray<PNChannelMetadata *> *expectedMembershipMembershipsOrder = [channelsMetadata sortedArrayUsingDescriptors:@[
+        [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:NO]
+    ]];
+
+
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        self.client.objects().manageMemberships()
+            .uuid(uuidsMetadata.firstObject.uuid)
+            .includeFields(PNMembershipChannelField|PNMembershipChannelCustomField)
+            .includeCount(YES)
+            .sort(@[@"channel.name:desc"])
+            .set(channels)
             .performWithCompletion(^(PNManageMembershipsStatus *status) {
                 NSURLRequest *request = [status valueForKey:@"clientRequest"];
                 memberships = status.data.memberships;
@@ -185,343 +498,301 @@ NS_ASSUME_NONNULL_END
                 XCTAssertNotNil(memberships);
                 XCTAssertNotEqual([request.URL.absoluteString rangeOfString:expectedSort].location,
                                   NSNotFound);
-                
-                for (NSUInteger fetchedMembershipIdx = 0; fetchedMembershipIdx < memberships.count; fetchedMembershipIdx++) {
-                    XCTAssertEqualObjects(memberships[fetchedMembershipIdx].spaceId,
-                                          expectedMembershipSpacesOrder[fetchedMembershipIdx].identifier);
+
+                for (NSUInteger idx = 0; idx < memberships.count; idx++) {
+                    XCTAssertEqualObjects(memberships[idx].channel,
+                                          expectedMembershipMembershipsOrder[idx].channel);
                 }
-                
-                XCTAssertNotEqualObjects([memberships valueForKeyPath:@"space.name"],
-                                         [spaces valueForKeyPath:@"name"]);
-                
+
+                XCTAssertNotEqualObjects([memberships valueForKeyPath:@"metadata.name"],
+                                         [channelsMetadata valueForKeyPath:@"name"]);
+
                 handler();
             });
     }];
-    
-    [self deleteUser:users.firstObject.identifier membershipObjects:memberships usingClient:nil];
-    [self deleteUserObjectsUsingClient:nil];
-    [self deleteSpaceObjectsUsingClient:nil];
+
+    [self removeUUID:uuidsMetadata.firstObject.uuid membershipObjects:memberships usingClient:nil];
+    [self removeAllUUIDMetadataUsingClient:nil];
+    [self removeChannelsMetadataUsingClient:nil];
 }
 
-- (void)testItShouldCreateMembershipAndReturnSpaceInformationWhenSpaceIncludeFlagIsSet {
-    NSArray<PNSpace *> *spaces = [self createObjectForSpaces:2 usingClient:nil];
-    NSArray<PNUser *> *users = [self createObjectForUsers:1 usingClient:nil];
-    NSArray<NSDictionary *> *membershipSpaces = @[
-        @{ @"spaceId": spaces[0].identifier },
-        @{ @"spaceId": spaces[1].identifier }
+- (void)testItShouldSetMembershipUsingManageAndReturnMembershipInformationWhenIncludeFlagIsSet {
+    NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:2 usingClient:nil];
+    NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:nil];
+    NSArray<NSDictionary *> *channels = @[
+        @{ @"channel": channelsMetadata[0].channel },
+        @{ @"channel": channelsMetadata[1].channel }
     ];
     __block NSArray *memberships = nil;
-    
-    
+
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.manageMemberships()
-            .userId(users.firstObject.identifier)
-            .includeFields(PNMembershipSpaceField|PNMembershipSpaceCustomField)
-            .add(membershipSpaces)
+        self.client.objects().manageMemberships()
+            .uuid(uuidsMetadata.firstObject.uuid)
+            .includeFields(PNMembershipChannelField|PNMembershipChannelCustomField)
+            .set(channels)
             .performWithCompletion(^(PNManageMembershipsStatus *status) {
                 memberships = status.data.memberships;
                 XCTAssertFalse(status.isError);
                 XCTAssertNotNil(memberships);
-                
+
                 for (PNMembership *membership in memberships) {
-                    XCTAssertNotNil(membership.space);
-                    
-                    for (NSUInteger spaceIdx = 0; spaceIdx < spaces.count; spaceIdx++) {
-                        PNSpace *space = spaces[spaceIdx];
-                        
-                        if ([membership.space.identifier isEqualToString:space.identifier]) {
-                            XCTAssertEqualObjects(membership.space.custom, space.custom);
+                    XCTAssertNotNil(membership.metadata);
+
+                    for (NSUInteger idx = 0; idx < channelsMetadata.count; idx++) {
+                        PNChannelMetadata *metadata = channelsMetadata[idx];
+
+                        if ([membership.metadata.channel isEqualToString:metadata.channel]) {
+                            XCTAssertEqualObjects(membership.metadata.custom, metadata.custom);
                             break;
                         }
                     }
                 }
-                
+
                 handler();
             });
     }];
-    
-    [self deleteUser:users.firstObject.identifier membershipObjects:memberships usingClient:nil];
-    [self deleteUserObjectsUsingClient:nil];
-    [self deleteSpaceObjectsUsingClient:nil];
+
+    [self removeUUID:uuidsMetadata.firstObject.uuid membershipObjects:memberships usingClient:nil];
+    [self removeAllUUIDMetadataUsingClient:nil];
+    [self removeChannelsMetadataUsingClient:nil];
 }
 
-- (void)testItShouldCreateMembershipAndTriggerCreateEventOnUserChannel {
+- (void)testItShouldSetMembershipUsingManageAndTriggerSetEventOnUUIDChannel {
     NSMutableArray *createdMemberships = [NSMutableArray new];
     PubNub *client1 = [self createPubNubForUser:@"serhii"];
     PubNub *client2 = [self createPubNubForUser:@"david"];
-    NSArray<PNSpace *> *spaces = [self createObjectForSpaces:2 usingClient:client1];
-    NSArray<PNUser *> *users = [self createObjectForUsers:1 usingClient:client1];
-    NSString *channel = users.firstObject.identifier;
-    NSArray<NSDictionary *> *membershipSpaces = @[
-        @{ @"spaceId": spaces[0].identifier },
-        @{ @"spaceId": spaces[1].identifier }
+    NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:2 usingClient:client1];
+    NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:client1];
+    NSString *channel = uuidsMetadata.firstObject.uuid;
+    NSArray<NSDictionary *> *channels = @[
+        @{ @"channel": channelsMetadata[0].channel },
+        @{ @"channel": channelsMetadata[1].channel }
     ];
     __block NSArray *memberships = nil;
-    
+
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
-    
-    
+
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self addMembershipHandlerForClient:client2
-                                  withBlock:^(PubNub *client, PNMembershipEventResult *event, BOOL *remove) {
+        [self addObjectHandlerForClient:client2
+                              withBlock:^(PubNub *client, PNObjectEventResult *event, BOOL *remove) {
             
-            XCTAssertEqualObjects(event.data.event, @"create");
-            XCTAssertNotNil(event.data.created);
+            XCTAssertEqualObjects(event.data.event, @"set");
+            XCTAssertEqualObjects(event.data.type, @"membership");
+            XCTAssertNotNil(event.data.membership.updated);
             XCTAssertNotNil(event.data.timestamp);
-            
-            if ([createdMemberships indexOfObject:event.data.spaceId] == NSNotFound) {
-                [createdMemberships addObject:event.data.spaceId];
+
+            if ([createdMemberships indexOfObject:event.data.membership.channel] == NSNotFound) {
+                [createdMemberships addObject:event.data.membership.channel];
             }
-            
-            if (createdMemberships.count == spaces.count) {
-                XCTAssertNotEqual([createdMemberships indexOfObject:spaces[0].identifier], NSNotFound);
-                XCTAssertNotEqual([createdMemberships indexOfObject:spaces[1].identifier], NSNotFound);
+
+            if (createdMemberships.count == channelsMetadata.count) {
+                XCTAssertNotEqual([createdMemberships indexOfObject:channelsMetadata[0].channel], NSNotFound);
+                XCTAssertNotEqual([createdMemberships indexOfObject:channelsMetadata[1].channel], NSNotFound);
                 *remove = YES;
-                
+
                 handler();
             }
         }];
-        
-        client1.manageMemberships()
-            .userId(users.firstObject.identifier)
-            .includeFields(PNMembershipSpaceField|PNMembershipSpaceCustomField)
-            .add(membershipSpaces)
+
+        client1.objects().manageMemberships()
+            .uuid(uuidsMetadata.firstObject.uuid)
+            .includeFields(PNMembershipChannelField|PNMembershipChannelCustomField)
+            .set(channels)
             .performWithCompletion(^(PNManageMembershipsStatus *status) {
                 memberships = status.data.memberships;
                 XCTAssertFalse(status.isError);
             });
     }];
-    
+
     [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
-    
-    
-    [self verifyUserMembershipsCount:users.firstObject.identifier shouldEqualTo:membershipSpaces.count
+
+
+    [self verifyUUIDMembershipsCount:uuidsMetadata.firstObject.uuid shouldEqualTo:channels.count
                          usingClient:client1];
-    
-    [self deleteUser:users.firstObject.identifier membershipObjects:memberships usingClient:client1];
-    [self deleteUserObjectsUsingClient:client1];
-    [self deleteSpaceObjectsUsingClient:client1];
+
+    [self removeUUID:uuidsMetadata.firstObject.uuid membershipObjects:memberships usingClient:client1];
+    [self removeAllUUIDMetadataUsingClient:client1];
+    [self removeChannelsMetadataUsingClient:client1];
 }
 
-- (void)testItShouldCreateMembershipAndTriggerCreateEventOnSpaceChannel {
+- (void)testItShouldSetMembershipUsingManageAndTriggerSetEventOnChannel {
     PubNub *client1 = [self createPubNubForUser:@"serhii"];
     PubNub *client2 = [self createPubNubForUser:@"david"];
-    NSArray<PNSpace *> *spaces = [self createObjectForSpaces:2 usingClient:client1];
-    NSArray<PNUser *> *users = [self createObjectForUsers:1 usingClient:client1];
-    NSString *channel = spaces.firstObject.identifier;
-    NSArray<NSDictionary *> *membershipSpaces = @[
-        @{ @"spaceId": spaces[0].identifier },
-        @{ @"spaceId": spaces[1].identifier }
+    NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:2 usingClient:client1];
+    NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:client1];
+    NSString *channel = channelsMetadata.firstObject.channel;
+    NSArray<NSDictionary *> *channels = @[
+        @{ @"channel": channelsMetadata[0].channel },
+        @{ @"channel": channelsMetadata[1].channel }
     ];
     __block NSArray *memberships = nil;
-    
+
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
-    
-    
+
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self addMembershipHandlerForClient:client2
-                                  withBlock:^(PubNub *client, PNMembershipEventResult *event, BOOL *remove) {
+        [self addObjectHandlerForClient:client2
+                              withBlock:^(PubNub *client, PNObjectEventResult *event, BOOL *remove) {
             
-            XCTAssertEqualObjects(event.data.event, @"create");
-            XCTAssertNotNil(event.data.created);
+            XCTAssertEqualObjects(event.data.event, @"set");
+            XCTAssertEqualObjects(event.data.type, @"membership");
+            XCTAssertNotNil(event.data.membership.updated);
             XCTAssertNotNil(event.data.timestamp);
             *remove = YES;
-            
+
             handler();
         }];
-        
-        client1.manageMemberships()
-            .userId(users.firstObject.identifier)
-            .includeFields(PNMembershipSpaceField|PNMembershipSpaceCustomField)
-            .add(membershipSpaces)
+
+        client1.objects().manageMemberships()
+            .uuid(uuidsMetadata.firstObject.uuid)
+            .includeFields(PNMembershipChannelField|PNMembershipChannelCustomField)
+            .set(channels)
             .performWithCompletion(^(PNManageMembershipsStatus *status) {
                 memberships = status.data.memberships;
                 XCTAssertFalse(status.isError);
             });
     }];
-    
+
     [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
-    
-    [self deleteUser:users.firstObject.identifier membershipObjects:memberships usingClient:client1];
-    [self deleteUserObjectsUsingClient:client1];
-    [self deleteSpaceObjectsUsingClient:client1];
+
+    [self removeUUID:uuidsMetadata.firstObject.uuid membershipObjects:memberships usingClient:client1];
+    [self removeAllUUIDMetadataUsingClient:client1];
+    [self removeChannelsMetadataUsingClient:client1];
 }
 
-- (void)testItShouldNotCreateMembershipWhenUserAlreadyHasMembershipWithTargetSpace {
-    NSArray<PNSpace *> *spaces = [self createObjectForSpaces:2 usingClient:nil];
-    NSArray<PNUser *> *users = [self createObjectForUsers:1 usingClient:nil];
-    NSArray<NSDictionary *> *membershipSpaces = @[
-        @{ @"spaceId": spaces[0].identifier },
-        @{ @"spaceId": spaces[1].identifier }
-    ];
-    __block NSArray *memberships = nil;
+
+#pragma mark - Tests :: Builder pattern-based remove membership
+
+/**
+ * @brief To test 'retry' functionality
+ *  'ItShouldRemoveMembershipAndReceiveStatusWithExpectedOperationAndCategory.json' should
+ *  be modified after cassette recording. Find first mention of membership remove and copy paste
+ *  4 entries which belong to it. For new entries change 'id' field to be different from source. For
+ *  original response entry change status code to 404.
+ */
+- (void)testItShouldRemoveMembershipAndReceiveStatusWithExpectedOperationAndCategory {
+    if ([self shouldSkipTestWithManuallyModifiedMockedResponse]) {
+        NSLog(@"'%@' requires special conditions (modified mocked response). Skip", self.name);
+        return;
+    }
+
+    NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:2 usingClient:nil];
+    NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:nil];
     __block BOOL retried = NO;
-    
-    
+
+    [self createUUIDsMembership:[uuidsMetadata valueForKey:@"uuid"]
+                     inChannels:[channelsMetadata valueForKey:@"channel"]
+                    withCustoms:nil
+                    usingClient:nil];
+
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.manageMemberships()
-            .userId(users.firstObject.identifier)
-            .includeFields(PNMembershipSpaceField|PNMembershipSpaceCustomField)
-            .add(membershipSpaces)
+        self.client.objects().removeMemberships()
+            .uuid(uuidsMetadata.firstObject.uuid)
+            .includeFields(PNMembershipCustomField)
+            .channels(@[channelsMetadata.firstObject.channel])
             .performWithCompletion(^(PNManageMembershipsStatus *status) {
-                memberships = status.data.memberships;
-                XCTAssertFalse(status.isError);
-                handler();
-            });
-    }];
-    
-    
-    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.manageMemberships()
-            .userId(users.firstObject.identifier)
-            .includeFields(PNMembershipSpaceField|PNMembershipSpaceCustomField)
-            .add(@[membershipSpaces.firstObject])
-            .performWithCompletion(^(PNManageMembershipsStatus *status) {
-                XCTAssertTrue(status.isError);
-                XCTAssertEqual(status.statusCode, 400);
-                
-                if (!retried) {
+                if (!retried && !YHVVCR.cassette.isNewCassette) {
+                    XCTAssertTrue(status.error);
+                    XCTAssertEqual(status.operation, PNRemoveMembershipsOperation);
+                    XCTAssertEqual(status.category, PNMalformedResponseCategory);
+
                     retried = YES;
                     [status retry];
                 } else {
+                    NSArray<PNMembership *> *memberships = status.data.memberships;
+                    XCTAssertFalse(status.isError);
+                    XCTAssertNotNil(memberships);
+                    XCTAssertEqual(memberships.count, 1);
+                    XCTAssertEqualObjects(memberships.firstObject.channel, channelsMetadata[1].channel);
+                    XCTAssertEqual(status.operation, PNRemoveMembershipsOperation);
+                    XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+
+                    [self removeUUID:uuidsMetadata.firstObject.uuid
+          cachedMembershipForChannel:channelsMetadata[0].channel];
+
                     handler();
                 }
             });
     }];
-    
-    
-    [self verifyUserMembershipsCount:users.firstObject.identifier shouldEqualTo:membershipSpaces.count
-                         usingClient:nil];
-    
-    [self deleteUser:users.firstObject.identifier membershipObjects:memberships usingClient:nil];
-    [self deleteUserObjectsUsingClient:nil];
-    [self deleteSpaceObjectsUsingClient:nil];
+
+    [self removeUUID:uuidsMetadata.firstObject.uuid membershipObjectsUsingClient:nil];
+    [self removeAllUUIDMetadataUsingClient:nil];
+    [self removeChannelsMetadataUsingClient:nil];
 }
 
-
-#pragma mark - Tests :: Builder pattern-based update membership
-
-- (void)testItShouldUpdateMembershipAndReceiveStatusWithExpectedOperationAndCategory {
-    NSArray<PNSpace *> *spaces = [self createObjectForSpaces:2 usingClient:nil];
-    NSArray<PNUser *> *users = [self createObjectForUsers:1 usingClient:nil];
-    NSArray<NSDictionary *> *membershipCustom = @[
-        @{ @"user-membership-custom": [@[spaces[0].identifier, @"custom", @"data", @"1"] componentsJoinedByString:@"-"] },
-        @{ @"user-membership-custom": [@[spaces[1].identifier, @"custom", @"data", @"2"] componentsJoinedByString:@"-"] }
-    ];
-    NSArray<NSDictionary *> *expectedMembershipCustom = @[
-        @{ @"user-membership-custom": [@[spaces[0].identifier, @"custom", @"data", @"3"] componentsJoinedByString:@"-"] },
-        @{ @"user-membership-custom": [@[spaces[1].identifier, @"custom", @"data", @"4"] componentsJoinedByString:@"-"] }
-    ];
-    
-    [self createUsersMembership:users inSpaces:spaces withCustoms:membershipCustom usingClient:nil];
-    
-    
-    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.manageMemberships()
-            .userId(users.firstObject.identifier)
-            .includeFields(PNMembershipCustomField)
-            .update(@[
-                @{ @"spaceId": spaces[0].identifier, @"custom": expectedMembershipCustom[0] },
-                @{ @"spaceId": spaces[1].identifier, @"custom": expectedMembershipCustom[1] },
-            ])
-            .performWithCompletion(^(PNManageMembershipsStatus *status) {
-                NSArray<PNMembership *> *memberships = status.data.memberships;
-                XCTAssertFalse(status.isError);
-                XCTAssertNotNil(memberships);
-                XCTAssertEqual(status.operation, PNManageMembershipsOperation);
-                XCTAssertEqual(status.category, PNAcknowledgmentCategory);
-                
-                for (PNMembership *membership in memberships) {
-                    for (NSUInteger spaceIdx = 0; spaceIdx < spaces.count; spaceIdx++) {
-                        PNSpace *space = spaces[spaceIdx];
-                        
-                        if ([membership.spaceId isEqualToString:space.identifier]) {
-                            XCTAssertEqualObjects(membership.custom, expectedMembershipCustom[spaceIdx]);
-                            break;
-                        }
-                    }
-                }
-                
-                handler();
-            });
-    }];
-
-    [self deleteUser:users.firstObject.identifier membershipObjectsUsingClient:nil];
-    [self deleteUserObjectsUsingClient:nil];
-    [self deleteSpaceObjectsUsingClient:nil];
-}
-
-- (void)testItShouldUpdateMembershipAndReturnFilteredSpaceInformationWhenFilterIsSet {
-    NSArray<PNSpace *> *spaces = [self createObjectForSpaces:2 usingClient:nil];
-    NSArray<PNUser *> *users = [self createObjectForUsers:1 usingClient:nil];
-    NSUInteger halfNameLength = (NSUInteger)(spaces.lastObject.name.length * 0.5f);
-    NSString *filterExpression = [NSString stringWithFormat:@"space.name like '%@*'",
-                                  [spaces.lastObject.name substringToIndex:halfNameLength]];
+- (void)testItShouldRemoveMembershipAndReturnFilteredMembershipsInformationWhenFilterIsSet {
+    NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:2 usingClient:nil];
+    NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:nil];
+    NSUInteger halfNameLength = (NSUInteger)(channelsMetadata.lastObject.name.length * 0.5f);
+    NSString *filterExpression = [NSString stringWithFormat:@"channel.name like '%@*'",
+                                  [channelsMetadata.lastObject.name substringToIndex:halfNameLength]];
     NSString *expectedFilterExpression = [PNString percentEscapedString:filterExpression];
-    NSArray<NSDictionary *> *membershipCustom = @[
-        @{ @"user-membership-custom": [@[spaces[0].identifier, @"custom", @"data", @"1"] componentsJoinedByString:@"-"] },
-        @{ @"user-membership-custom": [@[spaces[1].identifier, @"custom", @"data", @"2"] componentsJoinedByString:@"-"] }
-    ];
-    
-    [self createUsersMembership:users inSpaces:spaces withCustoms:nil usingClient:nil];
-    
-    
+
+    [self createUUIDsMembership:[uuidsMetadata valueForKey:@"uuid"]
+                     inChannels:[channelsMetadata valueForKey:@"channel"]
+                    withCustoms:nil
+                    usingClient:nil];
+
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.manageMemberships()
-            .userId(users.firstObject.identifier)
-            .includeFields(PNMembershipSpaceField|PNMembershipSpaceCustomField)
+        self.client.objects().removeMemberships()
+            .uuid(uuidsMetadata.firstObject.uuid)
+            .includeFields(PNMembershipChannelField|PNMembershipChannelCustomField)
             .includeCount(YES)
             .filter(filterExpression)
-            .update(@[
-                @{ @"spaceId": spaces[0].identifier, @"custom": membershipCustom[0] },
-                @{ @"spaceId": spaces[1].identifier, @"custom": membershipCustom[1] },
-            ])
+            .channels(@[channelsMetadata[0].channel])
             .performWithCompletion(^(PNManageMembershipsStatus *status) {
                 NSArray<PNMembership *> *memberships = status.data.memberships;
                 NSURLRequest *request = [status valueForKey:@"clientRequest"];
                 XCTAssertFalse(status.isError);
                 XCTAssertNotNil(memberships);
+                XCTAssertEqual(status.data.totalCount, 1);
+                XCTAssertEqual(memberships.count, status.data.totalCount);
+                XCTAssertNotNil(memberships.firstObject.metadata);
+                XCTAssertEqualObjects(memberships.firstObject.metadata.channel, channelsMetadata[1].channel);
+                XCTAssertEqualObjects(memberships.firstObject.metadata.custom, channelsMetadata[1].custom);
                 XCTAssertNotEqual([request.URL.absoluteString rangeOfString:expectedFilterExpression].location,
                                   NSNotFound);
-                XCTAssertNotNil(memberships.lastObject.space);
-                XCTAssertEqualObjects(memberships.lastObject.space.custom, spaces.lastObject.custom);
-                
+
+                [self removeUUID:uuidsMetadata.firstObject.uuid
+      cachedMembershipForChannel:channelsMetadata[0].channel];
+
                 handler();
             });
     }];
 
-    [self deleteUser:users.firstObject.identifier membershipObjectsUsingClient:nil];
-    [self deleteUserObjectsUsingClient:nil];
-    [self deleteSpaceObjectsUsingClient:nil];
+    [self removeUUID:uuidsMetadata.firstObject.uuid membershipObjectsUsingClient:nil];
+    [self removeAllUUIDMetadataUsingClient:nil];
+    [self removeChannelsMetadataUsingClient:nil];
 }
 
-- (void)testItShouldUpdateMembershipAndReturnSortedSpaceInformationWhenSortIsSet {
-    NSArray<PNSpace *> *spaces = [self createObjectForSpaces:4 usingClient:nil];
-    NSArray<PNUser *> *users = [self createObjectForUsers:1 usingClient:nil];
-    NSString *expectedSort = @"space.name%3Adesc,created";
-    NSArray<NSDictionary *> *membershipCustom = @[
-        @{ @"user-membership-custom": [@[spaces[0].identifier, @"custom", @"data", @"1"] componentsJoinedByString:@"-"] },
-        @{ @"user-membership-custom": [@[spaces[1].identifier, @"custom", @"data", @"2"] componentsJoinedByString:@"-"] }
-    ];
-    
-    NSArray<PNMembership *> *memberships = [self createUsersMembership:users inSpaces:spaces withCustoms:nil
-                                                      spaceInformation:YES usingClient:nil];
+- (void)testItShouldRemoveMembershipAndReturnSortedMembershipsInformationWhenSortedIsSet {
+    NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:5 usingClient:nil];
+    NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:nil];
+    NSString *expectedSort = @"channel.name%3Adesc,updated";
+
+    NSMutableArray<PNMembership *> *memberships = [[self createUUIDsMembership:[uuidsMetadata valueForKey:@"uuid"]
+                                                                    inChannels:[channelsMetadata valueForKey:@"channel"]
+                                                                   withCustoms:nil
+                                                               channelMetadata:YES
+                                                                   usingClient:nil] mutableCopy];
+    [memberships removeObjectAtIndex:0];
     NSArray<PNMembership *> *expectedMembershipsOrder = [self memberships:memberships sortedWith:@[
         [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:NO],
-        [NSSortDescriptor sortDescriptorWithKey:@"created" ascending:YES]
+        [NSSortDescriptor sortDescriptorWithKey:@"updated" ascending:YES]
     ]];
-    
-    
+
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.manageMemberships()
-            .userId(users.firstObject.identifier)
-            .includeFields(PNMembershipSpaceField|PNMembershipSpaceCustomField)
+        self.client.objects().removeMemberships()
+            .uuid(uuidsMetadata.firstObject.uuid)
+            .includeFields(PNMembershipChannelField|PNMembershipChannelCustomField)
             .includeCount(YES)
-            .sort(@[@"space.name:desc", @"created"])
-            .update(@[
-                @{ @"spaceId": spaces[0].identifier, @"custom": membershipCustom[0] },
-                @{ @"spaceId": spaces[1].identifier, @"custom": membershipCustom[1] },
-            ])
+            .sort(@[@"channel.name:desc", @"updated"])
+            .channels(@[channelsMetadata[0].channel])
             .performWithCompletion(^(PNManageMembershipsStatus *status) {
                 NSArray<PNMembership *> *fetchedMemberships = status.data.memberships;
                 NSURLRequest *request = [status valueForKey:@"clientRequest"];
@@ -529,227 +800,187 @@ NS_ASSUME_NONNULL_END
                 XCTAssertNotNil(fetchedMemberships);
                 XCTAssertNotEqual([request.URL.absoluteString rangeOfString:expectedSort].location,
                                   NSNotFound);
-                
-                for (NSUInteger fetchedMembershipIdx = 0; fetchedMembershipIdx < fetchedMemberships.count; fetchedMembershipIdx++) {
-                    XCTAssertEqualObjects(fetchedMemberships[fetchedMembershipIdx].space.name,
-                                          expectedMembershipsOrder[fetchedMembershipIdx].space.name);
+
+                for (NSUInteger idx = 0; idx < fetchedMemberships.count; idx++) {
+                    XCTAssertEqualObjects(fetchedMemberships[idx].metadata.name,
+                                          expectedMembershipsOrder[idx].metadata.name);
                 }
-                
-                XCTAssertNotEqualObjects([fetchedMemberships valueForKeyPath:@"space.name"],
-                                         [memberships valueForKeyPath:@"space.name"]);
-                
+
+                XCTAssertNotEqualObjects([fetchedMemberships valueForKeyPath:@"metadata.name"],
+                                         [memberships valueForKeyPath:@"metadata.name"]);
+
+                [self removeUUID:uuidsMetadata.firstObject.uuid
+      cachedMembershipForChannel:channelsMetadata[0].channel];
+
                 handler();
             });
     }];
 
-    [self deleteUser:users.firstObject.identifier membershipObjectsUsingClient:nil];
-    [self deleteUserObjectsUsingClient:nil];
-    [self deleteSpaceObjectsUsingClient:nil];
+    [self removeUUID:uuidsMetadata.firstObject.uuid membershipObjectsUsingClient:nil];
+    [self removeAllUUIDMetadataUsingClient:nil];
+    [self removeChannelsMetadataUsingClient:nil];
 }
 
-- (void)testItShouldUpdateMembershipAndReturnSpaceInformationWhenSpaceIncludeFlagIsSet {
-    NSArray<PNSpace *> *spaces = [self createObjectForSpaces:2 usingClient:nil];
-    NSArray<PNUser *> *users = [self createObjectForUsers:1 usingClient:nil];
-    NSArray<NSDictionary *> *membershipCustom = @[
-        @{ @"user-membership-custom": [@[spaces[0].identifier, @"custom", @"data", @"1"] componentsJoinedByString:@"-"] },
-        @{ @"user-membership-custom": [@[spaces[1].identifier, @"custom", @"data", @"2"] componentsJoinedByString:@"-"] }
-    ];
-    
-    [self createUsersMembership:users inSpaces:spaces withCustoms:nil usingClient:nil];
-    
-    
+- (void)testItShouldRemoveMembershipAndReturnMembershipsInformationWhenIncludeFlagIsSet {
+    NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:2 usingClient:nil];
+    NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:nil];
+
+    [self createUUIDsMembership:[uuidsMetadata valueForKey:@"uuid"]
+                     inChannels:[channelsMetadata valueForKey:@"channel"]
+                    withCustoms:nil
+                    usingClient:nil];
+
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.manageMemberships()
-            .userId(users.firstObject.identifier)
-            .includeFields(PNMembershipSpaceField|PNMembershipSpaceCustomField)
-            .update(@[
-                @{ @"spaceId": spaces[0].identifier, @"custom": membershipCustom[0] },
-                @{ @"spaceId": spaces[1].identifier, @"custom": membershipCustom[1] },
-            ])
+        self.client.objects().removeMemberships()
+            .uuid(uuidsMetadata.firstObject.uuid)
+            .includeFields(PNMembershipChannelField|PNMembershipChannelCustomField)
+            .channels(@[channelsMetadata[0].channel])
             .performWithCompletion(^(PNManageMembershipsStatus *status) {
                 NSArray<PNMembership *> *memberships = status.data.memberships;
                 XCTAssertFalse(status.isError);
                 XCTAssertNotNil(memberships);
-                
-                for (PNMembership *membership in memberships) {
-                    XCTAssertNotNil(membership.space);
-                    
-                    for (PNSpace *space in spaces) {
-                        if ([membership.space.identifier isEqualToString:space.identifier]) {
-                            XCTAssertEqualObjects(membership.space.custom, space.custom);
-                            break;
-                        }
-                    }
-                }
-                
+                XCTAssertEqual(memberships.count, 1);
+                XCTAssertNotNil(memberships.firstObject.metadata);
+                XCTAssertEqualObjects(memberships.firstObject.metadata.channel, channelsMetadata[1].channel);
+                XCTAssertEqualObjects(memberships.firstObject.metadata.custom, channelsMetadata[1].custom);
+
+                [self removeUUID:uuidsMetadata.firstObject.uuid
+      cachedMembershipForChannel:channelsMetadata[0].channel];
+
                 handler();
             });
     }];
 
-    [self deleteUser:users.firstObject.identifier membershipObjectsUsingClient:nil];
-    [self deleteUserObjectsUsingClient:nil];
-    [self deleteSpaceObjectsUsingClient:nil];
+    [self removeUUID:uuidsMetadata.firstObject.uuid membershipObjectsUsingClient:nil];
+    [self removeAllUUIDMetadataUsingClient:nil];
+    [self removeChannelsMetadataUsingClient:nil];
 }
 
-- (void)testItShouldUpdateMembershipAndTriggerUpdateEventOnUserChannel {
-    NSMutableArray *updatedMemberships = [NSMutableArray new];
+- (void)testItShouldRemoveMembershipAndTriggerDeleteEventOnUUIDChannel {
+    NSMutableArray *deletedMemberships = [NSMutableArray new];
     PubNub *client1 = [self createPubNubForUser:@"serhii"];
     PubNub *client2 = [self createPubNubForUser:@"david"];
-    NSArray<PNSpace *> *spaces = [self createObjectForSpaces:2 usingClient:client1];
-    NSArray<PNUser *> *users = [self createObjectForUsers:1 usingClient:client1];
-    NSString *channel = users.firstObject.identifier;
-    NSArray<NSDictionary *> *membershipCustom = @[
-        @{ @"user-membership-custom": [@[spaces[0].identifier, @"custom", @"data", @"1"] componentsJoinedByString:@"-"] },
-        @{ @"user-membership-custom": [@[spaces[1].identifier, @"custom", @"data", @"2"] componentsJoinedByString:@"-"] }
-    ];
-    
-    [self createUsersMembership:users inSpaces:spaces withCustoms:nil usingClient:client1];
+    NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:2 usingClient:client1];
+    NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:client1];
+    NSString *channel = uuidsMetadata.firstObject.uuid;
+
+    [self createUUIDsMembership:[uuidsMetadata valueForKey:@"uuid"]
+                     inChannels:[channelsMetadata valueForKey:@"channel"]
+                    withCustoms:nil
+                    usingClient:client1];
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
-    
-    
+
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self addMembershipHandlerForClient:client2
-                                  withBlock:^(PubNub *client, PNMembershipEventResult *event, BOOL *remove) {
+        [self addObjectHandlerForClient:client2
+                              withBlock:^(PubNub *client, PNObjectEventResult *event, BOOL *remove) {
             
-            XCTAssertEqualObjects(event.data.event, @"update");
-            XCTAssertNotNil(event.data.updated);
+            XCTAssertEqualObjects(event.data.event, @"delete");
+            XCTAssertEqualObjects(event.data.type, @"membership");
             XCTAssertNotNil(event.data.timestamp);
-            
-            if ([updatedMemberships indexOfObject:event.data.spaceId] == NSNotFound) {
-                [updatedMemberships addObject:event.data.spaceId];
+
+            if ([deletedMemberships indexOfObject:event.data.membership.channel] == NSNotFound) {
+                [deletedMemberships addObject:event.data.membership.channel];
             }
-            
-            if (updatedMemberships.count == spaces.count) {
-                XCTAssertNotEqual([updatedMemberships indexOfObject:spaces[0].identifier], NSNotFound);
-                XCTAssertNotEqual([updatedMemberships indexOfObject:spaces[1].identifier], NSNotFound);
+
+            if (deletedMemberships.count == channelsMetadata.count) {
+                XCTAssertNotEqual([deletedMemberships indexOfObject:channelsMetadata[0].channel], NSNotFound);
+                XCTAssertNotEqual([deletedMemberships indexOfObject:channelsMetadata[1].channel], NSNotFound);
                 *remove = YES;
-                
+
                 handler();
             }
         }];
-        
-        client1.manageMemberships()
-            .userId(users.firstObject.identifier)
-            .includeFields(PNMembershipSpaceField|PNMembershipSpaceCustomField)
-            .update(@[
-                @{ @"spaceId": spaces[0].identifier, @"custom": membershipCustom[0] },
-                @{ @"spaceId": spaces[1].identifier, @"custom": membershipCustom[1] },
-            ])
+
+        client1.objects().removeMemberships()
+            .uuid(uuidsMetadata.firstObject.uuid)
+            .includeFields(PNMembershipChannelField|PNMembershipChannelCustomField)
+            .channels(@[channelsMetadata[0].channel, channelsMetadata[1].channel])
             .performWithCompletion(^(PNManageMembershipsStatus *status) {
                 XCTAssertFalse(status.isError);
             });
     }];
-    
+
     [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
 
-    [self deleteUser:users.firstObject.identifier membershipObjectsUsingClient:client1];
-    [self deleteUserObjectsUsingClient:client1];
-    [self deleteSpaceObjectsUsingClient:client1];
+    [self removeAllUUIDMetadataUsingClient:client1];
+    [self removeChannelsMetadataUsingClient:client1];
 }
 
-- (void)testItShouldUpdateMembershipAndTriggerUpdateEventOnSpaceChannel {
+- (void)testItShouldRemoveMembershipAndTriggerDeleteEventOnChannel {
     PubNub *client1 = [self createPubNubForUser:@"serhii"];
     PubNub *client2 = [self createPubNubForUser:@"david"];
-    NSArray<PNSpace *> *spaces = [self createObjectForSpaces:2 usingClient:client1];
-    NSArray<PNUser *> *users = [self createObjectForUsers:1 usingClient:client1];
-    NSString *channel = spaces.firstObject.identifier;
-    NSArray<NSDictionary *> *membershipCustom = @[
-        @{ @"user-membership-custom": [@[spaces[0].identifier, @"custom", @"data", @"1"] componentsJoinedByString:@"-"] },
-        @{ @"user-membership-custom": [@[spaces[1].identifier, @"custom", @"data", @"2"] componentsJoinedByString:@"-"] }
-    ];
-    
-    [self createUsersMembership:users inSpaces:spaces withCustoms:nil usingClient:client1];
+    NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:2 usingClient:client1];
+    NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:client1];
+    NSString *channel = channelsMetadata.firstObject.channel;
+
+    [self createUUIDsMembership:[uuidsMetadata valueForKey:@"uuid"]
+                     inChannels:[channelsMetadata valueForKey:@"channel"]
+                    withCustoms:nil
+                    usingClient:client1];
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
-    
-    
+
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self addMembershipHandlerForClient:client2
-                                  withBlock:^(PubNub *client, PNMembershipEventResult *event, BOOL *remove) {
-            
-            XCTAssertEqualObjects(event.data.event, @"update");
-            XCTAssertEqualObjects(event.data.spaceId, spaces.firstObject.identifier);
-            XCTAssertNotNil(event.data.updated);
+        [self addObjectHandlerForClient:client2
+                              withBlock:^(PubNub *client, PNObjectEventResult *event, BOOL *remove) {
+
+            XCTAssertEqualObjects(event.data.event, @"delete");
+            XCTAssertEqualObjects(event.data.type, @"membership");
+            XCTAssertEqualObjects(event.data.channel, channelsMetadata.firstObject.channel);
             XCTAssertNotNil(event.data.timestamp);
             *remove = YES;
-            
+
             handler();
         }];
-        
-        client1.manageMemberships()
-            .userId(users.firstObject.identifier)
-            .includeFields(PNMembershipSpaceField|PNMembershipSpaceCustomField)
-            .update(@[
-                @{ @"spaceId": spaces[0].identifier, @"custom": membershipCustom[0] },
-                @{ @"spaceId": spaces[1].identifier, @"custom": membershipCustom[1] },
-            ])
+
+        client1.objects().removeMemberships()
+            .uuid(uuidsMetadata.firstObject.uuid)
+            .includeFields(PNMembershipChannelField|PNMembershipChannelCustomField)
+            .channels(@[channelsMetadata[0].channel, channelsMetadata[1].channel])
             .performWithCompletion(^(PNManageMembershipsStatus *status) {
                 XCTAssertFalse(status.isError);
             });
     }];
-    
+
     [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
 
-    [self deleteUser:users.firstObject.identifier membershipObjectsUsingClient:client1];
-    [self deleteUserObjectsUsingClient:client1];
-    [self deleteSpaceObjectsUsingClient:client1];
-}
-
-- (void)testItShouldNotUpdateMembershipWhenUserNotHaveMembershipWithSpecifiedSpaces {
-    NSArray<PNSpace *> *spaces = [self createObjectForSpaces:2 usingClient:nil];
-    NSArray<PNUser *> *users = [self createObjectForUsers:1 usingClient:nil];
-    NSArray<NSDictionary *> *membershipCustom = @[
-        @{ @"user-membership-custom": [@[spaces[0].identifier, @"custom", @"data", @"1"] componentsJoinedByString:@"-"] },
-        @{ @"user-membership-custom": [@[spaces[1].identifier, @"custom", @"data", @"2"] componentsJoinedByString:@"-"] }
-    ];
-    
-    
-    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.manageMemberships()
-            .userId(users.firstObject.identifier)
-            .includeFields(PNMembershipCustomField)
-            .update(@[
-                @{ @"spaceId": spaces[0].identifier, @"custom": membershipCustom[0] },
-                @{ @"spaceId": spaces[1].identifier, @"custom": membershipCustom[1] }
-            ])
-            .performWithCompletion(^(PNManageMembershipsStatus *status) {
-                XCTAssertTrue(status.isError);
-                XCTAssertEqual(status.statusCode, 400);
-                handler();
-            });
-    }];
-    
-    [self deleteUserObjectsUsingClient:nil];
-    [self deleteSpaceObjectsUsingClient:nil];
+    [self removeAllUUIDMetadataUsingClient:client1];
+    [self removeChannelsMetadataUsingClient:client1];
 }
 
 
-#pragma mark - Tests :: Builder pattern-based delete membership
+#pragma mark - Tests :: Builder pattern-based remove membership
 
 /**
  * @brief To test 'retry' functionality
- *  'ItShouldDeleteMembershipAndReceiveStatusWithExpectedOperationAndCategory.json' should
+ *  'ItShouldRemoveMembershipUsingManageAndReceiveStatusWithExpectedOperationAndCategory.json' should
  *  be modified after cassette recording. Find first mention of membership remove and copy paste
  *  4 entries which belong to it. For new entries change 'id' field to be different from source. For
  *  original response entry change status code to 404.
  */
-- (void)testItShouldDeleteMembershipAndReceiveStatusWithExpectedOperationAndCategory {
+- (void)testItShouldRemoveMembershipUsingManageAndReceiveStatusWithExpectedOperationAndCategory {
     if ([self shouldSkipTestWithManuallyModifiedMockedResponse]) {
         NSLog(@"'%@' requires special conditions (modified mocked response). Skip", self.name);
         return;
     }
-    
-    NSArray<PNSpace *> *spaces = [self createObjectForSpaces:2 usingClient:nil];
-    NSArray<PNUser *> *users = [self createObjectForUsers:1 usingClient:nil];
+
+    NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:2 usingClient:nil];
+    NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:nil];
     __block BOOL retried = NO;
-    
-    [self createUsersMembership:users inSpaces:spaces withCustoms:nil usingClient:nil];
-    
-    
+
+    [self createUUIDsMembership:[uuidsMetadata valueForKey:@"uuid"]
+                     inChannels:[channelsMetadata valueForKey:@"channel"]
+                    withCustoms:nil
+                    usingClient:nil];
+
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.manageMemberships()
-            .userId(users.firstObject.identifier)
+        self.client.objects().manageMemberships()
+            .uuid(uuidsMetadata.firstObject.uuid)
             .includeFields(PNMembershipCustomField)
-            .remove(@[spaces.firstObject.identifier])
+            .remove(@[channelsMetadata.firstObject.channel])
             .performWithCompletion(^(PNManageMembershipsStatus *status) {
                 if (!retried && !YHVVCR.cassette.isNewCassette) {
                     XCTAssertTrue(status.error);
@@ -763,40 +994,44 @@ NS_ASSUME_NONNULL_END
                     XCTAssertFalse(status.isError);
                     XCTAssertNotNil(memberships);
                     XCTAssertEqual(memberships.count, 1);
-                    XCTAssertEqualObjects(memberships.firstObject.spaceId, spaces[1].identifier);
+                    XCTAssertEqualObjects(memberships.firstObject.channel, channelsMetadata[1].channel);
                     XCTAssertEqual(status.operation, PNManageMembershipsOperation);
                     XCTAssertEqual(status.category, PNAcknowledgmentCategory);
-                    
-                    [self deleteUser:users.firstObject.identifier cachedMembershipForSpace:spaces[0].identifier];
-                    
+
+                    [self removeUUID:uuidsMetadata.firstObject.uuid
+          cachedMembershipForChannel:channelsMetadata[0].channel];
+
                     handler();
                 }
             });
     }];
-                       
-    [self deleteUser:users.firstObject.identifier membershipObjectsUsingClient:nil];
-    [self deleteUserObjectsUsingClient:nil];
-    [self deleteSpaceObjectsUsingClient:nil];
+
+    [self removeUUID:uuidsMetadata.firstObject.uuid membershipObjectsUsingClient:nil];
+    [self removeAllUUIDMetadataUsingClient:nil];
+    [self removeChannelsMetadataUsingClient:nil];
 }
 
-- (void)testItShouldDeleteMembershipAndReturnFilteredSpaceInformationWhenFilterIsSet {
-    NSArray<PNSpace *> *spaces = [self createObjectForSpaces:2 usingClient:nil];
-    NSArray<PNUser *> *users = [self createObjectForUsers:1 usingClient:nil];
-    NSUInteger halfNameLength = (NSUInteger)(spaces.lastObject.name.length * 0.5f);
-    NSString *filterExpression = [NSString stringWithFormat:@"space.name like '%@*'",
-                                  [spaces.lastObject.name substringToIndex:halfNameLength]];
+- (void)testItShouldRemoveMembershipUsingManageAndReturnFilteredMembershipsInformationWhenFilterIsSet {
+    NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:2 usingClient:nil];
+    NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:nil];
+    NSUInteger halfNameLength = (NSUInteger)(channelsMetadata.lastObject.name.length * 0.5f);
+    NSString *filterExpression = [NSString stringWithFormat:@"channel.name like '%@*'",
+                                  [channelsMetadata.lastObject.name substringToIndex:halfNameLength]];
     NSString *expectedFilterExpression = [PNString percentEscapedString:filterExpression];
-    
-    [self createUsersMembership:users inSpaces:spaces withCustoms:nil usingClient:nil];
-    
-    
+
+    [self createUUIDsMembership:[uuidsMetadata valueForKey:@"uuid"]
+                     inChannels:[channelsMetadata valueForKey:@"channel"]
+                    withCustoms:nil
+                    usingClient:nil];
+
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.manageMemberships()
-            .userId(users.firstObject.identifier)
-            .includeFields(PNMembershipSpaceField|PNMembershipSpaceCustomField)
+        self.client.objects().manageMemberships()
+            .uuid(uuidsMetadata.firstObject.uuid)
+            .includeFields(PNMembershipChannelField|PNMembershipChannelCustomField)
             .includeCount(YES)
             .filter(filterExpression)
-            .remove(@[spaces[0].identifier])
+            .remove(@[channelsMetadata[0].channel])
             .performWithCompletion(^(PNManageMembershipsStatus *status) {
                 NSArray<PNMembership *> *memberships = status.data.memberships;
                 NSURLRequest *request = [status valueForKey:@"clientRequest"];
@@ -804,44 +1039,48 @@ NS_ASSUME_NONNULL_END
                 XCTAssertNotNil(memberships);
                 XCTAssertEqual(status.data.totalCount, 1);
                 XCTAssertEqual(memberships.count, status.data.totalCount);
-                XCTAssertNotNil(memberships.firstObject.space);
-                XCTAssertEqualObjects(memberships.firstObject.space.identifier, spaces[1].identifier);
-                XCTAssertEqualObjects(memberships.firstObject.space.custom, spaces[1].custom);
+                XCTAssertNotNil(memberships.firstObject.metadata);
+                XCTAssertEqualObjects(memberships.firstObject.metadata.channel, channelsMetadata[1].channel);
+                XCTAssertEqualObjects(memberships.firstObject.metadata.custom, channelsMetadata[1].custom);
                 XCTAssertNotEqual([request.URL.absoluteString rangeOfString:expectedFilterExpression].location,
                                   NSNotFound);
-                
-                [self deleteUser:users.firstObject.identifier cachedMembershipForSpace:spaces[0].identifier];
-                
+
+                [self removeUUID:uuidsMetadata.firstObject.uuid
+      cachedMembershipForChannel:channelsMetadata[0].channel];
+
                 handler();
             });
     }];
-                       
-    [self deleteUser:users.firstObject.identifier membershipObjectsUsingClient:nil];
-    [self deleteUserObjectsUsingClient:nil];
-    [self deleteSpaceObjectsUsingClient:nil];
+
+    [self removeUUID:uuidsMetadata.firstObject.uuid membershipObjectsUsingClient:nil];
+    [self removeAllUUIDMetadataUsingClient:nil];
+    [self removeChannelsMetadataUsingClient:nil];
 }
 
-- (void)testItShouldDeleteMembershipAndReturnSortedSpaceInformationWhenSortedIsSet {
-    NSArray<PNSpace *> *spaces = [self createObjectForSpaces:5 usingClient:nil];
-    NSArray<PNUser *> *users = [self createObjectForUsers:1 usingClient:nil];
-    NSString *expectedSort = @"space.name%3Adesc,created";
-    
-    NSMutableArray<PNMembership *> *memberships = [[self createUsersMembership:users inSpaces:spaces withCustoms:nil
-                                                              spaceInformation:YES usingClient:nil] mutableCopy];
+- (void)testItShouldRemoveMembershipUsingManageAndReturnSortedMembershipsInformationWhenSortedIsSet {
+    NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:5 usingClient:nil];
+    NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:nil];
+    NSString *expectedSort = @"channel.name%3Adesc,updated";
+
+    NSMutableArray<PNMembership *> *memberships = [[self createUUIDsMembership:[uuidsMetadata valueForKey:@"uuid"]
+                                                                    inChannels:[channelsMetadata valueForKey:@"channel"]
+                                                                   withCustoms:nil
+                                                               channelMetadata:YES
+                                                                   usingClient:nil] mutableCopy];
     [memberships removeObjectAtIndex:0];
     NSArray<PNMembership *> *expectedMembershipsOrder = [self memberships:memberships sortedWith:@[
         [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:NO],
-        [NSSortDescriptor sortDescriptorWithKey:@"created" ascending:YES]
+        [NSSortDescriptor sortDescriptorWithKey:@"updated" ascending:YES]
     ]];
-    
-    
+
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.manageMemberships()
-            .userId(users.firstObject.identifier)
-            .includeFields(PNMembershipSpaceField|PNMembershipSpaceCustomField)
+        self.client.objects().manageMemberships()
+            .uuid(uuidsMetadata.firstObject.uuid)
+            .includeFields(PNMembershipChannelField|PNMembershipChannelCustomField)
             .includeCount(YES)
-            .sort(@[@"space.name:desc", @"created"])
-            .remove(@[spaces[0].identifier])
+            .sort(@[@"channel.name:desc", @"updated"])
+            .remove(@[channelsMetadata[0].channel])
             .performWithCompletion(^(PNManageMembershipsStatus *status) {
                 NSArray<PNMembership *> *fetchedMemberships = status.data.memberships;
                 NSURLRequest *request = [status valueForKey:@"clientRequest"];
@@ -849,186 +1088,227 @@ NS_ASSUME_NONNULL_END
                 XCTAssertNotNil(fetchedMemberships);
                 XCTAssertNotEqual([request.URL.absoluteString rangeOfString:expectedSort].location,
                                   NSNotFound);
-                
-                for (NSUInteger fetchedMembershipIdx = 0; fetchedMembershipIdx < fetchedMemberships.count; fetchedMembershipIdx++) {
-                    XCTAssertEqualObjects(fetchedMemberships[fetchedMembershipIdx].space.name,
-                                          expectedMembershipsOrder[fetchedMembershipIdx].space.name);
+
+                for (NSUInteger idx = 0; idx < fetchedMemberships.count; idx++) {
+                    XCTAssertEqualObjects(fetchedMemberships[idx].metadata.name,
+                                          expectedMembershipsOrder[idx].metadata.name);
                 }
-                
-                XCTAssertNotEqualObjects([fetchedMemberships valueForKeyPath:@"space.name"],
-                                         [memberships valueForKeyPath:@"space.name"]);
-                
-                [self deleteUser:users.firstObject.identifier cachedMembershipForSpace:spaces[0].identifier];
-                
+
+                XCTAssertNotEqualObjects([fetchedMemberships valueForKeyPath:@"metadata.name"],
+                                         [memberships valueForKeyPath:@"metadata.name"]);
+
+                [self removeUUID:uuidsMetadata.firstObject.uuid
+      cachedMembershipForChannel:channelsMetadata[0].channel];
+
                 handler();
             });
     }];
-                       
-    [self deleteUser:users.firstObject.identifier membershipObjectsUsingClient:nil];
-    [self deleteUserObjectsUsingClient:nil];
-    [self deleteSpaceObjectsUsingClient:nil];
+
+    [self removeUUID:uuidsMetadata.firstObject.uuid membershipObjectsUsingClient:nil];
+    [self removeAllUUIDMetadataUsingClient:nil];
+    [self removeChannelsMetadataUsingClient:nil];
 }
 
-- (void)testItShouldDeleteMembershipAndReturnSpaceInformationWhenSpaceIncludeFlagIsSet {
-    NSArray<PNSpace *> *spaces = [self createObjectForSpaces:2 usingClient:nil];
-    NSArray<PNUser *> *users = [self createObjectForUsers:1 usingClient:nil];
-    
-    [self createUsersMembership:users inSpaces:spaces withCustoms:nil usingClient:nil];
-    
-    
+- (void)testItShouldRemoveMembershipUsingManageAndReturnMembershipsInformationWhenIncludeFlagIsSet {
+    NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:2 usingClient:nil];
+    NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:nil];
+
+    [self createUUIDsMembership:[uuidsMetadata valueForKey:@"uuid"]
+                     inChannels:[channelsMetadata valueForKey:@"channel"]
+                    withCustoms:nil
+                    usingClient:nil];
+
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.manageMemberships()
-            .userId(users.firstObject.identifier)
-            .includeFields(PNMembershipSpaceField|PNMembershipSpaceCustomField)
-            .remove(@[spaces[0].identifier])
+        self.client.objects().manageMemberships()
+            .uuid(uuidsMetadata.firstObject.uuid)
+            .includeFields(PNMembershipChannelField|PNMembershipChannelCustomField)
+            .remove(@[channelsMetadata[0].channel])
             .performWithCompletion(^(PNManageMembershipsStatus *status) {
                 NSArray<PNMembership *> *memberships = status.data.memberships;
                 XCTAssertFalse(status.isError);
                 XCTAssertNotNil(memberships);
                 XCTAssertEqual(memberships.count, 1);
-                XCTAssertNotNil(memberships.firstObject.space);
-                XCTAssertEqualObjects(memberships.firstObject.space.identifier, spaces[1].identifier);
-                XCTAssertEqualObjects(memberships.firstObject.space.custom, spaces[1].custom);
-                
-                [self deleteUser:users.firstObject.identifier cachedMembershipForSpace:spaces[0].identifier];
-                
+                XCTAssertNotNil(memberships.firstObject.metadata);
+                XCTAssertEqualObjects(memberships.firstObject.metadata.channel, channelsMetadata[1].channel);
+                XCTAssertEqualObjects(memberships.firstObject.metadata.custom, channelsMetadata[1].custom);
+
+                [self removeUUID:uuidsMetadata.firstObject.uuid
+      cachedMembershipForChannel:channelsMetadata[0].channel];
+
                 handler();
             });
     }];
-                       
-    [self deleteUser:users.firstObject.identifier membershipObjectsUsingClient:nil];
-    [self deleteUserObjectsUsingClient:nil];
-    [self deleteSpaceObjectsUsingClient:nil];
+
+    [self removeUUID:uuidsMetadata.firstObject.uuid membershipObjectsUsingClient:nil];
+    [self removeAllUUIDMetadataUsingClient:nil];
+    [self removeChannelsMetadataUsingClient:nil];
 }
 
-- (void)testItShouldDeleteMembershipAndTriggerDeleteEventOnUserChannel {
+- (void)testItShouldRemoveMembershipUsingManageAndTriggerDeleteEventOnUUIDChannel {
     NSMutableArray *deletedMemberships = [NSMutableArray new];
     PubNub *client1 = [self createPubNubForUser:@"serhii"];
     PubNub *client2 = [self createPubNubForUser:@"david"];
-    NSArray<PNSpace *> *spaces = [self createObjectForSpaces:2 usingClient:client1];
-    NSArray<PNUser *> *users = [self createObjectForUsers:1 usingClient:client1];
-    NSString *channel = users.firstObject.identifier;
-    
-    [self createUsersMembership:users inSpaces:spaces withCustoms:nil usingClient:client1];
+    NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:2 usingClient:client1];
+    NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:client1];
+    NSString *channel = uuidsMetadata.firstObject.uuid;
+
+    [self createUUIDsMembership:[uuidsMetadata valueForKey:@"uuid"]
+                     inChannels:[channelsMetadata valueForKey:@"channel"]
+                    withCustoms:nil
+                    usingClient:client1];
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
-    
-    
+
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self addMembershipHandlerForClient:client2
-                                  withBlock:^(PubNub *client, PNMembershipEventResult *event, BOOL *remove) {
+        [self addObjectHandlerForClient:client2
+                              withBlock:^(PubNub *client, PNObjectEventResult *event, BOOL *remove) {
             
             XCTAssertEqualObjects(event.data.event, @"delete");
+            XCTAssertEqualObjects(event.data.type, @"membership");
             XCTAssertNotNil(event.data.timestamp);
-            
-            if ([deletedMemberships indexOfObject:event.data.spaceId] == NSNotFound) {
-                [deletedMemberships addObject:event.data.spaceId];
+
+            if ([deletedMemberships indexOfObject:event.data.membership.channel] == NSNotFound) {
+                [deletedMemberships addObject:event.data.membership.channel];
             }
-            
-            if (deletedMemberships.count == spaces.count) {
-                XCTAssertNotEqual([deletedMemberships indexOfObject:spaces[0].identifier], NSNotFound);
-                XCTAssertNotEqual([deletedMemberships indexOfObject:spaces[1].identifier], NSNotFound);
+
+            if (deletedMemberships.count == channelsMetadata.count) {
+                XCTAssertNotEqual([deletedMemberships indexOfObject:channelsMetadata[0].channel], NSNotFound);
+                XCTAssertNotEqual([deletedMemberships indexOfObject:channelsMetadata[1].channel], NSNotFound);
                 *remove = YES;
-                
+
                 handler();
             }
         }];
-        
-        client1.manageMemberships()
-            .userId(users.firstObject.identifier)
-            .includeFields(PNMembershipSpaceField|PNMembershipSpaceCustomField)
-            .remove(@[spaces[0].identifier, spaces[1].identifier])
+
+        client1.objects().manageMemberships()
+            .uuid(uuidsMetadata.firstObject.uuid)
+            .includeFields(PNMembershipChannelField|PNMembershipChannelCustomField)
+            .remove(@[channelsMetadata[0].channel, channelsMetadata[1].channel])
             .performWithCompletion(^(PNManageMembershipsStatus *status) {
                 XCTAssertFalse(status.isError);
             });
     }];
-    
+
     [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
-    
-    [self deleteUserObjectsUsingClient:client1];
-    [self deleteSpaceObjectsUsingClient:client1];
+
+    [self removeAllUUIDMetadataUsingClient:client1];
+    [self removeChannelsMetadataUsingClient:client1];
 }
 
-- (void)testItShouldDeleteMembershipAndTriggerDeleteEventOnSpaceChannel {
+- (void)testItShouldRemoveMembershipUsingManageAndTriggerDeleteEventOnChannel {
     PubNub *client1 = [self createPubNubForUser:@"serhii"];
     PubNub *client2 = [self createPubNubForUser:@"david"];
-    NSArray<PNSpace *> *spaces = [self createObjectForSpaces:2 usingClient:client1];
-    NSArray<PNUser *> *users = [self createObjectForUsers:1 usingClient:client1];
-    NSString *channel = spaces.firstObject.identifier;
-    
-    [self createUsersMembership:users inSpaces:spaces withCustoms:nil usingClient:client1];
+    NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:2 usingClient:client1];
+    NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:client1];
+    NSString *channel = channelsMetadata.firstObject.channel;
+
+    [self createUUIDsMembership:[uuidsMetadata valueForKey:@"uuid"]
+                     inChannels:[channelsMetadata valueForKey:@"channel"]
+                    withCustoms:nil
+                    usingClient:client1];
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
-    
-    
+
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self addMembershipHandlerForClient:client2
-                                  withBlock:^(PubNub *client, PNMembershipEventResult *event, BOOL *remove) {
-            
+        [self addObjectHandlerForClient:client2
+                              withBlock:^(PubNub *client, PNObjectEventResult *event, BOOL *remove) {
+
             XCTAssertEqualObjects(event.data.event, @"delete");
-            XCTAssertEqualObjects(event.data.spaceId, spaces.firstObject.identifier);
+            XCTAssertEqualObjects(event.data.type, @"membership");
+            XCTAssertEqualObjects(event.data.channel, channelsMetadata.firstObject.channel);
             XCTAssertNotNil(event.data.timestamp);
             *remove = YES;
-            
+
             handler();
         }];
-        
-        client1.manageMemberships()
-            .userId(users.firstObject.identifier)
-            .includeFields(PNMembershipSpaceField|PNMembershipSpaceCustomField)
-            .remove(@[spaces[0].identifier, spaces[1].identifier])
+
+        client1.objects().manageMemberships()
+            .uuid(uuidsMetadata.firstObject.uuid)
+            .includeFields(PNMembershipChannelField|PNMembershipChannelCustomField)
+            .remove(@[channelsMetadata[0].channel, channelsMetadata[1].channel])
             .performWithCompletion(^(PNManageMembershipsStatus *status) {
                 XCTAssertFalse(status.isError);
             });
     }];
-    
+
     [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
 
-    [self deleteUserObjectsUsingClient:client1];
-    [self deleteSpaceObjectsUsingClient:client1];
+    [self removeAllUUIDMetadataUsingClient:client1];
+    [self removeChannelsMetadataUsingClient:client1];
 }
 
 
 #pragma mark - Tests :: Builder pattern-based fetch membership
 
+/**
+ * @brief To test 'retry' functionality
+ *  'ItShouldFetchMembershipsAndReceiveResultWithExpectedOperation.json' should
+ *  be modified after cassette recording. Find first mention of memberships fetch and copy paste 4 entries
+ *  which belong to it. For new entries change 'id' field to be different from source. For original
+ *  response entry change status code to 404.
+ */
 - (void)testItShouldFetchMembershipsAndReceiveResultWithExpectedOperation {
-    NSArray<PNSpace *> *spaces = [self createObjectForSpaces:6 usingClient:nil];
-    NSArray<PNUser *> *users = [self createObjectForUsers:1 usingClient:nil];
+    if ([self shouldSkipTestWithManuallyModifiedMockedResponse]) {
+        NSLog(@"'%@' requires special conditions (modified mocked response). Skip", self.name);
+        return;
+    }
     
-    [self createUsersMembership:users inSpaces:spaces withCustoms:nil usingClient:nil];
-    
-    
+    NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:6 usingClient:nil];
+    NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:nil];
+    __block BOOL retried = NO;
+
+    [self createUUIDsMembership:[uuidsMetadata valueForKey:@"uuid"]
+                     inChannels:[channelsMetadata valueForKey:@"channel"]
+                    withCustoms:nil
+                    usingClient:nil];
+
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.fetchMemberships()
-            .userId(users.firstObject.identifier)
+        self.client.objects().memberships()
+            .uuid(uuidsMetadata.firstObject.uuid)
             .performWithCompletion(^(PNFetchMembershipsResult *result, PNErrorStatus *status) {
-                NSArray<PNMembership *> *memberships = result.data.memberships;
-                XCTAssertNil(status);
-                XCTAssertNotNil(memberships);
-                XCTAssertEqual(memberships.count, spaces.count);
-                XCTAssertEqual(result.data.totalCount, 0);
-                
-                handler();
+                if (!retried && !YHVVCR.cassette.isNewCassette) {
+                    XCTAssertTrue(status.error);
+                    XCTAssertEqual(status.operation, PNFetchMembershipsOperation);
+                    XCTAssertEqual(status.category, PNMalformedResponseCategory);
+
+                    retried = YES;
+                    [status retry];
+                } else {
+                    NSArray<PNMembership *> *memberships = result.data.memberships;
+                    XCTAssertNil(status);
+                    XCTAssertNotNil(memberships);
+                    XCTAssertEqual(memberships.count, channelsMetadata.count);
+                    XCTAssertEqual(result.data.totalCount, 0);
+
+                    handler();
+                }
             });
     }];
-      
-    [self deleteUser:users.firstObject.identifier membershipObjectsUsingClient:nil];
-    [self deleteUserObjectsUsingClient:nil];
-    [self deleteSpaceObjectsUsingClient:nil];
+
+    [self removeUUID:uuidsMetadata.firstObject.uuid membershipObjectsUsingClient:nil];
+    [self removeAllUUIDMetadataUsingClient:nil];
+    [self removeChannelsMetadataUsingClient:nil];
 }
 
 - (void)testItShouldFetchFilteredMembershipsWhenFilterIsSet {
-    NSArray<PNSpace *> *spaces = [self createObjectForSpaces:6 usingClient:nil];
-    NSArray<PNUser *> *users = [self createObjectForUsers:1 usingClient:nil];
-    NSUInteger halfNameLength = (NSUInteger)(spaces[3].name.length * 0.5f);
-    NSString *filterExpression = [NSString stringWithFormat:@"space.name like '%@*'",
-                                  [spaces[3].name substringToIndex:halfNameLength]];
+    NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:6 usingClient:nil];
+    NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:nil];
+    NSUInteger halfNameLength = (NSUInteger)(channelsMetadata[3].name.length * 0.5f);
+    NSString *filterExpression = [NSString stringWithFormat:@"channel.name like '%@*'",
+                                  [channelsMetadata[3].name substringToIndex:halfNameLength]];
     NSString *expectedFilterExpression = [PNString percentEscapedString:filterExpression];
-    
-    [self createUsersMembership:users inSpaces:spaces withCustoms:nil usingClient:nil];
-    
-    
+
+    [self createUUIDsMembership:[uuidsMetadata valueForKey:@"uuid"]
+                     inChannels:[channelsMetadata valueForKey:@"channel"]
+                    withCustoms:nil
+                    usingClient:nil];
+
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.fetchMemberships()
-            .userId(users.firstObject.identifier)
+        self.client.objects().memberships()
+            .uuid(uuidsMetadata.firstObject.uuid)
             .includeCount(YES)
             .filter(filterExpression)
             .performWithCompletion(^(PNFetchMembershipsResult *result, PNErrorStatus *status) {
@@ -1042,35 +1322,38 @@ NS_ASSUME_NONNULL_END
                 XCTAssertNotNil(result.data.next);
                 XCTAssertNotEqual([request.URL.absoluteString rangeOfString:expectedFilterExpression].location,
                                   NSNotFound);
-                
+
                 handler();
             });
     }];
-      
-    [self deleteUser:users.firstObject.identifier membershipObjectsUsingClient:nil];
-    [self deleteUserObjectsUsingClient:nil];
-    [self deleteSpaceObjectsUsingClient:nil];
+
+    [self removeUUID:uuidsMetadata.firstObject.uuid membershipObjectsUsingClient:nil];
+    [self removeAllUUIDMetadataUsingClient:nil];
+    [self removeChannelsMetadataUsingClient:nil];
 }
 
 - (void)testItShouldFetchSortedMembershipsWhenSortedIsSet {
-    NSArray<PNSpace *> *spaces = [self createObjectForSpaces:6 usingClient:nil];
-    NSArray<PNUser *> *users = [self createObjectForUsers:1 usingClient:nil];
-    NSString *expectedSort = @"space.name%3Adesc,created";
-    
-    NSArray<PNMembership *> *memberships = [self createUsersMembership:users inSpaces:spaces withCustoms:nil
-                                                      spaceInformation:YES usingClient:nil];
+    NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:6 usingClient:nil];
+    NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:nil];
+    NSString *expectedSort = @"channel.name%3Adesc,updated";
+
+    NSArray<PNMembership *> *memberships = [self createUUIDsMembership:[uuidsMetadata valueForKey:@"uuid"]
+                                                            inChannels:[channelsMetadata valueForKey:@"channel"]
+                                                           withCustoms:nil
+                                                       channelMetadata:YES
+                                                           usingClient:nil];
     NSArray<PNMembership *> *expectedMembershipsOrder = [self memberships:memberships sortedWith:@[
         [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:NO],
-        [NSSortDescriptor sortDescriptorWithKey:@"created" ascending:YES]
+        [NSSortDescriptor sortDescriptorWithKey:@"updated" ascending:YES]
     ]];
-    
-    
+
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.fetchMemberships()
-            .userId(users.firstObject.identifier)
-            .includeFields(PNMembershipSpaceField|PNMembershipSpaceField)
+        self.client.objects().memberships()
+            .uuid(uuidsMetadata.firstObject.uuid)
+            .includeFields(PNMembershipChannelField|PNMembershipChannelField)
             .includeCount(YES)
-            .sort(@[@"space.name:desc", @"created"])
+            .sort(@[@"channel.name:desc", @"updated"])
             .performWithCompletion(^(PNFetchMembershipsResult *result, PNErrorStatus *status) {
                 NSArray<PNMembership *> *fetchedMemberships = result.data.memberships;
                 NSURLRequest *request = [result valueForKey:@"clientRequest"];
@@ -1080,39 +1363,39 @@ NS_ASSUME_NONNULL_END
                 XCTAssertNotNil(result.data.next);
                 XCTAssertNotEqual([request.URL.absoluteString rangeOfString:expectedSort].location,
                                   NSNotFound);
-                
-                for (NSUInteger fetchedMembershipIdx = 0; fetchedMembershipIdx < fetchedMemberships.count; fetchedMembershipIdx++) {
-                    XCTAssertEqualObjects(fetchedMemberships[fetchedMembershipIdx].space.name,
-                                          expectedMembershipsOrder[fetchedMembershipIdx].space.name);
+
+                for (NSUInteger idx = 0; idx < fetchedMemberships.count; idx++) {
+                    XCTAssertEqualObjects(fetchedMemberships[idx].metadata.name,
+                                          expectedMembershipsOrder[idx].metadata.name);
                 }
-                
-                XCTAssertNotEqualObjects([fetchedMemberships valueForKeyPath:@"space.name"],
-                                         [memberships valueForKeyPath:@"space.name"]);
-                
+
+                XCTAssertNotEqualObjects([fetchedMemberships valueForKeyPath:@"metadata.name"],
+                                         [memberships valueForKeyPath:@"metadata.name"]);
+
                 handler();
             });
     }];
-      
-    [self deleteUser:users.firstObject.identifier membershipObjectsUsingClient:nil];
-    [self deleteUserObjectsUsingClient:nil];
-    [self deleteSpaceObjectsUsingClient:nil];
+
+    [self removeUUID:uuidsMetadata.firstObject.uuid membershipObjectsUsingClient:nil];
+    [self removeAllUUIDMetadataUsingClient:nil];
+    [self removeChannelsMetadataUsingClient:nil];
 }
 
 - (void)testItShouldFetchMembershipWhenLimitIsSet {
-    NSArray<PNSpace *> *spaces = [self createObjectForSpaces:6 usingClient:nil];
-    NSArray<PNUser *> *users = [self createObjectForUsers:1 usingClient:nil];
+    NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:6 usingClient:nil];
+    NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:nil];
     NSArray<NSDictionary *> *membershipCustom = @[
-        @{ @"user-membership-custom": [@[spaces[0].identifier, @"custom", @"data", @"1"] componentsJoinedByString:@"-"] },
-        @{ @"user-membership-custom": [@[spaces[1].identifier, @"custom", @"data", @"2"] componentsJoinedByString:@"-"] }
+        @{ @"uuid-membership-custom": [@[channelsMetadata[0].channel, @"custom", @"data", @"1"] componentsJoinedByString:@"-"] },
+        @{ @"uuid-membership-custom": [@[channelsMetadata[1].channel, @"custom", @"data", @"2"] componentsJoinedByString:@"-"] }
     ];
     NSUInteger expectedCount = 2;
-    
-    [self createUsersMembership:users inSpaces:spaces withCustoms:membershipCustom usingClient:nil];
-    
-    
+
+    [self createUUIDsMembership:[uuidsMetadata valueForKey:@"uuid"] inChannels:[channelsMetadata valueForKey:@"channel"] withCustoms:membershipCustom usingClient:nil];
+
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.fetchMemberships()
-            .userId(users.firstObject.identifier)
+        self.client.objects().memberships()
+            .uuid(uuidsMetadata.firstObject.uuid)
             .limit(expectedCount)
             .includeFields(PNMembershipCustomField)
             .includeCount(YES)
@@ -1121,45 +1404,48 @@ NS_ASSUME_NONNULL_END
                 XCTAssertNil(status);
                 XCTAssertNotNil(memberships);
                 XCTAssertEqual(memberships.count, expectedCount);
-                XCTAssertEqual(result.data.totalCount, spaces.count);
+                XCTAssertEqual(result.data.totalCount, channelsMetadata.count);
                 XCTAssertNotNil(memberships.firstObject.custom);
-                
+
                 handler();
             });
     }];
-      
-    [self deleteUser:users.firstObject.identifier membershipObjectsUsingClient:nil];
-    [self deleteUserObjectsUsingClient:nil];
-    [self deleteSpaceObjectsUsingClient:nil];
+
+    [self removeUUID:uuidsMetadata.firstObject.uuid membershipObjectsUsingClient:nil];
+    [self removeAllUUIDMetadataUsingClient:nil];
+    [self removeChannelsMetadataUsingClient:nil];
 }
 
 - (void)testItShouldFetchNextMembershipPageWhenStartAndLimitIsSet {
-    NSArray<PNSpace *> *spaces = [self createObjectForSpaces:6 usingClient:nil];
-    NSArray<PNUser *> *users = [self createObjectForUsers:1 usingClient:nil];
+    NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:6 usingClient:nil];
+    NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:nil];
     __block NSString *next = nil;
-    
-    [self createUsersMembership:users inSpaces:spaces withCustoms:nil usingClient:nil];
-    
-    
+
+    [self createUUIDsMembership:[uuidsMetadata valueForKey:@"uuid"]
+                     inChannels:[channelsMetadata valueForKey:@"channel"]
+                    withCustoms:nil
+                    usingClient:nil];
+
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.fetchMemberships()
-            .userId(users.firstObject.identifier)
-            .limit(spaces.count - 2)
+        self.client.objects().memberships()
+            .uuid(uuidsMetadata.firstObject.uuid)
+            .limit(channelsMetadata.count - 2)
             .includeCount(YES)
             .performWithCompletion(^(PNFetchMembershipsResult *result, PNErrorStatus *status) {
                 NSArray<PNMembership *> *memberships = result.data.memberships;
                 XCTAssertNil(status);
                 XCTAssertNotNil(memberships);
-                XCTAssertEqual(memberships.count, spaces.count - 2);
+                XCTAssertEqual(memberships.count, channelsMetadata.count - 2);
                 next = result.data.next;
-                
+
                 handler();
             });
     }];
-    
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.fetchMemberships()
-            .userId(users.firstObject.identifier)
+        self.client.objects().memberships()
+            .uuid(uuidsMetadata.firstObject.uuid)
             .start(next)
             .includeCount(YES)
             .performWithCompletion(^(PNFetchMembershipsResult *result, PNErrorStatus *status) {
@@ -1167,75 +1453,56 @@ NS_ASSUME_NONNULL_END
                 XCTAssertNil(status);
                 XCTAssertNotNil(memberships);
                 XCTAssertEqual(memberships.count, 2);
-                
+
                 handler();
             });
     }];
-      
-    [self deleteUser:users.firstObject.identifier membershipObjectsUsingClient:nil];
-    [self deleteUserObjectsUsingClient:nil];
-    [self deleteSpaceObjectsUsingClient:nil];
-}
 
-- (void)testItShouldNotFetchMembershipsWhenUserObjectNotExists {
-    NSString *userIdentifier = [self uuidForUser:@"not-existing-user"];
-    __block BOOL retried = NO;
-    
-    
-    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.fetchMemberships()
-            .userId(userIdentifier)
-            .performWithCompletion(^(PNFetchMembershipsResult *result, PNErrorStatus *status) {
-                XCTAssertTrue(status.isError);
-                XCTAssertEqual(status.statusCode, 404);
-                
-                if (!retried) {
-                    retried = YES;
-                    [status retry];
-                } else {
-                    handler();
-                }
-            });
-    }];
+    [self removeUUID:uuidsMetadata.firstObject.uuid membershipObjectsUsingClient:nil];
+    [self removeAllUUIDMetadataUsingClient:nil];
+    [self removeChannelsMetadataUsingClient:nil];
 }
 
 
 #pragma mark - Tests :: Member events
 
-- (void)testItShouldDeleteMemberAndTriggerUserDeleteOnSpaceChannel {
+- (void)testItShouldRemoveMemberAndTriggerUUIDDeleteOnChannel {
     PubNub *client1 = [self createPubNubForUser:@"serhii"];
     PubNub *client2 = [self createPubNubForUser:@"david"];
-    NSArray<PNSpace *> *spaces = [self createObjectForSpaces:2 usingClient:client1];
-    NSArray<PNUser *> *users = [self createObjectForUsers:1 usingClient:client1];
-    NSString *channel = spaces.firstObject.identifier;
-    
-    [self createUsersMembership:users inSpaces:spaces withCustoms:nil usingClient:client1];
+    NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:2 usingClient:client1];
+    NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:client1];
+    NSString *channel = channelsMetadata.firstObject.channel;
+
+    [self createUUIDsMembership:[uuidsMetadata valueForKey:@"uuid"]
+                     inChannels:[channelsMetadata valueForKey:@"channel"]
+                    withCustoms:nil
+                    usingClient:client1];
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
-    
-    
+
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self addUserHandlerForClient:client2
-                            withBlock:^(PubNub *client, PNUserEventResult *event, BOOL *remove) {
+        [self addObjectHandlerForClient:client2 withBlock:^(PubNub *client, PNObjectEventResult *event, BOOL *remove) {
             
             XCTAssertEqualObjects(event.data.event, @"delete");
-            XCTAssertEqualObjects(event.data.identifier, users.firstObject.identifier);
+            XCTAssertEqualObjects(event.data.type, @"uuid");
+            XCTAssertEqualObjects(event.data.channel, channelsMetadata.firstObject.channel);
             XCTAssertNotNil(event.data.timestamp);
             *remove = YES;
-                                
+
             handler();
         }];
-        
-        client1.deleteUser()
-            .userId(users.firstObject.identifier)
+
+        client1.objects().removeUUIDMetadata()
+            .uuid(uuidsMetadata.firstObject.uuid)
             .performWithCompletion(^(PNAcknowledgmentStatus *status) {
                 XCTAssertFalse(status.isError);
             });
     }];
-    
+
     [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
 
-    [self deleteUserObjectsUsingClient:client1];
-    [self deleteSpaceObjectsUsingClient:client1];
+    [self removeAllUUIDMetadataUsingClient:client1];
+    [self removeChannelsMetadataUsingClient:client1];
 }
 
 
@@ -1243,33 +1510,33 @@ NS_ASSUME_NONNULL_END
 
 - (NSArray<NSDictionary *> *)flattenedMemberships:(NSArray<PNMembership *> *)memberships {
     NSMutableArray *flattenedMemberships = [NSMutableArray new];
-    
+
     for (PNMembership *membership in memberships) {
         [flattenedMemberships addObject:@{
-            @"name": membership.space.name,
-            @"created": membership.created
+            @"name": membership.metadata.name,
+            @"updated": membership.updated
         }];
     }
-    
+
     return flattenedMemberships;
 }
 
 - (NSArray<PNMembership *> *)memberships:(NSArray<PNMembership *> *)memberships
                               sortedWith:(NSArray<NSSortDescriptor *> *)sortDescriptors {
-    
+
     NSMutableArray *sortedMemberships = [NSMutableArray new];
     NSArray *flattenedMemberships = [self flattenedMemberships:memberships];
     NSArray *sortedFlattenedMemberships = [flattenedMemberships sortedArrayUsingDescriptors:sortDescriptors];
-    
+
     for (NSDictionary *flattenedMembership in sortedFlattenedMemberships) {
         for (PNMembership *membership in memberships) {
-            if ([membership.space.name isEqualToString:flattenedMembership[@"name"]]) {
+            if ([membership.metadata.name isEqualToString:flattenedMembership[@"name"]]) {
                 [sortedMemberships addObject:membership];
                 break;
             }
         }
     }
-    
+
     return sortedMemberships;
 }
 
