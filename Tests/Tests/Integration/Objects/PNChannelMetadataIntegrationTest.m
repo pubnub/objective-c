@@ -276,6 +276,7 @@ NS_ASSUME_NONNULL_END
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         self.client.objects().allChannelsMetadata()
+            .includeCount(NO)
             .performWithCompletion(^(PNFetchAllChannelsMetadataResult *result, PNErrorStatus *status) {
             if (!retried && !YHVVCR.cassette.isNewCassette) {
                 XCTAssertTrue(status.error);

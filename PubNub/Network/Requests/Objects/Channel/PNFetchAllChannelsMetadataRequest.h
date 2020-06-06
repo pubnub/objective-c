@@ -22,6 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief Bitfield set to fields which should be returned with response.
  *
  * @note Supported keys specified in \b PNChannelFields enum.
+ * @note Default value (\B PNChannelTotalCountField) can be reset by setting 0.  
  */
 @property (nonatomic, assign) PNChannelFields includeFields;
 

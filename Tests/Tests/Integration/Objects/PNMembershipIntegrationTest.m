@@ -339,6 +339,7 @@ NS_ASSUME_NONNULL_END
         @{ @"channel": channelsMetadata[1].channel }
     ];
     __block NSArray *memberships = nil;
+    __block BOOL shouldCallCompletionHandler = NO;
 
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
 
@@ -352,8 +353,12 @@ NS_ASSUME_NONNULL_END
             XCTAssertNotNil(event.data.membership.updated);
             XCTAssertNotNil(event.data.timestamp);
             *remove = YES;
-
-            handler();
+            
+            if (memberships) {
+                handler();
+            } else {
+                shouldCallCompletionHandler = YES;
+            }
         }];
 
         client1.objects().setMemberships()
@@ -363,11 +368,15 @@ NS_ASSUME_NONNULL_END
             .performWithCompletion(^(PNManageMembershipsStatus *status) {
                 memberships = status.data.memberships;
                 XCTAssertFalse(status.isError);
+                
+                if (shouldCallCompletionHandler) {
+                    handler();
+                }
             });
     }];
-
+    
     [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
-
+    
     [self removeUUID:uuidsMetadata.firstObject.uuid membershipObjects:memberships usingClient:client1];
     [self removeAllUUIDMetadataUsingClient:client1];
     [self removeChannelsMetadataUsingClient:client1];
@@ -627,6 +636,7 @@ NS_ASSUME_NONNULL_END
         @{ @"channel": channelsMetadata[0].channel },
         @{ @"channel": channelsMetadata[1].channel }
     ];
+    __block BOOL shouldCallCompletionHandler = NO;
     __block NSArray *memberships = nil;
 
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
@@ -641,8 +651,12 @@ NS_ASSUME_NONNULL_END
             XCTAssertNotNil(event.data.membership.updated);
             XCTAssertNotNil(event.data.timestamp);
             *remove = YES;
-
-            handler();
+            
+            if (memberships) {
+                handler();
+            } else {
+                shouldCallCompletionHandler = YES;
+            }
         }];
 
         client1.objects().manageMemberships()
@@ -652,6 +666,10 @@ NS_ASSUME_NONNULL_END
             .performWithCompletion(^(PNManageMembershipsStatus *status) {
                 memberships = status.data.memberships;
                 XCTAssertFalse(status.isError);
+                
+                if (shouldCallCompletionHandler) {
+                    handler();
+                }
             });
     }];
 
@@ -1266,6 +1284,7 @@ NS_ASSUME_NONNULL_END
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         self.client.objects().memberships()
+            .includeCount(NO)
             .uuid(uuidsMetadata.firstObject.uuid)
             .performWithCompletion(^(PNFetchMembershipsResult *result, PNErrorStatus *status) {
                 if (!retried && !YHVVCR.cassette.isNewCassette) {

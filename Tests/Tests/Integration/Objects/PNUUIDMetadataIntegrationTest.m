@@ -61,6 +61,7 @@ NS_ASSUME_NONNULL_END
                 XCTAssertEqualObjects(metadata.uuid, identifier);
                 XCTAssertNotNil(metadata.updated);
                 XCTAssertNotNil(metadata.eTag);
+                XCTAssertNotEqual([metadata.debugDescription rangeOfString:@"uuid-metadata"].location, NSNotFound);
                 XCTAssertEqual(status.operation, PNSetUUIDMetadataOperation);
                 XCTAssertEqual(status.category, PNAcknowledgmentCategory);
                 
@@ -73,7 +74,7 @@ NS_ASSUME_NONNULL_END
 
 /**
  * @brief To test 'retry' functionality
- *  'tItShouldSetUUIDMetadataWhenAdditionalInformationIsSet.json' should
+ *  'ItShouldSetUUIDMetadataWhenAdditionalInformationIsSet.json' should
  *  be modified after cassette recording. Find first mention of UUID metadata set and copy paste 4 entries
  *  which belong to it. For new entries change 'id' field to be different from source. For original
  *  response entry change status code to 404.
@@ -224,9 +225,7 @@ NS_ASSUME_NONNULL_END
 /**
  * @brief To test event skip for older Objects version
  *  'ItShouldNotTriggerDeleteEventToUUIDChannelWhenSentFromPreviousObjectsVersion.json' should
- *  be modified after cassette recording. Find first mention of UUID metadata remove and copy paste 4 entries
- *  which belong to it. For new entries change 'id' field to be different from source. For original
- *  response entry change status code to 404. Find GET request for subscribe with longest Base64
+ *  be modified after cassette recording. Find GET request for subscribe with longest Base64
  *  encoded body. Decode body, change objects version to "1.0" and encode string back to use as
  *  replacement for original.
  */
@@ -347,6 +346,7 @@ NS_ASSUME_NONNULL_END
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         self.client.objects().allUUIDMetadata()
+            .includeCount(NO)
             .performWithCompletion(^(PNFetchAllUUIDMetadataResult *result, PNErrorStatus *status) {
                 if (!retried && !YHVVCR.cassette.isNewCassette) {
                     XCTAssertTrue(status.error);

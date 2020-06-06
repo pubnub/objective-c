@@ -99,7 +99,7 @@ NS_ASSUME_NONNULL_END
         _membershipBodyPayload = [NSMutableDictionary new];
     }
     
-    return self;;
+    return self;
 }
 
 

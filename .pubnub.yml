@@ -1,9 +1,19 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.14.0"
+version: "4.14.1"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "By default, all requests which is able to return multiple objects, will return their total count (corresponding `includeFields` flag is set)."
+        type: feature
+      -
+        text: "Renamed group of methods which is responsible for `channel` members management / audit."
+        type: improvement
+    date: Jun 6, 20
+    version: v4.14.1
   -
     changes:
       -
@@ -1048,28 +1058,6 @@ features:
   signal:
     - SIGNAL-SEND
   objects:
-    - OBJECTS-CREATE-USER
-    - OBJECTS-UPDATE-USER
-    - OBJECTS-DELETE-USER
-    - OBJECTS-GET-USER
-    - OBJECTS-GET-USERS
-    - OBJECTS-CREATE-SPACE
-    - OBJECTS-UPDATE-SPACE
-    - OBJECTS-DELETE-SPACE
-    - OBJECTS-GET-SPACE
-    - OBJECTS-GET-SPACES
-    - OBJECTS-JOIN-SPACES
-    - OBJECTS-UPDATE-MEMBERSHIPS
-    - OBJECTS-LEAVE-SPACES
-    - OBJECTS-MANAGE-MEMBERSHIPS
-    - OBJECTS-GET-MEMBERSHIPS
-    - OBJECTS-ADD-MEMBERS
-    - OBJECTS-UPDATE-MEMBERS
-    - OBJECTS-REMOVE-MEMBERS
-    - OBJECTS-MANAGE-MEMBERS
-    - OBJECTS-GET-MEMBERS
-    - OBJECTS-FILTERING
-    - OBJECTS-SORTING
     - OBJECTS-GET-ALL-UUID-METADATA
     - OBJECTS-GET-UUID-METADATA
     - OBJECTS-SET-UUID-METADATA
@@ -1082,10 +1070,12 @@ features:
     - OBJECTS-SET-MEMBERSHIPS-V2
     - OBJECTS-REMOVE-MEMBERSHIPS-V2
     - OBJECTS-MANAGE-MEMBERSHIPS-V2
-    - OBJECTS-GET-MEMBERS-V2
-    - OBJECTS-SET-MEMBERS-V2
-    - OBJECTS-REMOVE-MEMBERS-V2
-    - OBJECTS-MANAGE-MEMBERS-V2
+    - OBJECTS-GET-CHANNEL-MEMBERS-V2
+    - OBJECTS-SET-CHANNEL-MEMBERS-V2
+    - OBJECTS-REMOVE-CHANNEL-MEMBERS-V2
+    - OBJECTS-MANAGE-CHANNEL-MEMBERS-V2
+    - OBJECTS-FILTERING
+    - OBJECTS-SORTING
   message-actions:
     - MESSAGE-ACTIONS-GET
     - MESSAGE-ACTIONS-ADD

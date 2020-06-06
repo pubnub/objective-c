@@ -61,10 +61,10 @@ static NSString * const PNOperationRequestTemplate[51] = {
     [PNRemoveMembershipsOperation] = @"/v2/objects/{sub-key}/uuids/{uuid}/channels",
     [PNManageMembershipsOperation] = @"/v2/objects/{sub-key}/uuids/{uuid}/channels",
     [PNFetchMembershipsOperation] = @"/v2/objects/{sub-key}/uuids/{uuid}/channels",
-    [PNSetMembersOperation] = @"/v2/objects/{sub-key}/channels/{channel}/uuids",
-    [PNRemoveMembersOperation] = @"/v2/objects/{sub-key}/channels/{channel}/uuids",
-    [PNManageMembersOperation] = @"/v2/objects/{sub-key}/channels/{channel}/uuids",
-    [PNFetchMembersOperation] = @"/v2/objects/{sub-key}/channels/{channel}/uuids",
+    [PNSetChannelMembersOperation] = @"/v2/objects/{sub-key}/channels/{channel}/uuids",
+    [PNRemoveChannelMembersOperation] = @"/v2/objects/{sub-key}/channels/{channel}/uuids",
+    [PNManageChannelMembersOperation] = @"/v2/objects/{sub-key}/channels/{channel}/uuids",
+    [PNFetchChannelMembersOperation] = @"/v2/objects/{sub-key}/channels/{channel}/uuids",
     [PNTimeOperation] = @"/time/0"
 };
 

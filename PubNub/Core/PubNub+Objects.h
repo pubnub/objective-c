@@ -11,10 +11,10 @@
 #import "PNRemoveMembershipsRequest.h"
 #import "PNManageMembershipsRequest.h"
 #import "PNFetchMembershipsRequest.h"
-#import "PNSetMembersRequest.h"
-#import "PNRemoveMembersRequest.h"
-#import "PNManageMembersRequest.h"
-#import "PNFetchMembersRequest.h"
+#import "PNSetChannelMembersRequest.h"
+#import "PNRemoveChannelMembersRequest.h"
+#import "PNManageChannelMembersRequest.h"
+#import "PNFetchChannelMembersRequest.h"
 
 #import "PNSetUUIDMetadataStatus.h"
 #import "PNFetchUUIDMetadataResult.h"
@@ -22,8 +22,8 @@
 #import "PNFetchChannelsMetadataResult.h"
 #import "PNManageMembershipsStatus.h"
 #import "PNFetchMembershipsResult.h"
-#import "PNManageMembersStatus.h"
-#import "PNFetchMembersResult.h"
+#import "PNManageChannelMembersStatus.h"
+#import "PNFetchChannelMembersResult.h"
 
 
 #import "PNObjectsAPICallBuilder.h"
@@ -42,10 +42,10 @@
 #import "PNRemoveMembershipsAPICallBuilder.h"
 #import "PNManageMembershipsAPICallBuilder.h"
 #import "PNFetchMembershipsAPICallBuilder.h"
-#import "PNSetMembersAPICallBuilder.h"
-#import "PNRemoveMembersAPICallBuilder.h"
-#import "PNManageMembersAPICallBuilder.h"
-#import "PNFetchMembersAPICallBuilder.h"
+#import "PNSetChannelMembersAPICallBuilder.h"
+#import "PNRemoveChannelMembersAPICallBuilder.h"
+#import "PNManageChannelMembersAPICallBuilder.h"
+#import "PNFetchChannelMembersAPICallBuilder.h"
 
 #import "PNStructures.h"
 
@@ -345,7 +345,7 @@ NS_ASSUME_NONNULL_BEGIN
  *                                                                    channels:channels];
  * // Add this request option, if returned membership models should have value which has been set to
  * // 'custom' and 'channel' properties.
- * request.includeFields = PNMembershipCustomField | PNMembershipChannelField | PNMembershipTotalCountField;
+ * request.includeFields = PNMembershipCustomField | PNMembershipChannelField | PNMembershipsTotalCountField;
  * request.limit = 40;
  *
  * [self.client setMembershipsWithRequest:request completion:^(PNManageMembershipsStatus *status) {
@@ -382,7 +382,7 @@ NS_ASSUME_NONNULL_BEGIN
  *                                                                          channels:channels];
  * // Add this request option, if returned membership models should have value which has been set to
  * // 'custom' and 'channel' properties.
- * request.includeFields = PNMembershipCustomField | PNMembershipChannelField | PNMembershipTotalCountField;
+ * request.includeFields = PNMembershipCustomField | PNMembershipChannelField | PNMembershipsTotalCountField;
  * request.limit = 40;
  *
  * [self.client removeMembershipsWithRequest:request
@@ -422,7 +422,7 @@ NS_ASSUME_NONNULL_BEGIN
  * request.removeChannels = @[@"channel3", @"channel4"];
  * // Add this request option, if returned membership models should have value which has been set to
  * // 'custom' and 'channel' properties.
- * request.includeFields = PNMembershipCustomField | PNMembershipChannelField | PNMembershipTotalCountField;
+ * request.includeFields = PNMembershipCustomField | PNMembershipChannelField | PNMembershipsTotalCountField;
  * request.limit = 40;
  *
  * [self.client manageMembershipsWithRequest:request
@@ -459,7 +459,7 @@ NS_ASSUME_NONNULL_BEGIN
  * request.start = @"<next from previous request>";
  * // Add this request option, if returned membership models should have value which has been set to
  * // 'custom' and 'channel' properties.
- * request.includeFields = PNMembershipCustomField | PNMembershipChannelField | PNMembershipTotalCountField;
+ * request.includeFields = PNMembershipCustomField | PNMembershipChannelField | PNMembershipsTotalCountField;
  * request.limit = 40;
  *
  * [self.client membershipsWithRequest:request
@@ -496,13 +496,14 @@ NS_ASSUME_NONNULL_BEGIN
  *   @{ @"uuid": @"uuid2", @"custom": @{ @"role": @"moderator" } }
  * ];
  *
- * PNSetMembersRequest *request = [PNSetMembersRequest requestWithChannel:@"channel" uuids:uuids];
+ * PNSetChannelMembersRequest *request = [PNSetChannelMembersRequest requestWithChannel:@"channel"
+ *                                                                                uuids:uuids];
  * // Add this request option, if returned member models should have value which has been set to
  * // 'custom' and 'uuid' properties.
- * request.includeFields = PNMemberCustomField | PNMemberUUIDField | PNMemberTotalCountField;
+ * request.includeFields = PNChannelMemberCustomField | PNChannelMemberUUIDField | PNChannelMembersTotalCountField;
  * request.limit = 40;
  *
- * [self.client setMembersWithRequest:request completion:^(PNManageMembersStatus *status) {
+ * [self.client setChannelMembersWithRequest:request completion:^(PNManageChannelMembersStatus *status) {
  *     if (!status.isError) {
  *         // Channel's members successfully set.
  *         // Result object has following information:
@@ -523,22 +524,22 @@ NS_ASSUME_NONNULL_BEGIN
  *   used to set \c UUID member.
  * @param block \c Set \c channel's \c members list request completion block.
  */
-- (void)setMembersWithRequest:(PNSetMembersRequest *)request
-                   completion:(nullable PNManageMembersCompletionBlock)block;
+- (void)setChannelMembersWithRequest:(PNSetChannelMembersRequest *)request
+                          completion:(nullable PNManageChannelMembersCompletionBlock)block;
 
 /**
  * @brief \c Remove \c channel's \c members.
  *
  * @code
  * NSArray<NSString *> *uuids = @[@"uuid3", @"uuid4"];
- * PNRemoveMembersRequest *request = [PNRemoveMembersRequest requestWithChannel:@"channel"
- *                                                                        uuids:uuids];
+ * PNRemoveChannelMembersRequest *request = [PNRemoveChannelMembersRequest requestWithChannel:@"channel"
+ *                                                                                      uuids:uuids];
  * // Add this request option, if returned member models should have value which has been set to
  * // 'custom' and 'uuid' properties.
- * request.includeFields = PNMemberCustomField | PNMemberUUIDField | PNMemberTotalCountField;
+ * request.includeFields = PNChannelMemberCustomField | PNChannelMemberUUIDField | PNChannelMembersTotalCountField;
  * request.limit = 40;
  *
- * [self.client manageMembersWithRequest:request completion:^(PNManageMembersStatus *status) {
+ * [self.client removeChannelMembersWithRequest:request completion:^(PNManageChannelMembersStatus *status) {
  *     if (!status.isError) {
  *         // Channel's members successfully removed.
  *         // Result object has following information:
@@ -559,24 +560,24 @@ NS_ASSUME_NONNULL_BEGIN
  *   to remove \c UUID members.
  * @param block \c Remove \c channel's \c members request completion block.
  */
-- (void)removeMembersWithRequest:(PNRemoveMembersRequest *)request
-                      completion:(nullable PNManageMembersCompletionBlock)block;
+- (void)removeChannelMembersWithRequest:(PNRemoveChannelMembersRequest *)request
+                             completion:(nullable PNManageChannelMembersCompletionBlock)block;
 
 /**
  * @brief \c Manage \c channel's members list.
  *
  * @code
- * PNManageMembersRequest *request = [PNManageMembersRequest requestWithChannel:@"channel"];
+ * PNManageChannelMembersRequest *request = [PNManageChannelMembersRequest requestWithChannel:@"channel"];
  * request.setMembers = @[
  *     @{ @"uuid": @"uuid2", @"custom": @{ @"role": @"moderator" } }
  * ];
  * request.removeMembers = @[@"uuid3", @"uuid4"];
  * // Add this request option, if returned member models should have value which has been set to
  * // 'custom' and 'uuid' properties.
- * request.includeFields = PNMemberCustomField | PNMemberUUIDField | PNMemberTotalCountField;
+ * request.includeFields = PNChannelMemberCustomField | PNChannelMemberUUIDField | PNChannelMembersTotalCountField;
  * request.limit = 40;
  *
- * [self.client manageMembersWithRequest:request completion:^(PNManageMembersStatus *status) {
+ * [self.client manageChannelMembersWithRequest:request completion:^(PNManageChannelMembersStatus *status) {
  *     if (!status.isError) {
  *         // Channel's members successfully changed.
  *         // Result object has following information:
@@ -597,22 +598,22 @@ NS_ASSUME_NONNULL_BEGIN
  *   to \c channel's members list should be done (\c set / \c remove \c UUID).
  * @param block \c Manage \c channel's \c members list request completion block.
  */
-- (void)manageMembersWithRequest:(PNManageMembersRequest *)request
-                      completion:(nullable PNManageMembersCompletionBlock)block;
+- (void)manageChannelMembersWithRequest:(PNManageChannelMembersRequest *)request
+                             completion:(nullable PNManageChannelMembersCompletionBlock)block;
 
 /**
  * @brief \c Fetch \c channel's \c members.
  *
  * @code
- * PNFetchMembersRequest *request = [PNFetchMembersRequest requestWithChannel:@"channel"];
+ * PNFetchChannelMembersRequest *request = [PNFetchChannelMembersRequest requestWithChannel:@"channel"];
  * request.start = @"<next from previous request>";
  * // Add this request option, if returned member models should have value which has been set to
  * // 'custom' and 'uuid' properties.
- * request.includeFields = PNMemberCustomField | PNMemberUUIDField | PNMemberTotalCountField;
+ * request.includeFields = PNChannelMemberCustomField | PNChannelMemberUUIDField | PNChannelMembersTotalCountField;
  * request.limit = 40;
  *
- * [self.client membersWithRequest:request
- *                      completion:^(PNFetchMembersResult *result, PNErrorStatus *status) {
+ * [self.client channelMembersWithRequest:request
+ *                             completion:^(PNFetchChannelMembersResult *result, PNErrorStatus *status) {
  *
  *     if (!status.isError) {
  *         // Channel's members successfully fetched.
@@ -634,8 +635,8 @@ NS_ASSUME_NONNULL_BEGIN
  *     to fetch existing \c channel's \c members.
  * @param block \c Fetch \c channel's \c members request completion block.
  */
-- (void)membersWithRequest:(PNFetchMembersRequest *)request
-                completion:(PNFetchMembersCompletionBlock)block;
+- (void)channelMembersWithRequest:(PNFetchChannelMembersRequest *)request
+                       completion:(PNFetchChannelMembersCompletionBlock)block;
 
 #pragma mark -
 

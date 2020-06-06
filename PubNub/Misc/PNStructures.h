@@ -20,7 +20,7 @@
 @class PNPublishStatus, PNSignalStatus, PNErrorStatus, PNTimeResult, PNResult, PNStatus;
 @class PNSetUUIDMetadataStatus, PNFetchUUIDMetadataResult, PNFetchAllUUIDMetadataResult;
 @class PNSetChannelMetadataStatus, PNFetchChannelMetadataResult, PNFetchAllChannelsMetadataResult;
-@class PNManageMembershipsStatus, PNFetchMembershipsResult, PNManageMembersStatus, PNFetchMembersResult;
+@class PNManageMembershipsStatus, PNFetchMembershipsResult, PNManageChannelMembersStatus, PNFetchChannelMembersResult;
 @class PNAddMessageActionStatus, PNFetchMessageActionsResult;
 
 #ifndef PNStructures_h
@@ -254,7 +254,7 @@ typedef void(^PNFetchMembershipsCompletionBlock)(PNFetchMembershipsResult * _Nul
  *
  * @since 4.10.0
  */
-typedef void(^PNManageMembersCompletionBlock)(PNManageMembersStatus *status);
+typedef void(^PNManageChannelMembersCompletionBlock)(PNManageChannelMembersStatus *status);
 
 /**
  * @brief \c Fetch \c members completion handler block.
@@ -264,7 +264,7 @@ typedef void(^PNManageMembersCompletionBlock)(PNManageMembersStatus *status);
  *
  * @since 4.10.0
  */
-typedef void(^PNFetchMembersCompletionBlock)(PNFetchMembersResult * _Nullable result,
+typedef void(^PNFetchChannelMembersCompletionBlock)(PNFetchChannelMembersResult * _Nullable result,
                                              PNErrorStatus * _Nullable status);
 
 
@@ -479,7 +479,7 @@ typedef NS_OPTIONS(NSUInteger, PNMembershipFields) {
     /**
      * @brief Include how many memberships \c UUID has.
      */
-    PNMembershipTotalCountField = 1 << 4,
+    PNMembershipsTotalCountField = 1 << 4,
     /**
      * @brief Include field with additional information from \c metadata which has been associated
      * with \c UUID during \c membership \c set requests.
@@ -502,25 +502,25 @@ typedef NS_OPTIONS(NSUInteger, PNMembershipFields) {
  *
  * @since 4.14.0
  */
-typedef NS_OPTIONS(NSUInteger, PNMemberFields) {
+typedef NS_OPTIONS(NSUInteger, PNChannelMemberFields) {
     /**
      * @brief Include how many members \c channel has.
      */
-    PNMemberTotalCountField = 1 << 8,
+    PNChannelMembersTotalCountField = 1 << 8,
     /**
      * @brief Include field with additional information from \c metadata which has been associated
      * with \c UUID during \c channel \c member \c set requests.
      */
-    PNMemberCustomField = 1 << 9,
+    PNChannelMemberCustomField = 1 << 9,
     /**
      * @brief Include \c UUID's \c metadata into response (not only identifier).
      */
-    PNMemberUUIDField = 1 << 10,
+    PNChannelMemberUUIDField = 1 << 10,
     /**
      * @brief Include \c UUID's additional information which has been used during \c UUID
      * \c metadata \c set requests.
      */
-    PNMemberUUIDCustomField = 1 << 11
+    PNChannelMemberUUIDCustomField = 1 << 11
 };
 
 /**
@@ -750,10 +750,10 @@ typedef NS_ENUM(NSInteger, PNOperationType){
     PNRemoveMembershipsOperation,
     PNManageMembershipsOperation,
     PNFetchMembershipsOperation,
-    PNSetMembersOperation,
-    PNRemoveMembersOperation,
-    PNManageMembersOperation,
-    PNFetchMembersOperation,
+    PNSetChannelMembersOperation,
+    PNRemoveChannelMembersOperation,
+    PNManageChannelMembersOperation,
+    PNFetchChannelMembersOperation,
     PNTimeOperation
 };
 

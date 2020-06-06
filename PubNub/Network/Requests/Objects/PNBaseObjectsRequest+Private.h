@@ -34,7 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief Bitfield set to fields which should be returned with response.
  *
  * @note Available values depends from object type for which request created. So far following
- *   helper \a types available: \b PNMembershipFields, \b PNMemberFields,
+ *   helper \a types available: \b PNMembershipFields, \b PNChannelMemberFields,
  *   \b PNChannelFields, \b PNUUIDFields.
  */
 @property (nonatomic, assign) NSUInteger includeFields;

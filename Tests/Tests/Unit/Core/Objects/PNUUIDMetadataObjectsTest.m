@@ -321,11 +321,11 @@ NS_ASSUME_NONNULL_END
     XCTAssertTrue([self.client.objects().allUUIDMetadata() isKindOfClass:[PNFetchAllUUIDMetadataAPICallBuilder class]]);
 }
 
-- (void)testItShouldNotSetDefaultFetchAllUUIDMetadataIncludeFields {
+- (void)testItShouldSetDefaultFetchAllUUIDMetadataIncludeFields {
     PNFetchAllUUIDMetadataRequest *request = [PNFetchAllUUIDMetadataRequest new];
     
     
-    XCTAssertEqual(request.includeFields, 0);
+    XCTAssertEqual(request.includeFields, PNUUIDTotalCountField);
 }
 
 
@@ -366,7 +366,7 @@ NS_ASSUME_NONNULL_END
     }];
 }
 
-- (void)testItShouldNotSetDefaultIncludeFieldsWhenCalledWithOutFetchAllUUIDMetadataIncludeFields {
+- (void)testItShouldSetDefaultIncludeFieldsWhenCalledWithOutFetchAllUUIDMetadataIncludeFields {
     id clientMock = [self mockForObject:self.client];
     id recorded = OCMExpect([clientMock processOperation:PNFetchAllUUIDMetadataOperation
                                           withParameters:[OCMArg any]
@@ -375,7 +375,7 @@ NS_ASSUME_NONNULL_END
         .andDo(^(NSInvocation *invocation) {
             PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
             
-            XCTAssertNil(parameters.query[@"include"]);
+            XCTAssertNotNil(parameters.query[@"include"]);
         });
     
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{

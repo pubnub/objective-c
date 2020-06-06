@@ -471,7 +471,7 @@ NS_ASSUME_NONNULL_END
     }
     
     // Check whether minimum supported event source version is present (at moment of release - 2).
-    if ([sourceVersion componentsSeparatedByString:@"."].firstObject.integerValue < 2) {
+    if ([sourceVersion componentsSeparatedByString:@"."].firstObject.integerValue != 2) {
         return object;
     }
     

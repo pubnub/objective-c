@@ -66,6 +66,7 @@
                 XCTAssertEqualObjects(action.uuid, self.client.uuid);
                 XCTAssertEqualObjects(action.messageTimetoken, timetokens[0]);
                 XCTAssertNotNil(action.actionTimetoken);
+                XCTAssertNotEqual([action.debugDescription rangeOfString:@"actionTimetoken"].location, NSNotFound);
                 XCTAssertEqual(status.operation, PNAddMessageActionOperation);
                 XCTAssertEqual(status.category, PNAcknowledgmentCategory);
                 

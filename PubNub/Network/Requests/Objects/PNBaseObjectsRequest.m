@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief Bitfield set to fields which should be returned with response.
  *
  * @note Available values depends from object type for which request created. So far following
- *   helper \a types available: \b PNMembershipFields, \b PNMemberFields,
+ *   helper \a types available: \b PNMembershipFields, \b PNChannelMemberFields,
  *   \b PNChannelFields, \b PNUUIDFields.
  * @note Default value can be reset by setting 0.
  */
@@ -130,15 +130,15 @@ NS_ASSUME_NONNULL_END
         [fields addObject:@"channel.custom"];
     }
 
-    if ((self.includeFields & PNMemberCustomField) == PNMemberCustomField) {
+    if ((self.includeFields & PNChannelMemberCustomField) == PNChannelMemberCustomField) {
         [fields addObject:@"custom"];
     }
 
-    if ((self.includeFields & PNMemberUUIDField) == PNMemberUUIDField) {
+    if ((self.includeFields & PNChannelMemberUUIDField) == PNChannelMemberUUIDField) {
         [fields addObject:@"uuid"];
     }
 
-    if ((self.includeFields & PNMemberUUIDCustomField) == PNMemberUUIDCustomField) {
+    if ((self.includeFields & PNChannelMemberUUIDCustomField) == PNChannelMemberUUIDCustomField) {
         [fields addObject:@"uuid.custom"];
     }
 

@@ -39,6 +39,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief Bitfield set to fields which should be returned with response.
  *
  * @note Supported keys specified in \b PNMembershipFields enum.
+ * @note Default value (\B PNMembershipsTotalCountField) can be reset by setting 0.
  */
 @property (nonatomic, assign) PNMembershipFields includeFields;
 

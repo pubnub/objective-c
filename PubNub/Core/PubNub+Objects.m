@@ -124,7 +124,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @param parameters Dictionary with information passed to builder-based API.
  */
-- (void)sendSetMembersRequestUsingBuilderParameters:(NSDictionary *)parameters;
+- (void)sendSetChannelMembersRequestUsingBuilderParameters:(NSDictionary *)parameters;
 
 /**
  * @brief Process information provider by user with builder API call and use it to send request
@@ -132,7 +132,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @param parameters Dictionary with information passed to builder-based API.
  */
-- (void)sendRemoveMembersRequestUsingBuilderParameters:(NSDictionary *)parameters;
+- (void)sendRemoveChannelMembersRequestUsingBuilderParameters:(NSDictionary *)parameters;
 
 /**
  * @brief Process information provider by user with builder API call and use it to send request
@@ -140,7 +140,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @param parameters Dictionary with information passed to builder-based API.
  */
-- (void)sendManageMembersRequestUsingBuilderParameters:(NSDictionary *)parameters;
+- (void)sendManageChannelMembersRequestUsingBuilderParameters:(NSDictionary *)parameters;
 
 /**
  * @brief Process information provider by user with builder API call and use it to send request
@@ -148,7 +148,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @param parameters Dictionary with information passed to builder-based API.
  */
-- (void)sendFetchMembersRequestUsingBuilderParameters:(NSDictionary *)parameters;
+- (void)sendFetchChannelMembersRequestUsingBuilderParameters:(NSDictionary *)parameters;
 
 
 #pragma mark - Misc
@@ -209,14 +209,14 @@ NS_ASSUME_NONNULL_END
             [weakSelf sendManageMembershipsRequestUsingBuilderParameters:parameters];
         } else if ([flags containsObject:NSStringFromSelector(@selector(memberships))]) {
             [weakSelf sendFetchMembershipsRequestUsingBuilderParameters:parameters];
-        } else if ([flags containsObject:NSStringFromSelector(@selector(setMembers))]) {
-            [weakSelf sendSetMembersRequestUsingBuilderParameters:parameters];
-        } else if ([flags containsObject:NSStringFromSelector(@selector(removeMembers))]) {
-            [weakSelf sendRemoveMembersRequestUsingBuilderParameters:parameters];
-        } else if ([flags containsObject:NSStringFromSelector(@selector(manageMembers))]) {
-            [weakSelf sendManageMembersRequestUsingBuilderParameters:parameters];
-        } else if ([flags containsObject:NSStringFromSelector(@selector(members))]) {
-            [weakSelf sendFetchMembersRequestUsingBuilderParameters:parameters];
+        } else if ([flags containsObject:NSStringFromSelector(@selector(setChannelMembers))]) {
+            [weakSelf sendSetChannelMembersRequestUsingBuilderParameters:parameters];
+        } else if ([flags containsObject:NSStringFromSelector(@selector(removeChannelMembers))]) {
+            [weakSelf sendRemoveChannelMembersRequestUsingBuilderParameters:parameters];
+        } else if ([flags containsObject:NSStringFromSelector(@selector(manageChannelMembers))]) {
+            [weakSelf sendManageChannelMembersRequestUsingBuilderParameters:parameters];
+        } else if ([flags containsObject:NSStringFromSelector(@selector(channelMembers))]) {
+            [weakSelf sendFetchChannelMembersRequestUsingBuilderParameters:parameters];
         }
     }];
 
@@ -273,8 +273,12 @@ NS_ASSUME_NONNULL_END
     
     [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
     
-    if (includeCount && includeCount.boolValue) {
-        request.includeFields |= PNUUIDTotalCountField;
+    if (includeCount) {
+        if (includeCount.boolValue) {
+            request.includeFields |= PNUUIDTotalCountField;
+        } else {
+            request.includeFields ^= PNUUIDTotalCountField;
+        }
     }
 
     [self allUUIDMetadataWithRequest:request completion:parameters[@"block"]];
@@ -326,8 +330,12 @@ NS_ASSUME_NONNULL_END
 
     [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
     
-    if (includeCount && includeCount.boolValue) {
-        request.includeFields |= PNChannelTotalCountField;
+    if (includeCount) {
+        if (includeCount.boolValue) {
+            request.includeFields |= PNChannelTotalCountField;
+        } else {
+            request.includeFields ^= PNChannelTotalCountField;
+        }
     }
     
     [self allChannelsMetadataWithRequest:request completion:parameters[@"block"]];
@@ -346,8 +354,12 @@ NS_ASSUME_NONNULL_END
 
     [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
     
-    if (includeCount && includeCount.boolValue) {
-        request.includeFields |= PNMembershipTotalCountField;
+    if (includeCount) {
+        if (includeCount.boolValue) {
+            request.includeFields |= PNMembershipsTotalCountField;
+        } else {
+            request.includeFields ^= PNMembershipsTotalCountField;
+        }
     }
     
     [self setMembershipsWithRequest:request completion:parameters[@"block"]];
@@ -363,8 +375,12 @@ NS_ASSUME_NONNULL_END
 
     [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
     
-    if (includeCount && includeCount.boolValue) {
-        request.includeFields |= PNMembershipTotalCountField;
+    if (includeCount) {
+        if (includeCount.boolValue) {
+            request.includeFields |= PNMembershipsTotalCountField;
+        } else {
+            request.includeFields ^= PNMembershipsTotalCountField;
+        }
     }
     
     [self removeMembershipsWithRequest:request completion:parameters[@"block"]];
@@ -381,8 +397,12 @@ NS_ASSUME_NONNULL_END
 
     [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
     
-    if (includeCount && includeCount.boolValue) {
-        request.includeFields |= PNMembershipTotalCountField;
+    if (includeCount) {
+        if (includeCount.boolValue) {
+            request.includeFields |= PNMembershipsTotalCountField;
+        } else {
+            request.includeFields ^= PNMembershipsTotalCountField;
+        }
     }
     
     [self manageMembershipsWithRequest:request completion:parameters[@"block"]];
@@ -397,79 +417,99 @@ NS_ASSUME_NONNULL_END
 
     [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
     
-    if (includeCount && includeCount.boolValue) {
-        request.includeFields |= PNMembershipTotalCountField;
+    if (includeCount) {
+        if (includeCount.boolValue) {
+            request.includeFields |= PNMembershipsTotalCountField;
+        } else {
+            request.includeFields ^= PNMembershipsTotalCountField;
+        }
     }
     
     [self membershipsWithRequest:request completion:parameters[@"block"]];
 }
 
-- (void)sendSetMembersRequestUsingBuilderParameters:(NSDictionary *)parameters {
+- (void)sendSetChannelMembersRequestUsingBuilderParameters:(NSDictionary *)parameters {
     NSNumber *includeCount = parameters[NSStringFromSelector(@selector(includeCount))];
     NSString *channel = parameters[NSStringFromSelector(@selector(channel))];
     NSArray *uuids = parameters[NSStringFromSelector(@selector(uuids))];
 
-    PNSetMembersRequest *request = [PNSetMembersRequest requestWithChannel:channel uuids:uuids];
+    PNSetChannelMembersRequest *request = [PNSetChannelMembersRequest requestWithChannel:channel uuids:uuids];
     request.arbitraryQueryParameters = parameters[@"queryParam"];
 
     [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
     
-    if (includeCount && includeCount.boolValue) {
-        request.includeFields |= PNMemberTotalCountField;
+    if (includeCount) {
+        if (includeCount.boolValue) {
+            request.includeFields |= PNChannelMembersTotalCountField;
+        } else {
+            request.includeFields ^= PNChannelMembersTotalCountField;
+        }
     }
-    
-    [self setMembersWithRequest:request completion:parameters[@"block"]];
+
+    [self setChannelMembersWithRequest:request completion:parameters[@"block"]];
 }
 
-- (void)sendRemoveMembersRequestUsingBuilderParameters:(NSDictionary *)parameters {
+- (void)sendRemoveChannelMembersRequestUsingBuilderParameters:(NSDictionary *)parameters {
     NSNumber *includeCount = parameters[NSStringFromSelector(@selector(includeCount))];
     NSString *channel = parameters[NSStringFromSelector(@selector(channel))];
     NSArray *uuids = parameters[NSStringFromSelector(@selector(uuids))];
 
-    PNRemoveMembersRequest *request = [PNRemoveMembersRequest requestWithChannel:channel uuids:uuids];
+    PNRemoveChannelMembersRequest *request = [PNRemoveChannelMembersRequest requestWithChannel:channel uuids:uuids];
     request.arbitraryQueryParameters = parameters[@"queryParam"];
 
     [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
     
-    if (includeCount && includeCount.boolValue) {
-        request.includeFields |= PNMemberTotalCountField;
+    if (includeCount) {
+        if (includeCount.boolValue) {
+            request.includeFields |= PNChannelMembersTotalCountField;
+        } else {
+            request.includeFields ^= PNChannelMembersTotalCountField;
+        }
     }
-    
-    [self removeMembersWithRequest:request completion:parameters[@"block"]];
+
+    [self removeChannelMembersWithRequest:request completion:parameters[@"block"]];
 }
 
-- (void)sendManageMembersRequestUsingBuilderParameters:(NSDictionary *)parameters {
+- (void)sendManageChannelMembersRequestUsingBuilderParameters:(NSDictionary *)parameters {
     NSNumber *includeCount = parameters[NSStringFromSelector(@selector(includeCount))];
     NSString *channel = parameters[NSStringFromSelector(@selector(channel))];
 
-    PNManageMembersRequest *request = [PNManageMembersRequest requestWithChannel:channel];
+    PNManageChannelMembersRequest *request = [PNManageChannelMembersRequest requestWithChannel:channel];
     request.removeMembers = parameters[NSStringFromSelector(@selector(remove))];
     request.setMembers = parameters[NSStringFromSelector(@selector(set))];
     request.arbitraryQueryParameters = parameters[@"queryParam"];
 
     [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
     
-    if (includeCount && includeCount.boolValue) {
-        request.includeFields |= PNMemberTotalCountField;
+    if (includeCount) {
+        if (includeCount.boolValue) {
+            request.includeFields |= PNChannelMembersTotalCountField;
+        } else {
+            request.includeFields ^= PNChannelMembersTotalCountField;
+        }
     }
-    
-    [self manageMembersWithRequest:request completion:parameters[@"block"]];
+
+    [self manageChannelMembersWithRequest:request completion:parameters[@"block"]];
 }
 
-- (void)sendFetchMembersRequestUsingBuilderParameters:(NSDictionary *)parameters {
+- (void)sendFetchChannelMembersRequestUsingBuilderParameters:(NSDictionary *)parameters {
     NSNumber *includeCount = parameters[NSStringFromSelector(@selector(includeCount))];
     NSString *channel = parameters[NSStringFromSelector(@selector(channel))];
 
-    PNFetchMembersRequest *request = [PNFetchMembersRequest requestWithChannel:channel];
+    PNFetchChannelMembersRequest *request = [PNFetchChannelMembersRequest requestWithChannel:channel];
     request.arbitraryQueryParameters = parameters[@"queryParam"];
 
     [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
     
-    if (includeCount && includeCount.boolValue) {
-        request.includeFields |= PNMemberTotalCountField;
+    if (includeCount) {
+        if (includeCount.boolValue) {
+            request.includeFields |= PNChannelMembersTotalCountField;
+        } else {
+            request.includeFields ^= PNChannelMembersTotalCountField;
+        }
     }
-    
-    [self membersWithRequest:request completion:parameters[@"block"]];
+
+    [self channelMembersWithRequest:request completion:parameters[@"block"]];
 }
 
 
@@ -478,7 +518,7 @@ NS_ASSUME_NONNULL_END
 - (void)setUUIDMetadataWithRequest:(PNSetUUIDMetadataRequest *)request
                         completion:(nullable PNSetUUIDMetadataCompletionBlock)block {
 
-    request.identifier = request.identifier ?: self.configuration.uuid;
+    request.identifier = request.identifier.length ? request.identifier : self.configuration.uuid;
     __weak __typeof(self) weakSelf = self;
     
     [self performRequest:request withCompletion:^(PNSetUUIDMetadataStatus *status) {
@@ -497,7 +537,7 @@ NS_ASSUME_NONNULL_END
 - (void)removeUUIDMetadataWithRequest:(PNRemoveUUIDMetadataRequest *)request
                            completion:(nullable PNRemoveUUIDMetadataCompletionBlock)block {
 
-    request.identifier = request.identifier ?: self.configuration.uuid;
+    request.identifier = request.identifier.length ? request.identifier : self.configuration.uuid;
     __weak __typeof(self) weakSelf = self;
     
     [self performRequest:request withCompletion:^(PNAcknowledgmentStatus *status) {
@@ -516,7 +556,7 @@ NS_ASSUME_NONNULL_END
 - (void)uuidMetadataWithRequest:(PNFetchUUIDMetadataRequest *)request
                      completion:(PNFetchUUIDMetadataCompletionBlock)block {
 
-    request.identifier = request.identifier ?: self.configuration.uuid;
+    request.identifier = request.identifier.length ? request.identifier : self.configuration.uuid;
     __weak __typeof(self) weakSelf = self;
     
     [self performRequest:request
@@ -630,7 +670,7 @@ NS_ASSUME_NONNULL_END
 - (void)setMembershipsWithRequest:(PNSetMembershipsRequest *)request
                        completion:(nullable PNManageMembershipsCompletionBlock)block {
     
-    request.identifier = request.identifier ?: self.configuration.uuid;
+    request.identifier = request.identifier.length ? request.identifier : self.configuration.uuid;
     __weak __typeof(self) weakSelf = self;
 
     [self performRequest:request withCompletion:^(PNManageMembershipsStatus *status) {
@@ -649,7 +689,7 @@ NS_ASSUME_NONNULL_END
 - (void)removeMembershipsWithRequest:(PNRemoveMembershipsRequest *)request
                           completion:(PNManageMembershipsCompletionBlock)block {
     
-    request.identifier = request.identifier ?: self.configuration.uuid;
+    request.identifier = request.identifier.length ? request.identifier : self.configuration.uuid;
     __weak __typeof(self) weakSelf = self;
 
     [self performRequest:request withCompletion:^(PNManageMembershipsStatus *status) {
@@ -668,7 +708,7 @@ NS_ASSUME_NONNULL_END
 - (void)manageMembershipsWithRequest:(PNManageMembershipsRequest *)request
                           completion:(PNManageMembershipsCompletionBlock)block {
     
-    request.identifier = request.identifier ?: self.configuration.uuid;
+    request.identifier = request.identifier.length ? request.identifier : self.configuration.uuid;
     __weak __typeof(self) weakSelf = self;
     
     [self performRequest:request withCompletion:^(PNManageMembershipsStatus *status) {
@@ -687,7 +727,7 @@ NS_ASSUME_NONNULL_END
 - (void)membershipsWithRequest:(PNFetchMembershipsRequest *)request
                     completion:(PNFetchMembershipsCompletionBlock)block {
     
-    request.identifier = request.identifier ?: self.configuration.uuid;
+    request.identifier = request.identifier.length ? request.identifier : self.configuration.uuid;
     __weak __typeof(self) weakSelf = self;
     
     [self performRequest:request
@@ -703,15 +743,15 @@ NS_ASSUME_NONNULL_END
     }];
 }
 
-- (void)setMembersWithRequest:(PNSetMembersRequest *)request
-                   completion:(PNManageMembersCompletionBlock)block {
+- (void)setChannelMembersWithRequest:(PNSetChannelMembersRequest *)request
+                          completion:(PNManageChannelMembersCompletionBlock)block {
 
     __weak __typeof(self) weakSelf = self;
 
-    [self performRequest:request withCompletion:^(PNManageMembersStatus *status) {
+    [self performRequest:request withCompletion:^(PNManageChannelMembersStatus *status) {
         if (block && status.isError) {
             status.retryBlock = ^{
-                [weakSelf setMembersWithRequest:request completion:block];
+                [weakSelf setChannelMembersWithRequest:request completion:block];
             };
         }
 
@@ -721,15 +761,15 @@ NS_ASSUME_NONNULL_END
     }];
 }
 
-- (void)removeMembersWithRequest:(PNRemoveMembersRequest *)request
-                      completion:(PNManageMembersCompletionBlock)block {
+- (void)removeChannelMembersWithRequest:(PNRemoveChannelMembersRequest *)request
+                             completion:(PNManageChannelMembersCompletionBlock)block {
 
     __weak __typeof(self) weakSelf = self;
 
-    [self performRequest:request withCompletion:^(PNManageMembersStatus *status) {
+    [self performRequest:request withCompletion:^(PNManageChannelMembersStatus *status) {
         if (block && status.isError) {
             status.retryBlock = ^{
-                [weakSelf removeMembersWithRequest:request completion:block];
+                [weakSelf removeChannelMembersWithRequest:request completion:block];
             };
         }
 
@@ -739,15 +779,15 @@ NS_ASSUME_NONNULL_END
     }];
 }
 
-- (void)manageMembersWithRequest:(PNManageMembersRequest *)request
-                      completion:(PNManageMembersCompletionBlock)block {
+- (void)manageChannelMembersWithRequest:(PNManageChannelMembersRequest *)request
+                             completion:(PNManageChannelMembersCompletionBlock)block {
     
     __weak __typeof(self) weakSelf = self;
     
-    [self performRequest:request withCompletion:^(PNManageMembersStatus *status) {
+    [self performRequest:request withCompletion:^(PNManageChannelMembersStatus *status) {
         if (block && status.isError) {
             status.retryBlock = ^{
-                [weakSelf manageMembersWithRequest:request completion:block];
+                [weakSelf manageChannelMembersWithRequest:request completion:block];
             };
         }
         
@@ -757,17 +797,17 @@ NS_ASSUME_NONNULL_END
     }];
 }
 
-- (void)membersWithRequest:(PNFetchMembersRequest *)request
-                completion:(PNFetchMembersCompletionBlock)block {
+- (void)channelMembersWithRequest:(PNFetchChannelMembersRequest *)request
+                       completion:(PNFetchChannelMembersCompletionBlock)block {
     
     __weak __typeof(self) weakSelf = self;
     
     [self performRequest:request
-          withCompletion:^(PNFetchMembersResult *result, PNErrorStatus *status) {
+          withCompletion:^(PNFetchChannelMembersResult *result, PNErrorStatus *status) {
         
         if (status.isError) {
             status.retryBlock = ^{
-                [weakSelf membersWithRequest:request completion:block];
+                [weakSelf channelMembersWithRequest:request completion:block];
             };
         }
         
@@ -787,8 +827,11 @@ NS_ASSUME_NONNULL_END
     request.start = parameters[NSStringFromSelector(@selector(start))];
     request.sort = parameters[NSStringFromSelector(@selector(sort))];
     request.end = parameters[NSStringFromSelector(@selector(end))];
-    request.includeFields = includeFields.unsignedIntegerValue;
     request.limit = limit.unsignedIntegerValue;
+    
+    if (includeFields) {
+        request.includeFields = includeFields.unsignedIntegerValue;
+    }
 }
 
 #pragma mark -

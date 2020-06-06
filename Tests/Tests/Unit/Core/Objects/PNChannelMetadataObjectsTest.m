@@ -248,11 +248,11 @@ NS_ASSUME_NONNULL_END
     XCTAssertTrue([self.client.objects().allChannelsMetadata() isKindOfClass:[PNFetchAllChannelsMetadataAPICallBuilder class]]);
 }
 
-- (void)testItShouldNotSetDefaultFetchAllChannelsMetadataIncludeFields {
+- (void)testItShouldSetDefaultFetchAllChannelsMetadataIncludeFields {
     PNFetchAllChannelsMetadataRequest *request = [PNFetchAllChannelsMetadataRequest new];
     
     
-    XCTAssertEqual(request.includeFields, 0);
+    XCTAssertEqual(request.includeFields, PNChannelTotalCountField);
 }
 
 
@@ -293,7 +293,7 @@ NS_ASSUME_NONNULL_END
     }];
 }
 
-- (void)testItShouldNotSetDefaultIncludeFieldsWhenCalledWithOutFetchAllChannelsMetadataIncludeFields {
+- (void)testItShouldSetDefaultIncludeFieldsWhenCalledWithOutFetchAllChannelsMetadataIncludeFields {
     id clientMock = [self mockForObject:self.client];
     id recorded = OCMExpect([clientMock processOperation:PNFetchAllChannelsMetadataOperation
                                           withParameters:[OCMArg any]
@@ -302,7 +302,7 @@ NS_ASSUME_NONNULL_END
         .andDo(^(NSInvocation *invocation) {
             PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
             
-            XCTAssertNil(parameters.query[@"include"]);
+            XCTAssertNotNil(parameters.query[@"include"]);
         });
     
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{

@@ -25,6 +25,17 @@
     return NO;
 }
 
+
+#pragma mark - Initialization & Configuration
+
+- (instancetype)init {
+    if ((self = [super init])) {
+        self.includeFields = PNUUIDTotalCountField;
+    }
+    
+    return self;
+}
+
 #pragma mark -
 
 

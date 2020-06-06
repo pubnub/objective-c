@@ -1,3 +1,14 @@
+## [v4.14.1](https://github.com/pubnub/objective-c/releases/tag/v4.14.1)
+June 6 2020
+
+[Full Changelog](https://github.com/pubnub/objective-c/compare/v4.14.0...v4.14.1)
+
+#### Added
+- By default, all requests which is able to return multiple objects, will return their total count (corresponding `includeFields` flag is set). 
+
+#### Modified
+- Renamed group of methods which is responsible for `channel` members management / audit. 
+
 ## [v4.14.0](https://github.com/pubnub/objective-c/releases/tag/v4.14.0)
 May 29 2020
 

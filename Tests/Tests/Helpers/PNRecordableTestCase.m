@@ -44,7 +44,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief List of \c channel \c members objects created during current test case.
  */
-@property (nonatomic, strong) NSMutableDictionary<NSString *, NSMutableArray<PNMember *> *> *channelMembersObjects;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, NSMutableArray<PNChannelMember *> *> *channelMembersObjects;
 
 /**
  * @brief List of names which can be used as channel identifiers.
@@ -482,7 +482,7 @@ NS_ASSUME_NONNULL_END
 
 - (void)updateVCRConfigurationFromDefaultConfiguration:(YHVConfiguration *)configuration {
 #if WRITING_CASSETTES
-    NSString *cassettesPath = @"<project path>/Tests/Support Files/Fixtures";
+    NSString *cassettesPath = @"<path to the project>/Tests/Support Files/Fixtures";
     NSString *cassetteName = [NSStringFromClass([self class]) stringByAppendingPathExtension:@"bundle"];
     configuration.cassettesPath = [cassettesPath stringByAppendingPathComponent:cassetteName];
 #endif // WRITING_CASSETTES
@@ -1581,7 +1581,7 @@ NS_ASSUME_NONNULL_END
     }];
 }
 
-- (NSArray<PNMember *> *)addMembers:(NSArray<NSString *> *)uuids
+- (NSArray<PNChannelMember *> *)addMembers:(NSArray<NSString *> *)uuids
                          toChannels:(NSArray<NSString *> *)channels
                         withCustoms:(nullable NSArray<NSDictionary *> *)customs
                         usingClient:(nullable PubNub *)client {
@@ -1593,7 +1593,7 @@ NS_ASSUME_NONNULL_END
                 usingClient:client];
 }
 
-- (NSArray<PNMember *> *)addMembers:(NSArray<NSString *> *)uuids
+- (NSArray<PNChannelMember *> *)addMembers:(NSArray<NSString *> *)uuids
                          toChannels:(NSArray<NSString *> *)channels
                         withCustoms:(nullable NSArray<NSDictionary *> *)customs
                        uuidMetadata:(BOOL)shouldIncludeUUIDMetadata
@@ -1613,10 +1613,10 @@ NS_ASSUME_NONNULL_END
         [membersToAdd addObject:memberData];
     }
     
-    PNMemberFields fields = PNMemberCustomField;
+    PNChannelMemberFields fields = PNChannelMemberCustomField;
     
     if (shouldIncludeUUIDMetadata) {
-        fields |= PNMemberUUIDField;
+        fields |= PNChannelMemberUUIDField;
     }
     
     for (NSString *channel in channels) {
@@ -1626,15 +1626,15 @@ NS_ASSUME_NONNULL_END
         
         [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
             client.objects()
-                .setMembers(channel)
+                .setChannelMembers(channel)
                 .uuids(membersToAdd)
                 .includeFields(fields)
-                .performWithCompletion(^(PNManageMembersStatus *status) {
+                .performWithCompletion(^(PNManageChannelMembersStatus *status) {
                     XCTAssertFalse(status.isError);
                     XCTAssertNotNil(status.data.members);
                     
                     for (NSUInteger memberIdx = 0; memberIdx < uuids.count; memberIdx++) {
-                        for (PNMember *member in status.data.members) {
+                        for (PNChannelMember *member in status.data.members) {
                             if ([member.uuid isEqualToString:uuids[memberIdx]]) {
                                 [createdChannelMembers addObject:member];
                                 break;
@@ -1658,9 +1658,9 @@ NS_ASSUME_NONNULL_END
     client = client ?: self.client;
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        client.objects().members(channel)
-            .performWithCompletion(^(PNFetchMembersResult *result, PNErrorStatus *status) {
-                NSArray<PNMember *> *members = result.data.members;
+        client.objects().channelMembers(channel)
+            .performWithCompletion(^(PNFetchChannelMembersResult *result, PNErrorStatus *status) {
+                NSArray<PNChannelMember *> *members = result.data.members;
                 XCTAssertNil(status);
                 XCTAssertNotNil(members);
                 XCTAssertEqual(members.count, count);
@@ -1671,7 +1671,7 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)removeChannel:(NSString *)channel cachedMemberForUUID:(NSString *)uuid {
-    PNMember *member = nil;
+    PNChannelMember *member = nil;
     
     for (member in self.channelMembersObjects[channel]) {
         if ([member.uuid isEqualToString:uuid]) {
@@ -1688,7 +1688,7 @@ NS_ASSUME_NONNULL_END
     }
 }
 
-- (void)removeChannel:(NSString *)channel memberObjects:(NSArray<PNMember *> *)members usingClient:(nullable PubNub *)client {
+- (void)removeChannel:(NSString *)channel memberObjects:(NSArray<PNChannelMember *> *)members usingClient:(nullable PubNub *)client {
     [self removeChannel:channel members:[members valueForKey:@"uuid"] usingClient:client];
 }
 
@@ -1710,7 +1710,7 @@ NS_ASSUME_NONNULL_END
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 1.f : 0.f)];
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        client.objects().removeMembers(channel).uuids(uuids).performWithCompletion(^(PNManageMembersStatus *status) {
+        client.objects().removeChannelMembers(channel).uuids(uuids).performWithCompletion(^(PNManageChannelMembersStatus *status) {
             XCTAssertFalse(status.isError);
             
             if (status.isError) {

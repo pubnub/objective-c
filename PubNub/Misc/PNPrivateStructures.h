@@ -107,10 +107,10 @@ static NSString * const PNOperationTypeStrings[51] = {
     [PNRemoveMembershipsOperation] = @"Remove Memberships",
     [PNManageMembershipsOperation] = @"Manage Memberships",
     [PNFetchMembershipsOperation] = @"Fetch Memberships",
-    [PNSetMembersOperation] = @"Update Members",
-    [PNRemoveMembersOperation] = @"Remove Members",
-    [PNManageMembersOperation] = @"Manage Members",
-    [PNFetchMembersOperation] = @"Fetch Members",
+    [PNSetChannelMembersOperation] = @"Set Channel Members",
+    [PNRemoveChannelMembersOperation] = @"Remove Channel Members",
+    [PNManageChannelMembersOperation] = @"Manage Channel Members",
+    [PNFetchChannelMembersOperation] = @"Fetch Channel Members",
     [PNTimeOperation] = @"Time",
 };
 
@@ -136,7 +136,7 @@ static NSString * const PNOperationResultClasses[51] = {
     [PNFetchChannelMetadataOperation] = @"PNFetchChannelMetadataResult",
     [PNFetchAllChannelsMetadataOperation] = @"PNFetchAllChannelsMetadataResult",
     [PNFetchMembershipsOperation] = @"PNFetchMembershipsResult",
-    [PNFetchMembersOperation] = @"PNFetchMembersResult",
+    [PNFetchChannelMembersOperation] = @"PNFetchChannelMembersResult",
     [PNTimeOperation] = @"PNTimeResult",
 };
 
@@ -187,10 +187,10 @@ static NSString * const PNOperationStatusClasses[51] = {
     [PNRemoveMembershipsOperation] = @"PNManageMembershipsStatus",
     [PNManageMembershipsOperation] = @"PNManageMembershipsStatus",
     [PNFetchMembershipsOperation] = @"PNErrorStatus",
-    [PNSetMembersOperation] = @"PNManageMembersStatus",
-    [PNRemoveMembersOperation] = @"PNManageMembersStatus",
-    [PNManageMembersOperation] = @"PNManageMembersStatus",
-    [PNFetchMembersOperation] = @"PNErrorStatus",
+    [PNSetChannelMembersOperation] = @"PNManageChannelMembersStatus",
+    [PNRemoveChannelMembersOperation] = @"PNManageChannelMembersStatus",
+    [PNManageChannelMembersOperation] = @"PNManageChannelMembersStatus",
+    [PNFetchChannelMembersOperation] = @"PNErrorStatus",
     [PNTimeOperation] = @"PNErrorStatus",
 };
 

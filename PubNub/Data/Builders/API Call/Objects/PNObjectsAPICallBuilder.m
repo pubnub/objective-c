@@ -20,10 +20,10 @@
 #import "PNRemoveMembershipsAPICallBuilder.h"
 #import "PNManageMembershipsAPICallBuilder.h"
 #import "PNFetchMembershipsAPICallBuilder.h"
-#import "PNSetMembersAPICallBuilder.h"
-#import "PNRemoveMembersAPICallBuilder.h"
-#import "PNManageMembersAPICallBuilder.h"
-#import "PNFetchMembersAPICallBuilder.h"
+#import "PNSetChannelMembersAPICallBuilder.h"
+#import "PNRemoveChannelMembersAPICallBuilder.h"
+#import "PNManageChannelMembersAPICallBuilder.h"
+#import "PNFetchChannelMembersAPICallBuilder.h"
 #import "PNAPICallBuilder+Private.h"
 #import <objc/runtime.h>
 
@@ -51,10 +51,10 @@
             [PNRemoveMembershipsAPICallBuilder class],
             [PNManageMembershipsAPICallBuilder class],
             [PNFetchMembershipsAPICallBuilder class],
-            [PNSetMembersAPICallBuilder class],
-            [PNRemoveMembersAPICallBuilder class],
-            [PNManageMembersAPICallBuilder class],
-            [PNFetchMembersAPICallBuilder class]]
+            [PNSetChannelMembersAPICallBuilder class],
+            [PNRemoveChannelMembersAPICallBuilder class],
+            [PNManageChannelMembersAPICallBuilder class],
+            [PNFetchChannelMembersAPICallBuilder class]]
         ];
     }
 }
@@ -188,55 +188,55 @@
     };
 }
 
-- (PNSetMembersAPICallBuilder *(^)(NSString *channel))setMembers {
-    return ^PNSetMembersAPICallBuilder * (NSString *channel) {
-        object_setClass(self, [PNSetMembersAPICallBuilder class]);
+- (PNSetChannelMembersAPICallBuilder *(^)(NSString *channel))setChannelMembers {
+    return ^PNSetChannelMembersAPICallBuilder * (NSString *channel) {
+        object_setClass(self, [PNSetChannelMembersAPICallBuilder class]);
 
         if ([channel isKindOfClass:[NSString class]] && channel.length) {
             [self setValue:channel forParameter:@"channel"];
         }
 
         [self setFlag:NSStringFromSelector(_cmd)];
-        return (PNSetMembersAPICallBuilder *)self;
+        return (PNSetChannelMembersAPICallBuilder *)self;
     };
 }
 
-- (PNRemoveMembersAPICallBuilder *(^)(NSString *channel))removeMembers {
-    return ^PNRemoveMembersAPICallBuilder * (NSString *channel) {
-        object_setClass(self, [PNRemoveMembersAPICallBuilder class]);
+- (PNRemoveChannelMembersAPICallBuilder *(^)(NSString *channel))removeChannelMembers {
+    return ^PNRemoveChannelMembersAPICallBuilder * (NSString *channel) {
+        object_setClass(self, [PNRemoveChannelMembersAPICallBuilder class]);
 
         if ([channel isKindOfClass:[NSString class]] && channel.length) {
             [self setValue:channel forParameter:@"channel"];
         }
 
         [self setFlag:NSStringFromSelector(_cmd)];
-        return (PNRemoveMembersAPICallBuilder *)self;
+        return (PNRemoveChannelMembersAPICallBuilder *)self;
     };
 }
 
-- (PNManageMembersAPICallBuilder *(^)(NSString *channel))manageMembers {
-    return ^PNManageMembersAPICallBuilder * (NSString *channel) {
-        object_setClass(self, [PNManageMembersAPICallBuilder class]);
+- (PNManageChannelMembersAPICallBuilder *(^)(NSString *channel))manageChannelMembers {
+    return ^PNManageChannelMembersAPICallBuilder * (NSString *channel) {
+        object_setClass(self, [PNManageChannelMembersAPICallBuilder class]);
 
         if ([channel isKindOfClass:[NSString class]] && channel.length) {
             [self setValue:channel forParameter:@"channel"];
         }
 
         [self setFlag:NSStringFromSelector(_cmd)];
-        return (PNManageMembersAPICallBuilder *)self;
+        return (PNManageChannelMembersAPICallBuilder *)self;
     };
 }
 
-- (PNFetchMembersAPICallBuilder *(^)(NSString *channel))members {
-    return ^PNFetchMembersAPICallBuilder * (NSString *channel) {
-        object_setClass(self, [PNFetchMembersAPICallBuilder class]);
+- (PNFetchChannelMembersAPICallBuilder *(^)(NSString *channel))channelMembers {
+    return ^PNFetchChannelMembersAPICallBuilder * (NSString *channel) {
+        object_setClass(self, [PNFetchChannelMembersAPICallBuilder class]);
 
         if ([channel isKindOfClass:[NSString class]] && channel.length) {
             [self setValue:channel forParameter:@"channel"];
         }
 
         [self setFlag:NSStringFromSelector(_cmd)];
-        return (PNFetchMembersAPICallBuilder *)self;
+        return (PNFetchChannelMembersAPICallBuilder *)self;
     };
 }
 

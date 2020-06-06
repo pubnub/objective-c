@@ -266,10 +266,10 @@ NS_ASSUME_NONNULL_END
         case PNRemoveMembershipsOperation:
         case PNManageMembershipsOperation:
         case PNFetchMembershipsOperation:
-        case PNSetMembersOperation:
-        case PNRemoveMembersOperation:
-        case PNManageMembersOperation:
-        case PNFetchMembersOperation:
+        case PNSetChannelMembersOperation:
+        case PNRemoveChannelMembersOperation:
+        case PNManageChannelMembersOperation:
+        case PNFetchChannelMembersOperation:
             operation = @"obj";
             break;
         case PNAddMessageActionOperation:

@@ -45,6 +45,14 @@ NS_ASSUME_NONNULL_END
     XCTAssertTrue([self.client.objects().setMemberships() isKindOfClass:[PNSetMembershipsAPICallBuilder class]]);
 }
 
+- (void)testItShouldSetDefaultSetMembershipIncludeFields {
+    PNSetMembershipsRequest *request = [PNSetMembershipsRequest requestWithUUID:[NSUUID UUID].UUIDString
+                                                                       channels:@[]];
+
+
+    XCTAssertEqual(request.includeFields, PNMembershipsTotalCountField);
+}
+
 
 #pragma mark - Tests :: Set :: Call
 
@@ -127,6 +135,14 @@ NS_ASSUME_NONNULL_END
     XCTAssertTrue([self.client.objects().removeMemberships() isKindOfClass:[PNRemoveMembershipsAPICallBuilder class]]);
 }
 
+- (void)testItShouldSetDefaultRemoveMembershipIncludeFields {
+    PNRemoveMembershipsRequest *request = [PNRemoveMembershipsRequest requestWithUUID:[NSUUID UUID].UUIDString
+                                                                             channels:@[]];
+
+
+    XCTAssertEqual(request.includeFields, PNMembershipsTotalCountField);
+}
+
 
 #pragma mark - Tests :: Remove :: Call
 
@@ -201,6 +217,13 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldReturnManageBuilder {
     XCTAssertTrue([self.client.objects().manageMemberships() isKindOfClass:[PNManageMembershipsAPICallBuilder class]]);
+}
+
+- (void)testItShouldSetDefaultManageMembershipIncludeFields {
+    PNManageMembershipsRequest *request = [PNManageMembershipsRequest requestWithUUID:[NSUUID UUID].UUIDString];
+
+
+    XCTAssertEqual(request.includeFields, PNMembershipsTotalCountField);
 }
 
 
@@ -307,6 +330,13 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldReturnFetchBuilder {
     XCTAssertTrue([self.client.objects().memberships() isKindOfClass:[PNFetchMembershipsAPICallBuilder class]]);
+}
+
+- (void)testItShouldSetDefaultFetchMembershipIncludeFields {
+    PNFetchMembershipsRequest *request = [PNFetchMembershipsRequest requestWithUUID:[NSUUID UUID].UUIDString];
+
+
+    XCTAssertEqual(request.includeFields, PNMembershipsTotalCountField);
 }
 
 

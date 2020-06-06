@@ -2,7 +2,7 @@
  * @author Serhii Mamontov
  * @copyright © 2010-2020 PubNub, Inc.
  */
-#import <PubNub/PNAPICallBuilder+Private.h>
+ #import <PubNub/PNAPICallBuilder+Private.h>
 #import <XCTest/XCTest.h>
 #import <PubNub/PubNub.h>
 #import <OCMock/OCMock.h>

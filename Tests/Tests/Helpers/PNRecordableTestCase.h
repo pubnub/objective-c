@@ -622,10 +622,10 @@ typedef void (^PNTClientDidReceiveStatusHandler)(PubNub *client, PNSubscribeStat
  *
  * @return List of created \c member objects.
  */
-- (NSArray<PNMember *> *)addMembers:(NSArray<NSString *> *)uuids
-                         toChannels:(NSArray<NSString *> *)channels
-                        withCustoms:(nullable NSArray<NSDictionary *> *)customs
-                        usingClient:(nullable PubNub *)client;
+- (NSArray<PNChannelMember *> *)addMembers:(NSArray<NSString *> *)uuids
+                                toChannels:(NSArray<NSString *> *)channels
+                               withCustoms:(nullable NSArray<NSDictionary *> *)customs
+                               usingClient:(nullable PubNub *)client;
 
 /**
  * @brief Add set of \c UUIDs as members to each of passed \c channel.
@@ -640,11 +640,11 @@ typedef void (^PNTClientDidReceiveStatusHandler)(PubNub *client, PNSubscribeStat
  *
  * @return List of created \c member objects.
  */
-- (NSArray<PNMember *> *)addMembers:(NSArray<NSString *> *)uuids
-                         toChannels:(NSArray<NSString *> *)channels
-                        withCustoms:(nullable NSArray<NSDictionary *> *)customs
-                       uuidMetadata:(BOOL)shouldIncludeUUIDMetadata
-                        usingClient:(nullable PubNub *)client;
+- (NSArray<PNChannelMember *> *)addMembers:(NSArray<NSString *> *)uuids
+                                toChannels:(NSArray<NSString *> *)channels
+                               withCustoms:(nullable NSArray<NSDictionary *> *)customs
+                              uuidMetadata:(BOOL)shouldIncludeUUIDMetadata
+                               usingClient:(nullable PubNub *)client;
 
 /**
  * @brief Ensure that specified \c channel has exact number of \c members.
@@ -684,7 +684,7 @@ typedef void (^PNTClientDidReceiveStatusHandler)(PubNub *client, PNSubscribeStat
  *     if passed \c nil.
  */
 - (void)removeChannel:(NSString *)channel
-        memberObjects:(NSArray<PNMember *> *)members
+        memberObjects:(NSArray<PNChannelMember *> *)members
           usingClient:(nullable PubNub *)client;
 
 /**

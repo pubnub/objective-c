@@ -39,7 +39,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Total number of existing objects.
  *
- * @note Value will be \c 0 in case if \b PNMembershipTotalCountField not added to \c includeFields
+ * @note Value will be \c 0 in case if \b PNMembershipsTotalCountField not added to \c includeFields
  * of \b PNSetMembershipsRequest / \b PNRemoveMembershipsRequest / \b PNManageMembershipsRequest or
  * \b PNFetchMembershipsRequest.
  */

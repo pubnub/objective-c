@@ -281,7 +281,7 @@ NS_ASSUME_NONNULL_END
     PNObjectsAPICallBuilder *builder = [self objectsBuilder];
     
     
-    XCTAssertTrue([builder.manageMembers(@"secret") isKindOfClass:[PNManageMembersAPICallBuilder class]]);
+    XCTAssertTrue([builder.manageChannelMembers(@"secret") isKindOfClass:[PNManageChannelMembersAPICallBuilder class]]);
 }
 
 - (void)testItShouldSetChannelWhenNSStringPassedToManageMembers {
@@ -292,7 +292,7 @@ NS_ASSUME_NONNULL_END
     id builderMock = OCMPartialMock(builder);
     [self expect:NO mock:builderMock toSetValue:expected toParameter:@"channel"];
     
-    builder.manageMembers(expected);
+    builder.manageChannelMembers(expected);
     
     OCMVerifyAll(builderMock);
 }
@@ -305,7 +305,7 @@ NS_ASSUME_NONNULL_END
     id builderMock = OCMPartialMock(builder);
     [self expect:NO mock:builderMock toSetValue:expected toParameter:@"channel"];
     
-    builder.manageMembers(expected);
+    builder.manageChannelMembers(expected);
     
     OCMVerifyAll(builderMock);
 }
@@ -318,7 +318,7 @@ NS_ASSUME_NONNULL_END
     id builderMock = OCMPartialMock(builder);
     [self expect:NO mock:builderMock toSetValue:expected toParameter:@"channel"];
     
-    builder.manageMembers(expected);
+    builder.manageChannelMembers(expected);
     
     OCMVerifyAll(builderMock);
 }
@@ -330,7 +330,7 @@ NS_ASSUME_NONNULL_END
     PNObjectsAPICallBuilder *builder = [self objectsBuilder];
     
     
-    XCTAssertTrue([builder.setMembers(@"secret") isKindOfClass:[PNSetMembersAPICallBuilder class]]);
+    XCTAssertTrue([builder.setChannelMembers(@"secret") isKindOfClass:[PNSetChannelMembersAPICallBuilder class]]);
 }
 
 - (void)testItShouldSetChannelWhenNSStringPassedToSetMembers {
@@ -341,7 +341,7 @@ NS_ASSUME_NONNULL_END
     id builderMock = OCMPartialMock(builder);
     [self expect:NO mock:builderMock toSetValue:expected toParameter:@"channel"];
     
-    builder.setMembers(expected);
+    builder.setChannelMembers(expected);
     
     OCMVerifyAll(builderMock);
 }
@@ -354,7 +354,7 @@ NS_ASSUME_NONNULL_END
     id builderMock = OCMPartialMock(builder);
     [self expect:NO mock:builderMock toSetValue:expected toParameter:@"channel"];
     
-    builder.setMembers(expected);
+    builder.setChannelMembers(expected);
     
     OCMVerifyAll(builderMock);
 }
@@ -367,7 +367,7 @@ NS_ASSUME_NONNULL_END
     id builderMock = OCMPartialMock(builder);
     [self expect:NO mock:builderMock toSetValue:expected toParameter:@"channel"];
     
-    builder.setMembers(expected);
+    builder.setChannelMembers(expected);
     
     OCMVerifyAll(builderMock);
 }
@@ -379,7 +379,7 @@ NS_ASSUME_NONNULL_END
     PNObjectsAPICallBuilder *builder = [self objectsBuilder];
     
     
-    XCTAssertTrue([builder.removeMembers(@"secret") isKindOfClass:[PNRemoveMembersAPICallBuilder class]]);
+    XCTAssertTrue([builder.removeChannelMembers(@"secret") isKindOfClass:[PNRemoveChannelMembersAPICallBuilder class]]);
 }
 
 - (void)testItShouldSetChannelWhenNSStringPassedToRemoveMembers {
@@ -390,7 +390,7 @@ NS_ASSUME_NONNULL_END
     id builderMock = OCMPartialMock(builder);
     [self expect:NO mock:builderMock toSetValue:expected toParameter:@"channel"];
     
-    builder.removeMembers(expected);
+    builder.removeChannelMembers(expected);
     
     OCMVerifyAll(builderMock);
 }
@@ -403,7 +403,7 @@ NS_ASSUME_NONNULL_END
     id builderMock = OCMPartialMock(builder);
     [self expect:NO mock:builderMock toSetValue:expected toParameter:@"channel"];
     
-    builder.removeMembers(expected);
+    builder.removeChannelMembers(expected);
     
     OCMVerifyAll(builderMock);
 }
@@ -416,7 +416,7 @@ NS_ASSUME_NONNULL_END
     id builderMock = OCMPartialMock(builder);
     [self expect:NO mock:builderMock toSetValue:expected toParameter:@"channel"];
     
-    builder.removeMembers(expected);
+    builder.removeChannelMembers(expected);
     
     OCMVerifyAll(builderMock);
 }
@@ -428,7 +428,7 @@ NS_ASSUME_NONNULL_END
     PNObjectsAPICallBuilder *builder = [self objectsBuilder];
     
     
-    XCTAssertTrue([builder.members(@"secret") isKindOfClass:[PNFetchMembersAPICallBuilder class]]);
+    XCTAssertTrue([builder.channelMembers(@"secret") isKindOfClass:[PNFetchChannelMembersAPICallBuilder class]]);
 }
 
 - (void)testItShouldSetChannelWhenNSStringPassedToFetchMembers {
@@ -439,7 +439,7 @@ NS_ASSUME_NONNULL_END
     id builderMock = OCMPartialMock(builder);
     [self expect:NO mock:builderMock toSetValue:expected toParameter:@"channel"];
     
-    builder.members(expected);
+    builder.channelMembers(expected);
     
     OCMVerifyAll(builderMock);
 }
@@ -452,7 +452,7 @@ NS_ASSUME_NONNULL_END
     id builderMock = OCMPartialMock(builder);
     [self expect:NO mock:builderMock toSetValue:expected toParameter:@"channel"];
     
-    builder.members(expected);
+    builder.channelMembers(expected);
     
     OCMVerifyAll(builderMock);
 }
@@ -465,7 +465,7 @@ NS_ASSUME_NONNULL_END
     id builderMock = OCMPartialMock(builder);
     [self expect:NO mock:builderMock toSetValue:expected toParameter:@"channel"];
     
-    builder.members(expected);
+    builder.channelMembers(expected);
     
     OCMVerifyAll(builderMock);
 }

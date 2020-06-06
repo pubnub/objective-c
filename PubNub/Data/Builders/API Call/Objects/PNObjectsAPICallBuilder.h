@@ -6,7 +6,7 @@
 
 @class PNSetUUIDMetadataAPICallBuilder, PNRemoveUUIDMetadataAPICallBuilder, PNFetchUUIDMetadataAPICallBuilder, PNFetchAllUUIDMetadataAPICallBuilder, PNFetchMembershipsAPICallBuilder;
 @class PNSetChannelMetadataAPICallBuilder, PNRemoveChannelMetadataAPICallBuilder, PNFetchChannelMetadataAPICallBuilder, PNFetchAllChannelsMetadataAPICallBuilder;
-@class PNManageMembersAPICallBuilder, PNRemoveMembersAPICallBuilder, PNSetMembersAPICallBuilder, PNFetchMembersAPICallBuilder;
+@class PNManageChannelMembersAPICallBuilder, PNRemoveChannelMembersAPICallBuilder, PNSetChannelMembersAPICallBuilder, PNFetchChannelMembersAPICallBuilder;
 @class PNManageMembershipsAPICallBuilder, PNSetMembershipsAPICallBuilder, PNRemoveMembershipsAPICallBuilder;
 
 
@@ -148,7 +148,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @return API call configuration builder.
  */
-@property (nonatomic, readonly, strong) PNManageMembersAPICallBuilder * (^manageMembers)(NSString *channel);
+@property (nonatomic, readonly, strong) PNManageChannelMembersAPICallBuilder * (^manageChannelMembers)(NSString *channel);
 
 /**
  * @brief Members set API call builder access block.
@@ -157,7 +157,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @return API call configuration builder.
  */
-@property (nonatomic, readonly, strong) PNSetMembersAPICallBuilder * (^setMembers)(NSString *channel);
+@property (nonatomic, readonly, strong) PNSetChannelMembersAPICallBuilder * (^setChannelMembers)(NSString *channel);
 
 /**
  * @brief Members remove API call builder access block.
@@ -166,7 +166,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @return API call configuration builder.
  */
-@property (nonatomic, readonly, strong) PNRemoveMembersAPICallBuilder * (^removeMembers)(NSString *channel);
+@property (nonatomic, readonly, strong) PNRemoveChannelMembersAPICallBuilder * (^removeChannelMembers)(NSString *channel);
 
 /**
  * @brief Members fetch API call builder access block.
@@ -175,7 +175,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @return API call configuration builder.
  */
-@property (nonatomic, readonly, strong) PNFetchMembersAPICallBuilder * (^members)(NSString *channel);
+@property (nonatomic, readonly, strong) PNFetchChannelMembersAPICallBuilder * (^channelMembers)(NSString *channel);
 
 #pragma mark -
 

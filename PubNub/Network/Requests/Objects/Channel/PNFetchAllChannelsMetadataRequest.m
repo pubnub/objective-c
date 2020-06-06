@@ -5,6 +5,7 @@
  * @copyright © 2010-2020 PubNub, Inc.
  */
 #import "PNFetchAllChannelsMetadataRequest.h"
+#import "PNBaseObjectsRequest+Private.h"
 
 
 #pragma mark Interface implementation
@@ -23,6 +24,17 @@
 
 - (BOOL)isIdentifierRequired {
     return NO;
+}
+
+
+#pragma mark - Initialization & Configuration
+
+- (instancetype)init {
+    if ((self = [super init])) {
+        self.includeFields = PNChannelTotalCountField;
+    }
+    
+    return self;
 }
 
 #pragma mark -

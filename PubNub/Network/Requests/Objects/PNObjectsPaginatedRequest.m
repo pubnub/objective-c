@@ -26,8 +26,8 @@
     
     if ((self.includeFields & PNChannelTotalCountField) == PNChannelTotalCountField ||
         (self.includeFields & PNUUIDTotalCountField) == PNUUIDTotalCountField ||
-        (self.includeFields & PNMembershipTotalCountField) == PNMembershipTotalCountField ||
-        (self.includeFields & PNMemberTotalCountField) == PNMemberTotalCountField) {
+        (self.includeFields & PNMembershipsTotalCountField) == PNMembershipsTotalCountField ||
+        (self.includeFields & PNChannelMembersTotalCountField) == PNChannelMembersTotalCountField) {
 
         [parameters addQueryParameter:@"1" forFieldName:@"count"];
     }
