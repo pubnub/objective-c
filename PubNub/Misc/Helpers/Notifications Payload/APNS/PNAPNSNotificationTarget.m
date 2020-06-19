@@ -116,7 +116,7 @@ NS_ASSUME_NONNULL_END
                                                            __unused NSUInteger idx,
                                                            __unused BOOL *stop) {
             
-            [excludedDevices addObject:[PNData HEXFromDevicePushToken:token]];
+            [excludedDevices addObject:[PNData HEXFromDevicePushToken:token].lowercaseString];
         }];
         
         dictionary[@"excluded_devices"] = excludedDevices;

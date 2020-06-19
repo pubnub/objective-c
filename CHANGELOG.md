@@ -1,3 +1,11 @@
+## [v4.14.2](https://github.com/pubnub/objective-c/releases/tag/v4.14.2)
+June 19 2020
+
+[Full Changelog](https://github.com/pubnub/objective-c/compare/v4.14.1...v4.14.2)
+
+#### Fixed
+- Make device push tokens added to `excluded_devices` lowercase. 
+
 ## [v4.14.1](https://github.com/pubnub/objective-c/releases/tag/v4.14.1)
 June 6 2020
 
