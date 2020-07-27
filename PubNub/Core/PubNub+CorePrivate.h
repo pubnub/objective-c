@@ -2,6 +2,7 @@
 #import "PNPublishSequence.h"
 #import "PNRequest+Private.h"
 #import "PNStateListener.h"
+#import "PNFilesManager.h"
 #import "PNClientState.h"
 #import "PNSubscriber.h"
 #import "PNTelemetry.h"
@@ -47,6 +48,13 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief Subscription loop manager.
  */
 @property (nonatomic, readonly, strong) PNSubscriber *subscriberManager;
+
+/**
+ * @brief Files upload / download manager.
+ *
+ * @since 4.15.0
+ */
+@property (nonatomic, readonly, strong) PNFilesManager *filesManager;
 
 /**
  * @brief Publish sequence manager.

@@ -33,11 +33,18 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Service based formatter
 
 /**
- * @brief Create and configure date formatter to handle dates from Objecta API.
+ * @brief Create and configure date formatter to handle dates from Objects API.
  *
  * @return Date formatter which will use \c yyyy-MM-dd'T'HH:mm:ss.SSSZ as \c dateFormat.
  */
 + (NSDateFormatter *)pn_objectsDateFormatter;
+
+/**
+ * @brief Create and configure date formatter to handle dates from Files API.
+ *
+ * @return Date formatter which will use \c yyyy-MM-dd'T'HH:mm:ss.SSSZ as \c dateFormat.
+ */
++ (NSDateFormatter *)pn_filesDateFormatter;
 
 #pragma mark -
 

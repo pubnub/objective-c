@@ -61,6 +61,26 @@ struct PNEventTimeTokenStructure {
 };
 
 /**
+ * @brief Structure with keys under which stored information about newly uploaded file.
+ *
+ * @since 4.15.0
+ */
+struct PNFileMessageDataStructure {
+    /**
+     * @brief Key under which stored unique file identifier
+     */
+    __unsafe_unretained NSString *identifier;
+    
+    /**
+     * @brief Key under which stored name under which file has been stored remotely.
+     */
+    __unsafe_unretained NSString *filename;
+} PNFileMessageData = {
+    .identifier = @"id",
+    .filename = @"name"
+};
+
+/**
  * @brief Overall real-time event format.
  */
 struct PNEventEnvelopeStructure {
@@ -203,6 +223,22 @@ struct PNEventEnvelopeStructure {
          */
         __unsafe_unretained NSString *data;
     } object;
+    
+    struct {
+        /**
+         * @brief Key under which stored message which has been sent along with file.
+         *
+         * @since 4.15.0
+         */
+        __unsafe_unretained NSString *message;
+        
+        /**
+         * @brief Uploaded file information.
+         *
+         * @since 4.15.0
+         */
+        struct PNFileMessageDataStructure file;
+    } file;
 } PNEventEnvelope = {
     .senderTimeToken = { .key = @"o" },
     .publishTimeToken = { .key = @"p" },
@@ -219,6 +255,10 @@ struct PNEventEnvelopeStructure {
         .type = @"type",
         .version = @"version",
         .data = @"data"
+    },
+    .file = {
+        .message = @"message",
+        .file = @"file"
     }
 };
 
@@ -266,6 +306,19 @@ NS_ASSUME_NONNULL_BEGIN
  * @since 4.10.0
  */
 + (NSMutableDictionary *)objectFromData:(NSDictionary<NSString *, id> *)data;
+
+/**
+ * @brief Parse provided data as \c file event.
+ *
+ * @param data Data which should be parsed to required 'file event' object format.
+ * @param additionalData Additional information provided by client to complete parsing.
+ *
+ * @return Processed and parsed 'file event' object.
+ *
+ * @since 4.15.0
+ */
++ (NSMutableDictionary *)fileFromData:(NSDictionary<NSString *, id> *)data
+             withAdditionalParserData:(NSDictionary<NSString *, id> *)additionalData;
 
 /**
  * @brief Parse provided data as \c action event.
@@ -368,7 +421,8 @@ NS_ASSUME_NONNULL_END
     event[@"subscription"] = (subscriptionMatch ?: channel);
     event[@"channel"] = channel;
     PNMessageType messageType = ((PNEnvelopeInformation *)event[@"envelope"]).messageType;
-    BOOL isEncryptionSupported = messageType == PNRegularMessageType;
+    BOOL isEncryptionSupported = messageType == PNRegularMessageType ||
+                                 messageType == PNFileMessageType;
 
     id timeTokenData = (data[PNEventEnvelope.senderTimeToken.key] ?:
                         data[PNEventEnvelope.publishTimeToken.key]);
@@ -396,6 +450,14 @@ NS_ASSUME_NONNULL_END
                                        withEnvelope:event[@"envelope"]];
         
         [event addEntriesFromDictionary:action];
+    } else if (messageType == PNFileMessageType) {
+        NSDictionary *parserData = isEncryptionSupported ? additionalData : nil;
+        NSDictionary *fileMessage = [self fileFromData:data[PNEventEnvelope.payload]
+                              withAdditionalParserData:parserData];
+        
+        if (fileMessage.count) {
+            [event addEntriesFromDictionary:fileMessage];
+        }
     } else {
         NSDictionary *parserData = isEncryptionSupported ? additionalData : nil;
 
@@ -496,6 +558,23 @@ NS_ASSUME_NONNULL_END
     }
     
     return object;
+}
+
++ (NSMutableDictionary *)fileFromData:(NSDictionary<NSString *, id> *)data
+             withAdditionalParserData:(NSDictionary<NSString *, id> *)additionalData {
+    
+    NSMutableDictionary *fileMessage = [NSMutableDictionary new];
+    NSDictionary *messagePayload = [self messageFromData:data
+                                withAdditionalParserData:additionalData];
+    
+    if (!((NSNumber *)messagePayload[@"decryptError"]).boolValue) {
+        fileMessage[@"message"] = [messagePayload valueForKeyPath:@"message.message"];
+        fileMessage[@"file"] = [messagePayload valueForKeyPath:@"message.file"];
+    } else {
+        fileMessage = [messagePayload mutableCopy];
+    }
+    
+    return fileMessage;
 }
 
 + (NSMutableDictionary *)actionFromData:(NSDictionary<NSString *, id> *)data

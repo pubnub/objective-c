@@ -52,6 +52,15 @@ typedef void (^PNTClientDidReceivePresenceEventHandler)(PubNub *client, PNPresen
 typedef void (^PNTClientDidReceiveObjectEventHandler)(PubNub *client, PNObjectEventResult *event, BOOL *shouldRemove);
 
 /**
+ * @brief Type used to describe block for \c file event handling.
+ *
+ * @param client \b PubNub client which used delegate callback.
+ * @param event Object with information about received \c file event.
+ * @param shouldRemove Whether handling block should be removed after call or not.
+ */
+typedef void (^PNTClientDidReceiveFileEventHandler)(PubNub *client, PNFileEventResult *event, BOOL *shouldRemove);
+
+/**
  * @brief Type used to describe block for status change handling.
  *
  * @param client \b PubNub client which used delegate callback.
@@ -721,6 +730,65 @@ typedef void (^PNTClientDidReceiveStatusHandler)(PubNub *client, PNSubscribeStat
 - (void)removeChannelsMetadataUsingClient:(nullable PubNub *)client;
 
 
+#pragma mark - Files
+
+/**
+ * @brief Upload set fo random files to specified \c channel.
+ *
+ * @param count How many random files should be uploaded to \c channel.
+ * @param channel Name of channel to which files should be uploaded.
+ * @param client \b PubNub client which should be used to upload \c channel \c files. Will use
+ *   \c self.client if passed \c nil.
+ *
+ * @return List with uploaded files information.
+ */
+- (NSArray<NSDictionary *> *)uploadFiles:(NSUInteger)count
+                               toChannel:(NSString *)channel
+                             usingClient:(nullable PubNub *)client;
+
+/**
+ * @brief Upload set fo random encrypted files to specified \c channel.
+ *
+ * @param count How many random files should be uploaded to \c channel.
+ * @param channel Name of channel to which files should be uploaded.
+ * @param key Cipher key which should be used to encrypt uploaded file.
+ * @param client \b PubNub client which should be used to upload \c channel \c files. Will use
+ *   \c self.client if passed \c nil.
+ *
+ * @return List with uploaded files information.
+ */
+- (NSArray<NSDictionary *> *)uploadFiles:(NSUInteger)count
+                               toChannel:(NSString *)channel
+                           withCipherKey:(nullable NSString *)key
+                             usingClient:(nullable PubNub *)client;
+
+/**
+ * @brief Ensure that specified number of \c files has been uploaded to \c channel for current publish / subscribe keys.
+ *
+ * @param count Expected number of \c files which uploaded to \c channel.
+ * @param client \b PubNub client which should be used to audit \c channel \c files. Will use
+ *   \c self.client if passed \c nil.
+ */
+- (void)verifyUploadedFilesCountInChannel:(NSString *)channel
+                            shouldEqualTo:(NSUInteger)count
+                              usingClient:(nullable PubNub *)client;
+
+/**
+ * @brief Try to remove specified \c files from channel.
+ *
+ * @param files List of files which should be removed from channel.
+ * @param channel Name of channel for which files should be removed.
+ */
+- (void)removeFiles:(NSArray<NSDictionary *> *)files forChannel:(NSString *)channel;
+
+/**
+ * @brief Try to remove files from channel.
+ *
+ * @param channel Name of channel for which files should be removed.
+ */
+- (void)removeAllFilesForChannel:(NSString *)channel;
+
+
 #pragma mark - Mocking
 
 /**
@@ -783,6 +851,14 @@ typedef void (^PNTClientDidReceiveStatusHandler)(PubNub *client, PNSubscribeStat
  * @param handler Block which should be called each \c user event.
  */
 - (void)addObjectHandlerForClient:(PubNub *)client withBlock:(PNTClientDidReceiveObjectEventHandler)handler;
+
+/**
+ * @brief Add block which will be called for each received \c file event.
+ *
+ * @param client \b PubNub client for which \c file events should be tracked.
+ * @param handler Block which should be called each \c file event.
+ */
+- (void)addFileHandlerForClient:(PubNub *)client withBlock:(PNTClientDidReceiveFileEventHandler)handler;
 
 /**
  * @brief Add block which will be called for each received \c action event.

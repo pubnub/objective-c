@@ -14,6 +14,7 @@
 
 #pragma mark - Error domains
 
+static NSString * const kPNStorageErrorDomain = @"PNStorageErrorDomain";
 static NSString * const kPNAESErrorDomain = @"PNAESErrorDomain";
 static NSString * const kPNAPIErrorDomain = @"PNAPIErrorDomain";
 
@@ -38,6 +39,7 @@ static NSInteger const kPNEmptyMessageError = 3000;
 static NSInteger const kPNAESEmptyObjectError = 4000;
 static NSInteger const kPNAESConfigurationError = 4001;
 static NSInteger const kPNAESInsufficientMemoryError = 4002;
-static NSInteger const kPNAESDecryptionError = 4003;
+static NSInteger const kPNAESEncryptionError = 4003;
+static NSInteger const kPNAESDecryptionError = 4004;
 
 #endif // PNErrorCodes_h

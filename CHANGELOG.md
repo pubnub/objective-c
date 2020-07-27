@@ -1,3 +1,18 @@
+## [v4.15.0](https://github.com/pubnub/objective-c/releases/tag/v4.15.0)
+July 27 2020
+
+[Full Changelog](https://github.com/pubnub/objective-c/compare/v4.14.2...v4.15.0)
+
+#### Added
+- Add send file API support which allow encrypt (if configured) and upload file to `channel`. 
+- Add download file API support which allow download file from `channel` and decrypt (if configured). 
+- Add list files API support which allow retrieve information about files sent to `channel`. 
+- Add delete file API support to permanently remove file from `channel`. 
+- Add file message publish API which allow notify about new file upload completion (should be used to recover from internal publish error). 
+- Add new subscribe events listener to handle new files events. 
+- Add new methods to PNAES which allow to encrypt / decrypt file at local file system. 
+- Add new option for PubNub client configuration and PNAES methods to use random initialization vector instead of hard-coded when files / data is encrypted / decrypted. 
+
 ## [v4.14.2](https://github.com/pubnub/objective-c/releases/tag/v4.14.2)
 June 19 2020
 

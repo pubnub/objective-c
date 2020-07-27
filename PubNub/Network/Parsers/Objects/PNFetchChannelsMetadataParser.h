@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @since 4.14.0
  * @copyright © 2010-2020 PubNub, Inc.
  */
-@interface PNFetchChannelsMetadataParser : NSObject
+@interface PNFetchChannelsMetadataParser : NSObject <PNParser>
 
 
 #pragma mark -

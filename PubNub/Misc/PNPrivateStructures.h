@@ -52,7 +52,12 @@ typedef NS_OPTIONS(NSUInteger, PNMessageType) {
     /**
      @brief Type which represent \c message \c action object.
      */
-    PNMessageActionType = 3
+    PNMessageActionType = 3,
+    
+    /**
+     @brief Type which represent \c file \c message object.
+     */
+    PNFileMessageType = 4
 };
 
 /**
@@ -60,7 +65,7 @@ typedef NS_OPTIONS(NSUInteger, PNMessageType) {
  *
  * @since 4.0.0
  */
-static NSString * const PNOperationTypeStrings[51] = {
+static NSString * const PNOperationTypeStrings[57] = {
     [PNSubscribeOperation] = @"Subscribe",
     [PNUnsubscribeOperation] = @"Unsubscribe",
     [PNPublishOperation] = @"Publish",
@@ -111,10 +116,16 @@ static NSString * const PNOperationTypeStrings[51] = {
     [PNRemoveChannelMembersOperation] = @"Remove Channel Members",
     [PNManageChannelMembersOperation] = @"Manage Channel Members",
     [PNFetchChannelMembersOperation] = @"Fetch Channel Members",
+    [PNGenerateFileUploadURLOperation] = @"Generate File Upload URL",
+    [PNPublishFileMessageOperation] = @"Publish File Message",
+    [PNSendFileOperation] = @"Send File",
+    [PNListFilesOperation] = @"List Files",
+    [PNDownloadFileOperation] = @"Download File",
+    [PNDeleteFileOperation] = @"Delete file",
     [PNTimeOperation] = @"Time",
 };
 
-static NSString * const PNOperationResultClasses[51] = {
+static NSString * const PNOperationResultClasses[57] = {
     [PNHistoryOperation] = @"PNHistoryResult",
     [PNHistoryForChannelsOperation] = @"PNHistoryResult",
     [PNHistoryWithActionsOperation] = @"PNHistoryResult",
@@ -137,10 +148,12 @@ static NSString * const PNOperationResultClasses[51] = {
     [PNFetchAllChannelsMetadataOperation] = @"PNFetchAllChannelsMetadataResult",
     [PNFetchMembershipsOperation] = @"PNFetchMembershipsResult",
     [PNFetchChannelMembersOperation] = @"PNFetchChannelMembersResult",
+    [PNListFilesOperation] = @"PNListFilesResult",
+    [PNDownloadFileOperation] = @"PNDownloadFileResult",
     [PNTimeOperation] = @"PNTimeResult",
 };
 
-static NSString * const PNOperationStatusClasses[51] = {
+static NSString * const PNOperationStatusClasses[57] = {
     [PNSubscribeOperation] = @"PNSubscribeStatus",
     [PNUnsubscribeOperation] = @"PNAcknowledgmentStatus",
     [PNPublishOperation] = @"PNPublishStatus",
@@ -191,6 +204,12 @@ static NSString * const PNOperationStatusClasses[51] = {
     [PNRemoveChannelMembersOperation] = @"PNManageChannelMembersStatus",
     [PNManageChannelMembersOperation] = @"PNManageChannelMembersStatus",
     [PNFetchChannelMembersOperation] = @"PNErrorStatus",
+    [PNGenerateFileUploadURLOperation] = @"PNGenerateFileUploadURLStatus",
+    [PNPublishFileMessageOperation] = @"PNPublishStatus",
+    [PNSendFileOperation] = @"PNSendFileStatus",
+    [PNListFilesOperation] = @"PNErrorStatus",
+    [PNDownloadFileOperation] = @"PNErrorStatus",
+    [PNDeleteFileOperation] = @"PNAcknowledgmentStatus",
     [PNTimeOperation] = @"PNErrorStatus",
 };
 
@@ -199,7 +218,7 @@ static NSString * const PNOperationStatusClasses[51] = {
  *
  * @since 4.0.0
  */
-static NSString * const PNStatusCategoryStrings[18] = {
+static NSString * const PNStatusCategoryStrings[21] = {
     [PNUnknownCategory] = @"Unknown",
     [PNAcknowledgmentCategory] = @"Acknowledgment",
     [PNAccessDeniedCategory] = @"Access Denied",
@@ -217,7 +236,10 @@ static NSString * const PNStatusCategoryStrings[18] = {
     [PNMalformedResponseCategory] = @"Malformed Response",
     [PNDecryptionErrorCategory] = @"Decryption Error",
     [PNTLSConnectionFailedCategory] = @"TLS Connection Failed",
-    [PNTLSUntrustedCertificateCategory] = @"Untrusted TLS Certificate"
+    [PNTLSUntrustedCertificateCategory] = @"Untrusted TLS Certificate",
+    [PNSendFileErrorCategory] = @"File Upload Failed",
+    [PNPublishFileMessageErrorCategory] = @"File Message Publish Failed",
+    [PNDownloadErrorCategory] = @"File Download Failed"
 };
 
 /**

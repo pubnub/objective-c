@@ -60,6 +60,13 @@ NS_ASSUME_NONNULL_END
 - (PNRequestParameters *)requestParameters {
     if (!_requestParameters) {
         _requestParameters = [PNRequestParameters new];
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wundeclared-selector"
+        if ([self respondsToSelector:@selector(arbitraryQueryParameters)]) {
+            NSDictionary *queryParameters = [self valueForKey:@"arbitraryQueryParameters"];
+            [_requestParameters addQueryParameters:queryParameters];
+        }
+        #pragma clang diagnostic pop
     }
     
     return _requestParameters;

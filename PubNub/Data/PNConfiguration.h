@@ -276,6 +276,27 @@ NS_ASSUME_NONNULL_BEGIN
 #endif // TARGET_OS_IOS
 
 /**
+ * @brief Whether PNAES should use random initialization vector for each encrypted message.
+ *
+ * @warning This option doesn't have backward compatibility and if enabled, older messages can't be
+ * decrypted.
+ *
+ * @default By default \c client use \b YES only for uploaded files encryption and \b NO for published messages.
+ *
+ * @since 4.15.0
+ */
+@property (nonatomic, assign, getter = shouldUseRandomInitializationVector) BOOL useRandomInitializationVector;
+
+/**
+ * @brief How many times \b PubNub client should retry \c file \c message \c publish before returning error.
+ *
+ * @note Set this property to \b to disable automatic \c file \c message \c publish retry attempts.
+ *
+ * @default By default \c client use \b 5.
+ */
+@property (nonatomic, assign) NSUInteger fileMessagePublishRetryLimit;
+
+/**
  * @brief Construct configuration instance using minimal required data.
  *
  * @param publishKey Key which allow client to use data push API.

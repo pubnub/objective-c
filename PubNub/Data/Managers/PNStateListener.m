@@ -72,6 +72,16 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSHashTable<id <PNEventsListener>> *objectEventListeners;
 
 /**
+ * @brief List of listeners which would like to be notified when new \c file event arrive from
+ * remote data feed objects on which client subscribed at this moment.
+ *
+ * @return Hash table with list of \c file event listeners.
+ *
+ * @since 4.15.0
+ */
+@property (nonatomic, strong) NSHashTable<id <PNEventsListener>> *fileEventListeners;
+
+/**
  * @brief List of listeners which would like to be notified when on subscription state changes
  * (connection, access rights error, disconnection and unexpected disconnection).
  */
@@ -143,6 +153,7 @@ NS_ASSUME_NONNULL_END
         _messageActionListeners = [NSHashTable weakObjectsHashTable];
         _presenceEventListeners = [NSHashTable weakObjectsHashTable];
         _objectEventListeners = [NSHashTable weakObjectsHashTable];
+        _fileEventListeners = [NSHashTable weakObjectsHashTable];
         _stateListeners = [NSHashTable weakObjectsHashTable];
         _resourceAccessQueue = dispatch_queue_create("com.pubnub.listener", DISPATCH_QUEUE_SERIAL);
     }
@@ -160,6 +171,7 @@ NS_ASSUME_NONNULL_END
     NSHashTable *actionListeners = [listener listenersCopyFrom:listener.messageActionListeners];
     NSHashTable *presenceEventListeners = [listener listenersCopyFrom:listener.presenceEventListeners];
     NSHashTable *objectEventListeners = [listener listenersCopyFrom:listener.objectEventListeners];
+    NSHashTable *fileEventListeners = [listener listenersCopyFrom:listener.fileEventListeners];
     NSHashTable *stateListeners = [listener listenersCopyFrom:listener.stateListeners];
     
     dispatch_async(self.resourceAccessQueue, ^{
@@ -168,6 +180,7 @@ NS_ASSUME_NONNULL_END
         self.messageActionListeners = actionListeners;
         self.presenceEventListeners = presenceEventListeners;
         self.objectEventListeners = objectEventListeners;
+        self.fileEventListeners = fileEventListeners;
         self.stateListeners = stateListeners;
     });
 }
@@ -197,6 +210,10 @@ NS_ASSUME_NONNULL_END
             [self.objectEventListeners addObject:listener];
         }
         
+        if ([listener respondsToSelector:@selector(client:didReceiveFileEvent:)]) {
+            [self.fileEventListeners addObject:listener];
+        }
+        
         if ([listener respondsToSelector:@selector(client:didReceiveStatus:)]) {
             [self.stateListeners addObject:listener];
         }
@@ -210,6 +227,7 @@ NS_ASSUME_NONNULL_END
         [self.messageActionListeners removeObject:listener];
         [self.presenceEventListeners removeObject:listener];
         [self.objectEventListeners removeObject:listener];
+        [self.fileEventListeners removeObject:listener];
         [self.stateListeners removeObject:listener];
     });
 }
@@ -221,6 +239,7 @@ NS_ASSUME_NONNULL_END
         [self.messageActionListeners removeAllObjects];
         [self.presenceEventListeners removeAllObjects];
         [self.objectEventListeners removeAllObjects];
+        [self.fileEventListeners removeAllObjects];
         [self.stateListeners removeAllObjects];
     });
 }
@@ -287,6 +306,16 @@ NS_ASSUME_NONNULL_END
     pn_dispatch_async(self.client.callbackQueue, ^{
         for (id <PNEventsListener> listener in listeners) {
             [listener client:self.client didReceiveObjectEvent:event];
+        }
+    });
+}
+
+- (void)notifyFileEvent:(PNFileEventResult *)event {
+    NSArray<id <PNEventsListener>> *listeners = self.fileEventListeners.allObjects;
+
+    pn_dispatch_async(self.client.callbackQueue, ^{
+        for (id <PNEventsListener> listener in listeners) {
+            [listener client:self.client didReceiveFileEvent:event];
         }
     });
 }

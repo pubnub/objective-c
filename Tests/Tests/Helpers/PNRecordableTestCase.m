@@ -347,6 +347,11 @@ NS_ASSUME_NONNULL_END
     self.usesMockedObjects = [self hasMockedObjectsInTestCaseWithName:self.name];
     self.testCompletionDelay = 15.f;
     self.falseTestCompletionDelay = YHVVCR.cassette.isNewCassette ? self.testCompletionDelay : 0.25f;
+    
+    if (![self shouldSetupVCR]) {
+        self.falseTestCompletionDelay = 5.f;
+    }
+    
     self.randomizedUserProvidedValues = [NSMutableDictionary new];
     self.randomizedChannelGroups = [NSMutableDictionary new];
     self.uuidMembershipObjects = [NSMutableDictionary new];
@@ -1771,6 +1776,98 @@ NS_ASSUME_NONNULL_END
 }
 
 
+#pragma mark - Files
+
+- (NSArray<NSDictionary *> *)uploadFiles:(NSUInteger)count toChannel:(NSString *)channel usingClient:(PubNub *)client {
+    return [self uploadFiles:count toChannel:channel withCipherKey:nil usingClient:client];
+}
+
+- (NSArray<NSDictionary *> *)uploadFiles:(NSUInteger)count toChannel:(NSString *)channel withCipherKey:(NSString *)key usingClient:(PubNub *)client {
+    
+    NSMutableArray<NSDictionary *> *files = [NSMutableArray new];
+    client = client ?: self.client;
+    key = key ?: client.currentConfiguration.cipherKey;
+    
+    for (NSUInteger fileIdx = 0; fileIdx < count; fileIdx++) {
+        NSString *fileName = [[NSUUID UUID].UUIDString stringByAppendingPathExtension:@"txt"];
+        NSDictionary *message = @{ @"text": [NSUUID UUID].UUIDString };
+        NSData *data = [[NSUUID UUID].UUIDString dataUsingEncoding:NSUTF8StringEncoding];
+        
+        [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+            client.files().sendFile(channel, fileName)
+                .data(data)
+                .message(message)
+                .cipherKey(key)
+                .performWithCompletion(^(PNSendFileStatus *status) {
+                    XCTAssertFalse(status.isError);
+                    XCTAssertTrue(status.data.fileUploaded);
+                    XCTAssertNotNil(status.data.fileIdentifier);
+                    XCTAssertNotNil(status.data.fileName);
+                    
+                    [files addObject:@{
+                        @"id": status.data.fileIdentifier,
+                        @"name": status.data.fileName,
+                        @"data": data
+                    }];
+                    
+                    handler();
+                });
+        }];
+        
+        [self waitTask:@"waitForDistribution" completionFor:1.f];
+    }
+    
+    [self waitTask:@"waitForDistribution" completionFor:1.f];
+    
+    return files;
+}
+
+- (void)verifyUploadedFilesCountInChannel:(NSString *)channel shouldEqualTo:(NSUInteger)count usingClient:(PubNub *)client {
+    client = client ?: self.client;
+    
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        self.client.files().listFiles(channel)
+            .performWithCompletion(^(PNListFilesResult *result, PNErrorStatus *status) {
+                XCTAssertNil(status);
+                XCTAssertGreaterThan(result.data.files.count, 0);
+                XCTAssertEqual(result.data.count, count);
+                handler();
+            });
+    }];
+}
+
+- (void)removeFiles:(NSArray<NSDictionary *> *)files forChannel:(NSString *)channel {
+    for (NSDictionary *file in files) {
+        [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+            self.client.files().deleteFile(channel, file[@"id"], file[@"name"])
+                .performWithCompletion(^(PNAcknowledgmentStatus *status) {
+                
+                handler();
+            });
+        }];
+    }
+    
+    if (files.count) {
+        NSLog(@"%@ '%@' CHANNEL FILES HAS BEEN REMOVED", @(files.count), channel);
+        [self waitTask:@"waitForDistribution" completionFor:1.f];
+    }
+}
+
+- (void)removeAllFilesForChannel:(NSString *)channel {
+    NSMutableArray<NSDictionary *> *files = [NSMutableArray new];
+    
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        self.client.files().listFiles(channel).performWithCompletion(^(PNListFilesResult *result, PNErrorStatus *status) {
+            for (PNFile *file in result.data.files) {
+                [files addObject:@{ @"id": file.identifier, @"name": file.name }];
+            }
+            
+            handler();
+        });
+    }];
+}
+
+
 #pragma mark - Mocking
 
 - (BOOL)isObjectMocked:(id)object {
@@ -1855,6 +1952,10 @@ NS_ASSUME_NONNULL_END
     [self addHandlerOfType:@"object" forClient:client withBlock:handler];
 }
 
+- (void)addFileHandlerForClient:(PubNub *)client withBlock:(PNTClientDidReceiveFileEventHandler)handler {
+    [self addHandlerOfType:@"file" forClient:client withBlock:handler];
+}
+
 - (void)addActionHandlerForClient:(PubNub *)client withBlock:(PNTClientDidReceiveMessageActionHandler)handler {
     [self addHandlerOfType:@"actions" forClient:client withBlock:handler];
 }
@@ -1909,6 +2010,10 @@ NS_ASSUME_NONNULL_END
 
 - (void)client:(PubNub *)client didReceiveObjectEvent:(PNObjectEventResult *)event {
     [self handleClient:client eventWithData:event type:@"object"];
+}
+
+- (void)client:(PubNub *)client didReceiveFileEvent:(PNFileEventResult *)event {
+    [self handleClient:client eventWithData:event type:@"file"];
 }
 
 - (void)waitForObject:(id)object

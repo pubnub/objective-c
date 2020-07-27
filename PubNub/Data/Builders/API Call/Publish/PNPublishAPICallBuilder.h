@@ -71,7 +71,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @note Will be ignored if \c shouldStore is set to \c NO.
  *
  * @param ttl How long message should be stored in channel's storage. Pass \b 0 store message
- *     forever.
+ *     according to retention.
  *
  * @return API call configuration builder.
  *

@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @since 4.14.0
  * @copyright © 2010-2020 PubNub, Inc.
  */
-@interface PNObjectsRemoveParser : NSObject
+@interface PNObjectsRemoveParser : NSObject <PNParser>
 
 
 #pragma mark -

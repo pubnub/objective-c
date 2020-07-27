@@ -5,7 +5,7 @@
 
 #pragma mark Class forward
 
-@class PNChannelMetadata, PNMessageAction, PNUUIDMetadata, PNMembership;
+@class PNChannelMetadata, PNMessageAction, PNUUIDMetadata, PNMembership, PNFile;
 
 
 
@@ -205,11 +205,11 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, readonly, copy) NSString *event;
 
-
 #pragma mark -
 
 
 @end
+
 
 /**
  * @brief Class which allow to get access to \c objects event body received from remote object live
@@ -259,6 +259,35 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief Type of \c object which has been changed and triggered event.
  */
 @property (nonatomic, readonly, strong) NSString *type;
+
+#pragma mark -
+
+
+@end
+
+
+/**
+ * @brief Class which allow to get access to \c file event body received from remote object live feed.
+ *
+ * @author Serhii Mamontov
+ * @version 4.15.0
+ * @since 4.15.0
+ * @copyright © 2010-2020 PubNub, Inc.
+ */
+@interface PNFileEventData : PNSubscriberData
+
+
+#pragma mark - Information
+
+/**
+ * @brief Information about file which has been uploaded to \c channel
+ */
+@property (nonatomic, nullable, readonly, strong) PNFile *file;
+
+/**
+ * @brief Message which has been sent along with uploaded \c file to \c channel.
+ */
+@property (nonatomic, nullable, readonly, strong) id message;
 
 #pragma mark -
 
@@ -355,6 +384,30 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief \c Object event object from live feed.
  */
 @property (nonatomic, readonly, strong) PNObjectEventData *data;
+
+#pragma mark -
+
+
+@end
+
+
+/**
+ * @brief Class which is used to provide access to request processing results.
+ *
+ * @author Serhii Mamontov
+ * @version 4.15.0
+ * @since 4.15.0
+ * @copyright © 2010-2020 PubNub, Inc.
+ */
+@interface PNFileEventResult : PNResult
+
+
+#pragma mark - Information
+
+/**
+ * @brief \c File \c event object from live feed.
+ */
+@property (nonatomic, readonly, strong) PNFileEventData *data;
 
 #pragma mark -
 

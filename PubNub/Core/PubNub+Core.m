@@ -102,6 +102,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) PNHeartbeat *heartbeatManager;
 @property (nonatomic, strong) PNTelemetry *telemetryManager;
 @property (nonatomic, assign) PNStatusCategory recentClientStatus;
+@property (nonatomic, strong) PNFilesManager *filesManager;
 @property (nonatomic, strong) PNNetwork *subscriptionNetwork;
 @property (nonatomic, strong) PNNetwork *serviceNetwork;
 
@@ -282,6 +283,7 @@ NS_ASSUME_NONNULL_END
 
         [self prepareNetworkManagers];
         
+        _filesManager = [PNFilesManager filesManagerForClient:self];
         _subscriberManager = [PNSubscriber subscriberForClient:self];
         _sequenceManager = [PNPublishSequence sequenceForClient:self];
         _clientStateManager = [PNClientState stateForClient:self];

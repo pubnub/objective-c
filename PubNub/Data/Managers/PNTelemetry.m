@@ -272,6 +272,12 @@ NS_ASSUME_NONNULL_END
         case PNFetchChannelMembersOperation:
             operation = @"obj";
             break;
+        case PNGenerateFileUploadURLOperation:
+        case PNListFilesOperation:
+        case PNDownloadFileOperation:
+        case PNDeleteFileOperation:
+            operation = @"file";
+            break;
         case PNAddMessageActionOperation:
         case PNRemoveMessageActionOperation:
         case PNFetchMessagesActionsOperation:

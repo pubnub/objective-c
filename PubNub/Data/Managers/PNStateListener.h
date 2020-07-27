@@ -5,7 +5,7 @@
 #pragma mark Class forward
 
 @class PNMessageActionResult, PNMessageResult, PNSignalResult, PNErrorStatus, PubNub;
-@class PNPresenceEventResult, PNObjectEventResult;
+@class PNPresenceEventResult, PNObjectEventResult, PNFileEventResult;
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -140,6 +140,18 @@ NS_ASSUME_NONNULL_BEGIN
  * for it.
  */
 - (void)notifyObjectEvent:(PNObjectEventResult *)event;
+
+/**
+ * @brief Notify all \c file listeners about new event.
+ *
+ * @warning Method should be called within \b -notifyWithBlock: block to shift execution to private
+ * protected queue.
+ *
+ * @param event Event object which provide information about operation type and service response for it.
+ *
+ * @since 4.15.0
+ */
+- (void)notifyFileEvent:(PNFileEventResult *)event;
 
 /**
  * @brief Notify all state change listeners about changes in subscriber state.

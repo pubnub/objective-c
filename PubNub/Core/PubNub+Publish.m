@@ -1,14 +1,17 @@
 /**
  * @author Serhii Mamontov
- * @since 4.0
- * @copyright © 2010-2018 PubNub, Inc.
+ * @version 4.15.0
+ * @since 4.0.0
+ * @copyright © 2010-2020 PubNub, Inc.
  */
 #import "PubNub+Publish.h"
+#import "PNBasePublishRequest+Private.h"
 #import "PNAPICallBuilder+Private.h"
 #import "PNRequestParameters.h"
 #import "PubNub+CorePrivate.h"
 #import "PNStatus+Private.h"
 #import "PNConfiguration.h"
+#import "PNPublishStatus.h"
 #import "PNLogMacro.h"
 #import "PNHelpers.h"
 #import "PNAES.h"
@@ -216,14 +219,68 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - API Builder support
 
+- (PNPublishFileMessageAPICallBuilder * (^)(void))publishFileMessage {
+    PNPublishFileMessageAPICallBuilder *builder = nil;
+    __weak __typeof(self) weakSelf = self;
+    
+    builder = [PNPublishFileMessageAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
+                                                                              NSDictionary *parameters) {
+                                                                       
+        NSString *identifier = parameters[NSStringFromSelector(@selector(fileIdentifier))];
+        NSString *filename = parameters[NSStringFromSelector(@selector(fileName))];
+        NSString *channel = parameters[NSStringFromSelector(@selector(channel))];
+        NSNumber *shouldStore = parameters[NSStringFromSelector(@selector(shouldStore))];
+        NSNumber *ttl = parameters[NSStringFromSelector(@selector(ttl))];
+        
+        if (shouldStore && !shouldStore.boolValue) {
+            ttl = nil;
+        }
+
+        PNPublishFileMessageRequest *request = [PNPublishFileMessageRequest requestWithChannel:channel
+                                                                                fileIdentifier:identifier
+                                                                                          name:filename];
+        request.metadata = parameters[NSStringFromSelector(@selector(metadata))];
+        request.message = parameters[NSStringFromSelector(@selector(message))];
+        request.arbitraryQueryParameters = parameters[@"queryParam"];
+        request.store = (shouldStore ? shouldStore.boolValue : YES);
+        request.ttl = ttl.unsignedIntegerValue;
+        
+        [weakSelf publishFileMessageWithRequest:request completion:parameters[@"block"]];
+    }];
+    
+    return ^PNPublishFileMessageAPICallBuilder * {
+        return builder;
+    };
+}
+
 - (PNPublishAPICallBuilder * (^)(void))publish {
     
     PNPublishAPICallBuilder *builder = nil;
     __weak __typeof(self) weakSelf = self;
     builder = [PNPublishAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags, 
                                                                    NSDictionary *parameters) {
+                                                                       
+        NSString *channel = parameters[NSStringFromSelector(@selector(channel))];
+        NSNumber *shouldStore = parameters[NSStringFromSelector(@selector(shouldStore))];
+        NSNumber *ttl = parameters[NSStringFromSelector(@selector(ttl))];
+        NSNumber *compressed = parameters[NSStringFromSelector(@selector(compress))];
+        NSNumber *replicate = parameters[NSStringFromSelector(@selector(replicate))];
+        
+        if (shouldStore && !shouldStore.boolValue) {
+            ttl = nil;
+        }
+
+        PNPublishRequest *request = [PNPublishRequest requestWithChannel:channel];
+        request.metadata = parameters[NSStringFromSelector(@selector(metadata))];
+        request.payloads = parameters[NSStringFromSelector(@selector(payloads))];
+        request.message = parameters[NSStringFromSelector(@selector(message))];
+        request.arbitraryQueryParameters = parameters[@"queryParam"];
+        request.store = (shouldStore ? shouldStore.boolValue : YES);
+        request.replicate = (replicate ? replicate.boolValue : YES);
+        request.compress = compressed.boolValue;
+        request.ttl = ttl.unsignedIntegerValue;
                                      
-        [weakSelf handlePublishBuilderExecutionWithFlags:flags parameters:parameters];
+        [weakSelf publishWithRequest:request completion:parameters[@"block"]];
     }];
     
     return ^PNPublishAPICallBuilder * {
@@ -303,6 +360,76 @@ NS_ASSUME_NONNULL_END
     return ^PNPublishSizeAPICallBuilder * {
         return builder;
     };
+}
+
+
+#pragma mark - Files message
+
+- (void)publishFileMessageWithRequest:(PNPublishFileMessageRequest *)request
+                           completion:(PNPublishCompletionBlock)block {
+    
+    if (!request.retried) {
+        request.sequenceNumber = [self.sequenceManager nextSequenceNumber:YES];
+    }
+    
+    request.cipherKey = self.configuration.cipherKey;
+    
+    PNLogAPICall(self.logger, @"<PubNub::API> Publish '%@' file message to '%@' channel%@%@%@",
+                 (request.identifier ?: @"<error>"),
+                 (request.channel ?: @"<error>"),
+                 (request.metadata ? [NSString stringWithFormat:@" with metadata (%@)",
+                                      request.metadata] : @""),
+                 (!request.shouldStore ? @" which won't be saved in history" : @""),
+                 [NSString stringWithFormat:@": %@", (request.preFormattedMessage ?: @"<error>")]);
+    
+    __weak __typeof(self) weakSelf = self;
+    
+    [self performRequest:request withCompletion:^(PNPublishStatus *status) {
+        if (block && status.isError) {
+            status.retryBlock = ^{
+                request.retried = YES;
+                [weakSelf publishFileMessageWithRequest:request completion:block];
+            };
+        }
+        
+        if (block) {
+            block(status);
+        }
+    }];
+}
+
+#pragma mark - Publish with request
+
+- (void)publishWithRequest:(PNPublishRequest *)request completion:(PNPublishCompletionBlock)block {
+    if (!request.retried) {
+        request.sequenceNumber = [self.sequenceManager nextSequenceNumber:YES];
+    }
+    
+    request.cipherKey = self.configuration.cipherKey;
+
+    PNLogAPICall(self.logger, @"<PubNub::API> Publish%@ message to '%@' channel%@%@%@",
+                 (request.shouldCompress ? @" compressed" : @""),
+                 (request.channel ?: @"<error>"),
+                 (request.metadata ? [NSString stringWithFormat:@" with metadata (%@)",
+                                      request.metadata] : @""),
+                 (!request.shouldStore ? @" which won't be saved in history" : @""),
+                 (!request.shouldCompress ? [NSString stringWithFormat:@": %@",
+                                             (request.message ?: @"<error>")] : @"."));
+    
+    __weak __typeof(self) weakSelf = self;
+    
+    [self performRequest:request withCompletion:^(PNPublishStatus *status) {
+        if (block && status.isError) {
+            status.retryBlock = ^{
+                request.retried = YES;
+                [weakSelf publishWithRequest:request completion:block];
+            };
+        }
+        
+        if (block) {
+            block(status);
+        }
+    }];
 }
 
 
@@ -541,93 +668,17 @@ NS_ASSUME_NONNULL_END
       queryParameters:(NSDictionary *)queryParameters
            completion:(PNPublishCompletionBlock)block {
 
-    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    NSUInteger nextSequenceNumber = [self.sequenceManager nextSequenceNumber:YES];
-    __weak __typeof(self) weakSelf = self;
-
-    if (@available(macOS 10.10, iOS 8.0, *)) {
-        if (self.configuration.applicationExtensionSharedGroupIdentifier) {
-            queue = dispatch_get_main_queue();
-        }
-    }
-
-    dispatch_async(queue, ^{
-        __strong __typeof__(weakSelf) strongSelf = weakSelf;
-        BOOL isEncrypted = NO;
-        NSError *publishError = nil;
-        NSString *messageForPublish = [PNJSON JSONStringFrom:message withError:&publishError];
-        NSString *metadataForPublish = nil;
-        NSData *publishData = nil;
-
-        if (!publishError) {
-            NSString *encrypted = [strongSelf encryptedMessage:messageForPublish
-                                                 withCipherKey:strongSelf.configuration.cipherKey
-                                                         error:&publishError];
-            isEncrypted = ![messageForPublish isEqualToString:encrypted];
-            messageForPublish = [encrypted copy];
-        }
-        
-        
-        if (metadata) {
-            metadataForPublish = [PNJSON JSONStringFrom:metadata withError:&publishError];
-        }
-
-        if (!publishError && payloads.count) {
-            id targetMessage = isEncrypted ? messageForPublish : message;
-            NSDictionary *mergedData = [strongSelf mergedMessage:targetMessage
-                                           withMobilePushPayload:payloads];
-            messageForPublish = [PNJSON JSONStringFrom:mergedData withError:&publishError];
-        }
-        
-        PNRequestParameters *parameters = [strongSelf requestParametersForMessage:messageForPublish
-                                                                        toChannel:channel 
-                                                                       compressed:compressed
-                                                                   storeInHistory:shouldStore
-                                                                              ttl:ttl
-                                                                        replicate:replicate
-                                                                         metadata:metadataForPublish 
-                                                                   sequenceNumber:nextSequenceNumber
-                                                                  queryParameters:queryParameters];
-        
-        if (compressed) {
-            NSData *messageData = [messageForPublish dataUsingEncoding:NSUTF8StringEncoding];
-            NSData *compressedBody = [PNGZIP GZIPDeflatedData:messageData];
-            publishData = (compressedBody?: [@"" dataUsingEncoding:NSUTF8StringEncoding]);
-            parameters.POSTBodyCompressed = YES;
-            parameters.HTTPMethod = @"POST";
-        }
-        
-        PNLogAPICall(strongSelf.logger, @"<PubNub::API> Publish%@ message to '%@' channel%@%@%@",
-            (compressed ? @" compressed" : @""), (channel?: @"<error>"),
-            (metadata ? [NSString stringWithFormat:@" with metadata (%@)",
-                         metadataForPublish] : @""),
-            (!shouldStore ? @" which won't be saved in history" : @""),
-            (!compressed ? [NSString stringWithFormat:@": %@",
-                            (messageForPublish?: @"<error>")] : @"."));
-
-        [strongSelf processOperation:PNPublishOperation
-                      withParameters:parameters
-                                data:publishData
-                     completionBlock:^(PNStatus *status) {
-                         
-            if (status.isError) {
-                status.retryBlock = ^{
-                    [weakSelf publish:message
-                              toChannel:channel
-                      mobilePushPayload:payloads
-                         storeInHistory:shouldStore
-                                    ttl:ttl
-                             compressed:compressed
-                        withReplication:replicate
-                               metadata:metadata
-                        queryParameters:queryParameters
-                             completion:block];
-               };
-           }
-                         
-           [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
-       }];
-    });
+    PNPublishRequest *request = [PNPublishRequest requestWithChannel:channel];
+    request.arbitraryQueryParameters = queryParameters;
+    request.ttl = ttl.unsignedIntegerValue;
+    request.replicate = replicate;
+    request.compress = compressed;
+    request.metadata = metadata;
+    request.payloads = payloads;
+    request.store = shouldStore;
+    request.message = message;
+                                 
+    [self publishWithRequest:request completion:block];
 }
 
 

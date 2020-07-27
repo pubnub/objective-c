@@ -15,6 +15,7 @@
 #import "PNStatus+Private.h"
 #import "PNResult+Private.h"
 #import "PNConfiguration.h"
+#import "PubNub+Files.h"
 #import <objc/runtime.h>
 #import "PNLogMacro.h"
 #import "PNHelpers.h"
@@ -409,6 +410,17 @@ NS_ASSUME_NONNULL_BEGIN
  * @since 4.10.0
  */
 - (void)handleNewObjectsEvent:(PNResult *)data;
+
+/**
+ * @brief Process \c files API event which just has been received from \b PubNub service through
+ * live feed on which client subscribed at this moment.
+ *
+ * @param data Result data which hold information about request on which this response has been
+ * received and message itself.
+ *
+ * @since 4.15.0
+ */
+- (void)handleNewFileEvent:(PNFileEventResult *)data;
 
 /**
  * @brief Process presence event which just has been received from \b PubNub service through
@@ -1507,6 +1519,8 @@ NS_ASSUME_NONNULL_END
                     
                     if (messageType == PNObjectMessageType) {
                         [self handleNewObjectsEvent:eventResultObject];
+                    } else if (messageType == PNFileMessageType) {
+                        [self handleNewFileEvent:(PNFileEventResult *)eventResultObject];
                     } else if (messageType == PNRegularMessageType) {
                         object_setClass(eventResultObject, [PNMessageResult class]);
                         [self handleNewMessage:(PNMessageResult *)eventResultObject];
@@ -1588,6 +1602,40 @@ NS_ASSUME_NONNULL_END
     if ([_knownTypesOfObjectEvents containsObject:data.serviceData[@"type"]]) {
         object_setClass(data, [PNObjectEventResult class]);
         [self.client.listenersManager notifyObjectEvent:(PNObjectEventResult *)data];
+    }
+}
+
+- (void)handleNewFileEvent:(PNResult *)data {
+    PNErrorStatus *status = nil;
+    
+    if (data) {
+        PNLogResult(self.client.logger, @"<PubNub> %@", [(PNResult *)data stringifiedRepresentation]);
+        NSMutableDictionary *updatedData = [data.serviceData mutableCopy];
+        
+        if ([data.serviceData[@"decryptError"] boolValue]) {
+            status = [PNErrorStatus statusForOperation:PNSubscribeOperation
+                                              category:PNDecryptionErrorCategory
+                                   withProcessingError:nil];
+
+            [updatedData removeObjectsForKeys:@[@"decryptError", @"envelope"]];
+            status.associatedObject = [PNFileEventData dataWithServiceResponse:updatedData];
+        } else {
+            NSMutableDictionary *fileData = [updatedData[@"file"] mutableCopy];
+            NSURL *downloadURL = [self.client downloadURLForFileWithName:fileData[@"name"]
+                                                              identifier:fileData[@"id"]
+                                                               inChannel:updatedData[@"channel"]];
+            fileData[@"downloadURL"] = downloadURL.absoluteString;
+            updatedData[@"file"] = fileData;
+        }
+        
+        [data updateData:updatedData];
+    }
+
+    if (status) {
+        [self.client.listenersManager notifyStatusChange:(id)status];
+    } else if (data) {
+        object_setClass(data, [PNFileEventResult class]);
+        [self.client.listenersManager notifyFileEvent:(PNFileEventResult *)data];
     }
 }
 
@@ -1677,7 +1725,8 @@ NS_ASSUME_NONNULL_END
         [events enumerateObjectsUsingBlock:^(NSDictionary<NSString *, id> *event, NSUInteger eventIdx, 
                                              BOOL *eventsEnumeratorStop) {
             PNMessageType messageType = ((PNEnvelopeInformation *)event[@"envelope"]).messageType;
-            BOOL isMessageEvent = (messageType != PNObjectMessageType &&
+            BOOL isMessageEvent = (messageType != PNFileMessageType &&
+                                   messageType != PNObjectMessageType &&
                                    messageType != PNMessageActionType);
             BOOL isPresenceEvent = event[@"presenceEvent"] != nil;
             BOOL isDecryptionError = ((NSNumber *)event[@"decryptError"]).boolValue;

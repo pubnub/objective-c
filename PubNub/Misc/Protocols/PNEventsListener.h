@@ -5,7 +5,7 @@
 #pragma mark Class forward
 
 @class PNPresenceEventResult, PNSubscribeStatus, PNMessageResult, PNSignalResult, PNErrorStatus;
-@class PNMessageActionResult, PNObjectEventResult;
+@class PNMessageActionResult, PNObjectEventResult, PNFileEventResult;
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -71,6 +71,15 @@ NS_ASSUME_NONNULL_BEGIN
  * @param event Instance which store information about received event from Objects API use.
  */
 - (void)client:(PubNub *)client didReceiveObjectEvent:(PNObjectEventResult *)event;
+
+/**
+ * @brief Notify listener about new \c file events which arrived from one of remote data object's
+ * live feed on which \c client subscribe at this moment.
+ *
+ * @param client \b PubNub client which triggered this callback method call.
+ * @param event Instance which store information about received event from File API use.
+ */
+- (void)client:(PubNub *)client didReceiveFileEvent:(PNFileEventResult *)event;
 
 
 #pragma mark - Status change handler.

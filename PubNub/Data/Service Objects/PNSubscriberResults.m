@@ -13,6 +13,7 @@
 #import "PNMembership+Private.h"
 #import "PNSubscriberResults.h"
 #import "PNResult+Private.h"
+#import "PNFile+Private.h"
 
 #pragma mark Protected interfaces declaration
 
@@ -74,6 +75,19 @@
 #pragma mark - Properties
 
 @property (nonatomic, strong) PNObjectEventData *data;
+
+#pragma mark -
+
+
+@end
+
+
+@interface PNFileEventResult ()
+
+
+#pragma mark - Properties
+
+@property (nonatomic, strong) PNFileEventData *data;
 
 #pragma mark -
 
@@ -233,6 +247,25 @@
 @end
 
 
+@implementation PNFileEventData
+
+
+#pragma mark - Information
+
+- (PNFile *)file {
+    return [PNFile fileFromDictionary:self.serviceData[@"file"]];
+}
+
+- (id)message {
+    return self.serviceData[@"message"];
+}
+
+#pragma mark -
+
+
+@end
+
+
 @implementation PNMessageResult
 
 
@@ -317,6 +350,24 @@
 - (PNObjectEventData *)data {
     if (!_data) {
         _data = [PNObjectEventData dataWithServiceResponse:self.serviceData];
+    }
+
+    return _data;
+}
+
+#pragma mark -
+
+@end
+
+
+@implementation PNFileEventResult
+
+
+#pragma mark - Information
+
+- (PNFileEventData *)data {
+    if (!_data) {
+        _data = [PNFileEventData dataWithServiceResponse:self.serviceData];
     }
 
     return _data;

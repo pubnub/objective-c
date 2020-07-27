@@ -14,7 +14,7 @@
 /**
  * @brief API endpoints description basing on operation type.
  */
-static NSString * const PNOperationRequestTemplate[51] = {
+static NSString * const PNOperationRequestTemplate[57] = {
     [PNSubscribeOperation] = @"/v2/subscribe/{sub-key}/{channels}/0",
     [PNUnsubscribeOperation] = @"/v2/presence/sub_key/{sub-key}/channel/{channels}/leave",
     [PNPublishOperation] = @"/publish/{pub-key}/{sub-key}/0/{channel}/0/{message}",
@@ -65,6 +65,11 @@ static NSString * const PNOperationRequestTemplate[51] = {
     [PNRemoveChannelMembersOperation] = @"/v2/objects/{sub-key}/channels/{channel}/uuids",
     [PNManageChannelMembersOperation] = @"/v2/objects/{sub-key}/channels/{channel}/uuids",
     [PNFetchChannelMembersOperation] = @"/v2/objects/{sub-key}/channels/{channel}/uuids",
+    [PNGenerateFileUploadURLOperation] = @"/v1/files/{sub-key}/channels/{channel}/generate-upload-url",
+    [PNPublishFileMessageOperation] = @"/v1/files/publish-file/{pub-key}/{sub-key}/0/{channel}/0/{message}",
+    [PNListFilesOperation] = @"/v1/files/{sub-key}/channels/{channel}/files",
+    [PNDownloadFileOperation] = @"/v1/files/{sub-key}/channels/{channel}/files/{id}/{name}",
+    [PNDeleteFileOperation] = @"/v1/files/{sub-key}/channels/{channel}/files/{id}/{name}",
     [PNTimeOperation] = @"/time/0"
 };
 
@@ -77,6 +82,9 @@ static NSString * const PNOperationRequestTemplate[51] = {
 #pragma mark - API URL constructor
 
 + (NSURL *)URLForOperation:(PNOperationType)operation withParameters:(PNRequestParameters *)parameters {
+    if (parameters.url) {
+        return parameters.url;
+    }
     
     NSURL *requestURL = nil;
     NSMutableString *requestURLString = [PNOperationRequestTemplate[operation] mutableCopy];

@@ -67,6 +67,11 @@ NS_ASSUME_NONNULL_END
     return [self pn_formatterWithString:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
 }
 
++ (NSDateFormatter *)pn_filesDateFormatter {
+    //2020-07-22T19:19:11Z
+    return [self pn_formatterWithString:@"yyyy-MM-dd'T'HH:mm:ssZ"];
+}
+
 #pragma mark -
 
 

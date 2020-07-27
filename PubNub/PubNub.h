@@ -43,6 +43,7 @@
 #import "PubNub+Publish.h"
 #import "PubNub+History.h"
 #import "PubNub+Objects.h"
+#import "PubNub+Files.h"
 #import "PubNub+State.h"
 #import "PNErrorCodes.h"
 #import "PNStructures.h"

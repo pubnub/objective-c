@@ -788,7 +788,7 @@ NS_ASSUME_NONNULL_END
             @(PNFetchMessagesActionsOperation), @(PNFetchMembershipsOperation),
             @(PNFetchChannelMetadataOperation), @(PNFetchAllChannelsMetadataOperation),
             @(PNFetchUUIDMetadataOperation), @(PNFetchAllUUIDMetadataOperation),
-            @(PNFetchChannelMembersOperation)
+            @(PNFetchChannelMembersOperation), @(PNListFilesOperation)
         ];
     });
     
@@ -811,7 +811,8 @@ NS_ASSUME_NONNULL_END
             @"PNUUIDMetadataChangeParser", @"PNObjectsRemoveParser", @"PNMembershipsParser",
             @"PNFetchChannelsMetadataParser", @"PNFetchUUIDMetadataParser", @"PNChannelMembersParser",
             @"PNAddMessageActionParser", @"PNRemoveMessageActionParser",
-            @"PNFetchMessagesActionsParser"];
+            @"PNFetchMessagesActionsParser", @"PNGenerateFileUploadURLParser",
+            @"PNDeleteFileParser", @"PNListFilesParser"];
         NSMutableDictionary *parsers = [NSMutableDictionary new];
 
         for (NSString *className in parserNames) {

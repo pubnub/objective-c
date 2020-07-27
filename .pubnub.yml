@@ -1,9 +1,37 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.14.2"
+version: "4.15.0"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Add send file API support which allow encrypt (if configured) and upload file to `channel`."
+        type: feature
+      -
+        text: "Add download file API support which allow download file from `channel` and decrypt (if configured)."
+        type: feature
+      -
+        text: "Add list files API support which allow retrieve information about files sent to `channel`."
+        type: feature
+      -
+        text: "Add delete file API support to permanently remove file from `channel`."
+        type: feature
+      -
+        text: "Add file message publish API which allow notify about new file upload completion (should be used to recover from internal publish error)."
+        type: feature
+      -
+        text: "Add new subscribe events listener to handle new files events."
+        type: feature
+      -
+        text: "Add new methods to PNAES which allow to encrypt / decrypt file at local file system."
+        type: feature
+      -
+        text: "Add new option for PubNub client configuration and PNAES methods to use random initialization vector instead of hard-coded when files / data is encrypted / decrypted."
+        type: feature
+    date: Jul 27, 20
+    version: v4.15.0
   -
     changes:
       -
@@ -1029,6 +1057,7 @@ features:
     - PUBLISH-FIRE
     - PUBLISH-REPLICATION-FLAG
     - PUBLISH-MESSAGE-TTL
+    - PUBLISH-FILE-MESSAGE
   storage:
     - STORAGE-REVERSE
     - STORAGE-INCLUDE-TIMETOKEN
@@ -1040,6 +1069,7 @@ features:
     - STORAGE-HISTORY-WITH-META
     - STORAGE-FETCH-WITH-META
     - STORAGE-FETCH-WITH-MESSAGE-ACTIONS
+    - STORAGE-FETCH-WITH-FILE
   time:
     - TIME-TIME
   subscribe:
@@ -1056,9 +1086,10 @@ features:
     - SUBSCRIBE-MESSAGE-DEDUPE
     - SUBSCRIBE-SIGNAL-LISTENER
     - SUBSCRIBE-MEMBERSHIP-LISTENER
-    - SUBSCRIBE-SPACE-LISTENER
-    - SUBSCRIBE-USER-LISTENER
+    - SUBSCRIBE-OBJECTS-CHANNEL-LISTENER
+    - SUBSCRIBE-OBJECTS-UUID-LISTENER
     - SUBSCRIBE-MESSAGE-ACTIONS-LISTENER
+    - SUBSCRIBE-FILE-LISTENER
   unsubscribe:
     - UNSUBSCRIBE-ALL
     - UNSUBSCRIBE-SUPPRESS-LEAVE-EVENTS
@@ -1083,6 +1114,12 @@ features:
     - OBJECTS-MANAGE-CHANNEL-MEMBERS-V2
     - OBJECTS-FILTERING
     - OBJECTS-SORTING
+  files:
+    - FILES-SEND-FILE
+    - FILES-LIST-FILES
+    - FILES-GET-FILE-URL
+    - FILES-DELETE-FILE
+    - FILES-DOWNLOAD-FILE
   message-actions:
     - MESSAGE-ACTIONS-GET
     - MESSAGE-ACTIONS-ADD
@@ -1092,6 +1129,7 @@ features:
     - PN-OTHER-PROCESSING
     - QUERY-PARAM
     - CREATE-PUSH-PAYLOAD
+    - RANDOM-INITIALIZATION-VECTOR
 supported-platforms:
   -
     version: PubNub Objective-C SDK

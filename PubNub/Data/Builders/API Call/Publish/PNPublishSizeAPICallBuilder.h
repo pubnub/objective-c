@@ -4,6 +4,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+#pragma mark Interface declaration
+
 /**
  * @brief Publish message size calculation API call builder.
  *

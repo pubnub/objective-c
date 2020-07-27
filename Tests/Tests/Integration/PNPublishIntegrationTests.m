@@ -110,7 +110,7 @@
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [client publish:expectedMessage toChannel:channel withCompletion:^(PNPublishStatus *status) {
             XCTAssertTrue(status.isError);
-            XCTAssertNil(status.data.information);
+            XCTAssertNotNil(status.data.information);
             XCTAssertEqual(status.operation, PNPublishOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
             XCTAssertEqual(status.statusCode, 400);
@@ -129,7 +129,7 @@
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [client publish:expectedMessage toChannel:channel withCompletion:^(PNPublishStatus *status) {
             XCTAssertTrue(status.isError);
-            XCTAssertNil(status.data.information);
+            XCTAssertNotNil(status.data.information);
             XCTAssertEqual(status.operation, PNPublishOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
             XCTAssertEqual(status.statusCode, 400);

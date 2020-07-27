@@ -19,6 +19,13 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark Information
 
 /**
+ * @brief URL which should be used ignoring operation type and URL builder.
+ *
+ * @since 4.15.0
+ */
+@property (nonatomic, nullable, strong) NSURL *url;
+
+/**
  * @brief Stores reference on expected HTTP method for request.
  *
  * @since 4.7.0
@@ -31,7 +38,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, nullable, readonly) NSDictionary<NSString *, NSString *> *pathComponents;
 
 /**
- * @brief Whether relemetry data should be appeanded to request or not.
+ * @brief Whether telemetry data should be appeanded to request or not.
  *
  * @since 4.9.0
  */

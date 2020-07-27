@@ -154,7 +154,9 @@ NS_ASSUME_NONNULL_END
         _managePresenceListManually = kPNDefaultShouldManagePresenceListManually;
         _keepTimeTokenOnListChange = kPNDefaultShouldKeepTimeTokenOnListChange;
         _catchUpOnSubscriptionRestore = kPNDefaultShouldTryCatchUpOnSubscriptionRestore;
+        _useRandomInitializationVector = kPNDefaultUseRandomInitializationVector;
         _requestMessageCountThreshold = kPNDefaultRequestMessageCountThreshold;
+        _fileMessagePublishRetryLimit = kPNDefaultFileMessagePublishRetryLimit;
         _maximumMessagesCacheSize = kPNDefaultMaximumMessagesCacheSize;
 #if TARGET_OS_IOS
         _completeRequestsBeforeSuspension = kPNDefaultShouldCompleteRequestsBeforeSuspension;
@@ -184,6 +186,8 @@ NS_ASSUME_NONNULL_END
     configuration.TLSEnabled = self.isTLSEnabled;
     configuration.keepTimeTokenOnListChange = self.shouldKeepTimeTokenOnListChange;
     configuration.catchUpOnSubscriptionRestore = self.shouldTryCatchUpOnSubscriptionRestore;
+    configuration.useRandomInitializationVector = self.shouldUseRandomInitializationVector;
+    configuration.fileMessagePublishRetryLimit = self.fileMessagePublishRetryLimit;
     
     if (@available(macOS 10.10, iOS 8.0, *)) {
         configuration.applicationExtensionSharedGroupIdentifier = self.applicationExtensionSharedGroupIdentifier;

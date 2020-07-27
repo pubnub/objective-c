@@ -8,6 +8,7 @@
 #import "PNStatus+Private.h"
 #import "PNResult+Private.h"
 #import "PNDictionary.h"
+#import "PNErrorCodes.h"
 
 
 #pragma mark Private interface
@@ -56,6 +57,15 @@
  * @param statusCode HTTP response status code which should be used during interpretation.
  */
 - (PNStatusCategory)categoryTypeFromStatusCode:(NSInteger)statusCode;
+
+/**
+ * @brief Try retrieve status code from error object code.
+ *
+ * @param error Reference on error which should be used during interpretation.
+ *
+ * @since 4.15.0
+ */
+- (NSInteger)statusCodeFromError:(NSError *)error;
 
 /**
  * @brief Try interpret error object to meaningful status object state.
@@ -167,6 +177,10 @@
             // Try extract category basing on response status codes.
             _category = [self categoryTypeFromStatusCode:self.statusCode];
             
+            if (_category == PNUnknownCategory && (self.statusCode == 200 || self.statusCode == 0)) {
+                self.statusCode = [self statusCodeFromError:error];
+            }
+            
             // Extract status category from passed error object.
             _category = (_category == PNUnknownCategory ? [self categoryTypeFromError:error] : _category);
             _category = (_category == PNUnknownCategory && self.statusCode == 400 ?
@@ -226,6 +240,8 @@
     
     if (statusCode == 403) {
         category = PNAccessDeniedCategory;
+    } else if (statusCode == 411) {
+        category = PNBadRequestCategory;
     } else if (statusCode == 414) {
         category = PNRequestURITooLongCategory;
     } else if (statusCode == 481) {
@@ -235,11 +251,62 @@
     return category;
 }
 
+- (NSInteger)statusCodeFromError:(NSError *)error {
+    NSInteger statusCode = -1;
+    
+    if ([error.domain isEqualToString:NSURLErrorDomain]) {
+        switch (error.code) {
+            case NSURLErrorTimedOut:
+                statusCode = 408;
+                break;
+            case NSURLErrorCannotDecodeContentData:
+            case NSURLErrorBadServerResponse:
+                statusCode = 500;
+                break;
+            case NSURLErrorBadURL:
+                statusCode = 400;
+                break;
+            case NSURLErrorCancelled:
+                statusCode = 499;
+                break;
+            case NSURLErrorSecureConnectionFailed:
+                statusCode = 525;
+                break;
+            case NSURLErrorServerCertificateUntrusted:
+                statusCode = 526;
+                break;
+            default:
+                break;
+        }
+    } else if ([error.domain isEqualToString:kPNAPIErrorDomain]) {
+        switch (error.code) {
+            case kPNAPIUnacceptableParameters:
+                statusCode = 400;
+                break;
+            default:
+                break;
+        }
+    } else if ([error.domain isEqualToString:NSCocoaErrorDomain]) {
+        switch (error.code) {
+            case NSPropertyListReadCorruptError:
+                statusCode = 500;
+                break;
+                
+            default:
+                break;
+        }
+    }
+    
+    return statusCode;
+}
+
 - (PNStatusCategory)categoryTypeFromError:(NSError *)error {
 
     PNStatusCategory category = PNUnknownCategory;
     
-    if ([error.domain isEqualToString:NSURLErrorDomain]) {
+    if ([error.domain isEqualToString:NSURLErrorDomain] ||
+        [error.domain isEqualToString:kPNStorageErrorDomain]) {
+        
         switch (error.code) {
             case NSURLErrorTimedOut:
                 category = PNTimeoutCategory;
@@ -266,6 +333,15 @@
                 break;
             case NSURLErrorServerCertificateUntrusted:
                 category = PNTLSUntrustedCertificateCategory;
+                break;
+            default:
+                break;
+        }
+    } else if ([error.domain isEqualToString:kPNAPIErrorDomain] ||
+               [error.domain isEqualToString:kPNStorageErrorDomain]) {
+        switch (error.code) {
+            case kPNAPIUnacceptableParameters:
+                category = PNBadRequestCategory;
                 break;
             default:
                 break;
@@ -312,9 +388,13 @@
         
         if (!information) {
             information = error.userInfo[@"NSDebugDescription"];
-        } else if (error.userInfo[NSLocalizedFailureReasonErrorKey]) {
+        }
+        
+        if (information && error.userInfo[NSLocalizedFailureReasonErrorKey]) {
             information = [NSString stringWithFormat:@"%@: %@", information,
                            error.userInfo[NSLocalizedFailureReasonErrorKey]];
+        } else if (error.userInfo[NSLocalizedFailureReasonErrorKey]) {
+            information = error.userInfo[NSLocalizedFailureReasonErrorKey];
         }
         
         if (information) {

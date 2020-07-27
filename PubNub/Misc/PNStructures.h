@@ -22,6 +22,7 @@
 @class PNSetChannelMetadataStatus, PNFetchChannelMetadataResult, PNFetchAllChannelsMetadataResult;
 @class PNManageMembershipsStatus, PNFetchMembershipsResult, PNManageChannelMembersStatus, PNFetchChannelMembersResult;
 @class PNAddMessageActionStatus, PNFetchMessageActionsResult;
+@class PNDownloadFileResult, PNSendFileStatus, PNListFilesResult;
 
 #ifndef PNStructures_h
 #define PNStructures_h
@@ -231,7 +232,7 @@ typedef void(^PNFetchAllChannelsMetadataCompletionBlock)(PNFetchAllChannelsMetad
  * @param status Object with information about \c manage \c memberships request results and service
  * response.
  *
- * @since 4.10.0
+ * @since 4.14.0
  */
 typedef void(^PNManageMembershipsCompletionBlock)(PNManageMembershipsStatus *status);
 
@@ -241,7 +242,7 @@ typedef void(^PNManageMembershipsCompletionBlock)(PNManageMembershipsStatus *sta
  * @param result Object with information about \c fetch \c memberships request results.
  * @param status Object with information about \c fetch \c memberships request error.
  *
- * @since 4.10.0
+ * @since 4.14.0
  */
 typedef void(^PNFetchMembershipsCompletionBlock)(PNFetchMembershipsResult * _Nullable result,
                                                  PNErrorStatus * _Nullable status);
@@ -252,7 +253,7 @@ typedef void(^PNFetchMembershipsCompletionBlock)(PNFetchMembershipsResult * _Nul
  * @param status Object with information about \c manage \c members request results and service
  * response.
  *
- * @since 4.10.0
+ * @since 4.14.0
  */
 typedef void(^PNManageChannelMembersCompletionBlock)(PNManageChannelMembersStatus *status);
 
@@ -262,10 +263,62 @@ typedef void(^PNManageChannelMembersCompletionBlock)(PNManageChannelMembersStatu
  * @param result Object with information about \c fetch \c members request results.
  * @param status Object with information about \c fetch \c members request error.
  *
- * @since 4.10.0
+ * @since 4.14.0
  */
 typedef void(^PNFetchChannelMembersCompletionBlock)(PNFetchChannelMembersResult * _Nullable result,
+                                                    PNErrorStatus * _Nullable status);
+
+
+#pragma mark - Completion blocks :: Files
+
+/**
+ * @brief \c Send \c file completion handler block.
+ *
+ * @param status Object with information about \c send \c file request results.
+ *
+ * @since 4.15.0
+ */
+typedef void(^PNSendFileCompletionBlock)(PNSendFileStatus *status);
+
+/**
+ * @brief \c List \c files completion handler block.
+ *
+ * @param result Object with information about \c list \c files request results.
+ * @param status Object with information about \c list \c files request error.
+ *
+ * @since 4.15.0
+ */
+typedef void(^PNListFilesCompletionBlock)(PNListFilesResult * _Nullable result,
+                                          PNErrorStatus * _Nullable status);
+
+/**
+ * @brief \c File \c download \c URL completion handler block.
+ *
+ * @param url URL which can be used to download file or \c nil in case if URL can't be composed.
+ *
+ * @since 4.15.0
+ */
+typedef void(^PNFileDownloadURLCompletionBlock)(NSURL * _Nullable url);
+
+/**
+ * @brief \c Download \c file completion handler block.
+ *
+ * @param result Object with information about \c download \c file request results.
+ * @param status Object with information about \c download \c file request error.
+ *
+ * @since 4.15.0
+ */
+typedef void(^PNDownloadFileCompletionBlock)(PNDownloadFileResult * _Nullable result,
                                              PNErrorStatus * _Nullable status);
+
+/**
+ * @brief \c Delete \c file completion handler block.
+ *
+ * @param status Object with information about \c delete \c file request results.
+ *
+ * @since 4.15.0
+ */
+typedef void(^PNDeleteFileCompletionBlock)(PNAcknowledgmentStatus *status);
 
 
 #pragma mark - Completion blocks :: Presence
@@ -754,6 +807,12 @@ typedef NS_ENUM(NSInteger, PNOperationType){
     PNRemoveChannelMembersOperation,
     PNManageChannelMembersOperation,
     PNFetchChannelMembersOperation,
+    PNGenerateFileUploadURLOperation,
+    PNPublishFileMessageOperation,
+    PNSendFileOperation,
+    PNListFilesOperation,
+    PNDownloadFileOperation,
+    PNDeleteFileOperation,
     PNTimeOperation
 };
 
@@ -911,7 +970,22 @@ typedef NS_ENUM(NSInteger, PNStatusCategory) {
      * internet. In another case it is better to get output of "nslookup pubsub.pubnub.com" status
      * object debug description and mail to support@pubnub.com.
     */
-    PNTLSUntrustedCertificateCategory
+    PNTLSUntrustedCertificateCategory,
+
+    /**
+     * @brief Looks like \b PubNub client wasn't able to upload requested file.
+     */
+    PNSendFileErrorCategory,
+
+    /**
+     * @brief Looks like \b PubNub client wasn't able to upload requested file.
+     */
+    PNPublishFileMessageErrorCategory,
+
+    /**
+     * @brief Looks like \b PubNub client wasn't able to download requested file.
+     */
+    PNDownloadErrorCategory,
 };
 
 /**

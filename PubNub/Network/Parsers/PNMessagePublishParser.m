@@ -13,7 +13,7 @@
 
 + (NSArray<NSNumber *> *)operations {
     
-    return @[@(PNPublishOperation), @(PNSignalOperation)];
+    return @[@(PNPublishFileMessageOperation), @(PNPublishOperation), @(PNSignalOperation)];
 }
 
 + (BOOL)requireAdditionalData {
