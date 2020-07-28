@@ -168,7 +168,8 @@ NS_ASSUME_NONNULL_END
 -  (instancetype)initWithChannel:(NSString *)channel {
     if ((self = [super init])) {
         _channel = [channel copy];
-        _replicate = YES;
+        self.replicate = YES;
+        self.store = YES;
     }
     
     return self;

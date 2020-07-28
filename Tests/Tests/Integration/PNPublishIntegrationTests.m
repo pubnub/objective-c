@@ -67,6 +67,68 @@
 
 #pragma mark - Tests :: Regular publish
 
+- (void)testItShouldPublishWithRequestAndReceivePublishTimetokenWhenDefaultsUsed {
+    NSString *channel = [self channelWithName:@"test-channel"];
+    PubNub *client = [self createPubNubForUser:@"serhii"];
+    NSString *expectedMessage = @"Hello there";
+    
+    
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        PNPublishRequest *request = [PNPublishRequest requestWithChannel:channel];
+        request.message = expectedMessage;
+        
+        [client publishWithRequest:request completion:^(PNPublishStatus *status) {
+            XCTAssertFalse(status.isError);
+            XCTAssertNotNil(status.data.timetoken);
+            XCTAssertEqual(status.statusCode, 200);
+            
+            handler();
+        }];
+    }];
+}
+
+- (void)testItShouldPublishWithRequestAndReceivePublishTimetokenWhenReplicationDisabled {
+    NSString *channel = [self channelWithName:@"test-channel"];
+    PubNub *client = [self createPubNubForUser:@"serhii"];
+    NSString *expectedMessage = @"Hello there";
+    
+    
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        PNPublishRequest *request = [PNPublishRequest requestWithChannel:channel];
+        request.message = expectedMessage;
+        request.replicate = NO;
+        
+        [client publishWithRequest:request completion:^(PNPublishStatus *status) {
+            XCTAssertFalse(status.isError);
+            XCTAssertNotNil(status.data.timetoken);
+            XCTAssertEqual(status.statusCode, 200);
+            
+            handler();
+        }];
+    }];
+}
+
+- (void)testItShouldPublishWithRequestAndReceivePublishTimetokenWhenStoreDisabled {
+    NSString *channel = [self channelWithName:@"test-channel"];
+    PubNub *client = [self createPubNubForUser:@"serhii"];
+    NSString *expectedMessage = @"Hello there";
+    
+    
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        PNPublishRequest *request = [PNPublishRequest requestWithChannel:channel];
+        request.message = expectedMessage;
+        request.store = NO;
+        
+        [client publishWithRequest:request completion:^(PNPublishStatus *status) {
+            XCTAssertFalse(status.isError);
+            XCTAssertNotNil(status.data.timetoken);
+            XCTAssertEqual(status.statusCode, 200);
+            
+            handler();
+        }];
+    }];
+}
+
 - (void)testItShouldPublishAndReceivePublishTimetoken {
     NSString *channel = [self channelWithName:@"test-channel"];
     PubNub *client = [self createPubNubForUser:@"serhii"];

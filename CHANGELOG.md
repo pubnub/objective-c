@@ -1,3 +1,11 @@
+## [v4.15.1](https://github.com/pubnub/objective-c/releases/tag/v4.15.1)
+July 28 2020
+
+[Full Changelog](https://github.com/pubnub/objective-c/compare/v4.15.0...v4.15.1)
+
+#### Fixed
+- Fix default issues after migration to publish requests objects usage because of which `replicate` and `store` has been reset to `false`. 
+
 ## [v4.15.0](https://github.com/pubnub/objective-c/releases/tag/v4.15.0)
 July 27 2020
 
