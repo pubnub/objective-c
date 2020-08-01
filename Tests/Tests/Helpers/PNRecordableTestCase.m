@@ -1790,7 +1790,13 @@ NS_ASSUME_NONNULL_END
     
     for (NSUInteger fileIdx = 0; fileIdx < count; fileIdx++) {
         NSString *fileName = [[NSUUID UUID].UUIDString stringByAppendingPathExtension:@"txt"];
-        NSDictionary *message = @{ @"text": [NSUUID UUID].UUIDString };
+        NSMutableString *messageText = [NSMutableString stringWithString:[NSUUID UUID].UUIDString];
+        
+        while (messageText.length <= ((fileIdx + 1) * 24)) {
+            [messageText appendString:[NSUUID UUID].UUIDString];
+        }
+        
+        NSDictionary *message = @{ @"text": messageText };
         NSData *data = [[NSUUID UUID].UUIDString dataUsingEncoding:NSUTF8StringEncoding];
         
         [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {

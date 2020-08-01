@@ -105,6 +105,20 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, readonly, strong) dispatch_queue_t callbackQueue;
 
+/**
+ * @brief Set of key/value pairs which is used in API endpoint path and common for all endpoints.
+ *
+ * @since 4.15.2
+ */
+@property (nonatomic, readonly, strong) NSDictionary *defaultPathComponents;
+
+/**
+ * @brief Set of key/value pairs which is used in API endpoint query and common for all endpoints.
+ *
+ * @since 4.15.2
+ */
+@property (nonatomic, readonly, strong) NSDictionary *defaultQueryComponents;
+
 
 #pragma mark - Requests helper
 
@@ -144,6 +158,13 @@ NS_ASSUME_NONNULL_BEGIN
           withParameters:(PNRequestParameters *)parameters
                     data:(nullable NSData *)data
          completionBlock:(nullable id)block;
+
+/**
+ * @brief Compose objects which is used to provide default values for requests.
+ *
+ * @since 4.15.2
+ */
+- (void)prepareRequiredParameters;
 
 
 #pragma mark - Operation information

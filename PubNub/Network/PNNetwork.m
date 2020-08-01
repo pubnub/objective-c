@@ -278,13 +278,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)appendRequiredParametersTo:(PNRequestParameters *)parameters;
 
 /**
- * @brief Compose objects which is used to provide default values for requests.
- *
- * @since 4.5.4
- */
-- (void)prepareRequiredParameters;
-
-/**
  * @brief Construct URL request suitable to send POST request (if required).
  *
  * @param requestURL Reference on complete remote resource URL which should be used for request.
@@ -647,7 +640,8 @@ NS_ASSUME_NONNULL_END
 #pragma clang diagnostic pop
 
         [_client.logger enableLogLevel:(PNRequestLogLevel | PNInfoLogLevel)];
-        [self prepareRequiredParameters];
+        _defaultQueryComponents = [client.defaultQueryComponents copy];
+        _defaultPathComponents = [client.defaultPathComponents copy];
         [self prepareSessionWithRequestTimeout:timeout maximumConnections:maximumConnections];
     }
     
@@ -666,23 +660,6 @@ NS_ASSUME_NONNULL_END
     }
     
     [parameters addQueryParameter:[[NSUUID UUID] UUIDString] forFieldName:@"requestid"];
-}
-
-- (void)prepareRequiredParameters {
-    _defaultPathComponents = @{@"{sub-key}": (self.configuration.subscribeKey?: @""),
-                               @"{pub-key}": (self.configuration.publishKey?: @"")};
-    NSMutableDictionary *queryComponents = [@{
-        @"uuid": [PNString percentEscapedString:(self.configuration.uuid?: @"")],
-        @"deviceid": (self.configuration.deviceID?: @""),
-        @"instanceid": self.client.instanceID,
-        @"pnsdk":[NSString stringWithFormat:@"PubNFub-%@%%2F%@", kPNClientName, kPNLibraryVersion]
-    } mutableCopy];
-
-    if (self.configuration.authKey.length) { 
-        queryComponents[@"auth"] = [PNString percentEscapedString:self.configuration.authKey];
-    }
-
-    _defaultQueryComponents = [queryComponents copy];
 }
 
 - (NSURLRequest *)requestWithURL:(NSURL *)requestURL

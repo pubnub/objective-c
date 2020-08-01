@@ -92,6 +92,17 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (NSUInteger)targetBufferSize:(NSInteger)size;
 
+/**
+ * @brief Calculate finalyzed size of buffer which is required to fit data of specified \c size.
+ *
+ * @param size Size of data for which target buffer size is required.
+ *
+ * @return Size of buffer which will be able to fit processed data.
+ *
+ * @since 4.15.2
+ */
+- (NSUInteger)finalTargetBufferSize:(NSInteger)size;
+
 #pragma mark -
 
 

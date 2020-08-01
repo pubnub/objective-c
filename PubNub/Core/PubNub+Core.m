@@ -105,6 +105,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) PNFilesManager *filesManager;
 @property (nonatomic, strong) PNNetwork *subscriptionNetwork;
 @property (nonatomic, strong) PNNetwork *serviceNetwork;
+@property (nonatomic, strong) NSDictionary *defaultPathComponents;
+@property (nonatomic, strong) NSDictionary *defaultQueryComponents;
 
 /**
  * @brief Reachability helper.
@@ -280,7 +282,8 @@ NS_ASSUME_NONNULL_END
         _configuration = [configuration copy];
         _callbackQueue = callbackQueue;
         _instanceID = [[[NSUUID UUID] UUIDString] copy];
-
+        
+        [self prepareRequiredParameters];
         [self prepareNetworkManagers];
         
         _filesManager = [PNFilesManager filesManagerForClient:self];
@@ -545,6 +548,23 @@ NS_ASSUME_NONNULL_END
                                          data:data
                               completionBlock:block];
     }
+}
+
+- (void)prepareRequiredParameters {
+    self.defaultPathComponents = @{@"{sub-key}": (self.configuration.subscribeKey?: @""),
+                               @"{pub-key}": (self.configuration.publishKey?: @"")};
+    NSMutableDictionary *queryComponents = [@{
+        @"uuid": [PNString percentEscapedString:(self.configuration.uuid?: @"")],
+        @"deviceid": (self.configuration.deviceID?: @""),
+        @"instanceid": self.instanceID,
+        @"pnsdk":[NSString stringWithFormat:@"PubNFub-%@%%2F%@", kPNClientName, kPNLibraryVersion]
+    } mutableCopy];
+
+    if (self.configuration.authKey.length) {
+        queryComponents[@"auth"] = [PNString percentEscapedString:self.configuration.authKey];
+    }
+
+    self.defaultQueryComponents = [queryComponents copy];
 }
 
 

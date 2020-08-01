@@ -85,17 +85,18 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Initialization & Configuration
 
 + (instancetype)requestWithChannel:(NSString *)channel fileURL:(NSURL *)url {
+    NSURL *fileURL = url.isFileURL ? url : [NSURL fileURLWithPath:url.path];
     NSFileManager *fileManager = NSFileManager.defaultManager;
     NSString *fileName = url.lastPathComponent;
-    NSString *fileURL = url.absoluteString;
     NSInputStream *inputStream = nil;
+    NSString *filePath = url.path;
     NSUInteger fileSize = 0;
     BOOL isDirectory = NO;
     NSError *error = nil;
     
-    if (!fileURL || ![fileManager fileExistsAtPath:fileURL isDirectory:&isDirectory] || isDirectory) {
+    if (!filePath || ![fileManager fileExistsAtPath:filePath isDirectory:&isDirectory] || isDirectory) {
         NSString *reason = isDirectory ? @"URL points to directory" : @"Target file not found";
-        NSString *filePath = fileURL ?: @"path is missing";
+        filePath = filePath ?: @"path is missing";
         error = [NSError errorWithDomain:kPNAPIErrorDomain
                                     code:kPNAPIUnacceptableParameters
                                 userInfo:@{
@@ -104,10 +105,10 @@ NS_ASSUME_NONNULL_END
                                     NSFilePathErrorKey: filePath
                                 }];
     } else {
-        NSDictionary *fileAttributes = [fileManager attributesOfItemAtPath:fileURL error:nil];
+        NSDictionary *fileAttributes = [fileManager attributesOfItemAtPath:filePath error:nil];
         fileSize = ((NSNumber *)fileAttributes[NSFileSize]).unsignedIntegerValue;
         
-        inputStream = [NSInputStream inputStreamWithURL:[[NSURL alloc] initFileURLWithPath:fileURL]];
+        inputStream = [NSInputStream inputStreamWithURL:fileURL];
     }
     
     return [[self alloc] initWithChannel:channel

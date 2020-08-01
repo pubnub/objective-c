@@ -26,6 +26,22 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, nullable, strong) NSMutableData *dataBuffer;
 
 /**
+ * @brief Buffer which is used to temporary store raw bytes from input stream.
+ *
+ * @discussion This used to store read, but not encrypted data between encrypted stream read method calls.
+ *
+ * @since 4.15.2
+ */
+ @property (nonatomic, nullable, strong) NSMutableData *readBuffer;
+
+ /**
+  * @brief Range of not processed data with \c readBuffer.
+  *
+  * @since 4.15.2
+  */
+ @property (nonatomic, assign) NSRange notProcessedDataRange;
+
+/**
  * @brief Whether initialization vector for data encryption has been sent to read buffer or not.
  */
 @property (nonatomic, assign) BOOL initializationVectorSent;
@@ -34,6 +50,13 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief Underlying input stream whose data should be encrypted on-demand.
  */
 @property (nonatomic, strong) NSInputStream *inputStream;
+
+/**
+ * @brief How much data has been read from input stream into \c readBuffer.
+ *
+ * @since 4.15.2
+ */
+@property (nonatomic, assign) NSUInteger readStreamSize;
 
 /**
  * @brief Encrypted input stream processing error.
@@ -48,12 +71,19 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Range of encrypted data inside of temporary buffer.
  */
-@property (nonatomic, assign) NSRange dataRange;
+@property (nonatomic, assign) NSRange unsentEncryptedDataRange;
 
 /**
  * @brief Size of data which will be provided by \c inputStream.
  */
 @property (nonatomic, assign) NSUInteger streamDataSize;
+
+/**
+ * @brief How much data has been sent already.
+ *
+ * @since 4.15.2
+ */
+@property (nonatomic, assign) NSUInteger streamedSize;
 
 /**
  * @brief Input data encryptor.
@@ -96,13 +126,15 @@ NS_ASSUME_NONNULL_BEGIN
                             length:(NSUInteger)length;
 
 /**
- * @brief Encrypt content of input stream.
+ * @brief Read data which will be encrypted later.
  *
- * @param maxLength Maximum length of data from input stream to be encrypted.
+ * @param maxLength Maximum length of data from input stream to read.
  *
- * @return \c YES in case if read and encryption was successful.
+ * @return \c YES in case if read was successful.
+ *
+ * @since 4.15.2
  */
-- (BOOL)encryptInputStreamBuffer:(NSUInteger)maxLength;
+- (BOOL)readInputStreamBuffer:(NSUInteger)maxLength;
 
 /**
  * @brief Check encrypted data buffer for content available.
@@ -156,10 +188,11 @@ NS_ASSUME_NONNULL_END
                           cipherKey:(NSString *)cipherKey {
     if ((self = [super init])) {
         _encryptor = [PNAES encryptorWithCipherKey:cipherKey];
-        _dataRange = NSMakeRange(NSNotFound, 0);
+        _unsentEncryptedDataRange = NSMakeRange(NSNotFound, 0);
+        _notProcessedDataRange = NSMakeRange(NSNotFound, 0);
         _inputStream = inputStream;
         _streamDataSize = size;
-        _size = [self.encryptor targetBufferSize:size] + self.encryptor.cipherBlockSize;
+        _size = [self.encryptor finalTargetBufferSize:size] + self.encryptor.cipherBlockSize;
         
         [self setStreamProcessingError:_encryptor.processingError];
         [self prependInitializationVector];
@@ -222,17 +255,20 @@ NS_ASSUME_NONNULL_END
     NSInteger bytesRead = 0;
     
     if (!self.initializationVectorSent) {
-        [self.dataBuffer getBytes:buffer range:self.dataRange];
+        NSRange ivDataRange = NSMakeRange(0, self.encryptor.cipherBlockSize);
+        [self.dataBuffer getBytes:buffer range:ivDataRange];
         self.initializationVectorSent = YES;
-        bytesRead += self.dataRange.length;
-        bytesToRead -= self.dataRange.length;
+        bytesRead += ivDataRange.length;
+        bytesToRead -= ivDataRange.length;
     }
 
-    if ([self encryptInputStreamBuffer:bytesToRead]) {
+    if ([self readInputStreamBuffer:(bytesToRead + self.encryptor.cipherBlockSize)] &&
+        [self encryptReadBuffer]) {
+        
         NSInteger encryptedBytesRead = [self readEncryptedToBuffer:buffer
                                                         withOffset:(NSUInteger)bytesRead
                                                             length:bytesToRead];
-        
+
         if (encryptedBytesRead >= 0) {
             bytesRead += encryptedBytesRead;
         } else {
@@ -241,7 +277,7 @@ NS_ASSUME_NONNULL_END
     } else {
         bytesRead = self.streamStatus == NSStreamStatusError ? -1 : 0;
     }
-        
+
     return bytesRead;
 }
 
@@ -251,8 +287,15 @@ NS_ASSUME_NONNULL_END
     if (!bufferAvailable && (!self.initializationVectorSent || [self hasEncryptedBytesAvailable])) {
         bufferAvailable = YES;
         
-        [self.dataBuffer getBytes:buffer length:self.dataRange.length];
-        *length = self.dataRange.length;
+        [self.dataBuffer getBytes:buffer length:self.unsentEncryptedDataRange.length];
+        *length = self.unsentEncryptedDataRange.length;
+    }
+    
+    if (!bufferAvailable && self.notProcessedDataRange.length) {
+        bufferAvailable = YES;
+        
+        [self.readBuffer getBytes:buffer length:self.notProcessedDataRange.length];
+        *length = self.notProcessedDataRange.length;
     }
     
     return bufferAvailable;
@@ -269,77 +312,141 @@ NS_ASSUME_NONNULL_END
                          withOffset:(NSUInteger)offset
                              length:(NSUInteger)length {
     
-    length = MIN(length, self.dataRange.length);
-    NSRange bufferReadRange = NSMakeRange(self.dataRange.location, length);
+    length = MIN(length, self.unsentEncryptedDataRange.length);
+    NSRange bufferReadRange = NSMakeRange(self.unsentEncryptedDataRange.location, length);
     
-    if (self.dataRange.location == NSNotFound || self.dataRange.length == 0) {
+    if (self.unsentEncryptedDataRange.location == NSNotFound || self.unsentEncryptedDataRange.length == 0) {
         return 0;
     }
     
     [self.dataBuffer getBytes:&buffer[offset] range:bufferReadRange];
-    
-    if (self.dataRange.length > length) {
-        self.dataRange = NSMakeRange(self.dataRange.location + length, self.dataRange.length - length);
+    if (self.unsentEncryptedDataRange.length > length) {
+        self.unsentEncryptedDataRange = NSMakeRange(self.unsentEncryptedDataRange.location + length, self.unsentEncryptedDataRange.length - length);
     } else {
-        self.dataRange = NSMakeRange(NSNotFound, 0);
+        self.unsentEncryptedDataRange = NSMakeRange(NSNotFound, 0);
     }
     
     return (NSInteger)length;
 }
 
-- (BOOL)encryptInputStreamBuffer:(NSUInteger)maxLength {
-    NSUInteger bytesToRead = [self.encryptor targetBufferSize:maxLength];
-    self.dataRange = NSMakeRange(NSNotFound, 0);
+- (BOOL)readInputStreamBuffer:(NSUInteger)maxLength {
+    if (self.streamStatus == NSStreamStatusError || self.streamStatus == NSStreamStatusClosed) {
+        return NO;
+    }
+    
+    NSMutableData *readBuffer = [NSMutableData dataWithLength:maxLength];
+    NSData *previousBufferData = nil;
+    
+    // Check whether some data left in buffer and move it if required.
+    if (self.notProcessedDataRange.length > 0) {
+        previousBufferData = [self.readBuffer subdataWithRange:self.notProcessedDataRange];
+    }
+    
+    self.notProcessedDataRange = NSMakeRange(NSNotFound, 0);
+    NSInteger bytesRead = [self.inputStream read:readBuffer.mutableBytes maxLength:maxLength];
+    
+    if (bytesRead < 0) {
+        [self setStreamProcessingError:self.inputStream.streamError];
+        return NO;
+    } else {
+        self.notProcessedDataRange = NSMakeRange(0, previousBufferData.length + bytesRead);
+        self.readStreamSize += bytesRead;
+        
+        if (previousBufferData) {
+            self.readBuffer = [NSMutableData dataWithCapacity:self.notProcessedDataRange.length];
+            [self.readBuffer appendData:previousBufferData];
+            [self.readBuffer appendData:readBuffer];
+        } else {
+            self.readBuffer = readBuffer;
+            self.readBuffer.length = bytesRead;
+        }
+    }
+    
+    return YES;
+}
+
+- (BOOL)encryptReadBuffer {
+    BOOL shouldFinaliseEncryption = self.streamDataSize == self.readStreamSize;
+    NSUInteger readBufferSize = self.notProcessedDataRange.length;
+    NSUInteger encryptedBufferSize = 0;
+    NSData *previousBufferData = nil;
     NSInteger encryptedLength = 0;
+    NSUInteger bytesToRead = 0;
+    
+    if (!shouldFinaliseEncryption) {
+        encryptedBufferSize = [self.encryptor targetBufferSize:readBufferSize];
+        bytesToRead = MIN(readBufferSize, encryptedBufferSize);
+    } else {
+        encryptedBufferSize = [self.encryptor finalTargetBufferSize:readBufferSize];
+        bytesToRead = readBufferSize;
+    }
+    
     
     if (self.streamStatus == NSStreamStatusError || self.streamStatus == NSStreamStatusClosed) {
         return NO;
     }
     
-    self.dataBuffer = [NSMutableData dataWithLength:bytesToRead];
-    NSMutableData *readBuffer = [NSMutableData dataWithLength:bytesToRead];
-    NSInteger bytesRead = [self.inputStream read:readBuffer.mutableBytes maxLength:maxLength];
-    
-    if (bytesRead > 0) {
-        encryptedLength = [self.encryptor updateProcessedData:self.dataBuffer
-                                                 usingRawData:readBuffer.mutableBytes
-                                                   withLength:(NSUInteger)bytesRead];
+    // Check whether some data left in buffer and move it if required.
+    if (self.unsentEncryptedDataRange.length > 0) {
+        previousBufferData = [self.dataBuffer subdataWithRange:self.unsentEncryptedDataRange];
     }
-
-    if (!self.encryptor.processingError && (bytesRead == 0 || bytesRead < bytesToRead)) {
-        NSMutableData *finalyzedData = self.dataBuffer;
-        BOOL appendingData = encryptedLength > 0;
-        
-        if (appendingData) {
-            finalyzedData = [NSMutableData dataWithLength:bytesToRead];
-            self.dataBuffer.length = encryptedLength;
-        }
-        
-        encryptedLength += [self.encryptor finalizeProcessedData:finalyzedData
-                                                      withLength:(NSUInteger)maxLength];
-        
-        if (appendingData) {
-            [self.dataBuffer appendData:finalyzedData];
-            self.dataBuffer.length = encryptedLength;
-        }
-        
-        self.dataBuffer.length = encryptedLength;
-    } else if (bytesRead < 0) {
-        [self setStreamProcessingError:self.inputStream.streamError];
+    
+    NSMutableData *writeBuffer = [NSMutableData dataWithLength:encryptedBufferSize];
+    self.unsentEncryptedDataRange = NSMakeRange(NSNotFound, 0);
+    
+    encryptedLength = [self.encryptor updateProcessedData:writeBuffer
+                                             usingRawData:self.readBuffer.mutableBytes
+                                               withLength:bytesToRead];
+    
+    if (self.encryptor.processingError) {
+        [self setStreamProcessingError:self.encryptor.processingError];
         return NO;
+    }
+    
+    if (shouldFinaliseEncryption) {
+        NSMutableData *finalData = writeBuffer;
+        BOOL shouldAppendData = encryptedLength > 0;
+        
+        if (shouldAppendData) {
+            finalData = [NSMutableData dataWithLength:encryptedBufferSize];
+            writeBuffer.length = encryptedLength;
+        }
+        
+        encryptedLength += [self.encryptor finalizeProcessedData:finalData
+                                                      withLength:(encryptedBufferSize - encryptedLength)];
+        
+        if (shouldAppendData) {
+            [writeBuffer appendData:finalData];
+        }
     }
 
     [self setStreamProcessingError:self.encryptor.processingError];
     
     if (!self.encryptor.processingError) {
-        self.dataRange = NSMakeRange(0, (NSUInteger)encryptedLength);
+        if (previousBufferData.length) {
+            encryptedLength += previousBufferData.length;
+            self.dataBuffer = [NSMutableData dataWithCapacity:encryptedLength];
+            [self.dataBuffer appendData:previousBufferData];
+            [self.dataBuffer appendData:writeBuffer];
+        } else {
+            self.dataBuffer = writeBuffer;
+        }
+        
+        self.unsentEncryptedDataRange = NSMakeRange(0, (NSUInteger)encryptedLength);
+        
+        if (self.notProcessedDataRange.length > bytesToRead) {
+            self.notProcessedDataRange = NSMakeRange(self.notProcessedDataRange.location + bytesToRead,
+                                                     self.notProcessedDataRange.length - bytesToRead);
+        } else {
+            self.notProcessedDataRange = NSMakeRange(NSNotFound, 0);
+        }
     }
     
     return self.streamStatus != NSStreamStatusError;
 }
 
 - (BOOL)hasEncryptedBytesAvailable {
-    return self.dataRange.length > 0;
+    return self.unsentEncryptedDataRange.length > 0;
 }
 
 - (void)prependInitializationVector {
@@ -347,7 +454,6 @@ NS_ASSUME_NONNULL_END
         NSData *initializationVector = self.encryptor.initializationVector;
         self.dataBuffer = [NSMutableData dataWithCapacity:initializationVector.length];
         [self.dataBuffer appendData:initializationVector];
-        self.dataRange = NSMakeRange(0, self.dataBuffer.length);
     }
 }
 

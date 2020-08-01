@@ -296,7 +296,7 @@ NS_ASSUME_NONNULL_END
 - (void)downloadFileAtURL:(NSURL *)remoteURL
                     toURL:(NSURL *)localURL
             withCipherKey:(NSString *)cipherKey
-               completion:(void(^)(NSURL *location, NSError *error))block {
+               completion:(void(^)(NSURLRequest *request, NSURL *location, NSError *error))block {
     
     __block NSURLSessionDownloadTask *task = nil;
     
@@ -310,7 +310,7 @@ NS_ASSUME_NONNULL_END
                                              code:kPNAPIUnacceptableParameters
                                          userInfo:userInfo];
         
-        block(nil, error);
+        block(nil, nil, error);
         return;
     }
     
@@ -318,6 +318,7 @@ NS_ASSUME_NONNULL_END
                            completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
         
         NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+        NSURLRequest *downloadRequest = task.originalRequest;
         NSURL *downloadedFileURL = localURL;
         BOOL temporary = NO;
         
@@ -328,7 +329,11 @@ NS_ASSUME_NONNULL_END
         }
         
         if (httpResponse.statusCode >= 400 || error) {
-            block(location, [self downloadErrorForTask:task httpResponse:httpResponse fileLocation:location error:error]);
+            NSError *requestError = [self downloadErrorForTask:task
+                                                  httpResponse:httpResponse
+                                                  fileLocation:location
+                                                         error:error];
+            block(downloadRequest, location, requestError);
         } else {
             NSURL *localFileURL = downloadedFileURL.isFileURL ? downloadedFileURL
                                                               : [NSURL fileURLWithPath:downloadedFileURL.path];
@@ -351,14 +356,14 @@ NS_ASSUME_NONNULL_END
                                                fileLocation:nil
                                                       error:fileMoveError];
                 
-                block(location, error);
+                block(downloadRequest, location, error);
             } else if(cipherKey.length) {
                 [PNAES decryptFileAtURL:destinationURL
                                   toURL:localFileURL
                           withCipherKey:cipherKey
                              completion:^(NSURL *location, NSError *error) {
                     
-                    block(location, error);
+                    block(downloadRequest, location, error);
                     
                     if (temporary && ![fileManager removeItemAtURL:location error:&error]) {
                         NSLog(@"<PubNub::FilesManager> Temporary file clean up error: %@",
@@ -370,7 +375,7 @@ NS_ASSUME_NONNULL_END
                     }
                 }];
             } else {
-                block(destinationURL, nil);
+                block(downloadRequest, destinationURL, nil);
                 
                 if (temporary && ![fileManager removeItemAtURL:destinationURL error:&error]) {
                     NSLog(@"<PubNub::FilesManager> Temporary file clean up error: %@",

@@ -69,7 +69,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)downloadFileAtURL:(NSURL *)remoteURL
                     toURL:(NSURL *)localURL
             withCipherKey:(nullable NSString *)cipherKey
-               completion:(void(^)(NSURL * _Nullable location, NSError * _Nullable error))block;
+               completion:(void(^)(NSURLRequest *request, NSURL * _Nullable location,
+                                   NSError * _Nullable error))block;
 
 #pragma mark -
 

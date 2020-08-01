@@ -695,6 +695,14 @@ NS_ASSUME_NONNULL_END
         return 0;
     }
     
+    return CCCryptorGetOutputLength(self.cryptor, size, false);
+}
+
+- (NSUInteger)finalTargetBufferSize:(NSInteger)size {
+    if (self.processingError || size == 0) {
+        return 0;
+    }
+    
     return CCCryptorGetOutputLength(self.cryptor, size, true);
 }
 

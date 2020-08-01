@@ -18,6 +18,7 @@
 #import "PNConfiguration.h"
 #import "PubNub+Publish.h"
 #import "PNErrorStatus.h"
+#import "PNURLBuilder.h"
 #import "PubNub+Files.h"
 #import "PNErrorCodes.h"
 
@@ -264,6 +265,7 @@ NS_ASSUME_NONNULL_END
     PNGenerateFileUploadURLRequest *urlRequest = nil;
     urlRequest = [PNGenerateFileUploadURLRequest requestWithChannel:request.channel
                                                            filename:request.filename];
+    urlRequest.parametersError = request.parametersError;
     
     // Retrieving URL which should be used for data upload.
     [self performRequest:urlRequest withCompletion:^(PNGenerateFileUploadURLStatus *status) {
@@ -326,16 +328,24 @@ NS_ASSUME_NONNULL_END
         return nil;
     }
     
-    NSString *protocol = self.configuration.isTLSEnabled ? @"https" : @"http";
-    NSString *urlString = [NSString stringWithFormat:@"%@://%@/v1/files/%@/channels/%@/files/%@/%@",
-                           protocol,
-                           self.configuration.origin,
-                           self.configuration.subscribeKey,
-                           channel,
-                           identifier,
-                           name];
+    NSURL *baseURL = [NSURL URLWithString:[NSString stringWithFormat:@"http%@://%@",
+                                           (self.configuration.TLSEnabled ? @"s" : @""),
+                                           self.configuration.origin]];
+    PNRequestParameters *parameters = [PNRequestParameters new];
+    [parameters addPathComponents:@{ @"{channel}": channel, @"{id}": identifier, @"{name}": name }];
+    [parameters addPathComponents:self.defaultPathComponents];
+    [parameters addQueryParameters:self.defaultQueryComponents];
     
-    return [NSURL URLWithString:urlString];
+    if (parameters.shouldIncludeTelemetry) {
+        [parameters addQueryParameters:[self.telemetryManager operationsLatencyForRequest]];
+    }
+    
+    [parameters addQueryParameter:[[NSUUID UUID] UUIDString] forFieldName:@"requestid"];
+    
+    NSURL *requestURL = [PNURLBuilder URLForOperation:PNDownloadFileOperation
+                                       withParameters:parameters];
+    
+    return [NSURL URLWithString:requestURL.absoluteString relativeToURL:baseURL];
 }
 
 - (void)downloadFileWithRequest:(PNDownloadFileRequest *)request
@@ -352,7 +362,7 @@ NS_ASSUME_NONNULL_END
     [self.filesManager downloadFileAtURL:downloadURL
                                    toURL:request.targetURL
                            withCipherKey:request.cipherKey
-                              completion:^(NSURL *location, NSError *error) {
+                              completion:^(NSURLRequest *downloadRequest, NSURL *location, NSError *error) {
         
         PNDownloadFileResult *result = nil;
         PNErrorStatus *errorStatus = nil;
@@ -388,6 +398,7 @@ NS_ASSUME_NONNULL_END
                                             completedWithTask:nil
                                                 processedData:serviceData
                                               processingError:nil];
+            result.clientRequest = downloadRequest;
         }
         
         block(result, errorStatus);

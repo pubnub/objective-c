@@ -57,6 +57,10 @@ NS_ASSUME_NONNULL_END
         configuration.cipherKey = self.cipherKey;
     }
     
+    if ([self.name pnt_includesString:@"AuthKeyIsSet"]) {
+        configuration.authKey = [self authForUser:@"serhii"];
+    }
+    
     return configuration;
 }
 
@@ -241,7 +245,7 @@ NS_ASSUME_NONNULL_END
             NSURL *expectedURL = [self.client downloadURLForFileWithName:file.name
                                                               identifier:file.identifier
                                                                inChannel:self.channel];
-            XCTAssertEqualObjects(file.downloadURL, expectedURL);
+            XCTAssertEqualObjects(file.downloadURL.path, expectedURL.path);
             
             *remove = YES;
             handler();
@@ -308,18 +312,75 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldDownloadFileAndReceiveResultWithExpectedOperation {
     NSArray<NSDictionary *> *uploadedFiles = [self uploadFiles:1 toChannel:self.channel usingClient:nil];
+    NSString *expectedUUID = [@"uuid=" stringByAppendingString:self.client.currentConfiguration.uuid];
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         self.client.files().downloadFile(self.channel, uploadedFiles.firstObject[@"id"], uploadedFiles.firstObject[@"name"])
             .performWithCompletion(^(PNDownloadFileResult *result, PNErrorStatus *status) {
                 NSData *downloadedFile = [NSData dataWithContentsOfURL:result.data.location];
+                NSURLRequest *request = [result valueForKey:@"clientRequest"];
                 XCTAssertFalse(status.isError);
+                XCTAssertNotNil(request);
                 XCTAssertNotNil(result.data.location);
                 XCTAssertEqual(result.operation, PNDownloadFileOperation);
                 
                 XCTAssertNotNil(downloadedFile);
                 XCTAssertEqualObjects(downloadedFile, uploadedFiles.firstObject[@"data"]);
+                XCTAssertNotEqual([request.URL.absoluteString rangeOfString:expectedUUID].location,
+                                  NSNotFound);
+                
+                handler();
+            });
+    }];
+    
+    
+    [self removeFiles:uploadedFiles forChannel:self.channel];
+}
+
+- (void)testItShouldDownloadFilesWhenFileEncrypted {
+    NSArray<NSDictionary *> *uploadedFiles = [self uploadFiles:3 toChannel:self.channel usingClient:nil];
+    
+    
+    for (NSDictionary *fileData in uploadedFiles) {
+        [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+            self.client.files().downloadFile(self.channel, fileData[@"id"], fileData[@"name"])
+                .performWithCompletion(^(PNDownloadFileResult *result, PNErrorStatus *status) {
+                    NSData *downloadedFile = [NSData dataWithContentsOfURL:result.data.location];
+                    XCTAssertFalse(status.isError);
+                    XCTAssertNotNil(result.data.location);
+                    
+                    XCTAssertNotNil(downloadedFile);
+                    XCTAssertEqualObjects(downloadedFile, fileData[@"data"]);
+                    
+                    handler();
+                });
+        }];
+    }
+    
+    
+    [self removeFiles:uploadedFiles forChannel:self.channel];
+}
+
+- (void)testItShouldDownloadFileWhenAuthKeyIsSet {
+    NSArray<NSDictionary *> *uploadedFiles = [self uploadFiles:1 toChannel:self.channel usingClient:nil];
+    NSString *expectedAuth = [@"auth=" stringByAppendingString:self.client.currentConfiguration.authKey];
+    
+    
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        self.client.files().downloadFile(self.channel, uploadedFiles.firstObject[@"id"], uploadedFiles.firstObject[@"name"])
+            .performWithCompletion(^(PNDownloadFileResult *result, PNErrorStatus *status) {
+                NSData *downloadedFile = [NSData dataWithContentsOfURL:result.data.location];
+                NSURLRequest *request = [result valueForKey:@"clientRequest"];
+                XCTAssertFalse(status.isError);
+                XCTAssertNotNil(request);
+                XCTAssertNotNil(result.data.location);
+                XCTAssertEqual(result.operation, PNDownloadFileOperation);
+                
+                XCTAssertNotNil(downloadedFile);
+                XCTAssertEqualObjects(downloadedFile, uploadedFiles.firstObject[@"data"]);
+                XCTAssertNotEqual([request.URL.absoluteString rangeOfString:expectedAuth].location,
+                                  NSNotFound);
                 
                 handler();
             });
@@ -400,6 +461,31 @@ NS_ASSUME_NONNULL_END
                 XCTAssertFalse(status.isError);
                 XCTAssertEqual(files.count, limit);
                 XCTAssertEqual(result.data.count, limit);
+                
+                handler();
+            });
+    }];
+    
+    
+    [self removeFiles:uploadedFiles forChannel:self.channel];
+}
+
+- (void)testItShouldFetchFilesListWhenAuthKeyIsSet {
+    NSArray<NSDictionary *> *uploadedFiles = [self uploadFiles:1 toChannel:self.channel usingClient:nil];
+    NSString *expectedAuth = [@"auth=" stringByAppendingString:self.client.currentConfiguration.authKey];
+    NSString *expectedUUID = [@"uuid=" stringByAppendingString:self.client.currentConfiguration.uuid];
+    
+    
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        self.client.files().listFiles(self.channel)
+            .performWithCompletion(^(PNListFilesResult *result, PNErrorStatus *status) {
+                NSURLRequest *request = [result valueForKey:@"clientRequest"];
+                XCTAssertNotNil(request);
+                
+                XCTAssertNotEqual([request.URL.absoluteString rangeOfString:expectedAuth].location,
+                                  NSNotFound);
+                XCTAssertNotEqual([request.URL.absoluteString rangeOfString:expectedUUID].location,
+                                  NSNotFound);
                 
                 handler();
             });

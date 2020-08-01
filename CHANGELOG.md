@@ -1,3 +1,12 @@
+## [v4.15.2](https://github.com/pubnub/objective-c/releases/tag/v4.15.2)
+August 1 2020
+
+[Full Changelog](https://github.com/pubnub/objective-c/compare/v4.15.1...v4.15.2)
+
+#### Fixed
+- Add same set of query parameters to download URL as any regular operation to PubNub service. 
+- Fix issue with files larger than 32 kilobytes. 
+
 ## [v4.15.1](https://github.com/pubnub/objective-c/releases/tag/v4.15.1)
 July 28 2020
 
