@@ -18,7 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Configuration
 
 /**
- * @brief Channel name addition block.
+ * @brief Channel name.
  *
  * @param channel Name of the channel for which events should be pulled out from storage.
  *
@@ -29,10 +29,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, strong) PNHistoryAPICallBuilder * (^channel)(NSString *channel);
 
 /**
- * @brief Channel names list addition block.
+ * @brief Channel names list.
  *
  * @param channels List of channel names for which events should be pulled out from storage.
- *     Maximum \c 500 channels.
+ *   Maximum \c 500 channels.
  *
  * @return API call configuration builder.
  *
@@ -41,10 +41,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, strong) PNHistoryAPICallBuilder * (^channels)(NSArray<NSString *> *channels);
 
 /**
- * @brief Search interval start timetoken addition block.
+ * @brief Search interval start timetoken.
  *
  * @param start Timetoken for oldest event starting from which next should be returned events.
- *     Value will be converted to required precision internally.
+ *   Value will be converted to required precision internally.
  *
  * @return API call configuration builder.
  *
@@ -53,10 +53,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, strong) PNHistoryAPICallBuilder * (^start)(NSNumber *start);
 
 /**
- * @brief Search interval end timetoken addition block.
+ * @brief Search interval end timetoken.
  *
  * @param end Timetoken for latest event till which events should be pulled out.
- *     Value will be converted to required precision internally.
+ *   Value will be converted to required precision internally.
  *
  * @return API call configuration builder.
  *
@@ -65,10 +65,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, strong) PNHistoryAPICallBuilder * (^end)(NSNumber *end);
 
 /**
- * @brief Maximum number of events addition block.
+ * @brief Maximum number of events.
  *
  * @param limit Maximum number of events which should be returned in response.
- *     Maximum \c 100 if \c channel is set and \c 25 if \c channels is set.
+ *   Maximum \c 100 if \c channel is set and \c 25 if \c channels is set.
  *
  * @return API call configuration builder.
  *
@@ -77,13 +77,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, strong) PNHistoryAPICallBuilder * (^limit)(NSUInteger limit);
 
 /**
- * @brief Events' time tokens presence flag addition block.
+ * @brief Events' time tokens presence flag.
  *
  * @note Each fetched entry will contain published data under 'message' key and message publish
- * \c timetoken will be available under 'timetoken' key.
+ *   \c timetoken will be available under 'timetoken' key.
  *
  * @param includeTimeToken Whether event dates (time tokens) should be included in response or
- *     not.
+ *   not.
  *
  * @return API call configuration builder.
  *
@@ -92,7 +92,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, strong) PNHistoryAPICallBuilder * (^includeTimeToken)(BOOL includeTimeToken);
 
 /**
- * @brief Events' metadata presence flag addition block.
+ * @brief Events' metadata presence flag.
  *
  * @note Each fetched entry will contain published data under 'message' key and published message
  * \c meta will be available under 'metadata' key.
@@ -106,7 +106,39 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, strong) PNHistoryAPICallBuilder * (^includeMetadata)(BOOL includeMetadata);
 
 /**
- * @brief Events' actions presence flag addition block.
+ * @brief Events' type presence flag.
+ *
+ * @note Available only when message fetched for multiple channels or should include message actions.
+ * @note Each fetched entry will contain published data under 'message' key and published message
+ * \c message \c type will be available under 'messageType' key.
+ *
+ * @param includeMessageType Whether event type should be included in response or not.
+ *   By default set to: \b YES. 
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.15.3
+ */
+@property (nonatomic, readonly, strong) PNHistoryAPICallBuilder * (^includeMessageType)(BOOL includeMessageType);
+
+/**
+ * @brief Events' publisher UUID presence flag.
+ *
+ * @note Available only when message fetched for multiple channels or should include message actions.
+ * @note Each fetched entry will contain published data under 'message' key and published message
+ * \c message \c publisher will be available under 'uuid' key.
+ *
+ * @param includeUUID Whether event publisher UUID should be included in response or not.
+ *   By default set to: \b YES.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.15.3
+ */
+@property (nonatomic, readonly, strong) PNHistoryAPICallBuilder * (^includeUUID)(BOOL includeUUID);
+
+/**
+ * @brief Events' actions presence flag.
  *
  * @note Each fetched entry will contain published data under 'message' key and added \c message
  * \c actions will be available under 'actions' key.
@@ -122,7 +154,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, strong) PNHistoryAPICallBuilder * (^includeMessageActions)(BOOL includeMessageActions);
 
 /**
- * @brief Events sorting order reverse flag addition block.
+ * @brief Events sorting order reverse flag.
  *
  * @param reverse Whether events order in response should be reversed or not.
  *
@@ -150,7 +182,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Misc
 
 /**
- * @brief Arbitrary query parameters addition block.
+ * @brief Arbitrary query parameters.
  *
  * @param params List of arbitrary percent encoded query parameters which should be sent along with
  *     original API call.

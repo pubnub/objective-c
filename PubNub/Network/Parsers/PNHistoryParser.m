@@ -142,15 +142,20 @@ NS_ASSUME_NONNULL_END
         
         NSArray<NSDictionary *> *actions = nil;
         NSDictionary *metadata = nil;
+        NSNumber *messageType = nil;
+        NSString *senderUUID = nil;
         id message = messageObject;
         NSNumber *timeToken = nil;
 
         if ([messageObject isKindOfClass:[NSDictionary class]] && messageObject[@"message"] &&
-            (messageObject[@"timetoken"] || messageObject[@"meta"] || messageObject[@"actions"])) {
+            (messageObject[@"timetoken"] || messageObject[@"meta"] || messageObject[@"actions"] ||
+             messageObject[@"message_type"] || messageObject[@"uuid"])) {
             
+            messageType = messageObject[@"message_type"];
             timeToken = messageObject[@"timetoken"];
             message = messageObject[@"message"];
             actions = messageObject[@"actions"];
+            senderUUID = messageObject[@"uuid"];
             metadata = messageObject[@"meta"];
             messageObject = message;
             
@@ -216,8 +221,12 @@ NS_ASSUME_NONNULL_END
         }
         
         if (message) {
-            if (timeToken || metadata || actions) {
+            if (timeToken || metadata || actions || messageType || senderUUID) {
                 NSMutableDictionary *messageWithInfo = [@{ @"message": message } mutableCopy];
+                
+                if ([messageType isKindOfClass:[NSNumber class]]) {
+                    messageWithInfo[@"messageType"] = messageType;
+                }
                 
                 if (timeToken) {
                     messageWithInfo[@"timetoken"] = timeToken;
@@ -229,6 +238,10 @@ NS_ASSUME_NONNULL_END
                 
                 if (actions) {
                     messageWithInfo[@"actions"] = actions;
+                }
+                
+                if (senderUUID.length) {
+                    messageWithInfo[@"uuid"] = senderUUID;
                 }
                 
                 message = messageWithInfo;

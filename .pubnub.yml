@@ -1,9 +1,28 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.15.2"
+version: "4.15.3"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Add `include_message_type` option to fetch messages and history with message actions APIs."
+        type: feature
+      -
+        text: "Add `include_uuid` option to fetch messages and history with message actions APIs."
+        type: feature
+      -
+        text: "Replace content type, which is returned by server during upload url generation, using system capabilities to detect MIME type by file extension."
+        type: improvement
+      -
+        text: "Split current Keychain helper to two separate storage options: in-memory and Keychain. Keychain will be used when possible and in-memory for cases when Keychain not available and macOS."
+        type: improvement
+      -
+        text: "After Keychain reorganization publish sequence manager has been restructured to use dispatch queue instead of SpinLock."
+        type: bug
+    date: Aug 13, 20
+    version: v4.15.3
   -
     changes:
       -
@@ -1087,6 +1106,10 @@ features:
     - STORAGE-FETCH-WITH-META
     - STORAGE-FETCH-WITH-MESSAGE-ACTIONS
     - STORAGE-FETCH-WITH-FILE
+    - STORAGE-HISTORY-WITH-INCLUDE-MESSAGE-TYPE
+    - STORAGE-HISTORY-WITH-INCLUDE-UUID
+    - STORAGE-FETCH-WITH-INCLUDE-MESSAGE-TYPE
+    - STORAGE-FETCH-WITH-INCLUDE-UUID
   time:
     - TIME-TIME
   subscribe:

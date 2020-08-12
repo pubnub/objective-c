@@ -50,6 +50,10 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Setup / Tear down
 
+- (BOOL)shouldSetupVCR {
+    return NO;
+}
+
 - (PNConfiguration *)configurationForTestCaseWithName:(NSString *)name {
     PNConfiguration *configuration = [super configurationForTestCaseWithName:name];
     
@@ -105,6 +109,48 @@ NS_ASSUME_NONNULL_END
             });
 
             handler();
+    }];
+    
+    [self waitTask:@"waitForDistribution" completionFor:1.f];
+}
+
+- (void)testItShouldSendFileFromDataAndReceiveFromHistory {
+    NSString *fileName = [[NSUUID UUID].UUIDString stringByAppendingPathExtension:@"txt"];
+    NSData *data = [[NSUUID UUID].UUIDString dataUsingEncoding:NSUTF8StringEncoding];
+    
+    
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        self.client.files().sendFile(self.channel, fileName)
+            .data(data)
+            .performWithCompletion(^(PNSendFileStatus *status) {
+                XCTAssertFalse(status.isError);
+                XCTAssertTrue(status.data.fileUploaded);
+                XCTAssertNotNil(status.data.fileIdentifier);
+                XCTAssertNotNil(status.data.fileName);
+                XCTAssertEqualObjects(status.data.fileName, fileName);
+                XCTAssertEqual(status.operation, PNSendFileOperation);
+                XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+                
+                handler();
+            });
+    }];
+    
+    [self waitTask:@"waitForDistribution" completionFor:2.f];
+    
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        self.client.history()
+            .channels(@[self.channel])
+            .performWithCompletion(^(PNHistoryResult *result, PNErrorStatus *status) {
+                NSArray<NSDictionary *> *messages = result.data.channels[self.channel];
+                XCTAssertFalse(status.isError);
+                XCTAssertNotNil(messages);
+                XCTAssertEqual(messages.count, 1);
+                XCTAssertNotNil(messages.firstObject[@"uuid"]);
+                XCTAssertNotNil(messages.firstObject[@"messageType"]);
+                XCTAssertEqualObjects(messages.firstObject[@"messageType"], @4);
+                
+                handler();
+            });
     }];
     
     [self waitTask:@"waitForDistribution" completionFor:1.f];

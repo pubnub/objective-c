@@ -30,24 +30,28 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief Allow to fetch events from specified \c channel's history within specified time frame.
  *
  * @param multipleChannels Whether history should be fetched for multiple \c object or not. If set
- *     to \c YES then \c object contain list of channel names for which history should be retrieved.
+ *   to \c YES then \c object contain list of channel names for which history should be retrieved.
  * @param object Name of the channel for which events should be pulled out from storage.
  * @param startDate Reference on time token for oldest event starting from which next should be
- *     returned events. Value will be converted to required precision internally.
+ *   returned events. Value will be converted to required precision internally.
  * @param endDate Reference on time token for latest event till which events should be pulled out.
- *     Value will be converted to required precision internally.
+ *   Value will be converted to required precision internally.
  * @param limit Maximum number of events which should be returned in response (not more then
- *     \b 100).
+ *   \b 100).
  * @param shouldReverseOrder Whether events order in response should be reversed or not.
  * @param shouldIncludeTimeToken Whether event dates (time tokens) should be included in response or
- *     not.
+ *   not.
+ * @param includeMessageType Whether event type should be included in response or not.
+ *   By default set to: \b YES.
+ * @param includeUUID Whether event publisher UUID should be included in response or not.
+ *   By default set to: \b YES.
  * @param shouldIncludeMessageActions Whether event actions should be included in response or not.
  * @param shouldIncludeMetadata Whether event metadata should be included in response or not.
  * @param queryParameters List arbitrary query parameters which should be sent along with original
- *     API call.
+ *   API call.
  * @param block History pull completion block.
  *
- * @since 4.8.2
+ * @since 4.15.3
  */
 - (void)historyForChannels:(BOOL)multipleChannels
                     object:(id)object
@@ -56,6 +60,8 @@ NS_ASSUME_NONNULL_BEGIN
                      limit:(nullable NSNumber *)limit
                    reverse:(nullable NSNumber *)shouldReverseOrder
           includeTimeToken:(nullable NSNumber *)shouldIncludeTimeToken
+        includeMessageType:(nullable NSNumber *)includeMessageType
+               includeUUID:(nullable NSNumber *)includeUUID
      includeMessageActions:(nullable NSNumber *)shouldIncludeMessageActions
            includeMetadata:(nullable NSNumber *)shouldIncludeMetadata
            queryParameters:(nullable NSDictionary *)queryParameters
@@ -66,9 +72,9 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @param channels List of channel names for which persist messages count should be fetched.
  * @param timetokens List with timetokens, where each timetoken's position in correspond to target
- *     \c channel location in channel names list.
+ *   \c channel location in channel names list.
  * @param queryParameters List arbitrary query parameters which should be sent along with original
- *     API call.
+ *   API call.
  * @param block Messages count pull completion block.
  *
  * @since 4.8.4
@@ -86,11 +92,11 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @param channel Name of the channel from which events should be removed.
  * @param startDate Reference on time token for oldest event starting from which events should be
- *     removed. Value will be converted to required precision internally. If no \c endDate value
- *     provided, will be removed all events till specified \c startDate date (not inclusive).
+ *   removed. Value will be converted to required precision internally. If no \c endDate value provided,
+ *   will be removed all events till specified \c startDate date (not inclusive).
  * @param endDate Reference on time token for latest event till which events should be removed.
- *     Value will be converted to required precision internally. If no \c startDate value provided,
- *     will be removed all events starting from specified \c endDate date (inclusive).
+ *   Value will be converted to required precision internally. If no \c startDate value provided, will be
+ *   removed all events starting from specified \c endDate date (inclusive).
  * @param block Events remove completion block.
  *
  * @since 4.8.2
@@ -146,6 +152,8 @@ NS_ASSUME_NONNULL_END
         NSNumber *end = parameters[NSStringFromSelector(@selector(end))];
         NSNumber *reverse = parameters[NSStringFromSelector(@selector(reverse))];
         NSNumber *includeTimeToken = parameters[NSStringFromSelector(@selector(includeTimeToken))];
+        NSNumber *includeMessageType = parameters[NSStringFromSelector(@selector(includeMessageType))];
+        NSNumber *includeUUID = parameters[NSStringFromSelector(@selector(includeUUID))];
         NSNumber *includeMetadata = parameters[NSStringFromSelector(@selector(includeMetadata))];
         NSNumber *includeActions = parameters[NSStringFromSelector(@selector(includeMessageActions))];
         NSDictionary *queryParam = parameters[@"queryParam"];
@@ -158,6 +166,8 @@ NS_ASSUME_NONNULL_END
                            limit:limit
                          reverse:reverse
                 includeTimeToken:includeTimeToken
+              includeMessageType:includeMessageType
+                     includeUUID:includeUUID
            includeMessageActions:includeActions
                  includeMetadata:includeMetadata
                  queryParameters:queryParam
@@ -305,6 +315,8 @@ NS_ASSUME_NONNULL_END
                        limit:nil
                      reverse:@NO
             includeTimeToken:@NO
+          includeMessageType:@YES
+                 includeUUID:@YES
        includeMessageActions:@(shouldIncludeMessageActions)
              includeMetadata:@(shouldIncludeMetadata)
              queryParameters:nil
@@ -390,6 +402,8 @@ NS_ASSUME_NONNULL_END
                        limit:@(limit)
                      reverse:@(shouldReverseOrder)
             includeTimeToken:@(shouldIncludeTimeToken)
+          includeMessageType:@YES
+                 includeUUID:@YES
        includeMessageActions:nil
              includeMetadata:nil
              queryParameters:nil
@@ -403,6 +417,8 @@ NS_ASSUME_NONNULL_END
                      limit:(NSNumber *)limit
                    reverse:(NSNumber *)shouldReverseOrder
           includeTimeToken:(NSNumber *)shouldIncludeTimeToken
+        includeMessageType:(NSNumber *)includeMessageType
+               includeUUID:(NSNumber *)includeUUID
      includeMessageActions:(NSNumber *)shouldIncludeMessageActions
            includeMetadata:(NSNumber *)shouldIncludeMetadata
            queryParameters:(NSDictionary *)queryParameters
@@ -419,6 +435,14 @@ NS_ASSUME_NONNULL_END
     
     if (!limit || limit.unsignedIntValue == 0) {
         limit = nil;
+    }
+    
+    if (!includeMessageType) {
+        includeMessageType = @YES;
+    }
+    
+    if (!includeUUID) {
+        includeUUID = @YES;
     }
 
     unsigned int limitValue = MIN(limit.unsignedIntValue, (multipleChannels ? 25 : 100));
@@ -466,6 +490,13 @@ NS_ASSUME_NONNULL_END
     
     if (shouldIncludeMetadata && shouldIncludeMetadata.boolValue) {
         [parameters addQueryParameter:@"true" forFieldName:@"include_meta"];
+    }
+    
+    if (operation == PNHistoryWithActionsOperation || multipleChannels) {
+        [parameters addQueryParameter:(includeMessageType.boolValue ? @"true" : @"false")
+                         forFieldName:@"include_message_type"];
+        [parameters addQueryParameter:(includeUUID.boolValue ? @"true" : @"false")
+                         forFieldName:@"include_uuid"];
     }
     
     if (!multipleChannels) {
@@ -524,6 +555,8 @@ NS_ASSUME_NONNULL_END
                                        limit:limit
                                      reverse:shouldReverseOrder
                             includeTimeToken:shouldIncludeTimeToken
+                          includeMessageType:includeMessageType
+                                 includeUUID:includeUUID
                        includeMessageActions:shouldIncludeMessageActions
                              includeMetadata:shouldIncludeMetadata
                              queryParameters:queryParameters

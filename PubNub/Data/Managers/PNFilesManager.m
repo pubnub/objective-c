@@ -581,8 +581,33 @@ NS_ASSUME_NONNULL_END
                                              cipherKey:(NSString *)cipherKey
                                             fromFields:(NSArray<NSDictionary *> *)fields
                                            streamsSize:(NSUInteger *)streamsTotalSize {
-
+    
+    NSString *fileMIMEType = [self mimeTypeFromFilename:filename];
     NSNumber *fileStreamSize = @(*streamsTotalSize);
+    
+    if (fileMIMEType.length) {
+        NSMutableArray<NSDictionary *> *mutableFields = [fields mutableCopy];
+        
+        for (NSUInteger fieldIdx = 0; fieldIdx < fields.count; fieldIdx++) {
+            if (![fields[fieldIdx][@"key"] isEqualToString:@"Content-Type"]) {
+                continue;
+            }
+
+            NSMutableDictionary *mutableField = [fields[fieldIdx] mutableCopy];
+            NSString *fieldValue = mutableField[@"value"];
+            
+            if (fieldValue.length == 0 ||
+                [fieldValue rangeOfString:@"octet-stream"].location != NSNotFound) {
+                
+                mutableField[@"value"] = fileMIMEType;
+                mutableFields[fieldIdx] = mutableField;
+                fields = [mutableFields copy];
+            }
+            
+            break;
+        }
+    }
+    
     NSData *multipartFormData = [self multipartFormDataWithBoundary:boundary fromFields:fields];
     NSData *fileFormData = [self multipartFormFile:filename dataWithBoundary:boundary];
     NSMutableArray<NSInputStream *> *inputStreams = [NSMutableArray new];
@@ -643,14 +668,11 @@ NS_ASSUME_NONNULL_END
 }
 
 - (NSData *)multipartFormFile:(NSString *)filename dataWithBoundary:(NSString *)boundary {
-    NSString *fileMIMEType = [self mimeTypeFromFilename:filename];
     NSMutableData *multipartFormFileData = [NSMutableData new];
 
     [multipartFormFileData appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary]
                                    dataUsingEncoding:NSUTF8StringEncoding]];
-    [multipartFormFileData appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"file\"; filename=\"%@\"\r\n", filename]
-                                   dataUsingEncoding:NSUTF8StringEncoding]];
-    [multipartFormFileData appendData:[[NSString stringWithFormat:@"Content-Type: %@\r\n\r\n", fileMIMEType]
+    [multipartFormFileData appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"file\"; filename=\"%@\"\r\n\r\n", filename]
                                    dataUsingEncoding:NSUTF8StringEncoding]];
     
     return multipartFormFileData;

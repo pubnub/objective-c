@@ -519,8 +519,8 @@
                 NSArray *fetchedMessages = result.data.channels[channel];
                 XCTAssertNil(status);
                 XCTAssertNotNil(fetchedMessages);
-                
                 NSDictionary *actionsByType = [fetchedMessages.firstObject valueForKey:@"actions"];
+                XCTAssertNotNil(fetchedMessages.firstObject[@"uuid"]);
                 NSUInteger historyActionsCount = 0;
                 
                 for (NSString *actionType in actionsByType) {
@@ -599,6 +599,7 @@
                 XCTAssertEqual(channelsWithMessages.count, channels.count);
                 XCTAssertEqual(channel1Messages.count, 1);
                 XCTAssertEqual(channel2Messages.count, 1);
+                XCTAssertNotNil(channel2Messages.firstObject[@"uuid"]);
                 XCTAssertEqualObjects(channel1Messages.firstObject[@"message"], messages1.lastObject[@"message"]);
                 XCTAssertEqualObjects(channel2Messages.firstObject[@"message"], messages2.lastObject[@"message"]);
                 XCTAssertEqual([channel1Messages.firstObject[@"timetoken"] compare:messages1.lastObject[@"timetoken"]],
@@ -608,6 +609,35 @@
                 XCTAssertEqual([result.data.start compare:@(0)], NSOrderedSame);
                 XCTAssertEqual([result.data.end compare:@(0)], NSOrderedSame);
                 XCTAssertEqual(result.operation, PNHistoryForChannelsOperation);
+                
+                handler();
+        });
+    }];
+    
+    [self deleteHistoryForChannels:channels usingClient:nil];
+}
+
+- (void)testItShouldFetchOneMessageForEachChannelWithOutUUIDUsingBuilder {
+    NSArray<NSString *> *channels = [self channelsWithNames:@[@"test-channel1", @"test-channel2"]];
+    NSUInteger expectedMessagesCount = 4;
+    
+    [self publishMessages:expectedMessagesCount toChannels:channels usingClient:nil];
+    
+    
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        self.client.history()
+            .channels(channels)
+            .includeUUID(NO)
+            .performWithCompletion(^(PNHistoryResult *result, PNErrorStatus *status) {
+                XCTAssertNil(status);
+                XCTAssertNotEqualObjects(result.data.channels, @{});
+                NSDictionary<NSString *, NSArray *> *channelsWithMessages = result.data.channels;
+                NSArray<NSDictionary *> *channel1Messages = channelsWithMessages[channels.firstObject];
+                NSArray<NSDictionary *> *channel2Messages = channelsWithMessages[channels.lastObject];
+                XCTAssertEqual(channelsWithMessages.count, channels.count);
+                XCTAssertEqual(channel1Messages.count, 1);
+                XCTAssertEqual(channel2Messages.count, 1);
+                XCTAssertNil(channel2Messages.firstObject[@"uuid"]);
                 
                 handler();
         });

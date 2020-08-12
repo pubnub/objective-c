@@ -1,3 +1,19 @@
+## [v4.15.3](https://github.com/pubnub/objective-c/releases/tag/v4.15.3)
+August 13 2020
+
+[Full Changelog](https://github.com/pubnub/objective-c/compare/v4.15.2...v4.15.3)
+
+#### Added
+- Add `include_message_type` option to fetch messages and history with message actions APIs. 
+- Add `include_uuid` option to fetch messages and history with message actions APIs. 
+
+#### Modified
+- Replace content type, which is returned by server during upload url generation, using system capabilities to detect MIME type by file extension. 
+- Split current Keychain helper to two separate storage options: in-memory and Keychain. Keychain will be used when possible and in-memory for cases when Keychain not available and macOS. 
+
+#### Fixed
+- After Keychain reorganization publish sequence manager has been restructured to use dispatch queue instead of SpinLock. 
+
 ## [v4.15.2](https://github.com/pubnub/objective-c/releases/tag/v4.15.2)
 August 1 2020
 

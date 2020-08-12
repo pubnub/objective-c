@@ -1,6 +1,6 @@
 [
   {
-    "id" : "5A258156-BD16-47B7-8843-D0333F3784C6",
+    "id" : "22942E5A-3C6D-4629-B6FB-496178DC2705",
     "data" : {
       "method" : "get",
       "cls" : "NSURLRequest",
@@ -21,7 +21,7 @@
     "type" : 0
   },
   {
-    "id" : "5A258156-BD16-47B7-8843-D0333F3784C6",
+    "id" : "22942E5A-3C6D-4629-B6FB-496178DC2705",
     "data" : {
       "status" : 200,
       "cls" : "NSHTTPURLResponse",
@@ -30,7 +30,7 @@
         "Access-Control-Allow-Methods" : "GET",
         "Content-Type" : "text\/javascript; charset=\"UTF-8\"",
         "Access-Control-Allow-Origin" : "*",
-        "Date" : "Mon, 10 Aug 2020 20:02:17 GMT",
+        "Date" : "Mon, 10 Aug 2020 20:06:52 GMT",
         "Content-Length" : "30",
         "Cache-Control" : "no-cache",
         "Connection" : "keep-alive"
@@ -39,19 +39,19 @@
     "type" : 1
   },
   {
-    "id" : "5A258156-BD16-47B7-8843-D0333F3784C6",
+    "id" : "22942E5A-3C6D-4629-B6FB-496178DC2705",
     "data" : {
       "cls" : "NSData",
-      "base64" : "WzEsIlNlbnQiLCIxNTk3MDg5NzM3MjMwOTkyNiJd"
+      "base64" : "WzEsIlNlbnQiLCIxNTk3MDkwMDEyOTg5NTA3MCJd"
     },
     "type" : 2
   },
   {
-    "id" : "5A258156-BD16-47B7-8843-D0333F3784C6",
+    "id" : "22942E5A-3C6D-4629-B6FB-496178DC2705",
     "type" : 4
   },
   {
-    "id" : "A3378ED4-E66D-4812-B22D-67A5CB70EE81",
+    "id" : "60EE78A9-48FB-412D-8AE0-9165019B6E6B",
     "data" : {
       "method" : "get",
       "cls" : "NSURLRequest",
@@ -72,7 +72,7 @@
     "type" : 0
   },
   {
-    "id" : "A3378ED4-E66D-4812-B22D-67A5CB70EE81",
+    "id" : "60EE78A9-48FB-412D-8AE0-9165019B6E6B",
     "data" : {
       "status" : 200,
       "cls" : "NSHTTPURLResponse",
@@ -81,7 +81,7 @@
         "Access-Control-Allow-Methods" : "GET",
         "Content-Type" : "text\/javascript; charset=\"UTF-8\"",
         "Access-Control-Allow-Origin" : "*",
-        "Date" : "Mon, 10 Aug 2020 20:02:17 GMT",
+        "Date" : "Mon, 10 Aug 2020 20:06:53 GMT",
         "Content-Length" : "30",
         "Cache-Control" : "no-cache",
         "Connection" : "keep-alive"
@@ -90,19 +90,19 @@
     "type" : 1
   },
   {
-    "id" : "A3378ED4-E66D-4812-B22D-67A5CB70EE81",
+    "id" : "60EE78A9-48FB-412D-8AE0-9165019B6E6B",
     "data" : {
       "cls" : "NSData",
-      "base64" : "WzEsIlNlbnQiLCIxNTk3MDg5NzM3ODIxMTA3MCJd"
+      "base64" : "WzEsIlNlbnQiLCIxNTk3MDkwMDEzNTc4NjM2MSJd"
     },
     "type" : 2
   },
   {
-    "id" : "A3378ED4-E66D-4812-B22D-67A5CB70EE81",
+    "id" : "60EE78A9-48FB-412D-8AE0-9165019B6E6B",
     "type" : 4
   },
   {
-    "id" : "38A84207-215D-4E00-B713-29BF23D8BE8D",
+    "id" : "61E96D2E-0A6C-4B94-A255-6D1B5EF24075",
     "data" : {
       "method" : "get",
       "cls" : "NSURLRequest",
@@ -123,7 +123,7 @@
     "type" : 0
   },
   {
-    "id" : "38A84207-215D-4E00-B713-29BF23D8BE8D",
+    "id" : "61E96D2E-0A6C-4B94-A255-6D1B5EF24075",
     "data" : {
       "status" : 200,
       "cls" : "NSHTTPURLResponse",
@@ -132,7 +132,7 @@
         "Access-Control-Allow-Methods" : "GET",
         "Content-Type" : "text\/javascript; charset=\"UTF-8\"",
         "Access-Control-Allow-Origin" : "*",
-        "Date" : "Mon, 10 Aug 2020 20:02:18 GMT",
+        "Date" : "Mon, 10 Aug 2020 20:06:54 GMT",
         "Content-Length" : "30",
         "Cache-Control" : "no-cache",
         "Connection" : "keep-alive"
@@ -141,19 +141,19 @@
     "type" : 1
   },
   {
-    "id" : "38A84207-215D-4E00-B713-29BF23D8BE8D",
+    "id" : "61E96D2E-0A6C-4B94-A255-6D1B5EF24075",
     "data" : {
       "cls" : "NSData",
-      "base64" : "WzEsIlNlbnQiLCIxNTk3MDg5NzM4MzY2MDkxNyJd"
+      "base64" : "WzEsIlNlbnQiLCIxNTk3MDkwMDE0MTI3MTMxOSJd"
     },
     "type" : 2
   },
   {
-    "id" : "38A84207-215D-4E00-B713-29BF23D8BE8D",
+    "id" : "61E96D2E-0A6C-4B94-A255-6D1B5EF24075",
     "type" : 4
   },
   {
-    "id" : "7802D3E0-1927-463F-9533-93CC1D9A24EF",
+    "id" : "5E8A0172-275C-44FC-B25B-40ED97E666BF",
     "data" : {
       "method" : "get",
       "cls" : "NSURLRequest",
@@ -174,7 +174,7 @@
     "type" : 0
   },
   {
-    "id" : "7802D3E0-1927-463F-9533-93CC1D9A24EF",
+    "id" : "5E8A0172-275C-44FC-B25B-40ED97E666BF",
     "data" : {
       "status" : 200,
       "cls" : "NSHTTPURLResponse",
@@ -183,7 +183,7 @@
         "Access-Control-Allow-Methods" : "GET",
         "Content-Type" : "text\/javascript; charset=\"UTF-8\"",
         "Access-Control-Allow-Origin" : "*",
-        "Date" : "Mon, 10 Aug 2020 20:02:18 GMT",
+        "Date" : "Mon, 10 Aug 2020 20:06:54 GMT",
         "Content-Length" : "30",
         "Cache-Control" : "no-cache",
         "Connection" : "keep-alive"
@@ -192,19 +192,19 @@
     "type" : 1
   },
   {
-    "id" : "7802D3E0-1927-463F-9533-93CC1D9A24EF",
+    "id" : "5E8A0172-275C-44FC-B25B-40ED97E666BF",
     "data" : {
       "cls" : "NSData",
-      "base64" : "WzEsIlNlbnQiLCIxNTk3MDg5NzM4OTU5MjY4NCJd"
+      "base64" : "WzEsIlNlbnQiLCIxNTk3MDkwMDE0Njc5MTM5NCJd"
     },
     "type" : 2
   },
   {
-    "id" : "7802D3E0-1927-463F-9533-93CC1D9A24EF",
+    "id" : "5E8A0172-275C-44FC-B25B-40ED97E666BF",
     "type" : 4
   },
   {
-    "id" : "B49D58CB-9586-408B-9195-8597E1F823A6",
+    "id" : "339F52F2-012B-4311-9DBB-04C30A9B5D6E",
     "data" : {
       "method" : "get",
       "cls" : "NSURLRequest",
@@ -225,7 +225,7 @@
     "type" : 0
   },
   {
-    "id" : "B49D58CB-9586-408B-9195-8597E1F823A6",
+    "id" : "339F52F2-012B-4311-9DBB-04C30A9B5D6E",
     "data" : {
       "status" : 200,
       "cls" : "NSHTTPURLResponse",
@@ -234,7 +234,7 @@
         "Access-Control-Allow-Methods" : "GET",
         "Content-Type" : "text\/javascript; charset=\"UTF-8\"",
         "Access-Control-Allow-Origin" : "*",
-        "Date" : "Mon, 10 Aug 2020 20:02:22 GMT",
+        "Date" : "Mon, 10 Aug 2020 20:06:58 GMT",
         "Content-Length" : "30",
         "Cache-Control" : "no-cache",
         "Connection" : "keep-alive"
@@ -243,19 +243,19 @@
     "type" : 1
   },
   {
-    "id" : "B49D58CB-9586-408B-9195-8597E1F823A6",
+    "id" : "339F52F2-012B-4311-9DBB-04C30A9B5D6E",
     "data" : {
       "cls" : "NSData",
-      "base64" : "WzEsIlNlbnQiLCIxNTk3MDg5NzQyNTg1NzYxMCJd"
+      "base64" : "WzEsIlNlbnQiLCIxNTk3MDkwMDE4MjgwMTg0MyJd"
     },
     "type" : 2
   },
   {
-    "id" : "B49D58CB-9586-408B-9195-8597E1F823A6",
+    "id" : "339F52F2-012B-4311-9DBB-04C30A9B5D6E",
     "type" : 4
   },
   {
-    "id" : "8D003F88-DD77-4362-BBC3-0C8C124CB7C5",
+    "id" : "BECF788F-6DA0-41E1-A99A-9E49D18BBE1B",
     "data" : {
       "method" : "get",
       "cls" : "NSURLRequest",
@@ -276,7 +276,7 @@
     "type" : 0
   },
   {
-    "id" : "8D003F88-DD77-4362-BBC3-0C8C124CB7C5",
+    "id" : "BECF788F-6DA0-41E1-A99A-9E49D18BBE1B",
     "data" : {
       "status" : 200,
       "cls" : "NSHTTPURLResponse",
@@ -285,7 +285,7 @@
         "Access-Control-Allow-Methods" : "GET",
         "Content-Type" : "text\/javascript; charset=\"UTF-8\"",
         "Access-Control-Allow-Origin" : "*",
-        "Date" : "Mon, 10 Aug 2020 20:02:23 GMT",
+        "Date" : "Mon, 10 Aug 2020 20:06:58 GMT",
         "Content-Length" : "30",
         "Cache-Control" : "no-cache",
         "Connection" : "keep-alive"
@@ -294,19 +294,19 @@
     "type" : 1
   },
   {
-    "id" : "8D003F88-DD77-4362-BBC3-0C8C124CB7C5",
+    "id" : "BECF788F-6DA0-41E1-A99A-9E49D18BBE1B",
     "data" : {
       "cls" : "NSData",
-      "base64" : "WzEsIlNlbnQiLCIxNTk3MDg5NzQzMTMzNTA0NSJd"
+      "base64" : "WzEsIlNlbnQiLCIxNTk3MDkwMDE4ODMzNTUzNSJd"
     },
     "type" : 2
   },
   {
-    "id" : "8D003F88-DD77-4362-BBC3-0C8C124CB7C5",
+    "id" : "BECF788F-6DA0-41E1-A99A-9E49D18BBE1B",
     "type" : 4
   },
   {
-    "id" : "38D61235-D36C-41EA-B531-AC213886CD83",
+    "id" : "D4573ACB-6056-4F1D-BC38-F9017679DA5B",
     "data" : {
       "method" : "get",
       "cls" : "NSURLRequest",
@@ -327,7 +327,7 @@
     "type" : 0
   },
   {
-    "id" : "38D61235-D36C-41EA-B531-AC213886CD83",
+    "id" : "D4573ACB-6056-4F1D-BC38-F9017679DA5B",
     "data" : {
       "status" : 200,
       "cls" : "NSHTTPURLResponse",
@@ -336,7 +336,7 @@
         "Access-Control-Allow-Methods" : "GET",
         "Content-Type" : "text\/javascript; charset=\"UTF-8\"",
         "Access-Control-Allow-Origin" : "*",
-        "Date" : "Mon, 10 Aug 2020 20:02:23 GMT",
+        "Date" : "Mon, 10 Aug 2020 20:06:59 GMT",
         "Content-Length" : "30",
         "Cache-Control" : "no-cache",
         "Connection" : "keep-alive"
@@ -345,19 +345,19 @@
     "type" : 1
   },
   {
-    "id" : "38D61235-D36C-41EA-B531-AC213886CD83",
+    "id" : "D4573ACB-6056-4F1D-BC38-F9017679DA5B",
     "data" : {
       "cls" : "NSData",
-      "base64" : "WzEsIlNlbnQiLCIxNTk3MDg5NzQzNjg0MTUzNiJd"
+      "base64" : "WzEsIlNlbnQiLCIxNTk3MDkwMDE5Mzg4NTAwMiJd"
     },
     "type" : 2
   },
   {
-    "id" : "38D61235-D36C-41EA-B531-AC213886CD83",
+    "id" : "D4573ACB-6056-4F1D-BC38-F9017679DA5B",
     "type" : 4
   },
   {
-    "id" : "5B8B43E6-4B98-4B52-8522-36493EF1DD5E",
+    "id" : "D37E88B3-0C9A-476B-A4AA-BB512CA0DC8E",
     "data" : {
       "method" : "get",
       "cls" : "NSURLRequest",
@@ -378,7 +378,7 @@
     "type" : 0
   },
   {
-    "id" : "5B8B43E6-4B98-4B52-8522-36493EF1DD5E",
+    "id" : "D37E88B3-0C9A-476B-A4AA-BB512CA0DC8E",
     "data" : {
       "status" : 200,
       "cls" : "NSHTTPURLResponse",
@@ -387,7 +387,7 @@
         "Access-Control-Allow-Methods" : "GET",
         "Content-Type" : "text\/javascript; charset=\"UTF-8\"",
         "Access-Control-Allow-Origin" : "*",
-        "Date" : "Mon, 10 Aug 2020 20:02:24 GMT",
+        "Date" : "Mon, 10 Aug 2020 20:06:59 GMT",
         "Content-Length" : "30",
         "Cache-Control" : "no-cache",
         "Connection" : "keep-alive"
@@ -396,19 +396,19 @@
     "type" : 1
   },
   {
-    "id" : "5B8B43E6-4B98-4B52-8522-36493EF1DD5E",
+    "id" : "D37E88B3-0C9A-476B-A4AA-BB512CA0DC8E",
     "data" : {
       "cls" : "NSData",
-      "base64" : "WzEsIlNlbnQiLCIxNTk3MDg5NzQ0MjM1NTU3NyJd"
+      "base64" : "WzEsIlNlbnQiLCIxNTk3MDkwMDE5OTQ3MTYzNiJd"
     },
     "type" : 2
   },
   {
-    "id" : "5B8B43E6-4B98-4B52-8522-36493EF1DD5E",
+    "id" : "D37E88B3-0C9A-476B-A4AA-BB512CA0DC8E",
     "type" : 4
   },
   {
-    "id" : "7C51ADA5-68E0-4281-AF01-A69ACA7F7150",
+    "id" : "633AD003-B0FA-4C56-AC10-81089FD4B1C9",
     "data" : {
       "method" : "get",
       "cls" : "NSURLRequest",
@@ -424,25 +424,25 @@
       },
       "pipeline" : false,
       "network" : 0,
-      "url" : "https:\/\/ps.pndsn.com\/v3\/history\/sub-key\/demo\/channel\/test-channel1,test-channel2?include_uuid=1&pnsdk=PubNub-ObjC-iOS\/4.x.x&uuid=Serhii&include_message_type=1"
+      "url" : "https:\/\/ps.pndsn.com\/v3\/history\/sub-key\/demo\/channel\/test-channel1,test-channel2?include_uuid=0&pnsdk=PubNub-ObjC-iOS\/4.x.x&uuid=Serhii&include_message_type=1"
     },
     "type" : 0
   },
   {
-    "id" : "7C51ADA5-68E0-4281-AF01-A69ACA7F7150",
+    "id" : "633AD003-B0FA-4C56-AC10-81089FD4B1C9",
     "data" : {
       "status" : 200,
       "cls" : "NSHTTPURLResponse",
-      "url" : "https:\/\/ps.pndsn.com\/v3\/history\/sub-key\/demo\/channel\/test-channel1,test-channel2?include_uuid=1&pnsdk=PubNub-ObjC-iOS\/4.x.x&uuid=Serhii&include_message_type=1",
+      "url" : "https:\/\/ps.pndsn.com\/v3\/history\/sub-key\/demo\/channel\/test-channel1,test-channel2?include_uuid=0&pnsdk=PubNub-ObjC-iOS\/4.x.x&uuid=Serhii&include_message_type=1",
       "headers" : {
         "Access-Control-Allow-Methods" : "GET, POST, DELETE, OPTIONS",
         "Content-Type" : "text\/javascript; charset=\"UTF-8\"",
         "Server" : "Pubnub",
         "Access-Control-Allow-Origin" : "*",
         "Age" : "0",
-        "Date" : "Mon, 10 Aug 2020 20:02:27 GMT",
+        "Date" : "Mon, 10 Aug 2020 20:07:03 GMT",
         "Accept-Ranges" : "bytes",
-        "Content-Length" : "427",
+        "Content-Length" : "363",
         "Cache-Control" : "no-cache",
         "Connection" : "keep-alive"
       }
@@ -450,19 +450,19 @@
     "type" : 1
   },
   {
-    "id" : "7C51ADA5-68E0-4281-AF01-A69ACA7F7150",
+    "id" : "633AD003-B0FA-4C56-AC10-81089FD4B1C9",
     "data" : {
       "cls" : "NSData",
-      "base64" : "eyJzdGF0dXMiOiAyMDAsICJlcnJvciI6IGZhbHNlLCAiZXJyb3JfbWVzc2FnZSI6ICIiLCAiY2hhbm5lbHMiOiB7InRlc3QtY2hhbm5lbDEiOlt7Im1lc3NhZ2UiOiB7Im1lc3NhZ2VJZHgiOiAibWVzc2FnZTogMyIsICJ0aW1lIjogMTU3NzkxODQxNX0sICJ0aW1ldG9rZW4iOiAiMTU5NzA4OTczODk1OTI2ODQiLCAibWVzc2FnZV90eXBlIjogIiIsICJ1dWlkIjogIlNlcmhpaSJ9XSwidGVzdC1jaGFubmVsMiI6W3sibWVzc2FnZSI6IHsibWVzc2FnZUlkeCI6ICJtZXNzYWdlOiAzIiwgInRpbWUiOiAxNTc3OTE4NDE1fSwgInRpbWV0b2tlbiI6ICIxNTk3MDg5NzQ0MjM1NTU3NyIsICJtZXNzYWdlX3R5cGUiOiAiIiwgInV1aWQiOiAiU2VyaGlpIn1dfX0="
+      "base64" : "eyJzdGF0dXMiOiAyMDAsICJlcnJvciI6IGZhbHNlLCAiZXJyb3JfbWVzc2FnZSI6ICIiLCAiY2hhbm5lbHMiOiB7InRlc3QtY2hhbm5lbDIiOlt7Im1lc3NhZ2UiOiB7Im1lc3NhZ2VJZHgiOiAibWVzc2FnZTogMyIsICJ0aW1lIjogMTU3NzkxODQxNX0sICJ0aW1ldG9rZW4iOiAiMTU5NzA5MDAxOTk0NzE2MzYiLCAibWVzc2FnZV90eXBlIjogIiJ9XSwidGVzdC1jaGFubmVsMSI6W3sibWVzc2FnZSI6IHsibWVzc2FnZUlkeCI6ICJtZXNzYWdlOiAzIiwgInRpbWUiOiAxNTc3OTE4NDE1fSwgInRpbWV0b2tlbiI6ICIxNTk3MDkwMDE0Njc5MTM5NCIsICJtZXNzYWdlX3R5cGUiOiAiIn1dfX0="
     },
     "type" : 2
   },
   {
-    "id" : "7C51ADA5-68E0-4281-AF01-A69ACA7F7150",
+    "id" : "633AD003-B0FA-4C56-AC10-81089FD4B1C9",
     "type" : 4
   },
   {
-    "id" : "099FC708-B232-4425-B8B5-2CFE81DF4184",
+    "id" : "4A66F5E5-608F-4DFE-A8D1-09E95400E8EC",
     "data" : {
       "method" : "delete",
       "cls" : "NSURLRequest",
@@ -483,7 +483,7 @@
     "type" : 0
   },
   {
-    "id" : "099FC708-B232-4425-B8B5-2CFE81DF4184",
+    "id" : "4A66F5E5-608F-4DFE-A8D1-09E95400E8EC",
     "data" : {
       "status" : 200,
       "cls" : "NSHTTPURLResponse",
@@ -494,7 +494,7 @@
         "Server" : "Pubnub",
         "Access-Control-Allow-Origin" : "*",
         "Age" : "0",
-        "Date" : "Mon, 10 Aug 2020 20:02:27 GMT",
+        "Date" : "Mon, 10 Aug 2020 20:07:03 GMT",
         "Accept-Ranges" : "bytes",
         "Content-Length" : "52",
         "Cache-Control" : "no-cache",
@@ -504,7 +504,7 @@
     "type" : 1
   },
   {
-    "id" : "099FC708-B232-4425-B8B5-2CFE81DF4184",
+    "id" : "4A66F5E5-608F-4DFE-A8D1-09E95400E8EC",
     "data" : {
       "cls" : "NSData",
       "base64" : "eyJzdGF0dXMiOiAyMDAsICJlcnJvciI6IGZhbHNlLCAiZXJyb3JfbWVzc2FnZSI6ICIifQ=="
@@ -512,11 +512,11 @@
     "type" : 2
   },
   {
-    "id" : "099FC708-B232-4425-B8B5-2CFE81DF4184",
+    "id" : "4A66F5E5-608F-4DFE-A8D1-09E95400E8EC",
     "type" : 4
   },
   {
-    "id" : "F619DD49-DEA7-4B53-B066-072B83029FA2",
+    "id" : "7E42FE27-9BC5-4FC6-B8DE-4A72B5C10804",
     "data" : {
       "method" : "delete",
       "cls" : "NSURLRequest",
@@ -537,7 +537,7 @@
     "type" : 0
   },
   {
-    "id" : "F619DD49-DEA7-4B53-B066-072B83029FA2",
+    "id" : "7E42FE27-9BC5-4FC6-B8DE-4A72B5C10804",
     "data" : {
       "status" : 200,
       "cls" : "NSHTTPURLResponse",
@@ -548,7 +548,7 @@
         "Server" : "Pubnub",
         "Access-Control-Allow-Origin" : "*",
         "Age" : "0",
-        "Date" : "Mon, 10 Aug 2020 20:02:27 GMT",
+        "Date" : "Mon, 10 Aug 2020 20:07:03 GMT",
         "Accept-Ranges" : "bytes",
         "Content-Length" : "52",
         "Cache-Control" : "no-cache",
@@ -558,7 +558,7 @@
     "type" : 1
   },
   {
-    "id" : "F619DD49-DEA7-4B53-B066-072B83029FA2",
+    "id" : "7E42FE27-9BC5-4FC6-B8DE-4A72B5C10804",
     "data" : {
       "cls" : "NSData",
       "base64" : "eyJzdGF0dXMiOiAyMDAsICJlcnJvciI6IGZhbHNlLCAiZXJyb3JfbWVzc2FnZSI6ICIifQ=="
@@ -566,7 +566,7 @@
     "type" : 2
   },
   {
-    "id" : "F619DD49-DEA7-4B53-B066-072B83029FA2",
+    "id" : "7E42FE27-9BC5-4FC6-B8DE-4A72B5C10804",
     "type" : 4
   }
 ]

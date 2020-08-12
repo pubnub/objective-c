@@ -16,14 +16,15 @@
 #import "PNPrivateStructures.h"
 #import "PNClientInformation.h"
 #import "PNRequestParameters.h"
+#import "PNKeychain+Private.h"
 #import "PNSubscribeStatus.h"
 #import "PNEventsListener.h"
 #import "PNResult+Private.h"
 #import "PNStatus+Private.h"
 #import "PNConfiguration.h"
 #import "PNReachability.h"
+#import "PNDataStorage.h"
 #import "PNConstants.h"
-#import "PNKeychain.h"
 #import "PNLogMacro.h"
 #import "PNNetwork.h"
 #import "PNHelpers.h"
@@ -192,10 +193,11 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief Store provided unique user identifier in keychain.
  *
  * @param uuid Unique user identifier which has been provided with \b PNConfiguration instance.
+ * @param identifier Account publish or subscribe key which has been provided with \c PNConfiguration instance.
  *
- * @since 4.5.15
+ * @since 4.15.3
  */
-- (void)storeUUID:(NSString *)uuid;
+- (void)storeUUID:(NSString *)uuid forIdentifier:(NSString *)identifier;
 
 /**
  * @brief Create and configure \b PubNub client logger instance.
@@ -274,7 +276,8 @@ NS_ASSUME_NONNULL_END
                         callbackQueue:(dispatch_queue_t)callbackQueue {
 
     if ((self = [super init])) {
-        [self storeUUID:configuration.uuid];
+        NSString *storageIdentifier = configuration.publishKey ?: configuration.subscribeKey;
+        [self storeUUID:configuration.uuid forIdentifier:storageIdentifier];
         [self setupClientLogger];
         
         PNLogClientInfo(self.logger, @"<PubNub> PubNub SDK %@ (%@)", kPNLibraryVersion, kPNCommit);
@@ -686,13 +689,12 @@ NS_ASSUME_NONNULL_END
     return class;
 }
 
-- (void)storeUUID:(NSString *)uuid {
-    
-    [PNKeychain storeValue:uuid forKey:kPNConfigurationUUIDKey withCompletionBlock:NULL];
+- (void)storeUUID:(NSString *)uuid forIdentifier:(NSString *)identifier {
+    id<PNKeyValueStorage> storage = [PNDataStorage persistentClientDataWithIdentifier:identifier];
+    [storage storeValue:uuid forKey:kPNConfigurationUUIDKey];
 }
 
 - (void)setupClientLogger {
-
 #if TARGET_OS_TV && !TARGET_OS_SIMULATOR
     NSSearchPathDirectory searchPath = NSCachesDirectory;
 #else 

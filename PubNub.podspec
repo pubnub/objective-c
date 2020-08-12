@@ -9,7 +9,7 @@
 
 Pod::Spec.new do |spec|
     spec.name     = 'PubNub'
-    spec.version  = '4.15.2'
+    spec.version  = '4.15.3'
     spec.summary  = 'The PubNub Real-Time Network. Build real-time apps quickly and scale them globally.'
     spec.homepage = 'https://github.com/pubnub/objective-c'
 
@@ -40,7 +40,7 @@ Pod::Spec.new do |spec|
             'PubNub/Misc/Helpers/{PNArray,PNChannel,PNData,PNDate,PNDictionary,PNGZIP,PNHelpers,PNJSON,PNLockSupport,PNNumber,PNString,PNURLRequest}.h',
             'PubNub/Misc/Logger/PNLogMacro.h',
             'PubNub/Misc/Logger/Data/*.h',
-            'PubNub/Misc/Protocols/PNParser.h',
+            'PubNub/Misc/Protocols/{PNKeyValueStorageProtocol,PNParser}.h',
             'PubNub/Network/{PNNetwork,PNNetworkResponseSerializer,PNReachability,PNRequestParameters,PNURLBuilder}.h',
             'PubNub/Network/Requests/Files/PNGenerateFileUploadURLRequest.h',
             'PubNub/Network/Parsers/**/*.h'

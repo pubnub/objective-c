@@ -6,6 +6,8 @@
 #import <Security/Security.h>
 #import "PNPrivateStructures.h"
 #import "PNKeychain+Private.h"
+#import "PNKeychainStorage.h"
+#import "PNDataStorage.h"
 #if TARGET_OS_IOS
     #import <UIKit/UIKit.h>
 #elif TARGET_OS_OSX
@@ -46,6 +48,16 @@ NS_ASSUME_NONNULL_BEGIN
  * @return Configured and ready to se configuration instance.
  */
 - (instancetype)initWithPublishKey:(NSString *)publishKey subscribeKey:(NSString *)subscribeKey;
+
+
+#pragma mark - Storage
+
+/**
+ * @brief Migrate previously stored client data in default storage to new one (identifier-based storage).
+ *
+ * @param identifier Unique identifier of storage to which information should be moved from default storage.
+ */
+- (void)migrateDefaultToStorageWithIdentifier:(NSString *)identifier;
 
 
 #pragma mark - Misc
@@ -117,7 +129,6 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Information
 
 - (void)setPresenceHeartbeatValue:(NSInteger)presenceHeartbeatValue {
-  
   _presenceHeartbeatValue = presenceHeartbeatValue < 20 ? 20 : MIN(presenceHeartbeatValue, 300);
   _presenceHeartbeatInterval = (NSInteger)(_presenceHeartbeatValue * 0.5f) - 1;
 }
@@ -135,15 +146,17 @@ NS_ASSUME_NONNULL_END
 }
 
 - (instancetype)initWithPublishKey:(NSString *)publishKey subscribeKey:(NSString *)subscribeKey {
-    
     if ((self = [super init])) {
-        [PNKeychain updateEntries:@[kPNConfigurationUUIDKey, kPNConfigurationDeviceIDKey, kPNPublishSequenceDataKey]
-                  accessibilityTo:kSecAttrAccessibleAfterFirstUnlock];
-        
-        
         _origin = [kPNDefaultOrigin copy];
         _publishKey = [publishKey copy];
         _subscribeKey = [subscribeKey copy];
+        
+        /**
+         * Call position important, because it migrate stored UUID and device identifier from older
+         * storage.
+         */
+        [self migrateDefaultToStorageWithIdentifier:publishKey ?: subscribeKey];
+        
         _uuid = [[self uniqueUserIdentifier] copy];
         _deviceID = [[self uniqueDeviceIdentifier] copy];
         _subscribeMaximumIdleTime = kPNDefaultSubscribeMaximumIdleTime;
@@ -167,7 +180,6 @@ NS_ASSUME_NONNULL_END
 }
 
 - (id)copyWithZone:(NSZone *)zone {
-    
     PNConfiguration *configuration = [[PNConfiguration allocWithZone:zone] init];
     configuration.deviceID = self.deviceID;
     configuration.origin = self.origin;
@@ -203,21 +215,50 @@ NS_ASSUME_NONNULL_END
 }
 
 
+#pragma mark - Storage
+
+- (void)migrateDefaultToStorageWithIdentifier:(NSString *)identifier {
+    id<PNKeyValueStorage> storage = [PNDataStorage persistentClientDataWithIdentifier:identifier];
+    PNKeychain *defaultKeychain = PNKeychain.defaultKeychain;
+    
+    NSString *previousUUID = [defaultKeychain valueForKey:kPNConfigurationUUIDKey];
+    
+    if (previousUUID) {
+        [storage syncStoreValue:previousUUID forKey:kPNConfigurationUUIDKey];
+        [defaultKeychain removeValueForKey:kPNConfigurationUUIDKey];
+        
+        NSString *previousDeviceID = [defaultKeychain valueForKey:kPNConfigurationDeviceIDKey];
+        [storage syncStoreValue:previousDeviceID forKey:kPNConfigurationDeviceIDKey];
+        [defaultKeychain removeValueForKey:kPNConfigurationDeviceIDKey];
+    }
+    
+    // Update access properties.
+    if ([storage isKindOfClass:[PNKeychainStorage class]]) {
+        PNKeychainStorage *keychainStorage = (PNKeychainStorage *)storage;
+        NSArray<NSString *> *entryNames = @[
+            kPNConfigurationUUIDKey,
+            kPNConfigurationDeviceIDKey,
+            kPNPublishSequenceDataKey
+        ];
+        
+        [keychainStorage updateEntries:entryNames accessibilityTo:kSecAttrAccessibleAfterFirstUnlock];
+    }
+}
+
+
 #pragma mark - Misc
 
 - (NSString *)uniqueUserIdentifier {
-    
+    NSString *storageIdentifier = self.publishKey ?: self.subscribeKey;
+    id<PNKeyValueStorage> storage = [PNDataStorage persistentClientDataWithIdentifier:storageIdentifier];
     __block NSString *identifier = nil;
     
-    [PNKeychain valueForKey:kPNConfigurationUUIDKey withCompletionBlock:^(id value) {
-        if (!value) {
+    [storage batchSyncAccessWithBlock:^{
+        identifier = [storage valueForKey:kPNConfigurationUUIDKey];
+        
+        if (!identifier) {
             identifier = [@"pn-" stringByAppendingString:[NSUUID UUID].UUIDString];
-            
-            [PNKeychain storeValue:identifier
-                            forKey:kPNConfigurationUUIDKey
-               withCompletionBlock:NULL];
-        } else {
-            identifier = value;
+            [storage storeValue:identifier forKey:kPNConfigurationUUIDKey];
         }
     }];
     
@@ -225,18 +266,16 @@ NS_ASSUME_NONNULL_END
 }
 
 - (NSString *)uniqueDeviceIdentifier {
-    
+    NSString *storageIdentifier = self.publishKey ?: self.subscribeKey;
+    id<PNKeyValueStorage> storage = [PNDataStorage persistentClientDataWithIdentifier:storageIdentifier];
     __block NSString *identifier = nil;
     
-    [PNKeychain valueForKey:kPNConfigurationDeviceIDKey withCompletionBlock:^(id value) {
-        if (!value) {
+    [storage batchSyncAccessWithBlock:^{
+        identifier = [storage valueForKey:kPNConfigurationDeviceIDKey];
+        
+        if (!identifier) {
             identifier = [self generateUniqueDeviceIdentifier];
-            
-            [PNKeychain storeValue:identifier
-                            forKey:kPNConfigurationDeviceIDKey
-               withCompletionBlock:NULL];
-        } else {
-            identifier = value;
+            [storage storeValue:identifier forKey:kPNConfigurationDeviceIDKey];
         }
     }];
     
@@ -244,7 +283,6 @@ NS_ASSUME_NONNULL_END
 }
 
 - (NSString *)generateUniqueDeviceIdentifier {
-    
     NSString *identifier = nil;
 #if TARGET_OS_IOS
     identifier = UIDevice.currentDevice.identifierForVendor.UUIDString;
@@ -257,7 +295,6 @@ NS_ASSUME_NONNULL_END
 
 #if TARGET_OS_OSX
 - (NSString *)serialNumber {
-    
     NSString *serialNumber = nil;
     io_service_t service = IOServiceGetMatchingService(kIOMasterPortDefault,
                                                        IOServiceMatching("IOPlatformExpertDevice"));
@@ -279,7 +316,6 @@ NS_ASSUME_NONNULL_END
 }
 
 - (NSString *)macAddress {
-    
     NSString *macAddress = nil;
     size_t length = 0;
     int mib[6] = {CTL_NET, AF_ROUTE, 0, AF_LINK, NET_RT_IFLIST, if_nametoindex("en0")};

@@ -1,10 +1,13 @@
 /**
  * @author Sergey Mamontov
- * @version 4.11.0
+ * @version 4.15.3
  * @since 4.5.2
- * @copyright © 2010-2019 PubNub, Inc.
+ * @copyright © 2010-2020 PubNub, Inc.
  */
 #import "PNPublishSequence.h"
+#import "PNPrivateStructures.h"
+#import "PNKeychain+Private.h"
+#import "PNDataStorage.h"
 
 #if TARGET_OS_IOS
     #import <UIKit/UIKit.h>
@@ -32,14 +35,6 @@ NSString * const kPNPublishSequenceDataKey = @"pn_publishSequence";
  */
 static NSUInteger const kPNMaximumPublishSequenceDataAge = (30 * 24 * 60 * 60);
 
-/**
- * @brief Spin-lock which is used to protect access to shared resources from multiple threads.
- */
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wpartial-availability"
-static os_unfair_lock publishSequenceKeychainAccessLock = OS_UNFAIR_LOCK_INIT;
-#pragma clang diagnostic pop
-
 
 #pragma mark - Structures
 
@@ -47,7 +42,6 @@ static os_unfair_lock publishSequenceKeychainAccessLock = OS_UNFAIR_LOCK_INIT;
  * @brief Storable sequence manager data structure.
  */
 struct PNPublishSequenceDataStructure {
-    
     /**
      * @brief Key under which stored date when sequence last has been re-saved / modified.
      */
@@ -65,26 +59,26 @@ struct PNPublishSequenceDataStructure PNPublishSequenceData = {
 };
 
 
-#pragma mark - Private interface declaration
+#pragma mark - Protected interface declaration
 
-@interface PNPublishSequence () {
-    /**
-     * @brief Spin-lock which is used to protect access to current message sequence number which can
-     * be changed at any moment.
-     */
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wpartial-availability"
-    os_unfair_lock _lock;
-#pragma clang diagnostic pop
-}
+@interface PNPublishSequence ()
 
 
 #pragma mark - Information
 
 /**
- * @brief Client for which state cache manager created.
+ * @brief Queue which is used to serialize access to shared client state information.
+ *
+ * @since 4.15.3
  */
-@property (nonatomic, weak) PubNub *client;
+@property (nonatomic, strong) dispatch_queue_t resourceAccessQueue;
+
+/**
+ * @brief Storage which is used to store information about current publish sequence number.
+ *
+ * @since 4.15.3
+ */
+@property (nonatomic, strong) id<PNKeyValueStorage> dataStorage;
 
 /**
  * @brief Sequence number which has been used for recent message publish API usage.
@@ -95,11 +89,6 @@ struct PNPublishSequenceDataStructure PNPublishSequenceData = {
  * @brief Whether stored sequence number for \b publishKey has been changed or not.
  */
 @property (nonatomic, assign) BOOL sequenceNumberChanged;
-
-/**
- * @brief Current \b PubNub client publish key.
- */
-@property (nonatomic, copy) NSString *publishKey;
 
 
 #pragma mark - Initialization and Configuration
@@ -140,6 +129,16 @@ struct PNPublishSequenceDataStructure PNPublishSequenceData = {
 - (void)cleanUpIfRequired;
 
 
+#pragma mark - Storage
+
+/**
+ * @brief Migrate previously stored client data in default storage to new one (identifier-based storage).
+ *
+ * @param identifier Unique identifier of storage to which information should be moved from default storage.
+ */
+- (void)migrateDefaultToStorageWithIdentifier:(NSString *)identifier;
+
+
 #pragma mark - Handlers
 
 /**
@@ -177,8 +176,8 @@ NS_ASSUME_NONNULL_END
 
 - (NSUInteger)sequenceNumber {
     __block NSUInteger sequenceNumber = 0;
-    
-    pn_lock(&_lock, ^{
+
+    dispatch_sync(self.resourceAccessQueue, ^{
         sequenceNumber = self->_sequenceNumber;
     });
     
@@ -187,27 +186,23 @@ NS_ASSUME_NONNULL_END
 
 - (NSUInteger)nextSequenceNumber:(BOOL)shouldUpdateCurrent {
     __block NSUInteger sequenceNumber = 0;
-    
-    pn_lock(&_lock, ^{
+
+    dispatch_block_t block = ^{
         sequenceNumber = self->_sequenceNumber == NSUIntegerMax ? 1 : self->_sequenceNumber + 1;
-        
+
         if (shouldUpdateCurrent) {
             self->_sequenceNumber = sequenceNumber;
             self->_sequenceNumberChanged = YES;
         }
-    });
+    };
+
+    if (shouldUpdateCurrent) {
+        dispatch_barrier_sync(self.resourceAccessQueue, block);
+    } else {
+        dispatch_sync(self.resourceAccessQueue, block);
+    }
     
     return sequenceNumber;
-}
-
-- (BOOL)sequenceNumberChanged {
-    __block BOOL sequenceNumberChanged = 0;
-    
-    pn_lock(&_lock, ^{
-        sequenceNumberChanged = self->_sequenceNumberChanged;
-    });
-    
-    return sequenceNumberChanged;
 }
 
 
@@ -223,8 +218,6 @@ NS_ASSUME_NONNULL_END
         if (!manager) {
             manager = [[self alloc] initForClient:client];
             sequenceManagers[client.currentConfiguration.publishKey] = manager;
-        } else {
-            manager.client = client;
         }
     }
     
@@ -244,12 +237,16 @@ NS_ASSUME_NONNULL_END
 
 - (instancetype)initForClient:(PubNub *)client {
     if ((self = [super init])) {
-        _client = client;
-        _publishKey = client.currentConfiguration.publishKey;
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wpartial-availability"
-        _lock = OS_UNFAIR_LOCK_INIT;
-#pragma clang diagnostic pop
+        NSString *subscribeKey = client.currentConfiguration.subscribeKey;
+        NSString *publishKey = client.currentConfiguration.publishKey;
+        NSString *storageIdentifier = publishKey ?: subscribeKey;
+        [self migrateDefaultToStorageWithIdentifier:storageIdentifier];
+        
+        const char *queueIdentifier = "com.pubnub.publish-sequence";
+        _resourceAccessQueue = dispatch_queue_create(queueIdentifier, DISPATCH_QUEUE_CONCURRENT);
+        dispatch_set_target_queue(_resourceAccessQueue, NULL);
+        
+        _dataStorage = [PNDataStorage persistentClientDataWithIdentifier:storageIdentifier];
         
         [self loadFromPersistentStorage];
         [self cleanUpIfRequired];
@@ -260,7 +257,7 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)reset {
-    pn_lock(&_lock, ^{
+    dispatch_barrier_async(self.resourceAccessQueue, ^{
         self->_sequenceNumberChanged = YES;
         self->_sequenceNumber = 0;
     });
@@ -272,84 +269,76 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Data storage
 
 - (void)loadFromPersistentStorage {
-    pn_lock_async(&publishSequenceKeychainAccessLock, ^(dispatch_block_t completion) {
-        [PNKeychain valueForKey:kPNPublishSequenceDataKey
-            withCompletionBlock:^(NSDictionary *sequences) {
-            
-            NSMutableDictionary *mutableSequences = [(sequences?: @{}) mutableCopy];
-            NSMutableDictionary *sequenceData = [(mutableSequences[self.publishKey]?: @{}) mutableCopy];
+    NSString *key = kPNPublishSequenceDataKey;
+    
+    dispatch_barrier_async(self.resourceAccessQueue, ^{
+        [self.dataStorage batchAsyncAccessWithBlock:^(dispatch_block_t completion) {
+            NSMutableDictionary *sequenceData = [([self.dataStorage valueForKey:key]?: @{}) mutableCopy];
             NSNumber *sequenceNumber = (NSNumber *)sequenceData[PNPublishSequenceData.sequence];
             sequenceData[PNPublishSequenceData.lastSaveDate] = @([NSDate date].timeIntervalSince1970);
             self->_sequenceNumber = sequenceNumber.unsignedIntegerValue;
             
-            [PNKeychain storeValue:mutableSequences
-                            forKey:kPNPublishSequenceDataKey
-               withCompletionBlock:^(BOOL stored) {
-                   
-                   completion();
-               }];
+            [self.dataStorage storeValue:sequenceData forKey:key];
+            completion();
         }];
     });
 }
 
 - (void)saveToPersistentStorage {
-    if (!self.sequenceNumberChanged) {
-        return;
-    }
-
-    pn_lock(&_lock, ^{
-        self->_sequenceNumberChanged = NO;
-    });
+    NSString *key = kPNPublishSequenceDataKey;
     
-    pn_lock_async(&publishSequenceKeychainAccessLock, ^(dispatch_block_t completion) {
-        [PNKeychain valueForKey:kPNPublishSequenceDataKey
-            withCompletionBlock:^(NSDictionary *sequences) {
-                
-            NSMutableDictionary *mutableSequences = [(sequences?: @{}) mutableCopy];
-            NSMutableDictionary *sequenceData = [(mutableSequences[self.publishKey]?: @{}) mutableCopy];
-            sequenceData[PNPublishSequenceData.sequence] = @(self.sequenceNumber);
+    dispatch_barrier_async(self.resourceAccessQueue, ^{
+        if (!self.sequenceNumberChanged) {
+            return;
+        }
+        
+        self.sequenceNumberChanged = NO;
+        
+        [self.dataStorage batchAsyncAccessWithBlock:^(dispatch_block_t completion) {
+            NSMutableDictionary *sequenceData = [([self.dataStorage valueForKey:key]?: @{}) mutableCopy];
+            sequenceData[PNPublishSequenceData.sequence] = @(self->_sequenceNumber);
             sequenceData[PNPublishSequenceData.lastSaveDate] = @([NSDate date].timeIntervalSince1970);
-            mutableSequences[self.publishKey] = sequenceData;
             
-            [PNKeychain storeValue:mutableSequences
-                            forKey:kPNPublishSequenceDataKey
-               withCompletionBlock:^(BOOL stored) {
-                   
-                   completion();
-               }];
+            [self.dataStorage storeValue:sequenceData forKey:key];
+            completion();
         }];
     });
 }
 
 - (void)cleanUpIfRequired {
     NSTimeInterval currentTimestamp = [NSDate date].timeIntervalSince1970;
+    NSString *key = kPNPublishSequenceDataKey;
     
-    pn_lock_async(&publishSequenceKeychainAccessLock, ^(dispatch_block_t completion) {
-        [PNKeychain valueForKey:kPNPublishSequenceDataKey withCompletionBlock:^(NSDictionary *sequences) {
+    dispatch_barrier_async(self.resourceAccessQueue, ^{
+        [self.dataStorage batchAsyncAccessWithBlock:^(dispatch_block_t completion) {
+            NSMutableDictionary *sequenceData = [self.dataStorage valueForKey:key];
             
-            NSMutableDictionary *mutableSequences = [(sequences?: @{}) mutableCopy];
-            [mutableSequences enumerateKeysAndObjectsUsingBlock:^(NSString *publishKey,
-                                                                  NSDictionary *sequenceData,
-                                                                  BOOL *sequencesEnumeratorStop) {
-                
-                if (![publishKey isEqualToString:self.publishKey]) {
-                    NSNumber *lastUpdateDate = sequenceData[PNPublishSequenceData.lastSaveDate];
-                    NSTimeInterval lastUpdateTimestamp = lastUpdateDate.doubleValue;
-                    
-                    if (ABS(currentTimestamp - lastUpdateTimestamp) > kPNMaximumPublishSequenceDataAge) {
-                        mutableSequences[publishKey] = nil;
-                    }
-                }
-            }];
+            NSNumber *lastUpdateDate = sequenceData[PNPublishSequenceData.lastSaveDate];
+            NSTimeInterval lastUpdateTimestamp = lastUpdateDate.doubleValue;
             
-            [PNKeychain storeValue:mutableSequences
-                            forKey:kPNPublishSequenceDataKey
-               withCompletionBlock:^(BOOL stored) {
-                   
-                   completion();
-               }];
+            if (ABS(currentTimestamp - lastUpdateTimestamp) > kPNMaximumPublishSequenceDataAge) {
+                [self.dataStorage storeValue:nil forKey:key];
+            }
+            
+            completion();
         }];
     });
+}
+
+
+#pragma mark - Storage
+
+- (void)migrateDefaultToStorageWithIdentifier:(NSString *)identifier {
+    id<PNKeyValueStorage> storage = [PNDataStorage persistentClientDataWithIdentifier:identifier];
+    PNKeychain *defaultKeychain = PNKeychain.defaultKeychain;
+    
+    NSDictionary *sequenceData = [defaultKeychain valueForKey:kPNPublishSequenceDataKey];
+    
+    if (sequenceData.count) {
+        sequenceData = sequenceData[sequenceData.allKeys.lastObject];
+        [storage syncStoreValue:sequenceData forKey:kPNPublishSequenceDataKey];
+        [defaultKeychain removeValueForKey:kPNConfigurationDeviceIDKey];
+    }
 }
 
 
