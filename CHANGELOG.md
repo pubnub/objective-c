@@ -1,3 +1,14 @@
+## [v4.15.4](https://github.com/pubnub/objective-c/releases/tag/v4.15.4)
+September 10 2020
+
+[Full Changelog](https://github.com/pubnub/objective-c/compare/v4.15.3...v4.15.4)
+
+#### Modified
+- Update code to ensure that persistent and in-memory storage accessed in thread-safe way. 
+
+#### Fixed
+- Fix issue because of which migrated data didn't placed at proper place. 
+
 ## [v4.15.3](https://github.com/pubnub/objective-c/releases/tag/v4.15.3)
 August 13 2020
 

@@ -1,9 +1,19 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.15.3"
+version: "4.15.4"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Update code to ensure that persistent and in-memory storage accessed in thread-safe way."
+        type: improvement
+      -
+        text: "Fix issue because of which migrated data didn't placed at proper place."
+        type: bug
+    date: Sep 10, 20
+    version: v4.15.4
   -
     changes:
       -

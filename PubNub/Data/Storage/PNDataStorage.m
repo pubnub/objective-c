@@ -66,7 +66,13 @@ NS_ASSUME_NONNULL_END
     static dispatch_once_t onceToken;
 
     dispatch_once(&onceToken, ^{
-        const char *queueIdentifier = "com.pubnub.data-storage.shared-queue";
+        const char *queueIdentifier = "com.pubnub.data-storage.in-memory";
+        
+#if !TARGET_OS_OSX
+        if ([PNKeychain isKeychainAvailable]) {
+            queueIdentifier = "com.pubnub.data-storage.keychain";
+        }
+#endif // TARGET_OS_OSX
         _sharedDataStorageAccessQueue = dispatch_queue_create(queueIdentifier,
                                                               DISPATCH_QUEUE_CONCURRENT);
     });
@@ -98,28 +104,16 @@ NS_ASSUME_NONNULL_END
         if (!storage) {
 #if !TARGET_OS_OSX
             if ([PNKeychain isKeychainAvailable]) {
-                const char *queueIdentifier = "com.pubnub.data-storage.keychain";
-                dispatch_queue_t queue = dispatch_queue_create(queueIdentifier,
-                                                               DISPATCH_QUEUE_CONCURRENT);
-                dispatch_set_target_queue(queue, self.resourcesAccessQueue);
-                
-                storage = [PNKeychainStorage storageWithIdentifier:storageIdentifier queue:queue];
+                storage = [PNKeychainStorage storageWithIdentifier:storageIdentifier
+                                                             queue:self.resourcesAccessQueue];
             } else {
-                const char *queueIdentifier = "com.pubnub.data-storage.in-memory";
-                dispatch_queue_t queue = dispatch_queue_create(queueIdentifier,
-                                                               DISPATCH_QUEUE_CONCURRENT);
-                dispatch_set_target_queue(queue, self.resourcesAccessQueue);
-                
-                storage = [PNInMemoryStorage storageWithIdentifier:storageIdentifier queue:queue];
+                storage = [PNInMemoryStorage storageWithIdentifier:storageIdentifier
+                                                             queue:self.resourcesAccessQueue];
             }
 #else
-            const char *queueIdentifier = "com.pubnub.data-storage.in-memory";
-            dispatch_queue_t queue = dispatch_queue_create(queueIdentifier,
-                                                           DISPATCH_QUEUE_CONCURRENT);
-            dispatch_set_target_queue(queue, self.resourcesAccessQueue);
-                
-            storage = [PNInMemoryStorage storageWithIdentifier:storageIdentifier queue:queue];
-#endif // TARGET_OS_OSX
+            storage = [PNInMemoryStorage storageWithIdentifier:storageIdentifier
+                                                         queue:self.resourcesAccessQueue];
+#endif // !TARGET_OS_OSX
         }
         
         [self storages][storageIdentifier] = storage;

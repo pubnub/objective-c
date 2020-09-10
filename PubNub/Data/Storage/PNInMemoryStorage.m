@@ -1,6 +1,6 @@
 /**
  * @author Serhii Mamontov
- * @version 4.15.3
+ * @version 4.15.4
  * @since 4.15.3
  * @copyright © 2010-2020 PubNub, Inc.
  */
@@ -17,12 +17,19 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Information
 
 /**
+ * @brief Dictionary which is used to keep values stored by multiple sessions of \b PubNub client.
+ *
+ * @since 4.15.4
+ */
+@property (nonatomic, readonly, strong) NSMutableDictionary *sharedStorage;
+
+/**
  * @brief Shared in-memory resources access queue.
  */
 @property (nonatomic, strong) dispatch_queue_t resourcesAccessQueue;
 
 /**
- * @brief Dictionary which is used to keep values stored during ,\b PubNub client usage.
+ * @brief Dictionary which is used to keep values stored during \b PubNub client usage.
  */
 @property (nonatomic, strong) NSMutableDictionary *storage;
 
@@ -43,12 +50,6 @@ NS_ASSUME_NONNULL_BEGIN
  * @return Initialised and ready to use \c key/value in-memory storage.
  */
 - (instancetype)initWithIdentifier:(NSString *)identifier queue:(dispatch_queue_t)queue;
-
-/**
- * @brief For macOS in-memory storage dumps data to \c Application \c Support folder each time when store is called. This
- * method allow to download previously stored data.
- */
-- (void)loadInMemoryContentFromFile;
 
 
 #pragma mark - Misc
@@ -73,6 +74,53 @@ NS_ASSUME_NONNULL_END
 @implementation PNInMemoryStorage
 
 
+#pragma mark - Information
+
+- (NSMutableDictionary *)sharedStorage {
+    static NSMutableDictionary *_sharedInMemoryStorage;
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
+#if !TARGET_OS_OSX
+        _sharedInMemoryStorage = [NSMutableDictionary new];
+#else
+        NSFileManager *fileManager = NSFileManager.defaultManager;
+        NSString *filePath = [self storagePath];
+        NSString *workingDirectory = [filePath stringByDeletingLastPathComponent];
+        
+        if (![fileManager fileExistsAtPath:workingDirectory isDirectory:NULL]) {
+            [fileManager createDirectoryAtPath:workingDirectory
+                   withIntermediateDirectories:YES
+                                    attributes:nil
+                                         error:nil];
+        }
+        
+        NSDictionary *storedData = [NSDictionary dictionaryWithContentsOfFile:filePath];
+        _sharedInMemoryStorage = [NSMutableDictionary dictionaryWithDictionary:storedData];
+        
+        // Migrate previous
+        if (!((NSDictionary *)_sharedInMemoryStorage[self.storageIdentifier]).count &&
+            !_sharedInMemoryStorage[@"pn_storage_migrated"]) {
+            
+            NSMutableDictionary *storage = [NSMutableDictionary new];
+            
+            for (NSString *key in _sharedInMemoryStorage) {
+                storage[key] = _sharedInMemoryStorage[key];
+            }
+            
+            [_sharedInMemoryStorage removeAllObjects];
+            _sharedInMemoryStorage[self.storageIdentifier] = storage;
+            _sharedInMemoryStorage[@"pn_storage_migrated"] = @YES;
+            
+            [_sharedInMemoryStorage writeToFile:filePath atomically:YES];
+        }
+#endif
+    });
+    
+    return _sharedInMemoryStorage;
+}
+
+
 #pragma mark - Initialization & Configuration
 
 + (instancetype)storageWithIdentifier:(NSString *)identifier queue:(dispatch_queue_t)queue {
@@ -82,43 +130,16 @@ NS_ASSUME_NONNULL_END
 - (instancetype)initWithIdentifier:(NSString *)identifier queue:(dispatch_queue_t)queue {
     if ((self = [super init])) {
         _storageIdentifier = [identifier copy];
-        _storage = [NSMutableDictionary new];
+        _storage = self.sharedStorage[_storageIdentifier];
         _resourcesAccessQueue = queue;
         
-#if TARGET_OS_OSX
-        [self loadInMemoryContentFromFile];
-#endif // TARGET_OS_OSX
+        if (!_storage) {
+            _storage = [NSMutableDictionary new];
+            self.sharedStorage[_storageIdentifier] = _storage;
+        }
     }
     
     return self;
-}
-
-- (void)loadInMemoryContentFromFile {
-    NSFileManager *fileManager = NSFileManager.defaultManager;
-    NSString *filePath = [self storagePath];
-    NSString *workingDirectory = [filePath stringByDeletingLastPathComponent];
-    
-    if (![fileManager fileExistsAtPath:workingDirectory isDirectory:NULL]) {
-        [fileManager createDirectoryAtPath:workingDirectory
-               withIntermediateDirectories:YES
-                                attributes:nil
-                                     error:nil];
-    }
-    
-    NSDictionary *storedData = [NSDictionary dictionaryWithContentsOfFile:filePath];
-    _storage = [NSMutableDictionary dictionaryWithDictionary:storedData];
-    
-    // Migrate previous
-    if (!_storage[self.storageIdentifier]) {
-        NSMutableDictionary *storage = [NSMutableDictionary new];
-        
-        for (NSString *key in _storage) {
-            storage[key] = _storage[key];
-        }
-        
-        _storage = [@{ self.storageIdentifier: storage } mutableCopy];
-        [_storage writeToFile:filePath atomically:YES];
-    }
 }
 
 
@@ -152,7 +173,7 @@ NS_ASSUME_NONNULL_END
     }
                 
 #if TARGET_OS_OSX
-    [self.storage writeToFile:[self storagePath] atomically:YES];
+    [self.sharedStorage writeToFile:[self storagePath] atomically:YES];
 #endif // TARGET_OS_OSX
     
     return YES;
