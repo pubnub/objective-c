@@ -617,6 +617,32 @@
     [self deleteHistoryForChannels:channels usingClient:nil];
 }
 
+- (void)testItShouldFetchMoreThan25MessagesForEachChannelWithUsedBatchBuilder {
+    NSArray<NSString *> *channels = [self channelsWithNames:@[@"test-channel1"]];
+    NSUInteger expectedMessagesCount = 40;
+    
+    [self publishMessages:expectedMessagesCount toChannels:channels usingClient:nil];
+    
+    
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        self.client.history()
+            .channels(channels)
+            .includeUUID(NO)
+            .performWithCompletion(^(PNHistoryResult *result, PNErrorStatus *status) {
+                XCTAssertNil(status);
+                XCTAssertNotEqualObjects(result.data.channels, @{});
+                NSDictionary<NSString *, NSArray *> *channelsWithMessages = result.data.channels;
+                NSArray<NSDictionary *> *channelMessages = channelsWithMessages[channels.firstObject];
+                XCTAssertEqual(channelsWithMessages.count, channels.count);
+                XCTAssertGreaterThan(channelMessages.count, 25);
+                
+                handler();
+        });
+    }];
+    
+    [self deleteHistoryForChannels:channels usingClient:nil];
+}
+
 - (void)testItShouldFetchOneMessageForEachChannelWithOutUUIDUsingBuilder {
     NSArray<NSString *> *channels = [self channelsWithNames:@[@"test-channel1", @"test-channel2"]];
     NSUInteger expectedMessagesCount = 4;

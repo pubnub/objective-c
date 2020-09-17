@@ -1,9 +1,16 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.15.4"
+version: "4.15.5"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Increase default number of messages returned by History v3, when single channel passed, to 100 messages per single call."
+        type: improvement
+    date: Sep 18, 20
+    version: v4.15.5
   -
     changes:
       -

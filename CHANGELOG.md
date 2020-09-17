@@ -1,3 +1,11 @@
+## [v4.15.5](https://github.com/pubnub/objective-c/releases/tag/v4.15.5)
+September 18 2020
+
+[Full Changelog](https://github.com/pubnub/objective-c/compare/v4.15.4...v4.15.5)
+
+#### Modified
+- Increase default number of messages returned by History v3, when single channel passed, to 100 messages per single call. 
+
 ## [v4.15.4](https://github.com/pubnub/objective-c/releases/tag/v4.15.4)
 September 10 2020
 

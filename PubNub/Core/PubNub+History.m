@@ -444,15 +444,28 @@ NS_ASSUME_NONNULL_END
     if (!includeUUID) {
         includeUUID = @YES;
     }
-
-    unsigned int limitValue = MIN(limit.unsignedIntValue, (multipleChannels ? 25 : 100));
-
+    
     PNOperationType operation = (!multipleChannels ? PNHistoryOperation
                                                    : PNHistoryForChannelsOperation);
     
     if (shouldIncludeMessageActions && shouldIncludeMessageActions.boolValue) {
         operation = PNHistoryWithActionsOperation;
-        
+    }
+    
+    unsigned int defaultLimit = multipleChannels ? 25 : 100;
+    
+    if (operation == PNHistoryForChannelsOperation && ((NSArray<NSString *> *)object).count == 1) {
+        defaultLimit = 100;
+    }
+    
+    unsigned int limitValue = defaultLimit;
+    
+    if (limit) {
+        limitValue = MIN(limit.unsignedIntValue, defaultLimit);
+    }
+    
+    
+    if (operation == PNHistoryWithActionsOperation) {
         if (limit) {
             limitValue = limit.unsignedIntValue;
         }
@@ -525,7 +538,7 @@ NS_ASSUME_NONNULL_END
     } else {
         NSArray<NSString *> *channels = object;
         
-        if (limit) {
+        if (limit || (channels.count == 1 && operation != PNHistoryWithActionsOperation)) {
             [parameters addQueryParameter:[NSString stringWithFormat:@"%d", limitValue]
                              forFieldName:@"max"];
         }
