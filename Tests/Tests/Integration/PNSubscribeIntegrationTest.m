@@ -1349,6 +1349,55 @@ NS_ASSUME_NONNULL_END
     }];
 }
 
+/**
+ * @brief Follow instructions to simulate server response with "broken" payload.
+ *
+ * Also requires in \c -fixedSerialisedResponse:forHTTPResponse:fromData:withSerialisationError:processingError:
+ * with Base64 output of received service response:
+ *   NSLog(@"BASE64: %@", [data base64EncodedStringWithOptions:(NSDataBase64EncodingOptions)0]);
+ * Use received string with any hex editors to replace random user name and channel with their non-random values and convert back to
+ * Base64 string.
+ *
+ * Received information should be used to add new entry to `ItShouldSubscribeToSingleChannelAndReceiveMessageWhenDataWithNulBytePublished.json`
+ * with packet type \b 2 (check previous entries with same type).
+ */
+- (void)testItShouldSubscribeToSingleChannelAndReceiveMessageWhenDataWithNulBytePublished {
+    if ([self shouldSkipTestWithManuallyModifiedMockedResponse]) {
+        NSLog(@"'%@' requires special conditions (modified mocked response). Skip", self.name);
+        return;
+    }
+    
+    NSString *randomChannel = [self channelWithName:@"nul-channel"];
+    NSString *subscription = [randomChannel stringByAppendingString:@".*"];
+    NSString *channel = [randomChannel stringByAppendingString:@"."];
+    NSString *publishedMessage = @"hello";
+    
+    if (YHVVCR.cassette.isNewCassette) {
+        PNConfiguration *configuration = self.client.currentConfiguration;
+        NSLog(@"Run following command in Terminal:\n\ncurl 'http://%@/publish/%@/%@/0/%@.%%FF/0/%%22hel%%FFlo%%22?uuid=%@' ; echo\n\n",
+              configuration.origin, configuration.publishKey, configuration.subscribeKey, randomChannel, configuration.uuid);
+        [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.5f)];
+    }
+    
+    
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        [self addMessageHandlerForClient:self.client
+                               withBlock:^(PubNub *client, PNMessageResult *message, BOOL *remove) {
+                                   
+            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.uuid]) {
+                XCTAssertEqualObjects(message.data.subscription, subscription);
+                XCTAssertEqualObjects(message.data.message, publishedMessage);
+                XCTAssertEqualObjects(message.data.channel, channel);
+                *remove = YES;
+
+                handler();
+            }
+        }];
+        
+        [self subscribeClient:self.client toChannels:@[subscription] withPresence:NO];
+    }];
+}
+
 - (void)testItShouldSubscribeToSingleChannelAndReceiveDecryptedMessageWhenPublisherAndReceivedHasSameCipherKey {
     NSDictionary *publishedMessage = @{ @"test-message": @"message for encryption" };
     NSString *channel = [self channelWithName:@"test-channel1"];

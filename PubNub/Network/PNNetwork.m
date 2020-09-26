@@ -1184,8 +1184,9 @@ NS_ASSUME_NONNULL_END
     dispatch_async(self.processingQueue, ^{
         NSError *serializationError = nil;
         id processedObject = [self.serializer serializedResponse:(NSHTTPURLResponse *)task.response
-                                                        withData:data error:&serializationError];
-        NSError *error = (requestError ?: serializationError);
+                                                        withData:data
+                                                           error:&serializationError];
+        NSError *error = requestError ?: serializationError;
 
         (!error ? success : failure)(task, (error ?: processedObject));
     });

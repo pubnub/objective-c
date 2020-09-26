@@ -1,9 +1,19 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.15.5"
+version: "4.15.6"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Fix issue because of which `PNPublishSequence` metrics data migration caused application crash."
+        type: bug
+      -
+        text: "Fix subscription loop issue caused by broken bytes array with null-byte in it."
+        type: bug
+    date: Sep 26, 20
+    version: v4.15.6
   -
     changes:
       -

@@ -1,3 +1,12 @@
+## [v4.15.6](https://github.com/pubnub/objective-c/releases/tag/v4.15.6)
+September 26 2020
+
+[Full Changelog](https://github.com/pubnub/objective-c/compare/v4.15.5...v4.15.6)
+
+#### Fixed
+- Fix issue because of which `PNPublishSequence` metrics data migration caused application crash. 
+- Fix subscription loop issue caused by broken bytes array with null-byte in it. 
+
 ## [v4.15.5](https://github.com/pubnub/objective-c/releases/tag/v4.15.5)
 September 18 2020
 

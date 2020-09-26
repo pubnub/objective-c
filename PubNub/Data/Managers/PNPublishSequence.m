@@ -336,8 +336,15 @@ NS_ASSUME_NONNULL_END
     
     if (sequenceData.count) {
         sequenceData = sequenceData[sequenceData.allKeys.lastObject];
-        [storage syncStoreValue:sequenceData forKey:kPNPublishSequenceDataKey];
-        [defaultKeychain removeValueForKey:kPNConfigurationDeviceIDKey];
+        
+        /**
+         * 'sequenceData' expected to be dictionary which stored some metrics for specific publish key.
+         */
+        if ([sequenceData isKindOfClass:[NSDictionary class]]) {
+            [storage syncStoreValue:sequenceData forKey:kPNPublishSequenceDataKey];
+        }
+        
+        [defaultKeychain removeValueForKey:kPNPublishSequenceDataKey];
     }
 }
 
