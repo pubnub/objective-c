@@ -1,9 +1,16 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.15.6"
+version: "4.15.7"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Add `timetoken` from file information publish call into `PNSendFileStatus` object."
+        type: feature
+    date: Oct 3, 20
+    version: v4.15.7
   -
     changes:
       -

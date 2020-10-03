@@ -102,6 +102,7 @@ NS_ASSUME_NONNULL_END
                 XCTAssertFalse(status.isError);
                 XCTAssertTrue(status.data.fileUploaded);
                 XCTAssertNotNil(status.data.fileIdentifier);
+                XCTAssertNotNil(status.data.timetoken);
                 XCTAssertNotNil(status.data.fileName);
                 XCTAssertEqualObjects(status.data.fileName, fileName);
                 XCTAssertEqual(status.operation, PNSendFileOperation);
@@ -126,6 +127,7 @@ NS_ASSUME_NONNULL_END
                 XCTAssertFalse(status.isError);
                 XCTAssertTrue(status.data.fileUploaded);
                 XCTAssertNotNil(status.data.fileIdentifier);
+                XCTAssertNotNil(status.data.timetoken);
                 XCTAssertNotNil(status.data.fileName);
                 XCTAssertEqualObjects(status.data.fileName, fileName);
                 XCTAssertEqual(status.operation, PNSendFileOperation);
@@ -170,6 +172,7 @@ NS_ASSUME_NONNULL_END
                 XCTAssertFalse(status.isError);
                 XCTAssertTrue(status.data.fileUploaded);
                 XCTAssertNotNil(status.data.fileIdentifier);
+                XCTAssertNotNil(status.data.timetoken);
                 XCTAssertNotNil(status.data.fileName);
                 XCTAssertEqualObjects(status.data.fileName, fileName);
                 XCTAssertEqual(status.operation, PNSendFileOperation);
@@ -200,6 +203,7 @@ NS_ASSUME_NONNULL_END
                 XCTAssertFalse(status.isError);
                 XCTAssertTrue(status.data.fileUploaded);
                 XCTAssertNotNil(status.data.fileIdentifier);
+                XCTAssertNotNil(status.data.timetoken);
                 XCTAssertNotNil(status.data.fileName);
                 XCTAssertEqualObjects(status.data.fileName, fileName);
                 XCTAssertEqual(status.operation, PNSendFileOperation);

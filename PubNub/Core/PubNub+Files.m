@@ -517,6 +517,10 @@ NS_ASSUME_NONNULL_END
                 serviceData[@"status"] = @(status.statusCode) ?: @(400);
             }
             
+            if (status.data.timetoken) {
+                serviceData[@"timetoken"] = status.data.timetoken;
+            }
+            
             sendFileStatus = [PNSendFileStatus objectForOperation:sendFileRequest.operation
                                                 completedWithTask:nil
                                                     processedData:serviceData

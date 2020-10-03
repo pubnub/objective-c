@@ -51,6 +51,10 @@ NS_ASSUME_NONNULL_END
     return self.serviceData[@"id"];
 }
 
+- (NSNumber *)timetoken {
+    return self.serviceData[@"timetoken"];
+}
+
 - (NSString *)fileName {
     return self.serviceData[@"name"];
 }

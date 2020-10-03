@@ -1,3 +1,11 @@
+## [v4.15.7](https://github.com/pubnub/objective-c/releases/tag/v4.15.7)
+October 3 2020
+
+[Full Changelog](https://github.com/pubnub/objective-c/compare/v4.15.6...v4.15.7)
+
+#### Added
+- Add `timetoken` from file information publish call into `PNSendFileStatus` object. 
+
 ## [v4.15.6](https://github.com/pubnub/objective-c/releases/tag/v4.15.6)
 September 26 2020
 

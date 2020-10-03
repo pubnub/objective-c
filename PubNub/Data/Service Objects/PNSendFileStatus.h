@@ -26,6 +26,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, nullable, readonly, strong) NSString *fileIdentifier;
 
 /**
+ * @brief Time token when the message with file information has been published.
+ */
+@property (nonatomic, nullable, readonly, strong) NSNumber *timetoken;
+
+/**
  * @brief Name under which uploaded data has been stored.
  */
 @property (nonatomic, nullable, readonly, strong) NSString *fileName;
