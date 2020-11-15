@@ -1,7 +1,8 @@
 /**
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2010-2018 PubNub, Inc.
+ * @author Serhii Mamontov
+ * @version 4.15.8
+ * @since 4.0.0
+ * @copyright © 2010-2020 PubNub, Inc.
  */
 #import "PNPresenceChannelHereNowResult.h"
 #import "PNServiceData+Private.h"
@@ -16,13 +17,19 @@
 #pragma mark - Information
 
 - (id)uuids {
-    
-    return self.serviceData[@"uuids"];
+    return self.channels.allValues.firstObject[@"uuids"];
+}
+
+- (NSDictionary<NSString *,NSDictionary *> *)channels {
+    return self.serviceData[@"channels"];
+}
+
+- (NSNumber *)totalOccupancy {
+    return self.serviceData[@"channels"] ? self.serviceData[@"totalOccupancy"] : @0;
 }
 
 - (NSNumber *)occupancy {
-    
-    return (self.serviceData[@"occupancy"]?: @0);
+    return self.channels.allValues.firstObject[@"occupancy"] ?: @0;
 }
 
 #pragma mark -
@@ -54,8 +61,10 @@
 #pragma mark - Information
 
 - (PNPresenceChannelHereNowData *)data {
+    if (!_data) {
+        _data = [PNPresenceChannelHereNowData dataWithServiceResponse:self.serviceData];
+    }
     
-    if (!_data) { _data = [PNPresenceChannelHereNowData dataWithServiceResponse:self.serviceData]; }
     return _data;
 }
 

@@ -1,3 +1,11 @@
+## [v4.15.8](https://github.com/pubnub/objective-c/releases/tag/v4.15.8)
+November 16 2020
+
+[Full Changelog](https://github.com/pubnub/objective-c/compare/v4.15.7...v4.15.8)
+
+#### Added
+- Add new parameters to `Here Now` builder-based API to get presence information for list of channels or channel groups. 
+
 ## [v4.15.7](https://github.com/pubnub/objective-c/releases/tag/v4.15.7)
 October 3 2020
 

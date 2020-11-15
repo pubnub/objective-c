@@ -1,4 +1,4 @@
-# PubNub 4.15.7 for iOS 9+
+# PubNub 4.15.8 for iOS 9+
 [![Twitter](https://img.shields.io/badge/twitter-%40PubNub-blue.svg?style=flat)](https://twitter.com/PubNub)
 [![Twitter Releases](https://img.shields.io/badge/twitter-%40PubNubRelease-blue.svg?style=flat)](https://twitter.com/PubNubRelease)
 [![License](https://img.shields.io/github/license/pubnub/objective-c.svg?style=flat)](https://img.shields.io/github/license/pubnub/objective-c.svg)
@@ -7,215 +7,195 @@
 [![Platform](https://img.shields.io/cocoapods/p/PubNub.svg?style=flat)](https://img.shields.io/cocoapods/p/PubNub.svg)
 [![Docs Coverage](https://img.shields.io/cocoapods/metrics/doc-percent/PubNub.svg?style=flat)](https://img.shields.io/cocoapods/metrics/doc-percent/PubNub.svg)
 [![Build Status](https://travis-ci.org/pubnub/objective-c.svg?branch=master)](https://travis-ci.org/pubnub/objective-c)
-## Please direct all Support Questions and Concerns to Support@PubNub.com
-## Complete Docs
-Check out our [official docs page](http://www.pubnub.com/docs/ios-objective-c/pubnub-objective-c-sdk-v4)
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+This is the official PubNub Objective-C SDK repository.
 
-- [Changes from 3.x](#changes-from-3x)
-- [Changes from 4.0.7](#changes-from-407)
-- [Setup and Hello World](#setup-and-hello-world)
-- [Migrating from 3.x](#migrating-from-3x)
-  - [Project Setup](#project-setup)
-  - [Method Names and Overall Operation have changed](#method-names-and-overall-operation-have-changed)
-  - [Removed support for iOS 6 and earlier](#removed-support-for-ios-6-and-earlier)
-  - [Removed support for JSONKit](#removed-support-for-jsonkit)
-  - [Removed support for blocking, synchronous calls (all calls are now async)](#removed-support-for-blocking-synchronous-calls-all-calls-are-now-async)
-  - [Removed support for Singleton, Delegate, Observer, Notifications response patterns](#removed-support-for-singleton-delegate-observer-notifications-response-patterns)
-  - [New Configuration Class](#new-configuration-class)
-  - [Optimized / Consolidated instance method names](#optimized--consolidated-instance-method-names)
-  - [Sending Logs to Support](#sending-logs-to-support)
-- [Configuration](#configuration)
-- [New for 4.0](#new-for-40)
-  - [How its Received: Result and Status Event Objects](#how-its-received-result-and-status-event-objects)
-    - [Operations that only return Status, never a Result](#operations-that-only-return-status-never-a-result)
-    - [Operations that can return Status or Result](#operations-that-can-return-status-or-result)
-  - [Where its Received: Completion Blocks and Listeners](#where-its-received-completion-blocks-and-listeners)
-- [Reference App - Example](#reference-app---example)
-- [Complete Docs](#complete-docs)
+PubNub takes care of the infrastructure and APIs needed for the realtime communication layer of your application. Work on your app's logic and let PubNub handle sending and receiving data across the world in less than 100ms.
 
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+## Get keys
 
-## Changes from 3.x
-* 4.0 is a non-bw compatible REWRITE with 95% less lines of code than our 3.x!
-* Removed support for iOS 6 and earlier
-* Removed support for JSONKit
-* Removed custom connection, request, logging, and reachability logic, replacing with NSURLSession, DDLog, and AFNetworking libraries
-* Simplified serialization/deserialization threading logic
-* Removed support for blocking, synchronous calls (all calls are now async)
-* Simplified usability by enforcing completion block pattern -- client no longer supports Singleton, Delegate, Observer, Notifications response patterns
-* Consolidated instance method namesv
+You will need the publish and subscribe keys to authenticate your app. Get your keys from the [Admin Portal](https://dashboard.pubnub.com/login).
 
-## Changes from 4.0.7
-* Added ability to build dynamic frameworks for iOS 8.0+
-* Changed data type in -client:didReceiveStatus: callback from **PNSubscribeStatus** to **PNStatus**  
-  This callback can accept at least three operation types: **PNSubscribeOperation**, **PNUnsubscribeOperation** and **PNHeartbeatOperation**.  
-  **WARNING:** Ensure what you deal with expected status by checking _operation_ property for received status object.
+## Configure PubNub
 
-## Setup and Hello World
-To setup and get started immediately with a Hello World demo, check out our [offical docs page](http://www.pubnub.com/docs/ios-objective-c/pubnub-objective-c-sdk-v4).
+1. Install the latest [`cocoapods`](https://guides.cocoapods.org/using/getting-started.html) gem by running the `gem install cocoapods` command. If you already have this gem, make sure to update to the latest version by running the `gem update cocoapods` command.
 
-## Migrating from 3.x
+2. Create a new Xcode project and create a `Podfile` in the root folder of the project:
 
-Its important to note that a lot of things have changed in 4.x. When migrating your applications from PN 3.x to PN 4.0, please be sure to read this section.
+    ```
+    pod init
+    ```
 
-### Project Setup
+    ```groovy
+    platform :ios, '9.0'
 
-We're using Cocoapods as our exclusive method of installing the client SDK. Please see "Setup and Hello World" above for the new way to configure PubNub 4.0 for iOS.
+    target 'application-target-name' do
+        use_frameworks!
 
-### Method Names and Overall Operation have changed
+        pod "PubNub", "~> 4"
+    end
+    ```
 
-Please checkout the "New for 4.0" section below for a general overview of the major changes in the usage pattern introduced in 4.0.
+    If you want to include additional pods or add other targets, add their entries to this Podfile as well. Refer to the [CocoaPods documentation](https://guides.cocoapods.org/syntax/podfile.html#target) for more information on Podfile configuration.
 
-### Removed support for iOS 6 and earlier
+3. Install your pods by running the `pod install` command from the directory which contains your Podfile. After installing your Pods, you should work with the CocoaPods-generated workspace and not the original project file.
 
-PubNub 4.0 for iOS supports iOS 7+. If you regard this as an issue, please contact us at support@pubnub.com.
+4. Import the PubNub headers in the classes where you want to use PubNub:
 
-### Removed support for JSONKit
+    ```objectivec
+    #import <PubNub/PubNub.h>
+    ```
 
-This should only be an issue for you if you are supporting very old iOS versions. If you regard this as an issue, please contact us at support@pubnub.com.
+5. Configure your keys:
 
-### Removed support for blocking, synchronous calls (all calls are now async)
+    ```objectivec
+    // Initialize and configure PubNub client instance
+    PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey: @"myPublishKey" subscribeKey:@"mySubscribeKey"];
+    configuration.uuid = @"myUniqueUUID";
 
-In the 3.x version of the client, the developer had the option to call a method blocking, or asynchronously. In the new version, asynchronously is the only option. Be sure that any blocking-dependent code is refactored to take the new 100% async behavior into account.
+    self.client = [PubNub clientWithConfiguration:configuration];
+    ```
 
-### Removed support for Singleton, Delegate, Observer, Notifications response patterns
+## Add event listeners
 
-We've removed the Singleton, Delegate, Observer, Notifications pattern support in 4.0, and instead provide you with one of two versitle alternatives on a per-method basis -- Completion Blocks, or Listeners.
+```objectivec
+// Listener's class should conform to `PNEventsListener` protocol
+// in order to have access to available callbacks.
 
-Please checkout the "New for 4.0" section below for a general overview of the major changes in the usage pattern introduced in 4.0, as well as the Example app for more information.
+// Adding listener.
+[pubnub addListener:self];
 
-### New Configuration Class
+// Callbacks listed below.
 
-There is a new configuration class which is not backwards compatible with the configuration class introduced in 3.x. Be sure to examine the "Configuration" section below, or the Example app for proper usage.
+- (void)client:(PubNub *)pubnub didReceiveMessage:(PNMessageResult *)message {
+    NSString *channel = message.data.channel; // Channel on which the message has been published
+    NSString *subscription = message.data.subscription; // Wild-card channel or channel on which PubNub client actually subscribed
+    NSNumber *timetoken = message.data.timetoken; // Publish timetoken
+    id msg = message.data.message; // Message payload
+    NSString *publisher = message.data.publisher; // Message publisher
+}
 
-### Optimized / Consolidated instance method names
+- (void)client:(PubNub *)pubnub didReceiveSignal:(PNSignalResult *)signal {
+    NSString *channel = message.data.channel; // Channel on which the signal has been published
+    NSString *subscription = message.data.subscription; // Wild-card channel or channel on which PubNub client actually subscribed
+    NSNumber *timetoken = message.data.timetoken; // Signal timetoken
+    id msg = message.data.message; // Signal payload
+    NSString *publisher = message.data.publisher; // Signal publisher
+}
 
-Method names have been optimized. Be sure to consult with the API reference below for more info on the available method names.
+- (void)client:(PubNub *)pubnub didReceiveMessageAction:(PNMessageActionResult *)action {
+    NSString *channel = action.data.channel; // Channel on which the message has been published
+    NSString *subscription = action.data.subscription; // Wild-card channel or channel on which PubNub client actually subscribed
+    NSString *event = action.data.event; // Can be: added or removed
+    NSString *type = action.data.action.type; // Message action type
+    NSString *value = action.data.action.value; // Message action value
+    NSNumber *messageTimetoken = action.data.action.messageTimetoken; // Timetoken of the original message
+    NSNumber *actionTimetoken = action.data.action.actionTimetoken; // Timetoken of the message action
+    NSString *uuid = action.data.action.uuid; // UUID of user which added / removed message action
+}
 
-### Sending Logs to Support
+- (void)client:(PubNub *)pubnub didReceivePresenceEvent:(PNPresenceEventResult *)event {
+    NSString *channel = message.data.channel; // Channel on which presence changes
+    NSString *subscription = message.data.subscription; // Wild-card channel or channel on which PubNub client actually subscribed
+    NSString *presenceEvent = event.data.presenceEvent; // Can be: join, leave, state-change, timeout or interval
+    NSNumber *occupancy = event.data.presence.occupancy; // Number of users subscribed to the channel (not available for state-change event)
+    NSNumber *timetoken = event.data.presence.timetoken; // Presence change timetoken
+    NSString *uuid = event.data.presence.uuid; // UUID of user for which presence change happened
 
-When filing a ticket with support, its handy to have your logs. Use a tool such as iExplorer to grab the logs off the APPNAME/Documents directory on your device, and be sure to include them in your support ticket as an attachment.
+    // Only for 'state-change' event
+    NSDictionary *state = event.data.presence.state; // User state (only for state-change event)
 
-## Configuration
+    // Only for 'interval' event
+    NSArray<NSString *> *join = event.data.presence.join; // UUID of users which recently joined channel
+    NSArray<NSString *> *leave = event.data.presence.leave; // UUID of users which recently leaved channel
+    NSArray<NSString *> *timeout = event.data.presence.timeout; // UUID of users which recently timed out on channel
+}
 
-To setup a custom configuration:
+- (void)client:(PubNub *)pubnub didReceiveObjectEvent:(PNObjectEventResult *)event {
+    NSString *channel = event.data.channel; // Channel to which the event belongs
+    NSString *subscription = event.data.subscription; // Wild-card channel or channel on which PubNub client actually subscribed
+    NSString *event = event.data.event; // Can be: set or delete
+    NSString *type = event.data.type; // Entity type: channel, uuid or membership
+    NSNumber *timestamp = event.data.timestamp; // Event timestamp
 
-* Define a configuration variable:
+    PNChannelMetadata *channelMetadata = event.data.channelMetadata; // Updated channel metadata (only for channel entity type)
+    PNUUIDMetadata *uuidMetadata = event.data.uuidMetadata; // Updated channel metadata (only for uuid entity type)
+    PNMembership *membership = event.data.membership; // Updated channel metadata (only for membership entity type)
+}
 
-```objective-c
-@property(nonatomic, strong) PNConfiguration *myConfig;
+- (void)client:(PubNub *)pubnub didReceiveFileEvent:(PNFileEventResult *)event {
+    NSString *channel = event.data.channel; // Channel to which file has been uploaded
+    NSString *subscription = event.data.subscription; // Wild-card channel or channel on which PubNub client actually subscribed
+    id message = event.data.message; // Message added for uploaded file
+    NSString *publisher = event.data.publisher; // UUID of file uploader
+    NSURL *fileDownloadURL = event.data.file.downloadURL; // URL which can be used to download file
+    NSString *fileIdentifier = event.data.file.identifier; // Unique file identifier
+    NSString *fileName = event.data.file.name; // Name with which file has been stored remotely
+}
+
+- (void)client:(PubNub *)pubnub didReceiveStatus:(PNStatus *)status {
+    PNStatusCategory category = status.category; // One of PNStatusCategory fields to identify status of operation processing
+    PNOperationType operation = status.operation; // One of PNOperationType fields to identify for which operation status received
+    BOOL isError = status.isError; // Whether any kind of error happened.
+    NSInteger statusCode = status.statusCode; // Related request processing status code
+    BOOL isTLSEnabled = status.isTLSEnabled; // Whether secured connection enabled
+    NSString *uuid = status.uuid; // UUID which configured for passed client
+    NSString *authKey = status.authKey; // Auth key configured for passed client
+    NSString *origin = status.origin; // Origin against which request has been sent
+    NSURLRequest *clientRequest = status.clientRequest; // Request which has been used to send last request (may be nil)
+    BOOL willAutomaticallyRetry = status.willAutomaticallyRetry; // Whether client will try to perform automatic retry
+
+    // Following is available when operation == PNSubscribeOperation,
+    // because status is PNSubscribeStatus instance in this case
+    PNSubscribeStatus *subscribeStatus = (PNSubscribeStatus *)status;
+    NSNumber *currentTimetoken = subscribeStatus.currentTimetoken; // Timetoken which has been used for current subscribe request
+    NSNumber *lastTimeToken = subscribeStatus.lastTimeToken; // Timetoken which has been used for previous subscribe request
+    NSArray<NSString *> *subscribedChannels = subscribeStatus.subscribedChannels; // List of channels on which client currently subscribed
+    NSArray<NSString *> *subscribedChannelGroups = subscribeStatus.subscribedChannelGroups; // List of channel groups on which client currently subscribed
+    NSString *channel = subscribeStatus.data.channel; // Name of channel to which status has been received
+    NSString *subscription = subscribeStatus.data.subscription; // Wild-card channel or channel on which PubNub client actually subscribed
+    NSNumber *timetoken = subscribeStatus.data.timetoken; // Timetoken at which event arrived
+    NSDictionary *userMetadata = subscribeStatus.data.userMetadata; // Metadata / envelope which has been passed along with event
+
+    // Following is available when isError == YES,
+    // because status is PNErrorStatus instance in this case
+    PNErrorStatus *errorStatus = (PNErrorStatus *)status;
+    id associatedObject = errorStatus.associatedObject; // Data which may contain related information (not decrypted message for example)
+    NSArray<NSString *> *erroredChannels = errorStatus.errorData.channels; // List of channels for which error reported (mostly because of PAM)
+    NSArray<NSString *> *erroredChannelGroups = errorStatus.errorData.channelGroups; // List of channel groups for which error reported (mostly because of PAM)
+    NSString *errorInformation = errorStatus.errorData.information; // Stringified information about error
+    id errorData = errorStatus.errorData.data; // Additional error information from PubNub service
+}
 ```
 
-* Once you have the configuration variable, the following configuration options are available:
+## Publish/subscribe
 
-```objective-c
-    self.myConfig.TLSEnabled = YES; // Secure Connection
-    self.myConfig.uuid = [self randomString]; // Setup a UUID
-    self.myConfig.origin = @"pubsub.pubnub.com"; // Setup a custom origin. Don't do this unless support requests.
-    self.myConfig.authKey = _authKey; // For PAM, an auth key for authorization
-
-    // Presence Settings
-    self.myConfig.presenceHeartbeatValue = 120; // Tell the server that the hearbeat timeout is 120s
-    self.myConfig.presenceHeartbeatInterval = 60; // Send the heartbeat to the server every 60 seconds
-
-    // Cipher Key Settings
-    //self.client.cipherKey = @"enigma"; // Set this to enable PN AES encryption
-
-    // Time Token Handling Settings
-    self.myConfig.keepTimeTokenOnListChange = YES; // When changing channels, 'catchup' ?
-    self.myConfig.catchUpOnSubscriptionRestore = YES; // Catchup ? Or start at 'now' ?
-```
-
-## New for 4.0
-
-Across all PubNub SDK client platforms, we are introducing the Result/Status model in 4.0. The Result/Status model simplifies handling of all types of PubNub Cloud responses, including method call results, status events (such as acknowledgements), errors (from expected errors like PAM 403s, to unexpected errors like timeouts or intermittent network layer issues) commonly encountered by mobile devices on-the-move.
-
-### How its Received: Result and Status Event Objects
-
-For any PubNub operation you call, you will be returned either a Result, or a Status, but never both at the same time.  A generic example of a history call being made in the Result/Status pattern looks like this:
-
-```objc
-[self.client historyForChannel:@"my_channel" start:nil end:nil limit:100
-                withCompletion:^(PNHistoryResult *result, PNErrorStatus *status) {
-
-    // Check whether request successfully completed or not.
-    if (!status.isError) {
-
-       // Handle downloaded history using:
-       //   result.data.start - oldest message time stamp in response
-       //   result.data.end - newest message time stamp in response
-       //   result.data.messages - list of messages
-    }
-    // Request processing failed.
-    else {
-
-       // Handle message history download error. Check 'category' property to find
-       // out possible issue because of which request did fail.
-       //
-       // Request can be resent using: [status retry];
-    }
+```objectivec
+[self.client publish:@{ @ "msg": @"hello" } toChannel:targetChannel 
+      withCompletion:^(PNPublishStatus *publishStatus) {
+          if (!publishStatus.isError) {
+              // Message successfully published to specified channel.
+          } else {
+              /**
+               * Handle message publish error. Check 'category' property to find out
+               * possible reason because of which request did fail.
+               * Review 'errorData' property (which has PNErrorData data type) of status
+               * object to get additional information about issue.
+               *
+               * Request can be resent using: [publishStatus retry];
+               */
+          }
 }];
+
+[self.client subscribeToChannels: @[@"hello-world-channel"] withPresence:YES];
 ```
 
-When a result comes in, we can inspect the data attribute on the result object for the messages, start, and end attributes.
+## Documentation
 
-When a status comes in, to determine what everything else can be, we inspect attributes on the status object, including:
+* [Build your first realtime Objective-C app with PubNub](https://www.pubnub.com/docs/platform/quickstarts/objectivec)
+* [API reference for Objective-C (iOS)](https://www.pubnub.com/docs/ios-objective-c/pubnub-objective-c-sdk)
+* [API reference for Objective-C (Cocoa)](https://www.pubnub.com/docs/cocoa-objective-c/pubnub-objective-c-sdk)
 
-1. isError - Is this an error, or more informational, such as an ACK, CONNECT, DISCONNECT, RECONNECT event?
-2. willAutomaticallyRetry - Do I need to manually retry, or will the system retry for me?
-3. category - this can be ACCESS_DENIED (PAM), TIMEOUT, NON_JSON_RESPONSE, API_KEY_ERROR, ENCRYPTION_ERROR
+## Support
 
-Status objects inherit from Result objects, so both contain common information like raw request, raw response, HTTP response code information, etc.
-
-Its important to keep in mind that although all operations will return a Status, only some have the capacity to return both Status and Results:
-
-#### Operations that only return Status, never a Result
-
-* Publish
-* Heartbeat
-* Set State
-* Channel Group Add|Remove
-* Mobile GW Add|Remove
-* Leave
-
-#### Operations that can return Status or Result
-
-* Channel / Channel Group / Presence Subscribe
-* Time
-* History
-* Here Now
-* Global Here Now
-* Where Now
-* Get State
-* Mobile GW List
-* List All Channels in Channel Group
-* List All Channel Groups
-
-### Where its Received: Completion Blocks and Listeners
-
-With PubNub, operations can be grouped into two groups: Streamed (Subscribed Messages, Presence Events), and Non-Streamed (History, Here Now, Add Channel to Channel Group, etc).
-
-Streamed operation method calls return Results and Statuses via listeners. For example:
-
-1. [Calling a subscribe operation](Example/PubNub/PNAppDelegate.m#L260) will return Result objects (received messages) to the [didReceiveMessage listener](Example/PubNub/PNAppDelegate.m#L504) and Status objects  (such as PAM errors, Connect, Disconnect state changes) to the [didReceiveStatus listener](Example/PubNub/PNAppDelegate.m#L533)
-
-2. [Calling a presence operation](Example/PubNub/PNAppDelegate.m#L250) will return Result objects (Such as Join, Leave Presence Events) to the [didReceivePresenceEvents listener](Example/PubNub/PNAppDelegate.m#L513) and Status objects to the [didReceiveStatus listener](Example/PubNub/PNAppDelegate.m#L533)
-
-Non-Streamed operation method calls use completion blocks which return either a result or status object. An example of this can be seen in the [history call example](Example/PubNub/PNAppDelegate.m#L432).
-
-If you have questions about how the Result and Status objects work in the meantime, feel free to contact support@pubnub.com and cc: geremy@pubnub.com, and we'll be happy to assist.
-
-## Reference App - Example
-
-In 4.0, [we provide Example](Example) as a generic reference on how to set config options, make Pub, Sub, and History calls (with and without PAM), and handle the various Status and Result events that may arise from them.  
-
-The Example app is used as a simple reference app. It will evolve over time, along with other example apps -- stay tuned for that!
-
-## Complete Docs
-Check out our [official docs page](https://www.pubnub.com/docs/ios-objective-c/pubnub-objective-c-sdk).
-
-# Please direct all Support Questions and Concerns to Support@PubNub.com
+If you **need help** or have a **general question**, contact support@pubnub.com.

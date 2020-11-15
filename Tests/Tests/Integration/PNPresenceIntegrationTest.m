@@ -516,6 +516,48 @@ NS_ASSUME_NONNULL_END
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
 }
 
+- (void)testItShouldFetchChannelsListHereNowUsingBuilderPatternInterface {
+    NSArray<NSString *> *channels = [self channelsWithNames:@[@"test-channel1", @"test-channel2", @"test-channel3"]];
+    NSArray<PubNub *> *clients = [self createPubNubClients:channels.count];
+    
+    
+    for (NSUInteger clientIdx = 0; clientIdx < clients.count; clientIdx++) {
+        [self subscribeClient:clients[clientIdx] toChannels:@[channels[clientIdx]] withPresence:NO];
+    }
+    
+    [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 5.f : 0.f)];
+    
+    
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        self.client.presence().hereNow()
+            .channels(channels)
+            .performWithCompletion(^(PNPresenceChannelHereNowResult *result, PNErrorStatus *status) {
+                NSDictionary<NSString *, NSDictionary *> *fetchedChannels = result.data.channels;
+                XCTAssertNil(status);
+                XCTAssertNotNil(fetchedChannels);
+                XCTAssertEqual(fetchedChannels.count, channels.count);
+                XCTAssertEqual(result.data.totalOccupancy.unsignedIntegerValue, clients.count);
+                XCTAssertEqual(result.operation, PNHereNowForChannelOperation);
+
+                for (NSUInteger channelIdx = 0; channelIdx < channels.count; channelIdx++) {
+                    NSDictionary *channelInformation = fetchedChannels[channels[channelIdx]];
+                    NSString *clientUUID = clients[channelIdx].currentConfiguration.uuid;
+
+                    XCTAssertEqual(((NSNumber *)channelInformation[@"occupancy"]).unsignedIntegerValue, 1);
+                    XCTAssertEqualObjects(channelInformation[@"uuids"], @[@{ @"uuid": clientUUID }]);
+                }
+                
+                handler();
+            });
+    }];
+    
+    for (NSUInteger clientIdx = 0; clientIdx < clients.count; clientIdx++) {
+        [self unsubscribeClient:clients[clientIdx] fromChannels:@[channels[clientIdx]] withPresence:NO];
+    }
+    
+    [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
+}
+
 
 #pragma mark - Tests :: Channel group here now
 
@@ -783,6 +825,57 @@ NS_ASSUME_NONNULL_END
     
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     [self removeChannelGroup:channelGroup usingClient:nil];
+}
+
+- (void)testItShouldFetchChannelGroupsListHereNowUsingBuilderPatternInterface {
+    NSArray<NSString *> *channels1 = [self channelsWithNames:@[@"test-channel1", @"test-channel2", @"test-channel3"]];
+    NSArray<NSString *> *channels2 = [self channelsWithNames:@[@"test-channel4", @"test-channel5", @"test-channel6"]];
+    NSArray<NSString *> *channels = [channels1 arrayByAddingObjectsFromArray:channels2];
+    NSArray<NSString *> *channelGroups = [self channelGroupsWithNames:@[@"test-channel-group1", @"test-channel-group2"]];
+    NSArray<PubNub *> *clients = [self createPubNubClients:channels.count];
+    
+    
+    [self addChannels:channels1 toChannelGroup:channelGroups.firstObject usingClient:nil];
+    [self addChannels:channels2 toChannelGroup:channelGroups.lastObject usingClient:nil];
+    
+    for (NSUInteger clientIdx = 0; clientIdx < clients.count; clientIdx++) {
+        [self subscribeClient:clients[clientIdx] toChannels:@[channels[clientIdx]] withPresence:NO];
+    }
+    
+    [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 5.f : 0.f)];
+    
+    
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        self.client.presence().hereNow()
+            .channelGroups(channelGroups)
+            .performWithCompletion(^(PNPresenceChannelGroupHereNowResult *result, PNErrorStatus *status) {
+                NSDictionary<NSString *, NSDictionary *> *fetchedChannels = result.data.channels;
+                XCTAssertNil(status);
+                XCTAssertNotNil(fetchedChannels);
+                XCTAssertEqual(fetchedChannels.count, channels.count);
+                XCTAssertEqual(result.data.totalChannels.unsignedIntegerValue, channels.count);
+                XCTAssertEqual(result.data.totalOccupancy.unsignedIntegerValue, clients.count);
+                XCTAssertEqual(result.operation, PNHereNowForChannelGroupOperation);
+
+                for (NSUInteger channelIdx = 0; channelIdx < channels.count; channelIdx++) {
+                    NSDictionary *channelInformation = fetchedChannels[channels[channelIdx]];
+                    NSString *clientUUID = clients[channelIdx].currentConfiguration.uuid;
+
+                    XCTAssertEqual(((NSNumber *)channelInformation[@"occupancy"]).unsignedIntegerValue, 1);
+                    XCTAssertEqualObjects(channelInformation[@"uuids"], @[@{ @"uuid": clientUUID }]);
+                }
+                
+                handler();
+            });
+    }];
+    
+    for (NSUInteger clientIdx = 0; clientIdx < clients.count; clientIdx++) {
+        [self unsubscribeClient:clients[clientIdx] fromChannels:channels withPresence:NO];
+    }
+    
+    [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
+    [self removeChannelGroup:channelGroups.firstObject usingClient:nil];
+    [self removeChannelGroup:channelGroups.lastObject usingClient:nil];
 }
 
 

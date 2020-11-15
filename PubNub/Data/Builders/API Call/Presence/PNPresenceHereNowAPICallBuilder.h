@@ -31,6 +31,17 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, readonly, strong) PNPresenceChannelHereNowAPICallBuilder * (^channel)(NSString *channel);
 
+/**
+ * @brief Users' presence on list of channels API access builder block.
+ *
+ * @param channels List of channels for which here now information should be received.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.15.8
+ */
+@property (nonatomic, readonly, strong) PNPresenceChannelHereNowAPICallBuilder * (^channels)(NSArray<NSString *> *channels);
+
 
 #pragma mark - Channel Group
 
@@ -44,6 +55,17 @@ NS_ASSUME_NONNULL_BEGIN
  * @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNPresenceChannelGroupHereNowAPICallBuilder * (^channelGroup)(NSString *channelGroup);
+
+/**
+ * @brief Users' presence on list of channel groups API access builder block.
+ *
+ * @param channelGroups List of channel group names for which here now information should be received.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 4.15.8
+ */
+@property (nonatomic, readonly, strong) PNPresenceChannelGroupHereNowAPICallBuilder * (^channelGroups)(NSArray<NSString *> *channelGroup);
 
 
 #pragma mark - Global

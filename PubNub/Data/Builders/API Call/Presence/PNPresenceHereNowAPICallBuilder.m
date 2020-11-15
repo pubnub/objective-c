@@ -1,6 +1,7 @@
 /**
  * @author Serhii Mamontov
- * @since 4.5.4
+ * @version 4.15.8
+ * @since 4.5.4 
  * @copyright © 2010-2018 PubNub, Inc.
  */
 #import "PNPresenceHereNowAPICallBuilder.h"
@@ -23,7 +24,6 @@
 #pragma mark - Initialization
 
 + (void)initialize {
-    
     if (self == [PNPresenceHereNowAPICallBuilder class]) {
         [self copyMethodsFromClasses:@[[PNPresenceChannelGroupHereNowAPICallBuilder class], 
                                        [PNPresenceChannelHereNowAPICallBuilder class]]];
@@ -34,7 +34,6 @@
 #pragma mark - Channel
 
 - (PNPresenceChannelHereNowAPICallBuilder * (^)(NSString *channel))channel {
-    
     return ^PNPresenceChannelHereNowAPICallBuilder * (NSString *channel) {
         object_setClass(self, [PNPresenceChannelHereNowAPICallBuilder class]);
 
@@ -43,15 +42,32 @@
     };
 }
 
+- (PNPresenceChannelHereNowAPICallBuilder * (^)(NSArray<NSString *> *channels))channels {
+    return ^PNPresenceChannelHereNowAPICallBuilder * (NSArray<NSString *> *channels) {
+        object_setClass(self, [PNPresenceChannelHereNowAPICallBuilder class]);
+
+        [self setValue:channels forParameter:NSStringFromSelector(_cmd)];
+        return (PNPresenceChannelHereNowAPICallBuilder *)self;
+    };
+}
+
 
 #pragma mark - Channel Group
 
 - (PNPresenceChannelGroupHereNowAPICallBuilder * (^)(NSString *channelGroup))channelGroup {
-    
     return ^PNPresenceChannelGroupHereNowAPICallBuilder * (NSString *channelGroup) {
         object_setClass(self, [PNPresenceChannelGroupHereNowAPICallBuilder class]);
 
         [self setValue:channelGroup forParameter:NSStringFromSelector(_cmd)];
+        return (PNPresenceChannelGroupHereNowAPICallBuilder *)self;
+    };
+}
+
+- (PNPresenceChannelGroupHereNowAPICallBuilder * (^)(NSArray<NSString *> *channelGroups))channelGroups {
+    return ^PNPresenceChannelGroupHereNowAPICallBuilder * (NSArray<NSString *> *channelGroups) {
+        object_setClass(self, [PNPresenceChannelGroupHereNowAPICallBuilder class]);
+
+        [self setValue:channelGroups forParameter:NSStringFromSelector(_cmd)];
         return (PNPresenceChannelGroupHereNowAPICallBuilder *)self;
     };
 }

@@ -2,11 +2,12 @@
 
 
 /**
- @brief  Class which allow to get access to channel groups presence processed result.
- 
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2010-2018 PubNub, Inc.
+ * @brief Class which allow to get access to channel groups presence processed result.
+ *
+ * @author Serhii Mamontov
+ * @version 4.15.8
+ * @since 4.0.0
+ * @copyright © 2010-2020 PubNub, Inc.
  */
 @interface PNPresenceChannelGroupHereNowData : PNPresenceGlobalHereNowData
 
@@ -18,23 +19,20 @@
 
 
 /**
- @brief  Class which is used to provide access to request processing results.
- 
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2010-2018 PubNub, Inc.
+ * @brief Class which is used to provide access to request processing results.
+ *
+ * @author Serhii Mamontov
+ * @version 4.15.8
+ * @since 4.0.0
+ * @copyright © 2010-2020 PubNub, Inc.
  */
 @interface PNPresenceChannelGroupHereNowResult : PNResult
 
 
-///------------------------------------------------
-/// @name Information
-///------------------------------------------------
+#pragma mark - Information
 
 /**
- @brief  Stores reference on channel group presence request processing information.
- 
- @since 4.0
+ * @brief Stores reference on channel group presence request processing information.
  */
 @property (nonatomic, nonnull, readonly, strong) PNPresenceChannelGroupHereNowData *data;
 

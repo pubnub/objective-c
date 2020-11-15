@@ -1,6 +1,7 @@
 /**
  * @author Serhii Mamontov
- * @since 4.0
+ * @version 4.15.8 
+ * @since 4.0.0
  * @copyright © 2010-2018 PubNub, Inc.
  */
 #import "PubNub+PresencePrivate.h"
@@ -30,17 +31,17 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @param level One of \b PNHereNowVerbosityLevel fields to instruct what exactly data it expected
  *     in response.
- * @param object Remote data object for which here now information should be received.
+ * @param objects Remote data objects for which here now information should be received.
  * @param operation One of \b PNOperationType fields to identify which kind on of presence operation
  *     should be performed.
  * @param queryParameters List arbitrary query parameters which should be sent along with original
  *     API call.
  * @param block Here now fetch completion block.
  *
- * @since 4.8.2
+ * @since 4.15.8
  */
 - (void)hereNowWithVerbosity:(PNHereNowVerbosityLevel)level
-                   forObject:(nullable NSString *)object
+                  forObjects:(nullable NSArray<NSString *> *)objects
            withOperationType:(PNOperationType)operation
              queryParameters:(nullable NSDictionary *)queryParameters
              completionBlock:(id)block;
@@ -130,7 +131,6 @@ NS_ASSUME_NONNULL_END
 #pragma mark - API Builder support
 
 - (PNPresenceAPICallBuilder * (^)(void))presence {
-    
     PNPresenceAPICallBuilder *builder = nil;
     builder = [PNPresenceAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags, 
                                                                     NSDictionary *parameters) {
@@ -152,14 +152,21 @@ NS_ASSUME_NONNULL_END
         } else if ([flags containsObject:NSStringFromSelector(@selector(hereNow))]) {
             NSString *object = (parameters[NSStringFromSelector(@selector(channel))] ?:
                                 parameters[NSStringFromSelector(@selector(channelGroup))]);
+            NSArray<NSString *> *objects = (parameters[NSStringFromSelector(@selector(channels))] ?:
+                                            parameters[NSStringFromSelector(@selector(channelGroups))]);
             PNOperationType type = PNHereNowGlobalOperation;
             PNHereNowVerbosityLevel level = PNHereNowState;
             
-            if (object) {
+            if (object || objects) {
                 type = PNHereNowForChannelOperation;
 
-                if (parameters[NSStringFromSelector(@selector(channelGroup))]) {
+                if (parameters[NSStringFromSelector(@selector(channelGroup))] ||
+                    parameters[NSStringFromSelector(@selector(channelGroups))]) {
                     type = PNHereNowForChannelGroupOperation;
+                }
+                
+                if (!objects) {
+                    objects = @[object];
                 }
             }
             
@@ -169,13 +176,12 @@ NS_ASSUME_NONNULL_END
             }
             
             [self hereNowWithVerbosity:level
-                             forObject:object
+                            forObjects:objects
                      withOperationType:type
                        queryParameters:queryParam
                        completionBlock:block];
         } else {
             NSString *uuid = parameters[NSStringFromSelector(@selector(uuid))];
-
             [self whereNowUUID:uuid withQueryParameters:queryParam completion:block];
         }
     }];
@@ -189,7 +195,6 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Global here now
 
 - (void)hereNowWithCompletion:(PNGlobalHereNowCompletionBlock)block {
-
     [self hereNowWithVerbosity:PNHereNowState completion:block];
 }
 
@@ -197,7 +202,7 @@ NS_ASSUME_NONNULL_END
                   completion:(PNGlobalHereNowCompletionBlock)block {
 
     [self hereNowWithVerbosity:level
-                     forObject:nil
+                    forObjects:nil
              withOperationType:PNHereNowGlobalOperation
                queryParameters:nil
                completionBlock:block];
@@ -207,7 +212,6 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Channel here now
 
 - (void)hereNowForChannel:(NSString *)channel withCompletion:(PNHereNowCompletionBlock)block {
-
     [self hereNowForChannel:channel withVerbosity:PNHereNowState completion:block];
 }
 
@@ -216,7 +220,7 @@ NS_ASSUME_NONNULL_END
                completion:(PNHereNowCompletionBlock)block {
     
     [self hereNowWithVerbosity:level
-                     forObject:channel
+                    forObjects:(channel ? @[channel] : nil)
              withOperationType:PNHereNowForChannelOperation
                queryParameters:nil
                completionBlock:block];
@@ -236,20 +240,19 @@ NS_ASSUME_NONNULL_END
                     completion:(PNChannelGroupHereNowCompletionBlock)block {
     
     [self hereNowWithVerbosity:level
-                     forObject:group
+                    forObjects:(group ? @[group] : nil)
              withOperationType:PNHereNowForChannelGroupOperation
                queryParameters:nil
                completionBlock:block];
 }
 
 - (void)hereNowWithVerbosity:(PNHereNowVerbosityLevel)level
-                   forObject:(NSString *)object
+                  forObjects:(NSArray<NSString *> *)objects
            withOperationType:(PNOperationType)operation
              queryParameters:(NSDictionary *)queryParameters
              completionBlock:(id)block {
 
     PNRequestParameters *parameters = [PNRequestParameters new];
-
     [parameters addQueryParameter:@"1" forFieldName:@"disable_uuids"];
     [parameters addQueryParameter:@"0" forFieldName:@"state"];
     [parameters addQueryParameters:queryParameters];
@@ -266,20 +269,21 @@ NS_ASSUME_NONNULL_END
         PNLogAPICall(self.logger, @"<PubNub::API> Global 'here now' information with %@ data.",
             PNHereNowDataStrings[level]);
     } else {
-        if ([object length]) {
-            [parameters addPathComponent:(operation == PNHereNowForChannelOperation ? 
-                                          [PNString percentEscapedString:object] : @",")
-                          forPlaceholder:@"{channel}"];
+        NSString *channelsOrGroups = [PNChannel namesForRequest:objects defaultString:@","];
+        
+        if (objects.count) {
+            NSString *channels = operation == PNHereNowForChannelOperation ? channelsOrGroups : @",";
+            
+            [parameters addPathComponent:channels forPlaceholder:@"{channel}"];
             
             if (operation == PNHereNowForChannelGroupOperation) {
-                [parameters addQueryParameter:[PNString percentEscapedString:object] 
-                                 forFieldName:@"channel-group"];
+                [parameters addQueryParameter:channelsOrGroups forFieldName:@"channel-group"];
             }
         }
         
         PNLogAPICall(self.logger, @"<PubNub::API> Channel%@ 'here now' information for %@ with "
             "%@ data.", (operation == PNHereNowForChannelGroupOperation ? @" group" : @""),
-            (object?: @"<error>"), PNHereNowDataStrings[level]);
+            (channelsOrGroups ?: @"<error>"), PNHereNowDataStrings[level]);
     }
     
     __weak __typeof(self) weakSelf = self;
@@ -290,7 +294,7 @@ NS_ASSUME_NONNULL_END
         if (status.isError) {
             status.retryBlock = ^{
                 [weakSelf hereNowWithVerbosity:level
-                                     forObject:object
+                                    forObjects:objects
                              withOperationType:operation
                                queryParameters:queryParameters
                                completionBlock:block];
@@ -305,7 +309,6 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Client where now
 
 - (void)whereNowUUID:(NSString *)uuid withCompletion:(PNWhereNowCompletionBlock)block {
-
     [self whereNowUUID:uuid withQueryParameters:nil completion:block];
 }
 
@@ -314,7 +317,6 @@ NS_ASSUME_NONNULL_END
              completion:(PNWhereNowCompletionBlock)block {
 
     PNRequestParameters *parameters = [PNRequestParameters new];
-
     [parameters addQueryParameters:queryParameters];
 
     if (uuid.length) {

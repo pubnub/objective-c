@@ -356,10 +356,12 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief Try process \c data using parser suitable for operation for which data has been received.
  *
  * @param data Data which has been received from \b PubNub network in response for operation.
+ * @param task Task which provided \c data for processing.
  * @param parser Class which should be used to parse data.
  * @param block Block which should be called back at the end of parsing process.
  */
 - (void)parseData:(nullable id)data
+     fromDataTask:(NSURLSessionDataTask *)task
        withParser:(Class <PNParser>)parser
        completion:(void(^)(NSDictionary * _Nullable parsedData, BOOL parseError))block;
 
@@ -895,6 +897,7 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)parseData:(id)data
+     fromDataTask:(NSURLSessionDataTask *)task
        withParser:(Class <PNParser>)parser
        completion:(void(^)(NSDictionary *parsedData, BOOL parseError))block {
 
@@ -903,7 +906,10 @@ NS_ASSUME_NONNULL_END
         if (processedData || parser == [PNErrorParser class]) {
             block(processedData, (parser == [PNErrorParser class]));
         } else {
-            [weakSelf parseData:data withParser:[PNErrorParser class] completion:[block copy]];
+            [weakSelf parseData:data
+                   fromDataTask:task
+                     withParser:[PNErrorParser class]
+                     completion:[block copy]];
         }
     };
     
@@ -911,11 +917,11 @@ NS_ASSUME_NONNULL_END
         parseCompletion(data ? [parser parsedServiceResponse:data] : nil);
     } else {
         NSMutableDictionary *additionalData = [NSMutableDictionary new];
+        additionalData[@"url"] = task.response.URL ?: task.currentRequest.URL;
 
         if ([self.configuration.cipherKey length]) {
             additionalData[@"cipherKey"] = self.configuration.cipherKey;
         }
-
         /**
          * If additional data required client should assume what potentially additional calculations
          * may be required and should temporarily shift to background queue.
@@ -1198,7 +1204,9 @@ NS_ASSUME_NONNULL_END
         completionBlock:(id)block {
     
     __weak __typeof(self) weakSelf = self;
+    
     [self parseData:responseObject
+       fromDataTask:task
          withParser:[self parserForOperation:operation]
          completion:^(NSDictionary *parsedData, BOOL parseError) {
 
@@ -1229,6 +1237,7 @@ NS_ASSUME_NONNULL_END
         }
 
         [self parseData:errorDetails
+           fromDataTask:task
              withParser:[PNErrorParser class]
              completion:^(NSDictionary *parsedData, __unused BOOL parseError) {
 
