@@ -417,11 +417,11 @@
 		79650C3C1E775EA000006F66 /* PNLockSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 79650C2B1E775E8300006F66 /* PNLockSupport.m */; };
 		79650C3D1E775EA100006F66 /* PNLockSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 79650C2B1E775E8300006F66 /* PNLockSupport.m */; };
 		79650C3F1E775EA100006F66 /* PNLockSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 79650C2B1E775E8300006F66 /* PNLockSupport.m */; };
-		797ABBA224C4148C0008CA1E /* PNBasePublishRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 797ABBA024C4148C0008CA1E /* PNBasePublishRequest.h */; };
-		797ABBA324C4148C0008CA1E /* PNBasePublishRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 797ABBA024C4148C0008CA1E /* PNBasePublishRequest.h */; };
-		797ABBA424C4148C0008CA1E /* PNBasePublishRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 797ABBA024C4148C0008CA1E /* PNBasePublishRequest.h */; };
-		797ABBA524C4148C0008CA1E /* PNBasePublishRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 797ABBA024C4148C0008CA1E /* PNBasePublishRequest.h */; };
-		797ABBA624C4148C0008CA1E /* PNBasePublishRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 797ABBA024C4148C0008CA1E /* PNBasePublishRequest.h */; };
+		797ABBA224C4148C0008CA1E /* PNBasePublishRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 797ABBA024C4148C0008CA1E /* PNBasePublishRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		797ABBA324C4148C0008CA1E /* PNBasePublishRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 797ABBA024C4148C0008CA1E /* PNBasePublishRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		797ABBA424C4148C0008CA1E /* PNBasePublishRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 797ABBA024C4148C0008CA1E /* PNBasePublishRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		797ABBA524C4148C0008CA1E /* PNBasePublishRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 797ABBA024C4148C0008CA1E /* PNBasePublishRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		797ABBA624C4148C0008CA1E /* PNBasePublishRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 797ABBA024C4148C0008CA1E /* PNBasePublishRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		797ABBA724C4148C0008CA1E /* PNBasePublishRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 797ABBA124C4148C0008CA1E /* PNBasePublishRequest.m */; };
 		797ABBA824C4148C0008CA1E /* PNBasePublishRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 797ABBA124C4148C0008CA1E /* PNBasePublishRequest.m */; };
 		797ABBA924C4148C0008CA1E /* PNBasePublishRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 797ABBA124C4148C0008CA1E /* PNBasePublishRequest.m */; };
@@ -4003,6 +4003,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				797ABBA224C4148C0008CA1E /* PNBasePublishRequest.h in Headers */,
 				A57A301B238D59B500DE8C68 /* PNAuditPushNotificationsRequest.h in Headers */,
 				79A238DE1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfigurationPrivate.h in Headers */,
 				A5FADC5C24936088001D7704 /* PNMultipartInputStream.h in Headers */,
@@ -4100,7 +4101,6 @@
 				A5A7B00E2349330F0060113B /* PNAddMessageActionRequest.h in Headers */,
 				79A0D8681DC22C950039A264 /* PNUnsubscribeAPICallBuilder.h in Headers */,
 				A504E14C24AA9515006DCF5B /* PNFile+Private.h in Headers */,
-				797ABBA224C4148C0008CA1E /* PNBasePublishRequest.h in Headers */,
 				A56865E9230176760014E17C /* PNChannelMembersParser.h in Headers */,
 				A55A877A22FD8272002D0A72 /* PNObjectsPaginatedRequest.h in Headers */,
 				791582861BD709C60084FC70 /* PNHeartbeatParser.h in Headers */,
@@ -4272,6 +4272,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				797ABBA424C4148C0008CA1E /* PNBasePublishRequest.h in Headers */,
 				A57A301D238D59B500DE8C68 /* PNAuditPushNotificationsRequest.h in Headers */,
 				79A0D92C1DC230AB0039A264 /* PNStreamAPICallBuilder.h in Headers */,
 				A5FADC5E24936088001D7704 /* PNMultipartInputStream.h in Headers */,
@@ -4369,7 +4370,6 @@
 				A5A7B0102349330F0060113B /* PNAddMessageActionRequest.h in Headers */,
 				79A0D8901DC22F690039A264 /* PNAPNSAuditAPICallBuilder.h in Headers */,
 				A504E14E24AA9515006DCF5B /* PNFile+Private.h in Headers */,
-				797ABBA424C4148C0008CA1E /* PNBasePublishRequest.h in Headers */,
 				A56865EB230176760014E17C /* PNChannelMembersParser.h in Headers */,
 				A55A877C22FD8272002D0A72 /* PNObjectsPaginatedRequest.h in Headers */,
 				7915832B1BD709D10084FC70 /* PNSubscribeParser.h in Headers */,
@@ -4541,6 +4541,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				797ABBA624C4148C0008CA1E /* PNBasePublishRequest.h in Headers */,
 				79A238E31D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfigurationPrivate.h in Headers */,
 				798842B01C18F2D5003E8948 /* PNPushNotificationsStateModificationParser.h in Headers */,
 				79A238D51D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.h in Headers */,
@@ -4677,7 +4678,6 @@
 				798842741C18F1FB003E8948 /* PNStatus+Private.h in Headers */,
 				798842321C18F0AC003E8948 /* PubNub+Subscribe.h in Headers */,
 				A57A30DF238DC87400DE8C68 /* PNAPNSNotificationTarget.h in Headers */,
-				797ABBA624C4148C0008CA1E /* PNBasePublishRequest.h in Headers */,
 				7988422C1C18F088003E8948 /* PubNub+Presence.h in Headers */,
 				A55BCCA72319243F0019DB68 /* PNAddMessageActionStatus.h in Headers */,
 				798842371C18F104003E8948 /* PNConfiguration.h in Headers */,
@@ -4809,6 +4809,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				797ABBA324C4148C0008CA1E /* PNBasePublishRequest.h in Headers */,
 				A57A301C238D59B500DE8C68 /* PNAuditPushNotificationsRequest.h in Headers */,
 				79A0D92B1DC230AB0039A264 /* PNStreamAPICallBuilder.h in Headers */,
 				A5FADC5D24936088001D7704 /* PNMultipartInputStream.h in Headers */,
@@ -4906,7 +4907,6 @@
 				A5A7B00F2349330F0060113B /* PNAddMessageActionRequest.h in Headers */,
 				79A0D88F1DC22F690039A264 /* PNAPNSAuditAPICallBuilder.h in Headers */,
 				A504E14D24AA9515006DCF5B /* PNFile+Private.h in Headers */,
-				797ABBA324C4148C0008CA1E /* PNBasePublishRequest.h in Headers */,
 				A56865EA230176760014E17C /* PNChannelMembersParser.h in Headers */,
 				A55A877B22FD8272002D0A72 /* PNObjectsPaginatedRequest.h in Headers */,
 				79A8BC991C58F93900015BDE /* PNSubscribeParser.h in Headers */,
@@ -5078,6 +5078,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				797ABBA524C4148C0008CA1E /* PNBasePublishRequest.h in Headers */,
 				A57A301E238D59B500DE8C68 /* PNAuditPushNotificationsRequest.h in Headers */,
 				79A0D92D1DC230AC0039A264 /* PNStreamAPICallBuilder.h in Headers */,
 				A5FADC5F24936088001D7704 /* PNMultipartInputStream.h in Headers */,
@@ -5175,7 +5176,6 @@
 				A5A7B0112349330F0060113B /* PNAddMessageActionRequest.h in Headers */,
 				79A0D8911DC22F690039A264 /* PNAPNSAuditAPICallBuilder.h in Headers */,
 				A504E14F24AA9515006DCF5B /* PNFile+Private.h in Headers */,
-				797ABBA524C4148C0008CA1E /* PNBasePublishRequest.h in Headers */,
 				A56865EC230176760014E17C /* PNChannelMembersParser.h in Headers */,
 				A55A877D22FD8272002D0A72 /* PNObjectsPaginatedRequest.h in Headers */,
 				79CBB1441BD03DE4001FC34D /* PNSubscribeStatus.h in Headers */,
