@@ -1277,10 +1277,13 @@ NS_ASSUME_NONNULL_END
         forInitialSubscription:isInitialSubscription
              overrideTimeToken:overrideTimeToken];
     
-    /**
-     * Because client received new event from service, it can restart reachability timer with new interval.
-     */
-    [self.client.heartbeatManager startHeartbeatIfRequired];
+    if (!self.client.configuration.shouldManagePresenceListManually) {
+        /**
+         * Because client received new event from service, it can restart reachability timer with new interval.
+         */
+        [self.client.heartbeatManager startHeartbeatIfRequired];
+    }
+        
     
     if (status.clientRequest.URL != nil && isInitialSubscription) {
         [self updateStateTo:PNConnectedSubscriberState
@@ -1306,7 +1309,9 @@ NS_ASSUME_NONNULL_END
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
     if (statusCategory == PNCancelledCategory) {
-        [self.client.heartbeatManager stopHeartbeatIfPossible];
+        if (!self.client.configuration.shouldManagePresenceListManually) {
+            [self.client.heartbeatManager stopHeartbeatIfPossible];
+        }
     } else {
         if (statusCategory == PNAccessDeniedCategory ||
             statusCategory == PNTimeoutCategory ||
@@ -1378,7 +1383,10 @@ NS_ASSUME_NONNULL_END
             
             [(PNStatus *)status updateCategory:PNUnexpectedDisconnectCategory];
             
-            [self.client.heartbeatManager stopHeartbeatIfPossible];
+            if (!self.client.configuration.shouldManagePresenceListManually) {
+                [self.client.heartbeatManager stopHeartbeatIfPossible];
+            }
+            
             [self updateStateTo:PNDisconnectedUnexpectedlySubscriberState withStatus:status completion:nil];
         }
     }

@@ -1,9 +1,19 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.15.8"
+version: "4.15.9"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Make `PNBasePublishRequest` header publicly visible."
+        type: bug
+      -
+        text: "Fix issue because of which subscriber reset heartbeat timer while in manual presence management mode."
+        type: bug
+    date: Feb 4, 21
+    version: v4.15.9
   -
     changes:
       -

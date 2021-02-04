@@ -417,11 +417,11 @@
 		79650C3C1E775EA000006F66 /* PNLockSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 79650C2B1E775E8300006F66 /* PNLockSupport.m */; };
 		79650C3D1E775EA100006F66 /* PNLockSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 79650C2B1E775E8300006F66 /* PNLockSupport.m */; };
 		79650C3F1E775EA100006F66 /* PNLockSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 79650C2B1E775E8300006F66 /* PNLockSupport.m */; };
-		797ABBA224C4148C0008CA1E /* PNBasePublishRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 797ABBA024C4148C0008CA1E /* PNBasePublishRequest.h */; };
-		797ABBA324C4148C0008CA1E /* PNBasePublishRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 797ABBA024C4148C0008CA1E /* PNBasePublishRequest.h */; };
-		797ABBA424C4148C0008CA1E /* PNBasePublishRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 797ABBA024C4148C0008CA1E /* PNBasePublishRequest.h */; };
-		797ABBA524C4148C0008CA1E /* PNBasePublishRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 797ABBA024C4148C0008CA1E /* PNBasePublishRequest.h */; };
-		797ABBA624C4148C0008CA1E /* PNBasePublishRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 797ABBA024C4148C0008CA1E /* PNBasePublishRequest.h */; };
+		797ABBA224C4148C0008CA1E /* PNBasePublishRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 797ABBA024C4148C0008CA1E /* PNBasePublishRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		797ABBA324C4148C0008CA1E /* PNBasePublishRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 797ABBA024C4148C0008CA1E /* PNBasePublishRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		797ABBA424C4148C0008CA1E /* PNBasePublishRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 797ABBA024C4148C0008CA1E /* PNBasePublishRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		797ABBA524C4148C0008CA1E /* PNBasePublishRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 797ABBA024C4148C0008CA1E /* PNBasePublishRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		797ABBA624C4148C0008CA1E /* PNBasePublishRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 797ABBA024C4148C0008CA1E /* PNBasePublishRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		797ABBA724C4148C0008CA1E /* PNBasePublishRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 797ABBA124C4148C0008CA1E /* PNBasePublishRequest.m */; };
 		797ABBA824C4148C0008CA1E /* PNBasePublishRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 797ABBA124C4148C0008CA1E /* PNBasePublishRequest.m */; };
 		797ABBA924C4148C0008CA1E /* PNBasePublishRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 797ABBA124C4148C0008CA1E /* PNBasePublishRequest.m */; };

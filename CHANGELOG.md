@@ -1,3 +1,12 @@
+## [v4.15.9](https://github.com/pubnub/objective-c/releases/tag/v4.15.9)
+February 4 2021
+
+[Full Changelog](https://github.com/pubnub/objective-c/compare/v4.15.8...v4.15.9)
+
+#### Fixed
+- Make `PNBasePublishRequest` header publicly visible. Addresses the following PRs from [@dymv](https://github.com/dymv): [#424](https://github.com/pubnub/objective-c/pull/424).
+- Fix issue because of which subscriber reset heartbeat timer while in manual presence management mode. 
+
 ## [v4.15.8](https://github.com/pubnub/objective-c/releases/tag/v4.15.8)
 November 16 2020
 
