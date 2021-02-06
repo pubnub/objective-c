@@ -22,11 +22,11 @@ jobs:
   include:
     - stage: "test"
       name: "[iOS] Mocked Integration test"
-      script: . "./Tests/Support Files/Scripts/tests-runner.sh" ios
+      script: . "./Tests/Support Files/Scripts/tests-runner.sh" ios 2
     - name: "[macOS] Mocked Integration test"
-      script: . "./Tests/Support Files/Scripts/tests-runner.sh" macos
+      script: . "./Tests/Support Files/Scripts/tests-runner.sh" macos 2
     - name: "[tvOS] Mocked Integration test"
-      script: . "./Tests/Support Files/Scripts/tests-runner.sh" tvos
+      script: . "./Tests/Support Files/Scripts/tests-runner.sh" tvos 2
 
 after_failure:
  - cat -n ~/Library/Logs/scan/*

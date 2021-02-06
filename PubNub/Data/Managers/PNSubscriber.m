@@ -968,6 +968,13 @@ NS_ASSUME_NONNULL_END
             PNLogAPICall(self.client.logger, @"<PubNub::API> Subscribe (channels: %@; groups: %@)%@",
                          parameters.pathComponents[@"{channels}"], parameters.query[@"channel-group"],
                          (timeToken ? [NSString stringWithFormat:@" with catch up from %@.", timeToken] : @"."));
+        } else if (block) {
+            PNSubscribeStatus *status = [PNSubscribeStatus statusForOperation:PNSubscribeOperation
+                                                                     category:PNConnectedCategory
+                                                          withProcessingError:nil];
+            [self.client appendClientInformation:status];
+            block(status);
+            block = nil;
         }
         
         __weak __typeof(self) weakSelf = self;

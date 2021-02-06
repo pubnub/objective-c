@@ -361,9 +361,16 @@ NS_ASSUME_NONNULL_END
     };
 
     if ([self.subscriberManager allObjects].count) {
-        if (![configuration.uuid isEqualToString:self.configuration.uuid] ||
-            ![configuration.authKey isEqualToString:self.configuration.authKey]) {
-            
+        // Stop any interactions on subscription loop.
+        [self cancelSubscribeOperations];
+        
+        BOOL uuidChanged = ![configuration.uuid isEqualToString:self.configuration.uuid];
+        BOOL authKeyChanged = ((self.configuration.authKey && !configuration.authKey) ||
+                               (!self.configuration.authKey && configuration.authKey) ||
+                               (configuration.authKey && self.configuration.authKey &&
+                                ![configuration.authKey isEqualToString:self.configuration.authKey]));
+        
+        if (uuidChanged || authKeyChanged) {
             [self unsubscribeFromChannels:self.subscriberManager.channels 
                                    groups:self.subscriberManager.channelGroups
                              withPresence:YES

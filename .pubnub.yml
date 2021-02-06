@@ -1,9 +1,16 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.15.9"
+version: "4.15.10"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Fix `copyWithConfiguration:completion:` which sometime stuck because of long-poll subscribe."
+        type: bug
+    date: Feb 6, 21
+    version: v4.15.10
   -
     changes:
       -

@@ -1,7 +1,13 @@
+## [v4.15.10](https://github.com/pubnub/objective-c/releases/tag/v4.15.10)
+February 6 2021
+
+[Full Changelog](https://github.com/pubnub/objective-c/compare/v4.15.9...v4.15.10)
+
+#### Fixed
+- Fix `copyWithConfiguration:completion:` which sometime stuck because of long-poll subscribe. 
+
 ## [v4.15.9](https://github.com/pubnub/objective-c/releases/tag/v4.15.9)
 February 4 2021
-
-[Full Changelog](https://github.com/pubnub/objective-c/compare/v4.15.8...v4.15.9)
 
 #### Fixed
 - Make `PNBasePublishRequest` header publicly visible. Addresses the following PRs from [@dymv](https://github.com/dymv): [#424](https://github.com/pubnub/objective-c/pull/424).
