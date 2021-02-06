@@ -1706,7 +1706,7 @@ NS_ASSUME_NONNULL_END
         [parameters addQueryParameter:self.currentTimeTokenRegion.stringValue forFieldName:@"tr"];
     }
     
-    if (!self.client.configuration.shouldManagePresenceListManually && self.client.configuration.presenceHeartbeatValue > 0) {
+    if (self.client.configuration.presenceHeartbeatValue > 0) {
         [parameters addQueryParameter:@(self.client.configuration.presenceHeartbeatValue).stringValue
                          forFieldName:@"heartbeat"];
     }

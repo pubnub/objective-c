@@ -1,3 +1,11 @@
+## [v4.15.11](https://github.com/pubnub/objective-c/releases/tag/v4.15.11)
+February 6 2021
+
+[Full Changelog](https://github.com/pubnub/objective-c/compare/v4.15.10...v4.15.11)
+
+#### Added
+- Add `heartbeat` to `subscribe` REST API call when `managePresenceListManually` is set to YES. 
+
 ## [v4.15.10](https://github.com/pubnub/objective-c/releases/tag/v4.15.10)
 February 6 2021
 

@@ -1,9 +1,16 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.15.10"
+version: "4.15.11"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Add `heartbeat` to `subscribe` REST API call when `managePresenceListManually` is set to YES."
+        type: feature
+    date: Feb 6, 21
+    version: v4.15.11
   -
     changes:
       -
