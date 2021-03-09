@@ -921,6 +921,7 @@ NS_ASSUME_NONNULL_END
 
         if ([self.configuration.cipherKey length]) {
             additionalData[@"cipherKey"] = self.configuration.cipherKey;
+            additionalData[@"randomIV"] = @(self.configuration.shouldUseRandomInitializationVector);
         }
         /**
          * If additional data required client should assume what potentially additional calculations

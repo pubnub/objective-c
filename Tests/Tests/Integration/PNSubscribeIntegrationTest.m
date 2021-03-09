@@ -34,10 +34,24 @@ NS_ASSUME_NONNULL_END
 #pragma clang diagnostic ignored "-Warc-retain-cycles"
 
 
+#pragma mark - VCR configuration
+
+- (BOOL)shouldSetupVCR {
+    BOOL shouldSetupVCR = [super shouldSetupVCR];
+    
+    if ([self.name pnt_includesString:@"RandomIV"]) {
+        shouldSetupVCR = NO;
+    }
+    
+    return shouldSetupVCR;
+}
+
+
 #pragma mark - Setup / Tear down
 
 - (PNConfiguration *)configurationForTestCaseWithName:(NSString *)name {
     PNConfiguration *configuration = [super configurationForTestCaseWithName:name];
+    configuration.useRandomInitializationVector = [self.name rangeOfString:@"RandomIV"].location != NSNotFound;
     configuration.presenceHeartbeatValue = 20;
     configuration.presenceHeartbeatInterval = 0;
     
@@ -77,6 +91,8 @@ NS_ASSUME_NONNULL_END
     NSString *channel = [self channelWithName:@"test-channel1"];
     
     
+    XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
+    
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addStatusHandlerForClient:self.client
                               withBlock:^(PubNub *client, PNSubscribeStatus *status, BOOL *remove) {
@@ -105,6 +121,9 @@ NS_ASSUME_NONNULL_END
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
     
+    XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
+    XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
+    
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addPresenceHandlerForClient:client2
                                 withBlock:^(PubNub *client, PNPresenceEventResult *event, BOOL *remove) {
@@ -128,6 +147,8 @@ NS_ASSUME_NONNULL_END
 - (void)testItShouldSubscribeToSingleChannelWithPresenceAndReceiveOwnOnlineEvent {
     NSString *channel = [self channelWithName:@"test-channel1"];
     
+    
+    XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addPresenceHandlerForClient:self.client
@@ -156,6 +177,8 @@ NS_ASSUME_NONNULL_END
     NSArray<NSString *> *channels = [self channelsWithNames:@[@"test-channel1", @"test-channel2"]];
     NSSet *subscriptionChannelsSet = [NSSet setWithArray:channels];
     
+    
+    XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addStatusHandlerForClient:self.client
@@ -186,6 +209,9 @@ NS_ASSUME_NONNULL_END
     [self subscribeClient:client2 toChannels:channels withPresence:YES];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
+    
+    XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
+    XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addPresenceHandlerForClient:client2
@@ -218,6 +244,9 @@ NS_ASSUME_NONNULL_END
     [self subscribeClient:client2 toChannels:channels withPresence:NO];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
+    
+    XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
+    XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToNotCompleteIn:self.falseTestCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addPresenceHandlerForClient:client2
@@ -262,6 +291,8 @@ NS_ASSUME_NONNULL_END
     __block NSUInteger reportedOnlineCount = 0;
     
     
+    XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
+    
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addPresenceHandlerForClient:self.client
                                 withBlock:^(PubNub *client, PNPresenceEventResult *event, BOOL *remove) {
@@ -293,6 +324,8 @@ NS_ASSUME_NONNULL_END
         channel: @{ @"channel1-state": [self randomizedValuesWithValues:@[@"channel-1-random-value"]] }
     };
     
+    
+    XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addStatusHandlerForClient:self.client
@@ -334,6 +367,8 @@ NS_ASSUME_NONNULL_END
         channels.lastObject: @{ @"channel2-state": [self randomizedValuesWithValues:@[@"channel-2-random-value"]] }
     };
     
+    
+    XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addStatusHandlerForClient:self.client
@@ -429,6 +464,8 @@ NS_ASSUME_NONNULL_END
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
     
+    XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
+    
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addStatusHandlerForClient:self.client
                               withBlock:^(PubNub *client, PNSubscribeStatus *status, BOOL *remove) {
@@ -461,6 +498,9 @@ NS_ASSUME_NONNULL_END
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
     
+    XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
+    XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
+    
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addPresenceHandlerForClient:client2
                                 withBlock:^(PubNub *client, PNPresenceEventResult *event, BOOL *remove) {
@@ -491,6 +531,8 @@ NS_ASSUME_NONNULL_END
     [self addChannels:@[channel] toChannelGroup:channelGroup usingClient:nil];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
+    
+    XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addPresenceHandlerForClient:self.client
@@ -526,6 +568,8 @@ NS_ASSUME_NONNULL_END
     [self addChannels:@[channels.lastObject] toChannelGroup:channelGroups.lastObject usingClient:nil];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
+    
+    XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addStatusHandlerForClient:self.client
@@ -563,6 +607,9 @@ NS_ASSUME_NONNULL_END
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
     
+    XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
+    XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
+    
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addPresenceHandlerForClient:client2
                                 withBlock:^(PubNub *client, PNPresenceEventResult *event, BOOL *remove) {
@@ -598,6 +645,8 @@ NS_ASSUME_NONNULL_END
     [self addChannels:@[channels.lastObject] toChannelGroup:channelGroups.lastObject usingClient:nil];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
+    
+    XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addPresenceHandlerForClient:self.client
@@ -638,6 +687,8 @@ NS_ASSUME_NONNULL_END
     [self addChannels:@[channel] toChannelGroup:channelGroup usingClient:nil];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
+    
+    XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addStatusHandlerForClient:self.client
@@ -691,6 +742,8 @@ NS_ASSUME_NONNULL_END
     [self addChannels:@[channels.lastObject] toChannelGroup:channelGroups.lastObject usingClient:nil];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
+    
+    XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addStatusHandlerForClient:self.client
@@ -792,6 +845,8 @@ NS_ASSUME_NONNULL_END
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
     
+    XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
+    
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addStatusHandlerForClient:self.client
                               withBlock:^(PubNub *client, PNSubscribeStatus *status, BOOL *remove) {
@@ -827,6 +882,8 @@ NS_ASSUME_NONNULL_END
     [self subscribeClient:client2 toChannels:channels withPresence:NO];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
+    
+    XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToNotCompleteIn:self.falseTestCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addPresenceHandlerForClient:client2
@@ -1408,6 +1465,42 @@ NS_ASSUME_NONNULL_END
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
     
+    XCTAssertNotNil(client1.currentConfiguration.cipherKey);
+    XCTAssertNotNil(client2.currentConfiguration.cipherKey);
+    XCTAssertEqualObjects(client1.currentConfiguration.cipherKey, client2.currentConfiguration.cipherKey);
+    
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        [self addMessageHandlerForClient:client2
+                               withBlock:^(PubNub *client, PNMessageResult *message, BOOL *remove) {
+
+            if ([message.data.publisher isEqualToString:client1.currentConfiguration.uuid]) {
+                XCTAssertEqualObjects(message.data.message, publishedMessage);
+                XCTAssertEqualObjects(message.data.subscription, channel);
+                XCTAssertEqualObjects(message.data.channel, channel);
+                *remove = YES;
+
+                handler();
+            }
+        }];
+        
+        [client1 publish:publishedMessage toChannel:channel withCompletion:^(PNPublishStatus *status) {
+            XCTAssertFalse(status.isError);
+        }];
+    }];
+}
+
+- (void)testItShouldSubscribeToSingleChannelAndReceiveDecryptedMessageWhenPublisherAndReceivedHasSameCipherKeyRandomIV {
+    NSDictionary *publishedMessage = @{ @"test-message": @"message for encryption" };
+    NSString *channel = [self channelWithName:@"test-channel1"];
+    PubNub *client1 = [self createPubNubForUser:@"serhii"];
+    PubNub *client2 = [self createPubNubForUser:@"david"];
+    
+    [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
+    [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
+    
+    
+    XCTAssertTrue(client1.currentConfiguration.shouldUseRandomInitializationVector);
+    XCTAssertTrue(client2.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertNotNil(client1.currentConfiguration.cipherKey);
     XCTAssertNotNil(client2.currentConfiguration.cipherKey);
     XCTAssertEqualObjects(client1.currentConfiguration.cipherKey, client2.currentConfiguration.cipherKey);

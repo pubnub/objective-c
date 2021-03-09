@@ -567,7 +567,7 @@ NS_ASSUME_NONNULL_END
         @"uuid": [PNString percentEscapedString:(self.configuration.uuid?: @"")],
         @"deviceid": (self.configuration.deviceID?: @""),
         @"instanceid": self.instanceID,
-        @"pnsdk":[NSString stringWithFormat:@"PubNFub-%@%%2F%@", kPNClientName, kPNLibraryVersion]
+        @"pnsdk":[NSString stringWithFormat:@"PubNub-%@%%2F%@", kPNClientName, kPNLibraryVersion]
     } mutableCopy];
 
     if (self.configuration.authKey.length) {

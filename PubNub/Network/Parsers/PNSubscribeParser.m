@@ -372,7 +372,6 @@ NS_ASSUME_NONNULL_END
                                                withData:(NSDictionary<NSString *, id> *)additionalData {
     
     NSDictionary *processedResponse = nil;
-
     if ([response isKindOfClass:[NSDictionary class]]) {
         NSDictionary<NSString *, NSString *> *timeTokenDictionary = response[kPNResponseEventTimeKey];
         NSNumber *timeToken = @(timeTokenDictionary[PNEventTimeToken.timeToken].longLongValue);
@@ -474,6 +473,7 @@ NS_ASSUME_NONNULL_END
     NSMutableDictionary *message = nil;
 
     if (((NSString *)additionalData[@"cipherKey"]).length){
+        BOOL useRandomIV = ((NSNumber *)additionalData[@"randomIV"]).boolValue;
         BOOL isDictionary = [data isKindOfClass:[NSDictionary class]];
         NSError *decryptionError;
         id decryptedEvent = nil;
@@ -482,8 +482,10 @@ NS_ASSUME_NONNULL_END
 
         if ([dataForDecryption isKindOfClass:[NSString class]]) {
             NSData *eventData = [PNAES decrypt:dataForDecryption
-                                       withKey:additionalData[@"cipherKey"]
+                                  withRandomIV:useRandomIV
+                                     cipherKey:additionalData[@"cipherKey"]
                                       andError:&decryptionError];
+            
             NSString *decryptedEventData = nil;
 
             if (eventData) {

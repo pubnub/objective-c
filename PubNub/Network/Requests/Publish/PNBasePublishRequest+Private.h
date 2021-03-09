@@ -19,6 +19,13 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Information
 
 /**
+ * @brief Whether message should be encrypted using random initialization vector or not.
+ *
+ * @since 4.16.0
+ */
+@property (nonatomic, assign, getter = shouldUseRandomInitializationVector) BOOL useRandomInitializationVector;
+
+/**
  * @brief Pre-process message content basing on request's requirements.
  */
 @property (nonatomic, nullable, readonly, strong) id preFormattedMessage;
@@ -93,12 +100,14 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @param message Data which \b PNAES should try to encrypt.
  * @param key Cipher key which should be used during encryption.
+ * @param randomIV Whether random initialization vector should be used or not.
  * @param error Pointer into which data encryption error will be passed.
  *
  * @return Encrypted Base64-encoded string or original message, if there is no \c key has been passed.
  */
 - (nullable NSString *)encryptedMessage:(NSString *)message
                           withCipherKey:(NSString *)key
+             randomInitializationVector:(BOOL)randomIV
                                   error:(NSError **)error;
 
 #pragma mark -

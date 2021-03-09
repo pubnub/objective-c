@@ -168,6 +168,7 @@ NS_ASSUME_NONNULL_END
         }
 
         if (((NSString *)additionalData[@"cipherKey"]).length){
+            BOOL useRandomIV = ((NSNumber *)additionalData[@"randomIV"]).boolValue;
             BOOL isDictionary = [message isKindOfClass:[NSDictionary class]];
             NSError *decryptionError;
             id decryptedMessage = nil;
@@ -175,7 +176,8 @@ NS_ASSUME_NONNULL_END
 
             if ([dataForDecryption isKindOfClass:[NSString class]]) {
                 NSData *eventData = [PNAES decrypt:dataForDecryption
-                                           withKey:additionalData[@"cipherKey"]
+                                      withRandomIV:useRandomIV
+                                         cipherKey:additionalData[@"cipherKey"]
                                           andError:&decryptionError];
 
                 NSString *decryptedMessageString = nil;
@@ -187,13 +189,11 @@ NS_ASSUME_NONNULL_END
                 // In case if decrypted message (because of error suppression) is equal to original
                 // message, there is no need to retry JSON de-serialization.
                 if (decryptedMessageString && ![decryptedMessageString isEqualToString:dataForDecryption]) {
-
                     decryptedMessage = [PNJSON JSONObjectFrom:decryptedMessageString withError:nil];
                 }
             }
             
             if (decryptionError || !decryptedMessage) {
-
                 PNLLogger *logger = [PNLLogger loggerWithIdentifier:kPNClientIdentifier];
                 [logger enableLogLevel:PNAESErrorLogLevel];
                 PNLogAESError(logger, @"<PubNub::AES> History entry decryption error: %@",

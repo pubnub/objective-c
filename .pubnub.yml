@@ -1,9 +1,16 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.15.11"
+version: "4.16.0"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "BREAKING CHANGE: Add randomized initialization vector usage by default for data encryption / decryption in publish / subscribe / history API calls."
+        type: feature
+    date: Mar 9, 21
+    version: v4.16.0
   -
     changes:
       -

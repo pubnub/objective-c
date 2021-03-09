@@ -1,3 +1,11 @@
+## [v4.16.0](https://github.com/pubnub/objective-c/releases/tag/v4.16.0)
+March 9 2021
+
+[Full Changelog](https://github.com/pubnub/objective-c/compare/v4.15.11...v4.16.0)
+
+#### Added
+- BREAKING CHANGE: Add randomized initialization vector usage by default for data encryption / decryption in publish / subscribe / history API calls. 
+
 ## [v4.15.11](https://github.com/pubnub/objective-c/releases/tag/v4.15.11)
 February 6 2021
 

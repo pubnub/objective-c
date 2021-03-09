@@ -38,18 +38,18 @@
 - (BOOL)shouldSetupVCR {
     BOOL shouldSetupVCR = [super shouldSetupVCR];
     
-    if ([self.name pnt_includesString:@"Size"]) {
+    if ([self.name pnt_includesString:@"Size"] || [self.name pnt_includesString:@"RandomIV"]) {
         shouldSetupVCR = NO;
     }
     
     return shouldSetupVCR;
 }
 
-
 #pragma mark - Setup / Tear down
 
 - (PNConfiguration *)configurationForTestCaseWithName:(NSString *)name {
     PNConfiguration *configuration = [super configurationForTestCaseWithName:name];
+    configuration.useRandomInitializationVector = [self.name rangeOfString:@"RandomIV"].location != NSNotFound;
     
     if ([self.name pnt_includesString:@"Encrypt"]) {
         configuration.cipherKey = self.cipherKey;
@@ -73,6 +73,8 @@
     NSString *expectedMessage = @"Hello there";
     
     
+    XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
+    
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         PNPublishRequest *request = [PNPublishRequest requestWithChannel:channel];
         request.message = expectedMessage;
@@ -92,6 +94,8 @@
     PubNub *client = [self createPubNubForUser:@"serhii"];
     NSString *expectedMessage = @"Hello there";
     
+    
+    XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         PNPublishRequest *request = [PNPublishRequest requestWithChannel:channel];
@@ -114,6 +118,8 @@
     NSString *expectedMessage = @"Hello there";
     
     
+    XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
+    
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         PNPublishRequest *request = [PNPublishRequest requestWithChannel:channel];
         request.message = expectedMessage;
@@ -135,6 +141,8 @@
     NSString *expectedMessage = @"Hello there";
     
     
+    XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
+    
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [client publish:expectedMessage toChannel:channel withCompletion:^(PNPublishStatus *status) {
             XCTAssertFalse(status.isError);
@@ -152,6 +160,8 @@
     NSString *expectedMessage = @"Hello there";
     
     
+    XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
+    
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [client publish:expectedMessage toChannel:channel withCompletion:^(PNPublishStatus *status) {
             XCTAssertFalse(status.isError);
@@ -168,6 +178,8 @@
     PubNub *client = [self createPubNubForUser:@"serhii"];
     NSString *expectedMessage = nil;
     
+    
+    XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [client publish:expectedMessage toChannel:channel withCompletion:^(PNPublishStatus *status) {
@@ -207,6 +219,8 @@
     NSString *expectedMessage = @"Hello there";
     
     
+    XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
+    
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         client.publish()
             .message(expectedMessage)
@@ -228,6 +242,8 @@
     PubNub *client = [self createPubNubForUser:@"serhii"];
     NSString *expectedMessage = @"Hello there";
     
+    
+    XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         client.publish()
@@ -253,6 +269,8 @@
     NSString *expectedMessage = @"Hello there";
     
     
+    XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
+    
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         client.publish()
             .message(expectedMessage)
@@ -277,6 +295,9 @@
     
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
     
+    
+    XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
+    XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
@@ -304,6 +325,9 @@
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
     
     
+    XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
+    XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
+    
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
             XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.uuid);
@@ -329,6 +353,9 @@
     
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
     
+    
+    XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
+    XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
@@ -356,6 +383,9 @@
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
     
     
+    XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
+    XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
+    
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
             XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.uuid);
@@ -381,6 +411,9 @@
     
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
     
+    
+    XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
+    XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
@@ -408,6 +441,9 @@
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
     
     
+    XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
+    XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
+    
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
             XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.uuid);
@@ -433,6 +469,9 @@
     
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
     
+    
+    XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
+    XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
@@ -460,6 +499,9 @@
     
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
     
+    
+    XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
+    XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
@@ -515,6 +557,9 @@
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
     
     
+    XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
+    XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
+    
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
             XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.uuid);
@@ -548,12 +593,50 @@
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
     
     
+    XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
+    XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
+    
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *receivedMessage, BOOL *shouldRemove) {
             XCTAssertEqualObjects(receivedMessage.data.publisher, client1.currentConfiguration.uuid);
             XCTAssertNotEqualObjects(receivedMessage.data.message, message);
             XCTAssertTrue([receivedMessage.data.message isKindOfClass:[NSString class]]);
             XCTAssertEqualObjects(receivedMessage.data.message, expectedMessage);
+            *shouldRemove = YES;
+            
+            handler();
+        }];
+        
+        [client1 publish:message toChannel:channel withCompletion:^(PNPublishStatus *status) {
+            XCTAssertFalse(status.isError);
+        }];
+    }];
+    
+    [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
+}
+
+- (void)testItShouldPublishEncryptedMessageRandomIV {
+    NSDictionary *message = @{ @"hello": @[@"there", @{ @"general": @"kenobi" }] };
+    NSString *notExpectedMessage = @"xY6oQ3eZMfoY03b6UtjUih+3u63/VZQCcB1o3wavdJc+nabYNOLmZYdz2vuEEPup";
+    NSString *channel = [self channelWithName:@"test-channel"];
+    PubNub *client1 = [self createPubNubForUser:@"serhii"];
+    
+    // Reset cipher key, so second subscriber will receive raw encrypted data.
+    self.cipherKey = nil;
+    PubNub *client2 = [self createPubNubForUser:@"david"];
+    
+    [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
+    
+    
+    XCTAssertTrue(client1.currentConfiguration.shouldUseRandomInitializationVector);
+    XCTAssertTrue(client2.currentConfiguration.shouldUseRandomInitializationVector);
+    
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *receivedMessage, BOOL *shouldRemove) {
+            XCTAssertEqualObjects(receivedMessage.data.publisher, client1.currentConfiguration.uuid);
+            XCTAssertNotEqualObjects(receivedMessage.data.message, message);
+            XCTAssertTrue([receivedMessage.data.message isKindOfClass:[NSString class]]);
+            XCTAssertNotEqualObjects(receivedMessage.data.message, notExpectedMessage);
             *shouldRemove = YES;
             
             handler();
@@ -579,6 +662,9 @@
     
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
     
+    
+    XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
+    XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
@@ -607,7 +693,9 @@
     NSString *channel = [self channelWithName:@"test-channel"];
     PubNub *client = [self createPubNubForUser:@"serhii"];
     NSString *expectedMessage = @"Hello there";
-
+    
+    
+    XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [client publish:expectedMessage toChannel:channel withCompletion:^(PNPublishStatus *status) {
@@ -633,7 +721,9 @@
     NSString *channel = [self channelWithName:@"test-channel"];
     PubNub *client = [self createPubNubForUser:@"serhii"];
     NSString *expectedMessage = @"Hello there";
-
+    
+    
+    XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [client publish:expectedMessage toChannel:channel storeInHistory:NO
@@ -677,6 +767,9 @@
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
     
     
+    XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
+    XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
+    
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
             XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.uuid);
@@ -706,6 +799,9 @@
     
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
     
+    
+    XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
+    XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
@@ -737,6 +833,9 @@
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
     
     
+    XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
+    XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
+    
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
             XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.uuid);
@@ -766,6 +865,9 @@
     
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
     
+    
+    XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
+    XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
@@ -797,6 +899,9 @@
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
     
     
+    XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
+    XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
+    
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
             XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.uuid);
@@ -827,6 +932,9 @@
     
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
     
+    
+    XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
+    XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
@@ -864,10 +972,52 @@
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
     
     
+    XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
+    XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
+    
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
             XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.uuid);
             XCTAssertEqualObjects(message.data.message, expectedMessage);
+            *shouldRemove = YES;
+            
+            handler();
+        }];
+        
+        [client1 publish:message toChannel:channel mobilePushPayload:mobilePayload
+          withCompletion:^(PNPublishStatus *status) {
+            
+            XCTAssertFalse(status.isError);
+        }];
+    }];
+    
+    [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
+}
+
+- (void)testItShouldPublishEncryptedMessageWithNotEncryptedMobilePayloadRandomIV {
+    NSDictionary *mobilePayload = @{ @"apns": @{ @"aps": @{ @"alert": @"Hello there" } } };
+    NSDictionary *message = @{ @"hello": @[@"there", @{ @"general": @"kenobi" }] };
+    NSString *channel = [self channelWithName:@"test-channel"];
+    PubNub *client1 = [self createPubNubForUser:@"serhii"];
+    NSDictionary *notExpectedMessage = @{
+        @"pn_apns": mobilePayload[@"apns"],
+        @"pn_other": @"\"xY6oQ3eZMfoY03b6UtjUih+3u63/VZQCcB1o3wavdJc+nabYNOLmZYdz2vuEEPup\""
+    };
+    
+    // Reset cipher key, so second subscriber will receive raw encrypted data.
+    self.cipherKey = nil;
+    PubNub *client2 = [self createPubNubForUser:@"david"];
+    
+    [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
+    
+    
+    XCTAssertTrue(client1.currentConfiguration.shouldUseRandomInitializationVector);
+    XCTAssertTrue(client2.currentConfiguration.shouldUseRandomInitializationVector);
+    
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
+            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.uuid);
+            XCTAssertNotEqualObjects(message.data.message, notExpectedMessage);
             *shouldRemove = YES;
             
             handler();
@@ -895,6 +1045,9 @@
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
     
     
+    XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
+    XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
+    
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
             XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.uuid);
@@ -920,6 +1073,8 @@
     NSString *channel = [self channelWithName:@"test-channel"];
     PubNub *client = [self createPubNubForUser:@"serhii"];
     
+    
+    XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [client publish:message toChannel:channel mobilePushPayload:mobilePayload storeInHistory:NO
@@ -950,6 +1105,8 @@
     NSMutableDictionary *expectedMessage = [@{ @"pn_apns": mobilePayload[@"apns"] } mutableCopy];
     [expectedMessage addEntriesFromDictionary:message];
     
+    
+    XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [client publish:message toChannel:channel mobilePushPayload:mobilePayload storeInHistory:YES
@@ -983,6 +1140,9 @@
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
     
     
+    XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
+    XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
+    
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
             XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.uuid);
@@ -1008,7 +1168,9 @@
     NSString *expectedMessage = [@"hello-there" pnt_stringWithLength:10000];
     NSString *channel = [self channelWithName:@"test-channel"];
     PubNub *client = [self createPubNubForUser:@"serhii"];
-
+    
+    
+    XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         XCTAssertEqual(expectedMessage.length, 10000);
@@ -1030,7 +1192,9 @@
     NSString *channel = [self channelWithName:@"test-channel"];
     PubNub *client = [self createPubNubForUser:@"serhii"];
     NSString *expectedMessage = @"Hello there";
-
+    
+    
+    XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [client publish:expectedMessage toChannel:channel storeInHistory:NO compressed:YES
@@ -1065,6 +1229,9 @@
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
     
     
+    XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
+    XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
+    
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
             XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.uuid);
@@ -1090,6 +1257,8 @@
     NSString *channel = [self channelWithName:@"test-channel"];
     PubNub *client = [self createPubNubForUser:@"serhii"];
     
+    
+    XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         client.fire()
@@ -1207,7 +1376,7 @@
 }
 
 
-#pragma mark - Tests :: Publish with encryption
+#pragma mark - Tests :: Signal with encryption
 
 - (void)testItShouldSendSignalWithNotEncryptedMessageWhenCipherKeyIsSet {
     NSString *channel = [self channelWithName:@"test-channel"];

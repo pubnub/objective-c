@@ -39,7 +39,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *deviceID;
 
 /**
- * @brief Initialize configuration instance using minimal required data.
+ * @brief Initialise configuration instance using minimal required data.
  *
  * @param publishKey Key which allow client to use data push API.
  * @param subscribeKey Key which allow client to subscribe on live feeds pushed from \b PubNub
@@ -75,7 +75,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSString *)uniqueUserIdentifier;
 
 /**
- * @brief Fetch unique device idenrifier from keychain or generate new one.
+ * @brief Fetch unique device identifier from keychain or generate new one.
  *
  * @return Unique device identifier which depends on platform for which client has been compiled.
  *

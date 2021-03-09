@@ -283,7 +283,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @default By default \c client use \b YES only for uploaded files encryption and \b NO for published messages.
  *
- * @since 4.15.0
+ * @since 4.16.0
  */
 @property (nonatomic, assign, getter = shouldUseRandomInitializationVector) BOOL useRandomInitializationVector;
 

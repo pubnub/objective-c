@@ -193,15 +193,17 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @param message Data which \b PNAES should try to encrypt.
  * @param key Cipher key which should be used during encryption.
+ * @param randomIV Whether random initialization vector should be used or not.
  * @param error Pointer into which data encryption error will be passed.
  *
  * @return Encrypted Base64-encoded string or original message, if there is no \c key has been
  * passed.
  *
- * @since 4.0
+ * @since 4.16.0
  */
 - (nullable NSString *)encryptedMessage:(NSString *)message
                           withCipherKey:(NSString *)key
+             randomInitializationVector:(BOOL)randomIV
                                   error:(NSError **)error;
 
 #pragma mark -
@@ -372,6 +374,7 @@ NS_ASSUME_NONNULL_END
         request.sequenceNumber = [self.sequenceManager nextSequenceNumber:YES];
     }
     
+    request.useRandomInitializationVector = self.configuration.shouldUseRandomInitializationVector;
     request.cipherKey = self.configuration.cipherKey;
     
     PNLogAPICall(self.logger, @"<PubNub::API> Publish '%@' file message to '%@' channel%@%@%@",
@@ -405,6 +408,7 @@ NS_ASSUME_NONNULL_END
         request.sequenceNumber = [self.sequenceManager nextSequenceNumber:YES];
     }
     
+    request.useRandomInitializationVector = self.configuration.shouldUseRandomInitializationVector;
     request.cipherKey = self.configuration.cipherKey;
 
     PNLogAPICall(self.logger, @"<PubNub::API> Publish%@ message to '%@' channel%@%@%@",
@@ -890,6 +894,7 @@ NS_ASSUME_NONNULL_END
                 // Try perform user message encryption.
                 messageForPublish = [self encryptedMessage:messageForPublish
                                              withCipherKey:self.configuration.cipherKey
+                                randomInitializationVector:self.configuration.shouldUseRandomInitializationVector
                                                      error:&publishError];
             }
             
@@ -1032,14 +1037,19 @@ NS_ASSUME_NONNULL_END
     return [mergedMessage copy];
 }
 
-- (NSString *)encryptedMessage:(NSString *)message withCipherKey:(NSString *)key
-                         error:(NSError *__autoreleasing *)error {
+- (NSString *)encryptedMessage:(NSString *)message
+                 withCipherKey:(NSString *)key
+    randomInitializationVector:(BOOL)randomIV
+                         error:(NSError **)error {
     
     NSString *encryptedMessage = message;
 
     if (key.length) {
         NSData *JSONData = [message dataUsingEncoding:NSUTF8StringEncoding];
-        NSString *JSONString = [PNAES encrypt:JSONData withKey:key andError:error];
+        NSString *JSONString = [PNAES encrypt:JSONData
+                                 withRandomIV:randomIV
+                                    cipherKey:key
+                                     andError:error];
 
         if (*error == nil) {
             // PNAES encryption output is NSString which is valid JSON object from PubNub

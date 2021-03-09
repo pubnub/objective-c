@@ -44,10 +44,13 @@
     
     if (!shouldSetupVCR) {
         NSArray<NSString *> *testNames = @[
-            @"ShouldNotDeleteMessagesForChannelAndReceiveBadRequestStatusWhenChannelIsNil"
+            @"ShouldNotDeleteMessagesForChannelAndReceiveBadRequestStatusWhenChannelIsNil",
+            @"ItShouldFetchHistoryForChannelWithEncryptedMessagesAndDecrypt"
         ];
         
         shouldSetupVCR = [self.name pnt_includesAnyString:testNames];
+    } else if ([self.name rangeOfString:@"RandomIV"].location != NSNotFound) {
+        shouldSetupVCR = NO;
     }
     
     return shouldSetupVCR;
@@ -55,6 +58,7 @@
 
 - (PNConfiguration *)configurationForTestCaseWithName:(NSString *)name {
     PNConfiguration *configuration = [super configurationForTestCaseWithName:name];
+    configuration.useRandomInitializationVector = [self.name rangeOfString:@"RandomIV"].location != NSNotFound;
     
     if ([self.name rangeOfString:@"Encrypt"].location != NSNotFound) {
         NSString *cipherKey = self.cipherKey;
@@ -96,6 +100,8 @@
     NSDictionary *checkedMessage = publishedMessages[checkedMessageIdx];
     
     
+    XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
+    
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self.client historyForChannel:channel
                         withCompletion:^(PNHistoryResult *result, PNErrorStatus *status) {
@@ -127,6 +133,8 @@
     NSNumber *middleTimetoken = publishedMessages[2][@"timetoken"];
     
     
+    XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
+    
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self.client historyForChannel:channel start:middleTimetoken end:middleMinusOneTimetoken limit:101
                                reverse:YES withCompletion:^(PNHistoryResult *result, PNErrorStatus *status) {
@@ -154,6 +162,8 @@
     NSUInteger checkedMessageIdx = (NSUInteger)(expectedMessagesCount * 0.5f);
     NSDictionary *checkedMessage = publishedMessages[checkedMessageIdx];
     
+    
+    XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self.client historyForChannel:channel start:nil end:nil includeTimeToken:YES
@@ -183,6 +193,8 @@
     NSDictionary *checkedMessage = publishedMessages[checkedMessageIdx];
     
     
+    XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
+    
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self.client historyForChannel:channel withMetadata:YES
                             completion:^(PNHistoryResult *result, PNErrorStatus *status) {
@@ -201,6 +213,37 @@
     [self deleteHistoryForChannel:channel usingClient:nil];
 }
 
+- (void)testItShouldFetchHistoryForChannelWithEncryptedMessagesAndDecryptRandomIV {
+    NSString *channel = [self channelWithName:@"test-channel"];
+    NSUInteger expectedMessagesCount = 4;
+    NSUInteger halfSize = (NSUInteger)(expectedMessagesCount * 0.5f);
+    
+    NSArray<NSDictionary *> *publishedMessages = [self publishMessages:expectedMessagesCount
+                                                             toChannel:channel
+                                                           usingClient:nil];
+    
+    [self waitTask:@"waitForDistribution" completionFor:1.f];
+    
+    
+    XCTAssertTrue(self.client.currentConfiguration.shouldUseRandomInitializationVector);
+        
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        [self.client historyForChannel:channel start:nil end:nil includeMetadata:YES
+                        withCompletion:^(PNHistoryResult *result, PNErrorStatus *status) {
+            NSArray *fetchedMessages = result.data.messages;
+            XCTAssertNil(status);
+            XCTAssertNotNil(fetchedMessages);
+            XCTAssertEqualObjects(fetchedMessages[halfSize][@"message"],
+                                  publishedMessages[halfSize][@"message"]);
+            XCTAssertTrue([fetchedMessages[halfSize] isKindOfClass:[NSDictionary class]]);
+            
+            handler();
+        }];
+    }];
+    
+    [self deleteHistoryForChannel:channel usingClient:nil];
+}
+
 - (void)testItShouldFetchHistoryForChannelWithEncryptedMessagesAndDecrypt {
     NSString *channel = [self channelWithName:@"test-channel"];
     NSUInteger expectedMessagesCount = 4;
@@ -210,6 +253,8 @@
                                                              toChannel:channel
                                                            usingClient:nil];
     
+    
+    XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
         
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self.client historyForChannel:channel start:nil end:nil includeMetadata:YES
@@ -229,6 +274,42 @@
     [self deleteHistoryForChannel:channel usingClient:nil];
 }
 
+- (void)testItShouldFetchHistoryForChannelWithEncryptedMessagesAndFailToDecryptWhenDifferentCipherKeyIsSetRandomIV {
+    PubNub *consumerClient = [self createPubNubClients:1].lastObject;
+    NSString *channel = [self channelWithName:@"test-channel"];
+    NSUInteger expectedMessagesCount = 4;
+    NSUInteger halfSize = (NSUInteger)(expectedMessagesCount * 0.5f);
+    
+    NSArray<NSDictionary *> *publishedMessages = [self publishMessages:expectedMessagesCount
+                                                             toChannel:channel
+                                                           usingClient:nil];
+    
+    [self waitTask:@"waitForDistribution" completionFor:1.f];
+    
+    
+    XCTAssertTrue(self.client.currentConfiguration.shouldUseRandomInitializationVector);
+    
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        [consumerClient historyForChannel:channel start:nil end:nil includeMessageActions:YES
+                           withCompletion:^(PNHistoryResult *result, PNErrorStatus *status) {
+            
+            XCTAssertNil(result);
+            XCTAssertTrue(status.isError);
+            XCTAssertEqual(status.operation, PNHistoryOperation);
+            XCTAssertEqual(status.category, PNDecryptionErrorCategory);
+            NSArray *encryptedMessages = status.associatedObject[@"channels"][channel];
+            XCTAssertNotNil(status.associatedObject);
+            XCTAssertNotNil(encryptedMessages);
+            XCTAssertNotEqualObjects(encryptedMessages[halfSize][@"message"], publishedMessages[halfSize][@"message"]);
+            XCTAssertTrue([encryptedMessages[halfSize][@"message"] isKindOfClass:[NSString class]]);
+            
+            handler();
+        }];
+    }];
+    
+    [self deleteHistoryForChannel:channel usingClient:nil];
+}
+
 - (void)testItShouldFetchHistoryForChannelWithEncryptedMessagesAndFailToDecryptWhenDifferentCipherKeyIsSet {
     PubNub *consumerClient = [self createPubNubClients:1].lastObject;
     NSString *channel = [self channelWithName:@"test-channel"];
@@ -239,6 +320,8 @@
                                                              toChannel:channel
                                                            usingClient:nil];
     
+    
+    XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [consumerClient historyForChannel:channel start:nil end:nil includeMessageActions:YES
@@ -274,6 +357,8 @@
     NSNumber *middleMinusOneTimetoken = publishedMessages[halfSize - 1][@"timetoken"];
     NSNumber *middleTimetoken = publishedMessages[halfSize][@"timetoken"];
     
+    
+    XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self.client historyForChannel:channel start:nil end:nil limit:halfSize
@@ -331,6 +416,8 @@
     NSNumber *middleMinusOneTimetoken = publishedMessages[halfSize - 1][@"timetoken"];
     NSNumber *middleTimetoken = publishedMessages[halfSize][@"timetoken"];
     
+    
+    XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self.client historyForChannel:channel start:nil end:nil limit:halfSize reverse:YES
@@ -413,6 +500,8 @@
     NSDictionary *checkedMessage = publishedMessages[checkedMessageIdx];
     
     
+    XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
+    
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         self.client.history()
             .channel(channel)
@@ -450,6 +539,8 @@
                                                  inChannel:channel
                                                usingClient:nil];
     
+    
+    XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self.client historyForChannel:channel withMessageActions:YES
@@ -508,6 +599,8 @@
                                                  inChannel:channel
                                                usingClient:nil];
     
+    
+    XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         self.client.history()
@@ -587,6 +680,8 @@
     NSArray<NSDictionary *> *messages2 = publishedMessages[channels.lastObject];
     
     
+    XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
+    
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         self.client.history()
             .channels(channels)
@@ -624,6 +719,8 @@
     [self publishMessages:expectedMessagesCount toChannels:channels usingClient:nil];
     
     
+    XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
+    
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         self.client.history()
             .channels(channels)
@@ -649,6 +746,8 @@
     
     [self publishMessages:expectedMessagesCount toChannels:channels usingClient:nil];
     
+    
+    XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         self.client.history()
@@ -687,6 +786,8 @@
     NSNumber *channel2FirstTimetoken = messages2.firstObject[@"timetoken"];
     NSNumber *channel2LastTimetoken = messages2.lastObject[@"timetoken"];
     
+    
+    XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         self.client.history()

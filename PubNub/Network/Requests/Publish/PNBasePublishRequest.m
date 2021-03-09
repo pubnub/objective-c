@@ -20,6 +20,13 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Information
 
 /**
+ * @brief Whether message should be encrypted using random initialization vector or not.
+ *
+ * @since 4.16.0
+ */
+@property (nonatomic, assign, getter = shouldUseRandomInitializationVector) BOOL useRandomInitializationVector;
+
+/**
  * @brief Whether message should be replicated across the PubNub Real-Time Network and sent simultaneously to all subscribed
  * clients on a channel.
  */
@@ -196,6 +203,7 @@ NS_ASSUME_NONNULL_END
     if (!parametersError && self.cipherKey.length) {
         NSString *encryptedMessage = [self encryptedMessage:messageForPublish
                                               withCipherKey:self.cipherKey
+                                 randomInitializationVector:self.shouldUseRandomInitializationVector
                                                       error:&parametersError];
         
         if (!parametersError) {
@@ -252,14 +260,19 @@ NS_ASSUME_NONNULL_END
     return [mergedMessage copy];
 }
 
-- (NSString *)encryptedMessage:(NSString *)message withCipherKey:(NSString *)key
-                         error:(NSError *__autoreleasing *)error {
+- (NSString *)encryptedMessage:(NSString *)message
+                 withCipherKey:(NSString *)key
+    randomInitializationVector:(BOOL)randomIV
+                         error:(NSError **)error {
     
     NSString *encryptedMessage = message;
 
     if (key.length) {
         NSData *JSONData = [message dataUsingEncoding:NSUTF8StringEncoding];
-        NSString *JSONString = [PNAES encrypt:JSONData withKey:key andError:error];
+        NSString *JSONString = [PNAES encrypt:JSONData
+                                 withRandomIV:randomIV
+                                    cipherKey:key
+                                     andError:error];
 
         if (*error == nil) {
             /**
