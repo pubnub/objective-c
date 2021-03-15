@@ -99,7 +99,9 @@ NS_ASSUME_NONNULL_END
     // Check whether initialization was successful or not.
     if ((self = [super init])) {
         _client = client;
+#ifndef PUBNUB_DISABLE_LOGGER
         [_client.logger enableLogLevel:PNReachabilityLogLevel];
+#endif // PUBNUB_DISABLE_LOGGER
         _pingCompleteBlock = [block copy];
         _resourceAccessQueue = dispatch_queue_create("com.pubnub.reachability",
                                                      DISPATCH_QUEUE_CONCURRENT);

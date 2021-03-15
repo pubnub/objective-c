@@ -22,6 +22,7 @@
 #import "PNConstants.h"
 #import "PNLogMacro.h"
 #import "PNHelpers.h"
+#import "PNAPICallBuilder.h"
 
 
 #pragma mark Types
@@ -174,6 +175,20 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, strong) NSDictionary *defaultQueryComponents;
 
+/**
+ * @brief List of headers which should be added to each request.
+ *
+ * @since 4.16.1
+ */
+@property (nonatomic, nullable, copy) NSDictionary *HTTPAdditionalHeaders;
+
+/**
+ * @brief Default request caching policy (basing on current session settings).
+ *
+ * @since 4.16.1
+ */
+@property (nonatomic, assign) NSURLRequestCachePolicy requestCachePolicy;
+
 #if PN_URLSESSION_TRANSACTION_METRICS_AVAILABLE
 /**
  * @brief Linkage of scheduled data task and it's operation type.
@@ -206,7 +221,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @since 4.5.0
  */
-@property (nonatomic, strong) NSMutableArray<NSURLSessionDataTask *> *scheduledDataTasks;
+@property (nonatomic, nullable, strong) NSMutableArray<NSURLSessionDataTask *> *scheduledDataTasks;
 
 /**
  * @brief Identifier which has been used to request from system more time to complete pending tasks
@@ -238,15 +253,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) dispatch_queue_t processingQueue;
 
 /**
- * @brief Spin-lock which is used to protect access to session instance which can be  changed at any
+ * @brief pthread mutex is used to protect access to session instance which can be  changed at any
  * moment (invalidated instances can't be used and SDK should instantiate new instance).
  *
- * @since 4.0.2
+ * @since 4.16.1
  */
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wpartial-availability"
-@property (nonatomic, assign) os_unfair_lock lock;
-#pragma clang diagnostic pop
+@property (nonatomic, assign) pthread_mutex_t lock;
 
 
 #pragma mark - Initialization and Configuration
@@ -286,8 +298,6 @@ NS_ASSUME_NONNULL_BEGIN
  * @param isDataCompressed Whether POST body has been compressed or not.
  *
  * @return Constructed and ready to use request object.
- *
- * @since 4.0
  */
 - (NSURLRequest *)requestWithURL:(NSURL *)requestURL
                           method:(NSString *)method
@@ -618,12 +628,11 @@ NS_ASSUME_NONNULL_END
         _configuration = client.configuration;
         _forLongPollRequests = longPollEnabled;
 #if TARGET_OS_IOS
-        _scheduledDataTasks = [NSMutableArray new];
         _tasksCompletionIdentifier = UIBackgroundTaskInvalid;
+        _scheduledDataTasks = [NSMutableArray new];
 #endif // TARGET_OS_IOS
         _identifier = [[NSString stringWithFormat:@"com.pubnub.network.%p", self] copy];
-        _processingQueue = dispatch_queue_create([_identifier UTF8String],
-                                                 DISPATCH_QUEUE_CONCURRENT);
+        _processingQueue = dispatch_queue_create([_identifier UTF8String], DISPATCH_QUEUE_CONCURRENT);
 
         if (@available(macOS 10.10, iOS 8.0, *)) {
             if (_configuration.applicationExtensionSharedGroupIdentifier) {
@@ -636,12 +645,11 @@ NS_ASSUME_NONNULL_END
 #endif // PN_URLSESSION_TRANSACTION_METRICS_AVAILABLE
         _serializer = [PNNetworkResponseSerializer new];
         _baseURL = [self requestBaseURL];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wpartial-availability"
-        _lock = OS_UNFAIR_LOCK_INIT;
-#pragma clang diagnostic pop
+        pthread_mutex_init(&_lock, nil);
 
+#ifndef PUBNUB_DISABLE_LOGGER
         [_client.logger enableLogLevel:(PNRequestLogLevel | PNInfoLogLevel)];
+#endif // PUBNUB_DISABLE_LOGGER
         _defaultQueryComponents = [client.defaultQueryComponents copy];
         _defaultPathComponents = [client.defaultPathComponents copy];
         [self prepareSessionWithRequestTimeout:timeout maximumConnections:maximumConnections];
@@ -661,7 +669,7 @@ NS_ASSUME_NONNULL_END
         [parameters addQueryParameters:[self.client.telemetryManager operationsLatencyForRequest]];
     }
     
-    [parameters addQueryParameter:[[NSUUID UUID] UUIDString] forFieldName:@"requestid"];
+    [parameters addQueryParameter:[NSUUID UUID].UUIDString forFieldName:@"requestid"];
 }
 
 - (NSURLRequest *)requestWithURL:(NSURL *)requestURL
@@ -672,17 +680,15 @@ NS_ASSUME_NONNULL_END
     NSURL *fullURL = [NSURL URLWithString:requestURL.absoluteString relativeToURL:self.baseURL];
     NSMutableURLRequest *httpRequest = [NSMutableURLRequest requestWithURL:fullURL];
     httpRequest.HTTPMethod = method;
-
-    pn_lock(&_lock, ^{
-        httpRequest.cachePolicy = self.session.configuration.requestCachePolicy;
-        httpRequest.allHTTPHeaderFields = self.session.configuration.HTTPAdditionalHeaders;
-    });
+    httpRequest.allHTTPHeaderFields = self.HTTPAdditionalHeaders;
+    httpRequest.cachePolicy = self.requestCachePolicy;
 
     if (postData) {
         NSMutableDictionary *allHeaders = [httpRequest.allHTTPHeaderFields mutableCopy];
-        [allHeaders addEntriesFromDictionary:@{@"Content-Type":@"application/json;charset=UTF-8",
-                                               @"Content-Length":[NSString stringWithFormat:@"%@",
-                                                                  @(postData.length)]}];
+        [allHeaders addEntriesFromDictionary: @{
+            @"Content-Type": @"application/json;charset=UTF-8",
+            @"Content-Length": @(postData.length).stringValue
+        }];
         
         if (isDataCompressed) {
             allHeaders[@"Content-Encoding"] = @"gzip";
@@ -700,16 +706,18 @@ NS_ASSUME_NONNULL_END
                                       success:(NSURLSessionDataTaskSuccess)success
                                       failure:(NSURLSessionDataTaskFailure)failure {
 
+    NSString *sessionIdentifier = self.sessionIdentifier;
     NSURLSessionDataTaskCompletion handler = nil;
     __block NSURLSessionDataTask *task = nil;
     __weak __typeof(self) weakSelf = self;
+    BOOL isApplicationExtension = NO;
+
     handler = ^(NSData *data, NSURLResponse *response, NSError *error) {
         if (self.isMetricsNotSupportByOS) {
             NSString *taskIdentifier = @(task.taskIdentifier).stringValue;
-            NSString *identifier = [self.sessionIdentifier stringByAppendingString:taskIdentifier];
+            NSString *identifier = [sessionIdentifier stringByAppendingString:taskIdentifier];
 
-            [weakSelf.client.telemetryManager stopLatencyMeasureFor:operationType
-                                                     withIdentifier:identifier];
+            [weakSelf.client.telemetryManager stopLatencyMeasureFor:operationType withIdentifier:identifier];
         }
 
         [weakSelf handleData:data
@@ -719,13 +727,11 @@ NS_ASSUME_NONNULL_END
                      failure:failure];
     };
 
+    if (@available(macOS 10.10, iOS 8.0, *)) {
+        isApplicationExtension = self->_configuration.applicationExtensionSharedGroupIdentifier != nil;
+    }
+
     pn_lock(&_lock, ^{
-        BOOL isApplicationExtension = NO;
-
-        if (@available(macOS 10.10, iOS 8.0, *)) {
-            isApplicationExtension = self->_configuration.applicationExtensionSharedGroupIdentifier != nil;
-        }
-
         if (isApplicationExtension) {
             self.previousDataTaskCompletionHandler = handler;
             self.fetchedData = [NSMutableData new];
@@ -733,11 +739,11 @@ NS_ASSUME_NONNULL_END
         } else {
             task = [self.session dataTaskWithRequest:request completionHandler:[handler copy]];
         }
-        
+
 #if TARGET_OS_IOS
-        if (self.configuration.applicationExtensionSharedGroupIdentifier == nil && 
+        if (self.configuration.applicationExtensionSharedGroupIdentifier == nil &&
             self.configuration.shouldCompleteRequestsBeforeSuspension) {
-            
+
             [self.scheduledDataTasks addObject:task];
         }
 #endif // TARGET_OS_IOS
@@ -750,7 +756,6 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Request processing
 
 - (BOOL)operationExpectResult:(PNOperationType)operation {
-    
     static NSArray *_resultExpectingOperations;
     static dispatch_once_t onceToken;
 
@@ -775,7 +780,6 @@ NS_ASSUME_NONNULL_END
 }
 
 - (Class <PNParser>)parserForOperation:(PNOperationType)operation {
-    
     static NSDictionary *_parsers;
     static dispatch_once_t onceToken;
 
@@ -919,15 +923,16 @@ NS_ASSUME_NONNULL_END
         NSMutableDictionary *additionalData = [NSMutableDictionary new];
         additionalData[@"url"] = task.response.URL ?: task.currentRequest.URL;
 
-        if ([self.configuration.cipherKey length]) {
+        if (self.configuration.cipherKey.length) {
             additionalData[@"cipherKey"] = self.configuration.cipherKey;
             additionalData[@"randomIV"] = @(self.configuration.shouldUseRandomInitializationVector);
         }
+
         /**
          * If additional data required client should assume what potentially additional calculations
          * may be required and should temporarily shift to background queue.
          */
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSDictionary *parsedData = [parser parsedServiceResponse:data withData:additionalData];
 
             pn_dispatch_async(self.processingQueue, ^{
@@ -963,16 +968,17 @@ NS_ASSUME_NONNULL_END
 #endif // TARGET_OS_IOS
 
 - (void)cancelAllOperationsWithURLPrefix:(NSString *)prefix {
-    
-    pn_lock_async(&_lock, ^(dispatch_block_t complete) {
 #if TARGET_OS_IOS
-        if (self.configuration.applicationExtensionSharedGroupIdentifier == nil && 
+    if (self.configuration.applicationExtensionSharedGroupIdentifier == nil &&
             self.configuration.shouldCompleteRequestsBeforeSuspension) {
-            
+
+        pn_lock(&_lock, ^{
             [self.scheduledDataTasks removeAllObjects];
-        }
+        });
+    }
 #endif // TARGET_OS_IOS
-        
+
+    pn_lock_async(&_lock, ^(dispatch_block_t complete) {
         [self.session getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks,
                                                       NSArray *downloadTasks) {
             
@@ -992,7 +998,6 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)invalidate {
-    
     pn_lock(&_lock, ^{
         [self->_session invalidateAndCancel];
         self->_session = nil;
@@ -1035,8 +1040,10 @@ NS_ASSUME_NONNULL_END
     _session = [self sessionWithConfiguration:config];
     _sessionIdentifier = [[NSUUID UUID] UUIDString];
 
+    _HTTPAdditionalHeaders = [_session.configuration.HTTPAdditionalHeaders copy];
+    _requestCachePolicy = _session.configuration.requestCachePolicy;
+
     [self printIfRequiredSessionCustomizationInformation];
-    
 }
 
 - (NSURLSessionConfiguration *)configurationWithRequestTimeout:(NSTimeInterval)timeout
@@ -1044,6 +1051,7 @@ NS_ASSUME_NONNULL_END
 
     NSURLSessionConfiguration *configuration = nil;
     configuration = [NSURLSessionConfiguration pn_ephemeralSessionConfigurationWithIdentifier:self.identifier];
+
     if (@available(macOS 10.10, iOS 8.0, *)) {
         if (self.configuration.applicationExtensionSharedGroupIdentifier) {
             configuration = [NSURLSessionConfiguration pn_backgroundSessionConfigurationWithIdentifier:self.identifier];
@@ -1058,7 +1066,6 @@ NS_ASSUME_NONNULL_END
 }
 
 - (NSOperationQueue *)operationQueueWithConfiguration:(NSURLSessionConfiguration *)configuration {
-    
     NSOperationQueue *queue = [NSOperationQueue new];
     queue.maxConcurrentOperationCount = configuration.HTTPMaximumConnectionsPerHost;
     
@@ -1066,16 +1073,10 @@ NS_ASSUME_NONNULL_END
 }
 
 - (NSURLSession *)sessionWithConfiguration:(NSURLSessionConfiguration *)configuration {
-
-    NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration
-                                                          delegate:self
-                                                     delegateQueue:_delegateQueue];
-    
-    return session;
+    return [NSURLSession sessionWithConfiguration:configuration delegate:self delegateQueue:_delegateQueue];
 }
 
 - (NSURL *)requestBaseURL {
-    
     return [NSURL URLWithString:[NSString stringWithFormat:@"http%@://%@",
                                  (_configuration.TLSEnabled ? @"s" : @""), _configuration.origin]];
 }
@@ -1084,36 +1085,43 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Handlers
 
 #if TARGET_OS_IOS
-
 - (void)handleClientWillResignActive {
-    
     if (self.configuration.applicationExtensionSharedGroupIdentifier == nil) {
-        pn_lock(&_lock, ^{
-            UIApplication *application = [UIApplication performSelector:NSSelectorFromString(@"sharedApplication")];
-            if (self.tasksCompletionIdentifier == UIBackgroundTaskInvalid) {
-                __weak __typeof__(self) weakSelf = self;
-                self.tasksCompletionIdentifier = [application beginBackgroundTaskWithExpirationHandler:^{
-                    [weakSelf endBackgroundTasksCompletionIfRequired];
-                }];
+        UIApplication *application = [UIApplication performSelector:NSSelectorFromString(@"sharedApplication")];
+        __block BOOL backgroundTaskStarted = NO;
 
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3f * NSEC_PER_SEC)),
-                               dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        if (self.tasksCompletionIdentifier == UIBackgroundTaskInvalid) {
+            __weak __typeof__(self) weakSelf = self;
+            backgroundTaskStarted = YES;
 
-                    __strong __typeof__(weakSelf) strongSelf = weakSelf;
-                    pn_lock(&strongSelf->_lock, ^{
-                        if (strongSelf.tasksCompletionIdentifier != UIBackgroundTaskInvalid) {
-                            [strongSelf processIncompleteBeforeClientResignActiveTasks:self.scheduledDataTasks
-                                                                  onDataTaskCompletion:NO];
-                        }
+            self.tasksCompletionIdentifier = [application beginBackgroundTaskWithExpirationHandler:^{
+                [weakSelf endBackgroundTasksCompletionIfRequired];
+            }];
+        }
+
+        if (backgroundTaskStarted) {
+            PNWeakify(self);
+            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3f * NSEC_PER_SEC)),
+                           dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                PNStrongify(self);
+                
+                if (self.tasksCompletionIdentifier != UIBackgroundTaskInvalid) {
+                    __block NSArray<NSURLSessionDataTask *> *scheduledDataTasks;
+
+                    pn_lock(&self->_lock, ^{
+                        scheduledDataTasks = [self.scheduledDataTasks copy];
                     });
-                });
-            } 
-        });
+
+                    [self processIncompleteBeforeClientResignActiveTasks:scheduledDataTasks
+                                                    onDataTaskCompletion:NO];
+                }
+            });
+        }
     }
 }
 
 - (void)handleClientDidBecomeActive {
-    
     [self endBackgroundTasksCompletionIfRequired];
 }
 
@@ -1121,19 +1129,21 @@ NS_ASSUME_NONNULL_END
 
 
 -(void)URLSession:(NSURLSession *)session didBecomeInvalidWithError:(NSError *)error {
-    
     if (error) {
-        pn_lock(&_lock, ^{
 #if TARGET_OS_IOS
-            if (self.configuration.applicationExtensionSharedGroupIdentifier == nil &&
+        if (self.configuration.applicationExtensionSharedGroupIdentifier == nil &&
                 self.configuration.shouldCompleteRequestsBeforeSuspension) {
-                
-                [self.scheduledDataTasks removeAllObjects];
-            }
+
+            self.scheduledDataTasks = nil;
+        }
 #endif // TARGET_OS_IOS
 
+        pn_lock(&_lock, ^{
             [self prepareSessionWithRequestTimeout:self.requestTimeout
                                 maximumConnections:self.maximumConnections];
+#if TARGET_OS_IOS
+            self.scheduledDataTasks = [NSMutableArray new];
+#endif // TARGET_OS_IOS
         });
     }
 }
@@ -1159,11 +1169,11 @@ NS_ASSUME_NONNULL_END
 
             [self.client.logger log:0 message:message];
         }
-        
-        NSData *fetchedData = [self.fetchedData copy];
-        self.fetchedData = nil;
 
         if (self.previousDataTaskCompletionHandler) {
+            NSData *fetchedData = [self.fetchedData copy];
+            self.fetchedData = nil;
+
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.previousDataTaskCompletionHandler(fetchedData, task.response, error);
             });
@@ -1229,7 +1239,7 @@ NS_ASSUME_NONNULL_END
         [self handleOperation:operation taskDidComplete:task withData:nil completionBlock:block];
     } else {
         id errorDetails = nil;
-        NSData *errorData = (error?: task.error).userInfo[kPNNetworkErrorResponseDataKey];
+        NSData *errorData = (error ?: task.error).userInfo[kPNNetworkErrorResponseDataKey];
 
         if (errorData) {
             errorDetails = [NSJSONSerialization JSONObjectWithData:errorData
@@ -1297,15 +1307,17 @@ NS_ASSUME_NONNULL_END
 #if TARGET_OS_IOS
     if (self.configuration.applicationExtensionSharedGroupIdentifier == nil && 
         self.configuration.shouldCompleteRequestsBeforeSuspension) {
-        
+        __block NSArray *scheduledDataTasks;
+
         pn_lock(&_lock, ^{
             [self.scheduledDataTasks removeObject:task];
-
-            if (self.tasksCompletionIdentifier != UIBackgroundTaskInvalid) {
-                [self processIncompleteBeforeClientResignActiveTasks:self.scheduledDataTasks
-                                                onDataTaskCompletion:YES];
-            }
+            scheduledDataTasks = self.scheduledDataTasks;
         });
+
+        if (self.tasksCompletionIdentifier != UIBackgroundTaskInvalid) {
+            [self processIncompleteBeforeClientResignActiveTasks:scheduledDataTasks
+                                            onDataTaskCompletion:YES];
+        }
     }
 #endif // TARGET_OS_IOS
 }
@@ -1361,13 +1373,14 @@ NS_ASSUME_NONNULL_END
         NSTimeInterval latency = responseEndDate - responseStartDate;
 
         if (latency > 0.f) {
-            pn_lock(&self->_lock, ^{
-                NSString *taskID = @(task.taskIdentifier).stringValue;
-                NSString *identifier = [self.sessionIdentifier stringByAppendingString:taskID];
-                PNOperationType operationType = 0;
+            NSString *taskID = @(task.taskIdentifier).stringValue;
+            NSString *identifier = [self.sessionIdentifier stringByAppendingString:taskID];
 
-                if (identifier) {
-                    operationType = self.dataTaskToOperationMap[identifier].integerValue;
+            pn_lock(&self->_lock, ^{
+                NSNumber *operationNumber = self.dataTaskToOperationMap[identifier];
+
+                if (identifier && operationNumber) {
+                    PNOperationType operationType = (PNOperationType)operationNumber.integerValue;
 
                     [self.dataTaskToOperationMap removeObjectForKey:identifier];
                     [self.client.telemetryManager setLatency:latency forOperation:operationType];
@@ -1390,11 +1403,9 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Misc
 
 #if TARGET_OS_IOS
-
-- (BOOL)hasOperation:(PNOperationType)operation
-         inDataTasks:(NSArray<NSURLSessionDataTask *> *)tasks {
-    
+- (BOOL)hasOperation:(PNOperationType)operation inDataTasks:(NSArray<NSURLSessionDataTask *> *)tasks {
     BOOL hasOperation = NO;
+
     for (NSURLSessionDataTask *dataTask in tasks) {
         if ([PNURLBuilder isURL:dataTask.originalRequest.URL forOperation:operation]) {
             hasOperation = YES;
@@ -1406,16 +1417,13 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)endBackgroundTasksCompletionIfRequired {
-
     if (self.configuration.applicationExtensionSharedGroupIdentifier == nil) {
-        pn_trylock(&_lock, ^{
-            UIApplication *application = [UIApplication performSelector:NSSelectorFromString(@"sharedApplication")];
-            
-            if (self.tasksCompletionIdentifier != UIBackgroundTaskInvalid) {
-                [application endBackgroundTask:self.tasksCompletionIdentifier];
-                self.tasksCompletionIdentifier = UIBackgroundTaskInvalid;
-            }
-        });
+        UIApplication *application = [UIApplication performSelector:NSSelectorFromString(@"sharedApplication")];
+
+        if (self.tasksCompletionIdentifier != UIBackgroundTaskInvalid) {
+            [application endBackgroundTask:self.tasksCompletionIdentifier];
+            self.tasksCompletionIdentifier = UIBackgroundTaskInvalid;
+        }
     }
 }
 
@@ -1457,35 +1465,35 @@ NS_ASSUME_NONNULL_END
     NSDate *lookupStartDate = transaction.domainLookupStartDate;
     NSDate *lookupEndDate = transaction.domainLookupEndDate;
     NSTimeInterval lookupDuration = [lookupEndDate timeIntervalSinceDate:(lookupStartDate ?: lookupEndDate)];
-    [metricsData appendFormat:@"lookup: %@ (%fs); ", lookupStartDate ?: @"<re-use>",
+    [metricsData appendFormat:@"lookup: %@ (%fs); ", lookupStartDate.description ?: @"<re-use>",
                                lookupDuration];
     
     // Add connection establish duration.
     NSDate *connectStartDate = transaction.connectStartDate;
     NSDate *connectEndDate = transaction.connectEndDate;
     NSTimeInterval connectDuration = [connectEndDate timeIntervalSinceDate:(connectStartDate ?: connectEndDate)];
-    [metricsData appendFormat:@"connect: %@ (%fs); ", connectStartDate ?: @"<re-use>",
+    [metricsData appendFormat:@"connect: %@ (%fs); ", connectStartDate.description ?: @"<re-use>",
                                connectDuration];
     
     // Add secure connection establish duration.
     NSDate *secureStartDate = transaction.secureConnectionStartDate;
     NSDate *secureEndDate = transaction.secureConnectionEndDate;
     NSTimeInterval secureDuration = [secureEndDate timeIntervalSinceDate:(secureStartDate ?: secureEndDate)];
-    [metricsData appendFormat:@"secure: %@ (%fs); ", secureStartDate ?: @"<re-use>",
+    [metricsData appendFormat:@"secure: %@ (%fs); ", secureStartDate.description ?: @"<re-use>",
                                secureDuration];
     
     // Add request sending duration.
     NSDate *requestStartDate = transaction.requestStartDate;
     NSDate *requestEndDate = transaction.requestEndDate;
     NSTimeInterval requestDuration = [requestEndDate timeIntervalSinceDate:(requestStartDate ?: requestEndDate)];
-    [metricsData appendFormat:@"request: %@ (%fs); ", requestStartDate ?: @"<not-started>",
+    [metricsData appendFormat:@"request: %@ (%fs); ", requestStartDate.description ?: @"<not-started>",
                                requestDuration];
     
     // Add response loading duration.
     NSDate *responseStartDate = transaction.responseStartDate;
     NSDate *responseEndDate = transaction.responseEndDate;
     NSTimeInterval responseDuration = [responseEndDate timeIntervalSinceDate:(responseStartDate ?: responseEndDate)];
-    [metricsData appendFormat:@"response: %@ (%fs))", responseStartDate ?: @"<not-started>",
+    [metricsData appendFormat:@"response: %@ (%fs))", responseStartDate.description ?: @"<not-started>",
                                responseDuration];
     
     return metricsData;
@@ -1494,7 +1502,6 @@ NS_ASSUME_NONNULL_END
 #endif
 
 - (void)printIfRequiredSessionCustomizationInformation {
-    
     if ([NSURLSessionConfiguration pn_HTTPAdditionalHeaders].count) {
         PNLogClientInfo(self.client.logger, @"<PubNub::Network> Custom HTTP headers is set by "
             "user: %@", [NSURLSessionConfiguration pn_HTTPAdditionalHeaders]);

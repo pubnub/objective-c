@@ -25,16 +25,6 @@
 #pragma mark - Static
 
 /**
- @brief  Spin-lock which is used to protect access to shared resources from multiple threads.
- 
- @since 4.5.0
- */
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wpartial-availability"
-static os_unfair_lock pnl_cacheAccessLock = OS_UNFAIR_LOCK_INIT;
-#pragma clang diagnostic pop
-
-/**
  @brief  Stores maximum log entry timestamp string length.
  
  @since 4.5.0
@@ -77,7 +67,8 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
     
     BOOL _writeToConsole;
     BOOL _writeToFile;
-    
+    BOOL _enabled;
+
     char *_applicationCName;
     size_t _applicationNameLength;
     
@@ -168,14 +159,11 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
 @property (nonatomic, strong) dispatch_queue_t queue;
 
 /**
- @brief  Spin-lock which is used to protect access to shared resources from multiple threads.
- 
- @since 4.5.0
+ * @brief pthread mutex which is used to protect access to shared resources from multiple threads.
+ *
+ * @since 4.16.1
  */
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wpartial-availability"
-@property (nonatomic, assign) os_unfair_lock accessLock;
-#pragma clang diagnostic pop
+@property (nonatomic, assign) pthread_mutex_t accessLock;
 
 
 #pragma mark - Initialization and Configuration
@@ -195,7 +183,8 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
  
  @return Initialized and ready to use logger instance.
  */
-- (instancetype)initWithIdentifier:(NSString *)identifier directory:(nullable NSString *)logsDirectoryPath 
+- (instancetype)initWithIdentifier:(NSString *)identifier
+                         directory:(nullable NSString *)logsDirectoryPath
                       logExtension:(nullable NSString *)extension;
 
 
@@ -364,105 +353,141 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
 
 @synthesize writeToConsole = _writeToConsole;
 @synthesize writeToFile = _writeToFile;
+@synthesize enabled = _enabled;
 
 
 #pragma mark - Information
 
 - (BOOL)writeToConsole {
-    
     __block BOOL writeToConsole = NO;
-    pn_lock(&_accessLock, ^{ writeToConsole = self->_writeToConsole; });
+
+    pn_lock(&_accessLock, ^{
+        writeToConsole = self->_writeToConsole;
+    });
     
     return writeToConsole;
 }
 
 - (void)setWriteToConsole:(BOOL)writeToConsole {
-    
-    pn_lock(&_accessLock, ^{ self->_writeToConsole = writeToConsole; });
+    pn_lock(&_accessLock, ^{
+        self->_writeToConsole = writeToConsole;
+    });
 }
 
 - (BOOL)writeToFile {
-    
     __block BOOL writeToFile = NO;
-    pn_lock(&_accessLock, ^{ writeToFile = self->_writeToFile; });
+
+    pn_lock(&_accessLock, ^{
+        writeToFile = self->_writeToFile;
+    });
     
     return writeToFile;
 }
 
 - (void)setWriteToFile:(BOOL)writeToFile {
-    
-    pn_lock(&_accessLock, ^{ self->_writeToFile = writeToFile; });
+    pn_lock(&_accessLock, ^{
+        self->_writeToFile = writeToFile;
+    });
 }
 
 - (void)setMaximumLogFileSize:(NSUInteger)maximumLogFileSize {
-    
     __block BOOL changed = NO;
+
     pn_lock(&_accessLock, ^{
-        
-        changed = (self->_maximumLogFileSize != maximumLogFileSize);
+        changed = self->_maximumLogFileSize != maximumLogFileSize;
         self->_maximumLogFileSize = maximumLogFileSize;
     });
-    if (changed) { dispatch_async(self.queue, ^{ @autoreleasepool { [self rollRecentLogFileIfRequired]; }}); }
+
+    if (changed) {
+        dispatch_async(self.queue, ^{
+            @autoreleasepool {
+                pn_lock(&self->_accessLock, ^{
+                    [self rollRecentLogFileIfRequired];
+                });
+            }
+        });
+    }
 }
 
 - (void)setMaximumNumberOfLogFiles:(NSUInteger)maximumNumberOfLogFiles {
-    
     __block BOOL changed = NO;
+
     pn_lock(&_accessLock, ^{
-        changed = (self->_maximumNumberOfLogFiles != maximumNumberOfLogFiles);
+        changed = self->_maximumNumberOfLogFiles != maximumNumberOfLogFiles;
         self->_maximumNumberOfLogFiles = maximumNumberOfLogFiles;
     });
-    if (changed) { dispatch_async(self.queue, ^{ @autoreleasepool { [self deleteOldLogsIfRequired]; }}); }
+
+    if (changed) {
+        dispatch_async(self.queue, ^{
+            @autoreleasepool {
+                pn_lock(&self->_accessLock, ^{
+                    [self deleteOldLogsIfRequired];
+                });
+            }
+        });
+    }
+}
+
+- (void)setLogFilesDiskQuota:(NSUInteger)logFilesDiskQuota {
+    __block BOOL changed = NO;
+
+    pn_lock(&_accessLock, ^{
+        changed = self->_logFilesDiskQuota != logFilesDiskQuota;
+        self->_logFilesDiskQuota = logFilesDiskQuota;
+    });
+
+    if (changed) {
+        dispatch_async(self.queue, ^{
+            @autoreleasepool {
+                pn_lock(&self->_accessLock, ^{
+                    [self deleteOldLogsIfRequired];
+                });
+            }
+        });
+    }
 }
 
 - (PNLLogFileInformation *)currentLogInformation {
-    
-    pn_trylock(&_accessLock, ^{
-        
-        if (self->_currentLogInformation == nil) {
-            
-            [self rollRecentLogFileIfRequired];
-            PNLLogFileInformation *recentLogInfomration = self.logFilesInformation.firstObject;
-            if (recentLogInfomration && !recentLogInfomration.isArchived) {
-                
-                self->_currentLogInformation = recentLogInfomration;
-            }
-            else {
-                
-                NSString *logFilePath = [self createLogFile];
-                PNLLogFileInformation *information = [PNLLogFileInformation informationForFileAtPath:logFilePath];
-                self->_currentLogInformation = information;
-                [self.logFilesInformation insertObject:self->_currentLogInformation atIndex:0];
-            }
+    if (self->_currentLogInformation == nil) {
+        [self rollRecentLogFileIfRequired];
+
+        PNLLogFileInformation *recentLogInformation = self.logFilesInformation.firstObject;
+
+        if (recentLogInformation && !recentLogInformation.isArchived) {
+            self->_currentLogInformation = recentLogInformation;
+        } else {
+            NSString *logFilePath = [self createLogFile];
+            PNLLogFileInformation *information = [PNLLogFileInformation informationForFileAtPath:logFilePath];
+            self->_currentLogInformation = information;
+            [self.logFilesInformation insertObject:self->_currentLogInformation atIndex:0];
         }
-    });
-    
+    }
+
     return _currentLogInformation;
 }
 
 - (NSFileHandle *)currentLogHandler {
-    
-    pn_trylock(&_accessLock, ^{
-        
-        if (self->_currentLogHandler == nil) {
-            
-            self->_currentLogHandler = [NSFileHandle fileHandleForWritingAtPath:self.currentLogInformation.path];
-            [self->_currentLogHandler seekToEndOfFile];
-            if (self->_currentLogHandler) {
-                
-                self->_logFileWatchdog = dispatch_source_create(DISPATCH_SOURCE_TYPE_VNODE,
-                                                                [self->_currentLogHandler fileDescriptor],
-                                                                DISPATCH_VNODE_DELETE | DISPATCH_VNODE_RENAME,
-                                                                self->_queue);
-                dispatch_source_set_event_handler(self->_logFileWatchdog, ^{
-                    
-                    @autoreleasepool { [self rollCurrentLogFileOnMove:YES]; }
-                });
-                
-                dispatch_resume(self->_logFileWatchdog);
-            }
+    if (self->_currentLogHandler == nil) {
+        self->_currentLogHandler = [NSFileHandle fileHandleForWritingAtPath:self.currentLogInformation.path];
+        [self->_currentLogHandler seekToEndOfFile];
+
+        if (self->_currentLogHandler) {
+            self->_logFileWatchdog = dispatch_source_create(DISPATCH_SOURCE_TYPE_VNODE,
+                                                            [self->_currentLogHandler fileDescriptor],
+                                                            DISPATCH_VNODE_DELETE | DISPATCH_VNODE_RENAME,
+                                                            self->_queue);
+
+            dispatch_source_set_event_handler(self->_logFileWatchdog, ^{
+                @autoreleasepool {
+                    pn_lock(&self->_accessLock, ^{
+                        [self rollCurrentLogFileOnMove:YES];
+                    });
+                }
+            });
+
+            dispatch_resume(self->_logFileWatchdog);
         }
-    });
+    }
     
     return _currentLogHandler;
 }
@@ -471,27 +496,32 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
 #pragma mark - Initialization and Configuration
 
 + (instancetype)loggerWithIdentifier:(NSString *)identifier {
-    
     return [self loggerWithIdentifier:identifier directory:nil];
 }
 
 + (instancetype)loggerWithIdentifier:(NSString *)identifier directory:(NSString *)path {
-    
     return [self loggerWithIdentifier:identifier directory:path logExtension:nil];
 }
 
-+ (instancetype)loggerWithIdentifier:(NSString *)identifier directory:(NSString *)logsDirectoryPath 
++ (instancetype)loggerWithIdentifier:(NSString *)identifier
+                           directory:(NSString *)logsDirectoryPath
                         logExtension:(NSString *)extension {
+    
+    static pthread_mutex_t pnl_cacheAccessLock;
+    static dispatch_once_t onceToken;
+
+    dispatch_once(&onceToken, ^{
+        pthread_mutex_init(&pnl_cacheAccessLock, nil);
+    });
     
     __block PNLLogger *logger = nil;
     pn_lock(&pnl_cacheAccessLock, ^{
-        
         logger = [self loggersCache][identifier];
-        if (!logger) { 
-            
-            NSString *path = (logsDirectoryPath?: [self defaultLogsDirectoryPath]);
+
+        if (!logger) {
+            NSString *path = logsDirectoryPath ?: [self defaultLogsDirectoryPath];
             logger = [[self alloc] initWithIdentifier:identifier directory:path 
-                                         logExtension:(extension?: kPNLDefaultLogFileExtension)];
+                                         logExtension:(extension ?: kPNLDefaultLogFileExtension)];
             [self loggersCache][identifier] = logger;
         }
     });
@@ -499,13 +529,14 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
     return logger;
 }
 
-- (instancetype)initWithIdentifier:(NSString *)identifier directory:(NSString *)logsDirectoryPath 
+- (instancetype)initWithIdentifier:(NSString *)identifier
+                         directory:(NSString *)logsDirectoryPath
                       logExtension:(NSString *)extension {
     
     // Check whether initialization has been successful or not.
     if ((self = [super init])) {
-        
         [self retrieveEnvironmentInformation];
+
         _identifier = [identifier copy];
         _directory = [[self workingDirectoryPath:logsDirectoryPath] copy];
         _logFileExtension = [extension copy];
@@ -514,10 +545,7 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
         
         const char *queueIdentifier = [[identifier stringByAppendingString:@".logger.queue"] UTF8String];
         _queue = dispatch_queue_create(queueIdentifier, DISPATCH_QUEUE_SERIAL);
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wpartial-availability"
-        _accessLock = OS_UNFAIR_LOCK_INIT;
-#pragma clang diagnostic pop
+        pthread_mutex_init(&_accessLock, nil);
         
         [self prepareDateFormatter];
         [self indexExistingLogFiles];
@@ -529,39 +557,60 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
     return self;
 }
 
+- (BOOL)enabled {
+    __block BOOL enabled = NO;
+
+    pn_lock(&_accessLock, ^{
+        enabled = self->_enabled;
+    });
+
+    return enabled;
+}
+
 - (void)setEnabled:(BOOL)enabled {
-    
-    pn_lock(&_accessLock, ^{ self->_enabled = enabled; });
+    pn_lock(&_accessLock, ^{
+        self->_enabled = enabled;
+    });
 }
 
 - (void)enableLogLevel:(NSUInteger)level {
-    
     pn_lock(&_accessLock, ^{
-        
-        BOOL notifyChange = (self->_logLevel != (self->_logLevel | level) && self->_logLevelChangeHandler);
+        BOOL notifyChange = self->_logLevel != (self->_logLevel | level) && self->_logLevelChangeHandler;
         self->_logLevel |= level;
-        if (notifyChange) { dispatch_async(dispatch_get_main_queue(), self->_logLevelChangeHandler); }
+
+        if (notifyChange) {
+            dispatch_async(dispatch_get_main_queue(), self->_logLevelChangeHandler);
+        }
     });
 }
 
 - (void)disableLogLevel:(NSUInteger)level {
-    
     pn_lock(&_accessLock, ^{
-        
-        BOOL notifyChange = (self->_logLevel != (self->_logLevel & ~level) && self->_logLevelChangeHandler);
+        BOOL notifyChange = self->_logLevel != (self->_logLevel & ~level) && self->_logLevelChangeHandler;
         self->_logLevel &= ~level;
-        if (notifyChange) { dispatch_async(dispatch_get_main_queue(), self->_logLevelChangeHandler); }
+
+        if (self->_logLevel == 0) {
+            self->_enabled = NO;
+        }
+
+        if (notifyChange) {
+            dispatch_async(dispatch_get_main_queue(), self->_logLevelChangeHandler);
+        }
     });
 }
 
 - (void)setLogLevel:(NSUInteger)level {
-    
     pn_lock(&_accessLock, ^{
-        
-        BOOL notifyChange = (self->_logLevel != level && self->_logLevelChangeHandler);
+        BOOL notifyChange = self->_logLevel != level && self->_logLevelChangeHandler;
         self->_logLevel = level;
-        if (level == 0) { self->_enabled = NO; }
-        if (notifyChange) { dispatch_async(dispatch_get_main_queue(), self->_logLevelChangeHandler); }
+
+        if (level == 0) {
+            self->_enabled = NO;
+        }
+
+        if (notifyChange) {
+            dispatch_async(dispatch_get_main_queue(), self->_logLevelChangeHandler);
+        }
     });
 }
 
@@ -569,12 +618,14 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
 #pragma mark - Logging
 
 - (void)log:(NSUInteger)level format:(NSString *)format, ... {
-
 #ifndef PUBNUB_DISABLE_LOGGER
     __block BOOL shouldHandleLog = NO;
-    pn_lock(&_accessLock, ^{ shouldHandleLog = (self->_logLevel & level); });
+
+    pn_lock(&_accessLock, ^{
+        shouldHandleLog = (self->_logLevel & level) > 0;
+    });
+
     if (shouldHandleLog && format.length) {
-        
         va_list args;
         va_start(args, format);
         [self log:level message:[[NSString alloc] initWithFormat:format arguments:args]];
@@ -584,21 +635,18 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
 }
 
 - (void)log:(NSUInteger)level message:(NSString *)message {
-
 #ifndef PUBNUB_DISABLE_LOGGER
     if (self.enabled || level == 0) {
-        
         NSString *threadID = [self currentThreadID];
         NSDate *logDate = [NSDate date];
+
         dispatch_async(self.queue, ^{
-            
             char timestamp[kPNLLogEntryTimestampLength];
             NSUInteger timestampLength = [self getTimestamp:timestamp fromDate:logDate];
+
             if (self.writeToConsole) {
-                
                 NSUInteger length = [message lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
-                const BOOL useStackMemory = length < (1024 * 4);
-                char *cMessage = (char *)(useStackMemory ? alloca(length + 1) : malloc(length + 1));
+                char *cMessage = (char *)malloc(length + 1);
                 [message getCString:cMessage maxLength:(length + 1) encoding:NSUTF8StringEncoding];
                 
                 const char *threadCID = [threadID cStringUsingEncoding:NSUTF8StringEncoding];
@@ -618,19 +666,20 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
                 vector[9] = (struct iovec){.iov_base = "\n", .iov_len = (cMessage[length] == '\n' ? 0 : 1)};
                 
                 writev(STDERR_FILENO, vector, 10);
-                if (!useStackMemory) { free(cMessage); }
+                free(cMessage);
             }
             
             if (self.writeToFile) {
-                
                 NSString *formattedMessage = [NSString stringWithFormat:@"%s %@[%@:%@] %@%@", timestamp, 
                                               self->_applicationName, self->_applicationProcessID, threadID, message,
                                               ([message hasSuffix:@"\n"] ? @"" : @"\n")];
                 NSData *messageData = [formattedMessage dataUsingEncoding:NSUTF8StringEncoding];
+
                 @try {
-                    
-                    [[self currentLogHandler] writeData:messageData];
-                    [self rollRecentLogFileIfRequired];
+                    pn_lock(&self->_accessLock, ^{
+                        [[self currentLogHandler] writeData:messageData];
+                        [self rollRecentLogFileIfRequired];
+                    });
                 } @catch (NSException *exception) { /* Nothing can't be done useful because of exception. */ }
             }
         });
@@ -642,7 +691,6 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
 #pragma mark - File logging
 
 - (NSString *)newLogFileName {
-    
     NSInteger maximumCopyNumber = -1;
     NSString *baseName = [NSString stringWithFormat:@"%@ %@", self.applicationName,
                           [self.dateFormatter stringFromDate:[NSDate date]]];
@@ -654,18 +702,17 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
     NSRegularExpressionOptions options = NSRegularExpressionCaseInsensitive;
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:options
                                                                              error:nil];
+
     for (NSString *name in existingNames) {
-        
         if (maximumCopyNumber == -1 && [name hasPrefix:baseName]) { maximumCopyNumber = 0; }
         NSRange matchRange = NSMakeRange(0, name.length);
         NSArray *matches = [regex matchesInString:name options:(NSMatchingOptions)0 range:matchRange];
+
         if (matches.count) {
-            
             for (NSTextCheckingResult *match in matches) {
-                
                 NSRange matchRange = [match rangeAtIndex:1];
+
                 if (matchRange.location != NSNotFound) {
-                    
                     NSInteger fileCopyNumber = [name substringWithRange:matchRange].integerValue;
                     maximumCopyNumber = MAX(maximumCopyNumber, fileCopyNumber);
                 }
@@ -674,7 +721,6 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
     }
         
     if (maximumCopyNumber >= 0) {
-        
         targetName = [NSString stringWithFormat:@"%@ %lu.%@", baseName, 
                       (unsigned long)(maximumCopyNumber + 1), self.logFileExtension];
     }
@@ -683,7 +729,6 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
 }
 
 - (NSString *)createLogFile {
-    
     NSString *filePath = [self.directory stringByAppendingPathComponent:[self newLogFileName]];
 #if TARGET_OS_IOS
     NSDictionary *attributes = @{NSFileProtectionKey: NSFileProtectionCompleteUntilFirstUserAuthentication};
@@ -693,10 +738,12 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
     
     // Create logs folder if required.
     if (![[NSFileManager defaultManager] fileExistsAtPath:_directory]) {
-        
-        [[NSFileManager defaultManager] createDirectoryAtPath:_directory withIntermediateDirectories:YES
-                                                   attributes:nil error:nil];
+        [[NSFileManager defaultManager] createDirectoryAtPath:_directory
+                                  withIntermediateDirectories:YES
+                                                   attributes:nil
+                                                        error:nil];
     }
+
     [[NSFileManager defaultManager] createFileAtPath:filePath contents:nil attributes:attributes];
     [self deleteOldLogsIfRequired];
     
@@ -704,106 +751,105 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
 }
 
 - (void)rollRecentLogFileIfRequired {
-    
-    pn_trylock(&_accessLock, ^{
-        
-        PNLLogFileInformation *recentLogInfomration = self.logFilesInformation.firstObject;
-        if (recentLogInfomration && !recentLogInfomration.archived) {
-            
-            BOOL isCurrentLog = (self->_currentLogInformation && [self->_currentLogInformation isEqual:recentLogInfomration]);
-            unsigned long long size = recentLogInfomration.size;
-            if (isCurrentLog && self->_currentLogHandler) { size = self->_currentLogHandler.offsetInFile; }
-            if (self->_maximumLogFileSize > 0 && size >= self->_maximumLogFileSize) {
-                
-                if (isCurrentLog) { [self rollCurrentLogFileOnMove:NO]; }
-                else { recentLogInfomration.archived = YES; }
+    PNLLogFileInformation *recentLogInformation = self.logFilesInformation.firstObject;
+
+    if (recentLogInformation && !recentLogInformation.archived) {
+        BOOL isCurrentLog = self->_currentLogInformation && [self->_currentLogInformation isEqual:recentLogInformation];
+        unsigned long long size = recentLogInformation.size;
+
+        if (isCurrentLog && self->_currentLogHandler) {
+            size = self->_currentLogHandler.offsetInFile;
+        }
+
+        if (self->_maximumLogFileSize > 0 && size >= self->_maximumLogFileSize) {
+            if (!isCurrentLog) {
+                recentLogInformation.archived = YES;
+            } else {
+                [self rollCurrentLogFileOnMove:NO];
             }
         }
-    });
+    }
 }
 
 - (void)rollCurrentLogFileOnMove:(BOOL)rollOnFileMove {
-    
-    pn_trylock(&_accessLock, ^{
-        
-        if (self->_currentLogHandler) {
-            
-            unsigned long long logFileSize = self->_currentLogHandler.offsetInFile;
-            [self->_currentLogHandler synchronizeFile];
-            [self->_currentLogHandler closeFile];
-            self->_currentLogHandler = nil;
-            
-            if (!rollOnFileMove) {
-                
-                self->_currentLogInformation.size = logFileSize;
-                self->_currentLogInformation.archived = YES;
-            }
-            else { [self.logFilesInformation removeObject:self->_currentLogInformation]; }
-            self->_currentLogInformation = nil;
-            
-            if (self->_logFileWatchdog) {
-                
-                dispatch_source_cancel(self->_logFileWatchdog);
-                self->_logFileWatchdog = NULL;
-            }
-        }
-    });
+    if (!self->_currentLogHandler) {
+        return;
+    }
+
+    unsigned long long logFileSize = self->_currentLogHandler.offsetInFile;
+    [self->_currentLogHandler synchronizeFile];
+    [self->_currentLogHandler closeFile];
+    self->_currentLogHandler = nil;
+
+    if (!rollOnFileMove) {
+        self->_currentLogInformation.size = logFileSize;
+        self->_currentLogInformation.archived = YES;
+    } else {
+        [self.logFilesInformation removeObject:self->_currentLogInformation];
+    }
+
+    self->_currentLogInformation = nil;
+
+    if (self->_logFileWatchdog) {
+        dispatch_source_cancel(self->_logFileWatchdog);
+        self->_logFileWatchdog = NULL;
+    }
 }
 
 - (void)deleteOldLogsIfRequired {
-    
-    pn_trylock(&_accessLock, ^{
-        
-        NSMutableArray<PNLLogFileInformation *> *informationsForRemoval = [NSMutableArray new];
-        if (self->_maximumNumberOfLogFiles > 0 && self.logFilesInformation.count >= self->_maximumNumberOfLogFiles) {
-            
+    NSMutableArray<PNLLogFileInformation *> *forRemoval = [NSMutableArray new];
+
+    if (self->_maximumNumberOfLogFiles > 0 && self.logFilesInformation.count >= self->_maximumNumberOfLogFiles) {
+        NSUInteger filesCount = self.logFilesInformation.count;
+
+        for (NSUInteger infoIndex = self->_maximumNumberOfLogFiles - 1; infoIndex < filesCount; infoIndex++) {
+            PNLLogFileInformation *informationForRemoval = self.logFilesInformation[infoIndex];
+            [[NSFileManager defaultManager] removeItemAtPath:informationForRemoval.path error:nil];
+            [forRemoval addObject:informationForRemoval];
+        }
+
+        [self.logFilesInformation removeObjectsInArray:forRemoval];
+        [forRemoval removeAllObjects];
+    }
+
+    if (self.logFilesInformation.count) {
+        NSNumber *logsFileSize = [self.logFilesInformation valueForKeyPath:@"@sum.size"];
+
+        if ([logsFileSize compare:@(self->_logFilesDiskQuota)] == NSOrderedDescending) {
             NSUInteger filesCount = self.logFilesInformation.count;
-            for (NSUInteger infoIndex = self->_maximumNumberOfLogFiles - 1; infoIndex < filesCount; infoIndex++) {
-                
+            unsigned long long currentLogsFileSize = logsFileSize.unsignedLongLongValue;
+
+            for (NSUInteger infoIndex = filesCount - 1; infoIndex >= 0; infoIndex--) {
                 PNLLogFileInformation *informationForRemoval = self.logFilesInformation[infoIndex];
-                [[NSFileManager defaultManager] removeItemAtPath:informationForRemoval.path error:nil];
-                [informationsForRemoval addObject:informationForRemoval];
-            }
-            [self.logFilesInformation removeObjectsInArray:informationsForRemoval];
-            [informationsForRemoval removeAllObjects];
-        }
-        
-        if (self.logFilesInformation.count) {
-            
-            NSNumber *logsFileSize = [self.logFilesInformation valueForKeyPath:@"@sum.size"];
-            if ([logsFileSize compare:@(self->_logFilesDiskQuota)] == NSOrderedDescending) {
-                
-                NSUInteger filesCount = self.logFilesInformation.count;
-                unsigned long long currentLogsFileSize = logsFileSize.unsignedLongLongValue;
-                for (NSInteger infoIndex = filesCount - 1; infoIndex >= 0; infoIndex--) {
-                    
-                    PNLLogFileInformation *informationForRemoval = self.logFilesInformation[infoIndex];
-                    if (!self->_currentLogInformation || ![informationForRemoval isEqual:self->_currentLogInformation]) {
-                        
-                        currentLogsFileSize -= informationForRemoval.size;
-                        [[NSFileManager defaultManager] removeItemAtPath:informationForRemoval.path error:nil];
-                        [informationsForRemoval addObject:informationForRemoval];
-                    }
-                    
-                    if (currentLogsFileSize < self->_logFilesDiskQuota) { break; }
+
+                if (!self->_currentLogInformation || ![informationForRemoval isEqual:self->_currentLogInformation]) {
+                    currentLogsFileSize -= informationForRemoval.size;
+                    [[NSFileManager defaultManager] removeItemAtPath:informationForRemoval.path error:nil];
+                    [forRemoval addObject:informationForRemoval];
                 }
-                [self.logFilesInformation removeObjectsInArray:informationsForRemoval];
+
+                if (currentLogsFileSize < self->_logFilesDiskQuota) {
+                    break;
+                }
             }
+
+            [self.logFilesInformation removeObjectsInArray:forRemoval];
         }
-    });
+    }
 }
 
 - (void)indexExistingLogFiles {
-    
     self.logFilesInformation = [NSMutableArray new];
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSArray<NSString *> *fileNames = [fileManager contentsOfDirectoryAtPath:self.directory error:nil];
     NSArray<NSString *> *logFileNames = [self filteredLogFileNames:fileNames];
     NSArray<NSString *> *logFilePaths = nil;
-    if (logFileNames.count) { logFilePaths = [self.directory stringsByAppendingPaths:logFileNames]; }
+
+    if (logFileNames.count) {
+        logFilePaths = [self.directory stringsByAppendingPaths:logFileNames];
+    }
     
     for (NSString *filePath in logFilePaths) {
-        
         [self.logFilesInformation addObject:[PNLLogFileInformation informationForFileAtPath:filePath]];
     }
     
@@ -815,40 +861,42 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
 #pragma mark - Hanlders
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
-                        change:(NSDictionary<NSString *, NSNumber *> *)change context:(void *)context {
+                        change:(NSDictionary<NSString *, NSNumber *> *)change
+                       context:(void *)context {
     
     NSUInteger previousFlagValue = change[NSKeyValueChangeOldKey].unsignedIntegerValue;
     NSUInteger currentFlagValue = change[NSKeyValueChangeNewKey].unsignedIntegerValue;
     
     // Check whether value really changed or not.
     if (previousFlagValue != currentFlagValue) {
-        
-        if (!currentFlagValue || [keyPath isEqualToString:NSStringFromSelector(@selector(logFilesDiskQuota))]) {
-            
-            [self deleteOldLogsIfRequired]; 
+        if (!currentFlagValue || [keyPath isEqualToString:NSStringFromSelector(@selector(maximumNumberOfLogFiles))] ||
+            [keyPath isEqualToString:NSStringFromSelector(@selector(logFilesDiskQuota))]) {
+
+            pn_lock(&_accessLock, ^{
+                [self deleteOldLogsIfRequired];
+            });
         }
         
         if ([keyPath isEqualToString:NSStringFromSelector(@selector(enabled))]) {
-            
             [self log:0 message:[NSString stringWithFormat:@"<Logger::%@> Logger %@.",
                                  self.identifier, (currentFlagValue ? @"enabled" : @"disabled")]];
-        }
-        
-        if ([keyPath isEqualToString:NSStringFromSelector(@selector(writeToFile))]) {
-            
+        } else if ([keyPath isEqualToString:NSStringFromSelector(@selector(writeToConsole))]) {
+            [self log:0 message:[NSString stringWithFormat:@"<Logger::%@> Console logger %@.",
+                                                           self.identifier, (currentFlagValue ? @"enabled" : @"disabled")]];
+        } else if ([keyPath isEqualToString:NSStringFromSelector(@selector(writeToFile))]) {
             [self log:0 message:[NSString stringWithFormat:@"<Logger::%@> File logger %@.",
-                                 self.identifier, (currentFlagValue ? @"enabled" : @"disabled")]];
+                                                           self.identifier, (currentFlagValue ? @"enabled" : @"disabled")]];
+
             if (currentFlagValue) {
-                
                 [self log:0 message:[NSString stringWithFormat:@"<Logger::%@> Log files stored in: %@.",
-                                     self.identifier, self.directory]];
+                                                               self.identifier, self.directory]];
             }
-        }
-        
-        if ([keyPath isEqualToString:NSStringFromSelector(@selector(logFilesDiskQuota))]) {
-            
+        } else if ([keyPath isEqualToString:NSStringFromSelector(@selector(maximumNumberOfLogFiles))]) {
+            [self log:0 message:[NSString stringWithFormat:@"<Logger::%@> Maximum log files count changed to %lu.",
+                                                           self.identifier, (unsigned long)currentFlagValue]];
+        } else if ([keyPath isEqualToString:NSStringFromSelector(@selector(logFilesDiskQuota))]) {
             [self log:0 message:[NSString stringWithFormat:@"<Logger::%@> Disk quota changed to %lu bytes.",
-                                 self.identifier, (unsigned long)currentFlagValue]];
+                                                           self.identifier, (unsigned long)currentFlagValue]];
         }
     }
 }
@@ -857,16 +905,17 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
 #pragma mark - Misc
 
 + (NSMutableDictionary<NSString *, PNLLogger *> *)loggersCache {
-    
     static NSMutableDictionary<NSString *, PNLLogger *> * _sharedLoggersCache;
     static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{ _sharedLoggersCache = [NSMutableDictionary new]; });
+
+    dispatch_once(&onceToken, ^{
+        _sharedLoggersCache = [NSMutableDictionary new];
+    });
     
     return _sharedLoggersCache;
 }
 
 + (NSString *)defaultLogsDirectoryPath {
-    
     NSSearchPathDirectory searchPath = (TARGET_OS_IPHONE ? NSCachesDirectory : NSLibraryDirectory);
     NSArray<NSString *> *paths = NSSearchPathForDirectoriesInDomains(searchPath, NSUserDomainMask, YES);
     NSString *baseDirectory = (paths.count > 0 ? paths.firstObject : NSTemporaryDirectory());
@@ -875,11 +924,9 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
 }
 
 - (NSString *)workingDirectoryPath:(NSString *)logsDirectoryPath {
-    
     NSString *logsDirectory = logsDirectoryPath;
 #if !TARGET_OS_IPHONE
     if ([[[self class] defaultLogsDirectoryPath] isEqualToString:logsDirectoryPath]) {
-        
         logsDirectory = [logsDirectory stringByAppendingPathComponent:_applicationName];
     }
 #endif // TARGET_OS_IPHONE
@@ -889,9 +936,12 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
 }
 
 - (void)retrieveEnvironmentInformation {
-    
-    _applicationName = ([[NSProcessInfo processInfo] processName]?: [[NSBundle mainBundle] bundleIdentifier]);
-    if (!_applicationName) { _applicationName = @"PNLUnknownApplicationName"; }
+    _applicationName = [[NSProcessInfo processInfo] processName] ?: [[NSBundle mainBundle] bundleIdentifier];
+
+    if (!_applicationName) {
+        _applicationName = @"PNLUnknownApplicationName";
+    }
+
     _applicationNameLength = [_applicationName lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
     _applicationCName = malloc(_applicationNameLength + 1);
     [_applicationName getCString:_applicationCName maxLength:(_applicationNameLength + 1) 
@@ -905,7 +955,6 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
 }
 
 - (void)prepareDateFormatter {
-    
     _calendarUnits = (NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitHour |
                       NSCalendarUnitMinute | NSCalendarUnitSecond);
     
@@ -916,20 +965,20 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
 }
 
 - (NSString *)currentThreadID {
-    
     NSString *tid = nil;
+
     if (USE_PTHREAD_THREADID_NP) {
         __uint64_t threadID;
         pthread_threadid_np(NULL, &threadID);
         tid = [NSString stringWithFormat:@"%llu", threadID];
+    } else {
+        tid = [NSString stringWithFormat:@"%x", pthread_mach_thread_np(pthread_self())];
     }
-    else { tid = [NSString stringWithFormat:@"%x", pthread_mach_thread_np(pthread_self())]; }
     
     return tid;
 }
 
 - (NSUInteger)getTimestamp:(char *)timestamp fromDate:(NSDate *)date {
-    
     NSDateComponents *components = [[NSCalendar autoupdatingCurrentCalendar] components:self.calendarUnits
                                                                                fromDate:date];
     NSTimeInterval seconds = [date timeIntervalSince1970];
@@ -942,10 +991,13 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
 }
 
 - (void)startPropertiesModificationObservation {
-    
     NSKeyValueObservingOptions options = (NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew);
     [self addObserver:self forKeyPath:NSStringFromSelector(@selector(enabled)) options:options context:nil];
-    [self addObserver:self forKeyPath:NSStringFromSelector(@selector(writeToFile)) options:options 
+    [self addObserver:self forKeyPath:NSStringFromSelector(@selector(writeToConsole)) options:options
+              context:nil];
+    [self addObserver:self forKeyPath:NSStringFromSelector(@selector(writeToFile)) options:options
+              context:nil];
+    [self addObserver:self forKeyPath:NSStringFromSelector(@selector(maximumNumberOfLogFiles)) options:options
               context:nil];
     [self addObserver:self forKeyPath:NSStringFromSelector(@selector(logFilesDiskQuota)) options:options 
               context:nil];
@@ -953,35 +1005,36 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
 }
 
 - (void)stopPropertiesModificationObservation {
-    
     @try {
-        
         [self removeObserver:self forKeyPath:NSStringFromSelector(@selector(enabled))];
+        [self removeObserver:self forKeyPath:NSStringFromSelector(@selector(writeToConsole))];
         [self removeObserver:self forKeyPath:NSStringFromSelector(@selector(writeToFile))];
+        [self removeObserver:self forKeyPath:NSStringFromSelector(@selector(maximumNumberOfLogFiles))];
         [self removeObserver:self forKeyPath:NSStringFromSelector(@selector(logFilesDiskQuota))];
-    } @catch (NSException *exception) { /* Just cache expection in case if observer already removed. */ }
+    } @catch (NSException *exception) { /* Just catch exception in case if observer already removed. */ }
 }
 
 - (NSArray<NSString *> *)filteredLogFileNames:(NSArray<NSString *> *)names {
-    
     NSString *pattern = [NSString stringWithFormat:@".+\\s\\d{4}-\\d{2}-\\d{2}\\s\\d{2}-\\d{2}(\\s\\d+)?\\.(%@)", 
                          self.logFileExtension];
     NSRegularExpressionOptions options = NSRegularExpressionCaseInsensitive;
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:options
                                                                              error:nil];
     NSMutableArray<NSString *> *logFileNames = [NSMutableArray arrayWithCapacity:names.count];
+
     for (NSString *fileName in names) {
-        
         NSRange matchRange = NSMakeRange(0, fileName.length);
         NSArray *matches = [regex matchesInString:fileName options:(NSMatchingOptions)0 range:matchRange];
-        if (matches.count > 0) { [logFileNames addObject:fileName]; }
+
+        if (matches.count > 0) {
+            [logFileNames addObject:fileName];
+        }
     }
     
     return logFileNames;
 }
 
 - (void)dealloc {
-    
     [self stopPropertiesModificationObservation];
     [self rollCurrentLogFileOnMove:NO];
 }

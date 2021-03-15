@@ -5,7 +5,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  @brief      PubNub logger.
- @discussion Lightweight logger which is used in \b PubNub SDKs. Depending from configurations logger is able 
+ @discussion Lightweight logger which is used in \b PubNub SDKs. Depending from configurations logger is able
              to store logs in file and / or output to debug console.
  
  @author Sergey Mamontov
@@ -144,7 +144,8 @@ NS_ASSUME_NONNULL_BEGIN
  
  @return Configured and ready to use logger instance.
  */
-+ (instancetype)loggerWithIdentifier:(NSString *)identifier directory:(nullable NSString *)logsDirectoryPath 
++ (instancetype)loggerWithIdentifier:(NSString *)identifier
+                           directory:(nullable NSString *)logsDirectoryPath
                         logExtension:(nullable NSString *)extension;
 
 /**

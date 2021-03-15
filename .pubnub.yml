@@ -1,9 +1,16 @@
 --- 
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.16.0"
+version: "4.16.1"
 schema: 1
 changelog: 
+  -
+    changes:
+      -
+        text: "Replace `os_unfair_lock` with `pthread_mutex` to avoid cases when `os_unfair_lock_lock` called from same thread more than once."
+        type: bug
+    date: Mar 16, 21
+    version: v4.16.1
   -
     changes:
       -

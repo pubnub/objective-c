@@ -499,7 +499,9 @@ NS_ASSUME_NONNULL_END
         
         if (decryptionError || !decryptedEvent) {
             PNLLogger *logger = [PNLLogger loggerWithIdentifier:kPNClientIdentifier];
+#ifndef PUBNUB_DISABLE_LOGGER
             [logger enableLogLevel:PNAESErrorLogLevel];
+#endif // PUBNUB_DISABLE_LOGGER
             PNLogAESError(logger, @"<PubNub::AES> Message decryption error: %@", decryptionError);
             message[@"decryptError"] = @YES;
             message[@"message"] = dataForDecryption;

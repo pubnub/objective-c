@@ -195,7 +195,9 @@ NS_ASSUME_NONNULL_END
             
             if (decryptionError || !decryptedMessage) {
                 PNLLogger *logger = [PNLLogger loggerWithIdentifier:kPNClientIdentifier];
+#ifndef PUBNUB_DISABLE_LOGGER
                 [logger enableLogLevel:PNAESErrorLogLevel];
+#endif // PUBNUB_DISABLE_LOGGER
                 PNLogAESError(logger, @"<PubNub::AES> History entry decryption error: %@",
                               decryptionError);
                 data[@"decryptError"] = @YES;

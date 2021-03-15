@@ -1,7 +1,13 @@
+## [v4.16.1](https://github.com/pubnub/objective-c/releases/tag/v4.16.1)
+March 16 2021
+
+[Full Changelog](https://github.com/pubnub/objective-c/compare/v4.16.0...v4.16.1)
+
+#### Fixed
+- Replace `os_unfair_lock` with `pthread_mutex` to avoid cases when `os_unfair_lock_lock` called from same thread more than once. 
+
 ## [v4.16.0](https://github.com/pubnub/objective-c/releases/tag/v4.16.0)
 March 9 2021
-
-[Full Changelog](https://github.com/pubnub/objective-c/compare/v4.15.11...v4.16.0)
 
 #### Added
 - BREAKING CHANGE: Add randomized initialization vector usage by default for data encryption / decryption in publish / subscribe / history API calls. 

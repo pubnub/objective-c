@@ -838,7 +838,9 @@ NS_ASSUME_NONNULL_END
 - (instancetype)initForClient:(PubNub *)client {
     if ((self = [super init])) {
         _client = client;
+#ifndef PUBNUB_DISABLE_LOGGER
         [_client.logger enableLogLevel:PNAPICallLogLevel];
+#endif // PUBNUB_DISABLE_LOGGER
         _channelsSet = [NSMutableSet new];
         _channelGroupsSet = [NSMutableSet new];
         _presenceChannelsSet = [NSMutableSet new];
