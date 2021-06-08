@@ -136,6 +136,26 @@
     [self verifyEnabledForPushNotificationsChannels:channels];
 }
 
+- (void)testItShouldAddPushNotificationsAndNotCrashWhenCompletionBlockIsNil {
+    NSArray<NSString *> *channels = [self channelsWithNames:@[@"test-channel1", @"test-channel2"]];
+    
+    [self disableAllPushNotificationsOnDevice];
+    
+    
+    [self waitToNotCompleteIn:self.falseTestCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        @try {
+            [self.client addPushNotificationsOnChannels:channels
+                                    withDevicePushToken:self.devicePushTokenData
+                                          andCompletion:nil];
+        } @catch (NSException *exception) {
+            handler();
+        }
+    }];
+    
+    
+    [self verifyEnabledForPushNotificationsChannels:channels];
+}
+
 - (void)testItShouldAddPushNotificationsWithDefaultToAPNSPushType {
     NSArray<NSString *> *channels = [self channelsWithNames:@[@"test-channel1", @"test-channel2"]];
     
@@ -165,12 +185,12 @@
         [self.client addPushNotificationsOnChannels:channels withDevicePushToken:self.devicePushTokenString
                                            pushType:self.pushType
                                       andCompletion:^(PNAcknowledgmentStatus *status) {
-            
+
             NSString *url = status.clientRequest.URL.absoluteString;
             XCTAssertFalse(status.isError);
             XCTAssertNotNil(url);
             XCTAssertNotEqual([url rangeOfString:@"type=gcm"].location, NSNotFound);
-            
+
             handler();
         }];
     }];
@@ -509,6 +529,29 @@
             
             handler();
         }];
+    }];
+    
+    
+    [self verifyEnabledForPushNotificationsChannels:@[channels.lastObject]];
+}
+
+- (void)testItShouldRemovePushNotificationsAndNotCrashWhenCompletionBlockIsNil {
+    NSArray<NSString *> *channels = [self channelsWithNames:@[@"test-channel1", @"test-channel2"]];
+    
+    [self disableAllPushNotificationsOnDevice];
+    [self enabledPushNotificationsForChannels:channels];
+    
+    [self verifyEnabledForPushNotificationsChannels:channels];
+    
+    
+    [self waitToNotCompleteIn:self.falseTestCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        @try {
+            [self.client removePushNotificationsFromChannels:@[channels.firstObject]
+                                         withDevicePushToken:self.devicePushTokenData
+                                               andCompletion:nil];
+        } @catch (NSException *exception) {
+            handler();
+        }
     }];
     
     
@@ -914,6 +957,28 @@
             
             handler();
         }];
+    }];
+    
+    
+    [self verifyEnabledForPushNotificationsChannels:@[]];
+}
+
+- (void)testItShouldRemoveAllPushNotificationsAndNotCrashWhenCompletionBlockIsNil {
+    NSArray<NSString *> *channels = [self channelsWithNames:@[@"test-channel1", @"test-channel2"]];
+    
+    [self disableAllPushNotificationsOnDevice];
+    [self enabledPushNotificationsForChannels:channels];
+    
+    [self verifyEnabledForPushNotificationsChannels:channels];
+    
+    
+    [self waitToNotCompleteIn:self.falseTestCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        @try {
+            [self.client removeAllPushNotificationsFromDeviceWithPushToken:self.devicePushTokenData
+                                                             andCompletion:nil];
+        } @catch (NSException *exception) {
+            handler();
+        }
     }];
     
     

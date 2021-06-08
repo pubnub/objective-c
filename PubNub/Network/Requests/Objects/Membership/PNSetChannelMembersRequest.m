@@ -32,7 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @return Initialized and ready to use \c set \c channel's members request.
  */
-- (instancetype)initWithChannel:(NSString *)channel uuids:(NSArray<NSString *> *)uuids;
+- (instancetype)initWithChannel:(NSString *)channel uuids:(NSArray<NSDictionary *> *)uuids;
 
 #pragma mark -
 

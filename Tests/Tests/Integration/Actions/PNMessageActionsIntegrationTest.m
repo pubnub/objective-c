@@ -77,6 +77,37 @@
     [self deleteHistoryForChannel:channel usingClient:nil];
 }
 
+- (void)testItShouldAddActionAndNotCrashWhenCompletionBlockIsNil {
+    NSString *expectedValue = [self randomizedValuesWithValues:@[@"test-value"]].firstObject;
+    NSString *channel = [self channelWithName:@"test-channel"];
+    NSUInteger expectedMessagesCount = 1;
+    NSString *expectedType = @"custom";
+    
+    NSArray<NSDictionary *> *publishedMessages = [self publishMessages:expectedMessagesCount
+                                                             toChannel:channel
+                                                           usingClient:nil];
+    NSArray<NSNumber *> *timetokens = [publishedMessages valueForKey:@"timetoken"];
+    
+    
+    [self waitToNotCompleteIn:self.falseTestCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        @try {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+            self.client.addMessageAction()
+                .channel(channel)
+                .messageTimetoken(timetokens.firstObject)
+                .type(expectedType)
+                .value(expectedValue)
+                .performWithCompletion(nil);
+#pragma clang diagnostic pop
+        } @catch (NSException *exception) {
+            handler();
+        }
+    }];
+    
+    [self deleteHistoryForChannel:channel usingClient:nil];
+}
+
 - (void)testItShouldAddActionAndTriggerAddedEvent {
     NSString *expectedValue = [self randomizedValuesWithValues:@[@"test-value"]].firstObject;
     NSString *channel = [self channelWithName:@"test-channel"];
@@ -319,6 +350,44 @@
                 
                 handler();
             });
+    }];
+    
+    
+    [self verifyMessageActionsCountInChannel:channel shouldEqualTo:0 usingClient:nil];
+    
+    [self deleteHistoryForChannel:channel usingClient:nil];
+}
+
+- (void)testItShouldRemoveActionAndNotCrashWhenCompletionBlockIsNil {
+    NSString *channel = [self channelWithName:@"test-channel"];
+    NSUInteger expectedMessagesCount = 1;
+    NSUInteger expectedActionsCount = 1;
+    
+    NSArray<NSDictionary *> *publishedMessages = [self publishMessages:expectedMessagesCount
+                                                             toChannel:channel
+                                                           usingClient:nil];
+    NSArray<NSNumber *> *timetokens = [publishedMessages valueForKey:@"timetoken"];
+    NSArray<PNMessageAction *> *actions = [self addActions:expectedActionsCount
+                                                toMessages:timetokens
+                                                 inChannel:channel
+                                               usingClient:nil];
+    
+    [self verifyMessageActionsCountInChannel:channel shouldEqualTo:actions.count usingClient:nil];
+    
+    
+    [self waitToNotCompleteIn:self.falseTestCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        @try {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+            self.client.removeMessageAction()
+                .channel(channel)
+                .messageTimetoken(timetokens.firstObject)
+                .actionTimetoken(actions.firstObject.actionTimetoken)
+                .performWithCompletion(nil);
+#pragma clang diagnostic pop
+        } @catch (NSException *exception) {
+            handler();
+        }
     }];
     
     

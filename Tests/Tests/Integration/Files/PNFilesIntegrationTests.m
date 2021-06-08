@@ -115,6 +115,25 @@ NS_ASSUME_NONNULL_END
     [self waitTask:@"waitForDistribution" completionFor:1.f];
 }
 
+- (void)testItShouldSendFileFromDataAndNotCrashWhenCompletionBlockIsNil {
+    NSString *fileName = [[NSUUID UUID].UUIDString stringByAppendingPathExtension:@"txt"];
+    NSData *data = [[NSUUID UUID].UUIDString dataUsingEncoding:NSUTF8StringEncoding];
+    
+    
+    [self waitToNotCompleteIn:5.f codeBlock:^(dispatch_block_t handler) {
+        @try {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+            self.client.files().sendFile(self.channel, fileName).data(data).performWithCompletion(nil);
+#pragma clang diagnostic pop
+        } @catch (NSException *exception) {
+            handler();
+        }
+    }];
+    
+    [self waitTask:@"waitForDistribution" completionFor:1.f];
+}
+
 - (void)testItShouldSendFileFromDataAndReceiveFromHistory {
     NSString *fileName = [[NSUUID UUID].UUIDString stringByAppendingPathExtension:@"txt"];
     NSData *data = [[NSUUID UUID].UUIDString dataUsingEncoding:NSUTF8StringEncoding];
@@ -259,10 +278,14 @@ NS_ASSUME_NONNULL_END
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         client2.files().downloadFile(self.channel, uploadedFileIdentifier, uploadedFileName)
             .performWithCompletion(^(PNDownloadFileResult *result, PNErrorStatus *status) {
-                NSData *downloadedFile = [NSData dataWithContentsOfURL:result.data.location];
+                NSError *downloadError = nil;
+                NSData *downloadedFile = [NSData dataWithContentsOfURL:result.data.location
+                                                               options:NSDataReadingUncached
+                                                                 error:&downloadError];
                 XCTAssertFalse(status.isError);
                 XCTAssertNotNil(result.data.location);
                 
+                XCTAssertNil(downloadError);
                 XCTAssertNotNil(downloadedFile);
                 XCTAssertEqualObjects(downloadedFile, data);
                 
@@ -368,13 +391,17 @@ NS_ASSUME_NONNULL_END
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         self.client.files().downloadFile(self.channel, uploadedFiles.firstObject[@"id"], uploadedFiles.firstObject[@"name"])
             .performWithCompletion(^(PNDownloadFileResult *result, PNErrorStatus *status) {
-                NSData *downloadedFile = [NSData dataWithContentsOfURL:result.data.location];
+                NSError *downloadError = nil;
+                NSData *downloadedFile = [NSData dataWithContentsOfURL:result.data.location
+                                                               options:NSDataReadingUncached
+                                                                 error:&downloadError];
                 NSURLRequest *request = [result valueForKey:@"clientRequest"];
                 XCTAssertFalse(status.isError);
                 XCTAssertNotNil(request);
                 XCTAssertNotNil(result.data.location);
                 XCTAssertEqual(result.operation, PNDownloadFileOperation);
                 
+                XCTAssertNil(downloadError);
                 XCTAssertNotNil(downloadedFile);
                 XCTAssertEqualObjects(downloadedFile, uploadedFiles.firstObject[@"data"]);
                 XCTAssertNotEqual([request.URL.absoluteString rangeOfString:expectedUUID].location,
@@ -396,10 +423,14 @@ NS_ASSUME_NONNULL_END
         [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
             self.client.files().downloadFile(self.channel, fileData[@"id"], fileData[@"name"])
                 .performWithCompletion(^(PNDownloadFileResult *result, PNErrorStatus *status) {
-                    NSData *downloadedFile = [NSData dataWithContentsOfURL:result.data.location];
+                    NSError *downloadError = nil;
+                    NSData *downloadedFile = [NSData dataWithContentsOfURL:result.data.location
+                                                                   options:NSDataReadingUncached
+                                                                     error:&downloadError];
                     XCTAssertFalse(status.isError);
                     XCTAssertNotNil(result.data.location);
                     
+                    XCTAssertNil(downloadError);
                     XCTAssertNotNil(downloadedFile);
                     XCTAssertEqualObjects(downloadedFile, fileData[@"data"]);
                     
@@ -420,13 +451,17 @@ NS_ASSUME_NONNULL_END
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         self.client.files().downloadFile(self.channel, uploadedFiles.firstObject[@"id"], uploadedFiles.firstObject[@"name"])
             .performWithCompletion(^(PNDownloadFileResult *result, PNErrorStatus *status) {
-                NSData *downloadedFile = [NSData dataWithContentsOfURL:result.data.location];
+                NSError *downloadError = nil;
+                NSData *downloadedFile = [NSData dataWithContentsOfURL:result.data.location
+                                                               options:NSDataReadingUncached
+                                                                 error:&downloadError];
                 NSURLRequest *request = [result valueForKey:@"clientRequest"];
                 XCTAssertFalse(status.isError);
                 XCTAssertNotNil(request);
                 XCTAssertNotNil(result.data.location);
                 XCTAssertEqual(result.operation, PNDownloadFileOperation);
                 
+                XCTAssertNil(downloadError);
                 XCTAssertNotNil(downloadedFile);
                 XCTAssertEqualObjects(downloadedFile, uploadedFiles.firstObject[@"data"]);
                 XCTAssertNotEqual([request.URL.absoluteString rangeOfString:expectedAuth].location,
@@ -447,10 +482,14 @@ NS_ASSUME_NONNULL_END
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         self.client.files().downloadFile(self.channel, uploadedFiles.firstObject[@"id"], uploadedFiles.firstObject[@"name"])
             .performWithCompletion(^(PNDownloadFileResult *result, PNErrorStatus *status) {
-                NSData *downloadedFile = [NSData dataWithContentsOfURL:result.data.location];
+                NSError *downloadError = nil;
+                NSData *downloadedFile = [NSData dataWithContentsOfURL:result.data.location
+                                                               options:NSDataReadingUncached
+                                                                 error:&downloadError];
                 XCTAssertFalse(status.isError);
                 XCTAssertNotNil(result.data.location);
                 
+                XCTAssertNil(downloadError);
                 XCTAssertNotNil(downloadedFile);
                 XCTAssertNotEqualObjects(downloadedFile, uploadedFiles.firstObject[@"data"]);
                 
@@ -595,7 +634,7 @@ NS_ASSUME_NONNULL_END
 }
 
 
-#pragma mark - Tests :: Builder pattern-based list files
+#pragma mark - Tests :: Builder pattern-based delete files
 
 - (void)testItShouldDeleteFileAndReceiveStatusWithExpectedOperationAndCategory {
     NSArray<NSDictionary *> *uploadedFiles = [self uploadFiles:2 toChannel:self.channel usingClient:nil];
@@ -610,6 +649,26 @@ NS_ASSUME_NONNULL_END
 
                 handler();
             });
+    }];
+    
+    [self waitTask:@"waitForDistribution" completionFor:1.f];
+    [self verifyUploadedFilesCountInChannel:self.channel shouldEqualTo:1 usingClient:nil];
+}
+
+- (void)testItShouldDeleteFileAndNotCrashWhenCompletionBlockIsNil {
+    NSArray<NSDictionary *> *uploadedFiles = [self uploadFiles:2 toChannel:self.channel usingClient:nil];
+    
+    
+    [self waitToNotCompleteIn:5.f codeBlock:^(dispatch_block_t handler) {
+        @try {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+            self.client.files().deleteFile(self.channel, uploadedFiles.firstObject[@"id"], uploadedFiles.firstObject[@"name"])
+                .performWithCompletion(nil);
+#pragma clang diagnostic pop
+        } @catch (NSException *exception) {
+            handler();
+        }
     }];
     
     [self waitTask:@"waitForDistribution" completionFor:1.f];

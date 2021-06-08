@@ -395,9 +395,7 @@ NS_ASSUME_NONNULL_END
             };
         }
         
-        if (block) {
-            block(status);
-        }
+        [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
     }];
 }
 
@@ -430,9 +428,7 @@ NS_ASSUME_NONNULL_END
             };
         }
         
-        if (block) {
-            block(status);
-        }
+        [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
     }];
 }
 

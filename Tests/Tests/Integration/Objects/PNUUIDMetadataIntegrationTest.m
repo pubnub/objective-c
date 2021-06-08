@@ -72,6 +72,27 @@ NS_ASSUME_NONNULL_END
     [self removeUUIDsMetadata:@[identifier] usingClient:nil];
 }
 
+- (void)testItShouldSetUUIDMetadataAndNotCrashWhenCompletionBlockIsNil {
+    NSString *identifier = [self randomizedValuesWithValues:@[@"test-uuid"]].firstObject;
+    
+    
+    [self waitToNotCompleteIn:self.falseTestCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        @try {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+            self.client.objects().setUUIDMetadata()
+                .uuid(identifier)
+                .includeFields(PNUUIDCustomField)
+                .performWithCompletion(nil);
+#pragma clang diagnostic pop
+        } @catch (NSException *exception) {
+            handler();
+        }
+    }];
+    
+    [self removeUUIDsMetadata:@[identifier] usingClient:nil];
+}
+
 /**
  * @brief To test 'retry' functionality
  *  'ItShouldSetUUIDMetadataWhenAdditionalInformationIsSet.json' should
@@ -179,6 +200,29 @@ NS_ASSUME_NONNULL_END
     }];
 
 
+    [self verifyUUIDMetadataCountShouldEqualTo:(uuids.count - 1) usingClient:nil];
+
+    [self removeAllUUIDMetadataUsingClient:nil];
+}
+
+- (void)testItShouldRemoveUUIDMetadataAndNotCrashWhenCompletionBlockIsNil {
+    NSArray<PNUUIDMetadata *> *uuids = [self setUUIDMetadata:2 usingClient:nil];
+    
+    
+    [self waitToNotCompleteIn:self.falseTestCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        @try {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+            self.client.objects().removeUUIDMetadata()
+                .uuid(uuids.firstObject.uuid)
+                .performWithCompletion(nil);
+#pragma clang diagnostic pop
+        } @catch (NSException *exception) {
+            handler();
+        }
+    }];
+    
+    
     [self verifyUUIDMetadataCountShouldEqualTo:(uuids.count - 1) usingClient:nil];
 
     [self removeAllUUIDMetadataUsingClient:nil];

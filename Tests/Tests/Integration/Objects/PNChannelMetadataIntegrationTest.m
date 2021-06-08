@@ -67,6 +67,25 @@ NS_ASSUME_NONNULL_END
     [self removeChannelsMetadata:@[identifier] usingClient:nil];
 }
 
+- (void)testItShouldSetChannelMetadataAndNotCrashWhenCompletionBlockIsNil {
+    NSString *identifier = [self randomizedValuesWithValues:@[@"test-channel"]].firstObject;
+    
+    
+    [self waitToNotCompleteIn:self.falseTestCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        @try {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+            self.client.objects().setChannelMetadata(identifier)
+                .performWithCompletion(nil);
+#pragma clang diagnostic pop
+        } @catch (NSException *exception) {
+            handler();
+        }
+    }];
+    
+    [self removeChannelsMetadata:@[identifier] usingClient:nil];
+}
+
 /**
  * @brief To test 'retry' functionality
  *  'ItShouldSetChannelMetadataWhenAdditionalInformationIsSet.json' should
@@ -161,6 +180,28 @@ NS_ASSUME_NONNULL_END
     }];
 
 
+    [self verifyChannelsMetadataCountShouldEqualTo:(channels.count - 1) usingClient:nil];
+
+    [self removeChannelsMetadataUsingClient:nil];
+}
+
+- (void)testItShouldRemoveChannelMetadataAndNotCrashWhenCompletionBlockIsNil {
+    NSArray<PNChannelMetadata *> *channels = [self setChannelsMetadata:2 usingClient:nil];
+    
+    
+    [self waitToNotCompleteIn:self.falseTestCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        @try {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+            self.client.objects().removeChannelMetadata(channels.firstObject.channel)
+                .performWithCompletion(nil);
+#pragma clang diagnostic pop
+        } @catch (NSException *exception) {
+            handler();
+        }
+    }];
+    
+    
     [self verifyChannelsMetadataCountShouldEqualTo:(channels.count - 1) usingClient:nil];
 
     [self removeChannelsMetadataUsingClient:nil];

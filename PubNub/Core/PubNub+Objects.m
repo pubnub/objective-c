@@ -516,7 +516,7 @@ NS_ASSUME_NONNULL_END
 #pragma mark - UUID metadata object
 
 - (void)setUUIDMetadataWithRequest:(PNSetUUIDMetadataRequest *)request
-                        completion:(nullable PNSetUUIDMetadataCompletionBlock)block {
+                        completion:(PNSetUUIDMetadataCompletionBlock)block {
 
     request.identifier = request.identifier.length ? request.identifier : self.configuration.uuid;
     __weak __typeof(self) weakSelf = self;
@@ -528,14 +528,12 @@ NS_ASSUME_NONNULL_END
             };
         }
         
-        if (block) {
-            block(status);
-        }
+        [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
     }];
 }
 
 - (void)removeUUIDMetadataWithRequest:(PNRemoveUUIDMetadataRequest *)request
-                           completion:(nullable PNRemoveUUIDMetadataCompletionBlock)block {
+                           completion:(PNRemoveUUIDMetadataCompletionBlock)block {
 
     request.identifier = request.identifier.length ? request.identifier : self.configuration.uuid;
     __weak __typeof(self) weakSelf = self;
@@ -547,9 +545,7 @@ NS_ASSUME_NONNULL_END
             };
         }
         
-        if (block) {
-            block(status);
-        }
+        [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
     }];
 }
 
@@ -567,8 +563,8 @@ NS_ASSUME_NONNULL_END
                 [weakSelf uuidMetadataWithRequest:request completion:block];
             };
         }
-
-        block(result, status);
+        
+        [weakSelf callBlock:block status:NO withResult:result andStatus:status];
     }];
 }
 
@@ -586,7 +582,7 @@ NS_ASSUME_NONNULL_END
             };
         }
         
-        block(result, status);
+        [weakSelf callBlock:block status:NO withResult:result andStatus:status];
     }];
 }
 
@@ -604,9 +600,7 @@ NS_ASSUME_NONNULL_END
             };
         }
         
-        if (block) {
-            block(status);
-        }
+        [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
     }];
 }
 
@@ -622,9 +616,7 @@ NS_ASSUME_NONNULL_END
             };
         }
         
-        if (block) {
-            block(status);
-        }
+        [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
     }];
 }
 
@@ -642,7 +634,7 @@ NS_ASSUME_NONNULL_END
             };
         }
         
-        block(result, status);
+        [weakSelf callBlock:block status:NO withResult:result andStatus:status];
     }];
 }
 
@@ -660,7 +652,7 @@ NS_ASSUME_NONNULL_END
             };
         }
         
-        block(result, status);
+        [weakSelf callBlock:block status:NO withResult:result andStatus:status];
     }];
 }
 
@@ -679,10 +671,8 @@ NS_ASSUME_NONNULL_END
                 [weakSelf setMembershipsWithRequest:request completion:block];
             };
         }
-
-        if (block) {
-            block(status);
-        }
+        
+        [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
     }];
 }
 
@@ -698,10 +688,8 @@ NS_ASSUME_NONNULL_END
                 [weakSelf removeMembershipsWithRequest:request completion:block];
             };
         }
-
-        if (block) {
-            block(status);
-        }
+        
+        [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
     }];
 }
 
@@ -718,9 +706,7 @@ NS_ASSUME_NONNULL_END
             };
         }
         
-        if (block) {
-            block(status);
-        }
+        [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
     }];
 }
 
@@ -739,7 +725,7 @@ NS_ASSUME_NONNULL_END
             };
         }
         
-        block(result, status);
+        [weakSelf callBlock:block status:NO withResult:result andStatus:status];
     }];
 }
 
@@ -754,10 +740,8 @@ NS_ASSUME_NONNULL_END
                 [weakSelf setChannelMembersWithRequest:request completion:block];
             };
         }
-
-        if (block) {
-            block(status);
-        }
+        
+        [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
     }];
 }
 
@@ -772,10 +756,8 @@ NS_ASSUME_NONNULL_END
                 [weakSelf removeChannelMembersWithRequest:request completion:block];
             };
         }
-
-        if (block) {
-            block(status);
-        }
+        
+        [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
     }];
 }
 
@@ -791,9 +773,7 @@ NS_ASSUME_NONNULL_END
             };
         }
         
-        if (block) {
-            block(status);
-        }
+        [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
     }];
 }
 
@@ -811,7 +791,7 @@ NS_ASSUME_NONNULL_END
             };
         }
         
-        block(result, status);
+        [weakSelf callBlock:block status:NO withResult:result andStatus:status];
     }];
 }
 

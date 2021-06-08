@@ -863,6 +863,35 @@
     [self deleteHistoryForChannel:channel usingClient:nil];
 }
 
+- (void)testItShouldDeleteMessagesForChannelAndNotCrashWhenCompletionBlockIsNil {
+    NSString *channel = [self channelWithName:@"test-channel"];
+    NSUInteger expectedMessagesCount = 10;
+    
+    [self publishMessages:expectedMessagesCount toChannel:channel usingClient:nil];
+    
+    
+    [self waitToNotCompleteIn:self.falseTestCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        @try {
+            [self.client deleteMessagesFromChannel:channel start:nil end:nil withCompletion:nil];
+        } @catch (NSException *exception) {
+            handler();
+        }
+    }];
+    
+    
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        [self.client historyForChannel:channel withCompletion:^(PNHistoryResult *result, PNErrorStatus *status) {
+            XCTAssertNil(status);
+            XCTAssertEqualObjects(result.data.messages, @[]);
+            XCTAssertEqual(result.operation, PNHistoryOperation);
+            
+            handler();
+        }];
+    }];
+    
+    [self deleteHistoryForChannel:channel usingClient:nil];
+}
+
 - (void)testItShouldDeleteMessagesForChannelExcludingSpecifiedTimetokenAndOlderWhenStartIsSet {
     NSString *channel = [self channelWithName:@"test-channel"];
     NSUInteger expectedMessagesCount = 10;

@@ -65,6 +65,23 @@ NS_ASSUME_NONNULL_END
     }];
 }
 
+- (void)testItShouldSetPresenceStateForChannelAndNotCrashWhenCompletionBlockIsNil {
+    NSString *channel = [self channelWithName:@"test-channel1"];
+    NSString *uuid = self.client.currentConfiguration.uuid;
+    NSDictionary *state = @{
+        @"channel1-state": [self randomizedValuesWithValues:@[@"channel-1-random-value"]]
+    };
+    
+    
+    [self waitToNotCompleteIn:self.falseTestCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        @try {
+            [self.client setState:state forUUID:uuid onChannel:channel withCompletion:nil];
+        } @catch (NSException *exception) {
+            handler();
+        }
+    }];
+}
+
 - (void)testItShouldSetPresenceStateForChannelAndTriggerUpdateEventToTargetChannel {
     NSString *channel = [self channelWithName:@"test-channel1"];
     PubNub *client1 = [self createPubNubForUser:@"serhii"];
@@ -228,6 +245,28 @@ NS_ASSUME_NONNULL_END
     }];
     
     [self removeChannelGroup:channelGroup usingClient:nil];
+}
+
+- (void)testItShouldSetPresenceStateForChannelGroupAndNotCrashWhenCompletionBlockIsNil {
+    NSArray<NSString *> *channels = [self channelsWithNames:@[@"test-channel1", @"test-channel2"]];
+    NSString *channelGroup = [self channelGroupWithName:@"test-channel-group"];
+    NSString *uuid = self.client.currentConfiguration.uuid;
+    NSDictionary *state = @{
+        @"user-state": [self randomizedValuesWithValues:@[@"users-random-value"]]
+    };
+    
+    
+    [self addChannels:channels toChannelGroup:channelGroup usingClient:nil];
+    [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
+    
+    
+    [self waitToNotCompleteIn:self.falseTestCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        @try {
+            [self.client setState:state forUUID:uuid onChannelGroup:channelGroup withCompletion:nil];
+        } @catch (NSException *exception) {
+            handler();
+        }
+    }];
 }
 
 - (void)testItShouldNotSetPresenceStateForChannelGroupAndReceiveBadRequestStatusWhenChannelGroupIsNil {

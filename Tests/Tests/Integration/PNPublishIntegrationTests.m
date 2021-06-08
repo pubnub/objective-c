@@ -173,6 +173,23 @@
     }];
 }
 
+- (void)testItShouldPublishAndNotCrashWhenCompletionBlockIsNil {
+    NSString *channel = [self channelWithName:@"test-channel"];
+    PubNub *client = [self createPubNubForUser:@"serhii"];
+    NSString *expectedMessage = @"Hello there";
+    
+    
+    XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
+    
+    [self waitToNotCompleteIn:self.falseTestCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        @try {
+            [client publish:expectedMessage toChannel:channel withCompletion:nil];
+        } @catch (NSException *exception) {
+            handler();
+        }
+    }];
+}
+
 - (void)testItShouldNotPublishAndReceiveBadRequestStatusWhenMessageIsNil {
     NSString *channel = [self channelWithName:@"test-channel"];
     PubNub *client = [self createPubNubForUser:@"serhii"];

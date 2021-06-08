@@ -102,10 +102,8 @@
                 [weakSelf addMessageActionWithRequest:request completion:block];
             };
         }
-
-        if (block) {
-            block(status);
-        }
+        
+        [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
     }];
 }
 
@@ -120,10 +118,8 @@
                 [weakSelf removeMessageActionWithRequest:request completion:block];
             };
         }
-
-        if (block) {
-            block(status);
-        }
+        
+        [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
     }];
 }
 
@@ -141,7 +137,7 @@
             };
         }
 
-        block(result, status);
+        [weakSelf callBlock:block status:NO withResult:result andStatus:status];
     }];
 }
 

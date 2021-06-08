@@ -1,3 +1,16 @@
+## [v4.16.2](https://github.com/pubnub/objective-c/releases/tag/v4.16.2)
+June 9 2021
+
+[Full Changelog](https://github.com/pubnub/objective-c/compare/v4.16.1...v4.16.2)
+
+#### Modified
+- Add download error checks in Files API integration tests to have ability investigate random test failure with data download on Travis. 
+- Add `arm64` architecture to pre-compiled PubNub SDK Framework bundles for their usage on Apple M1 enabled computers. 
+
+#### Fixed
+- Fix issue because of which null-able completion block wasn't properly verified and caused application crash. 
+- Fix compiler warnings on type mismatch. 
+
 ## [v4.16.1](https://github.com/pubnub/objective-c/releases/tag/v4.16.1)
 March 16 2021
 

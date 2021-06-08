@@ -313,7 +313,7 @@ NS_ASSUME_NONNULL_END
             [status updateData:serviceData];
         }
         
-        block(result, status);
+        [weakSelf callBlock:block status:NO withResult:result andStatus:status];
     }];
 }
 
@@ -401,7 +401,13 @@ NS_ASSUME_NONNULL_END
             result.clientRequest = downloadRequest;
         }
         
-        block(result, errorStatus);
+        if (!temporary) {
+            [weakSelf callBlock:block status:NO withResult:result andStatus:errorStatus];
+        } else if (block) {
+            // Temporary files removed after File manager completion block exit and
+            // completion block can't be called asynchronously.
+            block(result, errorStatus);
+        }
     }];
 }
 
@@ -420,7 +426,7 @@ NS_ASSUME_NONNULL_END
             };
         }
         
-        block(status);
+        [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
     }];
 }
 
@@ -445,7 +451,8 @@ NS_ASSUME_NONNULL_END
         if (uploadError) {
             [self handleUploadFileErrorWithFileIdentifier:status.data.fileIdentifier
                                                      name:status.data.filename
-                                                    error:uploadError completion:block];
+                                                    error:uploadError
+                                               completion:block];
         } else {
             [self handleUploadFileSuccessWithFileIdentifier:status.data.fileIdentifier
                                                    fileName:status.data.filename
@@ -478,7 +485,7 @@ NS_ASSUME_NONNULL_END
     [self appendClientInformation:sendStatus];
     sendStatus.error = YES;
     
-    block(sendStatus);
+    [self callBlock:block status:YES withResult:nil andStatus:sendStatus];
 }
 
 - (void)handleUploadFileSuccessWithFileIdentifier:(NSString *)fileIdentifier
@@ -488,6 +495,7 @@ NS_ASSUME_NONNULL_END
 
     NSUInteger fileMessagePublishRetryLimit = self.configuration.fileMessagePublishRetryLimit;
     PNPublishFileMessageRequest *request = nil;
+    __weak __typeof(self) weakSelf = self;
     
     request = [PNPublishFileMessageRequest requestWithChannel:sendFileRequest.channel
                                                fileIdentifier:fileIdentifier
@@ -527,11 +535,11 @@ NS_ASSUME_NONNULL_END
                                                   processingError:nil];
             sendFileStatus.data.fileUploaded = YES;
 
-            [self appendClientInformation:sendFileStatus];
+            [weakSelf appendClientInformation:sendFileStatus];
             sendFileStatus.error = status.isError;
             sendFileStatus.retryBlock = ^{ };
             
-            block(sendFileStatus);
+            [weakSelf callBlock:block status:YES withResult:nil andStatus:sendFileStatus];
         } else {
             dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
             int64_t delayInNanoseconds = (int64_t)(1 * NSEC_PER_SEC);
@@ -568,10 +576,11 @@ NS_ASSUME_NONNULL_END
     if (sendStatus.category == PNUnknownCategory) {
         [sendStatus setCategory:PNSendFileErrorCategory];
     }
+    
     [self appendClientInformation:sendStatus];
     sendStatus.error = YES;
     
-    block(sendStatus);
+    [self callBlock:block status:YES withResult:nil andStatus:sendStatus];
 }
 
 #pragma mark -

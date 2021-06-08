@@ -112,6 +112,42 @@ NS_ASSUME_NONNULL_END
     [self removeChannelsMetadataUsingClient:nil];
 }
 
+- (void)testItShouldSetMembershipAndNotCrashWhenCompletionBlockIsNil {
+    NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:2 usingClient:nil];
+    NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:nil];
+    NSArray<NSDictionary *> *channels = @[
+        @{
+            @"channel": channelsMetadata[0].channel,
+            @"custom": @{ @"uuid-membership-custom": [@[channelsMetadata[0].channel, @"custom", @"data", @"1"] componentsJoinedByString:@"-"] }
+        },
+        @{
+            @"channel": channelsMetadata[1].channel,
+            @"custom": @{ @"uuid-membership-custom": [@[channelsMetadata[1].channel, @"custom", @"data", @"2"] componentsJoinedByString:@"-"] }
+        }
+    ];
+    __block NSArray *memberships = nil;
+    
+    
+    [self waitToNotCompleteIn:self.falseTestCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        @try {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+            self.client.objects().setMemberships()
+                .uuid(uuidsMetadata.firstObject.uuid)
+                .includeFields(PNMembershipCustomField)
+                .channels(channels)
+                .performWithCompletion(nil);
+#pragma clang diagnostic pop
+        } @catch (NSException *exception) {
+            handler();
+        }
+    }];
+    
+    [self removeUUID:uuidsMetadata.firstObject.uuid membershipObjects:memberships usingClient:nil];
+    [self removeAllUUIDMetadataUsingClient:nil];
+    [self removeChannelsMetadataUsingClient:nil];
+}
+
 - (void)testItShouldSetMembershipAndReturnFilteredMembershipsInformationWhenFilterIsSet {
     NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:2 usingClient:nil];
     NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:nil];
@@ -433,6 +469,42 @@ NS_ASSUME_NONNULL_END
     [self removeChannelsMetadataUsingClient:nil];
 }
 
+- (void)testItShouldSetMembershipUsingManageAndNotCrashWhenCompletionBlockIsNil {
+    NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:2 usingClient:nil];
+    NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:nil];
+    NSArray<NSDictionary *> *channels = @[
+        @{
+            @"channel": channelsMetadata[0].channel,
+            @"custom": @{ @"uuid-membership-custom": [@[channelsMetadata[0].channel, @"custom", @"data", @"1"] componentsJoinedByString:@"-"] }
+        },
+        @{
+            @"channel": channelsMetadata[1].channel,
+            @"custom": @{ @"uuid-membership-custom": [@[channelsMetadata[1].channel, @"custom", @"data", @"2"] componentsJoinedByString:@"-"] }
+        }
+    ];
+    __block NSArray *memberships = nil;
+    
+    
+    [self waitToNotCompleteIn:self.falseTestCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        @try {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+            self.client.objects().manageMemberships()
+                .uuid(uuidsMetadata.firstObject.uuid)
+                .includeFields(PNMembershipCustomField)
+                .set(channels)
+                .performWithCompletion(nil);
+#pragma clang diagnostic pop
+        } @catch (NSException *exception) {
+            handler();
+        }
+    }];
+    
+    [self removeUUID:uuidsMetadata.firstObject.uuid membershipObjects:memberships usingClient:nil];
+    [self removeAllUUIDMetadataUsingClient:nil];
+    [self removeChannelsMetadataUsingClient:nil];
+}
+
 - (void)testItShouldSetMembershipUsingManageAndReturnFilteredMembershipsInformationWhenFilterIsSet {
     NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:2 usingClient:nil];
     NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:nil];
@@ -741,6 +813,36 @@ NS_ASSUME_NONNULL_END
     [self removeChannelsMetadataUsingClient:nil];
 }
 
+- (void)testItShouldRemoveMembershipAndNotCrashWhenCompletionBlockIsNil {
+    NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:2 usingClient:nil];
+    NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:nil];
+
+    [self createUUIDsMembership:[uuidsMetadata valueForKey:@"uuid"]
+                     inChannels:[channelsMetadata valueForKey:@"channel"]
+                    withCustoms:nil
+                    usingClient:nil];
+    
+    
+    [self waitToNotCompleteIn:self.falseTestCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        @try {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+            self.client.objects().removeMemberships()
+                .uuid(uuidsMetadata.firstObject.uuid)
+                .includeFields(PNMembershipCustomField)
+                .channels(@[channelsMetadata.firstObject.channel])
+                .performWithCompletion(nil);
+#pragma clang diagnostic pop
+        } @catch (NSException *exception) {
+            handler();
+        }
+    }];
+    
+    [self removeUUID:uuidsMetadata.firstObject.uuid membershipObjectsUsingClient:nil];
+    [self removeAllUUIDMetadataUsingClient:nil];
+    [self removeChannelsMetadataUsingClient:nil];
+}
+
 - (void)testItShouldRemoveMembershipAndReturnFilteredMembershipsInformationWhenFilterIsSet {
     NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:2 usingClient:nil];
     NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:nil];
@@ -1024,6 +1126,36 @@ NS_ASSUME_NONNULL_END
             });
     }];
 
+    [self removeUUID:uuidsMetadata.firstObject.uuid membershipObjectsUsingClient:nil];
+    [self removeAllUUIDMetadataUsingClient:nil];
+    [self removeChannelsMetadataUsingClient:nil];
+}
+
+- (void)testItShouldRemoveMembershipUsingManageAndNotCrashWhenCompletionBlockIsNil {
+    NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:2 usingClient:nil];
+    NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:nil];
+
+    [self createUUIDsMembership:[uuidsMetadata valueForKey:@"uuid"]
+                     inChannels:[channelsMetadata valueForKey:@"channel"]
+                    withCustoms:nil
+                    usingClient:nil];
+    
+    
+    [self waitToNotCompleteIn:self.falseTestCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        @try {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+            self.client.objects().manageMemberships()
+                .uuid(uuidsMetadata.firstObject.uuid)
+                .includeFields(PNMembershipCustomField)
+                .remove(@[channelsMetadata.firstObject.channel])
+                .performWithCompletion(nil);
+#pragma clang diagnostic pop
+        } @catch (NSException *exception) {
+            handler();
+        }
+    }];
+    
     [self removeUUID:uuidsMetadata.firstObject.uuid membershipObjectsUsingClient:nil];
     [self removeAllUUIDMetadataUsingClient:nil];
     [self removeChannelsMetadataUsingClient:nil];

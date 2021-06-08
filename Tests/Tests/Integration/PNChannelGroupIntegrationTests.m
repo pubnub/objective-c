@@ -90,6 +90,19 @@
     [self verifyChannels:self.channels inChannelGroup:self.channelGroup shouldEqual:YES usingClient:nil];
 }
 
+- (void)testItShouldAddChannelsToChannelGroupAndNotCrashWhenCompletionBlockIsNil {
+    [self waitToNotCompleteIn:self.falseTestCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        @try {
+            [self.client addChannels:self.channels toGroup:self.channelGroup withCompletion:nil];
+        } @catch (NSException *exception) {
+            handler();
+        }
+    }];
+    
+    
+    [self verifyChannels:self.channels inChannelGroup:self.channelGroup shouldEqual:YES usingClient:nil];
+}
+
 - (void)testItShouldAddChannelsToExistingChannelGroup {
     NSArray<NSString *> *channels = [self channelsWithNames:@[@"test-channel3", @"test-channel4"]];
     NSMutableArray *expectedChannels = [self.channels mutableCopy];
@@ -183,6 +196,23 @@
              usingClient:nil];
 }
 
+- (void)testItShouldRemoveChannelsFromChannelGroupAndNotCrashWhenCompletionBlockIsNil {
+    [self addChannels:self.channels toChannelGroup:self.channelGroup usingClient:nil];
+    
+    
+    [self waitToNotCompleteIn:self.falseTestCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        @try {
+            [self.client removeChannels:@[self.channels.firstObject] fromGroup:self.channelGroup withCompletion:nil];
+        } @catch (NSException *exception) {
+            handler();
+        }
+    }];
+    
+    
+    [self verifyChannels:@[self.channels.lastObject] inChannelGroup:self.channelGroup shouldEqual:YES
+             usingClient:nil];
+}
+
 - (void)testItShouldNotRemoveChannelsFromGroupAndReceiveBadRequestStatusWhenChannelGroupIsNil {
     NSString *channelGroup = nil;
     __block BOOL retried = NO;
@@ -254,6 +284,22 @@
             
             handler();
         }];
+    }];
+    
+    
+    [self verifyChannels:@[] inChannelGroup:self.channelGroup shouldEqual:YES usingClient:nil];
+}
+
+- (void)testItShouldRemoveAllChannelsFromChannelGroupAndNotCrashWhenCompletionBlockIsNil {
+    [self addChannels:self.channels toChannelGroup:self.channelGroup usingClient:nil];
+    
+    
+    [self waitToNotCompleteIn:self.falseTestCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        @try {
+            [self.client removeChannelsFromGroup:self.channelGroup withCompletion:nil];
+        } @catch (NSException *exception) {
+            handler();
+        }
     }];
     
     

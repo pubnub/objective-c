@@ -306,8 +306,8 @@ NS_ASSUME_NONNULL_END
                 [weakSelf addPushNotificationsWithRequest:request completion:block];
             };
         }
-
-        block(status);
+        
+        [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
     }];
 }
 
@@ -373,8 +373,8 @@ NS_ASSUME_NONNULL_END
                 [weakSelf removePushNotificationsWithRequest:request completion:block];
             };
         }
-
-        block(status);
+        
+        [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
     }];
 }
 
@@ -433,8 +433,8 @@ NS_ASSUME_NONNULL_END
                 [weakSelf removeAllPushNotificationsWithRequest:request completion:block];
             };
         }
-
-        block(status);
+        
+        [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
     }];
 }
 
@@ -498,8 +498,8 @@ NS_ASSUME_NONNULL_END
                 [weakSelf pushNotificationEnabledChannelsWithRequest:request completion:block];
             };
         }
-
-        block(result, status);
+        
+        [weakSelf callBlock:block status:NO withResult:(PNResult *)result andStatus:status];
     }];
 }
 
