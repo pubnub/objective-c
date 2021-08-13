@@ -28,7 +28,7 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}
   publish:
     name: Publish package
-    runs-on: check-release
+    runs-on: macos-11
     needs: check-release
     if: ${{ needs.check-release.outputs.release == 'true' }}
     steps:
