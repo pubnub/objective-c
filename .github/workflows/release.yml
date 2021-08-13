@@ -47,6 +47,7 @@ jobs:
       - name: Publish to CocoaPods Trunk
         uses: ./.github/.release/actions/actions/services/cocoapods
         with:
+          token: ${{ secrets.GH_TOKEN }}
           cocoapods-token: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
       - name: Create Release
         uses: ./.github/.release/actions/actions/services/github-release
