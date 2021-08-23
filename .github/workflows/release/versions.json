@@ -1,0 +1,35 @@
+{
+  ".pubnub.yml": [
+    { "pattern": "^version: \"(.+)\"$", "cleared": true },
+    { "pattern": "\/download\/v([0-9]+\\.[0-9]+\\.[0-9]+(\\.[0-9]+)?)\/", "cleared": true }
+  ],
+  "PubNub.podspec": [
+    { "pattern": "spec.version.+'(.+)'", "cleared": true }
+  ],
+  "PubNub/Misc/PNConstants.h": [
+    { "pattern": "kPNLibraryVersion.+@\"(.+)\";$", "cleared": true }
+  ],
+  "README.md": [
+    { "pattern": "^# PubNub (.+) for iOS", "cleared": true },
+    { "pattern": "^\\s{2,}compile group.+pubnub-gson.+version:\\s'(.+)'$", "cleared": false }
+  ],
+  "VERSION": [
+    { "pattern": "(.+)", "cleared": true }
+  ],
+  "Framework/PubNub/Info.plist": [
+    { "pattern": "<string>([0-9]+\\.[0-9]+\\.[0-9]+(\\.[0-9]+)?)</string>", "cleared": true }
+  ],
+  "Framework/PubNub/PubNub-iOS-Info.plist": [
+    { "pattern": "<string>([0-9]+\\.[0-9]+\\.[0-9]+(\\.[0-9]+)?)</string>", "cleared": true }
+  ],
+  "Framework/PubNub/PubNub-tvOS-Info.plist": [
+    { "pattern": "<string>([0-9]+\\.[0-9]+\\.[0-9]+(\\.[0-9]+)?)</string>", "cleared": true }
+  ],
+  "Framework/PubNub/PubNub-watchOS-Info.plist": [
+    { "pattern": "<string>([0-9]+\\.[0-9]+\\.[0-9]+(\\.[0-9]+)?)</string>", "cleared": true }
+  ],
+  "Framework/PubNub/PubNub-watchOS-Info.plist": [
+    { "pattern": "<string>([0-9]+\\.[0-9]+\\.[0-9]+(\\.[0-9]+)?)</string>", "cleared": true }
+  ]
+
+}
