@@ -186,6 +186,7 @@ NS_ASSUME_NONNULL_END
     configuration.publishKey = self.publishKey;
     configuration.subscribeKey = self.subscribeKey;
     configuration.authKey = self.authKey;
+    configuration.authToken = self.authToken;
     configuration.uuid = self.uuid;
     configuration.cipherKey = self.cipherKey;
     configuration.subscribeMaximumIdleTime = self.subscribeMaximumIdleTime;

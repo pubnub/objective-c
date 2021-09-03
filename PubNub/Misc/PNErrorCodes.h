@@ -15,6 +15,7 @@
 #pragma mark - Error domains
 
 static NSString * const kPNStorageErrorDomain = @"PNStorageErrorDomain";
+static NSString * const kPNCBORErrorDomain = @"PNCBORErrorDomain";
 static NSString * const kPNAESErrorDomain = @"PNAESErrorDomain";
 static NSString * const kPNAPIErrorDomain = @"PNAPIErrorDomain";
 
@@ -41,5 +42,13 @@ static NSInteger const kPNAESConfigurationError = 4001;
 static NSInteger const kPNAESInsufficientMemoryError = 4002;
 static NSInteger const kPNAESEncryptionError = 4003;
 static NSInteger const kPNAESDecryptionError = 4004;
+
+
+#pragma mark -  CBOR Error domain codes
+
+static NSInteger const kPNCBORUnexpectedDataTypeError = 4005;
+static NSInteger const kPNCBORMalformedDataError = 4006;
+static NSInteger const kPNCBORDataItemNotWellFormedError = 4007;
+static NSInteger const kPNCBORMissingDataItemError = 4008;
 
 #endif // PNErrorCodes_h

@@ -570,7 +570,9 @@ NS_ASSUME_NONNULL_END
         @"pnsdk":[NSString stringWithFormat:@"PubNub-%@%%2F%@", kPNClientName, kPNLibraryVersion]
     } mutableCopy];
 
-    if (self.configuration.authKey.length) {
+    if (self.configuration.authToken.length) {
+        queryComponents[@"auth"] = self.configuration.authToken;
+    } else if (self.configuration.authKey.length) {
         queryComponents[@"auth"] = [PNString percentEscapedString:self.configuration.authKey];
     }
 

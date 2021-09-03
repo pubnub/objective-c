@@ -50,6 +50,7 @@ FOUNDATION_EXPORT const unsigned char PubNubVersionString[];
 #import "PNErrorStatus.h"
 #import "PNTimeResult.h"
 #import "PNKeychain.h"
+#import "PNPAMToken.h"
 #import "PNResult.h"
 #import "PNStatus.h"
 
@@ -69,6 +70,7 @@ FOUNDATION_EXPORT const unsigned char PubNubVersionString[];
 #import "PNStructures.h"
 #import "PubNub+APNS.h"
 #import "PubNub+Time.h"
+#import "PubNub+PAM.h"
 #import "PNLLogger.h"
 #import "PNResult.h"
 #import "PNStatus.h"
