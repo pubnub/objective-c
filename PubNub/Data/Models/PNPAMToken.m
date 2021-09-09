@@ -223,7 +223,6 @@ NS_ASSUME_NONNULL_END
     NSMutableDictionary *resourcePermissions = [NSMutableDictionary new];
     
     [permissions enumerateKeysAndObjectsUsingBlock:^(NSString *identifier, NSNumber *accessBits, BOOL *stop) {
-        NSLog(@">>>> %@ - %@", identifier, accessBits);
         resourcePermissions[identifier] = [PNPAMResourcePermission permissionWithValue:accessBits.unsignedIntegerValue];
     }];
     
