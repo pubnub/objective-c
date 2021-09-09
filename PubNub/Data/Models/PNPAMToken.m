@@ -158,7 +158,7 @@ NS_ASSUME_NONNULL_END
 
 - (NSString *)description {
     NSMutableArray<NSString *> *permissions = [NSMutableArray new];
-
+    
     if (self.value == PNPAMPermissionNone) {
         return @"[none]";
     }
@@ -167,35 +167,35 @@ NS_ASSUME_NONNULL_END
         return @"[all]";
     }
     
-    if (self.value == PNPAMPermissionRead) {
+    if (self.value & PNPAMPermissionRead) {
         [permissions addObject:@"read"];
     }
     
-    if (self.value == PNPAMPermissionWrite) {
+    if (self.value & PNPAMPermissionWrite) {
         [permissions addObject:@"write"];
     }
     
-    if (self.value == PNPAMPermissionManage) {
+    if (self.value & PNPAMPermissionManage) {
         [permissions addObject:@"manage"];
     }
     
-    if (self.value == PNPAMPermissionDelete) {
+    if (self.value & PNPAMPermissionDelete) {
         [permissions addObject:@"delete"];
     }
     
-    if (self.value == PNPAMPermissionGet) {
+    if (self.value & PNPAMPermissionGet) {
         [permissions addObject:@"get"];
     }
     
-    if (self.value == PNPAMPermissionUpdate) {
+    if (self.value & PNPAMPermissionUpdate) {
         [permissions addObject:@"update"];
     }
     
-    if (self.value == PNPAMPermissionJoin) {
+    if (self.value & PNPAMPermissionJoin) {
         [permissions addObject:@"join"];
     }
     
-    return [permissions componentsJoinedByString:@"|"];
+    return [permissions componentsJoinedByString:@", "];
 }
 
 #pragma mark -
@@ -223,10 +223,37 @@ NS_ASSUME_NONNULL_END
     NSMutableDictionary *resourcePermissions = [NSMutableDictionary new];
     
     [permissions enumerateKeysAndObjectsUsingBlock:^(NSString *identifier, NSNumber *accessBits, BOOL *stop) {
+        NSLog(@">>>> %@ - %@", identifier, accessBits);
         resourcePermissions[identifier] = [PNPAMResourcePermission permissionWithValue:accessBits.unsignedIntegerValue];
     }];
     
     return resourcePermissions;
+}
+
+
+#pragma mark - Misc
+
+- (NSString *)description {
+    NSMutableString *channels = [NSMutableString new];
+    NSMutableString *groups = [NSMutableString new];
+    NSMutableString *uuids = [NSMutableString new];
+    
+    [self.channels enumerateKeysAndObjectsUsingBlock:^(NSString *channel, PNPAMResourcePermission *permission, BOOL *stop) {
+        [channels appendFormat:@"\n\t\t\t- %@: %@", channel, permission.description];
+    }];
+    
+    [self.groups enumerateKeysAndObjectsUsingBlock:^(NSString *group, PNPAMResourcePermission *permission, BOOL *stop) {
+        [groups appendFormat:@"\n\t\t\t- %@: %@", group, permission.description];
+    }];
+    
+    [self.uuids enumerateKeysAndObjectsUsingBlock:^(NSString *uuid, PNPAMResourcePermission *permission, BOOL *stop) {
+        [uuids appendFormat:@"\n\t\t\t- %@: %@", uuid, permission.description];
+    }];
+    
+    return [NSString stringWithFormat:@"\n\t\t- channels: %@"
+            "\n\t\t- channel groups: %@"
+            "\n\t\t- uuids: %@",
+            channels, groups, uuids];
 }
 
 
@@ -315,6 +342,35 @@ NS_ASSUME_NONNULL_END
     
     self.valid = error == nil;
     self.error = error;
+}
+
+
+#pragma mark - Misc
+
+- (NSString *)description {
+    if (!self.valid) {
+        return [NSString stringWithFormat:@"Access token not parsed because of error: %@", self.error];
+    }
+    
+    NSData *metaJSONData = [NSJSONSerialization dataWithJSONObject:self.meta options:(NSJSONWritingOptions)0 error:nil];
+    
+    return [NSString stringWithFormat:@"PubNub Access Token content:"
+            "\n\t- Issue date: %@ (%@)"
+            "\n\t- Expiration date: %@ (%@)"
+            "\n\t- Authorized UUID: %@"
+            "\n\t- Resources: %@"
+            "\n\t- Patterns: %@"
+            "\n\t- Metadata: %@"
+            "\n\t- Token version: %@"
+            "\n\t- Signature: %@",
+            [NSDate dateWithTimeIntervalSince1970:self.timestamp], @(self.timestamp),
+            [NSDate dateWithTimeIntervalSince1970:(self.timestamp+self.ttl*60)], @(self.timestamp+self.ttl*60),
+            self.authorizedUUID,
+            self.resources.description,
+            self.patterns.description,
+            [[NSString alloc] initWithData:metaJSONData encoding:NSUTF8StringEncoding],
+            @(self.version),
+            self.signature];
 }
 
 #pragma mark -
