@@ -4,6 +4,7 @@
  * @since 4.17.0
  * @copyright © 2010-2021 PubNub, Inc.
  */
+#import "PNConfiguration+Private.h"
 #import "PubNub+CorePrivate.h"
 #import "PNPAMToken+Private.h"
 #import "PNConfiguration.h"
@@ -23,7 +24,9 @@
 }
 
 - (void)setAuthToken:(NSString *)token {
-    self.configuration.authToken = token;
+    pn_safe_property_write(self.resourceAccessQueue, ^{
+        self.configuration.authToken = token;
+    });
 }
 
 #pragma mark -

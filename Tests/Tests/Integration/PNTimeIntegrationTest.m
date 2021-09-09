@@ -43,7 +43,6 @@ NS_ASSUME_NONNULL_END
     
     if ([name pnt_includesString:@"ShouldFetch"] && [name pnt_includesString:@"ResultWithExpectedOperation"]) {
         configuration.authKey = @"auth-key";
-        configuration.authToken = @"secret-token";
     }
     
     return configuration;
@@ -54,13 +53,15 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldFetchPubNubTimeAndReceiveResultWithExpectedOperation {
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        [self.client setAuthToken:@"secret-token"];
+        
         [self.client timeWithCompletion:^(PNTimeResult *result, PNErrorStatus *status) {
             XCTAssertNil(status);
             XCTAssertNotNil(result.data.timetoken);
             XCTAssertEqual([@0 compare:result.data.timetoken], NSOrderedAscending);
             XCTAssertEqual(result.operation, PNTimeOperation);
             XCTAssertNotNil(self.client.currentConfiguration.authKey);
-            XCTAssertNotNil(self.client.currentConfiguration.authToken);
+            XCTAssertNotNil([self.client.currentConfiguration valueForKey:@"authToken"]);
             
             NSURLRequest *request = [result valueForKey:@"clientRequest"];
             XCTAssertNotEqual([request.URL.query rangeOfString:@"auth=secret-token"].location, NSNotFound);

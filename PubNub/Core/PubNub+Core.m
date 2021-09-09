@@ -1,6 +1,6 @@
 /**
  * @author Serhii Mamontov
- * @version 4.12.0
+ * @version 4.17.0
  * @since 4.0.0
  * @copyright © 2010-2019 PubNub, Inc.
  */
@@ -12,6 +12,7 @@
 #elif TARGET_OS_OSX
     #import <AppKit/AppKit.h>
 #endif // TARGET_OS_OSX
+#import "PNConfiguration+Private.h"
 #import "PubNub+SubscribePrivate.h"
 #import "PNPrivateStructures.h"
 #import "PNClientInformation.h"
@@ -33,28 +34,24 @@
 #pragma mark - Externs
 
 void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
-    
     if (queue && block) {
         dispatch_async(queue, block);
     }
 }
 
 void pn_safe_property_read(dispatch_queue_t queue, dispatch_block_t block) {
-    
     if (queue && block) {
         dispatch_sync(queue, block);
     }
 }
 
 void pn_safe_property_write(dispatch_queue_t queue, dispatch_block_t block) {
-    
     if (queue && block) {
         dispatch_barrier_async(queue, block);
     }
 }
 
 NSString * pn_operating_system_version(void) {
-
     NSOperatingSystemVersion ver = NSProcessInfo.processInfo.operatingSystemVersion;
     NSArray *versionComponents = @[@(ver.majorVersion), @(ver.minorVersion), @(ver.patchVersion)];
 
@@ -62,21 +59,18 @@ NSString * pn_operating_system_version(void) {
 }
 
 BOOL pn_operating_system_version_is_greater_than(NSString *version) {
-
     NSString *osVersion = pn_operating_system_version();
 
     return [osVersion compare:version options:NSNumericSearch] == NSOrderedDescending;
 }
 
 BOOL pn_operating_system_version_is_same_as(NSString *version) {
-
     NSString *osVersion = pn_operating_system_version();
 
     return [osVersion compare:version options:NSNumericSearch] == NSOrderedSame;
 }
 
 BOOL pn_operating_system_version_is_lower_than(NSString *version) {
-
     NSString *osVersion = pn_operating_system_version();
     
     return [osVersion compare:version options:NSNumericSearch] == NSOrderedAscending;
@@ -92,6 +86,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Properties
 
+@property (nonatomic, nullable, strong) dispatch_queue_t resourceAccessQueue;
 @property (nonatomic, strong) PNLLogger *logger;
 @property (nonatomic, strong) dispatch_queue_t callbackQueue;
 @property (nonatomic, copy) PNConfiguration *configuration;
@@ -229,7 +224,6 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Information
 
 + (PNClientInformation *)information {
-
     static PNClientInformation *_sharedClientInformation;
     static dispatch_once_t onceToken;
 
@@ -241,12 +235,10 @@ NS_ASSUME_NONNULL_END
 }
 
 - (PNConfiguration *)currentConfiguration {
-    
     return [self.configuration copy];
 }
 
 - (NSString *)uuid {
-    
     return self.configuration.uuid;
 }
 
@@ -254,13 +246,10 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Initialization
 
 + (instancetype)clientWithConfiguration:(PNConfiguration *)configuration {
-    
     return [self clientWithConfiguration:configuration callbackQueue:nil];
 }
 
-+ (instancetype)clientWithConfiguration:(PNConfiguration *)configuration
-                          callbackQueue:(dispatch_queue_t)callbackQueue {
-    
++ (instancetype)clientWithConfiguration:(PNConfiguration *)configuration callbackQueue:(dispatch_queue_t)callbackQueue {
     dispatch_queue_t queue = (callbackQueue ?: dispatch_get_main_queue());
 
     if (@available(macOS 10.10, iOS 8.0, *)) {
@@ -272,9 +261,7 @@ NS_ASSUME_NONNULL_END
     return [[self alloc] initWithConfiguration:configuration callbackQueue:queue];
 }
 
-- (instancetype)initWithConfiguration:(PNConfiguration *)configuration
-                        callbackQueue:(dispatch_queue_t)callbackQueue {
-
+- (instancetype)initWithConfiguration:(PNConfiguration *)configuration callbackQueue:(dispatch_queue_t)callbackQueue {
     if ((self = [super init])) {
         NSString *storageIdentifier = configuration.publishKey ?: configuration.subscribeKey;
         [self storeUUID:configuration.uuid forIdentifier:storageIdentifier];
@@ -285,6 +272,7 @@ NS_ASSUME_NONNULL_END
         _configuration = [configuration copy];
         _callbackQueue = callbackQueue;
         _instanceID = [[[NSUUID UUID] UUIDString] copy];
+        _resourceAccessQueue = dispatch_queue_create("com.pubnub.core", DISPATCH_QUEUE_CONCURRENT);
         
         [self prepareRequiredParameters];
         [self prepareNetworkManagers];
@@ -331,9 +319,7 @@ NS_ASSUME_NONNULL_END
     return self;
 }
 
-- (void)copyWithConfiguration:(PNConfiguration *)configuration
-                   completion:(void(^)(PubNub *client))block {
-
+- (void)copyWithConfiguration:(PNConfiguration *)configuration completion:(void(^)(PubNub *client))block {
     [self copyWithConfiguration:configuration callbackQueue:self.callbackQueue completion:block];
 }
 
@@ -389,9 +375,7 @@ NS_ASSUME_NONNULL_END
     }
 }
 
-- (void)setRecentClientStatus:(PNStatusCategory)recentClientStatus
-        withReachabilityCheck:(BOOL)shouldCheckReachability {
-    
+- (void)setRecentClientStatus:(PNStatusCategory)recentClientStatus withReachabilityCheck:(BOOL)shouldCheckReachability {
     PNStatusCategory previousState = self.recentClientStatus;
     PNStatusCategory currentState = recentClientStatus;
     
@@ -425,15 +409,15 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Reachability
 
 - (void)prepareReachability {
-
     __weak __typeof(self) weakSelf = self;
     _reachability = [PNReachability reachabilityForClient:self withPingStatus:^(BOOL pingSuccessful) {
-        
         if (pingSuccessful) {
-            // Silence static analyzer warnings.
-            // Code is aware about this case and at the end will simply call on 'nil' object method.
-            // In most cases if referenced object become 'nil' it mean what there is no more need in
-            // it and probably whole client instance has been deallocated.
+            /**
+             * Silence static analyzer warnings.
+             * Code is aware about this case and at the end will simply call on 'nil' object method.
+             * In most cases if referenced object become 'nil' it mean what there is no more need in
+             * it and probably whole client instance has been deallocated.
+             */
             #pragma clang diagnostic push
             #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
             [weakSelf.reachability stopServicePing];
@@ -448,9 +432,10 @@ NS_ASSUME_NONNULL_END
 #pragma mark - PubNub Network managers
 
 - (void)prepareNetworkManagers {
-    
-    // Check whether application extension support enabled or not.
-    // Long-poll tasks not supported in application extension context.
+    /**
+     * Check whether application extension support enabled or not.
+     * Long-poll tasks not supported in application extension context.
+     */
     BOOL shouldCreateSubscriptionNetwork = YES;
     NSInteger maximumConnections = 3;
 
@@ -463,7 +448,8 @@ NS_ASSUME_NONNULL_END
     if (shouldCreateSubscriptionNetwork) {
         _subscriptionNetwork = [PNNetwork networkForClient:self
                                             requestTimeout:_configuration.subscribeMaximumIdleTime
-                                        maximumConnections:1 longPoll:YES];
+                                        maximumConnections:1
+                                                  longPoll:YES];
     }
 
     _serviceNetwork = [PNNetwork networkForClient:self
@@ -547,6 +533,14 @@ NS_ASSUME_NONNULL_END
           withParameters:(PNRequestParameters *)parameters
                     data:(NSData *)data completionBlock:(id)block {
     
+    pn_safe_property_read(self.resourceAccessQueue, ^{
+        if (self.configuration.authToken.length) {
+            [parameters addQueryParameter:self.configuration.authToken forFieldName:@"auth"];
+        } else if (self.configuration.authKey.length) {
+            [parameters addQueryParameter:self.configuration.authKey forFieldName:@"auth"];
+        }
+    });
+    
     if (operationType == PNSubscribeOperation || operationType == PNUnsubscribeOperation) {
         [self.subscriptionNetwork processOperation:operationType
                                     withParameters:parameters
@@ -563,18 +557,13 @@ NS_ASSUME_NONNULL_END
 - (void)prepareRequiredParameters {
     self.defaultPathComponents = @{@"{sub-key}": (self.configuration.subscribeKey?: @""),
                                @"{pub-key}": (self.configuration.publishKey?: @"")};
+    
     NSMutableDictionary *queryComponents = [@{
         @"uuid": [PNString percentEscapedString:(self.configuration.uuid?: @"")],
         @"deviceid": (self.configuration.deviceID?: @""),
         @"instanceid": self.instanceID,
         @"pnsdk":[NSString stringWithFormat:@"PubNub-%@%%2F%@", kPNClientName, kPNLibraryVersion]
     } mutableCopy];
-
-    if (self.configuration.authToken.length) {
-        queryComponents[@"auth"] = self.configuration.authToken;
-    } else if (self.configuration.authKey.length) {
-        queryComponents[@"auth"] = [PNString percentEscapedString:self.configuration.authKey];
-    }
 
     self.defaultQueryComponents = [queryComponents copy];
 }
@@ -596,7 +585,6 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)appendClientInformation:(PNResult *)result {
-    
     result.TLSEnabled = self.configuration.isTLSEnabled;
     result.uuid = self.configuration.uuid;
     result.authKey = self.configuration.authKey;
@@ -635,13 +623,11 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)client:(PubNub *)__unused client didReceiveStatus:(PNSubscribeStatus *)status {
-    
     if (status.category == PNConnectedCategory || status.category == PNReconnectedCategory ||
         status.category == PNDisconnectedCategory ||
         status.category == PNUnexpectedDisconnectCategory) {
         
-        [self setRecentClientStatus:status.category
-              withReachabilityCheck:status.requireNetworkAvailabilityCheck];
+        [self setRecentClientStatus:status.category withReachabilityCheck:status.requireNetworkAvailabilityCheck];
     }
 }
 
@@ -649,7 +635,6 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Handlers
 
 - (void)handleContextTransition:(NSNotification *)notification {
-    
 #if TARGET_OS_IOS
     if ([notification.name isEqualToString:UIApplicationDidEnterBackgroundNotification]) {
         PNLogClientInfo(self.logger, @"<PubNub> Did enter background execution context.");
@@ -707,8 +692,7 @@ NS_ASSUME_NONNULL_END
 #if TARGET_OS_TV && !TARGET_OS_SIMULATOR
     NSSearchPathDirectory searchPath = NSCachesDirectory;
 #else 
-    NSSearchPathDirectory searchPath = (TARGET_OS_IPHONE ? NSDocumentDirectory
-                                                         : NSApplicationSupportDirectory);
+    NSSearchPathDirectory searchPath = (TARGET_OS_IPHONE ? NSDocumentDirectory : NSApplicationSupportDirectory);
 #endif // TARGET_OS_TV && !TARGET_OS_SIMULATOR
     NSArray *documents = NSSearchPathForDirectoriesInDomains(searchPath, NSUserDomainMask, YES);
     NSString *logsPath = documents.lastObject;
@@ -720,8 +704,7 @@ NS_ASSUME_NONNULL_END
     logsPath = [logsPath stringByAppendingPathComponent:@"Logs"];
     
     __weak __typeof__(self) weakSelf = self;
-    self.logger = [PNLLogger loggerWithIdentifier:kPNClientIdentifier directory:logsPath 
-                                     logExtension:@"log"];
+    self.logger = [PNLLogger loggerWithIdentifier:kPNClientIdentifier directory:logsPath logExtension:@"log"];
     self.logger.enabled = NO;
     self.logger.writeToConsole = YES;
     self.logger.writeToFile = YES;
@@ -741,7 +724,6 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)printLogVerbosityInformation {
-    
     NSUInteger verbosityFlags = self.logger.logLevel;
     NSMutableArray *enabledFlags = [NSMutableArray new];
 
@@ -778,7 +760,6 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)dealloc {
-    
 #if TARGET_OS_IOS
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
     [notificationCenter removeObserver:self

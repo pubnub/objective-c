@@ -34,7 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief Set PubNub access token which should be used to authorize REST API calls.
  *
  * @code
- * [self.client setToken:@"access-token"];
+ * [self.client setAuthToken:@"access-token"];
  * @endcode
  *
  * @param token Base64-encoded PubNub access token.

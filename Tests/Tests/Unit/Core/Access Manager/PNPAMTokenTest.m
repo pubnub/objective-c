@@ -64,7 +64,8 @@ NS_ASSUME_NONNULL_END
 - (void)testItShouldSetToken {
     [self.client setAuthToken:@"access-token"];
     
-    XCTAssertEqualObjects(self.client.currentConfiguration.authToken, @"access-token");
+    [self waitTask:@"auth-token-set" completionFor:2.f];
+    XCTAssertEqualObjects([self.client.currentConfiguration valueForKey:@"authToken"], @"access-token");
 }
 
 @end

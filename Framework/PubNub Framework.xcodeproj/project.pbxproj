@@ -1089,6 +1089,11 @@
 		79A8BCBA1C58F93900015BDE /* PNChannelGroupModificationParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0D21BD03DE4001FC34D /* PNChannelGroupModificationParser.h */; };
 		79A8BCBB1C58F93900015BDE /* PNPresenceHereNowParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0E01BD03DE4001FC34D /* PNPresenceHereNowParser.h */; };
 		79A8BCBD1C58F93900015BDE /* PNErrorStatus+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB08B1BD03DE4001FC34D /* PNErrorStatus+Private.h */; };
+		79AA8EC926EAB81500ADA747 /* PNConfiguration+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79AA8EC826EAB81500ADA747 /* PNConfiguration+Private.h */; };
+		79AA8ECA26EAB81500ADA747 /* PNConfiguration+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79AA8EC826EAB81500ADA747 /* PNConfiguration+Private.h */; };
+		79AA8ECB26EAB81500ADA747 /* PNConfiguration+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79AA8EC826EAB81500ADA747 /* PNConfiguration+Private.h */; };
+		79AA8ECC26EAB81500ADA747 /* PNConfiguration+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79AA8EC826EAB81500ADA747 /* PNConfiguration+Private.h */; };
+		79AA8ECD26EAB81500ADA747 /* PNConfiguration+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79AA8EC826EAB81500ADA747 /* PNConfiguration+Private.h */; };
 		79ABD8911F01636B007634E0 /* PNTelemetry.h in Headers */ = {isa = PBXBuildFile; fileRef = 79ABD88F1F01636B007634E0 /* PNTelemetry.h */; };
 		79ABD8921F01636B007634E0 /* PNTelemetry.h in Headers */ = {isa = PBXBuildFile; fileRef = 79ABD88F1F01636B007634E0 /* PNTelemetry.h */; };
 		79ABD8931F01636B007634E0 /* PNTelemetry.h in Headers */ = {isa = PBXBuildFile; fileRef = 79ABD88F1F01636B007634E0 /* PNTelemetry.h */; };
@@ -2638,6 +2643,7 @@
 		79A3E426221569DA00F2ADB9 /* PNMessageCountParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNMessageCountParser.h; sourceTree = "<group>"; };
 		79A3E427221569DA00F2ADB9 /* PNMessageCountParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNMessageCountParser.m; sourceTree = "<group>"; };
 		79A8BCC61C58F97A00015BDE /* PubNub-tvOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PubNub-tvOS-Info.plist"; sourceTree = "<group>"; };
+		79AA8EC826EAB81500ADA747 /* PNConfiguration+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PNConfiguration+Private.h"; sourceTree = "<group>"; };
 		79ABD88F1F01636B007634E0 /* PNTelemetry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNTelemetry.h; sourceTree = "<group>"; };
 		79ABD8901F01636B007634E0 /* PNTelemetry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNTelemetry.m; sourceTree = "<group>"; };
 		79ACC4961C11BD720056523A /* PubNub-Fabric-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PubNub-Fabric-Info.plist"; sourceTree = "<group>"; };
@@ -3375,6 +3381,7 @@
 				79CBB0781BD03DE4001FC34D /* PNClientInformation.m */,
 				79CFA2AB26DE0AEB00D206D4 /* PNCBORDecoder.h */,
 				79CFA2AC26DE0AEB00D206D4 /* PNCBORDecoder.m */,
+				79AA8EC826EAB81500ADA747 /* PNConfiguration+Private.h */,
 				79CBB07A1BD03DE4001FC34D /* PNConfiguration.h */,
 				79CBB07B1BD03DE4001FC34D /* PNConfiguration.m */,
 				A55CA69C2397389100B24E02 /* PNKeychain+Private.h */,
@@ -4057,6 +4064,7 @@
 				A5FADC5C24936088001D7704 /* PNMultipartInputStream.h in Headers */,
 				791582771BD709C60084FC70 /* PNPushNotificationsStateModificationParser.h in Headers */,
 				A55DAF0724B1FEC800766EE9 /* PNXML+Private.h in Headers */,
+				79AA8EC926EAB81500ADA747 /* PNConfiguration+Private.h in Headers */,
 				A58975B223005AAC0093BD9A /* PNManageMembershipsStatus.h in Headers */,
 				79A238D01D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.h in Headers */,
 				791582521BD709C60084FC70 /* PNPresenceChannelGroupHereNowResult.h in Headers */,
@@ -4330,6 +4338,7 @@
 				A5FADC5E24936088001D7704 /* PNMultipartInputStream.h in Headers */,
 				79A238E01D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfigurationPrivate.h in Headers */,
 				A55DAF0924B1FEC800766EE9 /* PNXML+Private.h in Headers */,
+				79AA8ECB26EAB81500ADA747 /* PNConfiguration+Private.h in Headers */,
 				A58975B423005AAC0093BD9A /* PNManageMembershipsStatus.h in Headers */,
 				791583201BD709D10084FC70 /* PNPushNotificationsStateModificationParser.h in Headers */,
 				79A238D21D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.h in Headers */,
@@ -4775,6 +4784,7 @@
 				79A0D9351DC230BD0039A264 /* PNStreamAuditAPICallBuilder.h in Headers */,
 				A55A87CC22FD8272002D0A72 /* PNRemoveUUIDMetadataRequest.h in Headers */,
 				798842891C18F287003E8948 /* PNURLRequest.h in Headers */,
+				79AA8ECD26EAB81500ADA747 /* PNConfiguration+Private.h in Headers */,
 				A523692D24A2270200656C19 /* PNAES+Private.h in Headers */,
 				A5FADC382490270E001D7704 /* PubNub+Files.h in Headers */,
 				7951954726BD44E9001E308C /* PubNub+PAM.h in Headers */,
@@ -4875,6 +4885,7 @@
 				A5FADC5D24936088001D7704 /* PNMultipartInputStream.h in Headers */,
 				79A238DF1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfigurationPrivate.h in Headers */,
 				A55DAF0824B1FEC800766EE9 /* PNXML+Private.h in Headers */,
+				79AA8ECA26EAB81500ADA747 /* PNConfiguration+Private.h in Headers */,
 				A58975B323005AAC0093BD9A /* PNManageMembershipsStatus.h in Headers */,
 				79A8BC8D1C58F93900015BDE /* PNPushNotificationsStateModificationParser.h in Headers */,
 				79A238D11D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.h in Headers */,
@@ -5148,6 +5159,7 @@
 				A5FADC5F24936088001D7704 /* PNMultipartInputStream.h in Headers */,
 				79A238E11D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfigurationPrivate.h in Headers */,
 				A55DAF0A24B1FEC800766EE9 /* PNXML+Private.h in Headers */,
+				79AA8ECC26EAB81500ADA747 /* PNConfiguration+Private.h in Headers */,
 				A58975B523005AAC0093BD9A /* PNManageMembershipsStatus.h in Headers */,
 				79E20D2C1C8B0AD5001BC9CC /* PNPushNotificationsStateModificationParser.h in Headers */,
 				79A238D31D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.h in Headers */,
