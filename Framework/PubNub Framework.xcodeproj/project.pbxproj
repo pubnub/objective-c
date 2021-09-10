@@ -1094,6 +1094,11 @@
 		79AA8ECB26EAB81500ADA747 /* PNConfiguration+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79AA8EC826EAB81500ADA747 /* PNConfiguration+Private.h */; };
 		79AA8ECC26EAB81500ADA747 /* PNConfiguration+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79AA8EC826EAB81500ADA747 /* PNConfiguration+Private.h */; };
 		79AA8ECD26EAB81500ADA747 /* PNConfiguration+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79AA8EC826EAB81500ADA747 /* PNConfiguration+Private.h */; };
+		79AA8ECF26EB3A1200ADA747 /* PubNub+PAMPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 79AA8ECE26EB3A1200ADA747 /* PubNub+PAMPrivate.h */; };
+		79AA8ED026EB3A1200ADA747 /* PubNub+PAMPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 79AA8ECE26EB3A1200ADA747 /* PubNub+PAMPrivate.h */; };
+		79AA8ED126EB3A1200ADA747 /* PubNub+PAMPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 79AA8ECE26EB3A1200ADA747 /* PubNub+PAMPrivate.h */; };
+		79AA8ED226EB3A1200ADA747 /* PubNub+PAMPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 79AA8ECE26EB3A1200ADA747 /* PubNub+PAMPrivate.h */; };
+		79AA8ED326EB3A1200ADA747 /* PubNub+PAMPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 79AA8ECE26EB3A1200ADA747 /* PubNub+PAMPrivate.h */; };
 		79ABD8911F01636B007634E0 /* PNTelemetry.h in Headers */ = {isa = PBXBuildFile; fileRef = 79ABD88F1F01636B007634E0 /* PNTelemetry.h */; };
 		79ABD8921F01636B007634E0 /* PNTelemetry.h in Headers */ = {isa = PBXBuildFile; fileRef = 79ABD88F1F01636B007634E0 /* PNTelemetry.h */; };
 		79ABD8931F01636B007634E0 /* PNTelemetry.h in Headers */ = {isa = PBXBuildFile; fileRef = 79ABD88F1F01636B007634E0 /* PNTelemetry.h */; };
@@ -2644,6 +2649,7 @@
 		79A3E427221569DA00F2ADB9 /* PNMessageCountParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNMessageCountParser.m; sourceTree = "<group>"; };
 		79A8BCC61C58F97A00015BDE /* PubNub-tvOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PubNub-tvOS-Info.plist"; sourceTree = "<group>"; };
 		79AA8EC826EAB81500ADA747 /* PNConfiguration+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PNConfiguration+Private.h"; sourceTree = "<group>"; };
+		79AA8ECE26EB3A1200ADA747 /* PubNub+PAMPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PubNub+PAMPrivate.h"; sourceTree = "<group>"; };
 		79ABD88F1F01636B007634E0 /* PNTelemetry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNTelemetry.h; sourceTree = "<group>"; };
 		79ABD8901F01636B007634E0 /* PNTelemetry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNTelemetry.m; sourceTree = "<group>"; };
 		79ACC4961C11BD720056523A /* PubNub-Fabric-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PubNub-Fabric-Info.plist"; sourceTree = "<group>"; };
@@ -3360,6 +3366,7 @@
 				79CBB06A1BD03DE4001FC34D /* PubNub+Time.m */,
 				A5FADC322490270E001D7704 /* PubNub+Files.h */,
 				A5FADC332490270E001D7704 /* PubNub+Files.m */,
+				79AA8ECE26EB3A1200ADA747 /* PubNub+PAMPrivate.h */,
 				7951954126BD44E9001E308C /* PubNub+PAM.h */,
 				7951954226BD44E9001E308C /* PubNub+PAM.m */,
 			);
@@ -4308,6 +4315,7 @@
 				A57A3059238D65A200DE8C68 /* PNNotificationsPayload.h in Headers */,
 				A504E12824AA90B8006DCF5B /* PNDownloadFileResult.h in Headers */,
 				A504E19C24ACCA42006DCF5B /* PNFileDownloadURLAPICallBuilder.h in Headers */,
+				79AA8ECF26EB3A1200ADA747 /* PubNub+PAMPrivate.h in Headers */,
 				7915827B1BD709C60084FC70 /* PNJSON.h in Headers */,
 				791582751BD709C60084FC70 /* PubNub.h in Headers */,
 				A55A887622FD8272002D0A72 /* PNManageChannelMembersRequest.h in Headers */,
@@ -4582,6 +4590,7 @@
 				A57A305B238D65A200DE8C68 /* PNNotificationsPayload.h in Headers */,
 				A504E12A24AA90B8006DCF5B /* PNDownloadFileResult.h in Headers */,
 				A504E19E24ACCA42006DCF5B /* PNFileDownloadURLAPICallBuilder.h in Headers */,
+				79AA8ED126EB3A1200ADA747 /* PubNub+PAMPrivate.h in Headers */,
 				7915831E1BD709D10084FC70 /* PubNub.h in Headers */,
 				7915831F1BD709D10084FC70 /* PNAES.h in Headers */,
 				A55A887822FD8272002D0A72 /* PNManageChannelMembersRequest.h in Headers */,
@@ -4834,6 +4843,7 @@
 				A57A30EE238DCAAF00DE8C68 /* PNAPNSNotificationTarget+Private.h in Headers */,
 				A5046E25247844E70008C81E /* PNSetMembershipsAPICallBuilder.h in Headers */,
 				798842811C18F286003E8948 /* PNChannel.h in Headers */,
+				79AA8ED326EB3A1200ADA747 /* PubNub+PAMPrivate.h in Headers */,
 				A5897587230014160093BD9A /* PNFetchMembershipsAPICallBuilder.h in Headers */,
 				A55A877F22FD8272002D0A72 /* PNObjectsPaginatedRequest.h in Headers */,
 				79A0D8BD1DC22FCA0039A264 /* PNPresenceChannelGroupHereNowAPICallBuilder.h in Headers */,
@@ -5129,6 +5139,7 @@
 				A57A305A238D65A200DE8C68 /* PNNotificationsPayload.h in Headers */,
 				A504E12924AA90B8006DCF5B /* PNDownloadFileResult.h in Headers */,
 				A504E19D24ACCA42006DCF5B /* PNFileDownloadURLAPICallBuilder.h in Headers */,
+				79AA8ED026EB3A1200ADA747 /* PubNub+PAMPrivate.h in Headers */,
 				79A8BC8B1C58F93900015BDE /* PubNub.h in Headers */,
 				79A8BC8C1C58F93900015BDE /* PNAES.h in Headers */,
 				A55A887722FD8272002D0A72 /* PNManageChannelMembersRequest.h in Headers */,
@@ -5403,6 +5414,7 @@
 				A57A305C238D65A200DE8C68 /* PNNotificationsPayload.h in Headers */,
 				A504E12B24AA90B8006DCF5B /* PNDownloadFileResult.h in Headers */,
 				A504E19F24ACCA42006DCF5B /* PNFileDownloadURLAPICallBuilder.h in Headers */,
+				79AA8ED226EB3A1200ADA747 /* PubNub+PAMPrivate.h in Headers */,
 				79CBB0421BD03D3F001FC34D /* PubNub.h in Headers */,
 				79CBB1151BD03DE4001FC34D /* PNAES.h in Headers */,
 				A55A887922FD8272002D0A72 /* PNManageChannelMembersRequest.h in Headers */,

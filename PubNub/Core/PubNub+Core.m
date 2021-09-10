@@ -19,6 +19,7 @@
 #import "PNRequestParameters.h"
 #import "PNKeychain+Private.h"
 #import "PNSubscribeStatus.h"
+#import "PubNub+PAMPrivate.h"
 #import "PNEventsListener.h"
 #import "PNResult+Private.h"
 #import "PNStatus+Private.h"
@@ -533,13 +534,7 @@ NS_ASSUME_NONNULL_END
           withParameters:(PNRequestParameters *)parameters
                     data:(NSData *)data completionBlock:(id)block {
     
-    pn_safe_property_read(self.resourceAccessQueue, ^{
-        if (self.configuration.authToken.length) {
-            [parameters addQueryParameter:self.configuration.authToken forFieldName:@"auth"];
-        } else if (self.configuration.authKey.length) {
-            [parameters addQueryParameter:self.configuration.authKey forFieldName:@"auth"];
-        }
-    });
+    [self addAuthParameter:parameters];
     
     if (operationType == PNSubscribeOperation || operationType == PNUnsubscribeOperation) {
         [self.subscriptionNetwork processOperation:operationType
