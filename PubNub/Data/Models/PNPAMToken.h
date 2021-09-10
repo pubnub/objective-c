@@ -144,11 +144,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, strong) NSData *signature;
 
 /**
- * @brief Whether provided PAM token string was valid and properly processed.
- */
-@property (nonatomic, readonly, assign) BOOL valid;
-
-/**
  * @brief Contains error with information about what went wrong in case if token not \c valid.
  */
 @property (nonatomic, nullable, readonly, strong) NSError *error;

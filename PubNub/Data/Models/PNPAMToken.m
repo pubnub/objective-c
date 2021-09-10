@@ -34,7 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @param permission Bit fields which specify permissions granted to resource.
  *
- * @return Initalized and ready to use permission object.
+ * @return Initialized and ready to use permission object.
  */
 + (instancetype)permissionWithValue:(PNPAMPermission)permission;
 
@@ -69,7 +69,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @param permission Bit fields which specify permissions granted to resource.
  *
- * @return Initalized and ready to use permission object.
+ * @return Initialized and ready to use permission object.
  */
 - (instancetype)initWithResources:(NSDictionary<NSString *, PAMResourcesDictionary *> *)permission;
 
@@ -106,7 +106,6 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, strong) NSData *tokenData;
 
-@property (nonatomic, assign) BOOL valid;
 @property (nonatomic, nullable, strong) NSError *error;
 
 
@@ -339,7 +338,20 @@ NS_ASSUME_NONNULL_END
         self.patterns = [[PNPAMTokenResource alloc] initWithResources:self.parsedToken[@"pat"]];
     }
     
-    self.valid = error == nil;
+    NSTimeInterval tokenExpiration = self.timestamp + self.ttl * 60.f;
+    NSTimeInterval currentDate = [NSDate date].timeIntervalSince1970;
+    
+    if (self.timestamp > 0 && currentDate > tokenExpiration) {
+        NSDictionary *userInfo = @{
+            NSLocalizedFailureReasonErrorKey: @"PAM token invalid.",
+            NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Provided PAM token expired %@ seconds ago.",
+                                        @(currentDate - tokenExpiration)]
+        };
+        error = [NSError errorWithDomain:kPNAPIErrorDomain
+                                    code:kPNAPIPAMTokenExpiredError
+                                userInfo:userInfo];
+    }
+    
     self.error = error;
 }
 
@@ -347,7 +359,7 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Misc
 
 - (NSString *)description {
-    if (!self.valid) {
+    if (self.error) {
         return [NSString stringWithFormat:@"Access token not parsed because of error: %@", self.error];
     }
     

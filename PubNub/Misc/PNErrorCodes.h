@@ -29,6 +29,11 @@ static NSInteger const kPNUnknownErrorCode = -1;
  */
 static NSInteger const kPNAPIUnacceptableParameters = 100;
 
+/**
+ * @brief Auth token expired.
+ */
+static NSInteger const kPNAPIPAMTokenExpiredError = 101;
+
 
 #pragma mark -  Publish
 
