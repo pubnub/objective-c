@@ -115,10 +115,11 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief Initialize PubNub access token description object.
  *
  * @param string PAM token encoded as Base64 string.
+ * @param uuid \c uuid which used by target \b PubNub instance.
  *
  * @return Initialized and ready to use \c token representation model.
  */
-- (instancetype)initFromBase64String:(NSString *)string;
+- (instancetype)initFromBase64String:(NSString *)string forUUID:(NSString *)uuid;
 
 
 #pragma mark - Processing
@@ -294,11 +295,11 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Initialization & Configuration
 
-+ (instancetype)tokenFromBase64String:(NSString *)string {
-    return [[self alloc] initFromBase64String:string];
++ (instancetype)tokenFromBase64String:(NSString *)string forUUID:(NSString *)uuid {
+    return [[self alloc] initFromBase64String:string forUUID:uuid];
 }
 
-- (instancetype)initFromBase64String:(NSString *)string {
+- (instancetype)initFromBase64String:(NSString *)string forUUID:(NSString *)uuid {
     if ((self = [super init])) {
         NSString *token = [PNString base64StringFromURLFriendlyBase64String:string];
         
@@ -307,6 +308,18 @@ NS_ASSUME_NONNULL_END
         }
         
         [self processTokenData];
+        
+        if (uuid.length && self.authorizedUUID.length && ![self.authorizedUUID isEqualToString:uuid]) {
+            NSDictionary *userInfo = @{
+                NSLocalizedFailureReasonErrorKey: @"PAM token invalid.",
+                NSLocalizedDescriptionKey: [NSString stringWithFormat:@"PAM token provided for %@ but %@ is used by "
+                                            "current PubNub instance.",
+                                            self.authorizedUUID, uuid]
+            };
+            self.error = [NSError errorWithDomain:kPNAPIErrorDomain
+                                             code:kPNAuthPAMTokenWrongUUIDError
+                                         userInfo:userInfo];
+        }
     }
     
     return self;
@@ -340,15 +353,15 @@ NS_ASSUME_NONNULL_END
     
     NSTimeInterval tokenExpiration = self.timestamp + self.ttl * 60.f;
     NSTimeInterval currentDate = [NSDate date].timeIntervalSince1970;
-    
+
     if (self.timestamp > 0 && currentDate > tokenExpiration) {
         NSDictionary *userInfo = @{
             NSLocalizedFailureReasonErrorKey: @"PAM token invalid.",
             NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Provided PAM token expired %@ seconds ago.",
                                         @(currentDate - tokenExpiration)]
         };
-        error = [NSError errorWithDomain:kPNAPIErrorDomain
-                                    code:kPNAPIPAMTokenExpiredError
+        error = [NSError errorWithDomain:kPNAuthErrorDomain
+                                    code:kPNAuthPAMTokenExpiredError
                                 userInfo:userInfo];
     }
     

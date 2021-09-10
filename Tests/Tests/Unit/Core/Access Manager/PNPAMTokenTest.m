@@ -45,6 +45,9 @@ NS_ASSUME_NONNULL_END
     XCTAssertNotNil(token.resources, @"'resources' is missing");
     XCTAssertNotNil(token.patterns, @"'patterns' is missing");
     
+    XCTAssertNotNil(token.error);
+    XCTAssertEqual(token.error.code, kPNAuthPAMTokenWrongUUIDError);
+    
     XCTAssertEqualObjects(token.authorizedUUID, @"test-authorized-uuid");
     XCTAssertEqual(token.resources.channels.count, 1);
     XCTAssertEqual(token.resources.groups.count, 1);

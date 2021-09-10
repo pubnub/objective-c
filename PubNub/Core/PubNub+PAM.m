@@ -20,7 +20,7 @@
 #pragma mark - PAM
 
 - (PNPAMToken *)parseAuthToken:(NSString *)token {
-    return [PNPAMToken tokenFromBase64String:token];
+    return [PNPAMToken tokenFromBase64String:token forUUID:self.configuration.uuid];
 }
 
 - (void)setAuthToken:(NSString *)token {

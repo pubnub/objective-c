@@ -18,10 +18,11 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief Create and configure PubNub access token description object.
  *
  * @param string PAM token encoded as Base64 string.
+ * @param uuid \c uuid which used by target \b PubNub instance.
  *
  * @return Configured and ready to use \c token representation model.
  */
-+ (instancetype)tokenFromBase64String:(NSString *)string;
++ (instancetype)tokenFromBase64String:(NSString *)string forUUID:(NSString *)uuid;
 
 #pragma mark -
 
