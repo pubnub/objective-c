@@ -582,7 +582,7 @@ NS_ASSUME_NONNULL_END
 - (void)appendClientInformation:(PNResult *)result {
     result.TLSEnabled = self.configuration.isTLSEnabled;
     result.uuid = self.configuration.uuid;
-    result.authKey = self.configuration.authKey;
+    result.authKey = self.configuration.authToken ?: self.configuration.authKey;
     result.origin = self.configuration.origin;
 }
 

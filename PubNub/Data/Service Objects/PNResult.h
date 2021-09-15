@@ -50,7 +50,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, copy) NSString *uuid;
 
 /**
- @brief      Authorization which is used to get access to protected remote resources.
+ @brief      Authorization key / token which is used to get access to protected remote resources.
  @discussion Some resources can be protected by \b PAM functionality and access done using this authorization 
              key.
  
