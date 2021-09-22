@@ -73,3 +73,7 @@ Icon?
 ehthumbs.db
 Thumbs.db
 .idea/
+
+# GitHub Actions #
+##################
+.github/.release
