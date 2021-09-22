@@ -1,3 +1,9 @@
+## v4.17.0
+September 22 2021
+
+#### Added
+- Add method which allow to set or parse auth token.
+
 ## [v4.16.2](https://github.com/pubnub/objective-c/releases/tag/v4.16.2)
 June 9 2021
 
