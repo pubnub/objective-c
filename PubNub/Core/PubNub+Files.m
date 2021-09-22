@@ -12,6 +12,7 @@
 #import "PNSendFileStatus+Private.h"
 #import "PNMultipartInputStream.h"
 #import "PubNub+CorePrivate.h"
+#import "PubNub+PAMPrivate.h"
 #import "PNResult+Private.h"
 #import "PNStatus+Private.h"
 #import "PNPublishStatus.h"
@@ -335,6 +336,8 @@ NS_ASSUME_NONNULL_END
     [parameters addPathComponents:@{ @"{channel}": channel, @"{id}": identifier, @"{name}": name }];
     [parameters addPathComponents:self.defaultPathComponents];
     [parameters addQueryParameters:self.defaultQueryComponents];
+    
+    [self addAuthParameter:parameters];
     
     if (parameters.shouldIncludeTelemetry) {
         [parameters addQueryParameters:[self.telemetryManager operationsLatencyForRequest]];

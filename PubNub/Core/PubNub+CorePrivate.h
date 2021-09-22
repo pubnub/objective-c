@@ -33,6 +33,14 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Properties
 
 /**
+ * @brief Shared \a PubNub resources access serialization queue.
+ *
+ * @version 4.17.0
+ * @since 4.17.0
+ */
+@property (nonatomic, nullable, readonly, strong) dispatch_queue_t resourceAccessQueue;
+
+/**
  * @brief Current \b PubNub client configuration.
  */
 @property (nonatomic, readonly, copy) PNConfiguration *configuration;

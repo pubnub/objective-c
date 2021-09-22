@@ -1,6 +1,6 @@
 /**
  * @author Sergey Mamontov
- * @copyright © 2010-2019 PubNub, Inc.
+ * @copyright © 2010-2021PubNub, Inc.
  */
 #import <Foundation/Foundation.h>
 #import <Security/Security.h>
@@ -17,7 +17,7 @@
     #include <net/if.h>
     #include <net/if_dl.h>
 #endif // TARGET_OS_OSX
-#import "PNConfiguration.h"
+#import "PNConfiguration+Private.h"
 #import "PNConstants.h"
 
 
@@ -34,12 +34,17 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PNConfiguration () <NSCopying>
 
 
+#pragma mark - Information
+
+@property (nonatomic, nullable, copy) NSString *authToken;
+
+
 #pragma mark - Initialization and Configuration
 
 @property (nonatomic, copy) NSString *deviceID;
 
 /**
- * @brief Initialise configuration instance using minimal required data.
+ * @brief Initialize configuration instance using minimal required data.
  *
  * @param publishKey Key which allow client to use data push API.
  * @param subscribeKey Key which allow client to subscribe on live feeds pushed from \b PubNub
@@ -186,6 +191,7 @@ NS_ASSUME_NONNULL_END
     configuration.publishKey = self.publishKey;
     configuration.subscribeKey = self.subscribeKey;
     configuration.authKey = self.authKey;
+    configuration.authToken = self.authToken;
     configuration.uuid = self.uuid;
     configuration.cipherKey = self.cipherKey;
     configuration.subscribeMaximumIdleTime = self.subscribeMaximumIdleTime;

@@ -30,6 +30,7 @@
 #import "PNServiceData.h"
 #import "PNErrorStatus.h"
 #import "PNTimeResult.h"
+#import "PNPAMToken.h"
 #import "PNResult.h"
 #import "PNStatus.h"
 
@@ -49,6 +50,7 @@
 #import "PNStructures.h"
 #import "PubNub+APNS.h"
 #import "PubNub+Time.h"
+#import "PubNub+PAM.h"
 #import "PNLLogger.h"
 #import "PNResult.h"
 #import "PNStatus.h"

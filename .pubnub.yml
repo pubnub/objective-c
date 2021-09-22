@@ -1,9 +1,14 @@
 ---
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "4.16.2"
+version: "4.17.0"
 schema: 1
 changelog:
+  - date: 2021-09-22
+    version: v4.17.0
+    changes:
+      - type: feature
+        text: "Add method which allow to set or parse auth token."
   -
     changes:
       -
@@ -1387,7 +1392,7 @@ sdks:
           - distribution-type: framework
             distribution-repository: GitHub release
             package-name: PubNub.catalyst.xcframework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v4.16.2/PubNub.catalyst.xcframework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v4.17.0/PubNub.catalyst.xcframework.tar.gz
             supported-platforms:
               supported-operating-systems:
                 macOS:
@@ -1416,7 +1421,7 @@ sdks:
           - distribution-type: framework
             distribution-repository: GitHub release
             package-name: PubNub.macos.xcframework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v4.16.2/PubNub.macos.xcframework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v4.17.0/PubNub.macos.xcframework.tar.gz
             supported-platforms:
               supported-operating-systems:
                 macOS:
@@ -1432,7 +1437,7 @@ sdks:
           - distribution-type: framework
             distribution-repository: GitHub release
             package-name: PubNub.ios.xcframework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v4.16.2/PubNub.ios.xcframework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v4.17.0/PubNub.ios.xcframework.tar.gz
             supported-platforms:
               supported-operating-systems:
                 iOS:
@@ -1451,7 +1456,7 @@ sdks:
           - distribution-type: framework
             distribution-repository: GitHub release
             package-name: PubNub.tvos.xcframework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v4.16.2/PubNub.tvos.xcframework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v4.17.0/PubNub.tvos.xcframework.tar.gz
             supported-platforms:
               supported-operating-systems:
                 tvOS:

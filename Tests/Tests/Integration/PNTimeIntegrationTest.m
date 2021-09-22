@@ -3,6 +3,7 @@
  * @copyright © 2010-2020 PubNub, Inc.
  */
 #import "PNRecordableTestCase.h"
+#import "NSString+PNTest.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -37,16 +38,33 @@ NS_ASSUME_NONNULL_END
     [self completePubNubConfiguration:self.client];
 }
 
+- (PNConfiguration *)configurationForTestCaseWithName:(NSString *)name {
+    PNConfiguration *configuration = [super configurationForTestCaseWithName:name];
+    
+    if ([name pnt_includesString:@"ShouldFetch"] && [name pnt_includesString:@"ResultWithExpectedOperation"]) {
+        configuration.authKey = @"auth-key";
+    }
+    
+    return configuration;
+}
+
 
 #pragma mark - Tests :: Fetch PubNub time
 
 - (void)testItShouldFetchPubNubTimeAndReceiveResultWithExpectedOperation {
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        [self.client setAuthToken:@"secret-token"];
+        
         [self.client timeWithCompletion:^(PNTimeResult *result, PNErrorStatus *status) {
             XCTAssertNil(status);
             XCTAssertNotNil(result.data.timetoken);
             XCTAssertEqual([@0 compare:result.data.timetoken], NSOrderedAscending);
             XCTAssertEqual(result.operation, PNTimeOperation);
+            XCTAssertNotNil(self.client.currentConfiguration.authKey);
+            XCTAssertNotNil([self.client.currentConfiguration valueForKey:@"authToken"]);
+            
+            NSURLRequest *request = [result valueForKey:@"clientRequest"];
+            XCTAssertNotEqual([request.URL.query rangeOfString:@"auth=secret-token"].location, NSNotFound);
             
             handler();
         }];
