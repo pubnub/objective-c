@@ -1156,6 +1156,9 @@ changelog:
     date: 2015-06-30
     version: v4.0.0
 features:
+  access:
+    - ACCESS-PARSE-TOKEN
+    - ACCESS-SET-TOKEN
   channel-groups:
     - CHANNEL-GROUPS-ADD-CHANNELS
     - CHANNEL-GROUPS-REMOVE-CHANNELS
@@ -1286,9 +1289,9 @@ sdks:
         documentation: https://www.pubnub.com/docs/sdks/objective-c
         distributions:
           - distribution-type: source
-            distribution-repository: GitHub
-            package-name: PubNub Objective-C SDK
-            location: https://github.com/pubnub/objective-c
+            distribution-repository: GitHub relese
+            package-name: PubNub.framework
+            location: https://github.com/pubnub/objective-c/archive/refs/tags/v4.17.0.zip
             supported-platforms:
               supported-operating-systems:
                 macOS:
@@ -1337,6 +1340,105 @@ sdks:
                     - arm64_32
                   target-devices:
                     - Apple Watch
+      - artifact-type: library
+        language: Objective-C
+        tier: 1
+        tags:
+          - Desktop
+          - Mobile
+        source-repository: https://github.com/pubnub/objective-c
+        documentation: https://www.pubnub.com/docs/sdks/objective-c
+        distributions:
+          - distribution-type: library
+            distribution-repository: GitHub relese
+            package-name: PubNub.catalyst.xcframework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v4.17.0/PubNub.catalyst.xcframework.tar.gz
+            supported-platforms:
+              supported-operating-systems:
+                macOS:
+                  runtime-version:
+                    - Objective-C 2.0
+                  minimum-os-version:
+                    - OS X 10.11
+                  maximum-os-version:
+                    - macOS 11.4
+                  target-architecture:
+                    - arm64
+                    - x86_64
+                iOS:
+                  runtime-version:
+                    - Objective-C 2.0
+                  minimum-os-version:
+                    - iOS 9.0
+                  maximum-os-version:
+                    - iOS 14.6
+                  target-architecture:
+                    - arm64
+                    - armv7
+                  target-devices:
+                    - iPhone
+                    - iPad
+          - distribution-type: library
+            distribution-repository: GitHub relese
+            package-name: PubNub.ios.xcframework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v4.17.0/PubNub.ios.xcframework.tar.gz
+            supported-platforms:
+              supported-operating-systems:
+                iOS:
+                  runtime-version:
+                    - Objective-C 2.0
+                  minimum-os-version:
+                    - iOS 9.0
+                  maximum-os-version:
+                    - iOS 14.6
+                  target-architecture:
+                    - arm64
+                    - armv7
+                  target-devices:
+                    - iPhone
+                    - iPad
+          - distribution-type: library
+            distribution-repository: GitHub relese
+            package-name: PubNub.macos.framework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v4.17.0/PubNub.macos.framework.tar.gz
+            supported-platforms:
+              supported-operating-systems:
+                macOS:
+                  runtime-version:
+                    - Objective-C 2.0
+                  minimum-os-version:
+                    - OS X 10.11
+                  maximum-os-version:
+                    - macOS 11.4
+                  target-architecture:
+                    - arm64
+                    - x86_64
+          - distribution-type: library
+            distribution-repository: GitHub relese
+            package-name: PubNub.tvos.xcframework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v4.17.0/PubNub.tvos.xcframework.tar.gz
+            supported-platforms:
+              supported-operating-systems:
+                tvOS:
+                  runtime-version:
+                    - Objective-C 2.0
+                  minimum-os-version:
+                    - tvOS 10.0
+                  maximum-os-version:
+                    - tvOS 14.6
+                  target-architecture:
+                    - arm64
+                  target-devices:
+                    - Apple TV
+      - artifact-type: package
+        language: Objective-C
+        tier: 1
+        tags:
+          - Desktop
+          - Mobile
+        source-repository: https://github.com/pubnub/objective-c
+        documentation: https://www.pubnub.com/docs/sdks/objective-c
+        distributions:
           - distribution-type: package
             distribution-repository: CocoaPods
             package-name: PubNub
@@ -1349,7 +1451,7 @@ sdks:
                   minimum-os-version:
                     - OS X 10.11
                   maximum-os-version:
-                    - macOS 11.2
+                    - macOS 11.4
                   target-architecture:
                     - arm64
                     - x86_64
@@ -1359,7 +1461,7 @@ sdks:
                   minimum-os-version:
                     - iOS 9.0
                   maximum-os-version:
-                    - iOS 14.4
+                    - iOS 14.6
                   target-architecture:
                     - arm64
                     - armv7
@@ -1372,7 +1474,7 @@ sdks:
                   minimum-os-version:
                     - tvOS 10.0
                   maximum-os-version:
-                    - tvOS 14.4
+                    - tvOS 14.6
                   target-architecture:
                     - arm64
                   target-devices:
@@ -1383,93 +1485,12 @@ sdks:
                   minimum-os-version:
                     - watchOS 4.0
                   maximum-os-version:
-                    - watchOS 7.3
+                    - watchOS 7.5
                   target-architecture:
                     - armv7k
                     - arm64_32
                   target-devices:
                     - Apple Watch
-          - distribution-type: framework
-            distribution-repository: GitHub release
-            package-name: PubNub.catalyst.xcframework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v4.17.0/PubNub.catalyst.xcframework.tar.gz
-            supported-platforms:
-              supported-operating-systems:
-                macOS:
-                  runtime-version:
-                    - Objective-C 2.0
-                  minimum-os-version:
-                    - macOS 11.0
-                  maximum-os-version:
-                    - macOS 11.2
-                  target-architecture:
-                    - arm64
-                    - x86_64
-                iOS:
-                  runtime-version:
-                    - Objective-C 2.0
-                  minimum-os-version:
-                    - iOS 9.0
-                  maximum-os-version:
-                    - iOS 14.4
-                  target-architecture:
-                    - arm64
-                    - armv7
-                  target-devices:
-                    - iPhone
-                    - iPad
-          - distribution-type: framework
-            distribution-repository: GitHub release
-            package-name: PubNub.macos.xcframework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v4.17.0/PubNub.macos.xcframework.tar.gz
-            supported-platforms:
-              supported-operating-systems:
-                macOS:
-                  runtime-version:
-                    - Objective-C 2.0
-                  minimum-os-version:
-                    - OS X 10.11
-                  maximum-os-version:
-                    - macOS 11.2
-                  target-architecture:
-                    - arm64
-                    - x86_64
-          - distribution-type: framework
-            distribution-repository: GitHub release
-            package-name: PubNub.ios.xcframework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v4.17.0/PubNub.ios.xcframework.tar.gz
-            supported-platforms:
-              supported-operating-systems:
-                iOS:
-                  runtime-version:
-                    - Objective-C 2.0
-                  minimum-os-version:
-                    - iOS 9.0
-                  maximum-os-version:
-                    - iOS 14.4
-                  target-architecture:
-                    - arm64
-                    - armv7
-                  target-devices:
-                    - iPhone
-                    - iPad
-          - distribution-type: framework
-            distribution-repository: GitHub release
-            package-name: PubNub.tvos.xcframework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v4.17.0/PubNub.tvos.xcframework.tar.gz
-            supported-platforms:
-              supported-operating-systems:
-                tvOS:
-                  runtime-version:
-                    - Objective-C 2.0
-                  minimum-os-version:
-                    - tvOS 10.0
-                  maximum-os-version:
-                    - tvOS 14.4
-                  target-architecture:
-                    - arm64
-                  target-devices:
-                    - Apple TV
 supported-platforms:
   - version: PubNub Objective-C SDK
     platforms:
