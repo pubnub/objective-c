@@ -51,20 +51,35 @@ if [[ $1 != macos ]]; then
 	DESTINATION_NAMES=()
 
 	# Extract list of devices which correspond to target platform and minimum version requirement
-	while IFS='' read -r match; do
-		# Skip destinations for iPhone paired watches
-		[[ $DEVICE == iPhone ]] && [[ $match =~ Watch ]] && continue
+	if [[ $TRAVIS == true ]]; then
+		while IFS='' read -r match; do
+			# Skip destinations for iPhone paired watches
+			[[ $DEVICE == iPhone ]] && [[ $match =~ Watch ]] && continue
 
-		# Skip destination if it's OS version is lower than specified in Podspec.
-		[[ $match =~ $VERSION_REGEXP ]] && [[ ${BASH_REMATCH[2]} -lt $MINIMUM_MAJOR_VERSION ]] && \
-			continue
+			# Skip destination if it's OS version is lower than specified in Podspec.
+			[[ $match =~ $VERSION_REGEXP ]] && [[ ${BASH_REMATCH[2]} -lt $MINIMUM_MAJOR_VERSION ]] && \
+				continue
 
-		[[ ${BASH_REMATCH[2]} -gt $MAXIMUM_MAJOR_VERSION ]] && \
-		  MAXIMUM_MAJOR_VERSION="${BASH_REMATCH[2]}"
+			[[ ${BASH_REMATCH[2]} -gt $MAXIMUM_MAJOR_VERSION ]] && \
+			  MAXIMUM_MAJOR_VERSION="${BASH_REMATCH[2]}"
 
-		AVAILABLE_DEVICES+=("$match")
-  done < <(echo "$(xcrun xctrace list devices)" | grep -E "^$DEVICE")
-  # done < <(echo "$(instruments -s devices)" | grep -E "^$DEVICE")
+			AVAILABLE_DEVICES+=("$match")
+	  done < <(echo "$(instruments -s devices)" | grep -E "^$DEVICE")
+  else
+		while IFS='' read -r match; do
+			# Skip destinations for iPhone paired watches
+			[[ $DEVICE == iPhone ]] && [[ $match =~ Watch ]] && continue
+
+			# Skip destination if it's OS version is lower than specified in Podspec.
+			[[ $match =~ $VERSION_REGEXP ]] && [[ ${BASH_REMATCH[2]} -lt $MINIMUM_MAJOR_VERSION ]] && \
+				continue
+
+			[[ ${BASH_REMATCH[2]} -gt $MAXIMUM_MAJOR_VERSION ]] && \
+			  MAXIMUM_MAJOR_VERSION="${BASH_REMATCH[2]}"
+
+			AVAILABLE_DEVICES+=("$match")
+	  done < <(echo "$(xcrun xctrace list devices)" | grep -E "^$DEVICE")
+  fi
 
 	NEXT_MAJOR_VERSION=$MAXIMUM_MAJOR_VERSION
 
@@ -77,7 +92,7 @@ if [[ $1 != macos ]]; then
 	  		[[ $DEVICE_INFORMATION =~ (.*)[[:space:]]\((([0-9]+)\.[0-9]+(\.[0-9]+)?)\) ]] && \
 	  			DEVICE_NAME="${BASH_REMATCH[1]}"
 
-	  		[[ -n $DEVICE_NAME ]] && DEVICE_NAME="$(echo "$DEVICE_NAME" | sed -e "s/ Simulator//")"
+	  		[[ -n $DEVICE_NAME && $TRAVIS != true ]] && DEVICE_NAME="$(echo "$DEVICE_NAME" | sed -e "s/ Simulator//")"
 				DESTINATION_NAMES+=("$DEVICE_NAME $OS")
 	  		DESTINATIONS+=("platform=$PLATFORM Simulator,name=$DEVICE_NAME,OS=$OS")
 				MAXIMUM_DESTINATIONS=$((MAXIMUM_DESTINATIONS-1))

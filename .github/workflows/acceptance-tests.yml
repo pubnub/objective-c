@@ -26,7 +26,7 @@ jobs:
           TESTS_PAM_PUBLISH_KEY: ${{ secrets.TESTS_PAM_PUBLISH_KEY }}
           TESTS_PAM_SUBSCRIBE_KEY: ${{ secrets.TESTS_PAM_SUBSCRIBE_KEY }}
           TESTS_PUBLISH_KEY: ${{ secrets.TESTS_PUBLISH_KEY }}
-          TESTS_SUBSCRIBE_KEY: ${{ secrets.ESTS_SUBSCRIBE_KEY }}
+          TESTS_SUBSCRIBE_KEY: ${{ secrets.TESTS_SUBSCRIBE_KEY }}
         run: |
           gem install xcpretty
           cd ./Tests && pod install && cd ..
