@@ -21,8 +21,11 @@ jobs:
         with:
           token: ${{ secrets.GH_TOKEN }}
           features-path: Tests/Support Files/Features
-      - name: Run iOS acceptance tests
+      - name: Preapre Xcode environment
         run: |
           gem install xcpretty
           cd ./Tests && pod install && cd ..
+          ./Tests/Support Files/Scripts/create-configuration.sh
+      - name: Run iOS acceptance tests
+        run: |
           ./Tests/Support\ Files/Scripts/tests-runner.sh ios contract 1
