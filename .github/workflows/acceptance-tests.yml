@@ -1,6 +1,8 @@
 name: Acceptance tests
 
-on: [push]
+on: 
+  push:
+  workflow_dispatch:
 
 jobs:
   acceptance-tests: 
