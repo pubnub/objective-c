@@ -39,7 +39,6 @@ if [[ $2 == contract && $1 != ios ]]; then
   exit 1
 fi
 
-
 if [[ $1 != macos ]]; then
 	[[ $1 == tvos ]] && PLATFORM="tvOS" || PLATFORM="iOS"
 	[[ $1 == tvos ]] && DEVICE="Apple TV" || DEVICE="iPhone"
@@ -64,8 +63,8 @@ if [[ $1 != macos ]]; then
 		  MAXIMUM_MAJOR_VERSION="${BASH_REMATCH[2]}"
 
 		AVAILABLE_DEVICES+=("$match")
-  # done < <(echo "$(xcrun xctrace list devices)" | grep -E "^$DEVICE")
-  done < <(echo "$(instruments -s devices)" | grep -E "^$DEVICE")
+  done < <(echo "$(xcrun xctrace list devices)" | grep -E "^$DEVICE")
+  # done < <(echo "$(instruments -s devices)" | grep -E "^$DEVICE")
 
 	NEXT_MAJOR_VERSION=$MAXIMUM_MAJOR_VERSION
 
@@ -78,6 +77,7 @@ if [[ $1 != macos ]]; then
 	  		[[ $DEVICE_INFORMATION =~ (.*)[[:space:]]\((([0-9]+)\.[0-9]+(\.[0-9]+)?)\) ]] && \
 	  			DEVICE_NAME="${BASH_REMATCH[1]}"
 
+	  		[[ -n $DEVICE_NAME ]] && DEVICE_NAME="$(echo "$DEVICE_NAME" | sed -e "s/ Simulator//")"
 				DESTINATION_NAMES+=("$DEVICE_NAME $OS")
 	  		DESTINATIONS+=("platform=$PLATFORM Simulator,name=$DEVICE_NAME,OS=$OS")
 				MAXIMUM_DESTINATIONS=$((MAXIMUM_DESTINATIONS-1))

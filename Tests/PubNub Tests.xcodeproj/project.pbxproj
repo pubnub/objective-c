@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7941EE5F270C73B30054D9EF /* ios-contract-tests.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7941EE5E270C73B30054D9EF /* ios-contract-tests.plist */; };
 		796E652A2707B33A001B57F4 /* PNContractCucumberTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 796E65292707B33A001B57F4 /* PNContractCucumberTest.m */; };
 		796E653127088547001B57F4 /* PNContractTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 796E653027088547001B57F4 /* PNContractTestCase.m */; };
 		796E653527088A2A001B57F4 /* PNTimeContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = 796E653427088A2A001B57F4 /* PNTimeContractTestSteps.m */; };
@@ -168,6 +169,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7941EE5E270C73B30054D9EF /* ios-contract-tests.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "ios-contract-tests.plist"; sourceTree = "<group>"; };
 		796E65292707B33A001B57F4 /* PNContractCucumberTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNContractCucumberTest.m; sourceTree = "<group>"; };
 		796E652F27088547001B57F4 /* PNContractTestCase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNContractTestCase.h; sourceTree = "<group>"; };
 		796E653027088547001B57F4 /* PNContractTestCase.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNContractTestCase.m; sourceTree = "<group>"; };
@@ -435,6 +437,7 @@
 		A52926B023B0D63100FF46DD /* Targets */ = {
 			isa = PBXGroup;
 			children = (
+				7941EE5E270C73B30054D9EF /* ios-contract-tests.plist */,
 				A529270B23B0E80700FF46DD /* macos-tests.plist */,
 				A529270C23B0E80700FF46DD /* tvos-tests.plist */,
 				A52926D823B0E3CF00FF46DD /* ios-tests.plist */,
@@ -897,6 +900,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7941EE5F270C73B30054D9EF /* ios-contract-tests.plist in Resources */,
 				796F630E270347AD00DE6F07 /* Features in Resources */,
 				796F6305270344DF00DE6F07 /* Fixtures in Resources */,
 				796F6306270344DF00DE6F07 /* tests-configuration.json in Resources */,
