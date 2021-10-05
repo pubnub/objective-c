@@ -24,6 +24,7 @@ fi
 TEST_SCHEME_TYPE="Mocked Integration Tests"
 [[ $2 == integration ]] && TEST_SCHEME_TYPE="Integration Tests"
 [[ $2 == coverage ]] && TEST_SCHEME_TYPE="Code Coverage"
+[[ $2 == contract ]] && TEST_SCHEME_TYPE="Contract Tests"
 
 # Maximum number of tests which should run for same device type (various versions).
 [[ -n $3 ]] && MAXIMUM_DESTINATIONS="$3" || MAXIMUM_DESTINATIONS=3
@@ -31,6 +32,12 @@ TEST_SCHEME_TYPE="Mocked Integration Tests"
 DESTINATION_NAMES=("macOS")
 DESTINATIONS=()
 PLATFORM="macOS"
+
+
+if [[ $2 == contract && $1 != ios ]]; then
+  echo -e "${BRCF}Contract testing implemented only for iOS${CF}"
+  exit 1
+fi
 
 
 if [[ $1 != macos ]]; then

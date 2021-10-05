@@ -37,6 +37,11 @@ target '[iOS] Integration Tests' do
   pod 'PubNub', :path => '../'
 end
 
+target '[iOS] Contract Tests' do
+  platform :ios, '9.0'
+  pod 'Cucumberish'
+  pod 'PubNub', :path => '../'
+end
 
 
 # Making all interfaces visible for all targets on explicit import

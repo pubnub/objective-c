@@ -1,0 +1,26 @@
+name: Acceptance tests
+
+on: [push]
+
+jobs:
+  acceptance-tests: 
+    name: Run Acceptance tests
+    runs-on: macos-11
+    steps: 
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Checkout mock-server action
+        uses: actions/checkout@v2
+        with:
+          repository: pubnub/client-engineering-deployment-tools
+          ref: v1
+          token: ${{ secrets.GH_TOKEN }}
+          path: deployment-tools
+      - name: Run mock server action
+        uses: ./deployment-tools/actions/mock-server
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          features-path: Tests/Support Files/Features
+      - name: Run iOS acceptance tests
+        run: |
+          ./Tests/Support\ Files/Scripts/tests-runner.sh contract 1
