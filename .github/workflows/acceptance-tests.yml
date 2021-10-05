@@ -31,6 +31,6 @@ jobs:
           gem install xcpretty
           cd ./Tests && pod install && cd ..
           ./Tests/Support\ Files/Scripts/create-configuration.sh
-      - name: Run iOS acceptance tests
+      - name: Run acceptance tests
         run: |
           ./Tests/Support\ Files/Scripts/tests-runner.sh ios contract 1
