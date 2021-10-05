@@ -64,6 +64,7 @@ if [[ $1 != macos ]]; then
 		  MAXIMUM_MAJOR_VERSION="${BASH_REMATCH[2]}"
 
 		AVAILABLE_DEVICES+=("$match")
+  # done < <(echo "$(xcrun xctrace list devices)" | grep -E "^$DEVICE")
   done < <(echo "$(instruments -s devices)" | grep -E "^$DEVICE")
 
 	NEXT_MAJOR_VERSION=$MAXIMUM_MAJOR_VERSION
