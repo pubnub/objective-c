@@ -467,7 +467,7 @@ changelog:
         text: "Fixed issue because of which new 'connected' presence API wasn't able to 'disconnect' user."
         type: bug
       -
-        text: "Fixed behavior during unsubscribe - connect event won't fire after user 'disconnectec', because there is no new channels about which listeners should be notified."
+        text: "Fixed behavior during unsubscribe - connect event won't fire after user 'disconnected', because there is no new channels about which listeners should be notified."
         type: improvement
     date: 2018-02-01
     version: v4.7.6
@@ -755,7 +755,7 @@ changelog:
         text: "added automatic heartbeat interval using formula and heartbeat value for calculated value."
         type: improvement
       -
-        text: "added 'channel' and 'subscription' properties to represent channel from which event arrived and actual data strean name which is used by PubNub client for subscription."
+        text: "added 'channel' and 'subscription' properties to represent channel from which event arrived and actual data stream name which is used by PubNub client for subscription."
         type: feature
       -
         text: "deprecated 'actualChannel' and 'subscribedChannel' in favor of 'channel' and 'subscription' (properties still available, but will be eventually will be completelly removed)."
@@ -811,7 +811,7 @@ changelog:
   -
     changes:
       -
-        text: "fixed podspec dependency version format compatibiliyty with CocoaPods 0.39."
+        text: "fixed podspec dependency version format compatibility with CocoaPods 0.39."
         type: bug
     date: 2016-05-17
     version: v4.3.3
@@ -831,7 +831,7 @@ changelog:
         text: "fixed issue with PNNumber on 32bit system, when passed NSNumber instance created from unix-timestamp multiplied on 10000000."
         type: bug
       -
-        text: "fixed message content descryption in case if it has been sent along with mobile push payload."
+        text: "fixed message content decryption in case if it has been sent along with mobile push payload."
         type: bug
       -
         text: "mobile push payload removed from received message."
@@ -856,7 +856,7 @@ changelog:
         text: "added generics to collection properties and arguments."
         type: feature
       -
-        text: "added nulability annotations."
+        text: "added null-ability annotations."
         type: improvement
       -
         text: "updated tests."
@@ -874,7 +874,7 @@ changelog:
         text: "fixed script responsible for module map update in built frameworks."
         type: bug
       -
-        text: "fixed 'Universal Startic Frameork (iOS)' to use correct platform."
+        text: "fixed 'Universal Static Framework (iOS)' to use correct platform."
         type: bug
       -
         text: "added missing files to Mac Framework."
@@ -884,7 +884,7 @@ changelog:
   -
     changes:
       -
-        text: "changed way how heartbeat state notification is set. Now it can be specified in heartbeatNotificationOptions bitfield property using PNHeartbeatNotificationOptions options."
+        text: "changed way how heartbeat state notification is set. Now it can be specified in heartbeatNotificationOptions bit field property using PNHeartbeatNotificationOptions options."
         type: improvement
     date: 2016-02-09
     version: v4.2.7
@@ -938,7 +938,7 @@ changelog:
   -
     changes:
       -
-        text: "fixed cient state cache issue because of which channel group state itself get updated even if state has been changed for one."
+        text: "fixed client state cache issue because of which channel group state itself get updated even if state has been changed for one."
         type: bug
     date: 2015-12-10
     version: v4.2.1
@@ -954,7 +954,7 @@ changelog:
         text: "added stringified representation for category and operation fields."
         type: improvement
       -
-        text: "removed client initialisation code which affected PNLogger configuration."
+        text: "removed client initialization code which affected PNLogger configuration."
         type: improvement
       -
         text: "fixed Mac OSX target and scripts for dynamic framework creation."
@@ -971,7 +971,7 @@ changelog:
   -
     changes:
       -
-        text: "adjusted Base64 decoding settings which will allow to decode encrypted messages from some clients which changed base64 encoding algorithms."
+        text: "adjusted Base64 decoding settings which will allow to decode encrypted messages from some clients which changed Base64 encoding algorithms."
         type: bug
     date: 2015-11-20
     version: v4.1.3
@@ -1131,7 +1131,7 @@ changelog:
         text: "added 'associatedObject' field to PNErrorStatus (for now only for decryption error on live feed)."
         type: improvement
       -
-        text: "in case of decryption error only status object will arrive to lisetner (‐client:didReceiveMessage: won't be called)."
+        text: "in case of decryption error only status object will arrive to listener (‐client:didReceiveMessage: won't be called)."
         type: improvement
       -
         text: "fixed logger levels manipulation."
@@ -1289,7 +1289,7 @@ sdks:
         documentation: https://www.pubnub.com/docs/sdks/objective-c
         distributions:
           - distribution-type: source
-            distribution-repository: GitHub relese
+            distribution-repository: GitHub release
             package-name: PubNub.framework
             location: https://github.com/pubnub/objective-c/archive/refs/tags/v4.17.0.zip
             supported-platforms:
@@ -1350,7 +1350,7 @@ sdks:
         documentation: https://www.pubnub.com/docs/sdks/objective-c
         distributions:
           - distribution-type: library
-            distribution-repository: GitHub relese
+            distribution-repository: GitHub release
             package-name: PubNub.catalyst.xcframework.tar.gz
             location: https://github.com/pubnub/objective-c/releases/download/v4.17.0/PubNub.catalyst.xcframework.tar.gz
             supported-platforms:
@@ -1379,7 +1379,7 @@ sdks:
                     - iPhone
                     - iPad
           - distribution-type: library
-            distribution-repository: GitHub relese
+            distribution-repository: GitHub release
             package-name: PubNub.ios.xcframework.tar.gz
             location: https://github.com/pubnub/objective-c/releases/download/v4.17.0/PubNub.ios.xcframework.tar.gz
             supported-platforms:
@@ -1398,7 +1398,7 @@ sdks:
                     - iPhone
                     - iPad
           - distribution-type: library
-            distribution-repository: GitHub relese
+            distribution-repository: GitHub release
             package-name: PubNub.macos.framework.tar.gz
             location: https://github.com/pubnub/objective-c/releases/download/v4.17.0/PubNub.macos.framework.tar.gz
             supported-platforms:
@@ -1414,7 +1414,7 @@ sdks:
                     - arm64
                     - x86_64
           - distribution-type: library
-            distribution-repository: GitHub relese
+            distribution-repository: GitHub release
             package-name: PubNub.tvos.xcframework.tar.gz
             location: https://github.com/pubnub/objective-c/releases/download/v4.17.0/PubNub.tvos.xcframework.tar.gz
             supported-platforms:
