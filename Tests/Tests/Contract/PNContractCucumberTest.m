@@ -10,7 +10,7 @@
 #import "PNContractTestCase.h"
 
 __attribute__((constructor))
-void CucumberishInit() {
+void CucumberishInit(void) {
     [[Cucumberish instance] setPrettyNamesAllowed:YES];
     // Setup common steps
     [[PNContractTestCase new] setup];

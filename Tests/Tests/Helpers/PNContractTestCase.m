@@ -325,7 +325,7 @@ NS_ASSUME_NONNULL_END
             
             XCTAssertNotNil(status, @"Last API call should fail");
             XCTAssertTrue(status.operation == self.testedFeatureType, @"Wrong last API call status operation type");
-            XCTAssertTrue(status.isError, @"Last AP I call should report error");
+            XCTAssertTrue(status.isError, @"Last API call should report error");
             
             if ([self testedFeatureExpectResponse]) {
                 XCTAssertNil(result, @"Last API shouldn't return result.");

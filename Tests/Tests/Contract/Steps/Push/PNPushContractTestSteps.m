@@ -42,7 +42,7 @@ NS_ASSUME_NONNULL_END
         self.testedFeatureType = PNPushNotificationEnabledChannelsOperation;
         
         [self callCodeSynchronously:^(dispatch_block_t completion) {
-            PNPushType pushType = [self pushTypeFromWhenMatch:args.lastObject];
+            PNPushType pushType = [self pushTypeFromWhenMatch:args.firstObject];
             PNAPNSAuditAPICallBuilder *builder = self.client.push().audit()
                 .pushType(pushType)
                 .token(@"my-token");
@@ -64,7 +64,7 @@ NS_ASSUME_NONNULL_END
         self.testedFeatureType = PNAddPushNotificationsOnChannelsOperation;
         
         [self callCodeSynchronously:^(dispatch_block_t completion) {
-            PNPushType pushType = [self pushTypeFromWhenMatch:args.lastObject];
+            PNPushType pushType = [self pushTypeFromWhenMatch:args.firstObject];
             PNAPNSModificationAPICallBuilder *builder = self.client.push().enable()
                 .pushType(pushType)
                 .token(@"my-token")
@@ -86,7 +86,7 @@ NS_ASSUME_NONNULL_END
         self.testedFeatureType = PNRemovePushNotificationsFromChannelsOperation;
         
         [self callCodeSynchronously:^(dispatch_block_t completion) {
-            PNPushType pushType = [self pushTypeFromWhenMatch:args.lastObject];
+            PNPushType pushType = [self pushTypeFromWhenMatch:args.firstObject];
             PNAPNSModificationAPICallBuilder *builder = self.client.push().disable()
                 .pushType([self pushTypeFromWhenMatch:args.lastObject])
                 .token(@"my-token")
@@ -108,7 +108,7 @@ NS_ASSUME_NONNULL_END
         self.testedFeatureType = PNRemoveAllPushNotificationsOperation;
         
         [self callCodeSynchronously:^(dispatch_block_t completion) {
-            PNPushType pushType = [self pushTypeFromWhenMatch:args.lastObject];
+            PNPushType pushType = [self pushTypeFromWhenMatch:args.firstObject];
             PNAPNSModificationAPICallBuilder *builder = self.client.push().disableAll()
                 .pushType([self pushTypeFromWhenMatch:args.lastObject])
                 .token(@"my-token");
