@@ -11,6 +11,8 @@
 #import "PNFilesContractTestSteps.h"
 #import "PNPushContractTestSteps.h"
 #import "PNTimeContractTestSteps.h"
+#import <PubNub/PNPrivateStructures.h>
+
 
 
 #pragma mark Types & Constants
@@ -293,9 +295,6 @@ NS_ASSUME_NONNULL_END
             PNContractTestCase.messageHandlers = nil;
             PNContractTestCase.statusHandlers = nil;
             PNContractTestCase.currentClient = nil;
-            
-            //Code that runs after each scenario
-            //You can now check the scenario's success and failureReason properties
         });
         
         Given(@"the demo keyset", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
@@ -324,7 +323,9 @@ NS_ASSUME_NONNULL_END
             PNResult *result = [self lastResult];
             
             XCTAssertNotNil(status, @"Last API call should fail");
-            XCTAssertTrue(status.operation == self.testedFeatureType, @"Wrong last API call status operation type");
+            XCTAssertTrue(status.operation == self.testedFeatureType,
+                          @"Wrong last API call status operation type (expected: %@; got: %@)",
+                          PNOperationTypeStrings[self.testedFeatureType], PNOperationTypeStrings[status.operation]);
             XCTAssertTrue(status.isError, @"Last API call should report error");
             
             if ([self testedFeatureExpectResponse]) {
