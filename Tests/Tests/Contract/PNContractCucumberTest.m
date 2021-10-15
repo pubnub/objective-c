@@ -16,8 +16,7 @@ void CucumberishInit(void) {
     [[PNContractTestCase new] setup];
     [Cucumberish instance].fixMissingLastScenario = NO;
     
-    NSArray *excludeTags = @[
-        @"feature=push",
+    NSMutableArray *excludeTags = [@[
         @"contract=grantAllPermissions",
         @"contract=grantWithoutAuthorizedUUID",
         @"contract=grantWithAuthorizedUUID",
@@ -25,8 +24,19 @@ void CucumberishInit(void) {
         @"contract=grantWithRegExpSyntaxError",
         @"contract=grantWithRegExpNonCapturingError",
         @"missingOpenApi",
+        @"na=objc",
+        @"beta",
         @"skip"
-    ];
+    ] mutableCopy];
+    
+    
+    NSString *xcTestBundlePath = NSProcessInfo.processInfo.environment[@"XCTestBundlePath"];
+    NSBundle *contractTestsBundle = [NSBundle bundleForClass:[PNContractTestCase class]];
+    Cucumberish.instance.resultsDirectory = contractTestsBundle.infoDictionary[@"CUCUMBER_REPORTS_PATH"];
+    
+    if ([xcTestBundlePath rangeOfString:@"Contract Tests Beta"].location != NSNotFound) {
+        [excludeTags removeObject:@"beta"];
+    }
     
     NSBundle * bundle = [NSBundle bundleForClass:[PNContractTestCase class]];
     [Cucumberish executeFeaturesInDirectory:@"Features"

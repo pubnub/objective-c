@@ -33,6 +33,14 @@ jobs:
           gem install xcpretty
           cd ./Tests && pod install && cd ..
           ./Tests/Support\ Files/Scripts/create-configuration.sh
-      - name: Run acceptance tests
+      - name: Run stable acceptance tests
         run: |
           ./Tests/Support\ Files/Scripts/tests-runner.sh ios contract 1
+      - name: Run beta acceptance tests
+        run: |
+          ./Tests/Support\ Files/Scripts/tests-runner.sh ios contract-beta 1
+      - name: Upload acceptance tests reports
+        uses: actions/upload-artifact@v2
+        with:
+          name: acceptance-test-reports
+          path: Tests/Results/*.json

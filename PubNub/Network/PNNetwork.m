@@ -840,7 +840,6 @@ NS_ASSUME_NONNULL_END
     
     [self appendRequiredParametersTo:parameters];
     NSURL *requestURL = [PNURLBuilder URLForOperation:operationType withParameters:parameters];
-    NSLog(@"~~~~~~> SEND REQUEST: %@", requestURL.absoluteString);
     
     if (requestURL) {
         PNLogRequest(self.client.logger, @"<PubNub::Network> %@ %@", parameters.HTTPMethod,

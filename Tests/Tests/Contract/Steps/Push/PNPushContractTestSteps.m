@@ -41,17 +41,16 @@ NS_ASSUME_NONNULL_END
     [self startCucumberHookEventsListening];
     
     When(@"^I list (.*) push channels(.*)?$", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
+        PNPushType pushType = [self pushTypeFromWhenMatch:args.firstObject];
+        id token = pushType == PNFCMPush ? @"my-token" : [@"my-token" dataUsingEncoding:NSUTF8StringEncoding];
         self.testedFeatureType = PNPushNotificationEnabledChannelsOperation;
-        NSLog(@"~~~~~> ^I list (.*) push channels(.*)?$: %@", args);
         
         [self callCodeSynchronously:^(dispatch_block_t completion) {
-            PNPushType pushType = [self pushTypeFromWhenMatch:args.firstObject];
             PNAPNSAuditAPICallBuilder *builder = self.client.push().audit()
                 .pushType(pushType)
-                .token(@"my-token");
+                .token(token);
             
             if (pushType == PNAPNS2Push && [args indexOfObject:@" with topic"] != NSNotFound) {
-                NSLog(@"~~~~~> SET V2 ENABLED CHANNELS");
                 self.testedFeatureType = PNPushNotificationEnabledChannelsV2Operation;
                 builder.topic(@"com.contract.test");
             }
@@ -65,13 +64,14 @@ NS_ASSUME_NONNULL_END
     });
     
     When(@"^I add (.*) push channels(.*)?$", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
+        PNPushType pushType = [self pushTypeFromWhenMatch:args.firstObject];
+        id token = pushType == PNFCMPush ? @"my-token" : [@"my-token" dataUsingEncoding:NSUTF8StringEncoding];
         self.testedFeatureType = PNAddPushNotificationsOnChannelsOperation;
         
         [self callCodeSynchronously:^(dispatch_block_t completion) {
-            PNPushType pushType = [self pushTypeFromWhenMatch:args.firstObject];
             PNAPNSModificationAPICallBuilder *builder = self.client.push().enable()
                 .pushType(pushType)
-                .token(@"my-token")
+                .token(token)
                 .channels(@[@"channel1", @"channel2"]);
             
             if (pushType == PNAPNS2Push && [args indexOfObject:@" with topic"] != NSNotFound) {
@@ -87,13 +87,14 @@ NS_ASSUME_NONNULL_END
     });
     
     When(@"^I remove (.*) push channels(.*)?$", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
+        PNPushType pushType = [self pushTypeFromWhenMatch:args.firstObject];
+        id token = pushType == PNFCMPush ? @"my-token" : [@"my-token" dataUsingEncoding:NSUTF8StringEncoding];
         self.testedFeatureType = PNRemovePushNotificationsFromChannelsOperation;
         
         [self callCodeSynchronously:^(dispatch_block_t completion) {
-            PNPushType pushType = [self pushTypeFromWhenMatch:args.firstObject];
             PNAPNSModificationAPICallBuilder *builder = self.client.push().disable()
                 .pushType([self pushTypeFromWhenMatch:args.lastObject])
-                .token(@"my-token")
+                .token(token)
                 .channels(@[@"channel1", @"channel2"]);
             
             if (pushType == PNAPNS2Push && [args indexOfObject:@" with topic"] != NSNotFound) {
@@ -109,13 +110,14 @@ NS_ASSUME_NONNULL_END
     });
     
     When(@"^I remove (.*) device(.*)?$", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
+        PNPushType pushType = [self pushTypeFromWhenMatch:args.firstObject];
+        id token = pushType == PNFCMPush ? @"my-token" : [@"my-token" dataUsingEncoding:NSUTF8StringEncoding];
         self.testedFeatureType = PNRemoveAllPushNotificationsOperation;
         
         [self callCodeSynchronously:^(dispatch_block_t completion) {
-            PNPushType pushType = [self pushTypeFromWhenMatch:args.firstObject];
             PNAPNSModificationAPICallBuilder *builder = self.client.push().disableAll()
                 .pushType([self pushTypeFromWhenMatch:args.lastObject])
-                .token(@"my-token");
+                .token(token);
             
             if (pushType == PNAPNS2Push && [args indexOfObject:@" with topic"] != NSNotFound) {
                 self.testedFeatureType = PNRemoveAllPushNotificationsV2Operation;

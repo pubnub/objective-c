@@ -25,6 +25,7 @@ TEST_SCHEME_TYPE="Mocked Integration Tests"
 [[ $2 == integration ]] && TEST_SCHEME_TYPE="Integration Tests"
 [[ $2 == coverage ]] && TEST_SCHEME_TYPE="Code Coverage"
 [[ $2 == contract ]] && TEST_SCHEME_TYPE="Contract Tests"
+[[ $2 == contract-beta ]] && TEST_SCHEME_TYPE="Contract Tests Beta"
 
 # Maximum number of tests which should run for same device type (various versions).
 [[ -n $3 ]] && MAXIMUM_DESTINATIONS="$3" || MAXIMUM_DESTINATIONS=3
@@ -110,6 +111,7 @@ fi
 for destinationPlatformIdx in "${!DESTINATIONS[@]}"; do
   DESTINATION_PLATFORM="${DESTINATIONS[$destinationPlatformIdx]}"
   DESTINATION_NAME="${DESTINATION_NAMES[$destinationPlatformIdx]}"
+  CUCUMBER_REPORTS_PATH="$GIT_ROOT_PATH/Tests/Results"
 
   echo -e "${LCCF}Running tests for '${DF}$DESTINATION_NAME${CF}${LCCF}'...${CF}"
 	xcodebuild \
@@ -117,11 +119,23 @@ for destinationPlatformIdx in "${!DESTINATIONS[@]}"; do
 		-scheme "[$PLATFORM] $TEST_SCHEME_TYPE" \
 		-destination "$DESTINATION_PLATFORM" \
 		-parallel-testing-enabled NO \
-		test && XCODE_BUILD_EXITCODE="${PIPESTATUS[0]}"
-		# test | xcpretty --simple && XCODE_BUILD_EXITCODE="${PIPESTATUS[0]}"
+		test | xcpretty --simple && XCODE_BUILD_EXITCODE="${PIPESTATUS[0]}"
 
-		if [[ $XCODE_BUILD_EXITCODE -gt 0 ]]; then
-			echo -e "${BRCF}xcodebuild exited with error code: $XCODE_BUILD_EXITCODE"
-			exit $XCODE_BUILD_EXITCODE
-	fi
+  if [[ $2 == contract || $2 == contract-beta ]]; then
+    REPORT_FILENAME="$CUCUMBER_REPORTS_PATH/CucumberishTestResults-[$PLATFORM] $TEST_SCHEME_TYPE.json"
+    [[ $2 == contract ]] && TARGET_REPORT_FILENAME="main.json" || TARGET_REPORT_FILENAME="beta.json"
+
+    if [[ -r "$REPORT_FILENAME" ]]; then
+      mv "$REPORT_FILENAME" "$CUCUMBER_REPORTS_PATH/$TARGET_REPORT_FILENAME"
+    else
+      echo -e "${BRCF}report file not created: $REPORT_FILENAME"
+    fi
+  fi
+
+  if [[ $XCODE_BUILD_EXITCODE -gt 0 && $2 != contract-beta ]]; then
+    echo -e "${BRCF}xcodebuild exited with error code: $XCODE_BUILD_EXITCODE"
+    exit $XCODE_BUILD_EXITCODE
+  elif [[ $2 == contract-beta ]]; then
+    echo -e "${LCCF}$TEST_SCHEME_TYPE is allowed to fail.${CF}"
+  fi
 done

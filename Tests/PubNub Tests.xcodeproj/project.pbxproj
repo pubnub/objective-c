@@ -7,6 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		79657A7B2719CD5B00BACEC5 /* PNAccessContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = 79BB4BDE270A66E100EDC466 /* PNAccessContractTestSteps.m */; };
+		79657A7C2719CD5B00BACEC5 /* PNMessageActionsContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = 79BB4BD6270A60A900EDC466 /* PNMessageActionsContractTestSteps.m */; };
+		79657A7D2719CD5B00BACEC5 /* PNSubscribeContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = 796E6538270895F5001B57F4 /* PNSubscribeContractTestSteps.m */; };
+		79657A7E2719CD5B00BACEC5 /* PNContractTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 796E653027088547001B57F4 /* PNContractTestCase.m */; };
+		79657A7F2719CD5B00BACEC5 /* PNTimeContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = 796E653427088A2A001B57F4 /* PNTimeContractTestSteps.m */; };
+		79657A802719CD5B00BACEC5 /* PNFilesContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = 79BB4BE2270A6FBF00EDC466 /* PNFilesContractTestSteps.m */; };
+		79657A812719CD5B00BACEC5 /* PNHistoryContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = 79BB4BDA270A62BE00EDC466 /* PNHistoryContractTestSteps.m */; };
+		79657A822719CD5B00BACEC5 /* PNPushContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = 79BB4BD22709EA5400EDC466 /* PNPushContractTestSteps.m */; };
+		79657A832719CD5B00BACEC5 /* PNPublishContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = 79BB4BCE2709D70C00EDC466 /* PNPublishContractTestSteps.m */; };
+		79657A842719CD5B00BACEC5 /* PNContractCucumberTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 796E65292707B33A001B57F4 /* PNContractCucumberTest.m */; };
+		79657A882719CD5B00BACEC5 /* Features in Resources */ = {isa = PBXBuildFile; fileRef = 796F630D270347AD00DE6F07 /* Features */; };
+		79657A892719CD5B00BACEC5 /* Fixtures in Resources */ = {isa = PBXBuildFile; fileRef = A5A905F923B57C80006D22BA /* Fixtures */; };
+		79657A8A2719CD5B00BACEC5 /* tests-configuration.json in Resources */ = {isa = PBXBuildFile; fileRef = A529271823B1855A00FF46DD /* tests-configuration.json */; };
 		796E652A2707B33A001B57F4 /* PNContractCucumberTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 796E65292707B33A001B57F4 /* PNContractCucumberTest.m */; };
 		796E653127088547001B57F4 /* PNContractTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 796E653027088547001B57F4 /* PNContractTestCase.m */; };
 		796E653527088A2A001B57F4 /* PNTimeContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = 796E653427088A2A001B57F4 /* PNTimeContractTestSteps.m */; };
@@ -169,6 +182,7 @@
 
 /* Begin PBXFileReference section */
 		7941EE5E270C73B30054D9EF /* ios-contract-tests.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "ios-contract-tests.plist"; sourceTree = "<group>"; };
+		79657A8F2719CD5B00BACEC5 /* [iOS] Contract Tests Beta.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "[iOS] Contract Tests Beta.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		796E65292707B33A001B57F4 /* PNContractCucumberTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNContractCucumberTest.m; sourceTree = "<group>"; };
 		796E652F27088547001B57F4 /* PNContractTestCase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNContractTestCase.h; sourceTree = "<group>"; };
 		796E653027088547001B57F4 /* PNContractTestCase.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNContractTestCase.m; sourceTree = "<group>"; };
@@ -243,6 +257,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		79657A852719CD5B00BACEC5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		796F6303270344DF00DE6F07 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -642,6 +663,7 @@
 				A52926F723B0E71700FF46DD /* [macOS] Mocked Integration Tests.xctest */,
 				A529270323B0E72500FF46DD /* [macOS] Unit Tests.xctest */,
 				796F630A270344DF00DE6F07 /* [iOS] Contract Tests.xctest */,
+				79657A8F2719CD5B00BACEC5 /* [iOS] Contract Tests Beta.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -678,6 +700,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		79657A782719CD5B00BACEC5 /* [iOS] Contract Tests Beta */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 79657A8C2719CD5B00BACEC5 /* Build configuration list for PBXNativeTarget "[iOS] Contract Tests Beta" */;
+			buildPhases = (
+				79657A7A2719CD5B00BACEC5 /* Sources */,
+				79657A852719CD5B00BACEC5 /* Frameworks */,
+				79657A872719CD5B00BACEC5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "[iOS] Contract Tests Beta";
+			productName = "[iOS] Integration Tests";
+			productReference = 79657A8F2719CD5B00BACEC5 /* [iOS] Contract Tests Beta.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		796F62F0270344DF00DE6F07 /* [iOS] Contract Tests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 796F6307270344DF00DE6F07 /* Build configuration list for PBXNativeTarget "[iOS] Contract Tests" */;
@@ -887,12 +926,23 @@
 				A5B65D8E23B04148006B7BFB /* [iOS] Integration Tests */,
 				A529268223B0D07500FF46DD /* [iOS] Code Coverage */,
 				796F62F0270344DF00DE6F07 /* [iOS] Contract Tests */,
+				79657A782719CD5B00BACEC5 /* [iOS] Contract Tests Beta */,
 				A5B65D6E23B03DB4006B7BFB /* [iOS] Unit Tests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		79657A872719CD5B00BACEC5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				79657A882719CD5B00BACEC5 /* Features in Resources */,
+				79657A892719CD5B00BACEC5 /* Fixtures in Resources */,
+				79657A8A2719CD5B00BACEC5 /* tests-configuration.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		796F6304270344DF00DE6F07 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -976,6 +1026,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		79657A7A2719CD5B00BACEC5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				79657A7B2719CD5B00BACEC5 /* PNAccessContractTestSteps.m in Sources */,
+				79657A7C2719CD5B00BACEC5 /* PNMessageActionsContractTestSteps.m in Sources */,
+				79657A7D2719CD5B00BACEC5 /* PNSubscribeContractTestSteps.m in Sources */,
+				79657A7E2719CD5B00BACEC5 /* PNContractTestCase.m in Sources */,
+				79657A7F2719CD5B00BACEC5 /* PNTimeContractTestSteps.m in Sources */,
+				79657A802719CD5B00BACEC5 /* PNFilesContractTestSteps.m in Sources */,
+				79657A812719CD5B00BACEC5 /* PNHistoryContractTestSteps.m in Sources */,
+				79657A822719CD5B00BACEC5 /* PNPushContractTestSteps.m in Sources */,
+				79657A832719CD5B00BACEC5 /* PNPublishContractTestSteps.m in Sources */,
+				79657A842719CD5B00BACEC5 /* PNContractCucumberTest.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		796F62F1270344DF00DE6F07 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1183,6 +1250,61 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		79657A8D2719CD5B00BACEC5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_CODE_COVERAGE = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"COCOAPODS=1",
+					"SRC_ROOT=@\\\"$(SRCROOT)\\\"",
+				);
+				INFOPLIST_FILE = "Support Files/Targets/ios-contract-tests.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.pubnub.ios-integration-tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TVOS_DEPLOYMENT_TARGET = 10.0;
+				WATCHOS_DEPLOYMENT_TARGET = 4.0;
+			};
+			name = Debug;
+		};
+		79657A8E2719CD5B00BACEC5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_CODE_COVERAGE = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = "Support Files/Targets/ios-contract-tests.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.pubnub.ios-integration-tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TVOS_DEPLOYMENT_TARGET = 10.0;
+				WATCHOS_DEPLOYMENT_TARGET = 4.0;
+			};
+			name = Release;
+		};
 		796F6308270344DF00DE6F07 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1732,6 +1854,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		79657A8C2719CD5B00BACEC5 /* Build configuration list for PBXNativeTarget "[iOS] Contract Tests Beta" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				79657A8D2719CD5B00BACEC5 /* Debug */,
+				79657A8E2719CD5B00BACEC5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		796F6307270344DF00DE6F07 /* Build configuration list for PBXNativeTarget "[iOS] Contract Tests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
