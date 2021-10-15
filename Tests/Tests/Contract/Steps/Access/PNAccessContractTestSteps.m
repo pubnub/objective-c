@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Access token parsed during one of steps.
  */
-@property (nonatomic, strong) PNPAMToken *token;
+@property (nonatomic, nullable, strong) PNPAMToken *token;
 
 #pragma mark -
 
@@ -37,6 +37,11 @@ NS_ASSUME_NONNULL_END
 
 
 #pragma mark - Initialization & Configuration
+
+- (void)handleBeforeHook {
+    self.token = nil;
+    [super handleBeforeHook];
+}
 
 - (void)setup {
     [self startCucumberHookEventsListening];

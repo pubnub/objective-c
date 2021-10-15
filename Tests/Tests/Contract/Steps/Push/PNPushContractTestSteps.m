@@ -42,6 +42,7 @@ NS_ASSUME_NONNULL_END
     
     When(@"^I list (.*) push channels(.*)?$", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
         self.testedFeatureType = PNPushNotificationEnabledChannelsOperation;
+        NSLog(@"~~~~~> ^I list (.*) push channels(.*)?$: %@", args);
         
         [self callCodeSynchronously:^(dispatch_block_t completion) {
             PNPushType pushType = [self pushTypeFromWhenMatch:args.firstObject];
@@ -50,6 +51,7 @@ NS_ASSUME_NONNULL_END
                 .token(@"my-token");
             
             if (pushType == PNAPNS2Push && [args indexOfObject:@" with topic"] != NSNotFound) {
+                NSLog(@"~~~~~> SET V2 ENABLED CHANNELS");
                 self.testedFeatureType = PNPushNotificationEnabledChannelsV2Operation;
                 builder.topic(@"com.contract.test");
             }

@@ -463,6 +463,7 @@ synchronouslyFromChannels:(NSArray *)channels
 
 - (void)storeRequestResult:(nullable PNResult *)result {
     dispatch_barrier_async(_resourcesAccess, ^{
+        NSLog(@"~~~~~> STORE RESULT: %@", result.debugDescription);
         [_apiCallResults addObject:result ? result : [NSNull null]];
     });
 }
@@ -479,6 +480,7 @@ synchronouslyFromChannels:(NSArray *)channels
 
 - (void)storeRequestStatus:(PNStatus *)status {
     dispatch_barrier_async(_resourcesAccess, ^{
+        NSLog(@"~~~~~> STORE STATUS: %@", status.debugDescription);
         [_apiCallStatuses addObject:status ? status : [NSNull null]];
     });
 }

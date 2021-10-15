@@ -16,6 +16,8 @@
     [self startCucumberHookEventsListening];
     
     When(@"I list files", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
+        self.testedFeatureType = PNListFilesOperation;
+        
         [self callCodeSynchronously:^(dispatch_block_t completion) {
             self.client.files()
                 .listFiles(@"test")
@@ -28,6 +30,8 @@
     });
     
     When(@"I publish file message", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
+        self.testedFeatureType = PNPublishFileMessageOperation;
+        
         [self callCodeSynchronously:^(dispatch_block_t completion) {
             self.client.publishFileMessage()
                 .fileIdentifier(@"identifier")
@@ -41,6 +45,8 @@
     });
     
     When(@"I delete file", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
+        self.testedFeatureType = PNDeleteFileOperation;
+        
         [self callCodeSynchronously:^(dispatch_block_t completion) {
             self.client.files()
                 .deleteFile(@"test", @"identifier", @"name.txt")
@@ -52,6 +58,8 @@
     });
     
     When(@"I download file", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
+        self.testedFeatureType = PNDownloadFileOperation;
+        
         [self callCodeSynchronously:^(dispatch_block_t completion) {
             self.client.files()
                 .downloadFile(@"channel", @"identifier", @"name.txt")
@@ -64,6 +72,8 @@
     });
     
     When(@"I send file", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
+        self.testedFeatureType = PNSendFileOperation;
+        
         [self callCodeSynchronously:^(dispatch_block_t completion) {
             self.client.files()
                 .sendFile(@"test", @"name.txt")

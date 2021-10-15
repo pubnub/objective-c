@@ -117,7 +117,8 @@ for destinationPlatformIdx in "${!DESTINATIONS[@]}"; do
 		-scheme "[$PLATFORM] $TEST_SCHEME_TYPE" \
 		-destination "$DESTINATION_PLATFORM" \
 		-parallel-testing-enabled NO \
-		test | xcpretty --simple && XCODE_BUILD_EXITCODE="${PIPESTATUS[0]}"
+		test && XCODE_BUILD_EXITCODE="${PIPESTATUS[0]}"
+		# test | xcpretty --simple && XCODE_BUILD_EXITCODE="${PIPESTATUS[0]}"
 
 		if [[ $XCODE_BUILD_EXITCODE -gt 0 ]]; then
 			echo -e "${BRCF}xcodebuild exited with error code: $XCODE_BUILD_EXITCODE"
