@@ -44,3 +44,4 @@ jobs:
         with:
           name: acceptance-test-reports
           path: Tests/Results/*.json
+          retention-days: 7
