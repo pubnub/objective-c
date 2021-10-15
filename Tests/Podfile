@@ -37,10 +37,18 @@ target '[iOS] Integration Tests' do
   pod 'PubNub', :path => '../'
 end
 
-target '[iOS] Contract Tests' do
-  platform :ios, '9.0'
+
+abstract_target 'ContractTests' do
   pod 'Cucumberish', :inhibit_warnings => true
   pod 'PubNub', :path => '../'
+
+  target '[iOS] Contract Tests' do
+    platform :ios, '9.0'
+  end
+
+  target '[iOS] Contract Tests Beta' do
+    platform :ios, '9.0'
+  end
 end
 
 
