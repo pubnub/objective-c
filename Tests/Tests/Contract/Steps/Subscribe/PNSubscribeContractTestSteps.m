@@ -13,6 +13,8 @@
 #pragma mark - Initialization & Configuration
 
 - (void)setup {
+    [self startCucumberHookEventsListening];
+    
     Given(@"the crypto keyset", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
         self.configuration.cipherKey = @"enigma";
     });
@@ -47,7 +49,6 @@
         self.testedFeatureType = PNSubscribeOperation;
         
         NSArray<PNStatus *> *statuses = [self waitClient:nil toReceiveStatuses:2];
-
         XCTAssertNotNil(statuses);
         XCTAssertEqual(statuses.lastObject.operation, PNSubscribeOperation);
         XCTAssertEqual(statuses.lastObject.category, PNDecryptionErrorCategory);

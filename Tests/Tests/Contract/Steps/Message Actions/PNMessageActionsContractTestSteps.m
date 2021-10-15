@@ -13,6 +13,8 @@
 #pragma mark - Initialization & Configuration
 
 - (void)setup {
+    [self startCucumberHookEventsListening];
+    
     When(@"I add a message action", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
         self.testedFeatureType = PNAddMessageActionOperation;
         

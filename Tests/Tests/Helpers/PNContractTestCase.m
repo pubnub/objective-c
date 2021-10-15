@@ -24,6 +24,12 @@ static NSString * const kPNMockServerAddress = @"localhost:8090";
 static NSString * const kPNDefaultSubscribeKey = @"demo-36";
 static NSString * const kPNDefaultPublishKey = @"demo-36";
 
+/**
+ * @brief Cucumber hook notification names.
+ */
+static NSString * const kPNCucumberBeforeHook = @"PNCucumberBeforeHook";
+static NSString * const kPNCucumberAfterHook = @"PNCucumberAfterHook";
+
 typedef NSMutableArray<PNMessageResult *> PNTestChannelMessagesList;
 typedef NSMutableDictionary<NSString *, PNTestChannelMessagesList *> PNTestClientMessagesList;
 typedef NSMutableArray<PNStatus *> PNTestClientStatusesList;
@@ -31,15 +37,44 @@ typedef NSMutableArray<PNStatus *> PNTestClientStatusesList;
 
 #pragma mark Static
 
-static PNConfiguration *_configuration;
 static PubNub *_currentClient;
+
+/**
+ * @brief Queue which is used to synchronize access to shared resources.
+ */
+static dispatch_queue_t _resourcesAccess;
+
+/**
+ * @brief Array with PubNub REST API call error status objects or nulls.
+ */
 static NSMutableArray *_apiCallStatuses;
+
+/**
+ * @brief Array with PubNub REST API call result objects or nulls.
+ */
 static NSMutableArray *_apiCallResults;
+
+/**
+ * @brief List of GCD blocks which listens for PubNub client status change.
+ */
 static NSMutableArray<void(^)(PubNub *client, PNStatus *statue)> *_statusHandlers;
+
+/**
+ * @brief Statuses received during current scenario execution.
+ */
 static NSMutableDictionary<NSString *, PNTestClientStatusesList *> *_receivedStatuses;
+
+/**
+ * @brief List of GCD blocks which listens for PubNub client message receive.
+ */
 static NSMutableArray<void(^)(PubNub *client, PNMessageResult *message)> *_messageHandlers;
+
+/**
+ * @brief Messages received during current scenario execution.
+ */
 static NSMutableDictionary<NSString *, PNTestClientMessagesList *> *_receivedMessages;
-static PNOperationType _testedFeatureType;
+
+static PNOperationType _currentlyTestedFeatureType;
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -51,42 +86,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Information
 
-@property (class, nonatomic, nullable, copy) PNConfiguration *configuration;
-
-/**
- * @brief Client configured for current test scenario.
- */
-@property (class, nonatomic, nullable, strong) PubNub *currentClient;
-
-/**
- * @brief Array with PubNub REST API call error status objects or nulls.
- */
-@property (class, nonatomic, strong) NSMutableArray *apiCallStatuses;
-
-/**
- * @brief Array with PubNub REST API call result objects or nulls.
- */
-@property (class, nonatomic, strong) NSMutableArray *apiCallResults;
-
-/**
- * @brief List of GCD blocks which listens for PubNub client status change.
- */
-@property (class, nonatomic, nullable, strong) NSMutableArray<void(^)(PubNub *client, PNStatus *statue)> *statusHandlers;
-
-/**
- * @brief Statuses received during current scenario execution.
- */
-@property (class, nonatomic, nullable) NSMutableDictionary<NSString *, PNTestClientStatusesList *> *receivedStatuses;
-
-/**
- * @brief List of GCD blocks which listens for PubNub client message receive.
- */
-@property (class, nonatomic, nullable, strong) NSMutableArray<void(^)(PubNub *client, PNMessageResult *message)> *messageHandlers;
-
-/**
- * @brief Messages received during current scenario execution.
- */
-@property (class, nonatomic, nullable, strong) NSMutableDictionary<NSString *, PNTestClientMessagesList *> *receivedMessages;
+@property (nonatomic, nullable, copy) PNConfiguration *currentConfiguration;
 
 
 #pragma mark - Helpers
@@ -159,100 +159,70 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Information
 
-+ (PNConfiguration *)configuration {
-    return _configuration;
+- (PNConfiguration *)configuration {
+    if (!self.currentConfiguration) {
+        self.currentConfiguration = [PNConfiguration configurationWithPublishKey:kPNDefaultPublishKey
+                                                             subscribeKey:kPNDefaultSubscribeKey];
+        self.currentConfiguration.origin = kPNMockServerAddress;
+        self.currentConfiguration.TLSEnabled = NO;
+    }
+    
+    return self.currentConfiguration;
 }
 
-+ (void)setConfiguration:(PNConfiguration *)configuration {
-    _configuration = configuration;
-}
-
-+ (PubNub *)currentClient {
-    return _currentClient;
-}
-
-+ (void)setCurrentClient:(PubNub *)currentClient {
-    _currentClient = currentClient;
-}
-
-+ (NSMutableArray *)apiCallStatuses {
-    return _apiCallStatuses;
-}
-
-+ (void)setApiCallStatuses:(NSMutableArray *)apiCallStatuses {
-    _apiCallStatuses = apiCallStatuses;
-}
-
-+ (NSMutableArray *)apiCallResults {
-    return _apiCallResults;
-}
-
-+ (void)setApiCallResults:(NSMutableArray *)apiCallResults {
-    _apiCallResults = apiCallResults;
-}
-
-+ (NSMutableArray<void (^)(PubNub *, PNStatus *)> *)statusHandlers {
-    return _statusHandlers;
-}
-
-+ (void)setStatusHandlers:(NSMutableArray<void (^)(PubNub *, PNStatus *)> *)statusHandlers {
-    _statusHandlers = statusHandlers;
-}
-
-+ (NSMutableDictionary<NSString *,PNTestClientStatusesList *> *)receivedStatuses {
-    return _receivedStatuses;
-}
-
-+ (void)setReceivedStatuses:(NSMutableDictionary<NSString *,PNTestClientStatusesList *> *)receivedStatuses {
-    _receivedStatuses = receivedStatuses;
-}
-
-+ (NSMutableArray<void (^)(PubNub *, PNMessageResult *)> *)messageHandlers {
-    return _messageHandlers;
-}
-
-+ (void)setMessageHandlers:(NSMutableArray<void (^)(PubNub *, PNMessageResult *)> *)messageHandlers {
-    _messageHandlers = messageHandlers;
-}
-
-+ (NSMutableDictionary<NSString *,PNTestClientMessagesList *> *)receivedMessages {
-    return _receivedMessages;
-}
-
-+ (void)setReceivedMessages:(NSMutableDictionary<NSString *,PNTestClientMessagesList *> *)receivedMessages {
-    _receivedMessages = receivedMessages;
+- (void)setConfiguration:(PNConfiguration *)configuration {
+    _currentConfiguration = [configuration copy];
 }
 
 - (PubNub *)client {
-    if (!PNContractTestCase.currentClient) {
-        dispatch_queue_t queue = dispatch_queue_create("com.contract-test.callback-queue", DISPATCH_QUEUE_SERIAL);
-        PNContractTestCase.currentClient = [PubNub clientWithConfiguration:self.configuration callbackQueue:queue];
-        
-        [PNContractTestCase.currentClient addListener:self];
-    }
+    dispatch_barrier_sync(_resourcesAccess, ^{
+        if (!_currentClient) {
+            dispatch_queue_t queue = dispatch_queue_create("com.contract-test.callback-queue", DISPATCH_QUEUE_SERIAL);
+            _currentClient = [PubNub clientWithConfiguration:self.configuration callbackQueue:queue];
+            
+            [_currentClient addListener:self];
+        }
+    });
     
-    return PNContractTestCase.currentClient;
-}
-
-- (PNConfiguration *)configuration {
-    return PNContractTestCase.configuration;
+    return _currentClient;
 }
 
 - (PNOperationType)testedFeatureType {
-    return _testedFeatureType;
+    return _currentlyTestedFeatureType;
 }
 
 - (void)setTestedFeatureType:(PNOperationType)testedFeatureType {
-    _testedFeatureType = testedFeatureType;
+    _currentlyTestedFeatureType = testedFeatureType;
 }
 
 
 #pragma mark - Initialization & Configuration
 
+- (void)startCucumberHookEventsListening {
+    NSNotificationCenter *center = NSNotificationCenter.defaultCenter;
+    
+    [center addObserverForName:kPNCucumberBeforeHook object:nil queue:nil usingBlock:^(NSNotification *note) {
+        [self handleBeforeHook];
+    }];
+    
+    [center addObserverForName:kPNCucumberAfterHook object:nil queue:nil usingBlock:^(NSNotification *note) {
+        [self handleAfterHook];
+    }];
+}
+
 - (void)setup {
     static dispatch_once_t onceToken;
 
     dispatch_once(&onceToken, ^{
+        _apiCallStatuses = [NSMutableArray new];
+        _apiCallResults = [NSMutableArray new];
+        _receivedMessages = [NSMutableDictionary new];
+        _receivedStatuses = [NSMutableDictionary new];
+        _messageHandlers = [NSMutableArray new];
+        _statusHandlers = [NSMutableArray new];
+        
+        _resourcesAccess = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        
         before(^(CCIScenarioDefinition *scenario) {
             if ([self shouldSetupMockServerForScenario:scenario]) {
                 NSData *response = [self setupMockServerForFeatureScenario:scenario];
@@ -260,20 +230,8 @@ NS_ASSUME_NONNULL_END
                 XCTAssertNotNil(response, @"Unable to get server init response");
             }
             
-            PNContractTestCase.configuration = [PNConfiguration configurationWithPublishKey:kPNDefaultPublishKey
-                                                                 subscribeKey:kPNDefaultSubscribeKey];
-            self.configuration.origin = kPNMockServerAddress;
-            self.configuration.TLSEnabled = NO;
-            
-            PNContractTestCase.apiCallStatuses = [NSMutableArray new];
-            PNContractTestCase.apiCallResults = [NSMutableArray new];
-            PNContractTestCase.receivedMessages = [NSMutableDictionary new];
-            PNContractTestCase.receivedStatuses = [NSMutableDictionary new];
-            PNContractTestCase.messageHandlers = [NSMutableArray new];
-            PNContractTestCase.statusHandlers = [NSMutableArray new];
-            
-            [PNContractTestCase.currentClient removeListener:self];
-            PNContractTestCase.currentClient = nil;
+            [self handleBeforeHook];
+            [NSNotificationCenter.defaultCenter postNotificationName:kPNCucumberBeforeHook object:nil];
         });
         
         after(^(CCIScenarioDefinition *scenario) {
@@ -292,9 +250,8 @@ NS_ASSUME_NONNULL_END
                 }
             }
             
-            PNContractTestCase.messageHandlers = nil;
-            PNContractTestCase.statusHandlers = nil;
-            PNContractTestCase.currentClient = nil;
+            [self handleAfterHook];
+            [NSNotificationCenter.defaultCenter postNotificationName:kPNCucumberAfterHook object:nil];
         });
         
         Given(@"the demo keyset", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
@@ -359,7 +316,7 @@ synchronouslyToChannels:(NSArray *)channels
     __block BOOL subscribeCompletedInTime = NO;
     client = client ?: self.client;
     
-    [PNContractTestCase.statusHandlers addObject:^void(PubNub *receiver, PNStatus *status) {
+    [_statusHandlers addObject:^void(PubNub *receiver, PNStatus *status) {
         if (status.operation == PNSubscribeOperation && status.category == PNConnectedCategory) {
             subscribeCompletedInTime = YES;
             dispatch_semaphore_signal(semaphore);
@@ -387,7 +344,7 @@ synchronouslyFromChannels:(NSArray *)channels
     __block BOOL unsubscribeCompletedInTime = NO;
     client = client ?: self.client;
     
-    [PNContractTestCase.statusHandlers addObject:^void(PubNub *receiver, PNStatus *status) {
+    [_statusHandlers addObject:^void(PubNub *receiver, PNStatus *status) {
         if (status.operation == PNUnsubscribeOperation && status.category == PNDisconnectedCategory) {
             unsubscribeCompletedInTime = YES;
             dispatch_semaphore_signal(semaphore);
@@ -416,34 +373,41 @@ synchronouslyFromChannels:(NSArray *)channels
     
     __weak __typeof(self) weakSelf = self;
     BOOL(^checkMessagesCount)(PubNub *) = ^BOOL(PubNub *receiver) {
-        NSString *clientIdentifier = receiver.currentConfiguration.uuid;
+        __block BOOL receivedRequiredCount = NO;
         
-        if ([client.currentConfiguration.uuid isEqualToString:clientIdentifier]) {
-            completedInTime = messagesCount >= [weakSelf messagesCountForClient:receiver onChannel:channel];
-        }
-        
-        if (completedInTime) {
-            PNTestClientMessagesList *clientMessages = PNContractTestCase.receivedMessages[clientIdentifier];
+        dispatch_sync(_resourcesAccess, ^{
+            NSString *clientIdentifier = receiver.currentConfiguration.uuid;
             
-            if (channel) {
-                messages = clientMessages[channel];
-            } else {
-                messages = [clientMessages.allValues valueForKeyPath: @"@unionOfArrays.self"];
+            if ([client.currentConfiguration.uuid isEqualToString:clientIdentifier]) {
+                receivedRequiredCount = messagesCount >= [weakSelf messagesCountForClient:receiver onChannel:channel];
             }
-        }
+            
+            if (receivedRequiredCount) {
+                PNTestClientMessagesList *clientMessages = _receivedMessages[clientIdentifier];
+                
+                if (channel) {
+                    messages = clientMessages[channel];
+                } else {
+                    messages = [clientMessages.allValues valueForKeyPath: @"@unionOfArrays.self"];
+                }
+            }
+        });
         
-        return completedInTime;
+        return receivedRequiredCount;
     };
     
     
-    [PNContractTestCase.messageHandlers addObject:^void(PubNub *receiver, PNMessageResult *message) {
+    [_messageHandlers addObject:^void(PubNub *receiver, PNMessageResult *message) {
         if (checkMessagesCount(receiver)) {
+            completedInTime = YES;
             dispatch_semaphore_signal(semaphore);
         }
     }];
     
     if (!checkMessagesCount(client)){
         dispatch_semaphore_wait(semaphore, dispatch_time(DISPATCH_TIME_NOW, 30 * NSEC_PER_SEC));
+    } else {
+        completedInTime = YES;
     }
     
     XCTAssertTrue(completedInTime, @"%@ messages not received in time", @(messagesCount));
@@ -458,28 +422,35 @@ synchronouslyFromChannels:(NSArray *)channels
     client = client ?: self.client;
     
     BOOL(^checkStatusesCount)(PubNub *) = ^BOOL(PubNub *receiver) {
-        NSString *clientIdentifier = receiver.currentConfiguration.uuid;
+        __block BOOL receivedRequiredCount = NO;
         
-        if ([client.currentConfiguration.uuid isEqualToString:clientIdentifier]) {
-            completedInTime = statusesCount >= PNContractTestCase.receivedStatuses[clientIdentifier].count;
-        }
+        dispatch_sync(_resourcesAccess, ^{
+            NSString *clientIdentifier = receiver.currentConfiguration.uuid;
+            
+            if ([client.currentConfiguration.uuid isEqualToString:clientIdentifier]) {
+                receivedRequiredCount = statusesCount >= _receivedStatuses[clientIdentifier].count;
+            }
+            
+            if (receivedRequiredCount) {
+                statuses = _receivedStatuses[clientIdentifier];
+            }
+        });
         
-        if (completedInTime) {
-            statuses = PNContractTestCase.receivedStatuses[clientIdentifier];
-        }
-        
-        return completedInTime;
+        return receivedRequiredCount;
     };
     
     
-    [PNContractTestCase.statusHandlers addObject:^void(PubNub *receiver, PNStatus *message) {
+    [_statusHandlers addObject:^void(PubNub *receiver, PNStatus *message) {
         if (checkStatusesCount(receiver)) {
+            completedInTime = YES;
             dispatch_semaphore_signal(semaphore);
         }
     }];
     
     if (!checkStatusesCount(client)) {
         dispatch_semaphore_wait(semaphore, dispatch_time(DISPATCH_TIME_NOW, 30 * NSEC_PER_SEC));
+    } else {
+        completedInTime = YES;
     }
     
     XCTAssertTrue(completedInTime, @"%@ statutes count not received in time", @(statusesCount));
@@ -491,23 +462,57 @@ synchronouslyFromChannels:(NSArray *)channels
 #pragma mark - Result & Status handling
 
 - (void)storeRequestResult:(nullable PNResult *)result {
-    [PNContractTestCase.apiCallResults addObject:result ? result : [NSNull null]];
+    dispatch_barrier_async(_resourcesAccess, ^{
+        [_apiCallResults addObject:result ? result : [NSNull null]];
+    });
 }
 
 - (PNResult *)lastResult {
-    id result = PNContractTestCase.apiCallResults.lastObject;
+    __block id result;
+    
+    dispatch_sync(_resourcesAccess, ^{
+        result = _apiCallResults.lastObject;
+    });
     
     return ![result isEqual:[NSNull null]] ? result : nil;
 }
 
 - (void)storeRequestStatus:(PNStatus *)status {
-    [PNContractTestCase.apiCallStatuses addObject:status ? status : [NSNull null]];
+    dispatch_barrier_async(_resourcesAccess, ^{
+        [_apiCallStatuses addObject:status ? status : [NSNull null]];
+    });
 }
 
 - (PNStatus *)lastStatus {
-    id status = PNContractTestCase.apiCallStatuses.lastObject;
+    __block id status;
+    
+    dispatch_sync(_resourcesAccess, ^{
+        status = _apiCallStatuses.lastObject;
+    });
     
     return ![status isEqual:[NSNull null]] ? status : nil;
+}
+
+
+#pragma mark - Hooks handler
+
+- (void)handleBeforeHook {
+    self.currentConfiguration = nil;
+}
+
+- (void)handleAfterHook {
+    [_apiCallStatuses removeAllObjects];
+    [_apiCallResults removeAllObjects];
+    [_receivedMessages removeAllObjects];
+    [_receivedStatuses removeAllObjects];
+    [_messageHandlers removeAllObjects];
+    [_statusHandlers removeAllObjects];
+    
+    dispatch_barrier_sync(_resourcesAccess, ^{
+        [_currentClient removeListener:self];
+        [_currentClient unsubscribeFromAll];
+        _currentClient = nil;
+    });
 }
 
 
@@ -592,7 +597,7 @@ synchronouslyFromChannels:(NSArray *)channels
 }
 
 - (NSUInteger)messagesCountForClient:(PubNub *)client onChannel:(NSString *)channel {
-    PNTestClientMessagesList *clientMessages = PNContractTestCase.receivedMessages[client.currentConfiguration.uuid];
+    PNTestClientMessagesList *clientMessages = _receivedMessages[client.currentConfiguration.uuid];
     __block NSUInteger messagesCount = 0;
     
     if (channel) {
@@ -648,42 +653,46 @@ synchronouslyFromChannels:(NSArray *)channels
 #pragma mark - PubNub event listener callbacks
 
 - (void)client:(PubNub *)client didReceiveStatus:(PNStatus *)status {
-    PNTestClientStatusesList *clientStatuses = PNContractTestCase.receivedStatuses[client.currentConfiguration.uuid];
-    
-    if (!clientStatuses) {
-        clientStatuses = [NSMutableArray new];
-        PNContractTestCase.receivedStatuses[client.currentConfiguration.uuid] = clientStatuses;
-    }
-    
-    if (status) {
-        [clientStatuses addObject:status];
-    }
-    
-    [PNContractTestCase.statusHandlers enumerateObjectsUsingBlock:^(void (^block)(PubNub *, PNStatus *), NSUInteger idx, BOOL *stop) {
-        block(client, status);
-    }];
+    dispatch_barrier_async(_resourcesAccess, ^{
+        PNTestClientStatusesList *clientStatuses = _receivedStatuses[client.currentConfiguration.uuid];
+        
+        if (!clientStatuses) {
+            clientStatuses = [NSMutableArray new];
+            _receivedStatuses[client.currentConfiguration.uuid] = clientStatuses;
+        }
+        
+        if (status) {
+            [clientStatuses addObject:status];
+        }
+        
+        [_statusHandlers enumerateObjectsUsingBlock:^(void (^block)(PubNub *, PNStatus *), NSUInteger idx, BOOL *stop) {
+            block(client, status);
+        }];
+    });
 }
 
 - (void)client:(PubNub *)client didReceiveMessage:(PNMessageResult *)message {
-    PNTestClientMessagesList *clientMessages = PNContractTestCase.receivedMessages[client.currentConfiguration.uuid];
-    
-    if (!clientMessages) {
-        clientMessages = [NSMutableDictionary new];
-        PNContractTestCase.receivedMessages[client.currentConfiguration.uuid] = clientMessages;
-    }
-    
-    PNTestChannelMessagesList *channelMessages = clientMessages[message.data.channel];
-    
-    if (!channelMessages) {
-        channelMessages = [NSMutableArray new];
-        clientMessages[message.data.channel] = channelMessages;
-    }
-    
-    [channelMessages addObject:message];
-    
-    [PNContractTestCase.messageHandlers enumerateObjectsUsingBlock:^(void (^block)(PubNub *, PNMessageResult *), NSUInteger idx, BOOL *stop) {
-        block(client, message);
-    }];
+    dispatch_barrier_async(_resourcesAccess, ^{
+        PNTestClientMessagesList *clientMessages = _receivedMessages[client.currentConfiguration.uuid];
+        
+        if (!clientMessages) {
+            clientMessages = [NSMutableDictionary new];
+            _receivedMessages[client.currentConfiguration.uuid] = clientMessages;
+        }
+        
+        PNTestChannelMessagesList *channelMessages = clientMessages[message.data.channel];
+        
+        if (!channelMessages) {
+            channelMessages = [NSMutableArray new];
+            clientMessages[message.data.channel] = channelMessages;
+        }
+        
+        [channelMessages addObject:message];
+        
+        [_messageHandlers enumerateObjectsUsingBlock:^(void (^block)(PubNub *, PNMessageResult *), NSUInteger idx, BOOL *stop) {
+            block(client, message);
+        }];
+    });
 }
 
 #pragma mark -

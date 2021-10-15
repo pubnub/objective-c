@@ -13,6 +13,8 @@
 #pragma mark - Initialization & Configuration
 
 - (void)setup {
+    [self startCucumberHookEventsListening];
+    
     When(@"I list files", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
         [self callCodeSynchronously:^(dispatch_block_t completion) {
             self.client.files()

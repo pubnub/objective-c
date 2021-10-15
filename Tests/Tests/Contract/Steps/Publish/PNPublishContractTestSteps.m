@@ -13,6 +13,8 @@
 #pragma mark - Initialization & Configuration
 
 - (void)setup {
+    [self startCucumberHookEventsListening];
+    
     When(@"I publish a message", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
         self.testedFeatureType = PNPublishOperation;
         

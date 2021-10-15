@@ -38,6 +38,8 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Initialization & Configuration
 
 - (void)setup {
+    [self startCucumberHookEventsListening];
+    
     When(@"^I list (.*) push channels(.*)?$", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
         self.testedFeatureType = PNPushNotificationEnabledChannelsOperation;
         

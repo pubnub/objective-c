@@ -116,6 +116,7 @@ for destinationPlatformIdx in "${!DESTINATIONS[@]}"; do
 		-workspace "$GIT_ROOT_PATH/Tests/PubNub Tests.xcworkspace" \
 		-scheme "[$PLATFORM] $TEST_SCHEME_TYPE" \
 		-destination "$DESTINATION_PLATFORM" \
+		-parallel-testing-enabled NO \
 		test | xcpretty --simple && XCODE_BUILD_EXITCODE="${PIPESTATUS[0]}"
 
 		if [[ $XCODE_BUILD_EXITCODE -gt 0 ]]; then

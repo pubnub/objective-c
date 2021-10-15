@@ -13,6 +13,8 @@
 #pragma mark - Initialization & Configuration
 
 - (void)setup {
+    [self startCucumberHookEventsListening];
+    
     When(@"^I fetch message history for (.*) channel(s)?$", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
         NSArray *channels = [args.firstObject isEqualToString:@"multiple"] ? @[@"test1", @"test2"] : @[@"test"];
         self.testedFeatureType = PNHistoryForChannelsOperation;

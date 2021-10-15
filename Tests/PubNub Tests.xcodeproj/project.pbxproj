@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7941EE5F270C73B30054D9EF /* ios-contract-tests.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7941EE5E270C73B30054D9EF /* ios-contract-tests.plist */; };
 		796E652A2707B33A001B57F4 /* PNContractCucumberTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 796E65292707B33A001B57F4 /* PNContractCucumberTest.m */; };
 		796E653127088547001B57F4 /* PNContractTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 796E653027088547001B57F4 /* PNContractTestCase.m */; };
 		796E653527088A2A001B57F4 /* PNTimeContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = 796E653427088A2A001B57F4 /* PNTimeContractTestSteps.m */; };
@@ -178,7 +177,6 @@
 		796E6537270895F5001B57F4 /* PNSubscribeContractTestSteps.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNSubscribeContractTestSteps.h; sourceTree = "<group>"; };
 		796E6538270895F5001B57F4 /* PNSubscribeContractTestSteps.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNSubscribeContractTestSteps.m; sourceTree = "<group>"; };
 		796F630A270344DF00DE6F07 /* [iOS] Contract Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "[iOS] Contract Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		796F630B270344DF00DE6F07 /* [iOS] Integration Tests copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "[iOS] Integration Tests copy-Info.plist"; path = "/Users/moonlight/Documents/Develop/Objective-C/PubNub SDK (public)/Tests/[iOS] Integration Tests copy-Info.plist"; sourceTree = "<absolute>"; };
 		796F630D270347AD00DE6F07 /* Features */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Features; sourceTree = "<group>"; };
 		797ABBE324C9BECA0008CA1E /* PNFilesIntegrationTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNFilesIntegrationTests.m; sourceTree = "<group>"; };
 		79BB4BCD2709D70C00EDC466 /* PNPublishContractTestSteps.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNPublishContractTestSteps.h; sourceTree = "<group>"; };
@@ -629,7 +627,6 @@
 				A52926AF23B0D63100FF46DD /* Support Files */,
 				A5B65D5523B03DB1006B7BFB /* Products */,
 				DC23E0797E4D29A69E09CCB4 /* Pods */,
-				796F630B270344DF00DE6F07 /* [iOS] Integration Tests copy-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -900,7 +897,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7941EE5F270C73B30054D9EF /* ios-contract-tests.plist in Resources */,
 				796F630E270347AD00DE6F07 /* Features in Resources */,
 				796F6305270344DF00DE6F07 /* Fixtures in Resources */,
 				796F6306270344DF00DE6F07 /* tests-configuration.json in Resources */,

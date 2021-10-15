@@ -37,6 +37,11 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Initialization & Configuration
 
 /**
+ * @brief Start listening for Cucumber hook notifications.
+ */
+- (void)startCucumberHookEventsListening;
+
+/**
  * @brief Setup contract testing environment once per test suite run.
  */
 - (void)setup;
@@ -128,6 +133,19 @@ synchronouslyFromChannels:(nullable NSArray *)channels
  * @return Status instance in case if last REST API call failed.
  */
 - (nullable PNStatus *)lastStatus;
+
+
+#pragma mark - Hooks handler
+
+/**
+ * @brief Called before each scenario run.
+ */
+- (void)handleBeforeHook;
+
+/**
+ * @brief Called after each scenario run.
+ */
+- (void)handleAfterHook;
 
 
 #pragma mark - Helpers

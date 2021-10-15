@@ -39,6 +39,8 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Initialization & Configuration
 
 - (void)setup {
+    [self startCucumberHookEventsListening];
+    
     Given(@"I have a keyset with access manager enabled", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
         // Do noting, because client doesn't support token grant.
     });

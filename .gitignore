@@ -8,6 +8,7 @@ reports/
 # Tests
 ##################
 tests-configuration.json
+Features/
 
 ## Build generated
 build/

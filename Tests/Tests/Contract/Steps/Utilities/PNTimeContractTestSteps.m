@@ -13,6 +13,8 @@
 #pragma mark - Initialization & Configuration
 
 - (void)setup {
+    [self startCucumberHookEventsListening];
+    
     When(@"I request current time", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
         self.testedFeatureType = PNTimeOperation;
         
