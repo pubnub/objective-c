@@ -29,7 +29,7 @@
         [self subscribeClient:nil synchronouslyToChannels:@[@"test"] groups:nil withPresence:NO timetoken:nil];
         
         // Give some time to rotate received timetokens.
-        [self pauseMainQueueFor:0.25f];
+        [self pauseMainQueueFor:0.5f];
     });
     
     Then(@"I receive the message in my subscribe response", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
@@ -41,7 +41,7 @@
             XCTAssertEqualObjects(messages.lastObject.data.message, @"hello world");
         } else if ([self checkInUserInfo:userInfo testingFeature:@"Subscribe Loop"]) {
             // Give some time to rotate received timetokens.
-            [self pauseMainQueueFor:0.25f];
+            [self pauseMainQueueFor:0.5f];
         }
     });
     
@@ -53,7 +53,7 @@
         XCTAssertEqual(statuses.lastObject.operation, PNSubscribeOperation);
         XCTAssertEqual(statuses.lastObject.category, PNDecryptionErrorCategory);
 
-        [self pauseMainQueueFor:0.25f];
+        [self pauseMainQueueFor:0.5f];
     });
 }
 

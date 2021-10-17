@@ -543,7 +543,7 @@ synchronouslyFromChannels:(NSArray *)channels
     dispatch_time_t date = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC));
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     
-    dispatch_after(date, dispatch_get_main_queue(), ^{
+    dispatch_after(date, dispatch_queue_create("wait-queue", DISPATCH_QUEUE_SERIAL), ^{
         dispatch_semaphore_signal(semaphore);
     });
     
