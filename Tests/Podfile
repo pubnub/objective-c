@@ -39,7 +39,7 @@ end
 
 
 abstract_target 'ContractTests' do
-  pod 'Cucumberish', :inhibit_warnings => true
+  pod 'Cucumberish', :git => 'https://github.com/parfeon/Cucumberish.git', :branch => 'master', :inhibit_warnings => true
   pod 'PubNub', :path => '../'
 
   target '[iOS] Contract Tests' do
