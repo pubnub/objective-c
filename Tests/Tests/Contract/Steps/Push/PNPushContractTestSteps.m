@@ -93,7 +93,7 @@ NS_ASSUME_NONNULL_END
         
         [self callCodeSynchronously:^(dispatch_block_t completion) {
             PNAPNSModificationAPICallBuilder *builder = self.client.push().disable()
-                .pushType([self pushTypeFromWhenMatch:args.lastObject])
+                .pushType(pushType)
                 .token(token)
                 .channels(@[@"channel1", @"channel2"]);
             
@@ -116,7 +116,7 @@ NS_ASSUME_NONNULL_END
         
         [self callCodeSynchronously:^(dispatch_block_t completion) {
             PNAPNSModificationAPICallBuilder *builder = self.client.push().disableAll()
-                .pushType([self pushTypeFromWhenMatch:args.lastObject])
+                .pushType(pushType)
                 .token(token);
             
             if (pushType == PNAPNS2Push && [args indexOfObject:@" with topic"] != NSNotFound) {
