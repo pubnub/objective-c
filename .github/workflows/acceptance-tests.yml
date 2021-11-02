@@ -11,6 +11,13 @@ jobs:
     steps: 
       - name: Checkout repository
         uses: actions/checkout@v2
+      - name: Cache installed Pods
+        uses: actions/cache@v2
+        with:
+          path: Tests/Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('Tests/Podfile.lock') }}
+          restore-keys: |
+              ${{ runner.os }}-pods-
       - name: Checkout mock-server action
         uses: actions/checkout@v2
         with:

@@ -46,6 +46,7 @@ xcuserdata/
 #
 Pods/
 Podfile.lock
+!Tests/Podfile.lock
 
 # Carthage
 #

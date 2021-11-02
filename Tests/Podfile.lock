@@ -1,0 +1,40 @@
+PODS:
+  - Cucumberish (1.4.0)
+  - OCMock (3.6)
+  - PubNub (4.17.0):
+    - PubNub/Core (= 4.17.0)
+  - PubNub/Core (4.17.0)
+  - YAHTTPVCR (1.4.2)
+
+DEPENDENCIES:
+  - Cucumberish (from `https://github.com/parfeon/Cucumberish.git`, branch `master`)
+  - OCMock (= 3.6)
+  - PubNub (from `../`)
+  - YAHTTPVCR
+
+SPEC REPOS:
+  trunk:
+    - OCMock
+    - YAHTTPVCR
+
+EXTERNAL SOURCES:
+  Cucumberish:
+    :branch: master
+    :git: https://github.com/parfeon/Cucumberish.git
+  PubNub:
+    :path: "../"
+
+CHECKOUT OPTIONS:
+  Cucumberish:
+    :commit: 6a9a44002b8ba9be6edc957357c244f9f9c7f94e
+    :git: https://github.com/parfeon/Cucumberish.git
+
+SPEC CHECKSUMS:
+  Cucumberish: 6cbd0c1f50306b369acebfe7d9f514c9c287d26c
+  OCMock: 5ea90566be239f179ba766fd9fbae5885040b992
+  PubNub: 306896876c3089884067609ff25d628a547d2942
+  YAHTTPVCR: e2aa406443a4db12585ff626b445369e1953a729
+
+PODFILE CHECKSUM: 569ce5fdb7670790d6d4a9d1a5a304a20781e374
+
+COCOAPODS: 1.11.2
