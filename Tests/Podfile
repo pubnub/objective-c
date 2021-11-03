@@ -38,6 +38,19 @@ target '[iOS] Integration Tests' do
 end
 
 
+abstract_target 'ContractTests' do
+  pod 'Cucumberish', :git => 'https://github.com/parfeon/Cucumberish.git', :branch => 'master', :inhibit_warnings => true
+  pod 'PubNub', :path => '../'
+
+  target '[iOS] Contract Tests' do
+    platform :ios, '9.0'
+  end
+
+  target '[iOS] Contract Tests Beta' do
+    platform :ios, '9.0'
+  end
+end
+
 
 # Making all interfaces visible for all targets on explicit import
 pre_install do |installer_representation|

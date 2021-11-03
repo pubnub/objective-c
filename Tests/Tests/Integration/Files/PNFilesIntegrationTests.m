@@ -56,6 +56,7 @@ NS_ASSUME_NONNULL_END
 
 - (PNConfiguration *)configurationForTestCaseWithName:(NSString *)name {
     PNConfiguration *configuration = [super configurationForTestCaseWithName:name];
+    configuration.cipherKey = self.cipherKey;
     
     if ([self.name pnt_includesString:@"Encrypt"] && ![self.name pnt_includesString:@"DontDecrypt"]) {
         configuration.cipherKey = self.cipherKey;

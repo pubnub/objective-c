@@ -1,0 +1,54 @@
+name: Acceptance tests
+
+on: 
+  push:
+  workflow_dispatch:
+
+jobs:
+  acceptance-tests: 
+    name: Run Acceptance tests
+    runs-on: macos-11
+    steps: 
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Cache installed Pods
+        uses: actions/cache@v2
+        with:
+          path: Tests/Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('Tests/Podfile.lock') }}
+          restore-keys: |
+              ${{ runner.os }}-pods-
+      - name: Checkout mock-server action
+        uses: actions/checkout@v2
+        with:
+          repository: pubnub/client-engineering-deployment-tools
+          ref: v1
+          token: ${{ secrets.GH_TOKEN }}
+          path: deployment-tools
+      - name: Run mock server action
+        uses: ./deployment-tools/actions/mock-server
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          features-path: Tests/Support Files/Features
+      - name: Preapre Xcode environment
+        env:
+          TESTS_PAM_PUBLISH_KEY: ${{ secrets.TESTS_PAM_PUBLISH_KEY }}
+          TESTS_PAM_SUBSCRIBE_KEY: ${{ secrets.TESTS_PAM_SUBSCRIBE_KEY }}
+          TESTS_PUBLISH_KEY: ${{ secrets.TESTS_PUBLISH_KEY }}
+          TESTS_SUBSCRIBE_KEY: ${{ secrets.TESTS_SUBSCRIBE_KEY }}
+        run: |
+          gem install xcpretty
+          cd ./Tests && pod install && cd ..
+          ./Tests/Support\ Files/Scripts/create-configuration.sh
+      - name: Run stable acceptance tests
+        run: |
+          ./Tests/Support\ Files/Scripts/tests-runner.sh ios contract 1
+      - name: Run beta acceptance tests
+        run: |
+          ./Tests/Support\ Files/Scripts/tests-runner.sh ios contract-beta 1
+      - name: Upload acceptance tests reports
+        uses: actions/upload-artifact@v2
+        with:
+          name: acceptance-test-reports
+          path: Tests/Results/*.json
+          retention-days: 7

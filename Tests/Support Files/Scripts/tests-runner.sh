@@ -24,6 +24,8 @@ fi
 TEST_SCHEME_TYPE="Mocked Integration Tests"
 [[ $2 == integration ]] && TEST_SCHEME_TYPE="Integration Tests"
 [[ $2 == coverage ]] && TEST_SCHEME_TYPE="Code Coverage"
+[[ $2 == contract ]] && TEST_SCHEME_TYPE="Contract Tests"
+[[ $2 == contract-beta ]] && TEST_SCHEME_TYPE="Contract Tests Beta"
 
 # Maximum number of tests which should run for same device type (various versions).
 [[ -n $3 ]] && MAXIMUM_DESTINATIONS="$3" || MAXIMUM_DESTINATIONS=3
@@ -32,6 +34,11 @@ DESTINATION_NAMES=("macOS")
 DESTINATIONS=()
 PLATFORM="macOS"
 
+
+if [[ $2 == contract && $1 != ios ]]; then
+  echo -e "${BRCF}Contract testing implemented only for iOS${CF}"
+  exit 1
+fi
 
 if [[ $1 != macos ]]; then
 	[[ $1 == tvos ]] && PLATFORM="tvOS" || PLATFORM="iOS"
@@ -45,19 +52,35 @@ if [[ $1 != macos ]]; then
 	DESTINATION_NAMES=()
 
 	# Extract list of devices which correspond to target platform and minimum version requirement
-	while IFS='' read -r match; do
-		# Skip destinations for iPhone paired watches
-		[[ $DEVICE == iPhone ]] && [[ $match =~ Watch ]] && continue
+	if [[ $TRAVIS == true ]]; then
+		while IFS='' read -r match; do
+			# Skip destinations for iPhone paired watches
+			[[ $DEVICE == iPhone ]] && [[ $match =~ Watch ]] && continue
 
-		# Skip destination if it's OS version is lower than specified in Podspec.
-		[[ $match =~ $VERSION_REGEXP ]] && [[ ${BASH_REMATCH[2]} -lt $MINIMUM_MAJOR_VERSION ]] && \
-			continue
+			# Skip destination if it's OS version is lower than specified in Podspec.
+			[[ $match =~ $VERSION_REGEXP ]] && [[ ${BASH_REMATCH[2]} -lt $MINIMUM_MAJOR_VERSION ]] && \
+				continue
 
-		[[ ${BASH_REMATCH[2]} -gt $MAXIMUM_MAJOR_VERSION ]] && \
-		  MAXIMUM_MAJOR_VERSION="${BASH_REMATCH[2]}"
+			[[ ${BASH_REMATCH[2]} -gt $MAXIMUM_MAJOR_VERSION ]] && \
+			  MAXIMUM_MAJOR_VERSION="${BASH_REMATCH[2]}"
 
-		AVAILABLE_DEVICES+=("$match")
-  done < <(echo "$(instruments -s devices)" | grep -E "^$DEVICE")
+			AVAILABLE_DEVICES+=("$match")
+	  done < <(echo "$(instruments -s devices)" | grep -E "^$DEVICE")
+  else
+		while IFS='' read -r match; do
+			# Skip destinations for iPhone paired watches
+			[[ $DEVICE == iPhone ]] && [[ $match =~ Watch ]] && continue
+
+			# Skip destination if it's OS version is lower than specified in Podspec.
+			[[ $match =~ $VERSION_REGEXP ]] && [[ ${BASH_REMATCH[2]} -lt $MINIMUM_MAJOR_VERSION ]] && \
+				continue
+
+			[[ ${BASH_REMATCH[2]} -gt $MAXIMUM_MAJOR_VERSION ]] && \
+			  MAXIMUM_MAJOR_VERSION="${BASH_REMATCH[2]}"
+
+			AVAILABLE_DEVICES+=("$match")
+	  done < <(echo "$(xcrun xctrace list devices)" | grep -E "^$DEVICE")
+  fi
 
 	NEXT_MAJOR_VERSION=$MAXIMUM_MAJOR_VERSION
 
@@ -70,6 +93,7 @@ if [[ $1 != macos ]]; then
 	  		[[ $DEVICE_INFORMATION =~ (.*)[[:space:]]\((([0-9]+)\.[0-9]+(\.[0-9]+)?)\) ]] && \
 	  			DEVICE_NAME="${BASH_REMATCH[1]}"
 
+	  		[[ -n $DEVICE_NAME && $TRAVIS != true ]] && DEVICE_NAME="$(echo "$DEVICE_NAME" | sed -e "s/ Simulator//")"
 				DESTINATION_NAMES+=("$DEVICE_NAME $OS")
 	  		DESTINATIONS+=("platform=$PLATFORM Simulator,name=$DEVICE_NAME,OS=$OS")
 				MAXIMUM_DESTINATIONS=$((MAXIMUM_DESTINATIONS-1))
@@ -87,16 +111,31 @@ fi
 for destinationPlatformIdx in "${!DESTINATIONS[@]}"; do
   DESTINATION_PLATFORM="${DESTINATIONS[$destinationPlatformIdx]}"
   DESTINATION_NAME="${DESTINATION_NAMES[$destinationPlatformIdx]}"
+  CUCUMBER_REPORTS_PATH="$GIT_ROOT_PATH/Tests/Results"
 
   echo -e "${LCCF}Running tests for '${DF}$DESTINATION_NAME${CF}${LCCF}'...${CF}"
 	xcodebuild \
 		-workspace "$GIT_ROOT_PATH/Tests/PubNub Tests.xcworkspace" \
 		-scheme "[$PLATFORM] $TEST_SCHEME_TYPE" \
 		-destination "$DESTINATION_PLATFORM" \
+		-parallel-testing-enabled NO \
 		test | xcpretty --simple && XCODE_BUILD_EXITCODE="${PIPESTATUS[0]}"
 
-		if [[ $XCODE_BUILD_EXITCODE -gt 0 ]]; then
-			echo -e "${BRCF}xcodebuild exited with error code: $XCODE_BUILD_EXITCODE"
-			exit $XCODE_BUILD_EXITCODE
-	fi
+  if [[ $2 == contract || $2 == contract-beta ]]; then
+    REPORT_FILENAME="$CUCUMBER_REPORTS_PATH/CucumberishTestResults-[$PLATFORM] $TEST_SCHEME_TYPE.json"
+    [[ $2 == contract ]] && TARGET_REPORT_FILENAME="main.json" || TARGET_REPORT_FILENAME="beta.json"
+
+    if [[ -r "$REPORT_FILENAME" ]]; then
+      mv "$REPORT_FILENAME" "$CUCUMBER_REPORTS_PATH/$TARGET_REPORT_FILENAME"
+    else
+      echo -e "${BRCF}report file not created: $REPORT_FILENAME"
+    fi
+  fi
+
+  if [[ $XCODE_BUILD_EXITCODE -gt 0 && $2 != contract-beta ]]; then
+    echo -e "${BRCF}xcodebuild exited with error code: $XCODE_BUILD_EXITCODE"
+    exit $XCODE_BUILD_EXITCODE
+  elif [[ $2 == contract-beta ]]; then
+    echo -e "${LCCF}$TEST_SCHEME_TYPE is allowed to fail.${CF}"
+  fi
 done

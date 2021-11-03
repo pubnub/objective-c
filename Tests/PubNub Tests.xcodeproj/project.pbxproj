@@ -7,10 +7,36 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		79657A7B2719CD5B00BACEC5 /* PNAccessContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = 79BB4BDE270A66E100EDC466 /* PNAccessContractTestSteps.m */; };
+		79657A7C2719CD5B00BACEC5 /* PNMessageActionsContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = 79BB4BD6270A60A900EDC466 /* PNMessageActionsContractTestSteps.m */; };
+		79657A7D2719CD5B00BACEC5 /* PNSubscribeContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = 796E6538270895F5001B57F4 /* PNSubscribeContractTestSteps.m */; };
+		79657A7E2719CD5B00BACEC5 /* PNContractTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 796E653027088547001B57F4 /* PNContractTestCase.m */; };
+		79657A7F2719CD5B00BACEC5 /* PNTimeContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = 796E653427088A2A001B57F4 /* PNTimeContractTestSteps.m */; };
+		79657A802719CD5B00BACEC5 /* PNFilesContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = 79BB4BE2270A6FBF00EDC466 /* PNFilesContractTestSteps.m */; };
+		79657A812719CD5B00BACEC5 /* PNHistoryContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = 79BB4BDA270A62BE00EDC466 /* PNHistoryContractTestSteps.m */; };
+		79657A822719CD5B00BACEC5 /* PNPushContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = 79BB4BD22709EA5400EDC466 /* PNPushContractTestSteps.m */; };
+		79657A832719CD5B00BACEC5 /* PNPublishContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = 79BB4BCE2709D70C00EDC466 /* PNPublishContractTestSteps.m */; };
+		79657A842719CD5B00BACEC5 /* PNContractCucumberTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 796E65292707B33A001B57F4 /* PNContractCucumberTest.m */; };
+		79657A882719CD5B00BACEC5 /* Features in Resources */ = {isa = PBXBuildFile; fileRef = 796F630D270347AD00DE6F07 /* Features */; };
+		79657A892719CD5B00BACEC5 /* Fixtures in Resources */ = {isa = PBXBuildFile; fileRef = A5A905F923B57C80006D22BA /* Fixtures */; };
+		79657A8A2719CD5B00BACEC5 /* tests-configuration.json in Resources */ = {isa = PBXBuildFile; fileRef = A529271823B1855A00FF46DD /* tests-configuration.json */; };
+		796E652A2707B33A001B57F4 /* PNContractCucumberTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 796E65292707B33A001B57F4 /* PNContractCucumberTest.m */; };
+		796E653127088547001B57F4 /* PNContractTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 796E653027088547001B57F4 /* PNContractTestCase.m */; };
+		796E653527088A2A001B57F4 /* PNTimeContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = 796E653427088A2A001B57F4 /* PNTimeContractTestSteps.m */; };
+		796E6539270895F5001B57F4 /* PNSubscribeContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = 796E6538270895F5001B57F4 /* PNSubscribeContractTestSteps.m */; };
+		796F6305270344DF00DE6F07 /* Fixtures in Resources */ = {isa = PBXBuildFile; fileRef = A5A905F923B57C80006D22BA /* Fixtures */; };
+		796F6306270344DF00DE6F07 /* tests-configuration.json in Resources */ = {isa = PBXBuildFile; fileRef = A529271823B1855A00FF46DD /* tests-configuration.json */; };
+		796F630E270347AD00DE6F07 /* Features in Resources */ = {isa = PBXBuildFile; fileRef = 796F630D270347AD00DE6F07 /* Features */; };
 		797ABBE424C9BECA0008CA1E /* PNFilesIntegrationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 797ABBE324C9BECA0008CA1E /* PNFilesIntegrationTests.m */; };
 		797ABBE524C9BECA0008CA1E /* PNFilesIntegrationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 797ABBE324C9BECA0008CA1E /* PNFilesIntegrationTests.m */; };
 		797ABBE624C9BECA0008CA1E /* PNFilesIntegrationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 797ABBE324C9BECA0008CA1E /* PNFilesIntegrationTests.m */; };
 		797ABBE724C9BECA0008CA1E /* PNFilesIntegrationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 797ABBE324C9BECA0008CA1E /* PNFilesIntegrationTests.m */; };
+		79BB4BCF2709D70C00EDC466 /* PNPublishContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = 79BB4BCE2709D70C00EDC466 /* PNPublishContractTestSteps.m */; };
+		79BB4BD32709EA5400EDC466 /* PNPushContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = 79BB4BD22709EA5400EDC466 /* PNPushContractTestSteps.m */; };
+		79BB4BD7270A60A900EDC466 /* PNMessageActionsContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = 79BB4BD6270A60A900EDC466 /* PNMessageActionsContractTestSteps.m */; };
+		79BB4BDB270A62BE00EDC466 /* PNHistoryContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = 79BB4BDA270A62BE00EDC466 /* PNHistoryContractTestSteps.m */; };
+		79BB4BDF270A66E100EDC466 /* PNAccessContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = 79BB4BDE270A66E100EDC466 /* PNAccessContractTestSteps.m */; };
+		79BB4BE3270A6FBF00EDC466 /* PNFilesContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = 79BB4BE2270A6FBF00EDC466 /* PNFilesContractTestSteps.m */; };
 		79CFA2D826DE25DA00D206D4 /* PNPAMTokenTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CFA2D626DE25CD00D206D4 /* PNPAMTokenTest.m */; };
 		79CFA2D926DE25DC00D206D4 /* PNPAMTokenTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CFA2D626DE25CD00D206D4 /* PNPAMTokenTest.m */; };
 		79CFA2DA26DE25DD00D206D4 /* PNPAMTokenTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CFA2D626DE25CD00D206D4 /* PNPAMTokenTest.m */; };
@@ -155,7 +181,30 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7941EE5E270C73B30054D9EF /* ios-contract-tests.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "ios-contract-tests.plist"; sourceTree = "<group>"; };
+		79657A8F2719CD5B00BACEC5 /* [iOS] Contract Tests Beta.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "[iOS] Contract Tests Beta.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		796E65292707B33A001B57F4 /* PNContractCucumberTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNContractCucumberTest.m; sourceTree = "<group>"; };
+		796E652F27088547001B57F4 /* PNContractTestCase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNContractTestCase.h; sourceTree = "<group>"; };
+		796E653027088547001B57F4 /* PNContractTestCase.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNContractTestCase.m; sourceTree = "<group>"; };
+		796E653327088A2A001B57F4 /* PNTimeContractTestSteps.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNTimeContractTestSteps.h; sourceTree = "<group>"; };
+		796E653427088A2A001B57F4 /* PNTimeContractTestSteps.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNTimeContractTestSteps.m; sourceTree = "<group>"; };
+		796E6537270895F5001B57F4 /* PNSubscribeContractTestSteps.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNSubscribeContractTestSteps.h; sourceTree = "<group>"; };
+		796E6538270895F5001B57F4 /* PNSubscribeContractTestSteps.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNSubscribeContractTestSteps.m; sourceTree = "<group>"; };
+		796F630A270344DF00DE6F07 /* [iOS] Contract Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "[iOS] Contract Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		796F630D270347AD00DE6F07 /* Features */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Features; sourceTree = "<group>"; };
 		797ABBE324C9BECA0008CA1E /* PNFilesIntegrationTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNFilesIntegrationTests.m; sourceTree = "<group>"; };
+		79BB4BCD2709D70C00EDC466 /* PNPublishContractTestSteps.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNPublishContractTestSteps.h; sourceTree = "<group>"; };
+		79BB4BCE2709D70C00EDC466 /* PNPublishContractTestSteps.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNPublishContractTestSteps.m; sourceTree = "<group>"; };
+		79BB4BD12709EA5400EDC466 /* PNPushContractTestSteps.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNPushContractTestSteps.h; sourceTree = "<group>"; };
+		79BB4BD22709EA5400EDC466 /* PNPushContractTestSteps.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNPushContractTestSteps.m; sourceTree = "<group>"; };
+		79BB4BD5270A60A900EDC466 /* PNMessageActionsContractTestSteps.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNMessageActionsContractTestSteps.h; sourceTree = "<group>"; };
+		79BB4BD6270A60A900EDC466 /* PNMessageActionsContractTestSteps.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNMessageActionsContractTestSteps.m; sourceTree = "<group>"; };
+		79BB4BD9270A62BE00EDC466 /* PNHistoryContractTestSteps.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNHistoryContractTestSteps.h; sourceTree = "<group>"; };
+		79BB4BDA270A62BE00EDC466 /* PNHistoryContractTestSteps.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNHistoryContractTestSteps.m; sourceTree = "<group>"; };
+		79BB4BDD270A66E100EDC466 /* PNAccessContractTestSteps.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNAccessContractTestSteps.h; sourceTree = "<group>"; };
+		79BB4BDE270A66E100EDC466 /* PNAccessContractTestSteps.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNAccessContractTestSteps.m; sourceTree = "<group>"; };
+		79BB4BE1270A6FBF00EDC466 /* PNFilesContractTestSteps.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNFilesContractTestSteps.h; sourceTree = "<group>"; };
+		79BB4BE2270A6FBF00EDC466 /* PNFilesContractTestSteps.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNFilesContractTestSteps.m; sourceTree = "<group>"; };
 		79CFA2D626DE25CD00D206D4 /* PNPAMTokenTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNPAMTokenTest.m; sourceTree = "<group>"; };
 		A529268323B0D07500FF46DD /* [iOS] Code Coverage.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "[iOS] Code Coverage.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A52926D823B0E3CF00FF46DD /* ios-tests.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ios-tests.plist"; sourceTree = "<group>"; };
@@ -208,6 +257,20 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		79657A852719CD5B00BACEC5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		796F6303270344DF00DE6F07 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A529268023B0D07500FF46DD /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -267,10 +330,106 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		796E65282707A864001B57F4 /* Steps */ = {
+			isa = PBXGroup;
+			children = (
+				79BB4BDC270A66D200EDC466 /* Access */,
+				79BB4BE0270A6FA800EDC466 /* Files */,
+				79BB4BD8270A62AC00EDC466 /* History */,
+				79BB4BD4270A608F00EDC466 /* Message Actions */,
+				79BB4BD02709EA3A00EDC466 /* Push */,
+				79BB4BCC2709D65C00EDC466 /* Publish */,
+				796E65362708958E001B57F4 /* Subscribe */,
+				796E6532270889EF001B57F4 /* Utilities */,
+			);
+			path = Steps;
+			sourceTree = "<group>";
+		};
+		796E6532270889EF001B57F4 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				796E653327088A2A001B57F4 /* PNTimeContractTestSteps.h */,
+				796E653427088A2A001B57F4 /* PNTimeContractTestSteps.m */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		796E65362708958E001B57F4 /* Subscribe */ = {
+			isa = PBXGroup;
+			children = (
+				796E6537270895F5001B57F4 /* PNSubscribeContractTestSteps.h */,
+				796E6538270895F5001B57F4 /* PNSubscribeContractTestSteps.m */,
+			);
+			path = Subscribe;
+			sourceTree = "<group>";
+		};
+		796F630C2703479800DE6F07 /* Contract */ = {
+			isa = PBXGroup;
+			children = (
+				796E65282707A864001B57F4 /* Steps */,
+				796E65292707B33A001B57F4 /* PNContractCucumberTest.m */,
+			);
+			path = Contract;
+			sourceTree = "<group>";
+		};
 		797ABBDC24C9B64D0008CA1E /* Files */ = {
 			isa = PBXGroup;
 			children = (
 				797ABBE324C9BECA0008CA1E /* PNFilesIntegrationTests.m */,
+			);
+			path = Files;
+			sourceTree = "<group>";
+		};
+		79BB4BCC2709D65C00EDC466 /* Publish */ = {
+			isa = PBXGroup;
+			children = (
+				79BB4BCD2709D70C00EDC466 /* PNPublishContractTestSteps.h */,
+				79BB4BCE2709D70C00EDC466 /* PNPublishContractTestSteps.m */,
+			);
+			path = Publish;
+			sourceTree = "<group>";
+		};
+		79BB4BD02709EA3A00EDC466 /* Push */ = {
+			isa = PBXGroup;
+			children = (
+				79BB4BD12709EA5400EDC466 /* PNPushContractTestSteps.h */,
+				79BB4BD22709EA5400EDC466 /* PNPushContractTestSteps.m */,
+			);
+			path = Push;
+			sourceTree = "<group>";
+		};
+		79BB4BD4270A608F00EDC466 /* Message Actions */ = {
+			isa = PBXGroup;
+			children = (
+				79BB4BD5270A60A900EDC466 /* PNMessageActionsContractTestSteps.h */,
+				79BB4BD6270A60A900EDC466 /* PNMessageActionsContractTestSteps.m */,
+			);
+			path = "Message Actions";
+			sourceTree = "<group>";
+		};
+		79BB4BD8270A62AC00EDC466 /* History */ = {
+			isa = PBXGroup;
+			children = (
+				79BB4BD9270A62BE00EDC466 /* PNHistoryContractTestSteps.h */,
+				79BB4BDA270A62BE00EDC466 /* PNHistoryContractTestSteps.m */,
+			);
+			path = History;
+			sourceTree = "<group>";
+		};
+		79BB4BDC270A66D200EDC466 /* Access */ = {
+			isa = PBXGroup;
+			children = (
+				79BB4BDD270A66E100EDC466 /* PNAccessContractTestSteps.h */,
+				79BB4BDE270A66E100EDC466 /* PNAccessContractTestSteps.m */,
+			);
+			path = Access;
+			sourceTree = "<group>";
+		};
+		79BB4BE0270A6FA800EDC466 /* Files */ = {
+			isa = PBXGroup;
+			children = (
+				79BB4BE1270A6FBF00EDC466 /* PNFilesContractTestSteps.h */,
+				79BB4BE2270A6FBF00EDC466 /* PNFilesContractTestSteps.m */,
 			);
 			path = Files;
 			sourceTree = "<group>";
@@ -286,6 +445,7 @@
 		A52926AF23B0D63100FF46DD /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
+				796F630D270347AD00DE6F07 /* Features */,
 				A5A905F923B57C80006D22BA /* Fixtures */,
 				A52926B023B0D63100FF46DD /* Targets */,
 				A529271823B1855A00FF46DD /* tests-configuration.json */,
@@ -296,6 +456,7 @@
 		A52926B023B0D63100FF46DD /* Targets */ = {
 			isa = PBXGroup;
 			children = (
+				7941EE5E270C73B30054D9EF /* ios-contract-tests.plist */,
 				A529270B23B0E80700FF46DD /* macos-tests.plist */,
 				A529270C23B0E80700FF46DD /* tvos-tests.plist */,
 				A52926D823B0E3CF00FF46DD /* ios-tests.plist */,
@@ -336,6 +497,8 @@
 				A5DB1E8F23B2D1D1009B1B23 /* Categories */,
 				A529270E23B181FE00FF46DD /* PNRecordableTestCase.h */,
 				A529270F23B181FE00FF46DD /* PNRecordableTestCase.m */,
+				796E652F27088547001B57F4 /* PNContractTestCase.h */,
+				796E653027088547001B57F4 /* PNContractTestCase.m */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -499,6 +662,8 @@
 				A52926EB23B0E6DC00FF46DD /* [tvOS] Unit Tests.xctest */,
 				A52926F723B0E71700FF46DD /* [macOS] Mocked Integration Tests.xctest */,
 				A529270323B0E72500FF46DD /* [macOS] Unit Tests.xctest */,
+				796F630A270344DF00DE6F07 /* [iOS] Contract Tests.xctest */,
+				79657A8F2719CD5B00BACEC5 /* [iOS] Contract Tests Beta.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -507,6 +672,7 @@
 			isa = PBXGroup;
 			children = (
 				A529270D23B1816000FF46DD /* Helpers */,
+				796F630C2703479800DE6F07 /* Contract */,
 				A52926B623B0D67C00FF46DD /* Integration */,
 				A52926B523B0D67C00FF46DD /* Unit */,
 			);
@@ -534,6 +700,40 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		79657A782719CD5B00BACEC5 /* [iOS] Contract Tests Beta */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 79657A8C2719CD5B00BACEC5 /* Build configuration list for PBXNativeTarget "[iOS] Contract Tests Beta" */;
+			buildPhases = (
+				79657A7A2719CD5B00BACEC5 /* Sources */,
+				79657A852719CD5B00BACEC5 /* Frameworks */,
+				79657A872719CD5B00BACEC5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "[iOS] Contract Tests Beta";
+			productName = "[iOS] Integration Tests";
+			productReference = 79657A8F2719CD5B00BACEC5 /* [iOS] Contract Tests Beta.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		796F62F0270344DF00DE6F07 /* [iOS] Contract Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 796F6307270344DF00DE6F07 /* Build configuration list for PBXNativeTarget "[iOS] Contract Tests" */;
+			buildPhases = (
+				796F62F1270344DF00DE6F07 /* Sources */,
+				796F6303270344DF00DE6F07 /* Frameworks */,
+				796F6304270344DF00DE6F07 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "[iOS] Contract Tests";
+			productName = "[iOS] Integration Tests";
+			productReference = 796F630A270344DF00DE6F07 /* [iOS] Contract Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		A529268223B0D07500FF46DD /* [iOS] Code Coverage */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = A529268823B0D07500FF46DD /* Build configuration list for PBXNativeTarget "[iOS] Code Coverage" */;
@@ -725,12 +925,34 @@
 				A5B65D8123B03FFD006B7BFB /* [iOS] Mocked Integration Tests */,
 				A5B65D8E23B04148006B7BFB /* [iOS] Integration Tests */,
 				A529268223B0D07500FF46DD /* [iOS] Code Coverage */,
+				796F62F0270344DF00DE6F07 /* [iOS] Contract Tests */,
+				79657A782719CD5B00BACEC5 /* [iOS] Contract Tests Beta */,
 				A5B65D6E23B03DB4006B7BFB /* [iOS] Unit Tests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		79657A872719CD5B00BACEC5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				79657A882719CD5B00BACEC5 /* Features in Resources */,
+				79657A892719CD5B00BACEC5 /* Fixtures in Resources */,
+				79657A8A2719CD5B00BACEC5 /* tests-configuration.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		796F6304270344DF00DE6F07 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				796F630E270347AD00DE6F07 /* Features in Resources */,
+				796F6305270344DF00DE6F07 /* Fixtures in Resources */,
+				796F6306270344DF00DE6F07 /* tests-configuration.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A529268123B0D07500FF46DD /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -804,6 +1026,40 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		79657A7A2719CD5B00BACEC5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				79657A7B2719CD5B00BACEC5 /* PNAccessContractTestSteps.m in Sources */,
+				79657A7C2719CD5B00BACEC5 /* PNMessageActionsContractTestSteps.m in Sources */,
+				79657A7D2719CD5B00BACEC5 /* PNSubscribeContractTestSteps.m in Sources */,
+				79657A7E2719CD5B00BACEC5 /* PNContractTestCase.m in Sources */,
+				79657A7F2719CD5B00BACEC5 /* PNTimeContractTestSteps.m in Sources */,
+				79657A802719CD5B00BACEC5 /* PNFilesContractTestSteps.m in Sources */,
+				79657A812719CD5B00BACEC5 /* PNHistoryContractTestSteps.m in Sources */,
+				79657A822719CD5B00BACEC5 /* PNPushContractTestSteps.m in Sources */,
+				79657A832719CD5B00BACEC5 /* PNPublishContractTestSteps.m in Sources */,
+				79657A842719CD5B00BACEC5 /* PNContractCucumberTest.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		796F62F1270344DF00DE6F07 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				79BB4BDF270A66E100EDC466 /* PNAccessContractTestSteps.m in Sources */,
+				79BB4BD7270A60A900EDC466 /* PNMessageActionsContractTestSteps.m in Sources */,
+				796E6539270895F5001B57F4 /* PNSubscribeContractTestSteps.m in Sources */,
+				796E653127088547001B57F4 /* PNContractTestCase.m in Sources */,
+				796E653527088A2A001B57F4 /* PNTimeContractTestSteps.m in Sources */,
+				79BB4BE3270A6FBF00EDC466 /* PNFilesContractTestSteps.m in Sources */,
+				79BB4BDB270A62BE00EDC466 /* PNHistoryContractTestSteps.m in Sources */,
+				79BB4BD32709EA5400EDC466 /* PNPushContractTestSteps.m in Sources */,
+				79BB4BCF2709D70C00EDC466 /* PNPublishContractTestSteps.m in Sources */,
+				796E652A2707B33A001B57F4 /* PNContractCucumberTest.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A529267F23B0D07500FF46DD /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -994,6 +1250,111 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		79657A8D2719CD5B00BACEC5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_CODE_COVERAGE = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"COCOAPODS=1",
+					"SRC_ROOT=@\\\"$(SRCROOT)\\\"",
+				);
+				INFOPLIST_FILE = "Support Files/Targets/ios-contract-tests.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.pubnub.ios-integration-tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TVOS_DEPLOYMENT_TARGET = 10.0;
+				WATCHOS_DEPLOYMENT_TARGET = 4.0;
+			};
+			name = Debug;
+		};
+		79657A8E2719CD5B00BACEC5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_CODE_COVERAGE = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = "Support Files/Targets/ios-contract-tests.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.pubnub.ios-integration-tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TVOS_DEPLOYMENT_TARGET = 10.0;
+				WATCHOS_DEPLOYMENT_TARGET = 4.0;
+			};
+			name = Release;
+		};
+		796F6308270344DF00DE6F07 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_CODE_COVERAGE = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = "Support Files/Targets/ios-contract-tests.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.pubnub.ios-integration-tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TVOS_DEPLOYMENT_TARGET = 10.0;
+				WATCHOS_DEPLOYMENT_TARGET = 4.0;
+			};
+			name = Debug;
+		};
+		796F6309270344DF00DE6F07 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_CODE_COVERAGE = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = "Support Files/Targets/ios-contract-tests.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.pubnub.ios-integration-tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TVOS_DEPLOYMENT_TARGET = 10.0;
+				WATCHOS_DEPLOYMENT_TARGET = 4.0;
+			};
+			name = Release;
+		};
 		A529268923B0D07500FF46DD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1493,6 +1854,24 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		79657A8C2719CD5B00BACEC5 /* Build configuration list for PBXNativeTarget "[iOS] Contract Tests Beta" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				79657A8D2719CD5B00BACEC5 /* Debug */,
+				79657A8E2719CD5B00BACEC5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		796F6307270344DF00DE6F07 /* Build configuration list for PBXNativeTarget "[iOS] Contract Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				796F6308270344DF00DE6F07 /* Debug */,
+				796F6309270344DF00DE6F07 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		A529268823B0D07500FF46DD /* Build configuration list for PBXNativeTarget "[iOS] Code Coverage" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

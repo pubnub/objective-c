@@ -8,6 +8,7 @@ reports/
 # Tests
 ##################
 tests-configuration.json
+Features/
 
 ## Build generated
 build/
@@ -45,6 +46,7 @@ xcuserdata/
 #
 Pods/
 Podfile.lock
+!Tests/Podfile.lock
 
 # Carthage
 #
