@@ -413,38 +413,11 @@ NS_ASSUME_NONNULL_END
                               withBlock:^(PubNub *client, PNSubscribeStatus *status, BOOL *remove) {
             
             if (status.operation == PNSubscribeOperation && status.category == PNAccessDeniedCategory) {
-                XCTAssertTrue(status.willAutomaticallyRetry);
-                [status cancelAutomaticRetry];
+                XCTAssertFalse(status.willAutomaticallyRetry);
                 
                 *remove = YES;
                 
                 handler();
-            }
-        }];
-        
-        [self.client subscribeToChannels:@[channel] withPresence:NO];
-    }];
-}
-
-- (void)testItShouldNotSubscribeToChannelAndRetryWhenReceiveAccessDeniedEvent {
-    NSString *channel = [self channelWithName:@"test-channel1"];
-    __block NSUInteger retriedCount = 0;
-    
-    
-    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self addStatusHandlerForClient:self.client
-                              withBlock:^(PubNub *client, PNSubscribeStatus *status, BOOL *remove) {
-            
-            if (status.operation == PNSubscribeOperation && status.category == PNAccessDeniedCategory) {
-                XCTAssertTrue(status.willAutomaticallyRetry);
-                
-                if (retriedCount == 1) {
-                    [status cancelAutomaticRetry];
-                    *remove = YES;
-                    handler();
-                } else {
-                    retriedCount++;
-                }
             }
         }];
         
@@ -791,8 +764,7 @@ NS_ASSUME_NONNULL_END
                               withBlock:^(PubNub *client, PNSubscribeStatus *status, BOOL *remove) {
             
             if (status.operation == PNSubscribeOperation && status.category == PNAccessDeniedCategory) {
-                XCTAssertTrue(status.willAutomaticallyRetry);
-                [status cancelAutomaticRetry];
+                XCTAssertFalse(status.willAutomaticallyRetry);
                 
                 *remove = YES;
                 
@@ -804,31 +776,6 @@ NS_ASSUME_NONNULL_END
     }];
 }
 
-- (void)testItShouldNotSubscribeToChannelGroupAndRetryWhenReceiveAccessDeniedEvent {
-    NSString *channelGroup = [self channelGroupWithName:@"test-channel-group1"];
-    __block NSUInteger retriedCount = 0;
-    
-    
-    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self addStatusHandlerForClient:self.client
-                              withBlock:^(PubNub *client, PNSubscribeStatus *status, BOOL *remove) {
-            
-            if (status.operation == PNSubscribeOperation && status.category == PNAccessDeniedCategory) {
-                XCTAssertTrue(status.willAutomaticallyRetry);
-                
-                if (retriedCount == 1) {
-                    [status cancelAutomaticRetry];
-                    *remove = YES;
-                    handler();
-                } else {
-                    retriedCount++;
-                }
-            }
-        }];
-        
-        [self.client subscribeToChannelGroups:@[channelGroup] withPresence:NO];
-    }];
-}
 
 
 #pragma mark - Tests :: Builder pattern-based subscribe
