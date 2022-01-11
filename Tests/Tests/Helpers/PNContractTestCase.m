@@ -162,7 +162,8 @@ NS_ASSUME_NONNULL_END
 - (PNConfiguration *)configuration {
     if (!self.currentConfiguration) {
         self.currentConfiguration = [PNConfiguration configurationWithPublishKey:kPNDefaultPublishKey
-                                                             subscribeKey:kPNDefaultSubscribeKey];
+                                                                    subscribeKey:kPNDefaultSubscribeKey
+                                                                            uuid:[NSUUID UUID].UUIDString];
         self.currentConfiguration.origin = kPNMockServerAddress;
         self.currentConfiguration.TLSEnabled = NO;
     }
