@@ -66,6 +66,8 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @warning There can't be two same client identifiers online at the same time.
  *
+ * @throw Exception in case if \c uuid is empty string.
+ *
  * @default Client will use it's own-generated value if won't be specified by user.
  */
 @property (nonatomic, copy, setter = setUUID:) NSString *uuid;
@@ -302,12 +304,17 @@ NS_ASSUME_NONNULL_BEGIN
  * @param publishKey Key which allow client to use data push API.
  * @param subscribeKey Key which allow client to subscribe on live feeds pushed from \b PubNub
  *     service.
+ * @param uuid Unique client identifier used to identify concrete client user from another which
+ *     currently use \b PubNub services.
+ *
+ * @throw Exception in case if \c uuid is empty string.
  *
  * @return Configured and ready to se configuration instance.
  */
 + (instancetype)configurationWithPublishKey:(NSString *)publishKey
                                subscribeKey:(NSString *)subscribeKey
-    NS_SWIFT_NAME(init(publishKey:subscribeKey:));
+                                       uuid:(NSString *)uuid
+    NS_SWIFT_NAME(init(publishKey:subscribeKey:uuid:));
 
 #pragma mark -
 
