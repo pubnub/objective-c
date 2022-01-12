@@ -1,7 +1,7 @@
 /**
-* @author Serhii Mamontov
-* @copyright © 2010-2020 PubNub, Inc.
-*/
+ * @author Serhii Mamontov
+ * @copyright © 2010-2022 PubNub, Inc.
+ */
 #import <PubNub/PNRequestParameters.h>
 #import <PubNub/PubNub+CorePrivate.h>
 #import "PNRecordableTestCase.h"

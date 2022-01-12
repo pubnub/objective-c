@@ -749,6 +749,7 @@ NS_ASSUME_NONNULL_END
 - (PNConfiguration *)defaultConfiguration {
     NSString *subscribeKey = self.subscribeKey;
     NSString *publishKey = self.publishKey;
+    NSString *uuid = [self uuidForUser:[self pubNubUUIDForTestCaseWithName:self.name]];
     
     if ([self usePAMEnabledKeysForTestCaseWithName:self.name]) {
         subscribeKey = self.pamSubscribeKey;
@@ -756,8 +757,8 @@ NS_ASSUME_NONNULL_END
     }
     
     PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:publishKey
-                                                                     subscribeKey:subscribeKey];
-    configuration.uuid = [self uuidForUser:[self pubNubUUIDForTestCaseWithName:self.name]];
+                                                                     subscribeKey:subscribeKey
+                                                                             uuid:uuid];
     configuration.authKey = [self pubNubAuthForTestCaseWithName:self.name];
     
     return configuration;

@@ -1,3 +1,9 @@
+## v5.0.0
+January 12 2022
+
+#### Modified
+- BREAKING CHANGES: Disable automated `uuid` generation and make it mandatory to specify during PNConfiguration instance creation.
+
 ## v4.17.0
 September 22 2021
 

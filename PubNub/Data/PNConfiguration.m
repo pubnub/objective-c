@@ -49,10 +49,12 @@ NS_ASSUME_NONNULL_BEGIN
  * @param publishKey Key which allow client to use data push API.
  * @param subscribeKey Key which allow client to subscribe on live feeds pushed from \b PubNub
  *     service.
+ * @param uuid Unique client identifier used to identify concrete client user from another which
+ *     currently use \b PubNub services.
  *
  * @return Configured and ready to se configuration instance.
  */
-- (instancetype)initWithPublishKey:(NSString *)publishKey subscribeKey:(NSString *)subscribeKey;
+- (instancetype)initWithPublishKey:(NSString *)publishKey subscribeKey:(NSString *)subscribeKey uuid:(NSString *)uuid;
 
 
 #pragma mark - Storage
@@ -66,18 +68,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 #pragma mark - Misc
-
-/**
- * @brief Fetch unique user identifier from keychain or generate new one.
- *
- * @discussion This value updates with every client configuration (if different from previous one).
- * If user doesn't provide custom \c uuid during client configuration, client will generate and
- * store new unique value which will be re-used during next client configuration (if not provided
- * custom \c uuid).
- *
- * @return Unique user identifier.
- */
-- (NSString *)uniqueUserIdentifier;
 
 /**
  * @brief Fetch unique device identifier from keychain or generate new one.
@@ -138,19 +128,35 @@ NS_ASSUME_NONNULL_END
   _presenceHeartbeatInterval = (NSInteger)(_presenceHeartbeatValue * 0.5f) - 1;
 }
 
+- (void)setUUID:(NSString *)uuid {
+    if (!uuid || [uuid stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0) {
+        NSDictionary *errorInformation = @{
+            NSLocalizedFailureReasonErrorKey: @"PubNub client doesn't generate UUID.",
+            NSLocalizedRecoverySuggestionErrorKey: @"Specify own 'uuid' using PNConfiguration constructor."
+        };
+
+        @throw [NSException exceptionWithName:@"PNUnacceptableParametersInput"
+                                       reason:@"'uuid' not set"
+                                     userInfo:errorInformation];
+    }
+    
+    _uuid = [uuid copy];
+}
+
 
 #pragma mark - Initialization and Configuration
 
 + (instancetype)configurationWithPublishKey:(NSString *)publishKey
-                               subscribeKey:(NSString *)subscribeKey {
+                               subscribeKey:(NSString *)subscribeKey
+                                       uuid:(NSString *)uuid {
     
     NSParameterAssert(publishKey);
     NSParameterAssert(subscribeKey);
     
-    return [[self alloc] initWithPublishKey:publishKey subscribeKey:subscribeKey];
+    return [[self alloc] initWithPublishKey:publishKey subscribeKey:subscribeKey uuid:uuid];
 }
 
-- (instancetype)initWithPublishKey:(NSString *)publishKey subscribeKey:(NSString *)subscribeKey {
+- (instancetype)initWithPublishKey:(NSString *)publishKey subscribeKey:(NSString *)subscribeKey uuid:(NSString *)uuid {
     if ((self = [super init])) {
         _origin = [kPNDefaultOrigin copy];
         _publishKey = [publishKey copy];
@@ -162,7 +168,7 @@ NS_ASSUME_NONNULL_END
          */
         [self migrateDefaultToStorageWithIdentifier:publishKey ?: subscribeKey];
         
-        _uuid = [[self uniqueUserIdentifier] copy];
+        self.uuid = uuid;
         _deviceID = [[self uniqueDeviceIdentifier] copy];
         _subscribeMaximumIdleTime = kPNDefaultSubscribeMaximumIdleTime;
         _nonSubscribeRequestTimeout = kPNDefaultNonSubscribeRequestTimeout;
