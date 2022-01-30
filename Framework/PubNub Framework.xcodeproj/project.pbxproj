@@ -2556,11 +2556,6 @@
 		7932485D1D874D9F00FBDF36 /* PNPublishSequence.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNPublishSequence.m; sourceTree = "<group>"; };
 		793887021BEAD49100DCC662 /* PNNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNNumber.h; sourceTree = "<group>"; };
 		793887031BEAD49100DCC662 /* PNNumber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNNumber.m; sourceTree = "<group>"; };
-		795158591C11C88500A9D3AE /* FABAttributes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FABAttributes.h; sourceTree = "<group>"; };
-		7951585A1C11C88500A9D3AE /* FABKitProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FABKitProtocol.h; sourceTree = "<group>"; };
-		7951585B1C11C88500A9D3AE /* Fabric+FABKits.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Fabric+FABKits.h"; sourceTree = "<group>"; };
-		7951585C1C11C88500A9D3AE /* Fabric.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Fabric.h; sourceTree = "<group>"; };
-		795158611C11EA5500A9D3AE /* PubNub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PubNub.h; sourceTree = "<group>"; };
 		7951954126BD44E9001E308C /* PubNub+PAM.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PubNub+PAM.h"; sourceTree = "<group>"; };
 		7951954226BD44E9001E308C /* PubNub+PAM.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "PubNub+PAM.m"; sourceTree = "<group>"; };
 		7960B6611F6811D700FFAEBB /* PNDeleteMessageAPICallBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNDeleteMessageAPICallBuilder.h; sourceTree = "<group>"; };
@@ -2585,6 +2580,7 @@
 		797D606822D2E43F00E64C94 /* PNSignalStatus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNSignalStatus.m; sourceTree = "<group>"; };
 		797D606922D2E44000E64C94 /* PNSignalStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNSignalStatus.h; sourceTree = "<group>"; };
 		798842101C18AFE0003E8948 /* update_modulemap.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = update_modulemap.sh; sourceTree = "<group>"; };
+		79884C9927A745A600052B42 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Package.swift; path = ../../Package.swift; sourceTree = "<group>"; };
 		799D60E824C1B33900171C29 /* PNSendFileStatus.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNSendFileStatus.h; sourceTree = "<group>"; };
 		799D60E924C1B33900171C29 /* PNSendFileStatus.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNSendFileStatus.m; sourceTree = "<group>"; };
 		799D610124C36D5B00171C29 /* PNPublishRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNPublishRequest.h; sourceTree = "<group>"; };
@@ -2652,7 +2648,6 @@
 		79AA8ECE26EB3A1200ADA747 /* PubNub+PAMPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PubNub+PAMPrivate.h"; sourceTree = "<group>"; };
 		79ABD88F1F01636B007634E0 /* PNTelemetry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNTelemetry.h; sourceTree = "<group>"; };
 		79ABD8901F01636B007634E0 /* PNTelemetry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNTelemetry.m; sourceTree = "<group>"; };
-		79ACC4961C11BD720056523A /* PubNub-Fabric-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PubNub-Fabric-Info.plist"; sourceTree = "<group>"; };
 		79CBB0411BD03D3F001FC34D /* PubNub.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PubNub.h; sourceTree = "<group>"; };
 		79CBB0431BD03D3F001FC34D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		79CBB0561BD03DE4001FC34D /* PubNub+APNS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PubNub+APNS.h"; sourceTree = "<group>"; };
@@ -3123,19 +3118,6 @@
 			path = Data;
 			sourceTree = "<group>";
 		};
-		795158581C11C88500A9D3AE /* Fabric */ = {
-			isa = PBXGroup;
-			children = (
-				7951585B1C11C88500A9D3AE /* Fabric+FABKits.h */,
-				7951585A1C11C88500A9D3AE /* FABKitProtocol.h */,
-				795158591C11C88500A9D3AE /* FABAttributes.h */,
-				7951585C1C11C88500A9D3AE /* Fabric.h */,
-				795158611C11EA5500A9D3AE /* PubNub.h */,
-			);
-			name = Fabric;
-			path = ../../Support/Fabric/Headers;
-			sourceTree = "<group>";
-		};
 		799D610024C36D3000171C29 /* Publish */ = {
 			isa = PBXGroup;
 			children = (
@@ -3326,12 +3308,11 @@
 		79CBB04F1BD03D93001FC34D /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
-				795158581C11C88500A9D3AE /* Fabric */,
+				79884C9927A745A600052B42 /* Package.swift */,
 				79CBB0431BD03D3F001FC34D /* Info.plist */,
 				7915839D1BD7119E0084FC70 /* PubNub-iOS-Info.plist */,
 				7915839E1BD7119E0084FC70 /* PubNub-watchOS-Info.plist */,
 				79A8BCC61C58F97A00015BDE /* PubNub-tvOS-Info.plist */,
-				79ACC4961C11BD720056523A /* PubNub-Fabric-Info.plist */,
 			);
 			name = "Support Files";
 			sourceTree = "<group>";
