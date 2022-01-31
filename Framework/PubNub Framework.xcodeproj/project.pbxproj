@@ -2581,6 +2581,7 @@
 		797D606922D2E44000E64C94 /* PNSignalStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNSignalStatus.h; sourceTree = "<group>"; };
 		798842101C18AFE0003E8948 /* update_modulemap.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = update_modulemap.sh; sourceTree = "<group>"; };
 		79884C9927A745A600052B42 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Package.swift; path = ../../Package.swift; sourceTree = "<group>"; };
+		79884CC627A7517600052B42 /* build_xcframework.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build_xcframework.sh; sourceTree = "<group>"; };
 		799D60E824C1B33900171C29 /* PNSendFileStatus.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNSendFileStatus.h; sourceTree = "<group>"; };
 		799D60E924C1B33900171C29 /* PNSendFileStatus.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNSendFileStatus.m; sourceTree = "<group>"; };
 		799D610124C36D5B00171C29 /* PNPublishRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNPublishRequest.h; sourceTree = "<group>"; };
@@ -3646,6 +3647,7 @@
 		79CBB1DB1BD043BD001FC34D /* scripts */ = {
 			isa = PBXGroup;
 			children = (
+				79884CC627A7517600052B42 /* build_xcframework.sh */,
 				79CBB1DC1BD043BD001FC34D /* build_universal.sh */,
 				79CBB1DD1BD043BD001FC34D /* copy_products.sh */,
 				798842101C18AFE0003E8948 /* update_modulemap.sh */,
