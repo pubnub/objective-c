@@ -4,15 +4,10 @@ set -e
 
 WORKING_DIRECTORY="$(pwd)"
 SOURCES_FOLDER="$1"
+[[ "$2" == public-only ]] && PUBLIC_ONLY=1 || PUBLIC_ONLY=0
 PUBLIC_HEADERS=()
+ALL_HEADERS=()
 FILES=()
-
-# Retrieve list of potentially public headers.
-while IFS='' read -r HEADER_PATH; do
-	RELATIVE_PATH="${HEADER_PATH#"$WORKING_DIRECTORY/$SOURCES_FOLDER/"}"
-	FILENAME="$(echo "$RELATIVE_PATH" | rev | cut -d/ -f1 | rev)"
-	FILES+=( "$FILENAME:$RELATIVE_PATH" )
-done <<< "$(find "$WORKING_DIRECTORY/$SOURCES_FOLDER" ! \( -name "*.m" -o -name "*Private.h" \))"
 
 
 # Function allow retrieve relative path to header by it's filename.
@@ -65,8 +60,28 @@ gather_imported_headers_in_file() {
 	done < "$1"
 }
 
-# Scan for public headers/
-gather_imported_headers_in_file "$SOURCES_FOLDER/PubNub.h"
+
+
+if [[ $PUBLIC_ONLY == 1 ]]; then
+	# Retrieve list of potentially public headers.
+	while IFS='' read -r HEADER_PATH; do
+		RELATIVE_PATH="${HEADER_PATH#"$WORKING_DIRECTORY/$SOURCES_FOLDER/"}"
+		FILENAME="$(echo "$RELATIVE_PATH" | rev | cut -d/ -f1 | rev)"
+		FILES+=( "$FILENAME:$RELATIVE_PATH" )
+		ALL_HEADERS+=("$RELATIVE_PATH")
+	done <<< "$(find "$WORKING_DIRECTORY/$SOURCES_FOLDER" -type f ! \( -name "*.m" -o -name ".DS_Store" -o -name "*Private.h" \))"
+
+	# Scan for public headers
+	gather_imported_headers_in_file "$SOURCES_FOLDER/PubNub.h"
+else
+	# Retrieve list of all headers.
+	while IFS='' read -r HEADER_PATH; do
+		RELATIVE_PATH="${HEADER_PATH#"$WORKING_DIRECTORY/$SOURCES_FOLDER/"}"
+		FILENAME="$(echo "$RELATIVE_PATH" | rev | cut -d/ -f1 | rev)"
+		FILES+=( "$FILENAME:$RELATIVE_PATH" )
+		ALL_HEADERS+=("$RELATIVE_PATH")
+	done <<< "$(find "$WORKING_DIRECTORY/$SOURCES_FOLDER" -type f ! \( -name "*.m" -o -name ".DS_Store" \))"
+fi
 
 
 # Create required folders structure.
@@ -84,7 +99,14 @@ popd
 cd "$1/include"
 ! [[ -e "PubNub.h" ]] && ln -s "../PubNub.h"
 
-for HEADER_PATH in "${PUBLIC_HEADERS[@]}"; do
-	FILENAME="$(echo "$HEADER_PATH" | rev | cut -d/ -f1 | rev)"
-	! [[ -e "$FILENAME" ]] && ln -s "../$HEADER_PATH"
-done
+if [[ $PUBLIC_ONLY == 1 ]]; then
+	for HEADER_PATH in "${PUBLIC_HEADERS[@]}"; do
+		FILENAME="$(echo "$HEADER_PATH" | rev | cut -d/ -f1 | rev)"
+		! [[ -e "$FILENAME" ]] && ln -s "../$HEADER_PATH"
+	done
+else
+	for HEADER_PATH in "${ALL_HEADERS[@]}"; do
+		FILENAME="$(echo "$HEADER_PATH" | rev | cut -d/ -f1 | rev)"
+		! [[ -e "$FILENAME" ]] && ln -s "../$HEADER_PATH" "$FILENAME"
+	done
+fi
