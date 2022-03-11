@@ -1,3 +1,9 @@
+## v5.1.0
+March 11 2022
+
+#### Added
+- Make it possible to use PubNub Objective-C SDK using SPM.
+
 ## v5.0.0
 January 12 2022
 

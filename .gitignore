@@ -9,11 +9,15 @@ reports/
 ##################
 tests-configuration.json
 Features/
+PubNub Tests.xcworkspace
 
 ## Build generated
+PubNub Example.xcworkspace
 build/
 DerivedData
 Framework/Products
+for-upload
+Tests/Results
 
 ## Various settings
 *.pbxuser
