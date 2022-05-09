@@ -192,7 +192,6 @@ You will need the publish and subscribe keys to authenticate your app. Get your 
 
 ## Documentation
 
-* [Build your first realtime Objective-C app with PubNub](https://www.pubnub.com/docs/platform/quickstarts/objectivec)
 * [API reference for Objective-C (iOS)](https://www.pubnub.com/docs/ios-objective-c/pubnub-objective-c-sdk)
 * [API reference for Objective-C (Cocoa)](https://www.pubnub.com/docs/cocoa-objective-c/pubnub-objective-c-sdk)
 

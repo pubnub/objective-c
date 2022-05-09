@@ -1241,7 +1241,6 @@ features:
     - PUSH-TYPE-APNS
     - PUSH-TYPE-APNS2
     - PUSH-TYPE-FCM
-    - PUSH-TYPE-MPNS
   signal:
     - SIGNAL-SEND
   storage:
