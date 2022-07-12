@@ -758,7 +758,7 @@ NS_ASSUME_NONNULL_END
     
     PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:publishKey
                                                                      subscribeKey:subscribeKey
-                                                                             uuid:uuid];
+                                                                           userId:uuid];
     configuration.authKey = [self pubNubAuthForTestCaseWithName:self.name];
     
     return configuration;
@@ -781,7 +781,7 @@ NS_ASSUME_NONNULL_END
 
 - (PubNub *)createPubNubForUser:(NSString *)user withConfiguration:(PNConfiguration *)configuration {
     dispatch_queue_t callbackQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    configuration.uuid = [self uuidForUser:user];
+    configuration.userId = [self uuidForUser:user];
     
     PubNub *client = [PubNub clientWithConfiguration:configuration callbackQueue:callbackQueue];
     client.logger.enabled = PUBNUB_LOGGER_ENABLED;
@@ -818,7 +818,7 @@ NS_ASSUME_NONNULL_END
 - (void)completePubNubConfiguration:(PubNub *)client {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-variable"
-    NSString *uuid = client.currentConfiguration.uuid;
+    NSString *uuid = client.currentConfiguration.userId;
 #pragma clang diagnostic pop
 }
 
@@ -1164,7 +1164,9 @@ NS_ASSUME_NONNULL_END
     client = client ?: self.client;
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [client setState:state forUUID:client.currentConfiguration.uuid onChannel:channel
+        [client setState:state
+                 forUUID:client.currentConfiguration.userId
+               onChannel:channel
           withCompletion:^(PNClientStateUpdateStatus *status) {
             XCTAssertFalse(status.isError);
             handler();

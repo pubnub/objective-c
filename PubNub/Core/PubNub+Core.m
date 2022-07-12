@@ -188,12 +188,12 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Store provided unique user identifier in keychain.
  *
- * @param uuid Unique user identifier which has been provided with \b PNConfiguration instance.
+ * @param userId Unique user identifier which has been provided with \b PNConfiguration instance.
  * @param identifier Account publish or subscribe key which has been provided with \c PNConfiguration instance.
  *
  * @since 4.15.3
  */
-- (void)storeUUID:(NSString *)uuid forIdentifier:(NSString *)identifier;
+- (void)storeUserId:(NSString *)userId forIdentifier:(NSString *)identifier;
 
 /**
  * @brief Create and configure \b PubNub client logger instance.
@@ -240,7 +240,11 @@ NS_ASSUME_NONNULL_END
 }
 
 - (NSString *)uuid {
-    return self.configuration.uuid;
+    return self.userId;
+}
+
+- (NSString *)userId {
+    return self.configuration.userId;
 }
 
 
@@ -265,7 +269,7 @@ NS_ASSUME_NONNULL_END
 - (instancetype)initWithConfiguration:(PNConfiguration *)configuration callbackQueue:(dispatch_queue_t)callbackQueue {
     if ((self = [super init])) {
         NSString *storageIdentifier = configuration.publishKey ?: configuration.subscribeKey;
-        [self storeUUID:configuration.uuid forIdentifier:storageIdentifier];
+        [self storeUserId:configuration.userId forIdentifier:storageIdentifier];
         [self setupClientLogger];
         
         PNLogClientInfo(self.logger, @"<PubNub> PubNub SDK %@ (%@)", kPNLibraryVersion, kPNCommit);
@@ -351,13 +355,13 @@ NS_ASSUME_NONNULL_END
         // Stop any interactions on subscription loop.
         [self cancelSubscribeOperations];
         
-        BOOL uuidChanged = ![configuration.uuid isEqualToString:self.configuration.uuid];
+        BOOL userIdChanged = ![configuration.userId isEqualToString:self.configuration.userId];
         BOOL authKeyChanged = ((self.configuration.authKey && !configuration.authKey) ||
                                (!self.configuration.authKey && configuration.authKey) ||
                                (configuration.authKey && self.configuration.authKey &&
                                 ![configuration.authKey isEqualToString:self.configuration.authKey]));
         
-        if (uuidChanged || authKeyChanged) {
+        if (userIdChanged || authKeyChanged) {
             [self unsubscribeFromChannels:self.subscriberManager.channels 
                                    groups:self.subscriberManager.channelGroups
                              withPresence:YES
@@ -554,7 +558,7 @@ NS_ASSUME_NONNULL_END
                                @"{pub-key}": (self.configuration.publishKey?: @"")};
     
     NSMutableDictionary *queryComponents = [@{
-        @"uuid": [PNString percentEscapedString:(self.configuration.uuid?: @"")],
+        @"uuid": [PNString percentEscapedString:(self.configuration.userId?: @"")],
         @"deviceid": (self.configuration.deviceID?: @""),
         @"instanceid": self.instanceID,
         @"pnsdk":[NSString stringWithFormat:@"PubNub-%@%%2F%@", kPNClientName, kPNLibraryVersion]
@@ -581,7 +585,7 @@ NS_ASSUME_NONNULL_END
 
 - (void)appendClientInformation:(PNResult *)result {
     result.TLSEnabled = self.configuration.isTLSEnabled;
-    result.uuid = self.configuration.uuid;
+    result.userId = self.configuration.userId;
     result.authKey = self.configuration.authToken ?: self.configuration.authKey;
     result.origin = self.configuration.origin;
 }
@@ -678,9 +682,9 @@ NS_ASSUME_NONNULL_END
     return class;
 }
 
-- (void)storeUUID:(NSString *)uuid forIdentifier:(NSString *)identifier {
+- (void)storeUserId:(NSString *)userId forIdentifier:(NSString *)identifier {
     id<PNKeyValueStorage> storage = [PNDataStorage persistentClientDataWithIdentifier:identifier];
-    [storage storeValue:uuid forKey:kPNConfigurationUUIDKey];
+    [storage storeValue:userId forKey:kPNConfigurationUserIdKey];
 }
 
 - (void)setupClientLogger {

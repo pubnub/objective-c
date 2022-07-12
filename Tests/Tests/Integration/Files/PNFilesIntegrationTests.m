@@ -347,7 +347,7 @@ NS_ASSUME_NONNULL_END
     PubNub *client1 = [self createPubNubForUser:@"serhii"];
     PubNub *client2 = [self createPubNubForUser:@"david"];
     client2.filterExpression = [NSString stringWithFormat:@"uuid == '%@'",
-                                client2.currentConfiguration.uuid];
+                                client2.currentConfiguration.userId];
     
     [self subscribeClient:client2 toChannels:@[self.channel] withPresence:NO];
     
@@ -368,7 +368,7 @@ NS_ASSUME_NONNULL_END
         client1.files().sendFile(self.channel, fileName)
             .data(data)
             .message(expectedMessage)
-            .fileMessageMetadata(@{ @"uuid": client1.currentConfiguration.uuid })
+            .fileMessageMetadata(@{ @"uuid": client1.currentConfiguration.userId })
             .performWithCompletion(^(PNSendFileStatus *status) {
                 XCTAssertFalse(status.isError);
             });
@@ -386,7 +386,7 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldDownloadFileAndReceiveResultWithExpectedOperation {
     NSArray<NSDictionary *> *uploadedFiles = [self uploadFiles:1 toChannel:self.channel usingClient:nil];
-    NSString *expectedUUID = [@"uuid=" stringByAppendingString:self.client.currentConfiguration.uuid];
+    NSString *expectedUUID = [@"uuid=" stringByAppendingString:self.client.currentConfiguration.userId];
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
@@ -563,7 +563,7 @@ NS_ASSUME_NONNULL_END
 - (void)testItShouldFetchFilesListWhenAuthKeyIsSet {
     NSArray<NSDictionary *> *uploadedFiles = [self uploadFiles:1 toChannel:self.channel usingClient:nil];
     NSString *expectedAuth = [@"auth=" stringByAppendingString:self.client.currentConfiguration.authKey];
-    NSString *expectedUUID = [@"uuid=" stringByAppendingString:self.client.currentConfiguration.uuid];
+    NSString *expectedUUID = [@"uuid=" stringByAppendingString:self.client.currentConfiguration.userId];
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {

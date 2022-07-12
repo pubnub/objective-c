@@ -50,11 +50,18 @@ NS_ASSUME_NONNULL_BEGIN
 - (PNConfiguration *)currentConfiguration;
 
 /**
- * @brief Retrieve UUID which has been used during client initialization.
+ * @brief Retrieve unique identifier to be used as a device identifier.
  *
- * @return User-provided or generated unique user identifier.
+ * @return User-provided unique identifier to be used as a device identifier.
  */
-- (NSString *)uuid;
+- (NSString *)uuid DEPRECATED_MSG_ATTRIBUTE("use 'userId' instead.");
+
+/**
+ * @brief Retrieve unique identifier to be used as a device identifier.
+ *
+ * @return User-provided unique identifier to be used as a device identifier.
+ */
+- (NSString *)userId;
 
 
 #pragma mark - Initialization
@@ -121,14 +128,14 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief Make copy of client with it's current state using new configuration.
  *
  * @discussion Allow to retrieve reference on client which will have same state as receiver, but
- * will use updated configuration. If authorization and/or uuid keys has been changed while
- * subscribed, this method will trigger \c leave presence event on behalf of current uuid and
+ * will use updated configuration. If authorization and/or userId keys has been changed while
+ * subscribed, this method will trigger \c leave presence event on behalf of current userId and
  * subscribe using new one.
  *
  * @note Copy will be returned asynchronous, because some operations may require communication with
- * \b PubNub network (like switching active \c uuid while subscribed).
+ * \b PubNub network (like switching active \c userId while subscribed).
  *
- * @note Re-subscription with new \c uuid will be done using catchup and all messages which has been
+ * @note Re-subscription with new \c userId will be done using catchup and all messages which has been
  * sent while client changed configuration will be handled.
  *
  * @note All listeners will be copied to new client.
@@ -155,14 +162,14 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief Make copy of client with it's current state using new configuration.
  *
  * @discussion Allow to retrieve reference on client which will have same state as receiver, but
- * will use updated configuration. If authorization and/or uuid keys has been changed while
- * subscribed, this method will trigger \c leave presence event on behalf of current uuid and
+ * will use updated configuration. If authorization and/or userId keys has been changed while
+ * subscribed, this method will trigger \c leave presence event on behalf of current userId and
  * subscribe using new one.
  *
  * @note Copy will be returned asynchronous, because some operations may require communication with
- * \b PubNub network (like switching active \c uuid while subscribed).
+ * \b PubNub network (like switching active \c userId while subscribed).
  *
- * @note Re-subscription with new \c uuid will be done using catchup and all messages which has been
+ * @note Re-subscription with new \c userId will be done using catchup and all messages which has been
  * sent while client changed configuration will be handled.
  * @note All listeners will be copied to new client.
  *
