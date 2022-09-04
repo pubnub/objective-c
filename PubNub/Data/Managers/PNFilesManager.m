@@ -431,6 +431,10 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Misc
 
+- (void)invalidate {
+    [self.session finishTasksAndInvalidate];
+}
+
 - (NSError *)uploadErrorForTask:(NSURLSessionDataTask *)task
                    httpResponse:(NSHTTPURLResponse *)response
                    responseData:(NSData *)data

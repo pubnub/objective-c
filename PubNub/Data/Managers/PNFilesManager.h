@@ -72,6 +72,14 @@ NS_ASSUME_NONNULL_BEGIN
                completion:(void(^)(NSURLRequest *request, NSURL * _Nullable location,
                                    NSError * _Nullable error))block;
 
+
+#pragma mark - Misc
+
+/**
+ * @brief Invalidate and reclaim all resources allocated by files manager.
+ */
+- (void)invalidate;
+
 #pragma mark -
 
 
