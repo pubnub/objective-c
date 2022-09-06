@@ -1,9 +1,14 @@
 ---
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "5.1.0"
+version: "5.1.1"
 schema: 1
 changelog:
+  - date: 2022-09-06
+    version: v5.1.1
+    changes:
+      - type: bug
+        text: "Fix issue because of which `PNFilesManager` leaked each time when PubNub client created."
   - date: 2022-03-11
     version: v5.1.0
     changes:
@@ -1300,7 +1305,7 @@ sdks:
           - distribution-type: source
             distribution-repository: GitHub release
             package-name: PubNub.framework
-            location: https://github.com/pubnub/objective-c/archive/refs/tags/v5.1.0.zip
+            location: https://github.com/pubnub/objective-c/archive/refs/tags/v5.1.1.zip
             supported-platforms:
               supported-operating-systems:
                 macOS:
@@ -1361,7 +1366,7 @@ sdks:
           - distribution-type: library
             distribution-repository: GitHub release
             package-name: PubNub.catalyst.xcframework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v5.1.0/PubNub.catalyst.xcframework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v5.1.1/PubNub.catalyst.xcframework.tar.gz
             supported-platforms:
               supported-operating-systems:
                 macOS:
@@ -1390,7 +1395,7 @@ sdks:
           - distribution-type: library
             distribution-repository: GitHub release
             package-name: PubNub.ios.xcframework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v5.1.0/PubNub.ios.xcframework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v5.1.1/PubNub.ios.xcframework.tar.gz
             supported-platforms:
               supported-operating-systems:
                 iOS:
@@ -1409,7 +1414,7 @@ sdks:
           - distribution-type: library
             distribution-repository: GitHub release
             package-name: PubNub.macos.framework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v5.1.0/PubNub.macos.framework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v5.1.1/PubNub.macos.framework.tar.gz
             supported-platforms:
               supported-operating-systems:
                 macOS:
@@ -1425,7 +1430,7 @@ sdks:
           - distribution-type: library
             distribution-repository: GitHub release
             package-name: PubNub.tvos.xcframework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v5.1.0/PubNub.tvos.xcframework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v5.1.1/PubNub.tvos.xcframework.tar.gz
             supported-platforms:
               supported-operating-systems:
                 tvOS:
