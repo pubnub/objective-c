@@ -2,7 +2,7 @@
 September 06 2022
 
 #### Fixed
-- Fix issue because of which `PNFilesManager` leaked each time when PubNub client created.
+- Fix the issue because of which `PNFilesManager` leaked each time when PubNub client was created.
 
 ## v5.1.0
 March 11 2022
