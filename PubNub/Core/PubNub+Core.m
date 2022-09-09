@@ -788,6 +788,8 @@ NS_ASSUME_NONNULL_END
     [_serviceNetwork invalidate];
     _serviceNetwork = nil;
     [_telemetryManager invalidate];
+    [_filesManager invalidate];
+    _filesManager = nil;
 }
 
 #pragma mark -
