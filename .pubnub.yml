@@ -1365,35 +1365,6 @@ sdks:
         distributions:
           - distribution-type: library
             distribution-repository: GitHub release
-            package-name: PubNub.catalyst.xcframework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v5.1.1/PubNub.catalyst.xcframework.tar.gz
-            supported-platforms:
-              supported-operating-systems:
-                macOS:
-                  runtime-version:
-                    - Objective-C 2.0
-                  minimum-os-version:
-                    - OS X 10.11
-                  maximum-os-version:
-                    - macOS 11.4
-                  target-architecture:
-                    - arm64
-                    - x86_64
-                iOS:
-                  runtime-version:
-                    - Objective-C 2.0
-                  minimum-os-version:
-                    - iOS 9.0
-                  maximum-os-version:
-                    - iOS 14.6
-                  target-architecture:
-                    - arm64
-                    - armv7
-                  target-devices:
-                    - iPhone
-                    - iPad
-          - distribution-type: library
-            distribution-repository: GitHub release
             package-name: PubNub.ios.xcframework.tar.gz
             location: https://github.com/pubnub/objective-c/releases/download/v5.1.1/PubNub.ios.xcframework.tar.gz
             supported-platforms:
