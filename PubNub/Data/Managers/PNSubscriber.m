@@ -1665,7 +1665,7 @@ NS_ASSUME_NONNULL_END
     // In case of state modification event for current client it should be applied on local storage.
     if ([data.data.presenceEvent isEqualToString:@"state-change"]) {
         // Check whether state has been changed for current client or not.
-        if ([data.data.presence.uuid isEqualToString:self.client.configuration.uuid]) {
+        if ([data.data.presence.uuid isEqualToString:self.client.configuration.userId]) {
             [self.client.clientStateManager setState:data.data.presence.state forObjects:@[data.data.channel]];
         }
     }

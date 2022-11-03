@@ -47,7 +47,7 @@ NS_ASSUME_NONNULL_BEGIN
  * group).
  *
  * @code
- * [self.client setState:@{ @"state": @"online" } forUUID:self.client.uuid onChannel:@"chat"
+ * [self.client setState:@{ @"state": @"online" } forUUID:self.client.userId onChannel:@"chat"
  *        withCompletion:^(PNClientStateUpdateStatus *status) {
  *
  *     if (!status.isError) {
@@ -78,7 +78,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief Modify state information for \c uuid on specified channel group.
  *
  * @code
- * [self.client setState:@{ @"announcement": @"New red is blue" } forUUID:self.client.uuid
+ * [self.client setState:@{ @"announcement": @"New red is blue" } forUUID:self.client.userId
  *        onChannelGroup:@"system" withCompletion:^(PNClientStateUpdateStatus *status) {
  *
  *     if (!status.isError) {
@@ -112,7 +112,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief Retrieve state information for \c uuid on specified channel.
  *
  * @code
- * [self.client stateForUUID:self.client.uuid onChannel:@"chat"
+ * [self.client stateForUUID:self.client.userId onChannel:@"chat"
  *            withCompletion:^(PNChannelClientStateResult *result, PNErrorStatus *status) {
  *
  *     if (!status.isError) {
@@ -141,7 +141,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief Retrieve state information for \c uuid on specified channel group.
  *
  * @code
- * [self.client stateForUUID:self.client.uuid onChannelGroup:@"system"
+ * [self.client stateForUUID:self.client.userId onChannelGroup:@"system"
  *            withCompletion:^(PNChannelGroupClientStateResult *result, PNErrorStatus *status) {
  *
  *     if (!status.isError) {

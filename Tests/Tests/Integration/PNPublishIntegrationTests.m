@@ -318,7 +318,7 @@
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
-            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.uuid);
+            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.userId);
             XCTAssertEqualObjects(message.data.message, expectedMessage);
             *shouldRemove = YES;
             
@@ -347,7 +347,7 @@
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
-            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.uuid);
+            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.userId);
             XCTAssertEqualObjects(message.data.message, expectedMessage);
             *shouldRemove = YES;
             
@@ -376,7 +376,7 @@
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
-            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.uuid);
+            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.userId);
             XCTAssertEqualObjects(message.data.message, expectedMessage);
             *shouldRemove = YES;
             
@@ -405,7 +405,7 @@
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
-            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.uuid);
+            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.userId);
             XCTAssertEqualObjects(message.data.message, expectedMessage);
             *shouldRemove = YES;
             
@@ -434,7 +434,7 @@
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
-            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.uuid);
+            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.userId);
             XCTAssertEqualObjects(message.data.message, expectedMessage);
             *shouldRemove = YES;
             
@@ -463,7 +463,7 @@
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
-            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.uuid);
+            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.userId);
             XCTAssertEqualObjects(message.data.message, expectedMessage);
             *shouldRemove = YES;
             
@@ -492,7 +492,7 @@
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
-            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.uuid);
+            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.userId);
             XCTAssertEqualObjects(message.data.message, expectedMessage);
             *shouldRemove = YES;
             
@@ -522,7 +522,7 @@
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
-            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.uuid);
+            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.userId);
             XCTAssertEqualObjects(message.data.message, expectedMessage);
             *shouldRemove = YES;
             
@@ -579,7 +579,7 @@
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
-            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.uuid);
+            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.userId);
             XCTAssertEqualObjects(message.data.message, expectedMessage);
             *shouldRemove = YES;
             
@@ -615,7 +615,7 @@
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *receivedMessage, BOOL *shouldRemove) {
-            XCTAssertEqualObjects(receivedMessage.data.publisher, client1.currentConfiguration.uuid);
+            XCTAssertEqualObjects(receivedMessage.data.publisher, client1.currentConfiguration.userId);
             XCTAssertNotEqualObjects(receivedMessage.data.message, message);
             XCTAssertTrue([receivedMessage.data.message isKindOfClass:[NSString class]]);
             XCTAssertEqualObjects(receivedMessage.data.message, expectedMessage);
@@ -650,7 +650,7 @@
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *receivedMessage, BOOL *shouldRemove) {
-            XCTAssertEqualObjects(receivedMessage.data.publisher, client1.currentConfiguration.uuid);
+            XCTAssertEqualObjects(receivedMessage.data.publisher, client1.currentConfiguration.userId);
             XCTAssertNotEqualObjects(receivedMessage.data.message, message);
             XCTAssertTrue([receivedMessage.data.message isKindOfClass:[NSString class]]);
             XCTAssertNotEqualObjects(receivedMessage.data.message, notExpectedMessage);
@@ -685,7 +685,7 @@
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
-            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.uuid);
+            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.userId);
             XCTAssertEqualObjects(message.data.message, expectedMessage);
             XCTAssertEqualObjects(message.data.userMetadata, expectedMetadata);
             *shouldRemove = YES;
@@ -789,7 +789,7 @@
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
-            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.uuid);
+            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.userId);
             XCTAssertEqualObjects(message.data.message, expectedMessage);
             *shouldRemove = YES;
             
@@ -822,7 +822,7 @@
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
-            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.uuid);
+            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.userId);
             XCTAssertEqualObjects(message.data.message, expectedMessage);
             *shouldRemove = YES;
             
@@ -855,7 +855,7 @@
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
-            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.uuid);
+            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.userId);
             XCTAssertEqualObjects(message.data.message, expectedMessage);
             *shouldRemove = YES;
             
@@ -888,7 +888,7 @@
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
-            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.uuid);
+            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.userId);
             XCTAssertEqualObjects(message.data.message, expectedMessage);
             *shouldRemove = YES;
             
@@ -921,7 +921,7 @@
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
-            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.uuid);
+            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.userId);
             XCTAssertEqualObjects(message.data.message, expectedMessage);
             *shouldRemove = YES;
             
@@ -955,7 +955,7 @@
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
-            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.uuid);
+            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.userId);
             XCTAssertEqualObjects(message.data.message, expectedMessage);
             *shouldRemove = YES;
             
@@ -994,7 +994,7 @@
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
-            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.uuid);
+            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.userId);
             XCTAssertEqualObjects(message.data.message, expectedMessage);
             *shouldRemove = YES;
             
@@ -1033,7 +1033,7 @@
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
-            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.uuid);
+            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.userId);
             XCTAssertNotEqualObjects(message.data.message, notExpectedMessage);
             *shouldRemove = YES;
             
@@ -1067,7 +1067,7 @@
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
-            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.uuid);
+            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.userId);
             XCTAssertEqualObjects(message.data.message, expectedMessage);
             *shouldRemove = YES;
             
@@ -1162,7 +1162,7 @@
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
-            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.uuid);
+            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.userId);
             XCTAssertEqualObjects(message.data.message, expectedMessage);
             *shouldRemove = YES;
             
@@ -1251,7 +1251,7 @@
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
-            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.uuid);
+            XCTAssertEqualObjects(message.data.publisher, client1.currentConfiguration.userId);
             XCTAssertEqualObjects(message.data.message, expectedMessage);
             *shouldRemove = YES;
             
@@ -1377,7 +1377,7 @@
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addSignalHandlerForClient:client2 withBlock:^(PubNub *client, PNSignalResult *signal, BOOL *shouldRemove) {
-            XCTAssertEqualObjects(signal.data.publisher, client1.currentConfiguration.uuid);
+            XCTAssertEqualObjects(signal.data.publisher, client1.currentConfiguration.userId);
             XCTAssertEqualObjects(signal.data.message, expectedSignal);
             *shouldRemove = YES;
             
@@ -1406,7 +1406,7 @@
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addSignalHandlerForClient:client2 withBlock:^(PubNub *client, PNSignalResult *signal, BOOL *shouldRemove) {
-            XCTAssertEqualObjects(signal.data.publisher, client1.currentConfiguration.uuid);
+            XCTAssertEqualObjects(signal.data.publisher, client1.currentConfiguration.userId);
             XCTAssertEqualObjects(signal.data.message, message);
             *shouldRemove = YES;
             

@@ -11,8 +11,9 @@ NS_ASSUME_NONNULL_BEGIN
  * \b PubNub network.
  *
  * @author Sergey Mamontov
+ * @version 5.2.0
  * @since 4.0
- * @copyright © 2010-2018 PubNub, Inc.
+ * @copyright © 2010-2022PubNub, Inc.
  */
 @interface PNConfiguration : NSObject
 
@@ -57,8 +58,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, nullable, copy) NSString *authKey;
 
 /**
- * @brief Unique client identifier used to identify concrete client user from another which
- * currently use \b PubNub services.
+ * @brief The unique identifier to be used as a device identifier..
  *
  * @discussion This value is different from \c authKey (which is used only by \b PAM) and represent
  * concrete client across server. This identifier is used for presence events to tell what some
@@ -70,7 +70,25 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @default Client will use it's own-generated value if won't be specified by user.
  */
-@property (nonatomic, copy, setter = setUUID:) NSString *uuid;
+@property (nonatomic, copy, setter = setUUID:) NSString *uuid
+    DEPRECATED_MSG_ATTRIBUTE("use 'userId' instead.");
+
+/**
+ * @brief The unique identifier to be used as a device identifier.
+ *
+ * @discussion This value is different from \c authKey (which is used only by \b PAM) and represent
+ * concrete client across server. This identifier is used for presence events to tell what some
+ * client joined or leaved live feed.
+ *
+ * @warning There can't be two same client identifiers online at the same time.
+ *
+ * @throw Exception in case if \c userId is empty string.
+ *
+ * @default Client will use it's own-generated value if won't be specified by user.
+ *
+ * @since 5.2.0
+ */
+@property (nonatomic, copy, setter = setUserId:) NSString *userId;
 
 /**
  * @brief Data encryption key.
@@ -301,11 +319,9 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Construct configuration instance using minimal required data.
  *
- * @param publishKey Key which allow client to use data push API.
- * @param subscribeKey Key which allow client to subscribe on live feeds pushed from \b PubNub
- *     service.
- * @param uuid Unique client identifier used to identify concrete client user from another which
- *     currently use \b PubNub services.
+ * @param publishKey The PubNub Publish Key to be used when publishing data to a channel
+ * @param subscribeKey The PubNub Subscribe Key to be used when getting data from a channel
+ * @param uuid The unique identifier to be used as a device identifier.
  *
  * @throw Exception in case if \c uuid is empty string.
  *
@@ -314,7 +330,24 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)configurationWithPublishKey:(NSString *)publishKey
                                subscribeKey:(NSString *)subscribeKey
                                        uuid:(NSString *)uuid
-    NS_SWIFT_NAME(init(publishKey:subscribeKey:uuid:));
+    NS_SWIFT_NAME(init(publishKey:subscribeKey:uuid:))
+    DEPRECATED_MSG_ATTRIBUTE("use 'configurationWithPublishKey:subscribeKey:userId:' instead.");
+
+/**
+ * @brief Construct configuration instance using minimal required information.
+ *
+ * @param publishKey The \b PubNub Publish Key to be used when publishing data to a channel
+ * @param subscribeKey The \b PubNub Subscribe Key to be used when getting data from a channel
+ * @param userId The unique identifier to be used as a device identifier.
+ *
+ * @throw Exception in case if \c userId is empty string.
+ *
+ * @return Configured and ready to se configuration instance.
+ */
++ (instancetype)configurationWithPublishKey:(NSString *)publishKey
+                               subscribeKey:(NSString *)subscribeKey
+                                     userId:(NSString *)userId
+    NS_SWIFT_NAME(init(publishKey:subscribeKey:userId:));
 
 #pragma mark -
 

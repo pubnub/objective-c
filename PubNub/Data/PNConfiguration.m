@@ -24,7 +24,7 @@
 #pragma mark Static
 
 NSString * const kPNConfigurationDeviceIDKey = @"PNConfigurationDeviceID";
-NSString * const kPNConfigurationUUIDKey = @"PNConfigurationUUID";
+NSString * const kPNConfigurationUserIdKey = @"PNConfigurationUUID";
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -46,15 +46,15 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Initialize configuration instance using minimal required data.
  *
- * @param publishKey Key which allow client to use data push API.
- * @param subscribeKey Key which allow client to subscribe on live feeds pushed from \b PubNub
- *     service.
- * @param uuid Unique client identifier used to identify concrete client user from another which
- *     currently use \b PubNub services.
+ * @param publishKey The \b PubNub Publish Key to be used when publishing data to a channel
+ * @param subscribeKey The \b PubNub Subscribe Key to be used when getting data from a channel
+ * @param userId The unique identifier to be used as a device identifier.
  *
  * @return Configured and ready to se configuration instance.
  */
-- (instancetype)initWithPublishKey:(NSString *)publishKey subscribeKey:(NSString *)subscribeKey uuid:(NSString *)uuid;
+- (instancetype)initWithPublishKey:(NSString *)publishKey
+                      subscribeKey:(NSString *)subscribeKey
+                            userId:(NSString *)userId;
 
 
 #pragma mark - Storage
@@ -128,19 +128,27 @@ NS_ASSUME_NONNULL_END
   _presenceHeartbeatInterval = (NSInteger)(_presenceHeartbeatValue * 0.5f) - 1;
 }
 
+- (NSString *)uuid {
+    return self.userId;
+}
+
 - (void)setUUID:(NSString *)uuid {
-    if (!uuid || [uuid stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0) {
+    self.userId = uuid;
+}
+
+- (void)setUserId:(NSString *)userId {
+    if (!userId || [userId stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0) {
         NSDictionary *errorInformation = @{
-            NSLocalizedFailureReasonErrorKey: @"PubNub client doesn't generate UUID.",
-            NSLocalizedRecoverySuggestionErrorKey: @"Specify own 'uuid' using PNConfiguration constructor."
+            NSLocalizedFailureReasonErrorKey: @"PubNub client doesn't generate 'userId'.",
+            NSLocalizedRecoverySuggestionErrorKey: @"Specify own 'userId' using PNConfiguration constructor."
         };
 
         @throw [NSException exceptionWithName:@"PNUnacceptableParametersInput"
-                                       reason:@"'uuid' not set"
+                                       reason:@"'userId' not set"
                                      userInfo:errorInformation];
     }
     
-    _uuid = [uuid copy];
+    _userId = [userId copy];
 }
 
 
@@ -150,25 +158,32 @@ NS_ASSUME_NONNULL_END
                                subscribeKey:(NSString *)subscribeKey
                                        uuid:(NSString *)uuid {
     
-    NSParameterAssert(publishKey);
-    NSParameterAssert(subscribeKey);
-    
-    return [[self alloc] initWithPublishKey:publishKey subscribeKey:subscribeKey uuid:uuid];
+    return [self configurationWithPublishKey:publishKey subscribeKey:subscribeKey userId:uuid];
 }
 
-- (instancetype)initWithPublishKey:(NSString *)publishKey subscribeKey:(NSString *)subscribeKey uuid:(NSString *)uuid {
++ (instancetype)configurationWithPublishKey:(NSString *)publishKey
+                               subscribeKey:(NSString *)subscribeKey
+                                     userId:(NSString *)userId {
+    
+    NSParameterAssert(publishKey && publishKey.length > 0);
+    NSParameterAssert(subscribeKey && subscribeKey.length > 0);
+    
+    return [[self alloc] initWithPublishKey:publishKey subscribeKey:subscribeKey userId:userId];
+}
+
+- (instancetype)initWithPublishKey:(NSString *)publishKey
+                      subscribeKey:(NSString *)subscribeKey
+                            userId:(NSString *)userId {
+    
     if ((self = [super init])) {
         _origin = [kPNDefaultOrigin copy];
         _publishKey = [publishKey copy];
         _subscribeKey = [subscribeKey copy];
         
-        /**
-         * Call position important, because it migrate stored UUID and device identifier from older
-         * storage.
-         */
+        // Call position important, because it migrate stored UUID and device identifier from older storage.
         [self migrateDefaultToStorageWithIdentifier:publishKey ?: subscribeKey];
         
-        self.uuid = uuid;
+        self.userId = userId;
         _deviceID = [[self uniqueDeviceIdentifier] copy];
         _subscribeMaximumIdleTime = kPNDefaultSubscribeMaximumIdleTime;
         _nonSubscribeRequestTimeout = kPNDefaultNonSubscribeRequestTimeout;
@@ -198,7 +213,7 @@ NS_ASSUME_NONNULL_END
     configuration.subscribeKey = self.subscribeKey;
     configuration.authKey = self.authKey;
     configuration.authToken = self.authToken;
-    configuration.uuid = self.uuid;
+    configuration.userId = self.userId;
     configuration.cipherKey = self.cipherKey;
     configuration.subscribeMaximumIdleTime = self.subscribeMaximumIdleTime;
     configuration.nonSubscribeRequestTimeout = self.nonSubscribeRequestTimeout;
@@ -233,11 +248,11 @@ NS_ASSUME_NONNULL_END
     id<PNKeyValueStorage> storage = [PNDataStorage persistentClientDataWithIdentifier:identifier];
     PNKeychain *defaultKeychain = PNKeychain.defaultKeychain;
     
-    NSString *previousUUID = [defaultKeychain valueForKey:kPNConfigurationUUIDKey];
+    NSString *previousUUID = [defaultKeychain valueForKey:kPNConfigurationUserIdKey];
     
     if (previousUUID) {
-        [storage syncStoreValue:previousUUID forKey:kPNConfigurationUUIDKey];
-        [defaultKeychain removeValueForKey:kPNConfigurationUUIDKey];
+        [storage syncStoreValue:previousUUID forKey:kPNConfigurationUserIdKey];
+        [defaultKeychain removeValueForKey:kPNConfigurationUserIdKey];
         
         NSString *previousDeviceID = [defaultKeychain valueForKey:kPNConfigurationDeviceIDKey];
         [storage syncStoreValue:previousDeviceID forKey:kPNConfigurationDeviceIDKey];
@@ -248,7 +263,7 @@ NS_ASSUME_NONNULL_END
     if ([storage isKindOfClass:[PNKeychainStorage class]]) {
         PNKeychainStorage *keychainStorage = (PNKeychainStorage *)storage;
         NSArray<NSString *> *entryNames = @[
-            kPNConfigurationUUIDKey,
+            kPNConfigurationUserIdKey,
             kPNConfigurationDeviceIDKey,
             kPNPublishSequenceDataKey
         ];
@@ -266,11 +281,11 @@ NS_ASSUME_NONNULL_END
     __block NSString *identifier = nil;
     
     [storage batchSyncAccessWithBlock:^{
-        identifier = [storage valueForKey:kPNConfigurationUUIDKey];
+        identifier = [storage valueForKey:kPNConfigurationUserIdKey];
         
         if (!identifier) {
             identifier = [@"pn-" stringByAppendingString:[NSUUID UUID].UUIDString];
-            [storage storeValue:identifier forKey:kPNConfigurationUUIDKey];
+            [storage storeValue:identifier forKey:kPNConfigurationUserIdKey];
         }
     }];
     
