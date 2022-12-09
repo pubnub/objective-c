@@ -1,3 +1,9 @@
+## v5.1.2
+December 09 2022
+
+#### Fixed
+- Fix issue because of which message de-duplication code leaked memory.
+
 ## v5.1.1
 September 06 2022
 

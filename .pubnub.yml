@@ -1,9 +1,14 @@
 ---
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "5.1.1"
+version: "5.1.2"
 schema: 1
 changelog:
+  - date: 2022-12-09
+    version: v5.1.2
+    changes:
+      - type: bug
+        text: "Fix issue because of which message de-duplication code leaked memory."
   - date: 2022-09-06
     version: v5.1.1
     changes:
@@ -1305,7 +1310,7 @@ sdks:
           - distribution-type: source
             distribution-repository: GitHub release
             package-name: PubNub.framework
-            location: https://github.com/pubnub/objective-c/archive/refs/tags/v5.1.1.zip
+            location: https://github.com/pubnub/objective-c/archive/refs/tags/v5.1.2.zip
             supported-platforms:
               supported-operating-systems:
                 macOS:
@@ -1366,7 +1371,7 @@ sdks:
           - distribution-type: library
             distribution-repository: GitHub release
             package-name: PubNub.ios.xcframework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v5.1.1/PubNub.ios.xcframework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v5.1.2/PubNub.ios.xcframework.tar.gz
             supported-platforms:
               supported-operating-systems:
                 iOS:
@@ -1385,7 +1390,7 @@ sdks:
           - distribution-type: library
             distribution-repository: GitHub release
             package-name: PubNub.macos.framework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v5.1.1/PubNub.macos.framework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v5.1.2/PubNub.macos.framework.tar.gz
             supported-platforms:
               supported-operating-systems:
                 macOS:
@@ -1401,7 +1406,7 @@ sdks:
           - distribution-type: library
             distribution-repository: GitHub release
             package-name: PubNub.tvos.xcframework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v5.1.1/PubNub.tvos.xcframework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v5.1.2/PubNub.tvos.xcframework.tar.gz
             supported-platforms:
               supported-operating-systems:
                 tvOS:
