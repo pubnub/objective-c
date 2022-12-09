@@ -1819,7 +1819,7 @@ NS_ASSUME_NONNULL_END
 
 - (void)cleanUpCachedObjectsIfRequired:(NSUInteger)maximumCacheSize {
     
-    if (_cachedObjectIdentifiers.count > maximumCacheSize) {
+    while (_cachedObjectIdentifiers.count > maximumCacheSize) {
         NSString *identifier = [_cachedObjectIdentifiers objectAtIndex:0];
         NSMutableArray *objects = _cachedObjects[identifier];
         
