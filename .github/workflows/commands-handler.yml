@@ -7,7 +7,7 @@ on:
 jobs:
   process:
     name: Process command
-    if: ${{ github.event.issue.pull_request && endsWith(github.repository, '-private') != true && startsWith(github.event.comment.body, '@client-engineering-bot ') }}
+    if: ${{ github.event.issue.pull_request && endsWith(github.repository, '-private') != true && startsWith(github.event.comment.body, format('@{0} ', ${{ secrets.CLEN_BOT }})) }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -23,4 +23,5 @@ jobs:
         uses: ./.github/.release/actions/actions/commands
         with:
           token: ${{ secrets.GH_TOKEN }}
-          listener: client-engineering-bot
+          listener: ${{ secrets.CLEN_BOT }}
+          jira-api-key: ${{ secrets.JIRA_API_KEY }}
