@@ -46,6 +46,12 @@ extern void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block);
 extern void pn_safe_property_read(dispatch_queue_t queue, dispatch_block_t block);
 extern void pn_safe_property_write(dispatch_queue_t queue, dispatch_block_t block);
 
+/**
+ * @brief Get information about machine CPU architecture.
+ *
+ * @return CPU architecture.
+ */
+extern NSString * pn_cpu_architecture(void);
 
 /**
  * @brief  Get stringified operation system version representation.

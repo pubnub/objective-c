@@ -7,6 +7,9 @@
 #import "PubNub+CorePrivate.h"
 #define PN_CORE_PROTOCOLS PNEventsListener
 
+#include <sys/sysctl.h>
+#include <sys/types.h>
+
 #if TARGET_OS_IOS
     #import <UIKit/UIKit.h>
 #elif TARGET_OS_OSX
@@ -50,6 +53,18 @@ void pn_safe_property_write(dispatch_queue_t queue, dispatch_block_t block) {
     if (queue && block) {
         dispatch_barrier_async(queue, block);
     }
+}
+
+NSString * pn_cpu_architecture(void) {
+    size_t size;
+    sysctlbyname("hw.machine", NULL, &size, NULL, 0);
+    char *name = malloc(size);
+    sysctlbyname("hw.machine", name, &size, NULL, 0);
+  
+    NSString *architecture = [NSString stringWithCString:name encoding:NSUTF8StringEncoding];
+    free(name);
+  
+    return architecture;
 }
 
 NSString * pn_operating_system_version(void) {

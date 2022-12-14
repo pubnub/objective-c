@@ -1,3 +1,9 @@
+## v5.1.3
+December 13 2022
+
+#### Fixed
+- Serialise access to previously created session configuration objects from different threads.
+
 ## v5.1.2
 December 09 2022
 
