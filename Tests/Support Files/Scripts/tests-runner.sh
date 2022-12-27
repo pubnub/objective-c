@@ -52,7 +52,7 @@ if [[ $1 != macos ]]; then
 	DESTINATION_NAMES=()
 
 	# Extract list of devices which correspond to target platform and minimum version requirement
-	if [[ $TRAVIS == true ]]; then
+	if [[ $CI == true ]]; then
 		while IFS='' read -r match; do
 			# Skip destinations for iPhone paired watches
 			[[ $DEVICE == iPhone ]] && [[ $match =~ Watch ]] && continue
