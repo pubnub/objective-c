@@ -2,9 +2,14 @@
 #import "PNRequest.h"
 
 
+#pragma mark Class forward
+
+@class PNMessageType, PNSpaceId;
+
+
 NS_ASSUME_NONNULL_BEGIN
 
-#pragma mark Interface declaration
+#pragma mark - Interface declaration
 
 /**
  * @brief Base class for all 'Publish' API endpoints which has shared query options.
@@ -40,12 +45,22 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, copy) NSString *channel;
 
 /**
+ * @brief Identifier of the space to which message should be published.
+ */
+@property (nonatomic, nullable, copy) PNSpaceId *spaceId;
+
+/**
  * @brief Message which will be published.
  *
  * @discussion Provided object will be serialized into JSON (\a NSString, \a NSNumber, \a NSArray, \a NSDictionary) string
  * before pushing to \b PubNub service. If client has been configured with cipher key message will be encrypted as well.
  */
 @property (nonatomic, nullable, strong) id message;
+
+/**
+ * @brief Custom type with which message should be published.
+ */
+@property (nonatomic, nullable, copy) PNMessageType *messageType;
 
 /**
  * @brief How long message should be stored in channel's storage. Pass \b 0 store message according to retention.

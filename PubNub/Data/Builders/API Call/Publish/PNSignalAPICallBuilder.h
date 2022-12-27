@@ -2,13 +2,19 @@
 #import "PNStructures.h"
 
 
+#pragma mark Class forward
+
+@class PNMessageType, PNSpaceId;
+
 NS_ASSUME_NONNULL_BEGIN
+
+#pragma mark - Interface declaration
 
 /**
  * @brief Signal API call builder.
  *
  * @author Serhii Mamontov
- * @version 4.9.0
+ * @version 5.2.0
  * @since 4.9.0
  * @copyright © 2010-2019 PubNub, Inc.
  */
@@ -27,6 +33,17 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, strong) PNSignalAPICallBuilder * (^channel)(NSString *channel);
 
 /**
+ * @brief Target space identifier name.
+ *
+ * @param spaceId Identifier of the space to which signal should be published.
+ *
+ * @return API call configuration builder.
+ *
+ * @version 5.2.0
+ */
+@property (nonatomic, readonly, strong) PNSignalAPICallBuilder * (^spaceId)(PNSpaceId *spaceId);
+
+/**
  * @brief Signal payload addition block.
  *
  * @discussion Provided object will be serialized into JSON string before pushing to \b PubNub
@@ -38,6 +55,17 @@ NS_ASSUME_NONNULL_BEGIN
  * @return API call configuration builder.
  */
 @property (nonatomic, readonly, strong) PNSignalAPICallBuilder * (^message)(id message);
+
+/**
+ * @brief Type of signal which will be published.
+ *
+ * @param type Custom type for published signal.
+ *
+ * @return API call configuration builder.
+ *
+ * @version 5.2.0
+ */
+@property (nonatomic, readonly, strong) PNSignalAPICallBuilder * (^messageType)(PNMessageType *type);
 
 
 #pragma mark - Execution

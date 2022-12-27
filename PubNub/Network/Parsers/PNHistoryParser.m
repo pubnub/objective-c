@@ -5,7 +5,9 @@
  * @copyright © 2010-2019 PubNub, Inc.
  */
 #import "PNHistoryParser.h"
+#import "PNMessageType+Private.h"
 #import "PubNub+CorePrivate.h"
+#import "PNSpaceId.h"
 #import "PNConstants.h"
 #import "PNLogMacro.h"
 #import "PNLLogger.h"
@@ -141,8 +143,10 @@ NS_ASSUME_NONNULL_END
                                            __unused BOOL *messageObjectEnumeratorStop) {
         
         NSArray<NSDictionary *> *actions = nil;
+        NSString *spaceId = nil;
         NSDictionary *metadata = nil;
-        NSNumber *messageType = nil;
+        NSNumber *pubNubMessageType = nil;
+        NSString *userMessageType = nil;
         NSString *senderUUID = nil;
         id message = messageObject;
         NSNumber *timeToken = nil;
@@ -151,7 +155,9 @@ NS_ASSUME_NONNULL_END
             (messageObject[@"timetoken"] || messageObject[@"meta"] || messageObject[@"actions"] ||
              messageObject[@"message_type"] || messageObject[@"uuid"])) {
             
-            messageType = messageObject[@"message_type"];
+            pubNubMessageType = messageObject[@"message_type"];
+            userMessageType = messageObject[@"type"];
+            spaceId = messageObject[@"space_id"];
             timeToken = messageObject[@"timetoken"];
             message = messageObject[@"message"];
             actions = messageObject[@"actions"];
@@ -223,11 +229,17 @@ NS_ASSUME_NONNULL_END
         }
         
         if (message) {
-            if (timeToken || metadata || actions || messageType || senderUUID) {
+            if (timeToken || metadata || actions || pubNubMessageType || userMessageType || spaceId || senderUUID) {
                 NSMutableDictionary *messageWithInfo = [@{ @"message": message } mutableCopy];
                 
-                if ([messageType isKindOfClass:[NSNumber class]]) {
-                    messageWithInfo[@"messageType"] = messageType;
+                if ([pubNubMessageType isKindOfClass:[NSNumber class]] ||
+                    [userMessageType isKindOfClass:[NSString class]]) {
+                    messageWithInfo[@"messageType"] = [PNMessageType messageTypeFromString:userMessageType
+                                                                         pubNubMessageType:pubNubMessageType.unsignedIntValue];
+                }
+                
+                if (spaceId) {
+                    messageWithInfo[@"spaceId"] = [PNSpaceId spaceIdFromString:spaceId];
                 }
                 
                 if (timeToken) {

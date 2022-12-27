@@ -29,11 +29,12 @@ extern NSString * const kPNPublishSequenceDataKey;
 extern NSString * const kPNConfigurationUUIDKey;
 
 /**
- * @brief Options describe object's message type.
+ * @brief \b PubNub provided service message types.
  *
- * @since 4.9.0
+ * @version 5.2.0
+ * @since 5.2.0
  */
-typedef NS_OPTIONS(NSUInteger, PNMessageType) {
+typedef NS_OPTIONS(NSUInteger, PNServiceMessageType) {
     /**
      @brief Type which represent regular message object.
      */

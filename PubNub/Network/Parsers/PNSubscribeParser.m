@@ -419,7 +419,7 @@ NS_ASSUME_NONNULL_END
 
     event[@"subscription"] = (subscriptionMatch ?: channel);
     event[@"channel"] = channel;
-    PNMessageType messageType = ((PNEnvelopeInformation *)event[@"envelope"]).messageType;
+    PNServiceMessageType messageType = ((PNEnvelopeInformation *)event[@"envelope"]).pubNubMessageType;
     BOOL isEncryptionSupported = messageType == PNRegularMessageType ||
                                  messageType == PNFileMessageType;
 

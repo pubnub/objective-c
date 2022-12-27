@@ -2,6 +2,11 @@
 #import "PNPrivateStructures.h"
 
 
+#pragma mark Class forward
+
+@class PNMessageType, PNSpaceId;
+
+
 /**
  * @brief Class describe real-time event envelope information.
  *
@@ -44,9 +49,23 @@
 @property (nonatomic, nullable, readonly, copy) NSString *subscribeKey;
 
 /**
- * @brief Object's message type.
+ * @brief \b PubNub defined object type.
+ *
+ * @since 5.2.0
  */
-@property (nonatomic, readonly, assign) PNMessageType messageType;
+@property (atomic, readonly, assign) PNServiceMessageType pubNubMessageType;
+
+/**
+ * @brief Object's message type.
+ *
+ * @since 5.2.0
+ */
+@property (nonatomic, nullable, readonly, strong) PNMessageType *messageType;
+
+/**
+ * @brief Identifier of space from which message has been received.
+ */
+@property (nonatomic, nullable, readonly, copy) PNSpaceId *spaceId;
 
 /**
  * @brief Event replication map (region based).
