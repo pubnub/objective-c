@@ -93,33 +93,37 @@ fi
 
 # Iterate through list of fetched destinations and run tests.
 for destinationPlatformIdx in "${!DESTINATIONS[@]}"; do
-  DESTINATION_PLATFORM="${DESTINATIONS[$destinationPlatformIdx]}"
-  DESTINATION_NAME="${DESTINATION_NAMES[$destinationPlatformIdx]}"
-  CUCUMBER_REPORTS_PATH="$GIT_ROOT_PATH/Tests/Results"
+	DESTINATION_PLATFORM="${DESTINATIONS[$destinationPlatformIdx]}"
+	DESTINATION_NAME="${DESTINATION_NAMES[$destinationPlatformIdx]}"
+	CUCUMBER_REPORTS_PATH="$GIT_ROOT_PATH/Tests/Results"
 
-  echo -e "${LCCF}Running tests for '${DF}$DESTINATION_NAME${CF}${LCCF}'...${CF}"
+  	echo -e "${LCCF}Running tests for '${DF}$DESTINATION_NAME${CF}${LCCF}'...${CF}"
 	xcodebuild \
 		-workspace "$GIT_ROOT_PATH/Tests/PubNub Tests.xcworkspace" \
 		-scheme "[$PLATFORM] $TEST_SCHEME_TYPE" \
 		-destination "$DESTINATION_PLATFORM" \
 		-parallel-testing-enabled NO \
 		test | xcpretty --simple && XCODE_BUILD_EXITCODE="${PIPESTATUS[0]}"
+  
+  	echo "~~~~~ Xcode test status code: $XCODE_BUILD_EXITCODE"
 
-  if [[ $2 == contract || $2 == contract-beta ]]; then
-    REPORT_FILENAME="$CUCUMBER_REPORTS_PATH/CucumberishTestResults-[$PLATFORM] $TEST_SCHEME_TYPE.json"
-    [[ $2 == contract ]] && TARGET_REPORT_FILENAME="main.json" || TARGET_REPORT_FILENAME="beta.json"
+  	if [[ $2 == contract || $2 == contract-beta ]]; then
+    	REPORT_FILENAME="$CUCUMBER_REPORTS_PATH/CucumberishTestResults-[$PLATFORM] $TEST_SCHEME_TYPE.json"
+    	[[ $2 == contract ]] && TARGET_REPORT_FILENAME="main.json" || TARGET_REPORT_FILENAME="beta.json"
 
-    if [[ -r "$REPORT_FILENAME" ]]; then
-      mv "$REPORT_FILENAME" "$CUCUMBER_REPORTS_PATH/$TARGET_REPORT_FILENAME"
-    else
-      echo -e "${BRCF}report file not created: $REPORT_FILENAME"
-    fi
-  fi
+    	if [[ -r "$REPORT_FILENAME" ]]; then
+      		mv "$REPORT_FILENAME" "$CUCUMBER_REPORTS_PATH/$TARGET_REPORT_FILENAME"
+    	else
+      		echo -e "${BRCF}report file not created: $REPORT_FILENAME"
+    	fi
+  	fi
+  
+  	echo "~~~~~ CODE: $XCODE_BUILD_EXITCODE | TARGET: $2"
 
-  if [[ $XCODE_BUILD_EXITCODE -gt 0 && $2 != contract-beta ]]; then
-    echo -e "${BRCF}xcodebuild exited with error code: $XCODE_BUILD_EXITCODE"
-    exit $XCODE_BUILD_EXITCODE
-  elif [[ $2 == contract-beta ]]; then
-    echo -e "${LCCF}$TEST_SCHEME_TYPE is allowed to fail.${CF}"
-  fi
+  	if [[ $XCODE_BUILD_EXITCODE -gt 0 && $2 != contract-beta ]]; then
+    	echo -e "${BRCF}xcodebuild exited with error code: $XCODE_BUILD_EXITCODE"
+    	exit $XCODE_BUILD_EXITCODE
+  	elif [[ $2 == contract-beta ]]; then
+    	echo -e "${LCCF}$TEST_SCHEME_TYPE is allowed to fail.${CF}"
+  	fi
 done
