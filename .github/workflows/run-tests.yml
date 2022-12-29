@@ -18,7 +18,7 @@ env:
 jobs:
   tests:
     name: Integration and Unit tests
-    runs-on: macos-11
+    runs-on: macos-12
     strategy:
       fail-fast: true
       matrix:
@@ -55,13 +55,13 @@ jobs:
       - name: Configure test environment
         run: ./Tests/Support\ Files/Scripts/create-configuration.sh
       - name: Run ${{ matrix.environment }} integration tests
-        run: ./Tests/Support\ Files/Scripts/tests-runner.sh $(echo ${{ matrix.environment }} | tr '[:upper:]' '[:lower:]') mocked 2
+        run: ./Tests/Support\ Files/Scripts/tests-runner.sh $(echo ${{ matrix.environment }} | tr '[:upper:]' '[:lower:]') mocked 1
       - name: Cancel workflow runs for commit on error
         if: failure()
         uses: ./.github/.release/actions/actions/utils/fast-jobs-failure
   acceptance-tests: 
     name: Run Acceptance tests
-    runs-on: macos-11
+    runs-on: macos-12
     steps: 
       - name: Checkout repository
         uses: actions/checkout@v3
