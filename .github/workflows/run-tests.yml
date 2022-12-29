@@ -16,7 +16,7 @@ env:
   TESTS_SUBSCRIBE_KEY: ${{ secrets.TESTS_SUBSCRIBE_KEY }}
 
 jobs:
-  tests-matrix:
+  tests:
     name: Integration and Unit tests
     runs-on: macos-11
     strategy:
@@ -57,13 +57,6 @@ jobs:
       - name: Cancel workflow runs for commit on error
         if: failure()
         uses: ./.github/.release/actions/actions/utils/fast-jobs-failure
-  tests:
-    name: Integration and Unit tests
-    runs-on: ubuntu-latest
-    needs: tests-matrix
-    steps:
-      - name: Tests summary
-        run: echo -e "\033[38;2;95;215;0m\033[1mTest successful"
   acceptance-tests: 
     name: Run Acceptance tests
     runs-on: macos-11
@@ -108,3 +101,10 @@ jobs:
       - name: Cancel workflow runs for commit on error
         if: failure()
         uses: ./.github/.release/actions/actions/utils/fast-jobs-failure
+  all-tests:
+    name: Tests
+    runs-on: ubuntu-latest
+    needs: [tests, acceptance-tests]
+    steps:
+      - name: Tests summary
+        run: echo -e "\033[38;2;95;215;0m\033[1mAll tests successfully passed"
