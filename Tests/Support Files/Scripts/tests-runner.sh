@@ -104,8 +104,6 @@ for destinationPlatformIdx in "${!DESTINATIONS[@]}"; do
 		-destination "$DESTINATION_PLATFORM" \
 		-parallel-testing-enabled NO \
 		test | xcpretty --simple && XCODE_BUILD_EXITCODE="${PIPESTATUS[0]}"
-  
-  	echo "~~~~~ Xcode test status code: $XCODE_BUILD_EXITCODE"
 
   	if [[ $2 == contract || $2 == contract-beta ]]; then
     	REPORT_FILENAME="$CUCUMBER_REPORTS_PATH/CucumberishTestResults-[$PLATFORM] $TEST_SCHEME_TYPE.json"
@@ -117,8 +115,6 @@ for destinationPlatformIdx in "${!DESTINATIONS[@]}"; do
       		echo -e "${BRCF}report file not created: $REPORT_FILENAME"
     	fi
   	fi
-  
-  	echo "~~~~~ CODE: $XCODE_BUILD_EXITCODE | TARGET: $2"
 
   	if [[ $XCODE_BUILD_EXITCODE -gt 0 && $2 != contract-beta ]]; then
     	echo -e "${BRCF}xcodebuild exited with error code: $XCODE_BUILD_EXITCODE"
