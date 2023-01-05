@@ -1,0 +1,126 @@
+name: Tests
+
+on:
+  push:
+  workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+defaults:
+  run:
+    shell: bash
+env:
+  TESTS_PAM_PUBLISH_KEY: ${{ secrets.TESTS_PAM_PUBLISH_KEY }}
+  TESTS_PAM_SUBSCRIBE_KEY: ${{ secrets.TESTS_PAM_SUBSCRIBE_KEY }}
+  TESTS_PUBLISH_KEY: ${{ secrets.TESTS_PUBLISH_KEY }}
+  TESTS_SUBSCRIBE_KEY: ${{ secrets.TESTS_SUBSCRIBE_KEY }}
+
+jobs:
+  tests:
+    name: Integration and Unit tests
+    runs-on: macos-12
+    strategy:
+      fail-fast: true
+      matrix:
+        environment: [iOS, tvOS, macOS]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+      - name: Checkout actions
+        uses: actions/checkout@v3
+        with:
+          repository: pubnub/client-engineering-deployment-tools
+          ref: v1
+          token: ${{ secrets.GH_TOKEN }}
+          path: .github/.release/actions
+      - name: Prepare Xcode environment
+        run: sudo xcode-select -s '/Applications/Xcode_14.2.app/Contents/Developer'
+      - name: Setup Ruby 2.6.6
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.6.6
+          bundler-cache: true
+      - name: Cache installed Pods
+        uses: actions/cache@v3
+        with:
+          path: Tests/Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('**/Tests/Podfile.lock') }}
+          restore-keys: |
+              ${{ runner.os }}-pods-
+      - name: Pre-load simulators list
+        if: ${{ matrix.environment != 'macOS' }}
+        run: xcrun simctl list -j
+      - name: Install dependencies
+        run: |
+          gem install xcpretty
+          cd ./Tests && pod install && cd ..
+      - name: Configure test environment
+        run: |
+          ./Tests/Support\ Files/Scripts/create-configuration.sh
+      - name: Run ${{ matrix.environment }} integration tests
+        run: |
+          ./Tests/Support\ Files/Scripts/tests-runner.sh $(echo ${{ matrix.environment }} | tr '[:upper:]' '[:lower:]') mocked 1
+      - name: Cancel workflow runs for commit on error
+        if: failure()
+        uses: ./.github/.release/actions/actions/utils/fast-jobs-failure
+  acceptance-tests: 
+    name: Run Acceptance tests
+    runs-on: macos-12
+    steps: 
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Prepare Xcode environment
+        run: sudo xcode-select -s '/Applications/Xcode_14.2.app/Contents/Developer'
+      - name: Setup Ruby 2.6.6
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.6.6
+          bundler-cache: true
+      - name: Cache installed Pods
+        uses: actions/cache@v3
+        with:
+          path: Tests/Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('**/Tests/Podfile.lock') }}
+          restore-keys: |
+              ${{ runner.os }}-pods-
+      - name: Checkout mock-server action
+        uses: actions/checkout@v3
+        with:
+          repository: pubnub/client-engineering-deployment-tools
+          ref: v1
+          token: ${{ secrets.GH_TOKEN }}
+          path: .github/.release/actions
+      - name: Run mock server action
+        uses: ./.github/.release/actions/actions/mock-server
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          features-path: Tests/Support Files/Features
+      - name: Install dependencies
+        run: |
+          gem install xcpretty
+          cd ./Tests && pod install && cd ..
+      - name: Configure test environment
+        run: ./Tests/Support\ Files/Scripts/create-configuration.sh
+      - name: Run stable acceptance tests
+        run: ./Tests/Support\ Files/Scripts/tests-runner.sh ios contract 1
+      - name: Run beta acceptance tests
+        run: ./Tests/Support\ Files/Scripts/tests-runner.sh ios contract-beta 1
+      - name: Expose acceptance tests reports
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: acceptance-test-reports
+          path: Tests/Results/*.json
+          retention-days: 7
+      - name: Cancel workflow runs for commit on error
+        if: failure()
+        uses: ./.github/.release/actions/actions/utils/fast-jobs-failure
+  all-tests:
+    name: Tests
+    runs-on: ubuntu-latest
+    needs: [tests, acceptance-tests]
+    steps:
+      - name: Tests summary
+        run: echo -e "\033[38;2;95;215;0m\033[1mAll tests successfully passed"
