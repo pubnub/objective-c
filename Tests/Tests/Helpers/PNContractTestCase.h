@@ -33,6 +33,13 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, assign) PNOperationType testedFeatureType;
 
+/**
+ * @brief Whether at the end of the test on expectation check it is allowed to have pending requests
+ * or not.
+ */
+@property (nonatomic, assign, class) BOOL allowsPendingRequests;
+@property (nonatomic, assign) BOOL allowsPendingRequests;
+
 
 #pragma mark - Initialization & Configuration
 

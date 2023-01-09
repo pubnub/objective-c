@@ -15,14 +15,6 @@
 - (void)setup {
     [self startCucumberHookEventsListening];
     
-    Given(@"the crypto keyset", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
-        self.configuration.cipherKey = @"enigma";
-    });
-    
-    Given(@"the invalid-crypto keyset", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
-        self.configuration.cipherKey = @"secret";
-    });
-    
     When(@"I subscribe", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
         self.testedFeatureType = PNSubscribeOperation;
         
@@ -54,6 +46,12 @@
         XCTAssertEqual(statuses.lastObject.category, PNDecryptionErrorCategory);
 
         [self pauseMainQueueFor:0.5f];
+    });
+    
+    Match(@[@"*"], @"I don't auto-retry subscribe", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
+        self.allowsPendingRequests = YES;
+        // Delay execution to ensure that there is no automated retry.
+        [self pauseMainQueueFor:2.f];
     });
 }
 

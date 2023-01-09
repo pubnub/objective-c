@@ -17,6 +17,8 @@
 
 #pragma mark Types & Constants
 
+static BOOL _allowsPendingRequests = NO;
+
 /**
  * @brief Origin which should be used to reach mock server for contract testing.
  */
@@ -159,6 +161,22 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Information
 
++ (BOOL)allowsPendingRequests {
+    return _allowsPendingRequests;
+}
+
++ (void)setAllowsPendingRequests:(BOOL)allowsPendingRequests {
+    _allowsPendingRequests = allowsPendingRequests;
+}
+
+- (BOOL)allowsPendingRequests {
+    return [PNContractTestCase class].allowsPendingRequests;
+}
+
+- (void)setAllowsPendingRequests:(BOOL)allowsPendingRequests {
+    [PNContractTestCase class].allowsPendingRequests = allowsPendingRequests;
+}
+
 - (PNConfiguration *)configuration {
     if (!self.currentConfiguration) {
         self.currentConfiguration = [PNConfiguration configurationWithPublishKey:kPNDefaultPublishKey
@@ -246,8 +264,12 @@ NS_ASSUME_NONNULL_END
                                                                            error:nil];
                 
                 NSArray<NSString *> *pendingExpectation = [response valueForKeyPath:@"expectations.pending"];
-                if (pendingExpectation.count) {
-                    XCTAssertTrue(false, @"Expectations not met: %@", [pendingExpectation componentsJoinedByString:@", "]);
+                NSArray<NSString *> *failedExpectation = [response valueForKeyPath:@"expectations.failed"];
+                if (pendingExpectation.count && !self.allowsPendingRequests) {
+                    XCTAssertTrue(false, @"Expectations not met (pending): %@", [pendingExpectation componentsJoinedByString:@", "]);
+                }
+                if (failedExpectation.count) {
+                    XCTAssertTrue(false, @"Expectations not met (failed): %@", [failedExpectation componentsJoinedByString:@", "]);
                 }
             }
             
@@ -261,6 +283,26 @@ NS_ASSUME_NONNULL_END
         
         Given(@"the invalid keyset", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
             // Nothing to do. Mock server will simulate proper error here.
+        });
+        
+        Given(@"the crypto keyset", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
+            self.configuration.cipherKey = @"enigma";
+        });
+        
+        Given(@"the invalid-crypto keyset", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
+            self.configuration.cipherKey = @"secret";
+        });
+        
+        Given(@"auth key", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
+            self.configuration.authKey = @"test-auth-key";
+        });
+        
+        Given(@"no auth key", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
+            // Nothing to do. By default PubNub client doesn't have configured authKey.
+        });
+        
+        Given(@"token", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
+            [self.client setAuthToken:@"my-test-token"];
         });
         
         Then(@"I receive successful response", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
@@ -292,6 +334,24 @@ NS_ASSUME_NONNULL_END
             }
         });
         
+        Then(@"I receive access denied status", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
+            PNStatus *status = [self lastStatus];
+            
+            XCTAssertNotNil(status, @"Last API call should fail");
+            XCTAssertTrue(status.isError, @"Last API call should report error");
+            XCTAssertEqual(status.category, PNAccessDeniedCategory);
+            XCTAssertEqual([self lastStatus].statusCode, 403);
+        });
+        
+        Match(@[@"*"], @"I receive access denied status", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
+            PNStatus *status = [self lastStatus];
+            
+            XCTAssertNotNil(status, @"Last API call should fail");
+            XCTAssertTrue(status.isError, @"Last API call should report error");
+            XCTAssertEqual(status.category, PNAccessDeniedCategory);
+            XCTAssertEqual([self lastStatus].statusCode, 403);
+        });
+        
         // Complete known contract steps configuration.
         [[PNAccessContractTestSteps new] setup];
         [[PNFilesContractTestSteps new] setup];
@@ -318,7 +378,10 @@ synchronouslyToChannels:(NSArray *)channels
     client = client ?: self.client;
     
     [_statusHandlers addObject:^void(PubNub *receiver, PNStatus *status) {
-        if (status.operation == PNSubscribeOperation && status.category == PNConnectedCategory) {
+        if (status.operation == PNSubscribeOperation &&
+            (status.category == PNConnectedCategory || status.category == PNAccessDeniedCategory)) {
+            [self storeRequestStatus:status];
+            
             subscribeCompletedInTime = YES;
             dispatch_semaphore_signal(semaphore);
         }
@@ -380,7 +443,8 @@ synchronouslyFromChannels:(NSArray *)channels
             NSString *clientIdentifier = receiver.currentConfiguration.uuid;
             
             if ([client.currentConfiguration.uuid isEqualToString:clientIdentifier]) {
-                receivedRequiredCount = messagesCount >= [weakSelf messagesCountForClient:receiver onChannel:channel];
+                NSUInteger messagesCountForClient = [weakSelf messagesCountForClient:receiver onChannel:channel];
+                receivedRequiredCount = messagesCountForClient > 0 && messagesCount >= messagesCountForClient;
             }
             
             if (receivedRequiredCount) {

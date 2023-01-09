@@ -1330,7 +1330,8 @@ NS_ASSUME_NONNULL_END
             statusCategory == PNTLSConnectionFailedCategory) {
             
             __weak __typeof(self) weakSelf = self;
-            ((PNStatus *)status).automaticallyRetry = (statusCategory != PNMalformedFilterExpressionCategory &&
+            ((PNStatus *)status).automaticallyRetry = (statusCategory != PNAccessDeniedCategory &&
+                                                       statusCategory != PNMalformedFilterExpressionCategory &&
                                                        statusCategory != PNRequestURITooLongCategory);
             PNSubscriberState subscriberState = PNAccessRightsErrorSubscriberState;
             ((PNStatus *)status).retryCancelBlock = ^{
