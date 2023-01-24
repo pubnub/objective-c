@@ -168,6 +168,10 @@ NS_ASSUME_NONNULL_END
             if (![metadata isKindOfClass:[NSDictionary class]]) {
                 metadata = nil;
             }
+
+            if ([pubNubMessageType isKindOfClass:[NSNull class]]) {
+                pubNubMessageType = @(PNRegularMessageType);
+            }
             
             timeToken = timeToken ? @(((NSString *)timeToken).longLongValue) : nil;
             [self normalizeActionTimetokens:((NSDictionary *)actions).allValues];

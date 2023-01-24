@@ -86,6 +86,7 @@ struct PNEventDebugEnvelopeStructure {
     .subscribeKey = @"k",
     .pubNubMessageTypeKey = @"e",
     .userMessageTypeKey = @"mt",
+    .spaceIdKey = @"si",
     .replicationMap = @"r",
     .eatAfterReading = @"ear",
     .metadata = @"u",

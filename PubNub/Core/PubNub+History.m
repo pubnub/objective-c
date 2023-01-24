@@ -43,6 +43,7 @@ NS_ASSUME_NONNULL_BEGIN
  *   not.
  * @param includeMessageType Whether event type should be included in response or not.
  *   By default set to: \b YES.
+ * @param includeSpaceId Whether identifier of space to which event has been sent should be included or not.
  * @param includeUUID Whether event publisher UUID should be included in response or not.
  *   By default set to: \b YES.
  * @param shouldIncludeMessageActions Whether event actions should be included in response or not.
@@ -61,6 +62,7 @@ NS_ASSUME_NONNULL_BEGIN
                    reverse:(nullable NSNumber *)shouldReverseOrder
           includeTimeToken:(nullable NSNumber *)shouldIncludeTimeToken
         includeMessageType:(nullable NSNumber *)includeMessageType
+            includeSpaceId:(nullable NSNumber *)includeSpaceId
                includeUUID:(nullable NSNumber *)includeUUID
      includeMessageActions:(nullable NSNumber *)shouldIncludeMessageActions
            includeMetadata:(nullable NSNumber *)shouldIncludeMetadata
@@ -153,6 +155,7 @@ NS_ASSUME_NONNULL_END
         NSNumber *reverse = parameters[NSStringFromSelector(@selector(reverse))];
         NSNumber *includeTimeToken = parameters[NSStringFromSelector(@selector(includeTimeToken))];
         NSNumber *includeMessageType = parameters[NSStringFromSelector(@selector(includeMessageType))];
+        NSNumber *includeSpaceId = parameters[NSStringFromSelector(@selector(includeSpaceId))];
         NSNumber *includeUUID = parameters[NSStringFromSelector(@selector(includeUUID))];
         NSNumber *includeMetadata = parameters[NSStringFromSelector(@selector(includeMetadata))];
         NSNumber *includeActions = parameters[NSStringFromSelector(@selector(includeMessageActions))];
@@ -167,6 +170,7 @@ NS_ASSUME_NONNULL_END
                          reverse:reverse
                 includeTimeToken:includeTimeToken
               includeMessageType:includeMessageType
+                  includeSpaceId:includeSpaceId
                      includeUUID:includeUUID
            includeMessageActions:includeActions
                  includeMetadata:includeMetadata
@@ -316,6 +320,7 @@ NS_ASSUME_NONNULL_END
                      reverse:@NO
             includeTimeToken:@NO
           includeMessageType:@YES
+              includeSpaceId:@NO
                  includeUUID:@YES
        includeMessageActions:@(shouldIncludeMessageActions)
              includeMetadata:@(shouldIncludeMetadata)
@@ -403,6 +408,7 @@ NS_ASSUME_NONNULL_END
                      reverse:@(shouldReverseOrder)
             includeTimeToken:@(shouldIncludeTimeToken)
           includeMessageType:@YES
+              includeSpaceId:@NO
                  includeUUID:@YES
        includeMessageActions:nil
              includeMetadata:nil
@@ -418,6 +424,7 @@ NS_ASSUME_NONNULL_END
                    reverse:(NSNumber *)shouldReverseOrder
           includeTimeToken:(NSNumber *)shouldIncludeTimeToken
         includeMessageType:(NSNumber *)includeMessageType
+            includeSpaceId:(NSNumber *)includeSpaceId
                includeUUID:(NSNumber *)includeUUID
      includeMessageActions:(NSNumber *)shouldIncludeMessageActions
            includeMetadata:(NSNumber *)shouldIncludeMetadata
@@ -436,9 +443,13 @@ NS_ASSUME_NONNULL_END
     if (!limit || limit.unsignedIntValue == 0) {
         limit = nil;
     }
-    
+
     if (!includeMessageType) {
         includeMessageType = @YES;
+    }
+
+    if (!includeSpaceId) {
+        includeSpaceId = @NO;
     }
     
     if (!includeUUID) {
@@ -508,6 +519,10 @@ NS_ASSUME_NONNULL_END
     if (operation == PNHistoryWithActionsOperation || multipleChannels) {
         [parameters addQueryParameter:(includeMessageType.boolValue ? @"true" : @"false")
                          forFieldName:@"include_message_type"];
+        [parameters addQueryParameter:(includeMessageType.boolValue ? @"true" : @"false")
+                         forFieldName:@"include_type"];
+        [parameters addQueryParameter:(includeSpaceId.boolValue ? @"true" : @"false")
+                         forFieldName:@"include_space_id"];
         [parameters addQueryParameter:(includeUUID.boolValue ? @"true" : @"false")
                          forFieldName:@"include_uuid"];
     }
@@ -569,6 +584,7 @@ NS_ASSUME_NONNULL_END
                                      reverse:shouldReverseOrder
                             includeTimeToken:shouldIncludeTimeToken
                           includeMessageType:includeMessageType
+                              includeSpaceId:includeSpaceId
                                  includeUUID:includeUUID
                        includeMessageActions:shouldIncludeMessageActions
                              includeMetadata:shouldIncludeMetadata

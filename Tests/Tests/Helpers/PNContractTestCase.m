@@ -31,7 +31,9 @@ static NSString * const kPNCucumberBeforeHook = @"PNCucumberBeforeHook";
 static NSString * const kPNCucumberAfterHook = @"PNCucumberAfterHook";
 
 typedef NSMutableArray<PNMessageResult *> PNTestChannelMessagesList;
+typedef NSMutableArray<PNSignalResult *> PNTestChannelSignalsList;
 typedef NSMutableDictionary<NSString *, PNTestChannelMessagesList *> PNTestClientMessagesList;
+typedef NSMutableDictionary<NSString *, PNTestChannelSignalsList *> PNTestClientSignalsList;
 typedef NSMutableArray<PNStatus *> PNTestClientStatusesList;
 
 
@@ -70,9 +72,19 @@ static NSMutableDictionary<NSString *, PNTestClientStatusesList *> *_receivedSta
 static NSMutableArray<void(^)(PubNub *client, PNMessageResult *message)> *_messageHandlers;
 
 /**
+ * @brief List of GCD blocks which listens for PubNub client signal receive.
+ */
+static NSMutableArray<void(^)(PubNub *client, PNSignalResult *signal)> *_signalHandlers;
+
+/**
  * @brief Messages received during current scenario execution.
  */
 static NSMutableDictionary<NSString *, PNTestClientMessagesList *> *_receivedMessages;
+
+/**
+ * @brief Signals received during current scenario execution.
+ */
+static NSMutableDictionary<NSString *, PNTestClientSignalsList *> *_receivedSignals;
 
 static PNOperationType _currentlyTestedFeatureType;
 
@@ -136,6 +148,16 @@ NS_ASSUME_NONNULL_BEGIN
  * @return Number of messages for specified \c client and \c channel.
  */
 - (NSUInteger)messagesCountForClient:(PubNub *)client onChannel:(nullable NSString *)channel;
+
+/**
+ * @brief Get total number of messages and signals which has been sent to specific channel.
+ *
+ * @param client \b PubNub client for which count should be done.
+ * @param channel Specific channel on which messages should be counted or all channels for \c client if \c nil.
+ *
+ * @return Total number of messages and signals for specified \c client and \c channel.
+ */
+- (NSUInteger)messagesAndSignalsCountForClient:(PubNub *)client onChannel:(nullable NSString *)channel;
 
 /**
  * @brief Check whether currently tested feature expects to receive response from server or not.
@@ -219,7 +241,9 @@ NS_ASSUME_NONNULL_END
         _apiCallResults = [NSMutableArray new];
         _receivedMessages = [NSMutableDictionary new];
         _receivedStatuses = [NSMutableDictionary new];
+        _receivedSignals = [NSMutableDictionary new];
         _messageHandlers = [NSMutableArray new];
+        _signalHandlers = [NSMutableArray new];
         _statusHandlers = [NSMutableArray new];
         
         _resourcesAccess = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
@@ -263,7 +287,7 @@ NS_ASSUME_NONNULL_END
             // Nothing to do. Mock server will simulate proper error here.
         });
         
-        Then(@"I receive successful response", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
+        Then(@"I receive (a )?successful response", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
             PNStatus *status = [self lastStatus];
             PNResult *result = [self lastResult];
             
@@ -276,7 +300,7 @@ NS_ASSUME_NONNULL_END
             }
         });
         
-        Then(@"I receive error response", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
+        Then(@"I receive (an )?error response", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
             PNStatus *status = [self lastStatus];
             PNResult *result = [self lastResult];
             
@@ -380,7 +404,7 @@ synchronouslyFromChannels:(NSArray *)channels
             NSString *clientIdentifier = receiver.currentConfiguration.uuid;
             
             if ([client.currentConfiguration.uuid isEqualToString:clientIdentifier]) {
-                receivedRequiredCount = messagesCount >= [weakSelf messagesCountForClient:receiver onChannel:channel];
+                receivedRequiredCount = messagesCount < [weakSelf messagesCountForClient:receiver onChannel:channel];
             }
             
             if (receivedRequiredCount) {
@@ -404,7 +428,7 @@ synchronouslyFromChannels:(NSArray *)channels
             dispatch_semaphore_signal(semaphore);
         }
     }];
-    
+
     if (!checkMessagesCount(client)){
         dispatch_semaphore_wait(semaphore, dispatch_time(DISPATCH_TIME_NOW, 30 * NSEC_PER_SEC));
     } else {
@@ -414,6 +438,74 @@ synchronouslyFromChannels:(NSArray *)channels
     XCTAssertTrue(completedInTime, @"%@ messages not received in time", @(messagesCount));
     
     return messages;
+}
+
+- (NSArray *)waitClient:(PubNub *)client
+    toReceiveSignalsOrMessages:(NSUInteger)count
+                     onChannel:(NSString *)channel {
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    __block BOOL completedInTime = NO;
+    __block NSArray *messages = nil;
+    client = client ?: self.client;
+
+    __weak __typeof(self) weakSelf = self;
+    BOOL(^checkMessagesCount)(PubNub *) = ^BOOL(PubNub *receiver) {
+        __block NSUInteger receivedMessagesCount = 0;
+        __block BOOL receivedRequiredCount = NO;
+
+        dispatch_sync(_resourcesAccess, ^{
+            NSString *clientIdentifier = receiver.currentConfiguration.uuid;
+
+            if ([client.currentConfiguration.uuid isEqualToString:clientIdentifier]) {
+                receivedMessagesCount = [weakSelf messagesAndSignalsCountForClient:receiver onChannel:channel];
+                receivedRequiredCount = receivedMessagesCount >= count;
+            }
+
+            if (receivedRequiredCount) {
+                PNTestClientMessagesList *clientMessages = _receivedMessages[clientIdentifier];
+                PNTestClientSignalsList *clientSignals = _receivedSignals[clientIdentifier];
+                NSArray *receivedMessages;
+                NSArray *receivedSignals;
+
+                if (channel) {
+                    receivedMessages = clientMessages[channel] ?: @[];
+                    receivedSignals = clientSignals[channel] ?: @[];
+                } else {
+                    receivedMessages = [clientMessages.allValues valueForKeyPath:@"@unionOfArrays.self"] ?: @[];
+                    receivedSignals = [clientSignals.allValues valueForKeyPath:@"@unionOfArrays.self"] ?: @[];
+                }
+
+                messages = [receivedMessages arrayByAddingObjectsFromArray:receivedSignals];
+            }
+        });
+
+        return receivedRequiredCount;
+    };
+
+
+    [_messageHandlers addObject:^void(PubNub *receiver, PNMessageResult *message) {
+        if (checkMessagesCount(receiver)) {
+            completedInTime = YES;
+            dispatch_semaphore_signal(semaphore);
+        }
+    }];
+
+    [_signalHandlers addObject:^void(PubNub *receiver, PNSignalResult *message) {
+        if (checkMessagesCount(receiver)) {
+            completedInTime = YES;
+            dispatch_semaphore_signal(semaphore);
+        }
+    }];
+
+    if (!checkMessagesCount(client)){
+        dispatch_semaphore_wait(semaphore, dispatch_time(DISPATCH_TIME_NOW, 30 * NSEC_PER_SEC));
+    } else {
+        completedInTime = YES;
+    }
+
+    XCTAssertTrue(completedInTime, @"%@ messages not received in time", @(count));
+
+    return messages.count > 0 ? messages : nil;
 }
 
 - (NSArray<PNStatus *> *)waitClient:(PubNub *)client toReceiveStatuses:(NSUInteger)statusesCount {
@@ -506,7 +598,9 @@ synchronouslyFromChannels:(NSArray *)channels
     [_apiCallResults removeAllObjects];
     [_receivedMessages removeAllObjects];
     [_receivedStatuses removeAllObjects];
+    [_receivedSignals removeAllObjects];
     [_messageHandlers removeAllObjects];
+    [_signalHandlers removeAllObjects];
     [_statusHandlers removeAllObjects];
     
     dispatch_barrier_sync(_resourcesAccess, ^{
@@ -612,6 +706,26 @@ synchronouslyFromChannels:(NSArray *)channels
     return messagesCount;
 }
 
+- (NSUInteger)messagesAndSignalsCountForClient:(PubNub *)client onChannel:(NSString *)channel {
+    PNTestClientMessagesList *clientMessages = _receivedMessages[client.currentConfiguration.uuid];
+    PNTestClientSignalsList *clientSignals = _receivedSignals[client.currentConfiguration.uuid];
+    __block NSUInteger messagesCount = 0;
+
+    if (channel) {
+        messagesCount = clientMessages[channel].count + clientSignals[channel].count;
+    } else {
+        [clientMessages enumerateKeysAndObjectsUsingBlock:^(NSString *channel, PNTestChannelMessagesList *messages, BOOL *stop) {
+            messagesCount += messages.count;
+        }];
+
+        [clientSignals enumerateKeysAndObjectsUsingBlock:^(NSString *channel, PNTestChannelSignalsList *messages, BOOL *stop) {
+            messagesCount += messages.count;
+        }];
+    }
+
+    return messagesCount;
+}
+
 - (BOOL)testedFeatureExpectResponse {
     BOOL responseExpected = NO;
     
@@ -689,9 +803,33 @@ synchronouslyFromChannels:(NSArray *)channels
         }
         
         [channelMessages addObject:message];
-        
+
         [_messageHandlers enumerateObjectsUsingBlock:^(void (^block)(PubNub *, PNMessageResult *), NSUInteger idx, BOOL *stop) {
             block(client, message);
+        }];
+    });
+}
+
+- (void)client:(PubNub *)client didReceiveSignal:(PNSignalResult *)signal {
+    dispatch_barrier_async(_resourcesAccess, ^{
+        PNTestClientSignalsList *clientSignals = _receivedSignals[client.currentConfiguration.uuid];
+
+        if (!clientSignals) {
+            clientSignals = [NSMutableDictionary new];
+            _receivedSignals[client.currentConfiguration.uuid] = clientSignals;
+        }
+
+        PNTestChannelSignalsList *channelSignals = clientSignals[signal.data.channel];
+
+        if (!channelSignals) {
+            channelSignals = [NSMutableArray new];
+            clientSignals[signal.data.channel] = channelSignals;
+        }
+
+        [channelSignals addObject:signal];
+
+        [_signalHandlers enumerateObjectsUsingBlock:^(void (^block)(PubNub *, PNSignalResult *), NSUInteger idx, BOOL *stop) {
+            block(client, signal);
         }];
     });
 }

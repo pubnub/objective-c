@@ -76,6 +76,13 @@
     };
 }
 
+- (PNHistoryAPICallBuilder * _Nonnull (^)(BOOL includeSpaceId))includeSpaceId {
+    return ^PNHistoryAPICallBuilder * (BOOL includeSpaceId) {
+        [self setValue:@(includeSpaceId) forParameter:NSStringFromSelector(_cmd)];
+        return self;
+    };
+}
+
 - (PNHistoryAPICallBuilder * _Nonnull (^)(BOOL includeUUID))includeUUID {
     return ^PNHistoryAPICallBuilder * (BOOL includeUUID) {
         [self setValue:@(includeUUID) forParameter:NSStringFromSelector(_cmd)];

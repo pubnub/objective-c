@@ -6,6 +6,8 @@
  */
 #import "PNBasePublishRequest+Private.h"
 #import "PNRequest+Private.h"
+#import "PNMessageType.h"
+#import "PNSpaceId.h"
 #import "PNHelpers.h"
 #import "PNAES.h"
 
@@ -112,6 +114,14 @@ NS_ASSUME_NONNULL_END
     
     if (!self.shouldReplicate) {
         [parameters addQueryParameter:@"true" forFieldName:@"norep"];
+    }
+
+    if (self.spaceId) {
+        [parameters addQueryParameter:self.spaceId.value forFieldName:@"space-id"];
+    }
+
+    if (self.messageType) {
+        [parameters addQueryParameter:self.messageType.value forFieldName:@"type"];
     }
     
     parameters.POSTBodyCompressed = self.shouldCompress;

@@ -1,9 +1,9 @@
 PODS:
   - Cucumberish (1.4.0)
   - OCMock (3.6)
-  - PubNub (5.1.2):
-    - PubNub/Core (= 5.1.2)
-  - PubNub/Core (5.1.2)
+  - PubNub (5.1.3):
+    - PubNub/Core (= 5.1.3)
+  - PubNub/Core (5.1.3)
   - YAHTTPVCR (1.4.2)
 
 DEPENDENCIES:
@@ -32,7 +32,7 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   Cucumberish: 6cbd0c1f50306b369acebfe7d9f514c9c287d26c
   OCMock: 5ea90566be239f179ba766fd9fbae5885040b992
-  PubNub: 65ddd075debdb479878f7bd42e4f3ab7de25ccec
+  PubNub: 0c6f2e5728efe4bb65c26b991331aae39ac5e5a5
   YAHTTPVCR: e2aa406443a4db12585ff626b445369e1953a729
 
 PODFILE CHECKSUM: 569ce5fdb7670790d6d4a9d1a5a304a20781e374

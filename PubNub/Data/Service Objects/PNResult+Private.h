@@ -109,12 +109,34 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  @brief  Convert result object to dictionary which can be used to print out structured data
- 
+
  @return Object in dictionary representation.
- 
+
  @since 4.0
  */
 - (NSDictionary *)dictionaryRepresentation;
+
+/**
+ @brief  Convert result object to dictionary which can be used to print out structured data
+
+ @param dictionary Dictionary in which fields should be normalised.
+
+ @return Object in dictionary representation.
+
+ @since 5.2.0
+ */
+- (NSDictionary *)dictionaryRepresentationFromDictionary:(NSDictionary *)dictionary;
+
+/**
+ @brief  Convert result object to dictionary which can be used to print out structured data
+
+ @param array Array in which fields should be normalised.
+
+ @return Object in dictionary representation.
+
+ @since 5.2.0
+ */
+- (NSArray *)arrayRepresentationFromArray:(NSArray *)array;
 
 /**
  @brief  Convert result object to string which can be used to print out data

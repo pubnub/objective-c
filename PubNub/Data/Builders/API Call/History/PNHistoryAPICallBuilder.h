@@ -122,6 +122,22 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, strong) PNHistoryAPICallBuilder * (^includeMessageType)(BOOL includeMessageType);
 
 /**
+ * @brief Events' space presence flag.
+ *
+ * @note Available only when message fetched for multiple channels or should include message actions.
+ * @note Each fetched entry will contain published data under 'message' key and published message
+ * \c message \c type will be available under 'spaceId' key.
+ *
+ * @param includeSpaceId Whether identifier of space to which event has been sent should be included or not.
+ *   By default set to: \b NO.
+ *
+ * @return API call configuration builder.
+ *
+ * @since 5.2.0
+ */
+@property (nonatomic, readonly, strong) PNHistoryAPICallBuilder * (^includeSpaceId)(BOOL includeSpaceId);
+
+/**
  * @brief Events' publisher UUID presence flag.
  *
  * @note Available only when message fetched for multiple channels or should include message actions.
