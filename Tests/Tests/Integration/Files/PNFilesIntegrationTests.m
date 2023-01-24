@@ -169,7 +169,7 @@ NS_ASSUME_NONNULL_END
                 XCTAssertEqual(messages.count, 1);
                 XCTAssertNotNil(messages.firstObject[@"uuid"]);
                 XCTAssertNotNil(messages.firstObject[@"messageType"]);
-                XCTAssertEqualObjects(messages.firstObject[@"messageType"], @4);
+                XCTAssertEqualObjects(((PNMessageType *)messages.firstObject[@"messageType"]).value, @"file");
                 
                 handler();
             });
