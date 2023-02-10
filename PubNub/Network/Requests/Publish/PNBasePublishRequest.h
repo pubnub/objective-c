@@ -46,8 +46,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  * @brief Identifier of the space to which message should be published.
+ *
+ * @since 5.2.0
  */
-@property (nonatomic, nullable, copy) PNSpaceId *spaceId;
+@property (nonatomic, nullable, strong) PNSpaceId *spaceId;
 
 /**
  * @brief Message which will be published.
@@ -59,8 +61,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  * @brief Custom type with which message should be published.
+ *
+ * @since 5.2.0
  */
-@property (nonatomic, nullable, copy) PNMessageType *messageType;
+@property (nonatomic, nullable, strong) PNMessageType *messageType;
 
 /**
  * @brief How long message should be stored in channel's storage. Pass \b 0 store message according to retention.

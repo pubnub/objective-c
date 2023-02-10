@@ -110,7 +110,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *subscribeKey;
 @property (atomic, assign) PNServiceMessageType pubNubMessageType;
 @property (nonatomic, nullable, strong) PNMessageType *messageType;
-@property (nonatomic, nullable, copy) PNSpaceId *spaceId;
+@property (nonatomic, nullable, strong) PNSpaceId *spaceId;
 @property (nonatomic, copy) NSNumber *replicationMap;
 @property (nonatomic, copy) NSNumber *eatAfterReading;
 @property (nonatomic, copy) NSDictionary *metadata;

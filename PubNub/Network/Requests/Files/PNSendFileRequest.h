@@ -4,7 +4,12 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-#pragma mark Interface declaration
+#pragma mark Class forward
+
+@class PNSpaceId, PNMessageType;
+
+
+#pragma mark - Interface declaration
 
 /**
  * @brief \c Upload \c file request.
@@ -47,6 +52,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, copy) NSString *channel;
 
 /**
+ * @brief Identifier of the space to which message should be published.
+ *
+ * @since 5.2.0
+ */
+@property (nonatomic, nullable, strong) PNSpaceId *spaceId;
+
+/**
  * @brief Whether \b PubNub published \c file \c message should be stored in \c channel history.
  */
 @property (nonatomic, assign) BOOL fileMessageStore;
@@ -58,6 +70,13 @@ NS_ASSUME_NONNULL_BEGIN
  * configured with cipher key message will be encrypted as well.
  */
 @property (nonatomic, nullable, strong) id message;
+
+/**
+ * @brief Custom type with which message should be published.
+ *
+ * @since 5.2.0
+ */
+@property (nonatomic, nullable, strong) PNMessageType *messageType;
 
 /**
  * @brief Name which should be used to store uploaded data.

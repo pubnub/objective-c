@@ -257,7 +257,9 @@ NS_ASSUME_NONNULL_END
         PNPublishFileMessageRequest *request = [PNPublishFileMessageRequest requestWithChannel:channel
                                                                                 fileIdentifier:identifier
                                                                                           name:filename];
+        request.messageType = parameters[NSStringFromSelector(@selector(messageType))];
         request.metadata = parameters[NSStringFromSelector(@selector(metadata))];
+        request.spaceId = parameters[NSStringFromSelector(@selector(spaceId))];
         request.message = parameters[NSStringFromSelector(@selector(message))];
         request.arbitraryQueryParameters = parameters[@"queryParam"];
         request.store = (shouldStore ? shouldStore.boolValue : YES);

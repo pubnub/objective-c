@@ -50,9 +50,23 @@
     };
 }
 
+- (PNPublishFileMessageAPICallBuilder * (^)(PNSpaceId *spaceId))spaceId {
+    return ^PNPublishFileMessageAPICallBuilder * (PNSpaceId *spaceId) {
+        [self setValue:spaceId forParameter:NSStringFromSelector(_cmd)];
+        return self;
+    };
+}
+
 - (PNPublishFileMessageAPICallBuilder * (^)(id message))message {
     return ^PNPublishFileMessageAPICallBuilder * (id message) {
         [self setValue:message forParameter:NSStringFromSelector(_cmd)];
+        return self;
+    };
+}
+
+- (PNPublishFileMessageAPICallBuilder * (^)(PNMessageType *messageType))messageType {
+    return ^PNPublishFileMessageAPICallBuilder * (PNMessageType *messageType) {
+        [self setValue:messageType forParameter:NSStringFromSelector(_cmd)];
         return self;
     };
 }

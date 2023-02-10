@@ -64,8 +64,10 @@
 
 /**
  * @brief Identifier of space from which message has been received.
+ *
+ * @since 5.2.0
  */
-@property (nonatomic, nullable, readonly, copy) PNSpaceId *spaceId;
+@property (nonatomic, nullable, readonly, strong) PNSpaceId *spaceId;
 
 /**
  * @brief Event replication map (region based).
