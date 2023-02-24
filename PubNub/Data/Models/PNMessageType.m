@@ -110,7 +110,7 @@ NS_ASSUME_NONNULL_END
         _pubNubMessageTypeMap = @[@"pn_message", @"pn_signal", @"pn_object", @"pn_messageAction", @"pn_file"];
     });
 
-    return userMessageType ? userMessageType : _pubNubMessageTypeMap[pubNubMessageType];
+    return userMessageType.length ? userMessageType : _pubNubMessageTypeMap[pubNubMessageType];
 }
 
 #pragma mark -
