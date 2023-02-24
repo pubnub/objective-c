@@ -107,7 +107,7 @@ NS_ASSUME_NONNULL_END
     static dispatch_once_t onceToken;
 
     dispatch_once(&onceToken, ^{
-        _pubNubMessageTypeMap = @[@"message", @"signal", @"object", @"messageAction", @"file"];
+        _pubNubMessageTypeMap = @[@"pn_message", @"pn_signal", @"pn_object", @"pn_messageAction", @"pn_file"];
     });
 
     return userMessageType ? userMessageType : _pubNubMessageTypeMap[pubNubMessageType];

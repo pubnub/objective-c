@@ -520,7 +520,7 @@ NS_ASSUME_NONNULL_END
     __block NSUInteger publishAttemptsCount = 1;
     
     [self publishFileMessageWithRequest:request completion:^(PNPublishStatus *status) {
-        if (!status.isError || publishAttemptsCount >= fileMessagePublishRetryLimit) {
+        if (!status.isError || status.statusCode == 400 || publishAttemptsCount >= fileMessagePublishRetryLimit) {
             PNSendFileStatus *sendFileStatus = nil;
             NSMutableDictionary *serviceData = [@{
                 @"id": fileIdentifier,
