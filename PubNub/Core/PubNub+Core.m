@@ -547,7 +547,8 @@ NS_ASSUME_NONNULL_END
 
 - (void)processOperation:(PNOperationType)operationType
           withParameters:(PNRequestParameters *)parameters
-                    data:(NSData *)data completionBlock:(id)block {
+                    data:(NSData *)data
+         completionBlock:(id)block {
     
     [self addAuthParameter:parameters];
     

@@ -287,6 +287,14 @@ NS_ASSUME_NONNULL_END
             // Nothing to do. Mock server will simulate proper error here.
         });
         
+        Given(@"the wrong publish key", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
+            // Nothing to do. Mock server will simulate proper error here.
+        });
+        
+        Given(@"the wrong subscribe key", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
+            // Nothing to do. Mock server will simulate proper error here.
+        });
+        
         Then(@"I receive (a )?successful response", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
             PNStatus *status = [self lastStatus];
             PNResult *result = [self lastResult];
@@ -314,6 +322,13 @@ NS_ASSUME_NONNULL_END
                 XCTAssertNil(result, @"Last API shouldn't return result.");
                 XCTAssertTrue(result.operation == self.testedFeatureType, @"Wrong last API call result operation type");
             }
+        });
+        
+        Match(@[@"*"], @"^the error status code is ([0-9]+)$", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
+            XCTAssertGreaterThan(args.count, 0);
+            PNStatus *status = [self lastStatus];
+            
+            XCTAssertEqual(status.statusCode, args[0].integerValue);
         });
         
         // Complete known contract steps configuration.

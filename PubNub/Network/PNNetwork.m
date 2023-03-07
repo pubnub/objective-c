@@ -687,7 +687,6 @@ NS_ASSUME_NONNULL_END
         NSMutableDictionary *allHeaders = [httpRequest.allHTTPHeaderFields mutableCopy];
         [allHeaders addEntriesFromDictionary: @{
             @"Content-Type": @"application/json;charset=UTF-8",
-            @"Content-Length": @(postData.length).stringValue
         }];
         
         if (isDataCompressed) {
