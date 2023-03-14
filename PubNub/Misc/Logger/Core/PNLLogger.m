@@ -636,7 +636,7 @@ static NSString * const kPNLDefaultLogFileExtension = @"txt";
 
 - (void)log:(NSUInteger)level message:(NSString *)message {
 #ifndef PUBNUB_DISABLE_LOGGER
-    if (self.enabled || level == 0) {
+    if (self.enabled || level != 0) {
         NSString *threadID = [self currentThreadID];
         NSDate *logDate = [NSDate date];
 
