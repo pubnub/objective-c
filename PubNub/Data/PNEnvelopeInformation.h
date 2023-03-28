@@ -53,14 +53,14 @@
  *
  * @since 5.2.0
  */
-@property (atomic, readonly, assign) PNServiceMessageType pubNubMessageType;
+@property (atomic, readonly, assign) PNServiceMessageType messageType;
 
 /**
- * @brief Object's message type.
+ * @brief Object's user-provided type.
  *
  * @since 5.2.0
  */
-@property (nonatomic, nullable, readonly, strong) PNMessageType *messageType;
+@property (nonatomic, nullable, readonly, strong) NSString *type;
 
 /**
  * @brief Identifier of space from which message has been received.

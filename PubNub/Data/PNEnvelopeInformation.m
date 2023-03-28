@@ -5,7 +5,6 @@
  @copyright © 2010-2019 PubNub Inc.
  */
 #import "PNEnvelopeInformation.h"
-#import "PNMessageType+Private.h"
 #import "PNSpaceId.h"
 #import "PNJSON.h"
 
@@ -45,10 +44,10 @@ struct PNEventDebugEnvelopeStructure {
     /**
      * @brief Key under which stored \b PubNub defined object's message type.
      */
-    __unsafe_unretained NSString *pubNubMessageTypeKey;
+    __unsafe_unretained NSString *messageTypeKey;
     
     /**
-     * @brief Key under which stored user-defined object's message type.
+     * @brief Key under which stored user-provided object's message type.
      */
     __unsafe_unretained NSString *userMessageTypeKey;
     
@@ -84,7 +83,7 @@ struct PNEventDebugEnvelopeStructure {
     .senderIdentifier = @"i",
     .sequenceNumber = @"s",
     .subscribeKey = @"k",
-    .pubNubMessageTypeKey = @"e",
+    .messageTypeKey = @"e",
     .userMessageTypeKey = @"mt",
     .spaceIdKey = @"si",
     .replicationMap = @"r",
@@ -108,8 +107,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *senderIdentifier;
 @property (nonatomic, copy) NSNumber *sequenceNumber;
 @property (nonatomic, copy) NSString *subscribeKey;
-@property (atomic, assign) PNServiceMessageType pubNubMessageType;
-@property (nonatomic, nullable, strong) PNMessageType *messageType;
+@property (atomic, assign) PNServiceMessageType messageType;
+@property (nonatomic, nullable, strong) NSString *type;
 @property (nonatomic, nullable, strong) PNSpaceId *spaceId;
 @property (nonatomic, copy) NSNumber *replicationMap;
 @property (nonatomic, copy) NSNumber *eatAfterReading;
@@ -159,9 +158,8 @@ NS_ASSUME_NONNULL_END
         _metadata = [payload[PNDebugEventEnvelope.metadata] copy];
         _waypoints = [payload[PNDebugEventEnvelope.waypoints] copy];
         
-        _pubNubMessageType = ((NSNumber *)payload[PNDebugEventEnvelope.pubNubMessageTypeKey]).unsignedIntegerValue;
-        NSString *userMessageType = payload[PNDebugEventEnvelope.userMessageTypeKey];
-        _messageType = [PNMessageType messageTypeFromString:userMessageType pubNubMessageType:_pubNubMessageType];
+        _messageType = ((NSNumber *)payload[PNDebugEventEnvelope.messageTypeKey]).unsignedIntegerValue;
+        _type = payload[PNDebugEventEnvelope.userMessageTypeKey];
         
         NSString *spaceId = payload[PNDebugEventEnvelope.spaceIdKey];
         if (spaceId) {
@@ -186,7 +184,8 @@ NS_ASSUME_NONNULL_END
              @"Client Identifier": (self.senderIdentifier?: @"<null>"),
              @"Sequence number": (self.sequenceNumber?: @"<null>"),
              @"Subscribe key": (self.subscribeKey?: @"<null>"),
-             @"Message type": (self.messageType.value ?: @(self.pubNubMessageType)),
+             @"Message type": @(self.messageType),
+             @"User-provided type": (self.type ?: @"<null>"),
              @"Replication map": (self.replicationMap?: @"<null>"),
              @"Eat after reading": (self.eatAfterReading ? (self.shouldEatAfterReading ? @"YES" : @"NO") : @"<null>"),
              @"Metadata": (self.metadata ? [PNJSON JSONStringFrom:self.metadata withError:nil] : @"<null>"),

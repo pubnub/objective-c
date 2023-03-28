@@ -1532,7 +1532,7 @@ NS_ASSUME_NONNULL_END
                     [self handleNewPresenceEvent:((PNPresenceEventResult *)eventResultObject)];
                 } else {
                     PNEnvelopeInformation *envelope = event[@"envelope"];
-                    PNServiceMessageType messageType = envelope.pubNubMessageType;
+                    PNServiceMessageType messageType = envelope.messageType;
                     
                     if (messageType == PNObjectMessageType) {
                         [self handleNewObjectsEvent:eventResultObject];
@@ -1741,7 +1741,7 @@ NS_ASSUME_NONNULL_END
         NSMutableIndexSet *duplicateMessagesIndices = [NSMutableIndexSet indexSet];
         [events enumerateObjectsUsingBlock:^(NSDictionary<NSString *, id> *event, NSUInteger eventIdx, 
                                              BOOL *eventsEnumeratorStop) {
-            PNServiceMessageType messageType = ((PNEnvelopeInformation *)event[@"envelope"]).pubNubMessageType;
+            PNServiceMessageType messageType = ((PNEnvelopeInformation *)event[@"envelope"]).messageType;
             BOOL isMessageEvent = (messageType != PNFileMessageType &&
                                    messageType != PNObjectMessageType &&
                                    messageType != PNMessageActionType);

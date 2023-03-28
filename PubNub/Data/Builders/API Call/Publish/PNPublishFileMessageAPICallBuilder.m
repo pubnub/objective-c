@@ -64,9 +64,9 @@
     };
 }
 
-- (PNPublishFileMessageAPICallBuilder * (^)(PNMessageType *messageType))messageType {
-    return ^PNPublishFileMessageAPICallBuilder * (PNMessageType *messageType) {
-        [self setValue:messageType forParameter:NSStringFromSelector(_cmd)];
+- (PNPublishFileMessageAPICallBuilder * (^)(NSString *type))type {
+    return ^PNPublishFileMessageAPICallBuilder * (NSString *type) {
+        [self setValue:type forParameter:NSStringFromSelector(_cmd)];
         return self;
     };
 }

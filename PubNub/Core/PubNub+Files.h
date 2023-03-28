@@ -3,7 +3,6 @@
 #import "PNDeleteFileRequest.h"
 #import "PNListFilesRequest.h"
 #import "PNSendFileRequest.h"
-#import "PNMessageType.h"
 #import "PNSpaceId.h"
 #import "PNFile.h"
 

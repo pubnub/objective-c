@@ -85,7 +85,7 @@
         }];
     });
 
-    When(@"^I send a file with '(.+)' space id and '(.+)' message type$", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
+    When(@"^I send a file with '(.+)' space id and '(.+)' type$", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
         XCTAssertEqual(args.count, 2);
         NSString *messageType = args.lastObject;
         NSString *spaceId = args.firstObject;
@@ -96,7 +96,7 @@
             self.client.files()
                 .sendFile(@"test", @"name.txt")
                 .data([@"test file data" dataUsingEncoding:NSUTF8StringEncoding])
-                .messageType([PNMessageType messageTypeFromString:messageType])
+                .type(messageType)
                 .spaceId([PNSpaceId spaceIdFromString:spaceId])
                 .performWithCompletion(^(PNSendFileStatus *status) {
                     [self storeRequestStatus:status];

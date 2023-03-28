@@ -72,11 +72,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, nullable, strong) id message;
 
 /**
- * @brief Custom type with which message should be published.
+ * @brief User-provided type with which message should be published.
  *
  * @since 5.2.0
  */
-@property (nonatomic, nullable, strong) PNMessageType *messageType;
+@property (nonatomic, nullable, strong) NSString *type;
 
 /**
  * @brief Name which should be used to store uploaded data.

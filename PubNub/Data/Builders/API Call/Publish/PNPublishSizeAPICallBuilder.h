@@ -2,6 +2,11 @@
 #import "PNStructures.h"
 
 
+#pragma mark Class forward
+
+@class PNSpaceId;
+
+
 NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Interface declaration
@@ -30,6 +35,17 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, strong) PNPublishSizeAPICallBuilder * (^channel)(NSString *channel);
 
 /**
+ * @brief Target space identifier name.
+ *
+ * @param spaceId Identifier of the space to which signal should be published.
+ *
+ * @return API call configuration builder.
+ *
+ * @version 5.2.0
+ */
+@property (nonatomic, readonly, strong) PNPublishSizeAPICallBuilder * (^spaceId)(PNSpaceId *spaceId);
+
+/**
  * @brief Message payload addition block.
  *
  * @discussion Provided object will be serialized into JSON string before pushing to \b PubNub
@@ -43,6 +59,17 @@ NS_ASSUME_NONNULL_BEGIN
  * @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNPublishSizeAPICallBuilder * (^message)(id message);
+
+/**
+ * @brief Type of signal which will be published.
+ *
+ * @param type User-provided type for published signal.
+ *
+ * @return API call configuration builder.
+ *
+ * @version 5.2.0
+ */
+@property (nonatomic, readonly, strong) PNPublishSizeAPICallBuilder * (^type)(NSString *type);
 
 /**
  * @brief Message metadata addition block.
