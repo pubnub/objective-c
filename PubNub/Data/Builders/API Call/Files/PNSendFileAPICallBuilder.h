@@ -5,7 +5,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Class forward
 
-@class PNSpaceId, PNMessageType;
+@class PNSpaceId;
 
 
 #pragma mark - Interface declaration

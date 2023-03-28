@@ -203,11 +203,10 @@ NS_ASSUME_NONNULL_END
 
 - (NSDictionary *)dictionaryRepresentationFromDictionary:(NSDictionary *)dictionary {
     NSMutableDictionary *representation = [NSMutableDictionary new];
-    Class messageTypeClass = NSClassFromString(@"PNMessageType");
     Class spaceIdClass = NSClassFromString(@"PNSpaceId");
 
     [dictionary enumerateKeysAndObjectsUsingBlock:^(NSString *key, id obj, BOOL *stop) {
-        if ([obj isKindOfClass:messageTypeClass] || [obj isKindOfClass:spaceIdClass]) {
+        if ([obj isKindOfClass:spaceIdClass]) {
             representation[key] = [obj valueForKey:@"value"];
         } else if ([[obj class] isSubclassOfClass:[NSDictionary class]]) {
             representation[key] = [self dictionaryRepresentationFromDictionary:obj];
@@ -223,11 +222,10 @@ NS_ASSUME_NONNULL_END
 
 - (NSArray *)arrayRepresentationFromArray:(NSArray *)array {
     NSMutableArray *representation = [NSMutableArray new];
-    Class messageTypeClass = NSClassFromString(@"PNMessageType");
     Class spaceIdClass = NSClassFromString(@"PNSpaceId");
 
     [array enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if ([obj isKindOfClass:messageTypeClass] || [obj isKindOfClass:spaceIdClass]) {
+        if ([obj isKindOfClass:spaceIdClass]) {
             if ([obj valueForKey:@"value"]) [representation addObject:[obj valueForKey:@"value"]];
         } else if ([[obj class] isSubclassOfClass:[NSDictionary class]]) {
             [representation addObject:[self dictionaryRepresentationFromDictionary:obj]];

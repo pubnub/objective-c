@@ -4,7 +4,7 @@
 
 #pragma mark Class forward
 
-@class PNMessageType, PNSpaceId;
+@class PNSpaceId;
 
 
 /**
