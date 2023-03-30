@@ -1207,7 +1207,6 @@ NS_ASSUME_NONNULL_END
                         .uuid(uuid)
                         .channels(channelNames)
                         .performWithCompletion(^(PNManageMembershipsStatus *status) {
-                            NSLog(@"%@ %@'s MEMBERSHIPS HAS BEEN REMOVED", @(channelNames.count), uuid);
                             handler();
                         });
                 } else {
@@ -1235,14 +1234,6 @@ NS_ASSUME_NONNULL_END
     }
     
     if (uuids.count || channels.count) {
-        if (uuids.count) {
-            NSLog(@"%@ UUIDs HAS BEEN REMOVED", @(uuids.count));
-        }
-        
-        if (channels.count) {
-            NSLog(@"%@ CHANNELS HAS BEEN REMOVED", @(channels.count));
-        }
-        
         [self waitTask:@"waitForDistribution" completionFor:1.f];
     }
 }
@@ -1855,7 +1846,6 @@ NS_ASSUME_NONNULL_END
     }
     
     if (files.count) {
-        NSLog(@"%@ '%@' CHANNEL FILES HAS BEEN REMOVED", @(files.count), channel);
         [self waitTask:@"waitForDistribution" completionFor:1.f];
     }
 }

@@ -72,7 +72,7 @@
         [self pauseMainQueueFor:0.5f];
     });
 
-    Match(@[@"And"], @"^response contains messages with '(.*)' and '(.*)' message types$",
+    Match(@[@"And"], @"^response contains messages with '(.*)' and '(.*)' types$",
           ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
         XCTAssertEqual(args.count, 2);
 
@@ -82,7 +82,7 @@
 
         SEL compare = @selector(caseInsensitiveCompare:);
         NSArray *expectedMessageTypes = [args sortedArrayUsingSelector:compare];
-        NSArray *receivedMessageTypes = [[messages valueForKeyPath:@"data.messageType.value"] sortedArrayUsingSelector:compare];
+        NSArray *receivedMessageTypes = [[messages valueForKeyPath:@"data.type"] sortedArrayUsingSelector:compare];
         XCTAssertEqualObjects(receivedMessageTypes, expectedMessageTypes);
     });
 

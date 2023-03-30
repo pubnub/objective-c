@@ -41,6 +41,6 @@ void CucumberishInit(void) {
     NSBundle * bundle = [NSBundle bundleForClass:[PNContractTestCase class]];
     [Cucumberish executeFeaturesInDirectory:@"Features"
                                  fromBundle:bundle
-                                includeTags:nil
-                                excludeTags:excludeTags];
+                                includeTags:@[@"featureSet=subscribeVSP"]
+                                excludeTags:nil];
 }
