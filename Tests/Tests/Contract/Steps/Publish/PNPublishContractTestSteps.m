@@ -120,7 +120,7 @@ NS_ASSUME_NONNULL_END
         }];
     });
 
-    When(@"^I publish message with '(.*)' space id and '(.*)' message type$",
+    When(@"^I publish message with '(.*)' space id and '(.*)' type$",
          ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
         self.testedFeatureType = PNPublishOperation;
 
@@ -128,7 +128,7 @@ NS_ASSUME_NONNULL_END
             self.client.publish()
                 .message(@"hello")
                 .channel(@"test")
-                .messageType([PNMessageType messageTypeFromString:args.lastObject])
+                .type(args.lastObject)
                 .spaceId([PNSpaceId spaceIdFromString:args.firstObject])
                 .performWithCompletion(^(PNPublishStatus *status) {
                     [self storeRequestStatus:status];
@@ -151,7 +151,7 @@ NS_ASSUME_NONNULL_END
         }];
     });
 
-    When(@"^I send a signal with '(.*)' space id and '(.*)' message type$",
+    When(@"^I send a signal with '(.*)' space id and '(.*)' type$",
          ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
         self.testedFeatureType = PNSignalOperation;
 
@@ -159,7 +159,7 @@ NS_ASSUME_NONNULL_END
             self.client.signal()
                 .message(@"hello")
                 .channel(@"test")
-                .messageType([PNMessageType messageTypeFromString:args.lastObject])
+                .type(args.lastObject)
                 .spaceId([PNSpaceId spaceIdFromString:args.firstObject])
                 .performWithCompletion(^(PNSignalStatus *status) {
                     [self storeRequestStatus:status];

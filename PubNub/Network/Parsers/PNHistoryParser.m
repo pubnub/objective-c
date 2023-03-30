@@ -5,7 +5,7 @@
  * @copyright © 2010-2019 PubNub, Inc.
  */
 #import "PNHistoryParser.h"
-#import "PNMessageType+Private.h"
+#import "PNPrivateStructures.h"
 #import "PubNub+CorePrivate.h"
 #import "PNSpaceId.h"
 #import "PNConstants.h"
@@ -236,10 +236,12 @@ NS_ASSUME_NONNULL_END
             if (timeToken || metadata || actions || pubNubMessageType || userMessageType || spaceId || senderUUID) {
                 NSMutableDictionary *messageWithInfo = [@{ @"message": message } mutableCopy];
                 
-                if ([pubNubMessageType isKindOfClass:[NSNumber class]] ||
-                    [userMessageType isKindOfClass:[NSString class]]) {
-                    messageWithInfo[@"messageType"] = [PNMessageType messageTypeFromString:userMessageType
-                                                                         pubNubMessageType:pubNubMessageType.unsignedIntValue];
+                if ([pubNubMessageType isKindOfClass:[NSNumber class]]) {
+                    messageWithInfo[@"messageType"] = pubNubMessageType;
+                }
+                
+                if ([userMessageType isKindOfClass:[NSString class]]) {
+                    messageWithInfo[@"type"] = userMessageType;
                 }
                 
                 if (spaceId) {

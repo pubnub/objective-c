@@ -20,17 +20,29 @@
 #pragma mark - Configuration
 
 - (PNPublishSizeAPICallBuilder * (^)(NSString *channel))channel {
-    
     return ^PNPublishSizeAPICallBuilder * (NSString *channel) {
         [self setValue:channel forParameter:NSStringFromSelector(_cmd)];
         return self;
     };
 }
 
+- (PNPublishSizeAPICallBuilder * _Nonnull (^)(PNSpaceId *spaceId))spaceId {
+    return ^PNPublishSizeAPICallBuilder * (PNSpaceId *spaceId) {
+        [self setValue:spaceId forParameter:NSStringFromSelector(_cmd)];
+        return self;
+    };
+}
+
 - (PNPublishSizeAPICallBuilder * (^)(id message))message {
-    
     return ^PNPublishSizeAPICallBuilder * (id message) {
         [self setValue:message forParameter:NSStringFromSelector(_cmd)];
+        return self;
+    };
+}
+
+- (PNPublishSizeAPICallBuilder * _Nonnull (^)(NSString *type))type {
+    return ^PNPublishSizeAPICallBuilder * (NSString *type) {
+        [self setValue:type forParameter:NSStringFromSelector(_cmd)];
         return self;
     };
 }

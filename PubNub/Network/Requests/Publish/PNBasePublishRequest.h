@@ -4,7 +4,7 @@
 
 #pragma mark Class forward
 
-@class PNMessageType, PNSpaceId;
+@class PNSpaceId;
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -60,11 +60,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, nullable, strong) id message;
 
 /**
- * @brief Custom type with which message should be published.
+ * @brief User-provided type with which message should be published.
  *
  * @since 5.2.0
  */
-@property (nonatomic, nullable, strong) PNMessageType *messageType;
+@property (nonatomic, nullable, strong) NSString *type;
 
 /**
  * @brief How long message should be stored in channel's storage. Pass \b 0 store message according to retention.

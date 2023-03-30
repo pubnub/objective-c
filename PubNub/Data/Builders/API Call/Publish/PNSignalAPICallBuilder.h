@@ -4,7 +4,8 @@
 
 #pragma mark Class forward
 
-@class PNMessageType, PNSpaceId;
+@class PNSpaceId;
+
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -59,13 +60,13 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Type of signal which will be published.
  *
- * @param type Custom type for published signal.
+ * @param type User-provided type for published signal.
  *
  * @return API call configuration builder.
  *
  * @version 5.2.0
  */
-@property (nonatomic, readonly, strong) PNSignalAPICallBuilder * (^messageType)(PNMessageType *type);
+@property (nonatomic, readonly, strong) PNSignalAPICallBuilder * (^type)(NSString *type);
 
 
 #pragma mark - Execution

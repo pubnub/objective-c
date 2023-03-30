@@ -26,8 +26,8 @@
     return self.envelope.spaceId;
 }
 
-- (PNMessageType *)messageType {
-    return self.envelope.messageType;
+- (NSString *)type {
+    return self.envelope.type;
 }
 
 - (NSString *)subscription {

@@ -189,7 +189,7 @@ NS_ASSUME_NONNULL_END
     request.cipherKey = cipherKey ?: self.configuration.cipherKey;
     request.fileMessageMetadata = parameters[NSStringFromSelector(@selector(fileMessageMetadata))];
     request.arbitraryQueryParameters = parameters[@"queryParam"];
-    request.messageType = parameters[NSStringFromSelector(@selector(messageType))];
+    request.type = parameters[NSStringFromSelector(@selector(type))];
     request.spaceId = parameters[NSStringFromSelector(@selector(spaceId))];
     request.message = parameters[NSStringFromSelector(@selector(message))];
     
@@ -508,7 +508,7 @@ NS_ASSUME_NONNULL_END
     
     request.arbitraryQueryParameters = sendFileRequest.arbitraryQueryParameters;
     request.metadata = sendFileRequest.fileMessageMetadata;
-    request.messageType = sendFileRequest.messageType;
+    request.type = sendFileRequest.type;
     request.store = sendFileRequest.fileMessageStore;
     request.spaceId = sendFileRequest.spaceId;
     request.message = sendFileRequest.message;

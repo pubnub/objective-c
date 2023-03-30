@@ -4,7 +4,7 @@
 
 #pragma mark Class forward
 
-@class PNMessageType, PNSpaceId;
+@class PNSpaceId;
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -51,11 +51,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, strong) NSNumber *timetoken;
 
 /**
- * @brief Type of message which has been published.
+ * @brief User-provided type of message which has been published.
  *
  * @since 5.2.0
  */
-@property (nonatomic, nullable, readonly, strong) PNMessageType *messageType;
+@property (nonatomic, nullable, readonly, strong) NSString *type;
 
 /**
  * @brief Stores reference on metadata information which has been passed along with received event.

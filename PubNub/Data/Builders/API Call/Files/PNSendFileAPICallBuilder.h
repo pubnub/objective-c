@@ -5,7 +5,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Class forward
 
-@class PNSpaceId, PNMessageType;
+@class PNSpaceId;
 
 
 #pragma mark - Interface declaration
@@ -104,13 +104,13 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Type of message which will be published.
  *
- * @param type Custom type for published message.
+ * @param type User-provided type for published message.
  *
  * @return API call configuration builder.
  *
  * @version 5.2.0
  */
-@property (nonatomic, readonly, strong) PNSendFileAPICallBuilder * (^messageType)(PNMessageType *type);
+@property (nonatomic, readonly, strong) PNSendFileAPICallBuilder * (^type)(NSString *type);
 
 /**
  * @brief In-memory binary data which should be uploaded and available in target channel.
