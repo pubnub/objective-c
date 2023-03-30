@@ -201,9 +201,56 @@ NS_ASSUME_NONNULL_END
              @"Response": response};
 }
 
+- (NSDictionary *)dictionaryRepresentationFromDictionary:(NSDictionary *)dictionary {
+    NSMutableDictionary *representation = [NSMutableDictionary new];
+    Class spaceIdClass = NSClassFromString(@"PNSpaceId");
+
+    [dictionary enumerateKeysAndObjectsUsingBlock:^(NSString *key, id obj, BOOL *stop) {
+        if ([obj isKindOfClass:spaceIdClass]) {
+            representation[key] = [obj valueForKey:@"value"];
+        } else if ([[obj class] isSubclassOfClass:[NSDictionary class]]) {
+            representation[key] = [self dictionaryRepresentationFromDictionary:obj];
+        } else if ([[obj class] isSubclassOfClass:[NSArray class]]) {
+            representation[key] = [self arrayRepresentationFromArray:obj];
+        } else {
+            representation[key] = obj;
+        }
+    }];
+
+    return representation;
+}
+
+- (NSArray *)arrayRepresentationFromArray:(NSArray *)array {
+    NSMutableArray *representation = [NSMutableArray new];
+    Class spaceIdClass = NSClassFromString(@"PNSpaceId");
+
+    [array enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([obj isKindOfClass:spaceIdClass]) {
+            if ([obj valueForKey:@"value"]) [representation addObject:[obj valueForKey:@"value"]];
+        } else if ([[obj class] isSubclassOfClass:[NSDictionary class]]) {
+            [representation addObject:[self dictionaryRepresentationFromDictionary:obj]];
+        } else if ([[obj class] isSubclassOfClass:[NSArray class]]) {
+            [representation addObject:[self arrayRepresentationFromArray:obj]];
+        } else {
+            [representation addObject:obj];
+        }
+    }];
+
+    return representation;
+}
+
 - (NSString *)stringifiedRepresentation {
-    
-    return [PNJSON JSONStringFrom:[self dictionaryRepresentation] withError:NULL];
+    NSDictionary *dictionary = [self dictionaryRepresentation];
+    NSString *representation;
+
+    @try {
+        representation = [PNJSON JSONStringFrom:dictionary withError:NULL];
+    } @catch (NSException *exception) {
+        dictionary = [self dictionaryRepresentationFromDictionary:dictionary];
+        representation = [PNJSON JSONStringFrom:dictionary withError:NULL];
+    }
+
+    return representation ? representation : @"unable to stirnfigy object";
 }
 
 - (NSString *)debugDescription {

@@ -3,6 +3,8 @@
 #import "PNPublishFileMessageRequest.h"
 #import "PNPublishRequest.h"
 
+#import "PNSpaceId.h"
+
 #import "PNPublishFileMessageAPICallBuilder.h"
 #import "PNPublishSizeAPICallBuilder.h"
 #import "PNPublishAPICallBuilder.h"

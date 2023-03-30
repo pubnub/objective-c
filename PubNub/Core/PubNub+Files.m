@@ -189,6 +189,8 @@ NS_ASSUME_NONNULL_END
     request.cipherKey = cipherKey ?: self.configuration.cipherKey;
     request.fileMessageMetadata = parameters[NSStringFromSelector(@selector(fileMessageMetadata))];
     request.arbitraryQueryParameters = parameters[@"queryParam"];
+    request.type = parameters[NSStringFromSelector(@selector(type))];
+    request.spaceId = parameters[NSStringFromSelector(@selector(spaceId))];
     request.message = parameters[NSStringFromSelector(@selector(message))];
     
     if (store) {
@@ -506,7 +508,9 @@ NS_ASSUME_NONNULL_END
     
     request.arbitraryQueryParameters = sendFileRequest.arbitraryQueryParameters;
     request.metadata = sendFileRequest.fileMessageMetadata;
+    request.type = sendFileRequest.type;
     request.store = sendFileRequest.fileMessageStore;
+    request.spaceId = sendFileRequest.spaceId;
     request.message = sendFileRequest.message;
     
     if (request.store) {
@@ -516,7 +520,7 @@ NS_ASSUME_NONNULL_END
     __block NSUInteger publishAttemptsCount = 1;
     
     [self publishFileMessageWithRequest:request completion:^(PNPublishStatus *status) {
-        if (!status.isError || publishAttemptsCount >= fileMessagePublishRetryLimit) {
+        if (!status.isError || status.statusCode == 400 || publishAttemptsCount >= fileMessagePublishRetryLimit) {
             PNSendFileStatus *sendFileStatus = nil;
             NSMutableDictionary *serviceData = [@{
                 @"id": fileIdentifier,

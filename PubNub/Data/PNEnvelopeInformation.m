@@ -5,6 +5,7 @@
  @copyright © 2010-2019 PubNub Inc.
  */
 #import "PNEnvelopeInformation.h"
+#import "PNSpaceId.h"
 #import "PNJSON.h"
 
 
@@ -41,9 +42,19 @@ struct PNEventDebugEnvelopeStructure {
     __unsafe_unretained NSString *subscribeKey;
     
     /**
-     * @brief Key under which stored object's message type.
+     * @brief Key under which stored \b PubNub defined object's message type.
      */
     __unsafe_unretained NSString *messageTypeKey;
+    
+    /**
+     * @brief Key under which stored user-provided object's message type.
+     */
+    __unsafe_unretained NSString *userMessageTypeKey;
+    
+    /**
+     * @brief Key under which stored identifier of space to which object has been sent.
+     */
+    __unsafe_unretained NSString *spaceIdKey;
     
     /**
      * @brief Key under which stored numeric representation of event replication map (region based).
@@ -73,6 +84,8 @@ struct PNEventDebugEnvelopeStructure {
     .sequenceNumber = @"s",
     .subscribeKey = @"k",
     .messageTypeKey = @"e",
+    .userMessageTypeKey = @"mt",
+    .spaceIdKey = @"si",
     .replicationMap = @"r",
     .eatAfterReading = @"ear",
     .metadata = @"u",
@@ -94,7 +107,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *senderIdentifier;
 @property (nonatomic, copy) NSNumber *sequenceNumber;
 @property (nonatomic, copy) NSString *subscribeKey;
-@property (nonatomic, assign) PNMessageType messageType;
+@property (atomic, assign) PNServiceMessageType messageType;
+@property (nonatomic, nullable, strong) NSString *type;
+@property (nonatomic, nullable, strong) PNSpaceId *spaceId;
 @property (nonatomic, copy) NSNumber *replicationMap;
 @property (nonatomic, copy) NSNumber *eatAfterReading;
 @property (nonatomic, copy) NSDictionary *metadata;
@@ -128,25 +143,28 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Initialization and Configuration
 
 + (nonnull instancetype)envelopeInformationWithPayload:(nonnull NSDictionary *)payload {
-    
     return [[self alloc] initWithPayload:payload];
 }
 
 - (nonnull instancetype)initWithPayload:(nonnull NSDictionary *)payload {
-    
-    // Check whether initialization was successful or not.
     if ((self = [super init])) {
-        
         _shardIdentifier = [payload[PNDebugEventEnvelope.shardIdentifier] copy];
         _debugFlags = [payload[PNDebugEventEnvelope.debugFlags] copy];
         _senderIdentifier = [payload[PNDebugEventEnvelope.senderIdentifier] copy];
         _sequenceNumber = [payload[PNDebugEventEnvelope.sequenceNumber] copy];
         _subscribeKey = [payload[PNDebugEventEnvelope.subscribeKey] copy];
-        _messageType = ((NSNumber *)payload[PNDebugEventEnvelope.messageTypeKey]).unsignedIntegerValue;
         _replicationMap = [payload[PNDebugEventEnvelope.replicationMap] copy];
         _eatAfterReading = payload[PNDebugEventEnvelope.eatAfterReading];
         _metadata = [payload[PNDebugEventEnvelope.metadata] copy];
         _waypoints = [payload[PNDebugEventEnvelope.waypoints] copy];
+        
+        _messageType = ((NSNumber *)payload[PNDebugEventEnvelope.messageTypeKey]).unsignedIntegerValue;
+        _type = payload[PNDebugEventEnvelope.userMessageTypeKey];
+        
+        NSString *spaceId = payload[PNDebugEventEnvelope.spaceIdKey];
+        if (spaceId) {
+            _spaceId = [PNSpaceId spaceIdFromString:spaceId];
+        }
     }
     
     return self;
@@ -161,13 +179,13 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Misc
 
 - (NSDictionary *)dictionaryRepresentation {
-    
     return @{@"Shard identifier": (self.shardIdentifier?: @"<null>"), 
              @"Flags": (self.debugFlags?: @"<null>"), 
              @"Client Identifier": (self.senderIdentifier?: @"<null>"),
              @"Sequence number": (self.sequenceNumber?: @"<null>"),
              @"Subscribe key": (self.subscribeKey?: @"<null>"),
              @"Message type": @(self.messageType),
+             @"User-provided type": (self.type ?: @"<null>"),
              @"Replication map": (self.replicationMap?: @"<null>"),
              @"Eat after reading": (self.eatAfterReading ? (self.shouldEatAfterReading ? @"YES" : @"NO") : @"<null>"),
              @"Metadata": (self.metadata ? [PNJSON JSONStringFrom:self.metadata withError:nil] : @"<null>"),
@@ -175,12 +193,10 @@ NS_ASSUME_NONNULL_END
 }
 
 - (NSString *)stringifiedRepresentation {
-    
     return [PNJSON JSONStringFrom:[self dictionaryRepresentation] withError:NULL];
 }
 
 - (NSString *)debugDescription {
-    
     return [[self dictionaryRepresentation] description];
 }
 

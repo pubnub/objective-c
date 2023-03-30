@@ -3,7 +3,12 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-#pragma mark Interface declaration
+#pragma mark Class forward
+
+@class PNSpaceId;
+
+
+#pragma mark - Interface declaration
 
 /**
  * @brief \c Send \c file API call builder.
@@ -74,6 +79,17 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, strong) PNSendFileAPICallBuilder * (^cipherKey)(NSString *key);
 
 /**
+ * @brief Target space identifier name.
+ *
+ * @param spaceId Identifier of the space to which message should be published.
+ *
+ * @return API call configuration builder.
+ *
+ * @version 5.2.0
+ */
+@property (nonatomic, readonly, strong) PNSendFileAPICallBuilder * (^spaceId)(PNSpaceId *spaceId);
+
+/**
  * @brief Message which should be sent along with file to specified \c channel.
  *
  * @discussion Provided object will be serialized into JSON string before pushing to \b PubNub service. If client has been
@@ -84,6 +100,17 @@ NS_ASSUME_NONNULL_BEGIN
  * @return API call configuration builder.
  */
 @property (nonatomic, readonly, strong) PNSendFileAPICallBuilder * (^message)(id message);
+
+/**
+ * @brief Type of message which will be published.
+ *
+ * @param type User-provided type for published message.
+ *
+ * @return API call configuration builder.
+ *
+ * @version 5.2.0
+ */
+@property (nonatomic, readonly, strong) PNSendFileAPICallBuilder * (^type)(NSString *type);
 
 /**
  * @brief In-memory binary data which should be uploaded and available in target channel.

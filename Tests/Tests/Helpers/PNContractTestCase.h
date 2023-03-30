@@ -93,6 +93,19 @@ synchronouslyFromChannels:(nullable NSArray *)channels
                                           onChannel:(nullable NSString *)channel;
 
 /**
+ * @brief Wait specified \b PubNub client to receive expected number (in total) of messages and signals.
+ *
+ * @param client \b PubNub client which is expecting to receive specific number (in total) of messages and signals.
+ * @param count How many messages and signals it is expected to receive.
+ * @param channel Channel on which messages and signals expected. All channels for \c client if \c nil.
+ *
+ * @return List of messages and signals when expected count received.
+ */
+- (nullable NSArray *)waitClient:(nullable PubNub *)client
+      toReceiveSignalsOrMessages:(NSUInteger)count
+                       onChannel:(nullable NSString *)channel;
+
+/**
  * @brief Wait specified \b PubNub client to receive expected number of status events.
  *
  * @param client \b PubNub client which is expecting to receive specific number of messages.

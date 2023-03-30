@@ -3,6 +3,7 @@
  * @copyright © 2010-2020 PubNub, Inc.
  */
 #import "PNRecordableTestCase.h"
+#import <PubNub/PNPrivateStructures.h>
 #import <PubNub/PNHelpers.h>
 #import "NSString+PNTest.h"
 
@@ -169,7 +170,9 @@ NS_ASSUME_NONNULL_END
                 XCTAssertEqual(messages.count, 1);
                 XCTAssertNotNil(messages.firstObject[@"uuid"]);
                 XCTAssertNotNil(messages.firstObject[@"messageType"]);
-                XCTAssertEqualObjects(messages.firstObject[@"messageType"], @4);
+                XCTAssertNotNil(messages.firstObject[@"type"]);
+                XCTAssertEqualObjects(messages.firstObject[@"type"], @"");
+                XCTAssertEqualObjects(messages.firstObject[@"messageType"], @(PNFileMessageType));
                 
                 handler();
             });

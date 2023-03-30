@@ -54,6 +54,9 @@ FOUNDATION_EXPORT const unsigned char PubNubVersionString[];
 #import "PNResult.h"
 #import "PNStatus.h"
 
+// Models
+#import "PNSpaceId.h"
+
 // API
 #import "PubNub+Core.h"
 #import "PubNub+MessageActions.h"

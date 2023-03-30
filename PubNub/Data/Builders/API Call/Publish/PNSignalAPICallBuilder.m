@@ -21,7 +21,6 @@
 #pragma mark - Configuration
 
 - (PNSignalAPICallBuilder * (^)(NSString *channel))channel {
-    
     return ^PNSignalAPICallBuilder * (NSString *channel) {
         if ([channel isKindOfClass:[NSString class]]) {
             [self setValue:channel forParameter:NSStringFromSelector(_cmd)];
@@ -31,10 +30,23 @@
     };
 }
 
+- (PNSignalAPICallBuilder * (^)(PNSpaceId *spaceId))spaceId {
+    return ^PNSignalAPICallBuilder * (PNSpaceId *spaceId) {
+        [self setValue:spaceId forParameter:NSStringFromSelector(_cmd)];
+        return self;
+    };
+}
+
 - (PNSignalAPICallBuilder * (^)(id message))message {
-    
     return ^PNSignalAPICallBuilder * (id message) {
         [self setValue:message forParameter:NSStringFromSelector(_cmd)];
+        return self;
+    };
+}
+
+- (PNSignalAPICallBuilder * (^)(NSString * type))type {
+    return ^PNSignalAPICallBuilder * (NSString *type) {
+        [self setValue:type forParameter:NSStringFromSelector(_cmd)];
         return self;
     };
 }

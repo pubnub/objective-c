@@ -1,8 +1,8 @@
 /**
  * @author Serhii Mamontov
- * @version 4.15.0
+ * @version 5.2.0
  * @since 4.0.0
- * @copyright © 2010-2020 PubNub, Inc.
+ * @copyright © 2010-2022 PubNub, Inc.
  */
 #import "PubNub+Publish.h"
 #import "PNBasePublishRequest+Private.h"
@@ -31,7 +31,9 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @param message Object (\a NSString, \a NSNumber, \a NSArray, \a NSDictionary) which will be
  *     published.
+ * @param type Type with which message should be published.
  * @param channel Name of the channel to which message should be published.
+ * @param spaceId Identifier of space to which message should be published.
  * @param payloads Dictionary with payloads for different vendors (Apple with "apns" key and Google
  *     with "gcm").
  * @param shouldStore Whether message should be stored and available with history API or not.
@@ -49,7 +51,9 @@ NS_ASSUME_NONNULL_BEGIN
  * @since 4.8.2
  */
 - (void)publish:(nullable id)message
+             withType:(nullable NSString *)type
             toChannel:(NSString *)channel
+              spaceId:(nullable PNSpaceId *)spaceId
     mobilePushPayload:(nullable NSDictionary<NSString *, id> *)payloads
        storeInHistory:(BOOL)shouldStore
                   ttl:(nullable NSNumber *)ttl
@@ -70,7 +74,9 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @param message Object (\a NSString, \a NSNumber, \a NSArray, \a NSDictionary) which will be
  *     sent with signal.
+ * @param type Type with which signal should be published.
  * @param channel Name of the channel to which signal should be sent.
+ * @param spaceId Identifier of space to which signal should be published.
  * @param queryParameters List arbitrary query parameters which should be sent along with original
  *     API call.
  * @param block Signal completion block.
@@ -78,7 +84,9 @@ NS_ASSUME_NONNULL_BEGIN
  * @since 4.9.0
  */
 - (void)signal:(id)message
+               withType:(nullable NSString *)type
                 channel:(NSString *)channel
+                spaceId:(nullable PNSpaceId *)spaceId
     withQueryParameters:(nullable NSDictionary *)queryParameters
              completion:(nullable PNSignalCompletionBlock)block;
 
@@ -92,7 +100,9 @@ NS_ASSUME_NONNULL_BEGIN
  * @note Size calculation use percent-escaped \c message and all added headers to get full size.
  *
  * @param message Message for which size should be calculated.
+ * @param type Type with which message should be published.
  * @param channel Name of the channel to which message should be published.
+ * @param spaceId Identifier of space to which message should be published.
  * @param compressMessage Whether message should be compressed before sending or not.
  * @param shouldStore Whether message should be stored and available with history API or not.
  * @param ttl How long message should be stored in channel's storage. If \b 0 it will be
@@ -108,7 +118,9 @@ NS_ASSUME_NONNULL_BEGIN
  * @since 4.8.2
  */
 - (void)sizeOfMessage:(id)message
+             withType:(nullable NSString *)type
             toChannel:(NSString *)channel
+              spaceId:(nullable PNSpaceId *)spaceId
            compressed:(BOOL)compressMessage
        storeInHistory:(BOOL)shouldStore
                   ttl:(nullable NSNumber *)ttl
@@ -142,7 +154,9 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @param message Object (\a NSString, \a NSNumber, \a NSArray, \a NSDictionary) which will be
  *     published.
+ * @param type Type with which message should be published.
  * @param channel Name of the channel to which message should be published.
+ * @param spaceId Identifier of space to which message should be published.
  * @param compressMessage Whether message should be compressed before sending or not.
  * @param replicate Whether message should be replicated across the PubNub Real-Time Network and
  *     sent simultaneously to all subscribed clients on a channel.
@@ -160,7 +174,9 @@ NS_ASSUME_NONNULL_BEGIN
  * @since 4.0
  */
 - (PNRequestParameters *)requestParametersForMessage:(NSString *)message
+                                            withType:(nullable NSString *)type
                                            toChannel:(NSString *)channel
+                                             spaceId:(nullable PNSpaceId *)spaceId
                                           compressed:(BOOL)compressMessage
                                       storeInHistory:(BOOL)shouldStore
                                                  ttl:(nullable NSNumber *)ttl
@@ -241,7 +257,9 @@ NS_ASSUME_NONNULL_END
         PNPublishFileMessageRequest *request = [PNPublishFileMessageRequest requestWithChannel:channel
                                                                                 fileIdentifier:identifier
                                                                                           name:filename];
+        request.type = parameters[NSStringFromSelector(@selector(type))];
         request.metadata = parameters[NSStringFromSelector(@selector(metadata))];
+        request.spaceId = parameters[NSStringFromSelector(@selector(spaceId))];
         request.message = parameters[NSStringFromSelector(@selector(message))];
         request.arbitraryQueryParameters = parameters[@"queryParam"];
         request.store = (shouldStore ? shouldStore.boolValue : YES);
@@ -256,12 +274,12 @@ NS_ASSUME_NONNULL_END
 }
 
 - (PNPublishAPICallBuilder * (^)(void))publish {
-    
     PNPublishAPICallBuilder *builder = nil;
     __weak __typeof(self) weakSelf = self;
+
     builder = [PNPublishAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags, 
                                                                    NSDictionary *parameters) {
-                                                                       
+
         NSString *channel = parameters[NSStringFromSelector(@selector(channel))];
         NSNumber *shouldStore = parameters[NSStringFromSelector(@selector(shouldStore))];
         NSNumber *ttl = parameters[NSStringFromSelector(@selector(ttl))];
@@ -273,9 +291,11 @@ NS_ASSUME_NONNULL_END
         }
 
         PNPublishRequest *request = [PNPublishRequest requestWithChannel:channel];
+        request.spaceId = parameters[NSStringFromSelector(@selector(spaceId))];
         request.metadata = parameters[NSStringFromSelector(@selector(metadata))];
         request.payloads = parameters[NSStringFromSelector(@selector(payloads))];
         request.message = parameters[NSStringFromSelector(@selector(message))];
+        request.type = parameters[NSStringFromSelector(@selector(type))];
         request.arbitraryQueryParameters = parameters[@"queryParam"];
         request.store = (shouldStore ? shouldStore.boolValue : YES);
         request.replicate = (replicate ? replicate.boolValue : YES);
@@ -291,9 +311,9 @@ NS_ASSUME_NONNULL_END
 }
 
 - (PNPublishAPICallBuilder * (^)(void))fire {
-    
     PNPublishAPICallBuilder *builder = nil;
     __weak __typeof(self) weakSelf = self;
+    
     builder = [PNPublishAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags, 
                                                                    NSDictionary *parameters) {
         
@@ -309,18 +329,25 @@ NS_ASSUME_NONNULL_END
 }
 
 - (PNSignalAPICallBuilder * (^)(void))signal {
-    
     PNSignalAPICallBuilder * builder = nil;
     __weak __typeof(self) weakSelf = self;
+    
     builder = [PNSignalAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
                                                                   NSDictionary *parameters) {
         
         id message = parameters[NSStringFromSelector(@selector(message))];
+        NSString *type = parameters[NSStringFromSelector(@selector(type))];
         NSString *channel = parameters[NSStringFromSelector(@selector(channel))];
+        PNSpaceId *spaceId = parameters[NSStringFromSelector(@selector(spaceId))];
         NSDictionary *queryParam = parameters[@"queryParam"];
         id block = parameters[@"block"];
         
-        [weakSelf signal:message channel:channel withQueryParameters:queryParam completion:block];
+        [weakSelf signal:message
+                withType:type
+                 channel:channel
+                 spaceId:spaceId
+     withQueryParameters:queryParam
+              completion:block];
     }];
     
     return ^PNSignalAPICallBuilder * {
@@ -329,13 +356,14 @@ NS_ASSUME_NONNULL_END
 }
 
 - (PNPublishSizeAPICallBuilder * (^)(void))size {
-    
     PNPublishSizeAPICallBuilder *builder = nil;
     builder = [PNPublishSizeAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
                                                                        NSDictionary *parameters) {
                                      
         id message = parameters[NSStringFromSelector(@selector(message))];
+        NSString *type = parameters[NSStringFromSelector(@selector(type))];
         NSString *channel = parameters[NSStringFromSelector(@selector(channel))];
+        PNSpaceId *spaceId = parameters[NSStringFromSelector(@selector(spaceId))];
         NSNumber *shouldStore = parameters[NSStringFromSelector(@selector(shouldStore))];
         NSNumber *ttl = parameters[NSStringFromSelector(@selector(ttl))];
         NSNumber *compressed = parameters[NSStringFromSelector(@selector(compress))];
@@ -349,7 +377,9 @@ NS_ASSUME_NONNULL_END
         }
                                          
         [self sizeOfMessage:message
+                   withType:type
                   toChannel:channel
+                    spaceId:spaceId
                  compressed:compressed.boolValue
              storeInHistory:(shouldStore ? shouldStore.boolValue : YES)
                         ttl:ttl
@@ -399,6 +429,7 @@ NS_ASSUME_NONNULL_END
     }];
 }
 
+
 #pragma mark - Publish with request
 
 - (void)publishWithRequest:(PNPublishRequest *)request completion:(PNPublishCompletionBlock)block {
@@ -409,9 +440,12 @@ NS_ASSUME_NONNULL_END
     request.useRandomInitializationVector = self.configuration.shouldUseRandomInitializationVector;
     request.cipherKey = self.configuration.cipherKey;
 
-    PNLogAPICall(self.logger, @"<PubNub::API> Publish%@ message to '%@' channel%@%@%@",
+    PNLogAPICall(self.logger, @"<PubNub::API> Publish%@ message%@ to '%@' channel%@%@%@%@",
                  (request.shouldCompress ? @" compressed" : @""),
+                 (request.type ? [NSString stringWithFormat:@" of '%@' type", request.type] : @""),
                  (request.channel ?: @"<error>"),
+                 (request.spaceId ? [NSString stringWithFormat:@" (space id: %@)",
+                                     request.spaceId.value] : @""),
                  (request.metadata ? [NSString stringWithFormat:@" with metadata (%@)",
                                       request.metadata] : @""),
                  (!request.shouldStore ? @" which won't be saved in history" : @""),
@@ -646,7 +680,9 @@ NS_ASSUME_NONNULL_END
            completion:(PNPublishCompletionBlock)block {
     
     [self publish:message
+             withType:nil
             toChannel:channel
+              spaceId:nil
     mobilePushPayload:payloads
        storeInHistory:shouldStore
                   ttl:nil
@@ -658,7 +694,9 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)publish:(id)message
+             withType:(NSString *)type
             toChannel:(NSString *)channel
+              spaceId:(PNSpaceId *)spaceId
     mobilePushPayload:(NSDictionary<NSString *, id> *)payloads
        storeInHistory:(BOOL)shouldStore
                   ttl:(NSNumber *)ttl
@@ -669,6 +707,7 @@ NS_ASSUME_NONNULL_END
            completion:(PNPublishCompletionBlock)block {
 
     PNPublishRequest *request = [PNPublishRequest requestWithChannel:channel];
+    request.spaceId = spaceId;
     request.arbitraryQueryParameters = queryParameters;
     request.ttl = ttl.unsignedIntegerValue;
     request.replicate = replicate;
@@ -677,6 +716,7 @@ NS_ASSUME_NONNULL_END
     request.payloads = payloads;
     request.store = shouldStore;
     request.message = message;
+    request.type = type;
                                  
     [self publishWithRequest:request completion:block];
 }
@@ -688,11 +728,13 @@ NS_ASSUME_NONNULL_END
            channel:(NSString *)channel
     withCompletion:(PNSignalCompletionBlock)block {
     
-    [self signal:message channel:channel withQueryParameters:nil completion:block];
+    [self signal:message withType:nil channel:channel spaceId:nil withQueryParameters:nil completion:block];
 }
 
 - (void)signal:(id)message
+               withType:(NSString *)type
                 channel:(NSString *)channel
+                spaceId:(PNSpaceId *)spaceId
     withQueryParameters:(NSDictionary *)queryParameters
              completion:(PNSignalCompletionBlock)block {
     
@@ -717,11 +759,19 @@ NS_ASSUME_NONNULL_END
                           forPlaceholder:@"{channel}"];
         }
         
+        if (spaceId) {
+            [parameters addQueryParameter:spaceId.value forFieldName:@"space-id"];
+        }
+        
         if (([messageForSignal isKindOfClass:[NSString class]] && messageForSignal.length) ||
             messageForSignal) {
             
             [parameters addPathComponent:[PNString percentEscapedString:messageForSignal]
                           forPlaceholder:@"{message}"];
+        }
+        
+        if (type) {
+            [parameters addQueryParameter:type forFieldName:@"type"];
         }
         
         PNLogAPICall(strongSelf.logger, @"<PubNub::API> Signal to '%@' channel.",
@@ -735,7 +785,9 @@ NS_ASSUME_NONNULL_END
             if (status.isError) {
                 status.retryBlock = ^{
                     [weakSelf signal:message
+                            withType:type
                              channel:channel
+                             spaceId:spaceId
                  withQueryParameters:queryParameters
                           completion:block];
                 };
@@ -842,7 +894,9 @@ NS_ASSUME_NONNULL_END
            completion:(PNMessageSizeCalculationCompletionBlock)block {
     
     [self sizeOfMessage:message
+               withType:nil
               toChannel:channel
+                spaceId:nil
              compressed:compressMessage
          storeInHistory:shouldStore
                     ttl:nil
@@ -853,7 +907,9 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)sizeOfMessage:(id)message
+             withType:(NSString *)type
             toChannel:(NSString *)channel
+              spaceId:(PNSpaceId *)spaceId
            compressed:(BOOL)compressMessage
        storeInHistory:(BOOL)shouldStore
                   ttl:(NSNumber *)ttl
@@ -899,7 +955,9 @@ NS_ASSUME_NONNULL_END
             }
             
             PNRequestParameters *parameters = [self requestParametersForMessage:messageForPublish
+                                                                       withType:type
                                                                       toChannel:channel
+                                                                        spaceId:spaceId
                                                                      compressed:compressMessage
                                                                  storeInHistory:shouldStore
                                                                             ttl:ttl
@@ -932,7 +990,9 @@ NS_ASSUME_NONNULL_END
                                     parameters:(NSDictionary *)parameters {
     
     id message = parameters[NSStringFromSelector(@selector(message))];
+    NSString *type = parameters[NSStringFromSelector(@selector(type))];
     NSString *channel = parameters[NSStringFromSelector(@selector(channel))];
+    PNSpaceId *spaceId = parameters[NSStringFromSelector(@selector(spaceId))];
     NSDictionary *payloads = parameters[NSStringFromSelector(@selector(payloads))];
     NSNumber *shouldStore = parameters[NSStringFromSelector(@selector(shouldStore))];
     NSNumber *ttl = parameters[NSStringFromSelector(@selector(ttl))];
@@ -942,7 +1002,9 @@ NS_ASSUME_NONNULL_END
     NSDictionary *metadata = parameters[NSStringFromSelector(@selector(metadata))];
     
     [self publish:message
+         withType:type
         toChannel:channel
+          spaceId:spaceId
     mobilePushPayload:payloads
    storeInHistory:(shouldStore ? shouldStore.boolValue : YES)
               ttl:ttl
@@ -957,7 +1019,9 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Misc
 
 - (PNRequestParameters *)requestParametersForMessage:(NSString *)message
+                                            withType:(NSString *)type
                                            toChannel:(NSString *)channel
+                                             spaceId:(PNSpaceId *)spaceId
                                           compressed:(BOOL)compressMessage
                                       storeInHistory:(BOOL)shouldStore
                                                  ttl:(NSNumber *)ttl
@@ -973,6 +1037,10 @@ NS_ASSUME_NONNULL_END
     if (channel.length) {
         [parameters addPathComponent:[PNString percentEscapedString:channel]
                       forPlaceholder:@"{channel}"];
+    }
+    
+    if (spaceId) {
+        [parameters addQueryParameter:spaceId.value forFieldName:@"space-id"];
     }
 
     if (!shouldStore) {
@@ -990,6 +1058,10 @@ NS_ASSUME_NONNULL_END
     if (([message isKindOfClass:[NSString class]] && message.length) || message) {
         id targetMessage = !compressMessage ? [PNString percentEscapedString:message] : @"";
         [parameters addPathComponent:targetMessage forPlaceholder:@"{message}"];
+    }
+    
+    if (type) {
+        [parameters addQueryParameter:type forFieldName:@"type"];
     }
     
     if ([metadata isKindOfClass:[NSString class]] && metadata.length) {

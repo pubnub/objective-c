@@ -2,9 +2,14 @@
 #import "PNStructures.h"
 
 
+#pragma mark Class forward
+
+@class PNSpaceId;
+
+
 NS_ASSUME_NONNULL_BEGIN
 
-#pragma mark Interface declaration
+#pragma mark - Interface declaration
 
 /**
  * @brief Base publish API call builder.
@@ -47,6 +52,17 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, strong) PNPublishFileMessageAPICallBuilder * (^channel)(NSString *channel);
 
 /**
+ * @brief Target space identifier name.
+ *
+ * @param spaceId Identifier of the space to which message should be published.
+ *
+ * @return API call configuration builder.
+ *
+ * @version 5.2.0
+ */
+@property (nonatomic, readonly, strong) PNPublishFileMessageAPICallBuilder * (^spaceId)(PNSpaceId *spaceId);
+
+/**
  * @brief Message payload.
  *
  * @discussion Provided object will be serialized into JSON string before pushing to \b PubNub service. If client has been
@@ -57,6 +73,17 @@ NS_ASSUME_NONNULL_BEGIN
  * @return API call configuration builder.
  */
 @property (nonatomic, readonly, strong) PNPublishFileMessageAPICallBuilder * (^message)(id message);
+
+/**
+ * @brief Type of message which will be published.
+ *
+ * @param type User-provided type for published message.
+ *
+ * @return API call configuration builder.
+ *
+ * @version 5.2.0
+ */
+@property (nonatomic, readonly, strong) PNPublishFileMessageAPICallBuilder * (^type)(NSString *type);
 
 /**
  * @brief Message metadata.

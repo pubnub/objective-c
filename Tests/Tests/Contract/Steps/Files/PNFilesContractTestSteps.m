@@ -70,14 +70,34 @@
                 });
         }];
     });
-    
-    When(@"I send file", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
+
+    When(@"^I send file$", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
         self.testedFeatureType = PNSendFileOperation;
-        
+
         [self callCodeSynchronously:^(dispatch_block_t completion) {
             self.client.files()
                 .sendFile(@"test", @"name.txt")
                 .data([@"test file data" dataUsingEncoding:NSUTF8StringEncoding])
+                .performWithCompletion(^(PNSendFileStatus *status) {
+                    [self storeRequestStatus:status];
+                    completion();
+                });
+        }];
+    });
+
+    When(@"^I send a file with '(.+)' space id and '(.+)' type$", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
+        XCTAssertEqual(args.count, 2);
+        NSString *messageType = args.lastObject;
+        NSString *spaceId = args.firstObject;
+
+        self.testedFeatureType = PNSendFileOperation;
+
+        [self callCodeSynchronously:^(dispatch_block_t completion) {
+            self.client.files()
+                .sendFile(@"test", @"name.txt")
+                .data([@"test file data" dataUsingEncoding:NSUTF8StringEncoding])
+                .type(messageType)
+                .spaceId([PNSpaceId spaceIdFromString:spaceId])
                 .performWithCompletion(^(PNSendFileStatus *status) {
                     [self storeRequestStatus:status];
                     completion();
