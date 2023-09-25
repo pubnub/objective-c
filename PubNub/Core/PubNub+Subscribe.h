@@ -1,9 +1,9 @@
 #import <Foundation/Foundation.h>
-#import "PNUnsubscribeChannelsOrGroupsAPICallBuilder.h"
-#import "PNSubscribeChannelsOrGroupsAPIBuilder.h"
-#import "PNUnsubscribeAPICallBuilder.h"
-#import "PNSubscribeAPIBuilder.h"
-#import "PubNub+Core.h"
+#import <PubNub/PNUnsubscribeChannelsOrGroupsAPICallBuilder.h>
+#import <PubNub/PNSubscribeChannelsOrGroupsAPIBuilder.h>
+#import <PubNub/PNUnsubscribeAPICallBuilder.h>
+#import <PubNub/PNSubscribeAPIBuilder.h>
+#import <PubNub/PubNub+Core.h>
 
 
 #pragma mark Class forward

@@ -4,9 +4,9 @@
  @copyright © 2010-2018 PubNub, Inc.
  */
 #import "PNSubscribeStatus+Private.h"
+#import "PNOperationResult+Private.h"
 #import "PNEnvelopeInformation.h"
 #import "PNServiceData+Private.h"
-#import "PNResult+Private.h"
 
 
 #pragma mark Interface implementation

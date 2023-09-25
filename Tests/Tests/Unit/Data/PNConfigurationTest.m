@@ -38,33 +38,33 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Tests :: UUID requirement
 
 - (void)testItShouldNotThrowWhenUUIDIsSet {
-    XCTAssertNoThrow([PNConfiguration configurationWithPublishKey:@"demo" subscribeKey:@"demo" uuid:@"uuid"],
+    XCTAssertNoThrow([PNConfiguration configurationWithPublishKey:@"demo" subscribeKey:@"demo" userID:@"uuid"],
                      @"Should not throw when UUID is set.");
 }
 
 - (void)testItShouldNotThrowWhenSetToNonEmptyUUID {
-    PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" subscribeKey:@"demo" uuid:@"uuid"];
-    XCTAssertNoThrow(configuration.uuid = @"uuid2", @"Should not throw when UUID changed.");
+    PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" subscribeKey:@"demo" userID:@"uuid"];
+    XCTAssertNoThrow(configuration.userID = @"uuid2", @"Should not throw when UUID changed.");
 }
 
 - (void)testItShouldThrowWhenUUIDIsEmpty {
-    XCTAssertThrows([PNConfiguration configurationWithPublishKey:@"demo" subscribeKey:@"demo" uuid:@""],
+    XCTAssertThrows([PNConfiguration configurationWithPublishKey:@"demo" subscribeKey:@"demo" userID:@""],
                     @"Should throw on empty UUID.");
 }
 
 - (void)testItShouldThrowWhenUUIDWhichContainsOnlySpaces {
-    XCTAssertThrows([PNConfiguration configurationWithPublishKey:@"demo" subscribeKey:@"demo" uuid:@"   "],
+    XCTAssertThrows([PNConfiguration configurationWithPublishKey:@"demo" subscribeKey:@"demo" userID:@"   "],
                     @"Should throw on empty UUID.");
 }
 
 - (void)testItShouldThrowWhenSetEmptyUUID {
-    PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" subscribeKey:@"demo" uuid:@"uuid"];
-    XCTAssertThrows(configuration.uuid = @"", @"Should throw when UUID changed to empty.");
+    PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" subscribeKey:@"demo" userID:@"uuid"];
+    XCTAssertThrows(configuration.userID = @"", @"Should throw when UUID changed to empty.");
 }
 
 - (void)testItShouldThrowWhenSetUUIDWhichContainsOnlySpaces {
-    PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" subscribeKey:@"demo" uuid:@"uuid"];
-    XCTAssertThrows(configuration.uuid = @"    ", @"Should throw when UUID changed to empty.");
+    PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo" subscribeKey:@"demo" userID:@"uuid"];
+    XCTAssertThrows(configuration.userID = @"    ", @"Should throw when UUID changed to empty.");
 }
 
 #pragma mark -

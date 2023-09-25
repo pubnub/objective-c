@@ -1,4 +1,4 @@
-#import "PNAPNSAPICallBuilder.h"
+#import <PubNub/PNAPNSAPICallBuilder.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Device token / identifier addition block.
  *
- * @param token Device token / identifier which should be used to change notifications state on
+ * @discussion Device token / identifier which should be used to change notifications state on
  *     specified set of channels. Depending from passed \c pushType should be \a NSData (for
  *     \b PNAPNS2Push and \b PNAPNSPush) or \a NSString for other.
  *
@@ -32,7 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Device APNS push token addition block.
  *
- * @param token Device APNS-provided push token against which search on \b PubNub service should be
+ * @discussion Device APNS-provided push token against which search on \b PubNub service should be
  *     performed.
  *
  * @return API call configuration builder.
@@ -46,7 +46,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Device FCM push token addition block.
  *
- * @param token Device FCM-provided push token against which search on \b PubNub service should be
+ * @discussion Device FCM-provided push token against which search on \b PubNub service should be
  *     performed.
  *
  * @return API call configuration builder.
@@ -60,10 +60,10 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief List of target channels addition block.
  *
+ * @discussion List of channels for which APNS state should be changed.
+ *
  * @note Use valid \c token and \c nil for this property to disable all push notifications for
  * device.
- *
- * @param channel List of channels for which APNS state should be changed.
  *
  * @return API call configuration builder.
  *
@@ -74,11 +74,11 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Environment in which channel notifications managed.
  *
+ * @discussion One of \b PNAPNSEnvironment fields which specify environment within which
+ *   device should manage list of channels with enabled notifications.
+ *
  * @note This field works only if request initialized with \c pushType set to \b PNAPNS2Push
  * (by default set to \b PNAPNSDevelopment).
- *
- * @param environment One of \b PNAPNSEnvironment fields which specify environment within which
- *   device should manage list of channels with enabled notifications.
  *
  * @return API call configuration builder.
  *
@@ -89,7 +89,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Push notifications service.
  *
- * @param pushType One of \b PNPushType fields which specify service to manage notifications for
+ * @discussion One of \b PNPushType fields which specify service to manage notifications for
  *     device specified with \c pushToken (will be set to \b PNAPNSPush by default).
  *
  * @return API call configuration builder.
@@ -101,10 +101,10 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Notifications topic name.
  *
+ * @discussion Notifications topic name (usually it is application's bundle identifier)
+ *
  * @note This field works only if request initialized with \c pushType set to \b PNAPNS2Push
  * (by default set to \b NSBundle.mainBundle.bundleIdentifier).
- *
- * @param environment Notifications topic name (usually it is application's bundle identifier)
  *
  * @return API call configuration builder.
  *
@@ -118,7 +118,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Perform API call.
  *
- * @param block Push notifications status modification completion block.
+ * @discussion Push notifications status modification completion block.
  *
  * @since 4.5.4
  */
@@ -130,14 +130,17 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Arbitrary query parameters addition block.
  *
- * @param params List of arbitrary percent encoded query parameters which should be sent along with
+ * @discussion List of arbitrary percent encoded query parameters which should be sent along with
  *     original API call.
  *
  * @return API call configuration builder.
  *
  * @since 4.8.2
  */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wincompatible-property-type"
 @property (nonatomic, readonly, strong) PNAPNSModificationAPICallBuilder * (^queryParam)(NSDictionary *params);
+#pragma clang diagnostic pop
 
 #pragma mark -
 

@@ -1,8 +1,8 @@
 #import <Foundation/Foundation.h>
-#import "PNStateModificationAPICallBuilder.h"
-#import "PNStateAuditAPICallBuilder.h"
-#import "PNStateAPICallBuilder.h"
-#import "PubNub+Core.h"
+#import <PubNub/PNStateModificationAPICallBuilder.h>
+#import <PubNub/PNStateAuditAPICallBuilder.h>
+#import <PubNub/PNStateAPICallBuilder.h>
+#import <PubNub/PubNub+Core.h>
 
 
 #pragma mark Class forward

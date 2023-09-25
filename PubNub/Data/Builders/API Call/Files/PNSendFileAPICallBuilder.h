@@ -1,4 +1,4 @@
-#import "PNFilesAPICallBuilder.h"
+#import <PubNub/PNFilesAPICallBuilder.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -24,10 +24,10 @@ NS_ASSUME_NONNULL_BEGIN
  * @discussion This approach allow to lower pressure on memory and load only required portion of
  * data which can be sent at this moment.
  *
- * @note Only one type of input will be used: \b stream, \c data or \c path.
+ * @discussion \c stream is in \a NSInputStream which can provide data for sending buffer.
+ * @discussion \c size Size of data which can be read from \c stream.
  *
- * @param stream \a NSInputStream which can provide data for sending buffer.
- * @param size Size of data which can be read from \c stream.
+ * @note Only one type of input will be used: \b stream, \c data or \c path.
  *
  * @return API call configuration builder.
  */
@@ -36,7 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief \c File \c message metadata..
  *
- * @param fileMessageMetadata \b NSDictionary with values which should be used by \b PubNub service to filter
+ * @discussion \b NSDictionary with values which should be used by \b PubNub service to filter
  * \c file \c messages.
  *
  * @return API call configuration builder.
@@ -46,10 +46,10 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Message maximum storage presence time.
  *
- * @note Will be ignored if \c fileMessageStore is set to \c NO.
- *
- * @param fileMessageTTL How long message should be stored in channel's storage. Pass \b 0 store message according to
+ * @discussion How long message should be stored in channel's storage. Pass \b 0 store message according to
  * retention.
+ *
+ * @note Will be ignored if \c fileMessageStore is set to \c NO.
  *
  * @return API call configuration builder.
  */
@@ -58,7 +58,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Keep \c file \c message in \c channel history.
  *
- * @param fileMessageStore Whether \b PubNub published \c file \c message should be stored in \c channel history.
+ * @discussion Whether \b PubNub published \c file \c message should be stored in \c channel history.
  *
  * @return API call configuration builder.
  */
@@ -67,7 +67,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Key which is used to encrypt uploaded file so it will be protected both in motion and at rest.
  *
- * @param cipherKey Data encryption key.
+ * @discussion Data encryption key.
  *
  * @return API call configuration builder.
  */
@@ -79,7 +79,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @discussion Provided object will be serialized into JSON string before pushing to \b PubNub service. If client has been
  * configured with cipher key message will be encrypted as well.
  *
- * @param message Object (\a NSString, \a NSNumber, \a NSArray, \a NSDictionary) which will be published.
+ * @discussion Object (\a NSString, \a NSNumber, \a NSArray, \a NSDictionary) which will be published.
  *
  * @return API call configuration builder.
  */
@@ -88,9 +88,9 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief In-memory binary data which should be uploaded and available in target channel.
  *
- * @note Only one type of input will be used: \b stream, \c data or \c path.
+ * @discussion Binary data which should be uploaded.
  *
- * @param data Binary data which should be uploaded.
+ * @note Only one type of input will be used: \b stream, \c data or \c path.
  *
  * @return API call configuration builder.
  */
@@ -99,9 +99,9 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief URL to location of file for upload.
  *
- * @note Only one type of input will be used: \b stream, \c data or \c url.
+ * @discussion URL on local file system.
  *
- * @param url URL on local file system.
+ * @note Only one type of input will be used: \b stream, \c data or \c url.
  *
  * @return API call configuration builder.
  */
@@ -114,7 +114,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Perform API call.
  *
- * @param block \c File \c send completion handler block.
+ * @discussion \c File \c send completion handler block.
  */
 @property (nonatomic, readonly, strong) void(^performWithCompletion)(PNSendFileCompletionBlock block);
 
@@ -124,13 +124,15 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Arbitrary query parameters addition block.
  *
- * @param params List of arbitrary percent-encoded query parameters which should be sent along with
+ * @discussion List of arbitrary percent-encoded query parameters which should be sent along with
  * original API call.
  *
  * @return API call configuration builder.
  */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wincompatible-property-type"
 @property (nonatomic, readonly, strong) PNSendFileAPICallBuilder * (^queryParam)(NSDictionary *params);
-
+#pragma clang diagnostic pop
 
 #pragma mark -
 

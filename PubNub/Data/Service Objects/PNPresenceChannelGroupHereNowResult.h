@@ -1,4 +1,4 @@
-#import "PNPresenceGlobalHereNowResult.h"
+#import <PubNub/PNPresenceGlobalHereNowResult.h>
 
 
 /**
@@ -26,7 +26,7 @@
  * @since 4.0.0
  * @copyright © 2010-2020 PubNub, Inc.
  */
-@interface PNPresenceChannelGroupHereNowResult : PNResult
+@interface PNPresenceChannelGroupHereNowResult : PNOperationResult
 
 
 #pragma mark - Information

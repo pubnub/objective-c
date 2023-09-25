@@ -1,4 +1,4 @@
-#import "PNPresenceAPICallBuilder.h"
+#import <PubNub/PNPresenceAPICallBuilder.h>
 
 
 #pragma mark Class forward
@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief On channel users' presence API access builder block.
  *
- * @param channel Channel for which here now information should be received.
+ * @discussion Channel for which here now information should be received.
  *
  * @return API call configuration builder.
  *
@@ -34,7 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Users' presence on list of channels API access builder block.
  *
- * @param channels List of channels for which here now information should be received.
+ * @discussion List of channels for which here now information should be received.
  *
  * @return API call configuration builder.
  *
@@ -48,7 +48,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief On channel group users' presence API access builder block.
  *
- * @param channelGroup Channel group name for which here now information should be received.
+ * @discussion Channel group name for which here now information should be received.
  *
  * @return API call configuration builder.
  *
@@ -59,7 +59,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Users' presence on list of channel groups API access builder block.
  *
- * @param channelGroups List of channel group names for which here now information should be received.
+ * @discussion List of channel group names for which here now information should be received.
  *
  * @return API call configuration builder.
  *
@@ -73,7 +73,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Users' state information detalization level addition block.
  *
- * @param verbosity One of \b PNHereNowVerbosityLevel fields to instruct what exactly data it
+ * @discussion One of \b PNHereNowVerbosityLevel fields to instruct what exactly data it
  *     expected in response.
  *
  * @return API call configuration builder.
@@ -85,7 +85,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Perform API call.
  *
- * @param block Here now fetch completion block.
+ * @discussion Here now fetch completion block.
  *
  * @since 4.5.4
  */
@@ -97,14 +97,17 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Arbitrary query parameters addition block.
  *
- * @param params List of arbitrary percent encoded query parameters which should be sent along with
+ * @discussion List of arbitrary percent encoded query parameters which should be sent along with
  *     original API call.
  *
  * @return API call configuration builder.
  *
  * @since 4.8.2
  */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wincompatible-property-type"
 @property (nonatomic, readonly, strong) PNPresenceHereNowAPICallBuilder * (^queryParam)(NSDictionary *params);
+#pragma clang diagnostic pop
 
 #pragma mark -
 

@@ -758,7 +758,7 @@ NS_ASSUME_NONNULL_END
     
     PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:publishKey
                                                                      subscribeKey:subscribeKey
-                                                                             uuid:uuid];
+                                                                           userID:uuid];
     configuration.authKey = [self pubNubAuthForTestCaseWithName:self.name];
     
     return configuration;
@@ -781,8 +781,8 @@ NS_ASSUME_NONNULL_END
 
 - (PubNub *)createPubNubForUser:(NSString *)user withConfiguration:(PNConfiguration *)configuration {
     dispatch_queue_t callbackQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    configuration.uuid = [self uuidForUser:user];
-    
+    configuration.userID = [self uuidForUser:user];
+
     PubNub *client = [PubNub clientWithConfiguration:configuration callbackQueue:callbackQueue];
     client.logger.enabled = PUBNUB_LOGGER_ENABLED;
     client.logger.logLevel  = PUBNUB_LOGGER_ENABLED ? PNVerboseLogLevel : PNSilentLogLevel;
@@ -818,7 +818,7 @@ NS_ASSUME_NONNULL_END
 - (void)completePubNubConfiguration:(PubNub *)client {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-variable"
-    NSString *uuid = client.currentConfiguration.uuid;
+    NSString *uuid = client.currentConfiguration.userID;
 #pragma clang diagnostic pop
 }
 
@@ -1164,7 +1164,7 @@ NS_ASSUME_NONNULL_END
     client = client ?: self.client;
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [client setState:state forUUID:client.currentConfiguration.uuid onChannel:channel
+        [client setState:state forUUID:client.currentConfiguration.userID onChannel:channel
           withCompletion:^(PNClientStateUpdateStatus *status) {
             XCTAssertFalse(status.isError);
             handler();
@@ -1783,12 +1783,17 @@ NS_ASSUME_NONNULL_END
     return [self uploadFiles:count toChannel:channel withCipherKey:nil usingClient:client];
 }
 
-- (NSArray<NSDictionary *> *)uploadFiles:(NSUInteger)count toChannel:(NSString *)channel withCipherKey:(NSString *)key usingClient:(PubNub *)client {
-    
+- (NSArray<NSDictionary *> *)uploadFiles:(NSUInteger)count 
+                               toChannel:(NSString *)channel
+                           withCipherKey:(NSString *)key
+                             usingClient:(PubNub *)client {
     NSMutableArray<NSDictionary *> *files = [NSMutableArray new];
     client = client ?: self.client;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     key = key ?: client.currentConfiguration.cipherKey;
-    
+#pragma clang diagnostic pop
+
     for (NSUInteger fileIdx = 0; fileIdx < count; fileIdx++) {
         NSString *fileName = [[NSUUID UUID].UUIDString stringByAppendingPathExtension:@"txt"];
         NSMutableString *messageText = [NSMutableString stringWithString:[NSUUID UUID].UUIDString];
@@ -2316,7 +2321,7 @@ NS_ASSUME_NONNULL_END
         NSError *error;
         
         if (!configurationData) {
-            NSString *errorReason = @"'test-configuration.json' file not found in bundle.";
+            NSString *errorReason = @"'tests-configuration.json' file not found in bundle.";
             
             exception = [NSException exceptionWithName:@"PNTestsConfiguration"
                                                 reason:errorReason
@@ -2330,7 +2335,7 @@ NS_ASSUME_NONNULL_END
         
         
         if (!_sharedTestsConfiguration || error) {
-            NSString *errorReason = @"'test-configuration.json' file parsing error.";
+            NSString *errorReason = @"'tests-configuration.json' file parsing error.";
             NSDictionary *userInfo = error ? @{ NSUnderlyingErrorKey: error } : nil;
             
             exception = [NSException exceptionWithName:@"PNTestsConfiguration"

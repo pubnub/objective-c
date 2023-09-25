@@ -5,8 +5,8 @@
  * @copyright © 2010-2020 PubNub, Inc.
  */
 #import "PNPresenceChannelGroupHereNowResult.h"
+#import "PNOperationResult+Private.h"
 #import "PNServiceData+Private.h"
-#import "PNResult+Private.h"
 
 
 #pragma mark Interface implementation

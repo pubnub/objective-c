@@ -6,8 +6,8 @@
  */
 #import "PNSetChannelMetadataStatus.h"
 #import "PNChannelMetadata+Private.h"
+#import "PNOperationResult+Private.h"
 #import "PNServiceData+Private.h"
-#import "PNResult+Private.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

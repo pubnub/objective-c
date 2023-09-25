@@ -1,8 +1,8 @@
 #import <Foundation/Foundation.h>
-#import "PNDeleteMessageAPICallBuilder.h"
-#import "PNMessageCountAPICallBuilder.h"
-#import "PNHistoryAPICallBuilder.h"
-#import "PubNub+Core.h"
+#import <PubNub/PNDeleteMessageAPICallBuilder.h>
+#import <PubNub/PNMessageCountAPICallBuilder.h>
+#import <PubNub/PNHistoryAPICallBuilder.h>
+#import <PubNub/PubNub+Core.h>
 
 
 #pragma mark Class forward

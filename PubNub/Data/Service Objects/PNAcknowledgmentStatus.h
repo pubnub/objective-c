@@ -1,4 +1,4 @@
-#import "PNErrorStatus.h"
+#import <PubNub/PNErrorStatus.h>
 
 
 /**

@@ -1,5 +1,5 @@
-#import "PNAPICallBuilder.h"
-#import "PNStructures.h"
+#import <PubNub/PNAPICallBuilder.h>
+#import <PubNub/PNStructures.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -22,7 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Unique identifier provided during file upload.
  *
- * @param identifier Unique file identifier.
+ * @discussion Unique file identifier.
  *
  * @return API call configuration builder.
  */
@@ -31,7 +31,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Name with which uploaded data has been stored.
  *
- * @param identifier Service-provided filename.
+ * @discussion Service-provided filename.
  *
  * @return API call configuration builder.
  */
@@ -40,7 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Target channel name.
  *
- * @param channel Name of the channel to which message should be published.
+ * @discussion Name of the channel to which message should be published.
  *
  * @return API call configuration builder.
  */
@@ -52,7 +52,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @discussion Provided object will be serialized into JSON string before pushing to \b PubNub service. If client has been
  * configured with cipher key message will be encrypted as well.
  *
- * @param message Object (\a NSString, \a NSNumber, \a NSArray, \a NSDictionary) which will be published.
+ * @discussion Object (\a NSString, \a NSNumber, \a NSArray, \a NSDictionary) which will be published.
  *
  * @return API call configuration builder.
  */
@@ -61,7 +61,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Message metadata.
  *
- * @param metadata \b NSDictionary with values which should be used by \b PubNub service to filter messages.
+ * @discussion \b NSDictionary with values which should be used by \b PubNub service to filter messages.
  *
  * @return API call configuration builder.
  */
@@ -70,7 +70,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Message presence in storage flag.
  *
- * @param shouldStore Whether message should be stored and available with history API or not.
+ * @discussion Whether message should be stored and available with history API or not.
  *
  * @return API call configuration builder.
  */
@@ -79,9 +79,9 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Message maximum storage presence time.
  *
- * @note Will be ignored if \c shouldStore is set to \c NO.
+ * @discussion How long message should be stored in channel's storage. Pass \b 0 store message according to retention.
  *
- * @param ttl How long message should be stored in channel's storage. Pass \b 0 store message according to retention.
+ * @note Will be ignored if \c shouldStore is set to \c NO.
  *
  * @return API call configuration builder.
  */
@@ -90,7 +90,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Message payload replication across the PubNub Real-Time Network flag.
  *
- * @param replicate Whether message should be replicated across the PubNub Real-Time Network and sent simultaneously to all
+ * @discussion Whether message should be replicated across the PubNub Real-Time Network and sent simultaneously to all
  * subscribed clients on a channel.
  *
  * @return API call configuration builder.
@@ -103,7 +103,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Perform API call.
  *
- * @param block \c File \c message \c publish completion handler block.
+ * @discussion \c File \c message \c publish completion handler block.
  */
 @property (nonatomic, readonly, strong) void(^performWithCompletion)(PNPublishCompletionBlock _Nullable block);
 
@@ -113,12 +113,15 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Arbitrary query parameters addition block.
  *
- * @param params List of arbitrary percent-encoded query parameters which should be sent along with
+ * @discussion List of arbitrary percent-encoded query parameters which should be sent along with
  * original API call.
  *
  * @return API call configuration builder.
  */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wincompatible-property-type"
 @property (nonatomic, readonly, strong) PNPublishFileMessageAPICallBuilder * (^queryParam)(NSDictionary *params);
+#pragma clang diagnostic pop
 
 #pragma mark -
 

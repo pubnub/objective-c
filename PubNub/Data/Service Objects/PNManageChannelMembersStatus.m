@@ -5,9 +5,9 @@
  * @copyright © 2010-2020 PubNub, Inc.
  */
 #import "PNManageChannelMembersStatus.h"
-#import "PNServiceData+Private.h"
-#import "PNResult+Private.h"
+#import "PNOperationResult+Private.h"
 #import "PNChannelMember+Private.h"
+#import "PNServiceData+Private.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

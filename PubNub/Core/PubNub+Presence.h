@@ -1,11 +1,12 @@
 #import <Foundation/Foundation.h>
-#import "PNPresenceChannelGroupHereNowAPICallBuilder.h"
-#import "PNPresenceChannelHereNowAPICallBuilder.h"
-#import "PNPresenceHeartbeatAPICallBuilder.h"
-#import "PNPresenceWhereNowAPICallBuilder.h"
-#import "PNPresenceHereNowAPICallBuilder.h"
-#import "PNPresenceAPICallBuilder.h"
-#import "PubNub+Core.h"
+#import <PubNub/PNPresenceChannelGroupHereNowAPICallBuilder.h>
+#import <PubNub/PNPresenceChannelHereNowAPICallBuilder.h>
+#import <PubNub/PNPresenceHeartbeatAPICallBuilder.h>
+#import <PubNub/PNPresenceWhereNowAPICallBuilder.h>
+#import <PubNub/PNPresenceHereNowAPICallBuilder.h>
+#import <PubNub/PNPresenceAPICallBuilder.h>
+#import <PubNub/PubNub+Core.h>
+
 
 
 #pragma mark Class forward

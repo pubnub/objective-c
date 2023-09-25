@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "PNStructures.h"
+#import <PubNub/PNStructures.h>
 
 
 NS_ASSUME_NONNULL_BEGIN

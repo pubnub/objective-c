@@ -1,5 +1,5 @@
-#import "PNErrorStatus.h"
-#import "PNChannelClientStateResult.h"
+#import <PubNub/PNErrorStatus.h>
+#import <PubNub/PNChannelClientStateResult.h>
 
 
 /**

@@ -4,8 +4,8 @@
  @copyright © 2010-2018 PubNub, Inc.
  */
 #import "PNTimeResult.h"
+#import "PNOperationResult+Private.h"
 #import "PNServiceData+Private.h"
-#import "PNResult+Private.h"
 
 
 #pragma mark - Interface implementation

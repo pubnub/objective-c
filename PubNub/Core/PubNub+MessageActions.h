@@ -1,15 +1,15 @@
-#import "PubNub+Core.h"
+#import <PubNub/PubNub+Core.h>
 
-#import "PNFetchMessageActionsRequest.h"
-#import "PNRemoveMessageActionRequest.h"
-#import "PNAddMessageActionRequest.h"
+#import <PubNub/PNFetchMessageActionsRequest.h>
+#import <PubNub/PNRemoveMessageActionRequest.h>
+#import <PubNub/PNAddMessageActionRequest.h>
 
-#import "PNFetchMessageActionsResult.h"
-#import "PNAddMessageActionStatus.h"
+#import <PubNub/PNFetchMessageActionsResult.h>
+#import <PubNub/PNAddMessageActionStatus.h>
 
-#import "PNAddMessageActionAPICallBuilder.h"
-#import "PNRemoveMessageActionAPICallBuilder.h"
-#import "PNFetchMessagesActionsAPICallBuilder.h"
+#import <PubNub/PNAddMessageActionAPICallBuilder.h>
+#import <PubNub/PNRemoveMessageActionAPICallBuilder.h>
+#import <PubNub/PNFetchMessagesActionsAPICallBuilder.h>
 
 
 NS_ASSUME_NONNULL_BEGIN

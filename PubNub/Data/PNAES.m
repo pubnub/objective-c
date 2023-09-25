@@ -172,10 +172,12 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Interface implementation
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-implementations"
 @implementation PNAES
 
 
-#pragma mark - Informartion
+#pragma mark - Information
 
 - (NSUInteger)cipherBlockSize {
     return kCCBlockSizeAES128;
@@ -233,7 +235,7 @@ NS_ASSUME_NONNULL_END
     NSError *encryptionError = nil;
     NSData *processedData = nil;
     
-    if (data.length && key.length) {
+    if (key.length) {
         CCCryptorStatus status;
         processedData = [self processedDataFrom:data
                                    withRandomIV:useRandomIV
@@ -245,16 +247,9 @@ NS_ASSUME_NONNULL_END
             encryptionError = [self errorFor:status];
         }
     } else {
-        NSString *description = @"Empty NSData instance has been passed for encryption.";
-        NSInteger errorCode = kPNAESEmptyObjectError;
-        
-        if (!key.length) {
-            description = @"Empty encryption key has been passed.";
-            errorCode = kPNAESConfigurationError;
-        }
-        
+        NSString *description = @"Empty encryption key has been passed.";
         encryptionError = [NSError errorWithDomain:kPNAESErrorDomain
-                                              code:errorCode
+                                              code:kPNAESConfigurationError
                                           userInfo:@{ NSLocalizedDescriptionKey: description }];
     }
     
@@ -454,10 +449,6 @@ NS_ASSUME_NONNULL_END
         }
         
         if (processingStatus == kCCSuccess) {
-            if (operation == kCCDecrypt && dataLength > 0 && processedData.length == 0) {
-                processingStatus = kCCDecodeError;
-            }
-
             if (useRandomIV && operation == kCCEncrypt) {
                 [processedData replaceBytesInRange:NSMakeRange(0, 0)
                                          withBytes:iv
@@ -624,12 +615,6 @@ NS_ASSUME_NONNULL_END
                              processedData.length,
                              &processedDataLength);
     
-    if (status == kCCSuccess && self.operation == kCCDecrypt) {
-        if (length > 0 && processedData.length == 0) {
-            status = kCCDecodeError;
-        }
-    }
-    
     if (status != kCCSuccess) {
         self.processingError = [[self class] errorFor:status];
         processedDataLength = -1;
@@ -751,3 +736,4 @@ NS_ASSUME_NONNULL_END
 
 
 @end
+#pragma clang diagnostic pop

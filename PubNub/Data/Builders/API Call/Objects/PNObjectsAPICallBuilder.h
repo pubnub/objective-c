@@ -1,5 +1,5 @@
-#import "PNAPICallBuilder.h"
-#import "PNStructures.h"
+#import <PubNub/PNAPICallBuilder.h>
+#import <PubNub/PNStructures.h>
 
 
 #pragma mark Class forward
@@ -30,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief \c Metadata association with \c UUID API access builder block.
  *
- * @param uuid Identifier with which new \c metadata should be associated.
+ * @discussion Identifier with which new \c metadata should be associated.
  * Will be set to current \b PubNub configuration \c uuid if \a nil is set.
  *
  * @return API call configuration builder.
@@ -40,7 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Associated with \c UUID \c metadata remove API access builder block.
  *
- * @param uuid Identifier for which associated \c metadata should be removed.
+ * @discussion Identifier for which associated \c metadata should be removed.
  * Will be set to current \b PubNub configuration \c uuid if \a nil is set.
  *
  * @return API call configuration builder.
@@ -50,7 +50,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief \c Fetch \c metadata associated with \c UUID API access builder block.
  *
- * @param uuid Identifier for which associated \c metadata should be fetched.
+ * @discussion Identifier for which associated \c metadata should be fetched.
  * Will be set to current \b PubNub configuration \c uuid if \a nil is set.
  *
  * @return API call configuration builder.
@@ -70,7 +70,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief \c Metadata association with \c channel API access builder block.
  *
- * @param channel Name of channel with which new \c metadata should be associated.
+ * @discussion Name of channel with which new \c metadata should be associated.
  *
  * @return API call configuration builder.
  */
@@ -79,7 +79,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Associated with \c channel \c metadata remove API access builder block.
  *
- * @param channel Name of channel for which associated \c metadata should be removed.
+ * @discussion Name of channel for which associated \c metadata should be removed.
  *
  * @return API call configuration builder.
  */
@@ -88,7 +88,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief \c Fetch \c metadata associated with \c channel API access builder block.
  *
- * @param channel Name of channel for which associated \c metadata should be fetched.
+ * @discussion Name of channel for which associated \c metadata should be fetched.
  *
  * @return API call configuration builder.
  */
@@ -114,18 +114,12 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Memberships set API call builder access block.
  *
- * @param uuid Identifier for which memberships should be set.
- * Will be set to current \b PubNub configuration \c uuid if \a nil is set.
- *
  * @return API call configuration builder.
  */
 @property (nonatomic, readonly, strong) PNSetMembershipsAPICallBuilder * (^setMemberships)(void);
 
 /**
  * @brief Memberships remove API call builder access block.
- *
- * @param uuid Identifier for which memberships should be removed.
- * Will be set to current \b PubNub configuration \c uuid if \a nil is set.
  *
  * @return API call configuration builder.
  */
@@ -134,9 +128,6 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Memberships fetch API call builder access block.
  *
- * @param uuid Identifier for which memberships should be fetched.
- * Will be set to current \b PubNub configuration \c uuid if \a nil is set.
- *
  * @return API call configuration builder.
  */
 @property (nonatomic, readonly, strong) PNFetchMembershipsAPICallBuilder * (^memberships)(void);
@@ -144,7 +135,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Members management API call builder access block.
  *
- * @param channel Name of channel from which members should be managed.
+ * @discussion Name of channel from which members should be managed.
  *
  * @return API call configuration builder.
  */
@@ -153,7 +144,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Members set API call builder access block.
  *
- * @param channel Name of channel from which members should be set.
+ * @discussion Name of channel from which members should be set.
  *
  * @return API call configuration builder.
  */
@@ -162,7 +153,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Members remove API call builder access block.
  *
- * @param channel Name of channel from which members should be removed.
+ * @discussion Name of channel from which members should be removed.
  *
  * @return API call configuration builder.
  */
@@ -171,7 +162,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Members fetch API call builder access block.
  *
- * @param channel Name of channel from which members should be fetched.
+ * @discussion Name of channel from which members should be fetched.
  *
  * @return API call configuration builder.
  */

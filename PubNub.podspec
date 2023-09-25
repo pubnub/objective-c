@@ -22,14 +22,14 @@ Pod::Spec.new do |spec|
         :tag => "v#{spec.version}"
     }
 
-    spec.ios.deployment_target = '9.0'
-    spec.watchos.deployment_target = '4.0'
-    spec.osx.deployment_target = '10.11'
-    spec.tvos.deployment_target = '10.0'
+    spec.ios.deployment_target = '14.0'
+    spec.watchos.deployment_target = '7.0'
+    spec.osx.deployment_target = '11.00'
+    spec.tvos.deployment_target = '14.0'
     spec.requires_arc = true
 
     spec.subspec 'Core' do |core|
-        core.source_files = 'PubNub/{Core,Data,Misc,Network}/**/*', 'PubNub/PubNub.h'
+        core.source_files = 'PubNub/{Core,Data,Modules,Misc,Network}/**/*', 'PubNub/PubNub.h'
         core.private_header_files = [
             'PubNub/**/*Private.h',
             'PubNub/Data/{PNEnvelopeInformation}.h',
@@ -41,6 +41,8 @@ Pod::Spec.new do |spec|
             'PubNub/Misc/Logger/PNLogMacro.h',
             'PubNub/Misc/Logger/Data/*.h',
             'PubNub/Misc/Protocols/{PNKeyValueStorageProtocol,PNParser}.h',
+            "PubNub/Modules/Crypto/Cryptors/AES/PNCCCryptorWrapper.h",
+            "PubNub/Modules/Crypto/Header/*.h",
             'PubNub/Network/{PNNetwork,PNNetworkResponseSerializer,PNReachability,PNRequestParameters,PNURLBuilder}.h',
             'PubNub/Network/Requests/Files/PNGenerateFileUploadURLRequest.h',
             'PubNub/Network/Parsers/**/*.h'

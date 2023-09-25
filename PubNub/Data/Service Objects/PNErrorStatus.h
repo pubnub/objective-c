@@ -1,5 +1,5 @@
-#import "PNStatus.h"
-#import "PNServiceData.h"
+#import <PubNub/PNStatus.h>
+#import <PubNub/PNServiceData.h>
 
 
 NS_ASSUME_NONNULL_BEGIN

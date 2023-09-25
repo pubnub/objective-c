@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "PubNub+Subscribe.h"
+#import <PubNub/PubNub+Subscribe.h>
 
 
 #pragma mark Class forward

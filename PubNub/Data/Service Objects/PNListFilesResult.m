@@ -5,8 +5,8 @@
  * @copyright © 2010-2020 PubNub, Inc.
  */
 #import "PNServiceData+Private.h"
+#import "PNOperationResult+Private.h"
 #import "PNListFilesResult.h"
-#import "PNResult+Private.h"
 #import "PNFile+Private.h"
 
 

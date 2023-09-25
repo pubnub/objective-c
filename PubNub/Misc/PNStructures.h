@@ -7,7 +7,7 @@
  * @copyright © 2010-2019 PubNub, Inc.
  */
 #import <Foundation/Foundation.h>
-#import "PNDefines.h"
+#import <PubNub/PNDefines.h>
 
 
 #pragma mark Class forward
@@ -17,7 +17,7 @@
 @class PNChannelGroupChannelsResult, PNPresenceWhereNowResult, PNChannelClientStateResult;
 @class PNClientStateGetResult, PNClientStateUpdateStatus, PNAcknowledgmentStatus;
 @class PNChannelGroupsResult, PNMessageCountResult, PNHistoryResult, PNAPICallBuilder;
-@class PNPublishStatus, PNSignalStatus, PNErrorStatus, PNTimeResult, PNResult, PNStatus;
+@class PNPublishStatus, PNSignalStatus, PNErrorStatus, PNTimeResult, PNOperationResult, PNStatus;
 @class PNSetUUIDMetadataStatus, PNFetchUUIDMetadataResult, PNFetchAllUUIDMetadataResult;
 @class PNSetChannelMetadataStatus, PNFetchChannelMetadataResult, PNFetchAllChannelsMetadataResult;
 @class PNManageMembershipsStatus, PNFetchMembershipsResult, PNManageChannelMembersStatus, PNFetchChannelMembersResult;
@@ -41,7 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param result \b PubNub service response information.
  * @param status Information about request to \b PubNub service failed or received error.
  */
-typedef void(^PNCompletionBlock)(PNResult * _Nullable result, PNStatus * _Nullable status);
+typedef void(^PNCompletionBlock)(PNOperationResult * _Nullable result, PNStatus * _Nullable status);
 
 
 /**
@@ -52,7 +52,7 @@ typedef void(^PNCompletionBlock)(PNResult * _Nullable result, PNStatus * _Nullab
  *
  * @param result Results generated from passed request.
  */
-typedef void(^PNResultBlock)(PNResult *result);
+typedef void(^PNResultBlock)(PNOperationResult *result);
 
 /**
  * @brief Completion block for som API endpoint where only request processing status can be

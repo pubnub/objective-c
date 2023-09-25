@@ -1,6 +1,6 @@
-#import "PNAcknowledgmentStatus.h"
-#import "PNServiceData.h"
-#import "PNFile.h"
+#import <PubNub/PNAcknowledgmentStatus.h>
+#import <PubNub/PNServiceData.h>
+#import <PubNub/PNFile.h>
 
 
 NS_ASSUME_NONNULL_BEGIN

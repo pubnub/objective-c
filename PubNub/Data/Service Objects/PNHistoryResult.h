@@ -1,5 +1,5 @@
-#import "PNResult.h"
-#import "PNServiceData.h"
+#import <PubNub/PNOperationResult.h>
+#import <PubNub/PNServiceData.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -65,7 +65,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @author Serhii Mamontov
  * @copyright © 2010-2019 PubNub, Inc.
  */
-@interface PNHistoryResult : PNResult
+@interface PNHistoryResult : PNOperationResult
 
 
 #pragma mark -  Information

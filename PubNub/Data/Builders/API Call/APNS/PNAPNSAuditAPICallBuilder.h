@@ -1,4 +1,4 @@
-#import "PNAPNSAPICallBuilder.h"
+#import <PubNub/PNAPNSAPICallBuilder.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @note This method will forward call to 'apnsToken' block.
  *
- * @param token Device token / identifier against which search on \b PubNub service should be
+ * @discussion Device token / identifier against which search on \b PubNub service should be
  *     performed. Depending from passed \c pushType should be \a NSData (for \b PNAPNS2Push and
  *     \b PNAPNSPush) or \a NSString for other.
  *
@@ -34,8 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Device APNS push token addition block.
  *
- * @param token Device APNS-provided push token against which search on \b PubNub service should be
- *     performed.
+ * @discussion Device APNS-provided push token against which search on \b PubNub service should be performed.
  *
  * @return API call configuration builder.
  *
@@ -48,7 +47,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Device FCM push token addition block.
  *
- * @param token Device FCM-provided push token against which search on \b PubNub service should be
+ * @discussion Device FCM-provided push token against which search on \b PubNub service should be
  *     performed.
  *
  * @return API call configuration builder.
@@ -65,7 +64,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @note This field works only if request initialized with \c pushType set to \b PNAPNS2Push
  * (by default set to \b PNAPNSDevelopment).
  *
- * @param environment One of \b PNAPNSEnvironment fields which specify environment within which
+ * @discussion One of \b PNAPNSEnvironment fields which specify environment within which
  *   device should manage list of channels with enabled notifications.
  *
  * @return API call configuration builder.
@@ -77,7 +76,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Push notifications service.
  *
- * @param pushType One of \b PNPushType fields which specify spervide to manage notifications for
+ * @discussion One of \b PNPushType fields which specify spervide to manage notifications for
  *     device specified with \c pushToken.
  *
  * @return API call configuration builder.
@@ -92,7 +91,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @note This field works only if request initialized with \c pushType set to \b PNAPNS2Push
  * (by default set to \b NSBundle.mainBundle.bundleIdentifier).
  *
- * @param environment Notifications topic name (usually it is application's bundle identifier)
+ * @discussion Notifications topic name (usually it is application's bundle identifier)
  *
  * @return API call configuration builder.
  *
@@ -106,7 +105,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Perform API call.
  *
- * @param block Push notifications status audition completion block.
+ * @discussion Push notifications status audition completion block.
  *
  * @since 4.5.4
  */
@@ -118,14 +117,17 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Arbitrary query parameters addition block.
  *
- * @param params List of arbitrary percent encoded query parameters which should be sent along with
+ * @discussion List of arbitrary percent encoded query parameters which should be sent along with
  *     original API call.
  *
  * @return API call configuration builder.
  *
  * @since 4.8.2
  */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wincompatible-property-type"
 @property (nonatomic, readonly, strong) PNAPNSAuditAPICallBuilder * (^queryParam)(NSDictionary *params);
+#pragma clang diagnostic pop
 
 #pragma mark -
 

@@ -57,6 +57,8 @@
 }
 
 - (PNConfiguration *)configurationForTestCaseWithName:(NSString *)name {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     PNConfiguration *configuration = [super configurationForTestCaseWithName:name];
     configuration.useRandomInitializationVector = [self.name rangeOfString:@"RandomIV"].location != NSNotFound;
     
@@ -72,7 +74,8 @@
         configuration.cipherKey = cipherKey;
         self.configurationRequestCounter++;
     }
-    
+#pragma clang diagnostic pop
+
     return configuration;
 }
 
@@ -98,10 +101,12 @@
     NSNumber *firstTimetoken = publishedMessages.firstObject[@"timetoken"];
     NSNumber *lastTimetoken = publishedMessages.lastObject[@"timetoken"];
     NSDictionary *checkedMessage = publishedMessages[checkedMessageIdx];
-    
-    
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-    
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self.client historyForChannel:channel
                         withCompletion:^(PNHistoryResult *result, PNErrorStatus *status) {
@@ -132,9 +137,11 @@
     NSNumber *middleMinusOneTimetoken = publishedMessages[1][@"timetoken"];
     NSNumber *middleTimetoken = publishedMessages[2][@"timetoken"];
     
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-    
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self.client historyForChannel:channel start:middleTimetoken end:middleMinusOneTimetoken limit:101
                                reverse:YES withCompletion:^(PNHistoryResult *result, PNErrorStatus *status) {
@@ -162,9 +169,11 @@
     NSUInteger checkedMessageIdx = (NSUInteger)(expectedMessagesCount * 0.5f);
     NSDictionary *checkedMessage = publishedMessages[checkedMessageIdx];
     
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-    
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self.client historyForChannel:channel start:nil end:nil includeTimeToken:YES
                         withCompletion:^(PNHistoryResult *result, PNErrorStatus * status) {
@@ -192,9 +201,11 @@
                                                            usingClient:nil];
     NSDictionary *checkedMessage = publishedMessages[checkedMessageIdx];
     
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-    
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self.client historyForChannel:channel withMetadata:YES
                             completion:^(PNHistoryResult *result, PNErrorStatus *status) {
@@ -224,9 +235,11 @@
     
     [self waitTask:@"waitForDistribution" completionFor:1.f];
     
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertTrue(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-        
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self.client historyForChannel:channel start:nil end:nil includeMetadata:YES
                         withCompletion:^(PNHistoryResult *result, PNErrorStatus *status) {
@@ -253,9 +266,11 @@
                                                              toChannel:channel
                                                            usingClient:nil];
     
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-        
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self.client historyForChannel:channel start:nil end:nil includeMetadata:YES
                         withCompletion:^(PNHistoryResult *result, PNErrorStatus *status) {
@@ -286,9 +301,11 @@
     
     [self waitTask:@"waitForDistribution" completionFor:1.f];
     
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertTrue(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-    
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [consumerClient historyForChannel:channel start:nil end:nil includeMessageActions:YES
                            withCompletion:^(PNHistoryResult *result, PNErrorStatus *status) {
@@ -320,9 +337,11 @@
                                                              toChannel:channel
                                                            usingClient:nil];
     
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-    
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [consumerClient historyForChannel:channel start:nil end:nil includeMessageActions:YES
                            withCompletion:^(PNHistoryResult *result, PNErrorStatus *status) {
@@ -357,9 +376,11 @@
     NSNumber *middleMinusOneTimetoken = publishedMessages[halfSize - 1][@"timetoken"];
     NSNumber *middleTimetoken = publishedMessages[halfSize][@"timetoken"];
     
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-    
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self.client historyForChannel:channel start:nil end:nil limit:halfSize
                       includeTimeToken:YES withCompletion:^(PNHistoryResult *result, PNErrorStatus *status) {
@@ -416,9 +437,11 @@
     NSNumber *middleMinusOneTimetoken = publishedMessages[halfSize - 1][@"timetoken"];
     NSNumber *middleTimetoken = publishedMessages[halfSize][@"timetoken"];
     
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-    
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self.client historyForChannel:channel start:nil end:nil limit:halfSize reverse:YES
                       includeTimeToken:YES withCompletion:^(PNHistoryResult *result, PNErrorStatus *status) {
@@ -499,9 +522,11 @@
     NSNumber *lastTimetoken = publishedMessages.lastObject[@"timetoken"];
     NSDictionary *checkedMessage = publishedMessages[checkedMessageIdx];
     
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-    
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         self.client.history()
             .channel(channel)
@@ -539,9 +564,11 @@
                                                  inChannel:channel
                                                usingClient:nil];
     
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-    
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self.client historyForChannel:channel withMessageActions:YES
                             completion:^(PNHistoryResult *result, PNErrorStatus *status) {
@@ -599,9 +626,11 @@
                                                  inChannel:channel
                                                usingClient:nil];
     
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-    
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         self.client.history()
             .channel(channel)
@@ -679,9 +708,11 @@
     NSArray<NSDictionary *> *messages1 = publishedMessages[channels.firstObject];
     NSArray<NSDictionary *> *messages2 = publishedMessages[channels.lastObject];
     
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-    
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         self.client.history()
             .channels(channels)
@@ -718,9 +749,11 @@
     
     [self publishMessages:expectedMessagesCount toChannels:channels usingClient:nil];
     
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-    
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         self.client.history()
             .channels(channels)
@@ -746,9 +779,11 @@
     
     [self publishMessages:expectedMessagesCount toChannels:channels usingClient:nil];
     
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-    
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         self.client.history()
             .channels(channels)
@@ -786,9 +821,11 @@
     NSNumber *channel2FirstTimetoken = messages2.firstObject[@"timetoken"];
     NSNumber *channel2LastTimetoken = messages2.lastObject[@"timetoken"];
     
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-    
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         self.client.history()
             .channels(channels)

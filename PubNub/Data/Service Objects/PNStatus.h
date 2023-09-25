@@ -1,5 +1,5 @@
-#import "PNResult.h"
-#import "PNStructures.h"
+#import <PubNub/PNOperationResult.h>
+#import <PubNub/PNStructures.h>
 
 
 
@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @since 4.0
  * @copyright © 2010-2019 PubNub, Inc.
  */
-@interface PNStatus : PNResult
+@interface PNStatus : PNOperationResult
 
 
 #pragma mark Information

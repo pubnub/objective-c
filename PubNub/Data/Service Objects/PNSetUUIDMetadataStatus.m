@@ -4,10 +4,10 @@
  * @since 4.14.0
  * @copyright © 2010-2020 PubNub, Inc.
  */
+#import "PNOperationResult+Private.h"
 #import "PNSetUUIDMetadataStatus.h"
 #import "PNUUIDMetadata+Private.h"
 #import "PNServiceData+Private.h"
-#import "PNResult+Private.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

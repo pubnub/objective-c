@@ -7,12 +7,12 @@
 #import "NSDateFormatter+PNCacheable.h"
 #import "PNChannelMetadata+Private.h"
 #import "PNSubscribeStatus+Private.h"
+#import "PNOperationResult+Private.h"
 #import "PNMessageAction+Private.h"
 #import "PNUUIDMetadata+Private.h"
 #import "PNServiceData+Private.h"
 #import "PNMembership+Private.h"
 #import "PNSubscriberResults.h"
-#import "PNResult+Private.h"
 #import "PNFile+Private.h"
 
 #pragma mark Protected interfaces declaration

@@ -6,6 +6,7 @@
  */
 #import "PNHistoryParser.h"
 #import "PubNub+CorePrivate.h"
+#import "PNCryptoProvider.h"
 #import "PNConstants.h"
 #import "PNLogMacro.h"
 #import "PNLLogger.h"
@@ -167,29 +168,26 @@ NS_ASSUME_NONNULL_END
             [self normalizeActionTimetokens:((NSDictionary *)actions).allValues];
         }
 
-        if (((NSString *)additionalData[@"cipherKey"]).length){
-            BOOL useRandomIV = ((NSNumber *)additionalData[@"randomIV"]).boolValue;
+        if (additionalData[@"cryptoModule"]) {
+            id<PNCryptoProvider> cryptoModule = additionalData[@"cryptoModule"];
             BOOL isDictionary = [message isKindOfClass:[NSDictionary class]];
             NSError *decryptionError;
             id decryptedMessage = nil;
-            id dataForDecryption = isDictionary ? ((NSDictionary *)message)[@"pn_other"] : message;
+            id encryptedData = isDictionary ? ((NSDictionary *)message)[@"pn_other"] : message;
 
-            if ([dataForDecryption isKindOfClass:[NSString class]]) {
-                NSData *eventData = [PNAES decrypt:dataForDecryption
-                                      withRandomIV:useRandomIV
-                                         cipherKey:additionalData[@"cipherKey"]
-                                          andError:&decryptionError];
+            if ([encryptedData isKindOfClass:[NSString class]]) {
+                NSCharacterSet *trimCharSet = [NSCharacterSet characterSetWithCharactersInString:@"\""];
+                encryptedData = [PNString base64DataFrom:[encryptedData stringByTrimmingCharactersInSet:trimCharSet]];
+                PNResult<NSData *> *decryptResult = [cryptoModule decryptData:encryptedData];
+                NSString *decryptedEventData = nil;
 
-                NSString *decryptedMessageString = nil;
-                if (eventData) {
-                    decryptedMessageString = [[NSString alloc] initWithData:eventData
-                                                                   encoding:NSUTF8StringEncoding];
-                }
+                if (decryptResult.isError) decryptionError = decryptResult.error;
+                else decryptedEventData = [[NSString alloc] initWithData:decryptResult.data encoding:NSUTF8StringEncoding];
 
                 // In case if decrypted message (because of error suppression) is equal to original
                 // message, there is no need to retry JSON de-serialization.
-                if (decryptedMessageString && ![decryptedMessageString isEqualToString:dataForDecryption]) {
-                    decryptedMessage = [PNJSON JSONObjectFrom:decryptedMessageString withError:nil];
+                if (decryptedEventData && ![decryptedEventData isEqualToString:encryptedData]) {
+                    decryptedMessage = [PNJSON JSONObjectFrom:decryptedEventData withError:nil];
                 }
             }
             

@@ -5,9 +5,9 @@
  * @copyright © 2010-2020 PubNub, Inc.
  */
 #import "PNFetchUUIDMetadataResult.h"
+#import "PNOperationResult+Private.h"
 #import "PNUUIDMetadata+Private.h"
 #import "PNServiceData+Private.h"
-#import "PNResult+Private.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

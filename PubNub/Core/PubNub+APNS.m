@@ -499,7 +499,7 @@ NS_ASSUME_NONNULL_END
             };
         }
         
-        [weakSelf callBlock:block status:NO withResult:(PNResult *)result andStatus:status];
+        [weakSelf callBlock:block status:NO withResult:(PNOperationResult *)result andStatus:status];
     }];
 }
 

@@ -1,4 +1,4 @@
-#import "PNFilesAPICallBuilder.h"
+#import <PubNub/PNFilesAPICallBuilder.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Key which is used to decrypt downloaded file
  *
- * @param cipherKey Data decryption key.
+ * @discussion Data decryption key.
  *
  * @return API call configuration builder.
  */
@@ -30,9 +30,9 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief URL to location where file should be stored.
  *
- * @note If file URL not set, file will be loaded in-memory.
+ * @discussion URL on local file system.
  *
- * @param url URL on local file system.
+ * @note If file URL not set, file will be loaded in-memory.
  *
  * @return API call configuration builder.
  */
@@ -44,7 +44,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Perform API call.
  *
- * @param block \c Download \c file completion handler block.
+ * @discussion \c Download \c file completion handler block.
  */
 @property (nonatomic, readonly, strong) void(^performWithCompletion)(PNDownloadFileCompletionBlock block);
 
@@ -54,12 +54,15 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Arbitrary query parameters addition block.
  *
- * @param params List of arbitrary percent-encoded query parameters which should be sent along with
+ * @discussion List of arbitrary percent-encoded query parameters which should be sent along with
  * original API call.
  *
  * @return API call configuration builder.
  */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wincompatible-property-type"
 @property (nonatomic, readonly, strong) PNDownloadFileAPICallBuilder * (^queryParam)(NSDictionary *params);
+#pragma clang diagnostic pop
 
 #pragma mark -
 

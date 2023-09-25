@@ -8,32 +8,32 @@ abstract_target 'MockableTests' do
   pod 'YAHTTPVCR'
  
   target '[macOS] Mocked Integration Tests' do
-    platform :osx, '10.11'
+    platform :osx, '11.00'
   end
 
   target '[tvOS] Mocked Integration Tests' do
-    platform :tvos, '10.0'
+    platform :tvos, '14.0'
   end
 
   target '[iOS] Mocked Integration Tests' do
-    platform :ios, '9.0'
+    platform :ios, '14.0'
   end
 
   target '[macOS] Unit Tests' do
-    platform :osx, '10.11'
+    platform :osx, '11.00'
   end
 
   target '[tvOS] Unit Tests' do
-    platform :tvos, '10.0'
+    platform :tvos, '14.0'
   end
 
   target '[iOS] Unit Tests' do
-    platform :ios, '9.0'
+    platform :ios, '14.0'
   end
 end
 
 target '[iOS] Integration Tests' do
-  platform :ios, '9.0'
+  platform :ios, '14.0'
   pod 'PubNub', :path => '../'
 end
 
@@ -43,11 +43,11 @@ abstract_target 'ContractTests' do
   pod 'PubNub', :path => '../'
 
   target '[iOS] Contract Tests' do
-    platform :ios, '9.0'
+    platform :ios, '14.0'
   end
 
   target '[iOS] Contract Tests Beta' do
-    platform :ios, '9.0'
+    platform :ios, '14.0'
   end
 end
 
@@ -69,6 +69,7 @@ post_install do |installer_representation|
             config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] = '$(inherited) PUBNUB_DISABLE_LOGGER=1'
             config.build_settings['CLANG_ENABLE_CODE_COVERAGE'] = target.name =~ /PubNub/ ? 'YES' : 'NO'
             config.build_settings['CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER'] = 'NO'
+            config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '14.0'
         end
     end
 end

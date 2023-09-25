@@ -1,5 +1,5 @@
-#import "PubNub+Core.h"
-#import "PNPAMToken.h"
+#import <PubNub/PubNub+Core.h>
+#import <PubNub/PNPAMToken.h>
 
 
 NS_ASSUME_NONNULL_BEGIN

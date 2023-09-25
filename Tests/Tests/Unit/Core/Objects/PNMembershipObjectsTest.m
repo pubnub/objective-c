@@ -102,7 +102,7 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)testItShouldSetMembershipsUsingPubNubClientUUIDWhenUUIDIsMissing {
-    NSString *expectedId = self.client.currentConfiguration.uuid;
+    NSString *expectedId = self.client.currentConfiguration.userID;
     NSArray<NSDictionary *> *channels = @[
         @{ @"channel": [NSUUID UUID].UUIDString, @"custom": @{ @"channel": [NSUUID UUID].UUIDString } }
     ];
@@ -188,7 +188,7 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)testItShouldRemoveMembershipsUsingPubNubClientUUIDWhenUUIDIsMissing {
-    NSString *expectedId = self.client.currentConfiguration.uuid;
+    NSString *expectedId = self.client.currentConfiguration.userID;
     NSArray<NSDictionary *> *channels = @[
         @{ @"channel": [NSUUID UUID].UUIDString, @"custom": @{ @"channel": [NSUUID UUID].UUIDString } }
     ];
@@ -276,7 +276,7 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)testItShouldManageMembershipsUsingPubNubClientUUIDWhenUUIDIsMissing {
-    NSString *expectedId = self.client.currentConfiguration.uuid;
+    NSString *expectedId = self.client.currentConfiguration.userID;
     NSArray<NSDictionary *> *setChannels = @[
             @{ @"channel": [NSUUID UUID].UUIDString, @"custom": @{ @"channel": [NSUUID UUID].UUIDString } }
     ];
@@ -381,7 +381,7 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)testItShouldFetchMembershipsUsingPubNubClientUUIDMembershipsWhenUUIDIsMissing {
-    NSString *expectedId = self.client.currentConfiguration.uuid;
+    NSString *expectedId = self.client.currentConfiguration.userID;
 
 
     id clientMock = [self mockForObject:self.client];

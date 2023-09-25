@@ -130,7 +130,7 @@ NS_ASSUME_NONNULL_END
     __weak __typeof(self) weakSelf = self;
     [self processOperation:operationType
             withParameters:parameters
-           completionBlock:^(PNResult *result, PNStatus *status) {
+           completionBlock:^(PNOperationResult *result, PNStatus *status) {
                
         if (status.isError) {
             status.retryBlock = ^{

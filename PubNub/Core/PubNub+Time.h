@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
-#import "PNTimeAPICallBuilder.h"
-#import "PubNub+Core.h"
+#import <PubNub/PNTimeAPICallBuilder.h>
+#import <PubNub/PubNub+Core.h>
 
 
 #pragma mark Class forward

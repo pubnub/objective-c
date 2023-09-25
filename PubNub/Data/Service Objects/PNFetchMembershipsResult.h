@@ -1,6 +1,6 @@
-#import "PNServiceData.h"
-#import "PNMembership.h"
-#import "PNResult.h"
+#import <PubNub/PNServiceData.h>
+#import <PubNub/PNOperationResult.h>
+#import <PubNub/PNMembership.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -59,7 +59,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @since 4.14.0
  * @copyright © 2010-2020 PubNub, Inc.
  */
-@interface PNFetchMembershipsResult : PNResult
+@interface PNFetchMembershipsResult : PNOperationResult
 
 
 #pragma mark - Information

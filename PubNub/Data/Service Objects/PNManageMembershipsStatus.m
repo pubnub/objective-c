@@ -5,9 +5,9 @@
  * @copyright © 2010-2019 PubNub, Inc.
  */
 #import "PNManageMembershipsStatus.h"
+#import "PNOperationResult+Private.h"
 #import "PNServiceData+Private.h"
 #import "PNMembership+Private.h"
-#import "PNResult+Private.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

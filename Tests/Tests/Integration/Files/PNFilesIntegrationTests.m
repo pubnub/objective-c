@@ -56,12 +56,15 @@ NS_ASSUME_NONNULL_END
 
 - (PNConfiguration *)configurationForTestCaseWithName:(NSString *)name {
     PNConfiguration *configuration = [super configurationForTestCaseWithName:name];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     configuration.cipherKey = self.cipherKey;
     
     if ([self.name pnt_includesString:@"Encrypt"] && ![self.name pnt_includesString:@"DontDecrypt"]) {
         configuration.cipherKey = self.cipherKey;
     }
-    
+#pragma clang diagnostic pop
+
     if ([self.name pnt_includesString:@"AuthKeyIsSet"]) {
         configuration.authKey = [self authForUser:@"serhii"];
     }
@@ -347,8 +350,8 @@ NS_ASSUME_NONNULL_END
     PubNub *client1 = [self createPubNubForUser:@"serhii"];
     PubNub *client2 = [self createPubNubForUser:@"david"];
     client2.filterExpression = [NSString stringWithFormat:@"uuid == '%@'",
-                                client2.currentConfiguration.uuid];
-    
+                                client2.currentConfiguration.userID];
+
     [self subscribeClient:client2 toChannels:@[self.channel] withPresence:NO];
     
     
@@ -368,7 +371,7 @@ NS_ASSUME_NONNULL_END
         client1.files().sendFile(self.channel, fileName)
             .data(data)
             .message(expectedMessage)
-            .fileMessageMetadata(@{ @"uuid": client1.currentConfiguration.uuid })
+            .fileMessageMetadata(@{ @"uuid": client1.currentConfiguration.userID })
             .performWithCompletion(^(PNSendFileStatus *status) {
                 XCTAssertFalse(status.isError);
             });
@@ -386,8 +389,8 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldDownloadFileAndReceiveResultWithExpectedOperation {
     NSArray<NSDictionary *> *uploadedFiles = [self uploadFiles:1 toChannel:self.channel usingClient:nil];
-    NSString *expectedUUID = [@"uuid=" stringByAppendingString:self.client.currentConfiguration.uuid];
-    
+    NSString *expectedUUID = [@"uuid=" stringByAppendingString:self.client.currentConfiguration.userID];
+
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         self.client.files().downloadFile(self.channel, uploadedFiles.firstObject[@"id"], uploadedFiles.firstObject[@"name"])
@@ -563,7 +566,7 @@ NS_ASSUME_NONNULL_END
 - (void)testItShouldFetchFilesListWhenAuthKeyIsSet {
     NSArray<NSDictionary *> *uploadedFiles = [self uploadFiles:1 toChannel:self.channel usingClient:nil];
     NSString *expectedAuth = [@"auth=" stringByAppendingString:self.client.currentConfiguration.authKey];
-    NSString *expectedUUID = [@"uuid=" stringByAppendingString:self.client.currentConfiguration.uuid];
+    NSString *expectedUUID = [@"uuid=" stringByAppendingString:self.client.currentConfiguration.userID];
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {

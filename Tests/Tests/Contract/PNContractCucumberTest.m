@@ -37,10 +37,13 @@ void CucumberishInit(void) {
     if ([xcTestBundlePath rangeOfString:@"Contract Tests Beta"].location != NSNotFound) {
         [excludeTags removeObject:@"beta"];
     }
+
+    NSArray *includeTags = @[@"featureSet=cryptoModule"];
+    excludeTags = nil;
     
     NSBundle * bundle = [NSBundle bundleForClass:[PNContractTestCase class]];
     [Cucumberish executeFeaturesInDirectory:@"Features"
                                  fromBundle:bundle
-                                includeTags:nil
+                                includeTags:includeTags
                                 excludeTags:excludeTags];
 }

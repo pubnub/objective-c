@@ -7,10 +7,10 @@
 #import "PNNetwork.h"
 #import "NSURLSessionConfiguration+PNConfigurationPrivate.h"
 #import "PNNetworkResponseSerializer.h"
+#import "PNOperationResult+Private.h"
 #import "PNRequestParameters.h"
 #import "PNPrivateStructures.h"
 #import "PubNub+CorePrivate.h"
-#import "PNResult+Private.h"
 #import "PNStatus+Private.h"
 #import "PNConfiguration.h"
 #import "PNErrorStatus.h"
@@ -531,7 +531,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param block Block which should be called at the end of pre-processed data wrapping into objects.
  */
 - (void)handleOperation:(PNOperationType)operation
-    processingCompletedWithResult:(nullable PNResult *)result
+    processingCompletedWithResult:(nullable PNOperationResult *)result
                            status:(nullable PNStatus *)status
                   completionBlock:(id)block;
 
@@ -814,7 +814,7 @@ NS_ASSUME_NONNULL_END
 }
 
 - (Class)resultClassForOperation:(PNOperationType)operation {
-    Class class = [PNResult class];
+    Class class = [PNOperationResult class];
     
     if (PNOperationResultClasses[operation]) {
         class = NSClassFromString(PNOperationResultClasses[operation]);
@@ -923,10 +923,7 @@ NS_ASSUME_NONNULL_END
         NSMutableDictionary *additionalData = [NSMutableDictionary new];
         additionalData[@"url"] = task.response.URL ?: task.currentRequest.URL;
 
-        if (self.configuration.cipherKey.length) {
-            additionalData[@"cipherKey"] = self.configuration.cipherKey;
-            additionalData[@"randomIV"] = @(self.configuration.shouldUseRandomInitializationVector);
-        }
+        if (self.configuration.cryptoModule) additionalData[@"cryptoModule"] = self.configuration.cryptoModule;
 
         /**
          * If additional data required client should assume what potentially additional calculations
@@ -1269,7 +1266,7 @@ NS_ASSUME_NONNULL_END
          processingError:(NSError *)error
          completionBlock:(id)block {
     
-    PNResult *result = nil;
+    PNOperationResult *result = nil;
     PNStatus *status = nil;
 
     if (task && ((NSHTTPURLResponse *)task.response).statusCode == 0 &&
@@ -1323,7 +1320,7 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)handleOperation:(PNOperationType)operation
-    processingCompletedWithResult:(PNResult *)result
+    processingCompletedWithResult:(PNOperationResult *)result
                            status:(PNStatus *)status
                   completionBlock:(id)block {
 
