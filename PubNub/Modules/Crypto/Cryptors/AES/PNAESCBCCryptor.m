@@ -104,6 +104,13 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Data processing
 
 - (PNResult<PNEncryptedData *> *)encryptData:(NSData *)data {
+    if (data.length == 0) {
+        NSError *error = [NSError errorWithDomain:kPNCryptorErrorDomain
+                                             code:kPNCryptorEncryptionError
+                                         userInfo:@{ NSLocalizedDescriptionKey: @"Unable to encrypt empty data." }];
+        return [PNResult resultWithData:nil error:error];
+    }
+
     NSData *initializationVector = self.initializationVector;
     PNResult<PNCCCryptorWrapper *> *wrapper = [PNCCCryptorWrapper AESCBCEncryptorWithCipherKey:self.cipherKey
                                                                           initializationVector:initializationVector];
@@ -139,6 +146,13 @@ NS_ASSUME_NONNULL_END
         }
     }
 
+    if (encryptedData.length == 0) {
+        NSError *error = [NSError errorWithDomain:kPNCryptorErrorDomain
+                                             code:kPNCryptorDecryptionError
+                                         userInfo:@{ NSLocalizedDescriptionKey: @"Unable to decrypt empty data." }];
+        return [PNResult resultWithData:nil error:error];
+    }
+
     PNResult<PNCCCryptorWrapper *> *wrapper = [PNCCCryptorWrapper AESCBCDecryptorWithCipherKey:self.cipherKey
                                                                           initializationVector:initializationVector];
     if (wrapper.isError) return (PNResult<NSData *> *)wrapper;
@@ -150,6 +164,13 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Stream processing
 
 - (PNResult<PNEncryptedStream *> *)encryptStream:(NSInputStream *)stream dataLength:(NSUInteger)length {
+    if (length == 0) {
+        NSError *error = [NSError errorWithDomain:kPNCryptorErrorDomain
+                                             code:kPNCryptorEncryptionError
+                                         userInfo:@{ NSLocalizedDescriptionKey: @"Unable to encrypt empty stream." }];
+        return [PNResult resultWithData:nil error:error];
+    }
+
     NSData *initializationVector = self.initializationVector;
     PNResult<PNCCCryptorWrapper *> *wrapper = [PNCCCryptorWrapper AESCBCEncryptorWithCipherKey:self.cipherKey
                                                                           initializationVector:initializationVector];
@@ -188,10 +209,16 @@ NS_ASSUME_NONNULL_END
         }
     }
 
-
     PNResult<PNCCCryptorWrapper *> *wrapper = [PNCCCryptorWrapper AESCBCDecryptorWithCipherKey:self.cipherKey
                                                                           initializationVector:initializationVector];
     if (wrapper.isError) return (PNResult<NSInputStream *> *)wrapper;
+
+    if (stream.stream.inputDataLength == 0) {
+        NSError *error = [NSError errorWithDomain:kPNCryptorErrorDomain
+                                             code:kPNCryptorDecryptionError
+                                         userInfo:@{ NSLocalizedDescriptionKey: @"Unable to decrypt empty stream." }];
+        return [PNResult resultWithData:nil error:error];
+    }
 
     PNCryptorInputStream *cryptorStream = nil;
     cryptorStream = [PNCryptorInputStream inputStreamWithInputStream:stream.stream

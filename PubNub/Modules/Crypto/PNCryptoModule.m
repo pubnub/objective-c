@@ -143,6 +143,13 @@ NS_ASSUME_NONNULL_END
 }
 
 - (PNResult<NSData *> *)decryptData:(NSData *)data {
+    if (data.length == 0) {
+        NSError *error = [NSError errorWithDomain:kPNCryptorErrorDomain
+                                             code:kPNCryptorDecryptionError
+                                         userInfo:@{ NSLocalizedDescriptionKey: @"Unable to encrypt empty data." }];
+        return [PNResult resultWithData:nil error:error];
+    }
+
     PNResult<PNCryptorHeader *> *headerResult = [PNCryptorHeader headerFromData:data];
     if (headerResult.isError) return (PNResult<NSData *> *)headerResult;
 
@@ -212,8 +219,14 @@ NS_ASSUME_NONNULL_END
 }
 
 - (PNResult<NSInputStream *> *)decryptStream:(NSInputStream *)stream dataLength:(NSUInteger)length {
-    PNCryptorInputStream *cryptorStream = [PNCryptorInputStream inputStreamWithInputStream:stream
-                                                                                dataLength:length];
+    if (length == 0) {
+        NSError *error = [NSError errorWithDomain:kPNCryptorErrorDomain
+                                             code:kPNCryptorDecryptionError
+                                         userInfo:@{ NSLocalizedDescriptionKey: @"Unable to encrypt empty data." }];
+        return [PNResult resultWithData:nil error:error];
+    }
+
+    PNCryptorInputStream *cryptorStream = [PNCryptorInputStream inputStreamWithInputStream:stream dataLength:length];
     PNResult<PNCryptorHeader *> *headerResult = [cryptorStream parseHeader];
     if (headerResult.isError) return (PNResult<NSInputStream *> *)headerResult;
 
