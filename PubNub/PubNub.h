@@ -2,7 +2,6 @@
 #define PubNub_h
 
 // Protocols
-#import "PNCryptoProvider.h"
 #import "PNEventsListener.h"
 
 // Categories
@@ -50,6 +49,7 @@
 #import "PNLegacyCryptor.h"
 
 // Protocols
+#import "PNCryptoProvider.h"
 #import "PNCryptor.h"
 
 // Module

@@ -44,6 +44,17 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithCipherKey:(NSString *)cipherKey
        randomInitializationVector:(BOOL)useRandomInitializationVector;
 
+
+#pragma mark - Helpers
+
+/// Initialization vector which should be used for data _encryption_.
+///
+/// Streams / files processing is done **only** with random initialization vector.
+///
+/// - Parameter forStreamProcessing - Whether initialization vector required for stream _encryption_ or not.
+/// - Returns: Suitable initialization vector.
+- (NSData *)initializationVector:(BOOL)forStreamProcessing;
+
 #pragma mark -
 
 
@@ -64,17 +75,7 @@ NS_ASSUME_NONNULL_END
 }
 
 - (NSData *)initializationVector {
-    if (!self.useRandomIV) return _initializationVector;
-    else {
-        uint8_t vectorBytes[kCCBlockSizeAES128];
-        
-        if (SecRandomCopyBytes(kSecRandomDefault, kCCBlockSizeAES128, vectorBytes) != kCCSuccess) {
-            NSData *randomBytes = [[NSUUID UUID].UUIDString dataUsingEncoding:NSUTF8StringEncoding];
-            [randomBytes getBytes:vectorBytes length:kCCBlockSizeAES128];
-        }
-        
-        return [NSData dataWithBytes:vectorBytes length:kCCBlockSizeAES128];
-    }
+    return [self initializationVector:self.useRandomIV];
 }
 
 
@@ -171,7 +172,7 @@ NS_ASSUME_NONNULL_END
         return [PNResult resultWithData:nil error:error];
     }
 
-    NSData *initializationVector = self.initializationVector;
+    NSData *initializationVector = [self initializationVector:YES];
     PNResult<PNCCCryptorWrapper *> *wrapper = [PNCCCryptorWrapper AESCBCEncryptorWithCipherKey:self.cipherKey
                                                                           initializationVector:initializationVector];
     if (wrapper.isError) return (PNResult<PNEncryptedStream *> *)wrapper;
@@ -182,7 +183,7 @@ NS_ASSUME_NONNULL_END
                                                          chunkLength:kCCBlockSizeAES128
                                                      processingBlock:[self processingBlockForWrapper:wrapper.data]];
 
-    NSData *metadata = self.useRandomIV ? initializationVector : nil;
+    NSData *metadata = initializationVector;
     NSUInteger encryptedDataLength = [wrapper.data processedDataLength:length];
     PNEncryptedStream *encryptedStream = [PNEncryptedStream encryptedStreamWithStream:cryptorStream
                                                                            dataLength:encryptedDataLength
@@ -192,21 +193,18 @@ NS_ASSUME_NONNULL_END
 }
 
 - (PNResult<NSInputStream *> *)decryptStream:(PNEncryptedStream *)stream dataLength:(NSUInteger)length {
-    NSData *initializationVector = stream.metadata.length ? stream.metadata
-                                                          : (!self.useRandomIV ? self.initializationVector : nil);
+    NSData *initializationVector = stream.metadata;
 
-    if (!initializationVector && self.useRandomIV) {
-        if (length > kCCBlockSizeAES128) {
-            initializationVector = [stream.stream readCryptorMetadataWithLength:kCCBlockSizeAES128].data;
-        } else {
-            NSError *error = [NSError errorWithDomain:kPNCryptorErrorDomain
-                                                 code:kPNCryptorDecryptionError
-                                             userInfo:@{
-                NSLocalizedDescriptionKey: @"Insufficient amount of data to read cryptor-defined metadata."
-            }];
+    if (initializationVector.length == 0 && length > kCCBlockSizeAES128) {
+        initializationVector = [stream.stream readCryptorMetadataWithLength:kCCBlockSizeAES128].data;
+    } else if (length < kCCBlockSizeAES128) {
+        NSError *error = [NSError errorWithDomain:kPNCryptorErrorDomain
+                                             code:kPNCryptorDecryptionError
+                                         userInfo:@{
+            NSLocalizedDescriptionKey: @"Insufficient amount of data to read cryptor-defined metadata."
+        }];
 
-            return [PNResult resultWithData:nil error:error];
-        }
+        return [PNResult resultWithData:nil error:error];
     }
 
     PNResult<PNCCCryptorWrapper *> *wrapper = [PNCCCryptorWrapper AESCBCDecryptorWithCipherKey:self.cipherKey
@@ -238,6 +236,20 @@ NS_ASSUME_NONNULL_END
 
 
 #pragma mark - Helpers
+
+- (NSData *)initializationVector:(BOOL)forStreamProcessing {
+    if (!forStreamProcessing && !self.useRandomIV) return _initializationVector;
+    else {
+        uint8_t vectorBytes[kCCBlockSizeAES128];
+
+        if (SecRandomCopyBytes(kSecRandomDefault, kCCBlockSizeAES128, vectorBytes) != kCCSuccess) {
+            NSData *randomBytes = [[NSUUID UUID].UUIDString dataUsingEncoding:NSUTF8StringEncoding];
+            [randomBytes getBytes:vectorBytes length:kCCBlockSizeAES128];
+        }
+
+        return [NSData dataWithBytes:vectorBytes length:kCCBlockSizeAES128];
+    }
+}
 
 - (NSData *)digestForKey:(NSString *)key {
     NSMutableData *digestData = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];

@@ -15,7 +15,6 @@ FOUNDATION_EXPORT const unsigned char PubNubVersionString[];
 
 
 // Protocols
-#import <PubNub/PNCryptoProvider.h>
 #import <PubNub/PNEventsListener.h>
 
 // Categories
@@ -63,6 +62,7 @@ FOUNDATION_EXPORT const unsigned char PubNubVersionString[];
 #import <PubNub/PNLegacyCryptor.h>
 
 // Protocols
+#import <PubNub/PNCryptoProvider.h>
 #import <PubNub/PNCryptor.h>
 
 // Module
