@@ -7,7 +7,6 @@
 #import "PNAPICallBuilder+Private.h"
 #import "PubNub+MessageActions.h"
 #import "PubNub+CorePrivate.h"
-#import "PNResult+Private.h"
 #import "PNStatus+Private.h"
 
 

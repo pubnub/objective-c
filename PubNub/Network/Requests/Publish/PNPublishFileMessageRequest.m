@@ -18,6 +18,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Information
 
+/// Crypto module for data processing.
+///
+/// **PubNub** client uses this instance to _encrypt_ and _decrypt_ data that has been sent and received from the
+/// **PubNub** network.
+@property(nonatomic, nullable, strong) id<PNCryptoProvider> cryptoModule;
+
 /**
  * @brief Unique identifier provided during file upload.
  */

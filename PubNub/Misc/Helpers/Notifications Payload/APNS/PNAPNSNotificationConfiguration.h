@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "PNAPNSNotificationTarget.h"
+#import <PubNub/PNAPNSNotificationTarget.h>
 
 
 NS_ASSUME_NONNULL_BEGIN

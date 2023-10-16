@@ -6,7 +6,7 @@
  */
 #import "PNServiceData+Private.h"
 #import "PNFetchChannelMembersResult.h"
-#import "PNResult+Private.h"
+#import "PNOperationResult+Private.h"
 #import "PNChannelMember+Private.h"
 
 

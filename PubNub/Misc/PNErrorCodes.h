@@ -17,6 +17,7 @@
 static NSString * const kPNStorageErrorDomain = @"PNStorageErrorDomain";
 static NSString * const kPNCBORErrorDomain = @"PNCBORErrorDomain";
 static NSString * const kPNAESErrorDomain = @"PNAESErrorDomain";
+static NSString * const kPNCryptorErrorDomain = @"PNCryptorErrorDomain";
 static NSString * const kPNAPIErrorDomain = @"PNAPIErrorDomain";
 static NSString * const kPNAuthErrorDomain = @"PNAuthErrorDomain";
 
@@ -56,6 +57,21 @@ static NSInteger const kPNAESConfigurationError = 5001;
 static NSInteger const kPNAESInsufficientMemoryError = 5002;
 static NSInteger const kPNAESEncryptionError = 5003;
 static NSInteger const kPNAESDecryptionError = 5004;
+
+/// Underlying cryptor module configuration error.
+static NSInteger const kPNCryptorConfigurationError = kPNAESConfigurationError;
+
+/// Not enough memory to complete cryptor operation.
+static NSInteger const kPNCryptorInsufficientMemoryError = kPNAESInsufficientMemoryError;
+
+/// There were an error during data encryption process.
+static NSInteger const kPNCryptorEncryptionError = kPNAESEncryptionError;
+
+/// There were an error during data encryption process.
+static NSInteger const kPNCryptorDecryptionError = kPNAESDecryptionError;
+
+/// Unknown cryptor identifier error.
+static NSInteger const kPNCryptorUnknownCryptorError = 5005;
 
 
 #pragma mark -  CBOR Error domain codes

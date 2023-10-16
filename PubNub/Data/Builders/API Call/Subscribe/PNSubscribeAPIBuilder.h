@@ -1,5 +1,5 @@
-#import "PNAPICallBuilder.h"
-#import "PNStructures.h"
+#import <PubNub/PNAPICallBuilder.h>
+#import <PubNub/PNStructures.h>
 
 
 #pragma mark Class forward
@@ -49,7 +49,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Presence channel names addition block.
  *
- * @param channels List of channel names for which client should try to subscribe on presence
+ * @param presenceChannels List of channel names for which client should try to subscribe on presence
  *     observing channels.
  *
  * @since 4.5.4
@@ -79,7 +79,10 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @since 4.8.2
  */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wincompatible-property-type"
 @property (nonatomic, readonly, strong) PNSubscribeAPIBuilder * (^queryParam)(NSDictionary *params);
+#pragma clang diagnostic pop
 
 #pragma mark -
 

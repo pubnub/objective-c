@@ -1,6 +1,6 @@
-#import "PNServiceData.h"
-#import "PNResult.h"
-#import "PNChannelMetadata.h"
+#import <PubNub/PNServiceData.h>
+#import <PubNub/PNOperationResult.h>
+#import <PubNub/PNChannelMetadata.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -84,7 +84,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @since 4.14.0
  * @copyright © 2010-2020 PubNub, Inc.
  */
-@interface PNFetchChannelMetadataResult : PNResult
+@interface PNFetchChannelMetadataResult : PNOperationResult
 
 
 #pragma mark - Information
@@ -109,7 +109,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @since 4.14.0
  * @copyright © 2010-2020 PubNub, Inc.
  */
-@interface PNFetchAllChannelsMetadataResult : PNResult
+@interface PNFetchAllChannelsMetadataResult : PNOperationResult
 
 
 #pragma mark - Information

@@ -1,5 +1,5 @@
-#import "PNStructures.h"
-#import "PNRequest.h"
+#import <PubNub/PNStructures.h>
+#import <PubNub/PNRequest.h>
 
 
 NS_ASSUME_NONNULL_BEGIN

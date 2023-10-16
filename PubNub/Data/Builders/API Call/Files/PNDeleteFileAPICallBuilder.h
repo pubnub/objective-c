@@ -1,4 +1,4 @@
-#import "PNFilesAPICallBuilder.h"
+#import <PubNub/PNFilesAPICallBuilder.h>
 
 
 NS_ASSUME_NONNULL_BEGIN

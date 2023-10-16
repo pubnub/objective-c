@@ -1,4 +1,4 @@
-#import "PNObjectsPaginatedRequest.h"
+#import <PubNub/PNObjectsPaginatedRequest.h>
 
 
 NS_ASSUME_NONNULL_BEGIN

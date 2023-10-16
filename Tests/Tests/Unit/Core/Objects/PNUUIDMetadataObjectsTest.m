@@ -113,7 +113,7 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)testItShouldSetUUIDMetadataUsingPubNubClientUUIDWhenUUIDIsMissing {
-    NSString *expectedId = self.client.currentConfiguration.uuid;
+    NSString *expectedId = self.client.currentConfiguration.userID;
 
 
     id clientMock = [self mockForObject:self.client];
@@ -212,7 +212,7 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)testItShouldRemoveUUIDMetadataUsingPubNubClientUUIDWhenUUIDIsMissing {
-    NSString *expectedId = self.client.currentConfiguration.uuid;
+    NSString *expectedId = self.client.currentConfiguration.userID;
 
 
     id clientMock = [self mockForObject:self.client];
@@ -293,7 +293,7 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)testItShouldFetchUUIDMetadataUsingPubNubClientUUIDWhenUUIDIsMissing {
-    NSString *expectedId = self.client.currentConfiguration.uuid;
+    NSString *expectedId = self.client.currentConfiguration.userID;
 
 
     id clientMock = [self mockForObject:self.client];

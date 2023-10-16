@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
-#import "PNAPNSNotificationConfiguration.h"
-#import "PNBaseNotificationPayload.h"
+#import <PubNub/PNAPNSNotificationConfiguration.h>
+#import <PubNub/PNBaseNotificationPayload.h>
 
 
 NS_ASSUME_NONNULL_BEGIN

@@ -7,6 +7,7 @@
 #import "PNSubscribeParser.h"
 #import "PNEnvelopeInformation.h"
 #import "PubNub+CorePrivate.h"
+#import "PNCryptoProvider.h"
 #import "PNConstants.h"
 #import "PNLogMacro.h"
 #import "PNLLogger.h"
@@ -472,27 +473,24 @@ NS_ASSUME_NONNULL_END
 
     NSMutableDictionary *message = nil;
 
-    if (((NSString *)additionalData[@"cipherKey"]).length){
-        BOOL useRandomIV = ((NSNumber *)additionalData[@"randomIV"]).boolValue;
+    if (additionalData[@"cryptoModule"]) {
+        id<PNCryptoProvider> cryptoModule = additionalData[@"cryptoModule"];
         BOOL isDictionary = [data isKindOfClass:[NSDictionary class]];
         NSError *decryptionError;
         id decryptedEvent = nil;
         message = [NSMutableDictionary new];
-        id dataForDecryption = isDictionary ? ((NSDictionary *)data)[@"pn_other"] : data;
+        id encryptedData = isDictionary ? ((NSDictionary *)data)[@"pn_other"] : data;
 
-        if ([dataForDecryption isKindOfClass:[NSString class]]) {
-            NSData *eventData = [PNAES decrypt:dataForDecryption
-                                  withRandomIV:useRandomIV
-                                     cipherKey:additionalData[@"cipherKey"]
-                                      andError:&decryptionError];
-            
+        if ([encryptedData isKindOfClass:[NSString class]]) {
+            NSCharacterSet *trimCharSet = [NSCharacterSet characterSetWithCharactersInString:@"\""];
+            encryptedData = [PNString base64DataFrom:[encryptedData stringByTrimmingCharactersInSet:trimCharSet]];
+            PNResult<NSData *> *decryptResult = [cryptoModule decryptData:encryptedData];
             NSString *decryptedEventData = nil;
 
-            if (eventData) {
-                decryptedEventData = [[NSString alloc] initWithData:eventData encoding:NSUTF8StringEncoding];
-            }
+            if (decryptResult.isError) decryptionError = decryptResult.error;
+            else decryptedEventData = [[NSString alloc] initWithData:decryptResult.data encoding:NSUTF8StringEncoding];
 
-            if (decryptedEventData && ![decryptedEventData isEqualToString:dataForDecryption]) {
+            if (decryptedEventData && ![decryptedEventData isEqualToString:encryptedData]) {
                 decryptedEvent = [PNJSON JSONObjectFrom:decryptedEventData withError:nil];
             }
         }
@@ -504,7 +502,7 @@ NS_ASSUME_NONNULL_END
 #endif // PUBNUB_DISABLE_LOGGER
             PNLogAESError(logger, @"<PubNub::AES> Message decryption error: %@", decryptionError);
             message[@"decryptError"] = @YES;
-            message[@"message"] = dataForDecryption;
+            message[@"message"] = isDictionary ? ((NSDictionary *)data)[@"pn_other"] : data;
         } else {
             if (isDictionary) {
                 NSMutableDictionary *mutableData = [(NSDictionary *)data mutableCopy];

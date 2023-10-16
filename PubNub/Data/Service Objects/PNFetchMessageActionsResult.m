@@ -5,9 +5,9 @@
  * @copyright © 2010-2019 PubNub, Inc.
  */
 #import "PNFetchMessageActionsResult.h"
+#import "PNOperationResult+Private.h"
 #import "PNMessageAction+Private.h"
 #import "PNServiceData+Private.h"
-#import "PNResult+Private.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

@@ -1,5 +1,5 @@
-#import "PNAPICallBuilder.h"
-#import "PNStructures.h"
+#import <PubNub/PNAPICallBuilder.h>
+#import <PubNub/PNStructures.h>
 
 
 #pragma mark Class forward

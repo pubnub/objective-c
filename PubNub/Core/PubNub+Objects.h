@@ -1,53 +1,52 @@
-#import "PubNub+Core.h"
-#import "PNSetUUIDMetadataRequest.h"
-#import "PNRemoveUUIDMetadataRequest.h"
-#import "PNFetchUUIDMetadataRequest.h"
-#import "PNFetchAllUUIDMetadataRequest.h"
-#import "PNSetChannelMetadataRequest.h"
-#import "PNRemoveChannelMetadataRequest.h"
-#import "PNFetchChannelMetadataRequest.h"
-#import "PNFetchAllChannelsMetadataRequest.h"
-#import "PNSetMembershipsRequest.h"
-#import "PNRemoveMembershipsRequest.h"
-#import "PNManageMembershipsRequest.h"
-#import "PNFetchMembershipsRequest.h"
-#import "PNSetChannelMembersRequest.h"
-#import "PNRemoveChannelMembersRequest.h"
-#import "PNManageChannelMembersRequest.h"
-#import "PNFetchChannelMembersRequest.h"
+#import <PubNub/PubNub+Core.h>
+#import <PubNub/PNSetUUIDMetadataRequest.h>
+#import <PubNub/PNRemoveUUIDMetadataRequest.h>
+#import <PubNub/PNFetchUUIDMetadataRequest.h>
+#import <PubNub/PNFetchAllUUIDMetadataRequest.h>
+#import <PubNub/PNSetChannelMetadataRequest.h>
+#import <PubNub/PNRemoveChannelMetadataRequest.h>
+#import <PubNub/PNFetchChannelMetadataRequest.h>
+#import <PubNub/PNFetchAllChannelsMetadataRequest.h>
+#import <PubNub/PNSetMembershipsRequest.h>
+#import <PubNub/PNRemoveMembershipsRequest.h>
+#import <PubNub/PNManageMembershipsRequest.h>
+#import <PubNub/PNFetchMembershipsRequest.h>
+#import <PubNub/PNSetChannelMembersRequest.h>
+#import <PubNub/PNRemoveChannelMembersRequest.h>
+#import <PubNub/PNManageChannelMembersRequest.h>
+#import <PubNub/PNFetchChannelMembersRequest.h>
 
-#import "PNSetUUIDMetadataStatus.h"
-#import "PNFetchUUIDMetadataResult.h"
-#import "PNSetChannelMetadataStatus.h"
-#import "PNFetchChannelsMetadataResult.h"
-#import "PNManageMembershipsStatus.h"
-#import "PNFetchMembershipsResult.h"
-#import "PNManageChannelMembersStatus.h"
-#import "PNFetchChannelMembersResult.h"
+#import <PubNub/PNSetUUIDMetadataStatus.h>
+#import <PubNub/PNFetchUUIDMetadataResult.h>
+#import <PubNub/PNSetChannelMetadataStatus.h>
+#import <PubNub/PNFetchChannelsMetadataResult.h>
+#import <PubNub/PNManageMembershipsStatus.h>
+#import <PubNub/PNFetchMembershipsResult.h>
+#import <PubNub/PNManageChannelMembersStatus.h>
+#import <PubNub/PNFetchChannelMembersResult.h>
 
+#import <PubNub/PNObjectsAPICallBuilder.h>
 
-#import "PNObjectsAPICallBuilder.h"
+#import <PubNub/PNSetUUIDMetadataAPICallBuilder.h>
+#import <PubNub/PNRemoveUUIDMetadataAPICallBuilder.h>
+#import <PubNub/PNFetchUUIDMetadataAPICallBuilder.h>
+#import <PubNub/PNFetchAllUUIDMetadataAPICallBuilder.h>
 
-#import "PNSetUUIDMetadataAPICallBuilder.h"
-#import "PNRemoveUUIDMetadataAPICallBuilder.h"
-#import "PNFetchUUIDMetadataAPICallBuilder.h"
-#import "PNFetchAllUUIDMetadataAPICallBuilder.h"
+#import <PubNub/PNSetChannelMetadataAPICallBuilder.h>
+#import <PubNub/PNRemoveChannelMetadataAPICallBuilder.h>
+#import <PubNub/PNFetchChannelMetadataAPICallBuilder.h>
+#import <PubNub/PNFetchAllChannelsMetadataAPICallBuilder.h>
 
-#import "PNSetChannelMetadataAPICallBuilder.h"
-#import "PNRemoveChannelMetadataAPICallBuilder.h"
-#import "PNFetchChannelMetadataAPICallBuilder.h"
-#import "PNFetchAllChannelsMetadataAPICallBuilder.h"
+#import <PubNub/PNSetMembershipsAPICallBuilder.h>
+#import <PubNub/PNRemoveMembershipsAPICallBuilder.h>
+#import <PubNub/PNManageMembershipsAPICallBuilder.h>
+#import <PubNub/PNFetchMembershipsAPICallBuilder.h>
+#import <PubNub/PNSetChannelMembersAPICallBuilder.h>
+#import <PubNub/PNRemoveChannelMembersAPICallBuilder.h>
+#import <PubNub/PNManageChannelMembersAPICallBuilder.h>
+#import <PubNub/PNFetchChannelMembersAPICallBuilder.h>
 
-#import "PNSetMembershipsAPICallBuilder.h"
-#import "PNRemoveMembershipsAPICallBuilder.h"
-#import "PNManageMembershipsAPICallBuilder.h"
-#import "PNFetchMembershipsAPICallBuilder.h"
-#import "PNSetChannelMembersAPICallBuilder.h"
-#import "PNRemoveChannelMembersAPICallBuilder.h"
-#import "PNManageChannelMembersAPICallBuilder.h"
-#import "PNFetchChannelMembersAPICallBuilder.h"
-
-#import "PNStructures.h"
+#import <PubNub/PNStructures.h>
 
 
 NS_ASSUME_NONNULL_BEGIN

@@ -1,6 +1,6 @@
-#import "PNUUIDMetadata.h"
-#import "PNServiceData.h"
-#import "PNResult.h"
+#import <PubNub/PNUUIDMetadata.h>
+#import <PubNub/PNOperationResult.h>
+#import <PubNub/PNServiceData.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -82,7 +82,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @since 4.14.0
  * @copyright © 2010-2020 PubNub, Inc.
  */
-@interface PNFetchUUIDMetadataResult : PNResult
+@interface PNFetchUUIDMetadataResult : PNOperationResult
 
 
 #pragma mark - Information
@@ -107,7 +107,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @since 4.14.0
  * @copyright © 2010-2020 PubNub, Inc.
  */
-@interface PNFetchAllUUIDMetadataResult : PNResult
+@interface PNFetchAllUUIDMetadataResult : PNOperationResult
 
 
 #pragma mark - Information

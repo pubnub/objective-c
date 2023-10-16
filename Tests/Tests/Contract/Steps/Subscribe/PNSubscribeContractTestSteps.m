@@ -16,11 +16,17 @@
     [self startCucumberHookEventsListening];
     
     Given(@"the crypto keyset", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
         self.configuration.cipherKey = @"enigma";
+#pragma clang diagnostic pop
     });
     
     Given(@"the invalid-crypto keyset", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
         self.configuration.cipherKey = @"secret";
+#pragma clang diagnostic pop
     });
     
     When(@"I subscribe", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {

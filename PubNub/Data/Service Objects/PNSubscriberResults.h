@@ -1,6 +1,6 @@
-#import "PNSubscribeStatus.h"
-#import "PNServiceData.h"
-#import "PNResult.h"
+#import <PubNub/PNSubscribeStatus.h>
+#import <PubNub/PNOperationResult.h>
+#import <PubNub/PNServiceData.h>
 
 
 #pragma mark Class forward
@@ -303,7 +303,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @since 4.0.0
  * @copyright © 2010-2019 PubNub, Inc.
  */
-@interface PNMessageResult : PNResult
+@interface PNMessageResult : PNOperationResult
 
 
 #pragma mark - Information
@@ -327,7 +327,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @since 4.9.0
  * @copyright © 2010-2019 PubNub, Inc.
  */
-@interface PNSignalResult : PNResult
+@interface PNSignalResult : PNOperationResult
 
 
 #pragma mark - Information
@@ -351,7 +351,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @since 4.11.0
  * @copyright © 2010-2019 PubNub, Inc.
  */
-@interface PNMessageActionResult : PNResult
+@interface PNMessageActionResult : PNOperationResult
 
 
 #pragma mark - Information
@@ -375,7 +375,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @since 4.14.0
  * @copyright © 2010-2020 PubNub, Inc.
  */
-@interface PNObjectEventResult : PNResult
+@interface PNObjectEventResult : PNOperationResult
 
 
 #pragma mark - Information
@@ -399,7 +399,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @since 4.15.0
  * @copyright © 2010-2020 PubNub, Inc.
  */
-@interface PNFileEventResult : PNResult
+@interface PNFileEventResult : PNOperationResult
 
 
 #pragma mark - Information
@@ -423,7 +423,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @since 4.0.0
  * @copyright © 2010-2019 PubNub, Inc.
  */
-@interface PNPresenceEventResult : PNResult
+@interface PNPresenceEventResult : PNOperationResult
 
 
 #pragma mark - Information

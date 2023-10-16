@@ -1,13 +1,12 @@
-/**
- * @author Sergey Mamontov
- * @version 4.15.0
- * @since 4.15.0
- * @copyright © 2010-2020 PubNub, Inc.
- */
 #import "PNAcknowledgmentStatus.h"
-#import "PNMultipartInputStream.h"
+#import "NSInputStream+PNCrypto.h"
+#import "PNSequenceInputStream.h"
+#import "PNCryptorInputStream.h"
+#import "NSInputStream+PNURL.h"
+#import "PubNub+CorePrivate.h"
 #import "PNConfiguration.h"
 #import "PNFilesManager.h"
+#import "PNCryptoModule.h"
 #import "PNErrorParser.h"
 #import "PNErrorCodes.h"
 #import "PubNub+Core.h"
@@ -21,9 +20,7 @@
 
 #pragma mark Constants
 
-/**
- * @brief How many simultaneous connections can be opened to single host.
- */
+/// How many simultaneous connections can be opened to single host.
 static NSUInteger const kPNFilesManagerSessionMaximumConnections = 2;
 
 
@@ -31,168 +28,134 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Protected interface declaration
 
+/// Files manager private extension.
 @interface PNFilesManager () <NSURLSessionTaskDelegate, NSURLSessionDelegate>
 
 
 #pragma mark - Information
 
-/**
- * @brief Queue which should be used by session to call callbacks and completion blocks on
- * \b PNFilesManager instance.
- */
+/// Queue which should be used by session to call callbacks and completion blocks on `PNFilesManager` instance.
 @property (nonatomic, strong) NSOperationQueue *delegateQueue;
 
-/**
- * @brief Session which is used to send network requests.
- */
+/// Session which is used to send network requests.
 @property (nonatomic, strong, nullable) NSURLSession *session;
 
-/**
- * @brief Maximum simultaneous requests.
- */
+/// Maximum simultaneous requests.
 @property (nonatomic, assign) NSInteger maximumConnections;
 
-/**
- * @brief Cipher key which should be used for data encryption / decryption.
- */
-@property (nonatomic, nullable, copy) NSString *cipherKey;
+/// Crypto module for data processing.
+///
+/// **PubNub** client uses this instance to _encrypt_ and _decrypt_ data that has been sent and received from the
+/// **PubNub** network.
+@property(nonatomic, nullable, strong) id<PNCryptoProvider> cryptoModule;
 
 
-#pragma mark - Initialization and Configuration
+#pragma mark - Initialization and configuration
 
-/**
- * @brief Initialize and configure files manager.
- *
- * @param client \b PubNub client for which files manager should be created.
- *
- * @return Initialized and ready to use client files manager.
- */
+/// Initialize files manager.
+///
+/// - Parameter client: **PubNub** client for which files manager should be created.
+/// - Returns: Initialized files manager instance.
 - (instancetype)initWithClient:(PubNub *)client;
 
 
 #pragma mark - Session constructor
 
-/**
- * @brief Complete \a NSURLSession instantiation and configuration.
- *
- * @param maximumConnections Maximum simultaneously connections (requests) which can be opened.
- */
+/// Complete `NSURLSession` instantiation and configuration.
+///
+/// - Parameter maximumConnections: Maximum simultaneously connections (requests) which can be opened.
 - (void)prepareSessionWithMaximumConnections:(NSInteger)maximumConnections;
 
-/**
- * @brief Create base \a NSURLSession configuration.
- *
- * @param maximumConnections Maximum simultaneously connections (requests) which can be opened.
- *
- * @return Constructed and ready to use session configuration.
- */
+/// Create base `NSURLSession` configuration.
+///
+/// - Parameter maximumConnections: Maximum simultaneously connections (requests) which can be opened.
+/// - Returns: Initialized `NSURLSession` configuration instance.
 - (NSURLSessionConfiguration *)configurationWithMaximumConnections:(NSInteger)maximumConnections;
 
-/**
- * @brief Construct queue on which session will call delegate callbacks and completion blocks.
- *
- * @param configuration Session configuration which should be used to complete queue configuration.
- *
- * @return Initialized and ready to use operation queue.
- */
+/// Create queue on which session will call delegate callbacks and completion blocks.
+///
+/// - Parameter configuration: Session configuration which should be used to complete queue configuration.
+/// - Returns: Initialized operation queue instance.
 - (NSOperationQueue *)operationQueueWithConfiguration:(NSURLSessionConfiguration *)configuration;
 
-/**
- * @brief Construct \a NSURLSession manager used to communicate with \b PubNub network.
- *
- * @param configuration Complete configuration which should be applied to \a NSURL session.
- *
- * @return Constructed and ready to use \a NSURLSession manager instance.
- */
+/// Create `NSURLSession` manager used to communicate with **PubNub** network.
+///
+/// - Parameter configuration: Complete configuration which should be applied to `NSURL` session.
+/// - Returns: Initialized `NSURLSession` manager instance.
 - (NSURLSession *)sessionWithConfiguration:(NSURLSessionConfiguration *)configuration;
 
 
-#pragma mark - Misc
+#pragma mark - Helpers
 
-/**
- * @brief Create data upload error using information received from server.
- *
- * @param task Task which has been used to upload data.
- * @param response Server's HTTP response on data upload request.
- * @param data Server's response body.
- * @param error Upload request processing error.
- *
- * @return \a Error object with detailed information about file upload error.
- */
+/// Create data upload error using information received from the service.
+///
+/// - Parameters:
+///   - task: Task which has been used to upload data.
+///   - response: Service's HTTP response on data upload request.
+///   - data: Service's response body.
+///   - error: Upload request processing error.
+/// - Returns: `Error` object with detailed information about file upload error.
 - (NSError *)uploadErrorForTask:(nullable NSURLSessionDataTask *)task
                    httpResponse:(nullable NSHTTPURLResponse *)response
                    responseData:(nullable NSData *)data
                           error:(nullable NSError *)error;
 
-/**
- * @brief Create data download error using information received from server.
- *
- * @param task Task which has been used to download data.
- * @param response Server's HTTP response on data download request.
- * @param location Location where requested data has been downloaded (can be error JSON / XML file).
- * @param error Download request processing error.
- *
- * @return \a Error object with detailed information about file download error.
- */
+/// Create data download error using information received from the service.
+///
+/// - Parameters:
+///   - task: Task which has been used to download data.
+///   - response: Service's HTTP response on data download request.
+///   - location: Location where requested data has been downloaded (can be error JSON / XML file).
+///   - error: Download request processing error.
+/// - Returns: `Error` object with detailed information about file download error.
 - (NSError *)downloadErrorForTask:(nullable NSURLSessionDownloadTask *)task
                      httpResponse:(nullable NSHTTPURLResponse *)response
                      fileLocation:(nullable NSURL *)location
                             error:(nullable NSError *)error;
 
-/**
- * @brief Create input stream which is able to provide stream-based data.
- *
- * @param boundary Boundary which should be used to separate \c multipart/form-data fields in POST body.
- * @param stream Input stream with data which should be uploaded.
- * @param filename Name which should be used to store uploaded data.
- * @param cipherKey Key which should be used to encrypt data before upload.
- * @param streamsTotalSize Pointer which is used to store overall input streams size.
- */
+/// Create input stream with `multipart/form-data` stream-based data.
+///
+/// - Parameters:
+///   - boundary: Boundary which should be used to separate `multipart/form-data` fields in POST body.
+///   - stream: Input stream with data which should be uploaded.
+///   - filename: Name which should be used to store uploaded data.
+///   - cryptoModule: Crypto module for data _encryption_.
+///   - fields: List of multipart/form-data fields which should be processed.
+///   - streamsTotalSize: Pointer which is used to store overall input streams size.
+/// - Returns: Initialized input stream with `multipart/form-data` stream-based data.
 - (nullable NSInputStream *)multipartFormDataStreamWithBoundary:(NSString *)boundary
                                                 dataInputStream:(NSInputStream *)stream
                                                        filename:(NSString *)filename
-                                                      cipherKey:(nullable NSString *)cipherKey
+                                                   cryptoModule:(nullable id<PNCryptoProvider>)cryptoModule
                                                      fromFields:(NSArray<NSDictionary *> *)fields
                                                     streamsSize:(NSUInteger *)streamsTotalSize;
 
-/**
- * @brief Prepare provided multipart/form-data fields to be sent with request POST body.
- *
- * @param boundary Separator for key/value pairs.
- * @param fields List of multipart/form-data fields which should be processed.
- *
- * @return Data object which can be sent with request post body or \c nil in case if there is no
- * \c fields provided.
- */
-- (nullable NSData *)multipartFormDataWithBoundary:(NSString *)boundary
-                                        fromFields:(NSArray<NSDictionary *> *)fields;
+/// Prepare provided multipart/form-data fields to be sent with request POST body.
+///
+/// - Parameters:
+///   - boundary: Separator for key/value pairs.
+///   - fields: List of multipart/form-data fields which should be processed.
+/// - Returns: Data object which can be sent with request post body or \c nil in case if there is no `fields` provided.
+- (nullable NSData *)multipartFormDataWithBoundary:(NSString *)boundary fromFields:(NSArray<NSDictionary *> *)fields;
 
-/**
- * @brief Prepare multipart/form-data file data to be sent with request POST body.
- *
- * @param filename Name under which uploaded data should be stored.
- * @param boundary Separator for key/value pairs.
- *
- * @return Data object which can be sent with request post body.
- */
+/// Prepare multipart/form-data file data to be sent with request POST body.
+///
+/// - Parameters:
+///   - filename: Name under which uploaded data should be stored.
+///   - boundary: Separator for key/value pairs.
+/// - Returns: Data object which can be sent with request post body.
 - (NSData *)multipartFormFile:(NSString *)filename dataWithBoundary:(NSString *)boundary;
 
-/**
- * @brief Multipart form data end data.
- *
- * @param boundary Separator for key/value pairs.
- *
- * @return Data object which should be send at the end of multipart/form-data HTTP body stream.
- */
+/// Multipart form data end data.
+///
+/// - Parameter boundary: Separator for key/value pairs.
+/// - Returns: Data object which should be send at the end of multipart/form-data HTTP body stream.
 - (NSData *)multipartFormEndDataWithBoundary:(NSString *)boundary;
 
-/**
- * @brief Identify file MIME type using file extension.
- *
- * @param filename Name from which extension should be examined.
- *
- * @return Actual file MIME type or \c application/octet-stream if type can't be identified.
- */
+/// Identify file MIME type using file extension.
+///
+/// - Parameter filename: Name from which extension should be examined.
+/// - Returns: Actual file MIME type or `application/octet-stream` if type can't be identified.
 - (NSString *)mimeTypeFromFilename:(NSString *)filename;
 
 #pragma mark -
@@ -216,8 +179,7 @@ NS_ASSUME_NONNULL_END
 
 - (instancetype)initWithClient:(PubNub *)client {
     if ((self = [super init])) {
-        _cipherKey = [client.currentConfiguration.cipherKey copy];
-        
+        _cryptoModule = client.configuration.cryptoModule;
         [self prepareSessionWithMaximumConnections:kPNFilesManagerSessionMaximumConnections];
     }
     
@@ -231,22 +193,20 @@ NS_ASSUME_NONNULL_END
                  formData:(NSArray<NSDictionary *> *)formData
                  filename:(NSString *)filename
                  dataSize:(NSUInteger)dataSize
-                cipherKey:(NSString *)cipherKey
+         withCryptoModule:(nullable id<PNCryptoProvider>)cryptoModule
                completion:(void(^)(NSError *error))block {
-    
     NSInputStream *httpBodyInputStream = request.HTTPBodyStream;
     NSMutableURLRequest *uploadRequest = [request mutableCopy];
-    cipherKey = cipherKey ?: self.cipherKey;
-    
+    cryptoModule = cryptoModule ?: self.cryptoModule;
+
     if (formData.count) {
-        NSString *boundary = [[NSUUID UUID].UUIDString stringByReplacingOccurrencesOfString:@"-"
-                                                                                 withString:@""];
+        NSString *boundary = [[NSUUID UUID].UUIDString stringByReplacingOccurrencesOfString:@"-" withString:@""];
         NSString *contentType = [@"multipart/form-data; boundary=" stringByAppendingString:boundary];
         [uploadRequest setValue:contentType forHTTPHeaderField: @"Content-Type"];
         httpBodyInputStream = [self multipartFormDataStreamWithBoundary:boundary
                                                         dataInputStream:httpBodyInputStream
                                                                filename:filename
-                                                              cipherKey:cipherKey
+                                                           cryptoModule:cryptoModule
                                                              fromFields:formData
                                                             streamsSize:&dataSize];
         
@@ -273,15 +233,11 @@ NS_ASSUME_NONNULL_END
     __block NSURLSessionDataTask *task = nil;
     task = [self.session dataTaskWithRequest:uploadRequest
                      completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        
         NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
         NSError *uploadError = nil;
         
         if (httpResponse.statusCode >= 400 || error) {
-            uploadError = [self uploadErrorForTask:task
-                                      httpResponse:httpResponse
-                                      responseData:data
-                                             error:error];
+            uploadError = [self uploadErrorForTask:task httpResponse:httpResponse responseData:data error:error];
         }
         
         block(uploadError);
@@ -295,10 +251,17 @@ NS_ASSUME_NONNULL_END
 
 - (void)downloadFileAtURL:(NSURL *)remoteURL
                     toURL:(NSURL *)localURL
-            withCipherKey:(NSString *)cipherKey
+         withCryptoModule:(nullable id<PNCryptoProvider>)cryptoModule
                completion:(void(^)(NSURLRequest *request, NSURL *location, NSError *error))block {
-    
+    cryptoModule = cryptoModule ?: self.cryptoModule;
     __block NSURLSessionDownloadTask *task = nil;
+    BOOL temporary = !localURL;
+
+    if (!localURL) {
+        localURL = [NSURL URLWithString:[NSString pathWithComponents:@[NSTemporaryDirectory(), [NSUUID UUID].UUIDString]]];
+    }
+
+    if (!localURL.isFileURL) localURL = [NSURL fileURLWithPath:localURL.path];
     
     if (!remoteURL) {
         NSDictionary *userInfo = @{
@@ -316,17 +279,8 @@ NS_ASSUME_NONNULL_END
     
     task = [self.session downloadTaskWithURL:remoteURL
                            completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
-        
         NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
         NSURLRequest *downloadRequest = task.originalRequest;
-        NSURL *downloadedFileURL = localURL;
-        BOOL temporary = NO;
-        
-        if (!downloadedFileURL) {
-            NSString *tmpDirectory = [location.path stringByDeletingLastPathComponent];
-            downloadedFileURL = [NSURL URLWithString:[tmpDirectory stringByAppendingPathComponent:[NSUUID UUID].UUIDString]];
-            temporary = YES;
-        }
         
         if (httpResponse.statusCode >= 400 || error) {
             NSError *requestError = [self downloadErrorForTask:task
@@ -335,51 +289,50 @@ NS_ASSUME_NONNULL_END
                                                          error:error];
             block(downloadRequest, location, requestError);
         } else {
-            NSURL *localFileURL = downloadedFileURL.isFileURL ? downloadedFileURL
-                                                              : [NSURL fileURLWithPath:downloadedFileURL.path];
-            NSURL *destinationURL = cipherKey.length ? [localFileURL URLByAppendingPathExtension:@"enc"]
-                                                     : localFileURL;
+
             NSFileManager *fileManager = NSFileManager.defaultManager;
+            NSURL *storeURL = temporary ? location : localURL;
             NSError *fileMoveError = nil;
 
-            if ([destinationURL checkResourceIsReachableAndReturnError:nil]) {
-                [fileManager removeItemAtURL:destinationURL error:&fileMoveError];
+            if (!temporary && [storeURL checkResourceIsReachableAndReturnError:nil]) {
+                [fileManager removeItemAtURL:storeURL error:&fileMoveError];
             }
-            
-            if (!fileMoveError) {
-                [fileManager moveItemAtURL:location toURL:destinationURL error:&fileMoveError];
+
+            if (cryptoModule) {
+                if (temporary) storeURL = [storeURL URLByAppendingPathExtension:@"dec"];
+            } else if (!fileMoveError && !temporary) {
+                [fileManager moveItemAtURL:location toURL:storeURL error:&fileMoveError];
             }
             
             if (fileMoveError) {
-                NSError *error = [self downloadErrorForTask:nil
-                                               httpResponse:nil
-                                               fileLocation:nil
-                                                      error:fileMoveError];
-                
+                NSError *error = [self downloadErrorForTask:nil httpResponse:nil fileLocation:nil error:fileMoveError];
                 block(downloadRequest, location, error);
-            } else if(cipherKey.length) {
-                [PNAES decryptFileAtURL:destinationURL
-                                  toURL:localFileURL
-                          withCipherKey:cipherKey
-                             completion:^(NSURL *location, NSError *error) {
-                    
-                    block(downloadRequest, location, error);
-                    
-                    if (temporary && ![fileManager removeItemAtURL:location error:&error]) {
-                        NSLog(@"<PubNub::FilesManager> Temporary file clean up error: %@",
-                              error);
+            } else if(cryptoModule) {
+                NSDictionary *fileAttributes = [fileManager attributesOfItemAtPath:location.path error:&error];
+                NSUInteger fileSize = ((NSNumber *)[fileAttributes objectForKey:NSFileSize]).unsignedIntegerValue;
+                NSInputStream *sourceStream = [NSInputStream inputStreamWithURL:location];
+
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    PNResult<NSInputStream *> *decryptResult = [cryptoModule decryptStream:sourceStream
+                                                                                dataLength:fileSize];
+                    NSError *decryptError = decryptResult.error;
+
+                    if (!decryptResult.isError) {
+                        [decryptResult.data pn_writeToFileAtURL:storeURL withBufferSize:1024 * 1024 error:&decryptError];
                     }
-                    
-                    if (![fileManager removeItemAtURL:destinationURL error:&error]) {
-                        NSLog(@"<PubNub::FilesManager> Encrypted file clean up error: %@", error);
+
+                    block(downloadRequest, !decryptResult.isError ? storeURL : nil, decryptError);
+
+                    if (temporary && !decryptError && ![fileManager removeItemAtURL:location error:&decryptError]) {
+                        NSLog(@"<PubNub::FilesManager> Encrypted file clean up error: %@", decryptError);
                     }
-                }];
+                });
             } else {
-                block(downloadRequest, destinationURL, nil);
-                
-                if (temporary && ![fileManager removeItemAtURL:destinationURL error:&error]) {
-                    NSLog(@"<PubNub::FilesManager> Temporary file clean up error: %@",
-                          error);
+                NSError *tempRemoveError = nil;
+                block(downloadRequest, storeURL, tempRemoveError);
+
+                if (temporary && ![fileManager removeItemAtURL:location error:&tempRemoveError]) {
+                    NSLog(@"<PubNub::FilesManager> Temporary file clean up error: %@", tempRemoveError);
                 }
             }
         }
@@ -412,19 +365,14 @@ NS_ASSUME_NONNULL_END
 }
 
 - (NSURLSession *)sessionWithConfiguration:(NSURLSessionConfiguration *)configuration {
-    return [NSURLSession sessionWithConfiguration:configuration
-                                         delegate:self
-                                    delegateQueue:self.delegateQueue];;
+    return [NSURLSession sessionWithConfiguration:configuration delegate:self delegateQueue:self.delegateQueue];
 }
 
 
 #pragma mark - URLSession & Tasks delegate callbacks
 
 - (void)URLSession:(NSURLSession *)session didBecomeInvalidWithError:(NSError *)error {
-    if (!error) {
-        return;
-    }
-    
+    if (!error) return;
     [self prepareSessionWithMaximumConnections:self.maximumConnections];
 }
 
@@ -439,7 +387,6 @@ NS_ASSUME_NONNULL_END
                    httpResponse:(NSHTTPURLResponse *)response
                    responseData:(NSData *)data
                           error:(NSError *)error {
-    
     NSError *uploadError = nil;
     NSDictionary *userInfo = [self errorUserInfoForFailedRequest:task.currentRequest
                                                 withHTTPResponse:response
@@ -463,7 +410,6 @@ NS_ASSUME_NONNULL_END
                      httpResponse:(NSHTTPURLResponse *)response
                      fileLocation:(NSURL *)location
                             error:(NSError *)error {
-    
     NSError *downloadError = nil;
     NSDictionary *userInfo = [self errorUserInfoForFailedRequest:task.currentRequest
                                                 withHTTPResponse:response
@@ -488,17 +434,13 @@ NS_ASSUME_NONNULL_END
                                    responseData:(NSData *)data
                                    fileLocation:(NSURL *)location
                                           error:(NSError *)error {
-    
     NSString *failureDescription = error.localizedDescription ?: @"Unable to complete request";
     NSUInteger statusCode = response ? response.statusCode : 400;
     NSMutableDictionary *userInfo = [NSMutableDictionary new];
     NSString *failureReason = error.localizedFailureReason;
     NSDictionary *serviceResponse = nil;
     
-    if (location) {
-        data = [NSData dataWithContentsOfURL:location];
-    }
-    
+    if (location) data = [NSData dataWithContentsOfURL:location];
     if ([request.URL.absoluteString rangeOfString:@".s3."].location != NSNotFound) {
         if (data.length) {
             PNXMLParser *parser = [PNXMLParser parserWithData:data];
@@ -506,9 +448,8 @@ NS_ASSUME_NONNULL_END
             NSString *errorMessage = [parsedXML valueForKeyPath:@"Error.Message"];
             NSString *errorCode = [parsedXML valueForKeyPath:@"Error.Code"];
             
-            if (errorMessage) {
-                failureReason = errorMessage;
-            } else if (!failureReason) {
+            if (errorMessage) failureReason = errorMessage;
+            else if (!failureReason) {
                 failureReason = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
             }
             
@@ -533,23 +474,14 @@ NS_ASSUME_NONNULL_END
                     ];
                 });
                 
-                if ([_s3AccessDeniedCodes containsObject:errorCode]) {
-                    statusCode = 403;
-                } else if ([errorCode isEqualToString:@"MethodNotAllowed"]) {
-                    statusCode = 405;
-                } else if ([errorCode isEqualToString:@"InvalidBucketState"]) {
-                    statusCode = 409;
-                } else if ([errorCode isEqualToString:@"MissingContentLength"]) {
-                    statusCode = 411;
-                } else if ([_s3NotFoundCodes containsObject:errorCode]) {
-                    statusCode = 404;
-                } else if ([errorCode isEqualToString:@"InternalError"]) {
-                    statusCode = 500;
-                } else if ([errorCode isEqualToString:@"NotImplemented"]) {
-                    statusCode = 501;
-                } else if ([_s3NotAvailableCodes containsObject:errorCode]) {
-                    statusCode = 503;
-                }
+                if ([_s3AccessDeniedCodes containsObject:errorCode]) statusCode = 403;
+                else if ([errorCode isEqualToString:@"MethodNotAllowed"]) statusCode = 405;
+                else if ([errorCode isEqualToString:@"InvalidBucketState"]) statusCode = 409;
+                else if ([errorCode isEqualToString:@"MissingContentLength"]) statusCode = 411;
+                else if ([_s3NotFoundCodes containsObject:errorCode]) statusCode = 404;
+                else if ([errorCode isEqualToString:@"InternalError"]) statusCode = 500;
+                else if ([errorCode isEqualToString:@"NotImplemented"]) statusCode = 501;
+                else if ([_s3NotAvailableCodes containsObject:errorCode]) statusCode = 503;
             }
         }
     } else {
@@ -557,24 +489,15 @@ NS_ASSUME_NONNULL_END
         
         if (serviceResponse) {
             failureReason = serviceResponse[@"information"];
-            
-            if (serviceResponse[@"status"]) {
-                statusCode = ((NSNumber *)serviceResponse[@"status"]).unsignedIntegerValue;
-            }
+            if (serviceResponse[@"status"]) statusCode = ((NSNumber *)serviceResponse[@"status"]).unsignedIntegerValue;
         }
     }
     
-    if (error) {
-        userInfo[NSUnderlyingErrorKey] = error;
-    }
-    
+    if (error) userInfo[NSUnderlyingErrorKey] = error;
     userInfo[NSLocalizedFailureReasonErrorKey] = failureReason ?: @"Unknown error reason";
     userInfo[NSLocalizedDescriptionKey] = failureDescription ?: @"Unknown error";
     userInfo[@"statusCode"] = @(statusCode);
-    
-    if (serviceResponse) {
-        userInfo[@"pn_serviceResponse"] = serviceResponse;
-    }
+    if (serviceResponse) userInfo[@"pn_serviceResponse"] = serviceResponse;
     
     return userInfo;
 }
@@ -582,27 +505,20 @@ NS_ASSUME_NONNULL_END
 - (NSInputStream *)multipartFormDataStreamWithBoundary:(NSString *)boundary
                                        dataInputStream:(NSInputStream *)stream
                                               filename:(NSString *)filename
-                                             cipherKey:(NSString *)cipherKey
+                                          cryptoModule:(id<PNCryptoProvider>)cryptoModule
                                             fromFields:(NSArray<NSDictionary *> *)fields
                                            streamsSize:(NSUInteger *)streamsTotalSize {
-    
     NSString *fileMIMEType = [self mimeTypeFromFilename:filename];
-    NSNumber *fileStreamSize = @(*streamsTotalSize);
     
     if (fileMIMEType.length) {
         NSMutableArray<NSDictionary *> *mutableFields = [fields mutableCopy];
         
         for (NSUInteger fieldIdx = 0; fieldIdx < fields.count; fieldIdx++) {
-            if (![fields[fieldIdx][@"key"] isEqualToString:@"Content-Type"]) {
-                continue;
-            }
-
+            if (![fields[fieldIdx][@"key"] isEqualToString:@"Content-Type"]) continue;
             NSMutableDictionary *mutableField = [fields[fieldIdx] mutableCopy];
             NSString *fieldValue = mutableField[@"value"];
             
-            if (fieldValue.length == 0 ||
-                [fieldValue rangeOfString:@"octet-stream"].location != NSNotFound) {
-                
+            if (fieldValue.length == 0 || [fieldValue rangeOfString:@"octet-stream"].location != NSNotFound) {
                 mutableField[@"value"] = fileMIMEType;
                 mutableFields[fieldIdx] = mutableField;
                 fields = [mutableFields copy];
@@ -615,34 +531,37 @@ NS_ASSUME_NONNULL_END
     NSData *multipartFormData = [self multipartFormDataWithBoundary:boundary fromFields:fields];
     NSData *fileFormData = [self multipartFormFile:filename dataWithBoundary:boundary];
     NSMutableArray<NSInputStream *> *inputStreams = [NSMutableArray new];
-    NSMutableArray<NSNumber *> *streamSizes = [NSMutableArray new];
+    NSMutableArray<NSNumber *> *streamLengths = [NSMutableArray new];
     NSInputStream *formDataStream = nil;
     
     if (multipartFormData) {
-        [streamSizes addObject:@(multipartFormData.length)];
+        [streamLengths addObject:@(multipartFormData.length)];
         [inputStreams addObject:[NSInputStream inputStreamWithData:multipartFormData]];
     }
     
     if (fileFormData) {
-        [streamSizes addObject:@(fileFormData.length)];
-        *streamsTotalSize += fileFormData.length;
+        [streamLengths addObject:@(fileFormData.length)];
         [inputStreams addObject:[NSInputStream inputStreamWithData:fileFormData]];
     }
-    
-    [streamSizes addObject:fileStreamSize];
+
+    NSNumber *fileStreamSize = @(*streamsTotalSize);
+    if (cryptoModule) {
+        PNResult<NSInputStream *> *encryptResult = [cryptoModule encryptStream:stream dataLength:*streamsTotalSize];
+        if (!encryptResult.isError) {
+            stream = encryptResult.data;
+            fileStreamSize = @(stream.pn_dataLength);
+        }
+    }
+    [streamLengths addObject:fileStreamSize];
     [inputStreams addObject:stream];
     
     NSData *multipartFormEndData = [self multipartFormEndDataWithBoundary:boundary];
-    [streamSizes addObject:@(multipartFormEndData.length)];
+    [streamLengths addObject:@(multipartFormEndData.length)];
     [inputStreams addObject:[NSInputStream inputStreamWithData:multipartFormEndData]];
-    *streamsTotalSize += multipartFormEndData.length;
     
     if (inputStreams.count == 4) {
-        formDataStream = [PNMultipartInputStream streamWithInputStreams:inputStreams
-                                                                  sizes:streamSizes
-                                                              cipherKey:cipherKey];
-        
-        *streamsTotalSize = ((PNMultipartInputStream *)formDataStream).size;
+        formDataStream = [PNSequenceInputStream inputStreamWithInputStreams:inputStreams lengths:streamLengths];
+        *streamsTotalSize = ((PNSequenceInputStream *)formDataStream).length;
     } else {
         *streamsTotalSize = 0;
     }
@@ -650,9 +569,7 @@ NS_ASSUME_NONNULL_END
     return formDataStream;
 }
 
-- (NSData *)multipartFormDataWithBoundary:(NSString *)boundary
-                               fromFields:(NSArray<NSDictionary *> *)fields {
-    
+- (NSData *)multipartFormDataWithBoundary:(NSString *)boundary fromFields:(NSArray<NSDictionary *> *)fields {
     NSMutableData *multipartFormData = [NSMutableData new];
     
     [fields enumerateObjectsUsingBlock:^(NSDictionary *fieldData, NSUInteger fieldDataIdx, BOOL *stop) {
@@ -687,15 +604,16 @@ NS_ASSUME_NONNULL_END
 }
 
 - (NSString *)mimeTypeFromFilename:(NSString *)filename {
+#if !TARGET_OS_OSX
     CFStringRef extension = (__bridge CFStringRef _Nonnull)filename.pathExtension;
     CFStringRef uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, extension, NULL);
     NSString *mimeType = CFBridgingRelease(UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType));
-    
-    if (uti != NULL) {
-        CFRelease(uti);
-    }
+    if (uti != NULL) CFRelease(uti);
     
     return mimeType ?: @"application/octet-stream";
+#else
+    return @"application/octet-stream";
+#endif // TARGET_OS_OSX
 }
 
 #pragma mark -

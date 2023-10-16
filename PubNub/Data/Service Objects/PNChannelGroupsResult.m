@@ -1,6 +1,6 @@
 #import "PNChannelGroupsResult.h"
+#import "PNOperationResult+Private.h"
 #import "PNServiceData+Private.h"
-#import "PNResult+Private.h"
 
 
 #pragma mark - Interface implementation

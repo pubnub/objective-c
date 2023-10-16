@@ -3,8 +3,8 @@
  * @copyright © 2010-2019 PubNub, Inc.
  */
 #import "PNHistoryResult.h"
+#import "PNOperationResult+Private.h"
 #import "PNServiceData+Private.h"
-#import "PNResult+Private.h"
 #import "PNStructures.h"
 
 

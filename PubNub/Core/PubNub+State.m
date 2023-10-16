@@ -362,7 +362,7 @@ NS_ASSUME_NONNULL_END
     
     [self processOperation:operation
             withParameters:parameters 
-           completionBlock:^(PNResult *result, PNStatus *status) {
+           completionBlock:^(PNOperationResult *result, PNStatus *status) {
                
         if (status.isError) {
             status.retryBlock = retryBlock;
@@ -387,7 +387,7 @@ NS_ASSUME_NONNULL_END
                       groups:(NSArray<NSString *> *)groups
               withCompletion:(PNSetStateCompletionBlock)block {
 
-    if (status && !status.isError && [uuid isEqualToString:self.configuration.uuid]) {
+    if (status && !status.isError && [uuid isEqualToString:self.configuration.userID]) {
         NSDictionary *state = status.data.state ?: @{};
 
         [self.clientStateManager setState:state forObjects:channels];
@@ -405,7 +405,7 @@ NS_ASSUME_NONNULL_END
               fromBuilder:(BOOL)apiCallBuilder
            withCompletion:(id)block {
 
-    if (result && [uuid isEqualToString:self.configuration.uuid]) {
+    if (result && [uuid isEqualToString:self.configuration.userID]) {
         NSDictionary *state = @{};
 
         if (!apiCallBuilder) {

@@ -1,117 +1,106 @@
-#import "PNStructures.h"
-#import "PNRequest.h"
+#import <PubNub/PNStructures.h>
+#import <PubNub/PNRequest.h>
+
+
+#pragma mark Protocols forwarding
+
+@protocol PNCryptoProvider;
 
 
 NS_ASSUME_NONNULL_BEGIN
 
-#pragma mark Interface declaration
+#pragma mark - Interface declaration
 
-/**
- * @brief \c Upload \c file request.
- *
- * @author Serhii Mamontov
- * @version 4.15.0
- * @since 4.15.0
- * @copyright © 2010-2020 PubNub, Inc.
- */
+/// `Upload file` request.
+///
+/// The **PubNub** client will use information from the provided request object to _upload_ files or data to the remote
+/// storage.
+///
+/// - Since: 4.15.0
+/// - Copyright: 2010-2023 PubNub, Inc.
 @interface PNSendFileRequest : PNRequest
 
 
 #pragma mark - Information
 
-/**
- * @brief Arbitrary percent encoded query parameters which should be sent along with original API call.
- */
+/// Arbitrary percent encoded query parameters which should be sent along with original API call.
 @property (nonatomic, nullable, strong) NSDictionary *arbitraryQueryParameters;
 
-/**
- * @brief \b NSDictionary with values which should be used by \b PubNub service to filter \c file \c messages.
- */
+/// `NSDictionary` with values which should be used by **PubNub** service to filter `file messages`.
 @property (nonatomic, nullable, strong) NSDictionary *fileMessageMetadata;
 
-/**
- * @brief Key which should be used to encrypt uploaded data.
- *
- * @note Configured \b PubNub instance \c cipherKey will be used if this property not set.
- */
+/// Key which should be used for uploaded data _encryption_.
+///
+/// This property allows setting up data _encryption_ using a different cipher key than the one set during **PubNub**
+/// client instance configuration.
 @property (nonatomic, nullable, copy) NSString *cipherKey;
 
-/**
- * @brief How long message should be stored in channel's storage. Pass \b 0 store message according to retention.
- */
+/// How long message should be stored in channel's storage.
+///
+/// > Note: Pass `0` store message according to retention.
 @property (nonatomic, assign) NSUInteger fileMessageTTL;
 
-/**
- * @brief Name of channel to which \c data should be uploaded.
- */
+/// Name of channel to which `data` should be uploaded.
 @property (nonatomic, readonly, copy) NSString *channel;
 
-/**
- * @brief Whether \b PubNub published \c file \c message should be stored in \c channel history.
- */
+/// Whether **PubNub** published `file message` should be stored in `channel` history.
 @property (nonatomic, assign) BOOL fileMessageStore;
 
-/**
- * @brief Message which should be sent along with file to specified \c channel.
- *
- * @discussion Provided object will be serialized into JSON string before pushing to \b PubNub service. If client has been
- * configured with cipher key message will be encrypted as well.
- */
+/// Message which should be sent along with file to specified `channel`.
+///
+/// Provided object will be serialized into JSON string before pushing to the **PubNub** network.
+///
+/// > Note: If client has been configured with cipher key message will be encrypted as well.
 @property (nonatomic, nullable, strong) id message;
 
-/**
- * @brief Name which should be used to store uploaded data.
- */
+/// Name which should be used to store uploaded data.
 @property (nonatomic, copy) NSString *filename;
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and configuration
 
-/**
- * @brief Create and configure \c file \c upload request.
- *
- * @param channel Name of channel to which file at \c path should be uploaded.
- * @param url URL of file which should be uploaded (on file system).
- *
- * @return Configured and ready to use \c file \c upload request.
- */
+/// Create `file upload` request instance.
+///
+/// Request can upload file from local storage by `URL`.
+///
+/// - Parameters:
+///   - channel: Name of channel to which file at `url` should be uploaded.
+///   - url: URL of file which should be uploaded (on the file system).
+/// - Returns: Initialized `file upload` request.
 + (instancetype)requestWithChannel:(NSString *)channel fileURL:(NSURL *)url;
 
-/**
- * @brief Create and configure \c data \c upload request.
- *
- * @param channel Name of channel to which \c data should be uploaded.
- * @param name File name which will be used to store uploaded \c data.
- * @param data Binary data which should be uploaded.
- *
- * @return Configured and ready to use \c data \c upload request.
- */
+/// Create `data upload` request instance.
+///
+/// Request can upload `binary` data.
+///
+/// - Parameters:
+///   - channel: Name of channel to which `data` should be uploaded.
+///   - name: File name which will be used to store uploaded `data`.
+///   - data: Binary data which should be uploaded.
+/// - Returns: Initialized `data upload` request.
 + (instancetype)requestWithChannel:(NSString *)channel
                           fileName:(NSString *)name
                               data:(NSData *)data;
 
-/**
- * @brief Create and configure \c upload from \c stream request.
- *
- * @param channel Name of channel to which \c data should be uploaded.
- * @param name File name which will be used to store uploaded \c data.
- * @param stream Stream to file on local file system or memory which should be uploaded.
- * @param size Size of data which can be read from \c stream.
- *
- * @return Configured and ready to use \c upload from \c stream request.
- */
+/// Create `stream data upload` request instance.
+///
+/// Request can upload `stream` data.
+///
+/// - Parameters:
+///   - channel: Name of channel to which `stream data` should be uploaded.
+///   - name: File name which will be used to store uploaded `stream data`.
+///   - stream: Stream to file on local file system or memory which should be uploaded.
+///   - size: Size of data which can be read from `stream`.
+/// - Returns: Initialized `stream data upload` request.
 + (instancetype)requestWithChannel:(NSString *)channel
                           fileName:(NSString *)name
                             stream:(NSInputStream *)stream
                               size:(NSUInteger)size;
 
-/**
- * @brief Forbids request initialization.
- *
- * @throws Interface not available exception and requirement to use provided constructor method.
- *
- * @return Initialized request.
- */
+/// Forbids request initialization.
+///
+/// - Returns: Initialized request.
+/// - Throws: Interface not available exception and requirement to use provided constructor method.
 - (instancetype)init NS_UNAVAILABLE;
 
 #pragma mark -

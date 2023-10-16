@@ -1,4 +1,4 @@
-#import "PNFilesAPICallBuilder.h"
+#import <PubNub/PNFilesAPICallBuilder.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -21,9 +21,9 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Maximum number of files metadata per fetched page.
  *
- * @note Will be set to \c 100 (which is also maximum value) if not specified.
+ * @discussion Number of files metadata to return in response.
  *
- * @param limit Number of files metadata to return in response.
+ * @note Will be set to \c 100 (which is also maximum value) if not specified.
  *
  * @return API call configuration builder.
  */
@@ -32,7 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Cursor value to navigate to next fetched result page.
  *
- * @param start Previously-returned cursor bookmark for fetching the next page.
+ * @discussion Previously-returned cursor bookmark for fetching the next page.
  *
  * @return API call configuration builder.
  */
@@ -44,7 +44,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Perform API call.
  *
- * @param block \c List \c files completion handler block.
+ * @discussion \c List \c files completion handler block.
  */
 @property (nonatomic, readonly, strong) void(^performWithCompletion)(PNListFilesCompletionBlock block);
 
@@ -54,13 +54,15 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Arbitrary query parameters addition block.
  *
- * @param params List of arbitrary percent-encoded query parameters which should be sent along with
+ * @discussion List of arbitrary percent-encoded query parameters which should be sent along with
  * original API call.
  *
  * @return API call configuration builder.
  */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wincompatible-property-type"
 @property (nonatomic, readonly, strong) PNSendFileAPICallBuilder * (^queryParam)(NSDictionary *params);
-
+#pragma clang diagnostic pop
 
 #pragma mark -
 

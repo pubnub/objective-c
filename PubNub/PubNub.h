@@ -30,6 +30,7 @@
 #import "PNClientInformation.h"
 #import "PNSubscriberResults.h"
 #import "PNSubscribeStatus.h"
+#import "PNOperationResult.h"
 #import "PNPublishStatus.h"
 #import "PNHistoryResult.h"
 #import "PNSignalStatus.h"
@@ -41,7 +42,25 @@
 #import "PNResult.h"
 #import "PNStatus.h"
 
-// API
+#pragma mark - Cryptor module
+
+// Crypto algorithms
+#import "PNAESCBCCryptor.h"
+#import "PNLegacyCryptor.h"
+
+// Protocols
+#import "PNCryptoProvider.h"
+#import "PNCryptor.h"
+
+// Module
+#import "PNCryptorInputStream.h"
+#import "PNEncryptedStream.h"
+#import "PNEncryptedData.h"
+#import "PNCryptoModule.h"
+
+
+#pragma mark - API
+
 #import "PubNub+Core.h"
 #import "PubNub+MessageActions.h"
 #import "PubNub+ChannelGroup.h"
@@ -59,8 +78,6 @@
 #import "PubNub+Time.h"
 #import "PubNub+PAM.h"
 #import "PNLLogger.h"
-#import "PNResult.h"
-#import "PNStatus.h"
 #import "PNAES.h"
 
 #endif

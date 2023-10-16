@@ -1,5 +1,5 @@
-#import "PNAPICallBuilder.h"
-#import "PNStructures.h"
+#import <PubNub/PNAPICallBuilder.h>
+#import <PubNub/PNStructures.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Channel names addition block / closure.
  *
- * @param channels List of channel names for which persist messages count should be fetched.
+ * @discussion List of channel names for which persist messages count should be fetched.
  *
  * @return API call configuration builder.
  */
@@ -30,11 +30,11 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Single timetoken or per-channel starting point timetoken addition block / closure.
  *
+ * @discussion List with single or multiple timetokens, where each timetoken position in
+ *     correspond to target \c channel location in channel names list.
+ *
  * @warning API call will fail in case if number of passed timetokens doesn't match number of
  * \c channels.
- *
- * @param timetoken List with single or multiple timetokens, where each timetoken position in
- *     correspond to target \c channel location in channel names list.
  *
  * @return API call configuration builder.
  */
@@ -46,7 +46,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Perform API call.
  *
- * @param block Messages count fetch completion block.
+ * @discussion Messages count fetch completion block.
  */
 @property (nonatomic, readonly, strong) void(^performWithCompletion)(PNMessageCountCompletionBlock block);
 
@@ -56,12 +56,15 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Arbitrary query parameters addition block.
  *
- * @param params List of arbitrary percent encoded query parameters which should be sent along with
+ * @discussion List of arbitrary percent encoded query parameters which should be sent along with
  *     original API call.
  *
  * @return API call configuration builder.
  */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wincompatible-property-type"
 @property (nonatomic, readonly, strong) PNMessageCountAPICallBuilder * (^queryParam)(NSDictionary *params);
+#pragma clang diagnostic pop
 
 #pragma mark -
 

@@ -111,14 +111,14 @@ synchronouslyFromChannels:(nullable NSArray *)channels
  *
  * @param result Result which should be stored for further usage in test verification.
  */
-- (void)storeRequestResult:(nullable PNResult *)result;
+- (void)storeRequestResult:(nullable PNOperationResult *)result;
 
 /**
  * @brief Retrieve recently received PubNub REST API call result.
  *
  * @return Result instance in case if last REST API call was successful.
  */
-- (nullable PNResult *)lastResult;
+- (nullable PNOperationResult *)lastResult;
 
 /**
  * @brief Store PubNub REST API call error status object.

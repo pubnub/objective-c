@@ -4,6 +4,7 @@
  */
 #import "PNSubscriber.h"
 #import "PNSubscribeStatus+Private.h"
+#import "PNOperationResult+Private.h"
 #import "PubNub+SubscribePrivate.h"
 #import "PNAcknowledgmentStatus.h"
 #import "PNEnvelopeInformation.h"
@@ -13,7 +14,6 @@
 #import "PNRequestParameters.h"
 #import "PubNub+CorePrivate.h"
 #import "PNStatus+Private.h"
-#import "PNResult+Private.h"
 #import "PNConfiguration.h"
 #import "PubNub+Files.h"
 #import <objc/runtime.h>
@@ -409,7 +409,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @since 4.10.0
  */
-- (void)handleNewObjectsEvent:(PNResult *)data;
+- (void)handleNewObjectsEvent:(PNOperationResult *)data;
 
 /**
  * @brief Process \c files API event which just has been received from \b PubNub service through
@@ -1562,7 +1562,7 @@ NS_ASSUME_NONNULL_END
     PNErrorStatus *status = nil;
     
     if (data) {
-        PNLogResult(self.client.logger, @"<PubNub> %@", [(PNResult *)data stringifiedRepresentation]);
+        PNLogResult(self.client.logger, @"<PubNub> %@", [(PNOperationResult *)data stringifiedRepresentation]);
         
         if ([data.serviceData[@"decryptError"] boolValue]) {
             status = [PNErrorStatus statusForOperation:PNSubscribeOperation
@@ -1603,7 +1603,7 @@ NS_ASSUME_NONNULL_END
     [self.client.listenersManager notifyMessageAction:(PNMessageActionResult *)data];
 }
 
-- (void)handleNewObjectsEvent:(PNResult *)data {
+- (void)handleNewObjectsEvent:(PNOperationResult *)data {
     if (!data) {
         return;
     }
@@ -1622,11 +1622,11 @@ NS_ASSUME_NONNULL_END
     }
 }
 
-- (void)handleNewFileEvent:(PNResult *)data {
+- (void)handleNewFileEvent:(PNOperationResult *)data {
     PNErrorStatus *status = nil;
     
     if (data) {
-        PNLogResult(self.client.logger, @"<PubNub> %@", [(PNResult *)data stringifiedRepresentation]);
+        PNLogResult(self.client.logger, @"<PubNub> %@", [(PNOperationResult *)data stringifiedRepresentation]);
         NSMutableDictionary *updatedData = [data.serviceData mutableCopy];
         
         if ([data.serviceData[@"decryptError"] boolValue]) {
@@ -1658,14 +1658,14 @@ NS_ASSUME_NONNULL_END
 
 - (void)handleNewPresenceEvent:(PNPresenceEventResult *)data {
     if (data) {
-        PNLogResult(self.client.logger, @"<PubNub> %@", [(PNResult *)data stringifiedRepresentation]);
+        PNLogResult(self.client.logger, @"<PubNub> %@", [(PNOperationResult *)data stringifiedRepresentation]);
     }
 
     // Check whether state modification event arrived or not.
     // In case of state modification event for current client it should be applied on local storage.
     if ([data.data.presenceEvent isEqualToString:@"state-change"]) {
         // Check whether state has been changed for current client or not.
-        if ([data.data.presence.uuid isEqualToString:self.client.configuration.uuid]) {
+        if ([data.data.presence.uuid isEqualToString:self.client.configuration.userID]) {
             [self.client.clientStateManager setState:data.data.presence.state forObjects:@[data.data.channel]];
         }
     }

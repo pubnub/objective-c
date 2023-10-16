@@ -41,7 +41,10 @@
     PNConfiguration *configuration = [super configurationForTestCaseWithName:name];
     
     if ([self.name rangeOfString:@"Encrypt"].location != NSNotFound) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
         configuration.cipherKey = self.cipherKey;
+#pragma clang diagnostic pop
     }
     
     return configuration;

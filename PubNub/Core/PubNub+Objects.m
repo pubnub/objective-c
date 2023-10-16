@@ -7,7 +7,6 @@
 #import "PNBaseObjectsRequest+Private.h"
 #import "PNAPICallBuilder+Private.h"
 #import "PubNub+CorePrivate.h"
-#import "PNResult+Private.h"
 #import "PNStatus+Private.h"
 #import "PNConfiguration.h"
 #import "PubNub+Objects.h"
@@ -518,7 +517,7 @@ NS_ASSUME_NONNULL_END
 - (void)setUUIDMetadataWithRequest:(PNSetUUIDMetadataRequest *)request
                         completion:(PNSetUUIDMetadataCompletionBlock)block {
 
-    request.identifier = request.identifier.length ? request.identifier : self.configuration.uuid;
+    request.identifier = request.identifier.length ? request.identifier : self.configuration.userID;
     __weak __typeof(self) weakSelf = self;
     
     [self performRequest:request withCompletion:^(PNSetUUIDMetadataStatus *status) {
@@ -535,7 +534,7 @@ NS_ASSUME_NONNULL_END
 - (void)removeUUIDMetadataWithRequest:(PNRemoveUUIDMetadataRequest *)request
                            completion:(PNRemoveUUIDMetadataCompletionBlock)block {
 
-    request.identifier = request.identifier.length ? request.identifier : self.configuration.uuid;
+    request.identifier = request.identifier.length ? request.identifier : self.configuration.userID;
     __weak __typeof(self) weakSelf = self;
     
     [self performRequest:request withCompletion:^(PNAcknowledgmentStatus *status) {
@@ -552,7 +551,7 @@ NS_ASSUME_NONNULL_END
 - (void)uuidMetadataWithRequest:(PNFetchUUIDMetadataRequest *)request
                      completion:(PNFetchUUIDMetadataCompletionBlock)block {
 
-    request.identifier = request.identifier.length ? request.identifier : self.configuration.uuid;
+    request.identifier = request.identifier.length ? request.identifier : self.configuration.userID;
     __weak __typeof(self) weakSelf = self;
     
     [self performRequest:request
@@ -662,7 +661,7 @@ NS_ASSUME_NONNULL_END
 - (void)setMembershipsWithRequest:(PNSetMembershipsRequest *)request
                        completion:(nullable PNManageMembershipsCompletionBlock)block {
     
-    request.identifier = request.identifier.length ? request.identifier : self.configuration.uuid;
+    request.identifier = request.identifier.length ? request.identifier : self.configuration.userID;
     __weak __typeof(self) weakSelf = self;
 
     [self performRequest:request withCompletion:^(PNManageMembershipsStatus *status) {
@@ -679,7 +678,7 @@ NS_ASSUME_NONNULL_END
 - (void)removeMembershipsWithRequest:(PNRemoveMembershipsRequest *)request
                           completion:(PNManageMembershipsCompletionBlock)block {
     
-    request.identifier = request.identifier.length ? request.identifier : self.configuration.uuid;
+    request.identifier = request.identifier.length ? request.identifier : self.configuration.userID;
     __weak __typeof(self) weakSelf = self;
 
     [self performRequest:request withCompletion:^(PNManageMembershipsStatus *status) {
@@ -696,7 +695,7 @@ NS_ASSUME_NONNULL_END
 - (void)manageMembershipsWithRequest:(PNManageMembershipsRequest *)request
                           completion:(PNManageMembershipsCompletionBlock)block {
     
-    request.identifier = request.identifier.length ? request.identifier : self.configuration.uuid;
+    request.identifier = request.identifier.length ? request.identifier : self.configuration.userID;
     __weak __typeof(self) weakSelf = self;
     
     [self performRequest:request withCompletion:^(PNManageMembershipsStatus *status) {
@@ -713,7 +712,7 @@ NS_ASSUME_NONNULL_END
 - (void)membershipsWithRequest:(PNFetchMembershipsRequest *)request
                     completion:(PNFetchMembershipsCompletionBlock)block {
     
-    request.identifier = request.identifier.length ? request.identifier : self.configuration.uuid;
+    request.identifier = request.identifier.length ? request.identifier : self.configuration.userID;
     __weak __typeof(self) weakSelf = self;
     
     [self performRequest:request

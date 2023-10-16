@@ -4,9 +4,9 @@
  * @since 4.15.0
  * @copyright © 2010-2020 PubNub, Inc.
  */
+#import "PNOperationResult+Private.h"
 #import "PNSendFileStatus+Private.h"
 #import "PNServiceData+Private.h"
-#import "PNResult+Private.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

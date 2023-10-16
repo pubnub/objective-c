@@ -1,13 +1,13 @@
 #import <Foundation/Foundation.h>
-#import "PNRemoveAllPushNotificationsRequest.h"
-#import "PNRemovePushNotificationsRequest.h"
-#import "PNAPNSModificationAPICallBuilder.h"
-#import "PNAuditPushNotificationsRequest.h"
-#import "PNAddPushNotificationsRequest.h"
-#import "PNAPNSAuditAPICallBuilder.h"
-#import "PNNotificationsPayload.h"
-#import "PNAPNSAPICallBuilder.h"
-#import "PubNub+Core.h"
+#import <PubNub/PNRemoveAllPushNotificationsRequest.h>
+#import <PubNub/PNRemovePushNotificationsRequest.h>
+#import <PubNub/PNAPNSModificationAPICallBuilder.h>
+#import <PubNub/PNAuditPushNotificationsRequest.h>
+#import <PubNub/PNAddPushNotificationsRequest.h>
+#import <PubNub/PNAPNSAuditAPICallBuilder.h>
+#import <PubNub/PNNotificationsPayload.h>
+#import <PubNub/PNAPNSAPICallBuilder.h>
+#import <PubNub/PubNub+Core.h>
 
 
 #pragma mark Class forward

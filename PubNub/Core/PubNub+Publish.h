@@ -1,12 +1,12 @@
-#import "PubNub+Core.h"
+#import <PubNub/PubNub+Core.h>
 
-#import "PNPublishFileMessageRequest.h"
-#import "PNPublishRequest.h"
+#import <PubNub/PNPublishFileMessageRequest.h>
+#import <PubNub/PNPublishRequest.h>
 
-#import "PNPublishFileMessageAPICallBuilder.h"
-#import "PNPublishSizeAPICallBuilder.h"
-#import "PNPublishAPICallBuilder.h"
-#import "PNSignalAPICallBuilder.h"
+#import <PubNub/PNPublishFileMessageAPICallBuilder.h>
+#import <PubNub/PNPublishSizeAPICallBuilder.h>
+#import <PubNub/PNPublishAPICallBuilder.h>
+#import <PubNub/PNSignalAPICallBuilder.h>
 
 
 #pragma mark Class forward

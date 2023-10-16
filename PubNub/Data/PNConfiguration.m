@@ -1,7 +1,3 @@
-/**
- * @author Sergey Mamontov
- * @copyright © 2010-2021PubNub, Inc.
- */
 #import <Foundation/Foundation.h>
 #import <Security/Security.h>
 #import "PNPrivateStructures.h"
@@ -23,88 +19,81 @@
 
 #pragma mark Static
 
+/// Device `"identifier"` store key in in-memory or Keychain storage.
 NSString * const kPNConfigurationDeviceIDKey = @"PNConfigurationDeviceID";
-NSString * const kPNConfigurationUUIDKey = @"PNConfigurationUUID";
+
+/// Configured user `identifier` store key in in-memory or Keychain storage.
+NSString * const kPNConfigurationUserIDKey = @"PNConfigurationUUID";
 
 
 NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Protected interface declaration
 
+/// **PubNub** client configuration wrapper private extension.
 @interface PNConfiguration () <NSCopying>
 
 
 #pragma mark - Information
 
 @property (nonatomic, nullable, copy) NSString *authToken;
+@property (nonatomic, copy) NSString *deviceID;
 
 
 #pragma mark - Initialization and Configuration
 
-@property (nonatomic, copy) NSString *deviceID;
-
-/**
- * @brief Initialize configuration instance using minimal required data.
- *
- * @param publishKey Key which allow client to use data push API.
- * @param subscribeKey Key which allow client to subscribe on live feeds pushed from \b PubNub
- *     service.
- * @param uuid Unique client identifier used to identify concrete client user from another which
- *     currently use \b PubNub services.
- *
- * @return Configured and ready to se configuration instance.
- */
-- (instancetype)initWithPublishKey:(NSString *)publishKey subscribeKey:(NSString *)subscribeKey uuid:(NSString *)uuid;
+/// Initialize **PubNub** configuration wrapper instance.
+///
+/// - Throws: Exception in case if `userID` is empty string.
+///
+/// - Parameters:
+///   - publishKey: Key which is used to push data / state to the **PubNub** network.
+///   - subscribeKey: Key which is used to fetch data / state from the **PubNub** network.
+///   - userID: Unique client identifier used to identify concrete client user from another which currently use
+///   **PubNub** services.
+/// - Returns: Initialized **PubNub** configuration wrapper instance.
+- (instancetype)initWithPublishKey:(NSString *)publishKey
+                      subscribeKey:(NSString *)subscribeKey
+                            userID:(NSString *)userID;
 
 
 #pragma mark - Storage
 
-/**
- * @brief Migrate previously stored client data in default storage to new one (identifier-based storage).
- *
- * @param identifier Unique identifier of storage to which information should be moved from default storage.
- */
+/// Migrate previously stored client data in default storage to new one (identifier-based storage).
+///
+/// - Parameter identifier: Unique identifier of storage to which information should be moved from default storage.
 - (void)migrateDefaultToStorageWithIdentifier:(NSString *)identifier;
 
 
-#pragma mark - Misc
+#pragma mark - Helpers
 
-/**
- * @brief Fetch unique device identifier from keychain or generate new one.
- *
- * @return Unique device identifier which depends on platform for which client has been compiled.
- *
- * @since 4.0.2
- */
+/// Fetch unique device identifier from keychain or generate new one.
+///
+/// - Returns: Unique device identifier which depends on platform for which client has been compiled.
+///
+/// - Since: 4.0.2
 - (nullable NSString *)uniqueDeviceIdentifier;
 
-/**
- * @brief Extract unique identifier for current platform.
- *
- * @return Unique device identifier which depends on platform for which client has been compiled.
- *
- * @since 4.1.1
- */
+/// Extract unique identifier for current platform.
+///
+/// - Returns: Unique device identifier which depends on platform for which client has been compiled.
+///
+/// - Since: 4.1.1
 - (nullable NSString *)generateUniqueDeviceIdentifier;
 
 #if TARGET_OS_OSX
-/**
- * @brief Try to fetch device serial number information.
- *
- * @return Serial number or \c nil in case if it has been lost (there is way for hardware to loose
- * it).
- *
- * @since 4.0.2
- */
+/// Try to fetch device serial number information.
+///
+/// - Returns: Serial number or `nil` in case if it has been lost (there is way for hardware to loose it).
+///
+/// - Since: 4.0.2
 - (nullable NSString *)serialNumber;
 
-/**
- * @brief Try to receive MAC address for any current interfaces.
- *
- * @return Network interface MAC address.
- *
- * @since 4.0.2
- */
+/// Try to receive MAC address for any current interfaces.
+///
+/// - Returns: Network interface MAC address.
+///
+/// - Since: 4.0.2
 - (nullable NSString *)macAddress;
 #endif // TARGET_OS_OSX
 
@@ -128,19 +117,27 @@ NS_ASSUME_NONNULL_END
   _presenceHeartbeatInterval = (NSInteger)(_presenceHeartbeatValue * 0.5f) - 1;
 }
 
+- (NSString *)uuid {
+    return self.userID;
+}
+
 - (void)setUUID:(NSString *)uuid {
-    if (!uuid || [uuid stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0) {
+    [self setUserID:uuid];
+}
+
+- (void)setUserID:(NSString *)userID {
+    if (!userID || [userID stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0) {
         NSDictionary *errorInformation = @{
             NSLocalizedFailureReasonErrorKey: @"PubNub client doesn't generate UUID.",
             NSLocalizedRecoverySuggestionErrorKey: @"Specify own 'uuid' using PNConfiguration constructor."
         };
 
         @throw [NSException exceptionWithName:@"PNUnacceptableParametersInput"
-                                       reason:@"'uuid' not set"
+                                       reason:@"identifier not set"
                                      userInfo:errorInformation];
     }
-    
-    _uuid = [uuid copy];
+
+    _userID = [userID copy];
 }
 
 
@@ -149,26 +146,30 @@ NS_ASSUME_NONNULL_END
 + (instancetype)configurationWithPublishKey:(NSString *)publishKey
                                subscribeKey:(NSString *)subscribeKey
                                        uuid:(NSString *)uuid {
-    
-    NSParameterAssert(publishKey);
-    NSParameterAssert(subscribeKey);
-    
-    return [[self alloc] initWithPublishKey:publishKey subscribeKey:subscribeKey uuid:uuid];
+    return [self configurationWithPublishKey:publishKey subscribeKey:subscribeKey userID:uuid];
 }
 
-- (instancetype)initWithPublishKey:(NSString *)publishKey subscribeKey:(NSString *)subscribeKey uuid:(NSString *)uuid {
++ (instancetype)configurationWithPublishKey:(NSString *)publishKey
+                               subscribeKey:(NSString *)subscribeKey
+                                     userID:(NSString *)userID {
+    NSParameterAssert(publishKey);
+    NSParameterAssert(subscribeKey);
+
+    return [[self alloc] initWithPublishKey:publishKey subscribeKey:subscribeKey userID:userID];
+}
+
+- (instancetype)initWithPublishKey:(NSString *)publishKey
+                      subscribeKey:(NSString *)subscribeKey
+                            userID:(NSString *)userID {
     if ((self = [super init])) {
         _origin = [kPNDefaultOrigin copy];
         _publishKey = [publishKey copy];
         _subscribeKey = [subscribeKey copy];
         
-        /**
-         * Call position important, because it migrate stored UUID and device identifier from older
-         * storage.
-         */
+        // Call position important, because it migrate stored UUID and device identifier from older storage.
         [self migrateDefaultToStorageWithIdentifier:publishKey ?: subscribeKey];
         
-        self.uuid = uuid;
+        self.userID = userID;
         _deviceID = [[self uniqueDeviceIdentifier] copy];
         _subscribeMaximumIdleTime = kPNDefaultSubscribeMaximumIdleTime;
         _nonSubscribeRequestTimeout = kPNDefaultNonSubscribeRequestTimeout;
@@ -198,8 +199,8 @@ NS_ASSUME_NONNULL_END
     configuration.subscribeKey = self.subscribeKey;
     configuration.authKey = self.authKey;
     configuration.authToken = self.authToken;
-    configuration.uuid = self.uuid;
-    configuration.cipherKey = self.cipherKey;
+    configuration.userID = self.userID;
+    configuration.cryptoModule = self.cryptoModule;
     configuration.subscribeMaximumIdleTime = self.subscribeMaximumIdleTime;
     configuration.nonSubscribeRequestTimeout = self.nonSubscribeRequestTimeout;
     configuration->_presenceHeartbeatValue = self.presenceHeartbeatValue;
@@ -210,8 +211,14 @@ NS_ASSUME_NONNULL_END
     configuration.TLSEnabled = self.isTLSEnabled;
     configuration.keepTimeTokenOnListChange = self.shouldKeepTimeTokenOnListChange;
     configuration.catchUpOnSubscriptionRestore = self.shouldTryCatchUpOnSubscriptionRestore;
-    configuration.useRandomInitializationVector = self.shouldUseRandomInitializationVector;
     configuration.fileMessagePublishRetryLimit = self.fileMessagePublishRetryLimit;
+    configuration.cryptoModule = self.cryptoModule;
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    configuration.cipherKey = self.cipherKey;
+    configuration.useRandomInitializationVector = self.shouldUseRandomInitializationVector;
+#pragma clang diagnostic pop
     
     if (@available(macOS 10.10, iOS 8.0, *)) {
         configuration.applicationExtensionSharedGroupIdentifier = self.applicationExtensionSharedGroupIdentifier;
@@ -233,11 +240,11 @@ NS_ASSUME_NONNULL_END
     id<PNKeyValueStorage> storage = [PNDataStorage persistentClientDataWithIdentifier:identifier];
     PNKeychain *defaultKeychain = PNKeychain.defaultKeychain;
     
-    NSString *previousUUID = [defaultKeychain valueForKey:kPNConfigurationUUIDKey];
+    NSString *previousUUID = [defaultKeychain valueForKey:kPNConfigurationUserIDKey];
     
     if (previousUUID) {
-        [storage syncStoreValue:previousUUID forKey:kPNConfigurationUUIDKey];
-        [defaultKeychain removeValueForKey:kPNConfigurationUUIDKey];
+        [storage syncStoreValue:previousUUID forKey:kPNConfigurationUserIDKey];
+        [defaultKeychain removeValueForKey:kPNConfigurationUserIDKey];
         
         NSString *previousDeviceID = [defaultKeychain valueForKey:kPNConfigurationDeviceIDKey];
         [storage syncStoreValue:previousDeviceID forKey:kPNConfigurationDeviceIDKey];
@@ -248,7 +255,7 @@ NS_ASSUME_NONNULL_END
     if ([storage isKindOfClass:[PNKeychainStorage class]]) {
         PNKeychainStorage *keychainStorage = (PNKeychainStorage *)storage;
         NSArray<NSString *> *entryNames = @[
-            kPNConfigurationUUIDKey,
+            kPNConfigurationUserIDKey,
             kPNConfigurationDeviceIDKey,
             kPNPublishSequenceDataKey
         ];
@@ -258,24 +265,7 @@ NS_ASSUME_NONNULL_END
 }
 
 
-#pragma mark - Misc
-
-- (NSString *)uniqueUserIdentifier {
-    NSString *storageIdentifier = self.publishKey ?: self.subscribeKey;
-    id<PNKeyValueStorage> storage = [PNDataStorage persistentClientDataWithIdentifier:storageIdentifier];
-    __block NSString *identifier = nil;
-    
-    [storage batchSyncAccessWithBlock:^{
-        identifier = [storage valueForKey:kPNConfigurationUUIDKey];
-        
-        if (!identifier) {
-            identifier = [@"pn-" stringByAppendingString:[NSUUID UUID].UUIDString];
-            [storage storeValue:identifier forKey:kPNConfigurationUUIDKey];
-        }
-    }];
-    
-    return identifier;
-}
+#pragma mark - Helpers
 
 - (NSString *)uniqueDeviceIdentifier {
     NSString *storageIdentifier = self.publishKey ?: self.subscribeKey;

@@ -1,9 +1,3 @@
-/**
- * @author Serhii Mamontov
- * @version 4.17.0
- * @since 4.0.0
- * @copyright © 2010-2019 PubNub, Inc.
- */
 #import "PubNub+CorePrivate.h"
 #define PN_CORE_PROTOCOLS PNEventsListener
 
@@ -15,6 +9,7 @@
 #elif TARGET_OS_OSX
     #import <AppKit/AppKit.h>
 #endif // TARGET_OS_OSX
+#import "PNOperationResult+Private.h"
 #import "PNConfiguration+Private.h"
 #import "PubNub+SubscribePrivate.h"
 #import "PNPrivateStructures.h"
@@ -23,9 +18,8 @@
 #import "PNKeychain+Private.h"
 #import "PNSubscribeStatus.h"
 #import "PubNub+PAMPrivate.h"
-#import "PNEventsListener.h"
-#import "PNResult+Private.h"
 #import "PNStatus+Private.h"
+#import "PNEventsListener.h"
 #import "PNConfiguration.h"
 #import "PNReachability.h"
 #import "PNDataStorage.h"
@@ -34,8 +28,10 @@
 #import "PNNetwork.h"
 #import "PNHelpers.h"
 
+#import "PNCryptoModule.h"
 
-#pragma mark - Externs
+
+#pragma mark Externs
 
 void pn_dispatch_async(dispatch_queue_t queue, dispatch_block_t block) {
     if (queue && block) {
@@ -95,8 +91,9 @@ BOOL pn_operating_system_version_is_lower_than(NSString *version) {
 
 NS_ASSUME_NONNULL_BEGIN
 
-#pragma mark - Protected interface declaration
+#pragma mark - Private interface declaration
 
+/// **PubNub** client core class private extension.
 @interface PubNub () <PN_CORE_PROTOCOLS>
 
 
@@ -117,111 +114,101 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) PNFilesManager *filesManager;
 @property (nonatomic, strong) PNNetwork *subscriptionNetwork;
 @property (nonatomic, strong) PNNetwork *serviceNetwork;
-@property (nonatomic, strong) NSDictionary *defaultPathComponents;
 @property (nonatomic, strong) NSDictionary *defaultQueryComponents;
+@property (nonatomic, strong) NSDictionary *defaultPathComponents;
 
-/**
- * @brief Reachability helper.
- *
- * @discussion Helper used by client to know about when something happened with network and when it
- * is safe to issue requests to \b PubNub network.
- */
+/// Reachability helper.
+///
+/// Helper used by client to know about when something happened with network and when it is safe to issue requests to
+/// the **PubNub** network.
 @property (nonatomic, strong) PNReachability *reachability;
 
 
 #pragma mark - Initialization
 
-/**
- * @brief Initialize \b PubNub client instance with pre-defined configuration.
- *
- * @discussion If all keys will be specified, client will be able to read and modify data on
- * \b PubNub service.
- *
- * @param configuration Reference on instance which store all user-provided information about how
- *     client should operate and handle events.
- * @param callbackQueue Reference on queue which should be used by client fot completion block and
- *     delegate calls.
- *
- * @return Initialized and ready to use \b PubNub client.
-*/
+/// Initialize **PubNub** client instance with pre-defined configuration.
+///
+/// If all keys will be specified, client will be able to read and modify data in **PubNub** network.
+///
+/// > Note: Client will make configuration deep copy and further changes in `PNConfiguration` after it has been passed
+/// to the client won't take any effect on client.
+///
+/// > Note: If `queue` is nil, completion blocks and delegate callbacks will be called on the main queue.
+///
+/// > Note: All required keys can be found on https://admin.pubnub.com
+///
+/// - Parameters:
+///   - configuration: User-provided information about how client should operate and handle events.
+///   - callbackQueue: Queue which is used by client for completion block and delegate calls. By default set to
+///   **main**.
+/// - Returns: Initialized **PubNub** client instance.
 - (instancetype)initWithConfiguration:(PNConfiguration *)configuration
                         callbackQueue:(nullable dispatch_queue_t)callbackQueue;
 
-/**
- * @brief Update current client state.
- *
- * @discussion Use subscription status to translate it to proper client state and launch service
- * reachability check if will be required.
- *
- * @param recentClientStatus Recent subscriber state which should be used to set proper client
- *     state.
- * @param shouldCheckReachability Whether service reachability check should be started or not.
- */
+/// Update current client state.
+///
+/// Use subscription status to translate it to proper client state and launch service reachability check if will be
+/// required.
+///
+/// - Parameters:
+///   - recentClientStatus: Recent subscriber state which should be used to set proper client state.
+///   - shouldCheckReachability: Whether service reachability check should be started or not.
 - (void)setRecentClientStatus:(PNStatusCategory)recentClientStatus
         withReachabilityCheck:(BOOL)shouldCheckReachability;
 
 
+#pragma mark - Crypto module
+
+/// Initialize and configure crypto module.
+- (void)prepareCryptoModule;
+
+
 #pragma mark - Reachability
 
-/**
- * @brief Complete reachability helper configuration.
- */
+/// Complete reachability helper configuration.
 - (void)prepareReachability;
 
 
 #pragma mark - PubNub Network managers
 
-/**
- * @brief Initialize and configure required \b PubNub network managers.
- */
+/// Initialize and configure required **PubNub** network managers.
 - (void)prepareNetworkManagers;
 
 
 #pragma mark - Handlers
 
-/**
- * @brief Handle application with active client transition between foreground and background
- * execution contexts.
- *
- * @param notification Notification which will provide information about to which context
- *     application has been pushed.
- */
+/// Handle application with active client transition between foreground and background execution contexts.
+///
+/// - Parameter notification: Notification which will provide information about to which context application has been
+/// pushed.
 - (void)handleContextTransition:(NSNotification *)notification;
 
 
 #pragma mark - Misc
 
-/**
- * @brief Status class which should be used to represent request error.
- *
- * @param request Request with information which should be used to decide on class.
- *
- * @return Class for error status presentation.
- */
+/// Status class which should be used to represent request error.
+///
+/// - Parameter request: Request with information which should be used to decide on class.
+/// - Returns: Class for error status presentation.
 - (Class)errorStatusClassForRequest:(PNRequest *)request;
 
-/**
- * @brief Store provided unique user identifier in keychain.
- *
- * @param uuid Unique user identifier which has been provided with \b PNConfiguration instance.
- * @param identifier Account publish or subscribe key which has been provided with \c PNConfiguration instance.
- *
- * @since 4.15.3
- */
+/// Store provided unique user identifier in the Keychain.
+///
+/// - Parameters:
+///   - uuid: Unique user identifier which has been provided with `PNConfiguration` instance.
+///   - identifier: Account publish or subscribe key which has been provided with `PNConfiguration` instance.
+///
+/// - Since: 4.15.3
 - (void)storeUUID:(NSString *)uuid forIdentifier:(NSString *)identifier;
 
-/**
- * @brief Create and configure \b PubNub client logger instance.
- *
- * @since 4.5.0
- */
+/// Create and configure **PubNub** client logger instance.
+///
+/// - Since 4.5.0
 - (void)setupClientLogger;
 
-/**
- * @brief Print out logger's verbosity configuration information.
- *
- * @since 4.5.0
- */
+/// Print out logger's verbosity configuration information.
+///
+/// - Since 4.5.0
 - (void)printLogVerbosityInformation;
 
 #pragma mark -
@@ -255,7 +242,11 @@ NS_ASSUME_NONNULL_END
 }
 
 - (NSString *)uuid {
-    return self.configuration.uuid;
+    return [self userID];
+}
+
+- (NSString *)userID {
+    return self.configuration.userID;
 }
 
 
@@ -280,7 +271,7 @@ NS_ASSUME_NONNULL_END
 - (instancetype)initWithConfiguration:(PNConfiguration *)configuration callbackQueue:(dispatch_queue_t)callbackQueue {
     if ((self = [super init])) {
         NSString *storageIdentifier = configuration.publishKey ?: configuration.subscribeKey;
-        [self storeUUID:configuration.uuid forIdentifier:storageIdentifier];
+        [self storeUUID:configuration.userID forIdentifier:storageIdentifier];
         [self setupClientLogger];
         
         PNLogClientInfo(self.logger, @"<PubNub> PubNub SDK %@ (%@)", kPNLibraryVersion, kPNCommit);
@@ -289,9 +280,10 @@ NS_ASSUME_NONNULL_END
         _callbackQueue = callbackQueue;
         _instanceID = [[[NSUUID UUID] UUIDString] copy];
         _resourceAccessQueue = dispatch_queue_create("com.pubnub.core", DISPATCH_QUEUE_CONCURRENT);
-        
+
         [self prepareRequiredParameters];
         [self prepareNetworkManagers];
+        [self prepareCryptoModule];
         
         _filesManager = [PNFilesManager filesManagerForClient:self];
         _subscriberManager = [PNSubscriber subscriberForClient:self];
@@ -365,8 +357,8 @@ NS_ASSUME_NONNULL_END
     if ([self.subscriberManager allObjects].count) {
         // Stop any interactions on subscription loop.
         [self cancelSubscribeOperations];
-        
-        BOOL uuidChanged = ![configuration.uuid isEqualToString:self.configuration.uuid];
+
+        BOOL uuidChanged = ![configuration.userID isEqualToString:self.configuration.userID];
         BOOL authKeyChanged = ((self.configuration.authKey && !configuration.authKey) ||
                                (!self.configuration.authKey && configuration.authKey) ||
                                (configuration.authKey && self.configuration.authKey &&
@@ -378,7 +370,6 @@ NS_ASSUME_NONNULL_END
                              withPresence:YES
                           queryParameters:nil
                                completion:^(__unused PNSubscribeStatus *status) {
-                                   
                 subscriptionRestoreBlock();
             }];
         } else {
@@ -419,6 +410,24 @@ NS_ASSUME_NONNULL_END
             [weakSelf.reachability startServicePing];
         });
     }
+}
+
+
+#pragma mark - Crypto module
+
+- (void)prepareCryptoModule {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    if (!self.configuration.cipherKey.length || self.configuration.cryptoModule) return;
+    if (self.configuration.cipherKey.length && self.configuration.cryptoModule) {
+        PNLogClientInfo(self.logger, @"<PubNub> It is expected that only cipherKey or cryptoModule will be configured "\
+                        "at once. PubNub client will use the configured cryptoModule.");
+        return;
+    }
+
+    self.configuration.cryptoModule = [PNCryptoModule legacyCryptoModuleWithCipherKey:self.configuration.cipherKey
+                                                           randomInitializationVector:self.configuration.useRandomInitializationVector];
+#pragma clang diagnostic pop
 }
 
 
@@ -509,7 +518,7 @@ NS_ASSUME_NONNULL_END
         }
         
         if ([request.httpMethod isEqualToString:@"GET"] && request.returnsResponse) {
-             requestCompletionBlock = ^(PNResult *result, PNStatus *status) {
+             requestCompletionBlock = ^(PNOperationResult *result, PNStatus *status) {
                 [strongSelf callBlock:block status:NO withResult:result andStatus:status];
             };
         } else {
@@ -565,11 +574,11 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)prepareRequiredParameters {
-    self.defaultPathComponents = @{@"{sub-key}": (self.configuration.subscribeKey?: @""),
-                               @"{pub-key}": (self.configuration.publishKey?: @"")};
+    self.defaultPathComponents = @{@"{sub-key}": (self.configuration.subscribeKey ?: @""),
+                               @"{pub-key}": (self.configuration.publishKey ?: @"")};
     
     NSMutableDictionary *queryComponents = [@{
-        @"uuid": [PNString percentEscapedString:(self.configuration.uuid?: @"")],
+        @"uuid": [PNString percentEscapedString:(self.configuration.userID ?: @"")],
         @"deviceid": (self.configuration.deviceID?: @""),
         @"instanceid": self.instanceID,
         @"pnsdk":[NSString stringWithFormat:@"PubNub-%@%%2F%@", kPNClientName, kPNLibraryVersion]
@@ -594,9 +603,9 @@ NS_ASSUME_NONNULL_END
     return [network packetSizeForOperation:operationType withParameters:parameters data:data];
 }
 
-- (void)appendClientInformation:(PNResult *)result {
+- (void)appendClientInformation:(PNOperationResult *)result {
     result.TLSEnabled = self.configuration.isTLSEnabled;
-    result.uuid = self.configuration.uuid;
+    result.userID = self.configuration.userID;
     result.authKey = self.configuration.authToken ?: self.configuration.authKey;
     result.origin = self.configuration.origin;
 }
@@ -606,37 +615,29 @@ NS_ASSUME_NONNULL_END
 
 - (void)callBlock:(id)block
            status:(BOOL)callingStatusBlock
-       withResult:(PNResult *)result
+       withResult:(PNOperationResult *)result
         andStatus:(PNStatus *)status {
     
-    if (result) {
-        PNLogResult(self.logger, @"<PubNub> %@", [result stringifiedRepresentation]);
-    }
+    if (result) PNLogResult(self.logger, @"<PubNub> %@", [result stringifiedRepresentation]);
     
     if (status) {
-        if (status.isError) {
-            PNLogFailureStatus(self.logger, @"<PubNub> %@", [status stringifiedRepresentation]);
-        } else {
-            PNLogStatus(self.logger, @"<PubNub> %@", [status stringifiedRepresentation]);
-        }
+        if (status.isError) PNLogFailureStatus(self.logger, @"<PubNub> %@", [status stringifiedRepresentation]);
+        else PNLogStatus(self.logger, @"<PubNub> %@", [status stringifiedRepresentation]);
     }
 
     if (block) {
         pn_dispatch_async(self.callbackQueue, ^{
-            if (!callingStatusBlock) {
-                ((PNCompletionBlock)block)(result, status);
-            } else {
-                ((PNStatusBlock)block)(status);
-            }
+            if (!callingStatusBlock) ((PNCompletionBlock)block)(result, status);
+            else ((PNStatusBlock)block)(status);
         });
     }
 }
 
 - (void)client:(PubNub *)__unused client didReceiveStatus:(PNSubscribeStatus *)status {
-    if (status.category == PNConnectedCategory || status.category == PNReconnectedCategory ||
+    if (status.category == PNConnectedCategory ||
+        status.category == PNReconnectedCategory ||
         status.category == PNDisconnectedCategory ||
         status.category == PNUnexpectedDisconnectCategory) {
-        
         [self setRecentClientStatus:status.category withReachabilityCheck:status.requireNetworkAvailabilityCheck];
     }
 }
@@ -681,7 +682,7 @@ NS_ASSUME_NONNULL_END
 }
 
 
-#pragma mark - Misc
+#pragma mark - Helpers
 
 - (Class)errorStatusClassForRequest:(PNRequest *)request {
     Class class = [PNErrorStatus class];
@@ -695,7 +696,7 @@ NS_ASSUME_NONNULL_END
 
 - (void)storeUUID:(NSString *)uuid forIdentifier:(NSString *)identifier {
     id<PNKeyValueStorage> storage = [PNDataStorage persistentClientDataWithIdentifier:identifier];
-    [storage storeValue:uuid forKey:kPNConfigurationUUIDKey];
+    [storage storeValue:uuid forKey:kPNConfigurationUserIDKey];
 }
 
 - (void)setupClientLogger {
@@ -737,33 +738,13 @@ NS_ASSUME_NONNULL_END
     NSUInteger verbosityFlags = self.logger.logLevel;
     NSMutableArray *enabledFlags = [NSMutableArray new];
 
-    if (verbosityFlags & PNReachabilityLogLevel) {
-        [enabledFlags addObject:@"Reachability"];
-    }
-
-    if (verbosityFlags & PNRequestLogLevel) {
-        [enabledFlags addObject:@"Network Request"];
-    }
-
-    if (verbosityFlags & PNResultLogLevel) {
-        [enabledFlags addObject:@"Result instance"];
-    }
-
-    if (verbosityFlags & PNStatusLogLevel) {
-        [enabledFlags addObject:@"Status instance"];
-    }
-
-    if (verbosityFlags & PNFailureStatusLogLevel) {
-        [enabledFlags addObject:@"Failed status instance"];
-    }
-
-    if (verbosityFlags & PNAESErrorLogLevel) {
-        [enabledFlags addObject:@"AES error"];
-    }
-
-    if (verbosityFlags & PNAPICallLogLevel) {
-        [enabledFlags addObject:@"API Call"];
-    }
+    if (verbosityFlags & PNReachabilityLogLevel) [enabledFlags addObject:@"Reachability"];
+    if (verbosityFlags & PNRequestLogLevel) [enabledFlags addObject:@"Network Request"];
+    if (verbosityFlags & PNResultLogLevel) [enabledFlags addObject:@"Result instance"];
+    if (verbosityFlags & PNStatusLogLevel) [enabledFlags addObject:@"Status instance"];
+    if (verbosityFlags & PNFailureStatusLogLevel) [enabledFlags addObject:@"Failed status instance"];
+    if (verbosityFlags & PNAESErrorLogLevel) [enabledFlags addObject:@"AES error"];
+    if (verbosityFlags & PNAPICallLogLevel) [enabledFlags addObject:@"API Call"];
     
     PNLogClientInfo(self.logger, @"<PubNub::Logger> Enabled verbosity level flags: %@",
         [enabledFlags componentsJoinedByString:@", "]);

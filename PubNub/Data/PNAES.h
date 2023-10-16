@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "PNStructures.h"
+#import <PubNub/PNStructures.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -15,6 +15,8 @@ NS_ASSUME_NONNULL_BEGIN
  * @since 4.0.0
  * @copyright © 2010-2020 PubNub, Inc.
  */
+DEPRECATED_MSG_ATTRIBUTE("This class deprecated and will be removed with next major update. Please use `CryptoModule` "
+                         "instead.")
 @interface PNAES : NSObject
 
 

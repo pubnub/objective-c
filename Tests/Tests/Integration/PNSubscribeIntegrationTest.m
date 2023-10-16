@@ -51,6 +51,8 @@ NS_ASSUME_NONNULL_END
 
 - (PNConfiguration *)configurationForTestCaseWithName:(NSString *)name {
     PNConfiguration *configuration = [super configurationForTestCaseWithName:name];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     configuration.useRandomInitializationVector = [self.name rangeOfString:@"RandomIV"].location != NSNotFound;
     configuration.presenceHeartbeatValue = 20;
     configuration.presenceHeartbeatInterval = 0;
@@ -66,7 +68,8 @@ NS_ASSUME_NONNULL_END
             configuration.cipherKey = @"secret";
         }
     }
-    
+#pragma clang diagnostic pop
+
     self.initializedClientsCount++;
     
     return configuration;
@@ -89,10 +92,12 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldSubscribeToSingleChannelAndReceiveConnectedEvent {
     NSString *channel = [self channelWithName:@"test-channel1"];
-    
-    
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-    
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addStatusHandlerForClient:self.client
                               withBlock:^(PubNub *client, PNSubscribeStatus *status, BOOL *remove) {
@@ -120,17 +125,19 @@ NS_ASSUME_NONNULL_END
     [self subscribeClient:client2 toChannels:@[channel] withPresence:YES];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
-    
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addPresenceHandlerForClient:client2
                                 withBlock:^(PubNub *client, PNPresenceEventResult *event, BOOL *remove) {
             
             if ([event.data.presenceEvent isEqualToString:@"join"] &&
-                [event.data.presence.uuid isEqualToString:client1.currentConfiguration.uuid]) {
-                
+                [event.data.presence.uuid isEqualToString:client1.currentConfiguration.userID]) {
+
                 XCTAssertEqual([@0 compare:event.data.presence.timetoken], NSOrderedAscending);
                 XCTAssertEqualObjects(event.data.subscription, channel);
                 XCTAssertEqualObjects(event.data.channel, channel);
@@ -147,18 +154,20 @@ NS_ASSUME_NONNULL_END
 - (void)testItShouldSubscribeToSingleChannelWithPresenceAndReceiveOwnOnlineEvent {
     NSString *channel = [self channelWithName:@"test-channel1"];
     
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-    
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addPresenceHandlerForClient:self.client
                                 withBlock:^(PubNub *client, PNPresenceEventResult *event, BOOL *remove) {
             
             if ([event.data.presenceEvent isEqualToString:@"join"] &&
-                [event.data.presence.uuid isEqualToString:self.client.currentConfiguration.uuid]) {
-                
+                [event.data.presence.uuid isEqualToString:self.client.currentConfiguration.userID]) {
+
                 NSString *presenceChannel = [channel stringByAppendingString:@"-pnpres"];
-                XCTAssertEqualObjects(event.data.presence.uuid, self.client.currentConfiguration.uuid);
+                XCTAssertEqualObjects(event.data.presence.uuid, self.client.currentConfiguration.userID);
                 XCTAssertEqual([@0 compare:event.data.presence.timetoken], NSOrderedAscending);
                 XCTAssertNotEqual([self.client.presenceChannels indexOfObject:presenceChannel], NSNotFound);
                 XCTAssertEqualObjects(event.data.subscription, channel);
@@ -177,9 +186,11 @@ NS_ASSUME_NONNULL_END
     NSArray<NSString *> *channels = [self channelsWithNames:@[@"test-channel1", @"test-channel2"]];
     NSSet *subscriptionChannelsSet = [NSSet setWithArray:channels];
     
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-    
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addStatusHandlerForClient:self.client
                               withBlock:^(PubNub *client, PNSubscribeStatus *status, BOOL *remove) {
@@ -209,17 +220,19 @@ NS_ASSUME_NONNULL_END
     [self subscribeClient:client2 toChannels:channels withPresence:YES];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
-    
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addPresenceHandlerForClient:client2
                                 withBlock:^(PubNub *client, PNPresenceEventResult *event, BOOL *remove) {
             
             if ([event.data.presenceEvent isEqualToString:@"join"] &&
-                [event.data.presence.uuid isEqualToString:client1.currentConfiguration.uuid]) {
-                
+                [event.data.presence.uuid isEqualToString:client1.currentConfiguration.userID]) {
+
                 XCTAssertTrue([channels containsObject:event.data.subscription]);
                 XCTAssertTrue([channels containsObject:event.data.channel]);
                 reportedOnlineCount++;
@@ -244,16 +257,18 @@ NS_ASSUME_NONNULL_END
     [self subscribeClient:client2 toChannels:channels withPresence:NO];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
-    
+#pragma clang diagnostic pop
+
     [self waitToNotCompleteIn:self.falseTestCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addPresenceHandlerForClient:client2
                                 withBlock:^(PubNub *client, PNPresenceEventResult *event, BOOL *remove) {
             
             if ([event.data.presenceEvent isEqualToString:@"join"] &&
-                [event.data.presence.uuid isEqualToString:client1.currentConfiguration.uuid]) {
+                [event.data.presence.uuid isEqualToString:client1.currentConfiguration.userID]) {
                 *remove = YES;
                 
                 handler();
@@ -275,7 +290,7 @@ NS_ASSUME_NONNULL_END
                                 withBlock:^(PubNub *client, PNPresenceEventResult *event, BOOL *remove) {
             
             if ([event.data.presenceEvent isEqualToString:@"join"] &&
-                [event.data.presence.uuid isEqualToString:client1.currentConfiguration.uuid]) {
+                [event.data.presence.uuid isEqualToString:client1.currentConfiguration.userID]) {
                 *remove = YES;
                 
                 handler();
@@ -290,16 +305,18 @@ NS_ASSUME_NONNULL_END
     NSArray<NSString *> *channels = [self channelsWithNames:@[@"test-channel1", @"test-channel2"]];
     __block NSUInteger reportedOnlineCount = 0;
     
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-    
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addPresenceHandlerForClient:self.client
                                 withBlock:^(PubNub *client, PNPresenceEventResult *event, BOOL *remove) {
             
             if ([event.data.presenceEvent isEqualToString:@"join"] &&
-                [event.data.presence.uuid isEqualToString:self.client.currentConfiguration.uuid]) {
-                
+                [event.data.presence.uuid isEqualToString:self.client.currentConfiguration.userID]) {
+
                 XCTAssertTrue([channels containsObject:event.data.subscription]);
                 XCTAssertTrue([channels containsObject:event.data.channel]);
                 reportedOnlineCount++;
@@ -324,9 +341,11 @@ NS_ASSUME_NONNULL_END
         channel: @{ @"channel1-state": [self randomizedValuesWithValues:@[@"channel-1-random-value"]] }
     };
     
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-    
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addStatusHandlerForClient:self.client
                               withBlock:^(PubNub *client, PNSubscribeStatus *status, BOOL *remove) {
@@ -345,7 +364,7 @@ NS_ASSUME_NONNULL_END
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client stateForUUID:self.client.currentConfiguration.uuid onChannel:channel
+        [self.client stateForUUID:self.client.currentConfiguration.userID onChannel:channel
                    withCompletion:^(PNChannelClientStateResult *result, PNErrorStatus *status) {
             
             NSDictionary *fetchedState = result.data.state;
@@ -367,9 +386,11 @@ NS_ASSUME_NONNULL_END
         channels.lastObject: @{ @"channel2-state": [self randomizedValuesWithValues:@[@"channel-2-random-value"]] }
     };
     
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-    
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addStatusHandlerForClient:self.client
                               withBlock:^(PubNub *client, PNSubscribeStatus *status, BOOL *remove) {
@@ -389,7 +410,7 @@ NS_ASSUME_NONNULL_END
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         self.client.state().audit()
-            .uuid(self.client.currentConfiguration.uuid)
+            .uuid(self.client.currentConfiguration.userID)
             .channels(channels)
             .performWithCompletion(^(PNClientStateGetResult *result, PNErrorStatus *status) {
                 NSDictionary<NSString *, NSDictionary *> *fetchedChannels = result.data.channels;
@@ -463,9 +484,11 @@ NS_ASSUME_NONNULL_END
     [self addChannels:@[channel] toChannelGroup:channelGroup usingClient:nil];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-    
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addStatusHandlerForClient:self.client
                               withBlock:^(PubNub *client, PNSubscribeStatus *status, BOOL *remove) {
@@ -497,17 +520,19 @@ NS_ASSUME_NONNULL_END
     [self subscribeClient:client2 toChannelGroups:@[channelGroup] withPresence:YES];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
-    
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addPresenceHandlerForClient:client2
                                 withBlock:^(PubNub *client, PNPresenceEventResult *event, BOOL *remove) {
             
             if ([event.data.presenceEvent isEqualToString:@"join"] &&
-                [event.data.presence.uuid isEqualToString:client1.currentConfiguration.uuid]) {
-                
+                [event.data.presence.uuid isEqualToString:client1.currentConfiguration.userID]) {
+
                 XCTAssertEqual([@0 compare:event.data.presence.timetoken], NSOrderedAscending);
                 XCTAssertEqualObjects(event.data.subscription, channelGroup);
                 XCTAssertEqualObjects(event.data.channel, channel);
@@ -531,18 +556,20 @@ NS_ASSUME_NONNULL_END
     [self addChannels:@[channel] toChannelGroup:channelGroup usingClient:nil];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-    
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addPresenceHandlerForClient:self.client
                                 withBlock:^(PubNub *client, PNPresenceEventResult *event, BOOL *remove) {
             
             if ([event.data.presenceEvent isEqualToString:@"join"] &&
-                [event.data.presence.uuid isEqualToString:self.client.currentConfiguration.uuid]) {
+                [event.data.presence.uuid isEqualToString:self.client.currentConfiguration.userID]) {
                 NSString *presenceChannelGroup = [channelGroup stringByAppendingString:@"-pnpres"];
                 XCTAssertNotEqual([self.client.channelGroups indexOfObject:presenceChannelGroup], NSNotFound);
-                XCTAssertEqualObjects(event.data.presence.uuid, self.client.currentConfiguration.uuid);
+                XCTAssertEqualObjects(event.data.presence.uuid, self.client.currentConfiguration.userID);
                 XCTAssertEqual([@0 compare:event.data.presence.timetoken], NSOrderedAscending);
                 XCTAssertEqualObjects(event.data.subscription, channelGroup);
                 XCTAssertEqualObjects(event.data.channel, channel);
@@ -568,9 +595,11 @@ NS_ASSUME_NONNULL_END
     [self addChannels:@[channels.lastObject] toChannelGroup:channelGroups.lastObject usingClient:nil];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-    
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addStatusHandlerForClient:self.client
                               withBlock:^(PubNub *client, PNSubscribeStatus *status, BOOL *remove) {
@@ -606,17 +635,19 @@ NS_ASSUME_NONNULL_END
     [self subscribeClient:client2 toChannelGroups:channelGroups withPresence:YES];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
-    
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addPresenceHandlerForClient:client2
                                 withBlock:^(PubNub *client, PNPresenceEventResult *event, BOOL *remove) {
             
             if ([event.data.presenceEvent isEqualToString:@"join"] &&
-                [event.data.presence.uuid isEqualToString:client1.currentConfiguration.uuid]) {
-                
+                [event.data.presence.uuid isEqualToString:client1.currentConfiguration.userID]) {
+
                 XCTAssertTrue([channelGroups containsObject:event.data.subscription]);
                 XCTAssertTrue([channels containsObject:event.data.channel]);
                 reportedOnlineCount++;
@@ -645,16 +676,18 @@ NS_ASSUME_NONNULL_END
     [self addChannels:@[channels.lastObject] toChannelGroup:channelGroups.lastObject usingClient:nil];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-    
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addPresenceHandlerForClient:self.client
                                 withBlock:^(PubNub *client, PNPresenceEventResult *event, BOOL *remove) {
             
             if ([event.data.presenceEvent isEqualToString:@"join"] &&
-                [event.data.presence.uuid isEqualToString:self.client.currentConfiguration.uuid]) {
-                
+                [event.data.presence.uuid isEqualToString:self.client.currentConfiguration.userID]) {
+
                 XCTAssertTrue([channelGroups containsObject:event.data.subscription]);
                 XCTAssertTrue([channels containsObject:event.data.channel]);
                 reportedOnlineCount++;
@@ -687,9 +720,11 @@ NS_ASSUME_NONNULL_END
     [self addChannels:@[channel] toChannelGroup:channelGroup usingClient:nil];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-    
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addStatusHandlerForClient:self.client
                               withBlock:^(PubNub *client, PNSubscribeStatus *status, BOOL *remove) {
@@ -708,7 +743,7 @@ NS_ASSUME_NONNULL_END
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client stateForUUID:self.client.currentConfiguration.uuid onChannel:channel
+        [self.client stateForUUID:self.client.currentConfiguration.userID onChannel:channel
                    withCompletion:^(PNChannelClientStateResult *result, PNErrorStatus *status) {
             
             NSDictionary *fetchedState = result.data.state;
@@ -742,9 +777,11 @@ NS_ASSUME_NONNULL_END
     [self addChannels:@[channels.lastObject] toChannelGroup:channelGroups.lastObject usingClient:nil];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-    
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addStatusHandlerForClient:self.client
                               withBlock:^(PubNub *client, PNSubscribeStatus *status, BOOL *remove) {
@@ -764,7 +801,7 @@ NS_ASSUME_NONNULL_END
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         self.client.state().audit()
-            .uuid(self.client.currentConfiguration.uuid)
+            .uuid(self.client.currentConfiguration.userID)
             .channelGroups(channelGroups)
             .performWithCompletion(^(PNClientStateGetResult *result, PNErrorStatus *status) {
                 NSDictionary<NSString *, NSDictionary *> *fetchedChannels = result.data.channels;
@@ -844,9 +881,11 @@ NS_ASSUME_NONNULL_END
     [self addChannels:channels toChannelGroup:channelGroup usingClient:nil];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-    
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addStatusHandlerForClient:self.client
                               withBlock:^(PubNub *client, PNSubscribeStatus *status, BOOL *remove) {
@@ -882,15 +921,17 @@ NS_ASSUME_NONNULL_END
     [self subscribeClient:client2 toChannels:channels withPresence:NO];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-    
+#pragma clang diagnostic pop
+
     [self waitToNotCompleteIn:self.falseTestCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addPresenceHandlerForClient:client2
                                 withBlock:^(PubNub *client, PNPresenceEventResult *event, BOOL *remove) {
             
             if ([event.data.presenceEvent isEqualToString:@"join"] &&
-                [event.data.presence.uuid isEqualToString:client1.currentConfiguration.uuid]) {
+                [event.data.presence.uuid isEqualToString:client1.currentConfiguration.userID]) {
                 *remove = YES;
                 
                 handler();
@@ -912,7 +953,7 @@ NS_ASSUME_NONNULL_END
                                 withBlock:^(PubNub *client, PNPresenceEventResult *event, BOOL *remove) {
             
             if ([event.data.presenceEvent isEqualToString:@"join"] &&
-                [event.data.presence.uuid isEqualToString:client1.currentConfiguration.uuid]) {
+                [event.data.presence.uuid isEqualToString:client1.currentConfiguration.userID]) {
                 *remove = YES;
                 
                 handler();
@@ -966,8 +1007,8 @@ NS_ASSUME_NONNULL_END
                                 withBlock:^(PubNub *client, PNPresenceEventResult *event, BOOL *remove) {
             
             if ([event.data.presenceEvent isEqualToString:@"leave"] &&
-                [event.data.presence.uuid isEqualToString:client1.currentConfiguration.uuid]) {
-                
+                [event.data.presence.uuid isEqualToString:client1.currentConfiguration.userID]) {
+
                 XCTAssertEqual([@0 compare:event.data.presence.timetoken], NSOrderedAscending);
                 *remove = YES;
                 
@@ -1022,8 +1063,8 @@ NS_ASSUME_NONNULL_END
                                 withBlock:^(PubNub *client, PNPresenceEventResult *event, BOOL *remove) {
             
             if ([event.data.presenceEvent isEqualToString:@"leave"] &&
-                [event.data.presence.uuid isEqualToString:client1.currentConfiguration.uuid]) {
-                
+                [event.data.presence.uuid isEqualToString:client1.currentConfiguration.userID]) {
+
                 reportedOfflineCount++;
             }
             
@@ -1052,7 +1093,7 @@ NS_ASSUME_NONNULL_END
                                 withBlock:^(PubNub *client, PNPresenceEventResult *event, BOOL *remove) {
             
             if ([event.data.presenceEvent isEqualToString:@"leave"] &&
-                [event.data.presence.uuid isEqualToString:client1.currentConfiguration.uuid]) {
+                [event.data.presence.uuid isEqualToString:client1.currentConfiguration.userID]) {
                 *remove = YES;
                 
                 handler();
@@ -1073,7 +1114,7 @@ NS_ASSUME_NONNULL_END
                                 withBlock:^(PubNub *client, PNPresenceEventResult *event, BOOL *remove) {
             
             if ([event.data.presenceEvent isEqualToString:@"leave"] &&
-                [event.data.presence.uuid isEqualToString:client1.currentConfiguration.uuid]) {
+                [event.data.presence.uuid isEqualToString:client1.currentConfiguration.userID]) {
                 *remove = YES;
                 
                 handler();
@@ -1133,8 +1174,8 @@ NS_ASSUME_NONNULL_END
                                 withBlock:^(PubNub *client, PNPresenceEventResult *event, BOOL *remove) {
             
             if ([event.data.presenceEvent isEqualToString:@"leave"] &&
-                [event.data.presence.uuid isEqualToString:client1.currentConfiguration.uuid]) {
-                
+                [event.data.presence.uuid isEqualToString:client1.currentConfiguration.userID]) {
+
                 XCTAssertEqual([@0 compare:event.data.presence.timetoken], NSOrderedAscending);
                 *remove = YES;
                 
@@ -1201,8 +1242,8 @@ NS_ASSUME_NONNULL_END
                                 withBlock:^(PubNub *client, PNPresenceEventResult *event, BOOL *remove) {
             
             if ([event.data.presenceEvent isEqualToString:@"leave"] &&
-                [event.data.presence.uuid isEqualToString:client1.currentConfiguration.uuid]) {
-                
+                [event.data.presence.uuid isEqualToString:client1.currentConfiguration.userID]) {
+
                 reportedOfflineCount++;
             }
             
@@ -1272,7 +1313,7 @@ NS_ASSUME_NONNULL_END
                                 withBlock:^(PubNub *client, PNPresenceEventResult *event, BOOL *remove) {
             
             if ([event.data.presenceEvent isEqualToString:@"leave"] &&
-                [event.data.presence.uuid isEqualToString:client1.currentConfiguration.uuid]) {
+                [event.data.presence.uuid isEqualToString:client1.currentConfiguration.userID]) {
                 *remove = YES;
                 
                 handler();
@@ -1293,7 +1334,7 @@ NS_ASSUME_NONNULL_END
                                 withBlock:^(PubNub *client, PNPresenceEventResult *event, BOOL *remove) {
             
             if ([event.data.presenceEvent isEqualToString:@"leave"] &&
-                [event.data.presence.uuid isEqualToString:client1.currentConfiguration.uuid]) {
+                [event.data.presence.uuid isEqualToString:client1.currentConfiguration.userID]) {
                 *remove = YES;
                 
                 handler();
@@ -1390,7 +1431,7 @@ NS_ASSUME_NONNULL_END
         [self addMessageHandlerForClient:self.client
                                withBlock:^(PubNub *client, PNMessageResult *message, BOOL *remove) {
                                    
-            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.uuid]) {
+            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.userID]) {
                 XCTAssertEqualObjects(message.data.message, publishedMessage);
                 XCTAssertEqualObjects(message.data.subscription, channel);
                 XCTAssertEqualObjects(message.data.channel, channel);
@@ -1432,7 +1473,7 @@ NS_ASSUME_NONNULL_END
     if (YHVVCR.cassette.isNewCassette) {
         PNConfiguration *configuration = self.client.currentConfiguration;
         NSLog(@"Run following command in Terminal:\n\ncurl 'http://%@/publish/%@/%@/0/%@.%%FF/0/%%22hel%%FFlo%%22?uuid=%@' ; echo\n\n",
-              configuration.origin, configuration.publishKey, configuration.subscribeKey, randomChannel, configuration.uuid);
+              configuration.origin, configuration.publishKey, configuration.subscribeKey, randomChannel, configuration.userID);
         [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.5f)];
     }
     
@@ -1441,7 +1482,7 @@ NS_ASSUME_NONNULL_END
         [self addMessageHandlerForClient:self.client
                                withBlock:^(PubNub *client, PNMessageResult *message, BOOL *remove) {
                                    
-            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.uuid]) {
+            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.userID]) {
                 XCTAssertEqualObjects(message.data.subscription, subscription);
                 XCTAssertEqualObjects(message.data.message, publishedMessage);
                 XCTAssertEqualObjects(message.data.channel, channel);
@@ -1464,16 +1505,18 @@ NS_ASSUME_NONNULL_END
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertNotNil(client1.currentConfiguration.cipherKey);
     XCTAssertNotNil(client2.currentConfiguration.cipherKey);
     XCTAssertEqualObjects(client1.currentConfiguration.cipherKey, client2.currentConfiguration.cipherKey);
-    
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2
                                withBlock:^(PubNub *client, PNMessageResult *message, BOOL *remove) {
 
-            if ([message.data.publisher isEqualToString:client1.currentConfiguration.uuid]) {
+            if ([message.data.publisher isEqualToString:client1.currentConfiguration.userID]) {
                 XCTAssertEqualObjects(message.data.message, publishedMessage);
                 XCTAssertEqualObjects(message.data.subscription, channel);
                 XCTAssertEqualObjects(message.data.channel, channel);
@@ -1498,18 +1541,20 @@ NS_ASSUME_NONNULL_END
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertTrue(client1.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertTrue(client2.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertNotNil(client1.currentConfiguration.cipherKey);
     XCTAssertNotNil(client2.currentConfiguration.cipherKey);
     XCTAssertEqualObjects(client1.currentConfiguration.cipherKey, client2.currentConfiguration.cipherKey);
-    
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2
                                withBlock:^(PubNub *client, PNMessageResult *message, BOOL *remove) {
 
-            if ([message.data.publisher isEqualToString:client1.currentConfiguration.uuid]) {
+            if ([message.data.publisher isEqualToString:client1.currentConfiguration.userID]) {
                 XCTAssertEqualObjects(message.data.message, publishedMessage);
                 XCTAssertEqualObjects(message.data.subscription, channel);
                 XCTAssertEqualObjects(message.data.channel, channel);
@@ -1531,6 +1576,8 @@ NS_ASSUME_NONNULL_END
     NSString *channel = [self channelWithName:@"test-channel1"];
     PubNub *client1 = [self createPubNubForUser:@"serhii"];
     PubNub *client2 = [self createPubNubForUser:@"david"];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     NSString *encryptedMessage = [PNAES encrypt:publishedMessageData withKey:client1.currentConfiguration.cipherKey];
     
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
@@ -1540,7 +1587,8 @@ NS_ASSUME_NONNULL_END
     XCTAssertNotNil(client1.currentConfiguration.cipherKey);
     XCTAssertNotNil(client2.currentConfiguration.cipherKey);
     XCTAssertNotEqualObjects(client1.currentConfiguration.cipherKey, client2.currentConfiguration.cipherKey);
-    
+#pragma clang diagnostic pop
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addStatusHandlerForClient:client2 withBlock:^(PubNub *client, PNSubscribeStatus *status, BOOL *remove) {
             if (status.operation == PNSubscribeOperation && status.category == PNDecryptionErrorCategory) {
@@ -1574,7 +1622,7 @@ NS_ASSUME_NONNULL_END
         [self addMessageHandlerForClient:self.client
                                withBlock:^(PubNub *client, PNMessageResult *message, BOOL *remove) {
                                    
-            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.uuid]) {
+            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.userID]) {
                 XCTAssertEqualObjects(message.data.message, publishedMessage);
                 XCTAssertEqualObjects(message.data.subscription, channels.lastObject);
                 XCTAssertEqualObjects(message.data.channel, channels.lastObject);
@@ -1631,7 +1679,7 @@ NS_ASSUME_NONNULL_END
 
             NSURLRequest *request = [message valueForKey:@"clientRequest"];
             
-            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.uuid]) {
+            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.userID]) {
                 XCTAssertTrue([request.URL.absoluteString pnt_includesString:lastTimetoken.stringValue]);
                 XCTAssertEqualObjects(message.data.message, publishedMessage);
                 *remove = YES;
@@ -1681,7 +1729,7 @@ NS_ASSUME_NONNULL_END
         [self addMessageHandlerForClient:self.client
                                withBlock:^(PubNub *client, PNMessageResult *message, BOOL *remove) {
 
-            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.uuid]) {
+            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.userID]) {
                 XCTAssertEqualObjects(message.data.message, publishedMessage);
                 *remove = YES;
                 
@@ -1732,7 +1780,7 @@ NS_ASSUME_NONNULL_END
                                withBlock:^(PubNub *client, PNMessageResult *message, BOOL *remove) {
             NSURLRequest *request = [message valueForKey:@"clientRequest"];
             
-            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.uuid]) {
+            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.userID]) {
                 XCTAssertTrue([request.URL.absoluteString pnt_includesString:lastTimetoken.stringValue]);
                 XCTAssertEqualObjects(message.data.message, publishedMessage);
                 *remove = YES;
@@ -1760,7 +1808,7 @@ NS_ASSUME_NONNULL_END
         [self addMessageHandlerForClient:self.client
                                withBlock:^(PubNub *client, PNMessageResult *message, BOOL *remove) {
                                    
-            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.uuid]) {
+            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.userID]) {
                 XCTAssertEqualObjects(message.data.message, publishedMessage);
                 XCTAssertEqualObjects(message.data.subscription, channelGroup);
                 XCTAssertEqualObjects(message.data.channel, channel);
@@ -1794,7 +1842,7 @@ NS_ASSUME_NONNULL_END
         [self addMessageHandlerForClient:self.client
                                withBlock:^(PubNub *client, PNMessageResult *message, BOOL *remove) {
                                    
-            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.uuid]) {
+            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.userID]) {
                 XCTAssertEqualObjects(message.data.message, publishedMessage);
                 XCTAssertEqualObjects(message.data.subscription, channelGroups.firstObject);
                 XCTAssertEqualObjects(message.data.channel, channels.firstObject);
@@ -1860,7 +1908,7 @@ NS_ASSUME_NONNULL_END
 
             NSURLRequest *request = [message valueForKey:@"clientRequest"];
             
-            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.uuid]) {
+            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.userID]) {
                 XCTAssertTrue([request.URL.absoluteString pnt_includesString:lastTimetoken.stringValue]);
                 XCTAssertEqualObjects(message.data.message, publishedMessage);
                 *remove = YES;
@@ -1920,7 +1968,7 @@ NS_ASSUME_NONNULL_END
                                withBlock:^(PubNub *client, PNMessageResult *message, BOOL *remove) {
             NSURLRequest *request = [message valueForKey:@"clientRequest"];
             
-            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.uuid]) {
+            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.userID]) {
                 XCTAssertTrue([request.URL.absoluteString pnt_includesString:lastTimetoken.stringValue]);
                 XCTAssertEqualObjects(message.data.message, publishedMessage);
                 *remove = YES;
@@ -1940,9 +1988,9 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Tests :: Messages filter expression
 
 - (void)testItShouldSubscribeToSingleChannelAndReceiveMessageWhenFilterExpressionIsSetToExactMatch {
-    NSString *filterExpression = [NSString stringWithFormat:@"uuid == '%@'", self.client.currentConfiguration.uuid];
+    NSString *filterExpression = [NSString stringWithFormat:@"uuid == '%@'", self.client.currentConfiguration.userID];
     NSDictionary *publishedMessage = @{ @"test-message": [self randomizedValuesWithValues:@[@"message"]] };
-    NSDictionary *messageMetadata = @{ @"uuid": self.client.currentConfiguration.uuid };
+    NSDictionary *messageMetadata = @{ @"uuid": self.client.currentConfiguration.userID };
     NSString *channel = [self channelWithName:@"test-channel1"];
     
     
@@ -1957,7 +2005,7 @@ NS_ASSUME_NONNULL_END
         [self addMessageHandlerForClient:self.client
                                withBlock:^(PubNub *client, PNMessageResult *message, BOOL *remove) {
             
-            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.uuid]) {
+            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.userID]) {
                 *remove = YES;
                 
                 handler();
@@ -1974,10 +2022,10 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldSubscribeToSingleChannelAndReceiveMessageWhenFilterExpressionIsSetToCompound {
     NSString *filterExpression = [NSString stringWithFormat:@"uuid == '%@' && (('admin','super-user') contains role) && age >= 32",
-                                  self.client.currentConfiguration.uuid];
+                                  self.client.currentConfiguration.userID];
     NSDictionary *publishedMessage = @{ @"test-message": [self randomizedValuesWithValues:@[@"message"]] };
     NSDictionary *messageMetadata = @{
-        @"uuid": self.client.currentConfiguration.uuid,
+        @"uuid": self.client.currentConfiguration.userID,
         @"role": @"super-user",
         @"age": @32
     };
@@ -1995,7 +2043,7 @@ NS_ASSUME_NONNULL_END
         [self addMessageHandlerForClient:self.client
                                withBlock:^(PubNub *client, PNMessageResult *message, BOOL *remove) {
             
-            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.uuid]) {
+            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.userID]) {
                 *remove = YES;
                 
                 handler();
@@ -2012,10 +2060,10 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldSubscribeToSingleChannelAndReceiveMessageWhenFilterExpressionIsSetToCompoundWithSubstringCheck {
     NSString *filterExpression = [NSString stringWithFormat:@"uuid == '%@' && role contains 'adm' && age >= 32",
-                                  self.client.currentConfiguration.uuid];
+                                  self.client.currentConfiguration.userID];
     NSDictionary *publishedMessage = @{ @"test-message": [self randomizedValuesWithValues:@[@"message"]] };
     NSDictionary *messageMetadata = @{
-        @"uuid": self.client.currentConfiguration.uuid,
+        @"uuid": self.client.currentConfiguration.userID,
         @"role": @"admin",
         @"age": @32
     };
@@ -2033,7 +2081,7 @@ NS_ASSUME_NONNULL_END
         [self addMessageHandlerForClient:self.client
                                withBlock:^(PubNub *client, PNMessageResult *message, BOOL *remove) {
             
-            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.uuid]) {
+            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.userID]) {
                 *remove = YES;
                 
                 handler();
@@ -2050,10 +2098,10 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldSubscribeToSingleChannelAndReceiveMessageWhenFilterExpressionIsSetToCompoundWithLike {
     NSString *filterExpression = [NSString stringWithFormat:@"uuid == '%@' && privileges like '*write' && age >= 32",
-                                  self.client.currentConfiguration.uuid];
+                                  self.client.currentConfiguration.userID];
     NSDictionary *publishedMessage = @{ @"test-message": [self randomizedValuesWithValues:@[@"message"]] };
     NSDictionary *messageMetadata = @{
-        @"uuid": self.client.currentConfiguration.uuid,
+        @"uuid": self.client.currentConfiguration.userID,
         @"privileges": @[@"write", @"read-write"],
         @"age": @32
     };
@@ -2071,7 +2119,7 @@ NS_ASSUME_NONNULL_END
         [self addMessageHandlerForClient:self.client
                                withBlock:^(PubNub *client, PNMessageResult *message, BOOL *remove) {
             
-            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.uuid]) {
+            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.userID]) {
                 *remove = YES;
                 
                 handler();
@@ -2088,7 +2136,7 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldSubscribeToSingleChannelAndNotReceiveMessageWhenFilterExpressionIsSetToExactMatch {
     NSDictionary *publishedMessage = @{ @"test-message": [self randomizedValuesWithValues:@[@"message"]] };
-    NSDictionary *messageMetadata = @{ @"uuid": self.client.currentConfiguration.uuid };
+    NSDictionary *messageMetadata = @{ @"uuid": self.client.currentConfiguration.userID };
     NSString *channel = [self channelWithName:@"test-channel1"];
     NSString *filterExpression = @"uuid == 'bob'";
     
@@ -2104,7 +2152,7 @@ NS_ASSUME_NONNULL_END
         [self addMessageHandlerForClient:self.client
                                withBlock:^(PubNub *client, PNMessageResult *message, BOOL *remove) {
             
-            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.uuid]) {
+            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.userID]) {
                 *remove = YES;
                 
                 handler();
@@ -2121,10 +2169,10 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldSubscribeToSingleChannelAndNotReceiveMessageWhenFilterExpressionIsSetToCompound {
     NSString *filterExpression = [NSString stringWithFormat:@"uuid == '%@' && !admin && age >= 32",
-                                  self.client.currentConfiguration.uuid];
+                                  self.client.currentConfiguration.userID];
     NSDictionary *publishedMessage = @{ @"test-message": [self randomizedValuesWithValues:@[@"message"]] };
     NSDictionary *messageMetadata = @{
-        @"uuid": self.client.currentConfiguration.uuid,
+        @"uuid": self.client.currentConfiguration.userID,
         @"admin": @YES,
         @"age": @33
     };
@@ -2142,7 +2190,7 @@ NS_ASSUME_NONNULL_END
         [self addMessageHandlerForClient:self.client
                                withBlock:^(PubNub *client, PNMessageResult *message, BOOL *remove) {
             
-            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.uuid]) {
+            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.userID]) {
                 *remove = YES;
                 
                 handler();
@@ -2159,10 +2207,10 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldSubscribeToSingleChannelAndReceiveFilteredMessagesWhenFilterExpressionSetAfterSubscribe {
     NSString *filterExpression = [NSString stringWithFormat:@"uuid == '%@' && !admin && age >= 32",
-                                  self.client.currentConfiguration.uuid];
+                                  self.client.currentConfiguration.userID];
     NSDictionary *publishedMessage = @{ @"test-message": [self randomizedValuesWithValues:@[@"message"]] };
     NSDictionary *messageMetadata = @{
-        @"uuid": self.client.currentConfiguration.uuid,
+        @"uuid": self.client.currentConfiguration.userID,
         @"admin": @YES,
         @"age": @33
     };
@@ -2177,7 +2225,7 @@ NS_ASSUME_NONNULL_END
         [self addMessageHandlerForClient:self.client
                                withBlock:^(PubNub *client, PNMessageResult *message, BOOL *remove) {
             
-            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.uuid]) {
+            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.userID]) {
                 *remove = YES;
                 
                 handler();
@@ -2199,7 +2247,7 @@ NS_ASSUME_NONNULL_END
         [self addMessageHandlerForClient:self.client
                                withBlock:^(PubNub *client, PNMessageResult *message, BOOL *remove) {
             
-            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.uuid]) {
+            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.userID]) {
                 *remove = YES;
                 
                 handler();

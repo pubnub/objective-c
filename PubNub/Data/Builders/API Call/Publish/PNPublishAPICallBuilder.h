@@ -1,5 +1,5 @@
-#import "PNAPICallBuilder.h"
-#import "PNStructures.h"
+#import <PubNub/PNAPICallBuilder.h>
+#import <PubNub/PNStructures.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -139,7 +139,10 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @since 4.8.2
  */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wincompatible-property-type"
 @property (nonatomic, readonly, strong) PNPublishAPICallBuilder * (^queryParam)(NSDictionary *params);
+#pragma clang diagnostic pop
 
 #pragma mark -
 

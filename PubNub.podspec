@@ -9,7 +9,7 @@
 
 Pod::Spec.new do |spec|
     spec.name     = 'PubNub'
-    spec.version  = '5.1.3'
+    spec.version  = '5.2.0'
     spec.summary  = 'The PubNub Real-Time Network. Build real-time apps quickly and scale them globally.'
     spec.homepage = 'https://github.com/pubnub/objective-c'
 
@@ -22,14 +22,14 @@ Pod::Spec.new do |spec|
         :tag => "v#{spec.version}"
     }
 
-    spec.ios.deployment_target = '9.0'
-    spec.watchos.deployment_target = '4.0'
-    spec.osx.deployment_target = '10.11'
-    spec.tvos.deployment_target = '10.0'
+    spec.ios.deployment_target = '14.0'
+    spec.watchos.deployment_target = '7.0'
+    spec.osx.deployment_target = '11.00'
+    spec.tvos.deployment_target = '14.0'
     spec.requires_arc = true
 
     spec.subspec 'Core' do |core|
-        core.source_files = 'PubNub/{Core,Data,Misc,Network}/**/*', 'PubNub/PubNub.h'
+        core.source_files = 'PubNub/{Core,Data,Modules,Misc,Network}/**/*', 'PubNub/PubNub.h'
         core.private_header_files = [
             'PubNub/**/*Private.h',
             'PubNub/Data/{PNEnvelopeInformation}.h',
@@ -41,6 +41,8 @@ Pod::Spec.new do |spec|
             'PubNub/Misc/Logger/PNLogMacro.h',
             'PubNub/Misc/Logger/Data/*.h',
             'PubNub/Misc/Protocols/{PNKeyValueStorageProtocol,PNParser}.h',
+            "PubNub/Modules/Crypto/Cryptors/AES/PNCCCryptorWrapper.h",
+            "PubNub/Modules/Crypto/Header/*.h",
             'PubNub/Network/{PNNetwork,PNNetworkResponseSerializer,PNReachability,PNRequestParameters,PNURLBuilder}.h',
             'PubNub/Network/Requests/Files/PNGenerateFileUploadURLRequest.h',
             'PubNub/Network/Parsers/**/*.h'
@@ -62,33 +64,35 @@ Pod::Spec.new do |spec|
     spec.license = { 
         :type => 'MIT', 
         :text => <<-LICENSE
-            PubNub Real-time Cloud-Hosted Push API and Push Notification Client Frameworks
-            Copyright (c) 2013 PubNub Inc.
-            http://www.pubnub.com/
-            http://www.pubnub.com/terms
+            PubNub Software Development Kit License Agreement
+            Copyright © 2023 PubNub Inc. All rights reserved.
 
-            Permission is hereby granted, free of charge, to any person obtaining a copy
-            of this software and associated documentation files (the "Software"), to deal
-            in the Software without restriction, including without limitation the rights
-            to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-            copies of the Software, and to permit persons to whom the Software is
-            furnished to do so, subject to the following conditions:
+            Subject to the terms and conditions of the license, you are hereby granted
+            a non-exclusive, worldwide, royalty-free license to (a) copy and modify
+            the software in source code or binary form for use with the software services
+            and interfaces provided by PubNub, and (b) redistribute unmodified copies
+            of the software to third parties. The software may not be incorporated in
+            or used to provide any product or service competitive with the products
+            and services of PubNub.
 
-            The above copyright notice and this permission notice shall be included in
-            all copies or substantial portions of the Software.
+            The above copyright notice and this license shall be included
+            in or with all copies or substantial portions of the software.
 
-            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-            IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-            FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-            AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-            LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-            OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-            THE SOFTWARE.
+            This license does not grant you permission to use the trade names, trademarks,
+            service marks, or product names of PubNub, except as required for reasonable
+            and customary use in describing the origin of the software and reproducing
+            the content of this license.
 
-            PubNub Real-time Cloud-Hosted Push API and Push Notification Client Frameworks
-            Copyright (c) 2014 PubNub Inc.
-            http://www.pubnub.com/
-            http://www.pubnub.com/terms
+            THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF
+            ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+            MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
+            EVENT SHALL PUBNUB OR THE AUTHORS OR COPYRIGHT HOLDERS OF THE SOFTWARE BE
+            LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+            CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+            SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+            https://www.pubnub.com/
+            https://www.pubnub.com/terms
         LICENSE
     }
 end

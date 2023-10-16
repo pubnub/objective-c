@@ -1,5 +1,5 @@
-#import "PNBasePushNotificationsRequest.h"
-#import "PNStructures.h"
+#import <PubNub/PNBasePushNotificationsRequest.h>
+#import <PubNub/PNStructures.h>
 
 
 NS_ASSUME_NONNULL_BEGIN

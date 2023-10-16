@@ -2,11 +2,10 @@
  * @author Serhii Mamontov
  * @copyright © 2010-2019 PubNub, Inc.
  */
-#import "PNStatus+Private.h"
 #import "PNNetworkResponseSerializer.h"
+#import "PNOperationResult+Private.h"
 #import "PNPrivateStructures.h"
 #import "PNStatus+Private.h"
-#import "PNResult+Private.h"
 #import "PNDictionary.h"
 #import "PNErrorCodes.h"
 

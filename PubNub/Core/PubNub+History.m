@@ -4,13 +4,13 @@
  * @copyright © 2010-2018 PubNub, Inc.
  */
 #import "PubNub+History.h"
+#import "PNOperationResult+Private.h"
 #import "PNAPICallBuilder+Private.h"
 #import "PNServiceData+Private.h"
 #import "PNErrorStatus+Private.h"
 #import "PNRequestParameters.h"
 #import "PubNub+CorePrivate.h"
 #import "PNSubscribeStatus.h"
-#import "PNResult+Private.h"
 #import "PNStatus+Private.h"
 #import "PNHistoryResult.h"
 #import "PNLogMacro.h"
@@ -120,7 +120,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @since 4.0
  */
-- (void)handleHistoryResult:(nullable PNResult *)result
+- (void)handleHistoryResult:(nullable PNOperationResult *)result
                  withStatus:(nullable PNStatus *)status
                  completion:(PNHistoryCompletionBlock)block;
 
@@ -557,7 +557,7 @@ NS_ASSUME_NONNULL_END
     __weak __typeof(self) weakSelf = self;
     [self processOperation:operation
             withParameters:parameters
-           completionBlock:^(PNResult *result, PNStatus *status) {
+           completionBlock:^(PNOperationResult *result, PNStatus *status) {
                
         if (status.isError) {
             status.retryBlock = ^{
@@ -622,7 +622,7 @@ NS_ASSUME_NONNULL_END
     __weak __typeof(self) weakSelf = self;
     [self processOperation:PNMessageCountOperation
             withParameters:parameters
-           completionBlock:^(PNResult *result, PNStatus *status) {
+           completionBlock:^(PNOperationResult *result, PNStatus *status) {
 
         if (status.isError) {
             status.retryBlock = ^{

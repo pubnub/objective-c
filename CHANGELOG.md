@@ -1,3 +1,13 @@
+## v5.2.0
+October 16 2023
+
+#### Added
+- Add a crypto module with a set of implemented cryptors.
+
+#### Modified
+- Mark `uuid` as deprecated configuration property.
+- Fix warnings after project settings update.
+
 ## v5.1.3
 December 13 2022
 

@@ -4,6 +4,7 @@
  */
 #import "PNContractTestCase.h"
 #import "PNMessageActionsContractTestSteps.h"
+#import "PNCryptoModuleContractTestSteps.h"
 #import "PNSubscribeContractTestSteps.h"
 #import "PNPublishContractTestSteps.h"
 #import "PNHistoryContractTestSteps.h"
@@ -163,7 +164,7 @@ NS_ASSUME_NONNULL_END
     if (!self.currentConfiguration) {
         self.currentConfiguration = [PNConfiguration configurationWithPublishKey:kPNDefaultPublishKey
                                                                     subscribeKey:kPNDefaultSubscribeKey
-                                                                            uuid:[NSUUID UUID].UUIDString];
+                                                                          userID:[NSUUID UUID].UUIDString];
         self.currentConfiguration.origin = kPNMockServerAddress;
         self.currentConfiguration.TLSEnabled = NO;
     }
@@ -265,7 +266,7 @@ NS_ASSUME_NONNULL_END
         
         Then(@"I receive successful response", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
             PNStatus *status = [self lastStatus];
-            PNResult *result = [self lastResult];
+            PNOperationResult *result = [self lastResult];
             
             if (status && status.operation == self.testedFeatureType) {
                 XCTAssertFalse(status.isError, @"Last API call shouldn't fail.");
@@ -278,7 +279,7 @@ NS_ASSUME_NONNULL_END
         
         Then(@"I receive error response", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
             PNStatus *status = [self lastStatus];
-            PNResult *result = [self lastResult];
+            PNOperationResult *result = [self lastResult];
             
             XCTAssertNotNil(status, @"Last API call should fail");
             XCTAssertTrue(status.operation == self.testedFeatureType,
@@ -301,6 +302,7 @@ NS_ASSUME_NONNULL_END
         [[PNPublishContractTestSteps new] setup];
         [[PNSubscribeContractTestSteps new] setup];
         [[PNTimeContractTestSteps new] setup];
+        [[PNCryptoModuleContractTestSteps new] setup];
     });
 }
 
@@ -377,9 +379,9 @@ synchronouslyFromChannels:(NSArray *)channels
         __block BOOL receivedRequiredCount = NO;
         
         dispatch_sync(_resourcesAccess, ^{
-            NSString *clientIdentifier = receiver.currentConfiguration.uuid;
-            
-            if ([client.currentConfiguration.uuid isEqualToString:clientIdentifier]) {
+            NSString *clientIdentifier = receiver.currentConfiguration.userID;
+
+            if ([client.currentConfiguration.userID isEqualToString:clientIdentifier]) {
                 receivedRequiredCount = messagesCount >= [weakSelf messagesCountForClient:receiver onChannel:channel];
             }
             
@@ -426,9 +428,9 @@ synchronouslyFromChannels:(NSArray *)channels
         __block BOOL receivedRequiredCount = NO;
         
         dispatch_sync(_resourcesAccess, ^{
-            NSString *clientIdentifier = receiver.currentConfiguration.uuid;
-            
-            if ([client.currentConfiguration.uuid isEqualToString:clientIdentifier]) {
+            NSString *clientIdentifier = receiver.currentConfiguration.userID;
+
+            if ([client.currentConfiguration.userID isEqualToString:clientIdentifier]) {
                 receivedRequiredCount = statusesCount >= _receivedStatuses[clientIdentifier].count;
             }
             
@@ -462,13 +464,13 @@ synchronouslyFromChannels:(NSArray *)channels
 
 #pragma mark - Result & Status handling
 
-- (void)storeRequestResult:(nullable PNResult *)result {
+- (void)storeRequestResult:(nullable PNOperationResult *)result {
     dispatch_barrier_async(_resourcesAccess, ^{
         [_apiCallResults addObject:result ? result : [NSNull null]];
     });
 }
 
-- (PNResult *)lastResult {
+- (PNOperationResult *)lastResult {
     __block id result;
     
     dispatch_sync(_resourcesAccess, ^{
@@ -598,7 +600,7 @@ synchronouslyFromChannels:(NSArray *)channels
 }
 
 - (NSUInteger)messagesCountForClient:(PubNub *)client onChannel:(NSString *)channel {
-    PNTestClientMessagesList *clientMessages = _receivedMessages[client.currentConfiguration.uuid];
+    PNTestClientMessagesList *clientMessages = _receivedMessages[client.currentConfiguration.userID];
     __block NSUInteger messagesCount = 0;
     
     if (channel) {
@@ -655,11 +657,11 @@ synchronouslyFromChannels:(NSArray *)channels
 
 - (void)client:(PubNub *)client didReceiveStatus:(PNStatus *)status {
     dispatch_barrier_async(_resourcesAccess, ^{
-        PNTestClientStatusesList *clientStatuses = _receivedStatuses[client.currentConfiguration.uuid];
-        
+        PNTestClientStatusesList *clientStatuses = _receivedStatuses[client.currentConfiguration.userID];
+
         if (!clientStatuses) {
             clientStatuses = [NSMutableArray new];
-            _receivedStatuses[client.currentConfiguration.uuid] = clientStatuses;
+            _receivedStatuses[client.currentConfiguration.userID] = clientStatuses;
         }
         
         if (status) {
@@ -674,11 +676,11 @@ synchronouslyFromChannels:(NSArray *)channels
 
 - (void)client:(PubNub *)client didReceiveMessage:(PNMessageResult *)message {
     dispatch_barrier_async(_resourcesAccess, ^{
-        PNTestClientMessagesList *clientMessages = _receivedMessages[client.currentConfiguration.uuid];
-        
+        PNTestClientMessagesList *clientMessages = _receivedMessages[client.currentConfiguration.userID];
+
         if (!clientMessages) {
             clientMessages = [NSMutableDictionary new];
-            _receivedMessages[client.currentConfiguration.uuid] = clientMessages;
+            _receivedMessages[client.currentConfiguration.userID] = clientMessages;
         }
         
         PNTestChannelMessagesList *channelMessages = clientMessages[message.data.channel];

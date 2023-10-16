@@ -1,4 +1,4 @@
-#import "PNStateAPICallBuilder.h"
+#import <PubNub/PNStateAPICallBuilder.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -18,7 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Unique user identifier addition block.
  *
- * @param uuid Unique user identifier for which state should be bound. Current \b {PubNub} user id
+ * @discussion Unique user identifier for which state should be bound. Current \b {PubNub} user id
  *     will be used by default if not set or set to \c nil.
  *
  * @return API call configuration builder.
@@ -30,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief User's presence state addition block.
  *
- * @param state \a NSDictionary with data which should be bound to \c uuid on
+ * @discussion \a NSDictionary with data which should be bound to \c uuid on
  *     channel / channel group.
  *
  * @since 4.5.4
@@ -40,7 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Channel name addition block.
  *
- * @param channel Name of the channel which will store provided state information for \c uuid.
+ * @discussion Name of the channel which will store provided state information for \c uuid.
  *
  * @deprecated 4.8.3
  */
@@ -51,7 +51,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Channel names addition block.
  *
- * @param channel List of the channel names which will store provided state information for \c uuid.
+ * @discussion List of the channel names which will store provided state information for \c uuid.
  *
  * @since 4.8.3
  */
@@ -60,7 +60,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Channel group name addition block.
  *
- * @param channelGroup Name of channel group which will store provided state information for
+ * @discussion Name of channel group which will store provided state information for
  *     \c uuid.
  *
  * @deprecated 4.8.3
@@ -72,7 +72,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Channel group names addition block.
  *
- * @param channelGroups List of channel group names which will store provided state information for
+ * @discussion List of channel group names which will store provided state information for
  *     \c uuid.
  *
  * @since 4.8.3
@@ -85,7 +85,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Perform API call.
  *
- * @param block State modification for user on channel completion block.
+ * @discussion State modification for user on channel completion block.
  *
  * @since 4.5.4
  */
@@ -97,14 +97,17 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Arbitrary query parameters addition block.
  *
- * @param params List of arbitrary percent encoded query parameters which should be sent along with
+ * @discussion List of arbitrary percent encoded query parameters which should be sent along with
  *     original API call.
  *
  * @return API call configuration builder.
  *
  * @since 4.8.2
  */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wincompatible-property-type"
 @property (nonatomic, readonly, strong) PNStateModificationAPICallBuilder * (^queryParam)(NSDictionary *params);
+#pragma clang diagnostic pop
 
 #pragma mark -
 

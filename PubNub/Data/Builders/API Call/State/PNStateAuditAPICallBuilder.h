@@ -1,4 +1,4 @@
-#import "PNStateAPICallBuilder.h"
+#import <PubNub/PNStateAPICallBuilder.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -18,7 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Unique user identifier addition block.
  *
- * @param uuid Unique user identifier for which state should be retrieved. Current \b {PubNub} user
+ * @discussion Unique user identifier for which state should be retrieved. Current \b {PubNub} user
  *     id will be used by default if not set or set to \c nil.
  *
  * @return API call configuration builder.
@@ -30,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Channel name addition block.
  *
- * @param channel Name of channel from which state information for \c uuid will be pulled out.
+ * @discussion Name of channel from which state information for \c uuid will be pulled out.
  *
  * @return API call configuration builder.
  *
@@ -43,7 +43,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Channel names addition block.
  *
- * @param channel List of the channel names from which state information for \c uuid will be
+ * @discussion List of the channel names from which state information for \c uuid will be
  *     pulled out.
  *
  * @return API call configuration builder.
@@ -55,7 +55,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Channel group name addition block.
  *
- * @param channelGroup Name of channel group from which state information for \c uuid will be
+ * @discussion Name of channel group from which state information for \c uuid will be
  *     pulled out.
  *
  * @return API call configuration builder.
@@ -69,7 +69,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Channel group names addition block.
  *
- * @param channelGroup List of channel group names from which state information for \c uuid will be
+ * @discussion List of channel group names from which state information for \c uuid will be
  *     pulled out.
  *
  * @return API call configuration builder.
@@ -84,7 +84,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Perform API call.
  *
- * @param block State audition for user on channel / channel group completion block.
+ * @discussion State audition for user on channel / channel group completion block.
  *
  * @since 4.5.4
  */
@@ -96,14 +96,17 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * @brief Arbitrary query parameters addition block.
  *
- * @param params List of arbitrary percent encoded query parameters which should be sent along with
+ * @discussion List of arbitrary percent encoded query parameters which should be sent along with
  *     original API call.
  *
  * @return API call configuration builder.
  *
  * @since 4.8.2
  */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wincompatible-property-type"
 @property (nonatomic, readonly, strong) PNStateAuditAPICallBuilder * (^queryParam)(NSDictionary *params);
+#pragma clang diagnostic pop
 
 #pragma mark -
 

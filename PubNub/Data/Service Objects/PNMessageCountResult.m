@@ -6,8 +6,8 @@
  * @copyright © 2010-2019 PubNub, Inc.
  */
 #import "PNMessageCountResult.h"
+#import "PNOperationResult+Private.h"
 #import "PNServiceData+Private.h"
-#import "PNResult+Private.h"
 
 
 #pragma mark Interface implementation

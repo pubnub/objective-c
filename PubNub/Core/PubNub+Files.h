@@ -1,20 +1,20 @@
-#import "PubNub+Core.h"
-#import "PNDownloadFileRequest.h"
-#import "PNDeleteFileRequest.h"
-#import "PNListFilesRequest.h"
-#import "PNSendFileRequest.h"
-#import "PNFile.h"
+#import <PubNub/PubNub+Core.h>
+#import <PubNub/PNDownloadFileRequest.h>
+#import <PubNub/PNDeleteFileRequest.h>
+#import <PubNub/PNListFilesRequest.h>
+#import <PubNub/PNSendFileRequest.h>
+#import <PubNub/PNFile.h>
 
-#import "PNDownloadFileResult.h"
-#import "PNListFilesResult.h"
-#import "PNSendFileStatus.h"
+#import <PubNub/PNDownloadFileResult.h>
+#import <PubNub/PNListFilesResult.h>
+#import <PubNub/PNSendFileStatus.h>
 
-#import "PNFileDownloadURLAPICallBuilder.h"
-#import "PNDownloadFileAPICallBuilder.h"
-#import "PNDeleteFileAPICallBuilder.h"
-#import "PNListFilesAPICallBuilder.h"
-#import "PNSendFileAPICallBuilder.h"
-#import "PNFilesAPICallBuilder.h"
+#import <PubNub/PNFileDownloadURLAPICallBuilder.h>
+#import <PubNub/PNDownloadFileAPICallBuilder.h>
+#import <PubNub/PNDeleteFileAPICallBuilder.h>
+#import <PubNub/PNListFilesAPICallBuilder.h>
+#import <PubNub/PNSendFileAPICallBuilder.h>
+#import <PubNub/PNFilesAPICallBuilder.h>
 
 
 NS_ASSUME_NONNULL_BEGIN

@@ -1,6 +1,6 @@
-#import "PNServiceData.h"
-#import "PNResult.h"
-#import "PNChannelMember.h"
+#import <PubNub/PNServiceData.h>
+#import <PubNub/PNOperationResult.h>
+#import <PubNub/PNChannelMember.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -57,7 +57,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @since 4.14.1
  * @copyright © 2010-2020 PubNub, Inc.
  */
-@interface PNFetchChannelMembersResult : PNResult
+@interface PNFetchChannelMembersResult : PNOperationResult
 
 
 #pragma mark - Information
