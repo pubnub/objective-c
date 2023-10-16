@@ -77,7 +77,7 @@
 - (void)pubNubInit {
 
     // Initialize PubNub client.
-    self.myConfig = [PNConfiguration configurationWithPublishKey:_pubKey subscribeKey:_subKey uuid:@"pubnub"];
+    self.myConfig = [PNConfiguration configurationWithPublishKey:_pubKey subscribeKey:_subKey userID:@"pubnub"];
 
     [self updateClientConfiguration];
     [self printClientConfiguration];

@@ -195,7 +195,8 @@ NS_ASSUME_NONNULL_END
 - (PNResult<NSInputStream *> *)decryptStream:(PNEncryptedStream *)stream dataLength:(NSUInteger)length {
     NSData *initializationVector = stream.metadata;
 
-    if (initializationVector.length == 0 && length > kCCBlockSizeAES128) {
+    if (initializationVector.length == 0 && !self.useRandomIV) initializationVector = self.initializationVector;
+    else if (initializationVector.length == 0 && length > kCCBlockSizeAES128) {
         initializationVector = [stream.stream readCryptorMetadataWithLength:kCCBlockSizeAES128].data;
     } else if (length < kCCBlockSizeAES128) {
         NSError *error = [NSError errorWithDomain:kPNCryptorErrorDomain
