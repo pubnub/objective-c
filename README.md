@@ -1,7 +1,6 @@
 # PubNub 5.2.0 for iOS 9+
 [![Twitter](https://img.shields.io/badge/twitter-%40PubNub-blue.svg?style=flat)](https://twitter.com/PubNub)
 [![Twitter Releases](https://img.shields.io/badge/twitter-%40PubNubRelease-blue.svg?style=flat)](https://twitter.com/PubNubRelease)
-[![License](https://img.shields.io/github/license/pubnub/objective-c.svg?style=flat)](https://img.shields.io/github/license/pubnub/objective-c.svg)
 [![CocoaPods Compatible](https://img.shields.io/cocoapods/v/PubNub.svg?style=flat)](https://img.shields.io/cocoapods/v/PubNub.svg)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![Platform](https://img.shields.io/cocoapods/p/PubNub.svg?style=flat)](https://img.shields.io/cocoapods/p/PubNub.svg)
@@ -198,3 +197,9 @@ You will need the publish and subscribe keys to authenticate your app. Get your 
 ## Support
 
 If you **need help** or have a **general question**, contact support@pubnub.com.
+
+## License
+
+The PubNub Swift SDK is released under the `PubNub Software Development Kit License`.
+
+[See LICENSE](https://github.com/pubnub/objective-c/blob/master/LICENSE) for details.
