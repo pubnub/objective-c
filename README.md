@@ -1,4 +1,4 @@
-# PubNub 5.2.0 for iOS 9+
+# PubNub 5.2.1 for iOS 9+
 [![Twitter](https://img.shields.io/badge/twitter-%40PubNub-blue.svg?style=flat)](https://twitter.com/PubNub)
 [![Twitter Releases](https://img.shields.io/badge/twitter-%40PubNubRelease-blue.svg?style=flat)](https://twitter.com/PubNubRelease)
 [![License](https://img.shields.io/github/license/pubnub/objective-c.svg?style=flat)](https://img.shields.io/github/license/pubnub/objective-c.svg)
