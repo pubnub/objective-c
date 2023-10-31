@@ -9,7 +9,7 @@
 
 Pod::Spec.new do |spec|
     spec.name     = 'PubNub'
-    spec.version  = '5.2.0'
+    spec.version  = '5.2.1'
     spec.summary  = 'The PubNub Real-Time Network. Build real-time apps quickly and scale them globally.'
     spec.homepage = 'https://github.com/pubnub/objective-c'
 
@@ -60,39 +60,5 @@ Pod::Spec.new do |spec|
 
     spec.library   = 'z'
     spec.default_subspec = 'Core'
-
-    spec.license = { 
-        :type => 'MIT', 
-        :text => <<-LICENSE
-            PubNub Software Development Kit License Agreement
-            Copyright © 2023 PubNub Inc. All rights reserved.
-
-            Subject to the terms and conditions of the license, you are hereby granted
-            a non-exclusive, worldwide, royalty-free license to (a) copy and modify
-            the software in source code or binary form for use with the software services
-            and interfaces provided by PubNub, and (b) redistribute unmodified copies
-            of the software to third parties. The software may not be incorporated in
-            or used to provide any product or service competitive with the products
-            and services of PubNub.
-
-            The above copyright notice and this license shall be included
-            in or with all copies or substantial portions of the software.
-
-            This license does not grant you permission to use the trade names, trademarks,
-            service marks, or product names of PubNub, except as required for reasonable
-            and customary use in describing the origin of the software and reproducing
-            the content of this license.
-
-            THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF
-            ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-            MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
-            EVENT SHALL PUBNUB OR THE AUTHORS OR COPYRIGHT HOLDERS OF THE SOFTWARE BE
-            LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
-            CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-            SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-            https://www.pubnub.com/
-            https://www.pubnub.com/terms
-        LICENSE
-    }
+    spec.license = { :type => 'PubNub Software Development Kit License', :file => 'LICENSE' }
 end
