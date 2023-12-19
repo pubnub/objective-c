@@ -60,7 +60,7 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldOverrideWrongMinimumDelayAndRetryAttemptsWithLinearPolicy {
     PNRequestRetryConfiguration *configuration = [PNRequestRetryConfiguration configurationWithLinearDelay:.5f
-                                                                                      maximumRetryAttempts:12
+                                                                                              maximumRetry:12
                                                                                          excludedEndpoints:0];
     NSURLRequest *request = [self requestForEndpoint:PNDevicePushNotificationsEndpoint];
     NSURLResponse *response = [self failedURLResponseForRequest:request withStatusCode:500 headers:nil];
@@ -71,7 +71,7 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldProvideConfiguredDelayWithLinearPolicy {
     PNRequestRetryConfiguration *configuration = [PNRequestRetryConfiguration configurationWithLinearDelay:4.5f
-                                                                                      maximumRetryAttempts:5
+                                                                                              maximumRetry:5
                                                                                          excludedEndpoints:0];
     NSURLRequest *request = [self requestForEndpoint:PNMessageSendEndpoint];
     NSURLResponse *response = [self failedURLResponseForRequest:request withStatusCode:500 headers:nil];
@@ -82,7 +82,7 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldProvideConfiguredDelayWhenReceivedResponseWith429StatusCodeAndRetryAfterIsMissingWithLinearPolicy {
     PNRequestRetryConfiguration *configuration = [PNRequestRetryConfiguration configurationWithLinearDelay:4.5f
-                                                                                      maximumRetryAttempts:5
+                                                                                              maximumRetry:5
                                                                                          excludedEndpoints:0];
     NSURLRequest *request = [self requestForEndpoint:PNMessageSendEndpoint];
     NSURLResponse *response = [self failedURLResponseForRequest:request withStatusCode:429 headers:nil];
@@ -92,7 +92,7 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldProvideRetryAfterValueDelayWhenReceivedResponseWith429StatusCodeAndRetryAfterIsPresentWithLinearPolicy {
     PNRequestRetryConfiguration *configuration = [PNRequestRetryConfiguration configurationWithLinearDelay:4.5f
-                                                                                      maximumRetryAttempts:5
+                                                                                              maximumRetry:5
                                                                                          excludedEndpoints:0];
     NSURLRequest *request = [self requestForEndpoint:PNMessageSendEndpoint];
     NSURLResponse *response = [self failedURLResponseForRequest:request withStatusCode:429 headers:@{@"Retry-After": @"16"}];
@@ -102,7 +102,7 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldNotProvideConfiguredDelayWhenExceededMaximumRetryAttemptsWithLinearPolicy {
     PNRequestRetryConfiguration *configuration = [PNRequestRetryConfiguration configurationWithLinearDelay:4.5f
-                                                                                      maximumRetryAttempts:5
+                                                                                              maximumRetry:5
                                                                                          excludedEndpoints:0];
     NSURLRequest *request = [self requestForEndpoint:PNMessageStorageEndpoint];
     NSURLResponse *response = [self failedURLResponseForRequest:request withStatusCode:510 headers:nil];
@@ -112,7 +112,7 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldNotProvideConfiguredDelayWhenReceivedResponseWith4XXStatusCodeWithLinearPolicy {
     PNRequestRetryConfiguration *configuration = [PNRequestRetryConfiguration configurationWithLinearDelay:4.5f
-                                                                                      maximumRetryAttempts:5
+                                                                                              maximumRetry:5
                                                                                          excludedEndpoints:0];
     NSURLRequest *request = [self requestForEndpoint:PNSubscribeEndpoint];
     NSURLResponse *response = [self failedURLResponseForRequest:request withStatusCode:403 headers:nil];
@@ -122,7 +122,7 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldNotProvideConfiguredDelayWhenTargetEndpointExcludedWithLinearPolicy {
     PNRequestRetryConfiguration *configuration = [PNRequestRetryConfiguration configurationWithLinearDelay:4.5f
-                                                                                      maximumRetryAttempts:5
+                                                                                              maximumRetry:5
                                                                                          excludedEndpoints:PNAppContextEndpoint, 0];
     NSURLRequest *request = [self requestForEndpoint:PNAppContextEndpoint];
     NSURLResponse *response = [self failedURLResponseForRequest:request withStatusCode:403 headers:nil];
@@ -136,7 +136,7 @@ NS_ASSUME_NONNULL_END
 - (void)testItShouldOverrideWrongMinimumDelayAndRetryAttemptsWithExponentialPolicy {
     PNRequestRetryConfiguration *configuration = [PNRequestRetryConfiguration configurationWithExponentialDelay:.5f 
                                                                                                    maximumDelay:10.f
-                                                                                           maximumRetryAttempts:12
+                                                                                                   maximumRetry:12
                                                                                               excludedEndpoints:0];
     NSTimeInterval expectedDelay = [self exponentialDelayWithBaseInterval:2.f maxInterval:10.f retryAttempt:2];
     NSURLRequest *request = [self requestForEndpoint:PNDevicePushNotificationsEndpoint];
@@ -149,7 +149,7 @@ NS_ASSUME_NONNULL_END
 - (void)testItShouldProvideCalculatedDelayWithExponentialPolicy {
     PNRequestRetryConfiguration *configuration = [PNRequestRetryConfiguration configurationWithExponentialDelay:4.5f
                                                                                                    maximumDelay:20.f
-                                                                                           maximumRetryAttempts:5
+                                                                                                   maximumRetry:5
                                                                                               excludedEndpoints:0];
     NSTimeInterval expectedDelay1 = [self exponentialDelayWithBaseInterval:4.5f maxInterval:20.f retryAttempt:1];
     NSTimeInterval expectedDelay2 = [self exponentialDelayWithBaseInterval:4.5f maxInterval:20.f retryAttempt:2];
@@ -164,7 +164,7 @@ NS_ASSUME_NONNULL_END
 - (void)testItShouldProvideConfiguredMaximumDelayWhenCalculatedDelayIsHigherThanConfiguredMaximumWithExponentialPolicy {
     PNRequestRetryConfiguration *configuration = [PNRequestRetryConfiguration configurationWithExponentialDelay:4.5f
                                                                                                    maximumDelay:20.f
-                                                                                           maximumRetryAttempts:5
+                                                                                                   maximumRetry:5
                                                                                               excludedEndpoints:0];
     NSURLRequest *request = [self requestForEndpoint:PNMessageSendEndpoint];
     NSURLResponse *response = [self failedURLResponseForRequest:request withStatusCode:500 headers:nil];
@@ -175,7 +175,7 @@ NS_ASSUME_NONNULL_END
 - (void)testItShouldProvideCalculatedDelayWhenReceivedResponseWith429StatusCodeAndRetryAfterIsMissingWithExponentialPolicy {
     PNRequestRetryConfiguration *configuration = [PNRequestRetryConfiguration configurationWithExponentialDelay:4.5f
                                                                                                    maximumDelay:20.f
-                                                                                           maximumRetryAttempts:5
+                                                                                                   maximumRetry:5
                                                                                               excludedEndpoints:0];
     NSTimeInterval expectedDelay = [self exponentialDelayWithBaseInterval:4.5f maxInterval:20.f retryAttempt:2];
     NSURLRequest *request = [self requestForEndpoint:PNMessageSendEndpoint];
@@ -187,7 +187,7 @@ NS_ASSUME_NONNULL_END
 - (void)testItShouldProvideRetryAfterValueDelayWhenReceivedResponseWith429StatusCodeAndRetryAfterIsPresentWithExponentialPolicy {
     PNRequestRetryConfiguration *configuration = [PNRequestRetryConfiguration configurationWithExponentialDelay:4.5f 
                                                                                                    maximumDelay:20.f
-                                                                                           maximumRetryAttempts:5
+                                                                                                   maximumRetry:5
                                                                                               excludedEndpoints:0];
     NSURLRequest *request = [self requestForEndpoint:PNMessageSendEndpoint];
     NSURLResponse *response = [self failedURLResponseForRequest:request withStatusCode:429 headers:@{@"Retry-After": @"16"}];
@@ -198,7 +198,7 @@ NS_ASSUME_NONNULL_END
 - (void)testItShouldNotProvideCalculatedDelayWhenExceededMaximumRetryAttemptsWithExponentialPolicy {
     PNRequestRetryConfiguration *configuration = [PNRequestRetryConfiguration configurationWithExponentialDelay:4.5f
                                                                                                    maximumDelay:20.f
-                                                                                           maximumRetryAttempts:5
+                                                                                                   maximumRetry:5
                                                                                               excludedEndpoints:0];
     NSURLRequest *request = [self requestForEndpoint:PNMessageStorageEndpoint];
     NSURLResponse *response = [self failedURLResponseForRequest:request withStatusCode:510 headers:nil];
@@ -209,7 +209,7 @@ NS_ASSUME_NONNULL_END
 - (void)testItShouldNotProvideCalculatedDelayWhenReceivedResponseWith4XXStatusCodeWithExponentialPolicy {
     PNRequestRetryConfiguration *configuration = [PNRequestRetryConfiguration configurationWithExponentialDelay:4.5f
                                                                                                    maximumDelay:20.f
-                                                                                           maximumRetryAttempts:5
+                                                                                                   maximumRetry:5
                                                                                               excludedEndpoints:0];
     NSURLRequest *request = [self requestForEndpoint:PNSubscribeEndpoint];
     NSURLResponse *response = [self failedURLResponseForRequest:request withStatusCode:403 headers:nil];
@@ -220,7 +220,7 @@ NS_ASSUME_NONNULL_END
 - (void)testItShouldNotProvideCalculatedDelayWhenTargetEndpointExcludedWithExponentialPolicy {
     PNRequestRetryConfiguration *configuration = [PNRequestRetryConfiguration configurationWithExponentialDelay:4.5f
                                                                                                    maximumDelay:20.f
-                                                                                           maximumRetryAttempts:5
+                                                                                                   maximumRetry:5
                                                                                               excludedEndpoints:PNAppContextEndpoint, 0];
     NSURLRequest *request = [self requestForEndpoint:PNAppContextEndpoint];
     NSURLResponse *response = [self failedURLResponseForRequest:request withStatusCode:403 headers:nil];

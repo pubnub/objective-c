@@ -72,20 +72,19 @@ NS_ASSUME_NONNULL_BEGIN
 ///                                                                        userID:@"user"];
 /// // Disabling message publish, signal and message storage access request automatic retry.
 /// configuration.requestRetry = [PNRequestRetryConfiguration configurationWithLinearDelay:3.f
-///                                                                   maximumRetryAttempts:3
+///                                                                           maximumRetry:3
 ///                                                                      excludedEndpoints:PNMessageSendEndpoint, PNMessageStorageEndpoint, 0];
 /// ```
 ///
 /// - Parameters:
 ///   - delay: Delay between failed requests automatically retries attempts.
 ///     > Important: The minimum allowed delay is **2.0**.
-///   - maximumRetryAttempts: The number of failed requests that should be retried automatically before reporting an
-///     error.
+///   - maximumRetry: The number of failed requests that should be retried automatically before reporting an error.
 ///     > Important: The maximum allowed number of retries is **10**.
 ///   - endpoints: A `0`-terminated list of endpoint groups for which automatic retry shouldn't be used.
 /// - Returns: Initialized automatic request retry configuration.
 + (instancetype)configurationWithLinearDelay:(NSTimeInterval)delay
-                        maximumRetryAttempts:(NSUInteger)maximumRetryAttempts
+                                maximumRetry:(NSUInteger)maximumRetry
                            excludedEndpoints:(PNEndpoint)endpoints, ...;
 
 /// Create a request retry configuration with a exponential retry policy.
@@ -146,7 +145,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// // Disabling message publish, signal and message storage access request automatic retry.
 /// configuration.requestRetry = [PNRequestRetryConfiguration configurationWithExponentialDelay:3.f
 ///                                                                                maximumDelay:120.f
-///                                                                        maximumRetryAttempts:3
+///                                                                                maximumRetry:3
 ///                                                                           excludedEndpoints:PNMessageSendEndpoint, PNMessageStorageEndpoint, 0];
 /// ```
 ///
@@ -155,14 +154,13 @@ NS_ASSUME_NONNULL_BEGIN
 ///     attempts.
 ///     > Important: The minimum allowed delay is **2.0**.
 ///   - maximumDelay: Maximum allowed computed delay that should be used between retry attempts.
-///   - maximumRetryAttempts: The number of failed requests that should be retried automatically before reporting an
-///   error.
+///   - maximumRetry: The number of failed requests that should be retried automatically before reporting an error.
 ///     > Important: The maximum allowed number of retries is **10**.
 ///   - endpoints: A `0`-terminated list of endpoint groups for which automatic retry shouldn't be used.
 /// - Returns: Initialized automatic request retry configuration.
 + (instancetype)configurationWithExponentialDelay:(NSTimeInterval)minimumDelay
                                      maximumDelay:(NSTimeInterval)maximumDelay
-                             maximumRetryAttempts:(NSUInteger)maximumRetryAttempts
+                                     maximumRetry:(NSUInteger)maximumRetry
                                 excludedEndpoints:(PNEndpoint)endpoints, ...;
 
 #pragma mark -

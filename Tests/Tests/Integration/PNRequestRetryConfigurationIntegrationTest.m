@@ -39,7 +39,7 @@ NS_ASSUME_NONNULL_END
 
     if (retryConfiguration) {
         [retryConfiguration setValue:@(.5f) forKey:@"minimumDelay"];
-        [retryConfiguration setValue:@(2) forKey:@"maximumRetryAttempts"];
+        [retryConfiguration setValue:@(2) forKey:@"maximumRetry"];
     }
 
     configuration.requestRetry = retryConfiguration;

@@ -55,7 +55,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// Maximum allowed number of failed requests that should be retried automatically before reporting an error.
 ///
 /// > Important: The maximum allowed number of retries is **10**.
-@property(nonatomic, assign) NSUInteger maximumRetryAttempts;
+@property(nonatomic, assign) NSUInteger maximumRetry;
 
 /// A list of endpoint groups for which automatic retry shouldn't be used.
 @property(nonatomic, nullable, strong) NSArray *excludedEndpoints;
@@ -71,14 +71,13 @@ NS_ASSUME_NONNULL_BEGIN
 ///     For the 'PNExponentialRetryPolicy' policy, which is used as the `minimumDelay`, which will be used to calculate
 ///     the next delay based on the number of retry attempts.
 ///   - maximumDelay: Maximum allowed computed delay that should be used between retry attempts.
-///   - maximumRetryAttempts: The number of failed requests that should be retried automatically before reporting an
-///   error.
+///   - maximumRetry: The number of failed requests that should be retried automatically before reporting an error.
 ///   - endpoints: A list of endpoint groups for which automatic retry shouldn't be used.
 /// - Returns: Initialized automatic request retry configuration.
 - (instancetype)initWithPolicy:(PNRequestRetryPolicy)policy
                   minimumDelay:(NSTimeInterval)minimumDelay
                   maximumDelay:(NSTimeInterval)maximumDelay
-          maximumRetryAttempts:(NSUInteger)maximumRetryAttempts
+                  maximumRetry:(NSUInteger)maximumRetry
              excludedEndpoints:(NSArray<NSNumber *> *)endpoints;
 
 
@@ -116,17 +115,17 @@ NS_ASSUME_NONNULL_END
     return [[self alloc] initWithPolicy:PNLinearRetryPolicy
                            minimumDelay:2.f
                            maximumDelay:0.0f
-                   maximumRetryAttempts:10
+                           maximumRetry:10
                       excludedEndpoints:VARARGS_TO_ENDPOINTS_ARRAY(endpoints, PNEndpoint)];
 }
 
 + (instancetype)configurationWithLinearDelay:(NSTimeInterval)delay
-                        maximumRetryAttempts:(NSUInteger)maximumRetryAttempts
+                                maximumRetry:(NSUInteger)maximumRetry
                            excludedEndpoints:(PNEndpoint)endpoints, ... {
     return [[self alloc] initWithPolicy:PNLinearRetryPolicy
                            minimumDelay:delay
                            maximumDelay:0.0f
-                   maximumRetryAttempts:maximumRetryAttempts
+                           maximumRetry:maximumRetry
                       excludedEndpoints:VARARGS_TO_ENDPOINTS_ARRAY(endpoints, PNEndpoint)];
 }
 
@@ -138,31 +137,31 @@ NS_ASSUME_NONNULL_END
     return [[self alloc] initWithPolicy:PNExponentialRetryPolicy
                            minimumDelay:2.f
                            maximumDelay:150.f
-                   maximumRetryAttempts:6
+                           maximumRetry:6
                       excludedEndpoints:VARARGS_TO_ENDPOINTS_ARRAY(endpoints, PNEndpoint)];
 }
 
 + (instancetype)configurationWithExponentialDelay:(NSTimeInterval)minimumDelay
                                      maximumDelay:(NSTimeInterval)maximumDelay
-                             maximumRetryAttempts:(NSUInteger)maximumRetryAttempts
+                                     maximumRetry:(NSUInteger)maximumRetry
                                 excludedEndpoints:(PNEndpoint)endpoints, ... {
     return [[self alloc] initWithPolicy:PNExponentialRetryPolicy
                            minimumDelay:minimumDelay
                            maximumDelay:maximumDelay
-                   maximumRetryAttempts:maximumRetryAttempts
+                           maximumRetry:maximumRetry
                       excludedEndpoints:VARARGS_TO_ENDPOINTS_ARRAY(endpoints, PNEndpoint)];
 }
 
 - (instancetype)initWithPolicy:(PNRequestRetryPolicy)policy
                   minimumDelay:(NSTimeInterval)minimumDelay
                   maximumDelay:(NSTimeInterval)maximumDelay
-          maximumRetryAttempts:(NSUInteger)maximumRetryAttempts
+                  maximumRetry:(NSUInteger)maximumRetry
              excludedEndpoints:(NSArray<NSNumber *> *)endpoints {
     if ((self = [super init])) {
         _policy = policy;
         _minimumDelay = MAX(minimumDelay, 2.0f);
         _maximumInterval = MAX(_minimumDelay, maximumDelay);
-        _maximumRetryAttempts = MIN(maximumRetryAttempts, 10);
+        _maximumRetry = MIN(maximumRetry, 10);
         _excludedEndpoints = endpoints.count ? endpoints : nil;
     }
 
@@ -176,7 +175,7 @@ NS_ASSUME_NONNULL_END
     configuration.policy = self.policy;
     configuration.minimumDelay = self.minimumDelay;
     configuration.maximumInterval = self.maximumInterval;
-    configuration.maximumRetryAttempts = self.maximumRetryAttempts;
+    configuration.maximumRetry = self.maximumRetry;
 
     return configuration;
 }
@@ -214,7 +213,7 @@ NS_ASSUME_NONNULL_END
               withResponse:(NSURLResponse *)response
               retryAttempt:(NSUInteger)retryAttempt {
     if ([self isExcludedEndpointURL:request.URL]) return NO;
-    else if (retryAttempt > self.maximumRetryAttempts) return NO;
+    else if (retryAttempt > self.maximumRetry) return NO;
 
     NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
     return httpResponse.statusCode == 429 || httpResponse.statusCode >= 500 || httpResponse.statusCode == 0;
@@ -242,7 +241,7 @@ NS_ASSUME_NONNULL_END
         self.policy == PNLinearRetryPolicy ? @"linear" : @"exponential",
         self.minimumDelay,
         self.policy == PNExponentialRetryPolicy ? [NSString stringWithFormat:@"\n\tmaximum delay: %f", self.maximumInterval] : @"",
-        self.maximumRetryAttempts
+        self.maximumRetry
     ];
 }
 
