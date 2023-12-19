@@ -32,13 +32,13 @@ NS_ASSUME_NONNULL_END
     PNRequestRetryConfiguration *retryConfiguration = nil;
 
     if ([name pnt_includesString:@"LinearPolicy"]) {
-        retryConfiguration = [PNRequestRetryConfiguration configurationWithLinearInterval];
+        retryConfiguration = [PNRequestRetryConfiguration configurationWithLinearDelay];
     } else if ([name pnt_includesString:@"ExponentialPolicy"]) {
-        retryConfiguration = [PNRequestRetryConfiguration configurationWithExponentialInterval];
+        retryConfiguration = [PNRequestRetryConfiguration configurationWithExponentialDelay];
     }
 
     if (retryConfiguration) {
-        [retryConfiguration setValue:@(.5f) forKey:@"interval"];
+        [retryConfiguration setValue:@(.5f) forKey:@"minimumDelay"];
         [retryConfiguration setValue:@(2) forKey:@"maximumRetryAttempts"];
     }
 

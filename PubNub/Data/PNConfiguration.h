@@ -283,7 +283,7 @@ DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with next
 /// PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo"
 ///                                                                  subscribeKey:@"demo"
 ///                                                                        userID:@"user"];
-/// configuration.requestRetry = [PNRequestRetryConfiguration configurationWithLinearInterval];
+/// configuration.requestRetry = [PNRequestRetryConfiguration configurationWithLinearDelay];
 /// ```
 ///
 /// - Since: 5.3.0
