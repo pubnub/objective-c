@@ -180,6 +180,13 @@
 		A5DB1EA023B41476009B1B23 /* tests-configuration.json in Resources */ = {isa = PBXBuildFile; fileRef = A529271823B1855A00FF46DD /* tests-configuration.json */; };
 		A5DB71502AB03F6C005B6559 /* PNCryptoModuleContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = A5DB714F2AB03F6C005B6559 /* PNCryptoModuleContractTestSteps.m */; };
 		A5DB71512AB03F6C005B6559 /* PNCryptoModuleContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = A5DB714F2AB03F6C005B6559 /* PNCryptoModuleContractTestSteps.m */; };
+		A5E3BA022B2FA76700D3AA18 /* PNRequestRetryConfigurationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E3BA012B2FA76700D3AA18 /* PNRequestRetryConfigurationTest.m */; };
+		A5E3BA032B2FA76700D3AA18 /* PNRequestRetryConfigurationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E3BA012B2FA76700D3AA18 /* PNRequestRetryConfigurationTest.m */; };
+		A5E3BA042B2FA76700D3AA18 /* PNRequestRetryConfigurationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E3BA012B2FA76700D3AA18 /* PNRequestRetryConfigurationTest.m */; };
+		A5E3BA072B3030BB00D3AA18 /* PNRequestRetryConfigurationIntegrationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E3BA062B3030BB00D3AA18 /* PNRequestRetryConfigurationIntegrationTest.m */; };
+		A5E3BA082B3030BB00D3AA18 /* PNRequestRetryConfigurationIntegrationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E3BA062B3030BB00D3AA18 /* PNRequestRetryConfigurationIntegrationTest.m */; };
+		A5E3BA092B3030BB00D3AA18 /* PNRequestRetryConfigurationIntegrationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E3BA062B3030BB00D3AA18 /* PNRequestRetryConfigurationIntegrationTest.m */; };
+		A5E3BA0A2B3030BB00D3AA18 /* PNRequestRetryConfigurationIntegrationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E3BA062B3030BB00D3AA18 /* PNRequestRetryConfigurationIntegrationTest.m */; };
 		A5F8E9DC2476D47A007F79AB /* PNObjectsAPICallBuilderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F8E9DA2476D46D007F79AB /* PNObjectsAPICallBuilderTest.m */; };
 		A5F8E9DD2476D47C007F79AB /* PNObjectsAPICallBuilderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F8E9DA2476D46D007F79AB /* PNObjectsAPICallBuilderTest.m */; };
 		A5F8E9DE2476D47D007F79AB /* PNObjectsAPICallBuilderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F8E9DA2476D46D007F79AB /* PNObjectsAPICallBuilderTest.m */; };
@@ -261,6 +268,8 @@
 		A5DB1E9B23B412E7009B1B23 /* PNPublishIntegrationTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNPublishIntegrationTests.m; sourceTree = "<group>"; };
 		A5DB714E2AB03F6C005B6559 /* PNCryptoModuleContractTestSteps.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNCryptoModuleContractTestSteps.h; sourceTree = "<group>"; };
 		A5DB714F2AB03F6C005B6559 /* PNCryptoModuleContractTestSteps.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNCryptoModuleContractTestSteps.m; sourceTree = "<group>"; };
+		A5E3BA012B2FA76700D3AA18 /* PNRequestRetryConfigurationTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNRequestRetryConfigurationTest.m; sourceTree = "<group>"; };
+		A5E3BA062B3030BB00D3AA18 /* PNRequestRetryConfigurationIntegrationTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNRequestRetryConfigurationIntegrationTest.m; sourceTree = "<group>"; };
 		A5F8E9DA2476D46D007F79AB /* PNObjectsAPICallBuilderTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNObjectsAPICallBuilderTest.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -484,6 +493,7 @@
 		A52926B523B0D67C00FF46DD /* Unit */ = {
 			isa = PBXGroup;
 			children = (
+				A5E3BA002B2FA73B00D3AA18 /* Network */,
 				A53D0B2923EA0FDC001E72AF /* Helpers */,
 				A59ECFDA23BB56E900E84300 /* Core */,
 				79DDA2AE278DC6F100A5B24C /* Data */,
@@ -505,6 +515,7 @@
 				A5DB1E9B23B412E7009B1B23 /* PNPublishIntegrationTests.m */,
 				A5BB312623DE32980015525A /* PNSubscribeIntegrationTest.m */,
 				A5BB312B23DE33310015525A /* PNTimeIntegrationTest.m */,
+				A5E3BA062B3030BB00D3AA18 /* PNRequestRetryConfigurationIntegrationTest.m */,
 			);
 			path = Integration;
 			sourceTree = "<group>";
@@ -723,6 +734,14 @@
 				A5DB714F2AB03F6C005B6559 /* PNCryptoModuleContractTestSteps.m */,
 			);
 			path = Crypto;
+			sourceTree = "<group>";
+		};
+		A5E3BA002B2FA73B00D3AA18 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				A5E3BA012B2FA76700D3AA18 /* PNRequestRetryConfigurationTest.m */,
+			);
+			path = Network;
 			sourceTree = "<group>";
 		};
 		DC23E0797E4D29A69E09CCB4 /* Pods */ = {
@@ -1128,6 +1147,7 @@
 				A5DB1E9523B2D212009B1B23 /* NSInvocation+PNTest.m in Sources */,
 				A529271223B181FE00FF46DD /* PNRecordableTestCase.m in Sources */,
 				A54185DE23B9565000FBA26A /* PNPushNotificationsIntegrationTests.m in Sources */,
+				A5E3BA082B3030BB00D3AA18 /* PNRequestRetryConfigurationIntegrationTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1135,6 +1155,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A5E3BA032B2FA76700D3AA18 /* PNRequestRetryConfigurationTest.m in Sources */,
 				A53D0B1023EA07E5001E72AF /* PNMembershipObjectsTest.m in Sources */,
 				A53D0B2C23EA0FEF001E72AF /* PNNotificationPayloadBuilderTest.m in Sources */,
 				A53D0AFB23E9FBE4001E72AF /* PNUUIDMetadataAPICallBuilderTest.m in Sources */,
@@ -1180,6 +1201,7 @@
 				A5DB1E9323B2D212009B1B23 /* NSInvocation+PNTest.m in Sources */,
 				A529271023B181FE00FF46DD /* PNRecordableTestCase.m in Sources */,
 				A54185DD23B9565000FBA26A /* PNPushNotificationsIntegrationTests.m in Sources */,
+				A5E3BA072B3030BB00D3AA18 /* PNRequestRetryConfigurationIntegrationTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1187,6 +1209,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A5E3BA022B2FA76700D3AA18 /* PNRequestRetryConfigurationTest.m in Sources */,
 				A53D0B0F23EA07E5001E72AF /* PNMembershipObjectsTest.m in Sources */,
 				A53D0B2B23EA0FEF001E72AF /* PNNotificationPayloadBuilderTest.m in Sources */,
 				A53D0AFA23E9FBE4001E72AF /* PNUUIDMetadataAPICallBuilderTest.m in Sources */,
@@ -1215,6 +1238,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A5E3BA042B2FA76700D3AA18 /* PNRequestRetryConfigurationTest.m in Sources */,
 				A53D0B1123EA07E5001E72AF /* PNMembershipObjectsTest.m in Sources */,
 				A53D0B2D23EA0FEF001E72AF /* PNNotificationPayloadBuilderTest.m in Sources */,
 				A53D0AFC23E9FBE4001E72AF /* PNUUIDMetadataAPICallBuilderTest.m in Sources */,
@@ -1260,6 +1284,7 @@
 				A5DB1E9723B2D212009B1B23 /* NSInvocation+PNTest.m in Sources */,
 				A529271423B181FE00FF46DD /* PNRecordableTestCase.m in Sources */,
 				A54185DF23B9565000FBA26A /* PNPushNotificationsIntegrationTests.m in Sources */,
+				A5E3BA092B3030BB00D3AA18 /* PNRequestRetryConfigurationIntegrationTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1284,6 +1309,7 @@
 				A5DB1E9823B2D212009B1B23 /* NSInvocation+PNTest.m in Sources */,
 				A529271523B181FE00FF46DD /* PNRecordableTestCase.m in Sources */,
 				A54185E023B9565000FBA26A /* PNPushNotificationsIntegrationTests.m in Sources */,
+				A5E3BA0A2B3030BB00D3AA18 /* PNRequestRetryConfigurationIntegrationTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

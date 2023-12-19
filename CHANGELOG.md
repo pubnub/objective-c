@@ -1,3 +1,9 @@
+## v5.3.0
+December 19 2023
+
+#### Added
+- Add the ability to set automatic request retry configuration in `PNConfiguration`.
+
 ## v5.2.1
 October 30 2023
 

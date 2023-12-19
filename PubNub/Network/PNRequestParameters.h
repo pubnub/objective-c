@@ -38,7 +38,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, nullable, readonly) NSDictionary<NSString *, NSString *> *pathComponents;
 
 /**
- * @brief Whether telemetry data should be appeanded to request or not.
+ * @brief Whether telemetry data should be appended to request or not.
  *
  * @since 4.9.0
  */

@@ -1,4 +1,5 @@
 #import <Foundation/Foundation.h>
+#import <PubNub/PNRequestRetryConfiguration.h>
 #import <PubNub/PNCryptoProvider.h>
 #import <PubNub/PNStructures.h>
 
@@ -272,6 +273,24 @@ DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with next
 ///
 /// - Since: 4.16.0
 @property (nonatomic, assign) NSUInteger fileMessagePublishRetryLimit;
+
+/// Request automatic retry configuration.
+///
+/// Failed request automatic retry configuration.
+///
+/// #### Example:
+/// ```objc
+/// PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo"
+///                                                                  subscribeKey:@"demo"
+///                                                                        userID:@"user"];
+/// configuration.requestRetry = [PNRequestRetryConfiguration configurationWithLinearDelay];
+/// ```
+///
+/// - Since: 5.3.0
+@property (nonatomic, nullable, strong) PNRequestRetryConfiguration *requestRetry;
+
+
+#pragma mark - Initialization and configuration
 
 /// Create **PubNub** configuration wrapper instance.
 ///

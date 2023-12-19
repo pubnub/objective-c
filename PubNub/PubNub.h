@@ -42,6 +42,9 @@
 #import "PNResult.h"
 #import "PNStatus.h"
 
+#import "PNRequestRetryConfiguration.h"
+#import "PNConfiguration.h"
+
 #pragma mark - Cryptor module
 
 // Crypto algorithms
@@ -65,7 +68,6 @@
 #import "PubNub+MessageActions.h"
 #import "PubNub+ChannelGroup.h"
 #import "PubNub+Subscribe.h"
-#import "PNConfiguration.h"
 #import "PubNub+Presence.h"
 #import "PubNub+Publish.h"
 #import "PubNub+History.h"
