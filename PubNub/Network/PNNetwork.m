@@ -6,6 +6,7 @@
  */
 #import "PNNetwork.h"
 #import "NSURLSessionConfiguration+PNConfigurationPrivate.h"
+#import "PNRequestRetryConfiguration+Private.h"
 #import "PNNetworkResponseSerializer.h"
 #import "PNOperationResult+Private.h"
 #import "PNRequestParameters.h"
@@ -361,6 +362,23 @@ NS_ASSUME_NONNULL_BEGIN
  * \b {PNStatus}).
  */
 - (Class)statusClassForOperation:(PNOperationType)operation;
+
+/// Process passed operation using set of parameters.
+///
+/// Translate client operation to actual request to \b PubNub network.
+///
+/// - Parameters:
+///   - operationType: One of `PNOperationType` enumerator fields which describe what kind of operation should be
+///     executed by client.
+///   - parameters: Request parameters representation object.
+///   - data: Binary data which should be pushed to **PubNub** network along with request.
+///   - block: Depending on operation type it can be `PNResultBlock`, `PNStatusBlock` or `PNCompletionBlock` blocks.
+/// - Since: 5.3.0
+- (void)processOperation:(PNOperationType)operationType
+          withParameters:(PNRequestParameters *)parameters
+                    data:(nullable NSData *)data
+            retryAttempt:(NSUInteger)retryAttempt
+         completionBlock:(id)block;
 
 /**
  * @brief Try process \c data using parser suitable for operation for which data has been received.
@@ -837,13 +855,19 @@ NS_ASSUME_NONNULL_END
           withParameters:(PNRequestParameters *)parameters
                     data:(NSData *)data
          completionBlock:(id)block {
-    
+    [self processOperation:operationType withParameters:parameters data:data retryAttempt:0 completionBlock:block];
+}
+
+- (void)processOperation:(PNOperationType)operationType
+          withParameters:(PNRequestParameters *)parameters
+                    data:(nullable NSData *)data
+            retryAttempt:(NSUInteger)retryAttempt
+         completionBlock:(id)block {
     [self appendRequiredParametersTo:parameters];
     NSURL *requestURL = [PNURLBuilder URLForOperation:operationType withParameters:parameters];
-    
+
     if (requestURL) {
-        PNLogRequest(self.client.logger, @"<PubNub::Network> %@ %@", parameters.HTTPMethod,
-            requestURL.absoluteString);
+        PNLogRequest(self.client.logger, @"<PubNub::Network> %@ %@", parameters.HTTPMethod, requestURL.absoluteString);
         
         __weak __typeof(self) weakSelf = self;
         NSURLRequest *request = [self requestWithURL:requestURL
@@ -852,21 +876,33 @@ NS_ASSUME_NONNULL_END
                                           compressed:parameters.isPOSTBodyCompressed];
         NSURLSessionDataTask *task = [self dataTaskWithRequest:request
                                                   forOperation:operationType
-                                                       success:^(NSURLSessionDataTask *completedTask,
-                                                                 id responseObject) {
-                                                           
+                                                       success:^(NSURLSessionDataTask *completedTask, id response) {
             [weakSelf handleOperation:operationType
                       taskDidComplete:completedTask
-                             withData:responseObject
+                             withData:response
                       completionBlock:block];
         }
-                                                       failure:^(NSURLSessionDataTask *failedTask,
-                                                                 id error) {
+                                                       failure:^(NSURLSessionDataTask *failedTask, id error) {
+            PNRequestRetryConfiguration *retry = weakSelf.configuration.requestRetry;
+            NSTimeInterval delay = [retry retryDelayForFailedRequest:request
+                                                        withResponse:failedTask.response
+                                                        retryAttempt:retryAttempt + 1];
 
-            [weakSelf handleOperation:operationType
-                          taskDidFail:failedTask
-                            withError:error
-                      completionBlock:block];
+            if (delay > 0.f) {
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)),
+                               dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    [weakSelf processOperation:operationType
+                                withParameters:parameters
+                                          data:data
+                                  retryAttempt:retryAttempt + 1
+                               completionBlock:block];
+                });
+            } else {
+                [weakSelf handleOperation:operationType
+                              taskDidFail:failedTask
+                                withError:error
+                          completionBlock:block];
+            }
         }];
 
         NSString *taskIdentifier = @(task.taskIdentifier).stringValue;
@@ -1273,9 +1309,7 @@ NS_ASSUME_NONNULL_END
         error && error.code == NSURLErrorBadServerResponse) {
         
         isError = YES;
-        error = [NSError errorWithDomain:NSURLErrorDomain
-                                    code:NSURLErrorCancelled
-                                userInfo:error.userInfo];
+        error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:error.userInfo];
     }
 
     if ([self operationExpectResult:operation] && !isError) {

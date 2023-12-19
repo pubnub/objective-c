@@ -2648,6 +2648,16 @@
 		A5DB71492AAEFE58005B6559 /* PNCryptorHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = A5DB70CE2AAEFE58005B6559 /* PNCryptorHeader.h */; };
 		A5DB714A2AAEFE59005B6559 /* PNCryptorHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = A5DB70CE2AAEFE58005B6559 /* PNCryptorHeader.h */; };
 		A5DB714B2AAEFE59005B6559 /* PNCryptorHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = A5DB70CE2AAEFE58005B6559 /* PNCryptorHeader.h */; };
+		A5E3BA0D2B3118BE00D3AA18 /* PNRequestRetryConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = A5E3BA0B2B3118BD00D3AA18 /* PNRequestRetryConfiguration.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A5E3BA0E2B3118BE00D3AA18 /* PNRequestRetryConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = A5E3BA0B2B3118BD00D3AA18 /* PNRequestRetryConfiguration.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A5E3BA0F2B3118BE00D3AA18 /* PNRequestRetryConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = A5E3BA0B2B3118BD00D3AA18 /* PNRequestRetryConfiguration.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A5E3BA102B3118BE00D3AA18 /* PNRequestRetryConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = A5E3BA0B2B3118BD00D3AA18 /* PNRequestRetryConfiguration.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A5E3BA112B3118BE00D3AA18 /* PNRequestRetryConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = A5E3BA0B2B3118BD00D3AA18 /* PNRequestRetryConfiguration.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A5E3BA122B3118BE00D3AA18 /* PNRequestRetryConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E3BA0C2B3118BE00D3AA18 /* PNRequestRetryConfiguration.m */; };
+		A5E3BA132B3118BE00D3AA18 /* PNRequestRetryConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E3BA0C2B3118BE00D3AA18 /* PNRequestRetryConfiguration.m */; };
+		A5E3BA142B3118BE00D3AA18 /* PNRequestRetryConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E3BA0C2B3118BE00D3AA18 /* PNRequestRetryConfiguration.m */; };
+		A5E3BA152B3118BE00D3AA18 /* PNRequestRetryConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E3BA0C2B3118BE00D3AA18 /* PNRequestRetryConfiguration.m */; };
+		A5E3BA162B3118BE00D3AA18 /* PNRequestRetryConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E3BA0C2B3118BE00D3AA18 /* PNRequestRetryConfiguration.m */; };
 		A5FADC342490270E001D7704 /* PubNub+Files.h in Headers */ = {isa = PBXBuildFile; fileRef = A5FADC322490270E001D7704 /* PubNub+Files.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A5FADC352490270E001D7704 /* PubNub+Files.h in Headers */ = {isa = PBXBuildFile; fileRef = A5FADC322490270E001D7704 /* PubNub+Files.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A5FADC362490270E001D7704 /* PubNub+Files.h in Headers */ = {isa = PBXBuildFile; fileRef = A5FADC322490270E001D7704 /* PubNub+Files.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -3219,6 +3229,9 @@
 		A5DB70CC2AAEFE58005B6559 /* PNCryptorHeaderV1Data.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNCryptorHeaderV1Data.h; sourceTree = "<group>"; };
 		A5DB70CD2AAEFE58005B6559 /* PNCryptorHeader+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PNCryptorHeader+Private.h"; sourceTree = "<group>"; };
 		A5DB70CE2AAEFE58005B6559 /* PNCryptorHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNCryptorHeader.h; sourceTree = "<group>"; };
+		A5E3B9FF2B2F669200D3AA18 /* PNRequestRetryConfiguration+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PNRequestRetryConfiguration+Private.h"; sourceTree = "<group>"; };
+		A5E3BA0B2B3118BD00D3AA18 /* PNRequestRetryConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNRequestRetryConfiguration.h; sourceTree = "<group>"; };
+		A5E3BA0C2B3118BE00D3AA18 /* PNRequestRetryConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNRequestRetryConfiguration.m; sourceTree = "<group>"; };
 		A5FADC322490270E001D7704 /* PubNub+Files.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PubNub+Files.h"; sourceTree = "<group>"; };
 		A5FADC332490270E001D7704 /* PubNub+Files.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "PubNub+Files.m"; sourceTree = "<group>"; };
 		A5FADC3F2490292A001D7704 /* PNSendFileRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNSendFileRequest.h; sourceTree = "<group>"; };
@@ -3755,6 +3768,9 @@
 				79CBB0F11BD03DE4001FC34D /* PNNetworkResponseSerializer.m */,
 				79CBB0F41BD03DE4001FC34D /* PNRequestParameters.h */,
 				79CBB0F51BD03DE4001FC34D /* PNRequestParameters.m */,
+				A5E3B9FF2B2F669200D3AA18 /* PNRequestRetryConfiguration+Private.h */,
+				A5E3BA0B2B3118BD00D3AA18 /* PNRequestRetryConfiguration.h */,
+				A5E3BA0C2B3118BE00D3AA18 /* PNRequestRetryConfiguration.m */,
 				79CBB0F21BD03DE4001FC34D /* PNReachability.h */,
 				79CBB0F31BD03DE4001FC34D /* PNReachability.m */,
 				79CBB0F61BD03DE4001FC34D /* PNURLBuilder.h */,
@@ -4580,6 +4596,7 @@
 				A5A4517A246D8CBE008ECC74 /* PNBaseObjectsMembershipRequest.h in Headers */,
 				79DA780924BFC1CF00AC72F2 /* PNDownloadFileRequest+Private.h in Headers */,
 				A5DB70DE2AAEFE58005B6559 /* PNEncryptedData.h in Headers */,
+				A5E3BA0D2B3118BE00D3AA18 /* PNRequestRetryConfiguration.h in Headers */,
 				A5046E392478471D0008C81E /* PNSetMembershipsRequest.h in Headers */,
 				A55A86C622FD817E002D0A72 /* PNUUIDMetadata.h in Headers */,
 				A5A451BD246DE8C3008ECC74 /* PNRemoveChannelMembersRequest.h in Headers */,
@@ -4872,6 +4889,7 @@
 				A5A4517C246D8CBE008ECC74 /* PNBaseObjectsMembershipRequest.h in Headers */,
 				79DA780B24BFC1CF00AC72F2 /* PNDownloadFileRequest+Private.h in Headers */,
 				A5DB70E02AAEFE58005B6559 /* PNEncryptedData.h in Headers */,
+				A5E3BA0F2B3118BE00D3AA18 /* PNRequestRetryConfiguration.h in Headers */,
 				A5046E3B2478471D0008C81E /* PNSetMembershipsRequest.h in Headers */,
 				A55A86C822FD817E002D0A72 /* PNUUIDMetadata.h in Headers */,
 				A5A451BF246DE8C3008ECC74 /* PNRemoveChannelMembersRequest.h in Headers */,
@@ -5064,6 +5082,7 @@
 				798842A81C18F2D3003E8948 /* PNErrorParser.h in Headers */,
 				A568659E230170690014E17C /* PNFetchUUIDMetadataParser.h in Headers */,
 				798842441C18F151003E8948 /* PNErrorStatus.h in Headers */,
+				A5E3BA112B3118BE00D3AA18 /* PNRequestRetryConfiguration.h in Headers */,
 				79CD275924D6A1CB000698DD /* PNDataStorage.h in Headers */,
 				A504E1C924AE78E4006DCF5B /* PNGenerateFileUploadURLRequest.h in Headers */,
 				A55A883522FD8272002D0A72 /* PNRemoveChannelMetadataRequest.h in Headers */,
@@ -5455,6 +5474,7 @@
 				A5A4517B246D8CBE008ECC74 /* PNBaseObjectsMembershipRequest.h in Headers */,
 				79DA780A24BFC1CF00AC72F2 /* PNDownloadFileRequest+Private.h in Headers */,
 				A5DB70DF2AAEFE58005B6559 /* PNEncryptedData.h in Headers */,
+				A5E3BA0E2B3118BE00D3AA18 /* PNRequestRetryConfiguration.h in Headers */,
 				A5046E3A2478471D0008C81E /* PNSetMembershipsRequest.h in Headers */,
 				A55A86C722FD817E002D0A72 /* PNUUIDMetadata.h in Headers */,
 				A5A451BE246DE8C3008ECC74 /* PNRemoveChannelMembersRequest.h in Headers */,
@@ -5747,6 +5767,7 @@
 				A5A4517D246D8CBE008ECC74 /* PNBaseObjectsMembershipRequest.h in Headers */,
 				79DA780C24BFC1CF00AC72F2 /* PNDownloadFileRequest+Private.h in Headers */,
 				A5DB70E12AAEFE58005B6559 /* PNEncryptedData.h in Headers */,
+				A5E3BA102B3118BE00D3AA18 /* PNRequestRetryConfiguration.h in Headers */,
 				A5046E3C2478471D0008C81E /* PNSetMembershipsRequest.h in Headers */,
 				A55A86C922FD817E002D0A72 /* PNUUIDMetadata.h in Headers */,
 				A5A451C0246DE8C3008ECC74 /* PNRemoveChannelMembersRequest.h in Headers */,
@@ -6437,6 +6458,7 @@
 				A5046F0B24784CAB0008C81E /* PNMembership.m in Sources */,
 				791582161BD709C60084FC70 /* PNJSON.m in Sources */,
 				7915820E1BD709C60084FC70 /* PNData.m in Sources */,
+				A5E3BA122B3118BE00D3AA18 /* PNRequestRetryConfiguration.m in Sources */,
 				791582141BD709C60084FC70 /* PNGZIP.m in Sources */,
 				A5046F0224784CAB0008C81E /* PNFetchAllChannelsMetadataAPICallBuilder.m in Sources */,
 				791582381BD709C60084FC70 /* PNAES.m in Sources */,
@@ -6679,6 +6701,7 @@
 				A5046EAD24784CAA0008C81E /* PNMembership.m in Sources */,
 				791582ED1BD709D10084FC70 /* PNArray.m in Sources */,
 				791582BF1BD709D10084FC70 /* PNJSON.m in Sources */,
+				A5E3BA142B3118BE00D3AA18 /* PNRequestRetryConfiguration.m in Sources */,
 				791582BD1BD709D10084FC70 /* PNGZIP.m in Sources */,
 				A5046EA424784CAA0008C81E /* PNFetchAllChannelsMetadataAPICallBuilder.m in Sources */,
 				791582B71BD709D10084FC70 /* PNData.m in Sources */,
@@ -6921,6 +6944,7 @@
 				A5046E4F24784CA90008C81E /* PNMembership.m in Sources */,
 				7988428B1C18F291003E8948 /* PNArray.m in Sources */,
 				798842911C18F292003E8948 /* PNJSON.m in Sources */,
+				A5E3BA162B3118BE00D3AA18 /* PNRequestRetryConfiguration.m in Sources */,
 				7988428E1C18F292003E8948 /* PNData.m in Sources */,
 				A5046E4624784CA90008C81E /* PNFetchAllChannelsMetadataAPICallBuilder.m in Sources */,
 				798842901C18F292003E8948 /* PNGZIP.m in Sources */,
@@ -7163,6 +7187,7 @@
 				A5046EDC24784CAB0008C81E /* PNMembership.m in Sources */,
 				79A8BC5A1C58F93900015BDE /* PNArray.m in Sources */,
 				79A8BC2B1C58F93900015BDE /* PNJSON.m in Sources */,
+				A5E3BA132B3118BE00D3AA18 /* PNRequestRetryConfiguration.m in Sources */,
 				79A8BC291C58F93900015BDE /* PNGZIP.m in Sources */,
 				A5046ED324784CAB0008C81E /* PNFetchAllChannelsMetadataAPICallBuilder.m in Sources */,
 				79A8BC231C58F93900015BDE /* PNData.m in Sources */,
@@ -7405,6 +7430,7 @@
 				A5046E7E24784CAA0008C81E /* PNMembership.m in Sources */,
 				79CBB1491BD03DE4001FC34D /* PNArray.m in Sources */,
 				79CBB1561BD03DE4001FC34D /* PNJSON.m in Sources */,
+				A5E3BA152B3118BE00D3AA18 /* PNRequestRetryConfiguration.m in Sources */,
 				79CBB1531BD03DE4001FC34D /* PNGZIP.m in Sources */,
 				A5046E7524784CAA0008C81E /* PNFetchAllChannelsMetadataAPICallBuilder.m in Sources */,
 				79CBB14F1BD03DE4001FC34D /* PNData.m in Sources */,

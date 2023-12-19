@@ -193,13 +193,13 @@ NS_ASSUME_NONNULL_END
 
 - (id)copyWithZone:(NSZone *)zone {
     PNConfiguration *configuration = [[PNConfiguration allocWithZone:zone] init];
-    configuration.deviceID = self.deviceID;
-    configuration.origin = self.origin;
-    configuration.publishKey = self.publishKey;
-    configuration.subscribeKey = self.subscribeKey;
-    configuration.authKey = self.authKey;
-    configuration.authToken = self.authToken;
-    configuration.userID = self.userID;
+    configuration.deviceID = [self.deviceID copy];
+    configuration.origin = [self.origin copy];
+    configuration.publishKey = [self.publishKey copy];
+    configuration.subscribeKey = [self.subscribeKey copy];
+    configuration.authKey = [self.authKey copy];
+    configuration.authToken = [self.authToken copy];
+    configuration.userID = [self.userID copy];
     configuration.cryptoModule = self.cryptoModule;
     configuration.subscribeMaximumIdleTime = self.subscribeMaximumIdleTime;
     configuration.nonSubscribeRequestTimeout = self.nonSubscribeRequestTimeout;
@@ -213,6 +213,7 @@ NS_ASSUME_NONNULL_END
     configuration.catchUpOnSubscriptionRestore = self.shouldTryCatchUpOnSubscriptionRestore;
     configuration.fileMessagePublishRetryLimit = self.fileMessagePublishRetryLimit;
     configuration.cryptoModule = self.cryptoModule;
+    configuration.requestRetry = [self.requestRetry copy];
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"

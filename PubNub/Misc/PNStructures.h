@@ -751,6 +751,42 @@ typedef NS_OPTIONS(NSUInteger, PNLogLevel){
                          PNAESErrorLogLevel)
 };
 
+
+/// List of known endpoint groups (by context).
+///
+/// - Since: 5.3.0
+typedef NS_ENUM(NSUInteger, PNEndpoint) {
+    /// Unknown endpoint.
+    PNUnknownEndpoint,
+
+    /// The endpoints to send messages.
+    PNMessageSendEndpoint,
+
+    /// The endpoint for real-time update retrieval.
+    PNSubscribeEndpoint,
+
+    /// The endpoint to access and manage `user_id` presence and fetch channel presence information.
+    PNPresenceEndpoint,
+
+    /// The endpoint to access and manage files in channel-specific storage.
+    PNFilesEndpoint,
+
+    /// The endpoint to access and manage messages for a specific channel(s) in the persistent storage.
+    PNMessageStorageEndpoint,
+
+    /// The endpoint to access and manage channel groups.
+    PNChannelGroupsEndpoint,
+
+    /// The endpoint to access and manage device registration for channel push notifications.
+    PNDevicePushNotificationsEndpoint,
+
+    /// The endpoint to access and manage App Context objects.
+    PNAppContextEndpoint,
+
+    /// The endpoint to access and manage reactions for a specific message.
+    PNMessageReactionsEndpoint
+};
+
 /**
  * @brief Type which specify possible operations for \b PNResult/ \b PNStatus event objects.
  *

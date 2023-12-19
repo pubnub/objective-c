@@ -23,7 +23,7 @@
 @property (nonatomic, strong) NSMutableDictionary<NSString *, NSString *> *queryFields;
 
 /**
- * @brief Whether relemetry data should be appeanded to request or not.
+ * @brief Whether telemetry data should be appended to request or not.
  *
  * @since 4.9.0
  */

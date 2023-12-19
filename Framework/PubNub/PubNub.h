@@ -55,6 +55,9 @@ FOUNDATION_EXPORT const unsigned char PubNubVersionString[];
 #import <PubNub/PNResult.h>
 #import <PubNub/PNStatus.h>
 
+#import <PubNub/PNRequestRetryConfiguration.h>
+#import <PubNub/PNConfiguration.h>
+
 #pragma mark - Cryptor module
 
 // Cryptor implementations
@@ -80,7 +83,6 @@ FOUNDATION_EXPORT const unsigned char PubNubVersionString[];
 #import <PubNub/PubNub+ChannelGroup.h>
 #import <PubNub/PNOperationResult.h>
 #import <PubNub/PubNub+Subscribe.h>
-#import <PubNub/PNConfiguration.h>
 #import <PubNub/PubNub+Presence.h>
 #import <PubNub/PubNub+Publish.h>
 #import <PubNub/PubNub+History.h>
