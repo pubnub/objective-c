@@ -371,6 +371,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///   - operationType: One of `PNOperationType` enumerator fields which describe what kind of operation should be
 ///     executed by client.
 ///   - parameters: Request parameters representation object.
+///   - retryAttempt: Current request retry attempt.
 ///   - data: Binary data which should be pushed to **PubNub** network along with request.
 ///   - block: Depending on operation type it can be `PNResultBlock`, `PNStatusBlock` or `PNCompletionBlock` blocks.
 /// - Since: 5.3.0
