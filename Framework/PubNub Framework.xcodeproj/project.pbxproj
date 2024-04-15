@@ -2701,6 +2701,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3D5BE99C2BCD3DA30091ACA7 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		7915839D1BD7119E0084FC70 /* PubNub-iOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PubNub-iOS-Info.plist"; sourceTree = "<group>"; };
 		7915839E1BD7119E0084FC70 /* PubNub-watchOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PubNub-watchOS-Info.plist"; sourceTree = "<group>"; };
 		7925DB821D3FFCAC00857C0D /* PNLLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNLLogger.h; sourceTree = "<group>"; };
@@ -3489,6 +3490,7 @@
 		79CBB0401BD03D3F001FC34D /* PubNub */ = {
 			isa = PBXGroup;
 			children = (
+				3D5BE99C2BCD3DA30091ACA7 /* PrivacyInfo.xcprivacy */,
 				79CBB0411BD03D3F001FC34D /* PubNub.h */,
 				79CBB0551BD03DE4001FC34D /* Core */,
 				79CBB06B1BD03DE4001FC34D /* Data */,
