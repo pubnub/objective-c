@@ -27,6 +27,7 @@ Pod::Spec.new do |spec|
     spec.osx.deployment_target = '11.00'
     spec.tvos.deployment_target = '14.0'
     spec.requires_arc = true
+    
     spec.resource_bundles = { "PubNub" => ["Framework/PubNub/PrivacyInfo.xcprivacy"]}
 
     spec.subspec 'Core' do |core|
