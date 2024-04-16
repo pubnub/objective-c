@@ -68,6 +68,10 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		3D5BE9D22BCEB3660091ACA7 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 3D5BE99C2BCD3DA30091ACA7 /* PrivacyInfo.xcprivacy */; };
+		3D5BE9D32BCEB3670091ACA7 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 3D5BE99C2BCD3DA30091ACA7 /* PrivacyInfo.xcprivacy */; };
+		3D5BE9D42BCEB3680091ACA7 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 3D5BE99C2BCD3DA30091ACA7 /* PrivacyInfo.xcprivacy */; };
+		3D5BE9D52BCEB3680091ACA7 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 3D5BE99C2BCD3DA30091ACA7 /* PrivacyInfo.xcprivacy */; };
 		791582091BD709C60084FC70 /* PubNub+History.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB05E1BD03DE4001FC34D /* PubNub+History.m */; };
 		7915820A1BD709C60084FC70 /* PNPresenceGlobalHereNowResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0951BD03DE4001FC34D /* PNPresenceGlobalHereNowResult.m */; };
 		7915820B1BD709C60084FC70 /* PNString.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0BC1BD03DE4001FC34D /* PNString.m */; };
@@ -5786,10 +5790,10 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 791582A91BD709C60084FC70 /* Build configuration list for PBXNativeTarget "PubNub (iOS)" */;
 			buildPhases = (
+				791582A71BD709C60084FC70 /* Resources */,
 				791582081BD709C60084FC70 /* Sources */,
 				7915824D1BD709C60084FC70 /* Frameworks */,
 				791582511BD709C60084FC70 /* Headers */,
-				791582A71BD709C60084FC70 /* Resources */,
 				791582A81BD709C60084FC70 /* Copy Products */,
 				7988420F1C18AF98003E8948 /* Update module map */,
 			);
@@ -5932,6 +5936,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3D5BE9D22BCEB3660091ACA7 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5939,6 +5944,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3D5BE9D42BCEB3680091ACA7 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5946,6 +5952,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3D5BE9D32BCEB3670091ACA7 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5953,6 +5960,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3D5BE9D52BCEB3680091ACA7 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
