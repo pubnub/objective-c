@@ -1,3 +1,9 @@
+## v5.4.0
+April 16 2024
+
+#### Added
+- Adding PrivacyInfo.xcprivacy.
+
 ## v5.3.0
 December 19 2023
 
