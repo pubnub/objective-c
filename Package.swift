@@ -1,4 +1,4 @@
-// swift-tools-version:5.0
+// swift-tools-version:5.3
 //
 //  Package.swift
 //
@@ -46,6 +46,10 @@ let package = Package(
     .library(
       name: "PubNub",
       targets: ["PubNub"]
+    ),
+    .library(
+      name: "PubNubBinaryFramework",
+      targets: ["PubNubBinaryFramework"]
     )
   ],
   dependencies: [
@@ -57,6 +61,11 @@ let package = Package(
     .target(
       name: "PubNub",
       dependencies: []
+    ),
+    .binaryTarget(
+      name: "PubNubBinaryFramework",
+      url: "https://github.com/pubnub/objective-c/releases/download/v5.4.0/PubNub.ios.xcframework.zip",
+      checksum: "9a0ed6ab4a452560ce163dadf195db7d2a4b709024eb6fe6bf891f954ce2957d"
     )
   ],
   swiftLanguageVersions: [.v5]
