@@ -1,1 +1,1 @@
-../Data/Builders/API Call/Objects/Membership/PNManageChannelMembersAPICallBuilder.h
+../../Data/Builders/API Call/Objects/Membership/PNManageChannelMembersAPICallBuilder.h

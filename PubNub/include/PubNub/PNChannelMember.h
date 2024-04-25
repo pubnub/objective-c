@@ -1,1 +1,1 @@
-../Data/Models/PNChannelMember.h
+../../Data/Models/PNChannelMember.h

@@ -1,1 +1,1 @@
-../Network/Requests/Publish/PNBasePublishRequest+Private.h
+../../Network/Requests/Publish/PNBasePublishRequest+Private.h

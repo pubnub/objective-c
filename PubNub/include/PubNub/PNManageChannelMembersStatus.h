@@ -1,1 +1,1 @@
-../Data/Service Objects/PNManageChannelMembersStatus.h
+../../Data/Service Objects/PNManageChannelMembersStatus.h

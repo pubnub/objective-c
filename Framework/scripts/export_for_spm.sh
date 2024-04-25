@@ -96,20 +96,18 @@ popd
 
 
 # Create symbolic links for public headers
-cd "$1/include"
-! [[ -e "PubNub.h" ]] && ln -s "../PubNub.h"
-cd "PubNub"
+#cd "$1/include"
+#! [[ -e "PubNub.h" ]] && ln -s "../PubNub.h"
+cd "$1/include/PubNub"
 
 if [[ $PUBLIC_ONLY == 1 ]]; then
 	for HEADER_PATH in "${PUBLIC_HEADERS[@]}"; do
 		FILENAME="$(echo "$HEADER_PATH" | rev | cut -d/ -f1 | rev)"
-		! [[ -e "$FILENAME" ]] && ln -s "../$HEADER_PATH"
+		! [[ -e "$FILENAME" ]] && ln -s "../../$HEADER_PATH"
 	done
 else
 	for HEADER_PATH in "${ALL_HEADERS[@]}"; do
 		FILENAME="$(echo "$HEADER_PATH" | rev | cut -d/ -f1 | rev)"
-		! [[ -e "$FILENAME" ]] && ln -s "../$HEADER_PATH" "$FILENAME"
+		! [[ -e "$FILENAME" ]] && ln -s "../../$HEADER_PATH" "$FILENAME"
 	done
 fi
-
-[[ -e "PubNub.h" ]] && rm "PubNub.h"

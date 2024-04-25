@@ -1,1 +1,1 @@
-../Core/PubNub+Core.h
+../../Core/PubNub+Core.h

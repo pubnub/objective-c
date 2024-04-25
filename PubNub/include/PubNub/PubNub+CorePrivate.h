@@ -1,1 +1,1 @@
-../Core/PubNub+CorePrivate.h
+../../Core/PubNub+CorePrivate.h

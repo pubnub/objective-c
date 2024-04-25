@@ -1,1 +1,1 @@
-../Data/Models/PNChannelMetadata.h
+../../Data/Models/PNChannelMetadata.h

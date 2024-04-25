@@ -1,1 +1,1 @@
-../Network/Requests/Objects/Channel/PNRemoveChannelMetadataRequest.h
+../../Network/Requests/Objects/Channel/PNRemoveChannelMetadataRequest.h

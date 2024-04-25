@@ -1,1 +1,1 @@
-../Data/Models/PNChannelMetadata+Private.h
+../../Data/Models/PNChannelMetadata+Private.h

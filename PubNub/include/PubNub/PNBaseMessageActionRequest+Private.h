@@ -1,1 +1,1 @@
-../Network/Requests/Actions/Message/PNBaseMessageActionRequest+Private.h
+../../Network/Requests/Actions/Message/PNBaseMessageActionRequest+Private.h

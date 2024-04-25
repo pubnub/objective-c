@@ -1,1 +1,1 @@
-../Misc/Helpers/Notifications Payload/APNS/PNAPNSNotificationPayload+Private.h
+../../Misc/Helpers/Notifications Payload/APNS/PNAPNSNotificationPayload+Private.h

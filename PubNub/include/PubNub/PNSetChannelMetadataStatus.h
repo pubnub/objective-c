@@ -1,1 +1,1 @@
-../Data/Service Objects/PNSetChannelMetadataStatus.h
+../../Data/Service Objects/PNSetChannelMetadataStatus.h

@@ -1,1 +1,1 @@
-../Network/Parsers/PNChannelGroupAuditionParser.h
+../../Network/Parsers/PNChannelGroupAuditionParser.h

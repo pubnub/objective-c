@@ -1,1 +1,1 @@
-../Core/PubNub+Subscribe.h
+../../Core/PubNub+Subscribe.h

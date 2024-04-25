@@ -1,1 +1,1 @@
-../Network/Parsers/Objects/PNChannelMembersParser.h
+../../Network/Parsers/Objects/PNChannelMembersParser.h

@@ -1,1 +1,1 @@
-../Data/Service Objects/PNFetchChannelMembersResult.h
+../../Data/Service Objects/PNFetchChannelMembersResult.h

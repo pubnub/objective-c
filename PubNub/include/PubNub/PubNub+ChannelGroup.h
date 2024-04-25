@@ -1,1 +1,1 @@
-../Core/PubNub+ChannelGroup.h
+../../Core/PubNub+ChannelGroup.h

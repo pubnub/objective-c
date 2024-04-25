@@ -1,1 +1,1 @@
-../Core/PubNub+PAM.h
+../../Core/PubNub+PAM.h

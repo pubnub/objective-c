@@ -1,1 +1,1 @@
-../Network/Parsers/Objects/PNChannelMetadataChangeParser.h
+../../Network/Parsers/Objects/PNChannelMetadataChangeParser.h

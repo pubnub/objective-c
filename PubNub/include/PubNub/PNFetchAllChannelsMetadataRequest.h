@@ -1,1 +1,1 @@
-../Network/Requests/Objects/Channel/PNFetchAllChannelsMetadataRequest.h
+../../Network/Requests/Objects/Channel/PNFetchAllChannelsMetadataRequest.h

@@ -1,1 +1,1 @@
-../Data/Models/PNMessageAction+Private.h
+../../Data/Models/PNMessageAction+Private.h

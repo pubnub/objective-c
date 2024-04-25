@@ -1,1 +1,1 @@
-../Network/Requests/Objects/Membership/PNBaseObjectsMembershipRequest+Private.h
+../../Network/Requests/Objects/Membership/PNBaseObjectsMembershipRequest+Private.h

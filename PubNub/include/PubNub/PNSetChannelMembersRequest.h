@@ -1,1 +1,1 @@
-../Network/Requests/Objects/Membership/PNSetChannelMembersRequest.h
+../../Network/Requests/Objects/Membership/PNSetChannelMembersRequest.h

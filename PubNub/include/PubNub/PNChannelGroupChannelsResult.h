@@ -1,1 +1,1 @@
-../Data/Service Objects/PNChannelGroupChannelsResult.h
+../../Data/Service Objects/PNChannelGroupChannelsResult.h

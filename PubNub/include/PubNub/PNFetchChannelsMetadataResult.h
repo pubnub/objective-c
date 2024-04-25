@@ -1,1 +1,1 @@
-../Data/Service Objects/PNFetchChannelsMetadataResult.h
+../../Data/Service Objects/PNFetchChannelsMetadataResult.h

@@ -1,1 +1,1 @@
-../Misc/Helpers/Notifications Payload/APNS/PNAPNSNotificationConfiguration.h
+../../Misc/Helpers/Notifications Payload/APNS/PNAPNSNotificationConfiguration.h

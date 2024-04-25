@@ -1,1 +1,1 @@
-../Network/Parsers/Files/PNGenerateFileUploadURLParser.h
+../../Network/Parsers/Files/PNGenerateFileUploadURLParser.h

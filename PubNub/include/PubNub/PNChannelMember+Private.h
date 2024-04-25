@@ -1,1 +1,1 @@
-../Data/Models/PNChannelMember+Private.h
+../../Data/Models/PNChannelMember+Private.h

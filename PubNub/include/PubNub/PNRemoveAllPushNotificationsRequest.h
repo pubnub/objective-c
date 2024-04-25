@@ -1,1 +1,1 @@
-../Network/Requests/Push Notifications/PNRemoveAllPushNotificationsRequest.h
+../../Network/Requests/Push Notifications/PNRemoveAllPushNotificationsRequest.h

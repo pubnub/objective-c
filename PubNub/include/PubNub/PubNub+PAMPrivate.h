@@ -1,1 +1,1 @@
-../Core/PubNub+PAMPrivate.h
+../../Core/PubNub+PAMPrivate.h

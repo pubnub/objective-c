@@ -1,1 +1,1 @@
-../Data/Builders/API Call/Objects/Channel/PNRemoveChannelMetadataAPICallBuilder.h
+../../Data/Builders/API Call/Objects/Channel/PNRemoveChannelMetadataAPICallBuilder.h

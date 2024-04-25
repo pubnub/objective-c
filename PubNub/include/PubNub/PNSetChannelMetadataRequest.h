@@ -1,1 +1,1 @@
-../Network/Requests/Objects/Channel/PNSetChannelMetadataRequest.h
+../../Network/Requests/Objects/Channel/PNSetChannelMetadataRequest.h

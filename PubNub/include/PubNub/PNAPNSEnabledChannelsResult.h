@@ -1,1 +1,1 @@
-../Data/Service Objects/PNAPNSEnabledChannelsResult.h
+../../Data/Service Objects/PNAPNSEnabledChannelsResult.h
