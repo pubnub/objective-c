@@ -1,4 +1,4 @@
-// swift-tools-version:5.0
+// swift-tools-version:5.3
 //
 //  Package.swift
 //
@@ -52,7 +52,8 @@ let package = Package(
     .target(
       name: "PubNub",
       dependencies: [],
-      path: "Sources/PubNub"
+      path: "Sources/PubNub",
+      resources: [.copy("PrivacyInfo.xcprivacy")]
     )
   ],
   swiftLanguageVersions: [.v5]
