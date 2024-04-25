@@ -114,6 +114,8 @@ else
 	done
 fi
 
+[[ -e "PubNub.h" ]] && rm "PubNub.h"
+
 cd "../"
 
 if [[ $PUBLIC_ONLY == 1 ]]; then
