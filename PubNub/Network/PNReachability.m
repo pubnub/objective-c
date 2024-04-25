@@ -5,8 +5,11 @@
 #import "PNReachability.h"
 #import "PubNub+CorePrivate.h"
 #import "PNConfiguration.h"
+#import "PNTimeResult.h"
+#import "PNStructures.h"
+#import "PubNub+Time.h"
+#import "PubNub+Core.h"
 #import "PNLogMacro.h"
-#import "PubNub.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
