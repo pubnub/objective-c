@@ -100,8 +100,6 @@ popd
 
 
 # Create symbolic links for public headers
-#cd "$1/include"
-#! [[ -e "PubNub.h" ]] && ln -s "../PubNub.h"
 cd "$1/include/PubNub"
 
 if [[ $PUBLIC_ONLY == 1 ]]; then
@@ -115,23 +113,19 @@ else
 		! [[ -e "$FILENAME" ]] && ln -s "../../$HEADER_PATH" "$FILENAME"
 	done
 fi
-[[ -e "PubNub.h" ]] && rm "PubNub.h"
 
 cd "../"
 
-# if [[ $PUBLIC_ONLY == 1 ]]; then
-# 	for HEADER_PATH in "${PUBLIC_HEADERS[@]}"; do
-# 		FILENAME="$(echo "$HEADER_PATH" | rev | cut -d/ -f1 | rev)"
-# 		! [[ -e "$FILENAME" ]] && ln -s "../$HEADER_PATH"
-# 	done
-# else
-# 	for HEADER_PATH in "${ALL_HEADERS[@]}"; do
-# 		FILENAME="$(echo "$HEADER_PATH" | rev | cut -d/ -f1 | rev)"
-# 		! [[ -e "$FILENAME" ]] && ln -s "../$HEADER_PATH" "$FILENAME"
-# 	done
-# fi
+if [[ $PUBLIC_ONLY == 1 ]]; then
+	for HEADER_PATH in "${PUBLIC_HEADERS[@]}"; do
+		FILENAME="$(echo "$HEADER_PATH" | rev | cut -d/ -f1 | rev)"
+		! [[ -e "$FILENAME" ]] && ln -s "../$HEADER_PATH"
+	done
+else
+	for HEADER_PATH in "${ALL_HEADERS[@]}"; do
+		FILENAME="$(echo "$HEADER_PATH" | rev | cut -d/ -f1 | rev)"
+		! [[ -e "$FILENAME" ]] && ln -s "../$HEADER_PATH" "$FILENAME"
+	done
+fi
 
-for HEADER_PATH in "${PRIVATE_HEADERS[@]}"; do
-	FILENAME="$(echo "$HEADER_PATH" | rev | cut -d/ -f1 | rev)"
-	! [[ -e "$FILENAME" ]] && ln -s "../$HEADER_PATH" "$FILENAME"
-done
+[[ -e "PubNub.h" ]] && rm "PubNub.h"
