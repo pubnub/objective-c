@@ -52,8 +52,7 @@ let package = Package(
     .target(
       name: "PubNub",
       dependencies: [],
-      path: "Sources/PubNub",
-      resources: [.copy("PrivacyInfo.xcprivacy")]
+      path: "Sources/PubNub"
     )
   ],
   swiftLanguageVersions: [.v5]
