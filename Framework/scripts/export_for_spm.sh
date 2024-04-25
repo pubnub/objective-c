@@ -125,3 +125,5 @@ else
 		! [[ -e "$FILENAME" ]] && ln -s "../$HEADER_PATH" "$FILENAME"
 	done
 fi
+
+[[ -e "PubNub.h" ]] && rm "PubNub.h"
