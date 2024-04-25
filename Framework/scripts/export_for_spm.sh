@@ -115,6 +115,7 @@ else
 		! [[ -e "$FILENAME" ]] && ln -s "../../$HEADER_PATH" "$FILENAME"
 	done
 fi
+[[ -e "PubNub.h" ]] && rm "PubNub.h"
 
 cd "../"
 
@@ -134,5 +135,3 @@ for HEADER_PATH in "${PRIVATE_HEADERS[@]}"; do
 	FILENAME="$(echo "$HEADER_PATH" | rev | cut -d/ -f1 | rev)"
 	! [[ -e "$FILENAME" ]] && ln -s "../$HEADER_PATH" "$FILENAME"
 done
-
-# [[ -e "PubNub.h" ]] && rm "PubNub.h"
