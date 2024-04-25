@@ -111,3 +111,17 @@ else
 		! [[ -e "$FILENAME" ]] && ln -s "../../$HEADER_PATH" "$FILENAME"
 	done
 fi
+
+cd "../"
+
+if [[ $PUBLIC_ONLY == 1 ]]; then
+	for HEADER_PATH in "${PUBLIC_HEADERS[@]}"; do
+		FILENAME="$(echo "$HEADER_PATH" | rev | cut -d/ -f1 | rev)"
+		! [[ -e "$FILENAME" ]] && ln -s "../$HEADER_PATH"
+	done
+else
+	for HEADER_PATH in "${ALL_HEADERS[@]}"; do
+		FILENAME="$(echo "$HEADER_PATH" | rev | cut -d/ -f1 | rev)"
+		! [[ -e "$FILENAME" ]] && ln -s "../$HEADER_PATH" "$FILENAME"
+	done
+fi
