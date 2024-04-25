@@ -53,11 +53,7 @@ let package = Package(
       name: "PubNub",
       dependencies: [],
       path: "Sources/PubNub",
-      publicHeadersPath: "include",
-      cSettings: [
-          .headerSearchPath("include"),
-          .define("PUBLIC_HEADER", to: "include"),
-      ]
+      resources: [.copy("PrivacyInfo.xcprivacy")]
     )
   ],
   swiftLanguageVersions: [.v5]

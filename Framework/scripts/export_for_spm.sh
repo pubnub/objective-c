@@ -9,8 +9,6 @@ PUBLIC_HEADERS=()
 ALL_HEADERS=()
 FILES=()
 
-echo "PUBLIC ONLY? ${PUBLIC_ONLY}"
-
 
 # Function allow retrieve relative path to header by it's filename.
 path_for_file() {
@@ -88,7 +86,7 @@ fi
 
 # Create required folders structure.
 ! [[ -d "$WORKING_DIRECTORY/Sources" ]] && mkdir -p "$WORKING_DIRECTORY/Sources"
-! [[ -d "$1/include" ]] && mkdir -p "$1/include"
+! [[ -d "$1/include" ]] && mkdir -p "$1/include/PubNub"
 
 
 # Create symbolic link to Objective-C SDK source files.
@@ -100,6 +98,7 @@ popd
 # Create symbolic links for public headers
 cd "$1/include"
 ! [[ -e "PubNub.h" ]] && ln -s "../PubNub.h"
+cd "PubNub"
 
 if [[ $PUBLIC_ONLY == 1 ]]; then
 	for HEADER_PATH in "${PUBLIC_HEADERS[@]}"; do
