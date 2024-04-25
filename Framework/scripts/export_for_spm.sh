@@ -9,6 +9,8 @@ PUBLIC_HEADERS=()
 ALL_HEADERS=()
 FILES=()
 
+echo "PUBLIC ONLY? ${PUBLIC_ONLY}"
+
 
 # Function allow retrieve relative path to header by it's filename.
 path_for_file() {
