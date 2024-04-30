@@ -1832,6 +1832,11 @@
 		A5105B59238F027D00CB693D /* PNDate.m in Sources */ = {isa = PBXBuildFile; fileRef = A5105B4F238F027D00CB693D /* PNDate.m */; };
 		A5105B5A238F027D00CB693D /* PNDate.m in Sources */ = {isa = PBXBuildFile; fileRef = A5105B4F238F027D00CB693D /* PNDate.m */; };
 		A5105B5C238F027D00CB693D /* PNDate.m in Sources */ = {isa = PBXBuildFile; fileRef = A5105B4F238F027D00CB693D /* PNDate.m */; };
+		A51B49E02BDA7806008C3370 /* PNRequestRetryConfiguration+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A5E3B9FF2B2F669200D3AA18 /* PNRequestRetryConfiguration+Private.h */; };
+		A51B49E12BDA7806008C3370 /* PNRequestRetryConfiguration+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A5E3B9FF2B2F669200D3AA18 /* PNRequestRetryConfiguration+Private.h */; };
+		A51B49E22BDA7807008C3370 /* PNRequestRetryConfiguration+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A5E3B9FF2B2F669200D3AA18 /* PNRequestRetryConfiguration+Private.h */; };
+		A51B49E32BDA7808008C3370 /* PNRequestRetryConfiguration+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A5E3B9FF2B2F669200D3AA18 /* PNRequestRetryConfiguration+Private.h */; };
+		A51B49E42BDA7809008C3370 /* PNRequestRetryConfiguration+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A5E3B9FF2B2F669200D3AA18 /* PNRequestRetryConfiguration+Private.h */; };
 		A523692924A2270200656C19 /* PNAES+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A523692824A2270200656C19 /* PNAES+Private.h */; };
 		A523692A24A2270200656C19 /* PNAES+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A523692824A2270200656C19 /* PNAES+Private.h */; };
 		A523692B24A2270200656C19 /* PNAES+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A523692824A2270200656C19 /* PNAES+Private.h */; };
@@ -4382,6 +4387,7 @@
 				A56865B9230173030014E17C /* PNChannelMetadataChangeParser.h in Headers */,
 				A57A30DA238DC87400DE8C68 /* PNAPNSNotificationTarget.h in Headers */,
 				7951954326BD44E9001E308C /* PubNub+PAM.h in Headers */,
+				A51B49E02BDA7806008C3370 /* PNRequestRetryConfiguration+Private.h in Headers */,
 				7915825C1BD709C60084FC70 /* PNChannelGroupsResult.h in Headers */,
 				79E20D151C8AEC3A001BC9CC /* PNEnvelopeInformation.h in Headers */,
 				A55CA69D2397389100B24E02 /* PNKeychain+Private.h in Headers */,
@@ -4675,6 +4681,7 @@
 				A56865BB230173030014E17C /* PNChannelMetadataChangeParser.h in Headers */,
 				A57A30DC238DC87400DE8C68 /* PNAPNSNotificationTarget.h in Headers */,
 				7951954526BD44E9001E308C /* PubNub+PAM.h in Headers */,
+				A51B49E22BDA7807008C3370 /* PNRequestRetryConfiguration+Private.h in Headers */,
 				791583071BD709D10084FC70 /* PNEventsListener.h in Headers */,
 				791583051BD709D10084FC70 /* PNChannelGroupsResult.h in Headers */,
 				A55CA69F2397389100B24E02 /* PNKeychain+Private.h in Headers */,
@@ -5055,6 +5062,7 @@
 				A57A30F6238DDCA300DE8C68 /* PNAPNSNotificationPayload+Private.h in Headers */,
 				798842741C18F1FB003E8948 /* PNStatus+Private.h in Headers */,
 				798842321C18F0AC003E8948 /* PubNub+Subscribe.h in Headers */,
+				A51B49E42BDA7809008C3370 /* PNRequestRetryConfiguration+Private.h in Headers */,
 				A57A30DF238DC87400DE8C68 /* PNAPNSNotificationTarget.h in Headers */,
 				797ABBA624C4148C0008CA1E /* PNBasePublishRequest.h in Headers */,
 				7988422C1C18F088003E8948 /* PubNub+Presence.h in Headers */,
@@ -5260,6 +5268,7 @@
 				A56865BA230173030014E17C /* PNChannelMetadataChangeParser.h in Headers */,
 				A57A30DB238DC87400DE8C68 /* PNAPNSNotificationTarget.h in Headers */,
 				7951954426BD44E9001E308C /* PubNub+PAM.h in Headers */,
+				A51B49E12BDA7806008C3370 /* PNRequestRetryConfiguration+Private.h in Headers */,
 				79A8BC741C58F93900015BDE /* PNEventsListener.h in Headers */,
 				79A8BC721C58F93900015BDE /* PNChannelGroupsResult.h in Headers */,
 				A55CA69E2397389100B24E02 /* PNKeychain+Private.h in Headers */,
@@ -5553,6 +5562,7 @@
 				A56865BC230173030014E17C /* PNChannelMetadataChangeParser.h in Headers */,
 				A57A30DD238DC87400DE8C68 /* PNAPNSNotificationTarget.h in Headers */,
 				7951954626BD44E9001E308C /* PubNub+PAM.h in Headers */,
+				A51B49E32BDA7808008C3370 /* PNRequestRetryConfiguration+Private.h in Headers */,
 				79CBB1661BD03DE4001FC34D /* PNEventsListener.h in Headers */,
 				79CBB1261BD03DE4001FC34D /* PNChannelGroupsResult.h in Headers */,
 				A55CA6A02397389100B24E02 /* PNKeychain+Private.h in Headers */,

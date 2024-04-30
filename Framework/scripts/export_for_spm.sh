@@ -5,6 +5,7 @@ set -e
 WORKING_DIRECTORY="$(pwd)"
 SOURCES_FOLDER="$1"
 [[ "$2" == public-only ]] && PUBLIC_ONLY=1 || PUBLIC_ONLY=0
+PRIVATE_HEADERS=()
 PUBLIC_HEADERS=()
 ALL_HEADERS=()
 FILES=()
@@ -61,32 +62,35 @@ gather_imported_headers_in_file() {
 }
 
 
-
 if [[ $PUBLIC_ONLY == 1 ]]; then
+	regex=".*Private.h"
 	# Retrieve list of potentially public headers.
 	while IFS='' read -r HEADER_PATH; do
 		RELATIVE_PATH="${HEADER_PATH#"$WORKING_DIRECTORY/$SOURCES_FOLDER/"}"
 		FILENAME="$(echo "$RELATIVE_PATH" | rev | cut -d/ -f1 | rev)"
 		FILES+=( "$FILENAME:$RELATIVE_PATH" )
 		ALL_HEADERS+=("$RELATIVE_PATH")
+		[[ "$RELATIVE_PATH" =~ $regex ]] && PRIVATE_HEADERS+=("$RELATIVE_PATH")
 	done <<< "$(find "$WORKING_DIRECTORY/$SOURCES_FOLDER" -type f ! \( -name "*.m" -o -name ".DS_Store" -o -name "*Private.h" \))"
 
 	# Scan for public headers
 	gather_imported_headers_in_file "$SOURCES_FOLDER/PubNub.h"
 else
+	regex=".*Private.h"
 	# Retrieve list of all headers.
 	while IFS='' read -r HEADER_PATH; do
 		RELATIVE_PATH="${HEADER_PATH#"$WORKING_DIRECTORY/$SOURCES_FOLDER/"}"
 		FILENAME="$(echo "$RELATIVE_PATH" | rev | cut -d/ -f1 | rev)"
 		FILES+=( "$FILENAME:$RELATIVE_PATH" )
 		ALL_HEADERS+=("$RELATIVE_PATH")
+		[[ "$RELATIVE_PATH" =~ $regex ]] && PRIVATE_HEADERS+=("$RELATIVE_PATH")
 	done <<< "$(find "$WORKING_DIRECTORY/$SOURCES_FOLDER" -type f ! \( -name "*.m" -o -name ".DS_Store" \))"
 fi
 
 
 # Create required folders structure.
 ! [[ -d "$WORKING_DIRECTORY/Sources" ]] && mkdir -p "$WORKING_DIRECTORY/Sources"
-! [[ -d "$1/include" ]] && mkdir -p "$1/include"
+! [[ -d "$1/include" ]] && mkdir -p "$1/include/PubNub"
 
 
 # Create symbolic link to Objective-C SDK source files.
@@ -96,8 +100,23 @@ popd
 
 
 # Create symbolic links for public headers
-cd "$1/include"
-! [[ -e "PubNub.h" ]] && ln -s "../PubNub.h"
+cd "$1/include/PubNub"
+
+if [[ $PUBLIC_ONLY == 1 ]]; then
+	for HEADER_PATH in "${PUBLIC_HEADERS[@]}"; do
+		FILENAME="$(echo "$HEADER_PATH" | rev | cut -d/ -f1 | rev)"
+		! [[ -e "$FILENAME" ]] && ln -s "../../$HEADER_PATH"
+	done
+else
+	for HEADER_PATH in "${ALL_HEADERS[@]}"; do
+		FILENAME="$(echo "$HEADER_PATH" | rev | cut -d/ -f1 | rev)"
+		! [[ -e "$FILENAME" ]] && ln -s "../../$HEADER_PATH" "$FILENAME"
+	done
+fi
+
+[[ -e "PubNub.h" ]] && rm "PubNub.h"
+
+cd "../"
 
 if [[ $PUBLIC_ONLY == 1 ]]; then
 	for HEADER_PATH in "${PUBLIC_HEADERS[@]}"; do
@@ -110,3 +129,5 @@ else
 		! [[ -e "$FILENAME" ]] && ln -s "../$HEADER_PATH" "$FILENAME"
 	done
 fi
+
+[[ -e "PubNub.h" ]] && rm "PubNub.h"
