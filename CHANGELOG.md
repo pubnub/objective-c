@@ -1,3 +1,9 @@
+## v5.4.1
+April 30 2024
+
+#### Fixed
+- Match `include` folder content to the `import` in source code.
+
 ## v5.4.0
 April 16 2024
 
