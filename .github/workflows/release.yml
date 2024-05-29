@@ -45,6 +45,8 @@ jobs:
           ref: v1
           token: ${{ secrets.GH_TOKEN }}
           path: .github/.release/actions
+      - name: Setup CocoaPods
+        run: gem install cocoapods
       - name: Publish to CocoaPods Trunk
         uses: ./.github/.release/actions/actions/services/cocoapods
         with:

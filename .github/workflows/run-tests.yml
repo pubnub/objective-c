@@ -41,6 +41,8 @@ jobs:
         with:
           ruby-version: 2.6.6
           bundler-cache: true
+      - name: Setup CocoaPods
+        run: gem install cocoapods
       - name: Cache installed Pods
         uses: actions/cache@v4
         with:
@@ -76,6 +78,8 @@ jobs:
         with:
           ruby-version: 2.6.6
           bundler-cache: true
+      - name: Setup CocoaPods
+        run: gem install cocoapods
       - name: Setup Node.js 20.x
         uses: actions/setup-node@v4
         with:
