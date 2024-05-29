@@ -74,6 +74,8 @@ post_install do |installer_representation|
         if target.name == 'OCMock'
             target.build_configurations.each do |config|
               config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
+              config.build_settings['MACOSX_DEPLOYMENT_TARGET'] = '12.0'
+              config.build_settings['TVOS_DEPLOYMENT_TARGET'] = '14.0'
             end
         end
     end
