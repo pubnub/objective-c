@@ -36,10 +36,10 @@ jobs:
           ref: v1
           token: ${{ secrets.GH_TOKEN }}
           path: .github/.release/actions
-      - name: Setup Ruby 2.6.6
+      - name: Setup Ruby 3.2.2
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.6.6
+          ruby-version: 3.2.2
           bundler-cache: true
       - name: Setup CocoaPods
         run: gem install cocoapods
@@ -73,10 +73,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Setup Ruby 2.6.6
+      - name: Setup Ruby 3.2.2
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.6.6
+          ruby-version: 3.2.2
           bundler-cache: true
       - name: Setup CocoaPods
         run: gem install cocoapods
