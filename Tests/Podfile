@@ -71,5 +71,10 @@ post_install do |installer_representation|
             config.build_settings['CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER'] = 'NO'
             config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '14.0'
         end
+        if target.name == 'OCMock'
+            target.build_configurations.each do |config|
+              config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
+            end
+        end
     end
 end
