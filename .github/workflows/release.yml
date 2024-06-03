@@ -2,20 +2,26 @@ name: Automated product release
 
 on:
   pull_request:
-    branches: [ master ]
-    types: [ closed ]
+    branches: [master]
+    types: [closed]
 
+env:
+  LANG: en_US.UTF-8
+  LANGUAGE: en_US.UTF-8
+  LC_ALL: en_US.UTF-8
+  LC_CTYPE: en_US.UTF-8
 
 jobs:
   check-release:
     name: Check release required
-    runs-on: ubuntu-latest
+    runs-on:
+      group: Default
     if: github.event.pull_request.merged && endsWith(github.repository, '-private') != true
     outputs:
       release: ${{ steps.check.outputs.ready }}
     steps:
       - name: Checkout actions
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: pubnub/client-engineering-deployment-tools
           ref: v1
@@ -28,22 +34,30 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}
   publish:
     name: Publish package
-    runs-on: macos-11
     needs: check-release
     if: needs.check-release.outputs.release == 'true'
+    runs-on:
+      group: macos-gh
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           # This should be the same as the one specified for on.pull_request.branches
           ref: master
       - name: Checkout actions
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: pubnub/client-engineering-deployment-tools
           ref: v1
           token: ${{ secrets.GH_TOKEN }}
           path: .github/.release/actions
+      - name: Setup Ruby 3.2.2
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2.2
+          bundler-cache: true
+      - name: Setup CocoaPods
+        run: gem install cocoapods
       - name: Publish to CocoaPods Trunk
         uses: ./.github/.release/actions/actions/services/cocoapods
         with:
@@ -60,4 +74,3 @@ jobs:
         with:
           token: ${{ secrets.GH_TOKEN }}
           acceptance-tests-workflow: Tests
-
