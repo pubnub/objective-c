@@ -829,7 +829,7 @@
     NSDictionary *expectedMessage = @{
         @"pn_other": message,
         @"pn_apns": mobilePayload[@"apns"],
-        @"pn_gcm": mobilePayload[@"gcm"]
+        @"pn_fcm": mobilePayload[@"gcm"]
     };
     
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
