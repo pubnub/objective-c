@@ -166,7 +166,7 @@ NS_ASSUME_NONNULL_END
         NSDictionary *fcmPayload = [self.fcm dictionaryRepresentation];
         
         if (fcmPayload.count) {
-            payload[@"pn_gcm"] = fcmPayload;
+            payload[@"pn_fcm"] = fcmPayload;
         }
     }
     
