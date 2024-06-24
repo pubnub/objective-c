@@ -1,40 +1,31 @@
-/**
- * @author Serhii Mamontov
- * @version 4.15.0
- * @since 4.15.0
- * @copyright © 2010-2020 PubNub, Inc.
- */
 #import "PNListFilesRequest.h"
-#import "PNRequest+Private.h"
+#import "PNBaseRequest+Private.h"
+#import "PNTransportRequest.h"
+#import "PNFunctions.h"
 #import "PNHelpers.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
 
-#pragma mark Protected interface declaration
+#pragma mark Private interface declaration
 
+/// `List files` request private extension.
 @interface PNListFilesRequest ()
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
-/**
- * @brief Name of channel for which list of files should be fetched.
- */
-@property (nonatomic, copy) NSString *channel;
+/// Name of channel for which list of files should be fetched.
+@property(copy, nonatomic) NSString *channel;
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
-/**
- * @brief Configure \c list \c files request.
- *
- * @param channel Name of channel for which files list should be retrieved.
- *
- * @return Configured and ready to use \c list \c files request.
- */
+/// Initialize `List files` request.
+///
+/// - Parameter channel: Name of channel for which files list should be retrieved.
+/// - Returns: Initialized `list files` request.
 - (instancetype)initWithChannel:(NSString *)channel;
-
 
 #pragma mark -
 
@@ -55,50 +46,46 @@ NS_ASSUME_NONNULL_END
     return PNListFilesOperation;
 }
 
-- (PNRequestParameters *)requestParameters {
-    PNRequestParameters *parameters = [super requestParameters];
-
-    if (self.parametersError) {
-        return parameters;
-    }
+- (NSDictionary *)query {
+    NSMutableDictionary *query = [NSMutableDictionary new];
     
-    if (self.channel.length) {
-        [parameters addPathComponent:[PNString percentEscapedString:self.channel]
-                      forPlaceholder:@"{channel}"];
-    } else {
-        self.parametersError = [self missingParameterError:@"channel" forObjectRequest:@"Request"];
-    }
-
-    if (self.limit > 0) {
-        [parameters addQueryParameter:@(MIN(self.limit, 100)).stringValue forFieldName:@"limit"];
-    }
-
-    if (self.next.length) {
-        [parameters addQueryParameter:[PNString percentEscapedString:self.next]
-                         forFieldName:@"next"];
-    }
+    if (self.next.length) query[@"next"] = [PNString percentEscapedString:self.next];
+    if (self.limit > 0) query[@"limit"] = @(MIN(self.limit, 100)).stringValue;
     
-    return parameters;
+    if (self.arbitraryQueryParameters.count) [query addEntriesFromDictionary:self.arbitraryQueryParameters];
+    
+    return query.count ? query : nil;
+}
+
+- (NSString *)path {
+    return PNStringFormat(@"/v1/files/%@/channels/%@/files",
+                          self.subscribeKey,
+                          [PNString percentEscapedString:self.channel]);
 }
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
 + (instancetype)requestWithChannel:(NSString *)channel {
     return [[self alloc] initWithChannel:channel];
 }
 
 - (instancetype)initWithChannel:(NSString *)channel {
-    if ((self = [super init])) {
-        _channel = [channel copy];
-    }
-    
+    if ((self = [super init])) _channel = [channel copy];
     return self;
 }
 
 - (instancetype)init {
     [self throwUnavailableInitInterface];
 
+    return nil;
+}
+
+
+#pragma mark - Prepare
+
+- (PNError *)validate {
+    if (self.channel.length == 0) return [self missingParameterError:@"channel" forObjectRequest:@"Request"];
     return nil;
 }
 

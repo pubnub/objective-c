@@ -33,7 +33,12 @@ extern NSString * const kPNConfigurationUserIDKey;
  *
  * @since 4.9.0
  */
-typedef NS_OPTIONS(NSUInteger, PNMessageType) {
+typedef NS_OPTIONS(NSInteger, PNMessageType) {
+    /**
+     @brief Type which represent presence object.
+     */
+    PNPresenceMessageType = -1,
+
     /**
      @brief Type which represent regular message object.
      */

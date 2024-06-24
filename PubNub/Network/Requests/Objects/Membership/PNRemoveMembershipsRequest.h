@@ -5,48 +5,34 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Interface declaration
 
-/**
- * @brief \c Remove \c UUID's memberships request.
- *
- * @author Serhii Mamontov
- * @version 4.14.0
- * @since 4.14.0
- * @copyright © 2010-2020 PubNub, Inc.
- */
+/// `Remove UUID's memberships` request.
 @interface PNRemoveMembershipsRequest : PNBaseObjectsMembershipRequest
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
-/**
- * @brief Bitfield set to fields which should be returned with response.
- *
- * @note Supported keys specified in \b PNMembershipFields enum.
- * @note Default value (\B PNMembershipsTotalCountField) can be reset by setting 0. 
- */
-@property (nonatomic, assign) PNMembershipFields includeFields;
+/// Bitfield set to fields which should be returned with response.
+///
+/// > Note: Supported keys specified in **PNMembershipFields** enum.
+/// > Note: Default value (**PNMembershipsTotalCountField**) can be reset by setting 0.
+@property(assign, nonatomic) PNMembershipFields includeFields;
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
-/**
- * @brief Create and configure \c remove \c UUID's memberships request.
- *
- * @param uuid Identifier for which memberships information should be removed.
- *   Will be set to current \b PubNub configuration \c uuid if \a nil is set.
- * @param channels List of \c channels from which \c UUID should be removed as \c member.
- *
- * @return Configured and ready to use \c remove \c UUID's memberships request.
- */
+/// Create `Remove UUID's memberships` request.
+///
+/// - Parameters:
+///   - uuid: Identifier for which memberships information should be removed.  Will be set to current **PubNub**
+///   configuration `uuid` if `nil` is set.
+///   - channels: List of`channels` from which `UUID` should be removed as `member`.
+/// - Returns: Ready to use `remove UUID's memberships` request.
 + (instancetype)requestWithUUID:(nullable NSString *)uuid channels:(NSArray<NSString *> *)channels;
 
-/**
- * @brief Forbids request initialization.
- *
- * @throws Interface not available exception and requirement to use provided constructor method.
- *
- * @return Initialized request.
- */
+/// Forbids request initialization.
+///
+/// - Returns: Initialized request.
+/// - Throws: Interface not available exception and requirement to use provided constructor method.
 - (instancetype)init NS_UNAVAILABLE;
 
 #pragma mark -

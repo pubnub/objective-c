@@ -1,8 +1,3 @@
-/**
- * @author Serhii Mamontov
- * @since 4.0
- * @copyright © 2010-2019 PubNub, Inc.
- */
 #import "PNStatus.h"
 
 
@@ -10,110 +5,89 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Private interface declaration
 
+/// General operation (request or client generated) status object private extension.
 @interface PNStatus () <NSCopying>
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
-/**
- * @brief One of \b PNStatusCategory fields which provide information about for which status this
- * instance has been created.
- */
-@property (nonatomic, assign) PNStatusCategory category;
+/// Channel group names list on which client currently subscribed.
+@property(copy, nonatomic) NSArray<NSString *> *subscribedChannelGroups;
 
-/**
- * @brief Whether status object represent error or not.
- */
-@property (nonatomic, assign, getter = isError) BOOL error;
+/// Class which should be used to deserialize ``responseData``.
+@property(class, strong, nonatomic, readonly) Class statusDataClass;
 
-/**
- * @brief Whether client will try to resent request associated with status or not.
- *
- * @discussion In most cases client will keep retry request sending till it won't be successful or
- * canceled with \c -cancelAutomaticRetry method.
- */
-@property (nonatomic, assign, getter = willAutomaticallyRetry) BOOL automaticallyRetry;
+/// List of channels on which client currently subscribed.
+@property(copy, nonatomic) NSArray<NSString *> *subscribedChannels;
 
-/**
- * @brief Whether request require network availability check or not.
- *
- * @since 4.8.10
- */
-@property (nonatomic, assign) BOOL requireNetworkAvailabilityCheck;
+/// Whether request require network availability check or not.
+@property(assign, nonatomic) BOOL requireNetworkAvailabilityCheck;
 
-/**
- * @brief Time token which has been used to establish current subscription cycle.
- */
-@property (nonatomic, strong) NSNumber *currentTimetoken;
+/// **PubNub** server region identifier (which generated `currentTimetoken` value).
+@property(strong, nonatomic) NSNumber *currentTimeTokenRegion;
 
-/**
- * @brief Previous time token which has been used in subscription cycle to receive
- * \c currentTimetoken along with other events.
- */
-@property (nonatomic, strong) NSNumber *lastTimeToken;
+/// Previous time token region which has been used in subscription cycle to receive `currentTimeTokenRegion` along with
+/// other events.
+@property(strong, nonatomic) NSNumber *lastTimeTokenRegion;
 
-/**
- * @brief \b PubNub server region identifier (which generated \c currentTimetoken value).
- *
- * @since 4.3.0
- */
-@property (nonatomic, strong) NSNumber *currentTimeTokenRegion;
+/// Whether service returned error response or not.
+@property(assign, nonatomic, getter = isError) BOOL error;
 
-/**
- * @brief Previous time token region which has been used in subscription cycle to receive
- * \c currentTimeTokenRegion along with other events.
- *
- * @since 4.3.0
- */
-@property (nonatomic, strong) NSNumber *lastTimeTokenRegion;
+/// Time token which has been used to establish current subscription cycle.
+@property(strong, nonatomic) NSNumber *currentTimetoken;
 
-/**
- * @brief List of channels on which client currently subscribed.
- */
-@property (nonatomic, copy) NSArray<NSString *> *subscribedChannels;
+/// Represent request processing status object using `PNStatusCategory` enum fields.
+@property(assign, nonatomic) PNStatusCategory category;
 
-/**
- * @brief Channel group names list on which client currently subscribed.
- */
-@property (nonatomic, copy) NSArray<NSString *> *subscribedChannelGroups;
-
-/**
- * @brief Block which can be used to retry request processing.
- *
- * @discussion This blocks provided only for requests which won't be auto-restarted by client.
- */
-@property (nonatomic, nullable, copy) dispatch_block_t retryBlock;
-
-/**
- * @brief Block which can be used to cancel automatic retry on requests.
- *
- * @discussion Usually requests resent by client \b 1 second late after failure and this is time
- * when request can be canceled by user using \c -cancelAutomaticRetry method.
- */
-@property (nonatomic, nullable, copy) dispatch_block_t retryCancelBlock;
+/// Previous time token which has been used in subscription cycle to receive `currentTimetoken` along with other events.
+@property(strong, nonatomic) NSNumber *lastTimeToken;
 
 
-#pragma mark - Initialization and configuration
+#pragma mark - Properties (deprecated)
 
-/**
- * @brief Construct minimal object to describe state using operation type and status category
- * information.
- *
- * @param operation Type of operation for which this status report.
- * @param category Operation processing status category.
- *
- * @return Constructed and ready to use status object.
- */
-+ (instancetype)statusForOperation:(PNOperationType)operation
-                          category:(PNStatusCategory)category
-               withProcessingError:(nullable NSError *)error;
+/// Request auto-retry configuration information.
+///
+/// > Important: This property always will return `NO` because it is possible to set request retries configuration when
+/// setup **PubNub** client instance.
+@property(assign, nonatomic, getter = willAutomaticallyRetry) BOOL automaticallyRetry
+    DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with the next major update. Please call "
+                             "endpoint with already created request instance or setup retry configuration during PubNub"
+                             " instance configuration.");
 
-/**
- * @brief Alter status category.
- *
- * @param category One of \b PNStatusCategory enum fields which should be applied on status object
- * \c category property.
- */
+/// Block which can be used to cancel automatic retry on requests.
+///
+/// > Important: This property won't be used by the client code anymore.
+@property(copy, nullable, nonatomic) dispatch_block_t retryCancelBlock
+    DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with the next major update. Please call "
+                             "endpoint with already created request instance or setup retry configuration during PubNub"
+                             " instance configuration.");
+
+/// Block which can be used to retry request processing.
+///
+/// > Important: This property won't be used by the client code anymore.
+@property(copy, nullable, nonatomic) dispatch_block_t retryBlock
+    DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with the next major update. Please call "
+                             "endpoint with already created request instance or setup retry configuration during PubNub"
+                             " instance configuration.");
+
+
+#pragma mark - Initialization and Configuration
+
+/// Create operation status object.
+///
+/// - Parameters:
+///   - operation: Type of operation for which status object has been created.
+///   - category: Operation processing status category.
+///   - response: Processed operation outcome data object.
+/// - Returns: Ready to use operation status object.
++ (instancetype)objectWithOperation:(PNOperationType)operation
+                           category:(PNStatusCategory)category
+                           response:(nullable id)response;
+
+/// Change status category.
+///
+/// - Parameter category: One of **PNStatusCategory** enum fields which should be applied on status object `category`
+/// property.
 - (void)updateCategory:(PNStatusCategory)category;
 
 #pragma mark -

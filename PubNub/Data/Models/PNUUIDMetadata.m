@@ -1,81 +1,15 @@
-/**
- * @author Serhii Mamontov
- * @version 4.14.0
- * @since 4.14.0
- * @copyright © 2010-2020 PubNub, Inc.
- */
-#import "NSDateFormatter+PNCacheable.h"
-#import "PNUUIDMetadata+Private.h"
+#import "PNUUIDMetadata.h"
+#import <PubNub/PNCodable.h>
+#import "PNBaseAppContextObject+Private.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
 
-#pragma mark Protected interface declaration
+#pragma mark Private interface declaration
 
-@interface PNUUIDMetadata ()
+/// `UUID Metadata` object private extension.
+@interface PNUUIDMetadata () <PNCodable>
 
-
-#pragma mark - Information
-
-/**
- * @brief Identifier from external service (database, auth service).
- */
-@property (nonatomic, nullable, copy) NSString *externalId;
-
-/**
- * @brief URL at which profile available.
- */
-@property (nonatomic, nullable, copy) NSString *profileUrl;
-
-/**
- * @brief Additional / complex attributes which should be associated with \c metadata.
- */
-@property (nonatomic, nullable, strong) NSDictionary *custom;
-
-/**
- * @brief Last \c metadata update date.
- */
-@property (nonatomic, nullable, strong) NSDate *updated;
-
-/**
- * @brief Email address.
- */
-@property (nonatomic, nullable, copy) NSString *email;
-
-/**
- * @brief \c UUID \c metadata object version identifier.
- */
-@property (nonatomic, nullable, copy) NSString *eTag;
-
-/**
- * @brief \c UUID with which \c metadata has been associated.
- */
-@property (nonatomic, copy) NSString *uuid;
-
-/**
- * @brief Name which should be stored in \c metadata associated with specified \c uuid.
- */
-@property (nonatomic, copy) NSString *name;
-
-
-#pragma mark - Initialization & Configuration
-
-/**
- * @brief Initialize \c UUID \c metadata data model.
- *
- * @param uuid Identifier with which \c metadata associated.
- *
- * @return Initialized and ready to use \c UUID \c metadata representation model.
- */
-- (instancetype)initWithUUID:(NSString *)uuid;
-
-
-#pragma mark - Misc
-
-/**
- * @brief Translate \c UUID \c metadata data model to dictionary.
- */
-- (NSDictionary *)dictionaryRepresentation;
 
 #pragma mark -
 
@@ -90,52 +24,37 @@ NS_ASSUME_NONNULL_END
 @implementation PNUUIDMetadata
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Properties
 
-+ (instancetype)uuidMetadataFromDictionary:(NSDictionary *)data {
-    PNUUIDMetadata *metadata = [PNUUIDMetadata metadataForUUID:data[@"id"]];
-    metadata.externalId = data[@"externalId"];
-    metadata.profileUrl = data[@"profileUrl"];
-    metadata.custom = data[@"custom"];
-    metadata.email = data[@"email"];
-    metadata.eTag = data[@"eTag"];
-    metadata.name = data[@"name"];
-
-    NSDateFormatter *formatter = [NSDateFormatter pn_objectsDateFormatter];
-
-    if (data[@"updated"]) {
-        metadata.updated = [formatter dateFromString:data[@"updated"]];
-    }
-
-    return metadata;
++ (NSDictionary<NSString *,NSString *> *)codingKeys {
+    return @{
+        @"name": @"name",
+        @"email": @"email",
+        @"profileUrl": @"profileUrl",
+        @"externalId": @"externalId",
+        @"status": @"status",
+        @"type": @"type",
+        @"uuid": @"id",
+    };
 }
 
-+ (instancetype)metadataForUUID:(NSString *)uuid {
-    return [[self alloc] initWithUUID:uuid];
-}
-
-- (instancetype)initWithUUID:(NSString *)uuid {
-    if ((self = [super init])) {
-        _uuid = [uuid copy];
-    }
-
-    return self;
++ (NSArray<NSString *> *)optionalKeys {
+    return @[@"name", @"email", @"profileUrl", @"externalId", @"status", @"type"];
 }
 
 
 #pragma mark - Misc
 
-- (NSDictionary *)dictionaryRepresentation {
-    NSMutableDictionary *dictionary = [@{ @"type": @"uuid-metadata" } mutableCopy];
-    
-    dictionary[@"externalId"] = self.externalId;
-    dictionary[@"profileUrl"] = self.profileUrl;
-    dictionary[@"updated"] = self.updated;
-    dictionary[@"custom"] = self.custom;
-    dictionary[@"email"] = self.email;
-    dictionary[@"name"] = self.name;
+- (NSMutableDictionary *)dictionaryRepresentation {
+    NSMutableDictionary *dictionary = [super dictionaryRepresentation];
     dictionary[@"uuid"] = self.uuid;
-    dictionary[@"eTag"] = self.eTag;
+
+    if (self.externalId) dictionary[@"externalId"] = self.externalId;
+    if (self.profileUrl) dictionary[@"profileUrl"] = self.profileUrl;
+    if (self.email) dictionary[@"email"] = self.email;
+    if (self.name) dictionary[@"name"] = self.name;
+    if (self.status) dictionary[@"status"] = self.status;
+    if (self.type) dictionary[@"type"] = self.type;
 
     return dictionary;
 }

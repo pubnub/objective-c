@@ -5,49 +5,42 @@
  * @copyright © 2010-2020 PubNub, Inc.
  */
 #import "PNDeleteFileRequest.h"
-#import "PNRequest+Private.h"
+#import "PNBaseRequest+Private.h"
+#import "PNTransportRequest.h"
+#import "PNFunctions.h"
 #import "PNHelpers.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
 
-#pragma mark Protected interface declaration
+#pragma mark Private interface declaration
 
+/// `Delete file` request private extension.
 @interface PNDeleteFileRequest ()
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
-/**
- * @brief Unique \c file identifier which has been assigned during \c file upload.
- */
-@property (nonatomic, copy) NSString *identifier;
+/// Unique `file` identifier which has been assigned during `file` upload.
+@property(copy, nonatomic) NSString *identifier;
 
-/**
- * @brief Name of channel from which \c file with \c name should be \c deleted.
- */
-@property (nonatomic, copy) NSString *channel;
+/// Name of channel from which `file` with `name` should be `deleted`.
+@property(copy, nonatomic) NSString *channel;
 
-/**
- * @brief Name under which uploaded \c file is stored for \c channel.
- */
-@property (nonatomic, copy) NSString *name;
+/// Name under which uploaded `file` is stored for `channel`.
+@property(copy, nonatomic) NSString *name;
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
-/**
- * @brief Initialize \c delete \c file request.
- *
- * @param channel Name of channel from which \c file with \c name should be \c deleted.
- * @param identifier Unique \c file identifier which has been assigned during \c file upload.
- * @param name Name under which uploaded \c file is stored for \c channel.
- *
- * @return Initialized and ready to use \c delete \c file request.
- */
-- (instancetype)initWithChannel:(NSString *)channel
-                     identifier:(NSString *)identifier
-                           name:(NSString *)name;
+/// Initialize `Delete file` request.
+///
+/// - Parameters:
+///   - channel: Name of channel from which `file` with `name` should be `deleted`.
+///   - identifier Unique `file` identifier which has been assigned during `file` upload.
+///   - name Name under which uploaded `file` is stored for `channel`.
+/// - Returns: Initialized `delete file` request.
+- (instancetype)initWithChannel:(NSString *)channel identifier:(NSString *)identifier name:(NSString *)name;
 
 #pragma mark -
 
@@ -68,54 +61,34 @@ NS_ASSUME_NONNULL_END
     return PNDeleteFileOperation;
 }
 
-- (NSString *)httpMethod {
-    return @"DELETE";
+- (TransportMethod)httpMethod {
+    return TransportDELETEMethod;
 }
 
-- (PNRequestParameters *)requestParameters {
-    PNRequestParameters *parameters = [super requestParameters];
+- (NSDictionary *)query {
+    NSMutableDictionary *query = [([super query] ?: @{}) mutableCopy];
 
-    if (self.parametersError) {
-        return parameters;
-    }
+    if (self.arbitraryQueryParameters.count) [query addEntriesFromDictionary:self.arbitraryQueryParameters];
 
-    if (self.channel.length) {
-        [parameters addPathComponent:[PNString percentEscapedString:self.channel]
-                      forPlaceholder:@"{channel}"];
-    } else {
-        self.parametersError = [self missingParameterError:@"channel" forObjectRequest:@"Request"];
-    }
+    return query.count ? query : nil;
+}
 
-    if (self.identifier.length) {
-        [parameters addPathComponent:self.identifier forPlaceholder:@"{id}"];
-    } else {
-        self.parametersError = [self missingParameterError:@"identifier" forObjectRequest:@"Request"];
-    }
-
-    if (self.name.length) {
-        [parameters addPathComponent:[PNString percentEscapedString:self.name]
-                      forPlaceholder:@"{name}"];
-    } else {
-        self.parametersError = [self missingParameterError:@"name" forObjectRequest:@"Request"];
-    }
-
-    return parameters;
+- (NSString *)path {
+    return PNStringFormat(@"/v1/files/%@/channels/%@/files/%@/%@",
+                          self.subscribeKey,
+                          [PNString percentEscapedString:self.channel], 
+                          self.identifier,
+                          [PNString percentEscapedString:self.name]);
 }
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
-+ (instancetype)requestWithChannel:(NSString *)channel
-                        identifier:(NSString *)identifier
-                              name:(NSString *)name {
-    
++ (instancetype)requestWithChannel:(NSString *)channel identifier:(NSString *)identifier name:(NSString *)name {
     return [[self alloc] initWithChannel:channel identifier:identifier name:name];
 }
 
-- (instancetype)initWithChannel:(NSString *)channel
-                     identifier:(NSString *)identifier
-                           name:(NSString *)name {
-    
+- (instancetype)initWithChannel:(NSString *)channel identifier:(NSString *)identifier name:(NSString *)name {
     if ((self = [super init])) {
         _identifier = [identifier copy];
         _channel = [channel copy];
@@ -128,6 +101,17 @@ NS_ASSUME_NONNULL_END
 - (instancetype)init {
     [self throwUnavailableInitInterface];
 
+    return nil;
+}
+
+
+#pragma mark - Prepare
+
+- (PNError *)validate {
+    if (self.identifier.length == 0) return [self missingParameterError:@"identifier" forObjectRequest:@"Request"];
+    if (self.channel.length == 0) return [self missingParameterError:@"channel" forObjectRequest:@"Request"];
+    if (self.name.length == 0) return [self missingParameterError:@"name" forObjectRequest:@"Request"];
+    
     return nil;
 }
 

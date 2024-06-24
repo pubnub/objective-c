@@ -5,47 +5,32 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Interface declaration
 
-/**
- * @brief \c Fetch \c UUID memberships request.
- *
- * @author Serhii Mamontov
- * @version 4.14.0
- * @since 4.14.0
- * @copyright © 2010-2020 PubNub, Inc.
- */
+/// `Fetch UUID memberships` request.
 @interface PNFetchMembershipsRequest : PNObjectsPaginatedRequest
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
-/**
- * @brief Bitfield set to fields which should be returned with response.
- *
- * @note Supported keys specified in \b PNMembershipFields enum.
- * @note Default value (\B PNMembershipsTotalCountField) can be reset by setting 0. 
- */
-@property (nonatomic, assign) PNMembershipFields includeFields;
+/// Bitfield set to fields which should be returned with response.
+///
+/// > Note: Supported keys specified in **PNMembershipFields** enum.
+/// > Note:  Default value (**PNMembershipsTotalCountField**) can be reset by setting 0.
+@property(assign, nonatomic) PNMembershipFields includeFields;
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
-/**
- * @brief Create and configure \c fetch \c UUID's memberships request.
- *
- * @param uuid Identifier for which memberships in \c channels should be fetched.
- * Will be set to current \b PubNub configuration \c uuid if \a nil is set.
- *
- * @return Configured and ready to use \c fetch \c UUID's memberships request.
- */
+/// Create `Fetch UUID's memberships` request.
+///
+/// - Parameter uuid: Identifier for which memberships in `channels` should be fetched. Will be set to current
+/// **PubNub** configuration `uuid` if `nil` is set.
+/// - Returns: Ready to use `fetch UUID's memberships` request.
 + (instancetype)requestWithUUID:(nullable NSString *)uuid;
 
-/**
- * @brief Forbids request initialization.
- *
- * @throws Interface not available exception and requirement to use provided constructor method.
- *
- * @return Initialized request.
- */
+/// Forbids request initialization.
+///
+/// - Returns: Initialized request.
+/// - Throws: Interface not available exception and requirement to use provided constructor method.
 - (instancetype)init NS_UNAVAILABLE;
 
 #pragma mark -

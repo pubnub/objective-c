@@ -1,29 +1,19 @@
+#import <PubNub/PNBaseRequest.h>
 #import <PubNub/PNStructures.h>
-#import <PubNub/PNRequest.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Interface declaration
 
-/**
- * @brief Base class for all Object API endpoints which has shared query options.
- *
- * @author Serhii Mamontov
- * @version 4.14.0
- * @since 4.14.0
- * @copyright © 2010-2020 PubNub, Inc.
- */
-@interface PNBaseObjectsRequest : PNRequest
+/// General request for all `App Contentx` API endpoints.
+@interface PNBaseObjectsRequest : PNBaseRequest
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
-/**
- * @brief Arbitrary percent encoded query parameters which should be sent along with original API
- * call.
- */
-@property (nonatomic, nullable, strong) NSDictionary *arbitraryQueryParameters;
+/// Arbitrary percent encoded query parameters which should be sent along with original API call.
+@property(strong, nullable, nonatomic) NSDictionary *arbitraryQueryParameters;
 
 #pragma mark -
 

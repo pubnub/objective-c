@@ -5,47 +5,30 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Interface declaration
 
-/**
- * @brief Object which is used to represent \c uploaded \c file.
- *
- * @author Serhii Mamontov
- * @version 4.15.0
- * @since 4.15.0
- * @copyright © 2010-2020 PubNub, Inc.
- */
+/// `Shared file` data object.
 @interface PNFile : NSObject
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
-/**
- * @brief URL which can be used to download file.
- */
-@property (nonatomic, readonly, strong) NSURL *downloadURL;
+/// Date when file has been uploaded.
+///
+/// > Note: This information is set only when file retrieved from history.
+@property(strong, nullable, nonatomic, readonly) NSDate *created;
 
-/**
- * @brief Unique uploaded file identifier.
- */
-@property (nonatomic, readonly, copy) NSString *identifier;
+/// URL which can be used to download file.
+@property(strong, nonatomic, readonly) NSURL *downloadURL;
 
-/**
- * @brief Date when file has been uploaded.
- *
- * @note This information is set only when file retrieved from history.
- */
-@property (nonatomic, readonly, strong) NSDate *created;
+/// Unique uploaded file identifier.
+@property(copy, nonatomic, readonly) NSString *identifier;
 
-/**
- * @brief Uploaded file size.
- *
- * @note This information is set only when file retrieved from history.
- */
-@property (nonatomic, readonly, assign) NSUInteger size;
+/// Uploaded file size.
+///
+/// > Note: This information is set only when file retrieved from history.
+@property(assign, nonatomic, readonly) NSUInteger size;
 
-/**
- * @brief Name with which file has been uploaded.
- */
-@property (nonatomic, readonly, copy) NSString *name;
+/// Name with which file has been uploaded.
+@property(copy, nonatomic, readonly) NSString *name;
 
 #pragma mark -
 

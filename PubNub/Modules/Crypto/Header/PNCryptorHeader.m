@@ -1,5 +1,5 @@
 #import "PNCryptorHeader+Private.h"
-#import "PNErrorCodes.h"
+#import "PNError.h"
 
 
 #pragma mark Contants
@@ -216,8 +216,8 @@ NS_ASSUME_NONNULL_END
     NSError *error = nil;
     
     if (data.length < kPNCryptorHeaderIdentifierOffset) {
-        error = [NSError errorWithDomain:kPNCryptorErrorDomain
-                                    code:kPNCryptorDecryptionError
+        error = [NSError errorWithDomain:PNCryptorErrorDomain
+                                    code:PNCryptorErrorDecryption
                                 userInfo:@{ NSLocalizedDescriptionKey: @"Decrypted data header is malformed." }];
         
         return [PNResult resultWithData:version error:error];
@@ -231,8 +231,8 @@ NS_ASSUME_NONNULL_END
             version = @(PNCryptorHeaderV1);
             break;
         default:
-            error = [NSError errorWithDomain:kPNCryptorErrorDomain
-                                        code:kPNCryptorUnknownCryptorError
+            error = [NSError errorWithDomain:PNCryptorErrorDomain
+                                        code:PNCryptorErrorUnknownCryptor
                                     userInfo:@{
                 NSLocalizedDescriptionKey: @"Decrypting data created by unknown cryptor."
             }];
@@ -246,8 +246,8 @@ NS_ASSUME_NONNULL_END
     NSError *error = nil;
     
     if (data.length < kPNCryptorHeaderSizeOffset) {
-        error = [NSError errorWithDomain:kPNCryptorErrorDomain
-                                    code:kPNCryptorDecryptionError
+        error = [NSError errorWithDomain:PNCryptorErrorDomain
+                                    code:PNCryptorErrorDecryption
                                 userInfo:@{ NSLocalizedDescriptionKey: @"Decrypted data header is malformed." }];
     } else {
         NSRange identifierRange = NSMakeRange(kPNCryptorHeaderIdentifierOffset, kPNCryptorHeaderIdentifierSize);

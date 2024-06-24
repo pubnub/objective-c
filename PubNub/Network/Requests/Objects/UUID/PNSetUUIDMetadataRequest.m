@@ -1,107 +1,57 @@
-/**
- * @author Serhii Mamontov
- * @version 4.14.0
- * @since 4.14.0
- * @copyright © 2010-2020 PubNub, Inc.
- */
-#import "PNBaseObjectsRequest+Private.h"
 #import "PNSetUUIDMetadataRequest.h"
-#import "PNRequest+Private.h"
+#import "PNBaseObjectsRequest+Private.h"
+#import "PNBaseRequest+Private.h"
+#import "PNTransportRequest.h"
 #import "PNDictionary.h"
-#import "PNErrorCodes.h"
+#import "PNFunctions.h"
+#import "PNError.h"
 
 
-#pragma mark Interface implementation
+NS_ASSUME_NONNULL_BEGIN
+
+#pragma mark Private interface declaration
+
+/// `Set UUID metadata` request private extension.
+@interface PNSetUUIDMetadataRequest ()
+
+
+#pragma mark - Properties
+
+/// Request post body.
+@property(strong, nullable, nonatomic) NSData *body;
+
+#pragma mark -
+
+
+@end
+
+NS_ASSUME_NONNULL_END
+
+
+#pragma mark - Interface implementation
 
 @implementation PNSetUUIDMetadataRequest
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
 - (PNOperationType)operation {
     return PNSetUUIDMetadataOperation;
 }
 
-- (NSString *)httpMethod {
-    return @"PATCH";
+- (TransportMethod)httpMethod {
+    return TransportPATCHMethod;
 }
 
-- (NSData *)bodyData {
-    NSArray<Class> *clss = @[[NSString class], [NSNumber class]];
-
-    if (self.custom.count && ![PNDictionary isDictionary:self.custom containValueOfClasses:clss]) {
-        NSString *reason = [NSString stringWithFormat:@"'custom' object for '%@' contain not "
-                            "allowed data types (only NSString and NSNumber allowed).",
-                            self.identifier];
-        NSDictionary *errorInformation = @{
-            NSLocalizedDescriptionKey: @"Metadata additional information serialization did fail",
-            NSLocalizedFailureReasonErrorKey: reason,
-        };
-
-        self.parametersError = [NSError errorWithDomain:kPNAPIErrorDomain
-                                                   code:kPNAPIUnacceptableParameters
-                                               userInfo:errorInformation];
-    }
-
-    if (self.parametersError) {
-        return nil;
-    }
-
-    NSMutableDictionary *info = [NSMutableDictionary new];
-    NSError *error = nil;
-    NSData *data = nil;
-
-    if (self.name) {
-        info[@"name"] = self.name;
-    }
-
-    if (self.externalId.length) {
-        info[@"externalId"] = self.externalId;
-    }
-
-    if (self.profileUrl.length) {
-        info[@"profileUrl"] = self.profileUrl;
-    }
-
-    if (self.email.length) {
-        info[@"email"] = self.email;
-    }
-
-    if (self.custom.count) {
-        info[@"custom"] = self.custom;
-    }
-
-    if ([NSJSONSerialization isValidJSONObject:info]) {
-        data = [NSJSONSerialization dataWithJSONObject:info
-                                               options:(NSJSONWritingOptions)0
-                                                 error:&error];
-    } else {
-        NSDictionary *errorInformation = @{
-            NSLocalizedDescriptionKey: @"Unable to serialize to JSON string",
-            NSLocalizedFailureReasonErrorKey: @"Provided object contains unsupported data type instances."
-        };
-
-        error = [NSError errorWithDomain:NSCocoaErrorDomain
-                                    code:NSPropertyListWriteInvalidError
-                                userInfo:errorInformation];
-    }
-
-    if (error) {
-        NSDictionary *errorInformation = @{
-            NSLocalizedDescriptionKey: @"Metadata information serialization did fail",
-            NSUnderlyingErrorKey: error
-        };
-
-        self.parametersError = [NSError errorWithDomain:kPNAPIErrorDomain
-                                                   code:kPNAPIUnacceptableParameters
-                                               userInfo:errorInformation];
-    }
-
-    return data;
+- (NSDictionary *)headers {
+    NSMutableDictionary *headers =[([super headers] ?: @{}) mutableCopy];
+    headers[@"Content-Type"] = @"application/json";
+    
+    return headers;
 }
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
 + (instancetype)new {
     return [self requestWithUUID:nil];
@@ -112,16 +62,64 @@
 }
 
 - (instancetype)initWithObject:(NSString *)objectType identifier:(NSString *)identifier {
-    if ((self = [super initWithObject:objectType identifier:identifier])) {
-        _includeFields = PNUUIDCustomField;
-    }
-    
+    if ((self = [super initWithObject:objectType identifier:identifier])) _includeFields = PNUUIDCustomField;
     return self;
 }
 
 - (instancetype)init {
     [self throwUnavailableInitInterface];
 
+    return nil;
+}
+
+
+#pragma mark - Prepare
+
+- (PNError *)validate {
+    PNError *error = [super validate];
+    if (error) return error;
+    
+    NSArray<Class> *clss = @[[NSString class], [NSNumber class]];
+    
+    if (self.custom.count && ![PNDictionary isDictionary:self.custom containValueOfClasses:clss]) {
+        NSString *reason = PNStringFormat(@"'custom' object for '%@' contain not allowed data types (only NSString and "
+                                          "NSNumber allowed).", self.identifier);
+        NSDictionary *userInfo = @{
+            NSLocalizedDescriptionKey: @"Metadata additional information serialization did fail",
+            NSLocalizedFailureReasonErrorKey: reason,
+        };
+        
+        return [PNError errorWithDomain:PNAPIErrorDomain code:PNAPIErrorUnacceptableParameters userInfo:userInfo];
+    }
+    
+    NSMutableDictionary *info = [NSMutableDictionary new];
+    
+    if (self.name) info[@"name"] = self.name;
+    if (self.externalId.length) info[@"externalId"] = self.externalId;
+    if (self.profileUrl.length) info[@"profileUrl"] = self.profileUrl;
+    if (self.email.length) info[@"email"] = self.email;
+    if (self.custom.count) info[@"custom"] = self.custom;
+    
+    if ([NSJSONSerialization isValidJSONObject:info]) {
+        self.body = [NSJSONSerialization dataWithJSONObject:info options:(NSJSONWritingOptions)0 error:&error];
+    } else {
+        NSDictionary *userInfo = @{
+            NSLocalizedDescriptionKey: @"Unable to serialize to JSON string",
+            NSLocalizedFailureReasonErrorKey: @"Provided object contains unsupported data type instances."
+        };
+        
+        error = [PNError errorWithDomain:NSCocoaErrorDomain  code:NSPropertyListWriteInvalidError userInfo:userInfo];
+    }
+    
+    if (error) {
+        NSDictionary *userInfo = @{
+            NSLocalizedDescriptionKey: @"Metadata information serialization did fail",
+            NSUnderlyingErrorKey: error
+        };
+        
+        return [PNError errorWithDomain:PNAPIErrorDomain code:PNAPIErrorUnacceptableParameters userInfo:userInfo];
+    }
+    
     return nil;
 }
 

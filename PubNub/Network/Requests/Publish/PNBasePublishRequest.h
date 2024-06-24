@@ -1,46 +1,45 @@
-#import <PubNub/PNStructures.h>
-#import <PubNub/PNRequest.h>
+#import <PubNub/PNBaseRequest.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Interface declaration
 
-/// Base class for `publish`-based API endpoints.
-///
-/// - Since: 4.15.0
-/// - Copyright: 2010-2023 PubNub, Inc.
-@interface PNBasePublishRequest : PNRequest
+/// General request for all `Publish` API endpoints.
+@interface PNBasePublishRequest : PNBaseRequest
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
 /// Arbitrary percent encoded query parameters which should be sent along with original API call.
-@property (nonatomic, nullable, strong) NSDictionary *arbitraryQueryParameters;
+@property(strong, nullable, nonatomic) NSDictionary *arbitraryQueryParameters;
+
+/// Serialized `NSDictionary` with values which should be used by **PubNub** service to filter messages.
+@property(strong, nullable, nonatomic, readonly) NSString *preparedMetadata;
 
 /// Whether `published` data should be stored and available with history API or not.
-@property (nonatomic, assign, getter = shouldStore) BOOL store;
+@property(assign, nonatomic, getter = shouldStore) BOOL store;
 
 /// `NSDictionary` with values which should be used by **PubNub** service to filter messages.
-@property (nonatomic, nullable, strong) NSDictionary *metadata;
+@property(strong, nullable, nonatomic) NSDictionary *metadata;
 
 /// Name of channel to which message should be published.
-@property (nonatomic, readonly, copy) NSString *channel;
+@property(copy, nonatomic, readonly) NSString *channel;
 
 /// Message which will be published.
 ///
 /// Provided object will be serialized into JSON (`NSString`, `NSNumber`, `NSArray`, `NSDictionary`) string before
 /// pushing to the **PubNub** network. If client has been configured with cipher key message will be encrypted as well.
-@property (nonatomic, nullable, strong) id message;
+@property(strong, nullable, nonatomic) id message;
 
 /// How long message should be stored in channel's storage. Pass \b 0 store message according to retention.
-@property (nonatomic, assign) NSUInteger ttl;
+@property(assign, nonatomic) NSUInteger ttl;
 
 /// Whether request is repeatedly sent to retry after recent failure.
-@property (nonatomic, assign) BOOL retried;
+@property(assign, nonatomic) BOOL retried;
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
 /// Forbids request initialization.
 ///

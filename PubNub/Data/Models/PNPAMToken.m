@@ -6,8 +6,8 @@
  */
 #import "PNPAMToken+Private.h"
 #import "PNCBORDecoder.h"
-#import "PNErrorCodes.h"
 #import "PNString.h"
+#import "PNError.h"
 
 
 #pragma mark Types & Structures
@@ -316,8 +316,8 @@ NS_ASSUME_NONNULL_END
                                             "current PubNub instance.",
                                             self.authorizedUUID, uuid]
             };
-            self.error = [NSError errorWithDomain:kPNAPIErrorDomain
-                                             code:kPNAuthPAMTokenWrongUUIDError
+            self.error = [NSError errorWithDomain:PNAPIErrorDomain
+                                             code:PNAuthErrorPAMTokenWrongUUID
                                          userInfo:userInfo];
         }
     }
@@ -341,8 +341,8 @@ NS_ASSUME_NONNULL_END
             NSLocalizedDescriptionKey: [NSString stringWithFormat:@"PAM token should be parsed as NSDictionary, but got %@",
                                         NSStringFromClass([value class])]
         };
-        error = [NSError errorWithDomain:kPNCBORErrorDomain
-                                    code:kPNCBORUnexpectedDataTypeError
+        error = [NSError errorWithDomain:PNCBORErrorDomain
+                                    code:PNCBORErrorUnexpectedDataType
                                 userInfo:userInfo];
     }
     
@@ -360,8 +360,8 @@ NS_ASSUME_NONNULL_END
             NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Provided PAM token expired %@ seconds ago.",
                                         @(currentDate - tokenExpiration)]
         };
-        error = [NSError errorWithDomain:kPNAuthErrorDomain
-                                    code:kPNAuthPAMTokenExpiredError
+        error = [NSError errorWithDomain:PNAuthErrorDomain
+                                    code:PNAuthErrorPAMTokenExpired
                                 userInfo:userInfo];
     }
     

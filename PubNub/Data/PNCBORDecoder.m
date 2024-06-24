@@ -5,7 +5,7 @@
  * @copyright © 2010-2021 PubNub, Inc.
  */
 #import "PNCBORDecoder.h"
-#import "PNErrorCodes.h"
+#import "PNError.h"
 
 
 #pragma mark Struct & Types
@@ -322,7 +322,7 @@ NS_ASSUME_NONNULL_END
             NSLocalizedDescriptionKey: @"Data item in given data doesn't have 'head' byte with information about it."
         };
         
-        *error = [NSError errorWithDomain:kPNCBORErrorDomain code:kPNCBORMalformedDataError userInfo:userInfo];
+        *error = [NSError errorWithDomain:PNCBORErrorDomain code:PNCBORErrorMalformedData userInfo:userInfo];
     }
     
     return value;
@@ -403,8 +403,8 @@ NS_ASSUME_NONNULL_END
             if (decodeDataItemError) {
                 *error = decodeDataItemError;
             } else {
-                *error = [NSError errorWithDomain:kPNCBORErrorDomain
-                                             code:kPNCBORDataItemNotWellFormedError
+                *error = [NSError errorWithDomain:PNCBORErrorDomain
+                                             code:PNCBORErrorDataItemNotWellFormed
                                          userInfo:errorUserInfo];
             }
         }
@@ -530,8 +530,8 @@ NS_ASSUME_NONNULL_END
             if (cStringReadError) {
                 *error = cStringReadError;
             } else {
-                *error = [NSError errorWithDomain:kPNCBORErrorDomain
-                                             code:kPNCBORDataItemNotWellFormedError
+                *error = [NSError errorWithDomain:PNCBORErrorDomain
+                                             code:PNCBORErrorDataItemNotWellFormed
                                          userInfo:errorUserInfo];
             }
         }
@@ -600,8 +600,8 @@ NS_ASSUME_NONNULL_END
             if (stringReadError) {
                 *error = stringReadError;
             } else {
-                *error = [NSError errorWithDomain:kPNCBORErrorDomain
-                                             code:kPNCBORDataItemNotWellFormedError
+                *error = [NSError errorWithDomain:PNCBORErrorDomain
+                                             code:PNCBORErrorDataItemNotWellFormed
                                          userInfo:errorUserInfo];
             }
         }
@@ -726,8 +726,8 @@ NS_ASSUME_NONNULL_END
             if (arrayReadError) {
                 *error = arrayReadError;
             } else {
-                *error = [NSError errorWithDomain:kPNCBORErrorDomain
-                                             code:kPNCBORMissingDataItemError
+                *error = [NSError errorWithDomain:PNCBORErrorDomain
+                                             code:PNCBORErrorMissingDataItem
                                          userInfo:errorUserInfo];
             }
         }
@@ -799,8 +799,8 @@ NS_ASSUME_NONNULL_END
             if (dictionaryReadError) {
                 *error = dictionaryReadError;
             } else {
-                *error = [NSError errorWithDomain:kPNCBORErrorDomain
-                                             code:kPNCBORMissingDataItemError
+                *error = [NSError errorWithDomain:PNCBORErrorDomain
+                                             code:PNCBORErrorMissingDataItem
                                          userInfo:errorUserInfo];
             }
         }

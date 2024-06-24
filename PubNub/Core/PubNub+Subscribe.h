@@ -1,9 +1,21 @@
-#import <Foundation/Foundation.h>
+#import <PubNub/PubNub+Core.h>
+
+#import <PubNub/PNPresenceLeaveRequest.h>
+#import <PubNub/PNPresenceEventResult.h>
+#import <PubNub/PNMessageActionResult.h>
+#import <PubNub/PNObjectEventResult.h>
+#import <PubNub/PNSubscribeRequest.h>
+#import <PubNub/PNSubscribeStatus.h>
+#import <PubNub/PNFileEventResult.h>
+#import <PubNub/PNEventsListener.h>
+#import <PubNub/PNMessageResult.h>
+#import <PubNub/PNSignalResult.h>
+
+// Deprecated
 #import <PubNub/PNUnsubscribeChannelsOrGroupsAPICallBuilder.h>
 #import <PubNub/PNSubscribeChannelsOrGroupsAPIBuilder.h>
 #import <PubNub/PNUnsubscribeAPICallBuilder.h>
 #import <PubNub/PNSubscribeAPIBuilder.h>
-#import <PubNub/PubNub+Core.h>
 
 
 #pragma mark Class forward
@@ -11,447 +23,420 @@
 @class PNSubscribeStatus;
 
 
-#pragma mark - Protocols
-
-@protocol PNEventsListener;
-
-
 NS_ASSUME_NONNULL_BEGIN
 
-/**
- * @brief \b PubNub client core class extension to provide access to 'publish' API group.
- *
- * @discussion Set of API which allow to push data to \b PubNub service. Data pushed to remote data
- * objects  called 'channels' and then delivered on their live feeds to all subscribers.
- *
- * @author Serhii Mamontov
- * @since 4.0
- * @copyright © 2010-2018 PubNub, Inc.
- */
+#pragma mark - Interface implementation
+
+/// **PubNub** `Subscribe` APIs.
+///
+/// Set of API which allow to push data to **PubNub** service. Data pushed to remote data objects  called `channels` and
+/// then delivered on their live feeds to all subscribers.
 @interface PubNub (Subscribe)
 
 
 #pragma mark - Information
 
-/**
- * @brief Retrieve list of channels on which client subscribed now.
- *
- * @return \a NSArray of channel names on which client subscribed at this moment.
- *
- * @since 4.0
- */
+/// Retrieve list of channels on which client subscribed now.
+///
+///- Returns: `NSArray` of channel names on which client subscribed at this moment.
 - (NSArray<NSString *> *)channels;
 
-/**
- * @brief Retrieve list of channel groups on which client subscribed now.
- *
- * @return \a NSArray of channel group names on which client subscribed at this moment.
- *
- * @since 4.0
- */
+/// Retrieve list of channel groups on which client subscribed now.
+/// 
+/// - Returns: `NSArray` of channel group names on which client subscribed at this moment.
 - (NSArray<NSString *> *)channelGroups;
 
-/**
- * @brief List of channels for which presence events observation has been enabled.
- *
- * @return \a NSArray of presence channel names on which client subscribed at this moment.
- *
- * @since 4.0
- */
+/// List of channels for which presence events observation has been enabled.
+///
+/// - Returns: `NSArray` of presence channel names on which client subscribed at this moment.
 - (NSArray<NSString *> *)presenceChannels;
 
-/**
- * @brief Check whether \b PubNub client currently subscribed on specified data object or not.
- *
- * @param name Name of data object against which check should be performed.
- *
- * @return Whether subscribed on specified data object or not.
- *
- * @since 4.0
- */
+/// Check whether **PubNub** client currently subscribed on specified data object or not.
+///
+/// - Parameter name: Name of data object against which check should be performed.
+/// - Returns: Whether subscribed on specified data object or not.
 - (BOOL)isSubscribedOn:(NSString *)name;
 
 
 #pragma mark - Listeners
 
-/**
- * @brief Add observer which conform to \b PNEventsListener protocol and would like to receive
- * updates based on live feed events and status change.
- *
- * @discussion Listener can implement only required callbacks from \b PNEventsListener protocol
- * and called only when desired type of event arrive.
- *
- * @param listener Listener which would like to receive updates.
- *
- * @since 4.0
- */
-- (void)addListener:(id <PNEventsListener>)listener NS_SWIFT_NAME(addListener(_:));
+/// Add observer which conform to ``PNEventsListener`` protocol and would like to receive updates based on live feed
+/// events and status change.
+///
+/// Listener can implement only required callbacks from ``PNEventsListener`` protocol and called only when desired type
+/// of event arrive.
+///
+/// - Parameter listener: Listener which would like to receive updates.
+- (void)addListener:(id<PNEventsListener>)listener NS_SWIFT_NAME(addListener(_:));
 
-/**
- * @brief Remove listener from list for callback calls.
- *
- * @discussion When listener not interested in live feed updates it can remove itself from updates
- * list using this method.
- *
- * @param listener Listener which doesn't want to receive updates anymore.
- *
- * @since 4.0
- */
-- (void)removeListener:(id <PNEventsListener>)listener NS_SWIFT_NAME(removeListener(_:));
+/// Remove listener from list for callback calls.
+///
+/// When listener not interested in live feed updates it can remove itself from updates list using this method.
+///
+/// - Parameter listener: Listener which doesn't want to receive updates anymore.
+- (void)removeListener:(id<PNEventsListener>)listener NS_SWIFT_NAME(removeListener(_:));
 
 
 #pragma mark - Filtering
 
-/**
- * @brief String representation of filtering expression which should be applied to decide which
- * updates should reach client.
- *
- * @warning If your filter expression is malformed, \b PNEventsListener won't receive any
- * messages and presence events from service (only error status).
- */
+/// String representation of filtering expression which should be applied to decide which updates should reach client.
+///
+/// > Warning: If your filter expression is malformed, ``PNEventsListener`` won't receive any messages and presence
+/// events from service (only error status).
 @property (nonatomic, nullable, copy) NSString *filterExpression;
 
 
 #pragma mark - API Builder support
 
-/**
- * @brief Subscribe API access builder.
- *
- * @note Since \b 4.8.0 if \c managePresenceListManually client configuration property is set to
- * \c YES this API won't add channels and / or channel groups to presence heartbeat list.
- *
- * @return API call configuration builder.
- *
- * @since 4.5.4
- */
-@property (nonatomic, readonly, strong) PNSubscribeAPIBuilder * (^subscribe)(void);
+/// Subscribe API access builder.
+///
+/// > Note: Since **4.8.0** if `managePresenceListManually` client configuration property is set to `YES` this API won't
+/// add channels and / or channel groups to presence heartbeat list.
+@property (nonatomic, readonly, strong) PNSubscribeAPIBuilder * (^subscribe)(void)
+    DEPRECATED_MSG_ATTRIBUTE("Builder-based interface deprecated. Please use corresponding request-based interfaces.");
 
-/**
- * @brief Unsubscribe API access builder.
- *
- * @return API call configuration builder.
- *
- * @since 4.5.4
- */
-@property (nonatomic, readonly, strong) PNUnsubscribeAPICallBuilder * (^unsubscribe)(void);
+/// Unsubscribe API access builder.
+@property (nonatomic, readonly, strong) PNUnsubscribeAPICallBuilder * (^unsubscribe)(void)
+    DEPRECATED_MSG_ATTRIBUTE("Builder-based interface deprecated. Please use corresponding request-based interfaces.");
 
 
 #pragma mark - Subscription
 
-/**
- * @brief Try subscribe on specified set of channels.
- *
- * @discussion Client is able to subscribe of remote data objects live feed and listen for new
- * events from them.
- *
- * @note Since \b 4.8.0 if \c managePresenceListManually client configuration property is set to
- * \c YES this API won't add channels to presence heartbeat list.
- *
- * @code
- * [self.client subscribeToChannels:@[@"swift"] withPresence:YES];
- * @endcode
- *
- * @param channels List of channel names on which client should try to subscribe.
- * @param shouldObservePresence Whether presence observation should be enabled for \c channels or
- *     not.
- *
- * @since 4.0
- */
-- (void)subscribeToChannels:(NSArray<NSString *> *)channels withPresence:(BOOL)shouldObservePresence
-    NS_SWIFT_NAME(subscribeToChannels(_:withPresence:));
+/// Subscribe to specified resources.
+///
+/// #### Examples:
+/// ##### Subscribe on regular channels and groups:
+/// ```objc
+/// PNSubscribeRequest *request = [PNSubscribeRequest requestWithChannels:@[@"channel-a"] channelGroups:nil];
+/// request.observePresence = YES;
+/// request.timetoken = @(1234567890);
+///
+/// [self.client subscribeWithRequest:request];
+/// ```
+///
+/// ##### Subscribe on presence channels and groups:
+/// ```objc
+/// // This request will subscribe on presence events from `group-a-pnpres` group.
+/// PNSubscribeRequest *request = [PNSubscribeRequest requestWithPresenceChannels:nil channelGroups:@[@"group-a"]];
+/// request.timetoken = @(1234567890);
+///
+/// [self.client subscribeWithRequest:request];
+/// ```
+///
+/// - Parameter request: Request with information about resources from which client will receive real-time updates.
+- (void)subscribeWithRequest:(PNSubscribeRequest *)request NS_SWIFT_NAME(subscribeWithRequest(_:));
 
-/**
- * @brief Try subscribe on specified set of channels.
- *
- * @discussion Client is able to subscribe of remote data objects live feed and listen for new
- * events from them.
- *
- * @note Since \b 4.8.0 if \c managePresenceListManually client configuration property is set to
- * \c YES this API won't add channels to presence heartbeat list.
- *
- * @code
- * NSNumber *timeToken = @([[NSDate dateWithTimeIntervalSinceNow:-2.0] timeIntervalSince1970]);
- *
- * [self.client subscribeToChannels:@[@"swift"] withPresence:YES usingTimeToken:timeToken];
- * @endcode
- *
- * @param channels List of channel names on which client should try to subscribe.
- * @param shouldObservePresence Whether presence observation should be enabled for \c channels or
- *     not.
- * @param timeToken Time from which client should try to catch up on messages.
- *
- * @since 4.2.0
- */
+/// Try subscribe on specified set of channels.
+///
+/// Client is able to subscribe of remote data objects live feed and listen for new events from them.
+///
+/// > Note: Since **4.8.0** if `managePresenceListManually` client configuration property is set to `YES` this API won't
+/// add channels to presence heartbeat list.
+///
+/// #### Example:
+/// ```objc
+/// [self.client subscribeToChannels:@[@"swift"] withPresence:YES];
+/// ```
+///
+/// - Parameters:
+///   - channels: List of channel names on which client should try to subscribe.
+///   - shouldObservePresence: Whether presence observation should be enabled for `channels` or not.
+- (void)subscribeToChannels:(NSArray<NSString *> *)channels withPresence:(BOOL)shouldObservePresence
+    NS_SWIFT_NAME(subscribeToChannels(_:withPresence:))
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+                             "'-subscribeWithRequest:' method instead.");
+
+/// Try subscribe on specified set of channels.
+///
+/// Client is able to subscribe of remote data objects live feed and listen for new events from them.
+///
+/// > Note: Since **4.8.0** if `managePresenceListManually` client configuration property is set to `YES` this API won't
+/// add channels to presence heartbeat list.
+///
+/// #### Example:
+/// ```
+/// NSNumber *timeToken = @([[NSDate dateWithTimeIntervalSinceNow:-2.0] timeIntervalSince1970]);
+///
+/// [self.client subscribeToChannels:@[@"swift"] withPresence:YES usingTimeToken:timeToken];
+/// ```
+///
+/// - Parameters:
+///   - channels: List of channel names on which client should try to subscribe.
+///   - shouldObservePresence: Whether presence observation should be enabled for `channels` or not.
+///   - timeToken: Time from which client should try to catch up on messages.
 - (void)subscribeToChannels:(NSArray<NSString *> *)channels
                withPresence:(BOOL)shouldObservePresence
              usingTimeToken:(nullable NSNumber *)timeToken
-    NS_SWIFT_NAME(subscribeToChannels(_:withPresence:usingTimeToken:));
+    NS_SWIFT_NAME(subscribeToChannels(_:withPresence:usingTimeToken:))
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+                             "'-subscribeWithRequest:' method instead.");
 
-/**
- * @brief Try subscribe on specified set of channels.
- *
- * @discussion Client is able to subscribe of remote data objects live feed and listen for new
- * events from them.
- *
- * @note Since \b 4.8.0 if \c managePresenceListManually client configuration property is set to
- * \c YES this API won't add channels to presence heartbeat list.
- *
- * @code
- * [self.client subscribeToChannels:@[@"swift"] withPresence:YES
- *                      clientState:@{ @"swift": @{ @"Type": @"Developer" } }];
- * @endcode
- *
- * @param channels List of channel names on which client should try to subscribe.
- * @param shouldObservePresence Whether presence observation should be enabled for \c channels or
- *     not.
- * @param state \a NSDictionary with key-value pairs based on channel group name and value which
- *     should be assigned to it.
- *
- * @since 4.0
- */
+/// Try subscribe on specified set of channels.
+///
+/// Client is able to subscribe of remote data objects live feed and listen for new events from them.
+///
+/// > Note: Since **4.8.0** if `managePresenceListManually` client configuration property is set to `YES` this API won't
+/// add channels to presence heartbeat list.
+///
+/// #### Example:
+/// ```
+/// [self.client subscribeToChannels:@[@"swift"] withPresence:YES clientState:@{ @"swift": @{ @"Type": @"Developer" }}];
+/// ```
+///
+/// - Parameters:
+///   - channels: List of channel names on which client should try to subscribe.
+///   - shouldObservePresence: Whether presence observation should be enabled for `channels` or not.
+///   - state: `NSDictionary` with key-value pairs based on channel group name and value which should be assigned to it.
 - (void)subscribeToChannels:(NSArray<NSString *> *)channels
                withPresence:(BOOL)shouldObservePresence
                 clientState:(nullable NSDictionary<NSString *, id> *)state
-    NS_SWIFT_NAME(subscribeToChannels(_:withPresence:clientState:));
+    NS_SWIFT_NAME(subscribeToChannels(_:withPresence:clientState:))
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+                             "'-subscribeWithRequest:' method instead.");
 
-/**
- * @brief Try subscribe on specified set of channels.
- *
- * @discussion Client is able to subscribe of remote data objects live feed and listen for new
- * events from them.
- *
- * @note Since \b 4.8.0 if \c managePresenceListManually client configuration property is set to
- * \c YES this API won't add channels to presence heartbeat list.
- *
- * @code
- * NSNumber *timeToken = @([[NSDate dateWithTimeIntervalSinceNow:-2.0] timeIntervalSince1970]);
- *
- * [self.client subscribeToChannels:@[@"swift"] withPresence:YES usingTimeToken:timeToken
- *                      clientState:@{ @"swift": @{ @"Type": @"Developer" } }];
- * @endcode
- *
- * @param channels List of channel names on which client should try to subscribe.
- * @param shouldObservePresence Whether presence observation should be enabled for \c channels or
- *     not.
- * @param timeToken Time from which client should try to catch up on messages.
- * @param state \a NSDictionary with key-value pairs based on channel group name and value which
- *     should be assigned to it.
- *
- * @since 4.2.0
- */
+/// Try subscribe on specified set of channels.
+///
+/// Client is able to subscribe of remote data objects live feed and listen for new events from them.
+///
+/// > Note: Since **4.8.0** if `managePresenceListManually` client configuration property is set to `YES` this API won't
+/// add channels to presence heartbeat list.
+///
+/// #### Example:
+/// ```objc
+/// NSNumber *timeToken = @([[NSDate dateWithTimeIntervalSinceNow:-2.0] timeIntervalSince1970]);
+///
+/// [self.client subscribeToChannels:@[@"swift"] 
+///                     withPresence:YES
+///                   usingTimeToken:timeToken
+///                      clientState:@{ @"swift": @{ @"Type": @"Developer" }}];
+/// ```
+///
+/// - Parameters:
+///   - channels: List of channel names on which client should try to subscribe.
+///   - shouldObservePresence: Whether presence observation should be enabled for `channels` or not.
+///   - timeToken: Time from which client should try to catch up on messages.
+///   - state: `NSDictionary` with key-value pairs based on channel group name and value which should be assigned to it.
 - (void)subscribeToChannels:(NSArray<NSString *> *)channels
                withPresence:(BOOL)shouldObservePresence
              usingTimeToken:(nullable NSNumber *)timeToken 
                 clientState:(nullable NSDictionary<NSString *, id> *)state
-    NS_SWIFT_NAME(subscribeToChannels(_:withPresence:usingTimeToken:clientState:));
+    NS_SWIFT_NAME(subscribeToChannels(_:withPresence:usingTimeToken:clientState:))
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+                             "'-subscribeWithRequest:' method instead.");
 
-/**
- * @brief Try subscribe on specified set of channel groups.
- *
- * @discussion Client is able to subscribe of remote data objects live feed and listen for new
- * events from them.
- *
- * @note Since \b 4.8.0 if \c managePresenceListManually client configuration property is set to
- * \c YES this API won't add channel groups to presence heartbeat list.
- *
- * @code
- * [self.client subscribeToChannelGroups:@[@"developers"] withPresence:YES];
- * @endcode
- *
- * @param groups List of channel group names on which client should try to subscribe.
- * @param shouldObservePresence Whether presence observation should be enabled for \c groups or not.
- *
- * @since 4.0
- */
-- (void)subscribeToChannelGroups:(NSArray<NSString *> *)groups
-                    withPresence:(BOOL)shouldObservePresence
-    NS_SWIFT_NAME(subscribeToChannelGroups(_:withPresence:));
+/// Try subscribe on specified set of channel groups.
+///
+/// Client is able to subscribe of remote data objects live feed and listen for new events from them.
+///
+/// > Note: Since **4.8.0** if `managePresenceListManually` client configuration property is set to `YES` this API won't
+/// add channel groups to presence heartbeat list.
+///
+/// #### Example:
+/// ```objc
+/// [self.client subscribeToChannelGroups:@[@"developers"] withPresence:YES];
+/// ```
+///
+/// - Parameters:
+///   - groups: List of channel group names on which client should try to subscribe.
+///   - shouldObservePresence: Whether presence observation should be enabled for `groups` or not.
+- (void)subscribeToChannelGroups:(NSArray<NSString *> *)groups withPresence:(BOOL)shouldObservePresence
+    NS_SWIFT_NAME(subscribeToChannelGroups(_:withPresence:))
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+                             "'-subscribeWithRequest:' method instead.");
 
-/**
- * @brief Try subscribe on specified set of channel groups.
- *
- * @discussion Client is able to subscribe of remote data objects live feed and listen for new
- * events from them.
- *
- * @note Since \b 4.8.0 if \c managePresenceListManually client configuration property is set to
- * \c YES this API won't add channel groups to presence heartbeat list.
- *
- * @code
- * NSNumber *timeToken = @([[NSDate dateWithTimeIntervalSinceNow:-2.0] timeIntervalSince1970]);
- *
- * [self.client subscribeToChannelGroups:@[@"developers"] withPresence:YES usingTimeToken:timeToken];
- * @endcode
- *
- * @param groups List of channel group names on which client should try to subscribe.
- * @param shouldObservePresence Whether presence observation should be enabled for \c groups or not.
- * @param timeToken Time from which client should try to catch up on messages.
- *
- * @since 4.2.0
- */
+/// Try subscribe on specified set of channel groups.
+///
+/// Client is able to subscribe of remote data objects live feed and listen for new events from them.
+///
+/// > Note: Since **4.8.0** if `managePresenceListManually` client configuration property is set to `YES` this API won't
+/// add channel groups to presence heartbeat list.
+///
+/// #### Example:
+/// ```objc
+/// NSNumber *timeToken = @([[NSDate dateWithTimeIntervalSinceNow:-2.0] timeIntervalSince1970]);
+///
+/// [self.client subscribeToChannelGroups:@[@"developers"] withPresence:YES usingTimeToken:timeToken];
+/// ```
+///
+/// - Parameters:
+///   - groups: List of channel group names on which client should try to subscribe.
+///   - shouldObservePresence: Whether presence observation should be enabled for `groups` or not.
+///   - timeToken: Time from which client should try to catch up on messages.
 - (void)subscribeToChannelGroups:(NSArray<NSString *> *)groups
                     withPresence:(BOOL)shouldObservePresence
                   usingTimeToken:(nullable NSNumber *)timeToken
-    NS_SWIFT_NAME(subscribeToChannelGroups(_:withPresence:usingTimeToken:));
+    NS_SWIFT_NAME(subscribeToChannelGroups(_:withPresence:usingTimeToken:))
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+                             "'-subscribeWithRequest:' method instead.");
 
-/**
- * @brief Try subscribe on specified set of channel groups.
- *
- * @discussion Client is able to subscribe of remote data objects live feed and listen for new
- * events from them.
- *
- * @note Since \b 4.8.0 if \c managePresenceListManually client configuration property is set to
- * \c YES this API won't add channel groups to presence heartbeat list.
- *
- * @code
- * [self.client subscribeToChannelGroups:@[@"developers"] withPresence:YES
- *                           clientState:@{ @"developers": @{ @"Name": @"Bob" } }];
- * @endcode
- *
- * @param groups List of channel group names on which client should try to subscribe.
- * @param shouldObservePresence Whether presence observation should be enabled for \c groups or not.
- * @param state \a NSDictionary with key-value pairs based on channel group name and value which
- *     should be assigned to it.
- *
- * @since 4.0
- */
+/// Try subscribe on specified set of channel groups.
+///
+/// Client is able to subscribe of remote data objects live feed and listen for new events from them.
+///
+/// > Note: Since **4.8.0** if `managePresenceListManually` client configuration property is set to `YES` this API won't
+/// add channel groups to presence heartbeat list.
+///
+/// #### Example:
+/// ```objc
+/// [self.client subscribeToChannelGroups:@[@"developers"]
+///                          withPresence:YES
+///                           clientState:@{ @"developers": @{ @"Name": @"Bob" }}];
+/// ```
+///
+/// - Parameters:
+///   - groups: List of channel group names on which client should try to subscribe.
+///   - shouldObservePresence: Whether presence observation should be enabled for `groups` or not.
+///   - state: `NSDictionary` with key-value pairs based on channel group name and value which should be assigned to it.
 - (void)subscribeToChannelGroups:(NSArray<NSString *> *)groups
                     withPresence:(BOOL)shouldObservePresence
                      clientState:(nullable NSDictionary<NSString *, id> *)state
-    NS_SWIFT_NAME(subscribeToChannelGroups(_:withPresence:clientState:));
+    NS_SWIFT_NAME(subscribeToChannelGroups(_:withPresence:clientState:))
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+                             "'-subscribeWithRequest:' method instead.");
 
-/**
- * @brief Try subscribe on specified set of channel groups.
- *
- * @discussion Client is able to subscribe of remote data objects live feed and listen for new
- * events from them.
- *
- * @note Since \b 4.8.0 if \c managePresenceListManually client configuration property is set to
- * \c YES this API won't add channel groups to presence heartbeat list.
- *
- * @code
- * NSNumber *timeToken = @([[NSDate dateWithTimeIntervalSinceNow:-2.0] timeIntervalSince1970]);
- *
- * [self.client subscribeToChannelGroups:@[@"developers"] withPresence:YES usingTimeToken:timeToken
- *                           clientState:@{ @"developers": @{ @"Name": @"Bob" } }];
- * @endcode
- *
- * @param groups List of channel group names on which client should try to subscribe.
- * @param shouldObservePresence Whether presence observation should be enabled for \c groups or not.
- * @param timeToken Time from which client should try to catch up on messages.
- * @param state \a NSDictionary with key-value pairs based on channel group name and value which
- *     should be assigned to it.
- *
- * @since 4.2.0
- */
+/// Try subscribe on specified set of channel groups.
+///
+/// Client is able to subscribe of remote data objects live feed and listen for new events from them.
+///
+/// > Note: Since **4.8.0** if `managePresenceListManually` client configuration property is set to `YES` this API won't
+/// add channel groups to presence heartbeat list.
+///
+/// #### Example:
+/// ```objc
+/// NSNumber *timeToken = @([[NSDate dateWithTimeIntervalSinceNow:-2.0] timeIntervalSince1970]);
+///
+/// [self.client subscribeToChannelGroups:@[@"developers"] 
+///                          withPresence:YES
+///                        usingTimeToken:timeToken
+///                           clientState:@{ @"developers": @{ @"Name": @"Bob" }}];
+/// ```
+///
+/// - Parameters:
+///   - groups: List of channel group names on which client should try to subscribe.
+///   - shouldObservePresence: Whether presence observation should be enabled for `groups` or not.
+///   - timeToken: Time from which client should try to catch up on messages.
+///   - state: `NSDictionary` with key-value pairs based on channel group name and value which should be assigned to it.
 - (void)subscribeToChannelGroups:(NSArray<NSString *> *)groups
                     withPresence:(BOOL)shouldObservePresence
                   usingTimeToken:(nullable NSNumber *)timeToken 
                      clientState:(nullable NSDictionary<NSString *, id> *)state
-    NS_SWIFT_NAME(subscribeToChannelGroups(_:withPresence:usingTimeToken:clientState:));
+    NS_SWIFT_NAME(subscribeToChannelGroups(_:withPresence:usingTimeToken:clientState:))
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+                             "'-subscribeWithRequest:' method instead.");
 
-/**
- * @brief Enable presence observation on specified \c channels.
- *
- * @discussion Client will be able to observe for presence events which is pushed to remote data
- * objects.
- *
- * @code
- * [self.client subscribeToPresenceChannels:@[@"swift"]];
- * @endcode
- *
- * @param channels List of channel names for which client should try to subscribe on presence
- *     observing channels.
- *
- * @since 4.0
- */
+/// Enable presence observation on specified `channels`.
+///
+/// Client will be able to observe for presence events which is pushed to remote data objects.
+///
+/// #### Example:
+/// ```objc
+/// [self.client subscribeToPresenceChannels:@[@"swift"]];
+/// ```
+///
+/// - Parameter channels: List of channel names for which client should try to subscribe on presence observing channels.
 - (void)subscribeToPresenceChannels:(NSArray<NSString *> *)channels
-    NS_SWIFT_NAME(subscribeToPresenceChannels(_:));
+    NS_SWIFT_NAME(subscribeToPresenceChannels(_:))
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+                             "'-subscribeWithRequest:' method instead.");
 
 
 #pragma mark - Un-subscription
 
-/**
- * @brief Unsubscribe / leave from specified set of channels.
- *
- * @discussion Client will push \c leave presence event on specified \c channels.
- *
- * @code
- * [self.client unsubscribeFromChannels:@[@"objc"] withPresence:YES];
- * @endcode
- *
- * @param channels List of channel names from which client should try to unsubscribe.
- * @param shouldObservePresence Whether client should disable presence observation on specified
- *     channels or keep listening for presence event on them.
- *
- * @since 4.0
- */
-- (void)unsubscribeFromChannels:(NSArray<NSString *> *)channels
-                   withPresence:(BOOL)shouldObservePresence
-    NS_SWIFT_NAME(unsubscribeFromChannels(_:withPresence:));
+/// Unsubscribe from specified resources.
+///
+/// #### Examples:
+/// ##### Unsubscribe from regular channels and groups:
+/// ```objc
+/// PNPresenceLeaveRequest *request = [PNPresenceLeaveRequest requestWithChannels:@[@"channel-a"] channelGroups:nil];
+/// [self.client unsubscribWithRequest:request];
+/// ```
+///
+/// ##### Unsubscribe from presence channels and groups:
+/// ```objc
+/// // This request will unsubscribe from presence events on `group-a-pnpres` group.
+/// PNPresenceLeaveRequest *request = [PNPresenceLeaveRequest requestWithPresenceChannels:nil
+///                                                                         channelGroups:@[@"group-a"]];
+/// request.observePresence = YES;
+/// [self.client unsubscribeWithRequest:request];
+/// ```
+///
+/// - Parameter request: Request with information about resources from which client should stop receiving real-time
+/// updates.
+- (void)unsubscribeWithRequest:(PNPresenceLeaveRequest *)request
+    NS_SWIFT_NAME(unsubscribWithRequest(_:));
 
-/**
- * @brief Unsubscribe / leave from specified set of channel groups.
- *
- * @discussion Client will push \c leave presence event on specified \c groups and all channels
- * which is part of \c groups.
- *
- * @code
- * [self.client unsubscribeFromChannelGroups:@[@"developers"] withPresence:YES];
- * @endcode
- *
- * @param groups List of channel group names from which client should try to unsubscribe.
- * @param shouldObservePresence Whether client should disable presence observation on specified
- *     channel groups or keep listening for presence event on them.
- *
- * @since 4.0
- */
-- (void)unsubscribeFromChannelGroups:(NSArray<NSString *> *)groups
-                        withPresence:(BOOL)shouldObservePresence
-    NS_SWIFT_NAME(unsubscribeFromChannelGroups(_:withPresence:));
+/// Unsubscribe / leave from specified set of channels.
+///
+/// Client will push `leave` presence event on specified `channels`.
+///
+/// #### Example:
+/// ```objc
+/// [self.client unsubscribeFromChannels:@[@"objc"] withPresence:YES];
+/// ```
+///
+/// - Parameters:
+///   - channels: List of channel names from which client should try to unsubscribe.
+///   - shouldObservePresence: Whether client should disable presence observation on specified channels or keep
+///   listening for presence event on them.
+- (void)unsubscribeFromChannels:(NSArray<NSString *> *)channels withPresence:(BOOL)shouldObservePresence
+    NS_SWIFT_NAME(unsubscribeFromChannels(_:withPresence:))
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+                             "'-unsubscribWithRequest:' method instead.");
 
-/**
- * @brief Disable presence events observation on specified channels.
- *
- * @code
- * [self.client unsubscribeFromPresenceChannels:@[@"swifty"]];
- * @endcode
- *
- * @param channels List of channel names for which client should try to unsubscribe from presence
- *     observing channels.
- *
- * @since 4.0
- */
+/// Unsubscribe / leave from specified set of channel groups.
+///
+/// Client will push `leave` presence event on specified `groups` and all channels which is part of `groups`.
+///
+/// #### Example:
+/// ```objc
+/// [self.client unsubscribeFromChannelGroups:@[@"developers"] withPresence:YES];
+/// ```
+///
+/// - Parameters:
+///   - groups: List of channel group names from which client should try to unsubscribe.
+///   - shouldObservePresence: Whether client should disable presence observation on specified channel groups or keep
+///   listening for presence event on them.
+- (void)unsubscribeFromChannelGroups:(NSArray<NSString *> *)groups withPresence:(BOOL)shouldObservePresence
+    NS_SWIFT_NAME(unsubscribeFromChannelGroups(_:withPresence:))
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+                             "'-unsubscribWithRequest:' method instead.");
+
+/// Disable presence events observation on specified channels.
+///
+/// #### Example:
+/// ```objc
+/// [self.client unsubscribeFromPresenceChannels:@[@"swifty"]];
+/// ```
+///
+/// - Parameter channels: List of channel names for which client should try to unsubscribe from presence observing
+/// channels.
 - (void)unsubscribeFromPresenceChannels:(NSArray<NSString *> *)channels
-    NS_SWIFT_NAME(unsubscribeFromPresenceChannels(_:));
+    NS_SWIFT_NAME(unsubscribeFromPresenceChannels(_:))
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+                             "'-unsubscribWithRequest:' method instead.");
 
-/**
- * @brief Unsubscribe from all channels and groups on which client has been subscribed so far.
- *
- * @discussion This API will remove all channels, presence channels and channel groups from
- * subscribe cycle and as result will stop it.
- *
- * @code
- * [self.client unsubscribeFromAll];
- * @endcode
- *
- * @since 4.2.0
- */
+/// Unsubscribe from all channels and groups on which client has been subscribed so far.
+///
+/// This API will remove all channels, presence channels and channel groups from
+/// subscribe cycle and as result will stop it.
+///
+/// #### Example:
+/// ```objc
+/// [self.client unsubscribeFromAll];
+/// ```
 - (void)unsubscribeFromAll;
 
-/**
- * @brief Unsubscribe from all channels and groups on which client has been subscribed so far.
- *
- * @code
- * [self.client unsubscribeFromAllWithCompletion:^(PNAcknowledgmentStatus *status) {
- *     // Handle unsubscription process completion.
- * }];
- * @endcode
- *
- * @param block Un-subscription completion block.
- *
- * @since 4.7.2
- */
-- (void)unsubscribeFromAllWithCompletion:(void(^__nullable)(PNStatus *status))block;
+/// Unsubscribe from all channels and groups on which client has been subscribed so far.
+///
+/// #### Example:
+/// ```objc
+/// [self.client unsubscribeFromAllWithCompletion:^(PNAcknowledgmentStatus *status) {
+///     // Handle unsubscription process completion.
+/// }];
+/// ```
+///
+/// - Parameter block: Un-subscription completion block.
+- (void)unsubscribeFromAllWithCompletion:(nullable PNStatusBlock)block;
 
 #pragma mark -
 

@@ -6,24 +6,31 @@
 */
 #import "PNBaseObjectsMembershipRequest+Private.h"
 #import "PNBaseObjectsRequest+Private.h"
-#import "PNRequest+Private.h"
-#import "PNErrorCodes.h"
+#import "PNBaseRequest+Private.h"
+#import "PNTransportRequest.h"
 #import "PNDictionary.h"
+#import "PNFunctions.h"
+#import "PNError.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
 
-#pragma mark Protected interface declaration
+#pragma mark Private interface declaration
 
+/// General request for all `App Context Membership / Members` API endpoints.
 @interface PNBaseObjectsMembershipRequest ()
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
-/**
- * @brief Dictionary which is used to manage memberships / members.
- */
-@property (nonatomic, strong) NSMutableDictionary<NSString *, NSMutableSet *> *membershipBodyPayload;
+/// Dictionary which is used to manage memberships / members.
+@property(strong, nonatomic) NSMutableDictionary<NSString *, NSMutableSet *> *membershipBodyPayload;
+
+/// Error which has been identified during request configuration.
+@property(strong, nullable, nonatomic) PNError *parametersError;
+
+/// Request post body.
+@property(strong, nullable, nonatomic) NSData *body;
 
 #pragma mark -
 
@@ -38,61 +45,14 @@ NS_ASSUME_NONNULL_END
 @implementation PNBaseObjectsMembershipRequest
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
-- (NSString *)httpMethod {
-    return @"PATCH";
-}
-
-- (NSData *)bodyData {
-    if (self.parametersError) {
-        return nil;
-    }
-    
-    NSMutableDictionary *update = [NSMutableDictionary new];
-    NSError *error = nil;
-    NSData *data = nil;
-    
-    if (self.membershipBodyPayload[@"set"].count) {
-        update[@"set"] = self.membershipBodyPayload[@"set"].allObjects;
-    }
-    
-    if (self.membershipBodyPayload[@"delete"].count) {
-        update[@"delete"] = self.membershipBodyPayload[@"delete"].allObjects;
-    }
-    
-    if ([NSJSONSerialization isValidJSONObject:update]) {
-        data = [NSJSONSerialization dataWithJSONObject:update
-                                               options:(NSJSONWritingOptions)0
-                                                 error:&error];
-    } else {
-        NSDictionary *errorInformation = @{
-            NSLocalizedDescriptionKey: @"Unable to serialize to JSON string",
-            NSLocalizedFailureReasonErrorKey: @"Provided object contains unsupported data type "
-                                               "instances."
-        };
-        
-        error = [NSError errorWithDomain:NSCocoaErrorDomain
-                                    code:NSPropertyListWriteInvalidError
-                                userInfo:errorInformation];
-    }
-    
-    if (error) {
-        NSDictionary *errorInformation = @{
-            NSLocalizedDescriptionKey: @"Update information serialization did fail",
-            NSUnderlyingErrorKey: error
-        };
-        
-        self.parametersError = [NSError errorWithDomain:kPNAPIErrorDomain
-                                                   code:kPNAPIUnacceptableParameters
-                                               userInfo:errorInformation];
-    }
-    
-    return data;
+- (TransportMethod)httpMethod {
+    return TransportPATCHMethod;
 }
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
 - (instancetype)initWithObject:(NSString *)objectType identifier:(NSString *)identifier {
     if ((self = [super initWithObject:objectType identifier:identifier])) {
@@ -108,25 +68,54 @@ NS_ASSUME_NONNULL_END
 - (void)setRelationToObjects:(NSArray<NSDictionary *> *)objects ofType:(NSString *)objectType {
     NSArray *serializedObjects = [self serializedObjectType:objectType fromArray:objects];
     
-    if (!self.membershipBodyPayload[@"set"]) {
-        self.membershipBodyPayload[@"set"] = [NSMutableSet new];
-    }
-    
+    if (!self.membershipBodyPayload[@"set"]) self.membershipBodyPayload[@"set"] = [NSMutableSet new];
     [self.membershipBodyPayload[@"set"] addObjectsFromArray:serializedObjects];
 }
 
 - (void)removeRelationToObjects:(NSArray<NSString *> *)objects ofType:(NSString *)objectType {
     NSMutableArray *removeObjects = [NSMutableArray new];
     
-    if (!self.membershipBodyPayload[@"delete"]) {
-        self.membershipBodyPayload[@"delete"] = [NSMutableSet new];
-    }
-    
-    for (NSString *object in objects) {
-        [removeObjects addObject:@{ objectType: @{ @"id": object } }];
-    }
+    if (!self.membershipBodyPayload[@"delete"]) self.membershipBodyPayload[@"delete"] = [NSMutableSet new];
+    for (NSString *object in objects)  [removeObjects addObject:@{ objectType: @{ @"id": object } }];
     
     [self.membershipBodyPayload[@"delete"] addObjectsFromArray:removeObjects];
+}
+
+
+#pragma mark - Prepare
+
+- (PNError *)validate {
+    PNError *error = [super validate] ?: self.parametersError;
+    if (error) return error;
+    
+    NSMutableDictionary *update = [NSMutableDictionary new];
+    
+    if (self.membershipBodyPayload[@"set"].count) update[@"set"] = self.membershipBodyPayload[@"set"].allObjects;
+    if (self.membershipBodyPayload[@"delete"].count) {
+        update[@"delete"] = self.membershipBodyPayload[@"delete"].allObjects;
+    }
+    
+    if ([NSJSONSerialization isValidJSONObject:update]) {
+        self.body = [NSJSONSerialization dataWithJSONObject:update options:(NSJSONWritingOptions)0 error:&error];
+    } else {
+        NSDictionary *userInfo = @{
+            NSLocalizedDescriptionKey: @"Unable to serialize to JSON string",
+            NSLocalizedFailureReasonErrorKey: @"Provided object contains unsupported data type instances."
+        };
+        
+        error = [PNError errorWithDomain:NSCocoaErrorDomain code:NSPropertyListWriteInvalidError userInfo:userInfo];
+    }
+    
+    if (error) {
+        NSDictionary *userInfo = @{
+            NSLocalizedDescriptionKey: @"Update information serialization did fail",
+            NSUnderlyingErrorKey: error
+        };
+        
+        return [PNError errorWithDomain:PNAPIErrorDomain code:PNAPIErrorUnacceptableParameters userInfo:userInfo];
+    }
+    
+    return nil;
 }
 
 
@@ -137,9 +126,7 @@ NS_ASSUME_NONNULL_END
     NSMutableArray *serializedObjects = [NSMutableArray new];
     
     for (NSDictionary *object in objects) {
-        if (!((NSString *)object[type]).length) {
-            continue;
-        }
+        if (!((NSString *)object[type]).length || self.parametersError) continue;
 
         NSMutableDictionary *objectData = [NSMutableDictionary new];
         NSString *identifier = object[type];
@@ -149,23 +136,18 @@ NS_ASSUME_NONNULL_END
             if ([PNDictionary isDictionary:object[@"custom"] containValueOfClasses:clss]) {
                 objectData[@"custom"] = object[@"custom"];
             } else {
-                NSString *reason = [NSString stringWithFormat:@"'custom' object for '%@' %@ "
-                                    "membership contain not allowed data types (only NSString "
-                                    "and NSNumber allowed).", identifier, type];
-                NSDictionary *errorInformation = @{
+                NSString *reason = PNStringFormat(@"'custom' object for '%@' %@ membership contain not allowed data "
+                                                  "types (only NSString and NSNumber allowed).", identifier, type);
+                NSDictionary *userInfo = @{
                     NSLocalizedDescriptionKey: @"Object additional membership information "
                                                 "serialization did fail",
                     NSLocalizedFailureReasonErrorKey: reason,
                 };
 
-                self.parametersError = [NSError errorWithDomain:kPNAPIErrorDomain
-                                                           code:kPNAPIUnacceptableParameters
-                                                       userInfo:errorInformation];
+                self.parametersError = [PNError errorWithDomain:PNAPIErrorDomain
+                                                           code:PNAPIErrorUnacceptableParameters
+                                                       userInfo:userInfo];
             }
-        }
-
-        if (self.parametersError) {
-            break;
         }
 
         [serializedObjects addObject:objectData];

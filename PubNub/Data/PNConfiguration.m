@@ -1,43 +1,24 @@
-#import <Foundation/Foundation.h>
-#import <Security/Security.h>
-#import "PNPrivateStructures.h"
-#import "PNKeychain+Private.h"
-#import "PNKeychainStorage.h"
-#import "PNDataStorage.h"
-#if TARGET_OS_IOS
-    #import <UIKit/UIKit.h>
-#elif TARGET_OS_OSX
-    #import <IOKit/IOKitLib.h>
-    #include <sys/socket.h>
-    #include <sys/sysctl.h>
-    #include <net/if.h>
-    #include <net/if_dl.h>
-#endif // TARGET_OS_OSX
 #import "PNConfiguration+Private.h"
+#import <Foundation/Foundation.h>
+#import "PNPrivateStructures.h"
 #import "PNConstants.h"
-
-
-#pragma mark Static
-
-/// Device `"identifier"` store key in in-memory or Keychain storage.
-NSString * const kPNConfigurationDeviceIDKey = @"PNConfigurationDeviceID";
-
-/// Configured user `identifier` store key in in-memory or Keychain storage.
-NSString * const kPNConfigurationUserIDKey = @"PNConfigurationUUID";
 
 
 NS_ASSUME_NONNULL_BEGIN
 
-#pragma mark - Protected interface declaration
+#pragma mark Private interface declaration
 
 /// **PubNub** client configuration wrapper private extension.
 @interface PNConfiguration () <NSCopying>
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
-@property (nonatomic, nullable, copy) NSString *authToken;
-@property (nonatomic, copy) NSString *deviceID;
+@property(copy, nullable, nonatomic) NSString *filterExpression;
+@property(copy, nullable, nonatomic) NSString *authToken;
+@property(copy, nonatomic) NSString *deviceID
+    DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with next major update. Unique value will "
+                             "be generated for each PubNub client instance.");
 
 
 #pragma mark - Initialization and Configuration
@@ -56,47 +37,6 @@ NS_ASSUME_NONNULL_BEGIN
                       subscribeKey:(NSString *)subscribeKey
                             userID:(NSString *)userID;
 
-
-#pragma mark - Storage
-
-/// Migrate previously stored client data in default storage to new one (identifier-based storage).
-///
-/// - Parameter identifier: Unique identifier of storage to which information should be moved from default storage.
-- (void)migrateDefaultToStorageWithIdentifier:(NSString *)identifier;
-
-
-#pragma mark - Helpers
-
-/// Fetch unique device identifier from keychain or generate new one.
-///
-/// - Returns: Unique device identifier which depends on platform for which client has been compiled.
-///
-/// - Since: 4.0.2
-- (nullable NSString *)uniqueDeviceIdentifier;
-
-/// Extract unique identifier for current platform.
-///
-/// - Returns: Unique device identifier which depends on platform for which client has been compiled.
-///
-/// - Since: 4.1.1
-- (nullable NSString *)generateUniqueDeviceIdentifier;
-
-#if TARGET_OS_OSX
-/// Try to fetch device serial number information.
-///
-/// - Returns: Serial number or `nil` in case if it has been lost (there is way for hardware to loose it).
-///
-/// - Since: 4.0.2
-- (nullable NSString *)serialNumber;
-
-/// Try to receive MAC address for any current interfaces.
-///
-/// - Returns: Network interface MAC address.
-///
-/// - Since: 4.0.2
-- (nullable NSString *)macAddress;
-#endif // TARGET_OS_OSX
-
 #pragma mark -
 
 
@@ -110,7 +50,7 @@ NS_ASSUME_NONNULL_END
 @implementation PNConfiguration
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
 - (void)setPresenceHeartbeatValue:(NSInteger)presenceHeartbeatValue {
   _presenceHeartbeatValue = presenceHeartbeatValue < 20 ? 20 : MIN(presenceHeartbeatValue, 300);
@@ -166,11 +106,8 @@ NS_ASSUME_NONNULL_END
         _publishKey = [publishKey copy];
         _subscribeKey = [subscribeKey copy];
         
-        // Call position important, because it migrate stored UUID and device identifier from older storage.
-        [self migrateDefaultToStorageWithIdentifier:publishKey ?: subscribeKey];
-        
         self.userID = userID;
-        _deviceID = [[self uniqueDeviceIdentifier] copy];
+        _deviceID = [NSUUID UUID].UUIDString;
         _subscribeMaximumIdleTime = kPNDefaultSubscribeMaximumIdleTime;
         _nonSubscribeRequestTimeout = kPNDefaultNonSubscribeRequestTimeout;
         _TLSEnabled = kPNDefaultIsTLSEnabled;
@@ -184,7 +121,7 @@ NS_ASSUME_NONNULL_END
         _fileMessagePublishRetryLimit = kPNDefaultFileMessagePublishRetryLimit;
         _maximumMessagesCacheSize = kPNDefaultMaximumMessagesCacheSize;
 #if TARGET_OS_IOS
-        _completeRequestsBeforeSuspension = kPNDefaultShouldCompleteRequestsBeforeSuspension;
+        _completeRequestsBeforeSuspension = YES;
 #endif // TARGET_OS_IOS
     }
     
@@ -193,7 +130,10 @@ NS_ASSUME_NONNULL_END
 
 - (id)copyWithZone:(NSZone *)zone {
     PNConfiguration *configuration = [[PNConfiguration allocWithZone:zone] init];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     configuration.deviceID = [self.deviceID copy];
+#pragma clang diagnostic pop
     configuration.origin = [self.origin copy];
     configuration.publishKey = [self.publishKey copy];
     configuration.subscribeKey = [self.subscribeKey copy];
@@ -201,6 +141,7 @@ NS_ASSUME_NONNULL_END
     configuration.authToken = [self.authToken copy];
     configuration.userID = [self.userID copy];
     configuration.cryptoModule = self.cryptoModule;
+    configuration.filterExpression = [self.filterExpression copy];
     configuration.subscribeMaximumIdleTime = self.subscribeMaximumIdleTime;
     configuration.nonSubscribeRequestTimeout = self.nonSubscribeRequestTimeout;
     configuration->_presenceHeartbeatValue = self.presenceHeartbeatValue;
@@ -219,124 +160,16 @@ NS_ASSUME_NONNULL_END
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     configuration.cipherKey = self.cipherKey;
     configuration.useRandomInitializationVector = self.shouldUseRandomInitializationVector;
-#pragma clang diagnostic pop
-    
-    if (@available(macOS 10.10, iOS 8.0, *)) {
-        configuration.applicationExtensionSharedGroupIdentifier = self.applicationExtensionSharedGroupIdentifier;
-    }
-    
-    configuration.requestMessageCountThreshold = self.requestMessageCountThreshold;
-    configuration.maximumMessagesCacheSize = self.maximumMessagesCacheSize;
+    configuration.applicationExtensionSharedGroupIdentifier = self.applicationExtensionSharedGroupIdentifier;
 #if TARGET_OS_IOS
     configuration.completeRequestsBeforeSuspension = self.shouldCompleteRequestsBeforeSuspension;
 #endif // TARGET_OS_IOS
-    
+#pragma clang diagnostic pop
+    configuration.requestMessageCountThreshold = self.requestMessageCountThreshold;
+    configuration.maximumMessagesCacheSize = self.maximumMessagesCacheSize;
+
     return configuration;
 }
-
-
-#pragma mark - Storage
-
-- (void)migrateDefaultToStorageWithIdentifier:(NSString *)identifier {
-    id<PNKeyValueStorage> storage = [PNDataStorage persistentClientDataWithIdentifier:identifier];
-    PNKeychain *defaultKeychain = PNKeychain.defaultKeychain;
-    
-    NSString *previousUUID = [defaultKeychain valueForKey:kPNConfigurationUserIDKey];
-    
-    if (previousUUID) {
-        [storage syncStoreValue:previousUUID forKey:kPNConfigurationUserIDKey];
-        [defaultKeychain removeValueForKey:kPNConfigurationUserIDKey];
-        
-        NSString *previousDeviceID = [defaultKeychain valueForKey:kPNConfigurationDeviceIDKey];
-        [storage syncStoreValue:previousDeviceID forKey:kPNConfigurationDeviceIDKey];
-        [defaultKeychain removeValueForKey:kPNConfigurationDeviceIDKey];
-    }
-    
-    // Update access properties.
-    if ([storage isKindOfClass:[PNKeychainStorage class]]) {
-        PNKeychainStorage *keychainStorage = (PNKeychainStorage *)storage;
-        NSArray<NSString *> *entryNames = @[
-            kPNConfigurationUserIDKey,
-            kPNConfigurationDeviceIDKey,
-            kPNPublishSequenceDataKey
-        ];
-        
-        [keychainStorage updateEntries:entryNames accessibilityTo:kSecAttrAccessibleAfterFirstUnlock];
-    }
-}
-
-
-#pragma mark - Helpers
-
-- (NSString *)uniqueDeviceIdentifier {
-    NSString *storageIdentifier = self.publishKey ?: self.subscribeKey;
-    id<PNKeyValueStorage> storage = [PNDataStorage persistentClientDataWithIdentifier:storageIdentifier];
-    __block NSString *identifier = nil;
-    
-    [storage batchSyncAccessWithBlock:^{
-        identifier = [storage valueForKey:kPNConfigurationDeviceIDKey];
-        
-        if (!identifier) {
-            identifier = [self generateUniqueDeviceIdentifier];
-            [storage storeValue:identifier forKey:kPNConfigurationDeviceIDKey];
-        }
-    }];
-    
-    return identifier;
-}
-
-- (NSString *)generateUniqueDeviceIdentifier {
-    NSString *identifier = nil;
-#if TARGET_OS_IOS
-    identifier = UIDevice.currentDevice.identifierForVendor.UUIDString;
-#elif TARGET_OS_OSX
-    identifier = [self serialNumber] ?: [self macAddress];
-#endif // TARGET_OS_OSX
-    
-    return identifier ?: [[NSUUID UUID].UUIDString copy];
-}
-
-#if TARGET_OS_OSX
-- (NSString *)serialNumber {
-    NSString *serialNumber = nil;
-    io_service_t service = IOServiceGetMatchingService(kIOMasterPortDefault,
-                                                       IOServiceMatching("IOPlatformExpertDevice"));
-    
-    if (service) {
-        CFTypeRef cfSerialNumber = IORegistryEntryCreateCFProperty(service,
-                                                                   CFSTR(kIOPlatformSerialNumberKey),
-                                                                   kCFAllocatorDefault,
-                                                                   0);
-        
-        if (cfSerialNumber) {
-            serialNumber = [(__bridge NSString *)(cfSerialNumber) copy];
-        }
-        
-        IOObjectRelease(service);
-    }
-    
-    return serialNumber;
-}
-
-- (NSString *)macAddress {
-    NSString *macAddress = nil;
-    size_t length = 0;
-    int mib[6] = {CTL_NET, AF_ROUTE, 0, AF_LINK, NET_RT_IFLIST, if_nametoindex("en0")};
-    
-    if (mib[5] != 0 && sysctl(mib, 6, NULL, &length, NULL, 0) >= 0 && length > 0) {
-        NSMutableData *data = [NSMutableData dataWithLength:length];
-        
-        if (sysctl(mib, 6, [data mutableBytes], &length, NULL, 0) >= 0) {
-            struct sockaddr_dl *address = ([data mutableBytes] + sizeof(struct if_msghdr));
-            unsigned char *mac = (unsigned char *)LLADDR(address);
-            macAddress = [[NSString alloc] initWithFormat:@"%02X:%02X:%02X:%02X:%02X:%02X",
-                          mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]];
-        }
-    }
-    
-    return macAddress;
-}
-#endif // TARGET_OS_OSX
 
 #pragma mark -
 

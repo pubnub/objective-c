@@ -30,6 +30,13 @@
 		<true/>
 		<key>NSExceptionDomains</key>
 		<dict>
+			<key>ps.pndsn.com</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+			</dict>
 			<key>pubsub.pubnub.com</key>
 			<dict>
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>

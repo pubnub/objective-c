@@ -2,76 +2,62 @@
 #import <PubNub/PNStructures.h>
 
 
-
 NS_ASSUME_NONNULL_BEGIN
 
-/**
- * @brief Class which is used to describe error response from server or any non-request related
- * client state changes.
- *
- * @discussion In case of error this instance may contain service response in \c data. Also this
- * object hold additional information about current client state.
- *
- * @author Serhii Mamontov
- * @since 4.0
- * @copyright © 2010-2019 PubNub, Inc.
- */
+#pragma mark Interface declaration
+
+/// General operation (request or client generated) status object.
+///
+/// This is a general object which is used to represent basic information about processing result. Additional
+/// information about error or remote origin response on resource access or data push may be provided by its subclasses.
 @interface PNStatus : PNOperationResult
 
 
-#pragma mark Information
+#pragma mark - Properties
 
-/**
- * @brief One of \b PNStatusCategory fields which provide information about for which status this
- * instance has been created.
- *
- * @return Processing status category.
- */
-@property (nonatomic, readonly, assign) PNStatusCategory category;
+/// Stringify request processing status.
+///
+/// Stringify processing `category` field (one of the `PNStatusCategory` enum).
+@property(strong, nonatomic, readonly) NSString *stringifiedCategory;
 
-/**
- * @brief Whether status object represent error or not.
- *
- * @return \c YES in case if status represent request processing error.
- */
-@property (nonatomic, readonly, assign, getter = isError) BOOL error;
+/// Whether service returned error response or not.
+@property(assign, nonatomic, readonly, getter = isError) BOOL error;
 
-/**
- * @brief Auto-retry configuration information.
- *
- * @discussion In most cases client will keep retry request sending till it won't be successful or
- * canceled with \c -cancelAutomaticRetry method.
- *
- * @return \c YES in case if request which represented with this failed status will be resent
- * automatically or not.
- */
-@property (nonatomic, readonly, assign, getter = willAutomaticallyRetry) BOOL automaticallyRetry;
-
-/**
- * @brief Stringified \c category value.
- *
- * @return Stringified representation for \c category property which store value from
- * \b PNStatusCategory.
- */
-- (NSString *)stringifiedCategory;
+/// Represent request processing status object using `PNStatusCategory` enum fields.
+@property(assign, nonatomic, readonly) PNStatusCategory category;
 
 
-#pragma mark - Recovery
+#pragma mark - Properties (deprecated)
 
-/**
- * @brief Try to resent request associated with processing status object.
- *
- * @discussion Some operations which perform automatic retry attempts will ignore method call.
- */
-- (void)retry;
+/// Request auto-retry configuration information.
+///
+/// > Important: This property always will return `NO` because it is possible to set request retries configuration when
+/// setup **PubNub** client instance.
+@property (nonatomic, readonly, assign, getter = willAutomaticallyRetry) BOOL automaticallyRetry
+    DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with the next major update. Please call "
+                             "endpoint with already created request instance or setup retry configuration during PubNub"
+                             " instance configuration.");
 
-/**
- * @brief For some requests client try to resent them to \b PubNub for processing.
- *
- * @discussion This method can be performed only on operations which respond with \c YES on
- * \c willAutomaticallyRetry property. Other operation types will ignore method call.
- */
-- (void)cancelAutomaticRetry;
+
+#pragma mark - Recovery (deprecated)
+
+/// Try to resent request associated with processing status object.
+///
+/// > Important: This method **won't resend the failed request**. Error status will be created only when all retry
+/// attempts configured when **PubNub** client has been set up will be exhausted. Next retry can be done manually by
+/// sending the same request object which has been used for the initial call.
+- (void)retry 
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with the next major update. Please call "
+                             "endpoint with already created request instance or setup retry configuration during PubNub"
+                             " instance configuration.");
+
+/// For some requests client try to resent them to **PubNub** for processing.
+///
+/// > Important: This method **won't interrupt configured automatic retry**. Retry will stop when all configured retry
+/// attempts will be exhausted.
+- (void)cancelAutomaticRetry
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with the next major update. Retry will stop "
+                             "when all configured retry attempts will be exhausted.");
 
 #pragma mark -
 

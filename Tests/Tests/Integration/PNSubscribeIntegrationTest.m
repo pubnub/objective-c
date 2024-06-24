@@ -30,9 +30,6 @@ NS_ASSUME_NONNULL_END
 
 @implementation PNSubscribeIntegrationTest
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warc-retain-cycles"
-
 
 #pragma mark - VCR configuration
 
@@ -49,10 +46,12 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Setup / Tear down
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-retain-cycles"
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
 - (PNConfiguration *)configurationForTestCaseWithName:(NSString *)name {
     PNConfiguration *configuration = [super configurationForTestCaseWithName:name];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     configuration.useRandomInitializationVector = [self.name rangeOfString:@"RandomIV"].location != NSNotFound;
     configuration.presenceHeartbeatValue = 20;
     configuration.presenceHeartbeatInterval = 0;
@@ -68,7 +67,6 @@ NS_ASSUME_NONNULL_END
             configuration.cipherKey = @"secret";
         }
     }
-#pragma clang diagnostic pop
 
     self.initializedClientsCount++;
     
@@ -93,10 +91,7 @@ NS_ASSUME_NONNULL_END
 - (void)testItShouldSubscribeToSingleChannelAndReceiveConnectedEvent {
     NSString *channel = [self channelWithName:@"test-channel1"];
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addStatusHandlerForClient:self.client
@@ -124,12 +119,9 @@ NS_ASSUME_NONNULL_END
     
     [self subscribeClient:client2 toChannels:@[channel] withPresence:YES];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
-    
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
     XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addPresenceHandlerForClient:client2
@@ -154,10 +146,7 @@ NS_ASSUME_NONNULL_END
 - (void)testItShouldSubscribeToSingleChannelWithPresenceAndReceiveOwnOnlineEvent {
     NSString *channel = [self channelWithName:@"test-channel1"];
     
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addPresenceHandlerForClient:self.client
@@ -186,10 +175,7 @@ NS_ASSUME_NONNULL_END
     NSArray<NSString *> *channels = [self channelsWithNames:@[@"test-channel1", @"test-channel2"]];
     NSSet *subscriptionChannelsSet = [NSSet setWithArray:channels];
     
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addStatusHandlerForClient:self.client
@@ -220,11 +206,8 @@ NS_ASSUME_NONNULL_END
     [self subscribeClient:client2 toChannels:channels withPresence:YES];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addPresenceHandlerForClient:client2
@@ -257,11 +240,8 @@ NS_ASSUME_NONNULL_END
     [self subscribeClient:client2 toChannels:channels withPresence:NO];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToNotCompleteIn:self.falseTestCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addPresenceHandlerForClient:client2
@@ -305,10 +285,7 @@ NS_ASSUME_NONNULL_END
     NSArray<NSString *> *channels = [self channelsWithNames:@[@"test-channel1", @"test-channel2"]];
     __block NSUInteger reportedOnlineCount = 0;
     
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addPresenceHandlerForClient:self.client
@@ -341,10 +318,7 @@ NS_ASSUME_NONNULL_END
         channel: @{ @"channel1-state": [self randomizedValuesWithValues:@[@"channel-1-random-value"]] }
     };
     
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addStatusHandlerForClient:self.client
@@ -386,10 +360,7 @@ NS_ASSUME_NONNULL_END
         channels.lastObject: @{ @"channel2-state": [self randomizedValuesWithValues:@[@"channel-2-random-value"]] }
     };
     
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addStatusHandlerForClient:self.client
@@ -484,10 +455,7 @@ NS_ASSUME_NONNULL_END
     [self addChannels:@[channel] toChannelGroup:channelGroup usingClient:nil];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addStatusHandlerForClient:self.client
@@ -505,7 +473,7 @@ NS_ASSUME_NONNULL_END
         
         [self.client subscribeToChannelGroups:@[channelGroup] withPresence:NO];
     }];
-    
+
     [self removeChannelGroup:channelGroup usingClient:nil];
 }
 
@@ -520,11 +488,8 @@ NS_ASSUME_NONNULL_END
     [self subscribeClient:client2 toChannelGroups:@[channelGroup] withPresence:YES];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addPresenceHandlerForClient:client2
@@ -544,7 +509,7 @@ NS_ASSUME_NONNULL_END
         
         [client1 subscribeToChannelGroups:@[channelGroup] withPresence:NO];
     }];
-    
+
     [self removeChannelGroup:channelGroup usingClient:client1];
 }
 
@@ -556,10 +521,7 @@ NS_ASSUME_NONNULL_END
     [self addChannels:@[channel] toChannelGroup:channelGroup usingClient:nil];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addPresenceHandlerForClient:self.client
@@ -581,7 +543,7 @@ NS_ASSUME_NONNULL_END
         
         [self.client subscribeToChannelGroups:@[channelGroup] withPresence:YES];
     }];
-    
+
     [self removeChannelGroup:channelGroup usingClient:nil];
 }
 
@@ -595,10 +557,7 @@ NS_ASSUME_NONNULL_END
     [self addChannels:@[channels.lastObject] toChannelGroup:channelGroups.lastObject usingClient:nil];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addStatusHandlerForClient:self.client
@@ -617,7 +576,7 @@ NS_ASSUME_NONNULL_END
         
         [self.client subscribeToChannelGroups:channelGroups withPresence:NO];
     }];
-    
+
     [self removeChannelGroup:channelGroups.firstObject usingClient:nil];
     [self removeChannelGroup:channelGroups.lastObject usingClient:nil];
 }
@@ -635,11 +594,8 @@ NS_ASSUME_NONNULL_END
     [self subscribeClient:client2 toChannelGroups:channelGroups withPresence:YES];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addPresenceHandlerForClient:client2
@@ -661,7 +617,7 @@ NS_ASSUME_NONNULL_END
         
         [client1 subscribeToChannelGroups:channelGroups withPresence:NO];
     }];
-    
+
     [self removeChannelGroup:channelGroups.firstObject usingClient:client1];
     [self removeChannelGroup:channelGroups.lastObject usingClient:client1];
 }
@@ -676,10 +632,7 @@ NS_ASSUME_NONNULL_END
     [self addChannels:@[channels.lastObject] toChannelGroup:channelGroups.lastObject usingClient:nil];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addPresenceHandlerForClient:self.client
@@ -701,7 +654,7 @@ NS_ASSUME_NONNULL_END
         
         [self.client subscribeToChannelGroups:channelGroups withPresence:YES];
     }];
-    
+
     [self removeChannelGroup:channelGroups.firstObject usingClient:nil];
     [self removeChannelGroup:channelGroups.lastObject usingClient:nil];
 }
@@ -720,10 +673,7 @@ NS_ASSUME_NONNULL_END
     [self addChannels:@[channel] toChannelGroup:channelGroup usingClient:nil];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addStatusHandlerForClient:self.client
@@ -753,7 +703,7 @@ NS_ASSUME_NONNULL_END
             handler();
         }];
     }];
-    
+
     [self removeChannelGroup:channelGroup usingClient:nil];
 }
 
@@ -777,10 +727,7 @@ NS_ASSUME_NONNULL_END
     [self addChannels:@[channels.lastObject] toChannelGroup:channelGroups.lastObject usingClient:nil];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addStatusHandlerForClient:self.client
@@ -814,7 +761,7 @@ NS_ASSUME_NONNULL_END
                 handler();
             });
     }];
-    
+
     [self removeChannelGroup:channelGroups.firstObject usingClient:nil];
     [self removeChannelGroup:channelGroups.lastObject usingClient:nil];
 }
@@ -845,7 +792,7 @@ NS_ASSUME_NONNULL_END
     NSString *channelGroup = [self channelGroupWithName:@"test-channel-group1"];
     __block NSUInteger retriedCount = 0;
     
-    
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addStatusHandlerForClient:self.client
                               withBlock:^(PubNub *client, PNSubscribeStatus *status, BOOL *remove) {
@@ -881,10 +828,7 @@ NS_ASSUME_NONNULL_END
     [self addChannels:channels toChannelGroup:channelGroup usingClient:nil];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addStatusHandlerForClient:self.client
@@ -921,10 +865,7 @@ NS_ASSUME_NONNULL_END
     [self subscribeClient:client2 toChannels:channels withPresence:NO];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(self.client.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToNotCompleteIn:self.falseTestCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addPresenceHandlerForClient:client2
@@ -1505,12 +1446,9 @@ NS_ASSUME_NONNULL_END
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertNotNil(client1.currentConfiguration.cipherKey);
     XCTAssertNotNil(client2.currentConfiguration.cipherKey);
     XCTAssertEqualObjects(client1.currentConfiguration.cipherKey, client2.currentConfiguration.cipherKey);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2
@@ -1541,14 +1479,11 @@ NS_ASSUME_NONNULL_END
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertTrue(client1.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertTrue(client2.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertNotNil(client1.currentConfiguration.cipherKey);
     XCTAssertNotNil(client2.currentConfiguration.cipherKey);
     XCTAssertEqualObjects(client1.currentConfiguration.cipherKey, client2.currentConfiguration.cipherKey);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2
@@ -1576,8 +1511,8 @@ NS_ASSUME_NONNULL_END
     NSString *channel = [self channelWithName:@"test-channel1"];
     PubNub *client1 = [self createPubNubForUser:@"serhii"];
     PubNub *client2 = [self createPubNubForUser:@"david"];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
+
     NSString *encryptedMessage = [PNAES encrypt:publishedMessageData withKey:client1.currentConfiguration.cipherKey];
     
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
@@ -1587,13 +1522,12 @@ NS_ASSUME_NONNULL_END
     XCTAssertNotNil(client1.currentConfiguration.cipherKey);
     XCTAssertNotNil(client2.currentConfiguration.cipherKey);
     XCTAssertNotEqualObjects(client1.currentConfiguration.cipherKey, client2.currentConfiguration.cipherKey);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addStatusHandlerForClient:client2 withBlock:^(PubNub *client, PNSubscribeStatus *status, BOOL *remove) {
             if (status.operation == PNSubscribeOperation && status.category == PNDecryptionErrorCategory) {
-                PNMessageData *messageData = status.associatedObject;
-                
+                PNSubscribeMessageEventData *messageData = status.associatedObject;
+
                 XCTAssertEqualObjects(messageData.message, encryptedMessage);
                 XCTAssertEqualObjects(messageData.subscription, channel);
                 XCTAssertEqualObjects(messageData.channel, channel);
@@ -1617,7 +1551,7 @@ NS_ASSUME_NONNULL_END
     [self subscribeClient:self.client toChannels:channels withPresence:NO];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
     
-    
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:self.client
                                withBlock:^(PubNub *client, PNMessageResult *message, BOOL *remove) {
@@ -1645,7 +1579,7 @@ NS_ASSUME_NONNULL_END
     NSDictionary *publishedMessage = @{ @"test-message": [self randomizedValuesWithValues:@[@"message"]] };
     __block NSNumber *lastTimetoken = nil;
     
-    
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addStatusHandlerForClient:self.client
                               withBlock:^(PubNub *client, PNSubscribeStatus *status, BOOL *remove) {
@@ -2264,6 +2198,7 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark -
 
-#pragma clang diagnostic pop
 
 @end
+
+#pragma clang diagnostic pop

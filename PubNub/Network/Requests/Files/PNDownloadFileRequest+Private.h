@@ -9,22 +9,22 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PNDownloadFileRequest (Private)
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
 /// Crypto module which should be used for uploaded data _encryption_.
 ///
 /// This property allows setting up data _encryption_ using a different crypto module than the one set during **PubNub**
 /// client instance configuration.
-@property(nonatomic, nullable, strong) id<PNCryptoProvider> cryptoModule;
+@property(strong, nullable, nonatomic) id<PNCryptoProvider> cryptoModule;
 
 /// Unique `file` identifier which has been assigned during `file` upload.
-@property (nonatomic, readonly, copy) NSString *identifier;
+@property(copy, nonatomic, readonly) NSString *identifier;
 
 /// Name of channel from which `file` with `name` should be downloaded.
-@property (nonatomic, readonly, copy) NSString *channel;
+@property(copy, nonatomic, readonly) NSString *channel;
 
 /// Name under which uploaded `file` is stored for `channel`.
-@property (nonatomic, readonly, copy) NSString *name;
+@property(copy, nonatomic, readonly) NSString *name;
 
 #pragma mark -
 

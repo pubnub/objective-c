@@ -5,36 +5,23 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Interface declaration
 
-/**
- * @brief \c Remove \c UUID \c metadata request.
- *
- * @author Serhii Mamontov
- * @version 4.14.0
- * @since 4.14.0
- * @copyright © 2010-2020 PubNub, Inc.
- */
+/// `Remove UUID metadata` request.
 @interface PNRemoveUUIDMetadataRequest : PNBaseObjectsRequest
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
-/**
- * @brief Create and configure \c remove \c UUID \c metadata request.
- *
- * @param uuid Identifier for which \c metadata should be removed.
- * Will be set to current \b PubNub configuration \c uuid if \a nil is set.
- *
- * @return Configured and ready to use \c remove \c UUID \c metadata request.
- */
+/// Create `Remove UUID metadata` request.
+///
+/// - Parameter uuid: Identifier for which `metadata` should be removed. Will be set to current **PubNub** configuration
+/// `uuid` if `nil` is set.
+/// - Returns: Ready to use `remove UUID metadata` request.
 + (instancetype)requestWithUUID:(nullable NSString *)uuid;
 
-/**
- * @brief Forbids request initialization.
- *
- * @throws Interface not available exception and requirement to use provided constructor method.
- *
- * @return Initialized request.
- */
+/// Forbids request initialization.
+///
+/// - Returns: Initialized request.
+/// - Throws: Interface not available exception and requirement to use provided constructor method.
 - (instancetype)init NS_UNAVAILABLE;
 
 #pragma mark -

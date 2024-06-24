@@ -1,5 +1,4 @@
-#import <PubNub/PNStructures.h>
-#import <PubNub/PNRequest.h>
+#import <PubNub/PNBaseRequest.h>
 
 
 #pragma mark Protocols forwarding
@@ -12,25 +11,19 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Interface declaration
 
 /// `Download file` request.
-///
-/// The **PubNub** client will use information from the provided request object to _download_ files from the remote
-/// storage.
-///
-/// - Since: 4.15.0
-/// - Copyright: 2010-2023 PubNub, Inc.
-@interface PNDownloadFileRequest : PNRequest
+@interface PNDownloadFileRequest : PNBaseRequest
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
 /// Arbitrary percent encoded query parameters which should be sent along with original API call.
-@property (nonatomic, nullable, strong) NSDictionary *arbitraryQueryParameters;
+@property(strong, nullable, nonatomic) NSDictionary *arbitraryQueryParameters;
 
 /// Key which should be used for downloaded data _decryption_.
 ///
 /// This property allows setting up data _decryption_ using a different cipher key than the one set during **PubNub**
 /// client instance configuration.
-@property (nonatomic, nullable, copy) NSString *cipherKey;
+@property(copy, nullable, nonatomic) NSString *cipherKey;
 
 /// File store url.
 ///
@@ -38,21 +31,19 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 /// > Note: The file will be downloaded to a temporary location if the value is not set. The location will be passed
 /// to the completion block, and the file will be removed on completion block exit.
-@property (nonatomic, nullable, strong) NSURL *targetURL;
+@property(strong, nullable, nonatomic) NSURL *targetURL;
 
 
 #pragma mark - Initialization and configuration
 
-/// Create `file download` request instance.
+/// Create `File download` request instance.
 ///
 /// - Parameters:
 ///   - channel: Name of channel from which `file` with `name` should be downloaded.
 ///   - identifier: Unique `file` identifier which has been assigned during `file` upload.
 ///   - name: Name under which uploaded `file` is stored for `channel`.
-/// - Returns: Initialized `file download` request.
-+ (instancetype)requestWithChannel:(NSString *)channel
-                        identifier:(NSString *)identifier
-                              name:(NSString *)name;
+/// - Returns: Ready to use `file download` request.
++ (instancetype)requestWithChannel:(NSString *)channel identifier:(NSString *)identifier name:(NSString *)name;
 
 /// Forbids request initialization.
 ///

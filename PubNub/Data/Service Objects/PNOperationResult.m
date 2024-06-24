@@ -1,50 +1,57 @@
 #import "PNOperationResult+Private.h"
 #import "PNPrivateStructures.h"
-#import "PNStatus.h"
-#import "PNJSON.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
 
-#pragma mark Protected interface declaration
+#pragma mark Private interface declaration
 
-/// Service response representation object private extension.
-@interface PNOperationResult () <NSCopying>
-
-
-#pragma mark - Information
-
-@property (nonatomic, assign) NSInteger statusCode;
-@property (nonatomic, assign) PNOperationType operation;
-@property (nonatomic, assign, getter = isTLSEnabled) BOOL TLSEnabled;
-@property (nonatomic, assign, getter = isUnexpectedServiceData) BOOL unexpectedServiceData;
-@property (nonatomic, copy) NSString *uuid
-    DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with next major update. Please use `userID` "
-                             "instead.");
-@property (nonatomic, copy) NSString *userID;
-@property (nonatomic, nullable, copy) NSString *authKey;
-@property (nonatomic, copy) NSString *origin;
-@property (nonatomic, nullable, copy) NSURLRequest *clientRequest;
-@property (nonatomic, nullable, copy) NSDictionary<NSString *, id> *serviceData;
+/// General operation (request or client generated) result object private extension.
+@interface PNOperationResult ()
 
 
-#pragma mark - Helpers
+#pragma mark - Properties
 
-/// Create instance copy with additional adjustments on whether service data information should be copied or not.
+/// Processed operation outcome data object.
+@property(strong, nullable, nonatomic) id responseData;
+
+/// Type of operation for which result object has been created.
+@property(assign, nonatomic) PNOperationType operation;
+
+
+#pragma mark - Properties (deprecated)
+
+/// Whether secured connection has been used to send request or not.
+@property(assign, nonatomic, getter = isTLSEnabled) BOOL TLSEnabled
+    DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with the next major update. The actual value"
+                             " can be retrieved from the client configuration object (`PNConfiguration`).");
+
+/// Copy of the original request which has been used to fetch or push data to **PubNub** network.
 ///
-/// - Parameter shouldCopyServiceData: Whether service data should be passed to new copy or not.
-/// - Returns: Receiver's new copy.
-- (id)copyWithServiceData:(BOOL)shouldCopyServiceData;
+/// > Important: This information not available anymore because property has been deprecated.
+@property(copy, nonatomic, nullable) NSURLRequest *clientRequest
+DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with the next major update.");
 
-/// Ensure what passed `serviceData` has required data type (dictionary). If `serviceData` has different data type, it
-/// will be wrapped into dictionary.
+/// Authorisation key / token which is used to get access to protected remote resources.
 ///
-/// If unexpected data type will be passes, object will set corresponding flag, so it will be processed and printed out
-/// to log file for further investigation.
-///
-/// - Parameter serviceData: Reference on data which should be verified and used for resulting object.
-/// - Returns: `Normalized` service data dictionary.
-- (NSDictionary *)normalizedServiceData:(nullable id)serviceData;
+/// Some resources can be protected by **PAM** functionality and access done using this authorisation key.
+@property(copy, nonatomic, nullable) NSString *authKey
+DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with the next major update. The actual value"
+                         " can be retrieved from the client configuration object (`PNConfiguration`).");
+
+/// **PubNub** network host name or IP address against which `request` has been called.
+@property(copy, nullable, nonatomic) NSString *origin
+    DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with the next major update. The actual value"
+                             " can be retrieved from the client configuration object (`PNConfiguration`).");
+
+/// UUID which is currently used by client to identify user in **PubNub** network.
+@property(copy, nullable, nonatomic) NSString *userID
+    DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with the next major update. The actual value"
+                             " can be retrieved from the client configuration object (`PNConfiguration`).");
+
+/// HTTP status code with which `request` completed processing with **PubNub** service.
+@property(assign, nonatomic) NSInteger statusCode
+    DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with the next major update.");
 
 #pragma mark -
 
@@ -54,144 +61,96 @@ NS_ASSUME_NONNULL_BEGIN
 NS_ASSUME_NONNULL_END
 
 
-#pragma mark Interface implementation
+#pragma mark - Interface implementation
 
 @implementation PNOperationResult
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
 - (NSString *)stringifiedOperation {
     return self.operation >= PNSubscribeOperation ? PNOperationTypeStrings[self.operation] : @"Unknown";
 }
 
 
-#pragma mark - Initialization and Configuration
+#pragma mark - Propeties (deprecated)
 
-+ (instancetype)objectForOperation:(PNOperationType)operation
-                 completedWithTask:(NSURLSessionDataTask *)task
-                     processedData:(NSDictionary<NSString *, id> *)processedData 
-                   processingError:(NSError *)error {
-    return [[self alloc] initForOperation:operation
-                        completedWithTask:task
-                            processedData:processedData
-                          processingError:error];
+- (NSString *)uuid {
+    return self.userID;
 }
 
-- (instancetype)initForOperation:(PNOperationType)operation
-               completedWithTask:(NSURLSessionDataTask *)task
-                   processedData:(NSDictionary<NSString *, id> *)processedData 
-                 processingError:(NSError *)__unused error {
-    if ((self = [super init])) {
-        _statusCode = (task ? ((NSHTTPURLResponse *)task.response).statusCode : 200);
-        _operation = operation;
-        _clientRequest = [task.currentRequest copy];
 
-        if ([processedData[@"status"] isKindOfClass:[NSNumber class]]) {
-            NSMutableDictionary *dataForUpdate = [processedData mutableCopy];
-            NSNumber *statusCode = [dataForUpdate[@"status"] copy];
-            [dataForUpdate removeObjectForKey:@"status"];
-            processedData = [dataForUpdate copy];
-            _statusCode = (([statusCode integerValue] > 200) ? [statusCode integerValue] : _statusCode);
-        } else if (processedData && ![processedData isKindOfClass:[NSDictionary class]]) {
-            _unexpectedServiceData = YES;
-            processedData = [self normalizedServiceData:processedData];
-        }
-        _serviceData = [processedData copy];
+#pragma mark - Initialization and Configuration
+
++ (instancetype)objectWithOperation:(PNOperationType)operation response:(id)response {
+    return [[self alloc] initWithOperation:operation response:response];
+}
+
+- (instancetype)initWithOperation:(PNOperationType)operation response:(id)response {
+    if ((self = [super init])) {
+        _responseData = response;
+        _operation = operation;
     }
     
     return self;
 }
 
 - (id)copyWithZone:(NSZone *)zone {
-    return [self copyWithServiceData:YES];
-}
-
-- (instancetype)copyWithMutatedData:(id)data {
-    PNOperationResult *result = [self copyWithServiceData:NO];
-    [result updateData:data];
-    
-    return result;
-}
-
-- (void)updateData:(id)data {
-    _serviceData = [[self normalizedServiceData:data] copy];
-    _unexpectedServiceData = ![_serviceData isEqual:data];
-}
-
-
-#pragma mark - Helpers
-
-- (id)copyWithServiceData:(BOOL)shouldCopyServiceData {
-    PNOperationResult *result = [[self class] new];
-    result.statusCode = self.statusCode;
-    result.operation = self.operation;
-    result.TLSEnabled = self.isTLSEnabled;
+    PNOperationResult *result = [[[self class] allocWithZone:zone] initWithOperation:self.operation
+                                                                            response:self.responseData];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    result.uuid = self.uuid;
-#pragma clang diagnostic pop
+    result.statusCode = self.statusCode;
+    result.TLSEnabled = self.isTLSEnabled;
     result.userID = self.userID;
     result.authKey = self.authKey;
     result.origin = self.origin;
     result.clientRequest = self.clientRequest;
-    if (shouldCopyServiceData) {
-        
-        [result updateData:self.serviceData];
+#pragma clang diagnostic pop
+
+    return self;
+
+}
+
+
+#pragma mark - Misc
+
+- (NSDictionary *)dictionaryRepresentationWithSerializer:(id<PNObjectSerializer>)serializer {
+    id processedData = self.responseData;
+
+    if (serializer) {
+        NSError *err;
+        NSData *serializedData = [serializer dataOfClass:[NSDictionary class] fromObject:processedData withError:&err];
+        NSDictionary *serializedDictionary = [serializer.jsonSerializer JSONObjectWithData:serializedData error:&err];
+        if (serializedDictionary) processedData = serializedDictionary;
     }
-    
-    return result;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    NSMutableDictionary *response = [@{
+        @"Status code": @(self.statusCode),
+        @"Processed data": processedData
+    } mutableCopy];
+
+    return @{@"Operation": PNOperationTypeStrings[self.operation],
+             @"Request": @{
+                 @"Method": self.clientRequest.HTTPMethod ?: @"GET",
+                 @"URL": [self.clientRequest.URL absoluteString] ?: @"null",
+                 @"POST Body size": [self.clientRequest valueForHTTPHeaderField:@"content-length"] ?: @0,
+                 @"Secure": (self.isTLSEnabled ? @"YES" : @"NO"),
+                 @"UUID": (self.uuid?: @"unknown"),
+                 @"Authorization": (self.authKey?: @"not set"),
+                 @"Origin": (self.origin?: @"unknown")
+             },
+             @"Response": response
+    };
+#pragma clang diagnostic pop
 }
 
-- (NSDictionary *)normalizedServiceData:(id)serviceData {
-    NSDictionary *normalizedServiceData = serviceData ?: @{};
-    
-    if (serviceData && ![serviceData isKindOfClass:[NSDictionary class]]) {
-        normalizedServiceData = @{@"information": serviceData};
-    }
-    
-    return normalizedServiceData;
-}
+- (NSString *)stringifiedRepresentationWithSerializer:(id<PNObjectSerializer>)serializer {
+    NSDictionary *dictionary = [self dictionaryRepresentationWithSerializer:serializer];
+    NSData *dictinaryData = [serializer.jsonSerializer dataWithJSONObject:dictionary error:nil];
 
-- (NSMethodSignature *)methodSignatureForSelector:(SEL)__unused selector {
-    return [[self class] instanceMethodSignatureForSelector:@selector(doNothing)];
-}
-
-- (void)forwardInvocation:(NSInvocation *)__unused invocation {
-}
-
-- (void)doNothing {
-}
-
-- (NSDictionary *)dictionaryRepresentation {
-    id processedData = ([self.serviceData mutableCopy]?: @"no data");
-
-    if (self.serviceData[@"envelope"]) {
-        processedData[@"envelope"] = [self.serviceData[@"envelope"] valueForKey:@"dictionaryRepresentation"];
-    }
-    
-    NSMutableDictionary *response = [@{@"Status code": @(self.statusCode),
-                                       @"Processed data": processedData
-                                     } mutableCopy];
-    if (_unexpectedServiceData) response[@"Unexpected"] = @(YES);
-    
-    return @{@"Operation": PNOperationTypeStrings[[self operation]],
-             @"Request": @{@"Method": (self.clientRequest.HTTPMethod ?: @"GET"),
-                           @"URL": ([self.clientRequest.URL absoluteString] ?: @"null"),
-                           @"POST Body size": [self.clientRequest valueForHTTPHeaderField:@"content-length"] ?: @0,
-                           @"Secure": (self.isTLSEnabled ? @"YES" : @"NO"),
-                           @"User ID": (self.userID?: @"unknown"),
-                           @"Authorization": (self.authKey?: @"not set"),
-                           @"Origin": (self.origin?: @"unknown")},
-             @"Response": response};
-}
-
-- (NSString *)stringifiedRepresentation {
-    return [PNJSON JSONStringFrom:[self dictionaryRepresentation] withError:NULL];
-}
-
-- (NSString *)debugDescription {
-    return [[self dictionaryRepresentation] description];
+    return [[NSString alloc] initWithData:dictinaryData encoding:NSUTF8StringEncoding];
 }
 
 #pragma mark -

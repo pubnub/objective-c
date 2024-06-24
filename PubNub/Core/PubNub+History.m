@@ -1,20 +1,12 @@
-/**
- * @author Serhii Mamontov
- * @since 4.0
- * @copyright © 2010-2018 PubNub, Inc.
- */
 #import "PubNub+History.h"
-#import "PNOperationResult+Private.h"
-#import "PNAPICallBuilder+Private.h"
-#import "PNServiceData+Private.h"
+#import "PNBaseOperationData+Private.h"
+#import "PNHistoryFetchData+Private.h"
 #import "PNErrorStatus+Private.h"
-#import "PNRequestParameters.h"
 #import "PubNub+CorePrivate.h"
-#import "PNSubscribeStatus.h"
 #import "PNStatus+Private.h"
-#import "PNHistoryResult.h"
-#import "PNLogMacro.h"
-#import "PNHelpers.h"
+
+// Deprecated
+#import "PNAPICallBuilder+Private.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -26,33 +18,27 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - History audition
 
-/**
- * @brief Allow to fetch events from specified \c channel's history within specified time frame.
- *
- * @param multipleChannels Whether history should be fetched for multiple \c object or not. If set
- *   to \c YES then \c object contain list of channel names for which history should be retrieved.
- * @param object Name of the channel for which events should be pulled out from storage.
- * @param startDate Reference on time token for oldest event starting from which next should be
- *   returned events. Value will be converted to required precision internally.
- * @param endDate Reference on time token for latest event till which events should be pulled out.
- *   Value will be converted to required precision internally.
- * @param limit Maximum number of events which should be returned in response (not more then
- *   \b 100).
- * @param shouldReverseOrder Whether events order in response should be reversed or not.
- * @param shouldIncludeTimeToken Whether event dates (time tokens) should be included in response or
- *   not.
- * @param includeMessageType Whether event type should be included in response or not.
- *   By default set to: \b YES.
- * @param includeUUID Whether event publisher UUID should be included in response or not.
- *   By default set to: \b YES.
- * @param shouldIncludeMessageActions Whether event actions should be included in response or not.
- * @param shouldIncludeMetadata Whether event metadata should be included in response or not.
- * @param queryParameters List arbitrary query parameters which should be sent along with original
- *   API call.
- * @param block History pull completion block.
- *
- * @since 4.15.3
- */
+/// Allow to fetch events from specified `channel`'s history within specified time frame.
+///
+/// - Parameters:
+///   - multipleChannels: Whether history should be fetched for multiple ``object`` or not. If set `YES` then ``object``
+///   contain list of channel names for which history should be retrieved.
+///   - object: Name of the channel for which events should be pulled out from storage.
+///   - startDate: Reference on time token for oldest event starting from which next should be returned events. 
+///   Value will be converted to required precision internally.
+///   - endDate: Reference on time token for latest event till which events should be pulled out.
+///   Value will be converted to required precision internally.
+///   - limit: Maximum number of events which should be returned in response (not more then **100**).
+///   - shouldReverseOrder: Whether events order in response should be reversed or not.
+///   - shouldIncludeTimeToken: Whether event dates (time tokens) should be included in response or not.
+///   - includeMessageType: Whether event type should be included in response or not.
+///   By default set to: `YES`.
+///   - includeUUID: Whether event publisher UUID should be included in response or not.
+///   By default set to: `YES`.
+///   - shouldIncludeMessageActions: Whether event actions should be included in response or not.
+///   - shouldIncludeMetadata: Whether event metadata should be included in response or not.
+///   - queryParameters: List arbitrary query parameters which should be sent along with original API call.
+///   - block History pull completion block.
 - (void)historyForChannels:(BOOL)multipleChannels
                     object:(id)object
                      start:(nullable NSNumber *)startDate
@@ -67,18 +53,14 @@ NS_ASSUME_NONNULL_BEGIN
            queryParameters:(nullable NSDictionary *)queryParameters
             withCompletion:(PNHistoryCompletionBlock)block;
 
-/**
- * @brief Allow to fetch number of messages for specified channels from specific dates (timetokens).
- *
- * @param channels List of channel names for which persist messages count should be fetched.
- * @param timetokens List with timetokens, where each timetoken's position in correspond to target
- *   \c channel location in channel names list.
- * @param queryParameters List arbitrary query parameters which should be sent along with original
- *   API call.
- * @param block Messages count pull completion block.
- *
- * @since 4.8.4
- */
+/// Allow to fetch number of messages for specified channels from specific dates (timetokens).
+///
+/// - Parameters:
+///   - channels: List of channel names for which persist messages count should be fetched.
+///   - timetokens: List with timetokens, where each timetoken's position in correspond to target `channel` location in
+///   channel names list.
+///   - queryParameters: List arbitrary query parameters which should be sent along with original API call.
+///   - block: Messages count pull completion block.
 - (void)messageCountForChannels:(NSArray<NSString *> *)channels
                      timetokens:(nullable NSArray<NSNumber *> *)timetokens
                 queryParameters:(nullable NSDictionary *)queryParameters
@@ -87,20 +69,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - History manipulation
 
-/**
- * @brief Allow to remove events from specified \c channel's history within specified time frame.
- *
- * @param channel Name of the channel from which events should be removed.
- * @param startDate Reference on time token for oldest event starting from which events should be
- *   removed. Value will be converted to required precision internally. If no \c endDate value provided,
- *   will be removed all events till specified \c startDate date (not inclusive).
- * @param endDate Reference on time token for latest event till which events should be removed.
- *   Value will be converted to required precision internally. If no \c startDate value provided, will be
- *   removed all events starting from specified \c endDate date (inclusive).
- * @param block Events remove completion block.
- *
- * @since 4.8.2
- */
+/// Allow to remove events from specified `channel`'s history within specified time frame.
+///
+/// - Parameters:
+///   - channel: Name of the channel from which events should be removed.
+///   - startDate: Reference on time token for oldest event starting from which events should be  removed.
+///   Value will be converted to required precision internally. If no ``endDate`` value provided, will be removed all
+///   events till specified ``startDate`` date (not inclusive).
+///   - endDate: Reference on time token for latest event till which events should be removed. Value will be converted
+///   to required precision internally. If no ``startDate`` value provided, will be removed all events starting from
+///   specified ``endDate`` date (inclusive).
+///   - block: Events remove completion block.
 - (void)deleteMessagesFromChannel:(NSString *)channel
                             start:(nullable NSNumber *)startDate
                               end:(nullable NSNumber *)endDate
@@ -110,16 +89,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Handlers
 
-/**
- * @brief History request results handling and pre-processing before notify to completion blocks
- * (if required at all).
- *
- * @param result Reference on object which represent server useful response data.
- * @param status Reference on object which represent request processing results.
- * @param block  History pull completion block.
- *
- * @since 4.0
- */
+/// History request results handling and pre-processing before notify to completion blocks (if required at all).
+///
+/// - Parameters:
+///   - result: Reference on object which represent server useful response data.
+///   - status: Reference on object which represent request processing results.
+///   - block: History pull completion block.
 - (void)handleHistoryResult:(nullable PNOperationResult *)result
                  withStatus:(nullable PNStatus *)status
                  completion:(PNHistoryCompletionBlock)block;
@@ -137,14 +112,12 @@ NS_ASSUME_NONNULL_END
 @implementation PubNub (History)
 
 
-#pragma mark - API Builder support
+#pragma mark - Message persistence API builder interdace (deprecated)
 
 - (PNHistoryAPICallBuilder * (^)(void))history {
-    
     PNHistoryAPICallBuilder *builder = nil;
-    builder = [PNHistoryAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags, 
+    builder = [PNHistoryAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
                                                                    NSDictionary *parameters) {
-
         NSString *channel = parameters[NSStringFromSelector(@selector(channel))];
         NSArray<NSString*> *channels = parameters[NSStringFromSelector(@selector(channels))];
         NSNumber *limit = parameters[NSStringFromSelector(@selector(limit))];
@@ -180,9 +153,8 @@ NS_ASSUME_NONNULL_END
 }
 
 - (PNDeleteMessageAPICallBuilder * (^)(void))deleteMessage {
-    
     PNDeleteMessageAPICallBuilder *builder = nil;
-    builder = [PNDeleteMessageAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags, 
+    builder = [PNDeleteMessageAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
                                                                          NSDictionary *parameters) {
         NSString *channel = parameters[NSStringFromSelector(@selector(channel))];
         NSNumber *start = parameters[NSStringFromSelector(@selector(start))];
@@ -190,11 +162,7 @@ NS_ASSUME_NONNULL_END
         NSDictionary *queryParam = parameters[@"queryParam"];
         id block = parameters[@"block"];
         
-        [self deleteMessagesFromChannel:channel
-                                  start:start
-                                    end:end
-                        queryParameters:queryParam
-                         withCompletion:block];
+        [self deleteMessagesFromChannel:channel start:start end:end queryParameters:queryParam withCompletion:block];
     }];
     
     return ^PNDeleteMessageAPICallBuilder * {
@@ -203,20 +171,15 @@ NS_ASSUME_NONNULL_END
 }
 
 - (PNMessageCountAPICallBuilder * (^)(void))messageCounts {
-    
     PNMessageCountAPICallBuilder *builder = nil;
     builder = [PNMessageCountAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
                                                                               NSDictionary *parameters) {
-        
         NSArray<NSNumber *> *timetokens = parameters[NSStringFromSelector(@selector(timetokens))];
         NSArray<NSString *> *channels = parameters[NSStringFromSelector(@selector(channels))];
         NSDictionary *queryParam = parameters[@"queryParam"];
         id block = parameters[@"block"];
         
-        [self messageCountForChannels:channels
-                           timetokens:timetokens
-                      queryParameters:queryParam
-                       withCompletion:block];
+        [self messageCountForChannels:channels timetokens:timetokens queryParameters:queryParam withCompletion:block];
     }];
     
     return ^PNMessageCountAPICallBuilder * {
@@ -227,22 +190,56 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Full history
 
+- (void)fetchHistoryWithRequest:(PNHistoryFetchRequest *)userRequest completion:(PNHistoryCompletionBlock)handlerBlock {
+    PNOperationDataParser *responseParser = [self parserWithResult:[PNHistoryResult class] status:[PNErrorStatus class]];
+    PNHistoryCompletionBlock block = [handlerBlock copy];
+    PNParsedRequestCompletionBlock handler;
+
+    NSUInteger defaultMax = !userRequest.includeMessageActions && userRequest.channels.count == 1 ? 100 : 25;
+    NSUInteger maxValue = defaultMax;
+    if (userRequest.max > 0) maxValue = MIN(userRequest.max, defaultMax);
+
+#ifndef PUBNUB_DISABLE_LOGGER
+    PNLogAPICall(self.logger, @"<PubNub::API> History for '%@' channels%@%@ with %@ limit.",
+                 [userRequest.channels componentsJoinedByString:@", "],
+                 (userRequest.start ? [NSString stringWithFormat:@" from %@", userRequest.start] : @""),
+                 (userRequest.end ? [NSString stringWithFormat:@" to %@", userRequest.end] : @""), @(maxValue));
+#endif // PUBNUB_DISABLE_LOGGER
+
+    PNWeakify(self);
+    handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
+                PNOperationDataParseResult<PNHistoryResult *, PNErrorStatus *> *result) {
+        PNStrongify(self);
+
+        if (result.status.isError) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            result.status.retryBlock = ^{
+                [self fetchHistoryWithRequest:userRequest completion:block];
+            };
+#pragma clang diagnostic pop
+        }
+
+        [self handleHistoryResult:result.result withStatus:result.status completion:block];
+    };
+
+    [self performRequest:userRequest withParser:responseParser completion:handler];
+
+}
+
 - (void)historyForChannel:(NSString *)channel withCompletion:(PNHistoryCompletionBlock)block {
-    
     [self historyForChannel:channel start:nil end:nil withCompletion:block];
 }
 
 - (void)historyForChannel:(NSString *)channel
              withMetadata:(BOOL)shouldIncludeMetadata
                completion:(PNHistoryCompletionBlock)block {
-    
     [self historyForChannel:channel withMetadata:shouldIncludeMetadata messageActions:NO completion:block];
 }
 
 - (void)historyForChannel:(NSString *)channel
        withMessageActions:(BOOL)shouldIncludeMessageActions
                completion:(PNHistoryCompletionBlock)block {
-    
     [self historyForChannel:channel
                withMetadata:NO
              messageActions:shouldIncludeMessageActions
@@ -253,7 +250,6 @@ NS_ASSUME_NONNULL_END
              withMetadata:(BOOL)shouldIncludeMetadata
            messageActions:(BOOL)shouldIncludeMessageActions
                completion:(PNHistoryCompletionBlock)block {
-    
     [self historyForChannel:channel
                       start:nil
                         end:nil
@@ -269,7 +265,6 @@ NS_ASSUME_NONNULL_END
                     start:(NSNumber *)startDate
                       end:(NSNumber *)endDate
            withCompletion:(PNHistoryCompletionBlock)block {
-    
     [self historyForChannel:channel start:startDate end:endDate limit:100 withCompletion:block];
 }
 
@@ -278,7 +273,6 @@ NS_ASSUME_NONNULL_END
                       end:(NSNumber *)endDate
           includeMetadata:(BOOL)shouldIncludeMetadata
            withCompletion:(PNHistoryCompletionBlock)block {
-    
     [self historyForChannel:channel
                       start:startDate
                         end:endDate
@@ -292,7 +286,6 @@ NS_ASSUME_NONNULL_END
                       end:(NSNumber *)endDate
     includeMessageActions:(BOOL)shouldIncludeMessageActions
            withCompletion:(PNHistoryCompletionBlock)block {
-    
     [self historyForChannel:channel
                       start:startDate
                         end:endDate
@@ -307,7 +300,6 @@ NS_ASSUME_NONNULL_END
           includeMetadata:(BOOL)shouldIncludeMetadata
     includeMessageActions:(BOOL)shouldIncludeMessageActions
            withCompletion:(PNHistoryCompletionBlock)block {
-    
     [self historyForChannels:NO
                       object:channel
                        start:startDate
@@ -329,7 +321,6 @@ NS_ASSUME_NONNULL_END
                       end:(NSNumber *)endDate
                     limit:(NSUInteger)limit
            withCompletion:(PNHistoryCompletionBlock)block {
-    
     [self historyForChannel:channel
                       start:startDate
                         end:endDate
@@ -346,7 +337,6 @@ NS_ASSUME_NONNULL_END
                       end:(NSNumber *)endDate
          includeTimeToken:(BOOL)shouldIncludeTimeToken
            withCompletion:(PNHistoryCompletionBlock)block {
-    
     [self historyForChannel:channel
                       start:startDate
                         end:endDate
@@ -361,7 +351,6 @@ NS_ASSUME_NONNULL_END
                     limit:(NSUInteger)limit
          includeTimeToken:(BOOL)shouldIncludeTimeToken
            withCompletion:(PNHistoryCompletionBlock)block {
-    
     [self historyForChannel:channel
                       start:startDate
                         end:endDate
@@ -377,7 +366,6 @@ NS_ASSUME_NONNULL_END
                     limit:(NSUInteger)limit
                   reverse:(BOOL)shouldReverseOrder
            withCompletion:(PNHistoryCompletionBlock)block {
-    
     [self historyForChannel:channel
                       start:startDate
                         end:endDate
@@ -394,7 +382,6 @@ NS_ASSUME_NONNULL_END
                   reverse:(BOOL)shouldReverseOrder
          includeTimeToken:(BOOL)shouldIncludeTimeToken
            withCompletion:(PNHistoryCompletionBlock)block {
-    
     [self historyForChannels:NO
                       object:channel
                        start:startDate
@@ -423,227 +410,74 @@ NS_ASSUME_NONNULL_END
            includeMetadata:(NSNumber *)shouldIncludeMetadata
            queryParameters:(NSDictionary *)queryParameters
             withCompletion:(PNHistoryCompletionBlock)block {
-
-    PNRequestParameters *parameters = [PNRequestParameters new];
-    [parameters addQueryParameters:queryParameters];
-
-    if (startDate && endDate && [startDate compare:endDate] == NSOrderedDescending) {
-        NSNumber *_startDate = startDate;
-        startDate = endDate;
-        endDate = _startDate;
-    }
-    
-    if (!limit || limit.unsignedIntValue == 0) {
-        limit = nil;
-    }
-    
-    if (!includeMessageType) {
-        includeMessageType = @YES;
-    }
-    
-    if (!includeUUID) {
-        includeUUID = @YES;
-    }
-    
-    PNOperationType operation = (!multipleChannels ? PNHistoryOperation
-                                                   : PNHistoryForChannelsOperation);
-    
-    if (shouldIncludeMessageActions && shouldIncludeMessageActions.boolValue) {
-        operation = PNHistoryWithActionsOperation;
-    }
-    
-    unsigned int defaultLimit = multipleChannels ? 25 : 100;
-    
-    if (operation == PNHistoryForChannelsOperation && ((NSArray<NSString *> *)object).count == 1) {
-        defaultLimit = 100;
-    }
-    
-    unsigned int limitValue = defaultLimit;
-    
-    if (limit) {
-        limitValue = MIN(limit.unsignedIntValue, defaultLimit);
-    }
-    
-    
-    if (operation == PNHistoryWithActionsOperation) {
-        if (limit) {
-            limitValue = limit.unsignedIntValue;
-        }
-        
-        if (multipleChannels) {
-            NSArray<NSString *> *channels = object;
-            object = channels.count ? channels.firstObject : nil;
-            multipleChannels = NO;
-            
-            if (channels.count > 1) {
-                NSString *reason = @"History can return actions data for a single channel only. "
-                                    "Either pass a single channel or disable the "
-                                    "includeMessageActions flag";
+    PNHistoryFetchRequest *request = [PNHistoryFetchRequest requestWithChannels:multipleChannels ? object : @[object]];
+    request.start = startDate;
+    request.end = endDate;
+    request.max = limit.unsignedIntegerValue;
+    request.reverse = shouldReverseOrder.boolValue;
+    if (includeMessageType) request.includeMessageType = includeMessageType.boolValue;
+    if (includeUUID) request.includeUUID = includeUUID.boolValue;
+    request.includeMessageActions = shouldIncludeMessageActions.boolValue;
+    request.includeMetadata = shouldIncludeMetadata.boolValue;
+    request.arbitraryQueryParameters = queryParameters;
                 
-                @throw [NSException exceptionWithName:@"PNUnacceptableParametersInput"
-                                               reason:reason
-                                             userInfo:nil];
-            }
-        }
-    }
-    
-    if (startDate) {
-        [parameters addQueryParameter:[PNNumber timeTokenFromNumber:startDate].stringValue
-                         forFieldName:@"start"];
-    }
-    
-    if (endDate) {
-        [parameters addQueryParameter:[PNNumber timeTokenFromNumber:endDate].stringValue
-                         forFieldName:@"end"];
-    }
-    
-    if (shouldReverseOrder && shouldReverseOrder.boolValue) {
-        [parameters addQueryParameter:@"true" forFieldName:@"reverse"];
-    }
-    
-    if (shouldIncludeMetadata && shouldIncludeMetadata.boolValue) {
-        [parameters addQueryParameter:@"true" forFieldName:@"include_meta"];
-    }
-    
-    if (operation == PNHistoryWithActionsOperation || multipleChannels) {
-        [parameters addQueryParameter:(includeMessageType.boolValue ? @"true" : @"false")
-                         forFieldName:@"include_message_type"];
-        [parameters addQueryParameter:(includeUUID.boolValue ? @"true" : @"false")
-                         forFieldName:@"include_uuid"];
-    }
-    
-    if (!multipleChannels) {
-        if (limit) {
-            [parameters addQueryParameter:[NSString stringWithFormat:@"%d", limitValue]
-                             forFieldName:(operation == PNHistoryOperation ? @"count" : @"max")];
-        }
-        
-        if (shouldIncludeTimeToken && shouldIncludeTimeToken.boolValue) {
-            [parameters addQueryParameter:@"true" forFieldName:@"include_token"];
-        }
-        
-        NSString *channel = object;
-        
-        if (channel.length) {
-            [parameters addPathComponent:[PNString percentEscapedString:channel]
-                          forPlaceholder:@"{channel}"];
-        }
-        
-        PNLogAPICall(self.logger, @"<PubNub::API> %@ for '%@' channel%@%@ with %@ limit%@.",
-            (shouldReverseOrder && shouldReverseOrder.boolValue ? @"Reversed history" : @"History"),
-            (channel?: @"<error>"),
-            (startDate ? [NSString stringWithFormat:@" from %@", startDate] : @""),
-            (endDate ? [NSString stringWithFormat:@" to %@", endDate] : @""), @(limitValue),
-            (shouldIncludeTimeToken.boolValue ? @" (including: message time tokens" : @""));
-    } else {
-        NSArray<NSString *> *channels = object;
-        
-        if (limit || (channels.count == 1 && operation != PNHistoryWithActionsOperation)) {
-            [parameters addQueryParameter:[NSString stringWithFormat:@"%d", limitValue]
-                             forFieldName:@"max"];
-        }
-        
-        if (channels.count) {
-            [parameters addPathComponent:[PNChannel namesForRequest:channels]
-                          forPlaceholder:@"{channels}"];
-        }
-        
-        PNLogAPICall(self.logger, @"<PubNub::API> History for '%@' channels%@%@ with %@ limit.",
-            (channels != nil ? [channels componentsJoinedByString:@", "] : @"<error>"),
-            (startDate ? [NSString stringWithFormat:@" from %@", startDate] : @""),
-            (endDate ? [NSString stringWithFormat:@" to %@", endDate] : @""), @(limitValue));
-    }
-
-    __weak __typeof(self) weakSelf = self;
-    [self processOperation:operation
-            withParameters:parameters
-           completionBlock:^(PNOperationResult *result, PNStatus *status) {
-               
-        if (status.isError) {
-            status.retryBlock = ^{
-                [weakSelf historyForChannels:multipleChannels
-                                      object:object
-                                       start:startDate
-                                         end:endDate
-                                       limit:limit
-                                     reverse:shouldReverseOrder
-                            includeTimeToken:shouldIncludeTimeToken
-                          includeMessageType:includeMessageType
-                                 includeUUID:includeUUID
-                       includeMessageActions:shouldIncludeMessageActions
-                             includeMetadata:shouldIncludeMetadata
-                             queryParameters:queryParameters
-                              withCompletion:block];
-            };
-        }
-
-        [weakSelf handleHistoryResult:result withStatus:status completion:block];
-    }];
+    [self fetchHistoryWithRequest:request completion:block];
 }
 
 - (void)messageCountForChannels:(NSArray<NSString *> *)channels
                      timetokens:(NSArray<NSNumber *> *)timetokens
                 queryParameters:(NSDictionary *)queryParameters
                  withCompletion:(PNMessageCountCompletionBlock)block {
-    
-    PNRequestParameters *parameters = [PNRequestParameters new];
-    NSUInteger timetokensCount = timetokens.count;
-    NSNumber *timetoken = timetokens.firstObject;
-    
-    [parameters addQueryParameters:queryParameters];
-    
-    if (channels.count && (timetokensCount == 1 || timetokensCount == channels.count)) {
-        [parameters addPathComponent:[PNChannel namesForRequest:channels]
-                      forPlaceholder:@"{channels}"];
-    }
-    
-    if (timetokensCount > 0) {
-        if (timetokensCount == 1) {
-            [parameters addQueryParameter:[PNNumber timeTokenFromNumber:timetoken].stringValue
-                             forFieldName:@"timetoken"];
-        } else {
-            NSMutableArray *pubNubTimetokens = [NSMutableArray arrayWithCapacity:timetokensCount];
-            
-            for (NSNumber *timetoken in timetokens) {
-                [pubNubTimetokens addObject:[PNNumber timeTokenFromNumber:timetoken].stringValue];
-            }
-            
-            [parameters addQueryParameter:[pubNubTimetokens componentsJoinedByString:@","]
-                             forFieldName:@"channelsTimetoken"];
-        }
-    }
-    
-    PNLogAPICall(self.logger, @"<PubNub::API> Messages count fetch for '%@' channels%@%@.",
-        (channels != nil ? [channels componentsJoinedByString:@", "] : @"<error>"),
-        (timetokensCount == 1 ? [NSString stringWithFormat:@" starting from %@", timetoken] : @""),
-        (timetokensCount > 1 ? [NSString stringWithFormat:@" with per-channel starting point %@",
-                                [timetokens componentsJoinedByString:@","]] : @""));
-    
-    __weak __typeof(self) weakSelf = self;
-    [self processOperation:PNMessageCountOperation
-            withParameters:parameters
-           completionBlock:^(PNOperationResult *result, PNStatus *status) {
-
-        if (status.isError) {
-            status.retryBlock = ^{
-                [weakSelf messageCountForChannels:channels
-                                       timetokens:timetokens
-                                  queryParameters:queryParameters
-                                   withCompletion:block];
-            };
-        }
-
-        [weakSelf callBlock:block status:NO withResult:(status ? nil : result) andStatus:status];
-    }];
+    PNHistoryMessagesCountRequest *request = [PNHistoryMessagesCountRequest requestWithChannels:channels
+                                                                                     timetokens:timetokens];
+    request.arbitraryQueryParameters = queryParameters;
+                     
+    [self fetchMessagesCountWithRequest:request completion:block];
 }
 
 #pragma mark - History manipulation
+
+- (void)deleteMessagesWithRequest:(PNHistoryMessagesDeleteRequest *)userRequest 
+                       completion:(PNMessageDeleteCompletionBlock)handleBlock {
+    PNOperationDataParser *responseParser = [self parserWithStatus:[PNAcknowledgmentStatus class]];
+    PNMessageDeleteCompletionBlock block = [handleBlock copy];
+    PNParsedRequestCompletionBlock handler; 
+    
+#ifndef PUBNUB_DISABLE_LOGGER
+    PNLogAPICall(self.logger, @"<PubNub::API> Delete messages from '%@' channel%@%@.",
+                 (userRequest.channel?: @"<error>"),
+                 (userRequest.start 
+                  ? [NSString stringWithFormat:@" %@ %@", userRequest.end ? @"from" : @"till", userRequest.start]
+                  : @""),
+                 (userRequest.end 
+                  ? [NSString stringWithFormat:@" %@ %@", userRequest.start ? @"to" : @"from", userRequest.end]
+                  : @""));
+#endif // PUBNUB_DISABLE_LOGGER
+
+    PNWeakify(self);
+    handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
+                PNOperationDataParseResult<PNAcknowledgmentStatus *, PNAcknowledgmentStatus *> *result) {
+        PNStrongify(self);
+
+        if (result.status.isError) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            result.status.retryBlock = ^{
+                [self deleteMessagesWithRequest:userRequest completion:block];
+            };
+#pragma clang diagnostic pop
+        }
+
+        [self callBlock:block status:YES withResult:nil andStatus:result.status];
+    };
+
+    [self performRequest:userRequest withParser:responseParser completion:handler];
+}
 
 - (void)deleteMessagesFromChannel:(NSString *)channel
                             start:(NSNumber *)startDate
                               end:(NSNumber *)endDate
                    withCompletion:(PNMessageDeleteCompletionBlock)block {
-
     [self deleteMessagesFromChannel:channel
                               start:startDate
                                 end:endDate
@@ -656,57 +490,55 @@ NS_ASSUME_NONNULL_END
                               end:(NSNumber *)endDate
                   queryParameters:(NSDictionary *)queryParameters
                    withCompletion:(PNMessageDeleteCompletionBlock)block {
+    PNHistoryMessagesDeleteRequest *request = [PNHistoryMessagesDeleteRequest requestWithChannel:channel];
+    request.start = startDate;
+    request.end = endDate;
+    request.arbitraryQueryParameters = queryParameters;
+
+    [self deleteMessagesWithRequest:request completion:block];
+}
+
+
+#pragma mark - Messages count
+
+
+- (void)fetchMessagesCountWithRequest:(PNHistoryMessagesCountRequest *)userRequest
+                           completion:(PNMessageCountCompletionBlock)handleBlock {
+    PNOperationDataParser *responseParser = [self parserWithResult:[PNMessageCountResult class]
+                                                            status:[PNErrorStatus class]];
+    PNMessageCountCompletionBlock block = [handleBlock copy];
+    PNParsedRequestCompletionBlock handler; 
     
-    // Swap time frame dates if required.
-    if (startDate && endDate && [startDate compare:endDate] == NSOrderedDescending) {
-        NSNumber *_startDate = startDate;
-        startDate = endDate;
-        endDate = _startDate;
-    }
-    
-    PNRequestParameters *parameters = [PNRequestParameters new];
-    [parameters addQueryParameters:queryParameters];
-    parameters.HTTPMethod = @"DELETE";
-    
-    if (startDate) {
-        [parameters addQueryParameter:[PNNumber timeTokenFromNumber:startDate].stringValue
-                         forFieldName:@"start"];
-    }
-    
-    if (endDate) {
-        [parameters addQueryParameter:[PNNumber timeTokenFromNumber:endDate].stringValue
-                         forFieldName:@"end"];
-    }
-    
-    if (channel.length) {
-        [parameters addPathComponent:[PNString percentEscapedString:channel]
-                      forPlaceholder:@"{channel}"];
-    }
-    
-    PNLogAPICall(self.logger, @"<PubNub::API> Delete messages from '%@' channel%@%@.",
-        (channel?: @"<error>"),
-        (startDate ? [NSString stringWithFormat:@" %@ %@",
-                      endDate ? @"from" : @"till", startDate] : @""),
-        (endDate ? [NSString stringWithFormat:@" %@ %@",
-                    startDate ? @"to" : @"from", endDate] : @""));
-    
-    __weak __typeof(self) weakSelf = self;
-    [self processOperation:PNDeleteMessageOperation
-            withParameters:parameters
-           completionBlock:^(PNStatus *status) {
-               
-        if (status.isError) {
-            status.retryBlock = ^{
-                [weakSelf deleteMessagesFromChannel:channel
-                                              start:startDate
-                                                end:endDate
-                                    queryParameters:queryParameters
-                                     withCompletion:block];
+#ifndef PUBNUB_DISABLE_LOGGER
+    NSUInteger timetokensCount = userRequest.timetokens.count;
+    PNLogAPICall(self.logger, @"<PubNub::API> Messages count fetch for '%@' channels%@%@.",
+                 [userRequest.channels componentsJoinedByString:@", "],
+                 (timetokensCount == 1
+                  ? [NSString stringWithFormat:@" starting from %@", userRequest.timetokens.firstObject]
+                  : @""),
+                 (timetokensCount > 1
+                  ? [NSString stringWithFormat:@" with per-channel starting point %@", [userRequest.timetokens componentsJoinedByString:@","]]
+                  : @""));
+#endif // PUBNUB_DISABLE_LOGGER
+
+    PNWeakify(self);
+    handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
+                PNOperationDataParseResult<PNMessageCountResult *, PNErrorStatus *> *result) {
+        PNStrongify(self);
+
+        if (result.status.isError) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            result.status.retryBlock = ^{
+                [self fetchMessagesCountWithRequest:userRequest completion:block];
             };
+#pragma clang diagnostic pop
         }
-               
-        [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
-    }];
+
+        [self callBlock:block status:NO withResult:result.result andStatus:result.status];
+    };
+
+    [self performRequest:userRequest withParser:responseParser completion:handler];
 }
 
 
@@ -716,24 +548,12 @@ NS_ASSUME_NONNULL_END
                  withStatus:(PNErrorStatus *)status
                  completion:(PNHistoryCompletionBlock)block {
 
-    if (result && (result.serviceData[@"decryptError"] || result.serviceData[@"apiError"])) {
-        PNStatusCategory category = result.serviceData[@"decryptError"] ? PNDecryptionErrorCategory
-                                                                        : PNAccessDeniedCategory;
-        status = [PNErrorStatus statusForOperation:PNHistoryOperation
-                                          category:category
-                               withProcessingError:nil];
-
-        NSMutableDictionary *updatedData = [result.serviceData mutableCopy];
-        [updatedData removeObjectsForKeys:@[@"decryptError", @"apiError", @"envelope"]];
-        
-        if (category == PNDecryptionErrorCategory) {
-            status.associatedObject = [PNHistoryData dataWithServiceResponse:updatedData];
-        }
-        
-        [status updateData:updatedData];
+    if (result.data.decryptError) {
+        status = [PNErrorStatus objectWithOperation:PNHistoryOperation category:PNDecryptionErrorCategory response:nil];
+        status.associatedObject = result.data;
     }
 
-    [self callBlock:block status:NO withResult:(status ? nil : result) andStatus:status];
+    [self callBlock:block status:NO withResult:status ? nil : result andStatus:status];
 }
 
 #pragma mark -

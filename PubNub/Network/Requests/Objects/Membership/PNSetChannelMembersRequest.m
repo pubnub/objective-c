@@ -1,37 +1,30 @@
-/**
- * @author Serhii Mamontov
- * @version 4.14.1
- * @since 4.14.1
- * @copyright © 2010-2020 PubNub, Inc.
- */
+#import "PNSetChannelMembersRequest.h"
 #import "PNBaseObjectsMembershipRequest+Private.h"
 #import "PNBaseObjectsRequest+Private.h"
-#import "PNSetChannelMembersRequest.h"
-#import "PNRequest+Private.h"
+#import "PNBaseRequest+Private.h"
+#import "PNTransportRequest.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
 
-#pragma mark Protected interface declaration
+#pragma mark Private interface declaration
 
+/// `Set channel's members` request private extension.
 @interface PNSetChannelMembersRequest ()
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
-/**
- * @brief Initialize \c set \c channel's members request.
- *
- * @discussion Request will set \c UUID's \c metadata associated with it in context of \c channel.
- *
- * @param channel Name of channel for which members should be added.
- * @param uuids List of \c UUIDs for which \c metadata associated with each of them in context of
- *     \c channel should be set.
- *     Each entry is dictionary with \c channel and \b optional \c custom fields. \c custom should
- *     be dictionary with simple objects: \a NSString and \a NSNumber.
- *
- * @return Initialized and ready to use \c set \c channel's members request.
- */
+/// Initialize `Set channel's members` request.
+///
+///Request will set `UUID's metadata` associated with it in context of `channel`.
+///
+/// - Parameters:
+///   - channel: Name of channel for which members `metadata` should be set.
+///   - uuids: List of `UUIDs` for which `metadata` associated with each of them in context of `channel` should be set.
+///   Each entry is dictionary with `uuid` and **optional** `custom` fields. `custom` should be dictionary with simple
+///   objects: `NSString` and `NSNumber`.
+/// - Returns: Initialized `set channel's members` request.
 - (instancetype)initWithChannel:(NSString *)channel uuids:(NSArray<NSDictionary *> *)uuids;
 
 #pragma mark -
@@ -47,7 +40,7 @@ NS_ASSUME_NONNULL_END
 @implementation PNSetChannelMembersRequest
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
 @dynamic includeFields;
 
@@ -57,7 +50,7 @@ NS_ASSUME_NONNULL_END
 }
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
 + (instancetype)requestWithChannel:(NSString *)channel uuids:(NSArray<NSDictionary *> *)uuids {
     return [[self alloc] initWithChannel:channel uuids:uuids];

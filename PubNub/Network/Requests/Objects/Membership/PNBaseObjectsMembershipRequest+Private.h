@@ -5,15 +5,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Private interface declaration
 
-/**
- * @brief Private \c base request extension to provide access to identifiable instance
- * initialization.
- *
- * @author Serhii Mamontov
- * @version 4.14.0
- * @since 4.14.0
- * @copyright © 2010-2020 PubNub, Inc.
- */
+/// General request for all `App Context Membership / Members` API endpoints private extension.
 @interface PNBaseObjectsMembershipRequest (Private)
 
 

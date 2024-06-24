@@ -5,46 +5,31 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Interface declaration
 
-/**
- * @brief \c Fetch \c channel's members request.
- *
- * @author Serhii Mamontov
- * @version 4.14.1
- * @since 4.14.1
- * @copyright © 2010-2020 PubNub, Inc.
- */
+/// `Fetch channel's members` request.
 @interface PNFetchChannelMembersRequest : PNObjectsPaginatedRequest
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
-/**
- * @brief Bitfield set to fields which should be returned with response.
- *
- * @note Supported keys specified in \b PNChannelMemberFields enum.
- * @note Default value (\B PNChannelMembersTotalCountField) can be reset by setting 0.  
- */
-@property (nonatomic, assign) PNChannelMemberFields includeFields;
+/// Bitfield set to fields which should be returned with response.
+///
+/// > Note: Supported keys specified in **PNChannelMemberFields** enum.
+/// > Note:  Default value (**PNChannelMembersTotalCountField**) can be reset by setting 0.
+@property(assign, nonatomic) PNChannelMemberFields includeFields;
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
-/**
- * @brief Create and configure \c fetch \c channel's members request.
- *
- * @param channel Name of channel for which members list should be fetched.
- *
- * @return Configured and ready to use \c fetch \c channel's members request.
- */
+/// Create `Fetch channel's members` request.
+///
+/// - Parameter channel: Name of channel for which members list should be fetched.
+/// - Returns: Ready to use `fetch channel's members` request.
 + (instancetype)requestWithChannel:(NSString *)channel;
 
-/**
- * @brief Forbids request initialization.
- *
- * @throws Interface not available exception and requirement to use provided constructor method.
- *
- * @return Initialized request.
- */
+/// Forbids request initialization.
+///
+/// - Returns: Initialized request.
+/// - Throws: Interface not available exception and requirement to use provided constructor method.
 - (instancetype)init NS_UNAVAILABLE;
 
 #pragma mark -

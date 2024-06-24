@@ -61,8 +61,8 @@
     self.channel1 = @"bot";
     self.channel2 = @"myCh";
     self.channelGroup1 = @"myChannelGroup";
-    self.pubKey = @"demo";
-    self.subKey = @"demo";
+    self.pubKey = @"pub-c-92e62c76-408a-4ac4-aefc-a1d20a83b2a6";
+    self.subKey = @"sub-c-d0b8e542-12a0-41c4-999f-a2d569dc4255";
     self.authKey = @"myAuthKey";
 
 
@@ -92,15 +92,75 @@
     self.client.logger.maximumNumberOfLogFiles = 10;
     [self.client.logger setLogLevel:PNVerboseLogLevel];
 
+
     // Bind didReceiveMessage, didReceiveStatus, and didReceivePresenceEvent 'listeners' to this delegate
     // just be sure the target has implemented the PNObjectEventListener extension
-    [self.client addListener:self];
-    [self pubNubSetState];
+//    [self.client addListener:self];
+//    [self pubNubSetState];
 }
 
 - (void)tireKicker {
     [self pubNubInit];
+    // public.channel.5
 
+
+    PNHereNowRequest *request = [PNHereNowRequest requestGlobal];
+    request.verbosityLevel = PNHereNowState;
+    [self.client hereNowWithRequest:request completion:^(PNPresenceHereNowResult *result, PNErrorStatus *status) {
+        NSLog(@"~~~~~> RESULT: %@", result);
+        NSLog(@"~~~~~> RESULT DATA: %@", result.data.channels[@"public.channel.5"].uuids.firstObject.uuid);
+        NSLog(@"~~~~~> STATUS: %@", status);
+        if (!status.isError) {
+            // Handle downloaded presence information using:
+            //   `result.data.channels` - dictionary with active channels and presence information on each. Each channel
+            //                          will have next fields: `uuids` - list of subscribers; `occupancy` - number of
+            //                          active subscribers.
+            //                          Each uuids entry has next fields: `uuid` - identifier and `state` if it has been
+            //                          provided.
+            //   `result.data.totalChannels` - total number of active channels.
+            //   `result.data.totalOccupancy` - total number of active subscribers.
+        } else {
+            // Handle presence audit error. Check `category` property to find out possible issue because of which
+            // request did fail.
+        }
+    }];
+
+
+//
+//
+//
+//
+//
+//
+//    PNPublishRequest *request = [PNPublishRequest requestWithChannel:@""];
+//    request.metadata = @{ @"to": @"John Doe" };
+//    request.message = @{ @"Hello": @"world" };
+//
+//    [self.client publishWithRequest:request completion:^(PNPublishStatus *status) {
+//        NSLog(@"~~~~~> STATUS: %@", status);
+//        NSLog(@"~~~~~> ERROR DATA: %@", status.stringifiedCategory);
+//        NSLog(@"~~~~~> TIME: %@", status.data.timetoken);
+//        if (!status.isError) {
+//            // Message successfully published to specified channel. Publish time stored in: `result.data.timetoken`.
+//        } else {
+//            // Handle message publish error. Check `category` property to find out possible issue because of which
+//            // request did fail.
+//        }
+//    }];
+
+
+
+//    NSLog(@"~~~~~=======> 1");
+//    PNListChannelGroupChannelsRequest *request = [PNListChannelGroupChannelsRequest requestWithChannelGroup:@"holla"];
+//    NSLog(@"~~~~~=======> 2: %@", request);
+//
+//    [self.client listChannelsForChannelGroupWithRequest:request
+//                                             completion:^(PNResponse<PNChannelGroupChannels *> *response, PNErrorStatus *status){
+//        NSLog(@"~~~~~=======> 3");
+//    }];
+//    NSLog(@"~~~~~=======> 4");
+
+    return;
 #pragma mark - Time
 
     [self pubNubTime];

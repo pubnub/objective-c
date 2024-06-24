@@ -1,31 +1,24 @@
-/**
- * @author Serhii Mamontov
- * @version 4.14.0
- * @since 4.14.0
- * @copyright © 2010-2019 PubNub, Inc.
- */
-#import "PNBaseObjectsRequest+Private.h"
 #import "PNFetchMembershipsRequest.h"
-#import "PNRequest+Private.h"
+#import "PNBaseObjectsRequest+Private.h"
+#import "PNBaseRequest+Private.h"
+#import "PNTransportRequest.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Protected interface declaration
 
+/// `Fetch UUID memberships` request private extension.
 @interface PNFetchMembershipsRequest ()
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
-/**
- * @brief Initialize \c fetch \c UUID's memberships request.
- *
- * @param uuid Identifier for which memberships in \c channels should be fetched.
- * Will be set to current \b PubNub configuration \c uuid if \a nil is set.
- *
- * @return Initialized and ready to use \c fetch \c UUID's memberships request.
- */
+///Initialize `Fetch UUID's memberships` request.
+///
+/// - Parameter uuid: Identifier for which memberships in `channels` should be fetched. Will be set to current
+/// **PubNub** configuration `uuid` if `nil` is set.
+/// - Returns: Initialized `fetch UUID's memberships` request.
 - (instancetype)initWithUUID:(nullable NSString *)uuid;
 
 #pragma mark -
@@ -41,7 +34,7 @@ NS_ASSUME_NONNULL_END
 @implementation PNFetchMembershipsRequest
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
 @dynamic includeFields;
 
@@ -51,7 +44,7 @@ NS_ASSUME_NONNULL_END
 }
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
 + (instancetype)requestWithUUID:(NSString *)uuid {
     return [[self alloc] initWithUUID:uuid];

@@ -1,31 +1,24 @@
-/**
- * @author Serhii Mamontov
- * @version 4.14.1
- * @since 4.14.1
- * @copyright © 2010-2020 PubNub, Inc.
- */
+#import "PNManageChannelMembersRequest.h"
 #import "PNBaseObjectsMembershipRequest+Private.h"
 #import "PNBaseObjectsRequest+Private.h"
-#import "PNManageChannelMembersRequest.h"
-#import "PNRequest+Private.h"
+#import "PNBaseRequest+Private.h"
+#import "PNTransportRequest.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
 
-#pragma mark Protected interface declaration
+#pragma mark Private interface declaration
 
+/// `Manage channel's memebers` request private extension.
 @interface PNManageChannelMembersRequest ()
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
-/**
- * @brief Initialize \c manage \c channel's members request.
- *
- * @param channel Name of channel for which members list should be updated.
- *
- * @return Initialized and ready to use \c manage \c channel's members request.
- */
+/// Initialize `Manage channel's members` request.
+///
+/// - Parameter channel: Name of channel for which members list should be updated.
+/// - Returns: Initialized `manage channel's members` request.
 - (instancetype)initWithChannel:(NSString *)channel;
 
 #pragma mark -
@@ -41,7 +34,7 @@ NS_ASSUME_NONNULL_END
 @implementation PNManageChannelMembersRequest
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
 @dynamic includeFields;
 
@@ -52,18 +45,16 @@ NS_ASSUME_NONNULL_END
 
 - (void)setSetMembers:(NSArray<NSDictionary *> *)setMembers {
     _setMembers = setMembers;
-
     [self setRelationToObjects:setMembers ofType:@"uuid"];
 }
 
 - (void)setRemoveMembers:(NSArray<NSString *> *)removeMembers {
     _removeMembers = removeMembers;
-    
     [self removeRelationToObjects:removeMembers ofType:@"uuid"];
 }
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
 + (instancetype)requestWithChannel:(NSString *)channel {
     return [[self alloc] initWithChannel:channel];

@@ -1,6 +1,7 @@
 #import "PNSendFileRequest+Private.h"
-#import "PNRequest+Private.h"
-#import "PNErrorCodes.h"
+#import "PNBaseRequest+Private.h"
+#import "PNTransportRequest.h"
+#import "PNError.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -11,22 +12,25 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PNSendFileRequest ()
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
 /// Crypto module which should be used for uploaded data _encryption_.
 ///
 /// This property allows setting up data _encryption_ using a different crypto module than the one set during **PubNub**
 /// client instance configuration.
-@property(nonatomic, nullable, strong) id<PNCryptoProvider> cryptoModule;
+@property(strong, nullable, nonatomic) id<PNCryptoProvider> cryptoModule;
+
+/// Request configuration error.
+@property(strong, nullable, nonatomic) PNError *parametersError;
 
 /// Input stream with data which should be uploaded to remote storage server / service.
-@property (nonatomic, strong) NSInputStream *stream;
+@property(strong, nonatomic) NSInputStream *stream;
 
 /// Size of data which can be read from `stream`.
-@property (nonatomic, assign) NSUInteger size;
+@property(assign, nonatomic) NSUInteger size;
 
 /// Name of channel to which `data` should be uploaded.
-@property (nonatomic, copy) NSString *channel;
+@property(copy, nonatomic) NSString *channel;
 
 
 #pragma mark - Initialization and configuration
@@ -46,7 +50,7 @@ NS_ASSUME_NONNULL_BEGIN
                        fileName:(NSString *)name
                          stream:(nullable NSInputStream *)stream
                            size:(NSUInteger)size
-                          error:(nullable NSError *)error;
+                          error:(nullable PNError *)error;
 
 #pragma mark -
 
@@ -61,18 +65,34 @@ NS_ASSUME_NONNULL_END
 @implementation PNSendFileRequest
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
 - (PNOperationType)operation {
     return PNSendFileOperation;
 }
 
-- (NSString *)httpMethod {
-    return @"POST";
+- (TransportMethod)httpMethod {
+    return TransportPOSTMethod;
+}
+
+- (BOOL)bodyStreamAvailable {
+    return self.stream != nil;
+}
+
+- (NSInputStream *)bodyStream {
+    return self.stream;
+}
+
+- (NSDictionary *)query {
+    NSMutableDictionary *query = [NSMutableDictionary new];
+    
+    if (self.arbitraryQueryParameters.count) [query addEntriesFromDictionary:self.arbitraryQueryParameters];
+    
+    return query.count ? query : nil;
 }
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
 + (instancetype)requestWithChannel:(NSString *)channel fileURL:(NSURL *)url {
     NSURL *fileURL = url.isFileURL ? url : [NSURL fileURLWithPath:url.path];
@@ -82,13 +102,13 @@ NS_ASSUME_NONNULL_END
     NSString *filePath = url.path;
     NSUInteger fileSize = 0;
     BOOL isDirectory = NO;
-    NSError *error = nil;
-    
+    PNError *error = nil;
+
     if (!filePath || ![fileManager fileExistsAtPath:filePath isDirectory:&isDirectory] || isDirectory) {
         NSString *reason = isDirectory ? @"URL points to directory" : @"Target file not found";
         filePath = filePath ?: @"path is missing";
-        error = [NSError errorWithDomain:kPNAPIErrorDomain
-                                    code:kPNAPIUnacceptableParameters
+        error = [PNError errorWithDomain:PNAPIErrorDomain
+                                    code:PNAPIErrorUnacceptableParameters
                                 userInfo:@{
             NSLocalizedDescriptionKey: @"Unable to send file",
             NSLocalizedFailureReasonErrorKey: reason,
@@ -106,13 +126,13 @@ NS_ASSUME_NONNULL_END
 
 + (instancetype)requestWithChannel:(NSString *)channel fileName:(NSString *)name data:(NSData *)data {
     NSInputStream *inputStream = nil;
-    NSError *error = nil;
+    PNError *error = nil;
     
     if (data.length != 0) inputStream = [NSInputStream inputStreamWithData:data];
     else {
         NSString *reason = @"Data object is empty";
-        error = [NSError errorWithDomain:kPNAPIErrorDomain
-                                    code:kPNAPIUnacceptableParameters
+        error = [PNError errorWithDomain:PNAPIErrorDomain
+                                    code:PNAPIErrorUnacceptableParameters
                                 userInfo:@{
             NSLocalizedDescriptionKey: @"Unable to send binary",
             NSLocalizedFailureReasonErrorKey: reason
@@ -126,20 +146,20 @@ NS_ASSUME_NONNULL_END
                           fileName:(NSString *)name
                             stream:(NSInputStream *)stream
                               size:(NSUInteger)size {
-    NSError *error = nil;
-    
+    PNError *error = nil;
+
     if (stream.streamStatus != NSStreamStatusNotOpen) {
         NSString *reason = @"Stream should be closed.";
-        error = [NSError errorWithDomain:kPNAPIErrorDomain
-                                    code:kPNAPIUnacceptableParameters
+        error = [PNError errorWithDomain:PNAPIErrorDomain
+                                    code:PNAPIErrorUnacceptableParameters
                                 userInfo:@{
             NSLocalizedDescriptionKey: @"Unable to send data from stream",
             NSLocalizedFailureReasonErrorKey: reason
         }];
     } else if (size == 0) {
         NSString *reason = @"Unable to send empty data object.";
-        error = [NSError errorWithDomain:kPNAPIErrorDomain
-                                    code:kPNAPIUnacceptableParameters
+        error = [PNError errorWithDomain:PNAPIErrorDomain
+                                    code:PNAPIErrorUnacceptableParameters
                                 userInfo:@{
             NSLocalizedDescriptionKey: @"Unable to send data from stream",
             NSLocalizedFailureReasonErrorKey: reason
@@ -153,7 +173,7 @@ NS_ASSUME_NONNULL_END
                        fileName:(NSString *)name
                          stream:(NSInputStream *)stream
                            size:(NSUInteger)size
-                          error:(NSError *)error {
+                          error:(PNError *)error {
     if ((self = [super init])) {
         self.parametersError = error;
         _channel = [channel copy];
@@ -170,6 +190,13 @@ NS_ASSUME_NONNULL_END
     [self throwUnavailableInitInterface];
 
     return nil;
+}
+
+
+#pragma mark - Prepare
+
+- (PNError *)validate {
+    return self.parametersError;
 }
 
 #pragma mark -

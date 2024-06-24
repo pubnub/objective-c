@@ -5,44 +5,29 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Interface declaration
 
-/**
- * @brief \c Publish \c file \c message request.
- *
- * @author Serhii Mamontov
- * @version 4.15.0
- * @since 4.15.0
- * @copyright © 2010-2020 PubNub, Inc.
- */
+/// `Publish file message` request.
 @interface PNPublishFileMessageRequest : PNBasePublishRequest
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
-/**
- * @brief Unique identifier provided during file upload.
- */
-@property (nonatomic, readonly, copy) NSString *identifier;
+/// Unique identifier provided during file upload.
+@property(copy, nonatomic, readonly) NSString *identifier;
 
-/**
- * @brief Name with which uploaded data has been stored.
- */
-@property (nonatomic, readonly, copy) NSString *filename;
+/// Name with which uploaded data has been stored.
+@property(copy, nonatomic, readonly) NSString *filename;
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
-/**
- * @brief Create and configure \c file \c message \c publish  request.
- *
- * @param channel Name of channel to which \c file \c message should be published.
- * @param identifier Unique identifier provided during file upload.
- * @param filename Name with which uploaded data has been stored.
- *
- * @return Configured and ready to use \c publish \c message request.
- */
-+ (instancetype)requestWithChannel:(NSString *)channel
-                    fileIdentifier:(NSString *)identifier
-                              name:(NSString *)filename;
+/// Create `File message publish` request.
+///
+/// - Parameters:
+///   - channel: Name of channel to which `file message` should be published.
+///   - identifier: Unique identifier provided during file upload.
+///   - filename Name with which uploaded data has been stored.
+/// - Returns: Ready to use `publish message` request.
++ (instancetype)requestWithChannel:(NSString *)channel fileIdentifier:(NSString *)identifier name:(NSString *)filename;
 
 #pragma mark -
 

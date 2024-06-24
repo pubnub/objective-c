@@ -78,7 +78,6 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         PNPublishRequest *request = [PNPublishRequest requestWithChannel:channel];
@@ -92,6 +91,7 @@
             handler();
         }];
     }];
+#pragma clang diagnostic pop
 }
 
 - (void)testItShouldPublishWithRequestAndReceivePublishTimetokenWhenReplicationDisabled {
@@ -102,7 +102,6 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         PNPublishRequest *request = [PNPublishRequest requestWithChannel:channel];
@@ -117,6 +116,7 @@
             handler();
         }];
     }];
+#pragma clang diagnostic pop
 }
 
 - (void)testItShouldPublishWithRequestAndReceivePublishTimetokenWhenStoreDisabled {
@@ -127,7 +127,6 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         PNPublishRequest *request = [PNPublishRequest requestWithChannel:channel];
@@ -142,6 +141,7 @@
             handler();
         }];
     }];
+#pragma clang diagnostic pop
 }
 
 - (void)testItShouldPublishAndReceivePublishTimetoken {
@@ -152,7 +152,6 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [client publish:expectedMessage toChannel:channel withCompletion:^(PNPublishStatus *status) {
@@ -163,6 +162,7 @@
             handler();
         }];
     }];
+#pragma clang diagnostic pop
 }
 
 - (void)testItShouldPublishAndReceiveStatusWithExpectedOperationAndCategory {
@@ -173,7 +173,6 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [client publish:expectedMessage toChannel:channel withCompletion:^(PNPublishStatus *status) {
@@ -184,6 +183,7 @@
             handler();
         }];
     }];
+#pragma clang diagnostic pop
 }
 
 - (void)testItShouldPublishAndNotCrashWhenCompletionBlockIsNil {
@@ -194,7 +194,6 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToNotCompleteIn:self.falseTestCompletionDelay codeBlock:^(dispatch_block_t handler) {
         @try {
@@ -203,6 +202,7 @@
             handler();
         }
     }];
+#pragma clang diagnostic pop
 }
 
 - (void)testItShouldNotPublishAndReceiveBadRequestStatusWhenMessageIsNil {
@@ -213,12 +213,11 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [client publish:expectedMessage toChannel:channel withCompletion:^(PNPublishStatus *status) {
             XCTAssertTrue(status.isError);
-            XCTAssertNotNil(status.data.information);
+            XCTAssertNotNil(status.errorData.information);
             XCTAssertEqual(status.operation, PNPublishOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
             XCTAssertEqual(status.statusCode, 400);
@@ -226,18 +225,20 @@
             handler();
         }];
     }];
+#pragma clang diagnostic pop
 }
 
 - (void)testItShouldNotPublishAndReceiveBadRequestStatusWhenChannelIsNil {
     PubNub *client = [self createPubNubForUser:@"serhii"];
     NSString *expectedMessage = @"Hello there";
     NSString *channel = nil;
-    
-    
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [client publish:expectedMessage toChannel:channel withCompletion:^(PNPublishStatus *status) {
             XCTAssertTrue(status.isError);
-            XCTAssertNotNil(status.data.information);
+            XCTAssertNotNil(status.errorData.information);
             XCTAssertEqual(status.operation, PNPublishOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
             XCTAssertEqual(status.statusCode, 400);
@@ -245,6 +246,7 @@
             handler();
         }];
     }];
+#pragma clang diagnostic pop
 }
 
 - (void)testItShouldPublishWithTTL {
@@ -255,7 +257,6 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         client.publish()
@@ -271,6 +272,7 @@
                 handler();
             });
     }];
+#pragma clang diagnostic pop
 }
 
 - (void)testItShouldPublishWithOutTTLWhenStoreInHistoryDisabled {
@@ -281,7 +283,6 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         client.publish()
@@ -299,6 +300,7 @@
                 handler();
             });
     }];
+#pragma clang diagnostic pop
 }
 
 - (void)testItShouldPublishWithNoReplicationPolicy {
@@ -309,7 +311,6 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         client.publish()
@@ -325,6 +326,7 @@
                 handler();
             });
     }];
+#pragma clang diagnostic pop
 }
 
 - (void)testItShouldPublishNSString {
@@ -339,7 +341,6 @@
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
@@ -354,7 +355,8 @@
             XCTAssertFalse(status.isError);
         }];
     }];
-    
+#pragma clang diagnostic pop
+
     [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
 }
 
@@ -370,7 +372,6 @@
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
@@ -385,7 +386,8 @@
             XCTAssertFalse(status.isError);
         }];
     }];
-    
+#pragma clang diagnostic pop
+
     [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
 }
 
@@ -401,7 +403,6 @@
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
@@ -416,7 +417,8 @@
             XCTAssertFalse(status.isError);
         }];
     }];
-    
+#pragma clang diagnostic pop
+
     [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
 }
 
@@ -432,7 +434,6 @@
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
@@ -447,7 +448,8 @@
             XCTAssertFalse(status.isError);
         }];
     }];
-    
+#pragma clang diagnostic pop
+
     [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
 }
 
@@ -463,7 +465,6 @@
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
@@ -478,7 +479,8 @@
             XCTAssertFalse(status.isError);
         }];
     }];
-    
+#pragma clang diagnostic pop
+
     [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
 }
 
@@ -494,7 +496,6 @@
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
@@ -509,7 +510,8 @@
             XCTAssertFalse(status.isError);
         }];
     }];
-    
+#pragma clang diagnostic pop
+
     [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
 }
 
@@ -525,7 +527,6 @@
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
@@ -541,7 +542,8 @@
             XCTAssertFalse(status.isError);
         }];
     }];
-    
+#pragma clang diagnostic pop
+
     [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
 }
 
@@ -557,7 +559,6 @@
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
@@ -573,7 +574,8 @@
             XCTAssertFalse(status.isError);
         }];
     }];
-    
+#pragma clang diagnostic pop
+
     [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
 }
 
@@ -583,7 +585,9 @@
     PubNub *client = [self createPubNubForUser:@"serhii"];
     __block BOOL retried = NO;
 
-    
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         XCTAssertEqual(expectedMessage.length, 100000);
         
@@ -600,7 +604,8 @@
             }
         }];
     }];
-    
+#pragma clang diagnostic pop
+
     XCTAssertTrue(retried);
 }
 
@@ -616,7 +621,6 @@
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
@@ -631,7 +635,8 @@
             XCTAssertFalse(status.isError);
         }];
     }];
-    
+#pragma clang diagnostic pop
+
     [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
 }
 
@@ -654,7 +659,6 @@
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *receivedMessage, BOOL *shouldRemove) {
@@ -671,7 +675,8 @@
             XCTAssertFalse(status.isError);
         }];
     }];
-    
+#pragma clang diagnostic pop
+
     [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
 }
 
@@ -691,7 +696,6 @@
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertTrue(client1.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertTrue(client2.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *receivedMessage, BOOL *shouldRemove) {
@@ -708,7 +712,8 @@
             XCTAssertFalse(status.isError);
         }];
     }];
-    
+#pragma clang diagnostic pop
+
     [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
 }
 
@@ -728,7 +733,6 @@
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
@@ -746,7 +750,8 @@
             XCTAssertFalse(status.isError);
         }];
     }];
-    
+#pragma clang diagnostic pop
+
     [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
 }
 
@@ -761,7 +766,6 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [client publish:expectedMessage toChannel:channel withCompletion:^(PNPublishStatus *status) {
@@ -781,6 +785,7 @@
             handler();
         }];
     }];
+#pragma clang diagnostic pop
 }
 
 - (void)testItShouldPublishAndFetchEmptyHistoryWhenStoreInHistoryDisabled {
@@ -791,7 +796,6 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [client publish:expectedMessage toChannel:channel storeInHistory:NO
@@ -812,6 +816,7 @@
             handler();
         }];
     }];
+#pragma clang diagnostic pop
 }
 
 
@@ -838,7 +843,6 @@
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
@@ -855,7 +859,8 @@
             XCTAssertFalse(status.isError);
         }];
     }];
-    
+#pragma clang diagnostic pop
+
     [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
 }
 
@@ -873,7 +878,6 @@
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
@@ -890,7 +894,8 @@
             XCTAssertFalse(status.isError);
         }];
     }];
-    
+#pragma clang diagnostic pop
+
     [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
 }
 
@@ -908,7 +913,6 @@
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
@@ -925,7 +929,8 @@
             XCTAssertFalse(status.isError);
         }];
     }];
-    
+#pragma clang diagnostic pop
+
     [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
 }
 
@@ -943,7 +948,6 @@
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
@@ -960,7 +964,8 @@
             XCTAssertFalse(status.isError);
         }];
     }];
-    
+#pragma clang diagnostic pop
+
     [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
 }
 
@@ -978,7 +983,6 @@
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
@@ -995,7 +999,8 @@
             XCTAssertFalse(status.isError);
         }];
     }];
-    
+#pragma clang diagnostic pop
+
     [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
 }
 
@@ -1014,7 +1019,6 @@
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
@@ -1031,7 +1035,8 @@
             XCTAssertFalse(status.isError);
         }];
     }];
-    
+#pragma clang diagnostic pop
+
     [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
 }
 
@@ -1055,7 +1060,6 @@
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
@@ -1072,7 +1076,8 @@
             XCTAssertFalse(status.isError);
         }];
     }];
-    
+#pragma clang diagnostic pop
+
     [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
 }
 
@@ -1096,7 +1101,6 @@
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertTrue(client1.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertTrue(client2.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
@@ -1113,7 +1117,8 @@
             XCTAssertFalse(status.isError);
         }];
     }];
-    
+#pragma clang diagnostic pop
+
     [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
 }
 
@@ -1132,7 +1137,6 @@
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
@@ -1149,7 +1153,8 @@
             XCTAssertFalse(status.isError);
         }];
     }];
-    
+#pragma clang diagnostic pop
+
     [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
 }
 
@@ -1162,7 +1167,6 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [client publish:message toChannel:channel mobilePushPayload:mobilePayload storeInHistory:NO
@@ -1183,6 +1187,7 @@
             handler();
         }];
     }];
+#pragma clang diagnostic pop
 }
 
 - (void)testItShouldPublishCompressedMessageWithMobilePayloadAndFetchMessageFromHistory {
@@ -1196,7 +1201,6 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [client publish:message toChannel:channel mobilePushPayload:mobilePayload storeInHistory:YES
@@ -1218,6 +1222,7 @@
             handler();
         }];
     }];
+#pragma clang diagnostic pop
 }
 
 - (void)testItShouldPublishOnlyWithMobilePayload {
@@ -1233,7 +1238,6 @@
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
@@ -1250,7 +1254,8 @@
             XCTAssertFalse(status.isError);
         }];
     }];
-    
+#pragma clang diagnostic pop
+
     [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
 }
 
@@ -1264,7 +1269,6 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         XCTAssertEqual(expectedMessage.length, 10000);
@@ -1280,6 +1284,7 @@
             handler();
         }];
     }];
+#pragma clang diagnostic pop
 }
 
 - (void)testItShouldPublishCompressedAndFetchEmptyHistoryWhenStoreInHistoryDisabled {
@@ -1290,7 +1295,6 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [client publish:expectedMessage toChannel:channel storeInHistory:NO compressed:YES
@@ -1311,6 +1315,7 @@
             handler();
         }];
     }];
+#pragma clang diagnostic pop
 }
 
 
@@ -1328,7 +1333,6 @@
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
     XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
@@ -1343,7 +1347,8 @@
             XCTAssertFalse(status.isError);
         });
     }];
-    
+#pragma clang diagnostic pop
+
     [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
 }
 
@@ -1358,7 +1363,6 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
-#pragma clang diagnostic pop
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         client.fire()
@@ -1380,6 +1384,7 @@
             handler();
         }];
     }];
+#pragma clang diagnostic pop
 }
 
 
@@ -1391,6 +1396,8 @@
     NSString *expectedSignal = @"Hello there";
     
     
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [client signal:expectedSignal channel:channel withCompletion:^(PNSignalStatus *status) {
             XCTAssertFalse(status.isError);
@@ -1400,6 +1407,7 @@
             handler();
         }];
     }];
+#pragma clang diagnostic pop
 }
 
 - (void)testItShouldSendSignalAndReceiveStatusWithExpectedOperationAndCategory {
@@ -1408,6 +1416,8 @@
     NSNumber *expectedSignal = @2010;
     
     
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [client signal:expectedSignal channel:channel withCompletion:^(PNSignalStatus *status) {
             XCTAssertFalse(status.isError);
@@ -1417,6 +1427,7 @@
             handler();
         }];
     }];
+#pragma clang diagnostic pop
 }
 
 - (void)testItShouldNotSendTooLongSignalMessage {
@@ -1425,7 +1436,9 @@
     NSString *expectedSignal = [@"hello-there" pnt_stringWithLength:200];
     __block BOOL retried = NO;
     
-    
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [client signal:expectedSignal channel:channel withCompletion:^(PNSignalStatus *status) {
             XCTAssertTrue(status.isError);
@@ -1442,7 +1455,8 @@
             }
         }];
     }];
-    
+#pragma clang diagnostic pop
+
     XCTAssertTrue(retried);
 }
 
@@ -1458,6 +1472,8 @@
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
     
     
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addSignalHandlerForClient:client2 withBlock:^(PubNub *client, PNSignalResult *signal, BOOL *shouldRemove) {
             XCTAssertEqualObjects(signal.data.publisher, client1.currentConfiguration.userID);
@@ -1471,7 +1487,8 @@
             XCTAssertFalse(status.isError);
         });
     }];
-    
+#pragma clang diagnostic pop
+
     [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
 }
 
@@ -1486,7 +1503,9 @@
     
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
     
-    
+   
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addSignalHandlerForClient:client2 withBlock:^(PubNub *client, PNSignalResult *signal, BOOL *shouldRemove) {
             XCTAssertEqualObjects(signal.data.publisher, client1.currentConfiguration.userID);
@@ -1500,7 +1519,8 @@
             XCTAssertFalse(status.isError);
         }];
     }];
-    
+#pragma clang diagnostic pop
+
     [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
 }
 
@@ -1513,12 +1533,15 @@
     NSString *expectedMessage = nil;
     
     
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [client sizeOfMessage:expectedMessage toChannel:channel withCompletion:^(NSInteger size) {
             XCTAssertEqual(size, -1);
             handler();
         }];
     }];
+#pragma clang diagnostic pop
 }
 
 - (void)testItShouldHaveNegativeSizeWhenChannelIsNil {
@@ -1527,12 +1550,15 @@
     NSString *channel = nil;
     
     
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [client sizeOfMessage:expectedMessage toChannel:channel withCompletion:^(NSInteger size) {
             XCTAssertEqual(size, -1);
             handler();
         }];
     }];
+#pragma clang diagnostic pop
 }
 
 - (void)testItShouldCalculateNSStringMessageSize {
@@ -1541,26 +1567,32 @@
     NSString *expectedMessage = @"Hello there";
     
     
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [client sizeOfMessage:expectedMessage toChannel:channel withCompletion:^(NSInteger size) {
             XCTAssertEqualWithAccuracy(size, 526, 30);
             handler();
         }];
     }];
+#pragma clang diagnostic pop
 }
 
 - (void)testItShouldCalculateNSNumberMessageSize {
     NSString *channel = [self channelWithName:@"test-channel"];
     PubNub *client = [self createPubNubForUser:@"serhii"];
     NSNumber *expectedMessage = @2010;
-    
-    
+
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [client sizeOfMessage:expectedMessage toChannel:channel withCompletion:^(NSInteger size) {
             XCTAssertEqualWithAccuracy(size, 511, 30);
             handler();
         }];
     }];
+#pragma clang diagnostic pop
 }
 
 - (void)testItShouldCalculateNSDictionaryMessageSize {
@@ -1568,27 +1600,33 @@
     NSDictionary *expectedMessage = @{ @"hello": @"there" };
     PubNub *client = [self createPubNubForUser:@"serhii"];
     
-    
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [client sizeOfMessage:expectedMessage toChannel:channel withCompletion:^(NSInteger size) {
             XCTAssertEqualWithAccuracy(size, 538, 30);
             handler();
         }];
     }];
+#pragma clang diagnostic pop
 }
 
 - (void)testItShouldCalculateNSDictionaryWithNestedCollectionsMessageSize {
     NSDictionary *expectedMessage = @{ @"hello": @[@"there", @{ @"general": @"kenobi" }] };
     NSString *channel = [self channelWithName:@"test-channel"];
     PubNub *client = [self createPubNubForUser:@"serhii"];
-    
-    
+
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [client sizeOfMessage:expectedMessage toChannel:channel withCompletion:^(NSInteger size) {
             XCTAssertEqualWithAccuracy(size, 581, 30);
             handler();
         }];
     }];
+#pragma clang diagnostic pop
 }
 
 - (void)testItShouldCalculateNSArrayMessageSize {
@@ -1597,12 +1635,15 @@
     NSArray *expectedMessage = @[@"hello", @"there"];
     
     
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [client sizeOfMessage:expectedMessage toChannel:channel withCompletion:^(NSInteger size) {
             XCTAssertEqualWithAccuracy(size, 538, 30);
             handler();
         }];
     }];
+#pragma clang diagnostic pop
 }
 
 - (void)testItShouldCalculateNSArrayWithNestedCollectionsMessageSize {
@@ -1611,12 +1652,15 @@
     PubNub *client = [self createPubNubForUser:@"serhii"];
     
     
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [client sizeOfMessage:expectedMessage toChannel:channel withCompletion:^(NSInteger size) {
             XCTAssertEqualWithAccuracy(size, 581, 30);
             handler();
         }];
     }];
+#pragma clang diagnostic pop
 }
 
 - (void)testItShouldCalculateCompressedMessageSize {
@@ -1627,6 +1671,8 @@
     __block NSInteger compressedMessageSize = 0;
     
     
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [client sizeOfMessage:expectedMessage toChannel:channel compressed:YES
                withCompletion:^(NSInteger size) {
@@ -1635,7 +1681,7 @@
             handler();
         }];
     }];
-    
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [client sizeOfMessage:expectedMessage toChannel:channel compressed:YES storeInHistory:YES
                withCompletion:^(NSInteger size) {
@@ -1644,7 +1690,8 @@
             handler();
         }];
     }];
-    
+#pragma clang diagnostic pop
+
     
     XCTAssertEqualWithAccuracy(compressedMessageSize, 617, 30);
     XCTAssertEqual(compressedStorableMessageSize, compressedMessageSize);
@@ -1655,6 +1702,9 @@
     PubNub *client = [self createPubNubForUser:@"serhii"];
     NSString *expectedMessage = @"Hello there";
     
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [client sizeOfMessage:expectedMessage toChannel:channel storeInHistory:YES
                withCompletion:^(NSInteger size) {
@@ -1663,6 +1713,7 @@
             handler();
         }];
     }];
+#pragma clang diagnostic pop
 }
 
 - (void)testItShouldCalculateSizeOfMessageWithMetadata {
@@ -1673,7 +1724,9 @@
     __block NSInteger messageWithMetadataSize = 0;
     __block NSInteger notCompressedMessageWithMetadataSize = 0;
     
-    
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [client sizeOfMessage:expectedMessage toChannel:channel withMetadata:expectedMetadata
                    completion:^(NSInteger size) {
@@ -1691,7 +1744,8 @@
             handler();
         }];
     }];
-    
+#pragma clang diagnostic pop
+
     
     XCTAssertEqualWithAccuracy(messageWithMetadataSize, 1558, 30);
     XCTAssertEqual(notCompressedMessageWithMetadataSize, messageWithMetadataSize);
@@ -1705,6 +1759,9 @@
     PubNub *client = [self createPubNubForUser:@"serhii"];
     NSString *expectedMessage = @"Hello there";
     
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         client.size()
             .message(expectedMessage)
@@ -1717,6 +1774,7 @@
                 handler();
             });
     }];
+#pragma clang diagnostic pop
 }
 
 #pragma mark -

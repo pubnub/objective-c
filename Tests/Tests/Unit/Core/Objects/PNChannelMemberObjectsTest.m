@@ -2,7 +2,6 @@
 * @author Serhii Mamontov
 * @copyright © 2010-2020 PubNub, Inc.
 */
-#import <PubNub/PNRequestParameters.h>
 #import <PubNub/PubNub+CorePrivate.h>
 #import "PNRecordableTestCase.h"
 #import <PubNub/PNHelpers.h>
@@ -41,6 +40,8 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Tests :: Set
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 - (void)testItShouldReturnSetMembersBuilder {
     XCTAssertTrue([self.client.objects().setChannelMembers(@"secret") isKindOfClass:[PNSetChannelMembersAPICallBuilder class]]);
 }
@@ -69,6 +70,7 @@ NS_ASSUME_NONNULL_END
                                                               options:(NSJSONWritingOptions)0
                                                                 error:nil];
     NSString *expectedFilterExpression = [PNString percentEscapedString:filterExpression];
+
 
 
     id clientMock = [self mockForObject:self.client];
@@ -323,6 +325,6 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark -
 
-#pragma clang diagnostic pop
-
 @end
+
+#pragma clang diagnostic pop

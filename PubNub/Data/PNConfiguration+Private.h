@@ -11,6 +11,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Information
 
+/// String representation of filtering expression which should be applied to decide which updates should reach client.
+///
+/// > Warning: If your filter expression is malformed, ``PNEventsListener`` won't receive any messages and presence
+/// events from service (only error status).
+@property(copy, nullable, nonatomic) NSString *filterExpression;
+
 /// Token which is used along with every request to **PubNub** service to identify client user.
 ///
 /// **PubNub** service provide **PAM** (PubNub Access Manager) functionality which allow to specify access rights to
@@ -21,7 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// > Important: If `authToken` is set if till be used instead of `authKey`.
 ///
 /// This property not set by default.
-@property (nonatomic, nullable, copy) NSString *authToken;
+@property(copy, nullable, nonatomic) NSString *authToken;
 
 #pragma mark -
 

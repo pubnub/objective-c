@@ -56,8 +56,5 @@ static BOOL const kPNDefaultShouldKeepTimeTokenOnListChange = YES;
 static BOOL const kPNDefaultShouldTryCatchUpOnSubscriptionRestore = YES;
 static BOOL const kPNDefaultRequestMessageCountThreshold = 0;
 static NSUInteger const kPNDefaultMaximumMessagesCacheSize = 100;
-#if TARGET_OS_IOS
-static BOOL const kPNDefaultShouldCompleteRequestsBeforeSuspension = YES;
-#endif // TARGET_OS_IOS
 
 #endif // PNConstants_h

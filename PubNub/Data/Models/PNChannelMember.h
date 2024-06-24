@@ -1,56 +1,25 @@
-#import <Foundation/Foundation.h>
-
-
-#pragma mark Class forward
-
-@class PNUUIDMetadata;
+#import <PubNub/PNBaseAppContextObject.h>
+#import <PubNub/PNUUIDMetadata.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Interface declaration
 
-/**
- * @brief Object which is used to represent \c chanel \c member.
- *
- * @author Serhii Mamontov
- * @version 4.14.1
- * @since 4.14.1
- * @copyright © 2010-2020 PubNub, Inc.
- */
-@interface PNChannelMember : NSObject
+/// `Channel member` object.
+@interface PNChannelMember : PNBaseAppContextObject
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
-/**
- * @brief \c Metadata associated with \c UUID which is listed in \c channel's members list.
- *
- * @note This property will be set only if \b PNChannelMemberUUIDField has been added to
- * \c includeFields list during request.
- */
-@property (nonatomic, nullable, readonly, strong) PNUUIDMetadata *metadata;
+/// Metadata associated with `UUID` which is listed in `channel`'s members list.
+///
+/// > Note: This property will be set only if **PNChannelMemberUUIDField** has been added to `includeFields` list during
+/// request.
+@property(strong, nonatomic, nullable, readonly) PNUUIDMetadata *metadata;
 
-/**
- * @brief Additional information from \c metadata which has been associated with \c UUID during
- * \c channel \c member \c add requests.
- */
-@property (nonatomic, nullable, readonly, strong) NSDictionary *custom;
-
-/**
- * @brief \c Member data modification date.
- */
-@property (nonatomic, readonly, strong) NSDate *updated;
-
-/**
- * @brief Identifier which is listed in \c channel's members list.
- */
-@property (nonatomic, readonly, copy) NSString *uuid;
-
-/**
- * @brief \c Member object version identifier.
- */
-@property (nonatomic, readonly, copy) NSString *eTag;
+/// Identifier which is listed in `channel`'s members list.
+@property(copy, nonatomic, readonly) NSString *uuid;
 
 #pragma mark -
 

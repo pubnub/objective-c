@@ -1,55 +1,15 @@
-/**
- * @author Serhii Mamontov
- * @version 4.14.1
- * @since 4.14.1
- * @copyright © 2010-2020 PubNub, Inc.
- */
-#import "NSDateFormatter+PNCacheable.h"
-#import "PNUUIDMetadata+Private.h"
-#import "PNChannelMember+Private.h"
+#import "PNChannelMember.h"
+#import <PubNub/PNCodable.h>
+#import "PNBaseAppContextObject+Private.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
 
-#pragma mark Protected interface declaration
+#pragma mark Private interface declaration
 
-@interface PNChannelMember ()
+/// `Channel member` object private extension.
+@interface PNChannelMember () <PNCodable>
 
-
-#pragma mark - Information
-
-/**
- * @brief \c Metadata associated with \c UUID which is listed in \c channel's members list.
- */
-@property (nonatomic, nullable, strong) PNUUIDMetadata *metadata;
-
-/**
- * @brief Additional information from \c metadata which has been associated with \c UUID during
- * \c channel \c member \c add requests.
- */
-@property (nonatomic, nullable, strong) NSDictionary *custom;
-
-/**
- * @brief \c Member data modification date.
- */
-@property (nonatomic, strong) NSDate *updated;
-
-/**
- * @brief \c Member object version identifier.
- */
-@property (nonatomic, copy) NSString *eTag;
-
-
-#pragma mark - Initialization & Configuration
-
-/**
- * @brief Initialize \c member data model.
- *
- * @param metadata \c Metadata which associated with specified \c UUID in context of \c channel.
- *
- * @return Initialized and ready to use \c member representation model.
- */
-- (instancetype)initWithUUIDMetadata:(PNUUIDMetadata *)metadata;
 
 #pragma mark -
 
@@ -64,33 +24,32 @@ NS_ASSUME_NONNULL_END
 @implementation PNChannelMember
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Properties
 
-+ (instancetype)memberFromDictionary:(NSDictionary *)data {
-    NSDateFormatter *formatter = [NSDateFormatter pn_objectsDateFormatter];
-    PNUUIDMetadata *uuidMetadata = [PNUUIDMetadata uuidMetadataFromDictionary:data[@"uuid"]];
-    PNChannelMember *member = [PNChannelMember memberWithUUIDMetadata:uuidMetadata];
-    member.custom = data[@"custom"];
-    member.eTag = data[@"eTag"];
-    
-    if (data[@"updated"]) {
-        member.updated = [formatter dateFromString:data[@"updated"]];
-    }
-    
-    return member;
++ (NSDictionary<NSString *,NSString *> *)codingKeys {
+    return @{ @"metadata": @"uuid" };
 }
 
-+ (instancetype)memberWithUUIDMetadata:(PNUUIDMetadata *)metadata {
-    return [[self alloc] initWithUUIDMetadata:metadata];
++ (NSArray<NSString *> *)ignoredKeys {
+    return @[@"uuid"];
 }
 
-- (instancetype)initWithUUIDMetadata:(PNUUIDMetadata *)metadata {
-    if ((self = [super init])) {
-        _uuid = [metadata.uuid copy];
-        _metadata = metadata;
-    }
+- (NSString *)uuid {
+    return self.metadata.uuid;
+}
 
-    return self;
+
+#pragma mark - Misc
+
+- (NSMutableDictionary *)dictionaryRepresentation {
+    NSMutableDictionary *dictionary = [super dictionaryRepresentation];
+    dictionary[@"uuid"] = [self.metadata dictionaryRepresentation];
+
+    return dictionary;
+}
+
+- (NSString *)debugDescription {
+    return [self dictionaryRepresentation].description;
 }
 
 #pragma mark -

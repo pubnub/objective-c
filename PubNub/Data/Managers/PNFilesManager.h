@@ -61,6 +61,8 @@ NS_ASSUME_NONNULL_BEGIN
          withCryptoModule:(nullable id<PNCryptoProvider>)cryptoModule
                completion:(void(^)(NSURLRequest *request, NSURL * _Nullable location, NSError * _Nullable error))block;
 
+- (void)handleDownloadedFileAtURL:(nullable NSURL *)url withStoreURL:(nullable NSURL *)localURL cryptoModule:(nullable id<PNCryptoProvider>)cryptoModule completion:(void(^)( NSURL * _Nullable location, NSError * _Nullable error))block;
+
 
 #pragma mark - Helpers
 

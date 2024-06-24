@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import <PubNub/PubNub+Subscribe.h>
+#import <PubNub/PubNub+Core.h>
 
 
 #pragma mark Class forward
@@ -10,15 +10,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/**
- * @brief Interface description for classes which would like to be registered for events from data
- * object live feed.
- *
- * @author Serhii Mamontov
- * @version 4.14.0
- * @since 4.14.0
- * @copyright © 2010-2020 PubNub, Inc.
- */
+#pragma mark - Interface declaration
+
+/// Events handler protocol.
+///
+/// Classes which would like to receive real-time updates from PubNub client should implement this protocol.
 @protocol PNEventsListener <NSObject>
 
 
@@ -26,73 +22,59 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Message, Actions, Signals and Events handler callbacks
 
-/**
- * @brief Notify listener about new message which arrived from one of remote data object's live feed
- * on which client subscribed at this moment.
- *
- * @param client \b PubNub client which triggered this callback method call.
- * @param message Instance which store message information in \c data
- * property.
- */
+/// New real-time message callback.
+///
+/// - Parameters:
+///   - client: **PubNub** client which triggered this callback method call.
+///   - message: Instance which store message information in `data` property.
 - (void)client:(PubNub *)client didReceiveMessage:(PNMessageResult *)message;
 
-/**
- * @brief Notify listener about new signal which arrived from one of remote data object's live feed
- * on which client subscribed at this moment.
- *
- * @param client \b PubNub client which triggered this callback method call.
- * @param signal Instance which store signal information in \c data property.
- */
+/// New real-time signal callback.
+///
+/// - Parameters:
+///   - client: **PubNub** client which triggered this callback method call.
+///   - signal: Instance which store signal information in `data` property.
 - (void)client:(PubNub *)client didReceiveSignal:(PNSignalResult *)signal;
 
-/**
- * @brief Notify listener about new \c action which arrived from one of remote data object's live
- * feed on which client subscribed at this moment.
- *
- * @param client \b PubNub client which triggered this callback method call.
- * @param action Instance which store \c action information in \c data property.
- */
+/// New message reaction callback.
+///
+/// - Parameters:
+///   - client: **PubNub** client which triggered this callback method call.
+///   - action: Instance which store `action` information in `data` property.
 - (void)client:(PubNub *)client didReceiveMessageAction:(PNMessageActionResult *)action;
 
-/**
- * @brief Notify listener about new presence events which arrived from one of remote data object's
- * presence live feed on which client subscribed at this moment.
- *
- * @param client \b PubNub client which triggered this callback method call.
- * @param event Instance which store presence event information in \c data property.
- */
+/// Channels' presence change callback.
+///
+/// - Parameters:
+///   - client: **PubNub** client which triggered this callback method call.
+///   - event: Instance which store presence event information in `data` property.
 - (void)client:(PubNub *)client didReceivePresenceEvent:(PNPresenceEventResult *)event;
 
-/**
- * @brief Notify listener about new \c object events which arrived from one of remote data object's
- * live feed on which \c client subscribe at this moment.
- *
- * @param client \b PubNub client which triggered this callback method call.
- * @param event Instance which store information about received event from Objects API use.
- */
+/// App Context object state update callback.
+///
+/// - Parameters:
+///   - client: **PubNub** client which triggered this callback method call.
+///   - event: Instance which store information about received event from Objects API use.
 - (void)client:(PubNub *)client didReceiveObjectEvent:(PNObjectEventResult *)event;
 
-/**
- * @brief Notify listener about new \c file events which arrived from one of remote data object's
- * live feed on which \c client subscribe at this moment.
- *
- * @param client \b PubNub client which triggered this callback method call.
- * @param event Instance which store information about received event from File API use.
- */
+/// File sharing event callback.
+///
+/// - Parameters:
+///   - client: **PubNub** client which triggered this callback method call.
+///   - event: Instance which store information about received event from File API use.
 - (void)client:(PubNub *)client didReceiveFileEvent:(PNFileEventResult *)event;
 
 
 #pragma mark - Status change handler.
 
-/**
- * @brief Notify listener about subscription state changes.
- *
- * @discussion This callback can fire when client tried to subscribe on channels for which it
- * doesn't have access rights or when network went down and client unexpectedly disconnected.
- *
- * @param client Reference on \b PubNub client which triggered this callback method call.
- * @param status  Reference on \b PNStatus instance which store subscriber state information.
- */
+/// Subscription state changes callback.
+///
+/// This callback can fire when client tried to subscribe on channels for which it doesn't have access rights or when
+/// network went down and client unexpectedly disconnected.
+///
+/// - Parameters:
+///   - client: Reference on **PubNub** client which triggered this callback method call.
+///   - status: Reference on ``PNStatus`` instance which store subscriber state information.
 - (void)client:(PubNub *)client didReceiveStatus:(PNStatus *)status;
 
 #pragma mark -
@@ -107,6 +89,7 @@ DEPRECATED_MSG_ATTRIBUTE("This protocol has been deprecated. Please use PNEvents
 @protocol PNObjectEventListener <PNEventsListener>
 
 #pragma mark -
+
 
 @end
 

@@ -1,44 +1,34 @@
-/**
- * @author Serhii Mamontov
- * @since 4.0
- * @copyright © 2010-2018 PubNub, Inc.
- */
 #import "PubNub+State.h"
-#import "PNChannelGroupClientStateResult.h"
-#import "PNClientStateUpdateStatus.h"
-#import "PNAPICallBuilder+Private.h"
-#import "PNClientStateGetResult.h"
-#import "PNRequestParameters.h"
+#import "PNChannelGroupClientStateResult+Private.h"
+#import "PNPresenceUserStateFetchData+Private.h"
+#import "PNChannelClientStateResult+Private.h"
+#import "PNClientStateGetResult+Private.h"
 #import "PubNub+CorePrivate.h"
 #import "PNStatus+Private.h"
-#import "PNConfiguration.h"
-#import "PNLogMacro.h"
-#import "PNHelpers.h"
+
+// Deprecated
+#import "PNAPICallBuilder+Private.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
 
-#pragma mark Protected interface declaration
+#pragma mark Private interface declaration
 
+/// **PubNub** `Presence State` API private extension.
 @interface PubNub (StateProtected)
 
 
 #pragma mark - Client state information manipulation
 
-/**
- * @brief Modify state information for \c uuid on specified remote data object.
- *
- * @param state \a NSDictionary with data which should be bound to \c uuid on channel group.
- * @param uuid Unique user identifier for which state should be bound.
- * @param channels List of the channels which will store provided state information for \c uuid.
- * @param groups List of channel group names which will store provided state information for
- *     \c uuid.
- * @param queryParameters List arbitrary query parameters which should be sent along with original
- *     API call.
- * @param block State modification for user on channel completion block.
- *
- * @since 4.8.2
- */
+/// Modify state information for `uuid` on specified remote data object.
+///
+/// - Parameters:
+///   - state: `NSDictionary` with data which should be bound to `uuid` on channel group.
+///   - uuid: Unique user identifier for which state should be bound.
+///   - channels: List of the channels which will store provided state information for `uuid`.
+///   - groups: List of channel group names which will store provided state information for `uuid`.
+///   - queryParameters: List arbitrary query parameters which should be sent along with original API call.
+///   - block: State modification for user on channel completion block.
 - (void)setState:(nullable NSDictionary<NSString *, id> *)state
                 forUUID:(NSString *)uuid
              onChannels:(nullable NSArray<NSString *> *)channels
@@ -46,20 +36,15 @@ NS_ASSUME_NONNULL_BEGIN
     withQueryParameters:(nullable NSDictionary *)queryParameters
              completion:(nullable PNSetStateCompletionBlock)block;
 
-/**
- * @brief Retrieve state information for \c uuid on specified remote data object.
- *
- * @param uuid Unique user identifier for which state should be retrieved.
- * @param channels List of the channels from which state information for \c uuid will be pulled out.
- * @param groups List of channel group names from which state information for \c uuid will be
- *     pulled out.
- * @param apiCallBuilder Whether API has been called from API call builder or not.
- * @param queryParameters List arbitrary query parameters which should be sent along with original
- *     API call.
- * @param block State audition for user on remote data object completion block.
- *
- * @since 4.8.2
- */
+/// Retrieve state information for `uuid` on specified remote data object.
+///
+/// - Parameters:
+///   - uuid: Unique user identifier for which state should be retrieved.
+///   - channels: List of the channels from which state information for `uuid` will be pulled out.
+///   - groups: List of channel group names from which state information for `uuid` will be pulled out.
+///   - apiCallBuilder: Whether API has been called from API call builder or not.
+///   - queryParameters: List arbitrary query parameters which should be sent along with original API call.
+///   - block: State audition for user on remote data object completion block.
 - (void)stateForUUID:(NSString *)uuid
             onChannels:(nullable NSArray<NSString *> *)channels
                  groups:(nullable NSArray<NSString *> *)groups
@@ -70,45 +55,34 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Handlers
 
-/**
- * @brief Process client state modification request completion and notify observers about results.
- *
- * @param status State modification status instance.
- * @param uuid Unique user identifier for which state should be updated.
- * @param channels List of the channels which will store provided state information for \c uuid.
- * @param groups List of channel group names which will store provided state information for
- *     \c uuid.
- * @param block State modification for user on channel completion block.
- *
- * @since 4.0
- */
+/// Process client state modification request completion and notify observers about results.
+///
+/// - Parameters:
+///   - status: State modification status instance.
+///   - uuid: Unique user identifier for which state should be updated.
+///   - channels: List of the channels which will store provided state information for `uuid`.
+///   - groups: List of channel group names which will store provided state information for `uuid`.
+///   - block: State modification for user on channel completion block.
 - (void)handleSetStateStatus:(PNClientStateUpdateStatus *)status
                      forUUID:(NSString *)uuid
                   atChannels:(nullable NSArray<NSString *> *)channels
                       groups:(nullable NSArray<NSString *> *)groups
               withCompletion:(nullable PNSetStateCompletionBlock)block;
 
-/**
- * @brief  Process client state audition request completion and notify observers about results.
- *
- * @param result Service response results instance.
- * @param status State request status instance.
- * @param uuid Unique user identifier for which state should be retrieved.
- * @param channels List of the channels which will store provided state information for \c uuid.
- * @param groups List of channel group names which will store provided state information for
- *     \c uuid.
- * @param apiCallBuilder Whether processing data which has been received by API call from API call
- *     builder or not.
- * @param block State audition for user on channel completion block.
-
- @since 4.0
- */
-- (void)handleStateResult:(nullable id)result
+///  Process client state audition request completion and notify observers about results.
+///
+///  - Parameters:
+///    - result: Service response results instance.
+///    - status: State request status instance.
+///    - uuid: Unique user identifier for which state should be retrieved.
+///    - channels: List of the channels which will store provided state information for `uuid`.
+///    - groups: List of channel group names which will store provided state information for `uuid`.
+///    - block: State audition for user on channel completion block.
+- (void)handleStateResult:(nullable PNPresenceStateFetchResult *)result
                withStatus:(nullable PNStatus *)status
                   forUUID:(NSString *)uuid
                atChannels:(nullable NSArray<NSString *> *)channels
                    groups:(nullable NSArray<NSString *> *)groups
-              fromBuilder:(BOOL)apiCallBuilder
            withCompletion:(id)block;
 
 #pragma mark - 
@@ -119,23 +93,20 @@ NS_ASSUME_NONNULL_BEGIN
 NS_ASSUME_NONNULL_END
 
 
-#pragma mark Interface implementation
+#pragma mark - Interface implementation
 
 @implementation PubNub (State)
 
 
-#pragma mark - API Builder support
+#pragma mark - Presence API builder interface (deprecated)
 
 - (PNStateAPICallBuilder * (^)(void))state {
-    
     PNStateAPICallBuilder *builder = nil;
-    builder = [PNStateAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags, 
-                                                                 NSDictionary *parameters) {
-                            
-        NSString *uuid = parameters[NSStringFromSelector(@selector(uuid))];
-        NSArray<NSString *> *channels = parameters[NSStringFromSelector(@selector(channels))];
+    builder = [PNStateAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags, NSDictionary *parameters) {
         NSArray<NSString *> *groups = parameters[NSStringFromSelector(@selector(channelGroups))];
+        NSArray<NSString *> *channels = parameters[NSStringFromSelector(@selector(channels))];
         NSDictionary *state = parameters[NSStringFromSelector(@selector(state))];
+        NSString *uuid = parameters[NSStringFromSelector(@selector(uuid))];
         NSDictionary *queryParam = parameters[@"queryParam"];
         id block = parameters[@"block"];
         
@@ -164,11 +135,52 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Client state information manipulation
 
+- (void)setPresenceStateWithRequest:(PNPresenceStateSetRequest *)userRequest
+                         completion:(PNSetStateCompletionBlock)handlerBlock {
+    PNOperationDataParser *responseParser = [self parserWithStatus:[PNClientStateUpdateStatus class]];
+    PNSetStateCompletionBlock block = [handlerBlock copy];
+    PNParsedRequestCompletionBlock handler; 
+
+#ifndef PUBNUB_DISABLE_LOGGER
+    PNLogAPICall(self.logger, @"<PubNub::API> Set %@'s state on%@%@: %@.",
+                 userRequest.userId,
+                 (userRequest.channels.count
+                  ? [NSString stringWithFormat:@" channels (%@)", [userRequest.channels componentsJoinedByString:@","]]
+                  : @""),
+                 (userRequest.channelGroups.count
+                  ? [NSString stringWithFormat:@" %@channel groups (%@)", userRequest.channels.count ? @"and " : @"", [userRequest.channelGroups componentsJoinedByString:@","]]
+                  : @""),
+                 userRequest.state);
+#endif // PUBNUB_DISABLE_LOGGER
+
+    PNWeakify(self);
+    handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
+                PNOperationDataParseResult<PNClientStateUpdateStatus *, PNClientStateUpdateStatus *> *result) {
+        PNStrongify(self);
+
+        if (result.status.isError) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            result.status.retryBlock = ^{
+                [self setPresenceStateWithRequest:userRequest completion:block];
+            };
+#pragma clang diagnostic pop
+        }
+
+        [self handleSetStateStatus:result.status
+                           forUUID:userRequest.userId
+                        atChannels:userRequest.channels
+                            groups:userRequest.channelGroups
+                    withCompletion:block];
+    };
+
+    [self performRequest:userRequest withParser:responseParser completion:handler];
+}
+
 - (void)setState:(NSDictionary<NSString *, id> *)state
            forUUID:(NSString *)uuid
          onChannel:(NSString *)channel
     withCompletion:(PNSetStateCompletionBlock)block {
-    
     NSArray *channels = channel ? @[channel] : nil;
 
     [self setState:state
@@ -183,7 +195,6 @@ NS_ASSUME_NONNULL_END
            forUUID:(NSString *)uuid
     onChannelGroup:(NSString *)group
     withCompletion:(PNSetStateCompletionBlock)block {
-        
     NSArray *groups = group ? @[group] : nil;
 
     [self setState:state
@@ -200,87 +211,65 @@ NS_ASSUME_NONNULL_END
                  groups:(NSArray<NSString *> *)groups
     withQueryParameters:(NSDictionary *)queryParameters
              completion:(PNSetStateCompletionBlock)block {
+    PNPresenceStateSetRequest *request = [PNPresenceStateSetRequest requestWithUserId:uuid];
+    request.arbitraryQueryParameters = queryParameters;
+    request.channelGroups = groups;
+    request.channels = channels;
+    request.state = state;
 
-    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    __weak __typeof(self) weakSelf = self;
-    
-    if (@available(macOS 10.10, iOS 8.0, *)) {
-        if (self.configuration.applicationExtensionSharedGroupIdentifier) {
-            queue = dispatch_get_main_queue();
-        }
-    }
-    
-    // State set retry block.
-    dispatch_block_t retryBlock = ^{
-         [weakSelf setState:state
-                    forUUID:uuid
-                 onChannels:channels
-                     groups:groups
-        withQueryParameters:queryParameters
-                 completion:block];
-    };
-    
-    if ((!channels.count && !groups.count) || !uuid.length) {
-        PNErrorStatus *badRequestStatus = [PNErrorStatus statusForOperation:PNSetStateOperation
-                                                                   category:PNBadRequestCategory
-                                                        withProcessingError:nil];
-
-        badRequestStatus.retryBlock = retryBlock;
-        [self appendClientInformation:badRequestStatus];
-        
-        [self callBlock:block status:YES withResult:nil andStatus:badRequestStatus];
-        return;
-    }
-    
-    dispatch_async(queue, ^{
-        __strong __typeof__(weakSelf) strongSelf = weakSelf;
-        NSString *stateString = [PNJSON JSONStringFrom:state withError:NULL] ?: @"{}";
-        PNRequestParameters *parameters = [PNRequestParameters new];
-
-        [parameters addPathComponent:(channels.count ? [PNChannel namesForRequest:channels] : @",")
-                      forPlaceholder:@"{channel}"];
-        [parameters addQueryParameter:[PNString percentEscapedString:stateString]
-                         forFieldName:@"state"];
-        [parameters addQueryParameters:queryParameters];
-        [parameters addPathComponent:[PNString percentEscapedString:uuid] forPlaceholder:@"{uuid}"];
-        
-        if (groups.count) {
-            [parameters addQueryParameter:[PNChannel namesForRequest:groups]
-                             forFieldName:@"channel-group"];
-        }
-
-        PNLogAPICall(strongSelf.logger, @"<PubNub::API> Set %@'s state on%@%@: %@.", uuid,
-                (channels.count ? [NSString stringWithFormat:@" channels (%@)",
-                                   [channels componentsJoinedByString:@","]] : @""),
-                (groups.count ? [NSString stringWithFormat:@" %@channel groups (%@)",
-                                channels.count ? @"and " : @"",
-                                [groups componentsJoinedByString:@","]] : @""),
-                parameters.query[@"state"]);
-        
-        [strongSelf processOperation:PNSetStateOperation
-                      withParameters:parameters
-                     completionBlock:^(PNStatus *status) {
-                         
-           if (status.isError) {
-               status.retryBlock = retryBlock;
-           }
-
-           [weakSelf handleSetStateStatus:(PNClientStateUpdateStatus *)status
-                                  forUUID:uuid
-                               atChannels:channels
-                                   groups:groups
-                           withCompletion:block];
-       }];
-    });
+    [self setPresenceStateWithRequest:request completion:block];
 }
 
 
 #pragma mark - Client state information audit
 
+- (void)fetchPresenceStateWithRequest:(PNPresenceStateFetchRequest *)userRequest
+                           completion:(PNPresenceStateFetchCompletionBlock)handlerBlock {
+    PNOperationDataParser *responseParser = [self parserWithResult:[PNPresenceStateFetchResult class]
+                                                            status:[PNErrorStatus class]];
+    PNPresenceStateFetchCompletionBlock block = [handlerBlock copy];
+    PNParsedRequestCompletionBlock handler;
+    
+#ifndef PUBNUB_DISABLE_LOGGER
+    PNLogAPICall(self.logger, @"<PubNub::API> State request on %@%@ for %@.",
+                 (userRequest.channels.count
+                  ? [NSString stringWithFormat:@" channels (%@)", [userRequest.channels componentsJoinedByString:@","]]
+                  : @""),
+                 (userRequest.channelGroups.count
+                  ? [NSString stringWithFormat:@" %@channel groups (%@)", userRequest.channels.count ? @"and " : @"",
+                             [userRequest.channelGroups componentsJoinedByString:@","]] 
+                  : @""),
+                 userRequest.userId);
+#endif // PUBNUB_DISABLE_LOGGER
+
+    PNWeakify(self);
+    handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
+                PNOperationDataParseResult<PNPresenceStateFetchResult *, PNErrorStatus *> *result) {
+        PNStrongify(self);
+
+        if (result.status.isError) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            result.status.retryBlock = ^{
+                [self fetchPresenceStateWithRequest:userRequest completion:block];
+            };
+#pragma clang diagnostic pop
+        }
+
+        [self handleStateResult:result.result
+                     withStatus:result.status
+                        forUUID:userRequest.userId
+                     atChannels:userRequest.channels
+                         groups:userRequest.channelGroups
+                 withCompletion:block];
+    };
+
+    [self performRequest:userRequest withParser:responseParser completion:handler];
+}
+
 - (void)stateForUUID:(NSString *)uuid
            onChannel:(NSString *)channel
       withCompletion:(PNChannelStateCompletionBlock)block {
-    
     NSArray *channels = channel ? @[channel] : nil;
     
     [self stateForUUID:uuid
@@ -294,7 +283,6 @@ NS_ASSUME_NONNULL_END
 - (void)stateForUUID:(NSString *)uuid
       onChannelGroup:(NSString *)group
       withCompletion:(PNChannelGroupStateCompletionBlock)block {
-          
     NSArray *groups = group ? @[group] : nil;
     
     [self stateForUUID:uuid
@@ -310,71 +298,26 @@ NS_ASSUME_NONNULL_END
                  groups:(NSArray<NSString *> *)groups
             fromBuilder:(BOOL)apiCallBuilder
     withQueryParameters:(NSDictionary *)queryParameters
-             completion:(id)block {
-    
-    PNRequestParameters *parameters = [PNRequestParameters new];
-    PNOperationType operation = PNGetStateOperation;
-    __weak __typeof(self) weakSelf = self;
+             completion:(id)handlerBlock {
 
-    if (!apiCallBuilder) {
-        operation = groups.count ? PNStateForChannelGroupOperation : PNStateForChannelOperation;
-    }
-    
-    // State fetch retry block.
-    dispatch_block_t retryBlock = ^{
-        [weakSelf stateForUUID:uuid
-                    onChannels:channels
-                        groups:groups
-                   fromBuilder:apiCallBuilder
-           withQueryParameters:queryParameters
-                    completion:block];
-    };
-    
-    if ((!channels.count && !groups.count) || !uuid.length) {
-        PNErrorStatus *badRequestStatus = [PNErrorStatus statusForOperation:operation
-                                                                   category:PNBadRequestCategory
-                                                        withProcessingError:nil];
+    PNPresenceStateFetchRequest *request = [PNPresenceStateFetchRequest requestWithUserId:uuid];
+    request.arbitraryQueryParameters = queryParameters;
+    request.channelGroups = groups;
+    id block = [handlerBlock copy];
+    request.channels = channels;
 
-        badRequestStatus.retryBlock = retryBlock;
-        [self appendClientInformation:badRequestStatus];
-        
-        [self callBlock:block status:NO withResult:nil andStatus:badRequestStatus];
-        return;
-    }
-
-    [parameters addPathComponent:(channels.count ? [PNChannel namesForRequest:channels] : @",")
-                  forPlaceholder:@"{channel}"];
-    [parameters addQueryParameters:queryParameters];
-    [parameters addPathComponent:[PNString percentEscapedString:uuid] forPlaceholder:@"{uuid}"];
-    
-    if (groups.count) {
-        [parameters addQueryParameter:[PNChannel namesForRequest:groups]
-                         forFieldName:@"channel-group"];
-    }
-    
-    PNLogAPICall(self.logger, @"<PubNub::API> State request on %@%@ for %@.",
-            (channels.count ? [NSString stringWithFormat:@" channels (%@)",
-                               [channels componentsJoinedByString:@","]] : @""),
-            (groups.count ? [NSString stringWithFormat:@" %@channel groups (%@)",
-                             channels.count ? @"and " : @"",
-                             [groups componentsJoinedByString:@","]] : @""),
-            uuid);
-    
-    [self processOperation:operation
-            withParameters:parameters 
-           completionBlock:^(PNOperationResult *result, PNStatus *status) {
-               
-        if (status.isError) {
-            status.retryBlock = retryBlock;
+    [self fetchPresenceStateWithRequest:request completion:^(PNPresenceStateFetchResult *result, PNErrorStatus *status) {
+        id mappedResult = result;
+        if (apiCallBuilder) mappedResult = [PNClientStateGetResult legacyPresenceStateFromPresenceState:result];
+        else {
+            if (channels.count == 1 && groups.count == 0) {
+                mappedResult = [PNChannelClientStateResult legacyPresenceFromPresence:result];
+            } else if (channels.count > 1 || groups.count > 1) {
+                mappedResult = [PNChannelGroupClientStateResult legacyPresenceFromPresence:result];
+            }
         }
 
-        [weakSelf handleStateResult:(PNChannelClientStateResult *)result
-                         withStatus:status
-                            forUUID:uuid
-                         atChannels:channels
-                             groups:groups
-                        fromBuilder:apiCallBuilder
-                     withCompletion:block];
+        [self callBlock:block status:NO withResult:mappedResult andStatus:status];
     }];
 }
 
@@ -397,26 +340,18 @@ NS_ASSUME_NONNULL_END
     [self callBlock:block status:YES withResult:nil andStatus:status];
 }
 
-- (void)handleStateResult:(id)result
+- (void)handleStateResult:(PNPresenceStateFetchResult *)result
                withStatus:(PNStatus *)status
                   forUUID:(NSString *)uuid
                atChannels:(NSArray<NSString *> *)channels
                    groups:(NSArray<NSString *> *)groups
-              fromBuilder:(BOOL)apiCallBuilder
            withCompletion:(id)block {
 
     if (result && [uuid isEqualToString:self.configuration.userID]) {
         NSDictionary *state = @{};
 
-        if (!apiCallBuilder) {
-            if (channels.count) {
-                state = @{ channels[0]: ((PNChannelClientStateResult *)result).data.state ?: @{} };
-            } else if (groups.count) {
-                state = ((PNChannelGroupClientStateResult *)result).data.channels;
-            }
-        } else {
-            state = ((PNClientStateGetResult *)result).data.channels;
-        }
+        if (result.data.channel) state = @{ result.data.channel: result.data.state };
+        else state = result.data.channels;
 
         NSMutableDictionary *existingState = [(self.clientStateManager.state ?: @{}) mutableCopy];
         [existingState addEntriesFromDictionary:state];
@@ -424,9 +359,7 @@ NS_ASSUME_NONNULL_END
         NSArray<NSString *> *channelsWithState = self.clientStateManager.state.allKeys;
         state = [existingState dictionaryWithValuesForKeys:channelsWithState];
 
-        if (state.count) {
-            [self.clientStateManager setState:state forObjects:channelsWithState];
-        }
+        if (state.count) [self.clientStateManager setState:state forObjects:channelsWithState];
     }
 
     [self callBlock:block status:NO withResult:result andStatus:status];
