@@ -5,7 +5,6 @@
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![Platform](https://img.shields.io/cocoapods/p/PubNub.svg?style=flat)](https://img.shields.io/cocoapods/p/PubNub.svg)
 [![Docs Coverage](https://img.shields.io/cocoapods/metrics/doc-percent/PubNub.svg?style=flat)](https://img.shields.io/cocoapods/metrics/doc-percent/PubNub.svg)
-[![Build Status](https://travis-ci.com/pubnub/objective-c.svg?branch=master)](https://travis-ci.com/pubnub/objective-c)
 
 This is the official PubNub Objective-C SDK repository.
 
