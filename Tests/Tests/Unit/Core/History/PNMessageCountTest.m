@@ -2,11 +2,10 @@
  * @author Serhii Mamontov
  * @copyright © 2010-2020 PubNub, Inc.
 */
-#import <PubNub/PNRequestParameters.h>
+#import <PubNub/PNHistoryMessagesCountRequest.h>
 #import <PubNub/PubNub+CorePrivate.h>
 #import "PNRecordableTestCase.h"
 #import <PubNub/PNChannel.h>
-#import <PubNub/PubNub.h>
 #import <OCMock/OCMock.h>
 
 
@@ -30,6 +29,7 @@ NS_ASSUME_NONNULL_END
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-retain-cycles"
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
 
 #pragma mark - VCR configuration
@@ -49,24 +49,23 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Tests :: Call
 
 - (void)testItShouldFetchMessageCountsWhenCalled {
-    NSArray<NSString *> *channels = @[@"PubNub 1", @"PubNub-2"];
+    NSArray<NSString *> *expectedChannels = @[@"PubNub 1", @"PubNub-2"];
     NSArray<NSNumber *> *timetokens = @[@(1550140202)];
-    NSString *expectedChannels = [PNChannel namesForRequest:channels];
     NSString *expectedTimetokens = @(15501402020000000).stringValue;
     
     
     id clientMock = [self mockForObject:self.client];
-    id recorded = OCMExpect([clientMock processOperation:PNMessageCountOperation
-                                          withParameters:[OCMArg any] completionBlock:[OCMArg any]])
+    id recorded = OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNHistoryMessagesCountRequest class]]
+                                        withCompletion:[OCMArg any]])
         .andDo(^(NSInvocation *invocation) {
-            PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
-            
-            XCTAssertEqualObjects(parameters.pathComponents[@"{channels}"], expectedChannels);
-            XCTAssertEqualObjects(parameters.query[@"timetoken"], expectedTimetokens);
+            PNHistoryMessagesCountRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
+
+            XCTAssertEqualObjects(request.channels, expectedChannels);
+            XCTAssertEqualObjects(request.request.query[@"timetoken"], expectedTimetokens);
         });
     
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
-        self.client.messageCounts().channels(channels).timetokens(timetokens)
+        self.client.messageCounts().channels(expectedChannels).timetokens(timetokens)
             .performWithCompletion(^(PNMessageCountResult *result, PNErrorStatus *status) { });
     }];
 }
@@ -78,14 +77,15 @@ NS_ASSUME_NONNULL_END
     
     
     id clientMock = [self mockForObject:self.client];
-    OCMStub([clientMock processOperation:PNMessageCountOperation withParameters:[OCMArg any]
-                           completionBlock:[OCMArg any]]).andDo(^(NSInvocation *invocation) {
-        PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
-        
-        XCTAssertNil(parameters.query[@"channelsTimetoken"]);
-        XCTAssertEqualObjects(parameters.query[@"timetoken"], expectedTimetokens);
-    });
-    
+    OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNHistoryMessagesCountRequest class]]
+                          withCompletion:[OCMArg any]])
+        .andDo(^(NSInvocation *invocation) {
+            PNHistoryMessagesCountRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
+
+            XCTAssertNil(request.request.query[@"channelsTimetoken"]);
+            XCTAssertEqualObjects(request.request.query[@"timetoken"], expectedTimetokens);
+        });
+
     self.client.messageCounts().channels(channels).timetokens(timetokens)
         .performWithCompletion(^(PNMessageCountResult *result, PNErrorStatus *status) { });
 }
@@ -97,31 +97,33 @@ NS_ASSUME_NONNULL_END
     
     
     id clientMock = [self mockForObject:self.client];
-    OCMStub([clientMock processOperation:PNMessageCountOperation withParameters:[OCMArg any]
-                           completionBlock:[OCMArg any]]).andDo(^(NSInvocation *invocation) {
-        PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
-        
-        XCTAssertNil(parameters.query[@"timetoken"]);
-        XCTAssertEqualObjects(parameters.query[@"channelsTimetoken"], expectedTimetokens);
-    });
-    
+    OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNHistoryMessagesCountRequest class]]
+                          withCompletion:[OCMArg any]])
+        .andDo(^(NSInvocation *invocation) {
+            PNHistoryMessagesCountRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
+
+            XCTAssertNil(request.request.query[@"timetoken"]);
+            XCTAssertEqualObjects(request.request.query[@"channelsTimetoken"], expectedTimetokens);
+        });
+
     self.client.messageCounts().channels(channels).timetokens(timetokens)
         .performWithCompletion(^(PNMessageCountResult *result, PNErrorStatus *status) { });
 }
 
-- (void)testItShouldNotSetChannelsWhenNumberOfChannelsAndTimetokensIsDifferent {
+- (void)testItShouldFailValidationWhenNumberOfChannelsAndTimetokensIsDifferent {
     NSArray<NSString *> *channels = @[@"PubNub 1", @"PubNub-2"];
     NSArray<NSNumber *> *timetokens = @[@(1550140202), @(1550140204), @(1550140206)];
     
     
     id clientMock = [self mockForObject:self.client];
-    OCMStub([clientMock processOperation:PNMessageCountOperation withParameters:[OCMArg any]
-                         completionBlock:[OCMArg any]]).andDo(^(NSInvocation *invocation) {
-        PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
-        
-        XCTAssertNil(parameters.pathComponents[@"{channels}"]);
-    });
-    
+    OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNHistoryMessagesCountRequest class]]
+                                        withCompletion:[OCMArg any]])
+        .andDo(^(NSInvocation *invocation) {
+            PNHistoryMessagesCountRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
+
+            XCTAssertNotNil([request validate]);
+        });
+
     self.client.messageCounts().channels(channels).timetokens(timetokens)
         .performWithCompletion(^(PNMessageCountResult *result, PNErrorStatus *status) { });
 }
@@ -159,9 +161,9 @@ NS_ASSUME_NONNULL_END
     }];
     
     id clientMock = [self mockForObject:self.client];
-    id recorded = OCMExpect([clientMock processOperation:PNMessageCountOperation
-                                          withParameters:[OCMArg any] completionBlock:[OCMArg any]]);
-    
+    id recorded = OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNHistoryMessagesCountRequest class]]
+                                        withCompletion:[OCMArg any]]);
+
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
         [errorStatus retry];
     }];

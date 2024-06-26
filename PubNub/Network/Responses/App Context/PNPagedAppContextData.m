@@ -48,6 +48,17 @@ NS_ASSUME_NONNULL_END
 @implementation PNPagedAppContextData
 
 
+#pragma mark - Properties
+
++ (NSArray<NSString *> *)optionalKeys {
+    return @[@"prev", @"next"];
+}
+
++ (NSArray<NSString *> *)ignoredKeys {
+    return @[@"objects"];
+}
+
+
 #pragma mark - Initialization and Configuration
 
 - (instancetype)initWithObjects:(NSArray<PNBaseAppContextObject *> *)objects {
@@ -64,7 +75,7 @@ NS_ASSUME_NONNULL_END
     NSError *error;
     NSArray *objects = [PNJSONDecoder decodedObjectsOfClass:[self class].appContextObjectClass
                                                   fromArray:payload[@"data"]
-                                                  withError:nil];
+                                                  withError:&error];
     if (error) return nil;
 
     PNPagedAppContextData *data = [self initWithObjects:objects];

@@ -55,6 +55,10 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Properties
 
++ (NSArray<NSString *> *)ignoredKeys {
+    return @[@"channels"];
+}
+
 - (NSArray<NSString *> *)channels {
     return self.payload.channels;
 }

@@ -11,7 +11,7 @@
 #pragma mark - Properties
 
 - (NSDictionary *)query {
-    NSMutableDictionary *query = [[super query] mutableCopy];
+    NSMutableDictionary *query = [([super query] ?: @{}) mutableCopy];
     
     if ((self.includeFields & PNChannelTotalCountField) == PNChannelTotalCountField ||
         (self.includeFields & PNUUIDTotalCountField) == PNUUIDTotalCountField ||
@@ -27,6 +27,13 @@
     if (self.end.length) query[@"end"] = self.end;
     
     return query.count ? query : nil;
+}
+
+#pragma mark - Initialization and Configuration
+
+- (instancetype)initWithObject:(NSString *)objectType identifier:(NSString *)identifier {
+    if ((self = [super initWithObject:objectType identifier:identifier])) _limit = 100;
+    return self;
 }
 
 #pragma mark -

@@ -30,6 +30,13 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Properties
 
++ (NSDictionary<NSString *,NSString *> *)codingKeys {
+    return @{
+        @"message": @"message",
+        @"file": @"file"
+    };
+}
+
 + (NSArray<NSString *> *)optionalKeys {
     return @[@"message"];
 }

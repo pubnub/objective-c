@@ -239,13 +239,13 @@
   {
     "id" : "BFD3E3A1-5429-427D-8F32-603356D2A68A",
     "data" : {
-      "status" : 404,
+      "status" : 200,
       "cls" : "NSHTTPURLResponse",
       "url" : "https:\/\/ps.pndsn.com\/v2\/objects\/demo\/channels\/Chanted-channel-identifier?uuid=Serhii&pnsdk=PubNub-ObjC-iOS\/4.x.x",
       "headers" : {
         "Access-Control-Allow-Credentials" : "true",
         "Date" : "Thu, 04 Jun 2020 19:39:46 GMT",
-        "Content-Type" : "application\/json",
+        "Content-Type" : "text\/html",
         "Content-Length" : "26",
         "Connection" : "keep-alive",
         "Access-Control-Allow-Origin" : "*"

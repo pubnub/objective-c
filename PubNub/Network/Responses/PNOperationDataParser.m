@@ -191,6 +191,7 @@ NS_ASSUME_NONNULL_END
     BOOL expectingResult = self.resultClass != nil;
     BOOL isJSON = [self isJSONResponse:response];
     BOOL isXML = !isJSON && [self isXMLResponse:response];
+    BOOL malformedResponse = NO;
     id resultData;
     id statusData;
     id result;
@@ -198,7 +199,12 @@ NS_ASSUME_NONNULL_END
 
     if (error) statusData = [PNErrorData dataWithError:error];
     else if (!isJSON && !isXML && !ignoreBody) statusData = [self errorDataWithUnexpectedServiceResponseError:error];
-    else if (isJSON) {
+    else if (isJSON && response.statusCode >= 400) {
+        statusData = [self.serializer objectOfClass:[PNErrorData class]
+                                           fromData:data
+                                     withAdditional:additional
+                                              error:&error];
+    } else if (isJSON) {
         error = nil;
 
         if (expectingResult) {
@@ -209,18 +215,25 @@ NS_ASSUME_NONNULL_END
         if (error || (!expectingResult && !resultData)) {
             Class dataClass = [self.statusClass statusDataClass];
             statusData = [self.serializer objectOfClass:dataClass fromData:data withAdditional:additional error:&error];
+            if (error) malformedResponse = YES;
         }
 
         // Fallback for case when only status expected but it can't be deserialized to the provided data class object.
         if (error && !expectingResult) {
             Class dataClass = [PNErrorData class];
             statusData = [self.serializer objectOfClass:dataClass fromData:data withAdditional:additional error:&error];
+            if (malformedResponse) ((PNErrorData *)statusData).category = PNMalformedResponseCategory;
         }
 
         if (!resultData && !statusData) statusData = [self errorDataWithMalformedServiceResponseError:error];
     } else if (response.statusCode >= 400 && isXML) {
         statusData = [self errorDataWithXMLResponse:data error:error];
     } else if (!ignoreBody) statusData = [self errorDataWithMalformedServiceResponseError:error];
+
+    if (ignoreBody && !expectingResult && !statusData) {
+        statusData = [PNErrorData new];
+        ((PNErrorData *)statusData).category = PNAcknowledgmentCategory;
+    }
 
     if (resultData) result = [self.resultClass objectWithOperation:operation response:resultData];
     else if (statusData) {

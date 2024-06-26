@@ -96,6 +96,9 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Prepare
 
 - (PNError *)validate {
+    PNError *error = [super validate];
+    if (error) return error;
+    
     PNOperationType operation = self.operation;
     
     if (self.channels.count == 0 &&

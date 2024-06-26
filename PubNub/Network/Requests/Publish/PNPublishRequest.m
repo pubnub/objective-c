@@ -16,6 +16,10 @@
     return PNPublishOperation;
 }
 
+- (BOOL)shouldCompressBody {
+    return self.shouldCompress;
+}
+
 - (NSString *)path {
     return PNStringFormat(@"/publish/%@/%@/0/%@/0/%@",
                           self.publishKey,

@@ -11,10 +11,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Properties
 
-/// Whether message should be replicated across the PubNub Real-Time Network and sent simultaneously to all subscribed
-/// clients on a channel.
-@property(assign, nonatomic, getter = shouldReplicate) BOOL replicate;
-
 /// Whether message should be compressed before sending or not.
 @property(assign, nonatomic, getter = shouldCompress) BOOL compress;
 

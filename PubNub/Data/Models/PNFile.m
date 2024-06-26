@@ -40,7 +40,7 @@ NS_ASSUME_NONNULL_END
 }
 
 + (NSArray<NSString *> *)optionalKeys {
-    return @[@"created", @"downloadURL"];
+    return @[@"created", @"downloadURL", @"size"];
 }
 
 #pragma mark -

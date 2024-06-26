@@ -1,4 +1,4 @@
-#import "PNRemoveMessageActionRequest.h"
+#import "PNRemoveMessageActionRequest+Private.h"
 #import "PNBaseMessageActionRequest+Private.h"
 #import "PNBaseRequest+Private.h"
 #import "PNFunctions.h"
@@ -75,7 +75,7 @@ NS_ASSUME_NONNULL_END
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     if (self.actionTimetoken.unsignedIntegerValue == 0 && self.messageActionTimetoken.unsignedIntegerValue == 0) {
-        return [self missingParameterError:@"messageActionTimetoken" forObjectRequest:@"PNRemoveMessageActionRequest"];
+        return [self missingParameterError:@"actionTimetoken" forObjectRequest:@"PNRemoveMessageActionRequest"];
     }
 #pragma clang diagnostic pop
     

@@ -15,9 +15,7 @@
 #import "PNClientState.h"
 #import "PNSubscriber.h"
 #import "PNHeartbeat.h"
-#ifndef PUBNUB_DISABLE_LOGGER
 #import "PNLogMacro.h"
-#endif // PUBNUB_DISABLE_LOGGER
 
 
 #pragma mark Class forward
@@ -127,10 +125,31 @@ typedef void(^PNParsedRequestCompletionBlock)(PNTransportRequest *,
 
 /// Create operation data parser.
 ///
-/// - Parameter statusClass: Class of object which represents API request processing status (for non-data fetching 
+/// - Parameter statusClass: Class of object which represents API request processing status (for non-data fetching
 /// requests) or error status data.
 /// - Returns: Ready to use operation data parser.
 - (PNOperationDataParser *)parserWithStatus:(Class)statusClass;
+
+/// Create operation data parser.
+///
+/// - Parameters:
+///   - resultClass: Class of object which represents API result (for data fetching requests).
+///   - statusClass: Class of object which represents API request processing status (for non-data fetching requests) or
+///   error status data.
+///   - cryptoModule: Crypto module which should be used for data processing.
+/// - Returns: Ready to use operation data parser.
+- (PNOperationDataParser *)parserWithResult:(Class)resultClass
+                                     status:(Class)statusClass
+                               cryptoModule:(nullable id<PNCryptoProvider>)cryptoModule;
+
+/// Create operation data parser.
+///
+/// - Parameter statusClass: Class of object which represents API request processing status (for non-data fetching
+/// requests) or error status data.
+///   - cryptoModule: Crypto module which should be used for data processing.
+/// - Returns: Ready to use operation data parser.
+- (PNOperationDataParser *)parserWithStatus:(Class)statusClass
+                               cryptoModule:(nullable id<PNCryptoProvider>)cryptoModule;
 
 
 #pragma mark - Operation information

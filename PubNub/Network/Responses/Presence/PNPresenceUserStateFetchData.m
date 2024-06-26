@@ -70,7 +70,8 @@ NS_ASSUME_NONNULL_END
     NSDictionary *payload = [coder decodeObjectOfClass:[NSDictionary class]];
     if (![payload isKindOfClass:[NSDictionary class]] || !payload[@"payload"]) return nil;
 
-    return [self initWithPresenceState:payload[@"payload"] forChannel:payload[@"channel"]];
+    return [self initWithPresenceState:!payload[@"channel"] ? payload[@"payload"][@"channels"] : payload[@"payload"]
+                            forChannel:payload[@"channel"]];
 }
 
 #pragma mark -

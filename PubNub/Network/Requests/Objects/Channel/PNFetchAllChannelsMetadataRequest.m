@@ -25,9 +25,11 @@
 
 #pragma mark - Initialization and Configuration
 
-- (instancetype)init {
-    if ((self = [super init])) self.includeFields = PNChannelTotalCountField;
-    return self;
++ (instancetype)new {
+    PNFetchAllChannelsMetadataRequest *request = [[self alloc] initWithObject:@"Channel" identifier:nil];
+    request.includeFields = PNChannelTotalCountField;
+
+    return request;
 }
 
 #pragma mark -

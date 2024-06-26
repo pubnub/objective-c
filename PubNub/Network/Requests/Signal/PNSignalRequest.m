@@ -109,6 +109,8 @@ NS_ASSUME_NONNULL_END
         return [PNError errorWithDomain:PNAPIErrorDomain code:PNAPIErrorUnacceptableParameters userInfo:userInfo];
     }
 
+    self.preparedMessage = messageForPublish;
+
     return nil;
 }
 

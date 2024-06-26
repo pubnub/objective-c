@@ -131,6 +131,7 @@ NS_ASSUME_NONNULL_END
 
 - (instancetype)initWithUUID:(NSString *)uuid state:(id)state {
     if ((self = [super init])) {
+        _verbosityLevel = PNHereNowUUID;
         _uuid = [uuid copy];
         _state = state;
     }
@@ -208,15 +209,9 @@ NS_ASSUME_NONNULL_END
         if (![array isKindOfClass:[NSArray class]]) return nil;
 
         [array enumerateObjectsUsingBlock:^(id data, __unused NSUInteger idx, BOOL *stop) {
-            PNPresenceUUIDData *userPresence;
-
-            if ([data isKindOfClass:[NSDictionary class]]) {
-                userPresence = [PNJSONDecoder decodedObjectOfClass:[PNPresenceUUIDData class]
-                                                    fromDictionary:data
-                                                         withError:nil];
-            } else if ([data isKindOfClass:[NSString class]]) {
-                userPresence = [[PNPresenceUUIDData alloc] initWithUUID:data state:nil];
-            }
+            PNPresenceUUIDData *userPresence = [PNJSONDecoder decodedObjectOfClass:[PNPresenceUUIDData class]
+                                                                    fromDictionary:data
+                                                                         withError:nil];
 
             if (userPresence) {
                 [usersPresence addObject:userPresence];

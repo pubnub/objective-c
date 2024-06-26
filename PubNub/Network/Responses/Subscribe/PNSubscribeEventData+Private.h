@@ -33,7 +33,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(strong, nullable, nonatomic) NSNumber *messageType;
 
 /// A numeric representation of enabled debug flags.
-@property(strong, nonatomic, readonly) NSString *debugFlags;
+@property(strong, nonatomic, readonly) NSNumber *debugFlags;
 
 /// Stores reference on **PubNub** server region identifier (which generated `timetoken` value).
 @property (nonatomic, readonly) NSNumber *region;

@@ -2,7 +2,6 @@
  * @author Serhii Mamontov
  * @copyright © 2010-2019 PubNub, Inc.
  */
-#import <PubNub/PNRequestParameters.h>
 #import <PubNub/PubNub+CorePrivate.h>
 #import "PNRecordableTestCase.h"
 #import <PubNub/PubNub.h>
@@ -46,8 +45,8 @@ NS_ASSUME_NONNULL_END
     XCTAssertNotNil(token.patterns, @"'patterns' is missing");
     
     XCTAssertNotNil(token.error);
-    XCTAssertEqual(token.error.code, kPNAuthPAMTokenWrongUUIDError);
-    
+    XCTAssertEqual(token.error.code, PNAuthErrorPAMTokenWrongUUID);
+
     XCTAssertEqualObjects(token.authorizedUUID, @"test-authorized-uuid");
     XCTAssertEqual(token.resources.channels.count, 1);
     XCTAssertEqual(token.resources.groups.count, 1);

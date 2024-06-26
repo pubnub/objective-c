@@ -104,12 +104,9 @@ NS_ASSUME_NONNULL_END
     PNGroupChannelsAuditCompletionBlock block = [handlerBlock copy];
     PNParsedRequestCompletionBlock handler; 
 
-#ifndef PUBNUB_DISABLE_LOGGER
-    PNOperationType operation = userRequest.operation;
-    if (operation == PNChannelGroupsOperation) {
+    if (userRequest.operation == PNChannelGroupsOperation) {
         PNLogAPICall(self.logger, @"<PubNub::API> Request channels for '%@' channel group.", userRequest.channelGroup);
     } else PNLogAPICall(self.logger, @"<PubNub::API> Request channel groups list.");
-#endif // PUBNUB_DISABLE_LOGGER
 
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
@@ -157,17 +154,14 @@ NS_ASSUME_NONNULL_END
     PNChannelGroupChangeCompletionBlock block = [handleBlock copy];
     PNParsedRequestCompletionBlock handler; 
 
-#ifndef PUBNUB_DISABLE_LOGGER
-    PNOperationType operation = userRequest.operation;
-    if (operation == PNRemoveGroupOperation) {
+    if (userRequest.operation == PNRemoveGroupOperation) {
         PNLogAPICall(self.logger, @"<PubNub::API> Remove '%@' channel group", (userRequest.channelGroup?: @"<error>"));
     } else {
-        BOOL shouldAdd = operation == PNAddChannelsToGroupOperation;
         PNLogAPICall(self.logger, @"<PubNub::API> %@ channels %@ '%@' channel group: %@",
-                     (shouldAdd ? @"Add" : @"Remove"), (shouldAdd ? @"to" : @"from"),
+                     (userRequest.operation == PNAddChannelsToGroupOperation ? @"Add" : @"Remove"),
+                     (userRequest.operation == PNAddChannelsToGroupOperation ? @"to" : @"from"),
                      (userRequest.channelGroup?: @"<error>"), (userRequest.channels?: @"<error>"));
     }
-#endif // PUBNUB_DISABLE_LOGGER
 
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,

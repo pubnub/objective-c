@@ -55,6 +55,13 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Properties
 
+- (PNTransportRequest *)request {
+    PNTransportRequest *request = super.request;
+    request.retriable = NO;
+
+    return request;
+}
+
 - (PNOperationType)operation {
     return PNUnsubscribeOperation;
 }
@@ -65,7 +72,7 @@ NS_ASSUME_NONNULL_END
     if (self.channelGroups.count) query[@"channel-group"] = [self.channelGroups componentsJoinedByString:@","];
     if (self.arbitraryQueryParameters) [query addEntriesFromDictionary:self.arbitraryQueryParameters];
     
-    return query;
+    return query.count ? query : nil;
 }
 
 - (NSString *)path {
@@ -90,7 +97,7 @@ NS_ASSUME_NONNULL_END
         presenceChannels = [NSMutableArray arrayWithCapacity:channels.count];
         for(NSString *name in channels) {
             if ([name hasSuffix:@"-pnpres"]) [presenceChannels addObject:name];
-            [presenceChannels addObject:[name stringByAppendingString:@"-pnpres"]];
+            else [presenceChannels addObject:[name stringByAppendingString:@"-pnpres"]];
         }
     }
     
@@ -98,7 +105,7 @@ NS_ASSUME_NONNULL_END
         presenceChannelGroups = [NSMutableArray arrayWithCapacity:channelGroups.count];
         for(NSString *name in channelGroups) {
             if ([name hasSuffix:@"-pnpres"]) [presenceChannelGroups addObject:name];
-            [presenceChannelGroups addObject:[name stringByAppendingString:@"-pnpres"]];
+            else [presenceChannelGroups addObject:[name stringByAppendingString:@"-pnpres"]];
         }
     }
     

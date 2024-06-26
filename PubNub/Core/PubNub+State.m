@@ -3,6 +3,7 @@
 #import "PNPresenceUserStateFetchData+Private.h"
 #import "PNChannelClientStateResult+Private.h"
 #import "PNClientStateGetResult+Private.h"
+#import "PNOperationResult+Private.h"
 #import "PubNub+CorePrivate.h"
 #import "PNStatus+Private.h"
 
@@ -141,7 +142,6 @@ NS_ASSUME_NONNULL_END
     PNSetStateCompletionBlock block = [handlerBlock copy];
     PNParsedRequestCompletionBlock handler; 
 
-#ifndef PUBNUB_DISABLE_LOGGER
     PNLogAPICall(self.logger, @"<PubNub::API> Set %@'s state on%@%@: %@.",
                  userRequest.userId,
                  (userRequest.channels.count
@@ -151,7 +151,6 @@ NS_ASSUME_NONNULL_END
                   ? [NSString stringWithFormat:@" %@channel groups (%@)", userRequest.channels.count ? @"and " : @"", [userRequest.channelGroups componentsJoinedByString:@","]]
                   : @""),
                  userRequest.state);
-#endif // PUBNUB_DISABLE_LOGGER
 
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
@@ -229,8 +228,7 @@ NS_ASSUME_NONNULL_END
                                                             status:[PNErrorStatus class]];
     PNPresenceStateFetchCompletionBlock block = [handlerBlock copy];
     PNParsedRequestCompletionBlock handler;
-    
-#ifndef PUBNUB_DISABLE_LOGGER
+
     PNLogAPICall(self.logger, @"<PubNub::API> State request on %@%@ for %@.",
                  (userRequest.channels.count
                   ? [NSString stringWithFormat:@" channels (%@)", [userRequest.channels componentsJoinedByString:@","]]
@@ -240,7 +238,6 @@ NS_ASSUME_NONNULL_END
                              [userRequest.channelGroups componentsJoinedByString:@","]] 
                   : @""),
                  userRequest.userId);
-#endif // PUBNUB_DISABLE_LOGGER
 
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
@@ -308,12 +305,15 @@ NS_ASSUME_NONNULL_END
 
     [self fetchPresenceStateWithRequest:request completion:^(PNPresenceStateFetchResult *result, PNErrorStatus *status) {
         id mappedResult = result;
-        if (apiCallBuilder) mappedResult = [PNClientStateGetResult legacyPresenceStateFromPresenceState:result];
-        else {
+        if (apiCallBuilder) {
+           if (mappedResult) mappedResult = [PNClientStateGetResult legacyPresenceStateFromPresenceState:result];
+        }  else {
             if (channels.count == 1 && groups.count == 0) {
-                mappedResult = [PNChannelClientStateResult legacyPresenceFromPresence:result];
-            } else if (channels.count > 1 || groups.count > 1) {
-                mappedResult = [PNChannelGroupClientStateResult legacyPresenceFromPresence:result];
+                if (mappedResult) mappedResult = [PNChannelClientStateResult legacyPresenceFromPresence:result];
+                else status.operation = PNStateForChannelOperation;
+            } else if (channels.count > 1 || groups.count >= 1) {
+                if (mappedResult) mappedResult = [PNChannelGroupClientStateResult legacyPresenceFromPresence:result];
+                else status.operation = PNStateForChannelGroupOperation;
             }
         }
 

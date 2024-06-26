@@ -50,7 +50,7 @@ NS_ASSUME_NONNULL_END
 }
 
 + (NSArray<NSString *> *)optionalKeys {
-    return @[@"uuid", @"join", @"leave", @"timeout"];
+    return @[@"uuid", @"join", @"leave", @"timeout", @"state"];
 }
 
 #pragma mark -

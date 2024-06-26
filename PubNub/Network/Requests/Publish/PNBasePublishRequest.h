@@ -17,6 +17,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// Serialized `NSDictionary` with values which should be used by **PubNub** service to filter messages.
 @property(strong, nullable, nonatomic, readonly) NSString *preparedMetadata;
 
+/// Whether message should be replicated across the PubNub Real-Time Network and sent simultaneously to all subscribed
+///clients on a channel.
+@property(assign, nonatomic, getter = shouldReplicate) BOOL replicate;
+
 /// Whether `published` data should be stored and available with history API or not.
 @property(assign, nonatomic, getter = shouldStore) BOOL store;
 

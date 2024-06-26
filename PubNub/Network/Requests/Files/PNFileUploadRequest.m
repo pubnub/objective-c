@@ -110,8 +110,12 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Properties
 
+- (PNOperationType)operation {
+    return PNSendFileOperation;
+}
+
 - (PNTransportRequest *)request {
-    PNTransportRequest *request = [super request];
+    PNTransportRequest *request = super.request;
     request.timeout = self.subscribeMaximumIdleTime;
 
     return request;
@@ -175,9 +179,6 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Prepare
 
 - (PNError *)validate {
-    PNError *error = [super validate];
-    if (error) return error;
-
     if (self.formData.count && [self bodyStreamAvailable]) {
         NSString *boundary = [[NSUUID UUID].UUIDString stringByReplacingOccurrencesOfString:@"-" withString:@""];
         NSUInteger dataSize = self.dataSize;

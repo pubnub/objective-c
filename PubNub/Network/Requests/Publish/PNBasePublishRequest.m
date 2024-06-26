@@ -22,10 +22,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// **PubNub** network.
 @property(strong, nullable, nonatomic) id<PNCryptoProvider> cryptoModule;
 
-/// Whether message should be replicated across the PubNub Real-Time Network and sent simultaneously to all subscribed
-///clients on a channel.
-@property(assign, nonatomic, getter = shouldReplicate) BOOL replicate;
-
 /// Whether message should be compressed before sending or not.
 @property(assign, nonatomic, getter = shouldCompress) BOOL compress;
 

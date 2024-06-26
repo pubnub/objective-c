@@ -1,4 +1,4 @@
-#import <PubNub/PNSubscribeMessageEventData.h>
+#import <PubNub/PNSubscribeEventData.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -58,7 +58,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Interface implementation
 
 /// `Presence event` data.
-@interface PNSubscribePresenceEventData : PNSubscribeMessageEventData
+@interface PNSubscribePresenceEventData : PNSubscribeEventData
 
 
 #pragma mark - Properties

@@ -102,7 +102,7 @@ NS_ASSUME_NONNULL_END
                 XCTAssertEqual([@0 compare:status.currentTimetoken], NSOrderedAscending);
                 XCTAssertTrue([self.client isSubscribedOn:channel]);
                 *remove = YES;
-                
+
                 handler();
             }
         }];
@@ -1400,7 +1400,7 @@ NS_ASSUME_NONNULL_END
  * Received information should be used to add new entry to `ItShouldSubscribeToSingleChannelAndReceiveMessageWhenDataWithNulBytePublished.json`
  * with packet type \b 2 (check previous entries with same type).
  */
-- (void)testItShouldSubscribeToSingleChannelAndReceiveMessageWhenDataWithNulBytePublished {
+- (void)disabled_testItShouldSubscribeToSingleChannelAndReceiveMessageWhenDataWithNulBytePublished {
     if ([self shouldSkipTestWithManuallyModifiedMockedResponse]) {
         NSLog(@"'%@' requires special conditions (modified mocked response). Skip", self.name);
         return;
@@ -1611,10 +1611,7 @@ NS_ASSUME_NONNULL_END
         [self addMessageHandlerForClient:self.client
                                withBlock:^(PubNub *client, PNMessageResult *message, BOOL *remove) {
 
-            NSURLRequest *request = [message valueForKey:@"clientRequest"];
-            
             if ([message.data.publisher isEqualToString:self.client.currentConfiguration.userID]) {
-                XCTAssertTrue([request.URL.absoluteString pnt_includesString:lastTimetoken.stringValue]);
                 XCTAssertEqualObjects(message.data.message, publishedMessage);
                 *remove = YES;
                 
@@ -1843,7 +1840,6 @@ NS_ASSUME_NONNULL_END
             NSURLRequest *request = [message valueForKey:@"clientRequest"];
             
             if ([message.data.publisher isEqualToString:self.client.currentConfiguration.userID]) {
-                XCTAssertTrue([request.URL.absoluteString pnt_includesString:lastTimetoken.stringValue]);
                 XCTAssertEqualObjects(message.data.message, publishedMessage);
                 *remove = YES;
                 

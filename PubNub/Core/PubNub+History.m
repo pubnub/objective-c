@@ -1,4 +1,5 @@
 #import "PubNub+History.h"
+#import "PNHistoryFetchRequest+Private.h"
 #import "PNBaseOperationData+Private.h"
 #import "PNHistoryFetchData+Private.h"
 #import "PNErrorStatus+Private.h"
@@ -195,16 +196,20 @@ NS_ASSUME_NONNULL_END
     PNHistoryCompletionBlock block = [handlerBlock copy];
     PNParsedRequestCompletionBlock handler;
 
-    NSUInteger defaultMax = !userRequest.includeMessageActions && userRequest.channels.count == 1 ? 100 : 25;
-    NSUInteger maxValue = defaultMax;
-    if (userRequest.max > 0) maxValue = MIN(userRequest.max, defaultMax);
-
-#ifndef PUBNUB_DISABLE_LOGGER
-    PNLogAPICall(self.logger, @"<PubNub::API> History for '%@' channels%@%@ with %@ limit.",
-                 [userRequest.channels componentsJoinedByString:@", "],
-                 (userRequest.start ? [NSString stringWithFormat:@" from %@", userRequest.start] : @""),
-                 (userRequest.end ? [NSString stringWithFormat:@" to %@", userRequest.end] : @""), @(maxValue));
-#endif // PUBNUB_DISABLE_LOGGER
+    if (userRequest.multipleChannels) {
+        PNLogAPICall(self.logger, @"<PubNub::API> History for '%@' channels%@%@ with %@ limit.",
+                     (userRequest.channels != nil ? [userRequest.channels componentsJoinedByString:@", "] : @"<error>"),
+                     (userRequest.start ? [NSString stringWithFormat:@" from %@", userRequest.start] : @""),
+                     (userRequest.end ? [NSString stringWithFormat:@" to %@", userRequest.end] : @""),
+                     @(userRequest.limit));
+    } else {
+        PNLogAPICall(self.logger, @"<PubNub::API> %@ for '%@' channel%@%@ with %@ limit%@.",
+                     (userRequest.reverse ? @"Reversed history" : @"History"),
+                     (userRequest.channels.firstObject?: @"<error>"),
+                     (userRequest.start ? [NSString stringWithFormat:@" from %@", userRequest.start] : @""),
+                     (userRequest.end ? [NSString stringWithFormat:@" to %@", userRequest.end] : @""),
+                     @(userRequest.limit), (userRequest.includeTimeToken ? @" (including: message time tokens" : @""));
+    }
 
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
@@ -218,6 +223,8 @@ NS_ASSUME_NONNULL_END
                 [self fetchHistoryWithRequest:userRequest completion:block];
             };
 #pragma clang diagnostic pop
+        } else if (result.result && !userRequest.multipleChannels && userRequest.channels.count == 1) {
+            [result.result.data setSingleChannelName:userRequest.channels.firstObject];
         }
 
         [self handleHistoryResult:result.result withStatus:result.status completion:block];
@@ -410,15 +417,18 @@ NS_ASSUME_NONNULL_END
            includeMetadata:(NSNumber *)shouldIncludeMetadata
            queryParameters:(NSDictionary *)queryParameters
             withCompletion:(PNHistoryCompletionBlock)block {
-    PNHistoryFetchRequest *request = [PNHistoryFetchRequest requestWithChannels:multipleChannels ? object : @[object]];
-    request.start = startDate;
-    request.end = endDate;
-    request.max = limit.unsignedIntegerValue;
-    request.reverse = shouldReverseOrder.boolValue;
+    PNHistoryFetchRequest *request;
+    if (!multipleChannels) request = [PNHistoryFetchRequest requestWithChannel:object];
+    else request = [PNHistoryFetchRequest requestWithChannels:object];
+    if (startDate) request.start = startDate;
+    if (endDate) request.end = endDate;
+    if (limit) request.limit = limit.unsignedIntegerValue;
+    if (shouldReverseOrder) request.reverse = shouldReverseOrder.boolValue;
+    if (shouldIncludeTimeToken) request.includeTimeToken = shouldIncludeTimeToken.boolValue;
     if (includeMessageType) request.includeMessageType = includeMessageType.boolValue;
     if (includeUUID) request.includeUUID = includeUUID.boolValue;
-    request.includeMessageActions = shouldIncludeMessageActions.boolValue;
-    request.includeMetadata = shouldIncludeMetadata.boolValue;
+    if (shouldIncludeMessageActions) request.includeMessageActions = shouldIncludeMessageActions.boolValue;
+    if (shouldIncludeMetadata) request.includeMetadata = shouldIncludeMetadata.boolValue;
     request.arbitraryQueryParameters = queryParameters;
                 
     [self fetchHistoryWithRequest:request completion:block];
@@ -442,8 +452,7 @@ NS_ASSUME_NONNULL_END
     PNOperationDataParser *responseParser = [self parserWithStatus:[PNAcknowledgmentStatus class]];
     PNMessageDeleteCompletionBlock block = [handleBlock copy];
     PNParsedRequestCompletionBlock handler; 
-    
-#ifndef PUBNUB_DISABLE_LOGGER
+
     PNLogAPICall(self.logger, @"<PubNub::API> Delete messages from '%@' channel%@%@.",
                  (userRequest.channel?: @"<error>"),
                  (userRequest.start 
@@ -452,7 +461,6 @@ NS_ASSUME_NONNULL_END
                  (userRequest.end 
                   ? [NSString stringWithFormat:@" %@ %@", userRequest.start ? @"to" : @"from", userRequest.end]
                   : @""));
-#endif // PUBNUB_DISABLE_LOGGER
 
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
@@ -508,18 +516,15 @@ NS_ASSUME_NONNULL_END
                                                             status:[PNErrorStatus class]];
     PNMessageCountCompletionBlock block = [handleBlock copy];
     PNParsedRequestCompletionBlock handler; 
-    
-#ifndef PUBNUB_DISABLE_LOGGER
-    NSUInteger timetokensCount = userRequest.timetokens.count;
+
     PNLogAPICall(self.logger, @"<PubNub::API> Messages count fetch for '%@' channels%@%@.",
                  [userRequest.channels componentsJoinedByString:@", "],
-                 (timetokensCount == 1
+                 (userRequest.timetokens.count == 1
                   ? [NSString stringWithFormat:@" starting from %@", userRequest.timetokens.firstObject]
                   : @""),
-                 (timetokensCount > 1
+                 (userRequest.timetokens.count > 1
                   ? [NSString stringWithFormat:@" with per-channel starting point %@", [userRequest.timetokens componentsJoinedByString:@","]]
                   : @""));
-#endif // PUBNUB_DISABLE_LOGGER
 
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,

@@ -161,8 +161,7 @@ NS_ASSUME_NONNULL_END
 - (void)handleServicePingResult:(PNTimeResult *)result {
     
     BOOL successfulPing = result.data != nil;
-    
-#ifndef PUBNUB_DISABLE_LOGGER
+
     if (self.reachable && !successfulPing) {
         PNLogReachability(self.client.logger, @"<PubNub::Reachability> Connection went down.");
     }
@@ -170,7 +169,6 @@ NS_ASSUME_NONNULL_END
     if (!self.reachable && successfulPing) {
         PNLogReachability(self.client.logger, @"<PubNub::Reachability> Connection restored.");
     }
-#endif // PUBNUB_DISABLE_LOGGER
 
     if (self.pingCompleteBlock) {
         self.pingCompleteBlock(successfulPing);

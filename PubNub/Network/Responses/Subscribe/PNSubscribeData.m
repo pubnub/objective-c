@@ -123,7 +123,7 @@ NS_ASSUME_NONNULL_END
                 @"action": updatePayload[@"action"],
                 @"presence": presenceData
             }];
-        } else if (!update[@"e"] || messageType == PNRegularMessageType || messageType == PNSignalOperation) {
+        } else if (!update[@"e"] || messageType == PNRegularMessageType || messageType == PNSignalMessageType) {
             if (!update[@"e"]) messageType = PNRegularMessageType;
             dataClass = messageType == PNRegularMessageType ? [PNSubscribeMessageEventData class]
                                                             : [PNSubscribeSignalEventData class];
@@ -137,12 +137,21 @@ NS_ASSUME_NONNULL_END
             // Rearrange for deserialization model.
             [patchedUpdate addEntriesFromDictionary:@{ @"message": updatePayload }];
         } else if (messageType == PNObjectMessageType) {
+            NSMutableDictionary *membershipData = [updatePayload mutableCopy];
             dataClass = [PNSubscribeObjectEventData class];
 
             // Rearrange for deserialization model.
-            [patchedUpdate addEntriesFromDictionary:updatePayload];
+            if (membershipData[@"data"][@"uuid"]) {
+                NSMutableDictionary *data = [membershipData[@"data"] mutableCopy];
+                data[@"_uuid"] = data[@"uuid"];
+                [data removeObjectForKey:@"uuid"];
+                membershipData[@"data"] = data;
+            }
+
+            // Rearrange for deserialization model.
+            [patchedUpdate addEntriesFromDictionary:membershipData];
         } else if (messageType == PNMessageActionType) {
-            dataClass = [PNSubscribeMessageEventData class];
+            dataClass = [PNSubscribeMessageActionEventData class];
 
             // Rearrange for deserialization model.
             NSMutableDictionary *actionEventData = [updatePayload mutableCopy];
@@ -176,7 +185,7 @@ NS_ASSUME_NONNULL_END
         else if (error) *stop = YES;
     }];
 
-    return [self initWithUpdates:updates cursor:cursor];
+    return !error ? [self initWithUpdates:updates cursor:cursor] : nil;
 }
 
 
@@ -205,6 +214,10 @@ NS_ASSUME_NONNULL_END
     }
 
     if (decryptionError || !decryptedEvent) {
+        if (!decryptionError) {
+            decryptionError = [NSError errorWithDomain:PNCryptorErrorDomain code:PNCryptorErrorDecryption userInfo:nil];
+        }
+
 #ifndef PUBNUB_DISABLE_LOGGER
         PNLLogger *logger = [PNLLogger loggerWithIdentifier:kPNClientIdentifier];
         [logger enableLogLevel:PNAESErrorLogLevel];

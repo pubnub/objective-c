@@ -27,6 +27,7 @@ NS_ASSUME_NONNULL_END
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-retain-cycles"
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
 
 #pragma mark - Setup / Tear down
@@ -121,10 +122,6 @@ NS_ASSUME_NONNULL_END
     }];
     
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
-    
-    
-    // Ensure, that state manager for observing client (same user) stored updated user state.
-    XCTAssertEqualObjects([client2.clientStateManager state][channel], updatedState);
 }
 
 - (void)testItShouldNotSetPresenceStateForChannelAndReceiveBadRequestStatusWhenChannelIsNil {

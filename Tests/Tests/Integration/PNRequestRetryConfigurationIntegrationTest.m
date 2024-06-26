@@ -24,6 +24,9 @@ NS_ASSUME_NONNULL_END
 
 @implementation PNRequestRetryConfigurationIntegrationTest
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
 
 #pragma mark - Setup / Tear down
 
@@ -56,7 +59,6 @@ NS_ASSUME_NONNULL_END
 
     [self waitToCompleteIn:4.f codeBlock:^(dispatch_block_t handler) {
         [self.client publish:@"hello-world" toChannel:@"test-channel" withCompletion:^(PNPublishStatus *status) {
-
             XCTAssertTrue(status.isError);
             XCTAssertTrue([YHVVCR.cassette allPlayed]);
             handler();
@@ -83,5 +85,6 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark -
 
+#pragma clang diagnostic pop
 
 @end

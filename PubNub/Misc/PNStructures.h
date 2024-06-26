@@ -800,6 +800,13 @@ typedef NS_ENUM(NSInteger, PNStatusCategory) {
     PNAcknowledgmentCategory,
 
     /**
+     * @brief \b PubNub resource not found.
+     *
+     * @discussion Requested resource / endpoint doesn't exists.
+     */
+    PNResourceNotFoundCategory,
+
+    /**
      * @brief \b PubNub Access Manager forbidden access to particular API.
      *
      * @discussion It is possible what at the moment when API has been used access rights hasn't

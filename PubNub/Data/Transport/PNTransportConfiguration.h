@@ -1,6 +1,8 @@
 #import <Foundation/Foundation.h>
 #import <PubNub/PNRequestRetryConfiguration.h>
+#ifndef PUBNUB_DISABLE_LOGGER
 #import <PubNub/PNLLogger.h>
+#endif // PUBNUB_DISABLE_LOGGER
 
 
 NS_ASSUME_NONNULL_BEGIN

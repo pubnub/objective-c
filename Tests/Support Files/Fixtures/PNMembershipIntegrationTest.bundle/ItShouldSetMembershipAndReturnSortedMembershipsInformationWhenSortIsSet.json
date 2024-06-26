@@ -303,12 +303,12 @@
   {
     "id" : "550EAA37-053F-4A30-BB34-C345DF2A5D6D",
     "data" : {
-      "status" : 404,
+      "status" : 200,
       "cls" : "NSHTTPURLResponse",
       "url" : "https:\/\/ps.pndsn.com\/v2\/objects\/demo\/uuids\/Serhii-uuid-identifier\/channels?sort=channel.name:desc&count=1&limit=100&pnsdk=PubNub-ObjC-iOS\/4.x.x&include=channel,channel.custom&uuid=Serhii",
       "headers" : {
         "Access-Control-Allow-Credentials" : "true",
-        "Content-Type" : "application\/json",
+        "Content-Type" : "text\/html",
         "Access-Control-Allow-Origin" : "*",
         "Vary" : "Accept-Encoding",
         "Transfer-Encoding" : "Identity",

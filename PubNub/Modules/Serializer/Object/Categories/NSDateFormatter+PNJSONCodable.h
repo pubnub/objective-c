@@ -12,6 +12,9 @@
 
 #pragma mark - Properties
 
+/// Pre-configured ISO8601 date formatter without milliseconds.
+@property(class, strong, nonatomic, readonly) NSDateFormatter *pnjc_iso8601NoMillisecond;
+
 /// Pre-configured ISO8601 date formatter.
 @property(class, strong, nonatomic, readonly) NSDateFormatter *pnjc_iso8601;
 

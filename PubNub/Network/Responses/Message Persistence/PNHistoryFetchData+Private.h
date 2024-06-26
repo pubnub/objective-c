@@ -15,6 +15,14 @@ NS_ASSUME_NONNULL_BEGIN
 /// Whether there were decryption error or not.
 @property(assign, nonatomic, readonly) BOOL decryptError;
 
+
+#pragma mark - Helpers
+
+/// Set name of the channel for messages fetched not for multiple channels (using `v2` `Message Persistence` REST API).
+///
+/// - Parameter channel: Name of the channel which should be single root key in processed messages.
+- (void)setSingleChannelName:(NSString *)channel;
+
 #pragma mark -
 
 

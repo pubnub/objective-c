@@ -2,9 +2,7 @@
 #import "PNBasePublishRequest+Private.h"
 #import "PubNub+CorePrivate.h"
 #import "PNStatus+Private.h"
-#ifndef PUBNUB_DISABLE_LOGGER
 #import "PNLogMacro.h"
-#endif // PUBNUB_DISABLE_LOGGER
 #import "PNHelpers.h"
 
 // Deprecated
@@ -244,14 +242,12 @@ NS_ASSUME_NONNULL_END
     PNOperationDataParser *responseParser = [self parserWithStatus:[PNPublishStatus class]];
     PNParsedRequestCompletionBlock handler;
 
-#ifndef PUBNUB_DISABLE_LOGGER
     PNLogAPICall(self.logger, @"<PubNub::API> Publish '%@' file message to '%@' channel%@%@%@",
                  (userRequest.identifier ?: @"<error>"),
                  (userRequest.channel ?: @"<error>"),
                  (userRequest.metadata ? [NSString stringWithFormat:@" with metadata (%@)", userRequest.metadata] : @""),
                  (!userRequest.shouldStore ? @" which won't be saved in history" : @""),
                  [NSString stringWithFormat:@": %@", (userRequest.preFormattedMessage ?: @"<error>")]);
-#endif // PUBNUB_DISABLE_LOGGER
 
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
@@ -282,7 +278,6 @@ NS_ASSUME_NONNULL_END
     PNOperationDataParser *responseParser = [self parserWithStatus:[PNPublishStatus class]];
     PNParsedRequestCompletionBlock handler;
 
-#ifndef PUBNUB_DISABLE_LOGGER
     PNLogAPICall(self.logger, @"<PubNub::API> Publish%@ message to '%@' channel%@%@%@",
                  (userRequest.shouldCompress ? @" compressed" : @""),
                  (userRequest.channel ?: @"<error>"),
@@ -290,7 +285,6 @@ NS_ASSUME_NONNULL_END
                  (!userRequest.shouldStore ? @" which won't be saved in history" : @""),
                  (!userRequest.shouldCompress ? [NSString stringWithFormat:@": %@",
                                                  (userRequest.message ?: @"<error>")] : @"."));
-#endif // PUBNUB_DISABLE_LOGGER
 
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
@@ -537,9 +531,7 @@ NS_ASSUME_NONNULL_END
     PNSignalCompletionBlock block = [handlerBlock copy];
     PNParsedRequestCompletionBlock handler;
 
-#ifndef PUBNUB_DISABLE_LOGGER
     PNLogAPICall(self.logger, @"<PubNub::API> Signal to '%@' channel.", (userRequest.channel ?: @"<error>"));
-#endif // PUBNUB_DISABLE_LOGGER
 
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,

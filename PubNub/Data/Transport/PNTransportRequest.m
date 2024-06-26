@@ -33,7 +33,7 @@
             return @"PATCH";
             break;
         case TransportDELETEMethod:
-            return @"DELET";
+            return @"DELETE";
             break;
         case TransportLOCALMethod:
             return @"LOCAL";

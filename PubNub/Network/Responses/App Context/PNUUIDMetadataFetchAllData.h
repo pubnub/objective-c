@@ -1,5 +1,5 @@
 #import <PubNub/PNPagedAppContextData.h>
-#import <PubNub/PNChannelMember.h>
+#import <PubNub/PNUUIDMetadata.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 /// > Note: Value will be `0` in case if ``PNUUIDFields/PNUUIDTotalCountField`` not added to `includeFields` of
 ///  ``PubNub/PNFetchAllUUIDMetadataRequest``.
-@property (nonatomic, readonly, assign) NSUInteger totalCount;
+@property(assign, nonatomic, readonly) NSUInteger totalCount;
 
 #pragma mark -
 

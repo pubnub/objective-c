@@ -19,6 +19,14 @@ NS_ASSUME_NONNULL_BEGIN
 ///  > Notes: Maximum 500 channels.
 @property(copy, nonatomic, readonly) NSArray<NSString *> *channels;
 
+/// Include events' actions presence flag.
+///
+/// Each fetched entry will contain published data under `message` key and added `message actions` will be available
+/// under `actions` key.
+///
+/// > Important: This option can't be used if `channels` contains multiple entries.
+@property(assign, nonatomic) BOOL includeMessageActions;
+
 /// Search interval start timetoken.
 ///
 /// Timetoken for the oldest event starting from which next should be returned events.
@@ -33,20 +41,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// > Note: Value will be converted to required precision internally.
 @property(strong, nullable, nonatomic) NSNumber *end;
 
-/// Maximum number of events.
-///
-/// Maximum number of events which should be returned in response.
-///
-/// > Note: Maximum `100` if `channels` contains only one name or `25` if `channels` contains multiple names or
-/// `includeMessageActions` is set to `YES`.
-@property(assign, nonatomic) NSUInteger max;
-
-/// Include events' metadata presence flag.
-///
-/// Each fetched entry will contain published data under `message` key and published message `meta` will be available
-/// under `metadata` key.
-@property(assign, nonatomic) BOOL includeMetadata;
-
 /// Include events' type presence flag.
 ///
 /// Each fetched entry will contain published data under `message` key and published message `message type` will be
@@ -54,6 +48,20 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 /// > Note: By default set to `YES`.
 @property(assign, nonatomic) BOOL includeMessageType;
+
+/// Include events' timetoken flag.
+///
+/// Each fetched entry will contain published data under `message` key and added `publish time` will be available
+/// under `timetoken` key.
+///
+/// > Important: This option can't be used if `channels` contains multiple entries.
+@property(assign, nonatomic) BOOL includeTimeToken;
+
+/// Include events' metadata presence flag.
+///
+/// Each fetched entry will contain published data under `message` key and published message `meta` will be available
+/// under `metadata` key.
+@property(assign, nonatomic) BOOL includeMetadata;
 
 /// Include events' publisher user ID presence flag.
 ///
@@ -63,19 +71,25 @@ NS_ASSUME_NONNULL_BEGIN
 /// > Note: By default set to `YES`.
 @property(assign, nonatomic) BOOL includeUUID;
 
-/// Include events' actions presence flag.
+/// Maximum number of events.
 ///
-/// Each fetched entry will contain published data under `message` key and added `message actions` will be available
-/// under `actions` key.
+/// Maximum number of events which should be returned in response.
 ///
-/// > Important: This option can't be used if `channels` contains multiple entries.
-@property(assign, nonatomic) BOOL includeMessageActions;
+/// > Note: Maximum `100` if `channels` contains only one name or `25` if `channels` contains multiple names or
+/// `includeMessageActions` is set to `YES`.
+@property(assign, nonatomic) NSUInteger limit;
 
 /// Whether events order in response should be reversed or not.
 @property(assign, nonatomic) BOOL reverse;
 
 
 #pragma mark - Initialization and Constructor
+
+/// Create `Fetch history` request.
+///
+/// - Parameter channel: Channel for which events should be pulled out from storage.
+/// - Returns: Ready to use `Fetch history` request.
++ (instancetype)requestWithChannel:(NSString *)channel;
 
 /// Create `Fetch history` request.
 ///

@@ -49,6 +49,7 @@ NS_ASSUME_NONNULL_END
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-retain-cycles"
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
 
 #pragma mark - Setup / Tear down
@@ -198,7 +199,7 @@ NS_ASSUME_NONNULL_END
  *  'ItShouldSetMembershipAndReturnSortedMembershipsInformationWhenSortIsSet.json' should
  *  be modified after cassette recording. Find first mention of membership set and copy paste
  *  4 entries which belong to it. For new entries change 'id' field to be different from source. For
- *  original response entry change status code to 404.
+ *  original response entry change `Content-Type` to `text/html`.
  */
 - (void)testItShouldSetMembershipAndReturnSortedMembershipsInformationWhenSortIsSet {
     if ([self shouldSkipTestWithManuallyModifiedMockedResponse]) {
@@ -760,7 +761,7 @@ NS_ASSUME_NONNULL_END
  *  'ItShouldRemoveMembershipAndReceiveStatusWithExpectedOperationAndCategory.json' should
  *  be modified after cassette recording. Find first mention of membership remove and copy paste
  *  4 entries which belong to it. For new entries change 'id' field to be different from source. For
- *  original response entry change status code to 404.
+ *  original response entry change `Content-Type` to `text/html`.
  */
 - (void)testItShouldRemoveMembershipAndReceiveStatusWithExpectedOperationAndCategory {
     if ([self shouldSkipTestWithManuallyModifiedMockedResponse]) {
@@ -892,7 +893,7 @@ NS_ASSUME_NONNULL_END
 - (void)testItShouldRemoveMembershipAndReturnSortedMembershipsInformationWhenSortedIsSet {
     NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:5 usingClient:nil];
     NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:nil];
-    NSString *expectedSort = @"channel.name%3Adesc,updated";
+    NSString *expectedSort = @"channel.name%3Adesc%2Cupdated";
 
     NSMutableArray<PNMembership *> *memberships = [[self createUUIDsMembership:[uuidsMetadata valueForKey:@"uuid"]
                                                                     inChannels:[channelsMetadata valueForKey:@"channel"]
@@ -1078,7 +1079,7 @@ NS_ASSUME_NONNULL_END
  *  'ItShouldRemoveMembershipUsingManageAndReceiveStatusWithExpectedOperationAndCategory.json' should
  *  be modified after cassette recording. Find first mention of membership remove and copy paste
  *  4 entries which belong to it. For new entries change 'id' field to be different from source. For
- *  original response entry change status code to 404.
+ *  original response entry change `Content-Type` to `text/html`.
  */
 - (void)testItShouldRemoveMembershipUsingManageAndReceiveStatusWithExpectedOperationAndCategory {
     if ([self shouldSkipTestWithManuallyModifiedMockedResponse]) {
@@ -1210,7 +1211,7 @@ NS_ASSUME_NONNULL_END
 - (void)testItShouldRemoveMembershipUsingManageAndReturnSortedMembershipsInformationWhenSortedIsSet {
     NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:5 usingClient:nil];
     NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:nil];
-    NSString *expectedSort = @"channel.name%3Adesc,updated";
+    NSString *expectedSort = @"channel.name%3Adesc%2Cupdated";
 
     NSMutableArray<PNMembership *> *memberships = [[self createUUIDsMembership:[uuidsMetadata valueForKey:@"uuid"]
                                                                     inChannels:[channelsMetadata valueForKey:@"channel"]
@@ -1396,7 +1397,7 @@ NS_ASSUME_NONNULL_END
  *  'ItShouldFetchMembershipsAndReceiveResultWithExpectedOperation.json' should
  *  be modified after cassette recording. Find first mention of memberships fetch and copy paste 4 entries
  *  which belong to it. For new entries change 'id' field to be different from source. For original
- *  response entry change status code to 404.
+ *  response entry change `Content-Type` to `text/html`.
  */
 - (void)testItShouldFetchMembershipsAndReceiveResultWithExpectedOperation {
     if ([self shouldSkipTestWithManuallyModifiedMockedResponse]) {
@@ -1486,7 +1487,7 @@ NS_ASSUME_NONNULL_END
 - (void)testItShouldFetchSortedMembershipsWhenSortedIsSet {
     NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:6 usingClient:nil];
     NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:nil];
-    NSString *expectedSort = @"channel.name%3Adesc,updated";
+    NSString *expectedSort = @"channel.name%3Adesc%2Cupdated";
 
     NSArray<PNMembership *> *memberships = [self createUUIDsMembership:[uuidsMetadata valueForKey:@"uuid"]
                                                             inChannels:[channelsMetadata valueForKey:@"channel"]
@@ -1556,7 +1557,7 @@ NS_ASSUME_NONNULL_END
                 XCTAssertNotNil(memberships);
                 XCTAssertEqual(memberships.count, expectedCount);
                 XCTAssertEqual(result.data.totalCount, channelsMetadata.count);
-                XCTAssertNotNil(memberships.firstObject.custom);
+                XCTAssertNil(memberships.firstObject.custom);
 
                 handler();
             });

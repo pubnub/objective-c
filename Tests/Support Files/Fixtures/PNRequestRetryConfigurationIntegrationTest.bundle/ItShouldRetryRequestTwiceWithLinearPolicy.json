@@ -28,7 +28,7 @@
       "url" : "https:\/\/ps.pndsn.com\/publish\/demo\/demo\/0\/test-channel\/0\/%22hello-world%22?pnsdk=PubNub-ObjC-iOS\/4.x.x&seqn=1&uuid=Serhii",
       "headers" : {
         "Access-Control-Allow-Methods" : "GET",
-        "Content-Type" : "text\/javascript; charset=\"UTF-8\"",
+        "Content-Type" : "text\/html; charset=\"UTF-8\"",
         "Access-Control-Allow-Origin" : "*",
         "Date" : "Mon, 18 Dec 2023 08:15:25 GMT",
         "Content-Length" : "160",
@@ -79,7 +79,7 @@
       "url" : "https:\/\/ps.pndsn.com\/publish\/demo\/demo\/0\/test-channel\/0\/%22hello-world%22?pnsdk=PubNub-ObjC-iOS\/4.x.x&seqn=1&uuid=Serhii",
       "headers" : {
         "Access-Control-Allow-Methods" : "GET",
-        "Content-Type" : "text\/javascript; charset=\"UTF-8\"",
+        "Content-Type" : "text\/html; charset=\"UTF-8\"",
         "Access-Control-Allow-Origin" : "*",
         "Date" : "Mon, 18 Dec 2023 08:15:25 GMT",
         "Content-Length" : "160",
@@ -130,7 +130,7 @@
       "url" : "https:\/\/ps.pndsn.com\/publish\/demo\/demo\/0\/test-channel\/0\/%22hello-world%22?pnsdk=PubNub-ObjC-iOS\/4.x.x&seqn=1&uuid=Serhii",
       "headers" : {
         "Access-Control-Allow-Methods" : "GET",
-        "Content-Type" : "text\/javascript; charset=\"UTF-8\"",
+        "Content-Type" : "text\/html; charset=\"UTF-8\"",
         "Access-Control-Allow-Origin" : "*",
         "Date" : "Mon, 18 Dec 2023 08:15:25 GMT",
         "Content-Length" : "160",

@@ -13,6 +13,14 @@
     return [PNMembership class];
 }
 
+- (NSArray<PNMembership *> *)memberships {
+    return (NSArray<PNMembership *> *)self.objects;
+}
+
+- (NSUInteger)totalCount {
+    return super.totalCount;
+}
+
 #pragma mark -
 
 

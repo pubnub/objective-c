@@ -49,7 +49,7 @@ NS_ASSUME_NONNULL_END
         @"userTimetoken": @"o",
         @"channel": @"c",
         @"subscription": @"b",
-        @"userMetadata": @"mt",
+        @"userMetadata": @"u",
     };
 }
 
@@ -81,7 +81,7 @@ NS_ASSUME_NONNULL_END
 }
 
 - (NSNumber *)region {
-    return self.publishTimetoken.reqion;
+    return self.publishTimetoken.region;
 }
 
 #pragma mark -

@@ -62,7 +62,7 @@
 #pragma mark - Initialization and Configuration
 
 + (instancetype)legacyPresenceFromPresence:(PNPresenceStateFetchResult *)presence {
-    return [self objectWithOperation:presence.operation
+    return [self objectWithOperation:PNStateForChannelGroupOperation
                             response:[[PNChannelGroupClientStateData alloc] initWithPresenceData:presence.responseData]];
 }
 

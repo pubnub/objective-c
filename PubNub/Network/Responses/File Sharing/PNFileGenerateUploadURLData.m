@@ -66,7 +66,7 @@ NS_ASSUME_NONNULL_END
 }
 
 - (instancetype)initObjectWithCoder:(id<PNDecoder>)coder {
-    NSDictionary *payload = [coder decodeObjectOfClass:[NSArray class]];
+    NSDictionary *payload = [coder decodeObjectOfClass:[NSDictionary class]];
     if (![payload isKindOfClass:[NSDictionary class]] || !payload[@"data"] || !payload[@"file_upload_request"]) {
         return nil;
     }

@@ -36,9 +36,7 @@
     PNTimeCompletionBlock block = [handlerBlock copy];
     PNParsedRequestCompletionBlock handler;
 
-#ifndef PUBNUB_DISABLE_LOGGER
     PNLogAPICall(self.logger, @"<PubNub::API> Time token request.");
-#endif // PUBNUB_DISABLE_LOGGER
 
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,

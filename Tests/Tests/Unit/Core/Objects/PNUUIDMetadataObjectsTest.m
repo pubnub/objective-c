@@ -2,8 +2,12 @@
 * @author Serhii Mamontov
 * @copyright © 2010-2020 PubNub, Inc.
 */
-#import <PubNub/PNRequestParameters.h>
 #import <PubNub/PubNub+CorePrivate.h>
+#import <PubNub/PNFetchAllUUIDMetadataRequest.h>
+#import <PubNub/PNBaseObjectsRequest+Private.h>
+#import <PubNub/PNRemoveUUIDMetadataRequest.h>
+#import <PubNub/PNFetchUUIDMetadataRequest.h>
+#import <PubNub/PNSetUUIDMetadataRequest.h>
 #import "PNRecordableTestCase.h"
 #import <PubNub/PNHelpers.h>
 #import <PubNub/PubNub.h>
@@ -30,6 +34,7 @@ NS_ASSUME_NONNULL_END
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-retain-cycles"
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
 
 #pragma mark - VCR configuration
@@ -67,19 +72,17 @@ NS_ASSUME_NONNULL_END
                                                               options:(NSJSONWritingOptions)0
                                                                 error:nil];
     
-    
+
     id clientMock = [self mockForObject:self.client];
-    id recorded = OCMExpect([clientMock processOperation:PNSetUUIDMetadataOperation
-                                          withParameters:[OCMArg any]
-                                                    data:[OCMArg any]
-                                         completionBlock:[OCMArg any]])
+    id recorded = OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNSetUUIDMetadataRequest class]]
+                                        withCompletion:[OCMArg any]])
         .andDo(^(NSInvocation *invocation) {
-            PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
-            NSData *sentData = [self objectForInvocation:invocation argumentAtIndex:3];
-            
-            XCTAssertEqualObjects(parameters.pathComponents[@"{uuid}"], expectedId);
-            XCTAssertEqualObjects(parameters.query[@"include"], @"custom");
-            XCTAssertEqualObjects(sentData, expectedPayload);
+            PNSetUUIDMetadataRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
+
+            XCTAssertNil([request validate]);
+            XCTAssertEqualObjects(request.identifier, expectedId);
+            XCTAssertEqualObjects(request.request.query[@"include"], @"custom");
+            XCTAssertEqualObjects(request.body, expectedPayload);
         });
     
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
@@ -93,14 +96,12 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldNotSetIncludeFieldsWhenCalledWithSetUUIDMetadataIncludeFieldsSetToZero {
     id clientMock = [self mockForObject:self.client];
-    id recorded = OCMExpect([clientMock processOperation:PNSetUUIDMetadataOperation
-                                          withParameters:[OCMArg any]
-                                                    data:[OCMArg any]
-                                         completionBlock:[OCMArg any]])
+    id recorded = OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNSetUUIDMetadataRequest class]]
+                                        withCompletion:[OCMArg any]])
         .andDo(^(NSInvocation *invocation) {
-            PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
-            
-            XCTAssertNil(parameters.query[@"include"]);
+            PNSetUUIDMetadataRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
+
+            XCTAssertNil(request.query[@"include"]);
         });
     
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
@@ -108,7 +109,7 @@ NS_ASSUME_NONNULL_END
             .uuid([NSUUID UUID].UUIDString)
             .name([NSUUID UUID].UUIDString)
             .includeFields(0)
-            .performWithCompletion(^(PNSetUUIDMetadataStatus *status) {});
+            .performWithCompletion(^(PNSetUUIDMetadataStatus *status) { });
     }];
 }
 
@@ -117,15 +118,13 @@ NS_ASSUME_NONNULL_END
 
 
     id clientMock = [self mockForObject:self.client];
-    id recorded = OCMExpect([clientMock processOperation:PNSetUUIDMetadataOperation
-                                          withParameters:[OCMArg any]
-                                                    data:[OCMArg any]
-                                         completionBlock:[OCMArg any]])
+    id recorded = OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNSetUUIDMetadataRequest class]]
+                                        withCompletion:[OCMArg any]])
         .andDo(^(NSInvocation *invocation) {
-            PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
+            PNSetUUIDMetadataRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
 
-            XCTAssertEqualObjects(parameters.pathComponents[@"{uuid}"], expectedId);
-            XCTAssertEqualObjects(parameters.query[@"include"], @"custom");
+            XCTAssertEqualObjects(request.identifier, expectedId);
+            XCTAssertEqualObjects(request.query[@"include"], @"custom");
         });
 
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
@@ -194,14 +193,12 @@ NS_ASSUME_NONNULL_END
     
     
     id clientMock = [self mockForObject:self.client];
-    id recorded = OCMExpect([clientMock processOperation:PNRemoveUUIDMetadataOperation
-                                          withParameters:[OCMArg any]
-                                                    data:[OCMArg any]
-                                         completionBlock:[OCMArg any]])
+    id recorded = OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNRemoveUUIDMetadataRequest class]]
+                                        withCompletion:[OCMArg any]])
         .andDo(^(NSInvocation *invocation) {
-            PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
+            PNRemoveUUIDMetadataRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
 
-            XCTAssertEqualObjects(parameters.pathComponents[@"{uuid}"], expectedId);
+            XCTAssertEqualObjects(request.identifier, expectedId);
         });
     
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
@@ -216,14 +213,12 @@ NS_ASSUME_NONNULL_END
 
 
     id clientMock = [self mockForObject:self.client];
-    id recorded = OCMExpect([clientMock processOperation:PNRemoveUUIDMetadataOperation
-                                          withParameters:[OCMArg any]
-                                                    data:[OCMArg any]
-                                         completionBlock:[OCMArg any]])
+    id recorded = OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNRemoveUUIDMetadataRequest class]]
+                                        withCompletion:[OCMArg any]])
         .andDo(^(NSInvocation *invocation) {
-            PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
+            PNRemoveUUIDMetadataRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
 
-            XCTAssertEqualObjects(parameters.pathComponents[@"{uuid}"], expectedId);
+            XCTAssertEqualObjects(request.identifier, expectedId);
         });
 
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
@@ -254,15 +249,13 @@ NS_ASSUME_NONNULL_END
     
     
     id clientMock = [self mockForObject:self.client];
-    id recorded = OCMExpect([clientMock processOperation:PNFetchUUIDMetadataOperation
-                                          withParameters:[OCMArg any]
-                                                    data:[OCMArg any]
-                                         completionBlock:[OCMArg any]])
+    id recorded = OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNFetchUUIDMetadataRequest class]]
+                                        withCompletion:[OCMArg any]])
         .andDo(^(NSInvocation *invocation) {
-            PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
-            
-            XCTAssertEqualObjects(parameters.pathComponents[@"{uuid}"], expectedId);
-            XCTAssertEqualObjects(parameters.query[@"include"], @"custom");
+            PNFetchUUIDMetadataRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
+
+            XCTAssertEqualObjects(request.identifier, expectedId);
+            XCTAssertEqualObjects(request.query[@"include"], @"custom");
         });
     
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
@@ -274,14 +267,12 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldNotSetIncludeFieldsWhenCalledWithFetchUUIDMetadataIncludeFieldsSetToZero {
     id clientMock = [self mockForObject:self.client];
-    id recorded = OCMExpect([clientMock processOperation:PNFetchUUIDMetadataOperation
-                                          withParameters:[OCMArg any]
-                                                    data:[OCMArg any]
-                                         completionBlock:[OCMArg any]])
+    id recorded = OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNFetchUUIDMetadataRequest class]]
+                                        withCompletion:[OCMArg any]])
         .andDo(^(NSInvocation *invocation) {
-            PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
+            PNFetchUUIDMetadataRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
             
-            XCTAssertNil(parameters.query[@"include"]);
+            XCTAssertNil(request.query[@"include"]);
         });
     
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
@@ -297,15 +288,13 @@ NS_ASSUME_NONNULL_END
 
 
     id clientMock = [self mockForObject:self.client];
-    id recorded = OCMExpect([clientMock processOperation:PNFetchUUIDMetadataOperation
-                                          withParameters:[OCMArg any]
-                                                    data:[OCMArg any]
-                                         completionBlock:[OCMArg any]])
+    id recorded = OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNFetchUUIDMetadataRequest class]]
+                                        withCompletion:[OCMArg any]])
         .andDo(^(NSInvocation *invocation) {
-            PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
+            PNFetchUUIDMetadataRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
 
-            XCTAssertEqualObjects(parameters.pathComponents[@"{uuid}"], expectedId);
-            XCTAssertEqualObjects(parameters.query[@"include"], @"custom");
+            XCTAssertEqualObjects(request.identifier, expectedId);
+            XCTAssertEqualObjects(request.query[@"include"], @"custom");
         });
 
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
@@ -333,26 +322,25 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldFetchAllUsersWhenCalled {
     NSString *filterExpression = @"updated >= '2019-08-31T00:00:00Z'";
-    NSString *expectedFilterExpression = [PNString percentEscapedString:filterExpression];
+    // Encoding is transport layer responsibility, so we are expecting raw string in query.
+    NSString *expectedFilterExpression = filterExpression;
     NSString *expectedStart = [NSUUID UUID].UUIDString;
     NSString *expectedEnd = [NSUUID UUID].UUIDString;
     NSNumber *expectedLimit = @(56);
     
     
     id clientMock = [self mockForObject:self.client];
-    id recorded = OCMExpect([clientMock processOperation:PNFetchAllUUIDMetadataOperation
-                                          withParameters:[OCMArg any]
-                                                    data:[OCMArg any]
-                                         completionBlock:[OCMArg any]])
-    .andDo(^(NSInvocation *invocation) {
-        PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
-        
-        XCTAssertEqualObjects(parameters.query[@"start"], expectedStart);
-        XCTAssertEqualObjects(parameters.query[@"end"], expectedEnd);
-        XCTAssertEqualObjects(parameters.query[@"include"], @"custom");
-        XCTAssertEqualObjects(parameters.query[@"limit"], expectedLimit.stringValue);
-        XCTAssertEqualObjects(parameters.query[@"filter"], expectedFilterExpression);
-        XCTAssertNil(parameters.query[@"count"]);
+    id recorded = OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNFetchAllUUIDMetadataRequest class]]
+                                        withCompletion:[OCMArg any]])
+        .andDo(^(NSInvocation *invocation) {
+            PNFetchAllUUIDMetadataRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
+
+        XCTAssertEqualObjects(request.query[@"start"], expectedStart);
+        XCTAssertEqualObjects(request.query[@"end"], expectedEnd);
+        XCTAssertEqualObjects(request.query[@"include"], @"custom");
+        XCTAssertEqualObjects(request.query[@"limit"], expectedLimit.stringValue);
+        XCTAssertEqualObjects(request.query[@"filter"], expectedFilterExpression);
+        XCTAssertNil(request.query[@"count"]);
     });
     
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
@@ -368,14 +356,12 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldSetDefaultIncludeFieldsWhenCalledWithOutFetchAllUUIDMetadataIncludeFields {
     id clientMock = [self mockForObject:self.client];
-    id recorded = OCMExpect([clientMock processOperation:PNFetchAllUUIDMetadataOperation
-                                          withParameters:[OCMArg any]
-                                                    data:[OCMArg any]
-                                         completionBlock:[OCMArg any]])
+    id recorded = OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNFetchAllUUIDMetadataRequest class]]
+                                        withCompletion:[OCMArg any]])
         .andDo(^(NSInvocation *invocation) {
-            PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
+            PNFetchAllUUIDMetadataRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
             
-            XCTAssertNotNil(parameters.query[@"include"]);
+            XCTAssertNotNil(request.query[@"include"]);
         });
     
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{

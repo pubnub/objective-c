@@ -28,6 +28,7 @@ NS_ASSUME_NONNULL_END
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-retain-cycles"
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
 
 #pragma mark - Setup / Tear down
@@ -53,7 +54,7 @@ NS_ASSUME_NONNULL_END
                 PNChannelMetadata *metadata = status.data.metadata;
                 XCTAssertFalse(status.isError);
                 XCTAssertNotNil(metadata);
-                XCTAssertEqualObjects(metadata.custom, [NSNull null]);
+                XCTAssertNil(metadata.custom);
                 XCTAssertEqualObjects(metadata.channel, identifier);
                 XCTAssertNotNil(metadata.updated);
                 XCTAssertNotNil(metadata.eTag);
@@ -91,7 +92,7 @@ NS_ASSUME_NONNULL_END
  *  'ItShouldSetChannelMetadataWhenAdditionalInformationIsSet.json' should
  *  be modified after cassette recording. Find first mention of channel metadata set and copy paste 4 entries
  *  which belong to it. For new entries change 'id' field to be different from source. For original
- *  response entry change status code to 404.
+ *  response entry change `Content-Type` to `text/html`.
  */
 - (void)testItShouldSetChannelMetadataWhenAdditionalInformationIsSet {
     if ([self shouldSkipTestWithManuallyModifiedMockedResponse]) {
@@ -145,7 +146,7 @@ NS_ASSUME_NONNULL_END
  *  'ItShouldRemoveChannelMetadataAndReceiveStatusWithExpectedOperationAndCategory.json' should
  *  be modified after cassette recording. Find first mention of channel metadata remove and copy paste 4 entries
  *  which belong to it. For new entries change 'id' field to be different from source. For original
- *  response entry change status code to 404.
+ *  response entry change `Content-Type` to `text/html`.
  */
 - (void)testItShouldRemoveChannelMetadataAndReceiveStatusWithExpectedOperationAndCategory {
     if ([self shouldSkipTestWithManuallyModifiedMockedResponse]) {
@@ -303,7 +304,7 @@ NS_ASSUME_NONNULL_END
  *  'ItShouldFetchAllChannelsMetadataAndReceiveResultWithExpectedOperation.json' should
  *  be modified after cassette recording. Find first mention of channels metadata fetch and copy paste 4 entries
  *  which belong to it. For new entries change 'id' field to be different from source. For original
- *  response entry change status code to 404.
+ *  response entry change `Content-Type` to `text/html`.
  */
 - (void)testItShouldFetchAllChannelsMetadataAndReceiveResultWithExpectedOperation {
     if ([self shouldSkipTestWithManuallyModifiedMockedResponse]) {
@@ -374,7 +375,7 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldFetchSortedChannelsMetadataWhenSortIsSet {
     NSArray<PNChannelMetadata *> *channels = [self setChannelsMetadata:6 usingClient:nil];
-    NSString *expectedSort = @"name%3Adesc,updated";
+    NSString *expectedSort = @"name%3Adesc%2Cupdated";
     NSArray<PNChannelMetadata *> *expectedChannelsOrder = [channels sortedArrayUsingDescriptors:@[
         [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:NO],
         [NSSortDescriptor sortDescriptorWithKey:@"updated" ascending:YES]

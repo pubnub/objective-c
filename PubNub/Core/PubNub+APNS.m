@@ -71,7 +71,6 @@
     PNPushNotificationsStateModificationCompletionBlock block = [handlerBlock copy];
     PNParsedRequestCompletionBlock handler; 
 
-#ifndef PUBNUB_DISABLE_LOGGER
     PNOperationType operation = userRequest.operation;
     if (operation == PNRemoveAllPushNotificationsOperation || operation == PNRemoveAllPushNotificationsV2Operation) {
         PNLogAPICall(self.logger, @"<PubNub::API> Disable push notifications for device '%@'%@.",
@@ -81,11 +80,9 @@
                            userRequest.topic, userRequest.environment == PNAPNSDevelopment ? @"development" : @"production"]
                         : @"");
     } else {
-        BOOL enable = operation == PNAddPushNotificationsOnChannelsOperation ||
-            operation == PNAddPushNotificationsOnChannelsV2Operation;
-        
         PNLogAPICall(self.logger, @"<PubNub::API> %@ push notifications for device '%@'%@: %@.",
-                     enable ? @"Enable" : @"Disable",
+                     (operation == PNAddPushNotificationsOnChannelsOperation ||
+                      operation == PNAddPushNotificationsOnChannelsV2Operation) ? @"Enable" : @"Disable",
                      userRequest.pushToken,
                      userRequest.pushType == PNAPNS2Push 
                         ? [NSString stringWithFormat:@" ('%@' topic in %@ environment)",
@@ -93,7 +90,6 @@
                         : @"",
                      [userRequest.channels componentsJoinedByString:@", "]);
     }
-#endif // PUBNUB_DISABLE_LOGGER
 
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
@@ -146,7 +142,7 @@
     
     if (pushType == PNAPNS2Push) {
         request.environment = environment;
-        request.topic = topic;
+        request.topic = topic ?: NSBundle.mainBundle.bundleIdentifier;
     }
     
     [self managePushNotificationWithRequest:request completion:block];
@@ -187,7 +183,7 @@
     
     if (pushType == PNAPNS2Push) {
         request.environment = environment;
-        request.topic = topic;
+        request.topic = topic ?: NSBundle.mainBundle.bundleIdentifier;
     }
     
     [self managePushNotificationWithRequest:request completion:block];
@@ -219,7 +215,7 @@
     
     if (pushType == PNAPNS2Push) {
         request.environment = environment;
-        request.topic = topic;
+        request.topic = topic ?: NSBundle.mainBundle.bundleIdentifier;
     }
     
     [self managePushNotificationWithRequest:request completion:block];
@@ -235,14 +231,12 @@
     PNPushNotificationsStateAuditCompletionBlock block = [handlerBlock copy];
     PNParsedRequestCompletionBlock handler;
 
-#ifndef PUBNUB_DISABLE_LOGGER
     PNLogAPICall(self.logger, @"<PubNub::API> Push notification enabled channels for device '%@'%@.",
                  userRequest.pushToken,
                  userRequest.pushType == PNAPNS2Push 
                     ? [NSString stringWithFormat:@" ('%@' topic in %@ environment)",
                        userRequest.topic, userRequest.environment == PNAPNSDevelopment ? @"development" : @"production"]
                     : @"");
-#endif // PUBNUB_DISABLE_LOGGER
 
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,

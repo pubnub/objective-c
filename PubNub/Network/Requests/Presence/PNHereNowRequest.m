@@ -62,7 +62,7 @@ NS_ASSUME_NONNULL_END
     }
     
     if (self.operation == PNHereNowForChannelGroupOperation) {
-        query[@"state"] = [self.channelGroups componentsJoinedByString:@","];
+        query[@"channel-group"] = [self.channelGroups componentsJoinedByString:@","];
     }
     
     if (self.arbitraryQueryParameters) [query addEntriesFromDictionary:self.arbitraryQueryParameters];

@@ -281,6 +281,12 @@ NS_ASSUME_NONNULL_END
         free(methodsList);
     }
 
+    if (aClass != [NSObject class] && strncmp(class_getName([aClass superclass]), "NS", 2) != 0) {
+        Class superClass = [aClass superclass];
+        NSSet<NSString *> *superMethodsList = [self methodsListForClass:superClass];
+        [methods unionSet:superMethodsList];
+    }
+
     return methods;
 }
 

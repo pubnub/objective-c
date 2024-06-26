@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Properties
 
 /// Actual `App Context` object information.
-@property(strong, nonatomic, readonly) id data;
+@property(strong, nonatomic, readonly) PNBaseAppContextObject *data;
 
 #pragma mark -
 
@@ -31,14 +31,6 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Properties
 
-+ (NSArray<NSString *> *)optionalKeys {
-    return @[@"channelMetadata", @"uuidMetadata", @"membership"];
-}
-
-+ (NSArray<NSString *> *)dynamicTypeKeys {
-    return @[@"data"];
-}
-
 + (Class)decodingClassForProperty:(NSString *)propertyName inDecodedDictionary:(NSDictionary *)decodedDictionary {
     if (![propertyName isEqualToString:@"data"]) return nil;
 
@@ -48,16 +40,32 @@ NS_ASSUME_NONNULL_END
     return [PNMembership class];
 }
 
++ (NSDictionary<NSString *,NSString *> *)codingKeys {
+    return @{
+        @"event": @"event",
+        @"type": @"type",
+        @"data": @"data"
+    };
+}
+
++ (NSArray<NSString *> *)optionalKeys {
+    return @[@"channelMetadata", @"uuidMetadata", @"membership"];
+}
+
++ (NSArray<NSString *> *)dynamicTypeKeys {
+    return @[@"data"];
+}
+
 - (PNChannelMetadata *)channelMetadata {
-    return [self.type isEqualToString:@"channel"] ? self.data : nil;
+    return [self.type isEqualToString:@"channel"] ? (PNChannelMetadata *)self.data : nil;
 }
 
 - (PNUUIDMetadata *)uuidMetadata {
-    return [self.type isEqualToString:@"uuid"] ? self.data : nil;
+    return [self.type isEqualToString:@"uuid"] ? (PNUUIDMetadata *)self.data : nil;
 }
 
 - (PNMembership *)membership {
-    return [self.type isEqualToString:@"membership"] ? self.data : nil;
+    return [self.type isEqualToString:@"membership"] ? (PNMembership *)self.data : nil;
 }
 
 - (NSNumber *)timestamp {

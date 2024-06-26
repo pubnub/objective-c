@@ -443,10 +443,7 @@ NS_ASSUME_NONNULL_END
     userRequest.identifier = userRequest.identifier.length ? userRequest.identifier : self.configuration.userID;
     PNOperationDataParser *responseParser = [self parserWithStatus:[PNSetUUIDMetadataStatus class]];
     PNSetUUIDMetadataCompletionBlock block = [handleBlock copy];
-    PNParsedRequestCompletionBlock handler; 
-
-#ifndef PUBNUB_DISABLE_LOGGER
-#endif // PUBNUB_DISABLE_LOGGER
+    PNParsedRequestCompletionBlock handler;
                            
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
@@ -473,10 +470,7 @@ NS_ASSUME_NONNULL_END
     userRequest.identifier = userRequest.identifier.length ? userRequest.identifier : self.configuration.userID;
     PNOperationDataParser *responseParser = [self parserWithStatus:[PNAcknowledgmentStatus class]];
     PNRemoveUUIDMetadataCompletionBlock block = [handleBlock copy];
-    PNParsedRequestCompletionBlock handler; 
-
-#ifndef PUBNUB_DISABLE_LOGGER
-#endif // PUBNUB_DISABLE_LOGGER
+    PNParsedRequestCompletionBlock handler;
                            
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
@@ -504,10 +498,7 @@ NS_ASSUME_NONNULL_END
     PNOperationDataParser *responseParser = [self parserWithResult:[PNFetchUUIDMetadataResult class]
                                                             status:[PNErrorStatus class]];
     PNFetchUUIDMetadataCompletionBlock block = [handleBlock copy];
-    PNParsedRequestCompletionBlock handler; 
-
-#ifndef PUBNUB_DISABLE_LOGGER
-#endif // PUBNUB_DISABLE_LOGGER
+    PNParsedRequestCompletionBlock handler;
                            
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
@@ -534,10 +525,7 @@ NS_ASSUME_NONNULL_END
     PNOperationDataParser *responseParser = [self parserWithResult:[PNFetchAllUUIDMetadataResult class]
                                                             status:[PNErrorStatus class]];
     PNFetchAllUUIDMetadataCompletionBlock block = [handleBlock copy];
-    PNParsedRequestCompletionBlock handler; 
-
-#ifndef PUBNUB_DISABLE_LOGGER
-#endif // PUBNUB_DISABLE_LOGGER
+    PNParsedRequestCompletionBlock handler;
                            
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
@@ -565,10 +553,7 @@ NS_ASSUME_NONNULL_END
                            completion:(PNSetChannelMetadataCompletionBlock)handleBlock {
     PNOperationDataParser *responseParser = [self parserWithStatus:[PNSetChannelMetadataStatus class]];
     PNSetChannelMetadataCompletionBlock block = [handleBlock copy];
-    PNParsedRequestCompletionBlock handler; 
-
-#ifndef PUBNUB_DISABLE_LOGGER
-#endif // PUBNUB_DISABLE_LOGGER
+    PNParsedRequestCompletionBlock handler;
                            
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
@@ -594,10 +579,7 @@ NS_ASSUME_NONNULL_END
                               completion:(PNRemoveChannelMetadataCompletionBlock)handleBlock {
     PNOperationDataParser *responseParser = [self parserWithStatus:[PNAcknowledgmentStatus class]];
     PNRemoveChannelMetadataCompletionBlock block = [handleBlock copy];
-    PNParsedRequestCompletionBlock handler; 
-
-#ifndef PUBNUB_DISABLE_LOGGER
-#endif // PUBNUB_DISABLE_LOGGER
+    PNParsedRequestCompletionBlock handler;
                            
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
@@ -624,10 +606,7 @@ NS_ASSUME_NONNULL_END
     PNOperationDataParser *responseParser = [self parserWithResult:[PNFetchChannelMetadataResult class]
                                                             status:[PNErrorStatus class]];
     PNFetchChannelMetadataCompletionBlock block = [handleBlock copy];
-    PNParsedRequestCompletionBlock handler; 
-
-#ifndef PUBNUB_DISABLE_LOGGER
-#endif // PUBNUB_DISABLE_LOGGER
+    PNParsedRequestCompletionBlock handler;
                            
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
@@ -654,10 +633,7 @@ NS_ASSUME_NONNULL_END
     PNOperationDataParser *responseParser = [self parserWithResult:[PNFetchAllChannelsMetadataResult class]
                                                             status:[PNErrorStatus class]];
     PNFetchAllChannelsMetadataCompletionBlock block = [handleBlock copy];
-    PNParsedRequestCompletionBlock handler; 
-
-#ifndef PUBNUB_DISABLE_LOGGER
-#endif // PUBNUB_DISABLE_LOGGER
+    PNParsedRequestCompletionBlock handler;
                            
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
@@ -687,10 +663,7 @@ NS_ASSUME_NONNULL_END
     userRequest.identifier = userRequest.identifier.length ? userRequest.identifier : self.configuration.userID;
     PNOperationDataParser *responseParser = [self parserWithStatus:[PNManageMembershipsStatus class]];
     PNManageMembershipsCompletionBlock block = [handleBlock copy];
-    PNParsedRequestCompletionBlock handler; 
-
-#ifndef PUBNUB_DISABLE_LOGGER
-#endif // PUBNUB_DISABLE_LOGGER
+    PNParsedRequestCompletionBlock handler;
                            
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
@@ -717,10 +690,7 @@ NS_ASSUME_NONNULL_END
     userRequest.identifier = userRequest.identifier.length ? userRequest.identifier : self.configuration.userID;
     PNOperationDataParser *responseParser = [self parserWithStatus:[PNManageMembershipsStatus class]];
     PNManageMembershipsCompletionBlock block = [handleBlock copy];
-    PNParsedRequestCompletionBlock handler; 
-
-#ifndef PUBNUB_DISABLE_LOGGER
-#endif // PUBNUB_DISABLE_LOGGER
+    PNParsedRequestCompletionBlock handler;
                            
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
@@ -747,10 +717,7 @@ NS_ASSUME_NONNULL_END
     userRequest.identifier = userRequest.identifier.length ? userRequest.identifier : self.configuration.userID;
     PNOperationDataParser *responseParser = [self parserWithStatus:[PNManageMembershipsStatus class]];
     PNManageMembershipsCompletionBlock block = [handleBlock copy];
-    PNParsedRequestCompletionBlock handler; 
-
-#ifndef PUBNUB_DISABLE_LOGGER
-#endif // PUBNUB_DISABLE_LOGGER
+    PNParsedRequestCompletionBlock handler;
                            
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
@@ -778,10 +745,7 @@ NS_ASSUME_NONNULL_END
     PNOperationDataParser *responseParser = [self parserWithResult:[PNFetchMembershipsResult class]
                                                             status:[PNErrorStatus class]];
     PNFetchMembershipsCompletionBlock block = [handleBlock copy];
-    PNParsedRequestCompletionBlock handler; 
-
-#ifndef PUBNUB_DISABLE_LOGGER
-#endif // PUBNUB_DISABLE_LOGGER
+    PNParsedRequestCompletionBlock handler;
                            
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
@@ -807,10 +771,7 @@ NS_ASSUME_NONNULL_END
                           completion:(PNManageChannelMembersCompletionBlock)handleBlock {
     PNOperationDataParser *responseParser = [self parserWithStatus:[PNManageChannelMembersStatus class]];
     PNManageChannelMembersCompletionBlock block = [handleBlock copy];
-    PNParsedRequestCompletionBlock handler; 
-
-#ifndef PUBNUB_DISABLE_LOGGER
-#endif // PUBNUB_DISABLE_LOGGER
+    PNParsedRequestCompletionBlock handler;
                            
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
@@ -836,10 +797,7 @@ NS_ASSUME_NONNULL_END
                              completion:(PNManageChannelMembersCompletionBlock)handleBlock {
     PNOperationDataParser *responseParser = [self parserWithStatus:[PNManageChannelMembersStatus class]];
     PNManageChannelMembersCompletionBlock block = [handleBlock copy];
-    PNParsedRequestCompletionBlock handler; 
-
-#ifndef PUBNUB_DISABLE_LOGGER
-#endif // PUBNUB_DISABLE_LOGGER
+    PNParsedRequestCompletionBlock handler;
                            
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
@@ -865,10 +823,7 @@ NS_ASSUME_NONNULL_END
                              completion:(PNManageChannelMembersCompletionBlock)handleBlock {
     PNOperationDataParser *responseParser = [self parserWithStatus:[PNManageChannelMembersStatus class]];
     PNManageChannelMembersCompletionBlock block = [handleBlock copy];
-    PNParsedRequestCompletionBlock handler; 
-
-#ifndef PUBNUB_DISABLE_LOGGER
-#endif // PUBNUB_DISABLE_LOGGER
+    PNParsedRequestCompletionBlock handler;
                            
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
@@ -897,9 +852,6 @@ NS_ASSUME_NONNULL_END
     PNFetchChannelMembersCompletionBlock block = [handleBlock copy];
     [userRequest setupWithClientConfiguration:self.configuration];
     PNParsedRequestCompletionBlock handler;
-
-#ifndef PUBNUB_DISABLE_LOGGER
-#endif // PUBNUB_DISABLE_LOGGER
 
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,

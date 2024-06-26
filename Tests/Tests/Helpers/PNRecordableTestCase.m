@@ -11,8 +11,9 @@
 
 #pragma mark Defines
 
-#define WRITING_CASSETTES 0
+#define WRITING_CASSETTES 1
 #define PUBNUB_LOGGER_ENABLED NO
+#define PUBNUB_DISABLE_LOGGER
 
 
 #pragma mark - Types and structures
@@ -283,6 +284,9 @@ NS_ASSUME_NONNULL_END
 
 @implementation PNRecordableTestCase
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
 
 #pragma mark - Information
 
@@ -487,7 +491,7 @@ NS_ASSUME_NONNULL_END
 
 - (void)updateVCRConfigurationFromDefaultConfiguration:(YHVConfiguration *)configuration {
 #if WRITING_CASSETTES
-    NSString *cassettesPath = @"<path to the project>/Tests/Support Files/Fixtures";
+    NSString *cassettesPath = @"/Users/sergey/Documents/Develop/Objective-C/PubNub SDK (public)/Tests/Support Files/Fixtures";
     NSString *cassetteName = [NSStringFromClass([self class]) stringByAppendingPathExtension:@"bundle"];
     configuration.cassettesPath = [cassettesPath stringByAppendingPathComponent:cassetteName];
 #endif // WRITING_CASSETTES
@@ -784,10 +788,12 @@ NS_ASSUME_NONNULL_END
     configuration.userID = [self uuidForUser:user];
 
     PubNub *client = [PubNub clientWithConfiguration:configuration callbackQueue:callbackQueue];
+#ifndef PUBNUB_DISABLE_LOGGER
     client.logger.enabled = PUBNUB_LOGGER_ENABLED;
     client.logger.logLevel  = PUBNUB_LOGGER_ENABLED ? PNVerboseLogLevel : PNSilentLogLevel;
     client.logger.writeToConsole = PUBNUB_LOGGER_ENABLED;
     client.logger.writeToFile = PUBNUB_LOGGER_ENABLED;
+#endif // PUBNUB_DISABLE_LOGGER
     [client addListener:self];
     
     if (!self.clients[user]) {
@@ -2089,7 +2095,7 @@ NS_ASSUME_NONNULL_END
 - (void)waitToCompleteIn:(NSTimeInterval)delay
                codeBlock:(void(^)(dispatch_block_t handler))codeBlock
               afterBlock:(void(^)(void))initialBlock {
-    
+
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     __block BOOL handlerCalled = NO;
     
@@ -2099,15 +2105,15 @@ NS_ASSUME_NONNULL_END
             dispatch_semaphore_signal(semaphore);
         }
     });
-    
+
     if (initialBlock) {
         initialBlock();
     }
     
-    
+
     dispatch_time_t timeout = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC));
     dispatch_semaphore_wait(semaphore, timeout);
-    
+
     XCTAssertTrue(handlerCalled);
 }
 
@@ -2371,6 +2377,8 @@ NS_ASSUME_NONNULL_END
 }
 
 #pragma mark -
+
+#pragma clang diagnostic pop
 
 
 @end

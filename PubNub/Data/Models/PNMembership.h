@@ -18,6 +18,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// request.
 @property(strong, nullable, nonatomic, readonly) PNChannelMetadata *metadata;
 
+/// UUID's for which membership has been created / removed.
+@property(copy, nonatomic, nullable, readonly) NSString *uuid;
+
 /// Name of channel which is listed in `UUID`'s memberships list.
 @property (nonatomic, readonly, copy) NSString *channel;
 

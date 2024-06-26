@@ -7,6 +7,7 @@
 #import "PNLogMacro.h"
 #endif // PUBNUB_DISABLE_LOGGER
 #import "PNHelpers.h"
+#import "PNError.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -26,6 +27,16 @@ NS_ASSUME_NONNULL_BEGIN
 /// > Note: Property will be set if history has been requested for multiple single channel.
 /// > Note: Kept mutable reference to make it possible to decrypt data.
 @property(strong, nonatomic, readonly) NSMutableDictionary<NSString *, NSMutableArray<NSMutableDictionary *> *> *channelsUpdates;
+
+/// Fetched messages timeframe start.
+///
+/// > Note: Property will be set if history has been requested for single channel.
+@property(strong, nullable, nonatomic) NSNumber *start;
+
+/// Fetched messages timeframe emd.
+///
+/// > Note: Property will be set if history has been requested for single channel.
+@property(strong, nullable, nonatomic) NSNumber *end;
 
 /// Whether there were decryption error or not.
 @property(assign, nonatomic) BOOL decryptError;
@@ -71,7 +82,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 /// - Parameter actions: Message reactions by type.
 /// - Returns: New dictionary with reactions where message action timetoken sotred as `NSNumber` instance.
-- (NSMutableDictionary *)normalizeActionTimetokens:(NSMutableDictionary *)actions;
+- (NSMutableDictionary *)normalizeActionTimetokens:(NSDictionary *)actions;
 
 #pragma mark -
 
@@ -102,21 +113,14 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Properties
 
+- (NSDictionary<NSString *,NSArray<NSDictionary *> *> *)channels {
+    return self.channelsUpdates;
+}
+
 - (NSArray<NSDictionary *> *)messages {
-    if (self.channelsUpdates.count != 1) return nil;
+    if (self.channelsUpdates.count > 1) return nil;
+    if (self.channelsUpdates.count == 0) return @[];
     return self.channelsUpdates[self.channelsUpdates.allKeys.firstObject];
-}
-
-- (NSNumber *)start {
-    NSArray *messages = self.messages;
-    NSDictionary *message = messages.firstObject;
-    return message ? message[@"timetoken"] : nil;
-}
-
-- (NSNumber *)end {
-    NSArray *messages = self.messages;
-    NSDictionary *message = messages.lastObject;
-    return message ? message[@"timetoken"] : nil;
 }
 
 
@@ -132,27 +136,51 @@ NS_ASSUME_NONNULL_END
 }
 
 - (instancetype)initObjectWithCoder:(id<PNDecoder>)coder {
-    NSDictionary *payload = [coder decodeObjectOfClass:[NSDictionary class]];
-    if (![payload isKindOfClass:[NSDictionary class]] || payload[@"channels"]) return nil;
-
     id<PNCryptoProvider> cryptoModule = coder.additionalData[@"cryptoModule"];
+    NSDictionary *payload = [coder decodeObjectOfClass:[NSDictionary class]];
     NSMutableDictionary *channelMessages = [NSMutableDictionary new];
-    NSDictionary *channels = payload[@"channels"];
     __block NSError *decryptionError;
+    NSNumber *start;
+    NSNumber *end;
 
-    [channels enumerateKeysAndObjectsUsingBlock:^(NSString *channel, NSArray *messages, BOOL *stop) {
-        NSError *error;
-        channelMessages[channel] = [self formattedUpdatesFromArray:messages withCryptoModule:cryptoModule error:&error];
+    if (payload) {
+        if (![payload isKindOfClass:[NSDictionary class]] || !payload[@"channels"]) return nil;
+        NSDictionary *channels = payload[@"channels"];
 
-        if (!decryptionError) decryptionError = error;
-    }];
+        [channels enumerateKeysAndObjectsUsingBlock:^(NSString *channel, NSArray *messages, BOOL *stop) {
+            NSError *error;
+            channelMessages[channel] = [self formattedUpdatesFromArray:messages withCryptoModule:cryptoModule error:&error];
 
+            if (!decryptionError) decryptionError = error;
+        }];
+    } else {
+        NSArray *payload = [coder decodeObjectOfClass:[NSArray class]];
+        if (![payload isKindOfClass:[NSArray class]] || ((NSArray *)payload).count != 3 ||
+            ![((NSArray *)payload).firstObject isKindOfClass:[NSArray class]]) return nil;
 
-    return [self initWithChannelUpdates:channelMessages error:decryptionError];
+        channelMessages[@""] = [self formattedUpdatesFromArray:((NSArray *)payload)[0]
+                                              withCryptoModule:cryptoModule
+                                                         error:&decryptionError];
+        start = ((NSArray *)payload)[1];
+        end = ((NSArray *)payload)[2];
+    }
+
+    PNHistoryFetchData *data = [self initWithChannelUpdates:channelMessages error:decryptionError];
+    data.start = start;
+    data.end = end;
+
+    return data;
 }
 
 
 #pragma mark - Helpers
+
+- (void)setSingleChannelName:(NSString *)channel {
+    if (self.channelsUpdates.count == 1 && [self.channelsUpdates.allKeys.firstObject isEqualToString:@""]) {
+        self.channelsUpdates[channel] = self.channelsUpdates[@""];
+        [self.channelsUpdates removeObjectForKey:@""];
+    }
+}
 
 - (NSMutableArray *)formattedUpdatesFromArray:(NSArray *)updates 
                              withCryptoModule:(id<PNCryptoProvider>)cryptoModule
@@ -160,32 +188,52 @@ NS_ASSUME_NONNULL_END
     NSMutableArray *processed = [NSMutableArray arrayWithCapacity:updates.count];
     __block NSError *decError;
 
-    [updates enumerateObjectsUsingBlock:^(NSDictionary *entry, __unused NSUInteger entryIdx, __unused BOOL *stop) {
-        NSDictionary *actions = [self normalizeActionTimetokens:entry[@"actions"]];
-        NSNumber *messageType = entry[@"message_type"];
-        NSNumber *timeToken = entry[@"timetoken"];
-        NSDictionary *metadata = entry[@"meta"];
-        NSString *senderUUID = entry[@"uuid"];
+    [updates enumerateObjectsUsingBlock:^(id entry, __unused NSUInteger entryIdx, __unused BOOL *stop) {
+        NSDictionary *actions = nil;
+        NSDictionary *metadata = nil;
+        NSNumber *messageType = nil;
+        NSString *senderUUID = nil;
+        NSNumber *timeToken = nil;
+        id message = entry;
+
+        if ([entry isKindOfClass:[NSDictionary class]] && entry[@"message"] &&
+            (entry[@"timetoken"] || entry[@"meta"] || entry[@"actions"] || entry[@"message_type"] || entry[@"uuid"])) {
+
+            messageType = entry[@"message_type"];
+            timeToken = entry[@"timetoken"];
+            message = entry[@"message"];
+            actions = entry[@"actions"];
+            senderUUID = entry[@"uuid"];
+            metadata = entry[@"meta"];
+
+            if (![metadata isKindOfClass:[NSDictionary class]]) metadata = nil;
+
+            timeToken = timeToken ? @(((NSString *)timeToken).longLongValue) : nil;
+            actions = [self normalizeActionTimetokens:actions];
+        }
+
         NSError *error;
-        id message = [self decryptedMessageFromData:entry[@"message"] withCryptoModule:cryptoModule error:&error];
+        message = [self decryptedMessageFromData:message withCryptoModule:cryptoModule error:&error];
+        
+        if (message) {
+            if (timeToken || metadata || actions || messageType || senderUUID) {
+                NSMutableDictionary *messageWithInfo = [@{ @"message": message } mutableCopy];
+                if ([messageType isKindOfClass:[NSNumber class]]) messageWithInfo[@"messageType"] = messageType;
+                if (timeToken) messageWithInfo[@"timetoken"] = timeToken;
+                if (metadata) messageWithInfo[@"metadata"] = metadata;
+                if (actions) messageWithInfo[@"actions"] = actions;
+                if (senderUUID.length) messageWithInfo[@"uuid"] = senderUUID;
 
-        if (![metadata isKindOfClass:[NSDictionary class]]) metadata = nil;
+                message = messageWithInfo;
+            }
 
-        timeToken = timeToken ? @(((NSString *)timeToken).longLongValue) : nil;
-
-        NSMutableDictionary *messageWithInfo = [@{ @"message": message } mutableCopy];
-        if ([messageType isKindOfClass:[NSNumber class]]) messageWithInfo[@"messageType"] = messageType;
-        if (timeToken) messageWithInfo[@"timetoken"] = timeToken;
-        if (metadata) messageWithInfo[@"metadata"] = metadata;
-        if (actions) messageWithInfo[@"actions"] = actions;
-        if (senderUUID.length) messageWithInfo[@"uuid"] = senderUUID;
+            [processed addObject:message];
+        }
 
         if (!decError && error) decError = error;
-
-        [processed addObject:messageWithInfo];
     }];
 
-    if(decError) *processingError = decError;
+    if (decError) *processingError = decError;
 
     return processed;
 }
@@ -213,6 +261,9 @@ NS_ASSUME_NONNULL_END
     }
 
     if (decryptionError || !decryptedMessage) {
+        if (!decryptionError) {
+            decryptionError = [NSError errorWithDomain:PNCryptorErrorDomain code:PNCryptorErrorDecryption userInfo:nil];
+        }
 #ifndef PUBNUB_DISABLE_LOGGER
         PNLLogger *logger = [PNLLogger loggerWithIdentifier:kPNClientIdentifier];
         [logger enableLogLevel:PNAESErrorLogLevel];
@@ -234,7 +285,7 @@ NS_ASSUME_NONNULL_END
     return decryptedMessage;
 }
 
-- (NSMutableDictionary *)normalizeActionTimetokens:(NSMutableDictionary *)actions {
+- (NSMutableDictionary *)normalizeActionTimetokens:(NSDictionary *)actions {
     if (actions.count == 0) return nil;
 
     NSMutableDictionary *updatedActions = [NSMutableDictionary dictionaryWithCapacity:actions.count];

@@ -74,7 +74,10 @@ NS_ASSUME_NONNULL_END
     if (self.operation == PNRemoveGroupOperation) return self.arbitraryQueryParameters;
     
     NSMutableDictionary *query = [([super query] ?: @{}) mutableCopy];
-    [query addEntriesFromDictionary:@{ (!self.removeChannels ? @"add": @"remove"): self.channels }];
+    [query addEntriesFromDictionary:@{
+        (!self.removeChannels ? @"add": @"remove"): [self.channels componentsJoinedByString:@","]
+    }];
+    
     if (self.arbitraryQueryParameters) [query addEntriesFromDictionary:self.arbitraryQueryParameters];
     
     return query;

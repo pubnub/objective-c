@@ -790,12 +790,10 @@ NS_ASSUME_NONNULL_END
         request.arbitraryQueryParameters = queryParameters;
 
         if (initialSubscribe) {
-#ifndef PUBNUB_DISABLE_LOGGER
             PNLogAPICall(self.client.logger, @"<PubNub::API> Subscribe (channels: %@; groups: %@)%@",
                          [request.channels componentsJoinedByString:@", "],
                          [request.channelGroups componentsJoinedByString:@", "],
                          (timeToken ? [NSString stringWithFormat:@" with catch up from %@.", timeToken] : @"."));
-#endif // PUBNUB_DISABLE_LOGGER
         } else if (block) {
             PNSubscribeStatus *status = [PNSubscribeStatus objectWithOperation:PNSubscribeOperation
                                                                       category:PNConnectedCategory
@@ -883,6 +881,7 @@ NS_ASSUME_NONNULL_END
 
     if (request.presenceOnly) {
         channels = [PNChannel presenceChannelsFrom:channels];
+        [self removePresenceChannels:channels];
         groups = nil;
     } else {
         if (channels.count) {
@@ -911,9 +910,7 @@ NS_ASSUME_NONNULL_END
     NSArray *channels = [self.channels copy];
     
     if (channels.count || channelGroups.count) {
-#ifndef PUBNUB_DISABLE_LOGGER
         PNLogAPICall(self.client.logger, @"<PubNub::API> Unsubscribe from all");
-#endif // PUBNUB_DISABLE_LOGGER
 
         [self removeChannels:channels];
         [self removePresenceChannels:self.presenceChannels];
@@ -1074,7 +1071,7 @@ NS_ASSUME_NONNULL_END
 
 - (void)handleSubscriptionStatus:(PNSubscribeStatus *)status {
     [self stopRetryTimer];
-    
+
     if (!status.isError && status.category != PNCancelledCategory) [self handleSuccessSubscriptionStatus:status];
     else [self handleFailedSubscriptionStatus:status];
 }
@@ -1083,7 +1080,7 @@ NS_ASSUME_NONNULL_END
     NSNumber *overrideTimeToken = self.overrideTimeToken;
     BOOL initialSubscribe = status.isInitialSubscription;
 
-    [self handleSubscription:initialSubscribe timeToken:status.data.cursor.timetoken region:status.data.cursor.reqion];
+    [self handleSubscription:initialSubscribe timeToken:status.data.cursor.timetoken region:status.data.cursor.region];
     [self handleLiveFeedEvents:status forInitialSubscription:initialSubscribe overrideTimeToken:overrideTimeToken];
 
     if (!self.client.configuration.shouldManagePresenceListManually) {
@@ -1122,9 +1119,7 @@ NS_ASSUME_NONNULL_END
                                                        statusCategory != PNRequestURITooLongCategory);
             PNSubscriberState subscriberState = PNAccessRightsErrorSubscriberState;
             ((PNStatus *)status).retryCancelBlock = ^{
-#ifndef PUBNUB_DISABLE_LOGGER
                 PNLogAPICall(weakSelf.client.logger, @"<PubNub::API> Cancel retry");
-#endif // PUBNUB_DISABLE_LOGGER
                 [weakSelf stopRetryTimer];
             };
             if (((PNStatus *)status).willAutomaticallyRetry) {
@@ -1224,14 +1219,12 @@ NS_ASSUME_NONNULL_END
             if (shouldUseLastTimeToken && self->_lastTimeToken &&
                 [self->_lastTimeToken compare:@0] != NSOrderedSame) {
 
-#ifndef PUBNUB_DISABLE_LOGGER
-                BOOL keepOnListChange = self.client.configuration.shouldKeepTimeTokenOnListChange;
                 PNLogResult(self.client.logger, @"<PubNub> Reuse existing subscription loop information "
                             "because of '%@' is set to 'YES' (timetoken = %@, region = %@)", 
-                            (keepOnListChange ? @"keepTimeTokenOnListChange" : @"catchUpOnSubscriptionRestore"),
+                            (self.client.configuration.shouldKeepTimeTokenOnListChange 
+                             ? @"keepTimeTokenOnListChange" 
+                             : @"catchUpOnSubscriptionRestore"),
                             self->_lastTimeToken, self->_lastTimeTokenRegion);
-#endif // PUBNUB_DISABLE_LOGGER
-
                 
                 shouldAcceptNewTimeToken = NO;
                 
@@ -1248,11 +1241,9 @@ NS_ASSUME_NONNULL_END
         // subscription while current time token report 0.
         if (!initialSubscription && self->_currentTimeToken &&
             [self->_currentTimeToken compare:@0] == NSOrderedSame) {
-#ifndef PUBNUB_DISABLE_LOGGER
             PNLogResult(self.client.logger, @"<PubNub> Ignore new subscription loop information because "
                         "non-initial subscribe request received when current timetoken is 0 (timetoken = %@, "
                         "region = %@). Potentially delayed request has been processed.", timeToken, region);
-#endif // PUBNUB_DISABLE_LOGGER
             shouldAcceptNewTimeToken = NO;
         }
         
@@ -1267,14 +1258,12 @@ NS_ASSUME_NONNULL_END
                 self->_lastTimeTokenRegion = self->_currentTimeTokenRegion;
             }
             self->_currentTimeToken = (shouldOverrideTimeToken ? self->_overrideTimeToken : timeToken);
-#ifndef PUBNUB_DISABLE_LOGGER
             PNLogResult(self.client.logger, @"<PubNub> Did receive next subscription loop information: "
                         "timetoken = %@, region = %@.%@", timeToken, region, 
                         shouldOverrideTimeToken
                         ? [NSString stringWithFormat:@" But received timetoken should be replaced with user provided: %@",
                            self->_overrideTimeToken]
                         : @"");
-#endif // PUBNUB_DISABLE_LOGGER
             self->_currentTimeTokenRegion = region;
         }
         
@@ -1347,9 +1336,7 @@ NS_ASSUME_NONNULL_END
 
     PNErrorStatus *status = nil;
 
-#ifndef PUBNUB_DISABLE_LOGGER
     PNLogResult(self.client.logger, @"<PubNub> %@", [message stringifiedRepresentationWithSerializer:nil]);
-#endif // PUBNUB_DISABLE_LOGGER
 
     if (message.data.decryptionError) {
         status = [PNErrorStatus objectWithOperation:PNSubscribeOperation
@@ -1364,10 +1351,8 @@ NS_ASSUME_NONNULL_END
 
 - (void)handleNewSignal:(PNSignalResult *)signal {
     if (!signal) return;
-    
-#ifndef PUBNUB_DISABLE_LOGGER
+
     PNLogResult(self.client.logger, @"<PubNub> %@", [signal stringifiedRepresentationWithSerializer:nil]);
-#endif // PUBNUB_DISABLE_LOGGER
 
     [self.client.listenersManager notifySignal:signal];
 }
@@ -1375,9 +1360,7 @@ NS_ASSUME_NONNULL_END
 - (void)handleNewMessageAction:(PNMessageActionResult *)action {
     if (!action) return;
 
-#ifndef PUBNUB_DISABLE_LOGGER
     PNLogResult(self.client.logger, @"<PubNub> %@", [action stringifiedRepresentationWithSerializer:nil]);
-#endif // PUBNUB_DISABLE_LOGGER
 
     [self.client.listenersManager notifyMessageAction:action];
 }
@@ -1385,9 +1368,7 @@ NS_ASSUME_NONNULL_END
 - (void)handleNewObjectsEvent:(PNObjectEventResult *)object {
     if (!object) return;
 
-#ifndef PUBNUB_DISABLE_LOGGER
     PNLogResult(self.client.logger, @"<PubNub> %@", [object stringifiedRepresentationWithSerializer:nil]);
-#endif // PUBNUB_DISABLE_LOGGER
 
     [self.client.listenersManager notifyObjectEvent:object];
 }
@@ -1396,9 +1377,7 @@ NS_ASSUME_NONNULL_END
     PNErrorStatus *status = nil;
     
     if (file) {
-#ifndef PUBNUB_DISABLE_LOGGER
         PNLogResult(self.client.logger, @"<PubNub> %@", [file stringifiedRepresentationWithSerializer:nil]);
-#endif // PUBNUB_DISABLE_LOGGER
        
         if (file.data.decryptionError) {
             status = [PNErrorStatus objectWithOperation:PNSubscribeOperation
@@ -1418,11 +1397,9 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)handleNewPresenceEvent:(PNPresenceEventResult *)presence {
-#ifndef PUBNUB_DISABLE_LOGGER
     if (presence) {
         PNLogResult(self.client.logger, @"<PubNub> %@", [presence stringifiedRepresentationWithSerializer:nil]);
     }
-#endif // PUBNUB_DISABLE_LOGGER
 
     [self.client.listenersManager notifyPresenceEvent:presence];
 }

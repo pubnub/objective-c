@@ -17,9 +17,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// List of channels for which error has been triggered.
 @property(strong, nullable, nonatomic, readonly) NSArray<NSString *> *channels;
 
-/// Whether service returned error response or not.
-@property(assign, nonatomic, readonly, getter = isError) BOOL error;
-
 /// Service-provided information about error.
 @property(strong, nonatomic, readonly) NSString *information;
 

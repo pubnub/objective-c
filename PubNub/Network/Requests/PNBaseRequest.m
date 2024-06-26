@@ -57,7 +57,9 @@ NS_ASSUME_NONNULL_END
 - (PNTransportRequest *)request {
     NSMutableDictionary *headers = [(self.headers ?: @{}) mutableCopy];
     PNTransportRequest *request = [PNTransportRequest new];
+    request.bodyStreamAvailable = self.bodyStreamAvailable;
     request.timeout = self.nonSubscribeRequestTimeout;
+    request.compressBody = self.shouldCompressBody;
     request.responseAsFile = self.responseAsFile;
     request.method = self.httpMethod;
     request.origin = self.origin;

@@ -253,7 +253,7 @@ NS_ASSUME_NONNULL_END
             // Construct backward-compatible crypto module.
             userRequest.cryptoModule = [PNCryptoModule legacyCryptoModuleWithCipherKey:cipherKey
                                                             randomInitializationVector:YES];
-        }
+        } else userRequest.cryptoModule = self.configuration.cryptoModule;
     }
 #pragma clang diagnostic pop
 
@@ -268,7 +268,7 @@ NS_ASSUME_NONNULL_END
         } else [self handleGenerateFileUploadURLErrorWithStatus:status sendFileRequest:userRequest completion:block];
     };
 
-    [self performRequest:userRequest withParser:responseParser completion:handler];
+    [self performRequest:urlRequest withParser:responseParser completion:handler];
 }
 
 
@@ -350,7 +350,7 @@ NS_ASSUME_NONNULL_END
             // Construct backward-compatible crypto module.
             userRequest.cryptoModule = [PNCryptoModule legacyCryptoModuleWithCipherKey:cipherKey
                                                             randomInitializationVector:YES];
-        }
+        } else userRequest.cryptoModule = self.configuration.cryptoModule;
     }
 #pragma clang diagnostic pop
 
@@ -360,7 +360,10 @@ NS_ASSUME_NONNULL_END
         PNStrongify(self);
         BOOL temporary = userRequest.targetURL == nil;
 
-        [self.filesManager handleDownloadedFileAtURL:url withStoreURL:userRequest.targetURL cryptoModule:userRequest.cryptoModule completion:^(NSURL *location, NSError *error) {
+        [self.filesManager handleDownloadedFileAtURL:url 
+                                        withStoreURL:userRequest.targetURL
+                                        cryptoModule:userRequest.cryptoModule
+                                          completion:^(NSURL *location, NSError *error) {
             PNErrorStatus *status = result.status;
             PNDownloadFileResult *downloadResult;
 
@@ -383,8 +386,8 @@ NS_ASSUME_NONNULL_END
 #pragma clang diagnostic pop
             }
 
-            if (!status) {
-                PNFileDownloadData *data = [PNFileDownloadData dataForFileAtLocation:url temporarily:temporary];
+            if (!status.isError) {
+                PNFileDownloadData *data = [PNFileDownloadData dataForFileAtLocation:location temporarily:temporary];
                 downloadResult = [PNDownloadFileResult objectWithOperation:userRequest.operation response:data];
                 [self updateResult:downloadResult withRequest:request response:response];
             }
@@ -434,7 +437,9 @@ NS_ASSUME_NONNULL_END
     PNFileUploadRequest *userRequest = [PNFileUploadRequest requestWithURL:generateStatus.data.requestURL
                                                                 httpMethod:generateStatus.data.httpMethod
                                                                   formData:generateStatus.data.formFields];
-    PNOperationDataParser *responseParser = [self parserWithStatus:[PNErrorStatus class]];
+    PNOperationDataParser *responseParser = [self parserWithStatus:[PNAcknowledgmentStatus class]
+                                                      cryptoModule:sendFileRequest.cryptoModule];
+    responseParser.errorOnly = YES;
     userRequest.cryptoModule = sendFileRequest.cryptoModule;
     userRequest.filename = generateStatus.data.filename;
     userRequest.bodyStream = sendFileRequest.stream;
@@ -512,6 +517,7 @@ NS_ASSUME_NONNULL_END
             if (!status.isError) {
                 data.timetoken = status.data.timetoken;
                 sendFileStatus = [PNSendFileStatus objectWithOperation:sendFileRequest.operation response:data];
+                sendFileStatus.category = PNAcknowledgmentCategory;
             } else {
                 data.category = status.category;
                 sendFileStatus = [PNSendFileStatus objectWithOperation:sendFileRequest.operation

@@ -49,10 +49,6 @@ NS_ASSUME_NONNULL_END
 - (NSDictionary *)query {
     NSMutableDictionary *query = [([super query] ?: @{}) mutableCopy];
     
-    if (self.operation == PNChannelsForGroupOperation) {
-        query[@"channel-group"] = [PNString percentEscapedString:self.channelGroup];
-    }
-    
     if (self.arbitraryQueryParameters) [query addEntriesFromDictionary:self.arbitraryQueryParameters];
     
     return query.count ? query : nil;

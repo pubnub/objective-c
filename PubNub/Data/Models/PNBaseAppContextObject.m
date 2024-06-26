@@ -43,7 +43,7 @@ NS_ASSUME_NONNULL_END
 }
 
 + (NSArray<NSString *> *)optionalKeys {
-    return @[@"custom"];
+    return @[@"custom", @"updated", @"eTag"];
 }
 
 

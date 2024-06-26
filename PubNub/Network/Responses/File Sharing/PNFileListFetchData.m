@@ -54,7 +54,7 @@ NS_ASSUME_NONNULL_END
 
     
     NSUInteger count = ((NSNumber *)payload[@"count"]).unsignedIntegerValue;
-    NSString *next = payload[@"next"];
+    NSString *next = ![payload[@"next"] isEqual:[NSNull null]] ? payload[@"next"] : nil;
     NSError *error;
     NSArray<PNFile *> *files = [PNJSONDecoder decodedObjectsOfClass:[PNFile class]
                                                           fromArray:payload[@"data"]

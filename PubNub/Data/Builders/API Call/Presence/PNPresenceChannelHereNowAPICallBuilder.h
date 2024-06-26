@@ -43,7 +43,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wincompatible-pointer-types"
 #pragma clang diagnostic ignored "-Wincompatible-property-type"
-@property (nonatomic, readonly, strong) void(^performWithCompletion)(PNHereNowCompletionBlock block);
+@property (nonatomic, readonly, strong) void(^performWithCompletion)(PNChannelHereNowCompletionBlock block);
 #pragma clang diagnostic pop
 
 

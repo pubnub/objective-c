@@ -23,6 +23,15 @@ NS_ASSUME_NONNULL_END
 @implementation PNSubscribeCursorData
 
 
+#pragma mark - Properties
+
++ (NSDictionary<NSString *,NSString *> *)codingKeys {
+    return @{
+        @"timetoken": @"t",
+        @"region": @"r"
+    };
+}
+
 #pragma mark -
 
 

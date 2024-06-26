@@ -65,7 +65,7 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Initialization and Configuration
 
 + (instancetype)legacyPresenceFromPresence:(PNPresenceStateFetchResult *)presence {
-    return [self objectWithOperation:presence.operation
+    return [self objectWithOperation:PNStateForChannelOperation
                             response:[[PNChannelClientStateData alloc] initWithPresenceData:presence.responseData]];
 }
 

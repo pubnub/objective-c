@@ -1,5 +1,6 @@
 #import "PNSignalStatus.h"
 #import "PNOperationResult+Private.h"
+#import "PNStatus+Private.h"
 
 
 #pragma mark Interface implementation
@@ -8,6 +9,10 @@
 
 
 #pragma mark - Properties
+
++ (Class)statusDataClass {
+    return [PNSignalData class];
+}
 
 - (PNSignalData *)data {
     return !self.isError ? self.responseData : nil;

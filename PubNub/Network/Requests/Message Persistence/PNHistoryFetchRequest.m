@@ -1,4 +1,4 @@
-#import "PNHistoryFetchRequest.h"
+#import "PNHistoryFetchRequest+Private.h"
 #import "PNBaseRequest+Private.h"
 #import "PNTransportResponse.h"
 #import "PNFunctions.h"
@@ -19,6 +19,11 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 ///  > Notes: Maximum 500 channels.
 @property(copy, nonatomic) NSArray<NSString *> *channels;
+
+/// Whether request has been created to fetch history for multiple channels or not.
+///
+/// > Important: If set to `YES` requst will use `v3` `Message Persistence` REST API.
+@property(assign, nonatomic) BOOL multipleChannels;
 
 
 #pragma mark - Initialization and Constructor
@@ -45,14 +50,15 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Properies
 
 - (PNOperationType)operation {
-    return self.includeMessageActions ? PNHistoryWithActionsOperation : PNHistoryForChannelsOperation;
+    if (self.multipleChannels) return PNHistoryForChannelsOperation;
+    return self.includeMessageActions ? PNHistoryWithActionsOperation : PNHistoryOperation;
 }
 
 - (NSDictionary *)query {
     NSMutableDictionary *query = [([super query] ?: @{}) mutableCopy];
+    PNOperationType operation = self.operation;
 
     NSNumber *startDate = self.start;
-    NSUInteger limit = self.max;
     NSNumber *endDate = self.end;
     
     if (startDate && endDate && [startDate compare:endDate] == NSOrderedDescending) {
@@ -60,27 +66,46 @@ NS_ASSUME_NONNULL_END
         startDate = endDate;
         endDate = _startDate;
     }
-    
-    NSUInteger defaultLimit = !self.includeMessageActions && self.channels.count == 1 ? 100 : 25;
+
+    NSString *limitQueryKeyName = self.multipleChannels ? @"max" : @"count";
+    NSUInteger defaultLimit = self.multipleChannels ? 25 : 100;
+
+    if (operation == PNHistoryForChannelsOperation && self.channels.count == 1) defaultLimit = 100;
     NSUInteger limitValue = defaultLimit;
-    
-    query[@"include_message_type"] = self.includeMessageType ? @"true" : @"false";
-    query[@"include_uuid"] = self.includeUUID ? @"true" : @"false";
-    
-    if (limit > 0) limitValue = MIN(limit, defaultLimit);
-    if (self.includeMessageActions && limit > 0) limitValue = limit;
+
+    if (self.limit > 0) limitValue = MIN(self.limit, defaultLimit);
+
+    if (operation == PNHistoryWithActionsOperation) {
+        limitValue = self.limit;
+        limitQueryKeyName = @"max";
+    }
+
+    if (self.multipleChannels) {
+        if (self.limit > 0 || (operation != PNHistoryWithActionsOperation && self.channels.count == 1)) {
+            query[limitQueryKeyName] = @(limitValue).stringValue;
+        }
+    } else if (self.limit > 0) query[limitQueryKeyName] = @(limitValue).stringValue;
+
+
     if (startDate) query[@"start"] = [PNNumber timeTokenFromNumber:startDate].stringValue;
     if (endDate) query[@"end"] = [PNNumber timeTokenFromNumber:endDate].stringValue;
-    if (self.reverse) query[@"reverse"] = @"true";
+    if (operation == PNHistoryOperation && self.reverse) query[@"reverse"] = @"true";
     if (self.includeMetadata) query[@"include_meta"] = @"true";
-    if (limit > 0) query[@"max"] = [NSString stringWithFormat:@"%lu", limitValue];
+
+    if (self.multipleChannels || operation == PNHistoryWithActionsOperation) {
+        query[@"include_message_type"] = self.includeMessageType ? @"true" : @"false";
+        query[@"include_uuid"] = self.includeUUID ? @"true" : @"false";
+    }
+
+    if (!self.multipleChannels && self.includeTimeToken) query[@"include_token"] = @"true";
     if (self.arbitraryQueryParameters) [query addEntriesFromDictionary:self.arbitraryQueryParameters];
     
     return query;
 }
 
 - (NSString *)path {
-    return PNStringFormat(@"/v3/history%@/sub-key/%@/channel/%@",
+    return PNStringFormat(@"/%@/history%@/sub-key/%@/channel/%@",
+                          self.operation == PNHistoryOperation ? @"v2" : @"v3",
                           self.includeMessageActions ? @"-with-actions" : @"",
                           self.subscribeKey,
                           [PNChannel namesForRequest:self.channels]);
@@ -88,6 +113,13 @@ NS_ASSUME_NONNULL_END
 
 
 #pragma mark - Initialization and Configuration
+
++ (instancetype)requestWithChannel:(NSString *)channel {
+    PNHistoryFetchRequest *request = [self requestWithChannels:(channel ? @[channel] : @[])];
+    request.multipleChannels = NO;
+
+    return request;
+}
 
 + (instancetype)requestWithChannels:(NSArray<NSString *> *)channels {
     return [[self alloc] initWithChannels:channels];
@@ -97,6 +129,7 @@ NS_ASSUME_NONNULL_END
     if ((self = [super init])){
         _channels = [channels copy];
         _includeMessageType = YES;
+        _multipleChannels = YES;
         _includeUUID = YES;
     }
     return self;
@@ -104,7 +137,6 @@ NS_ASSUME_NONNULL_END
 
 - (instancetype)init {
     [self throwUnavailableInitInterface];
-    
     return nil;
 }
 
@@ -112,13 +144,19 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Prepare
 
 - (PNError *)validate {
-    if (self.channels.count == 0) return [self missingParameterError:@"channels" forObjectRequest:@"Fetch history"];
-    if (self.channels.count > 1 && self.includeMessageActions) {
-        NSDictionary *userInfo = PNErrorUserInfo(@"Validation error",
-                                                 @"Message actions can't be fetched for multiple channels",
-                                                 @"Set only on channel in 'channels' or don't use 'includeMessageActions'.",
-                                                 nil);
+    if (self.multipleChannels && self.includeMessageActions) {
+        NSDictionary *userInfo = PNErrorUserInfo(
+            @"Request parameters error",
+            @"PNHistoryFetchRequest's 'includeMessageActions' can't be used with multiple channels.",
+            @"Use +requestWithChannel: or disable 'includeMessageActions'.",
+            nil
+        );
+
         return [PNError errorWithDomain:PNAPIErrorDomain code:PNAPIErrorUnacceptableParameters userInfo:userInfo];
+    } else if (!self.multipleChannels && self.channels.count == 0) {
+        return [self missingParameterError:@"channel" forObjectRequest:@"PNHistoryFetchRequest"];
+    } else if (self.multipleChannels && self.channels.count == 0) {
+        return [self missingParameterError:@"channels" forObjectRequest:@"PNHistoryFetchRequest"];
     }
     
     return nil;

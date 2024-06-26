@@ -2,7 +2,11 @@
  * @author Serhii Mamontov
  * @copyright © 2010-2020 PubNub, Inc.
  */
-#import <PubNub/PNRequestParameters.h>
+#import <PubNub/PNBaseObjectsRequest+Private.h>
+#import <PubNub/PNRemoveMembershipsRequest.h>
+#import <PubNub/PNManageMembershipsRequest.h>
+#import <PubNub/PNFetchMembershipsRequest.h>
+#import <PubNub/PNSetMembershipsRequest.h>
 #import <PubNub/PubNub+CorePrivate.h>
 #import "PNRecordableTestCase.h"
 #import <PubNub/PNHelpers.h>
@@ -30,6 +34,7 @@ NS_ASSUME_NONNULL_END
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-retain-cycles"
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
 
 #pragma mark - VCR configuration
@@ -70,25 +75,24 @@ NS_ASSUME_NONNULL_END
     NSData *expectedPayload = [NSJSONSerialization dataWithJSONObject:expectedBody
                                                               options:(NSJSONWritingOptions)0
                                                                 error:nil];
-    NSString *expectedFilterExpression = [PNString percentEscapedString:filterExpression];
-    
+    // Encoding is transport layer responsibility, so we are expecting raw string in query.
+    NSString *expectedFilterExpression = filterExpression;
+
     
     id clientMock = [self mockForObject:self.client];
-    id recorded = OCMExpect([clientMock processOperation:PNSetMembershipsOperation
-                                          withParameters:[OCMArg any]
-                                                    data:[OCMArg any]
-                                         completionBlock:[OCMArg any]])
+    id recorded = OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNSetMembershipsRequest class]]
+                                        withCompletion:[OCMArg any]])
         .andDo(^(NSInvocation *invocation) {
-            PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
-            NSData *sentData = [self objectForInvocation:invocation argumentAtIndex:3];
-            NSArray *includeFields = [parameters.query[@"include"] componentsSeparatedByString:@","];
+            PNSetMembershipsRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
+            NSArray *includeFields = [request.query[@"include"] componentsSeparatedByString:@","];
             SEL sortSelector = @selector(caseInsensitiveCompare:);
             NSString *includeQuery = [[includeFields sortedArrayUsingSelector:sortSelector] componentsJoinedByString:@","];
 
-            XCTAssertEqualObjects(parameters.pathComponents[@"{uuid}"], expectedId);
+            XCTAssertNil([request validate]);
+            XCTAssertEqualObjects(request.identifier, expectedId);
             XCTAssertEqualObjects(includeQuery, @"channel.custom,custom");
-            XCTAssertEqualObjects(parameters.query[@"filter"], expectedFilterExpression);
-            XCTAssertEqualObjects(sentData, expectedPayload);
+            XCTAssertEqualObjects(request.query[@"filter"], expectedFilterExpression);
+            XCTAssertEqualObjects(request.body, expectedPayload);
         });
     
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
@@ -109,15 +113,13 @@ NS_ASSUME_NONNULL_END
 
 
     id clientMock = [self mockForObject:self.client];
-    id recorded = OCMExpect([clientMock processOperation:PNSetMembershipsOperation
-                                          withParameters:[OCMArg any]
-                                                    data:[OCMArg any]
-                                         completionBlock:[OCMArg any]])
-            .andDo(^(NSInvocation *invocation) {
-                PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
+    id recorded = OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNSetMembershipsRequest class]]
+                                        withCompletion:[OCMArg any]])
+        .andDo(^(NSInvocation *invocation) {
+            PNSetMembershipsRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
 
-                XCTAssertEqualObjects(parameters.pathComponents[@"{uuid}"], expectedId);
-                XCTAssertEqualObjects(parameters.query[@"include"], @"custom");
+                XCTAssertEqualObjects(request.identifier, expectedId);
+                XCTAssertEqualObjects(request.query[@"include"], @"custom");
             });
 
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
@@ -156,25 +158,24 @@ NS_ASSUME_NONNULL_END
     NSData *expectedPayload = [NSJSONSerialization dataWithJSONObject:expectedBody
                                                               options:(NSJSONWritingOptions)0
                                                                 error:nil];
-    NSString *expectedFilterExpression = [PNString percentEscapedString:filterExpression];
+    // Encoding is transport layer responsibility, so we are expecting raw string in query.
+    NSString *expectedFilterExpression = filterExpression;
 
 
     id clientMock = [self mockForObject:self.client];
-    id recorded = OCMExpect([clientMock processOperation:PNRemoveMembershipsOperation
-                                          withParameters:[OCMArg any]
-                                                    data:[OCMArg any]
-                                         completionBlock:[OCMArg any]])
+    id recorded = OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNRemoveMembershipsRequest class]]
+                                        withCompletion:[OCMArg any]])
         .andDo(^(NSInvocation *invocation) {
-            PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
-            NSData *sentData = [self objectForInvocation:invocation argumentAtIndex:3];
-            NSArray *includeFields = [parameters.query[@"include"] componentsSeparatedByString:@","];
+            PNRemoveMembershipsRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
+            NSArray *includeFields = [request.query[@"include"] componentsSeparatedByString:@","];
             SEL sortSelector = @selector(caseInsensitiveCompare:);
             NSString *includeQuery = [[includeFields sortedArrayUsingSelector:sortSelector] componentsJoinedByString:@","];
 
-            XCTAssertEqualObjects(parameters.pathComponents[@"{uuid}"], expectedId);
+            XCTAssertNil([request validate]);
+            XCTAssertEqualObjects(request.identifier, expectedId);
             XCTAssertEqualObjects(includeQuery, @"channel.custom,custom");
-            XCTAssertEqualObjects(parameters.query[@"filter"], expectedFilterExpression);
-            XCTAssertEqualObjects(sentData, expectedPayload);
+            XCTAssertEqualObjects(request.query[@"filter"], expectedFilterExpression);
+            XCTAssertEqualObjects(request.body, expectedPayload);
         });
 
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
@@ -195,14 +196,12 @@ NS_ASSUME_NONNULL_END
 
 
     id clientMock = [self mockForObject:self.client];
-    id recorded = OCMExpect([clientMock processOperation:PNSetMembershipsOperation
-                                          withParameters:[OCMArg any]
-                                                    data:[OCMArg any]
-                                         completionBlock:[OCMArg any]])
-            .andDo(^(NSInvocation *invocation) {
-                PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
+    id recorded = OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNSetMembershipsRequest class]]
+                                        withCompletion:[OCMArg any]])
+        .andDo(^(NSInvocation *invocation) {
+            PNSetMembershipsRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
 
-                XCTAssertEqualObjects(parameters.pathComponents[@"{uuid}"], expectedId);
+                XCTAssertEqualObjects(request.identifier, expectedId);
             });
 
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
@@ -243,25 +242,24 @@ NS_ASSUME_NONNULL_END
     NSData *expectedPayload = [NSJSONSerialization dataWithJSONObject:expectedBody
                                                               options:(NSJSONWritingOptions)0
                                                                 error:nil];
-    NSString *expectedFilterExpression = [PNString percentEscapedString:filterExpression];
-    
+    // Encoding is transport layer responsibility, so we are expecting raw string in query.
+    NSString *expectedFilterExpression = filterExpression;
+
     
     id clientMock = [self mockForObject:self.client];
-    id recorded = OCMExpect([clientMock processOperation:PNManageMembershipsOperation
-                                          withParameters:[OCMArg any]
-                                                    data:[OCMArg any]
-                                         completionBlock:[OCMArg any]])
+    id recorded = OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNManageMembershipsRequest class]]
+                                        withCompletion:[OCMArg any]])
         .andDo(^(NSInvocation *invocation) {
-            PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
-            NSData *sentData = [self objectForInvocation:invocation argumentAtIndex:3];
-            NSArray *includeFields = [parameters.query[@"include"] componentsSeparatedByString:@","];
+            PNManageMembershipsRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
+            NSArray *includeFields = [request.query[@"include"] componentsSeparatedByString:@","];
             SEL sortSelector = @selector(caseInsensitiveCompare:);
             NSString *includeQuery = [[includeFields sortedArrayUsingSelector:sortSelector] componentsJoinedByString:@","];
 
-            XCTAssertEqualObjects(parameters.pathComponents[@"{uuid}"], expectedId);
+            XCTAssertNil([request validate]);
+            XCTAssertEqualObjects(request.identifier, expectedId);
             XCTAssertEqualObjects(includeQuery, @"channel.custom,custom");
-            XCTAssertEqualObjects(parameters.query[@"filter"], expectedFilterExpression);
-            XCTAssertEqualObjects(sentData, expectedPayload);
+            XCTAssertEqualObjects(request.query[@"filter"], expectedFilterExpression);
+            XCTAssertEqualObjects(request.body, expectedPayload);
         });
     
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
@@ -283,15 +281,13 @@ NS_ASSUME_NONNULL_END
 
 
     id clientMock = [self mockForObject:self.client];
-    id recorded = OCMExpect([clientMock processOperation:PNManageMembershipsOperation
-                                          withParameters:[OCMArg any]
-                                                    data:[OCMArg any]
-                                         completionBlock:[OCMArg any]])
+    id recorded = OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNManageMembershipsRequest class]]
+                                        withCompletion:[OCMArg any]])
         .andDo(^(NSInvocation *invocation) {
-            PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
+            PNManageMembershipsRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
 
-            XCTAssertEqualObjects(parameters.pathComponents[@"{uuid}"], expectedId);
-            XCTAssertEqualObjects(parameters.query[@"include"], @"custom");
+            XCTAssertEqualObjects(request.identifier, expectedId);
+            XCTAssertEqualObjects(request.query[@"include"], @"custom");
         });
 
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
@@ -344,7 +340,8 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldFetchMembershipsWhenCalled {
     NSString *filterExpression = @"updated >= '2019-08-31T00:00:00Z'";
-    NSString *expectedFilterExpression = [PNString percentEscapedString:filterExpression];
+    // Encoding is transport layer responsibility, so we are expecting raw string in query.
+    NSString *expectedFilterExpression = filterExpression;
     NSString *expectedStart = [NSUUID UUID].UUIDString;
     NSString *expectedEnd = [NSUUID UUID].UUIDString;
     NSString *expectedId = [NSUUID UUID].UUIDString;
@@ -352,20 +349,18 @@ NS_ASSUME_NONNULL_END
     
     
     id clientMock = [self mockForObject:self.client];
-    id recorded = OCMExpect([clientMock processOperation:PNFetchMembershipsOperation
-                                          withParameters:[OCMArg any]
-                                                    data:[OCMArg any]
-                                         completionBlock:[OCMArg any]])
+    id recorded = OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNFetchMembershipsRequest class]]
+                                        withCompletion:[OCMArg any]])
         .andDo(^(NSInvocation *invocation) {
-            PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
+            PNFetchMembershipsRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
             
-            XCTAssertEqualObjects(parameters.pathComponents[@"{uuid}"], expectedId);
-            XCTAssertEqualObjects(parameters.query[@"include"], @"custom");
-            XCTAssertEqualObjects(parameters.query[@"start"], expectedStart);
-            XCTAssertEqualObjects(parameters.query[@"end"], expectedEnd);
-            XCTAssertEqualObjects(parameters.query[@"limit"], expectedLimit.stringValue);
-            XCTAssertEqualObjects(parameters.query[@"filter"], expectedFilterExpression);
-            XCTAssertNil(parameters.query[@"count"]);
+            XCTAssertEqualObjects(request.identifier, expectedId);
+            XCTAssertEqualObjects(request.query[@"include"], @"custom");
+            XCTAssertEqualObjects(request.query[@"start"], expectedStart);
+            XCTAssertEqualObjects(request.query[@"end"], expectedEnd);
+            XCTAssertEqualObjects(request.query[@"limit"], expectedLimit.stringValue);
+            XCTAssertEqualObjects(request.query[@"filter"], expectedFilterExpression);
+            XCTAssertNil(request.query[@"count"]);
         });
     
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
@@ -385,15 +380,13 @@ NS_ASSUME_NONNULL_END
 
 
     id clientMock = [self mockForObject:self.client];
-    id recorded = OCMExpect([clientMock processOperation:PNFetchMembershipsOperation
-                                          withParameters:[OCMArg any]
-                                                    data:[OCMArg any]
-                                         completionBlock:[OCMArg any]])
+    id recorded = OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNFetchMembershipsRequest class]]
+                                        withCompletion:[OCMArg any]])
         .andDo(^(NSInvocation *invocation) {
-            PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
+            PNFetchMembershipsRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
 
-            XCTAssertEqualObjects(parameters.pathComponents[@"{uuid}"], expectedId);
-            XCTAssertEqualObjects(parameters.query[@"include"], @"custom");
+            XCTAssertEqualObjects(request.identifier, expectedId);
+            XCTAssertEqualObjects(request.query[@"include"], @"custom");
         });
 
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{

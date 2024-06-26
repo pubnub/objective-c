@@ -471,12 +471,12 @@
   {
     "id" : "9CF0E593-CBF7-432A-89FD-27090CBE0037",
     "data" : {
-      "status" : 404,
+      "status" : 200,
       "cls" : "NSHTTPURLResponse",
       "url" : "https:\/\/ps.pndsn.com\/v2\/objects\/demo\/uuids?uuid=Serhii&limit=100&pnsdk=PubNub-ObjC-iOS\/4.x.x",
       "headers" : {
         "Access-Control-Allow-Credentials" : "true",
-        "Content-Type" : "application\/json",
+        "Content-Type" : "text\/html",
         "Access-Control-Allow-Origin" : "*",
         "Vary" : "Accept-Encoding",
         "Transfer-Encoding" : "Identity",

@@ -8,6 +8,20 @@
 
 #pragma mark - Properties
 
++ (NSDateFormatter *)pnjc_iso8601NoMillisecond {
+    static NSDateFormatter *_iso8601FormatterNoMs;
+    static dispatch_once_t onceToken;
+
+    dispatch_once(&onceToken, ^{
+        _iso8601FormatterNoMs = [NSDateFormatter new];
+        _iso8601FormatterNoMs.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss'Z'";
+        _iso8601FormatterNoMs.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
+        _iso8601FormatterNoMs.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+    });
+
+    return _iso8601FormatterNoMs;
+}
+
 + (NSDateFormatter *)pnjc_iso8601 {
     static NSDateFormatter *_iso8601Formatter;
     static dispatch_once_t onceToken;

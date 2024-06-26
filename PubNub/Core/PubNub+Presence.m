@@ -30,12 +30,15 @@ NS_ASSUME_NONNULL_BEGIN
 ///   - objects: Remote data objects for which here now information should be received.
 ///   - operation: One of **PNOperationType** fields to identify which kind on of presence operation should be
 ///   performed.
+///   - shouldMapResult: Whether returned result should be re-mapped to the expected return type (depends from
+///   `operation`).
 ///   - queryParameters: List arbitrary query parameters which should be sent along with original API call.
 ///   - block: Here now fetch completion block.
 - (void)hereNowWithVerbosity:(PNHereNowVerbosityLevel)level
                   forObjects:(nullable NSArray<NSString *> *)objects
            withOperationType:(PNOperationType)operation
              queryParameters:(nullable NSDictionary *)queryParameters
+                   mapResult:(BOOL)shouldMapResult
              completionBlock:(PNHereNowCompletionBlock)block;
 
 
@@ -145,11 +148,12 @@ NS_ASSUME_NONNULL_END
                 NSNumber *verbosity = parameters[NSStringFromSelector(@selector(verbosity))];
                 level = (PNHereNowVerbosityLevel)verbosity.integerValue;
             }
-            
+
             [self hereNowWithVerbosity:level
                             forObjects:objects
                      withOperationType:type
                        queryParameters:queryParam
+                             mapResult:YES
                        completionBlock:block];
         } else {
             NSString *uuid = parameters[NSStringFromSelector(@selector(uuid))];
@@ -171,21 +175,15 @@ NS_ASSUME_NONNULL_END
     PNHereNowCompletionBlock block = [handleBlock copy];
     PNParsedRequestCompletionBlock handler; 
 
-#ifndef PUBNUB_DISABLE_LOGGER
-    PNHereNowVerbosityLevel level = userRequest.verbosityLevel;
-    PNOperationType operation = userRequest.operation;
-
-    if (operation == PNHereNowGlobalOperation) {
+    if (userRequest.operation == PNHereNowGlobalOperation) {
         PNLogAPICall(self.logger, @"<PubNub::API> Global 'here now' information with %@ data.",
-                     PNHereNowDataStrings[level]);
+                     PNHereNowDataStrings[userRequest.verbosityLevel]);
     } else {
-        NSString *channelsOrGroups = [userRequest.channels ?: userRequest.channelGroups componentsJoinedByString:@","];
-        
         PNLogAPICall(self.logger, @"<PubNub::API> Channel%@ 'here now' information for %@ with "
-                     "%@ data.", (operation == PNHereNowForChannelGroupOperation ? @" group" : @""),
-                     (channelsOrGroups ?: @"<error>"), PNHereNowDataStrings[level]);
+                     "%@ data.", (userRequest.operation == PNHereNowForChannelGroupOperation ? @" group" : @""),
+                     ([userRequest.channels ?: userRequest.channelGroups componentsJoinedByString:@","] ?: @"<error>"),
+                     PNHereNowDataStrings[userRequest.verbosityLevel]);
     }
-#endif // PUBNUB_DISABLE_LOGGER
 
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
@@ -223,17 +221,12 @@ NS_ASSUME_NONNULL_END
 - (void)hereNowWithVerbosity:(PNHereNowVerbosityLevel)level
                   completion:(PNGlobalHereNowCompletionBlock)handlerBlock {
     PNGlobalHereNowCompletionBlock block = [handlerBlock copy];
-
     [self hereNowWithVerbosity:level
                     forObjects:nil
              withOperationType:PNHereNowGlobalOperation
                queryParameters:nil
-               completionBlock:^(PNPresenceHereNowResult *result, PNErrorStatus *status) {
-        PNPresenceGlobalHereNowResult *globalResult;
-        if (result) globalResult = [PNPresenceGlobalHereNowResult legacyPresenceFromPresence:result];
-
-        [self callBlock:block status:NO withResult:globalResult andStatus:status];
-    }];
+                     mapResult:YES
+               completionBlock:(id)block];
 }
 
 
@@ -246,17 +239,12 @@ NS_ASSUME_NONNULL_END
 - (void)hereNowForChannel:(NSString *)channel
             withVerbosity:(PNHereNowVerbosityLevel)level
                completion:(PNChannelHereNowCompletionBlock)block {
-    
     [self hereNowWithVerbosity:level
                     forObjects:(channel ? @[channel] : nil)
              withOperationType:PNHereNowForChannelOperation
                queryParameters:nil
-               completionBlock:^(PNPresenceHereNowResult *result, PNErrorStatus *status) {
-        PNPresenceChannelHereNowResult *channelResult;
-        if (result) channelResult = [PNPresenceChannelHereNowResult legacyPresenceFromPresence:result];
-
-        [self callBlock:block status:NO withResult:channelResult andStatus:status];
-    }];
+                     mapResult:YES
+               completionBlock:(id)block];
 }
 
 
@@ -276,18 +264,15 @@ NS_ASSUME_NONNULL_END
                     forObjects:(group ? @[group] : nil)
              withOperationType:PNHereNowForChannelGroupOperation
                queryParameters:nil
-               completionBlock:^(PNPresenceHereNowResult *result, PNErrorStatus *status) {
-        PNPresenceChannelGroupHereNowResult *channelGroupResult;
-        if (result) channelGroupResult = [PNPresenceChannelGroupHereNowResult legacyPresenceFromPresence:result];
-
-        [self callBlock:block status:NO withResult:channelGroupResult andStatus:status];
-    }];
+                     mapResult:YES
+               completionBlock:(id)block];
 }
 
 - (void)hereNowWithVerbosity:(PNHereNowVerbosityLevel)level
-                  forObjects:(NSArray<NSString *> *)objects
+                  forObjects:(nullable NSArray<NSString *> *)objects
            withOperationType:(PNOperationType)operation
-             queryParameters:(NSDictionary *)queryParameters
+             queryParameters:(nullable NSDictionary *)queryParameters
+                   mapResult:(BOOL)shouldMapResult
              completionBlock:(PNHereNowCompletionBlock)block {
     PNHereNowRequest *request = nil;
     request.verbosityLevel = level;
@@ -300,8 +285,29 @@ NS_ASSUME_NONNULL_END
                  
     request.arbitraryQueryParameters = queryParameters;
     request.verbosityLevel = level;
-    
-    [self hereNowWithRequest:request completion:block];
+
+    if (!shouldMapResult) {
+        [self hereNowWithRequest:request completion:block];
+        return;
+    }
+                 
+    PNWeakify(self);
+    [self hereNowWithRequest:request completion:^(PNPresenceHereNowResult *result, PNErrorStatus *status) {
+        PNStrongify(self);
+        id mappedResult = result;
+
+        if (mappedResult) {
+            if (operation == PNHereNowGlobalOperation) {
+                mappedResult = [PNPresenceGlobalHereNowResult legacyPresenceFromPresence:result];
+            } else if (operation == PNHereNowForChannelOperation) {
+                mappedResult = [PNPresenceChannelHereNowResult legacyPresenceFromPresence:result];
+            } else if (operation == PNHereNowForChannelGroupOperation) {
+                mappedResult = [PNPresenceChannelGroupHereNowResult legacyPresenceFromPresence:result];
+            }
+        }
+
+        [self callBlock:block status:NO withResult:mappedResult andStatus:status];
+    }];
 }
 
 
@@ -312,11 +318,9 @@ NS_ASSUME_NONNULL_END
                                                             status:[PNErrorStatus class]];
     PNWhereNowCompletionBlock block = [handleBlock copy];
     PNParsedRequestCompletionBlock handler;
-    
-#ifndef PUBNUB_DISABLE_LOGGER
+
     PNLogAPICall(self.logger, @"<PubNub::API> 'Where now' presence information for %@.",
-                 (userRequest.userId?: @"<error>"));
-#endif // PUBNUB_DISABLE_LOGGER
+                 userRequest.userId ?: @"<error>");
 
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
@@ -428,7 +432,6 @@ NS_ASSUME_NONNULL_END
     PNStatusBlock block = [handleBlock copy];
     PNParsedRequestCompletionBlock handler;
 
-#ifndef PUBNUB_DISABLE_LOGGER
     PNLogAPICall(self.logger, @"<PubNub::API> Heartbeat for %@%@%@.",
                  userRequest.channels.count
                  ? [NSString stringWithFormat:@"channel%@ '%@'", userRequest.channels.count > 1 ? @"s" : @"",
@@ -439,7 +442,6 @@ NS_ASSUME_NONNULL_END
                  ? [NSString stringWithFormat:@"group%@ '%@'", userRequest.channelGroups.count > 1 ? @"s" : @"",
                     [userRequest.channelGroups componentsJoinedByString:@", "]]
                  : @"");
-#endif // PUBNUB_DISABLE_LOGGER
 
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,

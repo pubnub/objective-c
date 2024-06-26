@@ -31,6 +31,10 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Properties
 
++ (NSDictionary<NSString *,NSString *> *)codingKeys {
+    return @{ @"message": @"message" };
+}
+
 + (NSArray<NSString *> *)ignoredKeys {
     return @[@"publisher", @"decryptionError"];
 }

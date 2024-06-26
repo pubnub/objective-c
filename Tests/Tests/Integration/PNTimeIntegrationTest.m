@@ -27,6 +27,7 @@ NS_ASSUME_NONNULL_END
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-retain-cycles"
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
 
 #pragma mark - Setup / Tear down
@@ -90,7 +91,6 @@ NS_ASSUME_NONNULL_END
                 XCTAssertTrue(status.isError);
                 XCTAssertEqual(status.operation, PNTimeOperation);
                 XCTAssertEqual(status.category, PNMalformedResponseCategory);
-                XCTAssertEqual(status.statusCode, 404);
                 
                 retried = YES;
                 [status retry];

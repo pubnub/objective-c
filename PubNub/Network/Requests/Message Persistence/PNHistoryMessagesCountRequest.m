@@ -58,7 +58,7 @@ NS_ASSUME_NONNULL_END
             [pubNubTimetokens addObject:[PNNumber timeTokenFromNumber:timetoken].stringValue];
         }
         
-        query[@"timetoken"] = [pubNubTimetokens componentsJoinedByString:@","];
+        query[@"channelsTimetoken"] = [pubNubTimetokens componentsJoinedByString:@","];
     }
     
     return query;
@@ -97,7 +97,8 @@ NS_ASSUME_NONNULL_END
 - (PNError *)validate {
     if (self.channels.count == 0) return [self missingParameterError:@"channels" forObjectRequest:@"Messages count"];
     if (self.timetokens.count == 0) return [self missingParameterError:@"timetokens" forObjectRequest:@"Messages count"];
-    if (self.channels.count != self.timetokens.count) {
+    if ((self.channels.count == 1 && self.timetokens.count > 1) ||
+        (self.channels.count > 1 && self.timetokens.count > 1 && self.channels.count != self.timetokens.count)) {
         NSDictionary *userInfo = PNErrorUserInfo(@"Parameters validation error", 
                                                  PNStringFormat(@"Number of channels (%@) doesn't match number of "
                                                                 "timetokens (%@)", @(self.channels.count), @(self.timetokens.count)),

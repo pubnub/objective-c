@@ -248,6 +248,7 @@ NS_ASSUME_NONNULL_END
                 parsed = [NSDate dateWithTimeIntervalSince1970:((NSNumber *)date).doubleValue];
             } else if ([(NSString *)date rangeOfString:@"-"].location != NSNotFound) {
                 parsed = [NSDateFormatter.pnjc_iso8601 dateFromString:(NSString *)date];
+                if (!parsed) parsed = [NSDateFormatter.pnjc_iso8601NoMillisecond dateFromString:(NSString *)date];
             } else {
                 NSNumber *timestamp = [NSNumberFormatter.pnjc_number numberFromString:(NSString *)date];
                 if (timestamp != nil) parsed = [NSDate dateWithTimeIntervalSince1970:timestamp.doubleValue];
@@ -505,6 +506,7 @@ NS_ASSUME_NONNULL_END
 
     if ([[value class] isSubclassOfClass:_decDictionaryClass]) {
         decoder = [[PNJSONDecoder alloc] initForReadingFromDictionary:value];
+        decoder.additionalData = self.additionalData;
     } else if (!value && [self hasKey:key] ) {
         error = [self decodingErrorObjectOfType:@"PNJSONDecoder" forMissingKey:key];
     } else if (!value) {
@@ -739,7 +741,9 @@ NS_ASSUME_NONNULL_END
 
     id decodedObject;
 
-    if ([aClass isSubclassOfClass:_decStringClass]) {
+    if ([object isKindOfClass:_decNullClass]) {
+        return nil;
+    } else if ([aClass isSubclassOfClass:_decStringClass]) {
         BOOL mutableString = [aClass isSubclassOfClass:_decMutableStringClass];
         decodedObject = [self decodedAsMutableNSString:mutableString fromValue:object];
     } else if ([aClass isSubclassOfClass:_decNumberClass]) {
@@ -827,6 +831,7 @@ NS_ASSUME_NONNULL_END
                                                                          fromObject:value
                                                                      withSerializer:self.serializer
                                                                               error:&decodeError];
+        decoder.additionalData = self.additionalData;
         decodedObject = [(id<PNCodable>)[aClass alloc] initObjectWithCoder:decoder];
     } else {
         NSDictionary *dictionaryValue = (NSDictionary *)value;

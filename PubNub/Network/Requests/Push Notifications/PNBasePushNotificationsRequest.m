@@ -82,7 +82,7 @@ NS_ASSUME_NONNULL_END
         query[@"topic"] = topic;
     }
     
-    query[@"totypepic"] = tokenType;
+    query[@"type"] = tokenType;
     
     if (self.arbitraryQueryParameters.count) [query addEntriesFromDictionary:self.arbitraryQueryParameters];
     

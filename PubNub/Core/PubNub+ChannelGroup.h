@@ -6,6 +6,7 @@
 
 // Response
 #import <PubNub/PNChannelGroupChannelsResult.h>
+#import <PubNub/PNChannelGroupsResult.h>
 
 // Deprecated
 #import <PubNub/PNStreamModificationAPICallBuilder.h>

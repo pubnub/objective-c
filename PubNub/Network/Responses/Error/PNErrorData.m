@@ -171,6 +171,7 @@ NS_ASSUME_NONNULL_END
             
             if (statusCode == 400) self.category = PNBadRequestCategory;
             else if (statusCode == 403) self.category = PNAccessDeniedCategory;
+            else if (statusCode == 404) self.category = PNResourceNotFoundCategory;
             else if (statusCode == 411) self.category = PNBadRequestCategory;
             else if (statusCode == 414) self.category = PNRequestURITooLongCategory;
             else if (statusCode == 481) self.category = PNMalformedFilterExpressionCategory;

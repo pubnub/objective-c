@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(strong, nonatomic, readonly) NSNumber *timetoken;
 
 /// Data center region for which `timetoken` has been generated.
-@property(strong, nonatomic, readonly) NSNumber *reqion;
+@property(strong, nonatomic, readonly) NSNumber *region;
 
 #pragma mark -
 

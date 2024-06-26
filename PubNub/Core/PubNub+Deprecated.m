@@ -20,7 +20,7 @@
     result.TLSEnabled = self.configuration.isTLSEnabled;
     result.userID = self.configuration.userID;
     result.authKey = self.configuration.authToken ?: self.configuration.authKey;
-    result.statusCode = response.statusCode;
+    if (result.statusCode == 0 || response.statusCode > result.statusCode) result.statusCode = response.statusCode;
     result.origin = transportRequest.origin;
 
     if (!transportRequest) return;

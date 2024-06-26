@@ -115,16 +115,6 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Synchronous read / write locks
 
 - (void)syncReadAccessWithBlock:(dispatch_block_t)block {
-    if (self.isWriteLockAcquired) {
-        NSDictionary *userInfo = @{
-            NSLocalizedRecoverySuggestionErrorKey: @"Exclusive lock already acquired and there is no need to "
-                                                    "use -syncReadAccessWithBlock:."
-        };
-        @throw [NSException exceptionWithName:@"PNLockExclusiveWrite"
-                                       reason:@"Deadlock prevention exception. Called from within write block"
-                                     userInfo:userInfo];
-    }
-
     dispatch_sync(self.queue, block);
 }
 

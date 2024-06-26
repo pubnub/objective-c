@@ -77,6 +77,21 @@ NS_ASSUME_NONNULL_END
     return self;
 }
 
+
+#pragma mark - Prepare
+
+- (PNError *)validate {
+    if (self.fileIdentifier.length == 0) {
+        return [self missingParameterError:@"fileIdentifier" forObjectRequest:@"PNGenerateFileDownloadURLRequest"];
+    } else if (self.channel.length == 0) {
+        return [self missingParameterError:@"channel" forObjectRequest:@"PNGenerateFileDownloadURLRequest"];
+    } else if (self.filename.length == 0) {
+        return [self missingParameterError:@"filename" forObjectRequest:@"PNGenerateFileDownloadURLRequest"];
+    }
+
+    return nil;
+}
+
 #pragma mark -
 
 

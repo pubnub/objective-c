@@ -18,10 +18,14 @@ NS_ASSUME_NONNULL_BEGIN
 @property(strong, nullable, nonatomic, readonly) NSDictionary *custom;
 
 /// Last `App Context` object update date.
-@property(strong, nonatomic, readonly) NSDate *updated;
+///
+/// > Note: Value will be `nil` for objects received through subscribe real-time updates.
+@property(strong, nullable, nonatomic, readonly) NSDate *updated;
 
 /// `App Context` object version identifier.
-@property(copy, nonatomic, readonly) NSString *eTag;
+///
+/// > Note: Value will be `nil` for objects received through subscribe real-time updates.
+@property(copy, nullable, nonatomic, readonly) NSString *eTag;
 
 #pragma mark -
 

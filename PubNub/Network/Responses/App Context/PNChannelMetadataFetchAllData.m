@@ -13,6 +13,14 @@
     return [PNChannelMetadata class];
 }
 
+- (NSArray<PNChannelMetadata *> *)metadata {
+    return (NSArray<PNChannelMetadata *> *)self.objects;
+}
+
+- (NSUInteger)totalCount {
+    return super.totalCount;
+}
+
 #pragma mark -
 
 

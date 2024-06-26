@@ -2,8 +2,11 @@
  * @author Serhii Mamontov
  * @copyright © 2010-2022 PubNub, Inc.
  */
-#import <PubNub/PNRequestParameters.h>
 #import <PubNub/PubNub+CorePrivate.h>
+#import <PubNub/PNRemoveMessageActionRequest+Private.h>
+#import <PubNub/PNBaseMessageActionRequest+Private.h>
+#import <PubNub/PNFetchMessageActionsRequest.h>
+#import <PubNub/PNAddMessageActionRequest.h>
 #import "PNRecordableTestCase.h"
 #import <PubNub/PubNub.h>
 #import <OCMock/OCMock.h>
@@ -29,6 +32,7 @@ NS_ASSUME_NONNULL_END
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-retain-cycles"
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
 
 #pragma mark - VCR configuration
@@ -58,18 +62,15 @@ NS_ASSUME_NONNULL_END
     
     
     id clientMock = [self mockForObject:self.client];
-    id recorded = OCMExpect([clientMock processOperation:PNAddMessageActionOperation
-                                          withParameters:[OCMArg any]
-                                                    data:[OCMArg any]
-                                         completionBlock:[OCMArg any]])
+    id recorded = OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNAddMessageActionRequest class]]
+                                        withCompletion:[OCMArg any]])
         .andDo(^(NSInvocation *invocation) {
-            PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
-            NSData *sentData = [self objectForInvocation:invocation argumentAtIndex:3];
-            
-            XCTAssertEqualObjects(parameters.pathComponents[@"{channel}"], expectedChannel);
-            XCTAssertEqualObjects(parameters.pathComponents[@"{message-timetoken}"],
-                                  expectedMessageTimetoken.stringValue);
-            XCTAssertEqualObjects(sentData, expectedPayload);
+            PNAddMessageActionRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
+
+            XCTAssertNil([request validate]);
+            XCTAssertEqualObjects(request.channel, expectedChannel);
+            XCTAssertEqualObjects(request.messageTimetoken, expectedMessageTimetoken);
+            XCTAssertEqualObjects(request.body, expectedPayload);
         });
     
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
@@ -227,18 +228,14 @@ NS_ASSUME_NONNULL_END
     
     
     id clientMock = [self mockForObject:self.client];
-    id recorded = OCMExpect([clientMock processOperation:PNRemoveMessageActionOperation
-                                          withParameters:[OCMArg any]
-                                                    data:[OCMArg any]
-                                         completionBlock:[OCMArg any]])
+    id recorded = OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNRemoveMessageActionRequest class]]
+                                        withCompletion:[OCMArg any]])
         .andDo(^(NSInvocation *invocation) {
-            PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
-            
-            XCTAssertEqualObjects(parameters.pathComponents[@"{channel}"], expectedChannel);
-            XCTAssertEqualObjects(parameters.pathComponents[@"{message-timetoken}"],
-                                  expectedMessageTimetoken.stringValue);
-            XCTAssertEqualObjects(parameters.pathComponents[@"{action-timetoken}"],
-                                  expectedActionTimetoken.stringValue);
+            PNRemoveMessageActionRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
+
+            XCTAssertEqualObjects(request.channel, expectedChannel);
+            XCTAssertEqualObjects(request.messageTimetoken, expectedMessageTimetoken);
+            XCTAssertEqualObjects(request.messageActionTimetoken, expectedActionTimetoken);
         });
     
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
@@ -325,16 +322,14 @@ NS_ASSUME_NONNULL_END
     
     
     id clientMock = [self mockForObject:self.client];
-    id recorded = OCMExpect([clientMock processOperation:PNFetchMessagesActionsOperation
-                                          withParameters:[OCMArg any]
-                                                    data:[OCMArg any]
-                                         completionBlock:[OCMArg any]])
+    id recorded = OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNFetchMessageActionsRequest class]]
+                                        withCompletion:[OCMArg any]])
         .andDo(^(NSInvocation *invocation) {
-            PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
-            
-            XCTAssertEqualObjects(parameters.query[@"start"], expectedStart.stringValue);
-            XCTAssertEqualObjects(parameters.query[@"end"], expectedEnd.stringValue);
-            XCTAssertEqualObjects(parameters.query[@"limit"], expectedLimit.stringValue);
+            PNFetchMessageActionsRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
+
+            XCTAssertEqualObjects(request.start, expectedStart);
+            XCTAssertEqualObjects(request.end, expectedEnd);
+            XCTAssertEqual(request.limit, expectedLimit.unsignedIntegerValue);
         });
     
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{

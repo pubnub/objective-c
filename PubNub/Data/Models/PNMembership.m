@@ -1,4 +1,5 @@
 #import "PNMembership.h"
+#import <PubNub/PNUUIDMetadata.h>
 #import <PubNub/PNCodable.h>
 #import "PNBaseAppContextObject+Private.h"
 
@@ -10,6 +11,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// `UUID membership` object private extension.
 @interface PNMembership () <PNCodable>
 
+
+#pragma mark - Properties
+
+/// UUID's for which membership has been created / removed.
+@property(strong, nonatomic, nullable) PNUUIDMetadata *uuidMetadataObject;
 
 #pragma mark -
 
@@ -27,7 +33,14 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Properties
 
 + (NSDictionary<NSString *,NSString *> *)codingKeys {
-    return @{ @"metadata": @"channel" };
+    return @{
+        @"metadata": @"channel",
+        @"uuidMetadataObject": @"_uuid"
+    };
+}
+
++ (NSArray<NSString *> *)optionalKeys {
+    return @[@"uuidMetadataObject"];
 }
 
 + (NSArray<NSString *> *)ignoredKeys {
@@ -36,6 +49,10 @@ NS_ASSUME_NONNULL_END
 
 - (NSString *)channel {
     return self.metadata.channel;
+}
+
+- (NSString *)uuid {
+    return self.uuidMetadataObject.uuid;
 }
 
 

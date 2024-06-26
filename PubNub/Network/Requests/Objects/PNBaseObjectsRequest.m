@@ -155,7 +155,8 @@ NS_ASSUME_NONNULL_END
     NSMutableSet *includeFields = [NSMutableSet setWithArray:existingFields];
     [includeFields addObjectsFromArray:fields];
 
-    query[@"include"] = [includeFields.allObjects componentsJoinedByString:@","];
+//    if (includeFields.count)
+        query[@"include"] = [includeFields.allObjects componentsJoinedByString:@","];
 }
 
 #pragma mark -

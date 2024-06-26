@@ -187,12 +187,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Misc
 
-/// Status class which should be used to represent request error.
-///
-/// - Parameter request: Request with information which should be used to decide on class.
-/// - Returns: Class for error status presentation.
-- (Class)errorStatusClassForRequest:(id)request;
-
 #ifndef PUBNUB_DISABLE_LOGGER
 /// Create and configure **PubNub** client logger instance.
 - (void)setupClientLogger;
@@ -382,10 +376,8 @@ NS_ASSUME_NONNULL_END
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     if (!self.configuration.cipherKey.length || self.configuration.cryptoModule) return;
     if (self.configuration.cipherKey.length && self.configuration.cryptoModule) {
-#ifndef PUBNUB_DISABLE_LOGGER
         PNLogClientInfo(self.logger, @"<PubNub> It is expected that only cipherKey or cryptoModule will be configured "\
                         "at once. PubNub client will use the configured cryptoModule.");
-#endif // PUBNUB_DISABLE_LOGGER
         return;
     }
 
@@ -532,17 +524,37 @@ NS_ASSUME_NONNULL_END
 }
 
 - (PNOperationDataParser *)parserWithResult:(Class)resultClass status:(Class)statusClass {
-    return [PNOperationDataParser parserWithSerializer:self.coder
-                                                result:resultClass
-                                                status:statusClass
-                                    withAdditionalData:@{@"cryptoModule": self.configuration.cryptoModule }];
+    return [self parserWithResult:resultClass status:statusClass cryptoModule:nil];
 }
 
 - (PNOperationDataParser *)parserWithStatus:(Class)statusClass {
-    return [PNOperationDataParser parserWithSerializer:self.coder 
+    return [self parserWithStatus:statusClass cryptoModule:nil];
+}
+
+- (PNOperationDataParser *)parserWithResult:(Class)resultClass
+                                     status:(Class)statusClass
+                               cryptoModule:(id<PNCryptoProvider>)cryptoModule {
+    NSDictionary *additionalData;
+    if (cryptoModule || self.configuration.cryptoModule) {
+        additionalData = @{ @"cryptoModule": cryptoModule ?: self.configuration.cryptoModule };
+    }
+
+    return [PNOperationDataParser parserWithSerializer:self.coder
+                                                result:resultClass
+                                                status:statusClass
+                                    withAdditionalData:additionalData];
+}
+
+- (PNOperationDataParser *)parserWithStatus:(Class)statusClass cryptoModule:(id<PNCryptoProvider>)cryptoModule {
+    NSDictionary *additionalData;
+    if (cryptoModule || self.configuration.cryptoModule) {
+        additionalData = @{ @"cryptoModule": cryptoModule ?: self.configuration.cryptoModule };
+    }
+
+    return [PNOperationDataParser parserWithSerializer:self.coder
                                                 result:nil
                                                 status:statusClass
-                                    withAdditionalData:@{@"cryptoModule": self.configuration.cryptoModule }];
+                                    withAdditionalData:additionalData];
 }
 
 #pragma mark - Operation information
@@ -576,7 +588,6 @@ NS_ASSUME_NONNULL_END
     if (result) [self appendClientInformation:result];
     if (status) [self appendClientInformation:status];
 
-#ifndef PUBNUB_DISABLE_LOGGER
     if (result) PNLogResult(self.logger, @"<PubNub> %@", [result stringifiedRepresentationWithSerializer:self.coder]);
 
     if (status) {
@@ -584,7 +595,6 @@ NS_ASSUME_NONNULL_END
             PNLogFailureStatus(self.logger, @"<PubNub> %@", [status stringifiedRepresentationWithSerializer:self.coder]);
         } else PNLogStatus(self.logger, @"<PubNub> %@", [status stringifiedRepresentationWithSerializer:self.coder]);
     }
-#endif // PUBNUB_DISABLE_LOGGER
 
     if (block) {
         pn_dispatch_async(self.callbackQueue, ^{
@@ -610,45 +620,33 @@ NS_ASSUME_NONNULL_END
 - (void)handleContextTransition:(NSNotification *)notification {
 #if TARGET_OS_IOS
     if ([notification.name isEqualToString:UIApplicationDidEnterBackgroundNotification]) {
-#ifndef PUBNUB_DISABLE_LOGGER
         PNLogClientInfo(self.logger, @"<PubNub> Did enter background execution context.");
-#endif // PUBNUB_DISABLE_LOGGER
         [self.subscriptionNetwork suspend];
         [self.serviceNetwork suspend];
     } else if ([notification.name isEqualToString:UIApplicationWillEnterForegroundNotification]) {
-#ifndef PUBNUB_DISABLE_LOGGER
         PNLogClientInfo(self.logger, @"<PubNub> Will enter foreground execution context.");
-#endif // PUBNUB_DISABLE_LOGGER
         [self.subscriptionNetwork resume];
         [self.serviceNetwork resume];
     }
 #elif TARGET_OS_WATCH
     if ([notification.name isEqualToString:NSExtensionHostDidEnterBackgroundNotification]) {
-#ifndef PUBNUB_DISABLE_LOGGER
         PNLogClientInfo(self.logger, @"<PubNub> Did enter background execution context.");
-#endif // PUBNUB_DISABLE_LOGGER
         [self.subscriptionNetwork suspend];
         [self.serviceNetwork suspend];
     } else if ([notification.name isEqualToString:NSExtensionHostWillEnterForegroundNotification]) {
-#ifndef PUBNUB_DISABLE_LOGGER
         PNLogClientInfo(self.logger, @"<PubNub> Will enter foreground execution context.");
-#endif // PUBNUB_DISABLE_LOGGER
         [self.subscriptionNetwork resume];
         [self.serviceNetwork resume];
     }
 #elif TARGET_OS_OSX
     if ([notification.name isEqualToString:NSWorkspaceWillSleepNotification] ||
         [notification.name isEqualToString:NSWorkspaceSessionDidResignActiveNotification]) {
-#ifndef PUBNUB_DISABLE_LOGGER
         PNLogClientInfo(self.logger, @"<PubNub> Workspace became inactive.");
-#endif // PUBNUB_DISABLE_LOGGER
         [self.subscriptionNetwork suspend];
         [self.serviceNetwork suspend];
     } else if ([notification.name isEqualToString:NSWorkspaceDidWakeNotification] ||
                [notification.name isEqualToString:NSWorkspaceSessionDidBecomeActiveNotification]) {
-#ifndef PUBNUB_DISABLE_LOGGER
         PNLogClientInfo(self.logger, @"<PubNub> Workspace became active.");
-#endif // PUBNUB_DISABLE_LOGGER
         [self.subscriptionNetwork resume];
         [self.serviceNetwork resume];
     }
@@ -659,16 +657,6 @@ NS_ASSUME_NONNULL_END
 
 
 #pragma mark - Helpers
-
-- (Class)errorStatusClassForRequest:(id)request {
-    Class class = [PNErrorStatus class];
-    
-//    if (PNOperationStatusClasses[request.operation]) {
-//        class = NSClassFromString(PNOperationStatusClasses[request.operation]);
-//    }
-    
-    return class;
-}
 
 #ifndef PUBNUB_DISABLE_LOGGER
 - (void)setupClientLogger {
@@ -740,7 +728,6 @@ NS_ASSUME_NONNULL_END
     _subscriptionNetwork = nil;
     [_serviceNetwork invalidate];
     _serviceNetwork = nil;
-    [_filesManager invalidate];
     _filesManager = nil;
 }
 

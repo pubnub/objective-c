@@ -1,4 +1,5 @@
 #import "PNFetchAllUUIDMetadataRequest.h"
+#import "PNBaseObjectsRequest+Private.h"
 #import "PNBaseRequest+Private.h"
 #import "PNTransportRequest.h"
 
@@ -24,9 +25,11 @@
 
 #pragma mark - Initialization and Configuration
 
-- (instancetype)init {
-    if ((self = [super init])) self.includeFields = PNUUIDTotalCountField;
-    return self;
++ (instancetype)new {
+    PNFetchAllUUIDMetadataRequest *request = [[self alloc] initWithObject:@"UUID" identifier:nil];
+    request.includeFields = PNUUIDTotalCountField;
+
+    return request;
 }
 
 #pragma mark -

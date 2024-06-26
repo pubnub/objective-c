@@ -6,9 +6,7 @@
 #import <PubNub/PNTransportRequest+Private.h>
 #import <PubNub/NSError+PNTransport.h>
 #import <PubNub/PNFunctions.h>
-#ifndef PUBNUB_DISABLE_LOGGER
 #import <PubNub/PNLogMacro.h>
-#endif // PUBNUB_DISABLE_LOGGER
 #import <PubNub/PNHelpers.h>
 #import <PubNub/PNGZIP.h>
 #import <PubNub/PNLock.h>
@@ -187,9 +185,12 @@ NS_ASSUME_NONNULL_END
     task = [self.session dataTaskWithRequest:urlRequest
                            completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         PNStrongify(self);
+        BOOL retriableError = error && error.code != NSURLErrorCancelled;
+        NSInteger statusCode = ((NSHTTPURLResponse *)response).statusCode;
+        BOOL retriableStatusCode = statusCode >= 400 && statusCode != 403;
         NSTimeInterval delay = 0.f;
-        
-        if (error && request.retriable) {
+
+        if ((retriableError || retriableStatusCode) && request.retriable) {
             PNRequestRetryConfiguration *retry = self.configuration.retryConfiguration;
             NSUInteger retryAttempt = request.retryAttempt + 1;
             delay = [retry retryDelayForFailedRequest:urlRequest withResponse:response retryAttempt:retryAttempt];
@@ -197,9 +198,12 @@ NS_ASSUME_NONNULL_END
         
         if (delay > 0.f) {
             request.retryAttempt += 1;
-            [self sendRequest:request withCompletionBlock:block];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)),
+                           dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                [self sendRequest:request withCompletionBlock:block];
+            });
         } else {
-            block(request, 
+            block(request,
                   [self handleRequest:request taskCompletion:task withResponse:response data:data],
                   [self errorForRequest:request withURL:task.originalRequest.URL error:error]
             );
@@ -218,9 +222,12 @@ NS_ASSUME_NONNULL_END
     task = [self.session downloadTaskWithRequest:urlRequest
                                completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
         PNStrongify(self);
+        BOOL retriableError = error && error.code != NSURLErrorCancelled;
+        NSInteger statusCode = ((NSHTTPURLResponse *)response).statusCode;
+        BOOL retriableStatusCode = statusCode >= 400 && statusCode != 403;
         NSTimeInterval delay = 0.f;
         
-        if (error && request.retriable) {
+        if ((retriableError || retriableStatusCode) && request.retriable) {
             PNRequestRetryConfiguration *retry = self.configuration.retryConfiguration;
             NSUInteger retryAttempt = request.retryAttempt + 1;
             delay = [retry retryDelayForFailedRequest:urlRequest withResponse:response retryAttempt:retryAttempt];
@@ -228,7 +235,10 @@ NS_ASSUME_NONNULL_END
         
         if (delay > 0.f) {
             request.retryAttempt += 1;
-            [self sendDownloadRequest:request withCompletionBlock:block];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)),
+                           dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                [self sendDownloadRequest:request withCompletionBlock:block];
+            });
         } else {
             block(request,
                   [self handleRequest:request taskCompletion:task withResponse:nil data:nil],
@@ -244,30 +254,27 @@ NS_ASSUME_NONNULL_END
 - (void)sendRequest:(PNTransportRequest *)request withSessionTask:(NSURLSessionTask *)task {
     [self.lock asyncWriteAccessWithBlock:^{
         [self.requests addObject:request];
-        
-#ifndef PUBNUB_DISABLE_LOGGER
+
         PNLogRequest(self.configuration.logger, @"<PubNub::Network> %@ %@",
                      request.stringifiedMethod, task.originalRequest.URL.absoluteString);
-#endif // PUBNUB_DISABLE_LOGGER
         
         if (request.cancellable) {
+            __weak __typeof(request) weakRequest = request;
             PNWeakify(self);
-            PNWeakify(request);
             
             request.cancel = ^{
-                PNStrongify(request);
                 PNStrongify(self);
                 
-                request.cancelled = YES;
-                request.cancel = nil;
+                weakRequest.cancelled = YES;
+                weakRequest.cancel = nil;
+                [task cancel];
 
                 [self.lock asyncWriteAccessWithBlock:^{
-                    [self.requests removeObject:request];
-                    [task cancel];
+                    [self.requests removeObject:weakRequest];
                 }];
             };
         }
-        
+
         [task resume];
     }];
 }
@@ -295,15 +302,13 @@ NS_ASSUME_NONNULL_END
                           taskCompletion:(NSURLSessionTask *)task
                             withResponse:(NSURLResponse *)response
                                     data:(NSData *)data {
-           
-    __block NSUInteger activeRequestsCount = 0;
     [self.lock syncWriteAccessWithBlock:^{
         request.cancel = nil;
         [self.requests removeObject:request];
-        activeRequestsCount = self.requests.count;
+        NSUInteger activeRequestsCount = self.requests.count;
+
+        if (activeRequestsCount == 0) [self endBackgroundTasksCompletionIfRequired];
     }];
-                                       
-    if (activeRequestsCount == 0) [self endBackgroundTasksCompletionIfRequired];
 
     return [PNURLSessionTransportResponse responseWithNSURLResponse:response data:data];
 }
@@ -327,7 +332,9 @@ NS_ASSUME_NONNULL_END
         __weak __typeof__(self) weakSelf = self;
         UIApplication *application = [UIApplication performSelector:NSSelectorFromString(@"sharedApplication")];
         self.tasksCompletionIdentifier = [application beginBackgroundTaskWithExpirationHandler:^{
-            [weakSelf endBackgroundTasksCompletionIfRequired];
+            [self.lock syncWriteAccessWithBlock:^{
+                [weakSelf endBackgroundTasksCompletionIfRequired];
+            }];
         }];
 #endif // TARGET_OS_IOS && !defined(TARGET_IS_EXTENSION)
     }];
@@ -338,22 +345,20 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)endBackgroundTasksCompletionIfRequired {
-    [self.lock syncWriteAccessWithBlock:^{
 #if TARGET_OS_OSX
-        if (self.tasksCompletionIdentifier == nil) return;
-        
-        NSProcessInfo *processInfo = [NSProcessInfo processInfo];
-        [processInfo endActivity:self.tasksCompletionIdentifier];
-        self.tasksCompletionIdentifier = nil;
+    if (self.tasksCompletionIdentifier == nil) return;
+    
+    NSProcessInfo *processInfo = [NSProcessInfo processInfo];
+    [processInfo endActivity:self.tasksCompletionIdentifier];
+    self.tasksCompletionIdentifier = nil;
 #endif // TARGET_OS_OSX
 #if TARGET_OS_IOS && !TARGET_IS_EXTENSION
-        if (self.tasksCompletionIdentifier == UIBackgroundTaskInvalid) return;
+    if (self.tasksCompletionIdentifier == UIBackgroundTaskInvalid) return;
 
-        UIApplication *application = [UIApplication performSelector:NSSelectorFromString(@"sharedApplication")];
-        [application endBackgroundTask:self.tasksCompletionIdentifier];
-        self.tasksCompletionIdentifier = UIBackgroundTaskInvalid;
+    UIApplication *application = [UIApplication performSelector:NSSelectorFromString(@"sharedApplication")];
+    [application endBackgroundTask:self.tasksCompletionIdentifier];
+    self.tasksCompletionIdentifier = UIBackgroundTaskInvalid;
 #endif // TARGET_OS_IOS && !TARGET_IS_EXTENSION
-    }];
 }
 
 - (void)invalidate {
@@ -387,6 +392,8 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)URLSession:(NSURLSession *)session didBecomeInvalidWithError:(NSError *)error {
+    if (!error) return;
+    
     [self.lock syncWriteAccessWithBlock:^{
         [self setupURLSession];
     }];

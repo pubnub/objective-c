@@ -26,7 +26,7 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Properties
 
 + (NSDictionary<NSString *, NSString *> *)codingKeys {
-    return @{ @"state": @"paload" };
+    return @{ @"state": @"payload" };
 }
 
 #pragma mark -
