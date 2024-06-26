@@ -1464,8 +1464,8 @@ NS_ASSUME_NONNULL_END
             .uuid(uuid)
             .channels(channels)
             .performWithCompletion(^(PNManageMembershipsStatus *status) {
-                XCTAssertFalse(status.isError);
-                
+                XCTAssertFalse(status.isError, @"Error reason: %@", status.errorData.information);
+
                 if (status.isError) {
                     NSLog(@"'%@' UUID MEMBERSHIP REMOVE ERROR: %@\n%@",
                           uuid, status.errorData.information,
@@ -1501,8 +1501,8 @@ NS_ASSUME_NONNULL_END
             client.objects().removeUUIDMetadata()
                 .uuid(uuid)
                 .performWithCompletion(^(PNAcknowledgmentStatus *status) {
-                    XCTAssertFalse(status.isError);
-                    
+                    XCTAssertFalse(status.isError, @"Error reason: %@", status.errorData.information);
+
                     if (status.isError) {
                         NSLog(@"'%@' UUID METADATA REMOVE ERROR: %@\n%@",
                               uuid, status.errorData.information,
@@ -1758,7 +1758,7 @@ NS_ASSUME_NONNULL_END
     for (NSString *channel in channels) {
         [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
             client.objects().removeChannelMetadata(channel).performWithCompletion(^(PNAcknowledgmentStatus *status) {
-                XCTAssertFalse(status.isError);
+                XCTAssertFalse(status.isError, @"Error reason: %@", status.errorData.information);
                 
                 if (status.isError) {
                     NSLog(@"'%@' CHANNEL METADATA REMOVE ERROR: %@\n%@",

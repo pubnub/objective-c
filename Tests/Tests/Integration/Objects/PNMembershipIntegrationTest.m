@@ -405,7 +405,7 @@ NS_ASSUME_NONNULL_END
             .performWithCompletion(^(PNManageMembershipsStatus *status) {
                 memberships = status.data.memberships;
                 XCTAssertFalse(status.isError);
-                
+
                 if (shouldCallCompletionHandler) {
                     handler();
                 }
