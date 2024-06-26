@@ -839,10 +839,11 @@ NS_ASSUME_NONNULL_END
         [self updateStateTo:PNDisconnectedSubscriberState
                  withStatus:(PNSubscribeStatus *)status
                  completion:^(PNStatusCategory category) {
-            [self.client cancelSubscribeOperations];
-            [status updateCategory:category];
-            
-            [self.client callBlock:nil status:YES withResult:nil andStatus:status];
+            [self.client cancelSubscribeOperationsWithCompletion:^{
+                [status updateCategory:category];
+
+                [self.client callBlock:nil status:YES withResult:nil andStatus:status];
+            }];
         }];
     }
     #pragma clang diagnostic pop
