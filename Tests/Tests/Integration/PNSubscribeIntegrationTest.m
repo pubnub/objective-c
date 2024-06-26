@@ -261,8 +261,7 @@ NS_ASSUME_NONNULL_END
 
     [client2 subscribeToPresenceChannels:@[channels.lastObject]];
     [self waitTask:@"waitForSubscribeOnPresence" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
-    
-    
+
     XCTAssertTrue([client2 isSubscribedOn:[channels.lastObject stringByAppendingString:@"-pnpres"]]);
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {

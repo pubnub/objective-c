@@ -48,9 +48,6 @@ typedef void(^PNParsedRequestCompletionBlock)(PNTransportRequest *,
 
 #pragma mark - Properties
 
-// Handler which will be called when subscribe request will be cancelled.
-@property(strong, nullable, nonatomic) dispatch_block_t subscribeCancellationHandler;
-
 /// Recent client state (whether it was connected or not).
 @property (nonatomic, readonly, assign) PNStatusCategory recentClientStatus;
 

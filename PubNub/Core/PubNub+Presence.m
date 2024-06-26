@@ -412,14 +412,13 @@ NS_ASSUME_NONNULL_END
             [self heartbeatWithCompletion:block];
             [self.heartbeatManager startHeartbeatIfRequired];
         } else {
-            [self cancelSubscribeOperationsWithCompletion:^{
-                [self.subscriberManager unsubscribeFromChannels:presenceChannels
-                                                         groups:presenceChannelGroups
-                                            withQueryParameters:nil
-                                          listenersNotification:NO
-                                                     completion:^(PNSubscribeStatus *status) {
-                    if (block) block((id)status);
-                }];
+            [self cancelSubscribeOperations];
+            [self.subscriberManager unsubscribeFromChannels:presenceChannels
+                                                     groups:presenceChannelGroups
+                                        withQueryParameters:nil
+                                      listenersNotification:NO
+                                                 completion:^(PNSubscribeStatus *status) {
+                if (block) block((id)status);
             }];
         }
     } else {

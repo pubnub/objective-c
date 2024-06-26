@@ -90,9 +90,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Misc
 
 /// Cancel any active long-polling subscribe operations scheduled for processing.
-///
-/// - Parameter block: Subscribe request cancellatation handler block.
-- (void)cancelSubscribeOperationsWithCompletion:(nullable dispatch_block_t)block;
+- (void)cancelSubscribeOperations;
 
 #pragma mark -
 

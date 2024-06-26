@@ -94,8 +94,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Properties
 
-// Handler which will be called when subscribe request will be cancelled.
-@property(strong, nullable, nonatomic) dispatch_block_t subscribeCancellationHandler;
 /// Resources access lock.
 @property(strong, nonatomic) PNLock *lock;
 #ifndef PUBNUB_DISABLE_LOGGER
@@ -320,7 +318,7 @@ NS_ASSUME_NONNULL_END
 
     if ([self.subscriberManager allObjects].count) {
         // Stop any interactions on subscription loop.
-        [self cancelSubscribeOperationsWithCompletion:nil];
+        [self cancelSubscribeOperations];
 
         BOOL uuidChanged = ![configuration.userID isEqualToString:self.configuration.userID];
         BOOL authKeyChanged = ((self.configuration.authKey && !configuration.authKey) ||
@@ -404,9 +402,8 @@ NS_ASSUME_NONNULL_END
             #pragma clang diagnostic push
             #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
             [weakSelf.reachability stopServicePing];
-            [weakSelf cancelSubscribeOperationsWithCompletion:^{
-                [weakSelf.subscriberManager restoreSubscriptionCycleIfRequiredWithCompletion:nil];
-            }];
+            [weakSelf cancelSubscribeOperations];
+            [weakSelf.subscriberManager restoreSubscriptionCycleIfRequiredWithCompletion:nil];
             #pragma clang diagnostic pop
         }
     }];

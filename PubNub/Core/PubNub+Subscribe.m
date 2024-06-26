@@ -202,9 +202,8 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Subscription
 
 - (void)subscribeWithRequest:(PNSubscribeRequest *)request {
-    [self cancelSubscribeOperationsWithCompletion:^{
-        [self.subscriberManager subscribeWithRequest:request];
-    }];
+    [self cancelSubscribeOperations];
+    [self.subscriberManager subscribeWithRequest:request];
 }
 
 - (void)subscribeWithRequest:(PNSubscribeRequest *)userRequest completion:(PNSubscriberCompletionBlock)handleBlock {
@@ -222,14 +221,8 @@ NS_ASSUME_NONNULL_END
         PNStrongify(self);
 
         result.status.initialSubscription = [userRequest.timetoken isEqualToNumber:@0];
-        [self.lock writeAccessWithBlock:^{
-            if (self.subscribeCancellationHandler) {
-                self.subscribeCancellationHandler();
-                self.subscribeCancellationHandler = nil;
-            }
 
-            [self callBlock:block status:YES withResult:nil andStatus:result.status];
-        }];
+        [self callBlock:block status:YES withResult:nil andStatus:result.status];
     };
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
@@ -323,9 +316,8 @@ NS_ASSUME_NONNULL_END
 - (void)unsubscribeWithRequest:(PNPresenceLeaveRequest *)request {
     if (request.channels.count == 0 && request.channelGroups.count == 0) return;
 
-    [self cancelSubscribeOperationsWithCompletion:^{
-        [self.subscriberManager unsubscribeWithRequest:request completion:nil];
-    }];
+    [self cancelSubscribeOperations];
+    [self.subscriberManager unsubscribeWithRequest:request completion:nil];
 }
 
 - (void)unsubscribeWithRequest:(PNPresenceLeaveRequest *)userRequest
@@ -375,9 +367,8 @@ NS_ASSUME_NONNULL_END
     request.observePresence = shouldObservePresence;
 
     if (request.channels.count || request.channelGroups.count) {
-        [self cancelSubscribeOperationsWithCompletion:^{
-            [self.subscriberManager unsubscribeWithRequest:request completion:block];
-        }];
+        [self cancelSubscribeOperations];
+        [self.subscriberManager unsubscribeWithRequest:request completion:block];
     } else if (block) {
         pn_dispatch_async(self.callbackQueue, ^{
             block(nil);
@@ -405,39 +396,18 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)unsubscribeFromAllWithQueryParameters:(NSDictionary *)queryParameters completion:(PNStatusBlock)block {
-    [self cancelSubscribeOperationsWithCompletion:^{
-        [self.subscriberManager unsubscribeFromAllWithQueryParameters:queryParameters completion:block];
-    }];
+    [self cancelSubscribeOperations];
+    [self.subscriberManager unsubscribeFromAllWithQueryParameters:queryParameters completion:block];
 }
 
 
 #pragma mark - Misc
 
-- (void)cancelSubscribeOperationsWithCompletion:(dispatch_block_t)block {
+- (void)cancelSubscribeOperations {
     [self.subscriptionNetwork requestsWithBlock:^(NSArray<PNTransportRequest *> *requests) {
-        BOOL hasSubscribeRequests = NO;
-
         for(PNTransportRequest *request in requests) {
-            if (!hasSubscribeRequests && [request.path hasPrefix:kPNSubscribeAPIPrefix]) {
-                hasSubscribeRequests = YES;
-                break;
-            }
+            if ([request.path hasPrefix:kPNSubscribeAPIPrefix]) request.cancel();
         }
-
-        dispatch_block_t cancelRequests = ^{
-            for(PNTransportRequest *request in requests) {
-                if ([request.path hasPrefix:kPNSubscribeAPIPrefix]) request.cancel();
-            }
-        };
-
-        if (hasSubscribeRequests) {
-            if (block) {
-                [self.lock writeAccessWithBlock:^{
-                    self.subscribeCancellationHandler = [block copy];
-                    cancelRequests();
-                }];
-            } else cancelRequests();
-        } else if (block) block();
     }];
 }
 
