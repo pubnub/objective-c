@@ -2,15 +2,15 @@ name: Automated product release
 
 on:
   pull_request:
-    branches: [ master ]
-    types: [ closed ]
-
+    branches: [master]
+    types: [closed]
 
 jobs:
   check-release:
     name: Check release required
-    runs-on: ubuntu-latest
     if: github.event.pull_request.merged && endsWith(github.repository, '-private') != true
+    runs-on:
+      group: Default
     outputs:
       release: ${{ steps.check.outputs.ready }}
     steps:
@@ -28,9 +28,10 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}
   publish:
     name: Publish package
-    runs-on: macos-11
     needs: check-release
     if: needs.check-release.outputs.release == 'true'
+    runs-on:
+      group: macos-gh
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -60,4 +61,3 @@ jobs:
         with:
           token: ${{ secrets.GH_TOKEN }}
           acceptance-tests-workflow: Tests
-
