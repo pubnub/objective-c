@@ -11,7 +11,7 @@
 
 #pragma mark Defines
 
-#define WRITING_CASSETTES 1
+#define WRITING_CASSETTES 0
 #define PUBNUB_LOGGER_ENABLED NO
 #define PUBNUB_DISABLE_LOGGER
 
@@ -491,7 +491,7 @@ NS_ASSUME_NONNULL_END
 
 - (void)updateVCRConfigurationFromDefaultConfiguration:(YHVConfiguration *)configuration {
 #if WRITING_CASSETTES
-    NSString *cassettesPath = @"/Users/sergey/Documents/Develop/Objective-C/PubNub SDK (public)/Tests/Support Files/Fixtures";
+    NSString *cassettesPath = @"<path to the project>/Tests/Support Files/Fixtures";
     NSString *cassetteName = [NSStringFromClass([self class]) stringByAppendingPathExtension:@"bundle"];
     configuration.cassettesPath = [cassettesPath stringByAppendingPathComponent:cassetteName];
 #endif // WRITING_CASSETTES
