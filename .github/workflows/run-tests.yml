@@ -17,7 +17,8 @@ env:
   LANG: en_US.UTF-8
   LANGUAGE: en_US.UTF-8
   LC_ALL: en_US.UTF-8
-
+  LC_CTYPE: en_US.UTF-8
+  
 jobs:
   tests:
     name: Integration and Unit tests
@@ -29,11 +30,11 @@ jobs:
         environment: [iOS, tvOS, macOS]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.GH_TOKEN }}
       - name: Checkout actions
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: pubnub/client-engineering-deployment-tools
           ref: v1
@@ -47,7 +48,7 @@ jobs:
       - name: Setup CocoaPods
         run: gem install cocoapods
       - name: Cache installed Pods
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: Tests/Pods
           key: ${{ runner.os }}-pods-${{ hashFiles('**/Tests/Podfile.lock') }}
@@ -75,7 +76,7 @@ jobs:
       group: macos-gh
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup Ruby 3.2.2
         uses: ruby/setup-ruby@v1
         with:
@@ -89,14 +90,14 @@ jobs:
       - name: Setup CocoaPods
         run: gem install cocoapods
       - name: Cache installed Pods
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: Tests/Pods
           key: ${{ runner.os }}-pods-${{ hashFiles('**/Tests/Podfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-pods-
       - name: Checkout mock-server action
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: pubnub/client-engineering-deployment-tools
           ref: v1
@@ -118,7 +119,7 @@ jobs:
       - name: Run beta acceptance tests
         run: ./Tests/Support\ Files/Scripts/tests-runner.sh ios contract-beta 1
       - name: Expose acceptance tests reports
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: acceptance-test-reports

@@ -1,3 +1,9 @@
+## v5.5.0
+June 12 2024
+
+#### Added
+- Adjusting to FCM HTTP v1 API.
+
 ## v5.4.1
 April 30 2024
 

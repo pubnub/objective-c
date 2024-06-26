@@ -141,7 +141,7 @@ NS_ASSUME_NONNULL_END
                 }
             }
         },
-        @"pn_gcm": @{
+        @"pn_fcm": @{
             @"notification": @{
                 @"title": expectedTitle,
                 @"body": expectedBody
@@ -179,7 +179,7 @@ NS_ASSUME_NONNULL_END
                 }
             ]
         },
-        @"pn_gcm": @{
+        @"pn_fcm": @{
             @"notification": @{
                 @"title": expectedTitle,
                 @"body": expectedBody
