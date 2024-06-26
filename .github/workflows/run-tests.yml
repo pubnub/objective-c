@@ -14,6 +14,9 @@ env:
   TESTS_PAM_PUBLISH_KEY: ${{ secrets.SDK_PAM_PUB_KEY }}
   TESTS_SUBSCRIBE_KEY: ${{ secrets.SDK_SUB_KEY }}
   TESTS_PUBLISH_KEY: ${{ secrets.SDK_PUB_KEY }}
+  LANG: en_US.UTF-8
+  LANGUAGE: en_US.UTF-8
+  LC_ALL: en_US.UTF-8
 
 jobs:
   tests:
