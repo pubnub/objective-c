@@ -743,7 +743,7 @@
 - (void)testItShouldPublishMobilePayloadWithWrappedKeys {
     NSDictionary *mobilePayload = @{
         @"apns": @{ @"aps": @{ @"alert": @"Hello there" } },
-        @"gcm": @{ @"data": @{ @"hello": @"there" } }
+        @"fcm": @{ @"data": @{ @"hello": @"there" } }
     };
     NSString *channel = [self channelWithName:@"test-channel"];
     PubNub *client1 = [self createPubNubForUser:@"serhii"];
@@ -752,7 +752,7 @@
     NSDictionary *expectedMessage = @{
         @"pn_other": message,
         @"pn_apns": mobilePayload[@"apns"],
-        @"pn_gcm": mobilePayload[@"gcm"]
+        @"pn_fcm": mobilePayload[@"fcm"]
     };
     
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
