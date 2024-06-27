@@ -1,13 +1,6 @@
-/**
- * @author Serhii Mamontov
- * @version 4.14.0
- * @since 4.14.0
- * @copyright © 2010-2020 PubNub, Inc. 
- */
-#import "PNBaseObjectsRequest+Private.h"
 #import "PNObjectsPaginatedRequest.h"
-#import "PNRequest+Private.h"
-#import "PNHelpers.h"
+#import "PNBaseObjectsRequest+Private.h"
+#import "PNBaseRequest+Private.h"
 
 
 #pragma mark Interface implementation
@@ -15,52 +8,32 @@
 @implementation PNObjectsPaginatedRequest
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
-- (PNRequestParameters *)requestParameters {
-    PNRequestParameters *parameters = [super requestParameters];
-
-    if (self.parametersError) {
-        return parameters;
-    }
+- (NSDictionary *)query {
+    NSMutableDictionary *query = [([super query] ?: @{}) mutableCopy];
     
     if ((self.includeFields & PNChannelTotalCountField) == PNChannelTotalCountField ||
         (self.includeFields & PNUUIDTotalCountField) == PNUUIDTotalCountField ||
         (self.includeFields & PNMembershipsTotalCountField) == PNMembershipsTotalCountField ||
         (self.includeFields & PNChannelMembersTotalCountField) == PNChannelMembersTotalCountField) {
-
-        [parameters addQueryParameter:@"1" forFieldName:@"count"];
-    }
-
-    if (self.limit > 0) {
-        [parameters addQueryParameter:@(self.limit).stringValue forFieldName:@"limit"];
+        query[@"count"] = @"1";
     }
     
-    if (self.sort.count > 0) {
-        NSMutableArray *percentEncodedSort = [NSMutableArray new];
-        
-        for (NSString *criteria in self.sort) {
-            [percentEncodedSort addObject:[PNString percentEscapedString:criteria]];
-        }
-        
-        [parameters addQueryParameter:[percentEncodedSort componentsJoinedByString:@","]
-                         forFieldName:@"sort"];
-    }
+    if (self.sort.count > 0) query[@"sort"] = [self.sort componentsJoinedByString:@","];
+    if (self.limit > 0) query[@"limit"] = @(self.limit).stringValue;
+    if (self.filter.length > 0) query[@"filter"] = self.filter;
+    if (self.start.length) query[@"start"] = self.start;
+    if (self.end.length) query[@"end"] = self.end;
+    
+    return query.count ? query : nil;
+}
 
-    if (self.filter.length > 0) {
-        [parameters addQueryParameter:[PNString percentEscapedString:self.filter]
-                         forFieldName:@"filter"];
-    }
+#pragma mark - Initialization and Configuration
 
-    if (self.start.length) {
-        [parameters addQueryParameter:self.start forFieldName:@"start"];
-    }
-
-    if (self.end.length) {
-        [parameters addQueryParameter:self.end forFieldName:@"end"];
-    }
-
-    return parameters;
+- (instancetype)initWithObject:(NSString *)objectType identifier:(NSString *)identifier {
+    if ((self = [super initWithObject:objectType identifier:identifier])) _limit = 100;
+    return self;
 }
 
 #pragma mark -

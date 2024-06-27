@@ -4,7 +4,7 @@
 #import "PNCryptorInputStream+Private.h"
 #import "PNCCCryptorWrapper.h"
 #import "PNEncryptedStream.h"
-#import "PNErrorCodes.h"
+#import "PNError.h"
 
 
 #pragma mark Contants
@@ -106,8 +106,8 @@ NS_ASSUME_NONNULL_END
 
 - (PNResult<PNEncryptedData *> *)encryptData:(NSData *)data {
     if (data.length == 0) {
-        NSError *error = [NSError errorWithDomain:kPNCryptorErrorDomain
-                                             code:kPNCryptorEncryptionError
+        NSError *error = [NSError errorWithDomain:PNCryptorErrorDomain
+                                             code:PNCryptorErrorEncryption
                                          userInfo:@{ NSLocalizedDescriptionKey: @"Unable to encrypt empty data." }];
         return [PNResult resultWithData:nil error:error];
     }
@@ -137,8 +137,8 @@ NS_ASSUME_NONNULL_END
             initializationVector = [encryptedData subdataWithRange:NSMakeRange(0, kCCBlockSizeAES128)];
             encryptedData = [encryptedData subdataWithRange:NSMakeRange(kCCBlockSizeAES128, encryptedDataLength)];
         } else {
-            NSError *error = [NSError errorWithDomain:kPNCryptorErrorDomain
-                                                 code:kPNCryptorDecryptionError
+            NSError *error = [NSError errorWithDomain:PNCryptorErrorDomain
+                                                 code:PNCryptorErrorDecryption
                                              userInfo:@{
                 NSLocalizedDescriptionKey: @"Insufficient amount of data to read cryptor-defined metadata."
             }];
@@ -148,8 +148,8 @@ NS_ASSUME_NONNULL_END
     }
 
     if (encryptedData.length == 0) {
-        NSError *error = [NSError errorWithDomain:kPNCryptorErrorDomain
-                                             code:kPNCryptorDecryptionError
+        NSError *error = [NSError errorWithDomain:PNCryptorErrorDomain
+                                             code:PNCryptorErrorDecryption
                                          userInfo:@{ NSLocalizedDescriptionKey: @"Unable to decrypt empty data." }];
         return [PNResult resultWithData:nil error:error];
     }
@@ -166,8 +166,8 @@ NS_ASSUME_NONNULL_END
 
 - (PNResult<PNEncryptedStream *> *)encryptStream:(NSInputStream *)stream dataLength:(NSUInteger)length {
     if (length == 0) {
-        NSError *error = [NSError errorWithDomain:kPNCryptorErrorDomain
-                                             code:kPNCryptorEncryptionError
+        NSError *error = [NSError errorWithDomain:PNCryptorErrorDomain
+                                             code:PNCryptorErrorEncryption
                                          userInfo:@{ NSLocalizedDescriptionKey: @"Unable to encrypt empty stream." }];
         return [PNResult resultWithData:nil error:error];
     }
@@ -199,8 +199,8 @@ NS_ASSUME_NONNULL_END
     else if (initializationVector.length == 0 && length > kCCBlockSizeAES128) {
         initializationVector = [stream.stream readCryptorMetadataWithLength:kCCBlockSizeAES128].data;
     } else if (length < kCCBlockSizeAES128) {
-        NSError *error = [NSError errorWithDomain:kPNCryptorErrorDomain
-                                             code:kPNCryptorDecryptionError
+        NSError *error = [NSError errorWithDomain:PNCryptorErrorDomain
+                                             code:PNCryptorErrorDecryption
                                          userInfo:@{
             NSLocalizedDescriptionKey: @"Insufficient amount of data to read cryptor-defined metadata."
         }];
@@ -213,8 +213,8 @@ NS_ASSUME_NONNULL_END
     if (wrapper.isError) return (PNResult<NSInputStream *> *)wrapper;
 
     if (stream.stream.inputDataLength == 0) {
-        NSError *error = [NSError errorWithDomain:kPNCryptorErrorDomain
-                                             code:kPNCryptorDecryptionError
+        NSError *error = [NSError errorWithDomain:PNCryptorErrorDomain
+                                             code:PNCryptorErrorDecryption
                                          userInfo:@{ NSLocalizedDescriptionKey: @"Unable to decrypt empty stream." }];
         return [PNResult resultWithData:nil error:error];
     }

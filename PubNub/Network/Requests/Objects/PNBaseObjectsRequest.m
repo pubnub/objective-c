@@ -1,50 +1,36 @@
-/**
- * @author Serhii Mamontov
- * @version 4.14.0
- * @since 4.14.0
- * @copyright © 2010-2020 PubNub, Inc.
- */
 #import "PNBaseObjectsRequest+Private.h"
-#import "PNRequest+Private.h"
+#import "PNBaseRequest+Private.h"
+#import "PNFunctions.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
 
-#pragma mark Protected interface declaration
+#pragma mark Private interface declaration
 
+/// General request for all `App Contentx` API endpoints private extension.
 @interface PNBaseObjectsRequest ()
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
-/**
- * @brief Bitfield set to fields which should be returned with response.
- *
- * @note Available values depends from object type for which request created. So far following
- *   helper \a types available: \b PNMembershipFields, \b PNChannelMemberFields,
- *   \b PNChannelFields, \b PNUUIDFields.
- * @note Default value can be reset by setting 0.
- */
-@property (nonatomic, assign) NSUInteger includeFields;
+/// Bitfield set to fields which should be returned with response.
+///
+/// > Note: Available values depends from object type for which request created. So far following helper `types`
+/// available: **PNMembershipFields**, **PNChannelMemberFields**, **PNChannelFields**, and **PNUUIDFields**.
+@property(assign, nonatomic) NSUInteger includeFields;
 
-/**
- * @brief Unique \c object identifier.
- */
-@property (nonatomic, copy) NSString *identifier;
+/// Unique `object` identifier.
+@property(copy, nonatomic) NSString *identifier;
 
-/**
- * @brief Type of \c object.
- */
-@property (nonatomic, copy) NSString *objectType;
+/// Type of `object`.
+@property(copy, nonatomic) NSString *objectType;
 
 
 #pragma mark - Misc
 
-/**
- * @brief Translate value of \c includeFields bitfield to actual \c include field names.
- *
- * @return List of names for \c include query parameter.
- */
+/// Translate value of `includeFields` bitfield to actual `include` field names.
+///
+/// - Returns: List of names for `include` query parameter.
 - (NSArray<NSString *> *)includeFieldNames;
 
 #pragma mark -
@@ -60,43 +46,41 @@ NS_ASSUME_NONNULL_END
 @implementation PNBaseObjectsRequest
 
 
-#pragma mark - Information
+#pragma mark - Properties
+
+- (NSDictionary *)query {
+    NSMutableDictionary *query = [NSMutableDictionary new];
+    
+    if (self.includeFields > 0) [self addIncludedFields:[self includeFieldNames] toQuery:query];
+    if (self.arbitraryQueryParameters.count) [query addEntriesFromDictionary:self.arbitraryQueryParameters];
+    
+    return query.count ? query : nil;
+}
+
+- (NSString *)path {
+    NSMutableString *path = [PNStringFormat(@"/v2/objects/%@/%@s", self.subscribeKey, self.objectType) mutableCopy];
+    PNOperationType operation = self.operation;
+    
+    if (self.isIdentifierRequired) [path appendFormat:@"/%@", self.identifier];
+    if (operation == PNFetchAllUUIDMetadataOperation || operation == PNFetchAllChannelsMetadataOperation) return path;
+    if (operation == PNSetMembershipsOperation || operation == PNRemoveMembershipsOperation ||
+        operation == PNManageMembershipsOperation || operation == PNFetchMembershipsOperation) {
+        [path appendString:@"/channels"];
+    }
+    if (operation == PNSetChannelMembersOperation || operation == PNRemoveChannelMembersOperation ||
+        operation == PNManageChannelMembersOperation || operation == PNFetchChannelMembersOperation) {
+        [path appendString:@"/uuids"];
+    }
+    
+    return path;
+}
 
 - (BOOL)isIdentifierRequired {
     return YES;
 }
 
-- (PNRequestParameters *)requestParameters {
-    PNRequestParameters *parameters = [super requestParameters];
 
-    if (self.parametersError) {
-        return parameters;
-    }
-
-    if (self.includeFields > 0) {
-        [self addIncludedFields:[self includeFieldNames] toRequest:parameters];
-    }
-    
-    if (self.identifier) {
-        if (self.identifier.length > 92) {
-            self.parametersError = [self valueTooLongErrorForParameter:self.objectType
-                                                       ofObjectRequest:self.objectType
-                                                            withLength:self.identifier.length
-                                                         maximumLength:92];
-        } else {
-            NSString *placeholder = [@[@"{", self.objectType, @"}"] componentsJoinedByString:@""];
-            [parameters addPathComponent:self.identifier forPlaceholder:placeholder];
-        }
-    } else if (self.isIdentifierRequired) {
-        self.parametersError = [self missingParameterError:@"identifier"
-                                          forObjectRequest:self.objectType];
-    }
-
-    return parameters;
-}
-
-
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
 - (instancetype)initWithObject:(NSString *)objectType identifier:(NSString *)identifier {
     if ((self = [super init])) {
@@ -146,19 +130,33 @@ NS_ASSUME_NONNULL_END
 }
 
 
+#pragma mark - Prepare
+
+- (PNError *)validate {
+    if (self.identifier) {
+        if (self.identifier.length > 92) {
+            return [self valueTooLongErrorForParameter:self.objectType
+                                       ofObjectRequest:self.objectType
+                                            withLength:self.identifier.length
+                                         maximumLength:92];
+        }
+    } else if (self.isIdentifierRequired) {
+        return [self missingParameterError:@"identifier" forObjectRequest:self.objectType];
+    }
+    
+    return nil;
+}
+
+
 #pragma mark - Misc
 
-- (void)addIncludedFields:(NSArray<NSString *> *)fields
-                toRequest:(PNRequestParameters *)requestParameters {
-    
-    NSString *include = [requestParameters query][@"include"];
-    NSArray *existingFields = [include componentsSeparatedByString:@","] ?: @[];
+- (void)addIncludedFields:(NSArray<NSString *> *)fields toQuery:(NSMutableDictionary *)query {
+    NSArray *existingFields = [query[@"include"] componentsSeparatedByString:@","] ?: @[];
     NSMutableSet *includeFields = [NSMutableSet setWithArray:existingFields];
     [includeFields addObjectsFromArray:fields];
 
-    [requestParameters removeQueryParameterWithFieldName:@"include"];
-    [requestParameters addQueryParameter:[includeFields.allObjects componentsJoinedByString:@","]
-                            forFieldName:@"include"];
+//    if (includeFields.count)
+        query[@"include"] = [includeFields.allObjects componentsJoinedByString:@","];
 }
 
 #pragma mark -

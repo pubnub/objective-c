@@ -46,6 +46,7 @@ NS_ASSUME_NONNULL_END
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-retain-cycles"
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
 
 #pragma mark - Setup / Tear down
@@ -166,7 +167,7 @@ NS_ASSUME_NONNULL_END
         self.client.history()
             .channels(@[self.channel])
             .performWithCompletion(^(PNHistoryResult *result, PNErrorStatus *status) {
-                NSArray<NSDictionary *> *messages = result.data.channels[self.channel];
+                NSArray<NSDictionary *> *messages = result.data.messages;
                 XCTAssertFalse(status.isError);
                 XCTAssertNotNil(messages);
                 XCTAssertEqual(messages.count, 1);
@@ -623,7 +624,7 @@ NS_ASSUME_NONNULL_END
                 XCTAssertFalse(status.isError);
                 XCTAssertEqual(result.data.files.count, limit);
                 XCTAssertEqual(result.data.count, limit);
-                XCTAssertNotNil(result.data.next);
+                XCTAssertNil(result.data.next);
                 
                 for (PNFile *file in files) {
                     XCTAssertFalse([fetchedFilesIdentifiers containsObject:file.identifier]);

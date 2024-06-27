@@ -239,12 +239,12 @@
   {
     "id" : "F23A083F-AD68-4452-B42D-B4270B91E696",
     "data" : {
-      "status" : 404,
+      "status" : 200,
       "cls" : "NSHTTPURLResponse",
       "url" : "https:\/\/ps.pndsn.com\/v2\/presence\/sub-key\/demo?disable_uuids=1&pnsdk=PubNub-ObjC-iOS\/4.x.x&uuid=Serhii&state=0",
       "headers" : {
         "Access-Control-Allow-Methods" : "OPTIONS, GET, POST",
-        "Content-Type" : "text\/javascript; charset=\"UTF-8\"",
+        "Content-Type" : "text\/html; charset=\"UTF-8\"",
         "Server" : "Pubnub Presence",
         "Access-Control-Allow-Origin" : "*",
         "Age" : "0",

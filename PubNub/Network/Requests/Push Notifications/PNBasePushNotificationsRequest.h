@@ -1,80 +1,46 @@
+#import <PubNub/PNBaseRequest.h>
 #import <PubNub/PNStructures.h>
-#import <PubNub/PNRequest.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Interface declaration
 
-/**
- * @brief Base class for all 'Push Notifications' API endpoints which has shared query options.
- *
- * @author Serhii Mamontov
- * @version 4.12.0
- * @since 4.12.0
- * @copyright © 2010-2019 PubNub, Inc.
- */
-@interface PNBasePushNotificationsRequest : PNRequest
+/// General request for all `Push Notifications` API endpoints.
+@interface PNBasePushNotificationsRequest : PNBaseRequest
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
-/**
- * @brief One of \b PNPushType fields which specify service to manage notifications for device
- * specified with \c pushToken.
- */
-@property (nonatomic, readonly, assign) PNPushType pushType;
+/// Arbitrary percent encoded query parameters which should be sent along with original API call.
+@property(strong, nullable, nonatomic) NSDictionary *arbitraryQueryParameters;
 
-/**
- * @brief One of \b PNAPNSEnvironment fields which specify environment within which device should
- * manage list of channels with enabled notifications.
- *
- * @note This field works only if request initialized with \c pushType set to \b PNAPNS2Push
- * (by default set to \b PNAPNSDevelopment).
- */
-@property (nonatomic, assign) PNAPNSEnvironment environment;
+/// One of **PNPushType** fields which specify service to manage notifications for device specified with `pushToken`.
+@property(assign, nonatomic, readonly) PNPushType pushType;
 
-/**
- * @brief Notifications topic name (usually it is application's bundle identifier).
- *
- * @note This field works only if request initialized with \c pushType set to \b PNAPNS2Push
- * (by default set to \b NSBundle.mainBundle.bundleIdentifier).
- */
-@property (nonatomic, nullable, copy) NSString *topic;
+/// One of **PNAPNSEnvironment** fields which specify environment within which device should manage list of channels
+/// with enabled notifications.
+///
+/// > Note: This field works only if request initialized with `pushType` set to **PNAPNS2Push** (by default set to
+/// **PNAPNSDevelopment**).
+@property(assign, nonatomic) PNAPNSEnvironment environment;
 
-/**
- * @brief OS/library-provided device push token.
- */
-@property (nonatomic, readonly, copy) id pushToken;
+/// Notifications topic name (usually it is application's bundle identifier).
+///
+/// > Note: This field works only if request initialized with `pushType` set to **PNAPNS2Push** (by default set to
+/// **NSBundle.mainBundle.bundleIdentifier**).
+@property(copy, nullable, nonatomic) NSString *topic;
 
-/**
- * @brief Arbitrary percent encoded query parameters which should be sent along with original API
- * call.
- */
-@property (nonatomic, nullable, strong) NSDictionary *arbitraryQueryParameters;
+/// OS/library-provided device push token.
+@property(copy, nonatomic, readonly) id pushToken;
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
-/**
- * @brief Create and configure \c push \c notifications API access request.
- *
- * @param pushToken Device token / identifier which depending from passed \c pushType should be
- *     \a NSData (for \b PNAPNS2Push and \b PNAPNSPush) or \a NSString for other.
- * @param pushType One of \b PNPushType fields which specify service to manage notifications for
- *     device specified with \c pushToken.
- *
- * @return Configured and ready to use \c push \c notifications API access request.
- */
-+ (instancetype)requestWithDevicePushToken:(id)pushToken pushType:(PNPushType)pushType;
-
-/**
- * @brief Forbids request initialization.
- *
- * @throws Interface not available exception and requirement to use provided constructor method.
- *
- * @return Initialized request.
- */
+/// Forbids request initialization.
+///
+/// - Returns: Initialized request.
+/// - Throws: Interface not available exception and requirement to use provided constructor method.
 - (instancetype)init NS_UNAVAILABLE;
 
 #pragma mark -

@@ -2,7 +2,11 @@
 * @author Serhii Mamontov
 * @copyright © 2010-2020 PubNub, Inc.
 */
-#import <PubNub/PNRequestParameters.h>
+#import <PubNub/PNFetchAllChannelsMetadataRequest.h>
+#import <PubNub/PNRemoveChannelMetadataRequest.h>
+#import <PubNub/PNFetchChannelMetadataRequest.h>
+#import <PubNub/PNBaseObjectsRequest+Private.h>
+#import <PubNub/PNSetChannelMembersRequest.h>
 #import <PubNub/PubNub+CorePrivate.h>
 #import "PNRecordableTestCase.h"
 #import <PubNub/PNHelpers.h>
@@ -30,6 +34,7 @@ NS_ASSUME_NONNULL_END
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-retain-cycles"
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
 
 #pragma mark - VCR configuration
@@ -69,17 +74,15 @@ NS_ASSUME_NONNULL_END
 
 
     id clientMock = [self mockForObject:self.client];
-    id recorded = OCMExpect([clientMock processOperation:PNSetChannelMetadataOperation
-                                          withParameters:[OCMArg any]
-                                                    data:[OCMArg any]
-                                         completionBlock:[OCMArg any]])
+    id recorded = OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNSetChannelMetadataRequest class]]
+                                        withCompletion:[OCMArg any]])
         .andDo(^(NSInvocation *invocation) {
-            PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
-            NSData *sentData = [self objectForInvocation:invocation argumentAtIndex:3];
+            PNSetChannelMetadataRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
 
-            XCTAssertEqualObjects(parameters.pathComponents[@"{channel}"], expectedId);
-            XCTAssertEqualObjects(parameters.query[@"include"], @"custom");
-            XCTAssertEqualObjects(sentData, expectedPayload);
+            XCTAssertNil([request validate]);
+            XCTAssertEqualObjects(request.identifier, expectedId);
+            XCTAssertEqualObjects(request.query[@"include"], @"custom");
+            XCTAssertEqualObjects(request.body, expectedPayload);
         });
 
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
@@ -93,14 +96,12 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldNotSetIncludeFieldsWhenCalledWithSetChannelMetadataIncludeFieldsSetToZero {
     id clientMock = [self mockForObject:self.client];
-    id recorded = OCMExpect([clientMock processOperation:PNSetChannelMetadataOperation
-                                          withParameters:[OCMArg any]
-                                                    data:[OCMArg any]
-                                         completionBlock:[OCMArg any]])
+    id recorded = OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNSetChannelMetadataRequest class]]
+                                        withCompletion:[OCMArg any]])
         .andDo(^(NSInvocation *invocation) {
-            PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
+            PNSetChannelMetadataRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
 
-            XCTAssertNil(parameters.query[@"include"]);
+            XCTAssertNil(request.query[@"include"]);
         });
 
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
@@ -167,14 +168,12 @@ NS_ASSUME_NONNULL_END
 
 
     id clientMock = [self mockForObject:self.client];
-    id recorded = OCMExpect([clientMock processOperation:PNRemoveChannelMetadataOperation
-                                          withParameters:[OCMArg any]
-                                                    data:[OCMArg any]
-                                         completionBlock:[OCMArg any]])
+    id recorded = OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNRemoveChannelMetadataRequest class]]
+                                        withCompletion:[OCMArg any]])
         .andDo(^(NSInvocation *invocation) {
-            PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
+            PNRemoveChannelMetadataRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
 
-            XCTAssertEqualObjects(parameters.pathComponents[@"{channel}"], expectedId);
+            XCTAssertEqualObjects(request.identifier, expectedId);
         });
 
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
@@ -202,15 +201,13 @@ NS_ASSUME_NONNULL_END
 
 
     id clientMock = [self mockForObject:self.client];
-    id recorded = OCMExpect([clientMock processOperation:PNFetchChannelMetadataOperation
-                                          withParameters:[OCMArg any]
-                                                    data:[OCMArg any]
-                                         completionBlock:[OCMArg any]])
+    id recorded = OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNFetchChannelMetadataRequest class]]
+                                        withCompletion:[OCMArg any]])
         .andDo(^(NSInvocation *invocation) {
-            PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
+            PNFetchChannelMetadataRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
 
-            XCTAssertEqualObjects(parameters.pathComponents[@"{channel}"], expectedId);
-            XCTAssertEqualObjects(parameters.query[@"include"], @"custom");
+            XCTAssertEqualObjects(request.identifier, expectedId);
+            XCTAssertEqualObjects(request.query[@"include"], @"custom");
         });
 
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
@@ -224,14 +221,12 @@ NS_ASSUME_NONNULL_END
 
 
     id clientMock = [self mockForObject:self.client];
-    id recorded = OCMExpect([clientMock processOperation:PNFetchChannelMetadataOperation
-                                          withParameters:[OCMArg any]
-                                                    data:[OCMArg any]
-                                         completionBlock:[OCMArg any]])
+    id recorded = OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNFetchChannelMetadataRequest class]]
+                                        withCompletion:[OCMArg any]])
         .andDo(^(NSInvocation *invocation) {
-            PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
+            PNFetchChannelMetadataRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
 
-            XCTAssertNil(parameters.query[@"include"]);
+            XCTAssertNil(request.query[@"include"]);
         });
 
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
@@ -260,26 +255,25 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldFetchAllChannelsMetadataWhenCalled {
     NSString *filterExpression = @"updated >= '2019-08-31T00:00:00Z'";
-    NSString *expectedFilterExpression = [PNString percentEscapedString:filterExpression];
+    // Encoding is transport layer responsibility, so we are expecting raw string in query.
+    NSString *expectedFilterExpression = filterExpression;
     NSString *expectedStart = [NSUUID UUID].UUIDString;
     NSString *expectedEnd = [NSUUID UUID].UUIDString;
     NSNumber *expectedLimit = @(56);
     
     
     id clientMock = [self mockForObject:self.client];
-    id recorded = OCMExpect([clientMock processOperation:PNFetchAllChannelsMetadataOperation
-                                          withParameters:[OCMArg any]
-                                                    data:[OCMArg any]
-                                         completionBlock:[OCMArg any]])
+    id recorded = OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNFetchAllChannelsMetadataRequest class]]
+                                        withCompletion:[OCMArg any]])
         .andDo(^(NSInvocation *invocation) {
-            PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
+            PNFetchAllChannelsMetadataRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
 
-            XCTAssertEqualObjects(parameters.query[@"start"], expectedStart);
-            XCTAssertEqualObjects(parameters.query[@"end"], expectedEnd);
-            XCTAssertEqualObjects(parameters.query[@"include"], @"custom");
-            XCTAssertEqualObjects(parameters.query[@"limit"], expectedLimit.stringValue);
-            XCTAssertEqualObjects(parameters.query[@"filter"], expectedFilterExpression);
-            XCTAssertNil(parameters.query[@"count"]);
+            XCTAssertEqualObjects(request.query[@"start"], expectedStart);
+            XCTAssertEqualObjects(request.query[@"end"], expectedEnd);
+            XCTAssertEqualObjects(request.query[@"include"], @"custom");
+            XCTAssertEqualObjects(request.query[@"limit"], expectedLimit.stringValue);
+            XCTAssertEqualObjects(request.query[@"filter"], expectedFilterExpression);
+            XCTAssertNil(request.query[@"count"]);
         });
     
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
@@ -295,14 +289,12 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldSetDefaultIncludeFieldsWhenCalledWithOutFetchAllChannelsMetadataIncludeFields {
     id clientMock = [self mockForObject:self.client];
-    id recorded = OCMExpect([clientMock processOperation:PNFetchAllChannelsMetadataOperation
-                                          withParameters:[OCMArg any]
-                                                    data:[OCMArg any]
-                                         completionBlock:[OCMArg any]])
+    id recorded = OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNFetchAllChannelsMetadataRequest class]]
+                                        withCompletion:[OCMArg any]])
         .andDo(^(NSInvocation *invocation) {
-            PNRequestParameters *parameters = [self objectForInvocation:invocation argumentAtIndex:2];
+            PNFetchAllChannelsMetadataRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
             
-            XCTAssertNotNil(parameters.query[@"include"]);
+            XCTAssertNotNil(request.query[@"include"]);
         });
     
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{

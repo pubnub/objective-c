@@ -1,40 +1,36 @@
-/**
- * @author Serhii Mamontov
- * @version 4.15.0
- * @since 4.15.0
- * @copyright © 2010-2020 PubNub, Inc.
- */
 #import "PNGenerateFileUploadURLRequest.h"
-#import "PNRequest+Private.h"
-#import "PNErrorCodes.h"
+#import "PNBaseRequest+Private.h"
+#import "PNTransportRequest.h"
+#import "PNFunctions.h"
 #import "PNHelpers.h"
+#import "PNError.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
 
-#pragma mark Protected interface declaration
+#pragma mark Private interface declaration
 
+/// `File upload URL` request private extension.
 @interface PNGenerateFileUploadURLRequest ()
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
-/**
- * @brief Name of channel to which \c data should be uploaded.
- */
+/// Request post body.
+@property(strong, nullable, nonatomic) NSData *body;
+
+/// Name of channel to which \c data should be uploaded.
 @property (nonatomic, copy) NSString *channel;
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
-/**
- * @brief Initialize \c upload \c data \c URL \c generation request.
- *
- * @param channel Name of channel to which \c data should be uploaded.
- * @param name File name which will be used to store uploaded \c data.
- *
- * @return Initialized and ready to use \c upload \c data \c URL \c generation request.
- */
+/// Initialize `Upload data URL generation` request.
+///
+/// - Parameters:
+///   - channel: Name of channel to which `data` should be uploaded.
+///   - name File name which will be used to store uploaded `data`.
+/// - Returns: Initialized `upload data URL generation` request.
 - (instancetype)initWithChannel:(NSString *)channel filename:(NSString *)name;
 
 #pragma mark -
@@ -56,74 +52,31 @@ NS_ASSUME_NONNULL_END
     return PNGenerateFileUploadURLOperation;
 }
 
-- (NSString *)httpMethod {
-    return @"POST";
+- (TransportMethod)httpMethod {
+    return TransportPOSTMethod;
 }
 
-- (PNRequestParameters *)requestParameters {
-    PNRequestParameters *parameters = [super requestParameters];
-
-    if (self.parametersError) {
-        return parameters;
-    }
-
-    if (self.channel.length) {
-        [parameters addPathComponent:[PNString percentEscapedString:self.channel]
-                      forPlaceholder:@"{channel}"];
-    } else {
-        self.parametersError = [self missingParameterError:@"channel" forObjectRequest:@"Request"];
-    }
-
-    return parameters;
+- (NSDictionary *)query {
+    NSMutableDictionary *query = [NSMutableDictionary new];
+    
+    if (self.arbitraryQueryParameters.count) [query addEntriesFromDictionary:self.arbitraryQueryParameters];
+    
+    return query.count ? query : nil;
 }
 
-- (NSData *)bodyData {
-    if (self.parametersError) {
-        return nil;
-    }
+- (NSDictionary *)headers {
+    NSMutableDictionary *headers =[([super headers] ?: @{}) mutableCopy];
+    headers[@"Content-Type"] = @"application/json";
+    
+    return headers;
+}
 
-    NSMutableDictionary *info = [NSMutableDictionary new];
-    NSError *error = nil;
-    NSData *data = nil;
-
-    if (self.filename) {
-        info[@"name"] = [PNString percentEscapedString:self.filename];
-    } else {
-        self.parametersError = [self missingParameterError:@"filename" forObjectRequest:@"Request"];
-        return nil;
-    }
-
-    if ([NSJSONSerialization isValidJSONObject:info]) {
-        data = [NSJSONSerialization dataWithJSONObject:info
-                                               options:(NSJSONWritingOptions)0
-                                                 error:&error];
-    } else {
-        NSDictionary *errorInformation = @{
-            NSLocalizedDescriptionKey: @"Unable to serialize to JSON string",
-            NSLocalizedFailureReasonErrorKey: @"Provided object contains unsupported data type instances."
-        };
-
-        error = [NSError errorWithDomain:NSCocoaErrorDomain
-                                    code:NSPropertyListWriteInvalidError
-                                userInfo:errorInformation];
-    }
-
-    if (error) {
-        NSDictionary *errorInformation = @{
-            NSLocalizedDescriptionKey: @"File information serialization did fail",
-            NSUnderlyingErrorKey: error
-        };
-
-        self.parametersError = [NSError errorWithDomain:kPNAPIErrorDomain
-                                                   code:kPNAPIUnacceptableParameters
-                                               userInfo:errorInformation];
-    }
-
-    return data;
+- (NSString *)path {
+    return PNStringFormat(@"/v1/files/%@/channels/%@/generate-upload-url", self.subscribeKey, self.channel);
 }
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
 + (instancetype)requestWithChannel:(NSString *)channel filename:(NSString *)name {
     return [[self alloc] initWithChannel:channel filename:name];
@@ -141,6 +94,42 @@ NS_ASSUME_NONNULL_END
 - (instancetype)init {
     [self throwUnavailableInitInterface];
 
+    return nil;
+}
+
+
+#pragma mark - Prepare
+
+- (PNError *)validate {
+    NSDictionary *payload = nil;
+    NSError *error = nil;
+    
+    if (self.channel.length == 0) return  [self missingParameterError:@"channel" forObjectRequest:@"Request"];
+    if (!self.filename) return [self missingParameterError:@"filename" forObjectRequest:@"Request"];
+    else payload = @{ @"name": [PNString percentEscapedString:self.filename] };
+    
+    if ([NSJSONSerialization isValidJSONObject:payload]) {
+        self.body = [NSJSONSerialization dataWithJSONObject:payload options:(NSJSONWritingOptions)0 error:&error];
+    } else {
+        NSDictionary *userInfo = @{
+            NSLocalizedDescriptionKey: @"Unable to serialize to JSON string",
+            NSLocalizedFailureReasonErrorKey: @"Provided object contains unsupported data type instances."
+        };
+        
+        error = [NSError errorWithDomain:NSCocoaErrorDomain code:NSPropertyListWriteInvalidError userInfo:userInfo];
+    }
+    
+    if (error) {
+        NSDictionary *userInfo = @{
+            NSLocalizedDescriptionKey: @"File information serialization did fail",
+            NSUnderlyingErrorKey: error
+        };
+        
+        return [PNError errorWithDomain:PNAPIErrorDomain code:PNAPIErrorUnacceptableParameters userInfo:userInfo];
+    }
+    
+    
+    
     return nil;
 }
 

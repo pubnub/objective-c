@@ -6,16 +6,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/**
- * @brief \b PubNub client configuration wrapper.
- *
- * @discussion Use this instance to provide values which should be by client to communicate with
- * \b PubNub network.
- *
- * @author Sergey Mamontov
- * @since 4.0
- * @copyright © 2010-2018 PubNub, Inc.
- */
+#pragma mark Interface declaration
+
 /// **PubNub** client configuration wrapper.
 ///
 /// Use this instance to provide values which should be by client to communicate with **PubNub** network.
@@ -25,34 +17,34 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PNConfiguration : NSObject
 
 
-#pragma mark Initialization and Configuration
+#pragma mark - Properties
 
 /// Host name or IP address which should be used by client to get access to the **PubNub** network.
 ///
 /// This property is set to **ps.pndsn.com** by default.
-@property (nonatomic, copy) NSString *origin;
+@property(copy, nonatomic) NSString *origin;
 
 /// Key which is used to push data / state to the **PubNub** network.
 ///
 /// > Note: This key can be obtained on PubNub's [administration](https://admin.pubnub.com) portal after free
 /// registration
-@property (nonatomic, copy) NSString *publishKey;
+@property(copy, nonatomic) NSString *publishKey;
 
 /// Key which is used to fetch data / state from the **PubNub** network.
 ///
 /// > Note: This key can be obtained on PubNub's [administration](https://admin.pubnub.com) portal after free
 /// registration
-@property (nonatomic, copy) NSString *subscribeKey;
+@property(copy, nonatomic) NSString *subscribeKey;
 
 /// Key which is used along with every request to the **PubNub** network to identify client user.
 ///
 /// **PubNub** provides **PAM** (PubNub Access Manager) functionality which allow to specify access rights to access
-/// **PubNub** network with provided `publishKey` and `subscribeKey` keys.
+/// **PubNub** network with provided ``publishKey`` and ``subscribeKey`` keys.
 /// Access can be limited to concrete users. **PAM** system use this key to check whether client user has rights to
 /// access to required service or not.
 ///
 /// This property not set by default.
-@property (nonatomic, nullable, copy) NSString *authKey;
+@property(copy, nullable, nonatomic) NSString *authKey;
 
 /// Unique client identifier used to identify concrete client user from another which currently use **PubNub** services.
 ///
@@ -62,25 +54,25 @@ NS_ASSUME_NONNULL_BEGIN
 /// > Warning: There can't be two same client identifiers online at the same time.
 ///
 /// - Throws: An exception in case if `uuid` is empty string.
-@property (nonatomic, copy, setter = setUUID:) NSString *uuid
+@property(copy, nonatomic, setter = setUUID:) NSString *uuid
     DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with next major update. Please use `userID` "
                              "instead.");
 
 /// Unique client identifier used to identify concrete client user from another which currently use **PubNub** services.
 ///
-/// This value is different from `authKey` (which is used only by **PAM**) and represent concrete client across server.
-/// This identifier is used for presence events to tell what some client joined or leaved live feed.
+/// This value is different from ``authKey`` (which is used only by **PAM**) and represent concrete client across
+/// server. This identifier is used for presence events to tell what some client joined or leaved live feed.
 ///
 /// > Warning: There can't be two same client identifiers online at the same time.
 ///
 /// - Throws: An exception in case if `userID` is empty string.
-@property (nonatomic, copy, setter = setUserID:) NSString *userID;
+@property(copy, nonatomic, setter = setUserID:) NSString *userID;
 
 /// Key for data _encryption_ and _decryption_.
 ///
 /// Key which is used to _encrypt_ messages pushed to the **PubNub** network and decrypt data received from live feeds
 /// on which client subscribed at this moment.
-@property (nonatomic, nullable, copy) NSString *cipherKey
+@property(copy, nullable, nonatomic) NSString *cipherKey
 DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with next major update. Please use "
                          "`cryptoModule` instead.");
 
@@ -88,10 +80,12 @@ DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with next
 ///
 /// **PubNub** client uses this instance to _encrypt_ and _decrypt_ data that has been sent and received from the
 /// **PubNub** network.
-@property(nonatomic, strong) id<PNCryptoProvider> cryptoModule;
+@property(strong, nonatomic) id<PNCryptoProvider> cryptoModule;
 
 /// Unique device identifier based on bundle identifier used by software vendor.
-@property (nonatomic, readonly, copy) NSString *deviceID;
+@property(copy, nonatomic, readonly) NSString *deviceID
+    DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with next major update. Unique value will "
+                             "be generated for each PubNub client instance.");
 
 /// Maximum number of seconds which client should wait for events from live feed.
 ///
@@ -99,7 +93,7 @@ DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with next
 /// remote data objects with same time token (if configured).
 ///
 /// This property is set to **310** by default.
-@property (nonatomic, assign) NSTimeInterval subscribeMaximumIdleTime;
+@property(assign, nonatomic) NSTimeInterval subscribeMaximumIdleTime;
 
 /// Number of seconds which is used by client during non-subscription operations to check whether response potentially
 /// failed with `timeout` or not.
@@ -107,29 +101,29 @@ DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with next
 /// This is maximum time which client should wait fore response from **PubNub** network before reporting request error.
 ///
 /// This property is set to **10** by default.
-@property (nonatomic, assign) NSTimeInterval nonSubscribeRequestTimeout;
+@property(assign, nonatomic) NSTimeInterval nonSubscribeRequestTimeout;
 
 /// Number of seconds which is used by server to track whether client still subscribed on remote data objects live feed
 /// or not.
 ///
 /// This is time within which **PubNub** network expect to receive heartbeat request from this client. If heartbeat
-/// request won't be called in time **PubNub** network will send to other subscribers `timeout` presence event for this \
+/// request won't be called in time **PubNub** network will send to other subscribers `timeout` presence event for this
 /// client.
-@property (nonatomic, assign) NSInteger presenceHeartbeatValue;
+@property(assign, nonatomic) NSInteger presenceHeartbeatValue;
 
 /// Number of seconds which is used by client to issue heartbeat requests to **PubNub** network.
 ///
 /// > Note: This value should be smaller than `presenceHeartbeatValue` for better presence control.
 ///
 /// This property not set by default.
-@property (nonatomic, assign) NSInteger presenceHeartbeatInterval;
+@property(assign, nonatomic) NSInteger presenceHeartbeatInterval;
 
 /// Bitfield which describe client's behaviour on which heartbeat request processing states delegate should be notified.
 ///
 /// This property is set to **PNHeartbeatNotifyFailure** by default to notify only about failed requests.
 ///
 /// - Since: 4.2.7
-@property (nonatomic, assign) PNHeartbeatNotificationOptions heartbeatNotificationOptions;
+@property(assign, nonatomic) PNHeartbeatNotificationOptions heartbeatNotificationOptions;
 
 /// Whether client shouldn't send presence `leave` events during un-subscription process.
 ///
@@ -137,7 +131,7 @@ DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with next
 /// without notifying remote subscribers about leave.
 ///
 /// - Since: 4.7.3
-@property (nonatomic, assign, getter = shouldSuppressLeaveEvents) BOOL suppressLeaveEvents
+@property(assign, nonatomic, getter = shouldSuppressLeaveEvents) BOOL suppressLeaveEvents
     NS_SWIFT_NAME(suppressLeaveEvents);
 
 /// Whether heartbeat list managed manually or not.
@@ -147,18 +141,18 @@ DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with next
 /// With manual management special methods can be used to add channels and/or groups to heartbeat list.
 ///
 /// - Since: 4.8.0
-@property (nonatomic, assign, getter = shouldManagePresenceListManually) BOOL managePresenceListManually
+@property(assign, nonatomic, getter = shouldManagePresenceListManually) BOOL managePresenceListManually
     NS_SWIFT_NAME(managePresenceListManually);
 
 /// Whether client should communicate with **PubNub** network using secured connection or not.
 ///
 /// This property is set to **YES** by default.
-@property (nonatomic, assign, getter = isTLSEnabled) BOOL TLSEnabled NS_SWIFT_NAME(TLSEnabled);
+@property(assign, nonatomic, getter = isTLSEnabled) BOOL TLSEnabled NS_SWIFT_NAME(TLSEnabled);
 
 /// Whether client should keep previous time token when subscribe on new set of remote data objects live feeds.
 ///
 /// This property is set to **YES** by default.
-@property (nonatomic, assign, getter = shouldKeepTimeTokenOnListChange) BOOL keepTimeTokenOnListChange
+@property(assign, nonatomic, getter = shouldKeepTimeTokenOnListChange) BOOL keepTimeTokenOnListChange
     NS_SWIFT_NAME(keepTimeTokenOnListChange);
 
 /// Whether client should try to catch up for events which occurred on previously subscribed remote data objects feed
@@ -173,7 +167,7 @@ DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with next
 ///
 /// This property is set to **YES** by default to try catch up on missed messages (while client has been disconnected
 /// because of network issues).
-@property (nonatomic, assign, getter = shouldTryCatchUpOnSubscriptionRestore) BOOL catchUpOnSubscriptionRestore
+@property(assign, nonatomic, getter = shouldTryCatchUpOnSubscriptionRestore) BOOL catchUpOnSubscriptionRestore
     NS_SWIFT_NAME(catchUpOnSubscriptionRestore);
 
 /// Group identifier which is used to share request cache between application extension and it's containing application.
@@ -198,8 +192,10 @@ DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with next
 /// > Warning: Subscribe / unsubscribe API calls will be silently ignored.
 ///
 /// - Since: 4.5.4
-@property (nonatomic, copy) NSString *applicationExtensionSharedGroupIdentifier
-    NS_SWIFT_NAME(applicationExtensionSharedGroupIdentifier) NS_AVAILABLE(10_10, 8_0);
+@property(copy, nonatomic) NSString *applicationExtensionSharedGroupIdentifier
+    NS_SWIFT_NAME(applicationExtensionSharedGroupIdentifier) NS_AVAILABLE(10_10, 8_0)
+    DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with the next major update. Data doesn't "
+                             "need to be shared between the main app and the extension.");
 
 /// Number of maximum expected messages from **PubNub** network in single response.
 ///
@@ -208,7 +204,7 @@ DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with next
 /// triggered - this may mean what history request should be done.
 ///
 /// - Since: 4.5.4
-@property (nonatomic, assign) NSUInteger requestMessageCountThreshold
+@property(assign, nonatomic) NSUInteger requestMessageCountThreshold
     NS_SWIFT_NAME(requestMessageCountThreshold);
 
 /**
@@ -239,20 +235,21 @@ DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with next
 /// This property is set to **100** by default.
 ///
 /// - Since: 4.5.8
-@property (nonatomic, assign) NSUInteger maximumMessagesCacheSize
+@property(assign, nonatomic) NSUInteger maximumMessagesCacheSize
     NS_SWIFT_NAME(maximumMessagesCacheSize);
 
-#if TARGET_OS_IOS
+#if TARGET_OS_OSX || TARGET_OS_IOS && !defined(TARGET_IS_EXTENSION)
 /// Whether client should try complete all API call which is done before application will be completely suspended.
 ///
 /// > Note: This property ignored when SDK compiled for application with application extension.
 ///
 /// This property is set to **YES** by default to complete tasks which has been scheduled before `client` resign active.
-///
-/// - Since: 4.5.0
-@property (nonatomic, assign, getter = shouldCompleteRequestsBeforeSuspension) BOOL completeRequestsBeforeSuspension
-    NS_SWIFT_NAME(completeRequestsBeforeSuspension);
-#endif // TARGET_OS_IOS
+@property(assign, nonatomic, getter = shouldCompleteRequestsBeforeSuspension) BOOL completeRequestsBeforeSuspension
+    NS_SWIFT_NAME(completeRequestsBeforeSuspension)
+    DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with the next major update. Every time the "
+                             "application switches to a background execution context, PubNub SDK requests more "
+                             "background time to complete ongoing requests.");
+#endif // TARGET_OS_OSX || TARGET_OS_IOS && !defined(TARGET_IS_EXTENSION)
 
 /// Whether PNAES should use random initialization vector for each encrypted message.
 ///
@@ -261,7 +258,7 @@ DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with next
 /// This property is set to **NO** by default.
 ///
 /// - Since: 4.16.0
-@property (nonatomic, assign, getter = shouldUseRandomInitializationVector) BOOL useRandomInitializationVector
+@property(assign, nonatomic, getter = shouldUseRandomInitializationVector) BOOL useRandomInitializationVector
     DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with next major update. Please use "
                              "`cryptoModule` instead.");
 
@@ -272,7 +269,7 @@ DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with next
 /// This property is set to **5** by default.
 ///
 /// - Since: 4.16.0
-@property (nonatomic, assign) NSUInteger fileMessagePublishRetryLimit;
+@property(assign, nonatomic) NSUInteger fileMessagePublishRetryLimit;
 
 /// Request automatic retry configuration.
 ///
@@ -287,10 +284,10 @@ DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with next
 /// ```
 ///
 /// - Since: 5.3.0
-@property (nonatomic, nullable, strong) PNRequestRetryConfiguration *requestRetry;
+@property(strong, nullable, nonatomic) PNRequestRetryConfiguration *requestRetry;
 
 
-#pragma mark - Initialization and configuration
+#pragma mark - Initialization and Configuration
 
 /// Create **PubNub** configuration wrapper instance.
 ///

@@ -5,8 +5,8 @@
 #import "PNAESCBCCryptor.h"
 #import "PNLegacyCryptor.h"
 #import "PNCryptorHeader.h"
-#import "PNErrorCodes.h"
 #import "PNResult.h"
+#import "PNError.h"
 
 
 #pragma mark Extern
@@ -144,8 +144,8 @@ NS_ASSUME_NONNULL_END
 
 - (PNResult<NSData *> *)decryptData:(NSData *)data {
     if (data.length == 0) {
-        NSError *error = [NSError errorWithDomain:kPNCryptorErrorDomain
-                                             code:kPNCryptorDecryptionError
+        NSError *error = [NSError errorWithDomain:PNCryptorErrorDomain
+                                             code:PNCryptorErrorDecryption
                                          userInfo:@{ NSLocalizedDescriptionKey: @"Unable to encrypt empty data." }];
         return [PNResult resultWithData:nil error:error];
     }
@@ -177,8 +177,8 @@ NS_ASSUME_NONNULL_END
                                                      encoding:NSUTF8StringEncoding];
         NSString *errorMessage = [NSString stringWithFormat:@"Decrypting data created by unknown cryptor. Please make "\
                                   "sure to register '%@' or update the SDK.", identifier];
-        error = [NSError errorWithDomain:kPNCryptorErrorDomain
-                                    code:kPNCryptorUnknownCryptorError
+        error = [NSError errorWithDomain:PNCryptorErrorDomain
+                                    code:PNCryptorErrorUnknownCryptor
                                 userInfo:@{ NSLocalizedDescriptionKey: errorMessage }];
     }
 
@@ -220,8 +220,8 @@ NS_ASSUME_NONNULL_END
 
 - (PNResult<NSInputStream *> *)decryptStream:(NSInputStream *)stream dataLength:(NSUInteger)length {
     if (length == 0) {
-        NSError *error = [NSError errorWithDomain:kPNCryptorErrorDomain
-                                             code:kPNCryptorDecryptionError
+        NSError *error = [NSError errorWithDomain:PNCryptorErrorDomain
+                                             code:PNCryptorErrorDecryption
                                          userInfo:@{ NSLocalizedDescriptionKey: @"Unable to encrypt empty data." }];
         return [PNResult resultWithData:nil error:error];
     }
@@ -251,8 +251,8 @@ NS_ASSUME_NONNULL_END
                                                      encoding:NSUTF8StringEncoding];
         NSString *errorMessage = [NSString stringWithFormat:@"Decrypting data created by unknown cryptor. Please make "\
                                   "sure to register '%@' or update the SDK.", identifier];
-        error = [NSError errorWithDomain:kPNCryptorErrorDomain
-                                    code:kPNCryptorUnknownCryptorError
+        error = [NSError errorWithDomain:PNCryptorErrorDomain
+                                    code:PNCryptorErrorUnknownCryptor
                                 userInfo:@{ NSLocalizedDescriptionKey: errorMessage }];
     }
 

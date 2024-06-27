@@ -10,15 +10,15 @@ defaults:
   run:
     shell: bash
 env:
-  TESTS_PAM_PUBLISH_KEY: ${{ secrets.SDK_PAM_PUB_KEY }}
   TESTS_PAM_SUBSCRIBE_KEY: ${{ secrets.SDK_PAM_SUB_KEY }}
-  TESTS_PUBLISH_KEY: ${{ secrets.SDK_PUB_KEY }}
+  TESTS_PAM_PUBLISH_KEY: ${{ secrets.SDK_PAM_PUB_KEY }}
   TESTS_SUBSCRIBE_KEY: ${{ secrets.SDK_SUB_KEY }}
+  TESTS_PUBLISH_KEY: ${{ secrets.SDK_PUB_KEY }}
   LANG: en_US.UTF-8
   LANGUAGE: en_US.UTF-8
   LC_ALL: en_US.UTF-8
   LC_CTYPE: en_US.UTF-8
-
+  
 jobs:
   tests:
     name: Integration and Unit tests
@@ -82,12 +82,13 @@ jobs:
         with:
           ruby-version: 3.2.2
           bundler-cache: true
-      - name: Setup CocoaPods
-        run: gem install cocoapods
       - name: Setup Node.js 20.x
         uses: actions/setup-node@v4
         with:
-          node-version: "20.x"
+          node-version: 20
+      - run: npm version
+      - name: Setup CocoaPods
+        run: gem install cocoapods
       - name: Cache installed Pods
         uses: actions/cache@v4
         with:

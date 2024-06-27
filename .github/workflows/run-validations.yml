@@ -25,6 +25,10 @@ jobs:
           ref: v1
           token: ${{ secrets.GH_TOKEN }}
           path: .github/.release/actions
+      - name: Setup Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
       - name: "Run '.pubnub.yml' file validation"
         uses: ./.github/.release/actions/actions/validators/pubnub-yml
         with:

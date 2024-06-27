@@ -1,32 +1,26 @@
-/**
- * @author Serhii Mamontov
- * @version 4.14.1
- * @since 4.14.1
- * @copyright © 2010-2020 PubNub, Inc.
- */
+#import "PNRemoveChannelMembersRequest.h"
 #import "PNBaseObjectsMembershipRequest+Private.h"
 #import "PNBaseObjectsRequest+Private.h"
-#import "PNRemoveChannelMembersRequest.h"
-#import "PNRequest+Private.h"
+#import "PNBaseRequest+Private.h"
+#import "PNTransportRequest.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
 
-#pragma mark Protected interface declaration
+#pragma mark Private interface declaration
 
+/// `Remove channel's members` request private extension.
 @interface PNRemoveChannelMembersRequest ()
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
-/**
- * @brief Initialize \c remove \c channel's members request.
- *
- * @param channel Name of channel for which members should be added.
- * @param uuids List of \c UUIDs which should be removed from \c channel's list.
- *
- * @return Initialized and ready to use \c remove \c channel's members request.
- */
+/// Initialize `Remove channel's members` request.
+///
+/// - Parameters:
+///   - channel: Name of channel from which members should be removed.
+///   - uuids: List of `UUIDs` which should be removed from `channel's` list.
+/// - Returns: Initialized `remove channel's members` request.
 - (instancetype)initWithChannel:(NSString *)channel uuids:(NSArray<NSString *> *)uuids;
 
 #pragma mark -
@@ -42,7 +36,7 @@ NS_ASSUME_NONNULL_END
 @implementation PNRemoveChannelMembersRequest
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
 @dynamic includeFields;
 
@@ -52,7 +46,7 @@ NS_ASSUME_NONNULL_END
 }
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
 + (instancetype)requestWithChannel:(NSString *)channel uuids:(NSArray<NSString *> *)uuids {
     return [[self alloc] initWithChannel:channel uuids:uuids];

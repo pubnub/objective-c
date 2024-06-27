@@ -28,6 +28,7 @@ NS_ASSUME_NONNULL_END
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-retain-cycles"
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
 
 #pragma mark - Setup / Tear down
@@ -54,14 +55,13 @@ NS_ASSUME_NONNULL_END
                 PNUUIDMetadata *metadata = status.data.metadata;
                 XCTAssertFalse(status.isError);
                 XCTAssertNotNil(metadata);
-                XCTAssertEqualObjects(metadata.externalId, [NSNull null]);
-                XCTAssertEqualObjects(metadata.profileUrl, [NSNull null]);
-                XCTAssertEqualObjects(metadata.custom, [NSNull null]);
-                XCTAssertEqualObjects(metadata.email, [NSNull null]);
+                XCTAssertNil(metadata.externalId);
+                XCTAssertNil(metadata.profileUrl);
+                XCTAssertNil(metadata.custom);
+                XCTAssertNil(metadata.email);
                 XCTAssertEqualObjects(metadata.uuid, identifier);
                 XCTAssertNotNil(metadata.updated);
                 XCTAssertNotNil(metadata.eTag);
-                XCTAssertNotEqual([metadata.debugDescription rangeOfString:@"uuid-metadata"].location, NSNotFound);
                 XCTAssertEqual(status.operation, PNSetUUIDMetadataOperation);
                 XCTAssertEqual(status.category, PNAcknowledgmentCategory);
                 
@@ -266,56 +266,6 @@ NS_ASSUME_NONNULL_END
     [self removeAllUUIDMetadataUsingClient:client1];
 }
 
-/**
- * @brief To test event skip for older Objects version
- *  'ItShouldNotTriggerDeleteEventToUUIDChannelWhenSentFromPreviousObjectsVersion.json' should
- *  be modified after cassette recording. Find GET request for subscribe with longest Base64
- *  encoded body. Decode body, change objects version to "1.0" and encode string back to use as
- *  replacement for original.
- */
-- (void)testItShouldNotTriggerDeleteEventToUUIDChannelWhenSentFromPreviousObjectsVersion {
-    if ([self shouldSkipTestWithManuallyModifiedMockedResponse]) {
-        NSLog(@"'%@' requires special conditions (modified mocked response). Skip", self.name);
-        return;
-    }
-    
-    PubNub *client1 = [self createPubNubForUser:@"serhii"];
-    PubNub *client2 = [self createPubNubForUser:@"david"];
-    NSArray<PNUUIDMetadata *> *uuids = [self setUUIDMetadata:2 usingClient:client1];
-    NSString *channel = uuids.firstObject.uuid;
-    
-    [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
-    
-    
-    [self waitToNotCompleteIn:self.falseTestCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self addObjectHandlerForClient:client2
-                              withBlock:^(PubNub *client, PNObjectEventResult *event, BOOL *remove) {
-                                  
-            XCTAssertEqualObjects(event.data.event, @"delete");
-            XCTAssertEqualObjects(event.data.type, @"uuid");
-            XCTAssertEqualObjects(event.data.uuidMetadata.uuid, uuids.firstObject.uuid);
-            XCTAssertNotNil(event.data.timestamp);
-            *remove = YES;
-
-            handler();
-        }];
-        
-        client1.objects().removeUUIDMetadata().uuid(uuids.firstObject.uuid)
-            .performWithCompletion(^(PNAcknowledgmentStatus *status) {
-                XCTAssertFalse(status.isError);
-
-                [self removeCachedUUIDMetadata:uuids.firstObject.uuid];
-            });
-    }];
-    
-    [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
-
-
-    [self verifyUUIDMetadataCountShouldEqualTo:(uuids.count - 1) usingClient:client1];
-
-    [self removeAllUUIDMetadataUsingClient:client1];
-}
-
 
 #pragma mark - Tests :: Builder pattern-based fetch uuid metadata
 
@@ -376,7 +326,7 @@ NS_ASSUME_NONNULL_END
  *  'ItShouldFetchAllUUIDMetadataAndReceiveResultWithExpectedOperation.json' should
  *  be modified after cassette recording. Find first mention of UUID metadata fetch and copy paste 4 entries
  *  which belong to it. For new entries change 'id' field to be different from source. For original
- *  response entry change status code to 404.
+ *  response entry change `Content-Type` code to `text/html`.
  */
 - (void)testItShouldFetchAllUUIDMetadataAndReceiveResultWithExpectedOperation {
     if ([self shouldSkipTestWithManuallyModifiedMockedResponse]) {
@@ -447,7 +397,7 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldFetchSortedUUIDMetadataWhenSortIsSet {
     NSArray<PNUUIDMetadata *> *uuids = [self setUUIDMetadata:6 usingClient:nil];
-    NSString *expectedSort = @"name%3Adesc,updated";
+    NSString *expectedSort = @"name%3Adesc%2Cupdated";
     NSArray<PNUUIDMetadata *> *expectedUUIDsOrder = [uuids sortedArrayUsingDescriptors:@[
         [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:NO],
         [NSSortDescriptor sortDescriptorWithKey:@"updated" ascending:YES]

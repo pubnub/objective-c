@@ -6,38 +6,40 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Private interface declaration
 
-/// Base `publish` request private extension.
-///
-/// - Since: 4.15.0
-/// - Copyright: 2010-2023 PubNub, Inc.
+/// General request for all `Publish` API endpoints private extension.
 @interface PNBasePublishRequest (Private)
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
-/// Pre-process message content basing on request's requirements.
-@property (nonatomic, nullable, readonly, strong) id preFormattedMessage;
+/// Message which has been prepared for publish.
+///
+/// Depending from request configuration this object may store encrypted message with mobile push payloads.
+@property(strong, nullable, nonatomic, readonly) NSString *preparedMessage;
 
 /// Crypto module for data processing.
 ///
 /// **PubNub** client uses this instance to _encrypt_ and _decrypt_ data that has been sent and received from the
 /// **PubNub** network.
-@property(nonatomic, nullable, strong) id<PNCryptoProvider> cryptoModule;
+@property(strong, nullable, nonatomic) id<PNCryptoProvider> cryptoModule;
+
+/// Pre-process message content basing on request's requirements.
+@property(strong, nullable, nonatomic, readonly) id preFormattedMessage;
 
 /// Whether message should be compressed before sending or not.
-@property (nonatomic, assign, getter = shouldCompress) BOOL compress;
+@property(assign, nonatomic, getter = shouldCompress) BOOL compress;
 
 /// Dictionary with payloads for different vendors (Apple with `'apns'` key and Google with `'gcm'`).
-@property (nonatomic, nullable, strong) NSDictionary *payloads;
+@property(strong, nullable, nonatomic) NSDictionary *payloads;
 
 /// Publish request sequence number.
-@property (nonatomic, assign) NSUInteger sequenceNumber;
+@property(assign, nonatomic) NSUInteger sequenceNumber;
 
 /// Whether request is repeatedly sent to retry after recent failure.
-@property (nonatomic, assign) BOOL retried;
+@property(assign, nonatomic) BOOL retried;
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
 /// Initialize `publish` request.
 ///
@@ -47,14 +49,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 #pragma mark - Helpers
-
-/// Create JSON objects which should be published to specified `channel`.
-///
-/// - Parameters:
-///   - message: User-provided message which should be sent to channel and available for rest subscribers.
-///   - payloads: Mobile notification payloads which should be merged with original `message`.
-/// - Returns: JSON string (encrypted if required) which will be published to specified `channel`.
-- (NSString *)JSONFromMessage:(id)message withPushNotificationsPayload:(NSDictionary *)payloads;
 
 /// Merge user-specified message with push payloads into single message which will be processed on the **PubNub**
 /// service.
@@ -76,8 +70,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///   - message: Data which crypto module should try to encrypt.
 ///   - error: Pointer into which data encryption error will be passed.
 /// - Returns: Encrypted Base64-encoded string or original message.
-- (nullable NSString *)encryptedMessage:(NSString *)message
-                                  error:(NSError **)error;
+- (nullable NSString *)encryptedMessage:(NSString *)message error:(NSError **)error;
 
 #pragma mark -
 

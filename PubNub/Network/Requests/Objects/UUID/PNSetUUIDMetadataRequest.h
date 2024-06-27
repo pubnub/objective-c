@@ -5,72 +5,47 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Interface declaration
 
-/**
- * @brief \c Set \c UUID \c metadata request.
- *
- * @author Serhii Mamontov
- * @version 4.14.0
- * @since 4.14.0
- * @copyright © 2010-2020 PubNub, Inc.
- */
+/// `Set UUID metadata` request.
 @interface PNSetUUIDMetadataRequest : PNBaseObjectsRequest
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
-/**
- * @brief Additional / complex attributes which should be associated with \c metadata.
- */
-@property (nonatomic, nullable, strong) NSDictionary *custom;
+/// Additional / complex attributes which should be associated with `metadata`.
+@property(strong, nullable, nonatomic) NSDictionary *custom;
 
-/**
- * @brief Identifier from external service (database, auth service).
- */
-@property (nonatomic, nullable, copy) NSString *externalId;
+/// Identifier from external service (database, auth service).
+@property(copy, nullable, nonatomic) NSString *externalId;
 
-/**
- * @brief URL at which profile available.
- */
-@property (nonatomic, nullable, copy) NSString *profileUrl;
+/// URL at which profile available.
+@property(copy, nullable, nonatomic) NSString *profileUrl;
 
-/**
- * @brief Bitfield set to fields which should be returned with response.
- *
- * @note Supported keys specified in \b PNUUIDFields enum.
- * @note Default value (\b PNUUIDCustomField ) can be reset by setting \c 0.
- */
-@property (nonatomic, assign) PNUUIDFields includeFields;
+/// Bitfield set to fields which should be returned with response.
+///
+/// > Note: Supported keys specified in **PNUUIDFields** enum.
+/// > Note:  Default value (**PNUUIDCustomField** ) can be reset by setting `0`.
+@property(assign, nonatomic) PNUUIDFields includeFields;
 
-/**
- * @brief Email address.
- */
-@property (nonatomic, nullable, copy) NSString *email;
+/// Email address.
+@property(copy, nullable, nonatomic) NSString *email;
 
-/**
- * @brief Name which should be stored in \c metadata associated with specified \c identifier.
- */
-@property (nonatomic, nullable, copy) NSString *name;
+/// Name which should be stored in `metadata` associated with specified `identifier`.
+@property(copy, nullable, nonatomic) NSString *name;
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
-/**
- * @brief Create and configure \c set \c UUID \c metadata request.
- *
- * @param uuid Identifier with which \c metadata is linked.
- * Will be set to current \b PubNub configuration \c uuid if \a nil is set.
- *
- * @return Configured and ready to use \c set \c UUID \c metadata request.
- */
+/// Create `Set UUID metadata` request.
+///
+/// - Parameter uuid: Identifier with which `metadata` is linked. Will be set to current **PubNub** configuration 
+/// `uuid` if `nil` is set.
+/// - Resturns: Ready to use `set UUID metadata` request.
 + (instancetype)requestWithUUID:(nullable NSString *)uuid;
 
-/**
- * @brief Forbids request initialization.
- *
- * @throws Interface not available exception and requirement to use provided constructor method.
- *
- * @return Initialized request.
- */
+/// Forbids request initialization.
+///
+/// - Returns: Initialized request.
+/// - Throws: Interface not available exception and requirement to use provided constructor method.
 - (instancetype)init NS_UNAVAILABLE;
 
 #pragma mark -

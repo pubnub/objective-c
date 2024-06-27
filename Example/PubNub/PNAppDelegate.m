@@ -92,6 +92,7 @@
     self.client.logger.maximumNumberOfLogFiles = 10;
     [self.client.logger setLogLevel:PNVerboseLogLevel];
 
+
     // Bind didReceiveMessage, didReceiveStatus, and didReceivePresenceEvent 'listeners' to this delegate
     // just be sure the target has implemented the PNObjectEventListener extension
     [self.client addListener:self];

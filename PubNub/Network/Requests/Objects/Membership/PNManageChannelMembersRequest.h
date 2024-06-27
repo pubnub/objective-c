@@ -5,63 +5,43 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Interface declaration
 
-/**
- * @brief \c Manage \c channel's members request.
- *
- * @author Serhii Mamontov
- * @version 4.14.1
- * @since 4.14.1
- * @copyright © 2010-2020 PubNub, Inc.
- */
+/// `Manage channel's memebers` request.
 @interface PNManageChannelMembersRequest : PNBaseObjectsMembershipRequest
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
-/**
- * @brief List of \c UUIDs which should be added to \c channel's \c members list.
- *
- * @discussion With this specified, request will update \c channel's members list by addition of
- * specified list of \c UUIDs and associate \c metadata with \c UUID in context of \c channel
- * (if \c custom field is set).
- *
- * @note Each entry is dictionary with \c uuid and \b optional \c custom fields. \c custom should
- * be dictionary with simple objects: \a NSString and \a NSNumber.
- */
-@property (nonatomic, nullable, strong) NSArray<NSDictionary *> *setMembers;
+/// List of `UUIDs` which should be added to `channel's members` list.
+///
+/// With this specified, request will update `channel's` members list by addition of specified list of `UUIDs` and
+/// associate `metadata` with `UUID` in context of `channel` (if `custom` field is set).
+///
+/// > Note: Each entry is dictionary with `uuid` and **optional** `custom` fields. `custom` should be dictionary with
+/// simple objects: `NSString` and `NSNumber`.
+@property(strong, nullable, nonatomic) NSArray<NSDictionary *> *setMembers;
 
-/**
- * @brief List of \c UUIDs which should be removed from \c channel's list.
- */
-@property (nonatomic, nullable, strong) NSArray<NSString *> *removeMembers;
+/// List of `UUIDs` which should be removed from `channel's` list.
+@property(strong, nullable, nonatomic) NSArray<NSString *> *removeMembers;
 
-/**
- * @brief Bitfield set to fields which should be returned with response.
- *
- * @note Supported keys specified in \b PNChannelMemberFields enum.
- * @note Default value (\B PNChannelMembersTotalCountField) can be reset by setting 0. 
- */
+/// Bitfield set to fields which should be returned with response.
+///
+/// > Note: Supported keys specified in **PNChannelMemberFields** enum.
+/// > Note:  Default value (**PNChannelMembersTotalCountField**) can be reset by setting 0.
 @property (nonatomic, assign) PNChannelMemberFields includeFields;
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
-/**
- * @brief Create and configure \c manage \c channel's members request.
- *
- * @param channel Name of channel for which members list should be updated.
- *
- * @return Configured and ready to use \c manage \c channel's members request.
- */
+/// Create `Manage channel's members` request.
+///
+/// - Parameter channel: Name of channel for which members list should be updated.
+/// - Returns: Ready to use `manage channel's` members request.
 + (instancetype)requestWithChannel:(NSString *)channel;
 
-/**
- * @brief Forbids request initialization.
- *
- * @throws Interface not available exception and requirement to use provided constructor method.
- *
- * @return Initialized request.
- */
+/// Forbids request initialization.
+///
+/// - Returns: Initialized request.
+/// - Throws: Interface not available exception and requirement to use provided constructor method.
 - (instancetype)init NS_UNAVAILABLE;
 
 #pragma mark -

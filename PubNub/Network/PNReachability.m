@@ -141,10 +141,12 @@ NS_ASSUME_NONNULL_END
         self.pingRemoteService = YES;
         // Try to request 'time' API to ensure what network really available.
         __weak __typeof(self) weakSelf = self;
-        
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
         [self.client timeWithCompletion:^(PNTimeResult *result, __unused PNErrorStatus *status) {
             [weakSelf handleServicePingResult:result];
         }];
+#pragma clang diagnostic pop
     }
 }
 
@@ -159,7 +161,7 @@ NS_ASSUME_NONNULL_END
 - (void)handleServicePingResult:(PNTimeResult *)result {
     
     BOOL successfulPing = result.data != nil;
-    
+
     if (self.reachable && !successfulPing) {
         PNLogReachability(self.client.logger, @"<PubNub::Reachability> Connection went down.");
     }
@@ -167,7 +169,7 @@ NS_ASSUME_NONNULL_END
     if (!self.reachable && successfulPing) {
         PNLogReachability(self.client.logger, @"<PubNub::Reachability> Connection restored.");
     }
-    
+
     if (self.pingCompleteBlock) {
         self.pingCompleteBlock(successfulPing);
     }

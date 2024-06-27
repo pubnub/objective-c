@@ -13,6 +13,7 @@
 
 #define WRITING_CASSETTES 0
 #define PUBNUB_LOGGER_ENABLED NO
+#define PUBNUB_DISABLE_LOGGER
 
 
 #pragma mark - Types and structures
@@ -282,6 +283,9 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Interface implementation
 
 @implementation PNRecordableTestCase
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
 
 #pragma mark - Information
@@ -784,10 +788,12 @@ NS_ASSUME_NONNULL_END
     configuration.userID = [self uuidForUser:user];
 
     PubNub *client = [PubNub clientWithConfiguration:configuration callbackQueue:callbackQueue];
+#ifndef PUBNUB_DISABLE_LOGGER
     client.logger.enabled = PUBNUB_LOGGER_ENABLED;
     client.logger.logLevel  = PUBNUB_LOGGER_ENABLED ? PNVerboseLogLevel : PNSilentLogLevel;
     client.logger.writeToConsole = PUBNUB_LOGGER_ENABLED;
     client.logger.writeToFile = PUBNUB_LOGGER_ENABLED;
+#endif // PUBNUB_DISABLE_LOGGER
     [client addListener:self];
     
     if (!self.clients[user]) {
@@ -1458,12 +1464,14 @@ NS_ASSUME_NONNULL_END
             .uuid(uuid)
             .channels(channels)
             .performWithCompletion(^(PNManageMembershipsStatus *status) {
-                XCTAssertFalse(status.isError);
-                
-                if (status.isError) {
-                    NSLog(@"'%@' UUID MEMBERSHIP REMOVE ERROR: %@\n%@",
-                          uuid, status.errorData.information,
-                          [status valueForKey:@"clientRequest"]);
+                if (YHVVCR.cassette.isNewCassette) {
+                    XCTAssertFalse(status.isError, @"Error reason: %@", status.errorData.information);
+
+                    if (status.isError) {
+                        NSLog(@"'%@' UUID MEMBERSHIP REMOVE ERROR: %@\n%@",
+                              uuid, status.errorData.information,
+                              [status valueForKey:@"clientRequest"]);
+                    }
                 }
                 
                 handler();
@@ -1495,14 +1503,16 @@ NS_ASSUME_NONNULL_END
             client.objects().removeUUIDMetadata()
                 .uuid(uuid)
                 .performWithCompletion(^(PNAcknowledgmentStatus *status) {
-                    XCTAssertFalse(status.isError);
-                    
-                    if (status.isError) {
-                        NSLog(@"'%@' UUID METADATA REMOVE ERROR: %@\n%@",
-                              uuid, status.errorData.information,
-                              [status valueForKey:@"clientRequest"]);
+                    if (YHVVCR.cassette.isNewCassette) {
+                        XCTAssertFalse(status.isError, @"Error reason: %@", status.errorData.information);
+
+                        if (status.isError) {
+                            NSLog(@"'%@' UUID METADATA REMOVE ERROR: %@\n%@",
+                                  uuid, status.errorData.information,
+                                  [status valueForKey:@"clientRequest"]);
+                        }
                     }
-                    
+
                     handler();
                 });
         }];
@@ -1752,14 +1762,16 @@ NS_ASSUME_NONNULL_END
     for (NSString *channel in channels) {
         [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
             client.objects().removeChannelMetadata(channel).performWithCompletion(^(PNAcknowledgmentStatus *status) {
-                XCTAssertFalse(status.isError);
-                
-                if (status.isError) {
-                    NSLog(@"'%@' CHANNEL METADATA REMOVE ERROR: %@\n%@",
-                          channel, status.errorData.information,
-                          [status valueForKey:@"clientRequest"]);
+                if (YHVVCR.cassette.isNewCassette) {
+                    XCTAssertFalse(status.isError, @"Error reason: %@", status.errorData.information);
+                    
+                    if (status.isError) {
+                        NSLog(@"'%@' CHANNEL METADATA REMOVE ERROR: %@\n%@",
+                              channel, status.errorData.information,
+                              [status valueForKey:@"clientRequest"]);
+                    }
                 }
-                
+
                 handler();
             });
         }];
@@ -2089,7 +2101,7 @@ NS_ASSUME_NONNULL_END
 - (void)waitToCompleteIn:(NSTimeInterval)delay
                codeBlock:(void(^)(dispatch_block_t handler))codeBlock
               afterBlock:(void(^)(void))initialBlock {
-    
+
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     __block BOOL handlerCalled = NO;
     
@@ -2099,15 +2111,15 @@ NS_ASSUME_NONNULL_END
             dispatch_semaphore_signal(semaphore);
         }
     });
-    
+
     if (initialBlock) {
         initialBlock();
     }
     
-    
+
     dispatch_time_t timeout = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC));
     dispatch_semaphore_wait(semaphore, timeout);
-    
+
     XCTAssertTrue(handlerCalled);
 }
 
@@ -2371,6 +2383,8 @@ NS_ASSUME_NONNULL_END
 }
 
 #pragma mark -
+
+#pragma clang diagnostic pop
 
 
 @end

@@ -361,13 +361,13 @@
   {
     "id" : "4B014FCF-6400-4772-A2B4-74023AE960B2",
     "data" : {
-      "status" : 404,
+      "status" : 200,
       "cls" : "NSHTTPURLResponse",
       "url" : "https:\/\/ps.pndsn.com\/v2\/objects\/demo\/uuids\/Serhii-uuid-identifier\/channels?uuid=Serhii&include=custom&limit=100&pnsdk=PubNub-ObjC-iOS\/4.x.x",
       "headers" : {
         "Access-Control-Allow-Credentials" : "true",
         "Date" : "Thu, 04 Jun 2020 19:44:42 GMT",
-        "Content-Type" : "application\/json",
+        "Content-Type" : "text\/html",
         "Content-Length" : "175",
         "Connection" : "keep-alive",
         "Access-Control-Allow-Origin" : "*"

@@ -1,6 +1,11 @@
 #import <Foundation/Foundation.h>
+#import <PubNub/PNAcknowledgmentStatus.h>
+#import <PubNub/PNClientInformation.h>
+#import <PubNub/PNErrorStatus.h>
 #import <PubNub/PNStructures.h>
+#ifndef PUBNUB_DISABLE_LOGGER
 #import <PubNub/PNLLogger.h>
+#endif // PUBNUB_DISABLE_LOGGER
 
 
 #pragma mark Class forward
@@ -15,19 +20,16 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 /// Basically used by **PubNub** categories (each for own API group) and manage communication with **PubNub** network
 /// and share user-specified configuration.
-///
-/// - Since: 4.0.0
-/// - Copyright: 2010-2023 PubNub, Inc.
 @interface PubNub : NSObject
 
 
 #pragma mark - Information
 
+#ifndef PUBNUB_DISABLE_LOGGER
 /// **PubNub** client logger instance which can be used to add additional logs into console (if enabled) and file
 /// (if enabled).
-///
-/// - Since: 4.5.0
 @property (nonatomic, readonly, strong) PNLLogger *logger;
+#endif // PUBNUB_DISABLE_LOGGER
 
 /// Basic information about **PubNub** client.
 ///
@@ -49,12 +51,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// User ID which has been used during client initialization.
 ///
 /// - Returns: User-provided unique user identifier.
-///
-/// - Since: 5.1.4
 - (NSString *)userID;
 
 
-#pragma mark - Initialization and configuration
+#pragma mark - Initialization and Configuration
 
 /// Create new **PubNub** client instance with pre-defined configuration.
 ///
@@ -67,11 +67,12 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 /// > Note: All required keys can be found on https://admin.pubnub.com
 ///
+/// #### Example:
 /// ```objc
 /// PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo"
 ///                                                                  subscribeKey:@"demo"
 ///                                                                        userID:@"user"];
-/// PubNub *pubnub = [PubNub clientWithConfiguration:configuration];
+/// PubNub *client = [PubNub clientWithConfiguration:configuration];
 /// ```
 /// - Parameter configuration: User-provided information about how client should operate and handle events.
 /// - Returns: Initialized **PubNub** client instance.
@@ -89,13 +90,13 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 /// > Note: All required keys can be found on https://admin.pubnub.com
 ///
+/// #### Example:
 /// ```objc
 /// PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo"
 ///                                                                  subscribeKey:@"demo"
 ///                                                                        userID:@"user"];
-/// dispatch_queue_t queue = dispatch_queue_create("com.my-app.callback-queue",
-///                                                DISPATCH_QUEUE_SERIAL);
-/// PubNub *pubnub = [PubNub clientWithConfiguration:configuration callbackQueue:queue];
+/// dispatch_queue_t queue = dispatch_queue_create("com.my-app.callback-queue", DISPATCH_QUEUE_SERIAL);
+/// PubNub *client = [PubNub clientWithConfiguration:configuration callbackQueue:queue];
 /// ```
 /// - Parameters:
 ///   - configuration: User-provided information about how client should operate and handle events.
@@ -120,11 +121,12 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 /// > Note: All listeners will be copied to new client.
 ///
+/// #### Example:
 /// ```objc
 /// __weak __typeof(self) weakSelf = self;
 /// PNConfiguration *configuration = [self.pubnub currentConfiguration];
 /// configuration.TLSEnabled = NO;
-/// [self.pubnub copyWithConfiguration:configuration completion:^(PubNub *pubnub) {
+/// [self.client copyWithConfiguration:configuration completion:^(PubNub *pubnub) {
 ///     // Store reference on new client with updated configuration.
 ///     weakSelf.pubnub = pubnub;
 /// }];
@@ -132,8 +134,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// - Parameters:
 ///   - configuration: User-provided information about how client should operate and handle events.
 ///   - block: Copy completion block which will pass new **PubNub** client instance which use updated `configuration`.
-- (void)copyWithConfiguration:(PNConfiguration *)configuration
-                   completion:(void(^)(PubNub *client))block
+- (void)copyWithConfiguration:(PNConfiguration *)configuration completion:(void(^)(PubNub *client))block
     NS_SWIFT_NAME(copyWithConfiguration(_:completion:));
 
 /// Make copy of client with it's current state using new configuration.
@@ -150,10 +151,10 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 /// > Note: All listeners will be copied to new client.
 ///
+/// #### Example:
 /// ```objc
 /// __weak __typeof(self) weakSelf = self;
-/// dispatch_queue_t queue = dispatch_queue_create("com.my-app.callback-queue",
-///                                                DISPATCH_QUEUE_SERIAL);
+/// dispatch_queue_t queue = dispatch_queue_create("com.my-app.callback-queue", DISPATCH_QUEUE_SERIAL);
 /// PNConfiguration *configuration = [self.pubnub currentConfiguration];
 /// configuration.TLSEnabled = NO;
 /// [self.pubnub copyWithConfiguration:configuration callbackQueue:queue completion:^(PubNub *pubnub) {

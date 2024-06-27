@@ -15,7 +15,7 @@
 #pragma mark General information constants
 
 // Stores client library version number
-static NSString * const kPNLibraryVersion = @"5.5.0";
+static NSString * const kPNLibraryVersion = @"5.6.0";
 
 // Stores information about SDK codebase
 static NSString * const kPNCommit = @"fd5c7ed678527fce07eaf7eb162935caf1bfd303";
@@ -56,8 +56,5 @@ static BOOL const kPNDefaultShouldKeepTimeTokenOnListChange = YES;
 static BOOL const kPNDefaultShouldTryCatchUpOnSubscriptionRestore = YES;
 static BOOL const kPNDefaultRequestMessageCountThreshold = 0;
 static NSUInteger const kPNDefaultMaximumMessagesCacheSize = 100;
-#if TARGET_OS_IOS
-static BOOL const kPNDefaultShouldCompleteRequestsBeforeSuspension = YES;
-#endif // TARGET_OS_IOS
 
 #endif // PNConstants_h

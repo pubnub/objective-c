@@ -1,3 +1,11 @@
+## v5.6.0
+June 27 2024
+
+#### Added
+- Decoder to map server response directly to the data models.
+- Configurable request objects require less convenience methods to interact with PubNub REST API.
+- Network layer rewritten as module.
+
 ## v5.5.0
 June 12 2024
 

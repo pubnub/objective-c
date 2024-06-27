@@ -4,7 +4,6 @@ on:
   pull_request:
     branches: [master]
     types: [closed]
-
 env:
   LANG: en_US.UTF-8
   LANGUAGE: en_US.UTF-8
@@ -14,9 +13,9 @@ env:
 jobs:
   check-release:
     name: Check release required
+    if: github.event.pull_request.merged && endsWith(github.repository, '-private') != true
     runs-on:
       group: Default
-    if: github.event.pull_request.merged && endsWith(github.repository, '-private') != true
     outputs:
       release: ${{ steps.check.outputs.ready }}
     steps:

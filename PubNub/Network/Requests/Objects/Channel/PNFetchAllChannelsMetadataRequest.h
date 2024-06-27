@@ -5,26 +5,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Interface declaration
 
-/**
- * @brief \c Fetch \c all \c channels \c metadata request.
- *
- * @author Serhii Mamontov
- * @version 4.14.0
- * @since 4.14.0
- * @copyright © 2010-2020 PubNub, Inc.
- */
+/// `Fetch all channels metadata` request.
 @interface PNFetchAllChannelsMetadataRequest : PNObjectsPaginatedRequest
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
-/**
- * @brief Bitfield set to fields which should be returned with response.
- *
- * @note Supported keys specified in \b PNChannelFields enum.
- * @note Default value (\B PNChannelTotalCountField) can be reset by setting 0.  
- */
-@property (nonatomic, assign) PNChannelFields includeFields;
+/// Bitfield set to fields which should be returned with response.
+///
+/// > Note: Supported keys specified in **PNChannelFields** enum.
+/// > Note:  Default value (**PNChannelTotalCountField**) can be reset by setting 0.
+@property(assign, nonatomic) PNChannelFields includeFields;
 
 #pragma mark -
 

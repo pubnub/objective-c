@@ -5,62 +5,40 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Interface declaration
 
-/**
- * @brief \c Set \c channel \c metadata request.
- *
- * @author Serhii Mamontov
- * @version 4.14.0
- * @since 4.14.0
- * @copyright © 2010-2020 PubNub, Inc.
- */
+/// `Set channel metadata` request.
 @interface PNSetChannelMetadataRequest : PNBaseObjectsRequest
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
-/**
- * @brief Additional / complex attributes which should be stored in \c metadata associated with
- * specified \c channel.
- */
-@property (nonatomic, nullable, strong) NSDictionary *custom;
+/// Additional / complex attributes which should be stored in `metadata` associated with specified `channel`.
+@property(nonatomic, nullable, strong) NSDictionary *custom;
 
-/**
- * @brief Bitfield set to fields which should be returned with response.
- *
- * @note Supported keys specified in \b PNChannelFields enum.
- * @note Default value (\b PNChannelCustomField ) can be reset by setting \c 0. 
- */
-@property (nonatomic, assign) PNChannelFields includeFields;
+/// Bitfield set to fields which should be returned with response.
+///
+/// > Note: Supported keys specified in **PNChannelFields** enum.
+/// > Note:  Default value (**PNChannelCustomField**) can be reset by setting `0`.
+@property(assign, nonatomic) PNChannelFields includeFields;
 
-/**
- * @brief Description which should be stored in \c metadata associated with specified \c channel.
- */
-@property (nonatomic, nullable, copy) NSString *information;
+/// Description which should be stored in `metadata` associated with specified `channel`.
+@property(copy, nullable, nonatomic) NSString *information;
 
-/**
- * @brief Name which should be stored in \c metadata associated with specified \c channel.
- */
-@property (nonatomic, copy) NSString *name;
+/// Name which should be stored in `metadata` associated with specified `channel`.
+@property(copy, nonatomic) NSString *name;
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
-/**
- * @brief Create and configure \c set \c channel \c metadata request.
- *
- * @param channel Name of channel for which \c metadata should be set.
- *
- * @return Configured and ready to use \c set \c channel \c metadata request.
- */
+/// Create `Set channel metadata` request.
+///
+/// - Parameter channel: Name of channel for which `metadata` should be set.
+/// - Returns: Ready to use `set channel metadata` request.
 + (instancetype)requestWithChannel:(NSString *)channel;
 
-/**
- * @brief Forbids request initialization.
- *
- * @throws Interface not available exception and requirement to use provided constructor method.
- *
- * @return Initialized request.
- */
+/// Forbids request initialization.
+///
+/// - Returns: Initialized request.
+/// - Throws: Interface not available exception and requirement to use provided constructor method.
 - (instancetype)init NS_UNAVAILABLE;
 
 #pragma mark -

@@ -1,190 +1,23 @@
-
-/**
- * @author Serhii Mamontov
- * @version 4.12.0
- * @since 4.0.0
- * @copyright © 2010-2019 PubNub, Inc.
- */
 #import "PubNub+APNS.h"
-#import "PNAPICallBuilder+Private.h"
-#import "PNAcknowledgmentStatus.h"
-#import "PNRequestParameters.h"
+#import "PNBasePushNotificationsRequest+Private.h"
+#import "PNOperationResult+Private.h"
 #import "PubNub+CorePrivate.h"
 #import "PNStatus+Private.h"
-#import "PNErrorStatus.h"
-#import "PNKeychain.h"
-#import "PNHelpers.h"
+
+// Deprecated
+#import "PNAPICallBuilder+Private.h"
 
 
-NS_ASSUME_NONNULL_BEGIN
-
-#pragma mark Private interface declaration
-
-@interface PubNub (APNSProtected)
-
-
-#pragma mark - Push notifications state manipulation
-
-/**
- * @brief Enable push notifications (sent using legacy APNs or APNs over HTTP/2) on provided set of
- * \c channels.
- *
- * @code
- * PNAddPushNotificationsRequest *request = nil;
- * request = [PNAddPushNotificationsRequest requestWithDevicePushToken:self.devicePushToken
- *                                                            pushType:PNAPNSPush];
- * request.channels = @[@"wwdc",@"google.io"];
- *
- * [self.client addPushNotificationsWithRequest:request
- *                                   completion:^(PNAcknowledgmentStatus *status) {
- *
- *     if (!status.isError) {
- *        // Push notifications successful enabled on passed channels.
- *     } else {
- *        // Handle modification error. Check 'category' property to find out possible issue because
- *        // of which request did fail.
- *        //
- *        // Request can be resent using: [status retry];
- *     }
- * }];
- * @endcode
- *
- * @param request \c Add \c notifications \c for \c channels request with information required to
- *     enable notifications on \c channels.
- * @param block \c Add \c notifications \c for \c channels request completion block.
- *
- * @since 4.12.0
- */
-- (void)addPushNotificationsWithRequest:(PNAddPushNotificationsRequest *)request
-                     completion:(nullable PNPushNotificationsStateModificationCompletionBlock)block;
-
-/**
- * @brief Disable push notifications (sent using legacy APNs or APNs over HTTP/2) on provided set of
- * \c channels.
- *
- * @code
- * PNRemovePushNotificationsRequest *request = nil;
- * request = [PNRemovePushNotificationsRequest requestWithDevicePushToken:self.devicePushToken
- *                                                               pushType:PNAPNSPush];
- * request.channels = @[@"wwdc",@"google.io"];
- *
- * [self.client removePushNotificationsWithRequest:request
- *                                      completion:^(PNAcknowledgmentStatus *status) {
- *
- *     if (!status.isError) {
- *        // Push notification successfully disabled on passed channels.
- *     } else {
- *        // Handle modification error. Check 'category' property to find out possible issue because
- *        // of which request did fail.
- *        //
- *        // Request can be resent using: [status retry];
- *     }
- * }];
- * @endcode
- *
- * @param request \c Remove \c notifications \c from \c channels request with information required
- *     to disable notifications for \c channels.
- * @param block \c Remove \c notifications \c from \c channels request completion block.
- *
- * @since 4.12.0
- */
-- (void)removePushNotificationsWithRequest:(PNRemovePushNotificationsRequest *)request
-                     completion:(nullable PNPushNotificationsStateModificationCompletionBlock)block;
-
-/**
- * @brief Disable push notifications (sent using legacy APNs or APNs over HTTP/2) from all channels
- * which is registered with specified \c pushToken.
- *
- * @code
- * PNRemoveAllPushNotificationsRequest *request = nil;
- * request = [PNRemoveAllPushNotificationsRequest requestWithDevicePushToken:self.devicePushToken
- *                                                                  pushType:PNAPNS2Push];
- * request.topic = @"com.my-application.bundle";
- * request.environment = PNAPNSProduction;
- *
- * [self.client removeAllPushNotificationsWithRequest:request
- *                                         completion:^(PNAcknowledgmentStatus *status) {
- *
- *     if (!status.isError) {
- *        // Handle successful push notification disabling for all channels associated with
- *        // specified device push token.
- *     } else {
- *        // Handle modification error. Check 'category' property to find out possible issue because
- *        // of which request did fail.
- *        //
- *        // Request can be resent using: [status retry];
- *     }
- * }];
- * @endcode
- *
- * @param request \c Remove \c all \c notifications request with information required to disable
- *     notifications for \c device.
- * @param block \c Remove \c all \c notifications request completion block.
- *
- * @since 4.12.0
- */
-- (void)removeAllPushNotificationsWithRequest:(PNRemoveAllPushNotificationsRequest *)request
-                     completion:(nullable PNPushNotificationsStateModificationCompletionBlock)block;
-
-
-#pragma mark - Push notifications state audit
-
-/**
- * @brief Request for all channels on which push notification (sent using legacy APNs or APNs over
- * HTTP/2) has been enabled using specified \c pushToken.
- *
- * @code
- * PNAuditPushNotificationsRequest *request = nil;
- * request = [PNAuditPushNotificationsRequest requestWithDevicePushToken:self.devicePushToken
- *                                                              pushType:PNAPNS2Push];
- * request.topic = @"com.my-application.bundle";
- * request.environment = PNAPNSProduction;
- *
- * [self.client pushNotificationEnabledChannelsWithRequest:request
- *                     andCompletion:^(PNAPNSEnabledChannelsResult *result, PNErrorStatus *status) {
- *
- *     if (!status.isError) {
- *        // Handle downloaded list of channels using: result.data.channels
- *     } else {
- *        // Handle audition error. Check 'category' property to find out possible issue because of
- *        // which request did fail.
- *        //
- *        // Request can be resent using: [status retry];
- *     }
- * }];
- * @endcode
- *
- * @param request \c Audit \c notifications \c enabled \c channels request with information required
- *     to retrieve channels with enabled notifications.
- * @param block \c Audit \c notifications \c enabled \c channels request completion block.
- *
- * @since 4.12.0
- */
-- (void)pushNotificationEnabledChannelsWithRequest:(PNAuditPushNotificationsRequest *)request
-                                     completion:(PNPushNotificationsStateAuditCompletionBlock)block;
-
-
-#pragma mark -
-
-
-@end
-
-NS_ASSUME_NONNULL_END
-
-
-#pragma mark - Interface implementation
+#pragma mark Interface implementation
 
 @implementation PubNub (APNS)
 
 
-#pragma mark - API Builder support
+#pragma mark - Push notification API builder interdace (deprecated)
 
 - (PNAPNSAPICallBuilder * (^)(void))push {
-    
     PNAPNSAPICallBuilder *builder = nil;
-    builder = [PNAPNSAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
-                                                                NSDictionary *parameters) {
-
+    builder = [PNAPNSAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags, NSDictionary *parameters) {
         NSArray<NSString *> *channels = parameters[NSStringFromSelector(@selector(channels))];
         NSNumber *environmentValue = parameters[NSStringFromSelector(@selector(environment))];
         NSNumber *pushTypeValue = parameters[NSStringFromSelector(@selector(pushType))];
@@ -193,46 +26,34 @@ NS_ASSUME_NONNULL_END
         id token = parameters[NSStringFromSelector(@selector(token))];
         PNPushType pushType = pushTypeValue.unsignedIntegerValue;
         NSDictionary *queryParam = parameters[@"queryParam"];
+        PNBasePushNotificationsRequest *request = nil;
         id block = parameters[@"block"];
         
         if ([flags containsObject:NSStringFromSelector(@selector(audit))]) {
-            PNAuditPushNotificationsRequest *request = nil;
-            request = [PNAuditPushNotificationsRequest requestWithDevicePushToken:token
-                                                                         pushType:pushType];
-            request.arbitraryQueryParameters = queryParam;
-            request.environment = environment;
-            request.topic = topic;
-            
-            [self pushNotificationEnabledChannelsWithRequest:request completion:block];
+            request = [PNPushNotificationFetchRequest requestWithDevicePushToken:token pushType:pushType];
         } else if ([flags containsObject:NSStringFromSelector(@selector(enable))]) {
-            PNAddPushNotificationsRequest *request = nil;
-            request = [PNAddPushNotificationsRequest requestWithDevicePushToken:token
-                                                                       pushType:pushType];
-            request.arbitraryQueryParameters = queryParam;
-            request.environment = environment;
-            request.channels = channels;
-            request.topic = topic;
-            
-            [self addPushNotificationsWithRequest:request completion:block];
+            request = [PNPushNotificationManageRequest requestToAddChannels:channels
+                                                           toDeviceWithToken:token
+                                                                    pushType:pushType];
         } else if ([flags containsObject:NSStringFromSelector(@selector(disable))]) {
-            PNRemovePushNotificationsRequest *request = nil;
-            request = [PNRemovePushNotificationsRequest requestWithDevicePushToken:token
-                                                                          pushType:pushType];
-            request.arbitraryQueryParameters = queryParam;
-            request.environment = environment;
-            request.channels = channels;
-            request.topic = topic;
-            
-            [self removePushNotificationsWithRequest:request completion:block];
+            request = [PNPushNotificationManageRequest requestToRemoveChannels:channels 
+                                                            fromDeviceWithToken:token
+                                                                       pushType:pushType];
         } else if ([flags containsObject:NSStringFromSelector(@selector(disableAll))]) {
-            PNRemoveAllPushNotificationsRequest *request = nil;
-            request = [PNRemoveAllPushNotificationsRequest requestWithDevicePushToken:token
-                                                                             pushType:pushType];
+            request = [PNPushNotificationManageRequest requestToRemoveDeviceWithToken:token pushType:pushType];
+        }
+        
+        if (request) {
             request.arbitraryQueryParameters = queryParam;
             request.environment = environment;
             request.topic = topic;
             
-            [self removeAllPushNotificationsWithRequest:request completion:block];
+            if ([flags containsObject:NSStringFromSelector(@selector(audit))]) {
+                [self fetchPushNotificationWithRequest:(PNPushNotificationFetchRequest *)request
+                                                           completion:block];
+            } else {
+                [self managePushNotificationWithRequest:(PNPushNotificationManageRequest *)request completion:block];
+            }
         }
     }];
     
@@ -244,21 +65,62 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Push notifications state manipulation
 
+- (void)managePushNotificationWithRequest:(PNPushNotificationManageRequest *)userRequest
+                               completion:(PNPushNotificationsStateModificationCompletionBlock)handlerBlock {
+    PNOperationDataParser *responseParser = [self parserWithStatus:[PNAcknowledgmentStatus class]];
+    PNPushNotificationsStateModificationCompletionBlock block = [handlerBlock copy];
+    PNParsedRequestCompletionBlock handler; 
+
+    PNOperationType operation = userRequest.operation;
+    if (operation == PNRemoveAllPushNotificationsOperation || operation == PNRemoveAllPushNotificationsV2Operation) {
+        PNLogAPICall(self.logger, @"<PubNub::API> Disable push notifications for device '%@'%@.",
+                     userRequest.pushToken,
+                     userRequest.pushType == PNAPNS2Push 
+                        ? [NSString stringWithFormat:@" ('%@' topic in %@ environment)",
+                           userRequest.topic, userRequest.environment == PNAPNSDevelopment ? @"development" : @"production"]
+                        : @"");
+    } else {
+        PNLogAPICall(self.logger, @"<PubNub::API> %@ push notifications for device '%@'%@: %@.",
+                     (operation == PNAddPushNotificationsOnChannelsOperation ||
+                      operation == PNAddPushNotificationsOnChannelsV2Operation) ? @"Enable" : @"Disable",
+                     userRequest.pushToken,
+                     userRequest.pushType == PNAPNS2Push 
+                        ? [NSString stringWithFormat:@" ('%@' topic in %@ environment)",
+                           userRequest.topic, userRequest.environment == PNAPNSDevelopment ? @"development" : @"production"]
+                        : @"",
+                     [userRequest.channels componentsJoinedByString:@", "]);
+    }
+
+    PNWeakify(self);
+    handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
+                PNOperationDataParseResult<PNAcknowledgmentStatus *, PNAcknowledgmentStatus *> *result) {
+        PNStrongify(self);
+
+        if (result.status.isError) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            result.status.retryBlock = ^{
+                [self managePushNotificationWithRequest:userRequest completion:block];
+            };
+#pragma clang diagnostic pop
+        }
+
+        [self callBlock:block status:YES withResult:nil andStatus:result.status];
+    };
+
+    [self performRequest:userRequest withParser:responseParser completion:handler];
+}
+
 - (void)addPushNotificationsOnChannels:(NSArray<NSString *> *)channels
                    withDevicePushToken:(NSData *)pushToken
                          andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block {
-    
-    [self addPushNotificationsOnChannels:channels
-                     withDevicePushToken:pushToken
-                                pushType:PNAPNSPush
-                           andCompletion:block];
+    [self addPushNotificationsOnChannels:channels withDevicePushToken:pushToken pushType:PNAPNSPush andCompletion:block];
 }
 
 - (void)addPushNotificationsOnChannels:(NSArray<NSString *> *)channels
                    withDevicePushToken:(id)pushToken
                               pushType:(PNPushType)pushType
                          andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block {
-    
     [self addPushNotificationsOnChannels:channels
                      withDevicePushToken:pushToken
                                 pushType:pushType
@@ -273,48 +135,22 @@ NS_ASSUME_NONNULL_END
                            environment:(PNAPNSEnvironment)environment
                                  topic:(NSString *)topic
                          andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block {
-
-    PNAddPushNotificationsRequest *request = nil;
-    request = [PNAddPushNotificationsRequest requestWithDevicePushToken:pushToken
-                                                               pushType:pushType];
-    request.channels = channels;
+    PNPushNotificationManageRequest *request = nil;
+    request = [PNPushNotificationManageRequest requestToAddChannels:channels
+                                                   toDeviceWithToken:pushToken
+                                                            pushType:pushType];
     
     if (pushType == PNAPNS2Push) {
         request.environment = environment;
-        request.topic = topic;
+        request.topic = topic ?: NSBundle.mainBundle.bundleIdentifier;
     }
     
-    [self addPushNotificationsWithRequest:request completion:block];
-}
-
-- (void)addPushNotificationsWithRequest:(PNAddPushNotificationsRequest *)request
-                     completion:(PNPushNotificationsStateModificationCompletionBlock)block {
-
-    PNLogAPICall(self.logger, @"<PubNub::API> Enable push notifications for device '%@'%@: %@.",
-                 request.pushToken,
-                 request.pushType == PNAPNS2Push ? [NSString stringWithFormat:@" ('%@' topic in %@ environment)",
-                                                    request.topic,
-                                                    request.environment == PNAPNSDevelopment ? @"development" : @"production"]
-                                                 : @"",
-                 [PNChannel namesForRequest:request.channels]);
-    
-    __weak __typeof(self) weakSelf = self;
-    
-    [self performRequest:request withCompletion:^(PNAcknowledgmentStatus *status) {
-        if (status.isError) {
-            status.retryBlock = ^{
-                [weakSelf addPushNotificationsWithRequest:request completion:block];
-            };
-        }
-        
-        [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
-    }];
+    [self managePushNotificationWithRequest:request completion:block];
 }
 
 - (void)removePushNotificationsFromChannels:(NSArray<NSString *> *)channels
-                    withDevicePushToken:(NSData *)pushToken
-                          andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block {
-    
+                        withDevicePushToken:(NSData *)pushToken
+                              andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block {
     [self removePushNotificationsFromChannels:channels
                           withDevicePushToken:pushToken
                                      pushType:PNAPNSPush
@@ -322,10 +158,9 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)removePushNotificationsFromChannels:(NSArray<NSString *> *)channels
-                    withDevicePushToken:(id)pushToken
-                               pushType:(PNPushType)pushType
-                          andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block {
-    
+                        withDevicePushToken:(id)pushToken
+                                   pushType:(PNPushType)pushType
+                              andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block {
     [self removePushNotificationsFromChannels:channels
                           withDevicePushToken:pushToken
                                      pushType:pushType
@@ -335,61 +170,33 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)removePushNotificationsFromChannels:(NSArray<NSString *> *)channels
-                    withDevicePushToken:(id)pushToken
-                               pushType:(PNPushType)pushType
-                            environment:(PNAPNSEnvironment)environment
-                                  topic:(NSString *)topic
-                          andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block {
+                        withDevicePushToken:(id)pushToken
+                                   pushType:(PNPushType)pushType
+                                environment:(PNAPNSEnvironment)environment
+                                      topic:(NSString *)topic
+                              andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block {
 
-    PNRemovePushNotificationsRequest *request = nil;
-    request = [PNRemovePushNotificationsRequest requestWithDevicePushToken:pushToken
-                                                                  pushType:pushType];
-    request.channels = channels;
+    PNPushNotificationManageRequest *request = nil;
+    request = [PNPushNotificationManageRequest requestToRemoveChannels:channels 
+                                                    fromDeviceWithToken:pushToken
+                                                               pushType:pushType];
     
     if (pushType == PNAPNS2Push) {
         request.environment = environment;
-        request.topic = topic;
+        request.topic = topic ?: NSBundle.mainBundle.bundleIdentifier;
     }
     
-    [self removePushNotificationsWithRequest:request completion:block];
-}
-
-- (void)removePushNotificationsWithRequest:(PNRemovePushNotificationsRequest *)request
-                             completion:(PNPushNotificationsStateModificationCompletionBlock)block {
-    
-    PNLogAPICall(self.logger, @"<PubNub::API> Disable push notifications for device '%@'%@: %@.",
-                 request.pushToken,
-                 request.pushType == PNAPNS2Push ? [NSString stringWithFormat:@" ('%@' topic in %@ environment)",
-                                                    request.topic,
-                                                    request.environment == PNAPNSDevelopment ? @"development" : @"production"]
-                                                 : @"",
-                 [PNChannel namesForRequest:request.channels]);
-    
-    __weak __typeof(self) weakSelf = self;
-    
-    [self performRequest:request withCompletion:^(PNAcknowledgmentStatus *status) {
-        if (status.isError) {
-            status.retryBlock = ^{
-                [weakSelf removePushNotificationsWithRequest:request completion:block];
-            };
-        }
-        
-        [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
-    }];
+    [self managePushNotificationWithRequest:request completion:block];
 }
 
 - (void)removeAllPushNotificationsFromDeviceWithPushToken:(NSData *)pushToken
-                          andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block {
-
-    [self removeAllPushNotificationsFromDeviceWithPushToken:pushToken
-                                                   pushType:PNAPNSPush
-                                              andCompletion:block];
+                                            andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block {
+    [self removeAllPushNotificationsFromDeviceWithPushToken:pushToken pushType:PNAPNSPush andCompletion:block];
 }
 
 - (void)removeAllPushNotificationsFromDeviceWithPushToken:(id)pushToken
-                               pushType:(PNPushType)pushType
-                          andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block {
-    
+                                                 pushType:(PNPushType)pushType
+                                            andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block {
     [self removeAllPushNotificationsFromDeviceWithPushToken:pushToken
                                                    pushType:pushType
                                                 environment:PNAPNSDevelopment
@@ -398,61 +205,67 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)removeAllPushNotificationsFromDeviceWithPushToken:(id)pushToken
-                               pushType:(PNPushType)pushType
-                            environment:(PNAPNSEnvironment)environment
-                                  topic:(NSString *)topic
-                          andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block {
+                                                 pushType:(PNPushType)pushType
+                                              environment:(PNAPNSEnvironment)environment
+                                                    topic:(NSString *)topic
+                                            andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block {
 
-    PNRemoveAllPushNotificationsRequest *request = nil;
-    request = [PNRemoveAllPushNotificationsRequest requestWithDevicePushToken:pushToken
-                                                                     pushType:pushType];
+    PNPushNotificationManageRequest *request = nil;
+    request = [PNPushNotificationManageRequest requestToRemoveDeviceWithToken:pushToken pushType:pushType];
     
     if (pushType == PNAPNS2Push) {
         request.environment = environment;
-        request.topic = topic;
+        request.topic = topic ?: NSBundle.mainBundle.bundleIdentifier;
     }
     
-    [self removeAllPushNotificationsWithRequest:request completion:block];
-}
-
-- (void)removeAllPushNotificationsWithRequest:(PNRemoveAllPushNotificationsRequest *)request
-                             completion:(PNPushNotificationsStateModificationCompletionBlock)block {
-    
-    PNLogAPICall(self.logger, @"<PubNub::API> Disable push notifications for device '%@'%@.",
-                 request.pushToken,
-                 request.pushType == PNAPNS2Push ? [NSString stringWithFormat:@" ('%@' topic in %@ environment)",
-                                                    request.topic,
-                                                    request.environment == PNAPNSDevelopment ? @"development" : @"production"]
-                                                 : @"");
-    
-    __weak __typeof(self) weakSelf = self;
-    
-    [self performRequest:request withCompletion:^(PNAcknowledgmentStatus *status) {
-        if (status.isError) {
-            status.retryBlock = ^{
-                [weakSelf removeAllPushNotificationsWithRequest:request completion:block];
-            };
-        }
-        
-        [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
-    }];
+    [self managePushNotificationWithRequest:request completion:block];
 }
 
 
 #pragma mark - Push notifications state audit
 
-- (void)pushNotificationEnabledChannelsForDeviceWithPushToken:(NSData *)pushToken
-                                 andCompletion:(PNPushNotificationsStateAuditCompletionBlock)block {
+- (void)fetchPushNotificationWithRequest:(PNPushNotificationFetchRequest *)userRequest
+                              completion:(PNPushNotificationsStateAuditCompletionBlock)handlerBlock {
+    PNOperationDataParser *responseParser = [self parserWithResult:[PNAPNSEnabledChannelsResult class]
+                                                            status:[PNErrorStatus class]];
+    PNPushNotificationsStateAuditCompletionBlock block = [handlerBlock copy];
+    PNParsedRequestCompletionBlock handler;
 
-    [self pushNotificationEnabledChannelsForDeviceWithPushToken:pushToken
-                                                       pushType:PNAPNSPush
-                                                  andCompletion:block];
+    PNLogAPICall(self.logger, @"<PubNub::API> Push notification enabled channels for device '%@'%@.",
+                 userRequest.pushToken,
+                 userRequest.pushType == PNAPNS2Push 
+                    ? [NSString stringWithFormat:@" ('%@' topic in %@ environment)",
+                       userRequest.topic, userRequest.environment == PNAPNSDevelopment ? @"development" : @"production"]
+                    : @"");
+
+    PNWeakify(self);
+    handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
+                PNOperationDataParseResult<PNAPNSEnabledChannelsResult *, PNErrorStatus *> *result) {
+        PNStrongify(self);
+
+        if (result.status.isError) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            result.status.retryBlock = ^{
+                [self fetchPushNotificationWithRequest:userRequest completion:block];
+            };
+#pragma clang diagnostic pop
+        }
+
+        [self callBlock:block status:NO withResult:result.result andStatus:result.status];
+    };
+
+    [self performRequest:userRequest withParser:responseParser completion:handler];
+}
+
+- (void)pushNotificationEnabledChannelsForDeviceWithPushToken:(NSData *)pushToken
+                                                andCompletion:(PNPushNotificationsStateAuditCompletionBlock)block {
+    [self pushNotificationEnabledChannelsForDeviceWithPushToken:pushToken pushType:PNAPNSPush andCompletion:block];
 }
 
 - (void)pushNotificationEnabledChannelsForDeviceWithPushToken:(id)pushToken
-                                      pushType:(PNPushType)pushType
-                                 andCompletion:(PNPushNotificationsStateAuditCompletionBlock)block {
-    
+                                                     pushType:(PNPushType)pushType
+                                                andCompletion:(PNPushNotificationsStateAuditCompletionBlock)block {
     [self pushNotificationEnabledChannelsForDeviceWithPushToken:pushToken
                                                        pushType:pushType
                                                     environment:PNAPNSDevelopment
@@ -461,46 +274,19 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)pushNotificationEnabledChannelsForDeviceWithPushToken:(id)pushToken
-                                      pushType:(PNPushType)pushType
-                                   environment:(PNAPNSEnvironment)environment
-                                         topic:(NSString *)topic
-                                 andCompletion:(PNPushNotificationsStateAuditCompletionBlock)block {
-
-    PNAuditPushNotificationsRequest *request = nil;
-    request = [PNAuditPushNotificationsRequest requestWithDevicePushToken:pushToken
-                                                                 pushType:pushType];
+                                                     pushType:(PNPushType)pushType
+                                                  environment:(PNAPNSEnvironment)environment
+                                                        topic:(NSString *)topic
+                                                andCompletion:(PNPushNotificationsStateAuditCompletionBlock)block {
+    PNPushNotificationFetchRequest *request = nil;
+    request = [PNPushNotificationFetchRequest requestWithDevicePushToken:pushToken pushType:pushType];
     
     if (pushType == PNAPNS2Push) {
         request.environment = environment;
         request.topic = topic;
     }
     
-    [self pushNotificationEnabledChannelsWithRequest:request completion:block];
-}
-
-- (void)pushNotificationEnabledChannelsWithRequest:(PNAuditPushNotificationsRequest *)request
-                                    completion:(PNPushNotificationsStateAuditCompletionBlock)block {
-
-    PNLogAPICall(self.logger, @"<PubNub::API> Push notification enabled channels for device '%@'%@.",
-                 request.pushToken,
-                 request.pushType == PNAPNS2Push ? [NSString stringWithFormat:@" ('%@' topic in %@ environment)",
-                                                    request.topic,
-                                                    request.environment == PNAPNSDevelopment ? @"development" : @"production"]
-                                                 : @"");
-    
-    __weak __typeof(self) weakSelf = self;
-    
-    [self performRequest:request
-          withCompletion:^(PNAPNSEnabledChannelsResult *result, PNErrorStatus *status) {
-              
-        if (status.isError) {
-            status.retryBlock = ^{
-                [weakSelf pushNotificationEnabledChannelsWithRequest:request completion:block];
-            };
-        }
-        
-        [weakSelf callBlock:block status:NO withResult:(PNOperationResult *)result andStatus:status];
-    }];
+    [self fetchPushNotificationWithRequest:request completion:block];
 }
 
 #pragma mark -

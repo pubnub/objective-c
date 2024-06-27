@@ -27,6 +27,7 @@ NS_ASSUME_NONNULL_END
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-retain-cycles"
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
 
 #pragma mark - Setup / Tear down
@@ -189,7 +190,7 @@ NS_ASSUME_NONNULL_END
  *  'ItShouldFetchGlobalHereWithParticipantsOccupancyWhenOccupancyVerbosityIsSet.json' should
  *  be modified after cassette recording. Find first place where presence fetch API usage and copy paste
  *  4 entries which belong to it. For new entries change 'id' field to be different from source. For
- *  original response entry change status code to 404.
+ *  original response entry change `Content-Type` to `text/html`.
  */
 - (void)testItShouldFetchGlobalHereNowWithParticipantsOccupancyWhenOccupancyVerbosityIsSet {
     if ([self shouldSkipTestWithManuallyModifiedMockedResponse]) {
@@ -493,7 +494,10 @@ NS_ASSUME_NONNULL_END
     
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 5.f : 0.f)];
     
-    
+    /**
+     void (^)(PNPresenceChannelHereNowResult *__strong, PNErrorStatus *__strong)' to parameter of type 'PNHereNowCompletionBlock  _Nonnull __strong' (aka 'void (^__strong)(PNPresenceHereNowResult * _Nullable __strong, PNErrorStatus * _Nullable __strong)
+     */
+
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         self.client.presence().hereNow()
             .channel(channel)

@@ -1,9 +1,5 @@
-/**
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2010-2018 PubNub, Inc.
- */
 #import "PNAcknowledgmentStatus.h"
+#import "PNOperationResult+Private.h"
 
 
 #pragma mark Interface implementation

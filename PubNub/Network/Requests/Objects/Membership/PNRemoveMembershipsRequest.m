@@ -1,33 +1,27 @@
-/**
- * @author Serhii Mamontov
- * @version 4.14.0
- * @since 4.14.0
- * @copyright © 2010-2020 PubNub, Inc.
- */
+#import "PNRemoveMembershipsRequest.h"
 #import "PNBaseObjectsMembershipRequest+Private.h"
 #import "PNBaseObjectsRequest+Private.h"
-#import "PNRemoveMembershipsRequest.h"
-#import "PNRequest+Private.h"
+#import "PNBaseRequest+Private.h"
+#import "PNTransportRequest.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
 
-#pragma mark Protected interface declaration
+#pragma mark Private interface declaration
 
+/// `Remove UUID's memberships` request private extension.
 @interface PNRemoveMembershipsRequest ()
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
-/**
- * @brief Initialize \c remove \c UUID's memberships request.
- *
- * @param uuid Identifier for which memberships information should be removed.
- *   Will be set to current \b PubNub configuration \c uuid if \a nil is set.
- * @param channels List of \c channels from which \c UUID should be removed as \c member.
- *
- * @return Initialized and ready to use \c remove \c UUID's memberships request.
- */
+/// Initialize `Remove UUID's memberships` request.
+///
+/// - Parameters:
+///   - uuid: Identifier for which memberships information should be removed.  Will be set to current **PubNub**
+///   configuration `uuid` if `nil` is set.
+///   - channels: List of`channels` from which `UUID` should be removed as `member`.
+/// - Returns: Initialized `remove UUID's memberships` request.
 - (instancetype)initWithUUID:(nullable NSString *)uuid channels:(NSArray<NSString *> *)channels;
 
 #pragma mark -
@@ -43,7 +37,7 @@ NS_ASSUME_NONNULL_END
 @implementation PNRemoveMembershipsRequest
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
 @dynamic includeFields;
 
@@ -53,7 +47,7 @@ NS_ASSUME_NONNULL_END
 }
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
 + (instancetype)requestWithUUID:(NSString *)uuid channels:(NSArray<NSString *> *)channels {
     return [[self alloc] initWithUUID:uuid channels:channels];

@@ -1,164 +1,126 @@
-/**
- * @author Serhii Mamontov
- * @version 4.10.0
- * @since 4.10.0
- * @copyright © 2010-2019 PubNub, Inc.
- */
+#import "PubNub+Objects.h"
 #import "PNBaseObjectsRequest+Private.h"
-#import "PNAPICallBuilder+Private.h"
 #import "PubNub+CorePrivate.h"
 #import "PNStatus+Private.h"
-#import "PNConfiguration.h"
-#import "PubNub+Objects.h"
+#import "PNHelpers.h"
+
+// Deprecated
+#import "PNAPICallBuilder+Private.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
 
-#pragma mark Protected interface declaration
+#pragma mark Private interface declaration
 
 @interface PubNub (ObjectsProtected)
 
 
-#pragma mark - API Builder support
+#pragma mark - App Context API builder interdace (deprecated)
 
-/**
- * @brief Process information provider by user with builder API call and use it to send request
- * which will set UUID's metadata.
- *
- * @param parameters Dictionary with information passed to builder-based API.
- */
+/// Process information provider by user with builder API call and use it to send request which will set UUID's
+/// metadata.
+///
+/// - Parameter parameters: Dictionary with information passed to builder-based API.
 - (void)sendSetUUIDMetadataRequestUsingBuilderParameters:(NSDictionary *)parameters;
 
-/**
- * @brief Process information provider by user with builder API call and use it to send request
- * which will remove UUID's metadata.
- *
- * @param parameters Dictionary with information passed to builder-based API.
- */
+/// Process information provider by user with builder API call and use it to send request which will remove UUID's
+/// metadata.
+///
+/// - Parameter parameters: Dictionary with information passed to builder-based API.
 - (void)sendRemoveUUIDMetadataRequestUsingBuilderParameters:(NSDictionary *)parameters;
 
-/**
- * @brief Process information provider by user with builder API call and use it to send request
- * which will fetch specific UUID's metadata.
- *
- * @param parameters Dictionary with information passed to builder-based API.
- */
+/// Process information provider by user with builder API call and use it to send request which will fetch specific
+/// UUID's metadata.
+///
+/// - Parameter parameters: Dictionary with information passed to builder-based API.
 - (void)sendFetchUUIDMetadataRequestUsingBuilderParameters:(NSDictionary *)parameters;
 
-/**
- * @brief Process information provider by user with builder API call and use it to send request
- * which will fetch all UUIDs metadata.
- *
- * @param parameters Dictionary with information passed to builder-based API.
- */
+/// Process information provider by user with builder API call and use it to send request which will fetch all UUIDs
+/// metadata.
+///
+/// - Parameter parameters: Dictionary with information passed to builder-based API.
 - (void)sendFetchAllUUIDsMetadataRequestUsingBuilderParameters:(NSDictionary *)parameters;
 
-/**
- * @brief Process information provider by user with builder API call and use it to send request
- * which will set channel's metadata.
- *
- * @param parameters Dictionary with information passed to builder-based API.
- */
+/// Process information provider by user with builder API call and use it to send request which will set channel's
+/// metadata.
+///
+/// - Parameter parameters: Dictionary with information passed to builder-based API.
 - (void)sendSetChannelMetadataRequestUsingBuilderParameters:(NSDictionary *)parameters;
 
-/**
- * @brief Process information provider by user with builder API call and use it to send request
- * which will remove channel's metadata.
- *
- * @param parameters Dictionary with information passed to builder-based API.
- */
+/// Process information provider by user with builder API call and use it to send request which will remove channel's
+/// metadata.
+///
+/// - Parameter parameters: Dictionary with information passed to builder-based API.
 - (void)sendRemoveChannelMetadataRequestUsingBuilderParameters:(NSDictionary *)parameters;
 
-/**
- * @brief Process information provider by user with builder API call and use it to send request
- * which will fetch specific channel's metadata.
- *
- * @param parameters Dictionary with information passed to builder-based API.
- */
+/// Process information provider by user with builder API call and use it to send request which will fetch specific
+/// channel's metadata.
+///
+/// - Parameter parameters: Dictionary with information passed to builder-based API.
 - (void)sendFetchChannelMetadataRequestUsingBuilderParameters:(NSDictionary *)parameters;
 
-/**
- * @brief Process information provider by user with builder API call and use it to send request
- * which will fetch all channels metadata.
- *
- * @param parameters Dictionary with information passed to builder-based API.
- */
+/// Process information provider by user with builder API call and use it to send request which will fetch all channels
+/// metadata.
+///
+/// - Parameter parameters: Dictionary with information passed to builder-based API.
 - (void)sendFetchAllChannelsMetadataRequestUsingBuilderParameters:(NSDictionary *)parameters;
 
-/**
- * @brief Process information provider by user with builder API call and use it to send request
- * which will set UUID's memberships.
- *
- * @param parameters Dictionary with information passed to builder-based API.
- */
+/// Process information provider by user with builder API call and use it to send request which will set UUID's
+/// memberships.
+///
+/// - Parameter parameters: Dictionary with information passed to builder-based API.
 - (void)sendSetMembershipsRequestUsingBuilderParameters:(NSDictionary *)parameters;
 
-/**
- * @brief Process information provider by user with builder API call and use it to send request
- * which will remove UUID's memberships.
- *
- * @param parameters Dictionary with information passed to builder-based API.
- */
+/// Process information provider by user with builder API call and use it to send request which will remove UUID's
+/// memberships.
+///
+/// - Parameter parameters: Dictionary with information passed to builder-based API.
 - (void)sendRemoveMembershipsRequestUsingBuilderParameters:(NSDictionary *)parameters;
 
-/**
- * @brief Process information provider by user with builder API call and use it to send request
- * which will manage UUID's memberships.
- *
- * @param parameters Dictionary with information passed to builder-based API.
- */
+/// Process information provider by user with builder API call and use it to send request  which will manage UUID's
+/// memberships.
+///
+/// - Parameter parameters: Dictionary with information passed to builder-based API.
 - (void)sendManageMembershipsRequestUsingBuilderParameters:(NSDictionary *)parameters;
 
-/**
- * @brief Process information provider by user with builder API call and use it to send request
- * which will fetch UUID's memberships.
- *
- * @param parameters Dictionary with information passed to builder-based API.
- */
+/// Process information provider by user with builder API call and use it to send request which will fetch UUID's
+/// memberships.
+///
+/// - Parameter parameters: Dictionary with information passed to builder-based API.
 - (void)sendFetchMembershipsRequestUsingBuilderParameters:(NSDictionary *)parameters;
 
-/**
- * @brief Process information provider by user with builder API call and use it to send request
- * which will set channel's members.
- *
- * @param parameters Dictionary with information passed to builder-based API.
- */
+/// Process information provider by user with builder API call and use it to send request which will set channel's
+/// members.
+///
+/// - Parameter parameters: Dictionary with information passed to builder-based API.
 - (void)sendSetChannelMembersRequestUsingBuilderParameters:(NSDictionary *)parameters;
 
-/**
- * @brief Process information provider by user with builder API call and use it to send request
- * which will remove channel's members.
- *
- * @param parameters Dictionary with information passed to builder-based API.
- */
+/// Process information provider by user with builder API call and use it to send request which will remove channel's
+/// members.
+///
+/// - Parameter parameters: Dictionary with information passed to builder-based API.
 - (void)sendRemoveChannelMembersRequestUsingBuilderParameters:(NSDictionary *)parameters;
 
-/**
- * @brief Process information provider by user with builder API call and use it to send request
- * which will manage channel's members.
- *
- * @param parameters Dictionary with information passed to builder-based API.
- */
+/// Process information provider by user with builder API call and use it to send request which will manage channel's
+/// members.
+///
+/// - Parameter parameters: Dictionary with information passed to builder-based API.
 - (void)sendManageChannelMembersRequestUsingBuilderParameters:(NSDictionary *)parameters;
 
-/**
- * @brief Process information provider by user with builder API call and use it to send request
- * which will fetch channel's members.
- *
- * @param parameters Dictionary with information passed to builder-based API.
- */
+/// Process information provider by user with builder API call and use it to send request which will fetch channel's
+/// members.
+///
+/// - Parameter parameters: Dictionary with information passed to builder-based API.
 - (void)sendFetchChannelMembersRequestUsingBuilderParameters:(NSDictionary *)parameters;
 
 
 #pragma mark - Misc
 
-/**
- * @brief Add common parameters for multi-paged request suing information passed to
- * builder-based API.
- *
- * @param request Request for which properties should be set.
- * @param parameters Dictionary with information passed to builder-based API.
- */
+/// Add common parameters for multi-paged request suing information passed to builder-based API.
+///
+/// - Parameters:
+///   - request: Request for which properties should be set.
+///   - parameters: Dictionary with information passed to builder-based API.
 - (void)addObjectsPaginationOptionsToRequest:(PNObjectsPaginatedRequest *)request
                       usingBuilderParameters:(NSDictionary *)parameters;
 
@@ -175,7 +137,7 @@ NS_ASSUME_NONNULL_END
 @implementation PubNub (Objects)
 
 
-#pragma mark - API Builder support
+#pragma mark - App Context API builder interdace (deprecated)
 
 - (PNObjectsAPICallBuilder *(^)(void))objects {
     PNObjectsAPICallBuilder *builder = nil;
@@ -236,9 +198,7 @@ NS_ASSUME_NONNULL_END
     request.name = parameters[NSStringFromSelector(@selector(name))];
     request.arbitraryQueryParameters = parameters[@"queryParam"];
     
-    if (includeFields) {
-        request.includeFields = (PNUUIDFields)includeFields.unsignedIntegerValue;
-    }
+    if (includeFields) request.includeFields = (PNUUIDFields)includeFields.unsignedIntegerValue;
 
     [self setUUIDMetadataWithRequest:request completion:parameters[@"block"]];
 }
@@ -258,9 +218,7 @@ NS_ASSUME_NONNULL_END
     PNFetchUUIDMetadataRequest *request = [PNFetchUUIDMetadataRequest requestWithUUID:uuid];
     request.arbitraryQueryParameters = parameters[@"queryParam"];
     
-    if (includeFields) {
-        request.includeFields = (PNUUIDFields)includeFields.unsignedIntegerValue;
-    }
+    if (includeFields) request.includeFields = (PNUUIDFields)includeFields.unsignedIntegerValue;
 
     [self uuidMetadataWithRequest:request completion:parameters[@"block"]];
 }
@@ -273,11 +231,8 @@ NS_ASSUME_NONNULL_END
     [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
     
     if (includeCount) {
-        if (includeCount.boolValue) {
-            request.includeFields |= PNUUIDTotalCountField;
-        } else {
-            request.includeFields ^= PNUUIDTotalCountField;
-        }
+        if (includeCount.boolValue) request.includeFields |= PNUUIDTotalCountField;
+        else request.includeFields ^= PNUUIDTotalCountField;
     }
 
     [self allUUIDMetadataWithRequest:request completion:parameters[@"block"]];
@@ -293,9 +248,7 @@ NS_ASSUME_NONNULL_END
     request.name = parameters[NSStringFromSelector(@selector(name))];
     request.arbitraryQueryParameters = parameters[@"queryParam"];
     
-    if (includeFields) {
-        request.includeFields = (PNChannelFields)includeFields.unsignedIntegerValue;
-    }
+    if (includeFields) request.includeFields = (PNChannelFields)includeFields.unsignedIntegerValue;
 
     [self setChannelMetadataWithRequest:request completion:parameters[@"block"]];
 }
@@ -315,9 +268,7 @@ NS_ASSUME_NONNULL_END
     PNFetchChannelMetadataRequest *request = [PNFetchChannelMetadataRequest requestWithChannel:channel];
     request.arbitraryQueryParameters = parameters[@"queryParam"];
     
-    if (includeFields) {
-        request.includeFields = (PNChannelFields)includeFields.unsignedIntegerValue;
-    }
+    if (includeFields) request.includeFields = (PNChannelFields)includeFields.unsignedIntegerValue;
 
     [self channelMetadataWithRequest:request completion:parameters[@"block"]];
 }
@@ -330,11 +281,8 @@ NS_ASSUME_NONNULL_END
     [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
     
     if (includeCount) {
-        if (includeCount.boolValue) {
-            request.includeFields |= PNChannelTotalCountField;
-        } else {
-            request.includeFields ^= PNChannelTotalCountField;
-        }
+        if (includeCount.boolValue) request.includeFields |= PNChannelTotalCountField;
+        else request.includeFields ^= PNChannelTotalCountField;
     }
     
     [self allChannelsMetadataWithRequest:request completion:parameters[@"block"]];
@@ -354,11 +302,8 @@ NS_ASSUME_NONNULL_END
     [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
     
     if (includeCount) {
-        if (includeCount.boolValue) {
-            request.includeFields |= PNMembershipsTotalCountField;
-        } else {
-            request.includeFields ^= PNMembershipsTotalCountField;
-        }
+        if (includeCount.boolValue) request.includeFields |= PNMembershipsTotalCountField;
+        else request.includeFields ^= PNMembershipsTotalCountField;
     }
     
     [self setMembershipsWithRequest:request completion:parameters[@"block"]];
@@ -375,11 +320,8 @@ NS_ASSUME_NONNULL_END
     [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
     
     if (includeCount) {
-        if (includeCount.boolValue) {
-            request.includeFields |= PNMembershipsTotalCountField;
-        } else {
-            request.includeFields ^= PNMembershipsTotalCountField;
-        }
+        if (includeCount.boolValue) request.includeFields |= PNMembershipsTotalCountField;
+        else request.includeFields ^= PNMembershipsTotalCountField;
     }
     
     [self removeMembershipsWithRequest:request completion:parameters[@"block"]];
@@ -397,11 +339,8 @@ NS_ASSUME_NONNULL_END
     [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
     
     if (includeCount) {
-        if (includeCount.boolValue) {
-            request.includeFields |= PNMembershipsTotalCountField;
-        } else {
-            request.includeFields ^= PNMembershipsTotalCountField;
-        }
+        if (includeCount.boolValue) request.includeFields |= PNMembershipsTotalCountField;
+        else request.includeFields ^= PNMembershipsTotalCountField;
     }
     
     [self manageMembershipsWithRequest:request completion:parameters[@"block"]];
@@ -417,11 +356,8 @@ NS_ASSUME_NONNULL_END
     [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
     
     if (includeCount) {
-        if (includeCount.boolValue) {
-            request.includeFields |= PNMembershipsTotalCountField;
-        } else {
-            request.includeFields ^= PNMembershipsTotalCountField;
-        }
+        if (includeCount.boolValue) request.includeFields |= PNMembershipsTotalCountField;
+        else request.includeFields ^= PNMembershipsTotalCountField;
     }
     
     [self membershipsWithRequest:request completion:parameters[@"block"]];
@@ -438,11 +374,8 @@ NS_ASSUME_NONNULL_END
     [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
     
     if (includeCount) {
-        if (includeCount.boolValue) {
-            request.includeFields |= PNChannelMembersTotalCountField;
-        } else {
-            request.includeFields ^= PNChannelMembersTotalCountField;
-        }
+        if (includeCount.boolValue) request.includeFields |= PNChannelMembersTotalCountField;
+        else request.includeFields ^= PNChannelMembersTotalCountField;
     }
 
     [self setChannelMembersWithRequest:request completion:parameters[@"block"]];
@@ -459,11 +392,8 @@ NS_ASSUME_NONNULL_END
     [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
     
     if (includeCount) {
-        if (includeCount.boolValue) {
-            request.includeFields |= PNChannelMembersTotalCountField;
-        } else {
-            request.includeFields ^= PNChannelMembersTotalCountField;
-        }
+        if (includeCount.boolValue) request.includeFields |= PNChannelMembersTotalCountField;
+        else request.includeFields ^= PNChannelMembersTotalCountField;
     }
 
     [self removeChannelMembersWithRequest:request completion:parameters[@"block"]];
@@ -481,11 +411,8 @@ NS_ASSUME_NONNULL_END
     [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
     
     if (includeCount) {
-        if (includeCount.boolValue) {
-            request.includeFields |= PNChannelMembersTotalCountField;
-        } else {
-            request.includeFields ^= PNChannelMembersTotalCountField;
-        }
+        if (includeCount.boolValue) request.includeFields |= PNChannelMembersTotalCountField;
+        else request.includeFields ^= PNChannelMembersTotalCountField;
     }
 
     [self manageChannelMembersWithRequest:request completion:parameters[@"block"]];
@@ -501,11 +428,8 @@ NS_ASSUME_NONNULL_END
     [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
     
     if (includeCount) {
-        if (includeCount.boolValue) {
-            request.includeFields |= PNChannelMembersTotalCountField;
-        } else {
-            request.includeFields ^= PNChannelMembersTotalCountField;
-        }
+        if (includeCount.boolValue) request.includeFields |= PNChannelMembersTotalCountField;
+        else request.includeFields ^= PNChannelMembersTotalCountField;
     }
 
     [self channelMembersWithRequest:request completion:parameters[@"block"]];
@@ -514,284 +438,439 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - UUID metadata object
 
-- (void)setUUIDMetadataWithRequest:(PNSetUUIDMetadataRequest *)request
-                        completion:(PNSetUUIDMetadataCompletionBlock)block {
+- (void)setUUIDMetadataWithRequest:(PNSetUUIDMetadataRequest *)userRequest
+                        completion:(PNSetUUIDMetadataCompletionBlock)handleBlock {
+    userRequest.identifier = userRequest.identifier.length ? userRequest.identifier : self.configuration.userID;
+    PNOperationDataParser *responseParser = [self parserWithStatus:[PNSetUUIDMetadataStatus class]];
+    PNSetUUIDMetadataCompletionBlock block = [handleBlock copy];
+    PNParsedRequestCompletionBlock handler;
+                           
+    PNWeakify(self);
+    handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
+                PNOperationDataParseResult<PNSetUUIDMetadataStatus *, PNSetUUIDMetadataStatus *> *result) {
+        PNStrongify(self);
 
-    request.identifier = request.identifier.length ? request.identifier : self.configuration.userID;
-    __weak __typeof(self) weakSelf = self;
-    
-    [self performRequest:request withCompletion:^(PNSetUUIDMetadataStatus *status) {
-        if (block && status.isError) {
-            status.retryBlock = ^{
-                [weakSelf setUUIDMetadataWithRequest:request completion:block];
+        if (result.status.isError) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            result.status.retryBlock = ^{
+                [self setUUIDMetadataWithRequest:userRequest completion:block];
             };
+#pragma clang diagnostic pop
         }
-        
-        [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
-    }];
+
+        [self callBlock:block status:YES withResult:nil andStatus:result.status];
+    };
+
+    [self performRequest:userRequest withParser:responseParser completion:handler];
 }
 
-- (void)removeUUIDMetadataWithRequest:(PNRemoveUUIDMetadataRequest *)request
-                           completion:(PNRemoveUUIDMetadataCompletionBlock)block {
+- (void)removeUUIDMetadataWithRequest:(PNRemoveUUIDMetadataRequest *)userRequest
+                           completion:(PNRemoveUUIDMetadataCompletionBlock)handleBlock {
+    userRequest.identifier = userRequest.identifier.length ? userRequest.identifier : self.configuration.userID;
+    PNOperationDataParser *responseParser = [self parserWithStatus:[PNAcknowledgmentStatus class]];
+    PNRemoveUUIDMetadataCompletionBlock block = [handleBlock copy];
+    PNParsedRequestCompletionBlock handler;
+                           
+    PNWeakify(self);
+    handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
+                PNOperationDataParseResult<PNAcknowledgmentStatus *, PNAcknowledgmentStatus *> *result) {
+        PNStrongify(self);
 
-    request.identifier = request.identifier.length ? request.identifier : self.configuration.userID;
-    __weak __typeof(self) weakSelf = self;
-    
-    [self performRequest:request withCompletion:^(PNAcknowledgmentStatus *status) {
-        if (block && status.isError) {
-            status.retryBlock = ^{
-                [weakSelf removeUUIDMetadataWithRequest:request completion:block];
+        if (result.status.isError) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            result.status.retryBlock = ^{
+                [self removeUUIDMetadataWithRequest:userRequest completion:block];
             };
+#pragma clang diagnostic pop
         }
-        
-        [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
-    }];
+
+        [self callBlock:block status:YES withResult:nil andStatus:result.status];
+    };
+
+    [self performRequest:userRequest withParser:responseParser completion:handler];
 }
 
-- (void)uuidMetadataWithRequest:(PNFetchUUIDMetadataRequest *)request
-                     completion:(PNFetchUUIDMetadataCompletionBlock)block {
+- (void)uuidMetadataWithRequest:(PNFetchUUIDMetadataRequest *)userRequest
+                     completion:(PNFetchUUIDMetadataCompletionBlock)handleBlock {
+    userRequest.identifier = userRequest.identifier.length ? userRequest.identifier : self.configuration.userID;
+    PNOperationDataParser *responseParser = [self parserWithResult:[PNFetchUUIDMetadataResult class]
+                                                            status:[PNErrorStatus class]];
+    PNFetchUUIDMetadataCompletionBlock block = [handleBlock copy];
+    PNParsedRequestCompletionBlock handler;
+                           
+    PNWeakify(self);
+    handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
+                PNOperationDataParseResult<PNFetchUUIDMetadataResult *, PNErrorStatus *> *result) {
+        PNStrongify(self);
 
-    request.identifier = request.identifier.length ? request.identifier : self.configuration.userID;
-    __weak __typeof(self) weakSelf = self;
-    
-    [self performRequest:request
-          withCompletion:^(PNFetchUUIDMetadataResult *result, PNErrorStatus *status) {
-              
-        if (status.isError) {
-            status.retryBlock = ^{
-                [weakSelf uuidMetadataWithRequest:request completion:block];
+        if (result.status.isError) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            result.status.retryBlock = ^{
+                [self uuidMetadataWithRequest:userRequest completion:block];
             };
+#pragma clang diagnostic pop
         }
-        
-        [weakSelf callBlock:block status:NO withResult:result andStatus:status];
-    }];
+
+        [self callBlock:block status:NO withResult:result.result andStatus:result.status];
+    };
+
+    [self performRequest:userRequest withParser:responseParser completion:handler];
 }
 
-- (void)allUUIDMetadataWithRequest:(PNFetchAllUUIDMetadataRequest *)request
-                        completion:(PNFetchAllUUIDMetadataCompletionBlock)block {
-    
-    __weak __typeof(self) weakSelf = self;
-    
-    [self performRequest:request
-          withCompletion:^(PNFetchAllUUIDMetadataResult *result, PNErrorStatus *status) {
-        
-        if (status.isError) {
-            status.retryBlock = ^{
-                [weakSelf allUUIDMetadataWithRequest:request completion:block];
+- (void)allUUIDMetadataWithRequest:(PNFetchAllUUIDMetadataRequest *)userRequest
+                        completion:(PNFetchAllUUIDMetadataCompletionBlock)handleBlock {
+    PNOperationDataParser *responseParser = [self parserWithResult:[PNFetchAllUUIDMetadataResult class]
+                                                            status:[PNErrorStatus class]];
+    PNFetchAllUUIDMetadataCompletionBlock block = [handleBlock copy];
+    PNParsedRequestCompletionBlock handler;
+                           
+    PNWeakify(self);
+    handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
+                PNOperationDataParseResult<PNFetchAllUUIDMetadataResult *, PNErrorStatus *> *result) {
+        PNStrongify(self);
+
+        if (result.status.isError) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            result.status.retryBlock = ^{
+                [self allUUIDMetadataWithRequest:userRequest completion:block];
             };
+#pragma clang diagnostic pop
         }
-        
-        [weakSelf callBlock:block status:NO withResult:result andStatus:status];
-    }];
+
+        [self callBlock:block status:NO withResult:result.result andStatus:result.status];
+    };
+
+    [self performRequest:userRequest withParser:responseParser completion:handler];
 }
 
 #pragma mark - Channel metadata object
 
-- (void)setChannelMetadataWithRequest:(PNSetChannelMetadataRequest *)request
-                           completion:(nullable PNSetChannelMetadataCompletionBlock)block {
-    
-    __weak __typeof(self) weakSelf = self;
-    
-    [self performRequest:request withCompletion:^(PNSetChannelMetadataStatus *status) {
-        if (block && status.isError) {
-            status.retryBlock = ^{
-                [weakSelf setChannelMetadataWithRequest:request completion:block];
+- (void)setChannelMetadataWithRequest:(PNSetChannelMetadataRequest *)userRequest
+                           completion:(PNSetChannelMetadataCompletionBlock)handleBlock {
+    PNOperationDataParser *responseParser = [self parserWithStatus:[PNSetChannelMetadataStatus class]];
+    PNSetChannelMetadataCompletionBlock block = [handleBlock copy];
+    PNParsedRequestCompletionBlock handler;
+                           
+    PNWeakify(self);
+    handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
+                PNOperationDataParseResult<PNSetChannelMetadataStatus *, PNSetChannelMetadataStatus *> *result) {
+        PNStrongify(self);
+
+        if (result.status.isError) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            result.status.retryBlock = ^{
+                [self setChannelMetadataWithRequest:userRequest completion:block];
             };
+#pragma clang diagnostic pop
         }
-        
-        [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
-    }];
+
+        [self callBlock:block status:YES withResult:nil andStatus:result.status];
+    };
+
+    [self performRequest:userRequest withParser:responseParser completion:handler];
 }
 
-- (void)removeChannelMetadataWithRequest:(PNRemoveChannelMetadataRequest *)request
-                              completion:(nullable PNRemoveChannelMetadataCompletionBlock)block {
-    
-    __weak __typeof(self) weakSelf = self;
-    
-    [self performRequest:request withCompletion:^(PNAcknowledgmentStatus *status) {
-        if (block && status.isError) {
-            status.retryBlock = ^{
-                [weakSelf removeChannelMetadataWithRequest:request completion:block];
+- (void)removeChannelMetadataWithRequest:(PNRemoveChannelMetadataRequest *)userRequest
+                              completion:(PNRemoveChannelMetadataCompletionBlock)handleBlock {
+    PNOperationDataParser *responseParser = [self parserWithStatus:[PNAcknowledgmentStatus class]];
+    PNRemoveChannelMetadataCompletionBlock block = [handleBlock copy];
+    PNParsedRequestCompletionBlock handler;
+                           
+    PNWeakify(self);
+    handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
+                PNOperationDataParseResult<PNAcknowledgmentStatus *, PNAcknowledgmentStatus *> *result) {
+        PNStrongify(self);
+
+        if (result.status.isError) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            result.status.retryBlock = ^{
+                [self removeChannelMetadataWithRequest:userRequest completion:block];
             };
+#pragma clang diagnostic pop
         }
-        
-        [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
-    }];
+
+        [self callBlock:block status:YES withResult:nil andStatus:result.status];
+    };
+
+    [self performRequest:userRequest withParser:responseParser completion:handler];
 }
 
-- (void)channelMetadataWithRequest:(PNFetchChannelMetadataRequest *)request
-                        completion:(PNFetchChannelMetadataCompletionBlock)block {
-    
-    __weak __typeof(self) weakSelf = self;
-    
-    [self performRequest:request
-          withCompletion:^(PNFetchChannelMetadataResult *result, PNErrorStatus *status) {
-        
-        if (status.isError) {
-            status.retryBlock = ^{
-                [weakSelf channelMetadataWithRequest:request completion:block];
+- (void)channelMetadataWithRequest:(PNFetchChannelMetadataRequest *)userRequest
+                        completion:(PNFetchChannelMetadataCompletionBlock)handleBlock {
+    PNOperationDataParser *responseParser = [self parserWithResult:[PNFetchChannelMetadataResult class]
+                                                            status:[PNErrorStatus class]];
+    PNFetchChannelMetadataCompletionBlock block = [handleBlock copy];
+    PNParsedRequestCompletionBlock handler;
+                           
+    PNWeakify(self);
+    handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
+                PNOperationDataParseResult<PNFetchChannelMetadataResult *, PNErrorStatus *> *result) {
+        PNStrongify(self);
+
+        if (result.status.isError) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            result.status.retryBlock = ^{
+                [self channelMetadataWithRequest:userRequest completion:block];
             };
+#pragma clang diagnostic pop
         }
-        
-        [weakSelf callBlock:block status:NO withResult:result andStatus:status];
-    }];
+
+        [self callBlock:block status:NO withResult:result.result andStatus:result.status];
+    };
+
+    [self performRequest:userRequest withParser:responseParser completion:handler];
 }
 
-- (void)allChannelsMetadataWithRequest:(PNFetchAllChannelsMetadataRequest *)request
-                            completion:(PNFetchAllChannelsMetadataCompletionBlock)block {
-    
-    __weak __typeof(self) weakSelf = self;
-    
-    [self performRequest:request
-          withCompletion:^(PNFetchAllChannelsMetadataResult *result, PNErrorStatus *status) {
-        
-        if (status.isError) {
-            status.retryBlock = ^{
-                [weakSelf allChannelsMetadataWithRequest:request completion:block];
+- (void)allChannelsMetadataWithRequest:(PNFetchAllChannelsMetadataRequest *)userRequest
+                            completion:(PNFetchAllChannelsMetadataCompletionBlock)handleBlock {
+    PNOperationDataParser *responseParser = [self parserWithResult:[PNFetchAllChannelsMetadataResult class]
+                                                            status:[PNErrorStatus class]];
+    PNFetchAllChannelsMetadataCompletionBlock block = [handleBlock copy];
+    PNParsedRequestCompletionBlock handler;
+                           
+    PNWeakify(self);
+    handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
+                PNOperationDataParseResult<PNFetchAllChannelsMetadataResult *, PNErrorStatus *> *result) {
+        PNStrongify(self);
+
+        if (result.status.isError) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            result.status.retryBlock = ^{
+                [self allChannelsMetadataWithRequest:userRequest completion:block];
             };
+#pragma clang diagnostic pop
         }
-        
-        [weakSelf callBlock:block status:NO withResult:result andStatus:status];
-    }];
+
+        [self callBlock:block status:NO withResult:result.result andStatus:result.status];
+    };
+
+    [self performRequest:userRequest withParser:responseParser completion:handler];
 }
 
 
 #pragma mark - Membership objects
 
-- (void)setMembershipsWithRequest:(PNSetMembershipsRequest *)request
-                       completion:(nullable PNManageMembershipsCompletionBlock)block {
-    
-    request.identifier = request.identifier.length ? request.identifier : self.configuration.userID;
-    __weak __typeof(self) weakSelf = self;
+- (void)setMembershipsWithRequest:(PNSetMembershipsRequest *)userRequest
+                       completion:(PNManageMembershipsCompletionBlock)handleBlock {
+    userRequest.identifier = userRequest.identifier.length ? userRequest.identifier : self.configuration.userID;
+    PNOperationDataParser *responseParser = [self parserWithStatus:[PNManageMembershipsStatus class]];
+    PNManageMembershipsCompletionBlock block = [handleBlock copy];
+    PNParsedRequestCompletionBlock handler;
+                           
+    PNWeakify(self);
+    handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
+                PNOperationDataParseResult<PNManageMembershipsStatus *, PNManageMembershipsStatus *> *result) {
+        PNStrongify(self);
 
-    [self performRequest:request withCompletion:^(PNManageMembershipsStatus *status) {
-        if (block && status.isError) {
-            status.retryBlock = ^{
-                [weakSelf setMembershipsWithRequest:request completion:block];
+        if (result.status.isError) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            result.status.retryBlock = ^{
+                [self setMembershipsWithRequest:userRequest completion:block];
             };
+#pragma clang diagnostic pop
         }
-        
-        [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
-    }];
+
+        [self callBlock:block status:YES withResult:nil andStatus:result.status];
+    };
+
+    [self performRequest:userRequest withParser:responseParser completion:handler];
 }
 
-- (void)removeMembershipsWithRequest:(PNRemoveMembershipsRequest *)request
-                          completion:(PNManageMembershipsCompletionBlock)block {
-    
-    request.identifier = request.identifier.length ? request.identifier : self.configuration.userID;
-    __weak __typeof(self) weakSelf = self;
+- (void)removeMembershipsWithRequest:(PNRemoveMembershipsRequest *)userRequest
+                          completion:(PNManageMembershipsCompletionBlock)handleBlock {
+    userRequest.identifier = userRequest.identifier.length ? userRequest.identifier : self.configuration.userID;
+    PNOperationDataParser *responseParser = [self parserWithStatus:[PNManageMembershipsStatus class]];
+    PNManageMembershipsCompletionBlock block = [handleBlock copy];
+    PNParsedRequestCompletionBlock handler;
+                           
+    PNWeakify(self);
+    handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
+                PNOperationDataParseResult<PNManageMembershipsStatus *, PNManageMembershipsStatus *> *result) {
+        PNStrongify(self);
 
-    [self performRequest:request withCompletion:^(PNManageMembershipsStatus *status) {
-        if (block && status.isError) {
-            status.retryBlock = ^{
-                [weakSelf removeMembershipsWithRequest:request completion:block];
+        if (result.status.isError) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            result.status.retryBlock = ^{
+                [self removeMembershipsWithRequest:userRequest completion:block];
             };
+#pragma clang diagnostic pop
         }
-        
-        [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
-    }];
+
+        [self callBlock:block status:YES withResult:nil andStatus:result.status];
+    };
+
+    [self performRequest:userRequest withParser:responseParser completion:handler];
 }
 
-- (void)manageMembershipsWithRequest:(PNManageMembershipsRequest *)request
-                          completion:(PNManageMembershipsCompletionBlock)block {
-    
-    request.identifier = request.identifier.length ? request.identifier : self.configuration.userID;
-    __weak __typeof(self) weakSelf = self;
-    
-    [self performRequest:request withCompletion:^(PNManageMembershipsStatus *status) {
-        if (block && status.isError) {
-            status.retryBlock = ^{
-                [weakSelf manageMembershipsWithRequest:request completion:block];
+- (void)manageMembershipsWithRequest:(PNManageMembershipsRequest *)userRequest
+                          completion:(PNManageMembershipsCompletionBlock)handleBlock {
+    userRequest.identifier = userRequest.identifier.length ? userRequest.identifier : self.configuration.userID;
+    PNOperationDataParser *responseParser = [self parserWithStatus:[PNManageMembershipsStatus class]];
+    PNManageMembershipsCompletionBlock block = [handleBlock copy];
+    PNParsedRequestCompletionBlock handler;
+                           
+    PNWeakify(self);
+    handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
+                PNOperationDataParseResult<PNManageMembershipsStatus *, PNManageMembershipsStatus *> *result) {
+        PNStrongify(self);
+
+        if (result.status.isError) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            result.status.retryBlock = ^{
+                [self manageMembershipsWithRequest:userRequest completion:block];
             };
+#pragma clang diagnostic pop
         }
-        
-        [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
-    }];
+
+        [self callBlock:block status:YES withResult:nil andStatus:result.status];
+    };
+
+    [self performRequest:userRequest withParser:responseParser completion:handler];
 }
 
-- (void)membershipsWithRequest:(PNFetchMembershipsRequest *)request
-                    completion:(PNFetchMembershipsCompletionBlock)block {
-    
-    request.identifier = request.identifier.length ? request.identifier : self.configuration.userID;
-    __weak __typeof(self) weakSelf = self;
-    
-    [self performRequest:request
-          withCompletion:^(PNFetchMembershipsResult *result, PNErrorStatus *status) {
-        
-        if (status.isError) {
-            status.retryBlock = ^{
-                [weakSelf membershipsWithRequest:request completion:block];
+- (void)membershipsWithRequest:(PNFetchMembershipsRequest *)userRequest
+                    completion:(PNFetchMembershipsCompletionBlock)handleBlock {
+    userRequest.identifier = userRequest.identifier.length ? userRequest.identifier : self.configuration.userID;
+    PNOperationDataParser *responseParser = [self parserWithResult:[PNFetchMembershipsResult class]
+                                                            status:[PNErrorStatus class]];
+    PNFetchMembershipsCompletionBlock block = [handleBlock copy];
+    PNParsedRequestCompletionBlock handler;
+                           
+    PNWeakify(self);
+    handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
+                PNOperationDataParseResult<PNFetchMembershipsResult *, PNErrorStatus *> *result) {
+        PNStrongify(self);
+
+        if (result.status.isError) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            result.status.retryBlock = ^{
+                [self membershipsWithRequest:userRequest completion:block];
             };
+#pragma clang diagnostic pop
         }
-        
-        [weakSelf callBlock:block status:NO withResult:result andStatus:status];
-    }];
+
+        [self callBlock:block status:NO withResult:result.result andStatus:result.status];
+    };
+
+    [self performRequest:userRequest withParser:responseParser completion:handler];
 }
 
-- (void)setChannelMembersWithRequest:(PNSetChannelMembersRequest *)request
-                          completion:(PNManageChannelMembersCompletionBlock)block {
+- (void)setChannelMembersWithRequest:(PNSetChannelMembersRequest *)userRequest
+                          completion:(PNManageChannelMembersCompletionBlock)handleBlock {
+    PNOperationDataParser *responseParser = [self parserWithStatus:[PNManageChannelMembersStatus class]];
+    PNManageChannelMembersCompletionBlock block = [handleBlock copy];
+    PNParsedRequestCompletionBlock handler;
+                           
+    PNWeakify(self);
+    handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
+                PNOperationDataParseResult<PNManageChannelMembersStatus *, PNManageChannelMembersStatus *> *result) {
+        PNStrongify(self);
 
-    __weak __typeof(self) weakSelf = self;
-
-    [self performRequest:request withCompletion:^(PNManageChannelMembersStatus *status) {
-        if (block && status.isError) {
-            status.retryBlock = ^{
-                [weakSelf setChannelMembersWithRequest:request completion:block];
+        if (result.status.isError) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            result.status.retryBlock = ^{
+                [self setChannelMembersWithRequest:userRequest completion:block];
             };
+#pragma clang diagnostic pop
         }
-        
-        [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
-    }];
+
+        [self callBlock:block status:YES withResult:nil andStatus:result.status];
+    };
+
+    [self performRequest:userRequest withParser:responseParser completion:handler];
 }
 
-- (void)removeChannelMembersWithRequest:(PNRemoveChannelMembersRequest *)request
-                             completion:(PNManageChannelMembersCompletionBlock)block {
+- (void)removeChannelMembersWithRequest:(PNRemoveChannelMembersRequest *)userRequest
+                             completion:(PNManageChannelMembersCompletionBlock)handleBlock {
+    PNOperationDataParser *responseParser = [self parserWithStatus:[PNManageChannelMembersStatus class]];
+    PNManageChannelMembersCompletionBlock block = [handleBlock copy];
+    PNParsedRequestCompletionBlock handler;
+                           
+    PNWeakify(self);
+    handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
+                PNOperationDataParseResult<PNManageChannelMembersStatus *, PNManageChannelMembersStatus *> *result) {
+        PNStrongify(self);
 
-    __weak __typeof(self) weakSelf = self;
-
-    [self performRequest:request withCompletion:^(PNManageChannelMembersStatus *status) {
-        if (block && status.isError) {
-            status.retryBlock = ^{
-                [weakSelf removeChannelMembersWithRequest:request completion:block];
+        if (result.status.isError) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            result.status.retryBlock = ^{
+                [self removeChannelMembersWithRequest:userRequest completion:block];
             };
+#pragma clang diagnostic pop
         }
-        
-        [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
-    }];
+
+        [self callBlock:block status:YES withResult:nil andStatus:result.status];
+    };
+
+    [self performRequest:userRequest withParser:responseParser completion:handler];
 }
 
-- (void)manageChannelMembersWithRequest:(PNManageChannelMembersRequest *)request
-                             completion:(PNManageChannelMembersCompletionBlock)block {
-    
-    __weak __typeof(self) weakSelf = self;
-    
-    [self performRequest:request withCompletion:^(PNManageChannelMembersStatus *status) {
-        if (block && status.isError) {
-            status.retryBlock = ^{
-                [weakSelf manageChannelMembersWithRequest:request completion:block];
+- (void)manageChannelMembersWithRequest:(PNManageChannelMembersRequest *)userRequest
+                             completion:(PNManageChannelMembersCompletionBlock)handleBlock {
+    PNOperationDataParser *responseParser = [self parserWithStatus:[PNManageChannelMembersStatus class]];
+    PNManageChannelMembersCompletionBlock block = [handleBlock copy];
+    PNParsedRequestCompletionBlock handler;
+                           
+    PNWeakify(self);
+    handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
+                PNOperationDataParseResult<PNManageChannelMembersStatus *, PNManageChannelMembersStatus *> *result) {
+        PNStrongify(self);
+
+        if (result.status.isError) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            result.status.retryBlock = ^{
+                [self manageChannelMembersWithRequest:userRequest completion:block];
             };
+#pragma clang diagnostic pop
         }
-        
-        [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
-    }];
+
+        [self callBlock:block status:YES withResult:nil andStatus:result.status];
+    };
+
+    [self performRequest:userRequest withParser:responseParser completion:handler];
 }
 
-- (void)channelMembersWithRequest:(PNFetchChannelMembersRequest *)request
-                       completion:(PNFetchChannelMembersCompletionBlock)block {
-    
-    __weak __typeof(self) weakSelf = self;
-    
-    [self performRequest:request
-          withCompletion:^(PNFetchChannelMembersResult *result, PNErrorStatus *status) {
-        
-        if (status.isError) {
-            status.retryBlock = ^{
-                [weakSelf channelMembersWithRequest:request completion:block];
+- (void)channelMembersWithRequest:(PNFetchChannelMembersRequest *)userRequest
+                       completion:(PNFetchChannelMembersCompletionBlock)handleBlock {
+    PNOperationDataParser *responseParser = [self parserWithResult:[PNFetchChannelMembersResult class]
+                                                            status:[PNErrorStatus class]];
+    PNFetchChannelMembersCompletionBlock block = [handleBlock copy];
+    [userRequest setupWithClientConfiguration:self.configuration];
+    PNParsedRequestCompletionBlock handler;
+
+    PNWeakify(self);
+    handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
+                PNOperationDataParseResult<PNFetchChannelMembersResult *, PNErrorStatus *> *result) {
+        PNStrongify(self);
+
+        if (result.status.isError) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            result.status.retryBlock = ^{
+                [self channelMembersWithRequest:userRequest completion:block];
             };
+#pragma clang diagnostic pop
         }
-        
-        [weakSelf callBlock:block status:NO withResult:result andStatus:status];
-    }];
+
+        [self callBlock:block status:NO withResult:result.result andStatus:result.status];
+    };
+
+    [self performRequest:userRequest withParser:responseParser completion:handler];
 }
 
 
@@ -808,9 +887,7 @@ NS_ASSUME_NONNULL_END
     request.end = parameters[NSStringFromSelector(@selector(end))];
     request.limit = limit.unsignedIntegerValue;
     
-    if (includeFields) {
-        request.includeFields = includeFields.unsignedIntegerValue;
-    }
+    if (includeFields) request.includeFields = includeFields.unsignedIntegerValue;
 }
 
 #pragma mark -

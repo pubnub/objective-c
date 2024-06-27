@@ -1,32 +1,25 @@
-/**
- * @author Serhii Mamontov
- * @version 4.14.0
- * @since 4.14.0
- * @copyright © 2010-2020 PubNub, Inc.
- */
+#import "PNManageMembershipsRequest.h"
 #import "PNBaseObjectsMembershipRequest+Private.h"
 #import "PNBaseObjectsRequest+Private.h"
-#import "PNManageMembershipsRequest.h"
-#import "PNRequest+Private.h"
+#import "PNBaseRequest+Private.h"
+#import "PNTransportRequest.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
 
-#pragma mark Protected interface declaration
+#pragma mark Private interface declaration
 
+/// `Manage UUID's memberships` request private extension.
 @interface PNManageMembershipsRequest ()
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
-/**
- * @brief Initialize \c manage \c UUID's memberships request.
- *
- * @param uuid Identifier for which memberships should be managed.
- * Will be set to current \b PubNub configuration \c uuid if \a nil is set.
- *
- * @return Initialized and ready to use \c manage \c UUID's memberships request.
- */
+/// Initialize `Manage UUID's memberships` request.
+ ///
+ /// - Parameter uuid: Identifier for which memberships should be managed. Will be set to current **PubNub**
+ /// configuration `uuid` if `nil` is set.
+/// - Returns: Initialized `manage UUID's memberships` request.
 - (instancetype)initWithUUID:(nullable NSString *)uuid;
 
 #pragma mark -
@@ -42,7 +35,7 @@ NS_ASSUME_NONNULL_END
 @implementation PNManageMembershipsRequest
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
 @dynamic includeFields;
 
@@ -53,18 +46,16 @@ NS_ASSUME_NONNULL_END
 
 - (void)setSetChannels:(NSArray<NSDictionary *> *)setChannels {
     _setChannels = setChannels;
-    
     [self setRelationToObjects:setChannels ofType:@"channel"];
 }
 
 - (void)setRemoveChannels:(NSArray<NSString *> *)removeChannels {
     _removeChannels = removeChannels;
-    
     [self removeRelationToObjects:removeChannels ofType:@"channel"];
 }
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
 + (instancetype)requestWithUUID:(NSString *)uuid {
     return [[self alloc] initWithUUID:uuid];

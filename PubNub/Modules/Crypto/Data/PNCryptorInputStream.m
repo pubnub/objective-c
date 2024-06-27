@@ -1,6 +1,6 @@
 #import "PNCryptorInputStream+Private.h"
 #import "PNCryptorHeader+Private.h"
-#import "PNErrorCodes.h"
+#import "PNError.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -324,8 +324,8 @@ NS_ASSUME_NONNULL_END
     } while ([self canReadDataFromInputStream] && self.streamStatus != NSStreamStatusClosed && bytesToRead != 0);
 
     if (bytesToRead != 0) {
-        error = [NSError errorWithDomain:kPNCryptorErrorDomain
-                                    code:kPNCryptorDecryptionError
+        error = [NSError errorWithDomain:PNCryptorErrorDomain
+                                    code:PNCryptorErrorDecryption
                                 userInfo:@{
             NSLocalizedDescriptionKey: @"Insufficient amount of data to read cryptor-defined metadata."
         }];

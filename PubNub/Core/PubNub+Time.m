@@ -1,60 +1,26 @@
-/**
- * @author Serhii Mamontov
- * @since 4.0
- * @copyright © 2010-2018 PubNub, Inc.
- */
 #import "PubNub+Time.h"
-#import "PNAPICallBuilder+Private.h"
-#import "PNRequestParameters.h"
 #import "PubNub+CorePrivate.h"
 #import "PNStatus+Private.h"
-#import "PNLogMacro.h"
-#import "PNStatus.h"
+
+// Deprecated
+#import "PNAPICallBuilder+Private.h"
 
 
-NS_ASSUME_NONNULL_BEGIN
+#pragma mark Interface implementation
 
-#pragma mark Protected interface declaration
-
-@interface PubNub (SubscribeProtected)
-
-
-#pragma mark - Time token request
-
-/**
- * @brief Request current time from \b PubNub service servers.
- *
- * @param queryParameters List arbitrary query parameters which should be sent along with original
- *     API call.
- * @param block Time request process results handling block.
- *
- * @since 4.8.2
- */
-- (void)timeWithQueryParameters:(nullable NSDictionary *)queryParameters
-                     completion:(PNTimeCompletionBlock)block;
-
-#pragma mark -
-
-
-@end
-
-NS_ASSUME_NONNULL_END
-
-
-#pragma mark - Interface implementation
-
+/// **PubNub** `Time` API private extension.
 @implementation PubNub (Time)
 
 
-#pragma mark - API Builder support
+#pragma mark - Time token API builder interdace (deprecated)
 
 - (PNTimeAPICallBuilder * (^)(void))time {
-    
     PNTimeAPICallBuilder *builder = nil;
-    builder = [PNTimeAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags, 
-                                                                NSDictionary *parameters) {
-        
-        [self timeWithQueryParameters:parameters[@"queryParam"] completion:parameters[@"block"]];
+    builder = [PNTimeAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags, NSDictionary *parameters) {
+        PNTimeRequest *request = [PNTimeRequest new];
+        request.arbitraryQueryParameters = parameters[@"queryParam"];
+
+        [self timeWithRequest:request completion:parameters[@"block"]];
     }];
     
     return ^PNTimeAPICallBuilder * {
@@ -65,33 +31,35 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Time token request
 
-- (void)timeWithCompletion:(PNTimeCompletionBlock)block {
-    
-    [self timeWithQueryParameters:nil completion:block];
-}
-
-- (void)timeWithQueryParameters:(NSDictionary *)queryParameters
-                     completion:(PNTimeCompletionBlock)block {
+- (void)timeWithRequest:(PNTimeRequest *)userRequest completion:(PNTimeCompletionBlock)handlerBlock {
+    PNOperationDataParser *responseParser = [self parserWithResult:[PNTimeResult class] status:[PNErrorStatus class]];
+    PNTimeCompletionBlock block = [handlerBlock copy];
+    PNParsedRequestCompletionBlock handler;
 
     PNLogAPICall(self.logger, @"<PubNub::API> Time token request.");
 
-    PNRequestParameters *parameters = [PNRequestParameters new];
+    PNWeakify(self);
+    handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
+                PNOperationDataParseResult<PNTimeResult *, PNErrorStatus *> *result) {
+        PNStrongify(self);
 
-    [parameters addQueryParameters:queryParameters];
-
-    __weak __typeof(self) weakSelf = self;
-    [self processOperation:PNTimeOperation
-            withParameters:[PNRequestParameters new]
-           completionBlock:^(PNOperationResult *result, PNStatus *status) {
-               
-        if (status.isError) {
-            status.retryBlock = ^{
-                [weakSelf timeWithQueryParameters:queryParameters completion:block];
+        if (result.status.isError) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            result.status.retryBlock = ^{
+                [self timeWithRequest:userRequest completion:block];
             };
+#pragma clang diagnostic pop
         }
 
-        [weakSelf callBlock:block status:NO withResult:result andStatus:status];
-    }];
+        [self callBlock:block status:NO withResult:result.result andStatus:result.status];
+    };
+
+    [self performRequest:userRequest withParser:responseParser completion:handler];
+}
+
+- (void)timeWithCompletion:(PNTimeCompletionBlock)block {
+    [self timeWithRequest:[PNTimeRequest new] completion:block];
 }
 
 #pragma mark -

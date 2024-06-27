@@ -1,72 +1,15 @@
-/**
- * @author Serhii Mamontov
- * @version 4.14.0
- * @since 4.14.0
- * @copyright © 2010-2020 PubNub, Inc.
- */
-#import "NSDateFormatter+PNCacheable.h"
-#import "PNChannelMetadata+Private.h"
+#import "PNChannelMetadata.h"
+#import <PubNub/PNCodable.h>
+#import "PNBaseAppContextObject+Private.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
 
-#pragma mark Protected interface declaration
+#pragma mark Private interface declaration
 
-@interface PNChannelMetadata ()
+/// `Channel Metadata` object private extension.
+@interface PNChannelMetadata () <PNCodable>
 
-
-#pragma mark - Information
-
-/**
- * @brief Additional / complex attributes which should be stored in \c metadata associated with
- * specified \c channel.
- */
-@property (nonatomic, nullable, strong) NSDictionary *custom;
-
-/**
- * @brief Description which should be stored in \c metadata associated with specified \c channel.
- */
-@property (nonatomic, nullable, copy) NSString *information;
-
-/**
- * @brief Last \c metadata update date.
- */
-@property (nonatomic, nullable, strong) NSDate *updated;
-
-/**
- * @brief \c Channel \c metadata object version identifier.
- */
-@property (nonatomic, nullable, copy) NSString *eTag;
-
-/**
- * @brief Name which should be stored in \c metadata associated with specified \c channel.
- */
-@property (nonatomic, nullable, copy) NSString *name;
-
-/**
- * @brief \c Channel name with which \c metadata has been associated.
- */
-@property (nonatomic, copy) NSString *channel;
-
-
-#pragma mark - Initialization & Configuration
-
-/**
- * @brief Initialize \c channel \c metadata data model.
- *
- * @param channel Name of channel with which \c metadata associated.
- *
- * @return Initialized and ready to use \c channel \c metadata representation model.
- */
-- (instancetype)initWithChannel:(NSString *)channel;
-
-
-#pragma mark - Misc
-
-/**
- * @brief Translate \c channel \c metadata data model to dictionary.
- */
-- (NSDictionary *)dictionaryRepresentation;
 
 #pragma mark -
 
@@ -81,48 +24,33 @@ NS_ASSUME_NONNULL_END
 @implementation PNChannelMetadata
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Properties
 
-+ (instancetype)channelMetadataFromDictionary:(NSDictionary *)data {
-    PNChannelMetadata *metadata = [PNChannelMetadata metadataForChannel:data[@"id"]];
-    metadata.information = data[@"description"];
-    metadata.custom = data[@"custom"];
-    metadata.eTag = data[@"eTag"];
-    metadata.name = data[@"name"];
-
-    NSDateFormatter *formatter = [NSDateFormatter pn_objectsDateFormatter];
-    
-    if (data[@"updated"]) {
-        metadata.updated = [formatter dateFromString:data[@"updated"]];
-    }
-    
-    return metadata;
++ (NSDictionary<NSString *,NSString *> *)codingKeys {
+    return @{
+        @"name": @"name",
+        @"information": @"description",
+        @"status": @"status",
+        @"type": @"type",
+        @"channel": @"id",
+    };
 }
 
-+ (instancetype)metadataForChannel:(NSString *)channel {
-    return [[self alloc] initWithChannel:channel];
-}
-
-- (instancetype)initWithChannel:(NSString *)channel {
-    if ((self = [super init])) {
-        _channel = [channel copy];
-    }
-
-    return self;
++ (NSArray<NSString *> *)optionalKeys {
+    return @[@"name", @"information", @"status", @"type"];
 }
 
 
 #pragma mark - Misc
 
-- (NSDictionary *)dictionaryRepresentation {
-    NSMutableDictionary *dictionary = [@{ @"type": @"channel-metadata" } mutableCopy];
-
-    dictionary[@"information"] = self.information;
-    dictionary[@"updated"] = self.updated;
+- (NSMutableDictionary *)dictionaryRepresentation {
+    NSMutableDictionary *dictionary = [super dictionaryRepresentation];
     dictionary[@"channel"] = self.channel;
-    dictionary[@"custom"] = self.custom;
-    dictionary[@"name"] = self.name;
-    dictionary[@"eTag"] = self.eTag;
+    
+    if (self.information) dictionary[@"information"] = self.information;
+    if (self.status) dictionary[@"status"] = self.status;
+    if (self.type) dictionary[@"type"] = self.type;
+    if (self.name) dictionary[@"name"] = self.name;
 
     return dictionary;
 }

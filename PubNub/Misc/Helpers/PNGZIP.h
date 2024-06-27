@@ -3,29 +3,18 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/**
- @brief  Useful methods collection to work with data compression/uncompression.
- 
- @author Sergey Mamontov
- @since 4.0
- @copyright © 2010-2018 PubNub, Inc.
- */
+#pragma mark Interface implementation
+
+/// Useful methods collection to work with data compression/uncompression.
 @interface PNGZIP : NSObject
 
 
-///------------------------------------------------
-/// @name Compression
-///------------------------------------------------
+#pragma mark - Compression
 
-/**
- @brief      Allow to compress passed \c data.
-
- @param data Data which should be compressed with GZIP deflate algorithm.
-
- @return Compressed \a NSData instance or \c nil in case if compression error occurred.
-
- @since 4.0
- */
+/// Allow to compress passed `data`.
+///
+/// - Parameter data: Data which should be compressed with GZIP deflate algorithm.
+/// - Returns: Compressed `NSData` instance or `nil` in case if compression error occurred.
 + (nullable NSData *)GZIPDeflatedData:(NSData *)data;
 
 #pragma mark -

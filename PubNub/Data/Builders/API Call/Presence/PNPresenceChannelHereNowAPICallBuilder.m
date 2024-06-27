@@ -30,9 +30,9 @@
 
 #pragma mark - Execution
 
-- (void(^)(PNHereNowCompletionBlock block))performWithCompletion {
-    
-    return ^(PNHereNowCompletionBlock block) {
+- (void(^)(PNChannelHereNowCompletionBlock block))performWithCompletion {
+
+    return ^(PNChannelHereNowCompletionBlock block) {
         [super performWithBlock:block];
     };
 }

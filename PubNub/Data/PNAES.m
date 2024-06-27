@@ -8,11 +8,11 @@
 #import <CommonCrypto/CommonCryptor.h>
 #import <CommonCrypto/CommonHMAC.h>
 #import "PubNub+CorePrivate.h"
-#import "PNErrorCodes.h"
 #import "PNConstants.h"
 #import "PNLogMacro.h"
 #import "PNLLogger.h"
 #import "PNHelpers.h"
+#import "PNError.h"
 
 
 #pragma mark Static

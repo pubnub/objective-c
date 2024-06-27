@@ -1,56 +1,44 @@
-#import <PubNub/PNRequest.h>
+#import <PubNub/PNBaseRequest.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Interface declaration
 
-/**
- * @brief \c List \c files request.
- *
- * @author Serhii Mamontov
- * @version 4.15.0
- * @since 4.15.0
- * @copyright © 2010-2020 PubNub, Inc.
- */
-@interface PNListFilesRequest : PNRequest
+/// `List files` request.
+@interface PNListFilesRequest : PNBaseRequest
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
-/**
- * @brief Arbitrary percent encoded query parameters which should be sent along with original API call.
- */
-@property (nonatomic, nullable, strong) NSDictionary *arbitraryQueryParameters;
+/// Arbitrary percent encoded query parameters which should be sent along with original API call.
+@property(strong, nullable, nonatomic) NSDictionary *arbitraryQueryParameters;
 
-/**
- * @brief Name of channel for which list of files should be fetched.
- */
-@property (nonatomic, readonly, copy) NSString *channel;
+/// Name of channel for which list of files should be fetched.
+@property(copy, nonatomic, readonly) NSString *channel;
 
-/**
- * @brief Previously-returned cursor bookmark for fetching the next page.
- */
-@property (nonatomic, nullable, copy) NSString *next;
+/// Previously-returned cursor bookmark for fetching the next page.
+@property(copy, nullable, nonatomic) NSString *next;
 
-/**
- * @brief Number of files to return in response.
- *
- * @note Will be set to \c 100 (which is also maximum value) if not specified.
- */
-@property (nonatomic, assign) NSUInteger limit;
+/// Number of files to return in response.
+///
+/// > Note: Will be set to `100` (which is also maximum value) if not specified.
+@property(assign, nonatomic) NSUInteger limit;
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
-/**
- * @brief Create and configure \c list \c files request.
- *
- * @param channel Name of channel for which files list should be retrieved.
- *
- * @return Configured and ready to use \c list \c files request.
- */
+/// Create `List files` request.
+///
+/// - Parameter channel: Name of channel for which files list should be retrieved.
+/// - Returns: Ready to use `list files` request.
 + (instancetype)requestWithChannel:(NSString *)channel;
+
+/// Forbids request initialization.
+///
+/// - Returns: Initialized request.
+/// - Throws: Interface not available exception and requirement to use provided constructor method.
+- (instancetype)init NS_UNAVAILABLE;
 
 #pragma mark -
 

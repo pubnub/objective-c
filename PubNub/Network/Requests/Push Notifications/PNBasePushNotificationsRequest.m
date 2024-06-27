@@ -1,48 +1,40 @@
-/**
- * @author Serhii Mamontov
- * @version 4.12.0
- * @since 4.12.0
- * @copyright © 2010-2019 PubNub, Inc.
- */
-#import "PNBasePushNotificationsRequest.h"
-#import "PNRequest+Private.h"
-#import "PNErrorCodes.h"
+#import "PNBasePushNotificationsRequest+Private.h"
+#import "PNBaseRequest+Private.h"
+#import "PNFunctions.h"
 #import "PNHelpers.h"
+#import "PNError.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
 
-#pragma mark Protected interface declaration
+#pragma mark Private interface declaration
 
+/// General request for all `Push Notifications` API endpoints private extension.
 @interface PNBasePushNotificationsRequest ()
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
-/**
- * @brief OS/library-provided device push token.
- */
-@property (nonatomic, copy) id pushToken;
+/// Normalized OS / library-provided device push token.
+@property(copy, nonatomic) NSString *preparedPushToken;
 
-/**
- * @brief One of \b PNPushType fields which specify provider to manage notifications for device
- * specified with \c pushToken.
- */
-@property (nonatomic, assign) PNPushType pushType;
+/// One of **PNPushType** fields which specify provider to manage notifications for device specified with `pushToken`.
+@property(assign, nonatomic) PNPushType pushType;
+
+/// OS / library-provided device push token.
+@property(copy, nonatomic) id pushToken;
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
-/**
- * @brief Initialize \c push \c notifications API access request.
- *
- * @param pushToken Depending from passed \c pushType should be \a NSData (for \b PNAPNS2Push and
- *     \b PNAPNSPush) or \a NSString for other.
- * @param pushType One of \b PNPushType fields which specify spervide to manage notifications for
- *     device specified with \c pushToken.
- *
- * @return Initialized and ready to use \c push \c notifications API access request.
- */
+/// Initialize general `Push notifications` API access request.
+///
+/// - Parameters:
+///   - pushToken: Device token / identifier which depending from passed `pushType` should be `NSData` (for
+///   **PNAPNS2Push** and **PNAPNSPush**) or `NSString` for other.
+///   - pushType: One of **PNPushType** fields which specify service to manage notifications for device specified with
+///   `pushToken`.
+/// - Returns: Initialized `push notifications` API access request.
 - (instancetype)initWithDevicePushToken:(id)pushToken pushType:(PNPushType)pushType;
 
 #pragma mark -
@@ -58,40 +50,43 @@ NS_ASSUME_NONNULL_END
 @implementation PNBasePushNotificationsRequest
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
-- (PNRequestParameters *)requestParameters {
-    PNRequestParameters *parameters = [super requestParameters];
+- (NSString *)path {
+    NSString *path = PNStringFormat(@"/%@/push/sub-key/%@/devices%@/%@",
+                                    self.pushType != PNAPNS2Push ? @"v1" : @"v2",
+                                    self.subscribeKey, 
+                                    self.pushType != PNAPNS2Push ? @"" : @"-apns2",
+                                    self.preparedPushToken);
     
-    if (self.parametersError) {
-        return parameters;
+    if (self.operation == PNRemoveAllPushNotificationsOperation ||
+        self.operation == PNRemoveAllPushNotificationsV2Operation) {
+        return [path stringByAppendingString:@"/remove"];
     }
     
-    NSString *token = self.pushToken;
+    return path;
+}
+
+- (NSDictionary *)query {
+    NSMutableDictionary *query = [NSMutableDictionary new];
     NSString *tokenType = @"apns";
     
-    if (self.pushType == PNAPNSPush || self.pushType == PNAPNS2Push) {
-        token = [PNData HEXFromDevicePushToken:self.pushToken].lowercaseString;
-    }
-    
-    if (self.pushType == PNFCMPush) {
-        tokenType = @"gcm";
-    } else if (self.pushType == PNMPNSPush) {
-        tokenType = @"mpns";
-    }
+    if (self.pushType == PNFCMPush) tokenType = @"gcm";
+    else if (self.pushType == PNMPNSPush) tokenType = @"mpns";
     
     if (self.pushType == PNAPNS2Push) {
         NSString *environment = self.environment == PNAPNSDevelopment ? @"development" : @"production";
         NSString *topic = self.topic.length ? self.topic : NSBundle.mainBundle.bundleIdentifier;
         
-        [parameters addQueryParameter:environment forFieldName:@"environment"];
-        [parameters addQueryParameter:topic forFieldName:@"topic"];
+        query[@"environment"] = environment;
+        query[@"topic"] = topic;
     }
     
-    [parameters addPathComponent:[PNString percentEscapedString:token] forPlaceholder:@"{token}"];
-    [parameters addQueryParameter:tokenType forFieldName:@"type"];
+    query[@"type"] = tokenType;
     
-    return parameters;
+    if (self.arbitraryQueryParameters.count) [query addEntriesFromDictionary:self.arbitraryQueryParameters];
+    
+    return query;
 }
 
 
@@ -103,47 +98,12 @@ NS_ASSUME_NONNULL_END
 
 - (instancetype)initWithDevicePushToken:(id)pushToken pushType:(PNPushType)pushType {
     if ((self = [super init])) {
+        if ([pushToken isKindOfClass:[NSData class]] && (pushType == PNAPNSPush || pushType == PNAPNS2Push)) {
+            _preparedPushToken = [PNData HEXFromDevicePushToken:pushToken].lowercaseString;
+        } else _preparedPushToken = [pushToken copy];
+        
         _pushToken = [pushToken copy];
         _pushType = pushType;
-        
-        NSDictionary *errorInformation = nil;
-        
-        if (!pushToken ||
-            ([pushToken isKindOfClass:[NSData class]] && !((NSData *)pushToken).length) ||
-            ([pushToken isKindOfClass:[NSString class]] && !((NSString *)pushToken).length)) {
-            
-            errorInformation = @{
-                NSLocalizedDescriptionKey: @"Push Notifications API access request configuration error",
-                NSLocalizedFailureReasonErrorKey: @"Device token / identifier is missing or empty"
-            };
-        } else if ((pushType == PNAPNSPush || pushType == PNAPNS2Push) &&
-                   ![pushToken isKindOfClass:[NSData class]]) {
-            NSString *serviceName = pushType == PNAPNSPush ? @"APNS" : @"APNS over HTTP/2";
-            
-            errorInformation = @{
-                NSLocalizedDescriptionKey: @"Push Notifications API access request configuration error",
-                NSLocalizedFailureReasonErrorKey: [NSString stringWithFormat:@"%@ expects device "
-                                                   "token / identifier to be instance of NSData, "
-                                                   "but got: %@",
-                                                   serviceName,
-                                                   NSStringFromClass([pushToken class])]
-            };
-        } else if (pushType != PNAPNSPush && pushType != PNAPNS2Push &&
-                   ![pushToken isKindOfClass:[NSString class]]) {
-            errorInformation = @{
-                NSLocalizedDescriptionKey: @"Push Notifications API access request configuration error",
-                NSLocalizedFailureReasonErrorKey: [NSString stringWithFormat:@"FCM / GCM / MPNS expects "
-                                                   "device token / identifier to be instance of "
-                                                   "NSString, but got: %@",
-                                                   NSStringFromClass([pushToken class])]
-            };
-        }
-        
-        if (errorInformation) {
-            self.parametersError = [NSError errorWithDomain:kPNAPIErrorDomain
-                                                       code:kPNAPIUnacceptableParameters
-                                                   userInfo:errorInformation];
-        }
     }
     
     return self;
@@ -151,6 +111,50 @@ NS_ASSUME_NONNULL_END
 
 - (instancetype)init {
     [self throwUnavailableInitInterface];
+    
+    return nil;
+}
+
+
+#pragma mark - Prepare
+
+- (PNError *)validate {
+    NSDictionary *userInfo = nil;
+    
+    if (!self.pushToken ||
+        ([self.pushToken isKindOfClass:[NSData class]] && !((NSData *)self.pushToken).length) ||
+        ([self.pushToken isKindOfClass:[NSString class]] && !((NSString *)self.pushToken).length)) {
+        
+        userInfo = @{
+            NSLocalizedDescriptionKey: @"Push Notifications API access request configuration error",
+            NSLocalizedFailureReasonErrorKey: @"Device token / identifier is missing or empty"
+        };
+    } else if ((self.pushType == PNAPNSPush || self.pushType == PNAPNS2Push) &&
+               ![self.pushToken isKindOfClass:[NSData class]]) {
+        NSString *serviceName = self.pushType == PNAPNSPush ? @"APNS" : @"APNS over HTTP/2";
+        
+        userInfo = @{
+            NSLocalizedDescriptionKey: @"Push Notifications API access request configuration error",
+            NSLocalizedFailureReasonErrorKey: [NSString stringWithFormat:@"%@ expects device "
+                                               "token / identifier to be instance of NSData, "
+                                               "but got: %@",
+                                               serviceName,
+                                               NSStringFromClass([self.pushToken class])]
+        };
+    } else if (self.pushType != PNAPNSPush && self.pushType != PNAPNS2Push &&
+               ![self.pushToken isKindOfClass:[NSString class]]) {
+        userInfo = @{
+            NSLocalizedDescriptionKey: @"Push Notifications API access request configuration error",
+            NSLocalizedFailureReasonErrorKey: [NSString stringWithFormat:@"FCM / GCM / MPNS expects "
+                                               "device token / identifier to be instance of "
+                                               "NSString, but got: %@",
+                                               NSStringFromClass([self.pushToken class])]
+        };
+    }
+    
+    if (userInfo) {
+        return [PNError errorWithDomain:PNAPIErrorDomain code:PNAPIErrorUnacceptableParameters userInfo:userInfo];
+    }
     
     return nil;
 }

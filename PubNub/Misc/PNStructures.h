@@ -12,12 +12,15 @@
 
 #pragma mark Class forward
 
+
+@class PNChannelGroupChannelsData, PNPresenceHereNowResult, PNPresenceStateFetchResult;
+
 @class PNPresenceChannelGroupHereNowResult, PNChannelGroupClientStateResult;
 @class PNPresenceChannelHereNowResult, PNPresenceGlobalHereNowResult, PNAPNSEnabledChannelsResult;
 @class PNChannelGroupChannelsResult, PNPresenceWhereNowResult, PNChannelClientStateResult;
 @class PNClientStateGetResult, PNClientStateUpdateStatus, PNAcknowledgmentStatus;
-@class PNChannelGroupsResult, PNMessageCountResult, PNHistoryResult, PNAPICallBuilder;
-@class PNPublishStatus, PNSignalStatus, PNErrorStatus, PNTimeResult, PNOperationResult, PNStatus;
+@class PNMessageCountResult, PNHistoryResult, PNAPICallBuilder;
+@class PNPublishStatus, PNSignalStatus, PNErrorStatus, PNStatus, PNTimeResult, PNOperationResult;
 @class PNSetUUIDMetadataStatus, PNFetchUUIDMetadataResult, PNFetchAllUUIDMetadataResult;
 @class PNSetChannelMetadataStatus, PNFetchChannelMetadataResult, PNFetchAllChannelsMetadataResult;
 @class PNManageMembershipsStatus, PNFetchMembershipsResult, PNManageChannelMembersStatus, PNFetchChannelMembersResult;
@@ -83,15 +86,6 @@ typedef void(^PNPushNotificationsStateAuditCompletionBlock)(PNAPNSEnabledChannel
 
 
 #pragma mark - Completion blocks :: Stream
-
-/**
- * @brief Channel groups list audition completion block.
- *
- * @param result Result object which describe service response on audition request.
- * @param status Status instance which hold information about processing results.
- */
-typedef void(^PNGroupAuditCompletionBlock)(PNChannelGroupsResult * _Nullable result, 
-                                           PNErrorStatus * _Nullable status);
 
 /**
  * @brief Channel group channels list audition completion block.
@@ -323,14 +317,22 @@ typedef void(^PNDeleteFileCompletionBlock)(PNAcknowledgmentStatus *status);
 
 #pragma mark - Completion blocks :: Presence
 
+/// Here now completion block.
+///
+/// - Parameters:
+///   - result: Result object which describe service response on here now request.
+///   - status: Status instance which hold information about processing results.
+typedef void(^PNHereNowCompletionBlock)(PNPresenceHereNowResult * _Nullable result,
+                                        PNErrorStatus * _Nullable status);
+
 /**
  * @brief Here now completion block.
  *
  * @param result Result object which describe service response on here now request.
  * @param status Status instance which hold information about processing results.
  */
-typedef void(^PNHereNowCompletionBlock)(PNPresenceChannelHereNowResult * _Nullable result,
-                                        PNErrorStatus * _Nullable status);
+typedef void(^PNChannelHereNowCompletionBlock)(PNPresenceChannelHereNowResult * _Nullable result,
+                                               PNErrorStatus * _Nullable status);
 
 /**
  * @brief Global here now completion block.
@@ -394,6 +396,14 @@ typedef void(^PNMessageSizeCalculationCompletionBlock)(NSInteger size);
  * @param status Status instance which hold information about processing results.
  */
 typedef void(^PNSetStateCompletionBlock)(PNClientStateUpdateStatus *status);
+
+/// Associated state fetch completion block.
+///
+/// - Parameters:
+///   - result: Fetch associated presence state request processing result.
+///   - status: Fetch associated presence state request error.
+typedef void(^PNPresenceStateFetchCompletionBlock)(PNPresenceStateFetchResult * _Nullable result,
+                                                   PNErrorStatus * _Nullable status);
 
 /**
  * @brief Channels / channel groups channels state audition completion block.
@@ -522,146 +532,84 @@ typedef NS_ENUM(NSUInteger, PNAPNSEnvironment) {
 
 #pragma mark - Objects API options and enums
 
-/**
- * @brief Options with possible additional \c channel / \c membership fields which can be included
- * to response.
- *
- * @since 4.14.0
- */
+/// Options with possible additional `channel` / `membership` fields which can be included to response.
 typedef NS_OPTIONS(NSUInteger, PNMembershipFields) {
-    /**
-     * @brief Include how many memberships \c UUID has.
-     */
+    /// Include how many memberships `UUID` has.
     PNMembershipsTotalCountField = 1 << 4,
-    /**
-     * @brief Include field with additional information from \c metadata which has been associated
-     * with \c UUID during \c membership \c set requests.
-     */
+
+    /// Include field with additional information from `metadata` which has been associated with `UUID` during
+    /// `membership set` requests.
     PNMembershipCustomField = 1 << 5,
-    /**
-     * @brief Include \c channel's \c metadata into response (not only name).
-     */
+    
+    /// Include `channel`'s  `metadata` into response (not only name).
     PNMembershipChannelField = 1 << 6,
-    /**
-     * @brief Include \c channel's additional information which has been used during \c channel
-     * \c metadata \c set requests.
-     */
+    
+    /// Include `channel`'s additional information which has been used during `channel` `metadata set` requests.
     PNMembershipChannelCustomField = 1 << 7
 };
 
-/**
- * @brief Options with possible additional \c UUID / \c member fields which can be included to
- * response.
- *
- * @since 4.14.0
- */
+/// Options with possible additional `UUID` / `member` fields which can be included to response.
 typedef NS_OPTIONS(NSUInteger, PNChannelMemberFields) {
-    /**
-     * @brief Include how many members \c channel has.
-     */
+    /// Include how many members `channel` has.
     PNChannelMembersTotalCountField = 1 << 8,
-    /**
-     * @brief Include field with additional information from \c metadata which has been associated
-     * with \c UUID during \c channel \c member \c set requests.
-     */
+
+    /// Include field with additional information from `metadata` which has been associated with `UUID` during `channel
+    /// member set` requests.
     PNChannelMemberCustomField = 1 << 9,
-    /**
-     * @brief Include \c UUID's \c metadata into response (not only identifier).
-     */
+
+    /// Include `UUID`'s `metadata` into response (not only identifier).
     PNChannelMemberUUIDField = 1 << 10,
-    /**
-     * @brief Include \c UUID's additional information which has been used during \c UUID
-     * \c metadata \c set requests.
-     */
+    
+    /// Include `UUID`'s additional information which has been used during `UUID metadata set` requests.
     PNChannelMemberUUIDCustomField = 1 << 11
 };
 
-/**
- * @brief Options with possible additional \c channel fields which can be included to response.
- *
- * @since 4.14.0
- */
+/// Options with possible additional `channel` fields which can be included to response.
 typedef NS_OPTIONS(NSUInteger, PNChannelFields) {
-    /**
-     * @brief Include how many \c channels has been associated with \c metadata.
-     */
+    /// Include how many `channels` has been associated with `metadata`.
     PNChannelTotalCountField = 1 << 0,
-    /**
-     * @brief Include field with additional information from \c metadata which has been used during
-     * \c channel \c metadata \c set requests.
-     */
+    
+    /// Include field with additional information from `metadata` which has been used during `channel metadata set`
+    /// requests.
     PNChannelCustomField = 1 << 1
 };
 
-/**
- * @brief Options with possible additional \c UUID fields which can be included to response.
- *
- * @since 4.14.0
- */
+/// Options with possible additional `UUID` fields which can be included to response.
 typedef NS_OPTIONS(NSUInteger, PNUUIDFields) {
-    /**
-     * @brief Include how many \c UUID has been associated with \c metadata.
-     */
+    /// Include how many `UUID` has been associated with `metadata`.
     PNUUIDTotalCountField = 1 << 2,
-    /**
-     * @brief Include field with additional information from \c metadata which has been used during
-     * \c UUID \c metadata \c set requests.
-     */
+    
+    /// Include field with additional information from `metadata` which has been used during `UUID metadata set`
+    /// requests.
     PNUUIDCustomField = 1 << 3
 };
 
-/**
- * @brief Options describe possible heartbeat states on which delegate can be notified.
- *
- * @since 4.2.7
- */
+/// Options describe possible heartbeat states on which delegate can be notified.
 typedef NS_OPTIONS(NSUInteger, PNHeartbeatNotificationOptions) {
-    
-    /**
-     * @brief Delegate will be notified every time when heartbeat request will be successfully
-     * processed.
-     */
+    /// Delegate will be notified every time when heartbeat request will be successfully processed.
     PNHeartbeatNotifySuccess = (1 << 0),
     
-    /**
-     * @brief Delegate will be notified every time when heartbeat request processing will fail.
-     */
+    /// Delegate will be notified every time when heartbeat request processing will fail.
     PNHeartbeatNotifyFailure = (1 << 1),
     
-    /**
-     * @brief Delegate will be notified every time when heartbeat request processing will be
-     * successful or fail.
-     */
+    /// Delegate will be notified every time when heartbeat request processing will be successful or fail.
     PNHeartbeatNotifyAll = (PNHeartbeatNotifySuccess | PNHeartbeatNotifyFailure),
     
-    /**
-     * @brief Delegate won't be notified about ant heartbeat request processing results.
-     */
+    /// Delegate won't be notified about ant heartbeat request processing results.
     PNHeartbeatNotifyNone = (1 << 2)
 };
 
-/**
- * @brief Enum which specify possible actions on objects.
- *
- * @discussion These fields allow to identify what kind of action has been performed on target
- * object.
- *
- * @since 4.10.0
- */
+/// Enum which specify possible actions on objects.
+///
+/// These fields allow to identify what kind of action has been performed on target object.
 typedef NS_ENUM(NSUInteger, PNObjectActionType) {
-    /**
-     * @brief New object entity has been created.
-     */
+    /// New object entity has been created.
     PNCreateObjectAction,
     
-    /**
-     * @brief Object base or additional (custom field / membership) information has been modified.
-     */
+    /// Object base or additional (custom field / membership) information has been modified.
     PNUpdateObjectAction,
     
-    /**
-     * @brief Object entity has been deleted.
-     */
+    /// Object entity has been deleted.
     PNDeleteObjectAction,
 };
 
@@ -696,28 +644,16 @@ typedef NS_OPTIONS(NSUInteger, PNLogLevel){
      */
     PNRequestLogLevel = (1 << 3),
     
-#if PN_URLSESSION_TRANSACTION_METRICS_AVAILABLE
-    /**
-     * @brief \b PNLog level which allow to print out all API call requests' metrics.
-     *
-     * @discussion Starting from macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0) it is possible
-     * to gather metrics information about each request processed.
-     *
-     * @since 4.5.13
-     */
-    PNRequestMetricsLogLevel = (1 << 4),
-#endif
-    
     /**
      * @brief \b PNLog level which allow to print out API execution results.
      */
-    PNResultLogLevel = (1 << 5),
+    PNResultLogLevel = (1 << 4),
     
     /**
      * @brief \b PNLog level which allow to print out client state change status information and
      * API request processing errors.
      */
-    PNStatusLogLevel = (1 << 6),
+    PNStatusLogLevel = (1 << 5),
     
     /**
      * @brief \b PNLog level which allow to print out every failure status information.
@@ -725,7 +661,7 @@ typedef NS_OPTIONS(NSUInteger, PNLogLevel){
      * @discussion Every API call may fail and this option allow to print out information about
      * processing status and current client state.
      */
-    PNFailureStatusLogLevel = (1 << 7),
+    PNFailureStatusLogLevel = (1 << 6),
     
     /**
      * @brief \b PNLog level which allow to print out all API calls with passed parameters.
@@ -733,20 +669,17 @@ typedef NS_OPTIONS(NSUInteger, PNLogLevel){
      * @discussion This log level allow with debug to find out when API has been called and what
      * parameters should be passed.
      */
-    PNAPICallLogLevel = (1 << 8),
+    PNAPICallLogLevel = (1 << 7),
     
     /**
      * @brief \b PNLog level which allow to print out all AES errors.
      */
-    PNAESErrorLogLevel = (1 << 9),
+    PNAESErrorLogLevel = (1 << 8),
     
     /**
      * @brief Log every message from \b PubNub client.
      */
     PNVerboseLogLevel = (PNInfoLogLevel|PNReachabilityLogLevel|PNRequestLogLevel|
-#if PN_URLSESSION_TRANSACTION_METRICS_AVAILABLE
-                         PNRequestMetricsLogLevel|
-#endif
                          PNResultLogLevel|PNStatusLogLevel|PNFailureStatusLogLevel|PNAPICallLogLevel|
                          PNAESErrorLogLevel)
 };
@@ -865,6 +798,13 @@ typedef NS_ENUM(NSInteger, PNStatusCategory) {
      * @discussion Some API endpoints respond with request processing status w/o useful data.
      */
     PNAcknowledgmentCategory,
+
+    /**
+     * @brief \b PubNub resource not found.
+     *
+     * @discussion Requested resource / endpoint doesn't exists.
+     */
+    PNResourceNotFoundCategory,
 
     /**
      * @brief \b PubNub Access Manager forbidden access to particular API.

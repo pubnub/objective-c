@@ -134,7 +134,7 @@
       "url" : "https:\/\/ps.pndsn.com\/v2\/objects\/demo\/uuids\/test-uuid?uuid=Serhii&include=custom&pnsdk=PubNub-ObjC-iOS\/4.x.x",
       "headers" : {
         "Access-Control-Allow-Credentials" : "true",
-        "Content-Type" : "application\/json",
+        "Content-Type" : "text\/html",
         "Access-Control-Allow-Origin" : "*",
         "Vary" : "Accept-Encoding",
         "Transfer-Encoding" : "Identity",

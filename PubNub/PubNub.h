@@ -1,49 +1,33 @@
 #ifndef PubNub_h
 #define PubNub_h
 
-// Protocols
-#import "PNEventsListener.h"
+
+#pragma mark - Categories
 
 // Categories
 #import "NSURLSessionConfiguration+PNConfiguration.h"
 
-// Data objects
-#import "PNPresenceChannelGroupHereNowResult.h"
-#import "PNChannelGroupClientStateResult.h"
-#import "PNPresenceChannelHereNowResult.h"
-#import "PNPresenceGlobalHereNowResult.h"
-#import "PNFetchChannelsMetadataResult.h"
-#import "PNChannelGroupChannelsResult.h"
-#import "PNFetchMessageActionsResult.h"
-#import "PNAPNSEnabledChannelsResult.h"
-#import "PNSetChannelMetadataStatus.h"
-#import "PNChannelClientStateResult.h"
-#import "PNManageMembershipsStatus.h"
-#import "PNClientStateUpdateStatus.h"
-#import "PNFetchUUIDMetadataResult.h"
-#import "PNPresenceWhereNowResult.h"
-#import "PNAddMessageActionStatus.h"
-#import "PNAcknowledgmentStatus.h"
-#import "PNClientStateGetResult.h"
-#import "PNChannelGroupsResult.h"
-#import "PNMessageCountResult.h"
-#import "PNClientInformation.h"
-#import "PNSubscriberResults.h"
-#import "PNSubscribeStatus.h"
-#import "PNOperationResult.h"
-#import "PNPublishStatus.h"
-#import "PNHistoryResult.h"
-#import "PNSignalStatus.h"
-#import "PNServiceData.h"
-#import "PNErrorStatus.h"
-#import "PNTimeResult.h"
-#import "PNKeychain.h"
-#import "PNPAMToken.h"
-#import "PNResult.h"
-#import "PNStatus.h"
+
+#pragma mark - Data types
 
 #import "PNRequestRetryConfiguration.h"
 #import "PNConfiguration.h"
+#import "PNFunctions.h"
+#import "PNLock.h"
+
+
+#pragma mark - Base modules
+
+#import "PNJSONSerialization.h"
+#import "PNJSONCoder.h"
+
+
+#pragma mark - Transport module
+
+#import "PNTransportConfiguration.h"
+#import "PNBaseOperationData.h"
+#import "PNBaseRequest.h"
+
 
 #pragma mark - Cryptor module
 
@@ -62,6 +46,21 @@
 #import "PNCryptoModule.h"
 
 
+#pragma mark - Shared protocols
+
+#import "PNTransportResponse.h"
+#import "PNObjectSerializer.h"
+#import "PNTransportRequest.h"
+#import "PNEventsListener.h"
+#import "PNJSONSerializer.h"
+#import "PNCryptoProvider.h"
+#import "PNTransport.h"
+#import "PNCryptor.h"
+#import "PNEncoder.h"
+#import "PNDecoder.h"
+#import "PNCodable.h"
+
+
 #pragma mark - API
 
 #import "PubNub+Core.h"
@@ -74,12 +73,17 @@
 #import "PubNub+Objects.h"
 #import "PubNub+Files.h"
 #import "PubNub+State.h"
-#import "PNErrorCodes.h"
 #import "PNStructures.h"
 #import "PubNub+APNS.h"
 #import "PubNub+Time.h"
 #import "PubNub+PAM.h"
 #import "PNLLogger.h"
+#import "PNError.h"
 #import "PNAES.h"
+
+
+#pragma mark - Errors
+
+#import "PNError.h"
 
 #endif

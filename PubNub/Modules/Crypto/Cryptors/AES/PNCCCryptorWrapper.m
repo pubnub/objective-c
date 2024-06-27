@@ -1,7 +1,7 @@
 #import "PNCCCryptorWrapper.h"
 #import <CommonCrypto/CommonCryptor.h>
 #import <CommonCrypto/CommonHMAC.h>
-#import "PNErrorCodes.h"
+#import "PNError.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -181,36 +181,36 @@ NS_ASSUME_NONNULL_END
 }
 
 + (NSError *)errorFromCryptorStatus:(CCCryptorStatus)status andOperation:(CCOperation)operation {
-    NSInteger errorCode = kPNUnknownErrorCode;
+    NSInteger errorCode = PNErrorUnknown;
     NSString *description = @"Unknown error";
     
     switch (status) {
         case kCCParamError:
         case kCCAlignmentError:
             description = @"Illegal parameter value has been used with AES configuration.";
-            errorCode = kPNCryptorConfigurationError;
+            errorCode = PNCryptorErrorConfiguration;
             break;
         case kCCBufferTooSmall:
         case kCCMemoryFailure:
             description = @"Unable to allocate required amount of memory to process data.";
-            errorCode = kPNCryptorInsufficientMemoryError;
+            errorCode = PNCryptorErrorInsufficientMemory;
             break;
         case kCCKeySizeError:
         case kCCInvalidKey:
             description = @"Unacceptable cipher key has been provided.";
-            errorCode = kPNCryptorConfigurationError;
+            errorCode = PNCryptorErrorConfiguration;
             break;
         case kCCDecodeError:
         case kCCOverflow:
         case kCCRNGFailure:
             description = @"Provided data can't be processed.";
-            errorCode = operation == kCCEncrypt ? kPNCryptorEncryptionError : kPNCryptorDecryptionError;
+            errorCode = operation == kCCEncrypt ? PNCryptorErrorEncryption : PNCryptorErrorDecryption;
             break;
         default:
             break;
     }
     
-    return [NSError errorWithDomain:kPNCryptorErrorDomain
+    return [NSError errorWithDomain:PNCryptorErrorDomain
                                code:errorCode
                            userInfo:@{ NSLocalizedDescriptionKey: description }];
 }

@@ -1,22 +1,18 @@
-/**
- * @author Serhii Mamontov
- * @version 4.14.1
- * @since 4.14.1
- * @copyright © 2010-2020 PubNub, Inc.
- */
-#import "PNBaseObjectsRequest+Private.h"
 #import "PNFetchChannelMembersRequest.h"
-#import "PNRequest+Private.h"
+#import "PNBaseObjectsRequest+Private.h"
+#import "PNBaseRequest+Private.h"
+#import "PNTransportRequest.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
 
-#pragma mark Protected interface declaration
+#pragma mark Private interface declaration
 
+/// `Fetch channel's members` request private extension.
 @interface PNFetchChannelMembersRequest ()
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
 /**
  * @brief Initialize \c fetch \c channel's members request.
@@ -40,7 +36,7 @@ NS_ASSUME_NONNULL_END
 @implementation PNFetchChannelMembersRequest
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
 @dynamic includeFields;
 
@@ -50,7 +46,7 @@ NS_ASSUME_NONNULL_END
 }
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
 + (instancetype)requestWithChannel:(NSString *)channel {
     return [[self alloc] initWithChannel:channel];

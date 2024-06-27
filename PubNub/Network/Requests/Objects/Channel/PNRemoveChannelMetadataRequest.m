@@ -1,12 +1,7 @@
-/**
- * @author Serhii Mamontov
- * @version 4.14.0
- * @since 4.14.0
- * @copyright © 2010-2020 PubNub, Inc.
- */
-#import "PNBaseObjectsRequest+Private.h"
 #import "PNRemoveChannelMetadataRequest.h"
-#import "PNRequest+Private.h"
+#import "PNBaseObjectsRequest+Private.h"
+#import "PNBaseRequest+Private.h"
+#import "PNTransportRequest.h"
 
 
 #pragma mark Interface implementation
@@ -14,18 +9,18 @@
 @implementation PNRemoveChannelMetadataRequest
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
 - (PNOperationType)operation {
     return PNRemoveChannelMetadataOperation;
 }
 
-- (NSString *)httpMethod {
-    return @"DELETE";
+- (TransportMethod)httpMethod {
+    return TransportDELETEMethod;
 }
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
 + (instancetype)requestWithChannel:(NSString *)channel {
     return [[self alloc] initWithObject:@"Channel" identifier:channel];

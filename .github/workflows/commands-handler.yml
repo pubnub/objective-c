@@ -35,6 +35,10 @@ jobs:
           ref: v1
           token: ${{ secrets.GH_TOKEN }}
           path: .github/.release/actions
+      - name: Setup Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
       - name: Process changelog entries
         if: steps.user-check.outputs.expected-user == 'true'
         uses: ./.github/.release/actions/actions/commands

@@ -45,7 +45,7 @@ store_public_header() {
 # Function allow to retrieve list of headers which has been imported in file 
 # and add them to public list of headers
 gather_imported_headers_in_file() {
-	regex="import \"(.*)\""
+	regex="import <PubNub\/(.*)>"
 	while IFS='' read -r line; do
 		[[ -z "$line" || ! "$line" =~ $regex ]] && continue
 		imported_header_path="$(path_for_file "${BASH_REMATCH[1]}")"

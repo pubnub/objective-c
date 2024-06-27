@@ -5,64 +5,44 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Interface declaration
 
-/**
- * @brief \c Manage \c UUID's memberships request.
- *
- * @author Serhii Mamontov
- * @version 4.14.0
- * @since 4.14.0
- * @copyright © 2010-2020 PubNub, Inc.
- */
+/// `Manage UUID's memberships` request.
 @interface PNManageMembershipsRequest : PNBaseObjectsMembershipRequest
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
-/**
- * @brief List of \c channels within which \c UUID should be \c set as \c member.
- *
- * @discussion With this specified, request will set \c UUID's membership in specified list of
- * \c channels and associate \c metadata with \c UUID in context of specified \c channel
- * (if \c custom field is set).
- *
- * @note Each entry is dictionary with \c channel and \b optional \c custom fields. \c custom should
- * be dictionary with simple objects: \a NSString and \a NSNumber.
- */
-@property (nonatomic, nullable, strong) NSArray<NSDictionary *> *setChannels;
+/// List of `channels` within which `UUID` should be `set` as `member`.
+///
+/// With this specified, request will set `UUID's` membership in specified list of channels and associate `metadata`
+/// with `UUID` in context of specified `channel` (if `custom` field is set).
+///
+/// > Note: Each entry is dictionary with `channel` and **optional** `custom` fields. `custom` should be dictionary with
+/// simple objects: `NSString` and `NSNumber`.
+@property(strong, nullable, nonatomic) NSArray<NSDictionary *> *setChannels;
 
-/**
- * @brief List of \c channels from which \c UUID should be removed as \c member.
- */
-@property (nonatomic, nullable, strong) NSArray<NSString *> *removeChannels;
+/// List of `channels` from which `UUID` should be removed as `member`.
+@property(strong, nullable, nonatomic) NSArray<NSString *> *removeChannels;
 
-/**
- * @brief Bitfield set to fields which should be returned with response.
- *
- * @note Supported keys specified in \b PNMembershipFields enum.
- * @note Default value (\B PNMembershipsTotalCountField) can be reset by setting 0.
- */
-@property (nonatomic, assign) PNMembershipFields includeFields;
+/// Bitfield set to fields which should be returned with response.
+///
+/// > Note: Supported keys specified in **PNMembershipFields** enum.
+/// > Note:  Default value (**PNMembershipsTotalCountField**) can be reset by setting 0.
+@property(assign, nonatomic) PNMembershipFields includeFields;
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
-/**
- * @brief Create and configure \c manage \c UUID's memberships request.
- *
- * @param uuid Identifier for which memberships should be managed.
- * Will be set to current \b PubNub configuration \c uuid if \a nil is set.
- *
- * @return Configured and ready to use \c manage \c UUID's memberships request.
- */
+/// Create `Manage UUID's memberships` request.
+///
+/// - Parameter uuid: Identifier for which memberships should be managed. Will be set to current **PubNub**
+/// configuration `uuid` if `nil` is set.
+/// - Returns: Ready to use `manage UUID's memberships` request.
 + (instancetype)requestWithUUID:(nullable NSString *)uuid;
 
-/**
- * @brief Forbids request initialization.
- *
- * @throws Interface not available exception and requirement to use provided constructor method.
- *
- * @return Initialized request.
- */
+/// Forbids request initialization.
+///
+/// - Returns: Initialized request.
+/// - Throws: Interface not available exception and requirement to use provided constructor method.
 - (instancetype)init NS_UNAVAILABLE;
 
 #pragma mark -

@@ -50,6 +50,7 @@ NS_ASSUME_NONNULL_END
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-retain-cycles"
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
 
 #pragma mark - Setup / Tear down
@@ -326,9 +327,7 @@ NS_ASSUME_NONNULL_END
 
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self addObjectHandlerForClient:client2
-                              withBlock:^(PubNub *client, PNObjectEventResult *event, BOOL *remove) {
-            
+        [self addObjectHandlerForClient:client2 withBlock:^(PubNub *client, PNObjectEventResult *event, BOOL *remove) {
             XCTAssertEqualObjects(event.data.event, @"set");
             XCTAssertEqualObjects(event.data.type, @"membership");
             XCTAssertNotNil(event.data.membership.updated);
@@ -554,7 +553,7 @@ NS_ASSUME_NONNULL_END
 - (void)testItShouldSetMembersUsingManageAndReturnSortedMembersInformationWhenSortIsSet {
     NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:1 usingClient:nil];
     NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:4 usingClient:nil];
-    NSString *expectedSort = @"uuid.name%3Adesc,updated";
+    NSString *expectedSort = @"uuid.name%3Adesc%2Cupdated";
     NSArray<NSDictionary *> *membershipCustom = @[
         @{ @"uuid-member-custom": [@[uuidsMetadata[0].uuid, @"custom", @"data", @"1"] componentsJoinedByString:@"-"] },
         @{ @"uuid-member-custom": [@[uuidsMetadata[1].uuid, @"custom", @"data", @"2"] componentsJoinedByString:@"-"] }
@@ -767,7 +766,7 @@ NS_ASSUME_NONNULL_END
  *  'ItShouldRemoveMembersAndReceiveStatusWithExpectedOperationAndCategory.json' should
  *  be modified after cassette recording. Find first mention of member remove and copy paste
  *  4 entries which belong to it. For new entries change 'id' field to be different from source. For
- *  original response entry change status code to 404.
+ *  original response entry `Content-Type` code to `text/html`.
  */
 - (void)testItShouldRemoveMembersAndReceiveStatusWithExpectedOperationAndCategory {
     if ([self shouldSkipTestWithManuallyModifiedMockedResponse]) {
@@ -895,7 +894,7 @@ NS_ASSUME_NONNULL_END
 - (void)testItShouldRemoveMembersAndReturnSortedMembersInformationWhenSortIsSet {
     NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:1 usingClient:nil];
     NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:5 usingClient:nil];
-    NSString *expectedSort = @"uuid.name%3Adesc,updated";
+    NSString *expectedSort = @"uuid.name%3Adesc%2Cupdated";
 
     NSMutableArray<PNChannelMember *> *members = [[self addMembers:[uuidsMetadata valueForKey:@"uuid"]
                                                  toChannels:[channelsMetadata valueForKey:@"channel"]
@@ -1075,7 +1074,7 @@ NS_ASSUME_NONNULL_END
  *  'ItShouldRemoveMembersUsingManageAndReceiveStatusWithExpectedOperationAndCategory.json' should
  *  be modified after cassette recording. Find first mention of member remove and copy paste
  *  4 entries which belong to it. For new entries change 'id' field to be different from source. For
- *  original response entry change status code to 404.
+ *  original response entry change `Content-Type` to `text/html`.
  */
 - (void)testItShouldRemoveMembersUsingManageAndReceiveStatusWithExpectedOperationAndCategory {
     if ([self shouldSkipTestWithManuallyModifiedMockedResponse]) {
@@ -1203,7 +1202,7 @@ NS_ASSUME_NONNULL_END
 - (void)testItShouldRemoveMembersUsingManageAndReturnSortedMembersInformationWhenSortIsSet {
     NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:1 usingClient:nil];
     NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:5 usingClient:nil];
-    NSString *expectedSort = @"uuid.name%3Adesc,updated";
+    NSString *expectedSort = @"uuid.name%3Adesc%2Cupdated";
 
     NSMutableArray<PNChannelMember *> *members = [[self addMembers:[uuidsMetadata valueForKey:@"uuid"]
                                                  toChannels:[channelsMetadata valueForKey:@"channel"]
@@ -1383,7 +1382,7 @@ NS_ASSUME_NONNULL_END
  *  'ItShouldFetchMembersAndReceiveResultWithExpectedOperation.json' should
  *  be modified after cassette recording. Find first mention of members fetch and copy paste
  *  4 entries which belong to it. For new entries change 'id' field to be different from source. For
- *  original response entry change status code to 404.
+ *  original response entry change `Content-Type` to `text/html`.
  */
 - (void)testItShouldFetchMembersAndReceiveResultWithExpectedOperation {
     if ([self shouldSkipTestWithManuallyModifiedMockedResponse]) {
@@ -1472,7 +1471,7 @@ NS_ASSUME_NONNULL_END
 - (void)testItShouldFetchOrderedMembersWhenOrderIsSet {
     NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:1 usingClient:nil];
     NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:6 usingClient:nil];
-    NSString *expectedSort = @"uuid.name%3Adesc,updated";
+    NSString *expectedSort = @"uuid.name%3Adesc%2Cupdated";
 
     NSArray<PNChannelMember *> *members = [self addMembers:[uuidsMetadata valueForKey:@"uuid"]
                                          toChannels:[channelsMetadata valueForKey:@"channel"]

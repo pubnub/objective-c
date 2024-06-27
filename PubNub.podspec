@@ -9,7 +9,7 @@
 
 Pod::Spec.new do |spec|
     spec.name     = 'PubNub'
-    spec.version  = '5.5.0'
+    spec.version  = '5.6.0'
     spec.summary  = 'The PubNub Real-Time Network. Build real-time apps quickly and scale them globally.'
     spec.homepage = 'https://github.com/pubnub/objective-c'
 
@@ -31,23 +31,30 @@ Pod::Spec.new do |spec|
     spec.resource_bundles = { "PubNub" => ["Framework/PubNub/PrivacyInfo.xcprivacy"]}
 
     spec.subspec 'Core' do |core|
-        core.source_files = 'PubNub/{Core,Data,Modules,Misc,Network}/**/*', 'PubNub/PubNub.h'
+        core.source_files = 'PubNub/{Core,Data,Modules,Misc,Network,Protocols}/**/*', 'PubNub/PubNub.h'
         core.private_header_files = [
             'PubNub/**/*Private.h',
-            'PubNub/Data/{PNEnvelopeInformation}.h',
+            'PubNub/PubNub+Deprecated.h',
+            'PubNub/Data/PNEnvelopeInformation.h',
             'PubNub/Data/Managers/**/*.h',
             'PubNub/Data/Models/PNXML.h',
-            'PubNub/Data/Service Objects/PNGenerateFileUploadURLStatus.h',
+            'PubNub/Data/Service Objects/File Sharing/PNGenerateFileUploadURLStatus.h',
+            'PubNub/Data/Transport/{PNTransportMiddleware.h,PNTransportMiddlewareConfiguration.h}',
             'PubNub/Misc/{PNConstants,PNPrivateStructures}.h',
             'PubNub/Misc/Helpers/{PNArray,PNChannel,PNData,PNDate,PNDictionary,PNGZIP,PNHelpers,PNJSON,PNLockSupport,PNNumber,PNString,PNURLRequest}.h',
             'PubNub/Misc/Logger/PNLogMacro.h',
             'PubNub/Misc/Logger/Data/*.h',
             'PubNub/Misc/Protocols/{PNKeyValueStorageProtocol,PNParser}.h',
+            "PubNub/Modules/Transport/{PNURLSessionTransportResponse,PNURLSessionTransport}.h",
+            "PubNub/Modules/Serializer/Object/{Categories,Models}/*.h",
+            "PubNub/Modules/Serializer/Object/{PNJSONDecoder,PNJSONEncoder}.h",
             "PubNub/Modules/Crypto/Cryptors/AES/PNCCCryptorWrapper.h",
             "PubNub/Modules/Crypto/Header/*.h",
-            'PubNub/Network/{PNNetwork,PNNetworkResponseSerializer,PNReachability,PNRequestParameters,PNURLBuilder}.h',
+            'PubNub/Network/PNReachability.h',
             'PubNub/Network/Requests/Files/PNGenerateFileUploadURLRequest.h',
-            'PubNub/Network/Parsers/**/*.h'
+            'PubNub/Network/Parsers/**/*.h',
+            'PubNub/Network/Streams/*.h',
+            'PubNub/Protocols/PNRequest.h',
         ]
         core.pod_target_xcconfig = { 'APPLICATION_EXTENSION_API_ONLY' => 'YES' }
     end

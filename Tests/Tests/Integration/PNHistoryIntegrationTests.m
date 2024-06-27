@@ -35,6 +35,7 @@
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-retain-cycles"
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
 
 #pragma mark - Setup / Tear down
@@ -314,7 +315,7 @@
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNHistoryOperation);
             XCTAssertEqual(status.category, PNDecryptionErrorCategory);
-            NSArray *encryptedMessages = status.associatedObject[@"channels"][channel];
+            NSArray *encryptedMessages = ((PNHistoryFetchData *)status.associatedObject).channels[channel];
             XCTAssertNotNil(status.associatedObject);
             XCTAssertNotNil(encryptedMessages);
             XCTAssertNotEqualObjects(encryptedMessages[halfSize][@"message"], publishedMessages[halfSize][@"message"]);
@@ -350,7 +351,7 @@
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNHistoryOperation);
             XCTAssertEqual(status.category, PNDecryptionErrorCategory);
-            NSArray *encryptedMessages = status.associatedObject[@"channels"][channel];
+            NSArray *encryptedMessages = ((PNHistoryFetchData *)status.associatedObject).channels[channel];
             XCTAssertNotNil(status.associatedObject);
             XCTAssertNotNil(encryptedMessages);
             XCTAssertNotEqualObjects(encryptedMessages[halfSize][@"message"], publishedMessages[halfSize][@"message"]);
@@ -539,7 +540,7 @@
                 XCTAssertEqual([result.data.start compare:firstTimetoken], NSOrderedSame);
                 XCTAssertEqual([result.data.end compare:lastTimetoken], NSOrderedSame);
                 XCTAssertEqual(result.operation, PNHistoryOperation);
-                
+
                 handler();
             });
     }];
@@ -685,9 +686,10 @@
                 .includeMessageActions(YES)
                 .performWithCompletion(^(PNHistoryResult *result, PNErrorStatus *status) {
                     XCTAssertTrue(status.isError);
-                    XCTAssertEqual(status.operation, PNHistoryOperation);
+                    XCTAssertEqual(status.operation, PNHistoryForChannelsOperation);
                     XCTAssertEqual(status.category, PNBadRequestCategory);
                     XCTAssertEqual(status.statusCode, 400);
+                    handler();
                 });
         } @catch (NSException *exception) {
             handler();
@@ -921,7 +923,7 @@
             XCTAssertNil(status);
             XCTAssertEqualObjects(result.data.messages, @[]);
             XCTAssertEqual(result.operation, PNHistoryOperation);
-            
+
             handler();
         }];
     }];
@@ -959,7 +961,7 @@
             XCTAssertEqual(fetchedMessages.count, halfSize);
             XCTAssertEqualObjects(fetchedMessages.firstObject, publishedMessages[halfSize][@"message"]);
             XCTAssertEqualObjects(fetchedMessages.lastObject, publishedMessages.lastObject[@"message"]);
-            
+
             handler();
         }];
     }];
@@ -997,7 +999,7 @@
             XCTAssertEqual(fetchedMessages.count, halfSize);
             XCTAssertEqualObjects(fetchedMessages.firstObject, publishedMessages.firstObject[@"message"]);
             XCTAssertEqualObjects(fetchedMessages.lastObject, publishedMessages[halfSize - 1][@"message"]);
-            
+
             handler();
         }];
     }];
@@ -1035,7 +1037,7 @@
             XCTAssertEqual(fetchedMessages.count, 2);
             XCTAssertEqualObjects(fetchedMessages.firstObject, publishedMessages.firstObject[@"message"]);
             XCTAssertEqualObjects(fetchedMessages.lastObject, publishedMessages.lastObject[@"message"]);
-            
+
             handler();
         }];
     }];
@@ -1081,7 +1083,7 @@
             XCTAssertEqual(fetchedMessages.count, publishedMessages.count);
             XCTAssertEqualObjects(fetchedMessages.firstObject, publishedMessages.firstObject[@"message"]);
             XCTAssertEqualObjects(fetchedMessages.lastObject, publishedMessages.lastObject[@"message"]);
-            
+
             handler();
         }];
     }];

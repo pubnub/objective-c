@@ -5,53 +5,38 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Interface declaration
 
-/**
- * @brief \c Set \c UUID's memberships request.
- *
- * @author Serhii Mamontov
- * @version 4.14.0
- * @since 4.14.0
- * @copyright © 2010-2020 PubNub, Inc.
- */
+/// `Set UUID's memberships` request.
 @interface PNSetMembershipsRequest : PNBaseObjectsMembershipRequest
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
-/**
- * @brief Bitfield set to fields which should be returned with response.
- *
- * @note Supported keys specified in \b PNMembershipFields enum.
- * @note Default value (\B PNMembershipsTotalCountField) can be reset by setting 0. 
- */
-@property (nonatomic, assign) PNMembershipFields includeFields;
+/// Bitfield set to fields which should be returned with response.
+///
+/// > Note: Supported keys specified in **PNMembershipFields** enum.
+/// > Note:  Default value (**PNMembershipsTotalCountField**) can be reset by setting 0.
+@property(assign, nonatomic) PNMembershipFields includeFields;
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
-/**
- * @brief Create and configure \c set \c UUID's memberships request.
- *
- * @discussion Request will set \c UUID's \c metadata associated with membership.
- *
- * @param uuid Identifier for which memberships \c metadata should be set.
- *     Will be set to current \b PubNub configuration \c uuid if \a nil is set.
- * @param channels List of \c channels for which \c metadata associated with \c UUID should be set.
- *     Each entry is dictionary with \c channel and \b optional \c custom fields. \c custom should
- *     be dictionary with simple objects: \a NSString and \a NSNumber.
- *
- * @return Configured and ready to use \c set \c UUID's memberships request.
- */
-+ (instancetype)requestWithUUID:(nullable NSString *)uuid
-                       channels:(NSArray<NSDictionary *> *)channels;
+/// Create `Set UUID's memberships` request.
+///
+/// Request will set `UUID's metadata` associated with membership.
+///
+/// - Parameters:
+///   - uuid: Identifier for which memberships `metadata` should be set. Will be set to current **PubNub** configuration
+///   `uuid` if `nil` is set.
+///   - channels: List of `channels` for which `metadata` associated with `UUID` should be set. Each entry is dictionary
+///   with `channel` and **optional** `custom` fields. `custom` should be dictionary with simple objects: `NSString` and
+///   `NSNumber`
+/// - Returns: Ready to use `set UUID's memberships` request.
++ (instancetype)requestWithUUID:(nullable NSString *)uuid channels:(NSArray<NSDictionary *> *)channels;
 
-/**
- * @brief Forbids request initialization.
- *
- * @throws Interface not available exception and requirement to use provided constructor method.
- *
- * @return Initialized request.
- */
+/// Forbids request initialization.
+///
+/// - Returns: Initialized request.
+/// - Throws: Interface not available exception and requirement to use provided constructor method.
 - (instancetype)init NS_UNAVAILABLE;
 
 #pragma mark -

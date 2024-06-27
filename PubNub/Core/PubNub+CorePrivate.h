@@ -1,21 +1,44 @@
 #import "PubNub+Core.h"
+#import <PubNub/PNJSONSerialization.h>
+#import <PubNub/PNTransportResponse.h>
+#import <PubNub/PNTransportRequest.h>
+#import <PubNub/PNTransport.h>
+#import <PubNub/PNJSONCoder.h>
+#import <PubNub/PNLock.h>
+#import "PNOperationDataParser.h"
+#import "PNBaseRequest+Private.h"
+#import "PNPrivateStructures.h"
+#import "PubNub+Deprecated.h"
 #import "PNPublishSequence.h"
-#import "PNRequest+Private.h"
 #import "PNStateListener.h"
 #import "PNFilesManager.h"
 #import "PNClientState.h"
 #import "PNSubscriber.h"
-#import "PNTelemetry.h"
 #import "PNHeartbeat.h"
 #import "PNLogMacro.h"
 
 
 #pragma mark Class forward
 
-@class PNRequestParameters, PNConfiguration, PNNetwork, PNOperationResult, PNStatus;
+@class PNRequestParameters, PNConfiguration, PNOperationResult, PNStatus;
 
 
 NS_ASSUME_NONNULL_BEGIN
+
+#pragma mark - Types
+
+/// Request perform and parse completion block.
+///
+/// - Parameters:
+///   - request: Actual request which has been used to access remote origin resource.
+///   - response: Remote origin response with results of access to the resource.
+///   - path: Path to the temporarily downloaded file location.
+///   - result: Processed ``request`` response.
+typedef void(^PNParsedRequestCompletionBlock)(PNTransportRequest *,
+                                              id<PNTransportResponse>,
+                                              NSURL * _Nullable,
+                                              PNOperationDataParseResult * _Nullable);
+
 
 #pragma mark - Private interface declaration
 
@@ -25,36 +48,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Properties
 
-/**
- * @brief Shared \a PubNub resources access serialization queue.
- *
- * @version 4.17.0
- * @since 4.17.0
- */
-/// Shared **PubNub** resources access serialization queue.
-///
-/// - Since: 4.17.0
-@property (nonatomic, nullable, readonly, strong) dispatch_queue_t resourceAccessQueue;
-
-/// Current **PubNub** client configuration.
-@property (nonatomic, readonly, copy) PNConfiguration *configuration;
-
-/// Unique instance identifier.
-///
-/// - Since: 4.5.4
-@property (nonatomic, readonly, copy) NSString *instanceID;
-
-/// Subscription loop manager.
-@property (nonatomic, readonly, strong) PNSubscriber *subscriberManager;
-
-/// Files upload / download manager.
-///
-/// - Since: 4.15.0
-@property (nonatomic, readonly, strong) PNFilesManager *filesManager;
+/// Recent client state (whether it was connected or not).
+@property (nonatomic, readonly, assign) PNStatusCategory recentClientStatus;
 
 /// Publish sequence manager.
-///
-/// - Since: 4.5.2
 @property (nonatomic, readonly, strong) PNPublishSequence *sequenceManager;
 
 /// Client's state manager to store user's state for chats and group.
@@ -63,77 +60,96 @@ NS_ASSUME_NONNULL_BEGIN
 /// Subscribe event listeners manager.
 @property (nonatomic, readonly, strong) PNStateListener *listenersManager;
 
-/// Client's presence heartbeat manager.
-@property (nonatomic, readonly, strong) PNHeartbeat *heartbeatManager;
+/// Subscription loop manager.
+@property (nonatomic, readonly, strong) PNSubscriber *subscriberManager;
 
-/// Network manager configured to be used for 'subscription' API group with long-polling.
-@property (nonatomic, strong, nullable) PNNetwork *subscriptionNetwork;
-
-/// Network manager configured to be used for 'non-subscription' API group.
-@property (nonatomic, strong, nullable) PNNetwork *serviceNetwork;
-
-/// Client telemetry gather and publish manager.
-///
-/// - Since: 4.6.2
-@property (nonatomic, readonly, strong) PNTelemetry *telemetryManager;
-
-/// Recent client state (whether it was connected or not).
-@property (nonatomic, readonly, assign) PNStatusCategory recentClientStatus;
+/// JSON serializer.
+@property(strong, nonatomic, readonly) PNJSONSerialization *serializer;
 
 /// Queue on which completion / processing blocks will be called.
 @property (nonatomic, readonly, strong) dispatch_queue_t callbackQueue;
 
-/// Set of key/value pairs which is used in API endpoint path and common for all endpoints.
-///
-/// - Since: 4.15.2
-@property (nonatomic, readonly, strong) NSDictionary *defaultPathComponents;
+/// Client's presence heartbeat manager.
+@property (nonatomic, readonly, strong) PNHeartbeat *heartbeatManager;
 
-/// Set of key/value pairs which is used in API endpoint query and common for all endpoints.
-///
-/// - Since: 4.15.2
-@property (nonatomic, readonly, strong) NSDictionary *defaultQueryComponents;
+/// Current **PubNub** client configuration.
+@property (nonatomic, readonly, copy) PNConfiguration *configuration;
+
+/// Files upload / download manager.
+@property (nonatomic, readonly, strong) PNFilesManager *filesManager;
+
+/// Transport for subscription loop.
+@property (nonatomic, strong) id<PNTransport> subscriptionNetwork;
+
+/// Transport for service requests (non-subscribe).
+@property (nonatomic, strong) id<PNTransport> serviceNetwork;
+
+/// Unique instance identifier.
+@property (nonatomic, readonly, copy) NSString *instanceID;
+
+/// Data objects coder / decoder.
+@property(strong, nonatomic, readonly) PNJSONCoder *coder;
+
+/// Resources access lock.
+@property(strong, nonatomic) PNLock *lock;
 
 
-#pragma mark - Requests helper
+#pragma mark - Requests processing
 
 /// Perform network request.
 ///
 /// - Parameters:
-///   - request: Object which contain all required information to perform request.
-///   - block: Request processing completion block.
-- (void)performRequest:(PNRequest *)request withCompletion:(id)block;
+///   - userRequest: Object which contain all required information to perform request.
+///   - parser: Pre-configured ``userRequest`` response parser.
+///   - block: Request processing completion block. 
+- (void)performRequest:(PNBaseRequest *)userRequest
+            withParser:(PNOperationDataParser *)parser
+            completion:(PNParsedRequestCompletionBlock)block;
 
-
-#pragma mark - Operation processing
-
-/// Compose request to the **PubNub** network basing on operation type and passed `parameters`.
+/// Perform network request.
 ///
 /// - Parameters:
-///   - operationType: One of the `PNOperationType` enum fields which represent type of operation which should be issued
-///   to **PubNub** network.
-///   - parameters: Resource and query path fields wrapped into object.
-///   - block: Operation processing completion block.
-- (void)processOperation:(PNOperationType)operationType
-          withParameters:(PNRequestParameters *)parameters
-         completionBlock:(nullable id)block;
+///   - userRequest: Object which contain all required information to perform request.
+///   - block: Request processing completion block. Completion block can be one of: ``PNRequestCompletionBlock`` or
+///    `PNDownloadRequestCompletionBlock` types.
+- (void)performRequest:(PNBaseRequest *)userRequest withCompletion:(id)block;
 
-/// Compose request to **PubNub** network basing on operation type and passed `parameters`.
+/// Create operation data parser.
 ///
 /// - Parameters:
-///   - operationType: One of the `PNOperationType` enum fields which represent type of operation which be issued to
-///   **PubNub** network.
-///   - parameters: Resource and query path fields wrapped into object.
-///   - data: Data which should be pushed to the **PubNub** network.
-///   - block: Operation processing completion block.
-- (void)processOperation:(PNOperationType)operationType
-          withParameters:(PNRequestParameters *)parameters
-                    data:(nullable NSData *)data
-         completionBlock:(nullable id)block;
+///   - resultClass: Class of object which represents API result (for data fetching requests).
+///   - statusClass: Class of object which represents API request processing status (for non-data fetching requests) or
+///   error status data.
+/// - Returns: Ready to use operation data parser.
+- (PNOperationDataParser *)parserWithResult:(Class)resultClass status:(Class)statusClass;
 
-/// Compose objects which is used to provide default values for requests.
+/// Create operation data parser.
 ///
-/// - Since: 4.15.2
-- (void)prepareRequiredParameters;
+/// - Parameter statusClass: Class of object which represents API request processing status (for non-data fetching
+/// requests) or error status data.
+/// - Returns: Ready to use operation data parser.
+- (PNOperationDataParser *)parserWithStatus:(Class)statusClass;
+
+/// Create operation data parser.
+///
+/// - Parameters:
+///   - resultClass: Class of object which represents API result (for data fetching requests).
+///   - statusClass: Class of object which represents API request processing status (for non-data fetching requests) or
+///   error status data.
+///   - cryptoModule: Crypto module which should be used for data processing.
+/// - Returns: Ready to use operation data parser.
+- (PNOperationDataParser *)parserWithResult:(Class)resultClass
+                                     status:(Class)statusClass
+                               cryptoModule:(nullable id<PNCryptoProvider>)cryptoModule;
+
+/// Create operation data parser.
+///
+/// - Parameter statusClass: Class of object which represents API request processing status (for non-data fetching
+/// requests) or error status data.
+///   - cryptoModule: Crypto module which should be used for data processing.
+/// - Returns: Ready to use operation data parser.
+- (PNOperationDataParser *)parserWithStatus:(Class)statusClass
+                               cryptoModule:(nullable id<PNCryptoProvider>)cryptoModule;
 
 
 #pragma mark - Operation information
@@ -148,7 +164,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// - Returns: Size of the packet which include request string, host, headers and HTTP post body.
 - (NSInteger)packetSizeForOperation:(PNOperationType)operationType
                      withParameters:(PNRequestParameters *)parameters
-                               data:(NSData *)data;
+                               data:(NSData *)data
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with the next major update.");
 
 /// Add available client information to object instance subclassed from `PNOperationResult` (`PNStatus`).
 ///

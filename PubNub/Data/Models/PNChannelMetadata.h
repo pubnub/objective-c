@@ -1,53 +1,30 @@
-#import <Foundation/Foundation.h>
+#import <PubNub/PNBaseAppContextObject.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Interface declaration
 
-/**
- * @brief Object which is used to represent \c channel \c metadata.
- *
- * @author Serhii Mamontov
- * @version 4.14.0
- * @since 4.14.0
- * @copyright © 2010-2020 PubNub, Inc.
- */
-@interface PNChannelMetadata : NSObject
+/// `Channel Metadata` object.
+@interface PNChannelMetadata : PNBaseAppContextObject
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
-/**
- * @brief Additional / complex attributes which should be stored in \c metadata associated with
- * specified \c channel.
- */
-@property (nonatomic, nullable, readonly, strong) NSDictionary *custom;
+/// Channel Description which should be stored in `metadata` associated with specified `channel`.
+@property(copy, nullable, nonatomic, readonly) NSString *information;
 
-/**
- * @brief Description which should be stored in \c metadata associated with specified \c channel.
- */
-@property (nonatomic, nullable, readonly, copy) NSString *information;
+/// `Channel`'s object status.
+@property(copy, nullable, nonatomic, readonly) NSString *status;
 
-/**
- * @brief Name which should be stored in \c metadata associated with specified \c channel.
- */
-@property (nonatomic, nullable, readonly, copy) NSString *name;
+/// Name which should be stored in `metadata` associated with specified `channel`.
+@property(copy, nullable, nonatomic, readonly) NSString *name;
 
-/**
- * @brief \c Channel name with which \c metadata has been associated.
- */
-@property (nonatomic, readonly, copy) NSString *channel;
+/// `Channel`'s object type information.
+@property(copy, nullable, nonatomic, readonly) NSString *type;
 
-/**
- * @brief Last \c metadata update date.
- */
-@property (nonatomic, readonly, strong) NSDate *updated;
-
-/**
- * @brief \c Channel \c metadata object version identifier.
- */
-@property (nonatomic, readonly, copy) NSString *eTag;
+/// `Channel` name with which `metadata` has been associated.
+@property(copy, nonatomic, readonly) NSString *channel;
 
 #pragma mark -
 

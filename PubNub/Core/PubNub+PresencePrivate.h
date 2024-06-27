@@ -1,8 +1,3 @@
-/**
- * @author Serhii Mamontov
- * @since 4.0
- * @copyright © 2010-2018 PubNub, Inc.
- */
 #import "PubNub+Presence.h"
 
 
@@ -15,15 +10,18 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Heartbeat support
 
-/**
- * @brief Issue heartbeat request to \b PubNub network.
- *
- * @discussion Heartbeat help \b PubNub presence service to control subscribers availability.
- *
- * @param block Block which should be called with service information.
- *
- * @since 4.0
- */
+/// Announce user presence on specified `channels` and `channel groups`.
+///
+/// - Parameters:
+///   - request: Request with information required to announce presence.
+///   - block: Presence announce request completion block.
+- (void)heartbeatWithRequest:(PNPresenceHeartbeatRequest *)request completion:(PNStatusBlock)block;
+
+/// Issue heartbeat request to **PubNub** network.
+///
+/// Heartbeat help **PubNub** presence service to control subscribers availability.
+///
+/// - Parameter block: Block which should be called with service information.
 - (void)heartbeatWithCompletion:(PNStatusBlock)block;
 
 #pragma mark -

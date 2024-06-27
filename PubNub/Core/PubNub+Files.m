@@ -1,124 +1,113 @@
-/**
- * @author Serhii Mamontov
- * @version 4.15.0
- * @since 4.15.0
- * @copyright © 2010-2020 PubNub, Inc.
- */
+#import "PubNub+Files.h"
+#import "PNGenerateFileDownloadURLRequest.h"
 #import "PNGenerateFileUploadURLRequest.h"
 #import "PNGenerateFileUploadURLStatus.h"
 #import "PNDownloadFileRequest+Private.h"
+#import "PNBaseOperationData+Private.h"
+#import "PNFileListFetchData+Private.h"
+#import "PNFileDownloadData+Private.h"
 #import "PNSendFileRequest+Private.h"
 #import "PNOperationResult+Private.h"
-#import "PNAPICallBuilder+Private.h"
-#import "PNSendFileStatus+Private.h"
+#import "PNFileSendData+Private.h"
+#import "PNBaseRequest+Private.h"
+#import "PNFileUploadRequest.h"
+#import "PNErrorData+Private.h"
 #import "PubNub+CorePrivate.h"
-#import "PubNub+PAMPrivate.h"
 #import "PNStatus+Private.h"
 #import "PNPublishStatus.h"
-#import "PNConfiguration.h"
 #import "PubNub+Publish.h"
 #import "PNCryptoModule.h"
-#import "PNErrorStatus.h"
-#import "PNURLBuilder.h"
-#import "PubNub+Files.h"
-#import "PNErrorCodes.h"
+#import "PubNub+PAM.h"
+#import "PNHelpers.h"
+
+// Deprecated
+#import "PNAPICallBuilder+Private.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
 
-#pragma mark Protected interface declaration
+#pragma mark Private interface declaration
 
+/// **PubNub** `File Share` APIs private extension.
 @interface PubNub (FilesProtected)
 
 
-#pragma mark - API Builder support
+#pragma mark - Files API builder interdace (deprecated)
 
-/**
- * @brief Process information provider by user with builder API call and use it to send request which will upload file.
- *
- * @param parameters Dictionary with information passed to builder-based API.
- */
+/// Process information provider by user with builder API call and use it to send request which will upload file.
+///
+/// - Parameter parameters: Dictionary with information passed to builder-based API.
 - (void)sendFileRequestUsingBuilderParameters:(NSDictionary *)parameters;
 
-/**
- * @brief Process information provider by user with builder API call and use it to send request which will fetch uploaded files list.
- *
- * @param parameters Dictionary with information passed to builder-based API.
- */
+/// Process information provider by user with builder API call and use it to send request which will fetch uploaded 
+/// files list.
+///
+/// - Parameter parameters: Dictionary with information passed to builder-based API.
 - (void)listFilesRequestUsingBuilderParameters:(NSDictionary *)parameters;
 
-/**
- * @brief Process information provider by user with builder API call and generate file download URL.
- *
- * @param parameters Dictionary with information passed to builder-based API.
- */
+/// Process information provider by user with builder API call and generate file download URL.
+///
+/// - Parameter parameters: Dictionary with information passed to builder-based API.
 - (void)downloadFileURLUsingBuilderParameters:(NSDictionary *)parameters;
 
-/**
- * @brief Process information provider by user with builder API call and use it to download specific file.
- *
- * @param parameters Dictionary with information passed to builder-based API.
- */
+/// Process information provider by user with builder API call and use it to download specific file.
+///
+/// - Parameter parameters: Dictionary with information passed to builder-based API.
 - (void)downloadFileRequestUsingBuilderParameters:(NSDictionary *)parameters;
 
-/**
- * @brief Process information provider by user with builder API call and use it to send request which will delete specific file.
- *
- * @param parameters Dictionary with information passed to builder-based API.
- */
+/// Process information provider by user with builder API call and use it to send request which will delete specific 
+/// file.
+///
+/// - Parameter parameters: Dictionary with information passed to builder-based API.
 - (void)deleteFileRequestUsingBuilderParameters:(NSDictionary *)parameters;
 
 
 #pragma mark - Handlers
 
-/**
- * @brief Handle upload URL generation success.
- *
- * @param status Status object with information which can be used to upload data specified by \c sendFileRequest.
- * @param sendFileRequest Original \c send \c file request used to trigger upload URL generation.
- * @param block \c Send \c file request processing completion block.
- */
+/// Handle upload URL generation success.
+///
+/// - Parameters:
+///   - status: Status object with information which can be used to upload data specified by ``sendFileRequest``.
+///   - sendFileRequest: Original `send file` request used to trigger upload URL generation.
+///   - block: `Send file` request processing completion block.
 - (void)handleGenerateFileUploadURLSuccessWithStatus:(PNGenerateFileUploadURLStatus *)status
                                      sendFileRequest:(PNSendFileRequest *)sendFileRequest
                                           completion:(PNSendFileCompletionBlock)block;
 
-/**
- * @brief Handle upload URL generation failure.
- *
- * @param status Status object with information about what exactly went wrong during data upload.
- * @param sendFileRequest Original \c send \c file request used to trigger upload URL generation.
- * @param block \c Send \c file request processing completion block.
- */
+/// Handle upload URL generation failure.
+///
+/// - Parameters:
+///   - status: Status object with information about what exactly went wrong during data upload.
+///   - sendFileRequest: Original `send file` request used to trigger upload URL generation.
+///   - block: `Send file` request processing completion block.
 - (void)handleGenerateFileUploadURLErrorWithStatus:(PNGenerateFileUploadURLStatus *)status
                                    sendFileRequest:(PNSendFileRequest *)sendFileRequest
                                         completion:(PNSendFileCompletionBlock)block;
 
-/**
- * @brief Handle \c file \c upload success.
- *
- * @param fileIdentifier Unique identifier which has been assigned to file during upload (upload URL generation).
- * @param fileName Actual file name which has been used to store uploaded data (can be different from what has been configured
- *   with \c sendFileRequest).
- * @param sendFileRequest Original \c send \c file request used to trigger \c file \c upload.
- * @param block \c Send \c file request processing completion block.
- */
+/// Handle `file upload` success.
+///
+/// - Parameters:
+///   - fileIdentifier: Unique identifier which has been assigned to file during upload (upload URL generation).
+///   - fileName: Actual file name which has been used to store uploaded data (can be different from what has been
+///   configured with ``sendFileRequest``).
+///   - sendFileRequest: Original `send file` request used to trigger `file upload`.
+///   - block: `Send file` request processing completion block.
 - (void)handleUploadFileSuccessWithFileIdentifier:(NSString *)fileIdentifier
                                          fileName:(NSString *)fileName
                                   sendFileRequest:(PNSendFileRequest *)sendFileRequest
                                        completion:(PNSendFileCompletionBlock)block;
 
-/**
- * @brief Handle \c file \c upload failure.
- *
- * @param fileIdentifier Unique identifier which has been assigned to file during upload (upload URL generation).
- * @param fileName Actual file name which has been used to store uploaded data (can be different from what has been configured
- *   with \c sendFileRequest).
- * @param error Error instance with information about what exactly went wrong during data upload.
- * @param block \c Send \c file request processing completion block.
- */
+/// Handle `file upload` failure.
+///
+/// - Parameters:
+///   - fileIdentifier: Unique identifier which has been assigned to file during upload (upload URL generation).
+///   - fileName: Actual file name which has been used to store uploaded data (can be different from what has been 
+///   configured with ``sendFileRequest``).
+///   - category: File upload request processing error category.
+///   - block: `Send file` request processing completion block.
 - (void)handleUploadFileErrorWithFileIdentifier:(NSString *)fileIdentifier
                                            name:(NSString *)fileName
-                                          error:(NSError *)error
+                                       category:(PNStatusCategory)category
                                      completion:(PNSendFileCompletionBlock)block;
 
 #pragma mark -
@@ -129,10 +118,12 @@ NS_ASSUME_NONNULL_BEGIN
 NS_ASSUME_NONNULL_END
 
 
+#pragma mark - Interface implementation
+
 @implementation PubNub (Files)
 
 
-#pragma mark - API Builder support
+#pragma mark - Files API builder interdace (deprecated)
 
 - (PNFilesAPICallBuilder * (^)(void))files {
     PNFilesAPICallBuilder *builder = nil;
@@ -170,16 +161,12 @@ NS_ASSUME_NONNULL_END
     PNSendFileRequest *request = nil;
     
     if (stream) {
-        request = [PNSendFileRequest requestWithChannel:channel
-                                               fileName:name
-                                                 stream:stream
-                                                   size:size.unsignedIntegerValue];
+        NSUInteger streamSize = size.unsignedIntegerValue;
+        request = [PNSendFileRequest requestWithChannel:channel fileName:name stream:stream size:streamSize];
     } else if (url) {
         request = [PNSendFileRequest requestWithChannel:channel fileURL:url];
         if (name) request.filename = name;
-    } else {
-        request = [PNSendFileRequest requestWithChannel:channel fileName:name data:data];
-    }
+    } else request = [PNSendFileRequest requestWithChannel:channel fileName:name data:data];
     
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
@@ -247,64 +234,76 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - File upload
 
-- (void)sendFileWithRequest:(PNSendFileRequest *)request completion:(PNSendFileCompletionBlock)block {
+- (void)sendFileWithRequest:(PNSendFileRequest *)userRequest completion:(PNSendFileCompletionBlock)handlerBlock {
+    PNOperationDataParser *responseParser = [self parserWithStatus:[PNGenerateFileUploadURLStatus class]];
+    PNSendFileCompletionBlock block = [handlerBlock copy];
+
     PNGenerateFileUploadURLRequest *urlRequest = nil;
-    urlRequest = [PNGenerateFileUploadURLRequest requestWithChannel:request.channel filename:request.filename];
-    urlRequest.parametersError = request.parametersError;
+    urlRequest = [PNGenerateFileUploadURLRequest requestWithChannel:userRequest.channel filename:userRequest.filename];
+    urlRequest.arbitraryQueryParameters = userRequest.arbitraryQueryParameters;
+    [urlRequest setupWithClientConfiguration:self.configuration];
+    PNParsedRequestCompletionBlock handler;
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    if (!request.cryptoModule) {
-        NSString *cipherKey = request.cipherKey ?: self.configuration.cipherKey;
-        if (!cipherKey) request.cryptoModule = self.configuration.cryptoModule;
+    if (!userRequest.cryptoModule) {
+        NSString *cipherKey = userRequest.cipherKey ?: self.configuration.cipherKey;
+        if (!cipherKey) userRequest.cryptoModule = self.configuration.cryptoModule;
         else if (![cipherKey isEqualToString:self.configuration.cipherKey]) {
             // Construct backward-compatible crypto module.
-            request.cryptoModule = [PNCryptoModule legacyCryptoModuleWithCipherKey:cipherKey
-                                                        randomInitializationVector:YES];
-        }
+            userRequest.cryptoModule = [PNCryptoModule legacyCryptoModuleWithCipherKey:cipherKey
+                                                            randomInitializationVector:YES];
+        } else userRequest.cryptoModule = self.configuration.cryptoModule;
     }
 #pragma clang diagnostic pop
 
-    // Retrieving URL which should be used for data upload.
-    [self performRequest:urlRequest withCompletion:^(PNGenerateFileUploadURLStatus *status) {
+    PNWeakify(self);
+    handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
+                PNOperationDataParseResult<PNGenerateFileUploadURLStatus *, PNGenerateFileUploadURLStatus *> *result) {
+        PNStrongify(self);
+        PNGenerateFileUploadURLStatus *status = result.status;
+
         if (!status.isError) {
-            [self handleGenerateFileUploadURLSuccessWithStatus:status sendFileRequest:request completion:block];
-        } else {
-            [self handleGenerateFileUploadURLErrorWithStatus:status sendFileRequest:request completion:block];
-        }
-    }];
+            [self handleGenerateFileUploadURLSuccessWithStatus:status sendFileRequest:userRequest completion:block];
+        } else [self handleGenerateFileUploadURLErrorWithStatus:status sendFileRequest:userRequest completion:block];
+    };
+
+    [self performRequest:urlRequest withParser:responseParser completion:handler];
 }
+
 
 #pragma mark - List files
 
-- (void)listFilesWithRequest:(PNListFilesRequest *)request completion:(PNListFilesCompletionBlock)block {
-    __weak __typeof(self) weakSelf = self;
-    
-    [self performRequest:request withCompletion:^(PNListFilesResult *result, PNErrorStatus *status) {
-        if (status.isError) {
-            status.retryBlock = ^{
-                [weakSelf listFilesWithRequest:request completion:block];
-            };
-        } else {
-            NSMutableDictionary *serviceData = [result.serviceData mutableCopy];
-            NSMutableArray<NSDictionary *> *updatedFiles = [NSMutableArray new];
-            NSArray<NSDictionary *> *files = serviceData[@"files"];
-            
-            for (NSDictionary *file in files) {
-                NSMutableDictionary *updatedFile = [file mutableCopy];
-                NSURL *downloadURL = [weakSelf downloadURLForFileWithName:file[@"name"]
-                                                               identifier:file[@"id"]
-                                                                inChannel:request.channel];
-                updatedFile[@"downloadURL"] = downloadURL.absoluteString;
-                [updatedFiles addObject:updatedFile];
-            }
-            
-            serviceData[@"files"] = updatedFiles;
-            [status updateData:serviceData];
+- (void)listFilesWithRequest:(PNListFilesRequest *)userRequest completion:(PNListFilesCompletionBlock)handlerBlock {
+    PNOperationDataParser *responseParser = [self parserWithResult:[PNListFilesResult class]
+                                                            status:[PNErrorStatus class]];
+    PNListFilesCompletionBlock block = [handlerBlock copy];
+    PNParsedRequestCompletionBlock handler;
+
+    PNWeakify(self);
+    handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
+                PNOperationDataParseResult<PNListFilesResult *, PNErrorStatus *> *result) {
+        PNStrongify(self);
+
+        if (result.result) {
+            [result.result.data setFilesDownloadURLWithBlock:^NSURL *(NSString *identifier, NSString *name) {
+                return [self downloadURLForFileWithName:name identifier:identifier inChannel:userRequest.channel];
+            }];
         }
-        
-        [weakSelf callBlock:block status:NO withResult:result andStatus:status];
-    }];
+
+        if (result.status.isError) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            result.status.retryBlock = ^{
+                [self listFilesWithRequest:userRequest completion:block];
+            };
+#pragma clang diagnostic pop
+        }
+
+        [self callBlock:block status:NO withResult:result.result andStatus:result.status];
+    };
+
+    [self performRequest:userRequest withParser:responseParser completion:handler];
 }
 
 
@@ -313,166 +312,192 @@ NS_ASSUME_NONNULL_END
 - (NSURL *)downloadURLForFileWithName:(NSString *)name identifier:(NSString *)identifier inChannel:(NSString *)channel {
     if (!name.length || !identifier.length || !channel.length) return nil;
     
-    NSURL *baseURL = [NSURL URLWithString:[NSString stringWithFormat:@"http%@://%@",
-                                           (self.configuration.TLSEnabled ? @"s" : @""),
-                                           self.configuration.origin]];
-    PNRequestParameters *parameters = [PNRequestParameters new];
-    [parameters addPathComponents:@{ @"{channel}": channel, @"{id}": identifier, @"{name}": name }];
-    [parameters addPathComponents:self.defaultPathComponents];
-    [parameters addQueryParameters:self.defaultQueryComponents];
-    [self addAuthParameter:parameters];
-    
-    if (parameters.shouldIncludeTelemetry) {
-        [parameters addQueryParameters:[self.telemetryManager operationsLatencyForRequest]];
-    }
-    
-    [parameters addQueryParameter:[[NSUUID UUID] UUIDString] forFieldName:@"requestid"];
+    PNGenerateFileDownloadURLRequest *request;
+    request = [PNGenerateFileDownloadURLRequest requestWithChannel:channel fileIdentifier:identifier fileName:name];
+    [request setupWithClientConfiguration:self.configuration];
 
-    NSURL *requestURL = [PNURLBuilder URLForOperation:PNDownloadFileOperation withParameters:parameters];
-    
-    return [NSURL URLWithString:requestURL.absoluteString relativeToURL:baseURL];
+    if ([request validate]) return nil;
+
+    PNTransportRequest *transportRequest = [self.serviceNetwork transportRequestFromTransportRequest:request.request];
+    NSMutableString *path = [transportRequest.path mutableCopy];
+    NSDictionary *query = transportRequest.query;
+
+    if (query.count > 0) {
+        NSMutableArray *keyValuePairs = [NSMutableArray arrayWithCapacity:query.count];
+        [query enumerateKeysAndObjectsUsingBlock:^(NSString *key, id value, __unused BOOL *stop) {
+            value = [value isKindOfClass:[NSString class]] ? [PNString percentEscapedString:value] : value;
+            [keyValuePairs addObject:PNStringFormat(@"%@=%@", key, value)];
+        }];
+
+        [path appendFormat:@"?%@", [keyValuePairs componentsJoinedByString:@"&"]];
+    }
+
+    return [NSURL URLWithString:path relativeToURL:[NSURL URLWithString:transportRequest.origin]];
 }
 
-- (void)downloadFileWithRequest:(PNDownloadFileRequest *)request completion:(PNDownloadFileCompletionBlock)block {
-    NSURL *downloadURL = [self downloadURLForFileWithName:request.name
-                                               identifier:request.identifier
-                                                inChannel:request.channel];
+- (void)downloadFileWithRequest:(PNDownloadFileRequest *)userRequest completion:(PNDownloadFileCompletionBlock)handlerBlock {
+    PNOperationDataParser *responseParser = [self parserWithStatus:[PNErrorStatus class]];
+    responseParser.errorOnly = YES;
+    PNDownloadFileCompletionBlock block = [handlerBlock copy];
+    PNParsedRequestCompletionBlock handler;
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    if (!request.cryptoModule) {
-        NSString *cipherKey = request.cipherKey ?: self.configuration.cipherKey;
-        if (!cipherKey) request.cryptoModule = self.configuration.cryptoModule;
+    if (!userRequest.cryptoModule) {
+        NSString *cipherKey = userRequest.cipherKey ?: self.configuration.cipherKey;
+        if (!cipherKey) userRequest.cryptoModule = self.configuration.cryptoModule;
         else if (![cipherKey isEqualToString:self.configuration.cipherKey]) {
             // Construct backward-compatible crypto module.
-            request.cryptoModule = [PNCryptoModule legacyCryptoModuleWithCipherKey:cipherKey
-                                                        randomInitializationVector:YES];
-        }
+            userRequest.cryptoModule = [PNCryptoModule legacyCryptoModuleWithCipherKey:cipherKey
+                                                            randomInitializationVector:YES];
+        } else userRequest.cryptoModule = self.configuration.cryptoModule;
     }
 #pragma clang diagnostic pop
-    BOOL temporary = request.targetURL == nil;
-    __weak __typeof(self) weakSelf = self;
-    
-    [self.filesManager downloadFileAtURL:downloadURL
-                                   toURL:request.targetURL
-                        withCryptoModule:request.cryptoModule
-                              completion:^(NSURLRequest *downloadRequest, NSURL *location, NSError *error) {
-        PNDownloadFileResult *result = nil;
-        PNErrorStatus *errorStatus = nil;
 
-        if (error) {
-            NSDictionary *serviceData = error.userInfo[@"pn_serviceResponse"];
-            errorStatus = [PNErrorStatus objectForOperation:request.operation
-                                          completedWithTask:nil
-                                              processedData:serviceData
-                                            processingError:error];
-            
-            if ([error.domain isEqualToString:kPNStorageErrorDomain] && errorStatus.statusCode == -1) {
-                errorStatus.statusCode = error.code;
+    PNWeakify(self);
+    handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, NSURL *url,
+                PNOperationDataParseResult<PNErrorStatus *, PNErrorStatus*> *result) {
+        PNStrongify(self);
+        BOOL temporary = userRequest.targetURL == nil;
+
+        [self.filesManager handleDownloadedFileAtURL:url 
+                                        withStoreURL:userRequest.targetURL
+                                        cryptoModule:userRequest.cryptoModule
+                                          completion:^(NSURL *location, NSError *error) {
+            PNErrorStatus *status = result.status;
+            PNDownloadFileResult *downloadResult;
+
+            if (error && !status) {
+                PNErrorData *data = [PNErrorData dataWithError:error];
+                status = [PNErrorStatus objectWithOperation:userRequest.operation
+                                                   category:PNUnknownCategory
+                                                   response:data];
+                [self updateResult:status withRequest:request response:response];
             }
-            
-            if (errorStatus.category == PNUnknownCategory) [errorStatus setCategory:PNDownloadErrorCategory];
-            
-            [self appendClientInformation:errorStatus];
-            errorStatus.error = YES;
-            
-            errorStatus.retryBlock = ^{
-                [weakSelf downloadFileWithRequest:request completion:block];
-            };
-        } else {
-            NSDictionary *serviceData = @{ @"temporary": @(temporary), @"location": location.absoluteString };
-            result = [PNDownloadFileResult objectForOperation:request.operation
-                                            completedWithTask:nil
-                                                processedData:serviceData
-                                              processingError:nil];
-            result.clientRequest = downloadRequest;
-        }
-        
-        if (!temporary) [weakSelf callBlock:block status:NO withResult:result andStatus:errorStatus];
-        else if (block) block(result, errorStatus);
-    }];
+
+            if (status && status.isError) {
+                if (status.category == PNUnknownCategory) status.category = PNDownloadErrorCategory;
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+                status.retryBlock = ^{
+                    [self downloadFileWithRequest:userRequest completion:block];
+                };
+#pragma clang diagnostic pop
+            }
+
+            if (!status.isError) {
+                PNFileDownloadData *data = [PNFileDownloadData dataForFileAtLocation:location temporarily:temporary];
+                downloadResult = [PNDownloadFileResult objectWithOperation:userRequest.operation response:data];
+                [self updateResult:downloadResult withRequest:request response:response];
+            }
+
+            if (!temporary) [self callBlock:block status:NO withResult:downloadResult andStatus:status];
+            else if (block) block(downloadResult, status);
+        }];
+    };
+
+    [self performRequest:userRequest withParser:responseParser completion:handler];
 }
 
 
 #pragma mark - Delete files
 
-- (void)deleteFileWithRequest:(PNDeleteFileRequest *)request completion:(PNDeleteFileCompletionBlock)block {
-    __weak __typeof(self) weakSelf = self;
-    
-    [self performRequest:request withCompletion:^(PNAcknowledgmentStatus *status) {
-        if (status.isError) {
-            status.retryBlock = ^{
-                [weakSelf deleteFileWithRequest:request completion:block];
+- (void)deleteFileWithRequest:(PNDeleteFileRequest *)userRequest completion:(PNDeleteFileCompletionBlock)handleBlock {
+    PNOperationDataParser *responseParser = [self parserWithStatus:[PNAcknowledgmentStatus class]];
+    PNDeleteFileCompletionBlock block = [handleBlock copy];
+    PNParsedRequestCompletionBlock handler;
+
+    PNWeakify(self);
+    handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
+                PNOperationDataParseResult<PNAcknowledgmentStatus *, PNAcknowledgmentStatus *> *result) {
+        PNStrongify(self);
+
+        if (result.status.isError) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            result.status.retryBlock = ^{
+                [self deleteFileWithRequest:userRequest completion:block];
             };
+#pragma clang diagnostic pop
         }
-        
-        [weakSelf callBlock:block status:YES withResult:nil andStatus:status];
-    }];
+
+        [self callBlock:block status:YES withResult:nil andStatus:result.status];
+    };
+
+    [self performRequest:userRequest withParser:responseParser completion:handler];
 }
 
 
 #pragma mark - Handlers
 
-- (void)handleGenerateFileUploadURLSuccessWithStatus:(PNGenerateFileUploadURLStatus *)status
+- (void)handleGenerateFileUploadURLSuccessWithStatus:(PNGenerateFileUploadURLStatus *)generateStatus
                                      sendFileRequest:(PNSendFileRequest *)sendFileRequest
                                           completion:(PNSendFileCompletionBlock)block {
-    NSMutableURLRequest *uploadRequest = [NSMutableURLRequest requestWithURL:status.data.requestURL];
-    uploadRequest.HTTPMethod = status.data.httpMethod.uppercaseString;
-    uploadRequest.HTTPBodyStream = sendFileRequest.stream;
+    PNFileUploadRequest *userRequest = [PNFileUploadRequest requestWithURL:generateStatus.data.requestURL
+                                                                httpMethod:generateStatus.data.httpMethod
+                                                                  formData:generateStatus.data.formFields];
+    PNOperationDataParser *responseParser = [self parserWithStatus:[PNAcknowledgmentStatus class]
+                                                      cryptoModule:sendFileRequest.cryptoModule];
+    responseParser.errorOnly = YES;
+    userRequest.cryptoModule = sendFileRequest.cryptoModule;
+    userRequest.filename = generateStatus.data.filename;
+    userRequest.bodyStream = sendFileRequest.stream;
+    userRequest.dataSize = sendFileRequest.size;
+    PNParsedRequestCompletionBlock handler;
     
-    [self.filesManager uploadWithRequest:uploadRequest
-                                formData:status.data.formFields
-                                filename:status.data.filename
-                                dataSize:sendFileRequest.size
-                        withCryptoModule:sendFileRequest.cryptoModule
-                              completion:^(NSError *uploadError) {
-        if (uploadError) {
-            [self handleUploadFileErrorWithFileIdentifier:status.data.fileIdentifier
-                                                     name:status.data.filename
-                                                    error:uploadError
+    PNWeakify(self);
+    handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
+                PNOperationDataParseResult<PNErrorStatus *, PNErrorStatus *> *result) {
+        PNStrongify(self);
+        PNErrorStatus *status = result.status;
+
+        if (status.isError) {
+            [self handleUploadFileErrorWithFileIdentifier:generateStatus.data.fileIdentifier
+                                                     name:generateStatus.data.filename
+                                                 category:result.status.category
                                                completion:block];
         } else {
-            [self handleUploadFileSuccessWithFileIdentifier:status.data.fileIdentifier
-                                                   fileName:status.data.filename
+            [self handleUploadFileSuccessWithFileIdentifier:generateStatus.data.fileIdentifier
+                                                   fileName:generateStatus.data.filename
                                             sendFileRequest:sendFileRequest
                                                  completion:block];
         }
-    }];
+    };
+
+    [self performRequest:userRequest withParser:responseParser completion:handler];
 }
 
 - (void)handleGenerateFileUploadURLErrorWithStatus:(PNGenerateFileUploadURLStatus *)status
                                    sendFileRequest:(PNSendFileRequest *)sendFileRequest
                                         completion:(PNSendFileCompletionBlock)block {
     PNStatusCategory category = status.category != PNUnknownCategory ? status.category : PNSendFileErrorCategory;
-    NSMutableDictionary *serviceData = [(status.serviceData ?: @{}) mutableCopy];
-    serviceData[@"status"] = @(status.statusCode);
-    if (!serviceData[@"information"]) serviceData[@"information"] = @"Unknown error";
-
-    PNSendFileStatus *sendStatus = [PNSendFileStatus objectForOperation:sendFileRequest.operation
-                                                      completedWithTask:nil
-                                                          processedData:serviceData
-                                                        processingError:nil];
+    PNFileSendData *fileData = [PNFileSendData fileDataWithId:status.data.fileIdentifier name:status.data.filename];
+    PNSendFileStatus *sendStatus = [PNSendFileStatus objectWithOperation:sendFileRequest.operation
+                                                                category:category
+                                                                response:fileData];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    sendStatus.statusCode = status.statusCode;
     sendStatus.retryBlock = ^{};
-
-    [sendStatus setCategory:category];
-    [self appendClientInformation:sendStatus];
+    [self updateResult:sendStatus withRequest:nil response:nil];
+#pragma clang diagnostic pop
     sendStatus.error = YES;
-    
+
     [self callBlock:block status:YES withResult:nil andStatus:sendStatus];
 }
 
 - (void)handleUploadFileSuccessWithFileIdentifier:(NSString *)fileIdentifier
                                          fileName:(NSString *)fileName
                                   sendFileRequest:(PNSendFileRequest *)sendFileRequest
-                                       completion:(PNSendFileCompletionBlock)block {
+                                       completion:(PNSendFileCompletionBlock)handlerBlock {
     NSUInteger fileMessagePublishRetryLimit = self.configuration.fileMessagePublishRetryLimit;
+    PNSendFileCompletionBlock block = [handlerBlock copy];
     PNPublishFileMessageRequest *request = nil;
-    __weak __typeof(self) weakSelf = self;
-    
+
     request = [PNPublishFileMessageRequest requestWithChannel:sendFileRequest.channel
                                                fileIdentifier:fileIdentifier
                                                          name:fileName];
-    
     request.arbitraryQueryParameters = sendFileRequest.arbitraryQueryParameters;
     request.metadata = sendFileRequest.fileMessageMetadata;
     request.store = sendFileRequest.fileMessageStore;
@@ -480,36 +505,46 @@ NS_ASSUME_NONNULL_END
     if (request.store) request.ttl = sendFileRequest.fileMessageTTL;
     
     __block NSUInteger publishAttemptsCount = 1;
-    
-    [self publishFileMessageWithRequest:request completion:^(PNPublishStatus *status) {
-        if (!status.isError || publishAttemptsCount >= fileMessagePublishRetryLimit) {
-            PNSendFileStatus *sendFileStatus = nil;
-            NSMutableDictionary *serviceData = [@{ @"id": fileIdentifier, @"name": fileName } mutableCopy];
-            if (status.data.timetoken) serviceData[@"timetoken"] = status.data.timetoken;
+    PNWeakify(self);
 
-            if (status.isError) {
-                serviceData[@"information"] = status.serviceData[@"information"];
-                serviceData[@"status"] = @(status.statusCode) ?: @(400);
+    [self publishFileMessageWithRequest:request completion:^(PNPublishStatus *status) {
+        PNStrongify(self);
+
+        if (!status.isError || publishAttemptsCount >= fileMessagePublishRetryLimit) {
+            PNFileSendData *data = [PNFileSendData fileDataWithId:fileIdentifier name:fileName];
+            PNSendFileStatus *sendFileStatus = nil;
+
+            if (!status.isError) {
+                data.timetoken = status.data.timetoken;
+                sendFileStatus = [PNSendFileStatus objectWithOperation:sendFileRequest.operation response:data];
+                sendFileStatus.category = PNAcknowledgmentCategory;
+            } else {
+                data.category = status.category;
+                sendFileStatus = [PNSendFileStatus objectWithOperation:sendFileRequest.operation
+                                                              category:status.category
+                                                              response:data];
             }
 
-            sendFileStatus = [PNSendFileStatus objectForOperation:sendFileRequest.operation
-                                                completedWithTask:nil
-                                                    processedData:serviceData
-                                                  processingError:nil];
-            sendFileStatus.data.fileUploaded = YES;
-
-            [weakSelf appendClientInformation:sendFileStatus];
-            sendFileStatus.error = status.isError;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            sendFileStatus.statusCode = status.statusCode;
             sendFileStatus.retryBlock = ^{};
-            
-            [weakSelf callBlock:block status:YES withResult:nil andStatus:sendFileStatus];
+#pragma clang diagnostic pop
+            sendFileStatus.data.fileUploaded = YES;
+            sendFileStatus.error = status.isError;
+
+            [self appendClientInformation:sendFileStatus];
+            [self callBlock:block status:YES withResult:nil andStatus:sendFileStatus];
         } else {
             dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
             int64_t delayInNanoseconds = (int64_t)(1 * NSEC_PER_SEC);
             publishAttemptsCount++;
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, delayInNanoseconds), queue, ^{
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
                 [status retry];
+#pragma clang diagnostic pop
             });
         }
     }];
@@ -517,29 +552,20 @@ NS_ASSUME_NONNULL_END
 
 - (void)handleUploadFileErrorWithFileIdentifier:(NSString *)fileIdentifier
                                            name:(NSString *)fileName
-                                          error:(NSError *)error
+                                       category:(PNStatusCategory)category
                                      completion:(PNSendFileCompletionBlock)block {
-    NSDictionary *serviceData = error.userInfo[@"pn_serviceResponse"];
-    PNSendFileStatus *sendStatus = [PNSendFileStatus objectForOperation:PNSendFileOperation
-                                                      completedWithTask:nil
-                                                          processedData:serviceData
-                                                        processingError:error];
-    sendStatus.data.fileUploaded = YES;
-    sendStatus.retryBlock = ^{};
-    
-    if ([error.domain isEqualToString:kPNStorageErrorDomain] && sendStatus.statusCode == -1) {
-        sendStatus.statusCode = error.code;
-    }
- 
-    NSMutableDictionary *updatedServiceData = [NSMutableDictionary dictionaryWithDictionary:sendStatus.serviceData];
-    [updatedServiceData addEntriesFromDictionary:@{ @"id": fileIdentifier, @"name": fileName }];
-    [sendStatus updateData:updatedServiceData];
-    
-    if (sendStatus.category == PNUnknownCategory) [sendStatus setCategory:PNSendFileErrorCategory];
-    [self appendClientInformation:sendStatus];
-    sendStatus.error = YES;
-    
-    [self callBlock:block status:YES withResult:nil andStatus:sendStatus];
+    PNFileSendData *data = [PNFileSendData fileDataWithId:fileIdentifier name:fileName];
+    category = category != PNUnknownCategory ? category : PNSendFileErrorCategory;
+    PNSendFileStatus *status = [PNSendFileStatus objectWithOperation:PNSendFileOperation category:category response:data];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    status.statusCode = status.statusCode;
+    status.retryBlock = ^{};
+    [self updateResult:status withRequest:nil response:nil];
+#pragma clang diagnostic pop
+    status.error = YES;
+
+    [self callBlock:block status:YES withResult:nil andStatus:status];
 }
 
 #pragma mark -

@@ -5,46 +5,31 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Interface declaration
 
-/**
- * @brief \c Fetch \c channel \c metadata request.
- *
- * @author Serhii Mamontov
- * @version 4.14.0
- * @since 4.14.0
- * @copyright © 2010-2020 PubNub, Inc.
- */
+/// `Fetch channel metadata` request.
 @interface PNFetchChannelMetadataRequest : PNBaseObjectsRequest
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
-/**
- * @brief Bitfield set to fields which should be returned with response.
- *
- * @note Supported keys specified in \b PNChannelFields enum.
- * @note Default value (\B PNChannelCustomField) can be reset by setting 0.
- */
-@property (nonatomic, assign) PNChannelFields includeFields;
+/// Bitfield set to fields which should be returned with response.
+///
+/// > Note: Supported keys specified in **PNChannelFields** enum.
+/// > Note:  Default value (**PNChannelCustomField**) can be reset by setting 0.
+@property(assign, nonatomic) PNChannelFields includeFields;
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
-/**
- * @brief Create and configure \c fetch \c channel \c metadata request.
- *
- * @param channel Name of channel for which \c metadata should be fetched.
- *
- * @return Configured and ready to use \c fetch \c channel \c metadata request.
- */
+/// Create `Fetch channel metadata` request.
+///
+/// - Parameter channel: Name of channel for which `metadata` should be fetched.
+/// - Returns: Ready to use `fetch channel metadata` request.
 + (instancetype)requestWithChannel:(NSString *)channel;
 
-/**
- * @brief Forbids request initialization.
- *
- * @throws Interface not available exception and requirement to use provided constructor method.
- *
- * @return Initialized request.
- */
+/// Forbids request initialization.
+///
+/// - Returns: Initialized request.
+/// - Throws: Interface not available exception and requirement to use provided constructor method.
 - (instancetype)init NS_UNAVAILABLE;
 
 #pragma mark -

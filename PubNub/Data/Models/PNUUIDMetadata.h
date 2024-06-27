@@ -1,62 +1,36 @@
-#import <Foundation/Foundation.h>
+#import <PubNub/PNBaseAppContextObject.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Interface declaration
 
-/**
- * @brief Object which is used to represent \c UUID \c metadata.
- *
- * @author Serhii Mamontov
- * @version 4.14.0
- * @since 4.14.0
- * @copyright © 2010-2020 PubNub, Inc.
- */
-@interface PNUUIDMetadata : NSObject
+/// `UUID Metadata` object.
+@interface PNUUIDMetadata : PNBaseAppContextObject
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
-/**
- * @brief Additional / complex attributes which should be associated with \c metadata.
- */
-@property (nonatomic, nullable, readonly, strong) NSDictionary *custom;
+/// Identifier from external service (database, auth service).
+@property(copy, nullable, nonatomic, readonly) NSString *externalId;
 
-/**
- * @brief Identifier from external service (database, auth service).
- */
-@property (nonatomic, nullable, readonly, copy) NSString *externalId;
+/// URL at which profile available.
+@property(copy, nullable, nonatomic, readonly) NSString *profileUrl;
 
-/**
- * @brief URL at which profile available.
- */
-@property (nonatomic, nullable, readonly, copy) NSString *profileUrl;
+/// Email address.
+@property(copy, nullable, nonatomic, readonly) NSString *email;
 
-/**
- * @brief Email address.
- */
-@property (nonatomic, nullable, readonly, copy) NSString *email;
+/// `User`'s object status.
+@property(copy, nullable, nonatomic, readonly) NSString *status;
 
-/**
- * @brief Last \c metadata update date.
- */
-@property (nonatomic, readonly, strong) NSDate *updated;
+/// Name which should be stored in `metadata` associated with specified `uuid`.
+@property(copy, nullable, nonatomic, readonly) NSString *name;
 
-/**
- * @brief Name which should be stored in \c metadata associated with specified \c uuid.
- */
-@property (nonatomic, readonly, copy) NSString *name;
+/// `User`'s object type information.
+@property(copy, nullable, nonatomic, readonly) NSString *type;
 
-/**
- * @brief \c UUID with which \c metadata has been associated.
- */
-@property (nonatomic, readonly, copy) NSString *uuid;
-
-/**
- * @brief \c UUID \c metadata object version identifier.
- */
-@property (nonatomic, readonly, copy) NSString *eTag;
+/// `UUID` with which `metadata` has been associated.
+@property(copy, nonatomic, readonly) NSString *uuid;
 
 #pragma mark -
 

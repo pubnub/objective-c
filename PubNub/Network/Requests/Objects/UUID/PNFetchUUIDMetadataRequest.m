@@ -1,12 +1,7 @@
-/**
- * @author Serhii Mamontov
- * @version 4.14.0
- * @since 4.14.0
- * @copyright © 2010-2020 PubNub, Inc.
- */
-#import "PNBaseObjectsRequest+Private.h"
 #import "PNFetchUUIDMetadataRequest.h"
-#import "PNRequest+Private.h"
+#import "PNBaseObjectsRequest+Private.h"
+#import "PNBaseRequest+Private.h"
+#import "PNTransportRequest.h"
 
 
 #pragma mark Interface implementation
@@ -14,7 +9,7 @@
 @implementation PNFetchUUIDMetadataRequest
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
 @dynamic includeFields;
 
@@ -24,7 +19,7 @@
 }
 
 
-#pragma mark - Initialization & Configuration
+#pragma mark - Initialization and Configuration
 
 + (instancetype)new {
     return [self requestWithUUID:nil];
@@ -35,10 +30,7 @@
 }
 
 - (instancetype)initWithObject:(NSString *)objectType identifier:(NSString *)identifier {
-    if ((self = [super initWithObject:objectType identifier:identifier])) {
-        self.includeFields = PNUUIDCustomField;
-    }
-    
+    if ((self = [super initWithObject:objectType identifier:identifier]))  self.includeFields = PNUUIDCustomField;
     return self;
 }
 
