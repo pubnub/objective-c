@@ -1336,7 +1336,7 @@ NS_ASSUME_NONNULL_END
 
     PNErrorStatus *status = nil;
 
-    PNLogResult(self.client.logger, @"<PubNub> %@", [message stringifiedRepresentationWithSerializer:nil]);
+    PNLogResult(self.client.logger, @"<PubNub> %@", [message stringifiedRepresentationWithSerializer:self.client.coder]);
 
     if (message.data.decryptionError) {
         status = [PNErrorStatus objectWithOperation:PNSubscribeOperation
@@ -1352,7 +1352,7 @@ NS_ASSUME_NONNULL_END
 - (void)handleNewSignal:(PNSignalResult *)signal {
     if (!signal) return;
 
-    PNLogResult(self.client.logger, @"<PubNub> %@", [signal stringifiedRepresentationWithSerializer:nil]);
+    PNLogResult(self.client.logger, @"<PubNub> %@", [signal stringifiedRepresentationWithSerializer:self.client.coder]);
 
     [self.client.listenersManager notifySignal:signal];
 }
@@ -1360,7 +1360,7 @@ NS_ASSUME_NONNULL_END
 - (void)handleNewMessageAction:(PNMessageActionResult *)action {
     if (!action) return;
 
-    PNLogResult(self.client.logger, @"<PubNub> %@", [action stringifiedRepresentationWithSerializer:nil]);
+    PNLogResult(self.client.logger, @"<PubNub> %@", [action stringifiedRepresentationWithSerializer:self.client.coder]);
 
     [self.client.listenersManager notifyMessageAction:action];
 }
@@ -1368,7 +1368,7 @@ NS_ASSUME_NONNULL_END
 - (void)handleNewObjectsEvent:(PNObjectEventResult *)object {
     if (!object) return;
 
-    PNLogResult(self.client.logger, @"<PubNub> %@", [object stringifiedRepresentationWithSerializer:nil]);
+    PNLogResult(self.client.logger, @"<PubNub> %@", [object stringifiedRepresentationWithSerializer:self.client.coder]);
 
     [self.client.listenersManager notifyObjectEvent:object];
 }
@@ -1377,8 +1377,8 @@ NS_ASSUME_NONNULL_END
     PNErrorStatus *status = nil;
     
     if (file) {
-        PNLogResult(self.client.logger, @"<PubNub> %@", [file stringifiedRepresentationWithSerializer:nil]);
-       
+        PNLogResult(self.client.logger, @"<PubNub> %@", [file stringifiedRepresentationWithSerializer:self.client.coder]);
+
         if (file.data.decryptionError) {
             status = [PNErrorStatus objectWithOperation:PNSubscribeOperation
                                                category:PNDecryptionErrorCategory
@@ -1398,7 +1398,7 @@ NS_ASSUME_NONNULL_END
 
 - (void)handleNewPresenceEvent:(PNPresenceEventResult *)presence {
     if (presence) {
-        PNLogResult(self.client.logger, @"<PubNub> %@", [presence stringifiedRepresentationWithSerializer:nil]);
+        PNLogResult(self.client.logger, @"<PubNub> %@", [presence stringifiedRepresentationWithSerializer:self.client.coder]);
     }
 
     [self.client.listenersManager notifyPresenceEvent:presence];
