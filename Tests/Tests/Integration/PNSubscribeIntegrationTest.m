@@ -3,6 +3,7 @@
  * @copyright © 2010-2020 PubNub, Inc.
  */
 #import "PNRecordableTestCase.h"
+#import "PNSubscribeEventData+Private.h"
 #import "NSString+PNTest.h"
 
 
@@ -1381,6 +1382,39 @@ NS_ASSUME_NONNULL_END
             }
         }];
         
+        [self.client publish:publishedMessage toChannel:channel withCompletion:^(PNPublishStatus *status) {
+            XCTAssertFalse(status.isError);
+        }];
+    }];
+}
+
+- (void)testItShouldSubscribeToSingleChannelAndReceiveMessageWithUserTimetokenWhenPublished {
+    NSDictionary *publishedMessage = @{ @"test-message": [self randomizedValuesWithValues:@[@"message"]] };
+    NSString *channel = [self channelWithName:@"test-channel1"];
+
+
+    [self subscribeClient:self.client toChannels:@[channel] withPresence:NO];
+    [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
+
+
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        [self addMessageHandlerForClient:self.client
+                               withBlock:^(PubNub *client, PNMessageResult *message, BOOL *remove) {
+
+            if ([message.data.publisher isEqualToString:self.client.currentConfiguration.userID]) {
+                XCTAssertEqualObjects(message.data.message, publishedMessage);
+                XCTAssertEqualObjects(message.data.subscription, channel);
+                XCTAssertEqualObjects(message.data.channel, channel);
+                XCTAssertEqualObjects(message.data.userTimetoken.timetoken, 
+                                      @(message.data.timetoken.unsignedIntegerValue - 1));
+                XCTAssertNil(message.data.userTimetoken.region);
+                XCTAssertNotNil(message.data.userTimetoken);
+                *remove = YES;
+
+                handler();
+            }
+        }];
+
         [self.client publish:publishedMessage toChannel:channel withCompletion:^(PNPublishStatus *status) {
             XCTAssertFalse(status.isError);
         }];

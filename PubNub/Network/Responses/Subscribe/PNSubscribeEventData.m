@@ -65,7 +65,7 @@ NS_ASSUME_NONNULL_END
 }
 
 + (NSArray<NSString *> *)ignoredKeys {
-    return @[@"timetoken"];
+    return @[@"timetoken", @"region"];
 }
 
 - (NSString *)subscription {
