@@ -1,3 +1,10 @@
+## v5.6.1
+July 08 2024
+
+#### Fixed
+- Fix issue because of which wrong request timeout has been used.
+- Fix issue with `PNSubscribeCursorData` which should have an optional `region` to handle user timetoken in received real-time messages.
+
 ## v5.6.0
 June 27 2024
 
