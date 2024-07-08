@@ -54,6 +54,9 @@
 		A529271923B185F900FF46DD /* tests-configuration.json in Resources */ = {isa = PBXBuildFile; fileRef = A529271823B1855A00FF46DD /* tests-configuration.json */; };
 		A529271A23B185F900FF46DD /* tests-configuration.json in Resources */ = {isa = PBXBuildFile; fileRef = A529271823B1855A00FF46DD /* tests-configuration.json */; };
 		A529271D23B185FF00FF46DD /* tests-configuration.json in Resources */ = {isa = PBXBuildFile; fileRef = A529271823B1855A00FF46DD /* tests-configuration.json */; };
+		A53249102C304F90003510FF /* PNSubscribeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A532490F2C304F90003510FF /* PNSubscribeTest.m */; };
+		A53249112C304F90003510FF /* PNSubscribeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A532490F2C304F90003510FF /* PNSubscribeTest.m */; };
+		A53249122C304F90003510FF /* PNSubscribeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A532490F2C304F90003510FF /* PNSubscribeTest.m */; };
 		A53D0AEE23E9BF60001E72AF /* PNMembershipsObjectsAPICallBuilderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A53D0AED23E9BF60001E72AF /* PNMembershipsObjectsAPICallBuilderTest.m */; };
 		A53D0AEF23E9BF60001E72AF /* PNMembershipsObjectsAPICallBuilderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A53D0AED23E9BF60001E72AF /* PNMembershipsObjectsAPICallBuilderTest.m */; };
 		A53D0AF023E9BF60001E72AF /* PNMembershipsObjectsAPICallBuilderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A53D0AED23E9BF60001E72AF /* PNMembershipsObjectsAPICallBuilderTest.m */; };
@@ -230,6 +233,7 @@
 		A529270E23B181FE00FF46DD /* PNRecordableTestCase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNRecordableTestCase.h; sourceTree = "<group>"; };
 		A529270F23B181FE00FF46DD /* PNRecordableTestCase.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNRecordableTestCase.m; sourceTree = "<group>"; };
 		A529271823B1855A00FF46DD /* tests-configuration.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "tests-configuration.json"; sourceTree = "<group>"; };
+		A532490F2C304F90003510FF /* PNSubscribeTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNSubscribeTest.m; sourceTree = "<group>"; };
 		A53D0AED23E9BF60001E72AF /* PNMembershipsObjectsAPICallBuilderTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNMembershipsObjectsAPICallBuilderTest.m; sourceTree = "<group>"; };
 		A53D0AF123E9F42B001E72AF /* PNChannelMembersObjectsAPICallBuilderTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNChannelMembersObjectsAPICallBuilderTest.m; sourceTree = "<group>"; };
 		A53D0AF523E9F7D7001E72AF /* PNChannelMetadataAPICallBuilderTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNChannelMetadataAPICallBuilderTest.m; sourceTree = "<group>"; };
@@ -532,6 +536,14 @@
 			path = Helpers;
 			sourceTree = "<group>";
 		};
+		A532490E2C304F50003510FF /* Subscribe */ = {
+			isa = PBXGroup;
+			children = (
+				A532490F2C304F90003510FF /* PNSubscribeTest.m */,
+			);
+			path = Subscribe;
+			sourceTree = "<group>";
+		};
 		A53D0AEB23E9BF2C001E72AF /* Interfaces */ = {
 			isa = PBXGroup;
 			children = (
@@ -644,6 +656,7 @@
 		A59ECFDA23BB56E900E84300 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				A532490E2C304F50003510FF /* Subscribe */,
 				79CFA2D526DE25A400D206D4 /* Access Manager */,
 				A53D0AEB23E9BF2C001E72AF /* Interfaces */,
 				A53D0B0D23EA07BD001E72AF /* Objects */,
@@ -1165,6 +1178,7 @@
 				A53D0B2123EA0DB7001E72AF /* PNMessageActionsTest.m in Sources */,
 				A5F8E9DD2476D47C007F79AB /* PNObjectsAPICallBuilderTest.m in Sources */,
 				79CFA2D926DE25DC00D206D4 /* PNPAMTokenTest.m in Sources */,
+				A53249112C304F90003510FF /* PNSubscribeTest.m in Sources */,
 				A53D0B2723EA0EAD001E72AF /* PNMessageCountTest.m in Sources */,
 				A53D0B0623EA063A001E72AF /* PNSignalAPIBuilderTest.m in Sources */,
 				A53D0B1C23EA0C5C001E72AF /* PNUUIDMetadataObjectsTest.m in Sources */,
@@ -1219,6 +1233,7 @@
 				A53D0B2023EA0DB7001E72AF /* PNMessageActionsTest.m in Sources */,
 				A5F8E9DC2476D47A007F79AB /* PNObjectsAPICallBuilderTest.m in Sources */,
 				79CFA2D826DE25DA00D206D4 /* PNPAMTokenTest.m in Sources */,
+				A53249102C304F90003510FF /* PNSubscribeTest.m in Sources */,
 				A53D0B2623EA0EAD001E72AF /* PNMessageCountTest.m in Sources */,
 				A53D0B0523EA063A001E72AF /* PNSignalAPIBuilderTest.m in Sources */,
 				A53D0B1B23EA0C5C001E72AF /* PNUUIDMetadataObjectsTest.m in Sources */,
@@ -1248,6 +1263,7 @@
 				A53D0B2223EA0DB7001E72AF /* PNMessageActionsTest.m in Sources */,
 				A5F8E9DE2476D47D007F79AB /* PNObjectsAPICallBuilderTest.m in Sources */,
 				79CFA2DA26DE25DD00D206D4 /* PNPAMTokenTest.m in Sources */,
+				A53249122C304F90003510FF /* PNSubscribeTest.m in Sources */,
 				A53D0B2823EA0EAD001E72AF /* PNMessageCountTest.m in Sources */,
 				A53D0B0723EA063A001E72AF /* PNSignalAPIBuilderTest.m in Sources */,
 				A53D0B1D23EA0C5C001E72AF /* PNUUIDMetadataObjectsTest.m in Sources */,

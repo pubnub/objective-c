@@ -165,8 +165,8 @@ NS_ASSUME_NONNULL_END
 
 - (void)requestsWithBlock:(void (^)(NSArray<PNTransportRequest *> *))block {
     if (!block) return;
-    
-    [self.lock syncWriteAccessWithBlock:^{
+
+    [self.lock writeAccessWithBlock:^{
         block(self.requests);
         // Filter out potentially cancelled requests after block has been called.
         [self.requests filterUsingPredicate:self.cancelledPredicate];
@@ -182,20 +182,26 @@ NS_ASSUME_NONNULL_END
     
     PNWeakify(self);
     __block NSURLSessionTask *task;
-    task = [self.session dataTaskWithRequest:urlRequest
-                           completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+    __block NSURLSession *session;
+
+    [self.lock readAccessWithBlock:^{
+        session = self.session;
+    }];
+
+    task = [session dataTaskWithRequest:urlRequest
+                      completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         PNStrongify(self);
         BOOL retriableError = error && error.code != NSURLErrorCancelled;
         NSInteger statusCode = ((NSHTTPURLResponse *)response).statusCode;
         BOOL retriableStatusCode = statusCode >= 400 && statusCode != 403;
         NSTimeInterval delay = 0.f;
 
-        if ((retriableError || retriableStatusCode) && request.retriable) {
+        if ((retriableError || retriableStatusCode) && request.retriable && !request.cancelled) {
             PNRequestRetryConfiguration *retry = self.configuration.retryConfiguration;
             NSUInteger retryAttempt = request.retryAttempt + 1;
             delay = [retry retryDelayForFailedRequest:urlRequest withResponse:response retryAttempt:retryAttempt];
         }
-        
+
         if (delay > 0.f) {
             request.retryAttempt += 1;
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)),
@@ -219,15 +225,21 @@ NS_ASSUME_NONNULL_END
     
     PNWeakify(self);
     __block NSURLSessionTask *task;
-    task = [self.session downloadTaskWithRequest:urlRequest
-                               completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
+    __block NSURLSession *session;
+
+    [self.lock readAccessWithBlock:^{
+        session = self.session;
+    }];
+
+    task = [session downloadTaskWithRequest:urlRequest
+                          completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
         PNStrongify(self);
         BOOL retriableError = error && error.code != NSURLErrorCancelled;
         NSInteger statusCode = ((NSHTTPURLResponse *)response).statusCode;
         BOOL retriableStatusCode = statusCode >= 400 && statusCode != 403;
         NSTimeInterval delay = 0.f;
         
-        if ((retriableError || retriableStatusCode) && request.retriable) {
+        if ((retriableError || retriableStatusCode) && request.retriable && !request.cancelled) {
             PNRequestRetryConfiguration *retry = self.configuration.retryConfiguration;
             NSUInteger retryAttempt = request.retryAttempt + 1;
             delay = [retry retryDelayForFailedRequest:urlRequest withResponse:response retryAttempt:retryAttempt];
@@ -252,31 +264,38 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)sendRequest:(PNTransportRequest *)request withSessionTask:(NSURLSessionTask *)task {
-    [self.lock asyncWriteAccessWithBlock:^{
-        [self.requests addObject:request];
+    if (request.cancellable) {
+        [self.lock writeAccessWithBlock:^{
+            [self.requests addObject:request];
+        }];
 
-        PNLogRequest(self.configuration.logger, @"<PubNub::Network> %@ %@",
-                     request.stringifiedMethod, task.originalRequest.URL.absoluteString);
-        
-        if (request.cancellable) {
-            __weak __typeof(request) weakRequest = request;
-            PNWeakify(self);
-            
-            request.cancel = ^{
-                PNStrongify(self);
-                
-                weakRequest.cancelled = YES;
-                weakRequest.cancel = nil;
-                [task cancel];
+        __weak __typeof(request) weakRequest = request;
+        PNWeakify(self);
 
-                [self.lock asyncWriteAccessWithBlock:^{
-                    [self.requests removeObject:weakRequest];
-                }];
-            };
-        }
+        request.cancel = ^{
+            NSURLSessionTaskState taskState = task.state;
+            BOOL cancelled = weakRequest.cancelled;
 
-        [task resume];
-    }];
+            PNStrongify(self);
+
+            weakRequest.cancelled = YES;
+            weakRequest.cancel = nil;
+
+            if (cancelled || taskState != NSURLSessionTaskStateRunning) return;
+
+            [task cancel];
+
+            [self.lock writeAccessWithBlock:^{
+                __strong __typeof__(weakRequest) strongRequest = weakRequest;
+                if (strongRequest) [self.requests removeObject:strongRequest];
+            }];
+        };
+    }
+
+    PNLogRequest(self.configuration.logger, @"<PubNub::Network> %@ %@",
+                 request.stringifiedMethod, task.originalRequest.URL.absoluteString);
+
+    [task resume];
 }
 
 - (PNTransportRequest *)transportRequestFromTransportRequest:(PNTransportRequest *)request {
@@ -302,7 +321,7 @@ NS_ASSUME_NONNULL_END
                           taskCompletion:(NSURLSessionTask *)task
                             withResponse:(NSURLResponse *)response
                                     data:(NSData *)data {
-    [self.lock syncWriteAccessWithBlock:^{
+    [self.lock writeAccessWithBlock:^{
         request.cancel = nil;
         [self.requests removeObject:request];
         NSUInteger activeRequestsCount = self.requests.count;
@@ -362,7 +381,7 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)invalidate {
-    [self.lock syncWriteAccessWithBlock:^{
+    [self.lock writeAccessWithBlock:^{
         [self endBackgroundTasksCompletionIfRequired];
         [self.session invalidateAndCancel];
         self->_session = nil;
@@ -380,10 +399,10 @@ NS_ASSUME_NONNULL_END
 }
 
 - (NSURLSessionConfiguration *)urlSessionConfiguration {
-    NSString *identifier = [NSString stringWithFormat:@"com.pubnub.network.%p", self];
+    self.identifier = [NSString stringWithFormat:@"com.pubnub.transport.%p", self];
     NSURLSessionConfiguration *configuration = nil;
     
-    configuration = [NSURLSessionConfiguration pn_ephemeralSessionConfigurationWithIdentifier:identifier];
+    configuration = [NSURLSessionConfiguration pn_ephemeralSessionConfigurationWithIdentifier:self.identifier];
     configuration.HTTPMaximumConnectionsPerHost = self.configuration.maximumConnections;
     _HTTPAdditionalHeaders = [configuration.HTTPAdditionalHeaders copy];
     _cachePolicy = configuration.requestCachePolicy;
@@ -394,7 +413,7 @@ NS_ASSUME_NONNULL_END
 - (void)URLSession:(NSURLSession *)session didBecomeInvalidWithError:(NSError *)error {
     if (!error) return;
     
-    [self.lock syncWriteAccessWithBlock:^{
+    [self.lock writeAccessWithBlock:^{
         [self setupURLSession];
     }];
 }

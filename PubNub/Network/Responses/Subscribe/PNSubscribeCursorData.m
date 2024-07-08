@@ -32,6 +32,10 @@ NS_ASSUME_NONNULL_END
     };
 }
 
++ (NSArray<NSString *> *)optionalKeys {
+    return @[@"region"];
+}
+
 #pragma mark -
 
 

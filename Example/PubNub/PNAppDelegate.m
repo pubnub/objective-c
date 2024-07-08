@@ -595,10 +595,8 @@
         NSLog(@"Decryption error. Be sure the data is encrypted and/or encrypted with the correct cipher key.");
         NSLog(@"You can find the raw data returned from the server in the status.data attribute: %@", status.associatedObject);
         if (status.operation == PNSubscribeOperation) {
-            
-            NSLog(@"Decryption failed for message from channel: %@\nmessage: %@",
-                  ((PNMessageData *)status.associatedObject).channel, 
-                  ((PNMessageData *)status.associatedObject).message);
+            PNSubscribeMessageEventData *data = status.associatedObject;
+            NSLog(@"Decryption failed for message from channel: %@\nmessage: %@", data.channel, data.message);
         }
     }
     else if (status.category == PNMalformedFilterExpressionCategory) {

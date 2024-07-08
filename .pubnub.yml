@@ -1,9 +1,16 @@
 ---
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "5.6.0"
+version: "5.6.1"
 schema: 1
 changelog:
+  - date: 2024-07-08
+    version: v5.6.1
+    changes:
+      - type: bug
+        text: "Fix issue because of which wrong request timeout has been used."
+      - type: bug
+        text: "Fix issue with `PNSubscribeCursorData` which should have an optional `region` to handle user timetoken in received real-time messages."
   - date: 2024-06-27
     version: v5.6.0
     changes:
@@ -1358,7 +1365,7 @@ sdks:
           - distribution-type: source
             distribution-repository: GitHub release
             package-name: PubNub.framework
-            location: https://github.com/pubnub/objective-c/archive/refs/tags/v5.6.0.zip
+            location: https://github.com/pubnub/objective-c/archive/refs/tags/v5.6.1.zip
             supported-platforms:
               supported-operating-systems:
                 macOS:
@@ -1419,7 +1426,7 @@ sdks:
           - distribution-type: library
             distribution-repository: GitHub release
             package-name: PubNub.ios.xcframework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v5.6.0/PubNub.ios.xcframework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v5.6.1/PubNub.ios.xcframework.tar.gz
             supported-platforms:
               supported-operating-systems:
                 iOS:
@@ -1438,7 +1445,7 @@ sdks:
           - distribution-type: library
             distribution-repository: GitHub release
             package-name: PubNub.macos.framework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v5.6.0/PubNub.macos.framework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v5.6.1/PubNub.macos.framework.tar.gz
             supported-platforms:
               supported-operating-systems:
                 macOS:
@@ -1454,7 +1461,7 @@ sdks:
           - distribution-type: library
             distribution-repository: GitHub release
             package-name: PubNub.tvos.xcframework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v5.6.0/PubNub.tvos.xcframework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v5.6.1/PubNub.tvos.xcframework.tar.gz
             supported-platforms:
               supported-operating-systems:
                 tvOS:

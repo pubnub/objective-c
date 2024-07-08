@@ -118,7 +118,7 @@ NS_ASSUME_NONNULL_END
 - (NSDictionary *)dictionaryRepresentationWithSerializer:(id<PNObjectSerializer>)serializer {
     id processedData = self.responseData;
 
-    if (serializer) {
+    if (serializer && processedData) {
         NSError *err;
         NSData *serializedData = [serializer dataOfClass:[NSDictionary class] fromObject:processedData withError:&err];
         NSDictionary *serializedDictionary = [serializer.jsonSerializer JSONObjectWithData:serializedData error:&err];
@@ -128,7 +128,7 @@ NS_ASSUME_NONNULL_END
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     NSMutableDictionary *response = [@{
         @"Status code": @(self.statusCode),
-        @"Processed data": processedData
+        @"Processed data": processedData ?: @"no data"
     } mutableCopy];
 
     return @{@"Operation": PNOperationTypeStrings[self.operation],
