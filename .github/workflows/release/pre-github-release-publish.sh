@@ -68,9 +68,11 @@ build_framework macOS
 build_framework iOS
 build_framework tvOS
 
-if [[ "$(sw_vers -productVersion)" =~ ([0-9]+)\.([0-9]+) ]] && [[ ${BASH_REMATCH[1]} -ge 10 ]] && [[ ${BASH_REMATCH[2]} -ge 15 ]]; then
-  build_framework Catalyst
-else
-  echo -e "\n\n\n${CF}${BRCF}[${DF}deploy${CF}${BRCF}] WARNING: Framework with Catalyst support can't be build on 
+if [[ "$(sw_vers -productVersion)" =~ ([0-9]+)\.([0-9]+) ]]; then
+  if [[ ${BASH_REMATCH[1]} -eq 10 && ${BASH_REMATCH[2]} -ge 15 || ${BASH_REMATCH[1]} -gt 10 ]]; then
+    build_framework Catalyst
+  else
+    echo -e "\n\n\n${CF}${BRCF}[${DF}deploy${CF}${BRCF}] WARNING: Framework with Catalyst support can't be build on 
 macOS $(sw_vers -productVersion) (minimum 10.15 required)!\n\n\n${CF}"
+  fi
 fi
