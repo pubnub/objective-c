@@ -1362,7 +1362,8 @@ NS_ASSUME_NONNULL_END
 - (void)testItShouldSubscribeToSingleChannelAndReceiveMessageWhenPublished {
     NSDictionary *publishedMessage = @{ @"test-message": [self randomizedValuesWithValues:@[@"message"]] };
     NSString *channel = [self channelWithName:@"test-channel1"];
-    
+    NSString *expectedMessageType = @"test-message-type";
+
     
     [self subscribeClient:self.client toChannels:@[channel] withPresence:NO];
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
@@ -1374,6 +1375,7 @@ NS_ASSUME_NONNULL_END
                                    
             if ([message.data.publisher isEqualToString:self.client.currentConfiguration.userID]) {
                 XCTAssertEqualObjects(message.data.message, publishedMessage);
+                XCTAssertEqualObjects(message.data.customMessageType, expectedMessageType);
                 XCTAssertEqualObjects(message.data.subscription, channel);
                 XCTAssertEqualObjects(message.data.channel, channel);
                 *remove = YES;
@@ -1381,8 +1383,11 @@ NS_ASSUME_NONNULL_END
                 handler();
             }
         }];
-        
-        [self.client publish:publishedMessage toChannel:channel withCompletion:^(PNPublishStatus *status) {
+
+        PNPublishRequest *request = [PNPublishRequest requestWithChannel:channel];
+        request.message = publishedMessage;
+        request.customMessageType = expectedMessageType;
+        [self.client publishWithRequest:request completion:^(PNPublishStatus *status) {
             XCTAssertFalse(status.isError);
         }];
     }];
@@ -1945,6 +1950,42 @@ NS_ASSUME_NONNULL_END
     
     [self removeChannelGroup:channelGroups.firstObject usingClient:nil];
     [self removeChannelGroup:channelGroups.lastObject usingClient:nil];
+}
+
+
+#pragma mark - Tests :: Signals
+
+- (void)testItShouldSubscribeToSingleChannelAndReceiveSignalWhenSent {
+    NSDictionary *message = @{ @"test-message": [self randomizedValuesWithValues:@[@"message"]] };
+    NSString *channel = [self channelWithName:@"test-channel1"];
+    NSString *expectedMessageType = @"test-message-type";
+
+
+    [self subscribeClient:self.client toChannels:@[channel] withPresence:NO];
+    [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
+
+
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        [self addSignalHandlerForClient:self.client
+                               withBlock:^(PubNub *client, PNSignalResult *signal, BOOL *remove) {
+
+            if ([signal.data.publisher isEqualToString:self.client.currentConfiguration.userID]) {
+                XCTAssertEqualObjects(signal.data.message, message);
+                XCTAssertEqualObjects(signal.data.customMessageType, expectedMessageType);
+                XCTAssertEqualObjects(signal.data.subscription, channel);
+                XCTAssertEqualObjects(signal.data.channel, channel);
+                *remove = YES;
+
+                handler();
+            }
+        }];
+
+        PNSignalRequest *request = [PNSignalRequest requestWithChannel:channel signal:message];
+        request.customMessageType = expectedMessageType;
+        [self.client sendSignalWithRequest:request completion:^(PNSignalStatus *status) {
+            XCTAssertFalse(status.isError);
+        }];
+    }];
 }
 
 

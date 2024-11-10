@@ -32,7 +32,14 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Properties
 
 + (NSDictionary<NSString *,NSString *> *)codingKeys {
-    return @{ @"message": @"message" };
+    return @{
+        @"customMessageType": @"cmt",
+        @"message": @"message"
+    };
+}
+
++ (NSArray<NSString *> *)optionalKeys {
+    return @[@"customMessageType"];
 }
 
 + (NSArray<NSString *> *)ignoredKeys {

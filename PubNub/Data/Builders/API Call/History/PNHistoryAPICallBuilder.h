@@ -77,6 +77,17 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, strong) PNHistoryAPICallBuilder * (^limit)(NSUInteger limit);
 
 /**
+ * @brief Messages' custom type flag.
+ *
+ * @note Message / signal and file messages may contain user-provided type.
+ *
+ *@param includeCustomMessageType Whether custom message type should be included in response or not.
+ *
+ * @return API call configuration builder.
+ */
+@property (nonatomic, readonly, strong) PNHistoryAPICallBuilder * (^includeCustomMessageType)(BOOL includeCustomMessageType);
+
+/**
  * @brief Events' time tokens presence flag.
  *
  * @note Each fetched entry will contain published data under 'message' key and message publish
@@ -90,6 +101,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @since 4.5.4
  */
 @property (nonatomic, readonly, strong) PNHistoryAPICallBuilder * (^includeTimeToken)(BOOL includeTimeToken);
+
 
 /**
  * @brief Events' metadata presence flag.

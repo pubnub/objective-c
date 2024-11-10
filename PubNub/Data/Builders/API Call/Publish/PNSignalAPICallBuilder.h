@@ -39,6 +39,16 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, readonly, strong) PNSignalAPICallBuilder * (^message)(id message);
 
+/**
+ * @brief User-specified message type.
+ *
+ * \b Important: string limited by \b 3 - \b 50 case-sensitive alphanumeric characters with only \c - and \c _ special
+ * characters allowed.
+ *
+ * @return API call configuration builder.
+ */
+@property (nonatomic, readonly, strong) PNSignalAPICallBuilder * (^customMessageType)(NSString *customMessageType);
+
 
 #pragma mark - Execution
 

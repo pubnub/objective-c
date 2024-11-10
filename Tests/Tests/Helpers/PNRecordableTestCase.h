@@ -298,6 +298,23 @@ typedef void (^PNTClientDidReceiveStatusHandler)(PubNub *client, PNSubscribeStat
                                  usingClient:(nullable PubNub *)client;
 
 /**
+ * @brief Publish test messages to specified \c channel.
+ *
+ * @param messagesCount How many messages should be published to specified \c channel.
+ * @param channel Name of channel which will be used in test with pre-published messages.
+ * @param customMessageType Type which should be added as user-provided.
+ * @param client \b PubNub client which should be used to publish messages. Will use \c self.client
+ *     if passed \c nil.
+ *
+ * @return List of published messages (each entry includes: message, timetoken and some include
+ * metadata).
+ */
+- (NSArray<NSDictionary *> *)publishMessages:(NSUInteger)messagesCount
+                                   toChannel:(NSString *)channel
+                       withCustomMessageType:(nullable NSString *)customMessageType
+                                 usingClient:(nullable PubNub *)client;
+
+/**
  * @brief Publish test messages to set of specified \c channels.
  *
  * @param messagesCount How many messages should be published to each of specified \c channels.
@@ -309,6 +326,22 @@ typedef void (^PNTClientDidReceiveStatusHandler)(PubNub *client, PNSubscribeStat
  */
 - (NSDictionary<NSString *, NSArray<NSDictionary *> *> *)publishMessages:(NSUInteger)messagesCount
                                                               toChannels:(NSArray<NSString *> *)channels
+                                                             usingClient:(nullable PubNub *)client;
+
+/**
+ * @brief Publish test messages to set of specified \c channels.
+ *
+ * @param messagesCount How many messages should be published to each of specified \c channels.
+ * @param channels List of channel names which will be used in test with pre-published messages.
+ * @param customMessageType Type which should be added as user-provided. 
+ * @param client \b PubNub client which should be used to publish messages. Will use \c self.client
+ *     if passed \c nil.
+ *
+ * @return List of published message and timetokens mapped to channel names.
+ */
+- (NSDictionary<NSString *, NSArray<NSDictionary *> *> *)publishMessages:(NSUInteger)messagesCount
+                                                              toChannels:(NSArray<NSString *> *)channels
+                                                   withCustomMessageType:(nullable NSString *)customMessageType
                                                              usingClient:(nullable PubNub *)client;
 
 /**

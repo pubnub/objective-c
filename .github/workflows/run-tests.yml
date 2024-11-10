@@ -18,12 +18,11 @@ env:
   LANGUAGE: en_US.UTF-8
   LC_ALL: en_US.UTF-8
   LC_CTYPE: en_US.UTF-8
-  
+
 jobs:
   tests:
     name: Integration and Unit tests
-    runs-on:
-      group: macos-gh
+    runs-on: organization/macos-gh
     strategy:
       fail-fast: true
       matrix:
@@ -73,7 +72,7 @@ jobs:
   acceptance-tests:
     name: Run Acceptance tests
     runs-on:
-      group: macos-gh
+      group: organization/macos-gh
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -132,7 +131,7 @@ jobs:
     name: Tests
     needs: [tests, acceptance-tests]
     runs-on:
-      group: Default
+      group: organization/Default
     steps:
       - name: Tests summary
         run: echo -e "\033[38;2;95;215;0m\033[1mAll tests successfully passed"

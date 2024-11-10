@@ -21,6 +21,12 @@ NS_ASSUME_NONNULL_BEGIN
 ///clients on a channel.
 @property(assign, nonatomic, getter = shouldReplicate) BOOL replicate;
 
+/// User-specified message type.
+///
+/// > Important: string limited by **3**-**50** case-sensitive alphanumeric characters with only `-` and `_` special
+/// characters allowed.
+@property(copy, nullable, nonatomic) NSString *customMessageType;
+
 /// Whether `published` data should be stored and available with history API or not.
 @property(assign, nonatomic, getter = shouldStore) BOOL store;
 

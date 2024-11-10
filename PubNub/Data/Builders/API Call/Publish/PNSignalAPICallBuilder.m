@@ -39,6 +39,16 @@
     };
 }
 
+- (PNSignalAPICallBuilder * (^)(NSString * customMessageType))customMessageType {
+    return ^PNSignalAPICallBuilder * (NSString *customMessageType) {
+        if ([customMessageType isKindOfClass:[NSString class]]) {
+            [self setValue:customMessageType forParameter:NSStringFromSelector(_cmd)];
+        }
+
+        return self;
+    };
+}
+
 
 #pragma mark - Execution
 

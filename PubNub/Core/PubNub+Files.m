@@ -499,6 +499,7 @@ NS_ASSUME_NONNULL_END
                                                fileIdentifier:fileIdentifier
                                                          name:fileName];
     request.arbitraryQueryParameters = sendFileRequest.arbitraryQueryParameters;
+    request.customMessageType = sendFileRequest.customMessageType;
     request.metadata = sendFileRequest.fileMessageMetadata;
     request.store = sendFileRequest.fileMessageStore;
     request.message = sendFileRequest.message;

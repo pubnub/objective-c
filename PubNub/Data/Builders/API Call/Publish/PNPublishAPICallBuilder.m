@@ -35,6 +35,16 @@
     };
 }
 
+- (PNPublishAPICallBuilder * (^)(NSString *customMessageType))customMessageType {
+    return ^PNPublishAPICallBuilder * (NSString *customMessageType) {
+        if ([customMessageType isKindOfClass:[NSString class]]) {
+            [self setValue:customMessageType forParameter:NSStringFromSelector(_cmd)];
+        }
+
+        return self;
+    };
+}
+
 - (PNPublishAPICallBuilder * (^)(NSDictionary *metadata))metadata {
     
     return ^PNPublishAPICallBuilder * (NSDictionary *metadata) {

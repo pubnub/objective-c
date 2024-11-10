@@ -16,6 +16,12 @@ NS_ASSUME_NONNULL_BEGIN
 /// Arbitrary percent encoded query parameters which should be sent along with original API call.
 @property(strong, nullable, nonatomic) NSDictionary *arbitraryQueryParameters;
 
+/// User-specified message type.
+///
+/// > Important: string limited by **3**-**50** case-sensitive alphanumeric characters with only `-` and `_` special
+/// characters allowed.
+@property(copy, nullable, nonatomic) NSString *customMessageType;
+
 /// Name of channel to which signal should be send.
 @property(copy, nonatomic, readonly) NSString *channel;
 
