@@ -22,7 +22,8 @@ env:
 jobs:
   tests:
     name: Integration and Unit tests
-    runs-on: organization/macos-gh
+    runs-on:
+      group: organization/macos-gh
     strategy:
       fail-fast: true
       matrix:
