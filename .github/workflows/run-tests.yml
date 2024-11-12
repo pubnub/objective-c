@@ -59,7 +59,7 @@ jobs:
         run: xcrun simctl list -j
       - name: Install dependencies
         run: |
-          gem install xcpretty
+          gem install xcpretty -v 0.3.0
           cd ./Tests && pod install && cd ..
       - name: Configure test environment
         run: |
@@ -110,7 +110,7 @@ jobs:
           features-path: Tests/Support Files/Features
       - name: Install dependencies
         run: |
-          gem install xcpretty
+          gem install xcpretty -v 0.3.0
           cd ./Tests && pod install && cd ..
       - name: Configure test environment
         run: ./Tests/Support\ Files/Scripts/create-configuration.sh
