@@ -97,8 +97,12 @@ NS_ASSUME_NONNULL_END
         query[@"include_uuid"] = self.includeUUID ? @"true" : @"false";
     }
 
+    // `includeCustomMessageType` available only for v3 history and history with message actions.
+    if (self.multipleChannels || self.includeMessageActions) {
+        query[@"include_custom_message_type"] = self.includeCustomMessageType ? @"true" : @"false";
+    }
+
     if (!self.multipleChannels && self.includeTimeToken) query[@"include_token"] = @"true";
-    if (self.includeCustomMessageType) query[@"include_custom_message_type"] = @"true";
     if (self.arbitraryQueryParameters) [query addEntriesFromDictionary:self.arbitraryQueryParameters];
     
     return query;
