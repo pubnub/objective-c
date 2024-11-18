@@ -1,3 +1,9 @@
+## v5.7.0
+November 18 2024
+
+#### Added
+- Add custom message type support for the following APIs: publish, signal, share file, subscribe and history.
+
 ## v5.6.1
 July 08 2024
 

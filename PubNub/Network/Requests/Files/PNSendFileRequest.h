@@ -22,6 +22,12 @@ NS_ASSUME_NONNULL_BEGIN
 /// `NSDictionary` with values which should be used by **PubNub** service to filter `file messages`.
 @property(strong, nullable, nonatomic) NSDictionary *fileMessageMetadata;
 
+/// User-specified message type.
+///
+/// > Important: string limited by **3**-**50** case-sensitive alphanumeric characters with only `-` and `_` special
+/// characters allowed.
+@property(copy, nullable, nonatomic) NSString *customMessageType;
+
 /// Key which should be used for uploaded data `encryption`.
 ///
 /// This property allows setting up data _encryption_ using a different cipher key than the one set during **PubNub**

@@ -57,6 +57,16 @@
     };
 }
 
+- (PNPublishFileMessageAPICallBuilder * (^)(NSString *customMessageType))customMessageType {
+    return ^PNPublishFileMessageAPICallBuilder * (NSString *customMessageType) {
+        if ([customMessageType isKindOfClass:[NSString class]]) {
+            [self setValue:customMessageType forParameter:NSStringFromSelector(_cmd)];
+        }
+
+        return self;
+    };
+}
+
 - (PNPublishFileMessageAPICallBuilder * (^)(NSDictionary *metadata))metadata {
     return ^PNPublishFileMessageAPICallBuilder * (NSDictionary *metadata) {
         if ([metadata isKindOfClass:[NSDictionary class]]) {

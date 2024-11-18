@@ -30,6 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///   - compressed Whether message should be compressed before sending or not.
 ///   - replicate: Whether message should be replicated across the **PubNub** network and sent simultaneously to all
 ///   subscribed clients on a channel.
+///   - customMessageType: User-specified message type.
 ///   - metadata: `NSDictionary` with values which should be used by **PubNub** network to filter messages.
 ///   - queryParameters: List arbitrary query parameters which should be sent along with original API call.
 ///   - block: Publish completion block which.
@@ -40,6 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
                   ttl:(nullable NSNumber *)ttl
            compressed:(BOOL)compressed
       withReplication:(BOOL)replicate
+    customMessageType:(nullable NSString *)customMessageType
              metadata:(nullable NSDictionary<NSString *, id> *)metadata
       queryParameters:(nullable NSDictionary *)queryParameters
            completion:(nullable PNPublishCompletionBlock)block;
@@ -55,10 +57,12 @@ NS_ASSUME_NONNULL_BEGIN
 /// - Parameters:
 ///   - message Object (`NSString`, `NSNumber`, `NSArray`, `NSDictionary`) which will be sent with signal.
 ///   - channel: Name of the channel to which signal should be sent.
+///   - customMessageType: User-specified message type.
 ///   - queryParameters: List arbitrary query parameters which should be sent along with original API call.
 ///   - block: Signal completion block.
 - (void)signal:(id)message
                 channel:(NSString *)channel
+      customMessageType:(nullable NSString *)customMessageType
     withQueryParameters:(nullable NSDictionary *)queryParameters
              completion:(nullable PNSignalCompletionBlock)block;
 
@@ -132,12 +136,13 @@ NS_ASSUME_NONNULL_END
         NSString *channel = parameters[NSStringFromSelector(@selector(channel))];
         NSNumber *shouldStore = parameters[NSStringFromSelector(@selector(shouldStore))];
         NSNumber *ttl = parameters[NSStringFromSelector(@selector(ttl))];
-        
+
         if (shouldStore && !shouldStore.boolValue) ttl = nil;
 
         PNPublishFileMessageRequest *request = [PNPublishFileMessageRequest requestWithChannel:channel
                                                                                 fileIdentifier:identifier
                                                                                           name:filename];
+        request.customMessageType = parameters[NSStringFromSelector(@selector(customMessageType))];
         request.metadata = parameters[NSStringFromSelector(@selector(metadata))];
         request.message = parameters[NSStringFromSelector(@selector(message))];
         request.arbitraryQueryParameters = parameters[@"queryParam"];
@@ -188,12 +193,17 @@ NS_ASSUME_NONNULL_END
     __weak __typeof(self) weakSelf = self;
     builder = [PNSignalAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
                                                                   NSDictionary *parameters) {
+        NSString *customMessageType = parameters[NSStringFromSelector(@selector(customMessageType))];
         id message = parameters[NSStringFromSelector(@selector(message))];
         NSString *channel = parameters[NSStringFromSelector(@selector(channel))];
         NSDictionary *queryParam = parameters[@"queryParam"];
         id block = parameters[@"block"];
         
-        [weakSelf signal:message channel:channel withQueryParameters:queryParam completion:block];
+        [weakSelf signal:message
+                 channel:channel
+       customMessageType:customMessageType
+     withQueryParameters:queryParam
+              completion:block];
     }];
     
     return ^PNSignalAPICallBuilder * {
@@ -493,6 +503,7 @@ NS_ASSUME_NONNULL_END
                   ttl:nil
            compressed:compressed
       withReplication:YES
+    customMessageType:nil
              metadata:metadata
       queryParameters:nil
            completion:block];
@@ -505,12 +516,15 @@ NS_ASSUME_NONNULL_END
                   ttl:(NSNumber *)ttl
            compressed:(BOOL)compressed
       withReplication:(BOOL)replicate
+    customMessageType:(nullable NSString *)customMessageType
              metadata:(NSDictionary<NSString *, id> *)metadata
       queryParameters:(NSDictionary *)queryParameters
            completion:(PNPublishCompletionBlock)block {
 
     PNPublishRequest *request = [PNPublishRequest requestWithChannel:channel];
+
     request.arbitraryQueryParameters = queryParameters;
+    request.customMessageType = customMessageType;
     request.replicate = replicate;
     request.compress = compressed;
     request.metadata = metadata;
@@ -554,15 +568,17 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)signal:(id)message channel:(NSString *)channel withCompletion:(PNSignalCompletionBlock)block {
-    [self signal:message channel:channel withQueryParameters:nil completion:block];
+    [self signal:message channel:channel customMessageType:nil withQueryParameters:nil completion:block];
 }
 
 - (void)signal:(id)message
                 channel:(NSString *)channel
+      customMessageType:(nullable NSString *)customMessageType
     withQueryParameters:(NSDictionary *)queryParameters
              completion:(PNSignalCompletionBlock)block {
 
     PNSignalRequest *request = [PNSignalRequest requestWithChannel:channel signal:message];
+    request.customMessageType = customMessageType;
     request.arbitraryQueryParameters = queryParameters;
     [self sendSignalWithRequest:request completion:block];
 }
@@ -692,6 +708,7 @@ NS_ASSUME_NONNULL_END
                   ttl:ttl
            compressed:compressed.boolValue
       withReplication:(replicate ? replicate.boolValue : YES)
+    customMessageType:parameters[NSStringFromSelector(@selector(customMessageType))]
              metadata:parameters[NSStringFromSelector(@selector(metadata))]
       queryParameters:parameters[@"queryParam"]
            completion:parameters[@"block"]];

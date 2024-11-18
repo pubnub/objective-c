@@ -78,7 +78,8 @@ NS_ASSUME_NONNULL_END
 
 - (NSDictionary *)query {
     NSMutableDictionary *query = [NSMutableDictionary new];
-    
+
+    if (self.customMessageType.length) query[@"custom_message_type"] = self.customMessageType;
     if (self.preparedMetadata.length) query[@"meta"] = self.preparedMetadata;
     if (self.ttl > 0) query[@"ttl"] = @(self.ttl).stringValue;
     if (!self.shouldReplicate) query[@"norep"] = @"true";

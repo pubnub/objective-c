@@ -55,6 +55,13 @@
     };
 }
 
+- (PNHistoryAPICallBuilder * (^)(BOOL))includeCustomMessageType {
+    return ^PNHistoryAPICallBuilder * (BOOL includeCustomMessageType) {
+        [self setValue:@(includeCustomMessageType) forParameter:NSStringFromSelector(_cmd)];
+        return self;
+    };
+}
+
 - (PNHistoryAPICallBuilder * (^)(BOOL includeTimeToken))includeTimeToken {
     return ^PNHistoryAPICallBuilder * (BOOL includeTimeToken) {
         [self setValue:@(includeTimeToken) forParameter:NSStringFromSelector(_cmd)];

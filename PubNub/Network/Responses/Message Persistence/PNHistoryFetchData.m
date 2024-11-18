@@ -189,6 +189,7 @@ NS_ASSUME_NONNULL_END
     __block NSError *decError;
 
     [updates enumerateObjectsUsingBlock:^(id entry, __unused NSUInteger entryIdx, __unused BOOL *stop) {
+        NSString *customMessageType = nil;
         NSDictionary *actions = nil;
         NSDictionary *metadata = nil;
         NSNumber *messageType = nil;
@@ -197,8 +198,10 @@ NS_ASSUME_NONNULL_END
         id message = entry;
 
         if ([entry isKindOfClass:[NSDictionary class]] && entry[@"message"] &&
-            (entry[@"timetoken"] || entry[@"meta"] || entry[@"actions"] || entry[@"message_type"] || entry[@"uuid"])) {
+            (entry[@"timetoken"] || entry[@"meta"] || entry[@"actions"] || entry[@"message_type"] ||
+             entry[@"custom_message_type"] || entry[@"uuid"])) {
 
+            customMessageType = entry[@"custom_message_type"];
             messageType = entry[@"message_type"];
             timeToken = entry[@"timetoken"];
             message = entry[@"message"];
@@ -216,9 +219,10 @@ NS_ASSUME_NONNULL_END
         message = [self decryptedMessageFromData:message withCryptoModule:cryptoModule error:&error];
         
         if (message) {
-            if (timeToken || metadata || actions || messageType || senderUUID) {
+            if (timeToken || metadata || actions || messageType || customMessageType || senderUUID) {
                 NSMutableDictionary *messageWithInfo = [@{ @"message": message } mutableCopy];
                 if ([messageType isKindOfClass:[NSNumber class]]) messageWithInfo[@"messageType"] = messageType;
+                if (customMessageType) messageWithInfo[@"customMessageType"] = customMessageType;
                 if (timeToken) messageWithInfo[@"timetoken"] = timeToken;
                 if (metadata) messageWithInfo[@"metadata"] = metadata;
                 if (actions) messageWithInfo[@"actions"] = actions;

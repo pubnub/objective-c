@@ -44,7 +44,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.2.2
-          bundler-cache: true
+          bundler-cache: false
       - name: Setup CocoaPods
         run: gem install cocoapods
       - name: Cache installed Pods
@@ -59,7 +59,7 @@ jobs:
         run: xcrun simctl list -j
       - name: Install dependencies
         run: |
-          gem install xcpretty
+          gem install xcpretty -v 0.3.0
           cd ./Tests && pod install && cd ..
       - name: Configure test environment
         run: |
@@ -81,7 +81,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.2.2
-          bundler-cache: true
+          bundler-cache: false
       - name: Setup Node.js 20.x
         uses: actions/setup-node@v4
         with:
@@ -110,7 +110,7 @@ jobs:
           features-path: Tests/Support Files/Features
       - name: Install dependencies
         run: |
-          gem install xcpretty
+          gem install xcpretty -v 0.3.0
           cd ./Tests && pod install && cd ..
       - name: Configure test environment
         run: ./Tests/Support\ Files/Scripts/create-configuration.sh

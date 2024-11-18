@@ -60,6 +60,7 @@ NS_ASSUME_NONNULL_END
 - (NSDictionary *)query {
     NSMutableDictionary *query = [NSMutableDictionary new];
 
+    if (self.customMessageType.length) query[@"custom_message_type"] = self.customMessageType;
     if (self.arbitraryQueryParameters.count) [query addEntriesFromDictionary:self.arbitraryQueryParameters];
 
     return query.count ? query : nil;

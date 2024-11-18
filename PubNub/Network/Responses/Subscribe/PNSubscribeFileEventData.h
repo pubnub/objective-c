@@ -12,6 +12,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Properties
 
+/// User-specified message type.
+@property(strong, nullable, nonatomic, readonly) NSString *customMessageType;
+
 /// Information about file which has been uploaded to `channel`.
 @property (nonatomic, nullable, readonly, strong) PNFile *file;
 

@@ -182,6 +182,52 @@ NS_ASSUME_NONNULL_END
     [self waitTask:@"waitForDistribution" completionFor:1.f];
 }
 
+- (void)testItShouldSendFileFromDataWithCustomMessageTypeAndReceiveFromHistory {
+    NSString *fileName = [[NSUUID UUID].UUIDString stringByAppendingPathExtension:@"txt"];
+    NSData *data = [[NSUUID UUID].UUIDString dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *excpectedMessageType = @"profile-image";
+
+
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        PNSendFileRequest *request = [PNSendFileRequest requestWithChannel:self.channel fileName:fileName data:data];
+        request.customMessageType = excpectedMessageType;
+        [self.client sendFileWithRequest:request completion:^(PNSendFileStatus *status) {
+            XCTAssertFalse(status.isError);
+            XCTAssertTrue(status.data.fileUploaded);
+            XCTAssertNotNil(status.data.fileIdentifier);
+            XCTAssertNotNil(status.data.timetoken);
+            XCTAssertNotNil(status.data.fileName);
+            XCTAssertEqualObjects(status.data.fileName, fileName);
+            XCTAssertEqual(status.operation, PNSendFileOperation);
+            XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+
+            handler();
+        }];
+    }];
+
+    [self waitTask:@"waitForDistribution" completionFor:2.f];
+
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        PNHistoryFetchRequest *request = [PNHistoryFetchRequest requestWithChannels:@[self.channel]];
+        request.includeCustomMessageType = YES;
+
+        [self.client fetchHistoryWithRequest:request completion:^(PNHistoryResult *result, PNErrorStatus *status) {
+            NSArray<NSDictionary *> *messages = result.data.messages;
+            XCTAssertFalse(status.isError);
+            XCTAssertNotNil(messages);
+            XCTAssertEqual(messages.count, 1);
+            XCTAssertNotNil(messages.firstObject[@"uuid"]);
+            XCTAssertNotNil(messages.firstObject[@"messageType"]);
+            XCTAssertEqualObjects(messages.firstObject[@"messageType"], @4);
+            XCTAssertEqualObjects(messages.firstObject[@"customMessageType"], excpectedMessageType);
+
+            handler();
+        }];
+    }];
+
+    [self waitTask:@"waitForDistribution" completionFor:1.f];
+}
+
 - (void)testItShouldSendFileFromFileAndReceiveStatusWithExpectedOperationAndCategory {
     NSString *fileName = [[NSUUID UUID].UUIDString stringByAppendingPathExtension:@"txt"];
     NSURL *fileURL = [NSURL URLWithString:[self.workingDirectory stringByAppendingPathComponent:fileName]];

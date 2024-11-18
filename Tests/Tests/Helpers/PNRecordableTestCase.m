@@ -12,8 +12,12 @@
 #pragma mark Defines
 
 #define WRITING_CASSETTES 0
-#define PUBNUB_LOGGER_ENABLED NO
 #define PUBNUB_DISABLE_LOGGER
+#ifndef PUBNUB_DISABLE_LOGGER
+#define PUBNUB_LOGGER_ENABLED YES
+#else
+#define PUBNUB_LOGGER_ENABLED NO
+#endif
 
 
 #pragma mark - Types and structures
@@ -491,7 +495,7 @@ NS_ASSUME_NONNULL_END
 
 - (void)updateVCRConfigurationFromDefaultConfiguration:(YHVConfiguration *)configuration {
 #if WRITING_CASSETTES
-    NSString *cassettesPath = @"<path to the project>/Tests/Support Files/Fixtures";
+    NSString *cassettesPath = @"/Users/sergey/Documents/Develop/Objective-C/PubNub SDK (public)/Tests/Support Files/Fixtures";
     NSString *cassetteName = [NSStringFromClass([self class]) stringByAppendingPathExtension:@"bundle"];
     configuration.cassettesPath = [cassettesPath stringByAppendingPathComponent:cassetteName];
 #endif // WRITING_CASSETTES
@@ -764,7 +768,11 @@ NS_ASSUME_NONNULL_END
                                                                      subscribeKey:subscribeKey
                                                                            userID:uuid];
     configuration.authKey = [self pubNubAuthForTestCaseWithName:self.name];
-    
+
+    // TODO: REMOVE
+//    configuration.origin = @"ingress-tcp-pub.az1.pdx1.aws.int.ps.pn";
+//    configuration.TLSEnabled = false;
+
     return configuration;
 }
 
@@ -779,7 +787,7 @@ NS_ASSUME_NONNULL_END
 
 - (PubNub *)createPubNubForUser:(NSString *)user {
     PNConfiguration *configuration = [self configurationForTestCaseWithName:self.name];
-    
+
     return [self createPubNubForUser:user withConfiguration:configuration];
 }
 
@@ -956,7 +964,15 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Publish
 
-- (NSArray<NSDictionary *> *)publishMessages:(NSUInteger)messagesCount toChannel:(NSString *)channel
+- (NSArray<NSDictionary *> *)publishMessages:(NSUInteger)messagesCount
+                                   toChannel:(NSString *)channel
+                                 usingClient:(PubNub *)client {
+    return [self publishMessages:messagesCount toChannel:channel withCustomMessageType:nil usingClient:client];
+}
+
+- (NSArray<NSDictionary *> *)publishMessages:(NSUInteger)messagesCount
+                                   toChannel:(NSString *)channel
+                       withCustomMessageType:(NSString *)customMessageType
                                  usingClient:(PubNub *)client {
     
     NSMutableArray *messages = [NSMutableArray new];
@@ -972,7 +988,8 @@ NS_ASSUME_NONNULL_END
             };
             
             PNPublishAPICallBuilder *builder = client.publish().message(message).channel(channel);
-            
+            if (customMessageType) builder = builder.customMessageType(customMessageType);
+
             if (messageIdx % 2 == 0) {
                 metadata = @{ @"time": message[@"time"] };
                 builder = builder.metadata(metadata);
@@ -1013,11 +1030,26 @@ NS_ASSUME_NONNULL_END
     NSMutableDictionary *channelMessages = [NSMutableDictionary new];
     
     for (NSString *channel in channels) {
-        channelMessages[channel] = [self publishMessages:messagesCount
-                                               toChannel:channel
-                                             usingClient:client];
+        channelMessages[channel] = [self publishMessages:messagesCount toChannel:channel usingClient:client];
     }
     
+    return channelMessages;
+}
+
+- (NSDictionary<NSString *, NSArray<NSDictionary *> *> *)publishMessages:(NSUInteger)messagesCount
+                                                              toChannels:(NSArray<NSString *> *)channels
+                                                   withCustomMessageType:(NSString *)customMessageType
+                                                             usingClient:(PubNub *)client {
+
+    NSMutableDictionary *channelMessages = [NSMutableDictionary new];
+
+    for (NSString *channel in channels) {
+        channelMessages[channel] = [self publishMessages:messagesCount
+                                               toChannel:channel
+                                   withCustomMessageType:customMessageType
+                                             usingClient:client];
+    }
+
     return channelMessages;
 }
 

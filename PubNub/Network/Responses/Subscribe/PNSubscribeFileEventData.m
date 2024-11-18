@@ -32,13 +32,14 @@ NS_ASSUME_NONNULL_END
 
 + (NSDictionary<NSString *,NSString *> *)codingKeys {
     return @{
+        @"customMessageType": @"cmt",
         @"message": @"message",
         @"file": @"file"
     };
 }
 
 + (NSArray<NSString *> *)optionalKeys {
-    return @[@"message"];
+    return @[@"customMessageType", @"message"];
 }
 
 + (NSArray<NSString *> *)ignoredKeys {

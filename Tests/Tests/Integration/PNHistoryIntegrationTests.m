@@ -225,6 +225,100 @@
     [self deleteHistoryForChannel:channel usingClient:nil];
 }
 
+- (void)testItShouldFetchHistoryForChannelWithoutCustomMessageTypeWhenIncludeCustomMessageTypeFlagIsSet {
+    NSString *channel = [self channelWithName:@"test-channel"];
+    NSString *expectedMessageType = @"test-message";
+    NSUInteger expectedMessagesCount = 4;
+    NSUInteger checkedMessageIdx = (NSUInteger)(expectedMessagesCount * 0.5f);
+
+    [self publishMessages:expectedMessagesCount
+                toChannel:channel
+    withCustomMessageType:expectedMessageType
+              usingClient:nil];
+
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        PNHistoryFetchRequest *request = [PNHistoryFetchRequest requestWithChannel:channel];
+        request.includeCustomMessageType = YES;
+        [self.client fetchHistoryWithRequest:request completion:^(PNHistoryResult * result, PNErrorStatus * status) {
+            NSArray *fetchedMessages = result.data.messages;
+            XCTAssertNil(status);
+            XCTAssertNotNil(fetchedMessages);
+            XCTAssertNil(fetchedMessages[checkedMessageIdx][@"customMessageType"]);
+            XCTAssertEqual(result.operation, PNHistoryOperation);
+
+            handler();
+        }];
+    }];
+
+    [self deleteHistoryForChannel:channel usingClient:nil];
+}
+
+- (void)testItShouldFetchHistoryForChannelWithCustomMessageTypeWhenIncludeCustomMessageTypeAndIncludeMessageActionsFlagIsSet {
+    NSString *channel = [self channelWithName:@"test-channel"];
+    NSString *expectedMessageType = @"test-message";
+    NSUInteger expectedMessagesCount = 4;
+    NSUInteger expectedActionsCount = 4;
+    NSUInteger checkedMessageIdx = (NSUInteger)(expectedMessagesCount * 0.5f);
+
+    NSArray<NSDictionary *> *publishedMessages = [self publishMessages:expectedMessagesCount
+                                                             toChannel:channel
+                                                 withCustomMessageType:expectedMessageType
+                                                           usingClient:nil];
+    NSArray<NSNumber *> *timetokens = [publishedMessages valueForKey:@"timetoken"];
+    [self addActions:expectedActionsCount toMessages:timetokens inChannel:channel usingClient:nil];
+
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        PNHistoryFetchRequest *request = [PNHistoryFetchRequest requestWithChannel:channel];
+        request.includeCustomMessageType = YES;
+        request.includeMessageActions = YES;
+        [self.client fetchHistoryWithRequest:request completion:^(PNHistoryResult * result, PNErrorStatus * status) {
+            NSArray *fetchedMessages = result.data.messages;
+            XCTAssertNil(status);
+            XCTAssertNotNil(fetchedMessages);
+            XCTAssertNotNil(fetchedMessages[checkedMessageIdx][@"customMessageType"]);
+            XCTAssertEqualObjects(fetchedMessages[checkedMessageIdx][@"customMessageType"], expectedMessageType);
+            XCTAssertEqual(result.operation, PNHistoryWithActionsOperation);
+
+            handler();
+        }];
+    }];
+
+    [self deleteHistoryForChannel:channel usingClient:nil];
+}
+
+- (void)testItShouldFetchHistoryForChannelsWithCustomMessageTypeWhenIncludeCustomMessageTypeFlagIsSet {
+    NSArray<NSString *> *channels = @[
+        [self channelWithName:@"test-channel-alpha"],
+        [self channelWithName:@"test-channel-beta"]
+    ];
+    NSString *expectedMessageType = @"test-message";
+    NSUInteger expectedMessagesCount = 4;
+    NSUInteger checkedMessageIdx = (NSUInteger)(expectedMessagesCount * 0.5f);
+
+    [self publishMessages:expectedMessagesCount
+               toChannels:channels
+    withCustomMessageType:expectedMessageType
+              usingClient:nil];
+
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        PNHistoryFetchRequest *request = [PNHistoryFetchRequest requestWithChannels:channels];
+        request.includeCustomMessageType = YES;
+        request.limit = 25;
+        [self.client fetchHistoryWithRequest:request completion:^(PNHistoryResult * result, PNErrorStatus * status) {
+            NSDictionary<NSString *,NSArray<NSDictionary *> *> *fetchedMessages = result.data.channels;
+            XCTAssertNil(status);
+            XCTAssertNotNil(fetchedMessages);
+            XCTAssertEqualObjects(fetchedMessages[channels.lastObject][checkedMessageIdx][@"customMessageType"],
+                                  expectedMessageType);
+            XCTAssertEqual(result.operation, PNHistoryForChannelsOperation);
+
+            handler();
+        }];
+    }];
+
+    [self deleteHistoryForChannels:channels usingClient:nil];
+}
+
 - (void)testItShouldFetchHistoryForChannelWithEncryptedMessagesAndDecryptRandomIV {
     NSString *channel = [self channelWithName:@"test-channel"];
     NSUInteger expectedMessagesCount = 4;

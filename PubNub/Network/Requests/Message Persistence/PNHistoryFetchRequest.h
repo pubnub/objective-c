@@ -19,6 +19,14 @@ NS_ASSUME_NONNULL_BEGIN
 ///  > Notes: Maximum 500 channels.
 @property(copy, nonatomic, readonly) NSArray<NSString *> *channels;
 
+/// Include messages' custom type flag.
+///
+/// Message / signal and file messages may contain user-provided type.
+///
+/// > Important: This option can be used only if a request created with `requestWithChannels` or `includeMessageActions`
+/// options is set to `YES`.
+@property(assign, nonatomic) BOOL includeCustomMessageType;
+
 /// Include events' actions presence flag.
 ///
 /// Each fetched entry will contain published data under `message` key and added `message actions` will be available

@@ -11,6 +11,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Properties
 
+/// User-specified message type.
+@property(strong, nullable, nonatomic, readonly) NSString *customMessageType;
+
 /// Message which has been delivered through data object live feed.
 @property(strong, nullable, nonatomic, readonly) id message;
 
