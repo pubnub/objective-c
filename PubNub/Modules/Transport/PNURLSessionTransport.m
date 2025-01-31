@@ -281,14 +281,14 @@ NS_ASSUME_NONNULL_END
             weakRequest.cancelled = YES;
             weakRequest.cancel = nil;
 
-            if (cancelled || taskState != NSURLSessionTaskStateRunning) return;
-
-            [task cancel];
-
             [self.lock writeAccessWithBlock:^{
                 __strong __typeof__(weakRequest) strongRequest = weakRequest;
                 if (strongRequest) [self.requests removeObject:strongRequest];
             }];
+
+            if (cancelled || taskState != NSURLSessionTaskStateRunning) return;
+
+            [task cancel];
         };
     }
 
