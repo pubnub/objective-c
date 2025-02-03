@@ -1,3 +1,9 @@
+## v5.7.1
+February 03 2025
+
+#### Fixed
+- Fix issue which caused a crash because of an attempt to access nullified request cancellation block.
+
 ## v5.7.0
 November 18 2024
 

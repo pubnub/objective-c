@@ -406,7 +406,8 @@ NS_ASSUME_NONNULL_END
 - (void)cancelSubscribeOperations {
     [self.subscriptionNetwork requestsWithBlock:^(NSArray<PNTransportRequest *> *requests) {
         for(PNTransportRequest *request in requests) {
-            if ([request.path hasPrefix:kPNSubscribeAPIPrefix]) request.cancel();
+            dispatch_block_t cancelBlock = request.cancel;
+            if ([request.path hasPrefix:kPNSubscribeAPIPrefix] && cancelBlock) cancelBlock();
         }
     }];
 }
