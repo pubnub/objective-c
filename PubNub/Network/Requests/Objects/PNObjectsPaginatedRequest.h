@@ -15,6 +15,12 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 /// List of criteria (name of the field) which will be used for sorting in ascending order (by default).
 /// To change sorting order, append `:asc` (for ascending) or `:desc` (descending) to field name.
+/// Fields available for sorting:
+/// - `id`
+/// - `name`
+/// - `status`
+/// - `type`
+/// - `updated`
 @property(strong, nullable, nonatomic) NSArray<NSString *> *sort;
 
 /// Expression to filter out results basing on specified criteria.
@@ -25,7 +31,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Previously-returned cursor bookmark for fetching the previous page.
 ///
-/// > Note: Ignored if you also supply the `start` parameter.
+/// > Note: Ignored if you also provide the `start` parameter.
 @property(copy, nullable, nonatomic) NSString *end;
 
 /// Number of objects to return in response..

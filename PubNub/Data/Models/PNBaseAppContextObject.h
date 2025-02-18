@@ -22,10 +22,16 @@ NS_ASSUME_NONNULL_BEGIN
 /// > Note: Value will be `nil` for objects received through subscribe real-time updates.
 @property(strong, nullable, nonatomic, readonly) NSDate *updated;
 
+///`App Context` object status.
+@property(copy, nullable, nonatomic, readonly) NSString *status;
+
 /// `App Context` object version identifier.
 ///
 /// > Note: Value will be `nil` for objects received through subscribe real-time updates.
 @property(copy, nullable, nonatomic, readonly) NSString *eTag;
+
+/// `App Context` object type information.
+@property(copy, nullable, nonatomic, readonly) NSString *type;
 
 #pragma mark -
 

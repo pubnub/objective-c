@@ -26,6 +26,12 @@ NS_ASSUME_NONNULL_BEGIN
 /// > Note:  Default value (**PNUUIDCustomField** ) can be reset by setting `0`.
 @property(assign, nonatomic) PNUUIDFields includeFields;
 
+/// UUID's `metadata` object `status`.
+@property(strong, nullable, nonatomic) NSString *status;
+
+/// UUID's `metadata` object `type`.
+@property(strong, nullable, nonatomic) NSString *type;
+
 /// Email address.
 @property(copy, nullable, nonatomic) NSString *email;
 

@@ -535,17 +535,29 @@ typedef NS_ENUM(NSUInteger, PNAPNSEnvironment) {
 /// Options with possible additional `channel` / `membership` fields which can be included to response.
 typedef NS_OPTIONS(NSUInteger, PNMembershipFields) {
     /// Include how many memberships `UUID` has.
-    PNMembershipsTotalCountField = 1 << 4,
+    PNMembershipsTotalCountField = 1 << 0,
 
     /// Include field with additional information from `metadata` which has been associated with `UUID` during
     /// `membership set` requests.
-    PNMembershipCustomField = 1 << 5,
-    
+    PNMembershipCustomField = 1 << 1,
+
+    /// Include field with `metadata` status which has been associated with `UUID` during `membership set` requests.
+    PNMembershipStatusField = 1 << 2,
+
+    /// Include field with `metadata` type which has been associated with `UUID` during `membership set` requests.
+    PNMembershipTypeField = 1 << 3,
+
     /// Include `channel`'s  `metadata` into response (not only name).
-    PNMembershipChannelField = 1 << 6,
-    
+    PNMembershipChannelField = 1 << 4,
+
     /// Include `channel`'s additional information which has been used during `channel` `metadata set` requests.
-    PNMembershipChannelCustomField = 1 << 7
+    PNMembershipChannelCustomField = 1 << 5,
+
+    /// Include `channel`'s `status` which has been used during `channel` `metadata set` requests.
+    PNMembershipChannelStatusField = 1 << 6,
+
+    /// Include `channel`'s `type` which has been used during `channel` `metadata set` requests.
+    PNMembershipChannelTypeField = 1 << 7
 };
 
 /// Options with possible additional `UUID` / `member` fields which can be included to response.
@@ -557,31 +569,59 @@ typedef NS_OPTIONS(NSUInteger, PNChannelMemberFields) {
     /// member set` requests.
     PNChannelMemberCustomField = 1 << 9,
 
+    /// Include field with `metadata` status which has been associated with `UUID` during `channel member set` requests.
+    PNChannelMemberStatusField = 1 << 10,
+
+    /// Include field with `metadata` type which has been associated with `UUID` during `channel member set` requests.
+    PNChannelMemberTypeField = 1 << 11,
+
     /// Include `UUID`'s `metadata` into response (not only identifier).
-    PNChannelMemberUUIDField = 1 << 10,
-    
+    PNChannelMemberUUIDField = 1 << 12,
+
     /// Include `UUID`'s additional information which has been used during `UUID metadata set` requests.
-    PNChannelMemberUUIDCustomField = 1 << 11
+    PNChannelMemberUUIDCustomField = 1 << 13,
+
+    /// Include `UUID`'s `status` which has been used during `UUID metadata set` requests.
+    PNChannelMemberUUIDStatusField = 1 << 14,
+
+    /// Include `UUID`'s `type` which has been used during `UUID metadata set` requests.
+    PNChannelMemberUUIDTypeField = 1 << 15
 };
 
 /// Options with possible additional `channel` fields which can be included to response.
 typedef NS_OPTIONS(NSUInteger, PNChannelFields) {
     /// Include how many `channels` has been associated with `metadata`.
-    PNChannelTotalCountField = 1 << 0,
-    
+    ///
+    /// > Note: Available only when fetching list of channels metadata.
+    PNChannelTotalCountField = 1 << 16,
+
     /// Include field with additional information from `metadata` which has been used during `channel metadata set`
     /// requests.
-    PNChannelCustomField = 1 << 1
+    PNChannelCustomField = 1 << 17,
+
+    /// Include field with `metadata` status which has been used during `channel metadata set` requests.
+    PNChannelStatusField = 1 << 18,
+
+    /// Include field with `metadata` type which has been used during `channel metadata set` requests.
+    PNChannelTypeField = 1 << 19
 };
 
 /// Options with possible additional `UUID` fields which can be included to response.
 typedef NS_OPTIONS(NSUInteger, PNUUIDFields) {
     /// Include how many `UUID` has been associated with `metadata`.
-    PNUUIDTotalCountField = 1 << 2,
-    
+    ///
+    /// > Note: Available only when fetching list of UUIDs metadatas.
+    PNUUIDTotalCountField = 1 << 20,
+
     /// Include field with additional information from `metadata` which has been used during `UUID metadata set`
     /// requests.
-    PNUUIDCustomField = 1 << 3
+    PNUUIDCustomField = 1 << 21,
+
+    /// Include field with `metadata` status which has been used during `UUID metadata set` requests.
+    PNUUIDStatusField = 1 << 22,
+
+    /// Include field with `metadata` type which has been used during `UUID metadata set` requests.
+    PNUUIDTypeField = 1 << 23
 };
 
 /// Options describe possible heartbeat states on which delegate can be notified.
