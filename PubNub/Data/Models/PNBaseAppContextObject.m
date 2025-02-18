@@ -36,6 +36,8 @@ NS_ASSUME_NONNULL_END
 
 + (NSDictionary<NSString *,NSString *> *)codingKeys {
     return @{
+        @"status": @"status",
+        @"type": @"type",
         @"custom": @"custom",
         @"updated": @"updated",
         @"eTag": @"eTag",
@@ -43,7 +45,7 @@ NS_ASSUME_NONNULL_END
 }
 
 + (NSArray<NSString *> *)optionalKeys {
-    return @[@"custom", @"updated", @"eTag"];
+    return @[@"custom", @"status", @"type", @"updated", @"eTag"];
 }
 
 

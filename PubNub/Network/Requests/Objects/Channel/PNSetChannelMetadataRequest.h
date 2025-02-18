@@ -23,6 +23,12 @@ NS_ASSUME_NONNULL_BEGIN
 /// Description which should be stored in `metadata` associated with specified `channel`.
 @property(copy, nullable, nonatomic) NSString *information;
 
+/// UUID's `metadata` object `status`.
+@property(strong, nullable, nonatomic) NSString *status;
+
+/// UUID's `metadata` object `type`.
+@property(strong, nullable, nonatomic) NSString *type;
+
 /// Name which should be stored in `metadata` associated with specified `channel`.
 @property(copy, nonatomic) NSString *name;
 

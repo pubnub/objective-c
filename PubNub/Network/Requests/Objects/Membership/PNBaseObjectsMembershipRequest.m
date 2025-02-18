@@ -51,6 +51,13 @@ NS_ASSUME_NONNULL_END
     return TransportPATCHMethod;
 }
 
+- (NSDictionary *)headers {
+    NSMutableDictionary *headers =[([super headers] ?: @{}) mutableCopy];
+    headers[@"Content-Type"] = @"application/json";
+
+    return headers;
+}
+
 
 #pragma mark - Initialization and Configuration
 
@@ -149,6 +156,9 @@ NS_ASSUME_NONNULL_END
                                                        userInfo:userInfo];
             }
         }
+
+        if (object[@"status"]) objectData[@"status"] = object[@"status"];
+        if (object[@"type"]) objectData[@"type"] = object[@"type"];
 
         [serializedObjects addObject:objectData];
     }

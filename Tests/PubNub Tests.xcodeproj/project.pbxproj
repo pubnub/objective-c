@@ -54,6 +54,10 @@
 		A529271923B185F900FF46DD /* tests-configuration.json in Resources */ = {isa = PBXBuildFile; fileRef = A529271823B1855A00FF46DD /* tests-configuration.json */; };
 		A529271A23B185F900FF46DD /* tests-configuration.json in Resources */ = {isa = PBXBuildFile; fileRef = A529271823B1855A00FF46DD /* tests-configuration.json */; };
 		A529271D23B185FF00FF46DD /* tests-configuration.json in Resources */ = {isa = PBXBuildFile; fileRef = A529271823B1855A00FF46DD /* tests-configuration.json */; };
+		A531DFD62D5D026B00AEE218 /* PNAppContextObjectMetadataContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = A531DFD52D5D026B00AEE218 /* PNAppContextObjectMetadataContractTestSteps.m */; };
+		A531DFD72D5D026B00AEE218 /* PNAppContextObjectMetadataContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = A531DFD52D5D026B00AEE218 /* PNAppContextObjectMetadataContractTestSteps.m */; };
+		A531DFDA2D64A06D00AEE218 /* PNAppContextObjectsRelationMetadataContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = A531DFD92D64A06D00AEE218 /* PNAppContextObjectsRelationMetadataContractTestSteps.m */; };
+		A531DFDB2D64A06D00AEE218 /* PNAppContextObjectsRelationMetadataContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = A531DFD92D64A06D00AEE218 /* PNAppContextObjectsRelationMetadataContractTestSteps.m */; };
 		A53249102C304F90003510FF /* PNSubscribeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A532490F2C304F90003510FF /* PNSubscribeTest.m */; };
 		A53249112C304F90003510FF /* PNSubscribeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A532490F2C304F90003510FF /* PNSubscribeTest.m */; };
 		A53249122C304F90003510FF /* PNSubscribeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A532490F2C304F90003510FF /* PNSubscribeTest.m */; };
@@ -233,6 +237,10 @@
 		A529270E23B181FE00FF46DD /* PNRecordableTestCase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNRecordableTestCase.h; sourceTree = "<group>"; };
 		A529270F23B181FE00FF46DD /* PNRecordableTestCase.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNRecordableTestCase.m; sourceTree = "<group>"; };
 		A529271823B1855A00FF46DD /* tests-configuration.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "tests-configuration.json"; sourceTree = "<group>"; };
+		A531DFD42D5D026B00AEE218 /* PNAppContextObjectMetadataContractTestSteps.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNAppContextObjectMetadataContractTestSteps.h; sourceTree = "<group>"; };
+		A531DFD52D5D026B00AEE218 /* PNAppContextObjectMetadataContractTestSteps.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNAppContextObjectMetadataContractTestSteps.m; sourceTree = "<group>"; };
+		A531DFD82D64A06D00AEE218 /* PNAppContextObjectsRelationMetadataContractTestSteps.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNAppContextObjectsRelationMetadataContractTestSteps.h; sourceTree = "<group>"; };
+		A531DFD92D64A06D00AEE218 /* PNAppContextObjectsRelationMetadataContractTestSteps.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNAppContextObjectsRelationMetadataContractTestSteps.m; sourceTree = "<group>"; };
 		A532490F2C304F90003510FF /* PNSubscribeTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNSubscribeTest.m; sourceTree = "<group>"; };
 		A53D0AED23E9BF60001E72AF /* PNMembershipsObjectsAPICallBuilderTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNMembershipsObjectsAPICallBuilderTest.m; sourceTree = "<group>"; };
 		A53D0AF123E9F42B001E72AF /* PNChannelMembersObjectsAPICallBuilderTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNChannelMembersObjectsAPICallBuilderTest.m; sourceTree = "<group>"; };
@@ -354,6 +362,7 @@
 		796E65282707A864001B57F4 /* Steps */ = {
 			isa = PBXGroup;
 			children = (
+				A531DFD32D5D01C600AEE218 /* App Context */,
 				A5DB714C2AB03F2B005B6559 /* Modules */,
 				79BB4BDC270A66D200EDC466 /* Access */,
 				79BB4BE0270A6FA800EDC466 /* Files */,
@@ -534,6 +543,17 @@
 				796E653027088547001B57F4 /* PNContractTestCase.m */,
 			);
 			path = Helpers;
+			sourceTree = "<group>";
+		};
+		A531DFD32D5D01C600AEE218 /* App Context */ = {
+			isa = PBXGroup;
+			children = (
+				A531DFD82D64A06D00AEE218 /* PNAppContextObjectsRelationMetadataContractTestSteps.h */,
+				A531DFD92D64A06D00AEE218 /* PNAppContextObjectsRelationMetadataContractTestSteps.m */,
+				A531DFD42D5D026B00AEE218 /* PNAppContextObjectMetadataContractTestSteps.h */,
+				A531DFD52D5D026B00AEE218 /* PNAppContextObjectMetadataContractTestSteps.m */,
+			);
+			path = "App Context";
 			sourceTree = "<group>";
 		};
 		A532490E2C304F50003510FF /* Subscribe */ = {
@@ -1097,7 +1117,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A531DFDA2D64A06D00AEE218 /* PNAppContextObjectsRelationMetadataContractTestSteps.m in Sources */,
 				79657A7B2719CD5B00BACEC5 /* PNAccessContractTestSteps.m in Sources */,
+				A531DFD72D5D026B00AEE218 /* PNAppContextObjectMetadataContractTestSteps.m in Sources */,
 				79657A7C2719CD5B00BACEC5 /* PNMessageActionsContractTestSteps.m in Sources */,
 				79657A7D2719CD5B00BACEC5 /* PNSubscribeContractTestSteps.m in Sources */,
 				A5DB71512AB03F6C005B6559 /* PNCryptoModuleContractTestSteps.m in Sources */,
@@ -1115,7 +1137,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A531DFDB2D64A06D00AEE218 /* PNAppContextObjectsRelationMetadataContractTestSteps.m in Sources */,
 				79BB4BDF270A66E100EDC466 /* PNAccessContractTestSteps.m in Sources */,
+				A531DFD62D5D026B00AEE218 /* PNAppContextObjectMetadataContractTestSteps.m in Sources */,
 				79BB4BD7270A60A900EDC466 /* PNMessageActionsContractTestSteps.m in Sources */,
 				796E6539270895F5001B57F4 /* PNSubscribeContractTestSteps.m in Sources */,
 				A5DB71502AB03F6C005B6559 /* PNCryptoModuleContractTestSteps.m in Sources */,

@@ -42,6 +42,80 @@ NS_ASSUME_NONNULL_END
 }
 
 
+#pragma mark - Tests :: Set channel metadata
+
+- (void)testItShouldSetChannelMetadataWithStatuTypeAndReceiveStatusWithExpectedOperationAndCategory {
+    NSString *identifier = [self randomizedValuesWithValues:@[@"test-channel"]].firstObject;
+
+
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        PNSetChannelMetadataRequest *request = [PNSetChannelMetadataRequest requestWithChannel:identifier];
+        request.includeFields = PNChannelStatusField | PNChannelTypeField | PNChannelCustomField;
+        request.custom = @{ @"importand": @"data" };
+        request.status = @"success";
+        request.type = @"test";
+
+        [self.client setChannelMetadataWithRequest:request completion:^(PNSetChannelMetadataStatus *status) {
+            PNChannelMetadata *metadata = status.data.metadata;
+            XCTAssertFalse(status.isError);
+            XCTAssertNotNil(metadata);
+            XCTAssertEqualObjects(metadata.custom, request.custom);
+            XCTAssertEqualObjects(metadata.status, request.status);
+            XCTAssertEqualObjects(metadata.channel, identifier);
+            XCTAssertEqualObjects(metadata.type, request.type);
+            XCTAssertNotNil(metadata.updated);
+            XCTAssertNotNil(metadata.eTag);
+            XCTAssertEqual(status.operation, PNSetChannelMetadataOperation);
+            XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+
+            handler();
+        }];
+    }];
+
+    [self removeChannelsMetadata:@[identifier] usingClient:nil];
+}
+
+- (void)testItShouldSetChannelMetadataWithStatuTypeAndTriggerDeleteEventToChannel {
+    NSString *channel = [self randomizedValuesWithValues:@[@"test-channel"]].firstObject;
+    PubNub *client1 = [self createPubNubForUser:@"serhii"];
+    PubNub *client2 = [self createPubNubForUser:@"david"];
+
+
+    [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
+
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        PNSetChannelMetadataRequest *request = [PNSetChannelMetadataRequest requestWithChannel:channel];
+        request.includeFields = PNChannelStatusField | PNChannelTypeField | PNChannelCustomField;
+        request.custom = @{ @"importand": @"data" };
+        request.status = @"success";
+        request.type = @"test";
+
+        [self addObjectHandlerForClient:client2
+                              withBlock:^(PubNub *client, PNObjectEventResult *event, BOOL *remove) {
+
+            XCTAssertEqualObjects(event.data.type, @"channel");
+            XCTAssertEqualObjects(event.data.event, @"set");
+            XCTAssertEqualObjects(event.data.channelMetadata.channel, channel);
+            XCTAssertEqualObjects(event.data.channelMetadata.custom, request.custom);
+            XCTAssertEqualObjects(event.data.channelMetadata.status, request.status);
+            XCTAssertEqualObjects(event.data.channelMetadata.type, request.type);
+            XCTAssertNotNil(event.data.timestamp);
+            *remove = YES;
+
+            handler();
+        }];
+
+        [client1 setChannelMetadataWithRequest:request completion:^(PNSetChannelMetadataStatus *status) {
+            XCTAssertFalse(status.isError);
+        }];
+    }];
+
+    [self unsubscribeClient:client2 fromChannels:@[channel] withPresence:NO];
+
+    [self removeChannelsMetadataUsingClient:client1];
+}
+
+
 #pragma mark - Tests :: Builder pattern-based set channel metadata
 
 - (void)testItShouldSetChannelMetadataAndReceiveStatusWithExpectedOperationAndCategoryWhenOnlyChannelIsSet {

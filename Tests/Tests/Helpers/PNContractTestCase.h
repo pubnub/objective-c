@@ -33,6 +33,10 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, assign) PNOperationType testedFeatureType;
 
+@property (nonatomic, readonly, nullable, copy) NSDictionary *relationMetadata;
+@property (nonatomic, readonly, nullable, copy) NSDictionary *metadata;
+
+
 
 #pragma mark - Initialization & Configuration
 
@@ -146,6 +150,15 @@ synchronouslyFromChannels:(nullable NSArray *)channels
  * @brief Called after each scenario run.
  */
 - (void)handleAfterHook;
+
+
+#pragma mark - App Context helpers
+
+/// Retrieve mock data for App Context Metadata object with specific name.
+- (NSDictionary *)mockForAppContextMetadataWithName:(NSString *)name;
+
+/// Retrieve mock data for App Context Metadata object with specific id.
+- (NSDictionary *)mockForAppContextMetadataWithId:(NSString *)identifier;
 
 
 #pragma mark - Helpers

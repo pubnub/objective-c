@@ -97,9 +97,11 @@ NS_ASSUME_NONNULL_END
     if (self.name) info[@"name"] = self.name;
     if (self.externalId.length) info[@"externalId"] = self.externalId;
     if (self.profileUrl.length) info[@"profileUrl"] = self.profileUrl;
-    if (self.email.length) info[@"email"] = self.email;
+    if (self.status.length) info[@"status"] = self.status;
     if (self.custom.count) info[@"custom"] = self.custom;
-    
+    if (self.email.length) info[@"email"] = self.email;
+    if (self.type.length) info[@"type"] = self.type;
+
     if ([NSJSONSerialization isValidJSONObject:info]) {
         self.body = [NSJSONSerialization dataWithJSONObject:info options:(NSJSONWritingOptions)0 error:&error];
     } else {

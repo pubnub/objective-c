@@ -42,6 +42,83 @@ NS_ASSUME_NONNULL_END
 }
 
 
+#pragma mark - Tests :: Set uuid metadata
+
+- (void)testItShouldSetUUIDMetadataWithStatuTypeAndReceiveStatusWithExpectedOperationAndCategory {
+    NSString *identifier = [self randomizedValuesWithValues:@[@"test-uuid"]].firstObject;
+
+
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        PNSetUUIDMetadataRequest *request = [PNSetUUIDMetadataRequest requestWithUUID:identifier];
+        request.includeFields = PNUUIDStatusField | PNUUIDTypeField | PNUUIDCustomField;
+        request.custom = @{ @"importand": @"data" };
+        request.status = @"offline";
+        request.type = @"admin";
+
+        [self.client setUUIDMetadataWithRequest:request completion:^(PNSetUUIDMetadataStatus *status) {
+            PNUUIDMetadata *metadata = status.data.metadata;
+            XCTAssertFalse(status.isError);
+            XCTAssertNotNil(metadata);
+            XCTAssertNil(metadata.externalId);
+            XCTAssertNil(metadata.profileUrl);
+            XCTAssertNil(metadata.email);
+            XCTAssertEqualObjects(metadata.custom, request.custom);
+            XCTAssertEqualObjects(metadata.status, request.status);
+            XCTAssertEqualObjects(metadata.type, request.type);
+            XCTAssertEqualObjects(metadata.uuid, identifier);
+            XCTAssertNotNil(metadata.updated);
+            XCTAssertNotNil(metadata.eTag);
+            XCTAssertEqual(status.operation, PNSetUUIDMetadataOperation);
+            XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+
+            handler();
+        }];
+    }];
+
+    [self removeUUIDsMetadata:@[identifier] usingClient:nil];
+}
+
+- (void)testItShouldSetUUIDMetadataWithStatuTypeAndTriggerDeleteEventToChannel {
+    NSString *uuid = [self randomizedValuesWithValues:@[@"test-uuid"]].firstObject;
+    PubNub *client1 = [self createPubNubForUser:@"serhii"];
+    PubNub *client2 = [self createPubNubForUser:@"david"];
+
+
+    [self subscribeClient:client2 toChannels:@[uuid] withPresence:NO];
+
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        PNSetUUIDMetadataRequest *request = [PNSetUUIDMetadataRequest requestWithUUID:uuid];
+        request.includeFields = PNUUIDStatusField | PNUUIDTypeField | PNUUIDCustomField;
+        request.custom = @{ @"importand": @"data" };
+        request.status = @"offline";
+        request.type = @"admin";
+
+        [self addObjectHandlerForClient:client2
+                              withBlock:^(PubNub *client, PNObjectEventResult *event, BOOL *remove) {
+
+            XCTAssertEqualObjects(event.data.type, @"uuid");
+            XCTAssertEqualObjects(event.data.event, @"set");
+            XCTAssertEqualObjects(event.data.uuidMetadata.uuid, uuid);
+            XCTAssertEqualObjects(event.data.uuidMetadata.custom, request.custom);
+            XCTAssertEqualObjects(event.data.uuidMetadata.status, request.status);
+            XCTAssertEqualObjects(event.data.uuidMetadata.type, request.type);
+            XCTAssertNotNil(event.data.timestamp);
+            *remove = YES;
+
+            handler();
+        }];
+
+        [client1 setUUIDMetadataWithRequest:request completion:^(PNSetUUIDMetadataStatus *status) {
+            XCTAssertFalse(status.isError);
+        }];
+    }];
+
+    [self unsubscribeClient:client2 fromChannels:@[uuid] withPresence:NO];
+
+    [self removeChannelsMetadataUsingClient:client1];
+}
+
+
 #pragma mark - Tests :: Builder pattern-based set uuid metadata
 
 - (void)testItShouldSetUUIDMetadataAndReceiveStatusWithExpectedOperationAndCategoryWhenOnlyUUIDIsSet {
