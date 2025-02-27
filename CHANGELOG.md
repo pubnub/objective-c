@@ -1,3 +1,10 @@
+## v5.8.0
+February 27 2025
+
+#### Added
+- Add support for `type` and `status` fields for all App Context entities: `channel`, `uuid`, `membership`, and `member`.
+- Add `If-Match` header support to set `Channel` and `UUID` metadata app context objects.
+
 ## v5.7.1
 February 03 2025
 
