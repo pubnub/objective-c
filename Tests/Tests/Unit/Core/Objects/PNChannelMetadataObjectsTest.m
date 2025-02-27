@@ -94,6 +94,45 @@ NS_ASSUME_NONNULL_END
     }];
 }
 
+- (void)testItShouldSetChannelMetadataWhenCalledWithETag {
+    NSString *expectedInformation = [NSUUID UUID].UUIDString;
+    NSString *expectedChannelData = [NSUUID UUID].UUIDString;
+    NSString *expectedETag = [NSUUID UUID].UUIDString;
+    NSString *expectedName = [NSUUID UUID].UUIDString;
+    NSString *expectedId = [NSUUID UUID].UUIDString;
+    NSDictionary *expectedBody = @{
+        @"name": expectedName,
+        @"description": expectedInformation,
+        @"custom": @{ @"channel": expectedChannelData }
+    };
+    NSData *expectedPayload = [NSJSONSerialization dataWithJSONObject:expectedBody
+                                                              options:(NSJSONWritingOptions)0
+                                                                error:nil];
+
+
+    id clientMock = [self mockForObject:self.client];
+    id recorded = OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNSetChannelMetadataRequest class]]
+                                        withCompletion:[OCMArg any]])
+    .andDo(^(NSInvocation *invocation) {
+        PNSetChannelMetadataRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
+
+        XCTAssertNil([request validate]);
+        XCTAssertEqualObjects(request.identifier, expectedId);
+        XCTAssertEqualObjects(request.headers[@"If-Match"], expectedETag);
+        XCTAssertEqualObjects(request.query[@"include"], @"custom");
+        XCTAssertEqualObjects(request.body, expectedPayload);
+    });
+
+    [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
+        PNSetChannelMetadataRequest *request = [PNSetChannelMetadataRequest requestWithChannel:expectedId];
+        request.name = expectedName;
+        request.information = expectedInformation;
+        request.custom = @{ @"channel": expectedChannelData };
+        request.ifMatchesEtag = expectedETag;
+        [self.client setChannelMetadataWithRequest:request completion:^(PNSetChannelMetadataStatus *status) {}];
+    }];
+}
+
 - (void)testItShouldNotSetIncludeFieldsWhenCalledWithSetChannelMetadataIncludeFieldsSetToZero {
     id clientMock = [self mockForObject:self.client];
     id recorded = OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNSetChannelMetadataRequest class]]

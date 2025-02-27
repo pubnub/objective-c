@@ -495,7 +495,7 @@ NS_ASSUME_NONNULL_END
 
 - (void)updateVCRConfigurationFromDefaultConfiguration:(YHVConfiguration *)configuration {
 #if WRITING_CASSETTES
-    NSString *cassettesPath = @"/Users/sergey/Documents/Develop/Objective-C/PubNub SDK (public)/Tests/Support Files/Fixtures";
+    NSString *cassettesPath = @"<path to the repo clone>/Tests/Support Files/Fixtures";
     NSString *cassetteName = [NSStringFromClass([self class]) stringByAppendingPathExtension:@"bundle"];
     configuration.cassettesPath = [cassettesPath stringByAppendingPathComponent:cassetteName];
 #endif // WRITING_CASSETTES

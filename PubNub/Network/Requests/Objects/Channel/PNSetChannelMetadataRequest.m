@@ -46,6 +46,8 @@ NS_ASSUME_NONNULL_END
     NSMutableDictionary *headers =[([super headers] ?: @{}) mutableCopy];
     headers[@"Content-Type"] = @"application/json";
     
+    if (self.ifMatchesEtag) headers[@"If-Match"] = self.ifMatchesEtag;
+
     return headers;
 }
 
@@ -91,8 +93,10 @@ NS_ASSUME_NONNULL_END
     
     if (self.name) info[@"name"] = self.name;
     if (self.information.length) info[@"description"] = self.information;
+    if (self.status.length) info[@"status"] = self.status;
     if (self.custom.count) info[@"custom"] = self.custom;
-    
+    if (self.type.length) info[@"type"] = self.type;
+
     if ([NSJSONSerialization isValidJSONObject:info]) {
         self.body = [NSJSONSerialization dataWithJSONObject:info options:(NSJSONWritingOptions)0 error:&error];
     } else {

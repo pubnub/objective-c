@@ -11,6 +11,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Properties
 
+/// Optional entity tag from a previously received ``PNUUIDMetadata``.
+///
+/// The request will fail if this parameter is specified and the ETag value on the server doesn't match.
+@property(strong, nullable, nonatomic) NSString *ifMatchesEtag;
+
 /// Additional / complex attributes which should be associated with `metadata`.
 @property(strong, nullable, nonatomic) NSDictionary *custom;
 
@@ -25,6 +30,12 @@ NS_ASSUME_NONNULL_BEGIN
 /// > Note: Supported keys specified in **PNUUIDFields** enum.
 /// > Note:  Default value (**PNUUIDCustomField** ) can be reset by setting `0`.
 @property(assign, nonatomic) PNUUIDFields includeFields;
+
+/// UUID's `metadata` object `status`.
+@property(strong, nullable, nonatomic) NSString *status;
+
+/// UUID's `metadata` object `type`.
+@property(strong, nullable, nonatomic) NSString *type;
 
 /// Email address.
 @property(copy, nullable, nonatomic) NSString *email;

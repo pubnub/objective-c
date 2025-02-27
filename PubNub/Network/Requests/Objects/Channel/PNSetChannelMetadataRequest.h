@@ -11,6 +11,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Properties
 
+/// Optional entity tag from a previously received ``PNChannelMetadata``.
+///
+/// The request will fail if this parameter is specified and the ETag value on the server doesn't match.
+@property(strong, nullable, nonatomic) NSString *ifMatchesEtag;
+
 /// Additional / complex attributes which should be stored in `metadata` associated with specified `channel`.
 @property(nonatomic, nullable, strong) NSDictionary *custom;
 
@@ -22,6 +27,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Description which should be stored in `metadata` associated with specified `channel`.
 @property(copy, nullable, nonatomic) NSString *information;
+
+/// UUID's `metadata` object `status`.
+@property(strong, nullable, nonatomic) NSString *status;
+
+/// UUID's `metadata` object `type`.
+@property(strong, nullable, nonatomic) NSString *type;
 
 /// Name which should be stored in `metadata` associated with specified `channel`.
 @property(copy, nonatomic) NSString *name;

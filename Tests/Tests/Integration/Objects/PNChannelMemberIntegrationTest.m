@@ -64,6 +64,69 @@ NS_ASSUME_NONNULL_END
 }
 
 
+#pragma mark - Test :: Set members
+
+- (void)testItShouldSetMembersWithStatusTypeAndReceiveStatusWithExpectedOperationAndCategory {
+    NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:1 usingClient:nil];
+    NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:2 usingClient:nil];
+    NSArray<NSDictionary *> *uuids = @[
+        @{
+            @"uuid": uuidsMetadata[0].uuid,
+            @"status": @"active",
+            @"type": @"admin",
+            @"custom": @{
+                @"uuid-member-custom": [@[uuidsMetadata[0].uuid, @"custom", @"data", @"1"] componentsJoinedByString:@"-"]
+            }
+        },
+        @{
+            @"uuid": uuidsMetadata[1].uuid,
+            @"status": @"muted",
+            @"type": @"observer6",
+            @"custom": @{
+                @"uuid-member-custom": [@[uuidsMetadata[1].uuid, @"custom", @"data", @"2"] componentsJoinedByString:@"-"]
+            }
+        }
+    ];
+    __block NSArray *members = nil;
+
+    
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        PNSetChannelMembersRequest *request = [PNSetChannelMembersRequest requestWithChannel:channelsMetadata.firstObject.channel
+                                                                                       uuids:uuids];
+        request.includeFields = PNChannelMemberTypeField | PNChannelMemberStatusField | PNChannelMemberCustomField |
+                                PNChannelMemberUUIDField | PNChannelMemberUUIDTypeField;
+
+        [self.client setChannelMembersWithRequest:request completion:^(PNManageChannelMembersStatus *status) {
+            members = status.data.members;
+            XCTAssertFalse(status.isError);
+            XCTAssertNotNil(members);
+            XCTAssertEqual(status.operation, PNSetChannelMembersOperation);
+            XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+
+            for (PNChannelMember *member in members) {
+                for (NSUInteger memberIdx = 0; memberIdx < uuidsMetadata.count; memberIdx++) {
+                    PNUUIDMetadata *uuidMetadata = uuidsMetadata[memberIdx];
+
+                    if ([member.uuid isEqualToString:uuidMetadata.uuid]) {
+                        XCTAssertEqualObjects(member.status, uuids[memberIdx][@"status"]);
+                        XCTAssertEqualObjects(member.type, uuids[memberIdx][@"type"]);
+                        XCTAssertEqualObjects(member.custom, uuids[memberIdx][@"custom"]);
+                        XCTAssertNil(member.metadata.type);
+                        break;
+                    }
+                }
+            }
+
+            handler();
+        }];
+    }];
+
+    [self removeChannel:channelsMetadata.firstObject.channel memberObjects:members usingClient:nil];
+    [self removeAllUUIDMetadataUsingClient:nil];
+    [self removeChannelsMetadataUsingClient:nil];
+}
+
+
 #pragma mark - Tests :: Builder pattern-based set members
 
 - (void)testItShouldSetMembersAndReceiveStatusWithExpectedOperationAndCategory {

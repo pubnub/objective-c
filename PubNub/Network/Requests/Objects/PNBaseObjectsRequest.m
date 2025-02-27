@@ -96,14 +96,26 @@ NS_ASSUME_NONNULL_END
 
 - (NSArray<NSString *> *)includeFieldNames {
     NSMutableArray *fields = [NSMutableArray new];
-    
+
     if ((self.includeFields & PNUUIDCustomField) == PNUUIDCustomField ||
-        (self.includeFields & PNChannelCustomField) == PNChannelCustomField) {
+        (self.includeFields & PNChannelCustomField) == PNChannelCustomField ||
+        (self.includeFields & PNChannelMemberCustomField) == PNChannelMemberCustomField ||
+        (self.includeFields & PNMembershipCustomField) == PNMembershipCustomField) {
         [fields addObject:@"custom"];
     }
 
-    if ((self.includeFields & PNMembershipCustomField) == PNMembershipCustomField) {
-        [fields addObject:@"custom"];
+    if ((self.includeFields & PNUUIDStatusField) == PNUUIDStatusField ||
+        (self.includeFields & PNChannelStatusField) == PNChannelStatusField ||
+        (self.includeFields & PNChannelMemberStatusField) == PNChannelMemberStatusField ||
+        (self.includeFields & PNMembershipStatusField) == PNMembershipStatusField) {
+        [fields addObject:@"status"];
+    }
+
+    if ((self.includeFields & PNUUIDTypeField) == PNUUIDTypeField ||
+        (self.includeFields & PNChannelTypeField) == PNChannelTypeField ||
+        (self.includeFields & PNChannelMemberTypeField) == PNChannelMemberTypeField ||
+        (self.includeFields & PNMembershipTypeField) == PNMembershipTypeField) {
+        [fields addObject:@"type"];
     }
 
     if ((self.includeFields & PNMembershipChannelField) == PNMembershipChannelField) {
@@ -114,8 +126,12 @@ NS_ASSUME_NONNULL_END
         [fields addObject:@"channel.custom"];
     }
 
-    if ((self.includeFields & PNChannelMemberCustomField) == PNChannelMemberCustomField) {
-        [fields addObject:@"custom"];
+    if ((self.includeFields & PNMembershipChannelStatusField) == PNMembershipChannelStatusField) {
+        [fields addObject:@"channel.status"];
+    }
+
+    if ((self.includeFields & PNMembershipChannelTypeField) == PNMembershipChannelTypeField) {
+        [fields addObject:@"channel.type"];
     }
 
     if ((self.includeFields & PNChannelMemberUUIDField) == PNChannelMemberUUIDField) {
@@ -124,6 +140,14 @@ NS_ASSUME_NONNULL_END
 
     if ((self.includeFields & PNChannelMemberUUIDCustomField) == PNChannelMemberUUIDCustomField) {
         [fields addObject:@"uuid.custom"];
+    }
+
+    if ((self.includeFields & PNChannelMemberUUIDStatusField) == PNChannelMemberUUIDStatusField) {
+        [fields addObject:@"uuid.status"];
+    }
+
+    if ((self.includeFields & PNChannelMemberUUIDTypeField) == PNChannelMemberUUIDTypeField) {
+        [fields addObject:@"uuid.type"];
     }
 
     return fields;
@@ -155,7 +179,7 @@ NS_ASSUME_NONNULL_END
     NSMutableSet *includeFields = [NSMutableSet setWithArray:existingFields];
     [includeFields addObjectsFromArray:fields];
 
-//    if (includeFields.count)
+    if (includeFields.count)
         query[@"include"] = [includeFields.allObjects componentsJoinedByString:@","];
 }
 

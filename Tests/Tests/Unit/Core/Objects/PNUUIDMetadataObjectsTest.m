@@ -94,6 +94,44 @@ NS_ASSUME_NONNULL_END
     }];
 }
 
+- (void)testItShouldSetUUIDMetadataWhenCalledWithETag {
+    NSString *expectedUUIDData = [NSUUID UUID].UUIDString;
+    NSString *expectedName = [NSUUID UUID].UUIDString;
+    NSString *expectedETag = [NSUUID UUID].UUIDString;
+    NSString *expectedId = [NSUUID UUID].UUIDString;
+    NSDictionary *expectedBody = @{
+        @"name": expectedName,
+        @"custom": @{ @"uuid": expectedUUIDData }
+    };
+    NSData *expectedPayload = [NSJSONSerialization dataWithJSONObject:expectedBody
+                                                              options:(NSJSONWritingOptions)0
+                                                                error:nil];
+
+
+    id clientMock = [self mockForObject:self.client];
+    id recorded = OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNSetUUIDMetadataRequest class]]
+                                        withCompletion:[OCMArg any]])
+    .andDo(^(NSInvocation *invocation) {
+        PNSetUUIDMetadataRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
+
+
+        XCTAssertNil([request validate]);
+        XCTAssertNotNil(request.headers[@"If-Match"]);
+        XCTAssertEqualObjects(request.headers[@"If-Match"], expectedId);
+        XCTAssertEqualObjects(request.identifier, expectedId);
+        XCTAssertEqualObjects(request.request.query[@"include"], @"custom");
+        XCTAssertEqualObjects(request.body, expectedPayload);
+    });
+
+    [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
+        PNSetUUIDMetadataRequest *request = [PNSetUUIDMetadataRequest requestWithUUID:expectedId];
+        request.name = expectedName;
+        request.custom = @{ @"uuid": expectedUUIDData };
+        request.ifMatchesEtag = expectedETag;
+        [self.client setUUIDMetadataWithRequest:request completion:^(PNSetUUIDMetadataStatus *status) {}];
+    }];
+}
+
 - (void)testItShouldNotSetIncludeFieldsWhenCalledWithSetUUIDMetadataIncludeFieldsSetToZero {
     id clientMock = [self mockForObject:self.client];
     id recorded = OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNSetUUIDMetadataRequest class]]

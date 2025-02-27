@@ -4,6 +4,8 @@
  */
 #import "PNContractTestCase.h"
 #import "PNMessageActionsContractTestSteps.h"
+#import "PNAppContextObjectsRelationMetadataContractTestSteps.h"
+#import "PNAppContextObjectMetadataContractTestSteps.h"
 #import "PNCryptoModuleContractTestSteps.h"
 #import "PNSubscribeContractTestSteps.h"
 #import "PNPublishContractTestSteps.h"
@@ -77,6 +79,11 @@ static NSMutableDictionary<NSString *, PNTestClientMessagesList *> *_receivedMes
 
 static PNOperationType _currentlyTestedFeatureType;
 
+static NSMutableDictionary *_relationMetadataObject;
+static NSMutableDictionary *_metadataObject;
+
+static NSMutableString *_pubNubUserId;
+
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -86,6 +93,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 #pragma mark - Information
+
+/// Reference to the App Context mock metadata objects.
+@property (nonatomic, copy) NSDictionary<NSString *, NSDictionary *> *metadataObjects;
 
 @property (nonatomic, nullable, copy) PNConfiguration *currentConfiguration;
 
@@ -145,6 +155,9 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (BOOL)testedFeatureExpectResponse;
 
+/// Load all JSON objects from the `data` folder.
+- (void)loadAppContextObjects;
+
 #pragma mark -
 
 
@@ -167,6 +180,8 @@ NS_ASSUME_NONNULL_END
                                                                           userID:[NSUUID UUID].UUIDString];
         self.currentConfiguration.origin = kPNMockServerAddress;
         self.currentConfiguration.TLSEnabled = NO;
+
+        if (_pubNubUserId.length) self.currentConfiguration.userID = _pubNubUserId;
     }
     
     return self.currentConfiguration;
@@ -197,6 +212,13 @@ NS_ASSUME_NONNULL_END
     _currentlyTestedFeatureType = testedFeatureType;
 }
 
+- (NSDictionary *)metadata {
+    return _metadataObject;
+}
+
+- (NSDictionary *)relationMetadata {
+    return _relationMetadataObject;
+}
 
 #pragma mark - Initialization & Configuration
 
@@ -216,6 +238,9 @@ NS_ASSUME_NONNULL_END
     static dispatch_once_t onceToken;
 
     dispatch_once(&onceToken, ^{
+        _pubNubUserId = [NSMutableString new];
+        _relationMetadataObject = [NSMutableDictionary new];
+        _metadataObject = [NSMutableDictionary new];
         _apiCallStatuses = [NSMutableArray new];
         _apiCallResults = [NSMutableArray new];
         _receivedMessages = [NSMutableDictionary new];
@@ -255,16 +280,20 @@ NS_ASSUME_NONNULL_END
             [self handleAfterHook];
             [NSNotificationCenter.defaultCenter postNotificationName:kPNCucumberAfterHook object:nil];
         });
-        
+
         Given(@"the demo keyset", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
             // Nothing to do. Demo keys set by default if not explicitly set.
         });
-        
+
         Given(@"the invalid keyset", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
             // Nothing to do. Mock server will simulate proper error here.
         });
-        
-        Then(@"I receive successful response", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
+
+        Given(@"I have a keyset with Objects V2 enabled", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
+            // Nothing to do. Demo keys set by default if not explicitly set.
+        });
+
+        Then(@"^I receive (a )?successful response$", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
             PNStatus *status = [self lastStatus];
             PNOperationResult *result = [self lastResult];
             
@@ -292,7 +321,24 @@ NS_ASSUME_NONNULL_END
                 XCTAssertTrue(result.operation == self.testedFeatureType, @"Wrong last API call result operation type");
             }
         });
-        
+
+
+        Given(@"^current user is '(.*)' persona$", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
+            [_metadataObject addEntriesFromDictionary:[self mockForAppContextMetadataWithName:args[0]]];
+            [_pubNubUserId setString:_metadataObject[@"id"]];
+            XCTAssertTrue(_metadataObject.count > 0);
+        });
+
+        Match(@[@"Given", @"And"], @"^the (id|data) for '(.*)' (persona|channel|membership|member)( that we want to remove)?$", ^(NSArray<NSString *> *args, NSDictionary *userInfo) {
+            if ([args.lastObject isEqual:@"persona"] || [args.lastObject isEqual:@"channel"]) {
+                [_metadataObject addEntriesFromDictionary:[self mockForAppContextMetadataWithName:args[1]]];
+                XCTAssertTrue(_metadataObject.count > 0);
+            } else {
+                [_relationMetadataObject addEntriesFromDictionary:[self mockForAppContextMetadataWithName:args[1]]];
+                XCTAssertTrue(_relationMetadataObject.count > 0);
+            }
+        });
+
         // Complete known contract steps configuration.
         [[PNAccessContractTestSteps new] setup];
         [[PNFilesContractTestSteps new] setup];
@@ -303,6 +349,8 @@ NS_ASSUME_NONNULL_END
         [[PNSubscribeContractTestSteps new] setup];
         [[PNTimeContractTestSteps new] setup];
         [[PNCryptoModuleContractTestSteps new] setup];
+        [[PNAppContextObjectsRelationMetadataContractTestSteps new] setup];
+        [[PNAppContextObjectMetadataContractTestSteps new] setup];
     });
 }
 
@@ -501,9 +549,13 @@ synchronouslyFromChannels:(NSArray *)channels
 
 - (void)handleBeforeHook {
     self.currentConfiguration = nil;
+    [self loadAppContextObjects];
 }
 
 - (void)handleAfterHook {
+    [_pubNubUserId setString:@""];
+    [_relationMetadataObject removeAllObjects];
+    [_metadataObject removeAllObjects];
     [_apiCallStatuses removeAllObjects];
     [_apiCallResults removeAllObjects];
     [_receivedMessages removeAllObjects];
@@ -516,6 +568,21 @@ synchronouslyFromChannels:(NSArray *)channels
         [_currentClient unsubscribeFromAll];
         _currentClient = nil;
     });
+}
+
+
+#pragma mark - App Context helpers
+
+- (NSDictionary *)mockForAppContextMetadataWithName:(NSString *)name {
+    return self.metadataObjects[name.lowercaseString];
+}
+
+- (NSDictionary *)mockForAppContextMetadataWithId:(NSString *)identifier {
+    for (NSString *name in self.metadataObjects.allKeys) {
+        if ([self.metadataObjects[name][@"id"] isEqual:identifier]) return self.metadataObjects[name];
+    }
+
+    return nil;
 }
 
 
@@ -650,6 +717,21 @@ synchronouslyFromChannels:(NSArray *)channels
     }
     
     return responseExpected;
+}
+
+- (void)loadAppContextObjects {
+    NSString *resourcesPath = [NSBundle bundleForClass:[self class]].resourcePath;
+    NSString *appContextMockPath = [resourcesPath stringByAppendingPathComponent:@"Features/data"];
+    NSArray<NSString*> *mockNames = [NSFileManager.defaultManager contentsOfDirectoryAtPath:appContextMockPath error:nil];
+    NSMutableDictionary *objects = mockNames.count ? [NSMutableDictionary new] : nil;
+
+    [mockNames enumerateObjectsUsingBlock:^(NSString *name, NSUInteger __unused idx, BOOL * __unused stop) {
+        NSData *data = [NSData dataWithContentsOfFile:[appContextMockPath stringByAppendingPathComponent:name]];
+        NSString *entityName = name.lowercaseString.stringByDeletingPathExtension;
+        if (data) objects[entityName] = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+    }];
+
+    self.metadataObjects = objects;
 }
 
 

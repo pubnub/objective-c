@@ -63,6 +63,64 @@ NS_ASSUME_NONNULL_END
 }
 
 
+#pragma mark - Test :: Set membership
+
+- (void)testItShouldSetMembershipWithStatusTypeAndReceiveStatusWithExpectedOperationAndCategory {
+    NSArray<PNChannelMetadata *> *channelsMetadata = [self setChannelsMetadata:2 usingClient:nil];
+    NSArray<PNUUIDMetadata *> *uuidsMetadata = [self setUUIDMetadata:1 usingClient:nil];
+    NSArray<NSDictionary *> *channels = @[
+        @{
+            @"channel": channelsMetadata[0].channel,
+            @"status": @"active",
+            @"type": @"public",
+            @"custom": @{ @"uuid-membership-custom": [@[channelsMetadata[0].channel, @"custom", @"data", @"1"] componentsJoinedByString:@"-"] }
+        },
+        @{
+            @"channel": channelsMetadata[1].channel,
+            @"status": @"inreview",
+            @"type": @"moderated",
+            @"custom": @{ @"uuid-membership-custom": [@[channelsMetadata[1].channel, @"custom", @"data", @"2"] componentsJoinedByString:@"-"] }
+        }
+    ];
+    __block NSArray *memberships = nil;
+
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        PNSetMembershipsRequest *request = [PNSetMembershipsRequest requestWithUUID:uuidsMetadata.firstObject.uuid
+                                                                           channels:channels];
+        request.includeFields = PNMembershipTypeField | PNMembershipStatusField | PNMembershipCustomField |
+                                PNMembershipChannelField | PNMembershipChannelTypeField;
+
+        [self.client setMembershipsWithRequest:request completion:^(PNManageMembershipsStatus *status) {
+            memberships = status.data.memberships;
+            XCTAssertFalse(status.isError);
+            XCTAssertNotNil(memberships);
+            XCTAssertEqual(status.operation, PNSetMembershipsOperation);
+            XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+
+            for (PNMembership *membership in memberships) {
+                for (NSUInteger idx = 0; idx < channelsMetadata.count; idx++) {
+                    PNChannelMetadata *metadata = channelsMetadata[idx];
+
+                    if ([membership.channel isEqualToString:metadata.channel]) {
+                        XCTAssertEqualObjects(membership.status, channels[idx][@"status"]);
+                        XCTAssertEqualObjects(membership.type, channels[idx][@"type"]);
+                        XCTAssertEqualObjects(membership.custom, channels[idx][@"custom"]);
+                        XCTAssertNil(membership.metadata.type);
+                        break;
+                    }
+                }
+            }
+
+            handler();
+        }];
+    }];
+
+    [self removeUUID:uuidsMetadata.firstObject.uuid membershipObjects:memberships usingClient:nil];
+    [self removeAllUUIDMetadataUsingClient:nil];
+    [self removeChannelsMetadataUsingClient:nil];
+}
+
+
 #pragma mark - Tests :: Builder pattern-based set membership
 
 - (void)testItShouldSetMembershipAndReceiveStatusWithExpectedOperationAndCategory {
