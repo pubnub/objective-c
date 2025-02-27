@@ -46,7 +46,9 @@ NS_ASSUME_NONNULL_END
 - (NSDictionary *)headers {
     NSMutableDictionary *headers =[([super headers] ?: @{}) mutableCopy];
     headers[@"Content-Type"] = @"application/json";
-    
+
+    if (self.ifMatchesEtag) headers[@"If-Match"] = self.ifMatchesEtag;
+
     return headers;
 }
 
