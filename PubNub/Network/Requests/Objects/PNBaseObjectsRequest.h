@@ -6,7 +6,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Interface declaration
 
-/// General request for all `App Contentx` API endpoints.
+/// General request for all `App Context` API endpoints.
 @interface PNBaseObjectsRequest : PNBaseRequest
 
 

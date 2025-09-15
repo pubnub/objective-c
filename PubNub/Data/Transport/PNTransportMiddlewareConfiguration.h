@@ -27,20 +27,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Initialization and Configuration
 
-#ifdef PUBNUB_DISABLE_LOGGER
-/// Create middleware configuration.
-///
-/// - Parameters:
-///   - configuration: `PubNub` client configuration object.
-///   - clientInstanceId: Unique `PubNub` instance identifier.
-///   - transport: Instantiated transport object.
-///   - maximumConnections: Maximum simultaneously connections which can be opened.   
-/// - Returns: Configured and ready to use middleware configuration object.
-+ (instancetype)configurationWithClientConfiguration:(PNConfiguration *)configuration
-                                    clientInstanceId:(NSString *)clientInstanceId
-                                           transport:(id<PNTransport>)transport
-                                  maximumConnections:(NSUInteger)maximumConnections;
-#else
 /// Create middleware configuration.
 ///
 /// - Parameters:
@@ -54,8 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
                                     clientInstanceId:(NSString *)clientInstanceId
                                            transport:(id<PNTransport>)transport
                                   maximumConnections:(NSUInteger)maximumConnections
-                                              logger:(PNLLogger *)logger;
-#endif // PUBNUB_DISABLE_LOGGER
+                                              logger:(PNLoggerManager *)logger;
 
 #pragma mark -
 

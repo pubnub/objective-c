@@ -59,6 +59,11 @@ NS_ASSUME_NONNULL_END
 #pragma mark - API Builder support
 
 - (PNStreamAPICallBuilder * (^)(void))stream {
+    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"Builder-based interface deprecated. Please use corresponding "
+                "request-based interfaces."];
+    }];
+    
     PNStreamAPICallBuilder *builder = nil;
     builder = [PNStreamAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags, NSDictionary *parameters){
         NSString *group = parameters[NSStringFromSelector(@selector(channelGroup))];
@@ -104,31 +109,42 @@ NS_ASSUME_NONNULL_END
     PNGroupChannelsAuditCompletionBlock block = [handlerBlock copy];
     PNParsedRequestCompletionBlock handler; 
 
-    if (userRequest.operation == PNChannelGroupsOperation) {
-        PNLogAPICall(self.logger, @"<PubNub::API> Request channels for '%@' channel group.", userRequest.channelGroup);
-    } else PNLogAPICall(self.logger, @"<PubNub::API> Request channel groups list.");
-
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
                 PNOperationDataParseResult<PNChannelGroupChannelsResult *, PNErrorStatus *> *result) {
         PNStrongify(self);
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self fetchChannelsForChannelGroupWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+        if (!result.status.isError) {
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                NSUInteger count = (result.result.data.groups ?: result.result.data.channels).count;
+                NSString *message;
+                if (userRequest.operation == PNChannelGroupsOperation)
+                    message = PNStringFormat(@"List all channel groups success. Received %@ groups.", @(count));
+                else message = PNStringFormat(@"List channel group channels success. Received %@ channels.", @(count));
+                
+                return [PNStringLogEntry entryWithMessage:message];
+            }];
         }
 
         [self callBlock:block status:NO withResult:result.result andStatus:result.status];
     };
+                                        
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        if (userRequest.operation == PNChannelGroupsOperation)
+            return [PNStringLogEntry entryWithMessage:@"List all channel groups."];
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"List channel group channels with parameters:"];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
 
 - (void)channelsForGroup:(NSString *)group withCompletion:(PNGroupChannelsAuditCompletionBlock)block {
+    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
+                "'-fetchChannelsForChannelGroupWithRequest:completion:' method instead."];
+    }];
+    
     [self channelsForGroup:group withQueryParameters:nil completion:block];
 }
 
@@ -154,31 +170,41 @@ NS_ASSUME_NONNULL_END
     PNChannelGroupChangeCompletionBlock block = [handleBlock copy];
     PNParsedRequestCompletionBlock handler; 
 
-    if (userRequest.operation == PNRemoveGroupOperation) {
-        PNLogAPICall(self.logger, @"<PubNub::API> Remove '%@' channel group", (userRequest.channelGroup?: @"<error>"));
-    } else {
-        PNLogAPICall(self.logger, @"<PubNub::API> %@ channels %@ '%@' channel group: %@",
-                     (userRequest.operation == PNAddChannelsToGroupOperation ? @"Add" : @"Remove"),
-                     (userRequest.operation == PNAddChannelsToGroupOperation ? @"to" : @"from"),
-                     (userRequest.channelGroup?: @"<error>"), (userRequest.channels?: @"<error>"));
-    }
-
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
                 PNOperationDataParseResult<PNAcknowledgmentStatus *, PNAcknowledgmentStatus *> *result) {
         PNStrongify(self);
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self manageChannelGroupWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+        if (!result.status.isError) {
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                NSString *message;
+                if (userRequest.operation == PNRemoveGroupOperation) {
+                    message = PNStringFormat(@"Remove a channel group success. Removed '%@' channel group",
+                                             userRequest.channelGroup);
+                } else {
+                    message = PNStringFormat(@"%@ channels %@ the channel group success.",
+                                             userRequest.operation == PNAddChannelsToGroupOperation ? @"Add" : @"Remove",
+                                             userRequest.operation == PNAddChannelsToGroupOperation ? @"to" : @"from");
+                }
+                
+                return [PNStringLogEntry entryWithMessage:message];
+            }];
         }
 
         [self callBlock:block status:YES withResult:nil andStatus:result.status];
     };
+                               
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        NSString *details;
+        if (userRequest.operation == PNRemoveGroupOperation) details = @"Remove a channel group with parameters:";
+        else {
+            details = PNStringFormat(@"%@ channels %@ the channel group with parameters:",
+                                     userRequest.operation == PNAddChannelsToGroupOperation ? @"Add" : @"Remove",
+                                     userRequest.operation == PNAddChannelsToGroupOperation ? @"to" : @"from");
+        }
+        
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation] details:details];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
@@ -186,16 +212,31 @@ NS_ASSUME_NONNULL_END
 - (void)addChannels:(NSArray<NSString *> *)channels
             toGroup:(NSString *)group
      withCompletion:(PNChannelGroupChangeCompletionBlock)block {
+    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
+                "'-manageChannelGroupWithRequest:completion:' method instead."];
+    }];
+
     [self add:YES channels:channels toGroup:group queryParameters:nil withCompletion:block];
 }
 
 - (void)removeChannels:(NSArray<NSString *> *)channels
              fromGroup:(NSString *)group
         withCompletion:(PNChannelGroupChangeCompletionBlock)block {
+    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
+                "'-manageChannelGroupWithRequest:completion:' method instead."];
+    }];
+
     [self add:NO channels:channels.count ? channels : nil toGroup:group queryParameters:nil withCompletion:block];
 }
 
 - (void)removeChannelsFromGroup:(NSString *)group withCompletion:(PNChannelGroupChangeCompletionBlock)block {
+    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
+                "'-manageChannelGroupWithRequest:completion:' method instead."];
+    }];
+
     [self removeChannels:@[] fromGroup:group withCompletion:block];
 }
 

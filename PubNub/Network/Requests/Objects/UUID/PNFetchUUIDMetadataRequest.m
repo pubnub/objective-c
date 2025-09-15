@@ -30,7 +30,10 @@
 }
 
 - (instancetype)initWithObject:(NSString *)objectType identifier:(NSString *)identifier {
-    if ((self = [super initWithObject:objectType identifier:identifier]))  self.includeFields = PNUUIDCustomField;
+    if ((self = [super initWithObject:objectType identifier:identifier])) {
+        self.includeFields |= PNUUIDCustomField|PNUUIDStatusField|PNUUIDTypeField;
+    }
+    
     return self;
 }
 

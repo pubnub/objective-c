@@ -35,6 +35,18 @@
     return [[self alloc] initWithChannel:channel];
 }
 
+
+#pragma mark - Misc
+
+- (NSDictionary *)dictionaryRepresentation {
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary:[super dictionaryRepresentation]];
+    
+    if (self.compress) dictionary[@"compress"] = @(self.shouldCompress);
+    if (self.payloads) dictionary[@"payloads"] = self.payloads;
+    
+    return dictionary;
+}
+
 #pragma mark -
 
 

@@ -168,6 +168,27 @@ NS_ASSUME_NONNULL_END
 }
 
 
+#pragma mark - Misc
+
+- (NSDictionary *)dictionaryRepresentation {
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary:@{
+        @"includeCustomMessageType": @(self.includeCustomMessageType),
+        @"includeMessageActions": @(self.includeMessageActions),
+        @"includeMessageType": @(self.includeMessageType),
+        @"includeTimeToken": @(self.includeTimeToken),
+        @"includeMetadata": @(self.includeMetadata),
+        @"includeUUID": @(self.includeUUID),
+        @"reverse": @(self.reverse),
+        @"channels": self.channels ?: @"missing",
+        @"limit": @(self.limit)
+    }];
+    
+    if (self.arbitraryQueryParameters) dictionary[@"arbitraryQueryParameters"] = self.arbitraryQueryParameters;
+    if (self.start) dictionary[@"start"] = self.start;
+    if (self.end) dictionary[@"end"] = self.end;
+    
+    return dictionary;
+}
 
 #pragma mark -
 

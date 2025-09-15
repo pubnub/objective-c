@@ -4,9 +4,9 @@
 #endif // TARGET_OS_IOS && !defined(TARGET_IS_EXTENSION)
 #import <PubNub/PNRequestRetryConfiguration+Private.h>
 #import <PubNub/PNTransportRequest+Private.h>
+#import "PNNetworkRequestLogEntry+Private.h"
 #import <PubNub/NSError+PNTransport.h>
 #import <PubNub/PNFunctions.h>
-#import <PubNub/PNLogMacro.h>
 #import <PubNub/PNHelpers.h>
 #import <PubNub/PNGZIP.h>
 #import <PubNub/PNLock.h>
@@ -99,15 +99,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - State
 
-/// Complere background task (if any).
+/// Complete background task (if any).
 ///
-/// Free up system resources when background execution context not rrquired anymore.
+/// Free up system resources when background execution context not required anymore.
 - (void)endBackgroundTasksCompletionIfRequired;
 
 
 #pragma mark - Misc
 
-/// Create request porcessing error (if required).
+/// Create request processing error (if required).
 ///
 /// - Parameters:
 ///   - request: Transport request object which has been used to create `NSURLSessionTask`.
@@ -117,10 +117,8 @@ NS_ASSUME_NONNULL_BEGIN
                               withURL:(nullable NSURL *)requestUrl
                                 error:(nullable NSError *)transportError;
 
-#ifndef PUBNUB_DISABLE_LOGGER
 /// Print out any session configuration instance customizations which have been done by developer.
 - (void)printIfRequiredSessionCustomizationInformation;
-#endif // PUBNUB_DISABLE_LOGGER
 
 #pragma mark -
 
@@ -152,12 +150,9 @@ NS_ASSUME_NONNULL_END
     _configuration = [configuration copy];
     _requests = [NSMutableArray new];
     
-    // Finalyze transport configuration.
+    // Finalize transport configuration.
     [self setupURLSession];
-
-#ifndef PUBNUB_DISABLE_LOGGER
     [self printIfRequiredSessionCustomizationInformation];
-#endif // PUBNUB_DISABLE_LOGGER
 }
 
 
@@ -204,6 +199,11 @@ NS_ASSUME_NONNULL_END
 
         if (delay > 0.f) {
             request.retryAttempt += 1;
+            [self.configuration.logger warnWithLocation:@"PNURLSessionTransport"
+                                      andMessageFactory:^PNLogEntry * {
+                return [PNStringLogEntry entryWithMessage:PNStringFormat(@"HTTP request retry #%@ in %@ seconds.",
+                                                                         @(request.retryAttempt), @(delay))];
+            }];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)),
                            dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 [self sendRequest:request withCompletionBlock:block];
@@ -247,13 +247,19 @@ NS_ASSUME_NONNULL_END
         
         if (delay > 0.f) {
             request.retryAttempt += 1;
+            [self.configuration.logger warnWithLocation:@"PNURLSessionTransport"
+                                      andMessageFactory:^PNLogEntry * {
+                return [PNStringLogEntry entryWithMessage:PNStringFormat(@"HTTP file download request retry #%@ in %@ seconds",
+                                                                         @(request.retryAttempt), @(delay))];
+            }];
+            
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)),
                            dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 [self sendDownloadRequest:request withCompletionBlock:block];
             });
         } else {
             block(request,
-                  [self handleRequest:request taskCompletion:task withResponse:nil data:nil],
+                  [self handleRequest:request taskCompletion:task withResponse:response data:nil],
                   location,
                   [self errorForRequest:request withURL:task.originalRequest.URL error:error]
             );
@@ -287,13 +293,17 @@ NS_ASSUME_NONNULL_END
             }];
 
             if (cancelled || taskState != NSURLSessionTaskStateRunning) return;
+            
+            [self.configuration.logger traceWithLocation:@"PNURLSessionTransport"
+                                              andMessage:[PNStringLogEntry entryWithMessage:@"On-demand request aborting"]];
+            [self.configuration.logger debugWithLocation:@"PNURLSessionTransport"
+                                       andMessageFactory:^PNLogEntry * {
+                return [PNNetworkRequestLogEntry entryWithMessage:weakRequest details:@"Aborted" canceled:YES failed:NO];
+            }];
 
             [task cancel];
         };
     }
-
-    PNLogRequest(self.configuration.logger, @"<PubNub::Network> %@ %@",
-                 request.stringifiedMethod, task.originalRequest.URL.absoluteString);
 
     [task resume];
 }
@@ -307,9 +317,17 @@ NS_ASSUME_NONNULL_END
 
     if ((request.method == TransportPOSTMethod || request.method == TransportPATCHMethod) &&
         !request.bodyStreamAvailable && request.shouldCompressBody) {
+        NSUInteger bodyLength = request.body.length;
         request.body = [PNGZIP GZIPDeflatedData:request.body] ?: [NSData new];
         headers[@"content-encoding"] = @"gzip";
         headers[@"content-length"] = @(request.body.length).stringValue;
+        
+        [self.configuration.logger traceWithLocation:@"PNURLSessionTransport"
+                                  andMessageFactory:^PNLogEntry * {
+            double compressionRatio = bodyLength / request.body.length ;
+            return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Body of %@ bytes, compressed by %.2fx to %@ bytes.",
+                                                                     @(bodyLength), compressionRatio, @(request.body.length))];
+        }];
     }
 
     request.headers = headers;
@@ -455,6 +473,7 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Misc
 
 - (PNError *)errorForRequest:(PNTransportRequest *)request withURL:(NSURL *)requestUrl error:(NSError *)transportError {
+    if (!transportError) return nil;
     PNError *error = nil;
     
     if (request.cancelled || transportError.code == NSURLErrorCancelled) {
@@ -473,41 +492,38 @@ NS_ASSUME_NONNULL_END
                                          mutableCopy];
         userInfo[NSURLErrorFailingURLErrorKey] = [requestUrl copy];
         error = [PNError errorWithDomain:PNTransportErrorDomain code:PNTransportErrorRequestTimeout userInfo:userInfo];
+    } else {
+        NSMutableDictionary *userInfo = [PNErrorUserInfo(@"Network issues.",
+                                                         @"Request processing failed because of network issues.",
+                                                         nil,
+                                                         transportError)
+                                         mutableCopy];
+        userInfo[NSURLErrorFailingURLErrorKey] = [requestUrl copy];
+        error = [PNError errorWithDomain:PNTransportErrorDomain code:PNTransportErrorNetworkIssues userInfo:userInfo];
     }
     
     return error;
 }
 
-#ifndef PUBNUB_DISABLE_LOGGER
 - (void)printIfRequiredSessionCustomizationInformation {
-    PNLLogger *logger = self.configuration.logger;
-    
-    if ([NSURLSessionConfiguration pn_HTTPAdditionalHeaders].count) {
-        PNLogClientInfo(logger, @"<PubNub::Network> Custom HTTP headers is set by user: %@",
-                        [NSURLSessionConfiguration pn_HTTPAdditionalHeaders]);
-    }
-    
-    if ([NSURLSessionConfiguration pn_networkServiceType] != NSURLNetworkServiceTypeDefault) {
-        PNLogClientInfo(logger, @"<PubNub::Network> Custom network service type is set by user: %@",
-                        @([NSURLSessionConfiguration pn_networkServiceType]));
-    }
-    
-    if (![NSURLSessionConfiguration pn_allowsCellularAccess]) {
-        PNLogClientInfo(logger, @"<PubNub::Network> User limited access to cellular data and only WiFi connection can "
-                        "be used.");
-    }
-    
-    if ([NSURLSessionConfiguration pn_protocolClasses].count) {
-        PNLogClientInfo(logger, @"<PubNub::Network> Extra requests handling protocols defined by user: %@",
-                        [NSURLSessionConfiguration pn_protocolClasses]);
-    }
-    
-    if ([NSURLSessionConfiguration pn_connectionProxyDictionary].count) {
-        PNLogClientInfo(logger, @"<PubNub::Network> Connection proxy has been set by user: %@",
-                        [NSURLSessionConfiguration pn_connectionProxyDictionary]);
-    }
+    [self.configuration.logger debugWithLocation:@"PNURLSessionTransport" andMessageFactory:^PNLogEntry * {
+        NSMutableDictionary<NSString *, id> *sessionCustomization = [NSMutableDictionary new];
+        
+        if ([NSURLSessionConfiguration pn_HTTPAdditionalHeaders].count)
+            sessionCustomization[@"headers"] = [NSURLSessionConfiguration pn_HTTPAdditionalHeaders];
+        if ([NSURLSessionConfiguration pn_networkServiceType] != NSURLNetworkServiceTypeDefault)
+            sessionCustomization[@"networkService"] = @([NSURLSessionConfiguration pn_networkServiceType]);
+        if (![NSURLSessionConfiguration pn_allowsCellularAccess])
+            sessionCustomization[@"allowsCellular"] = @([NSURLSessionConfiguration pn_allowsCellularAccess]);
+        if ([NSURLSessionConfiguration pn_protocolClasses].count)
+            sessionCustomization[@"protocolClasses"] = [NSURLSessionConfiguration pn_protocolClasses];
+        if ([NSURLSessionConfiguration pn_connectionProxyDictionary].count)
+            sessionCustomization[@"connectionProxy"] = [NSURLSessionConfiguration pn_connectionProxyDictionary];
+        
+        if (!sessionCustomization.count) return nil;
+        return [PNDictionaryLogEntry entryWithMessage:sessionCustomization details:@"Use custom session configuration:"];
+    }];
 }
-#endif // PUBNUB_DISABLE_LOGGER
 
 #pragma mark -
 

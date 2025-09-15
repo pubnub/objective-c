@@ -58,7 +58,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// > Note: By default set to `NO`.
 @property(assign, nonatomic) BOOL cancellable;
 
-/// Whether request can be retried automatically (if trabsport implementation support it) or not.
+/// Whether request can be retried automatically (if transport implementation support it) or not.
 ///
 /// > Note: By default set to `YES`.
 @property(assign, nonatomic) BOOL retriable;
@@ -78,6 +78,11 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 /// > Note: By default set to `YES`.
 @property(assign, nonatomic) BOOL secure;
+
+/// Whether request failed or not.
+///
+/// > Note: By default set to `NO`.
+@property(assign, nonatomic) BOOL failed;
 
 #pragma mark -
 

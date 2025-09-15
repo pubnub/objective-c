@@ -102,6 +102,11 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Presence API builder interface (deprecated)
 
 - (PNStateAPICallBuilder * (^)(void))state {
+    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"Builder-based interface deprecated. Please use corresponding "
+                "request-based interfaces."];
+    }];
+    
     PNStateAPICallBuilder *builder = nil;
     builder = [PNStateAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags, NSDictionary *parameters) {
         NSArray<NSString *> *groups = parameters[NSStringFromSelector(@selector(channelGroups))];
@@ -142,28 +147,15 @@ NS_ASSUME_NONNULL_END
     PNSetStateCompletionBlock block = [handlerBlock copy];
     PNParsedRequestCompletionBlock handler; 
 
-    PNLogAPICall(self.logger, @"<PubNub::API> Set %@'s state on%@%@: %@.",
-                 userRequest.userId,
-                 (userRequest.channels.count
-                  ? [NSString stringWithFormat:@" channels (%@)", [userRequest.channels componentsJoinedByString:@","]]
-                  : @""),
-                 (userRequest.channelGroups.count
-                  ? [NSString stringWithFormat:@" %@channel groups (%@)", userRequest.channels.count ? @"and " : @"", [userRequest.channelGroups componentsJoinedByString:@","]]
-                  : @""),
-                 userRequest.state);
-
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
                 PNOperationDataParseResult<PNClientStateUpdateStatus *, PNClientStateUpdateStatus *> *result) {
         PNStrongify(self);
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self setPresenceStateWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+        if (!result.status.isError) {
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                return [PNStringLogEntry entryWithMessage:@"Set presence state success."];
+            }];
         }
 
         [self handleSetStateStatus:result.status
@@ -172,6 +164,11 @@ NS_ASSUME_NONNULL_END
                             groups:userRequest.channelGroups
                     withCompletion:block];
     };
+                             
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Set presence state with parameters:"];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
@@ -180,6 +177,11 @@ NS_ASSUME_NONNULL_END
            forUUID:(NSString *)uuid
          onChannel:(NSString *)channel
     withCompletion:(PNSetStateCompletionBlock)block {
+    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
+                "'-setPresenceStateWithRequest:completion:' method instead."];
+    }];
+
     NSArray *channels = channel ? @[channel] : nil;
 
     [self setState:state
@@ -194,6 +196,11 @@ NS_ASSUME_NONNULL_END
            forUUID:(NSString *)uuid
     onChannelGroup:(NSString *)group
     withCompletion:(PNSetStateCompletionBlock)block {
+    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
+                "'-setPresenceStateWithRequest:completion:' method instead."];
+    }];
+
     NSArray *groups = group ? @[group] : nil;
 
     [self setState:state
@@ -229,28 +236,19 @@ NS_ASSUME_NONNULL_END
     PNPresenceStateFetchCompletionBlock block = [handlerBlock copy];
     PNParsedRequestCompletionBlock handler;
 
-    PNLogAPICall(self.logger, @"<PubNub::API> State request on %@%@ for %@.",
-                 (userRequest.channels.count
-                  ? [NSString stringWithFormat:@" channels (%@)", [userRequest.channels componentsJoinedByString:@","]]
-                  : @""),
-                 (userRequest.channelGroups.count
-                  ? [NSString stringWithFormat:@" %@channel groups (%@)", userRequest.channels.count ? @"and " : @"",
-                             [userRequest.channelGroups componentsJoinedByString:@","]] 
-                  : @""),
-                 userRequest.userId);
-
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
                 PNOperationDataParseResult<PNPresenceStateFetchResult *, PNErrorStatus *> *result) {
         PNStrongify(self);
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self fetchPresenceStateWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+        if (!result.status.isError) {
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                PNPresenceUserStateFetchData * data = result.result.data;
+                NSUInteger channelsCount = data.channels ? data.channels.count : (data.state ? 1 : 0);
+                return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Fetch presence state success. Received "
+                                                                         "presence state for %@ channels.",
+                                                                         @(channelsCount))];
+            }];
         }
 
         [self handleStateResult:result.result
@@ -260,6 +258,11 @@ NS_ASSUME_NONNULL_END
                          groups:userRequest.channelGroups
                  withCompletion:block];
     };
+                               
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Fetch presence state with parameters:"];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
@@ -267,6 +270,11 @@ NS_ASSUME_NONNULL_END
 - (void)stateForUUID:(NSString *)uuid
            onChannel:(NSString *)channel
       withCompletion:(PNChannelStateCompletionBlock)block {
+    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
+                "'-fetchPresenceStateWithRequest:completion:' method instead."];
+    }];
+    
     NSArray *channels = channel ? @[channel] : nil;
     
     [self stateForUUID:uuid
@@ -280,6 +288,11 @@ NS_ASSUME_NONNULL_END
 - (void)stateForUUID:(NSString *)uuid
       onChannelGroup:(NSString *)group
       withCompletion:(PNChannelGroupStateCompletionBlock)block {
+    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
+                "'-fetchPresenceStateWithRequest:completion:' method instead."];
+    }];
+    
     NSArray *groups = group ? @[group] : nil;
     
     [self stateForUUID:uuid

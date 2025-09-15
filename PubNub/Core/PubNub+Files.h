@@ -30,10 +30,11 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PubNub (Files)
 
 
-#pragma mark - Files API builder interdace (deprecated)
+#pragma mark - Files API builder interface (deprecated)
 
 /// Files API access builder.
-@property (nonatomic, readonly, strong) PNFilesAPICallBuilder * (^files)(void);
+@property (nonatomic, readonly, strong) PNFilesAPICallBuilder * (^files)(void)
+    DEPRECATED_MSG_ATTRIBUTE("Builder-based interface deprecated. Please use corresponding request-based interfaces.");
 
 
 #pragma mark - File upload

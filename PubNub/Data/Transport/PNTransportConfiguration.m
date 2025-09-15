@@ -1,4 +1,5 @@
 #import "PNTransportConfiguration+Private.h"
+#import "PNRequestRetryConfiguration+Private.h"
 
 
 #pragma mark Interface implementation
@@ -12,12 +13,21 @@
     PNTransportConfiguration *configuration = [[PNTransportConfiguration allocWithZone:zone] init];
     configuration.retryConfiguration = [self.retryConfiguration copy];
     configuration.maximumConnections = self.maximumConnections;
-
-#ifndef PUBNUB_DISABLE_LOGGER
     configuration.logger = self.logger;
-#endif // PUBNUB_DISABLE_LOGGER
     
     return configuration;
+}
+
+
+#pragma mark - Misc
+
+- (NSDictionary *)dictionaryRepresentation {
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary:@{
+        @"maximumConnections": @(self.maximumConnections)
+    }];
+    if (self.retryConfiguration) dictionary[@"retryConfiguration"] = [self.retryConfiguration dictionaryRepresentation];
+    
+    return dictionary;
 }
 
 #pragma mark -

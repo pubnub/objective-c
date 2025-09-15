@@ -5,6 +5,7 @@
  * @copyright © 2010-2019 PubNub, Inc.
  */
 #import "PNStateListener.h"
+#import "PNSubscribeEventData+Private.h"
 #import "PNEventsListener.h"
 #import "PubNub+CorePrivate.h"
 #import "PNSubscribeStatus.h"
@@ -254,6 +255,11 @@ NS_ASSUME_NONNULL_END
 - (void)notifyMessage:(PNMessageResult *)message {
     NSArray<id <PNEventsListener>> *listeners = self.messageListeners.allObjects;
     
+    [self.client.logger debugWithLocation:@"PNStateListener" andMessageFactory:^PNLogEntry *{
+        return [PNDictionaryLogEntry entryWithMessage:[message.data dictionaryRepresentation]
+                                              details:@"Received message:"];
+    }];
+    
     /**
      * Silence static analyzer warnings.
      * Code is aware about this case and at the end will simply call on 'nil' object method.
@@ -272,6 +278,11 @@ NS_ASSUME_NONNULL_END
 
 - (void)notifySignal:(PNSignalResult *)signal {
     NSArray<id <PNEventsListener>> *listeners = self.signalListeners.allObjects;
+    
+    [self.client.logger debugWithLocation:@"PNStateListener" andMessageFactory:^PNLogEntry *{
+        return [PNDictionaryLogEntry entryWithMessage:[signal.data dictionaryRepresentation]
+                                              details:@"Received signal:"];
+    }];
 
     pn_dispatch_async(self.client.callbackQueue, ^{
         for (id <PNEventsListener> listener in listeners) {
@@ -282,6 +293,11 @@ NS_ASSUME_NONNULL_END
 
 - (void)notifyMessageAction:(PNMessageActionResult *)action {
     NSArray<id <PNEventsListener>> *listeners = self.messageActionListeners.allObjects;
+    
+    [self.client.logger debugWithLocation:@"PNStateListener" andMessageFactory:^PNLogEntry *{
+        return [PNDictionaryLogEntry entryWithMessage:[action.data dictionaryRepresentation]
+                                              details:@"Received message action event:"];
+    }];
 
     pn_dispatch_async(self.client.callbackQueue, ^{
         for (id <PNEventsListener> listener in listeners) {
@@ -292,6 +308,11 @@ NS_ASSUME_NONNULL_END
 
 - (void)notifyPresenceEvent:(PNPresenceEventResult *)event {
     NSArray<id <PNEventsListener>> *listeners = self.presenceEventListeners.allObjects;
+    
+    [self.client.logger debugWithLocation:@"PNStateListener" andMessageFactory:^PNLogEntry *{
+        return [PNDictionaryLogEntry entryWithMessage:[event.data dictionaryRepresentation]
+                                              details:@"Received presence event:"];
+    }];
 
     pn_dispatch_async(self.client.callbackQueue, ^{
         for (id <PNEventsListener> listener in listeners) {
@@ -302,6 +323,11 @@ NS_ASSUME_NONNULL_END
 
 - (void)notifyObjectEvent:(PNObjectEventResult *)event {
     NSArray<id <PNEventsListener>> *listeners = self.objectEventListeners.allObjects;
+    
+    [self.client.logger debugWithLocation:@"PNStateListener" andMessageFactory:^PNLogEntry *{
+        return [PNDictionaryLogEntry entryWithMessage:[event.data dictionaryRepresentation]
+                                              details:@"Received app context event:"];
+    }];
 
     pn_dispatch_async(self.client.callbackQueue, ^{
         for (id <PNEventsListener> listener in listeners) {
@@ -312,6 +338,11 @@ NS_ASSUME_NONNULL_END
 
 - (void)notifyFileEvent:(PNFileEventResult *)event {
     NSArray<id <PNEventsListener>> *listeners = self.fileEventListeners.allObjects;
+    
+    [self.client.logger debugWithLocation:@"PNStateListener" andMessageFactory:^PNLogEntry *{
+        return [PNDictionaryLogEntry entryWithMessage:[event.data dictionaryRepresentation]
+                                              details:@"Received file share event:"];
+    }];
 
     pn_dispatch_async(self.client.callbackQueue, ^{
         for (id <PNEventsListener> listener in listeners) {

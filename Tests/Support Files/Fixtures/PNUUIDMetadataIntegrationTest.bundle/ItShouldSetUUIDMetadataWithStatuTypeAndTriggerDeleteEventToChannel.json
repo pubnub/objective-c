@@ -1,6 +1,6 @@
 [
   {
-    "id" : "712FB554-DE31-4A85-AC5F-B157CA94E30A",
+    "id" : "84BDD687-4FDC-4E74-A52B-BFDE464D5195",
     "data" : {
       "method" : "get",
       "cls" : "NSURLRequest",
@@ -9,36 +9,36 @@
       "timeout" : 10,
       "cookies" : true,
       "headers" : {
-        "User-Agent" : "xctest\/23600 (iPhone; iOS 18.2.0; arm64) PubNub-ObjC\/5.7.1",
+        "User-Agent" : "xctest\/23796 (iPhone; iOS 18.5.0; arm64) PubNub-ObjC\/5.8.0",
         "Accept" : "*\/*",
         "Connection" : "keep-alive",
         "Accept-Encoding" : "gzip,deflate"
       },
       "pipeline" : false,
       "network" : 0,
-      "url" : "https:\/\/ps.pndsn.com\/v2\/objects\/demo\/uuids?uuid=Serhii&pnsdk=PubNub-ObjC-iOS\/4.x.x&count=1&limit=100"
+      "url" : "https:\/\/ps.pndsn.com\/v2\/objects\/demo\/uuids?count=1&pnsdk=PubNub-ObjC-iOS\/4.x.x&include=status,type&limit=100&uuid=Serhii"
     },
     "type" : 0
   },
   {
-    "id" : "712FB554-DE31-4A85-AC5F-B157CA94E30A",
+    "id" : "84BDD687-4FDC-4E74-A52B-BFDE464D5195",
     "data" : {
       "status" : 200,
       "cls" : "NSHTTPURLResponse",
-      "url" : "https:\/\/ps.pndsn.com\/v2\/objects\/demo\/uuids?uuid=Serhii&pnsdk=PubNub-ObjC-iOS\/4.x.x&count=1&limit=100",
+      "url" : "https:\/\/ps.pndsn.com\/v2\/objects\/demo\/uuids?count=1&pnsdk=PubNub-ObjC-iOS\/4.x.x&include=status,type&limit=100&uuid=Serhii",
       "headers" : {
         "Access-Control-Allow-Credentials" : "true",
         "Access-Control-Expose-Headers" : "*",
         "Content-Type" : "application\/json",
         "Content-Length" : "39",
         "Connection" : "keep-alive",
-        "Date" : "Tue, 18 Feb 2025 17:49:34 GMT"
+        "Date" : "Mon, 15 Sep 2025 21:14:23 GMT"
       }
     },
     "type" : 1
   },
   {
-    "id" : "712FB554-DE31-4A85-AC5F-B157CA94E30A",
+    "id" : "84BDD687-4FDC-4E74-A52B-BFDE464D5195",
     "data" : {
       "cls" : "NSData",
       "base64" : "eyJzdGF0dXMiOjIwMCwiZGF0YSI6W10sInRvdGFsQ291bnQiOjB9"
@@ -46,11 +46,11 @@
     "type" : 2
   },
   {
-    "id" : "712FB554-DE31-4A85-AC5F-B157CA94E30A",
+    "id" : "84BDD687-4FDC-4E74-A52B-BFDE464D5195",
     "type" : 4
   },
   {
-    "id" : "79D90EC5-7B5C-457D-A934-7C46B4F83459",
+    "id" : "AD687DEC-8DD3-46C8-9947-4C082E4CADC9",
     "data" : {
       "method" : "get",
       "cls" : "NSURLRequest",
@@ -59,36 +59,36 @@
       "timeout" : 10,
       "cookies" : true,
       "headers" : {
-        "User-Agent" : "xctest\/23600 (iPhone; iOS 18.2.0; arm64) PubNub-ObjC\/5.7.1",
+        "User-Agent" : "xctest\/23796 (iPhone; iOS 18.5.0; arm64) PubNub-ObjC\/5.8.0",
         "Accept" : "*\/*",
         "Connection" : "keep-alive",
         "Accept-Encoding" : "gzip,deflate"
       },
       "pipeline" : false,
       "network" : 0,
-      "url" : "https:\/\/ps.pndsn.com\/v2\/objects\/demo\/channels?uuid=Serhii&pnsdk=PubNub-ObjC-iOS\/4.x.x&count=1&limit=100"
+      "url" : "https:\/\/ps.pndsn.com\/v2\/objects\/demo\/channels?count=1&pnsdk=PubNub-ObjC-iOS\/4.x.x&include=status,type&limit=100&uuid=Serhii"
     },
     "type" : 0
   },
   {
-    "id" : "79D90EC5-7B5C-457D-A934-7C46B4F83459",
+    "id" : "AD687DEC-8DD3-46C8-9947-4C082E4CADC9",
     "data" : {
       "status" : 200,
       "cls" : "NSHTTPURLResponse",
-      "url" : "https:\/\/ps.pndsn.com\/v2\/objects\/demo\/channels?uuid=Serhii&pnsdk=PubNub-ObjC-iOS\/4.x.x&count=1&limit=100",
+      "url" : "https:\/\/ps.pndsn.com\/v2\/objects\/demo\/channels?count=1&pnsdk=PubNub-ObjC-iOS\/4.x.x&include=status,type&limit=100&uuid=Serhii",
       "headers" : {
         "Access-Control-Allow-Credentials" : "true",
         "Access-Control-Expose-Headers" : "*",
         "Content-Type" : "application\/json",
         "Content-Length" : "39",
         "Connection" : "keep-alive",
-        "Date" : "Tue, 18 Feb 2025 17:49:35 GMT"
+        "Date" : "Mon, 15 Sep 2025 21:14:23 GMT"
       }
     },
     "type" : 1
   },
   {
-    "id" : "79D90EC5-7B5C-457D-A934-7C46B4F83459",
+    "id" : "AD687DEC-8DD3-46C8-9947-4C082E4CADC9",
     "data" : {
       "cls" : "NSData",
       "base64" : "eyJzdGF0dXMiOjIwMCwiZGF0YSI6W10sInRvdGFsQ291bnQiOjB9"
@@ -96,11 +96,11 @@
     "type" : 2
   },
   {
-    "id" : "79D90EC5-7B5C-457D-A934-7C46B4F83459",
+    "id" : "AD687DEC-8DD3-46C8-9947-4C082E4CADC9",
     "type" : 4
   },
   {
-    "id" : "B42B1509-6E3F-456F-A047-CBCEAED78F7A",
+    "id" : "311ECFCF-13F4-4FBB-B322-9550A8B8B230",
     "data" : {
       "method" : "get",
       "cls" : "NSURLRequest",
@@ -109,7 +109,7 @@
       "timeout" : 310,
       "cookies" : true,
       "headers" : {
-        "User-Agent" : "xctest\/23600 (iPhone; iOS 18.2.0; arm64) PubNub-ObjC\/5.7.1",
+        "User-Agent" : "xctest\/23796 (iPhone; iOS 18.5.0; arm64) PubNub-ObjC\/5.8.0",
         "Accept" : "*\/*",
         "Connection" : "keep-alive",
         "Accept-Encoding" : "gzip,deflate"
@@ -121,7 +121,7 @@
     "type" : 0
   },
   {
-    "id" : "B42B1509-6E3F-456F-A047-CBCEAED78F7A",
+    "id" : "311ECFCF-13F4-4FBB-B322-9550A8B8B230",
     "data" : {
       "status" : 200,
       "cls" : "NSHTTPURLResponse",
@@ -131,7 +131,7 @@
         "Content-Type" : "text\/javascript; charset=\"UTF-8\"",
         "Access-Control-Expose-Headers" : "*",
         "Access-Control-Allow-Methods" : "GET",
-        "Date" : "Tue, 18 Feb 2025 17:49:36 GMT",
+        "Date" : "Mon, 15 Sep 2025 21:14:23 GMT",
         "Content-Length" : "45",
         "Cache-Control" : "no-cache",
         "Connection" : "keep-alive"
@@ -140,19 +140,19 @@
     "type" : 1
   },
   {
-    "id" : "B42B1509-6E3F-456F-A047-CBCEAED78F7A",
+    "id" : "311ECFCF-13F4-4FBB-B322-9550A8B8B230",
     "data" : {
       "cls" : "NSData",
-      "base64" : "eyJ0Ijp7InQiOiIxNzM5OTAwOTc2MTM0Njc0MCIsInIiOjIyfSwibSI6W119"
+      "base64" : "eyJ0Ijp7InQiOiIxNzU3OTcwODYzNTE2NDQ3OSIsInIiOjQxfSwibSI6W119"
     },
     "type" : 2
   },
   {
-    "id" : "B42B1509-6E3F-456F-A047-CBCEAED78F7A",
+    "id" : "311ECFCF-13F4-4FBB-B322-9550A8B8B230",
     "type" : 4
   },
   {
-    "id" : "9A5ED9D2-6952-4A32-8F28-453A01047A13",
+    "id" : "BA04ED95-F997-48D1-8C79-BA3FAC3C732E",
     "data" : {
       "method" : "get",
       "cls" : "NSURLRequest",
@@ -161,19 +161,19 @@
       "timeout" : 310,
       "cookies" : true,
       "headers" : {
-        "User-Agent" : "xctest\/23600 (iPhone; iOS 18.2.0; arm64) PubNub-ObjC\/5.7.1",
+        "User-Agent" : "xctest\/23796 (iPhone; iOS 18.5.0; arm64) PubNub-ObjC\/5.8.0",
         "Accept" : "*\/*",
         "Connection" : "keep-alive",
         "Accept-Encoding" : "gzip,deflate"
       },
       "pipeline" : false,
       "network" : 0,
-      "url" : "https:\/\/ps.pndsn.com\/v2\/subscribe\/demo\/test-uuid\/0?uuid=david&pnsdk=PubNub-ObjC-iOS\/4.x.x&tr=22&tt=17399009761346740"
+      "url" : "https:\/\/ps.pndsn.com\/v2\/subscribe\/demo\/test-uuid\/0?uuid=david&pnsdk=PubNub-ObjC-iOS\/4.x.x&tr=41&tt=17579708635164479"
     },
     "type" : 0
   },
   {
-    "id" : "55D9FD8B-3995-48E0-AE90-B4F9A8C35EB3",
+    "id" : "5E2DD603-1DD8-414A-A152-2CED73F17446",
     "data" : {
       "method" : "patch",
       "cls" : "NSURLRequest",
@@ -183,7 +183,7 @@
       "timeout" : 10,
       "cookies" : true,
       "headers" : {
-        "User-Agent" : "xctest\/23600 (iPhone; iOS 18.2.0; arm64) PubNub-ObjC\/5.7.1",
+        "User-Agent" : "xctest\/23796 (iPhone; iOS 18.5.0; arm64) PubNub-ObjC\/5.8.0",
         "Accept" : "*\/*",
         "Content-Length" : "65",
         "Connection" : "keep-alive",
@@ -200,7 +200,7 @@
     "type" : 0
   },
   {
-    "id" : "55D9FD8B-3995-48E0-AE90-B4F9A8C35EB3",
+    "id" : "5E2DD603-1DD8-414A-A152-2CED73F17446",
     "data" : {
       "status" : 200,
       "cls" : "NSHTTPURLResponse",
@@ -211,32 +211,32 @@
         "Content-Type" : "application\/json",
         "Content-Length" : "261",
         "Connection" : "keep-alive",
-        "Date" : "Tue, 18 Feb 2025 17:49:37 GMT"
+        "Date" : "Mon, 15 Sep 2025 21:14:23 GMT"
       }
     },
     "type" : 1
   },
   {
-    "id" : "55D9FD8B-3995-48E0-AE90-B4F9A8C35EB3",
+    "id" : "5E2DD603-1DD8-414A-A152-2CED73F17446",
     "data" : {
       "cls" : "NSData",
-      "base64" : "eyJzdGF0dXMiOjIwMCwiZGF0YSI6eyJpZCI6InRlc3QtdXVpZCIsIm5hbWUiOm51bGwsImV4dGVybmFsSWQiOm51bGwsInByb2ZpbGVVcmwiOm51bGwsImVtYWlsIjpudWxsLCJ0eXBlIjoiYWRtaW4iLCJzdGF0dXMiOiJvZmZsaW5lIiwiY3VzdG9tIjp7ImltcG9ydGFuZCI6ImRhdGEifSwidXBkYXRlZCI6IjIwMjUtMDItMThUMTc6NDk6MzcuMjg4Njg2WiIsImVUYWciOiIzNjJlMzliZTIxZjIyNTYyZWYwNTc0NDUyYWNhMDQxYiJ9fQ=="
+      "base64" : "eyJzdGF0dXMiOjIwMCwiZGF0YSI6eyJpZCI6InRlc3QtdXVpZCIsIm5hbWUiOm51bGwsImV4dGVybmFsSWQiOm51bGwsInByb2ZpbGVVcmwiOm51bGwsImVtYWlsIjpudWxsLCJ0eXBlIjoiYWRtaW4iLCJzdGF0dXMiOiJvZmZsaW5lIiwiY3VzdG9tIjp7ImltcG9ydGFuZCI6ImRhdGEifSwidXBkYXRlZCI6IjIwMjUtMDktMTVUMjE6MTQ6MjMuODUyNjQ3WiIsImVUYWciOiJmMGJjNGE3NTQyZGEyZjRiNmU5OTVkOWZjNTBjNjk0OCJ9fQ=="
     },
     "type" : 2
   },
   {
-    "id" : "9A5ED9D2-6952-4A32-8F28-453A01047A13",
+    "id" : "BA04ED95-F997-48D1-8C79-BA3FAC3C732E",
     "data" : {
       "status" : 200,
       "cls" : "NSHTTPURLResponse",
-      "url" : "https:\/\/ps.pndsn.com\/v2\/subscribe\/demo\/test-uuid\/0?uuid=david&pnsdk=PubNub-ObjC-iOS\/4.x.x&tr=22&tt=17399009761346740",
+      "url" : "https:\/\/ps.pndsn.com\/v2\/subscribe\/demo\/test-uuid\/0?uuid=david&pnsdk=PubNub-ObjC-iOS\/4.x.x&tr=41&tt=17579708635164479",
       "headers" : {
         "Access-Control-Allow-Credentials" : "true",
         "Content-Type" : "text\/javascript; charset=\"UTF-8\"",
         "Access-Control-Expose-Headers" : "*",
         "Access-Control-Allow-Methods" : "GET",
         "Transfer-Encoding" : "Identity",
-        "Date" : "Tue, 18 Feb 2025 17:49:37 GMT",
+        "Date" : "Mon, 15 Sep 2025 21:14:23 GMT",
         "Content-Encoding" : "gzip",
         "Cache-Control" : "no-cache",
         "Connection" : "keep-alive"
@@ -245,23 +245,23 @@
     "type" : 1
   },
   {
-    "id" : "55D9FD8B-3995-48E0-AE90-B4F9A8C35EB3",
+    "id" : "5E2DD603-1DD8-414A-A152-2CED73F17446",
     "type" : 4
   },
   {
-    "id" : "9A5ED9D2-6952-4A32-8F28-453A01047A13",
+    "id" : "BA04ED95-F997-48D1-8C79-BA3FAC3C732E",
     "data" : {
       "cls" : "NSData",
-      "base64" : "eyJ0Ijp7InQiOiIxNzM5OTAwOTc3Mjk2MjI2OSIsInIiOjIyfSwibSI6W3siYSI6IjUiLCJmIjowLCJlIjoyLCJwIjp7InQiOiIxNzM5OTAwOTc3Mjk2MjI2OSIsInIiOjQzfSwiayI6ImRlbW8iLCJjIjoidGVzdC11dWlkIiwiZCI6eyJzb3VyY2UiOiJvYmplY3RzIiwidmVyc2lvbiI6IjIuMCIsImV2ZW50Ijoic2V0IiwidHlwZSI6InV1aWQiLCJkYXRhIjp7ImN1c3RvbSI6eyJpbXBvcnRhbmQiOiJkYXRhIn0sImVUYWciOiIzNjJlMzliZTIxZjIyNTYyZWYwNTc0NDUyYWNhMDQxYiIsImlkIjoidGVzdC11dWlkIiwic3RhdHVzIjoib2ZmbGluZSIsInR5cGUiOiJhZG1pbiIsInVwZGF0ZWQiOiIyMDI1LTAyLTE4VDE3OjQ5OjM3LjI4ODY4NloifX19XX0="
+      "base64" : "eyJ0Ijp7InQiOiIxNzU3OTcwODYzOTA2NTQxNCIsInIiOjQxfSwibSI6W3siYSI6IjUiLCJmIjowLCJlIjoyLCJwIjp7InQiOiIxNzU3OTcwODYzOTA2NTQxNCIsInIiOjQxfSwiayI6ImRlbW8iLCJjIjoidGVzdC11dWlkIiwiZCI6eyJzb3VyY2UiOiJvYmplY3RzIiwidmVyc2lvbiI6IjIuMCIsImV2ZW50Ijoic2V0IiwidHlwZSI6InV1aWQiLCJkYXRhIjp7ImN1c3RvbSI6eyJpbXBvcnRhbmQiOiJkYXRhIn0sImVUYWciOiJmMGJjNGE3NTQyZGEyZjRiNmU5OTVkOWZjNTBjNjk0OCIsImlkIjoidGVzdC11dWlkIiwic3RhdHVzIjoib2ZmbGluZSIsInR5cGUiOiJhZG1pbiIsInVwZGF0ZWQiOiIyMDI1LTA5LTE1VDIxOjE0OjIzLjg1MjY0N1oifX19XX0="
     },
     "type" : 2
   },
   {
-    "id" : "9A5ED9D2-6952-4A32-8F28-453A01047A13",
+    "id" : "BA04ED95-F997-48D1-8C79-BA3FAC3C732E",
     "type" : 4
   },
   {
-    "id" : "4496CE2F-A2EF-40C4-ACF7-2E2DDA15EDCA",
+    "id" : "B1D53D27-3F0D-40EB-8283-B0160337ADC6",
     "data" : {
       "method" : "get",
       "cls" : "NSURLRequest",
@@ -270,19 +270,33 @@
       "timeout" : 310,
       "cookies" : true,
       "headers" : {
-        "User-Agent" : "xctest\/23600 (iPhone; iOS 18.2.0; arm64) PubNub-ObjC\/5.7.1",
+        "User-Agent" : "xctest\/23796 (iPhone; iOS 18.5.0; arm64) PubNub-ObjC\/5.8.0",
         "Accept" : "*\/*",
         "Connection" : "keep-alive",
         "Accept-Encoding" : "gzip,deflate"
       },
       "pipeline" : false,
       "network" : 0,
-      "url" : "https:\/\/ps.pndsn.com\/v2\/subscribe\/demo\/test-uuid\/0?uuid=david&pnsdk=PubNub-ObjC-iOS\/4.x.x&tr=22&tt=17399009772962269"
+      "url" : "https:\/\/ps.pndsn.com\/v2\/subscribe\/demo\/test-uuid\/0?uuid=david&pnsdk=PubNub-ObjC-iOS\/4.x.x&tr=41&tt=17579708639065414"
     },
     "type" : 0
   },
   {
-    "id" : "1EE1C8EF-4B97-4D2C-859E-3E06251BB05C",
+    "id" : "B1D53D27-3F0D-40EB-8283-B0160337ADC6",
+    "data" : {
+      "code" : -999,
+      "info" : {
+        "NSErrorFailingURLStringKey" : "https:\/\/ps.pndsn.com\/v2\/subscribe\/demo\/test-uuid\/0?uuid=david&pnsdk=PubNub-ObjC-iOS\/4.x.x&tr=41&tt=17579708639065414",
+        "NSLocalizedDescription" : "cancelled",
+        "NSErrorFailingURLKey" : "https:\/\/ps.pndsn.com\/v2\/subscribe\/demo\/test-uuid\/0?uuid=david&pnsdk=PubNub-ObjC-iOS\/4.x.x&tr=41&tt=17579708639065414"
+      },
+      "cls" : "NSError",
+      "domain" : "NSURLErrorDomain"
+    },
+    "type" : 3
+  },
+  {
+    "id" : "DC0FF37C-ED6C-49B5-8846-093E04F549F1",
     "data" : {
       "method" : "get",
       "cls" : "NSURLRequest",
@@ -291,7 +305,7 @@
       "timeout" : 10,
       "cookies" : true,
       "headers" : {
-        "User-Agent" : "xctest\/23600 (iPhone; iOS 18.2.0; arm64) PubNub-ObjC\/5.7.1",
+        "User-Agent" : "xctest\/23796 (iPhone; iOS 18.5.0; arm64) PubNub-ObjC\/5.8.0",
         "Accept" : "*\/*",
         "Connection" : "keep-alive",
         "Accept-Encoding" : "gzip,deflate"
@@ -303,28 +317,33 @@
     "type" : 0
   },
   {
-    "id" : "1EE1C8EF-4B97-4D2C-859E-3E06251BB05C",
+    "id" : "DC0FF37C-ED6C-49B5-8846-093E04F549F1",
     "data" : {
-      "code" : -1001,
-      "info" : {
-        "NSLocalizedDescription" : "The request timed out.",
-        "NSErrorFailingURLStringKey" : "https:\/\/ps.pndsn.com\/v2\/presence\/sub_key\/demo\/channel\/test-uuid\/leave?uuid=david&pnsdk=PubNub-ObjC-iOS\/4.x.x",
-        "NSErrorFailingURLKey" : "https:\/\/ps.pndsn.com\/v2\/presence\/sub_key\/demo\/channel\/test-uuid\/leave?uuid=david&pnsdk=PubNub-ObjC-iOS\/4.x.x",
-        "_kCFStreamErrorDomainKey" : 4,
-        "_kCFStreamErrorCodeKey" : -2102,
-        "NSUnderlyingError" : {
-          "code" : -1001,
-          "info" : {
-            "_kCFStreamErrorCodeKey" : -2102,
-            "_kCFStreamErrorDomainKey" : 4
-          },
-          "cls" : "NSError",
-          "domain" : "kCFErrorDomainCFNetwork"
-        }
-      },
-      "cls" : "NSError",
-      "domain" : "NSURLErrorDomain"
+      "status" : 200,
+      "cls" : "NSHTTPURLResponse",
+      "url" : "https:\/\/ps.pndsn.com\/v2\/presence\/sub_key\/demo\/channel\/test-uuid\/leave?uuid=david&pnsdk=PubNub-ObjC-iOS\/4.x.x",
+      "headers" : {
+        "Access-Control-Allow-Credentials" : "true",
+        "Content-Type" : "text\/javascript; charset=\"UTF-8\"",
+        "Access-Control-Expose-Headers" : "*",
+        "access-control-allow-methods" : "OPTIONS, GET, POST",
+        "Date" : "Mon, 15 Sep 2025 21:14:25 GMT",
+        "Content-Length" : "67",
+        "Connection" : "keep-alive"
+      }
     },
-    "type" : 3
+    "type" : 1
+  },
+  {
+    "id" : "DC0FF37C-ED6C-49B5-8846-093E04F549F1",
+    "data" : {
+      "cls" : "NSData",
+      "base64" : "eyJhY3Rpb24iOiJsZWF2ZSIsIm1lc3NhZ2UiOiJPSyIsInNlcnZpY2UiOiJQcmVzZW5jZSIsInN0YXR1cyI6MjAwfQ=="
+    },
+    "type" : 2
+  },
+  {
+    "id" : "DC0FF37C-ED6C-49B5-8846-093E04F549F1",
+    "type" : 4
   }
 ]

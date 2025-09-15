@@ -59,6 +59,7 @@
 #import "PNEncoder.h"
 #import "PNDecoder.h"
 #import "PNCodable.h"
+#import "PNLogger.h"
 
 
 #pragma mark - API
@@ -67,6 +68,7 @@
 #import "PubNub+MessageActions.h"
 #import "PubNub+ChannelGroup.h"
 #import "PubNub+Subscribe.h"
+#import "PNLoggerManager.h"
 #import "PubNub+Presence.h"
 #import "PubNub+Publish.h"
 #import "PubNub+History.h"
@@ -77,9 +79,21 @@
 #import "PubNub+APNS.h"
 #import "PubNub+Time.h"
 #import "PubNub+PAM.h"
-#import "PNLLogger.h"
 #import "PNError.h"
 #import "PNAES.h"
+
+
+#pragma mark - Logger
+
+#import "PNNetworkResponseLogEntry.h"
+#import "PNNetworkRequestLogEntry.h"
+#import "PNDictionaryLogEntry.h"
+#import "PNStringLogEntry.h"
+#import "PNLoggerManager.h"
+#import "PNConsoleLogger.h"
+#import "PNErrorLogEntry.h"
+#import "PNFileLogger.h"
+#import "PNLogEntry.h"
 
 
 #pragma mark - Errors

@@ -17,6 +17,10 @@
 
 - (void)setAuthToken:(NSString *)token {
     [self.lock asyncWriteAccessWithBlock:^{
+        [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * _Nullable{
+            return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Set auth key: %@", token)];
+        }];
+        
         self.configuration.authToken = token;
     }];
 }

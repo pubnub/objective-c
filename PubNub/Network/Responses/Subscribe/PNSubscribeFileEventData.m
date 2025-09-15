@@ -4,7 +4,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-#pragma mark Private nterface declaration
+#pragma mark Private interface declaration
 
 /// `File event` data private extension.
 @interface PNSubscribeFileEventData () <PNCodable>
@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Properties
 
 /// Whether decryption error happened during data processing or not.
-@property(assign, nonatomic) BOOL decryptionError;
+@property(strong, nonatomic) NSError *decryptionError;
 
 #pragma mark -
 

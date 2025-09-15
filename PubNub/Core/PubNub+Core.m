@@ -19,11 +19,12 @@
 #import "PNStatus+Private.h"
 #import "PNEventsListener.h"
 #import "PNConfiguration.h"
+#import "PNConsoleLogger.h"
 #import "PNReachability.h"
 #import "PNConstants.h"
-#import "PNLogMacro.h"
 #import "PNHelpers.h"
 
+#import "PNLoggerManager+Private.h"
 #import "PNTransportMiddleware.h"
 #import "PNURLSessionTransport.h"
 #import "PNCryptoModule.h"
@@ -96,22 +97,20 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Resources access lock.
 @property(strong, nonatomic) PNLock *lock;
-#ifndef PUBNUB_DISABLE_LOGGER
-@property (nonatomic, strong) PNLLogger *logger;
-#endif // PUBNUB_DISABLE_LOGGER
-@property (nonatomic, strong) id<PNTransport> subscriptionNetwork;
-@property (nonatomic, assign) PNStatusCategory recentClientStatus;
-@property (nonatomic, strong) PNPublishSequence *sequenceManager;
-@property (nonatomic, strong) PNClientState *clientStateManager;
-@property (nonatomic, strong) PNStateListener *listenersManager;
-@property (nonatomic, strong) PNSubscriber *subscriberManager;
-@property (nonatomic, strong) id<PNTransport> serviceNetwork;
-@property (nonatomic, strong) dispatch_queue_t callbackQueue;
+@property(strong, nonatomic) id<PNTransport> subscriptionNetwork;
+@property(assign, nonatomic) PNStatusCategory recentClientStatus;
+@property(strong, nonatomic) PNPublishSequence *sequenceManager;
+@property(strong, nonatomic) PNClientState *clientStateManager;
+@property(strong, nonatomic) PNStateListener *listenersManager;
+@property(strong, nonatomic) PNSubscriber *subscriberManager;
+@property(strong, nonatomic) id<PNTransport> serviceNetwork;
+@property(strong, nonatomic) dispatch_queue_t callbackQueue;
 @property(strong, nonatomic) PNJSONSerialization *serializer;
-@property (nonatomic, strong) PNHeartbeat *heartbeatManager;
-@property (nonatomic, strong) PNFilesManager *filesManager;
-@property (nonatomic, copy) PNConfiguration *configuration;
-@property (nonatomic, copy) NSString *instanceID;
+@property(strong, nonatomic) PNHeartbeat *heartbeatManager;
+@property(strong, nonatomic) PNFilesManager *filesManager;
+@property(copy, nonatomic) PNConfiguration *configuration;
+@property(strong, nonatomic) PNLoggerManager *logger;
+@property(copy, nonatomic) NSString *instanceID;
 @property(strong, nonatomic) PNJSONCoder *coder;
 
 /// Reachability helper.
@@ -187,13 +186,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Misc
 
-#ifndef PUBNUB_DISABLE_LOGGER
 /// Create and configure **PubNub** client logger instance.
 - (void)setupClientLogger;
-
-/// Print out logger's verbosity configuration information.
-- (void)printLogVerbosityInformation;
-#endif // PUBNUB_DISABLE_LOGGER
 
 #pragma mark -
 
@@ -226,6 +220,10 @@ NS_ASSUME_NONNULL_END
 }
 
 - (NSString *)uuid {
+    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use 'userID' method instead."];
+    }];
+    
     return [self userID];
 }
 
@@ -246,18 +244,19 @@ NS_ASSUME_NONNULL_END
 
 - (instancetype)initWithConfiguration:(PNConfiguration *)configuration callbackQueue:(dispatch_queue_t)callbackQueue {
     if ((self = [super init])) {
-#ifndef PUBNUB_DISABLE_LOGGER
-        [self setupClientLogger];
-        PNLogClientInfo(self.logger, @"<PubNub> PubNub SDK %@ (%@)", kPNLibraryVersion, kPNCommit);
-#endif // PUBNUB_DISABLE_LOGGER
-
         _lock = [PNLock lockWithIsolationQueueName:@"core" subsystemQueueIdentifier:@"com.pubnub.serializer"];
         _serializer = [PNJSONSerialization new];
         _coder = [PNJSONCoder coderWithJSONSerializer:_serializer];
         _instanceID = [[NSUUID UUID].UUIDString copy];
         _configuration = [configuration copy];
         _callbackQueue = callbackQueue;
-
+        
+        [self setupClientLogger];
+        [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+            return [PNDictionaryLogEntry entryWithMessage:[self->_configuration dictionaryRepresentation]
+                                                  details:@"Create with configuration:"];
+        }];
+        
         [self prepareNetworkManagers];
         [self prepareCryptoModule];
         
@@ -297,6 +296,11 @@ NS_ASSUME_NONNULL_END
 - (void)copyWithConfiguration:(PNConfiguration *)configuration
                 callbackQueue:(dispatch_queue_t)callbackQueue
                    completion:(void(^)(PubNub *client))block {
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[configuration dictionaryRepresentation]
+                                              details:@"Copy with new configuration:"];
+    }];
+                       
     PubNub *client = [PubNub clientWithConfiguration:configuration callbackQueue:callbackQueue];
 
     [client.subscriberManager inheritStateFromSubscriber:self.subscriberManager];
@@ -376,8 +380,10 @@ NS_ASSUME_NONNULL_END
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     if (!self.configuration.cipherKey.length || self.configuration.cryptoModule) return;
     if (self.configuration.cipherKey.length && self.configuration.cryptoModule) {
-        PNLogClientInfo(self.logger, @"<PubNub> It is expected that only cipherKey or cryptoModule will be configured "\
-                        "at once. PubNub client will use the configured cryptoModule.");
+        [self.logger errorWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+            return [PNStringLogEntry entryWithMessage:@"It is expected that only cipherKey or cryptoModule will be "
+                    "configured at once. PubNub client will use the configured cryptoModule."];
+        }];
         return;
     }
 
@@ -420,18 +426,11 @@ NS_ASSUME_NONNULL_END
 - (id<PNTransport>)transportWithMaximumConnections:(NSUInteger)maximumConnections {
     PNURLSessionTransport *transport = [PNURLSessionTransport new];
     PNTransportMiddlewareConfiguration *configuration;
-#ifdef PUBNUB_DISABLE_LOGGER
-    configuration = [PNTransportMiddlewareConfiguration configurationWithClientConfiguration:_configuration
-                                                                            clientInstanceId:self.instanceID
-                                                                                   transport:transport
-                                                                          maximumConnections:maximumConnections];
-#else
     configuration = [PNTransportMiddlewareConfiguration configurationWithClientConfiguration:_configuration
                                                                             clientInstanceId:self.instanceID
                                                                                    transport:transport
                                                                           maximumConnections:maximumConnections
                                                                                       logger:_logger];
-#endif // #ifdef PUBNUB_DISABLE_LOGGER
     
     return [PNTransportMiddleware middlewareWithConfiguration:configuration];
 }
@@ -453,7 +452,6 @@ NS_ASSUME_NONNULL_END
                                                                response:response
                                                                    data:response.body
                                                                   error:error];
-            [self updateResult:result.result ?: result.status withRequest:request response:response];
             block(request, response, nil, result);
         };
     } else {
@@ -464,8 +462,6 @@ NS_ASSUME_NONNULL_END
                                                                response:response
                                                                    data:data
                                                                   error:error];
-
-            [self updateResult:result.result ?: result.status withRequest:request response:response];
             block(request, response, location, result);
         };
     }
@@ -557,27 +553,6 @@ NS_ASSUME_NONNULL_END
                                     withAdditionalData:additionalData];
 }
 
-#pragma mark - Operation information
-
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-implementations"
-- (NSInteger)packetSizeForOperation:(PNOperationType)operationType
-                     withParameters:(PNRequestParameters *)parameters
-                               data:(NSData *)data {
-                                   return 0;
-}
-#pragma clang diagnostic pop
-
-- (void)appendClientInformation:(PNOperationResult *)result {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    result.TLSEnabled = self.configuration.isTLSEnabled;
-    result.userID = self.configuration.userID;
-    result.authKey = self.configuration.authToken ?: self.configuration.authKey;
-    if (!result.origin) result.origin = self.configuration.origin;
-#pragma clang diagnostic pop
-}
-
 
 #pragma mark - Events notification
 
@@ -585,23 +560,12 @@ NS_ASSUME_NONNULL_END
            status:(BOOL)callingStatusBlock
        withResult:(PNOperationResult *)result
         andStatus:(PNStatus *)status {
-    if (result) [self appendClientInformation:result];
-    if (status) [self appendClientInformation:status];
+    if (!block) return;
 
-    if (result) PNLogResult(self.logger, @"<PubNub> %@", [result stringifiedRepresentationWithSerializer:self.coder]);
-
-    if (status) {
-        if (!status.isError) {
-            PNLogFailureStatus(self.logger, @"<PubNub> %@", [status stringifiedRepresentationWithSerializer:self.coder]);
-        } else PNLogStatus(self.logger, @"<PubNub> %@", [status stringifiedRepresentationWithSerializer:self.coder]);
-    }
-
-    if (block) {
-        pn_dispatch_async(self.callbackQueue, ^{
-            if (!callingStatusBlock) ((PNCompletionBlock)block)(result, status);
-            else ((PNStatusBlock)block)(status);
-        });
-    }
+    pn_dispatch_async(self.callbackQueue, ^{
+        if (!callingStatusBlock) ((PNCompletionBlock)block)(result, status);
+        else ((PNStatusBlock)block)(status);
+    });
 }
 
 - (void)client:(PubNub *)__unused client didReceiveStatus:(PNSubscribeStatus *)status {
@@ -620,33 +584,51 @@ NS_ASSUME_NONNULL_END
 - (void)handleContextTransition:(NSNotification *)notification {
 #if TARGET_OS_IOS
     if ([notification.name isEqualToString:UIApplicationDidEnterBackgroundNotification]) {
-        PNLogClientInfo(self.logger, @"<PubNub> Did enter background execution context.");
+        [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+            return [PNStringLogEntry entryWithMessage:@"Did enter background execution context."];
+        }];
+        
         [self.subscriptionNetwork suspend];
         [self.serviceNetwork suspend];
     } else if ([notification.name isEqualToString:UIApplicationWillEnterForegroundNotification]) {
-        PNLogClientInfo(self.logger, @"<PubNub> Will enter foreground execution context.");
+        [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+            return [PNStringLogEntry entryWithMessage:@"Will enter foreground execution context."];
+        }];
+        
         [self.subscriptionNetwork resume];
         [self.serviceNetwork resume];
     }
 #elif TARGET_OS_WATCH
     if ([notification.name isEqualToString:NSExtensionHostDidEnterBackgroundNotification]) {
-        PNLogClientInfo(self.logger, @"<PubNub> Did enter background execution context.");
+        [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+            return [PNStringLogEntry entryWithMessage:@"Did enter background execution context."];
+        }];
+
         [self.subscriptionNetwork suspend];
         [self.serviceNetwork suspend];
     } else if ([notification.name isEqualToString:NSExtensionHostWillEnterForegroundNotification]) {
-        PNLogClientInfo(self.logger, @"<PubNub> Will enter foreground execution context.");
+        [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+            return [PNStringLogEntry entryWithMessage:@"Will enter foreground execution context."];
+        }];
+
         [self.subscriptionNetwork resume];
         [self.serviceNetwork resume];
     }
 #elif TARGET_OS_OSX
     if ([notification.name isEqualToString:NSWorkspaceWillSleepNotification] ||
         [notification.name isEqualToString:NSWorkspaceSessionDidResignActiveNotification]) {
-        PNLogClientInfo(self.logger, @"<PubNub> Workspace became inactive.");
+        [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+            return [PNStringLogEntry entryWithMessage:@"Workspace became inactive."];
+        }];
+
         [self.subscriptionNetwork suspend];
         [self.serviceNetwork suspend];
     } else if ([notification.name isEqualToString:NSWorkspaceDidWakeNotification] ||
                [notification.name isEqualToString:NSWorkspaceSessionDidBecomeActiveNotification]) {
-        PNLogClientInfo(self.logger, @"<PubNub> Workspace became active.");
+        [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+            return [PNStringLogEntry entryWithMessage:@"Workspace became active."];
+        }];
+
         [self.subscriptionNetwork resume];
         [self.serviceNetwork resume];
     }
@@ -658,58 +640,16 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Helpers
 
-#ifndef PUBNUB_DISABLE_LOGGER
 - (void)setupClientLogger {
-#if TARGET_OS_TV && !TARGET_OS_SIMULATOR
-    NSSearchPathDirectory searchPath = NSCachesDirectory;
-#else 
-    NSSearchPathDirectory searchPath = (TARGET_OS_IPHONE ? NSDocumentDirectory : NSApplicationSupportDirectory);
-#endif // TARGET_OS_TV && !TARGET_OS_SIMULATOR
-    NSArray *documents = NSSearchPathForDirectoriesInDomains(searchPath, NSUserDomainMask, YES);
-    NSString *logsPath = documents.lastObject;
-#if TARGET_OS_OSX || TARGET_OS_SIMULATOR
-    NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
-    if (NSClassFromString(@"XCTestExpectation")) bundleIdentifier = @"com.pubnub.objc-tests";
-    logsPath = [logsPath stringByAppendingPathComponent:bundleIdentifier];
-#endif // TARGET_OS_OSX || TARGET_OS_SIMULATOR
-    logsPath = [logsPath stringByAppendingPathComponent:@"Logs"];
+    if (_configuration.logLevel == PNNoneLogLevel) return;
     
-    __weak __typeof__(self) weakSelf = self;
-    self.logger = [PNLLogger loggerWithIdentifier:kPNClientIdentifier directory:logsPath logExtension:@"log"];
-    self.logger.enabled = NO;
-    self.logger.writeToConsole = YES;
-    self.logger.writeToFile = YES;
-    [self.logger setLogLevel:PNInfoLogLevel | PNFailureStatusLogLevel | PNAPICallLogLevel];
-    self.logger.logFilesDiskQuota = (50 * 1024 * 1024);
-    self.logger.maximumLogFileSize = (5 * 1024 * 1024);
-    self.logger.maximumNumberOfLogFiles = 5;
-
-    dispatch_time_t delay = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5f * NSEC_PER_SEC));
-    dispatch_after(delay, dispatch_get_main_queue(), ^{
-        weakSelf.logger.logLevelChangeHandler = ^{
-            [weakSelf printLogVerbosityInformation];
-        };
-
-        [weakSelf printLogVerbosityInformation];
-    });
-}
-
-- (void)printLogVerbosityInformation {
-    NSMutableArray *enabledFlags = [NSMutableArray new];
-    NSUInteger verbosityFlags = self.logger.logLevel;
-
-    if (verbosityFlags & PNReachabilityLogLevel) [enabledFlags addObject:@"Reachability"];
-    if (verbosityFlags & PNRequestLogLevel) [enabledFlags addObject:@"Network Request"];
-    if (verbosityFlags & PNResultLogLevel) [enabledFlags addObject:@"Result instance"];
-    if (verbosityFlags & PNStatusLogLevel) [enabledFlags addObject:@"Status instance"];
-    if (verbosityFlags & PNFailureStatusLogLevel) [enabledFlags addObject:@"Failed status instance"];
-    if (verbosityFlags & PNAESErrorLogLevel) [enabledFlags addObject:@"AES error"];
-    if (verbosityFlags & PNAPICallLogLevel) [enabledFlags addObject:@"API Call"];
+    NSMutableArray<id<PNLogger>> *loggers = [NSMutableArray arrayWithObject:[PNConsoleLogger new]];
+    if (_configuration.loggers.count) [loggers addObjectsFromArray:_configuration.loggers];
     
-    PNLogClientInfo(self.logger, @"<PubNub::Logger> Enabled verbosity level flags: %@",
-        [enabledFlags componentsJoinedByString:@", "]);
+    self.logger = [PNLoggerManager managerWithClientIdentifier:[_instanceID substringToIndex:6]
+                                                      logLevel:_configuration.logLevel
+                                                    andLoggers:loggers];
 }
-#endif // PUBNUB_DISABLE_LOGGER
 
 - (void)dealloc {
 #if TARGET_OS_IOS

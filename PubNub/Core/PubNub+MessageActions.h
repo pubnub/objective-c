@@ -26,7 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PubNub (MessageActions)
 
 
-#pragma mark - Message Actions API builder interdace (deprecated)
+#pragma mark - Message Actions API builder interface (deprecated)
 
 /// `Add message action` API access builder block.
 @property (nonatomic, readonly, strong) PNAddMessageActionAPICallBuilder * (^addMessageAction)(void)

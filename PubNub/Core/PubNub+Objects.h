@@ -253,8 +253,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///         // Handle channel metadata fetch error. Check `category` property to find out possible
 ///         // issue because of which request did fail.
-///         //
-///         // Request can be resent using: [status retry]
 ///     }
 /// }];
 /// ```

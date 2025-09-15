@@ -38,7 +38,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 /// - Parameter channel: Name of the channel from which events should be removed.
 /// - Returns: Ready to use `Delete messages` request.
-+ (instancetype)requestWithChannel:(NSString *)channels;
++ (instancetype)requestWithChannel:(NSString *)channel;
 
 /// Forbids request initialization.
 ///

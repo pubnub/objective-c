@@ -586,19 +586,28 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client historyForChannel:channel withCompletion:^(PNHistoryResult *result, PNErrorStatus *status) {
+        PNHistoryFetchRequest *request = [PNHistoryFetchRequest requestWithChannel:channel];
+        __block __weak PNHistoryCompletionBlock weakBlock;
+        __block PNHistoryCompletionBlock block;
+        
+        block = ^(PNHistoryResult *result, PNErrorStatus *status) {
+            __strong PNHistoryCompletionBlock strongBlock = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
+            
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNHistoryOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             if (!retried) {
                 retried = YES;
-                [status retry];
+                [self.client fetchHistoryWithRequest:request completion:strongBlock];
             } else {
                 handler();
             }
-        }];
+        };
+        
+        weakBlock = block;
+        [self.client fetchHistoryWithRequest:request completion:block];
     }];
 }
 
@@ -782,7 +791,6 @@
                     XCTAssertTrue(status.isError);
                     XCTAssertEqual(status.operation, PNHistoryForChannelsOperation);
                     XCTAssertEqual(status.category, PNBadRequestCategory);
-                    XCTAssertEqual(status.statusCode, 400);
                     handler();
                 });
         } @catch (NSException *exception) {
@@ -1151,21 +1159,28 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client deleteMessagesFromChannel:expectedChannel start:nil end:nil
-                                withCompletion:^(PNAcknowledgmentStatus *status) {
+        PNHistoryMessagesDeleteRequest *request = [PNHistoryMessagesDeleteRequest requestWithChannel:expectedChannel];
+        __block __weak PNMessageDeleteCompletionBlock weakBlock;
+        __block PNMessageDeleteCompletionBlock block;
+        
+        block = ^(PNAcknowledgmentStatus *status) {
+            __strong PNMessageDeleteCompletionBlock strongBlock = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
             
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNDeleteMessageOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             if (!retried) {
                 retried = YES;
-                [status retry];
+                [self.client deleteMessagesWithRequest:request completion:strongBlock];
             } else {
                 handler();
             }
-        }];
+        };
+        
+        weakBlock = block;
+        [self.client deleteMessagesWithRequest:request completion:block];
     }];
     
     
@@ -1293,24 +1308,31 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.messageCounts()
-            .channels(channels)
-            .timetokens(timetokens)
-            .performWithCompletion(^(PNMessageCountResult *result, PNErrorStatus *status) {
-                XCTAssertTrue(status.isError);
-                XCTAssertEqual(status.operation, PNMessageCountOperation);
-                XCTAssertEqual(status.category, PNBadRequestCategory);
-                XCTAssertEqual(status.statusCode, 400);
-                
-                if (!retried) {
-                    retried = YES;
-                    [status retry];
-                } else {
-                    handler();
-                }
-                
+        PNHistoryMessagesCountRequest *request = [PNHistoryMessagesCountRequest requestWithChannels:channels
+                                                                                         timetokens:timetokens];
+        __block __weak PNMessageCountCompletionBlock weakBlock;
+        __block PNMessageCountCompletionBlock block;
+        
+        block = ^(PNMessageCountResult *result, PNErrorStatus *status) {
+            __strong PNMessageCountCompletionBlock strongBlock = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
+            
+            XCTAssertTrue(status.isError);
+            XCTAssertEqual(status.operation, PNMessageCountOperation);
+            XCTAssertEqual(status.category, PNBadRequestCategory);
+            
+            if (!retried) {
+                retried = YES;
+                [self.client fetchMessagesCountWithRequest:request completion:strongBlock];
+            } else {
                 handler();
-            });
+            }
+            
+            handler();
+        };
+        
+        weakBlock = block;
+        [self.client fetchMessagesCountWithRequest:request completion:block];
     }];
 }
 
@@ -1321,24 +1343,31 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.messageCounts()
-            .channels(channels)
-            .timetokens(timetokens)
-            .performWithCompletion(^(PNMessageCountResult *result, PNErrorStatus *status) {
-                XCTAssertTrue(status.isError);
-                XCTAssertEqual(status.operation, PNMessageCountOperation);
-                XCTAssertEqual(status.category, PNBadRequestCategory);
-                XCTAssertEqual(status.statusCode, 400);
-                
-                if (!retried) {
-                    retried = YES;
-                    [status retry];
-                } else {
-                    handler();
-                }
-                
+        PNHistoryMessagesCountRequest *request = [PNHistoryMessagesCountRequest requestWithChannels:channels
+                                                                                         timetokens:timetokens];
+        __block __weak PNMessageCountCompletionBlock weakBlock;
+        __block PNMessageCountCompletionBlock block;
+        
+        block= ^(PNMessageCountResult *result, PNErrorStatus *status) {
+            __strong PNMessageCountCompletionBlock strongBlock = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
+            
+            XCTAssertTrue(status.isError);
+            XCTAssertEqual(status.operation, PNMessageCountOperation);
+            XCTAssertEqual(status.category, PNBadRequestCategory);
+            
+            if (!retried) {
+                retried = YES;
+                [self.client fetchMessagesCountWithRequest:request completion:strongBlock];
+            } else {
                 handler();
-            });
+            }
+            
+            handler();
+        };
+        
+        weakBlock = block;
+        [self.client fetchMessagesCountWithRequest:request completion:block];
     }];
 }
 
@@ -1349,24 +1378,31 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.messageCounts()
-            .channels(channels)
-            .timetokens(timetokens)
-            .performWithCompletion(^(PNMessageCountResult *result, PNErrorStatus *status) {
-                XCTAssertTrue(status.isError);
-                XCTAssertEqual(status.operation, PNMessageCountOperation);
-                XCTAssertEqual(status.category, PNBadRequestCategory);
-                XCTAssertEqual(status.statusCode, 400);
-                
-                if (!retried) {
-                    retried = YES;
-                    [status retry];
-                } else {
-                    handler();
-                }
-                
+        PNHistoryMessagesCountRequest *request = [PNHistoryMessagesCountRequest requestWithChannels:channels
+                                                                                         timetokens:timetokens];
+        __block __weak PNMessageCountCompletionBlock weakBlock;
+        __block PNMessageCountCompletionBlock block;
+        
+        block= ^(PNMessageCountResult *result, PNErrorStatus *status) {
+            __strong PNMessageCountCompletionBlock strongBlock = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
+            
+            XCTAssertTrue(status.isError);
+            XCTAssertEqual(status.operation, PNMessageCountOperation);
+            XCTAssertEqual(status.category, PNBadRequestCategory);
+            
+            if (!retried) {
+                retried = YES;
+                [self.client fetchMessagesCountWithRequest:request completion:strongBlock];
+            } else {
                 handler();
-            });
+            }
+            
+            handler();
+        };
+        
+        weakBlock = block;
+        [self.client fetchMessagesCountWithRequest:request completion:block];
     }];
 }
 

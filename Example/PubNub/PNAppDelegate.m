@@ -95,13 +95,14 @@
 
     // Bind didReceiveMessage, didReceiveStatus, and didReceivePresenceEvent 'listeners' to this delegate
     // just be sure the target has implemented the PNObjectEventListener extension
-    [self.client addListener:self];
-    [self pubNubSetState];
+//    [self.client addListener:self];
+//    [self pubNubSetState];
 }
 
 - (void)tireKicker {
     [self pubNubInit];
 
+    return;
 #pragma mark - Time
 
     [self pubNubTime];

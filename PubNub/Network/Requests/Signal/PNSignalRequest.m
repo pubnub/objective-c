@@ -115,6 +115,21 @@ NS_ASSUME_NONNULL_END
     return nil;
 }
 
+
+#pragma mark - Misc
+
+- (NSDictionary *)dictionaryRepresentation {
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary:@{
+        @"channel": self.channel ?: @"missing",
+    }];
+    
+    if (self.arbitraryQueryParameters) dictionary[@"arbitraryQueryParameters"] = self.arbitraryQueryParameters;
+    if (self.customMessageType) dictionary[@"customMessageType"] = self.customMessageType;
+    if (self.message) dictionary[@"message"] = self.message;
+    
+    return dictionary;
+}
+
 #pragma mark -
 
 @end

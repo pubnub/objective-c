@@ -26,10 +26,13 @@ NS_ASSUME_NONNULL_BEGIN
 /// Initialization vector which should be used for data _encryption_.
 @property(nonatomic, strong) NSData *initializationVector;
 
+/// Key for data _encryption_ and _decryption_.
+@property(nonatomic, strong) NSString *cipherKeyString;
+
 /// Whether random initialization vector should be used for data _encryption_ or not.
 @property(nonatomic, readonly) BOOL useRandomIV;
 
-/// Key for data _encryption_ and _decryption_.
+/// Prepared key for data _encryption_ and _decryption_.
 @property(nonatomic, strong) NSData *cipherKey;
 
 
@@ -96,6 +99,7 @@ NS_ASSUME_NONNULL_END
         if (!useRandomInitializationVector) _initializationVector = [NSData dataWithBytes:"0123456789012345" length:16];
         _useRandomIV = useRandomInitializationVector;
         _cipherKey = [self digestForKey:cipherKey];
+        _cipherKeyString = [cipherKey copy];
     }
     
     return self;
@@ -259,6 +263,33 @@ NS_ASSUME_NONNULL_END
     CC_SHA256(data.bytes, (CC_LONG)data.length, digestData.mutableBytes);
     
     return digestData;
+}
+
+
+#pragma mark - Misc
+
+- (NSDictionary *)dictionaryRepresentation {
+    NSString *cipherKey = self.cipherKeyString;
+    if (cipherKey) {
+        if (cipherKey.length <= 5) cipherKey = @"*****";
+        else {
+            NSUInteger maskLength = cipherKey.length - 2;
+            NSMutableString *maskedCipherKey = [[cipherKey substringToIndex:1] mutableCopy];
+            for (NSUInteger i = 0; i < maskLength; i++) [maskedCipherKey appendString:@"*"];
+            [maskedCipherKey appendString:[cipherKey substringFromIndex:cipherKey.length - 1]];
+            cipherKey = maskedCipherKey;
+        }
+    } else cipherKey = @"missing";
+    
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary:@{
+        @"class": NSStringFromClass(self.class),
+        @"userRandomIV": @(self.useRandomIV),
+        @"cipherKey": cipherKey
+    }];
+    
+    
+    
+    return dictionary;
 }
 
 #pragma mark -

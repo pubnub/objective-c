@@ -145,6 +145,11 @@ NS_ASSUME_NONNULL_END
 #pragma mark - API Builder support
 
 - (PNSubscribeAPIBuilder * (^)(void))subscribe {
+    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"Builder-based interface deprecated. Please use corresponding "
+                "request-based interfaces."];
+    }];
+    
     PNSubscribeAPIBuilder *builder = nil;
     builder = [PNSubscribeAPIBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags, NSDictionary *parameters) {
         NSArray *presenceChannels = parameters[NSStringFromSelector(@selector(presenceChannels))];
@@ -173,6 +178,11 @@ NS_ASSUME_NONNULL_END
 }
 
 - (PNUnsubscribeAPICallBuilder * (^)(void))unsubscribe {
+    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"Builder-based interface deprecated. Please use corresponding "
+                "request-based interfaces."];
+    }];
+    
     PNUnsubscribeAPICallBuilder *builder = nil;
     builder = [PNUnsubscribeAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags, 
                                                                        NSDictionary *parameters) {
@@ -224,6 +234,11 @@ NS_ASSUME_NONNULL_END
 
         [self callBlock:block status:YES withResult:nil andStatus:result.status];
     };
+    
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Subscribe with parameters:"];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
@@ -248,6 +263,11 @@ NS_ASSUME_NONNULL_END
                withPresence:(BOOL)shouldObservePresence
              usingTimeToken:(NSNumber *)timeToken
                 clientState:(NSDictionary<NSString *, id> *)state {
+    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use '-subscribeWithRequest:' method "
+                "instead."];
+    }];
+    
     [self subscribeToChannels:channels
                        groups:nil
                  withPresence:shouldObservePresence
@@ -276,6 +296,11 @@ NS_ASSUME_NONNULL_END
                     withPresence:(BOOL)shouldObservePresence
                   usingTimeToken:(NSNumber *)timeToken
                      clientState:(NSDictionary<NSString *, id> *)state {
+    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use '-subscribeWithRequest:' method "
+                "instead."];
+    }];
+    
     [self subscribeToChannels:nil
                        groups:groups
                  withPresence:shouldObservePresence
@@ -300,6 +325,11 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)subscribeToPresenceChannels:(NSArray<NSString *> *)channels {
+    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use '-subscribeWithRequest:' method "
+                "instead."];
+    }];
+    
     [self subscribeToPresenceChannels:channels withQueryParameters:nil];
 }
 
@@ -341,18 +371,32 @@ NS_ASSUME_NONNULL_END
                                                             response:result.status.responseData];
         }
         
-        [self updateResult:subscribeStatus withRequest:request response:response];
         [self callBlock:block status:YES withResult:nil andStatus:subscribeStatus];
     };
+                        
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                                                  details:@"Unsubscribe with parameters:"];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
 
 - (void)unsubscribeFromChannels:(NSArray<NSString *> *)channels withPresence:(BOOL)presence {
+    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use '-unsubscribWithRequest:' "
+                "method instead."];
+    }];
+    
     [self unsubscribeFromChannels:channels groups:nil withPresence:presence queryParameters:nil completion:nil];
 }
 
 - (void)unsubscribeFromChannelGroups:(NSArray<NSString *> *)groups withPresence:(BOOL)presence {
+    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use '-unsubscribWithRequest:' "
+                "method instead."];
+    }];
+    
     [self unsubscribeFromChannels:nil groups:groups withPresence:presence queryParameters:nil completion:nil];
 }
 
@@ -377,6 +421,11 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)unsubscribeFromPresenceChannels:(NSArray<NSString *> *)channels {
+    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use '-unsubscribWithRequest:' "
+                "method instead."];
+    }];
+    
     [self unsubscribeFromPresenceChannels:channels withQueryParameters:nil];
 }
 
@@ -396,6 +445,10 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)unsubscribeFromAllWithQueryParameters:(NSDictionary *)queryParameters completion:(PNStatusBlock)block {
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"Unsubscribe all channels and groups"];
+    }];
+    
     [self cancelSubscribeOperations];
     [self.subscriberManager unsubscribeFromAllWithQueryParameters:queryParameters completion:block];
 }

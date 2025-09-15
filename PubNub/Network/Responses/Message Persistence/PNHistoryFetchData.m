@@ -1,11 +1,8 @@
 #import "PNHistoryFetchData+Private.h"
 #import <PubNub/PNCryptoProvider.h>
 #import <PubNub/PNCodable.h>
-#ifndef PUBNUB_DISABLE_LOGGER
-#import <PubNub/PNLLogger.h>
+#import "PNLoggerManager.h"
 #import "PNConstants.h"
-#import "PNLogMacro.h"
-#endif // PUBNUB_DISABLE_LOGGER
 #import "PNHelpers.h"
 #import "PNError.h"
 
@@ -33,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// > Note: Property will be set if history has been requested for single channel.
 @property(strong, nullable, nonatomic) NSNumber *start;
 
-/// Fetched messages timeframe emd.
+/// Fetched messages timeframe end.
 ///
 /// > Note: Property will be set if history has been requested for single channel.
 @property(strong, nullable, nonatomic) NSNumber *end;
@@ -265,14 +262,8 @@ NS_ASSUME_NONNULL_END
     }
 
     if (decryptionError || !decryptedMessage) {
-        if (!decryptionError) {
+        if (!decryptionError)
             decryptionError = [NSError errorWithDomain:PNCryptorErrorDomain code:PNCryptorErrorDecryption userInfo:nil];
-        }
-#ifndef PUBNUB_DISABLE_LOGGER
-        PNLLogger *logger = [PNLLogger loggerWithIdentifier:kPNClientIdentifier];
-        [logger enableLogLevel:PNAESErrorLogLevel];
-        PNLogAESError(logger, @"<PubNub::AES> History entry decryption error: %@", decryptionError);
-#endif // PUBNUB_DISABLE_LOGGER
         *error = decryptionError;
 
         return isDictionary ? ((NSDictionary *)data)[@"pn_other"] : data;

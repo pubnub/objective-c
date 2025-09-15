@@ -13,9 +13,14 @@
 @implementation PubNub (APNS)
 
 
-#pragma mark - Push notification API builder interdace (deprecated)
+#pragma mark - Push notification API builder interface (deprecated)
 
 - (PNAPNSAPICallBuilder * (^)(void))push {
+    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"Builder-based interface deprecated. Please use corresponding "
+                "request-based interfaces."];
+    }];
+    
     PNAPNSAPICallBuilder *builder = nil;
     builder = [PNAPNSAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags, NSDictionary *parameters) {
         NSArray<NSString *> *channels = parameters[NSStringFromSelector(@selector(channels))];
@@ -69,44 +74,29 @@
                                completion:(PNPushNotificationsStateModificationCompletionBlock)handlerBlock {
     PNOperationDataParser *responseParser = [self parserWithStatus:[PNAcknowledgmentStatus class]];
     PNPushNotificationsStateModificationCompletionBlock block = [handlerBlock copy];
-    PNParsedRequestCompletionBlock handler; 
-
-    PNOperationType operation = userRequest.operation;
-    if (operation == PNRemoveAllPushNotificationsOperation || operation == PNRemoveAllPushNotificationsV2Operation) {
-        PNLogAPICall(self.logger, @"<PubNub::API> Disable push notifications for device '%@'%@.",
-                     userRequest.pushToken,
-                     userRequest.pushType == PNAPNS2Push 
-                        ? [NSString stringWithFormat:@" ('%@' topic in %@ environment)",
-                           userRequest.topic, userRequest.environment == PNAPNSDevelopment ? @"development" : @"production"]
-                        : @"");
-    } else {
-        PNLogAPICall(self.logger, @"<PubNub::API> %@ push notifications for device '%@'%@: %@.",
-                     (operation == PNAddPushNotificationsOnChannelsOperation ||
-                      operation == PNAddPushNotificationsOnChannelsV2Operation) ? @"Enable" : @"Disable",
-                     userRequest.pushToken,
-                     userRequest.pushType == PNAPNS2Push 
-                        ? [NSString stringWithFormat:@" ('%@' topic in %@ environment)",
-                           userRequest.topic, userRequest.environment == PNAPNSDevelopment ? @"development" : @"production"]
-                        : @"",
-                     [userRequest.channels componentsJoinedByString:@", "]);
-    }
+    PNParsedRequestCompletionBlock handler;
+    
+    if (userRequest.pushType == PNAPNS2Push && !userRequest.topic)
+        userRequest.topic = NSBundle.mainBundle.bundleIdentifier;
 
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
                 PNOperationDataParseResult<PNAcknowledgmentStatus *, PNAcknowledgmentStatus *> *result) {
         PNStrongify(self);
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self managePushNotificationWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+        if (!result.status.isError) {
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                return [PNStringLogEntry entryWithMessage:@"Manage push-enabled channels success."];
+            }];
         }
 
         [self callBlock:block status:YES withResult:nil andStatus:result.status];
     };
+    
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Manage push-enabled channels with parameters:"];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
@@ -114,6 +104,11 @@
 - (void)addPushNotificationsOnChannels:(NSArray<NSString *> *)channels
                    withDevicePushToken:(NSData *)pushToken
                          andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block {
+    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
+                "'-managePushNotificationWithRequest:completion:' method instead."];
+    }];
+    
     [self addPushNotificationsOnChannels:channels withDevicePushToken:pushToken pushType:PNAPNSPush andCompletion:block];
 }
 
@@ -121,6 +116,11 @@
                    withDevicePushToken:(id)pushToken
                               pushType:(PNPushType)pushType
                          andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block {
+    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
+                "'-managePushNotificationWithRequest:completion:' method instead."];
+    }];
+    
     [self addPushNotificationsOnChannels:channels
                      withDevicePushToken:pushToken
                                 pushType:pushType
@@ -135,6 +135,11 @@
                            environment:(PNAPNSEnvironment)environment
                                  topic:(NSString *)topic
                          andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block {
+    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
+                "'-managePushNotificationWithRequest:completion:' method instead."];
+    }];
+    
     PNPushNotificationManageRequest *request = nil;
     request = [PNPushNotificationManageRequest requestToAddChannels:channels
                                                    toDeviceWithToken:pushToken
@@ -142,7 +147,7 @@
     
     if (pushType == PNAPNS2Push) {
         request.environment = environment;
-        request.topic = topic ?: NSBundle.mainBundle.bundleIdentifier;
+        request.topic = topic;
     }
     
     [self managePushNotificationWithRequest:request completion:block];
@@ -151,6 +156,11 @@
 - (void)removePushNotificationsFromChannels:(NSArray<NSString *> *)channels
                         withDevicePushToken:(NSData *)pushToken
                               andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block {
+    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
+                "'-managePushNotificationWithRequest:completion:' method instead."];
+    }];
+    
     [self removePushNotificationsFromChannels:channels
                           withDevicePushToken:pushToken
                                      pushType:PNAPNSPush
@@ -161,6 +171,11 @@
                         withDevicePushToken:(id)pushToken
                                    pushType:(PNPushType)pushType
                               andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block {
+    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
+                "'-managePushNotificationWithRequest:completion:' method instead."];
+    }];
+    
     [self removePushNotificationsFromChannels:channels
                           withDevicePushToken:pushToken
                                      pushType:pushType
@@ -175,7 +190,11 @@
                                 environment:(PNAPNSEnvironment)environment
                                       topic:(NSString *)topic
                               andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block {
-
+    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
+                "'-managePushNotificationWithRequest:completion:' method instead."];
+    }];
+    
     PNPushNotificationManageRequest *request = nil;
     request = [PNPushNotificationManageRequest requestToRemoveChannels:channels 
                                                     fromDeviceWithToken:pushToken
@@ -183,7 +202,7 @@
     
     if (pushType == PNAPNS2Push) {
         request.environment = environment;
-        request.topic = topic ?: NSBundle.mainBundle.bundleIdentifier;
+        request.topic = topic;
     }
     
     [self managePushNotificationWithRequest:request completion:block];
@@ -191,12 +210,22 @@
 
 - (void)removeAllPushNotificationsFromDeviceWithPushToken:(NSData *)pushToken
                                             andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block {
+    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
+                "'-managePushNotificationWithRequest:completion:' method instead."];
+    }];
+    
     [self removeAllPushNotificationsFromDeviceWithPushToken:pushToken pushType:PNAPNSPush andCompletion:block];
 }
 
 - (void)removeAllPushNotificationsFromDeviceWithPushToken:(id)pushToken
                                                  pushType:(PNPushType)pushType
                                             andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block {
+    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
+                "'-managePushNotificationWithRequest:completion:' method instead."];
+    }];
+    
     [self removeAllPushNotificationsFromDeviceWithPushToken:pushToken
                                                    pushType:pushType
                                                 environment:PNAPNSDevelopment
@@ -209,13 +238,17 @@
                                               environment:(PNAPNSEnvironment)environment
                                                     topic:(NSString *)topic
                                             andCompletion:(PNPushNotificationsStateModificationCompletionBlock)block {
-
+    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
+                "'-managePushNotificationWithRequest:completion:' method instead."];
+    }];
+    
     PNPushNotificationManageRequest *request = nil;
     request = [PNPushNotificationManageRequest requestToRemoveDeviceWithToken:pushToken pushType:pushType];
     
     if (pushType == PNAPNS2Push) {
         request.environment = environment;
-        request.topic = topic ?: NSBundle.mainBundle.bundleIdentifier;
+        request.topic = topic;
     }
     
     [self managePushNotificationWithRequest:request completion:block];
@@ -230,42 +263,52 @@
                                                             status:[PNErrorStatus class]];
     PNPushNotificationsStateAuditCompletionBlock block = [handlerBlock copy];
     PNParsedRequestCompletionBlock handler;
-
-    PNLogAPICall(self.logger, @"<PubNub::API> Push notification enabled channels for device '%@'%@.",
-                 userRequest.pushToken,
-                 userRequest.pushType == PNAPNS2Push 
-                    ? [NSString stringWithFormat:@" ('%@' topic in %@ environment)",
-                       userRequest.topic, userRequest.environment == PNAPNSDevelopment ? @"development" : @"production"]
-                    : @"");
+    
+    if (userRequest.pushType == PNAPNS2Push && !userRequest.topic)
+        userRequest.topic = NSBundle.mainBundle.bundleIdentifier;
 
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
                 PNOperationDataParseResult<PNAPNSEnabledChannelsResult *, PNErrorStatus *> *result) {
         PNStrongify(self);
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self fetchPushNotificationWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+        if (!result.status.isError) {
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Fetch push-enabled channels success. "
+                                                                         "Received %@ channels.",
+                                                                         @(result.result.data.channels.count))];
+            }];
         }
 
         [self callBlock:block status:NO withResult:result.result andStatus:result.status];
     };
+    
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Fetch push-enabled channels with parameters:"];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
 
 - (void)pushNotificationEnabledChannelsForDeviceWithPushToken:(NSData *)pushToken
                                                 andCompletion:(PNPushNotificationsStateAuditCompletionBlock)block {
+    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
+                "'-fetchPushNotificationWithRequest:completion:' method instead."];
+    }];
+    
     [self pushNotificationEnabledChannelsForDeviceWithPushToken:pushToken pushType:PNAPNSPush andCompletion:block];
 }
 
 - (void)pushNotificationEnabledChannelsForDeviceWithPushToken:(id)pushToken
                                                      pushType:(PNPushType)pushType
                                                 andCompletion:(PNPushNotificationsStateAuditCompletionBlock)block {
+    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
+                "'-fetchPushNotificationWithRequest:completion:' method instead."];
+    }];
+    
     [self pushNotificationEnabledChannelsForDeviceWithPushToken:pushToken
                                                        pushType:pushType
                                                     environment:PNAPNSDevelopment
@@ -278,6 +321,11 @@
                                                   environment:(PNAPNSEnvironment)environment
                                                         topic:(NSString *)topic
                                                 andCompletion:(PNPushNotificationsStateAuditCompletionBlock)block {
+    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
+                "'-fetchPushNotificationWithRequest:completion:' method instead."];
+    }];
+    
     PNPushNotificationFetchRequest *request = nil;
     request = [PNPushNotificationFetchRequest requestWithDevicePushToken:pushToken pushType:pushType];
     

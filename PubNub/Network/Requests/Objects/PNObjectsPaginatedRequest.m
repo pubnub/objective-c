@@ -36,6 +36,28 @@
     return self;
 }
 
+
+#pragma mark - Misc
+
+- (NSDictionary *)dictionaryRepresentation {
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary:[super dictionaryRepresentation]];
+    
+    if ((self.includeFields & PNChannelTotalCountField) == PNChannelTotalCountField ||
+        (self.includeFields & PNUUIDTotalCountField) == PNUUIDTotalCountField ||
+        (self.includeFields & PNMembershipsTotalCountField) == PNMembershipsTotalCountField ||
+        (self.includeFields & PNChannelMembersTotalCountField) == PNChannelMembersTotalCountField) {
+        dictionary[@"count"] = @"1";
+    }
+    
+    if (self.limit) dictionary[@"limit"] = @(self.limit);
+    if (self.filter) dictionary[@"filter"] = self.filter;
+    if (self.start) dictionary[@"start"] = self.start;
+    if (self.sort) dictionary[@"sort"] = self.sort;
+    if (self.end) dictionary[@"status"] = self.end;
+    
+    return dictionary;
+}
+
 #pragma mark -
 
 

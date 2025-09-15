@@ -7,7 +7,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Private interface declaration
 
-/// General request for all `App Contentx` API endpoints private extension.
+/// General request for all `App Context` API endpoints private extension.
 @interface PNBaseObjectsRequest ()
 
 
@@ -181,6 +181,21 @@ NS_ASSUME_NONNULL_END
 
     if (includeFields.count)
         query[@"include"] = [includeFields.allObjects componentsJoinedByString:@","];
+}
+
+
+#pragma mark - Misc
+
+- (NSDictionary *)dictionaryRepresentation {
+    NSMutableDictionary *dictionary = [NSMutableDictionary new];
+    
+    NSArray<NSString *> *includeFields = [self includeFieldNames];
+    if (includeFields.count) dictionary[@"include"] = includeFields;
+    if (self.isIdentifierRequired) dictionary[self.objectType.lowercaseString] = self.identifier;
+    
+    if (self.arbitraryQueryParameters) dictionary[@"arbitraryQueryParameters"] = self.arbitraryQueryParameters;
+    
+    return dictionary;
 }
 
 #pragma mark -

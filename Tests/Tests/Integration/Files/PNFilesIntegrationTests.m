@@ -3,6 +3,8 @@
  * @copyright © 2010-2020 PubNub, Inc.
  */
 #import "PNRecordableTestCase.h"
+#import <PubNub/PubNub+CorePrivate.h>
+#import <PubNub/PNBaseRequest+Private.h>
 #import <PubNub/PNHelpers.h>
 #import "NSString+PNTest.h"
 
@@ -432,34 +434,107 @@ NS_ASSUME_NONNULL_END
 }
 
 
+#pragma mark - Tests :: Generate file download URL
+
+- (void)testItShouldReturnFileDownloadURL {
+    NSString *fileName = [[NSUUID UUID].UUIDString stringByAppendingPathExtension:@"txt"];
+    NSString *expectedUserId = [@"uuid=" stringByAppendingString:[PNString percentEscapedString:self.client.userID]];
+    NSString *identifier = [NSUUID UUID].UUIDString;
+    
+    
+    NSURL *downloadURL = [self.client downloadURLForFileWithName:fileName identifier:identifier inChannel:self.channel];
+    
+    
+    XCTAssertNotNil(downloadURL);
+    XCTAssertTrue([downloadURL.absoluteString containsString:expectedUserId]);
+    XCTAssertTrue([downloadURL.absoluteString containsString:identifier]);
+    XCTAssertTrue([downloadURL.absoluteString containsString:fileName]);
+}
+
+- (void)testItShouldReturnFileDownloadURLWhenAuthKeyIsSet {
+    NSString *fileName = [[NSUUID UUID].UUIDString stringByAppendingPathExtension:@"txt"];
+    NSString *expectedUserId = [@"uuid=" stringByAppendingString:[PNString percentEscapedString:self.client.userID]];
+    NSString *expectedAuth = @"auth=file-access-token";
+    NSString *identifier = [NSUUID UUID].UUIDString;
+    [self.client setAuthToken:@"file-access-token"];
+    
+    
+    NSURL *downloadURL = [self.client downloadURLForFileWithName:fileName identifier:identifier inChannel:self.channel];
+    
+    
+    XCTAssertNotNil(downloadURL);
+    XCTAssertTrue([downloadURL.absoluteString containsString:expectedUserId]);
+    XCTAssertTrue([downloadURL.absoluteString containsString:expectedAuth]);
+    XCTAssertTrue([downloadURL.absoluteString containsString:identifier]);
+    XCTAssertTrue([downloadURL.absoluteString containsString:fileName]);
+}
+
+- (void)testItShouldNotReturnFileDownloadURLWhenChannelNameIsNil {
+    NSString *fileName = [[NSUUID UUID].UUIDString stringByAppendingPathExtension:@"txt"];
+    NSString *identifier = [NSUUID UUID].UUIDString;
+    NSString *expectedChannel = nil;
+    
+    
+    NSURL *downloadURL = [self.client downloadURLForFileWithName:fileName identifier:identifier inChannel:expectedChannel];
+    
+    
+    XCTAssertNil(downloadURL);
+}
+
+- (void)testItShouldNotReturnFileDownloadURLWhenFileIdentifierIsNil {
+    NSString *fileName = [[NSUUID UUID].UUIDString stringByAppendingPathExtension:@"txt"];
+    NSString *identifier = nil;
+    
+    
+    NSURL *downloadURL = [self.client downloadURLForFileWithName:fileName identifier:identifier inChannel:self.channel];
+    
+    
+    XCTAssertNil(downloadURL);
+}
+
+- (void)testItShouldNotReturnFileDownloadURLWhenFileNameIsNil {
+    NSString *identifier = [NSUUID UUID].UUIDString;
+    NSString *fileName = nil;
+    
+    
+    NSURL *downloadURL = [self.client downloadURLForFileWithName:fileName identifier:identifier inChannel:self.channel];
+    
+    
+    XCTAssertNil(downloadURL);
+}
+
+
 #pragma mark - Tests :: Builder pattern-based download files
 
 - (void)testItShouldDownloadFileAndReceiveResultWithExpectedOperation {
     NSArray<NSDictionary *> *uploadedFiles = [self uploadFiles:1 toChannel:self.channel usingClient:nil];
-    NSString *expectedUUID = [@"uuid=" stringByAppendingString:self.client.currentConfiguration.userID];
+    NSString *expectedUUID = self.client.currentConfiguration.userID;
 
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.files().downloadFile(self.channel, uploadedFiles.firstObject[@"id"], uploadedFiles.firstObject[@"name"])
-            .performWithCompletion(^(PNDownloadFileResult *result, PNErrorStatus *status) {
-                NSError *downloadError = nil;
-                NSData *downloadedFile = [NSData dataWithContentsOfURL:result.data.location
-                                                               options:NSDataReadingUncached
-                                                                 error:&downloadError];
-                NSURLRequest *request = [result valueForKey:@"clientRequest"];
-                XCTAssertFalse(status.isError);
-                XCTAssertNotNil(request);
-                XCTAssertNotNil(result.data.location);
-                XCTAssertEqual(result.operation, PNDownloadFileOperation);
-                
-                XCTAssertNil(downloadError);
-                XCTAssertNotNil(downloadedFile);
-                XCTAssertEqualObjects(downloadedFile, uploadedFiles.firstObject[@"data"]);
-                XCTAssertNotEqual([request.URL.absoluteString rangeOfString:expectedUUID].location,
-                                  NSNotFound);
-                
-                handler();
-            });
+        PNDownloadFileRequest *request = [PNDownloadFileRequest requestWithChannel:self.channel
+                                                                        identifier:uploadedFiles.firstObject[@"id"]
+                                                                              name:uploadedFiles.firstObject[@"name"]];
+        PNTransportRequest *transportRequest = [self.client.serviceNetwork transportRequestFromTransportRequest:request.request];
+        
+        [self.client downloadFileWithRequest:request completion:^(PNDownloadFileResult *result, PNErrorStatus *status) {
+            NSError *downloadError = nil;
+            NSData *downloadedFile = [NSData dataWithContentsOfURL:result.data.location
+                                                           options:NSDataReadingUncached
+                                                             error:&downloadError];
+            
+            XCTAssertFalse(status.isError);
+            XCTAssertNotNil(request);
+            XCTAssertNotNil(result.data.location);
+            XCTAssertEqual(result.operation, PNDownloadFileOperation);
+            
+            XCTAssertNil(downloadError);
+            XCTAssertNotNil(downloadedFile);
+            XCTAssertEqualObjects(downloadedFile, uploadedFiles.firstObject[@"data"]);
+            XCTAssertEqualObjects(transportRequest.query[@"uuid"], expectedUUID);
+            
+            handler();
+        }];
     }];
     
     
@@ -496,30 +571,32 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldDownloadFileWhenAuthKeyIsSet {
     NSArray<NSDictionary *> *uploadedFiles = [self uploadFiles:1 toChannel:self.channel usingClient:nil];
-    NSString *expectedAuth = [@"auth=" stringByAppendingString:self.client.currentConfiguration.authKey];
+    NSString *expectedAuth = self.client.currentConfiguration.authKey;
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.files().downloadFile(self.channel, uploadedFiles.firstObject[@"id"], uploadedFiles.firstObject[@"name"])
-            .performWithCompletion(^(PNDownloadFileResult *result, PNErrorStatus *status) {
-                NSError *downloadError = nil;
-                NSData *downloadedFile = [NSData dataWithContentsOfURL:result.data.location
-                                                               options:NSDataReadingUncached
-                                                                 error:&downloadError];
-                NSURLRequest *request = [result valueForKey:@"clientRequest"];
-                XCTAssertFalse(status.isError);
-                XCTAssertNotNil(request);
-                XCTAssertNotNil(result.data.location);
-                XCTAssertEqual(result.operation, PNDownloadFileOperation);
-                
-                XCTAssertNil(downloadError);
-                XCTAssertNotNil(downloadedFile);
-                XCTAssertEqualObjects(downloadedFile, uploadedFiles.firstObject[@"data"]);
-                XCTAssertNotEqual([request.URL.absoluteString rangeOfString:expectedAuth].location,
-                                  NSNotFound);
-                
-                handler();
-            });
+        PNDownloadFileRequest *request = [PNDownloadFileRequest requestWithChannel:self.channel
+                                                                        identifier:uploadedFiles.firstObject[@"id"]
+                                                                              name:uploadedFiles.firstObject[@"name"]];
+        PNTransportRequest *transportRequest = [self.client.serviceNetwork transportRequestFromTransportRequest:request.request];
+        
+        [self.client downloadFileWithRequest:request completion:^(PNDownloadFileResult *result, PNErrorStatus *status) {
+            NSError *downloadError = nil;
+            NSData *downloadedFile = [NSData dataWithContentsOfURL:result.data.location
+                                                           options:NSDataReadingUncached
+                                                             error:&downloadError];
+            XCTAssertFalse(status.isError);
+            XCTAssertNotNil(request);
+            XCTAssertNotNil(result.data.location);
+            XCTAssertEqual(result.operation, PNDownloadFileOperation);
+            
+            XCTAssertNil(downloadError);
+            XCTAssertNotNil(downloadedFile);
+            XCTAssertEqualObjects(downloadedFile, uploadedFiles.firstObject[@"data"]);
+            XCTAssertEqualObjects(transportRequest.query[@"auth"], expectedAuth);
+            
+            handler();
+        }];
     }];
     
     
@@ -612,23 +689,20 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldFetchFilesListWhenAuthKeyIsSet {
     NSArray<NSDictionary *> *uploadedFiles = [self uploadFiles:1 toChannel:self.channel usingClient:nil];
-    NSString *expectedAuth = [@"auth=" stringByAppendingString:self.client.currentConfiguration.authKey];
-    NSString *expectedUUID = [@"uuid=" stringByAppendingString:self.client.currentConfiguration.userID];
+    NSString *expectedAuth = self.client.currentConfiguration.authKey;
+    NSString *expectedUUID = self.client.currentConfiguration.userID;
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.files().listFiles(self.channel)
-            .performWithCompletion(^(PNListFilesResult *result, PNErrorStatus *status) {
-                NSURLRequest *request = [result valueForKey:@"clientRequest"];
-                XCTAssertNotNil(request);
-                
-                XCTAssertNotEqual([request.URL.absoluteString rangeOfString:expectedAuth].location,
-                                  NSNotFound);
-                XCTAssertNotEqual([request.URL.absoluteString rangeOfString:expectedUUID].location,
-                                  NSNotFound);
-                
-                handler();
-            });
+        PNListFilesRequest *request = [PNListFilesRequest requestWithChannel:self.channel];
+        PNTransportRequest *transportRequest = [self.client.serviceNetwork transportRequestFromTransportRequest:request.request];
+        
+        [self.client listFilesWithRequest:request completion:^(PNListFilesResult *result, PNErrorStatus *status) {
+            XCTAssertEqualObjects(transportRequest.query[@"uuid"], expectedUUID);
+            XCTAssertEqualObjects(transportRequest.query[@"auth"], expectedAuth);
+            
+            handler();
+        }];
     }];
     
     

@@ -82,6 +82,16 @@ NS_ASSUME_NONNULL_END
     return nil;
 }
 
+
+#pragma mark - Misc
+
+- (NSDictionary *)dictionaryRepresentation {
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary:[super dictionaryRepresentation]];
+    dictionary[@"messageActionTimetoken"] = self.messageActionTimetoken;
+    
+    return dictionary;
+}
+
 #pragma mark -
 
 

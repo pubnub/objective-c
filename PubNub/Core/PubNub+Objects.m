@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PubNub (ObjectsProtected)
 
 
-#pragma mark - App Context API builder interdace (deprecated)
+#pragma mark - App Context API builder interface (deprecated)
 
 /// Process information provider by user with builder API call and use it to send request which will set UUID's
 /// metadata.
@@ -137,9 +137,14 @@ NS_ASSUME_NONNULL_END
 @implementation PubNub (Objects)
 
 
-#pragma mark - App Context API builder interdace (deprecated)
+#pragma mark - App Context API builder interface (deprecated)
 
 - (PNObjectsAPICallBuilder *(^)(void))objects {
+    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"Builder-based interface deprecated. Please use corresponding "
+                "request-based interfaces."];
+    }];
+    
     PNObjectsAPICallBuilder *builder = nil;
     __weak __typeof(self) weakSelf = self;
 
@@ -224,12 +229,14 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)sendFetchAllUUIDsMetadataRequestUsingBuilderParameters:(NSDictionary *)parameters {
+    NSNumber *includeFields = parameters[NSStringFromSelector(@selector(includeFields))];
     NSNumber *includeCount = parameters[NSStringFromSelector(@selector(includeCount))];
     PNFetchAllUUIDMetadataRequest *request = [PNFetchAllUUIDMetadataRequest new];
     request.arbitraryQueryParameters = parameters[@"queryParam"];
     
     [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
     
+    if (includeFields) request.includeFields = (PNUUIDFields)includeFields.unsignedIntegerValue;
     if (includeCount) {
         if (includeCount.boolValue) request.includeFields |= PNUUIDTotalCountField;
         else request.includeFields ^= PNUUIDTotalCountField;
@@ -274,12 +281,14 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)sendFetchAllChannelsMetadataRequestUsingBuilderParameters:(NSDictionary *)parameters {
+    NSNumber *includeFields = parameters[NSStringFromSelector(@selector(includeFields))];
     PNFetchAllChannelsMetadataRequest *request = [PNFetchAllChannelsMetadataRequest new];
     NSNumber *includeCount = parameters[NSStringFromSelector(@selector(includeCount))];
     request.arbitraryQueryParameters = parameters[@"queryParam"];
 
     [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
     
+    if (includeFields) request.includeFields = (PNChannelFields)includeFields.unsignedIntegerValue;
     if (includeCount) {
         if (includeCount.boolValue) request.includeFields |= PNChannelTotalCountField;
         else request.includeFields ^= PNChannelTotalCountField;
@@ -292,6 +301,7 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Membership objects
 
 - (void)sendSetMembershipsRequestUsingBuilderParameters:(NSDictionary *)parameters {
+    NSNumber *includeFields = parameters[NSStringFromSelector(@selector(includeFields))];
     NSNumber *includeCount = parameters[NSStringFromSelector(@selector(includeCount))];
     NSArray *channels = parameters[NSStringFromSelector(@selector(channels))];
     NSString *uuid = parameters[NSStringFromSelector(@selector(uuid))];
@@ -301,6 +311,7 @@ NS_ASSUME_NONNULL_END
 
     [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
     
+    if (includeFields) request.includeFields = (PNMembershipFields)includeFields.unsignedIntegerValue;
     if (includeCount) {
         if (includeCount.boolValue) request.includeFields |= PNMembershipsTotalCountField;
         else request.includeFields ^= PNMembershipsTotalCountField;
@@ -310,6 +321,7 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)sendRemoveMembershipsRequestUsingBuilderParameters:(NSDictionary *)parameters {
+    NSNumber *includeFields = parameters[NSStringFromSelector(@selector(includeFields))];
     NSNumber *includeCount = parameters[NSStringFromSelector(@selector(includeCount))];
     NSArray *channels = parameters[NSStringFromSelector(@selector(channels))];
     NSString *uuid = parameters[NSStringFromSelector(@selector(uuid))];
@@ -319,6 +331,7 @@ NS_ASSUME_NONNULL_END
 
     [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
     
+    if (includeFields) request.includeFields = (PNMembershipFields)includeFields.unsignedIntegerValue;
     if (includeCount) {
         if (includeCount.boolValue) request.includeFields |= PNMembershipsTotalCountField;
         else request.includeFields ^= PNMembershipsTotalCountField;
@@ -328,6 +341,7 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)sendManageMembershipsRequestUsingBuilderParameters:(NSDictionary *)parameters {
+    NSNumber *includeFields = parameters[NSStringFromSelector(@selector(includeFields))];
     NSNumber *includeCount = parameters[NSStringFromSelector(@selector(includeCount))];
     NSString *uuid = parameters[NSStringFromSelector(@selector(uuid))];
 
@@ -338,6 +352,7 @@ NS_ASSUME_NONNULL_END
 
     [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
     
+    if (includeFields) request.includeFields = (PNMembershipFields)includeFields.unsignedIntegerValue;
     if (includeCount) {
         if (includeCount.boolValue) request.includeFields |= PNMembershipsTotalCountField;
         else request.includeFields ^= PNMembershipsTotalCountField;
@@ -347,6 +362,7 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)sendFetchMembershipsRequestUsingBuilderParameters:(NSDictionary *)parameters {
+    NSNumber *includeFields = parameters[NSStringFromSelector(@selector(includeFields))];
     NSNumber *includeCount = parameters[NSStringFromSelector(@selector(includeCount))];
     NSString *uuid = parameters[NSStringFromSelector(@selector(uuid))];
 
@@ -355,6 +371,7 @@ NS_ASSUME_NONNULL_END
 
     [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
     
+    if (includeFields) request.includeFields = (PNMembershipFields)includeFields.unsignedIntegerValue;
     if (includeCount) {
         if (includeCount.boolValue) request.includeFields |= PNMembershipsTotalCountField;
         else request.includeFields ^= PNMembershipsTotalCountField;
@@ -364,6 +381,7 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)sendSetChannelMembersRequestUsingBuilderParameters:(NSDictionary *)parameters {
+    NSNumber *includeFields = parameters[NSStringFromSelector(@selector(includeFields))];
     NSNumber *includeCount = parameters[NSStringFromSelector(@selector(includeCount))];
     NSString *channel = parameters[NSStringFromSelector(@selector(channel))];
     NSArray *uuids = parameters[NSStringFromSelector(@selector(uuids))];
@@ -373,6 +391,7 @@ NS_ASSUME_NONNULL_END
 
     [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
     
+    if (includeFields) request.includeFields = (PNChannelMemberFields)includeFields.unsignedIntegerValue;
     if (includeCount) {
         if (includeCount.boolValue) request.includeFields |= PNChannelMembersTotalCountField;
         else request.includeFields ^= PNChannelMembersTotalCountField;
@@ -382,6 +401,7 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)sendRemoveChannelMembersRequestUsingBuilderParameters:(NSDictionary *)parameters {
+    NSNumber *includeFields = parameters[NSStringFromSelector(@selector(includeFields))];
     NSNumber *includeCount = parameters[NSStringFromSelector(@selector(includeCount))];
     NSString *channel = parameters[NSStringFromSelector(@selector(channel))];
     NSArray *uuids = parameters[NSStringFromSelector(@selector(uuids))];
@@ -391,6 +411,7 @@ NS_ASSUME_NONNULL_END
 
     [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
     
+    if (includeFields) request.includeFields = (PNChannelMemberFields)includeFields.unsignedIntegerValue;
     if (includeCount) {
         if (includeCount.boolValue) request.includeFields |= PNChannelMembersTotalCountField;
         else request.includeFields ^= PNChannelMembersTotalCountField;
@@ -400,6 +421,7 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)sendManageChannelMembersRequestUsingBuilderParameters:(NSDictionary *)parameters {
+    NSNumber *includeFields = parameters[NSStringFromSelector(@selector(includeFields))];
     NSNumber *includeCount = parameters[NSStringFromSelector(@selector(includeCount))];
     NSString *channel = parameters[NSStringFromSelector(@selector(channel))];
 
@@ -410,6 +432,7 @@ NS_ASSUME_NONNULL_END
 
     [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
     
+    if (includeFields) request.includeFields = (PNChannelMemberFields)includeFields.unsignedIntegerValue;
     if (includeCount) {
         if (includeCount.boolValue) request.includeFields |= PNChannelMembersTotalCountField;
         else request.includeFields ^= PNChannelMembersTotalCountField;
@@ -419,6 +442,7 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)sendFetchChannelMembersRequestUsingBuilderParameters:(NSDictionary *)parameters {
+    NSNumber *includeFields = parameters[NSStringFromSelector(@selector(includeFields))];
     NSNumber *includeCount = parameters[NSStringFromSelector(@selector(includeCount))];
     NSString *channel = parameters[NSStringFromSelector(@selector(channel))];
 
@@ -427,6 +451,7 @@ NS_ASSUME_NONNULL_END
 
     [self addObjectsPaginationOptionsToRequest:request usingBuilderParameters:parameters];
     
+    if (includeFields) request.includeFields = (PNChannelMemberFields)includeFields.unsignedIntegerValue;
     if (includeCount) {
         if (includeCount.boolValue) request.includeFields |= PNChannelMembersTotalCountField;
         else request.includeFields ^= PNChannelMembersTotalCountField;
@@ -450,17 +475,21 @@ NS_ASSUME_NONNULL_END
                 PNOperationDataParseResult<PNSetUUIDMetadataStatus *, PNSetUUIDMetadataStatus *> *result) {
         PNStrongify(self);
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self setUUIDMetadataWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+        if (!result.status.isError) {
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Set UUID metadata object success. "
+                                                                         "Removed '%@' UUID metadata object.",
+                                                                         userRequest.identifier)];
+            }];
         }
 
         [self callBlock:block status:YES withResult:nil andStatus:result.status];
     };
+                            
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Remove UUID metadata object with parameters:"];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
@@ -477,17 +506,21 @@ NS_ASSUME_NONNULL_END
                 PNOperationDataParseResult<PNAcknowledgmentStatus *, PNAcknowledgmentStatus *> *result) {
         PNStrongify(self);
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self removeUUIDMetadataWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+        if (!result.status.isError) {
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                NSString *identifier = userRequest.identifier;
+                return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Set UUID metadata object success. Updated "
+                                                                         "'%@' UUID metadata object.", identifier)];
+            }];
         }
 
         [self callBlock:block status:YES withResult:nil andStatus:result.status];
     };
+                               
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Set UUID metadata object with parameters:"];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
@@ -505,17 +538,21 @@ NS_ASSUME_NONNULL_END
                 PNOperationDataParseResult<PNFetchUUIDMetadataResult *, PNErrorStatus *> *result) {
         PNStrongify(self);
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self uuidMetadataWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+        if (!result.status.isError) {
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Fetch UUID metadata object success. "
+                                                                         "Received '%@' UUID metadata object.",
+                                                                         userRequest.identifier)];
+            }];
         }
 
         [self callBlock:block status:NO withResult:result.result andStatus:result.status];
     };
+                         
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Fetch UUID metadata object with parameters:"];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
@@ -532,17 +569,21 @@ NS_ASSUME_NONNULL_END
                 PNOperationDataParseResult<PNFetchAllUUIDMetadataResult *, PNErrorStatus *> *result) {
         PNStrongify(self);
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self allUUIDMetadataWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+        if (!result.status.isError) {
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Fetch all UUID metadata success. Received "
+                                                                         "%@ UUID metadata objects.",
+                                                                         @(result.result.data.metadata.count))];
+            }];
         }
 
         [self callBlock:block status:NO withResult:result.result andStatus:result.status];
     };
+                            
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Fetch all UUID metadata objects with parameters:"];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
@@ -560,17 +601,21 @@ NS_ASSUME_NONNULL_END
                 PNOperationDataParseResult<PNSetChannelMetadataStatus *, PNSetChannelMetadataStatus *> *result) {
         PNStrongify(self);
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self setChannelMetadataWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+        if (!result.status.isError) {
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Set Channel metadata object success. "
+                                                                         "Updated '%@' Channel metadata object.",
+                                                                         userRequest.identifier)];
+            }];
         }
 
         [self callBlock:block status:YES withResult:nil andStatus:result.status];
     };
+                               
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Set Channel metadata object with parameters:"];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
@@ -586,17 +631,21 @@ NS_ASSUME_NONNULL_END
                 PNOperationDataParseResult<PNAcknowledgmentStatus *, PNAcknowledgmentStatus *> *result) {
         PNStrongify(self);
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self removeChannelMetadataWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+        if (!result.status.isError) {
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Remove Channel metadata object success. "
+                                                                         "Removed '%@' Channel metadata object.",
+                                                                         userRequest.identifier)];
+            }];
         }
 
         [self callBlock:block status:YES withResult:nil andStatus:result.status];
     };
+                                  
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Remove Channel metadata object with parameters:"];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
@@ -613,17 +662,21 @@ NS_ASSUME_NONNULL_END
                 PNOperationDataParseResult<PNFetchChannelMetadataResult *, PNErrorStatus *> *result) {
         PNStrongify(self);
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self channelMetadataWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+        if (!result.status.isError) {
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Fetch Channel metadata object success. "
+                                                                         "Received '%@' Channel metadata object.",
+                                                                         userRequest.identifier)];
+            }];
         }
 
         [self callBlock:block status:NO withResult:result.result andStatus:result.status];
     };
+                            
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Fetch Channel metadata object with parameters:"];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
@@ -640,17 +693,21 @@ NS_ASSUME_NONNULL_END
                 PNOperationDataParseResult<PNFetchAllChannelsMetadataResult *, PNErrorStatus *> *result) {
         PNStrongify(self);
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self allChannelsMetadataWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+        if (!result.status.isError) {
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Fetch all Channel metadata objects success. "
+                                                                         "Received %@ Channel metadata objects.",
+                                                                         @(result.result.data.metadata.count))];
+            }];
         }
 
         [self callBlock:block status:NO withResult:result.result andStatus:result.status];
     };
+                                
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Fetch all Channel metadata objects with parameters:"];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
@@ -670,17 +727,21 @@ NS_ASSUME_NONNULL_END
                 PNOperationDataParseResult<PNManageMembershipsStatus *, PNManageMembershipsStatus *> *result) {
         PNStrongify(self);
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self setMembershipsWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+        if (!result.status.isError) {
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Set memberships success. There are %@ "
+                                                                         "memberships now.",
+                                                                         @(result.result.data.memberships.count))];
+            }];
         }
 
         [self callBlock:block status:YES withResult:nil andStatus:result.status];
     };
+                           
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Set memberships with parameters:"];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
@@ -697,17 +758,21 @@ NS_ASSUME_NONNULL_END
                 PNOperationDataParseResult<PNManageMembershipsStatus *, PNManageMembershipsStatus *> *result) {
         PNStrongify(self);
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self removeMembershipsWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+        if (!result.status.isError) {
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Remove memberships success. There are %@ "
+                                                                         "memberships now.",
+                                                                         @(result.result.data.memberships.count))];
+            }];
         }
 
         [self callBlock:block status:YES withResult:nil andStatus:result.status];
     };
+                              
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Remove memberships with parameters:"];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
@@ -724,17 +789,21 @@ NS_ASSUME_NONNULL_END
                 PNOperationDataParseResult<PNManageMembershipsStatus *, PNManageMembershipsStatus *> *result) {
         PNStrongify(self);
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self manageMembershipsWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+        if (!result.status.isError) {
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Manage memberships success. There are %@ "
+                                                                         "memberships now.",
+                                                                         @(result.result.data.memberships.count))];
+            }];
         }
 
         [self callBlock:block status:YES withResult:nil andStatus:result.status];
     };
+                              
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Manage memberships with parameters:"];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
@@ -752,17 +821,21 @@ NS_ASSUME_NONNULL_END
                 PNOperationDataParseResult<PNFetchMembershipsResult *, PNErrorStatus *> *result) {
         PNStrongify(self);
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self membershipsWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+        if (!result.status.isError) {
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Fetch memberships success. Received %@ "
+                                                                         "memberships.",
+                                                                         @(result.result.data.memberships.count))];
+            }];
         }
 
         [self callBlock:block status:NO withResult:result.result andStatus:result.status];
     };
+                        
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Fetch memberships with parameters:"];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
@@ -778,17 +851,21 @@ NS_ASSUME_NONNULL_END
                 PNOperationDataParseResult<PNManageChannelMembersStatus *, PNManageChannelMembersStatus *> *result) {
         PNStrongify(self);
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self setChannelMembersWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+        if (!result.status.isError) {
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Set channel members success. There are %@ "
+                                                                         "channel members now.",
+                                                                         @(result.result.data.members.count))];
+            }];
         }
 
         [self callBlock:block status:YES withResult:nil andStatus:result.status];
     };
+                              
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Set channel members with parameters:"];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
@@ -804,17 +881,21 @@ NS_ASSUME_NONNULL_END
                 PNOperationDataParseResult<PNManageChannelMembersStatus *, PNManageChannelMembersStatus *> *result) {
         PNStrongify(self);
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self removeChannelMembersWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+        if (!result.status.isError) {
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Remove channel members success. There are "
+                                                                         "%@ channel members now.",
+                                                                         @(result.result.data.members.count))];
+            }];
         }
 
         [self callBlock:block status:YES withResult:nil andStatus:result.status];
     };
+                                 
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Remove channel members with parameters:"];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
@@ -830,17 +911,21 @@ NS_ASSUME_NONNULL_END
                 PNOperationDataParseResult<PNManageChannelMembersStatus *, PNManageChannelMembersStatus *> *result) {
         PNStrongify(self);
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self manageChannelMembersWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+        if (!result.status.isError) {
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Manage channel members success. There are "
+                                                                         "%@ channel members now.",
+                                                                         @(result.result.data.members.count))];
+            }];
         }
 
         [self callBlock:block status:YES withResult:nil andStatus:result.status];
     };
+                                 
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Manage channel members with parameters:"];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
@@ -858,17 +943,21 @@ NS_ASSUME_NONNULL_END
                 PNOperationDataParseResult<PNFetchChannelMembersResult *, PNErrorStatus *> *result) {
         PNStrongify(self);
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self channelMembersWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+        if (!result.status.isError) {
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Fetch channel members success. Received %@ "
+                                                                         "channel members.",
+                                                                         @(result.result.data.members.count))];
+            }];
         }
 
         [self callBlock:block status:NO withResult:result.result andStatus:result.status];
     };
+                           
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Fetch channel members with parameters:"];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }

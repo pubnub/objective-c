@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Properties
 
-/// Unique identifer of the user for which presence information should be retrieved.
+/// Unique identifier of the user for which presence information should be retrieved.
 @property(copy, nonatomic) NSString *userId;
 
 
@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Initialize `User presence` request.
 ///
-/// - Parameter userId: Unique identifer of the user for which presence information should be retrieved.
+/// - Parameter userId: Unique identifier of the user for which presence information should be retrieved.
 /// - Returns: Initialized `User presence` request.
 - (instancetype)initForUserId:(NSString *)userId;
 
@@ -82,6 +82,19 @@ NS_ASSUME_NONNULL_END
 - (PNError *)validate {
     if (self.userId.length == 0) return [self missingParameterError:@"userId" forObjectRequest:@"User presence"];
     return nil;
+}
+
+
+#pragma mark - Misc
+
+- (NSDictionary *)dictionaryRepresentation {
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary:@{
+        @"userId": self.userId ?: @"missing"
+    }];
+    
+    if (self.arbitraryQueryParameters) dictionary[@"arbitraryQueryParameters"] = self.arbitraryQueryParameters;
+    
+    return dictionary;
 }
 
 #pragma mark -

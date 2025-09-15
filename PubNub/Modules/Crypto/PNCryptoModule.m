@@ -1,4 +1,4 @@
-#import "PNCryptoModule.h"
+#import "PNCryptoModule+Private.h"
 #import "PNCryptorInputStream+Private.h"
 #import "NSInputStream+PNCrypto.h"
 #import "PNSequenceInputStream.h"
@@ -272,6 +272,31 @@ NS_ASSUME_NONNULL_END
     }
     
     return nil;
+}
+
+
+#pragma mark - Misc
+
+- (NSDictionary *)dictionaryRepresentation {
+    NSMutableDictionary *dictionary = [NSMutableDictionary new];
+    if (self.defaultCryptor) {
+        if ([self.defaultCryptor respondsToSelector:@selector(dictionaryRepresentation)])
+            dictionary[@"defaultCryptor"] = [self.defaultCryptor performSelector:@selector(dictionaryRepresentation)];
+        else dictionary[@"defaultCryptor"] = NSStringFromClass(self.defaultCryptor.class);
+    }
+    
+    if (self.cryptors.count) {
+        NSMutableArray *cryptors = [NSMutableArray arrayWithCapacity:self.cryptors.count];
+        [self.cryptors enumerateObjectsUsingBlock:^(id<PNCryptor> cryotor, NSUInteger __unused idx, BOOL * __unused stop) {
+            if ([cryotor respondsToSelector:@selector(dictionaryRepresentation)])
+                [cryptors addObject:[cryotor performSelector:@selector(dictionaryRepresentation)]];
+            else [cryptors addObject:NSStringFromClass(cryotor.class)];
+        }];
+        
+        dictionary[@"cryptors"] = cryptors;
+    }
+    
+    return dictionary;
 }
 
 #pragma mark -

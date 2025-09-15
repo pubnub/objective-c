@@ -3,6 +3,7 @@
  * @copyright © 2010-2020 PubNub, Inc.
  */
 #import "PNRecordableTestCase.h"
+#import "PNBaseRequest+Private.h"
 #import "NSString+PNTest.h"
 
 
@@ -157,24 +158,6 @@
     [self verifyEnabledForPushNotificationsChannels:channels];
 }
 
-- (void)testItShouldAddPushNotificationsWithDefaultToAPNSPushType {
-    NSArray<NSString *> *channels = [self channelsWithNames:@[@"test-channel1", @"test-channel2"]];
-    
-    
-    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client addPushNotificationsOnChannels:channels withDevicePushToken:self.devicePushTokenData
-                                      andCompletion:^(PNAcknowledgmentStatus *status) {
-            
-            NSString *url = status.clientRequest.URL.absoluteString;
-            XCTAssertFalse(status.isError);
-            XCTAssertNotNil(url);
-            XCTAssertNotEqual([url rangeOfString:@"type=apns"].location, NSNotFound);
-            
-            handler();
-        }];
-    }];
-}
-
 - (void)testItShouldAddPushNotificationsWithFCMPushType {
     NSArray<NSString *> *channels = [self channelsWithNames:@[@"test-channel1", @"test-channel2"]];
     self.pushType = PNFCMPush;
@@ -183,19 +166,17 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client addPushNotificationsOnChannels:channels withDevicePushToken:self.devicePushTokenString
-                                           pushType:self.pushType
-                                      andCompletion:^(PNAcknowledgmentStatus *status) {
-
-            NSString *url = status.clientRequest.URL.absoluteString;
+        PNPushNotificationManageRequest *request = [PNPushNotificationManageRequest requestToAddChannels:channels
+                                                                                       toDeviceWithToken:self.devicePushTokenString
+                                                                                                pushType:self.pushType];
+        
+        [self.client managePushNotificationWithRequest:request completion:^(PNAcknowledgmentStatus *status) {
             XCTAssertFalse(status.isError);
-            XCTAssertNotNil(url);
-            XCTAssertNotEqual([url rangeOfString:@"type=gcm"].location, NSNotFound);
-
+            XCTAssertEqualObjects(request.request.query[@"type"], @"gcm");
+            
             handler();
         }];
     }];
-    
     
     [self verifyEnabledForPushNotificationsChannels:channels];
 }
@@ -208,13 +189,13 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client addPushNotificationsOnChannels:channels withDevicePushToken:self.devicePushTokenString
-                                           pushType:self.pushType andCompletion:^(PNAcknowledgmentStatus *status) {
-            
-            NSString *url = status.clientRequest.URL.absoluteString;
+        PNPushNotificationManageRequest *request = [PNPushNotificationManageRequest requestToAddChannels:channels
+                                                                                       toDeviceWithToken:self.devicePushTokenString
+                                                                                                pushType:self.pushType];
+        
+        [self.client managePushNotificationWithRequest:request completion:^(PNAcknowledgmentStatus *status) {
             XCTAssertFalse(status.isError);
-            XCTAssertNotNil(url);
-            XCTAssertNotEqual([url rangeOfString:@"type=mpns"].location, NSNotFound);
+            XCTAssertEqualObjects(request.request.query[@"type"], @"mpns");
             
             handler();
         }];
@@ -232,21 +213,30 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client addPushNotificationsOnChannels:channels withDevicePushToken:self.devicePushTokenData
-                                      andCompletion:^(PNAcknowledgmentStatus *status) {
+        PNPushNotificationManageRequest *request = [PNPushNotificationManageRequest requestToAddChannels:channels
+                                                                                       toDeviceWithToken:self.devicePushTokenData
+                                                                                                pushType:self.pushType];
+        __block __weak PNPushNotificationsStateModificationCompletionBlock weakBlock;
+        __block PNPushNotificationsStateModificationCompletionBlock block;
+        
+        block = ^(PNAcknowledgmentStatus *status) {
+            __strong PNPushNotificationsStateModificationCompletionBlock strongBlock = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
             
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNAddPushNotificationsOnChannelsOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             if (!retried) {
                 retried = YES;
-                [status retry];
+                [self.client managePushNotificationWithRequest:request completion:strongBlock];
             } else {
                 handler();
             }
-        }];
+        };
+        
+        weakBlock = block;
+        [self.client managePushNotificationWithRequest:request completion:block];
     }];
     
     
@@ -259,13 +249,14 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client addPushNotificationsOnChannels:channels withDevicePushToken:devicePushToken
-                                      andCompletion:^(PNAcknowledgmentStatus *status) {
-            
+        PNPushNotificationManageRequest *request = [PNPushNotificationManageRequest requestToAddChannels:channels
+                                                                                       toDeviceWithToken:devicePushToken
+                                                                                                pushType:self.pushType];
+        
+        [self.client managePushNotificationWithRequest:request completion:^(PNAcknowledgmentStatus *status) {
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNAddPushNotificationsOnChannelsOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             handler();
         }];
@@ -278,13 +269,14 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client addPushNotificationsOnChannels:channels withDevicePushToken:devicePushToken
-                                      andCompletion:^(PNAcknowledgmentStatus *status) {
-            
+        PNPushNotificationManageRequest *request = [PNPushNotificationManageRequest requestToAddChannels:channels
+                                                                                       toDeviceWithToken:devicePushToken
+                                                                                                pushType:self.pushType];
+        
+        [self.client managePushNotificationWithRequest:request completion:^(PNAcknowledgmentStatus *status) {
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNAddPushNotificationsOnChannelsOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             handler();
         }];
@@ -298,13 +290,14 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client addPushNotificationsOnChannels:channels withDevicePushToken:devicePushToken
-                                           pushType:self.pushType andCompletion:^(PNAcknowledgmentStatus *status) {
-            
+        PNPushNotificationManageRequest *request = [PNPushNotificationManageRequest requestToAddChannels:channels
+                                                                                       toDeviceWithToken:devicePushToken
+                                                                                                pushType:self.pushType];
+        
+        [self.client managePushNotificationWithRequest:request completion:^(PNAcknowledgmentStatus *status) {
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNAddPushNotificationsOnChannelsOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             handler();
         }];
@@ -318,13 +311,14 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client addPushNotificationsOnChannels:channels withDevicePushToken:devicePushToken
-                                           pushType:self.pushType andCompletion:^(PNAcknowledgmentStatus *status) {
-            
+        PNPushNotificationManageRequest *request = [PNPushNotificationManageRequest requestToAddChannels:channels
+                                                                                       toDeviceWithToken:devicePushToken
+                                                                                                pushType:self.pushType];
+        
+        [self.client managePushNotificationWithRequest:request completion:^(PNAcknowledgmentStatus *status) {
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNAddPushNotificationsOnChannelsOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             handler();
         }];
@@ -338,13 +332,14 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client addPushNotificationsOnChannels:channels withDevicePushToken:devicePushToken
-                                           pushType:self.pushType andCompletion:^(PNAcknowledgmentStatus *status) {
-            
+        PNPushNotificationManageRequest *request = [PNPushNotificationManageRequest requestToAddChannels:channels
+                                                                                       toDeviceWithToken:devicePushToken
+                                                                                                pushType:self.pushType];
+        
+        [self.client managePushNotificationWithRequest:request completion:^(PNAcknowledgmentStatus *status) {
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNAddPushNotificationsOnChannelsOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             handler();
         }];
@@ -358,13 +353,14 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client addPushNotificationsOnChannels:channels withDevicePushToken:devicePushToken
-                                           pushType:self.pushType andCompletion:^(PNAcknowledgmentStatus *status) {
-            
+        PNPushNotificationManageRequest *request = [PNPushNotificationManageRequest requestToAddChannels:channels
+                                                                                       toDeviceWithToken:devicePushToken
+                                                                                                pushType:self.pushType];
+        
+        [self.client managePushNotificationWithRequest:request completion:^(PNAcknowledgmentStatus *status) {
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNAddPushNotificationsOnChannelsOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             handler();
         }];
@@ -380,10 +376,13 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client addPushNotificationsOnChannels:channels withDevicePushToken:self.devicePushTokenData
-                                           pushType:self.pushType environment:self.apnsEnvironment
-                                              topic:self.apns2Topic andCompletion:^(PNAcknowledgmentStatus *status) {
-            
+        PNPushNotificationManageRequest *request = [PNPushNotificationManageRequest requestToAddChannels:channels
+                                                                                       toDeviceWithToken:self.devicePushTokenData
+                                                                                                pushType:self.pushType];
+        request.environment = self.apnsEnvironment;
+        request.topic = self.apns2Topic;
+        
+        [self.client managePushNotificationWithRequest:request completion:^(PNAcknowledgmentStatus *status) {
             XCTAssertFalse(status.isError);
             XCTAssertEqual(status.operation, PNAddPushNotificationsOnChannelsV2Operation);
             XCTAssertEqual(status.category, PNAcknowledgmentCategory);
@@ -407,16 +406,16 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client addPushNotificationsOnChannels:channels withDevicePushToken:self.devicePushTokenData
-                                           pushType:self.pushType environment:self.apnsEnvironment
-                                              topic:topic andCompletion:^(PNAcknowledgmentStatus *status) {
-            
-            NSString *topicQuery = [@[@"topic", self.apns2Topic] componentsJoinedByString:@"="];
-            NSString *url = status.clientRequest.URL.absoluteString;
-            XCTAssertFalse(status.isError);
-            XCTAssertNotNil(url);
-            XCTAssertNotEqual([url rangeOfString:@"devices-apns2"].location, NSNotFound);
-            XCTAssertNotEqual([url rangeOfString:topicQuery].location, NSNotFound);
+        PNPushNotificationManageRequest *request = [PNPushNotificationManageRequest requestToAddChannels:channels
+                                                                                       toDeviceWithToken:self.devicePushTokenData
+                                                                                                pushType:self.pushType];
+        request.environment = self.apnsEnvironment;
+        request.topic = topic;
+        
+        [self.client managePushNotificationWithRequest:request completion:^(PNAcknowledgmentStatus *status) {
+            PNTransportRequest *transportRequest = request.request;
+            XCTAssertTrue([transportRequest.path containsString:@"devices-apns2"]);
+            XCTAssertEqualObjects(transportRequest.query[@"topic"], self.apns2Topic);
             
             handler();
         }];
@@ -442,7 +441,6 @@
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNAddPushNotificationsOnChannelsV2Operation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             handler();
         }];
@@ -467,7 +465,6 @@
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNAddPushNotificationsOnChannelsV2Operation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             handler();
         }];
@@ -486,21 +483,17 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        client.push().enable()
-            .channels(channels)
-            .token(self.devicePushTokenString)
-            .pushType(PNFCMPush)
-            .performWithCompletion(^(PNAcknowledgmentStatus *status) {
-
-                NSString *url = status.clientRequest.URL.absoluteString;
-                XCTAssertFalse(status.isError);
-                XCTAssertNotNil(url);
-                XCTAssertEqual(status.operation, PNAddPushNotificationsOnChannelsOperation);
-                XCTAssertEqual(status.category, PNAcknowledgmentCategory);
-                XCTAssertNotEqual([url rangeOfString:@"type=gcm"].location, NSNotFound);
-                
-                handler();
-            });
+        PNPushNotificationManageRequest *request = [PNPushNotificationManageRequest requestToAddChannels:channels
+                                                                                       toDeviceWithToken:self.devicePushTokenString
+                                                                                                pushType:PNFCMPush];
+        [client managePushNotificationWithRequest:request completion:^(PNAcknowledgmentStatus *status) {
+            XCTAssertFalse(status.isError);
+            XCTAssertEqual(status.operation, PNAddPushNotificationsOnChannelsOperation);
+            XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+            XCTAssertEqualObjects(request.request.query[@"type"], @"gcm");
+            
+            handler();
+        }];
     }];
     
         
@@ -559,24 +552,6 @@
     [self verifyEnabledForPushNotificationsChannels:@[channels.lastObject]];
 }
 
-- (void)testItShouldRemovePushNotificationsWithDefaultToAPNSPushType {
-    NSArray<NSString *> *channels = [self channelsWithNames:@[@"test-channel1", @"test-channel2"]];
-    
-    
-    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client removePushNotificationsFromChannels:channels withDevicePushToken:self.devicePushTokenData
-                                           andCompletion:^(PNAcknowledgmentStatus *status) {
-            
-            NSString *url = status.clientRequest.URL.absoluteString;
-            XCTAssertFalse(status.isError);
-            XCTAssertNotNil(url);
-            XCTAssertNotEqual([url rangeOfString:@"type=apns"].location, NSNotFound);
-            
-            handler();
-        }];
-    }];
-}
-
 - (void)testItShouldRemovePushNotificationsWithFCMPushType {
     NSArray<NSString *> *channels = [self channelsWithNames:@[@"test-channel1", @"test-channel2"]];
     self.pushType = PNFCMPush;
@@ -588,14 +563,13 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client removePushNotificationsFromChannels:@[channels.firstObject]
-                                     withDevicePushToken:self.devicePushTokenString pushType:self.pushType
-                                           andCompletion:^(PNAcknowledgmentStatus *status) {
-            
-            NSString *url = status.clientRequest.URL.absoluteString;
+        PNPushNotificationManageRequest *request = [PNPushNotificationManageRequest requestToRemoveChannels:@[channels.firstObject]
+                                                                                        fromDeviceWithToken:self.devicePushTokenString
+                                                                                                   pushType:self.pushType];
+        
+        [self.client managePushNotificationWithRequest:request completion:^(PNAcknowledgmentStatus *status) {
             XCTAssertFalse(status.isError);
-            XCTAssertNotNil(url);
-            XCTAssertNotEqual([url rangeOfString:@"type=gcm"].location, NSNotFound);
+            XCTAssertEqualObjects(request.request.query[@"type"], @"gcm");
             
             handler();
         }];
@@ -616,14 +590,13 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client removePushNotificationsFromChannels:@[channels.firstObject]
-                                     withDevicePushToken:self.devicePushTokenString pushType:self.pushType
-                                           andCompletion:^(PNAcknowledgmentStatus *status) {
-            
-            NSString *url = status.clientRequest.URL.absoluteString;
+        PNPushNotificationManageRequest *request = [PNPushNotificationManageRequest requestToRemoveChannels:@[channels.firstObject]
+                                                                                        fromDeviceWithToken:self.devicePushTokenString
+                                                                                                   pushType:self.pushType];
+        
+        [self.client managePushNotificationWithRequest:request completion:^(PNAcknowledgmentStatus *status) {
             XCTAssertFalse(status.isError);
-            XCTAssertNotNil(url);
-            XCTAssertNotEqual([url rangeOfString:@"type=mpns"].location, NSNotFound);
+            XCTAssertEqualObjects(request.request.query[@"type"], @"mpns");
             
             handler();
         }];
@@ -645,21 +618,30 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client removePushNotificationsFromChannels:channels2 withDevicePushToken:self.devicePushTokenData
-                                           andCompletion:^(PNAcknowledgmentStatus *status) {
+        PNPushNotificationManageRequest *request = [PNPushNotificationManageRequest requestToRemoveChannels:channels2
+                                                                                        fromDeviceWithToken:self.devicePushTokenString
+                                                                                                   pushType:self.pushType];
+        __block __weak PNPushNotificationsStateModificationCompletionBlock weakBlock;
+        __block PNPushNotificationsStateModificationCompletionBlock block;
+        
+        block = ^(PNAcknowledgmentStatus *status) {
+            __strong PNPushNotificationsStateModificationCompletionBlock strongBlock = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
             
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNRemovePushNotificationsFromChannelsOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             if (!retried) {
                 retried = YES;
-                [status retry];
+                [self.client managePushNotificationWithRequest:request completion:strongBlock];
             } else {
                 handler();
             }
-        }];
+        };
+        
+        weakBlock = block;
+        [self.client managePushNotificationWithRequest:request completion:block];
     }];
     
     
@@ -678,7 +660,6 @@
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNRemovePushNotificationsFromChannelsOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             handler();
         }];
@@ -697,7 +678,6 @@
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNRemovePushNotificationsFromChannelsOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             handler();
         }];
@@ -717,7 +697,6 @@
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNRemovePushNotificationsFromChannelsOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             handler();
         }];
@@ -737,7 +716,6 @@
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNRemovePushNotificationsFromChannelsOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             handler();
         }];
@@ -757,7 +735,6 @@
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNRemovePushNotificationsFromChannelsOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             handler();
         }];
@@ -777,7 +754,6 @@
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNRemovePushNotificationsFromChannelsOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             handler();
         }];
@@ -827,17 +803,17 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client removePushNotificationsFromChannels:@[channels.firstObject]
-                                     withDevicePushToken:self.devicePushTokenData
-                                                pushType:self.pushType environment:self.apnsEnvironment
-                                                   topic:topic andCompletion:^(PNAcknowledgmentStatus *status) {
-            
-            NSString *topicQuery = [@[@"topic", self.apns2Topic] componentsJoinedByString:@"="];
-            NSString *url = status.clientRequest.URL.absoluteString;
+        PNPushNotificationManageRequest *request = [PNPushNotificationManageRequest requestToRemoveChannels:@[channels.firstObject]
+                                                                                        fromDeviceWithToken:self.devicePushTokenData
+                                                                                                   pushType:self.pushType];
+        request.environment = self.apnsEnvironment;
+        request.topic = topic;
+        [self.client managePushNotificationWithRequest:request completion:^(PNAcknowledgmentStatus *status) {
             XCTAssertFalse(status.isError);
-            XCTAssertNotNil(url);
-            XCTAssertNotEqual([url rangeOfString:@"devices-apns2"].location, NSNotFound);
-            XCTAssertNotEqual([url rangeOfString:topicQuery].location, NSNotFound);
+        
+            PNTransportRequest *transportRequest = request.request;
+            XCTAssertTrue([transportRequest.path containsString:@"devices-apns2"]);
+            XCTAssertEqualObjects(transportRequest.query[@"topic"], self.apns2Topic);
             
             handler();
         }];
@@ -868,7 +844,6 @@
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNRemovePushNotificationsFromChannelsV2Operation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             handler();
         }];
@@ -893,7 +868,6 @@
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNRemovePushNotificationsFromChannelsV2Operation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             handler();
         }];
@@ -915,21 +889,17 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        client.push().disable()
-            .channels(@[channels.firstObject])
-            .token(self.devicePushTokenString)
-            .pushType(PNFCMPush)
-            .performWithCompletion(^(PNAcknowledgmentStatus *status) {
-
-                NSString *url = status.clientRequest.URL.absoluteString;
-                XCTAssertFalse(status.isError);
-                XCTAssertNotNil(url);
-                XCTAssertEqual(status.operation, PNRemovePushNotificationsFromChannelsOperation);
-                XCTAssertEqual(status.category, PNAcknowledgmentCategory);
-                XCTAssertNotEqual([url rangeOfString:@"type=gcm"].location, NSNotFound);
-                
-                handler();
-            });
+        PNPushNotificationManageRequest *request = [PNPushNotificationManageRequest requestToRemoveChannels:@[channels.firstObject]
+                                                                                        fromDeviceWithToken:self.devicePushTokenString
+                                                                                                   pushType:PNFCMPush];
+        [client managePushNotificationWithRequest:request completion:^(PNAcknowledgmentStatus *status) {
+            XCTAssertFalse(status.isError);
+            XCTAssertEqual(status.operation, PNRemovePushNotificationsFromChannelsOperation);
+            XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+            XCTAssertEqualObjects(request.request.query[@"type"], @"gcm");
+            
+            handler();
+        }];
     }];
     
     
@@ -986,32 +956,6 @@
     [self verifyEnabledForPushNotificationsChannels:@[]];
 }
 
-- (void)testItShouldRemoveAllPushNotificationsWithDefaultToAPNSPushType {
-    NSArray<NSString *> *channels = [self channelsWithNames:@[@"test-channel1", @"test-channel2"]];
-    
-    [self disableAllPushNotificationsOnDevice];
-    [self enabledPushNotificationsForChannels:channels];
-    
-    [self verifyEnabledForPushNotificationsChannels:channels];
-    
-    
-    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client removeAllPushNotificationsFromDeviceWithPushToken:self.devicePushTokenData
-                                                         andCompletion:^(PNAcknowledgmentStatus *status) {
-            
-            NSString *url = status.clientRequest.URL.absoluteString;
-            XCTAssertFalse(status.isError);
-            XCTAssertNotNil(url);
-            XCTAssertNotEqual([url rangeOfString:@"type=apns"].location, NSNotFound);
-            
-            handler();
-        }];
-    }];
-    
-    
-    [self verifyEnabledForPushNotificationsChannels:@[]];
-}
-
 - (void)testItShouldRemoveAllPushNotificationsWithFCMPushType {
     NSArray<NSString *> *channels = [self channelsWithNames:@[@"test-channel1", @"test-channel2"]];
     self.pushType = PNFCMPush;
@@ -1023,14 +967,11 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client removeAllPushNotificationsFromDeviceWithPushToken:self.devicePushTokenString
-                                                              pushType:self.pushType
-                                                         andCompletion:^(PNAcknowledgmentStatus *status) {
-            
-            NSString *url = status.clientRequest.URL.absoluteString;
+        PNPushNotificationManageRequest *request = [PNPushNotificationManageRequest requestToRemoveDeviceWithToken:self.devicePushTokenString
+                                                                                                          pushType:self.pushType];
+        [self.client managePushNotificationWithRequest:request completion:^(PNAcknowledgmentStatus *status) {
             XCTAssertFalse(status.isError);
-            XCTAssertNotNil(url);
-            XCTAssertNotEqual([url rangeOfString:@"type=gcm"].location, NSNotFound);
+            XCTAssertEqualObjects(request.request.query[@"type"], @"gcm");
             
             handler();
         }];
@@ -1051,14 +992,11 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client removeAllPushNotificationsFromDeviceWithPushToken:self.devicePushTokenString
-                                                              pushType:self.pushType
-                                                         andCompletion:^(PNAcknowledgmentStatus *status) {
-            
-            NSString *url = status.clientRequest.URL.absoluteString;
+        PNPushNotificationManageRequest *request = [PNPushNotificationManageRequest requestToRemoveDeviceWithToken:self.devicePushTokenString
+                                                                                                          pushType:self.pushType];
+        [self.client managePushNotificationWithRequest:request completion:^(PNAcknowledgmentStatus *status) {
             XCTAssertFalse(status.isError);
-            XCTAssertNotNil(url);
-            XCTAssertNotEqual([url rangeOfString:@"type=mpns"].location, NSNotFound);
+            XCTAssertEqualObjects(request.request.query[@"type"], @"mpns");
             
             handler();
         }];
@@ -1074,21 +1012,29 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client removeAllPushNotificationsFromDeviceWithPushToken:devicePushToken
-                                                         andCompletion:^(PNAcknowledgmentStatus *status) {
+        PNPushNotificationManageRequest *request = [PNPushNotificationManageRequest requestToRemoveDeviceWithToken:devicePushToken
+                                                                                                          pushType:self.pushType];
+        __block __weak PNPushNotificationsStateModificationCompletionBlock weakBlock;
+        __block PNPushNotificationsStateModificationCompletionBlock block;
+        
+        block = ^(PNAcknowledgmentStatus *status) {
+            __strong PNPushNotificationsStateModificationCompletionBlock strongBlock = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
             
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNRemoveAllPushNotificationsOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             if (!retried) {
                 retried = YES;
-                [status retry];
+                [self.client managePushNotificationWithRequest:request completion:strongBlock];
             } else {
                 handler();
             }
-        }];
+        };
+        
+        weakBlock = block;
+        [self.client managePushNotificationWithRequest:request completion:block];
     }];
 }
 
@@ -1103,7 +1049,6 @@
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNRemoveAllPushNotificationsOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             handler();
         }];
@@ -1122,7 +1067,6 @@
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNRemoveAllPushNotificationsOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             handler();
         }];
@@ -1141,7 +1085,6 @@
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNRemoveAllPushNotificationsOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             handler();
         }];
@@ -1160,7 +1103,6 @@
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNRemoveAllPushNotificationsOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             handler();
         }];
@@ -1179,7 +1121,6 @@
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNRemoveAllPushNotificationsOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             handler();
         }];
@@ -1229,17 +1170,17 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client removeAllPushNotificationsFromDeviceWithPushToken:self.devicePushTokenData
-                                                              pushType:self.pushType environment:self.apnsEnvironment
-                                                                 topic:topic
-                                                         andCompletion:^(PNAcknowledgmentStatus *status) {
-            
-            NSString *topicQuery = [@[@"topic", self.apns2Topic] componentsJoinedByString:@"="];
-            NSString *url = status.clientRequest.URL.absoluteString;
+        PNPushNotificationManageRequest *request = [PNPushNotificationManageRequest requestToRemoveDeviceWithToken:self.devicePushTokenData
+                                                                                                          pushType:self.pushType];
+        request.environment = self.apnsEnvironment;
+        request.topic = topic;
+        
+        [self.client managePushNotificationWithRequest:request completion:^(PNAcknowledgmentStatus *status) {
             XCTAssertFalse(status.isError);
-            XCTAssertNotNil(url);
-            XCTAssertNotEqual([url rangeOfString:@"devices-apns2"].location, NSNotFound);
-            XCTAssertNotEqual([url rangeOfString:topicQuery].location, NSNotFound);
+            
+            PNTransportRequest *transportRequest = request.request;
+            XCTAssertTrue([transportRequest.path containsString:@"devices-apns2"]);
+            XCTAssertEqualObjects(transportRequest.query[@"topic"], self.apns2Topic);
             
             handler();
         }];
@@ -1262,7 +1203,6 @@
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNRemoveAllPushNotificationsV2Operation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             handler();
         }];
@@ -1284,20 +1224,16 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        client.push().disableAll()
-            .token(self.devicePushTokenString)
-            .pushType(PNFCMPush)
-            .performWithCompletion(^(PNAcknowledgmentStatus *status) {
-
-                NSString *url = status.clientRequest.URL.absoluteString;
-                XCTAssertFalse(status.isError);
-                XCTAssertNotNil(url);
-                XCTAssertEqual(status.operation, PNRemoveAllPushNotificationsOperation);
-                XCTAssertEqual(status.category, PNAcknowledgmentCategory);
-                XCTAssertNotEqual([url rangeOfString:@"type=gcm"].location, NSNotFound);
-                
-                handler();
-            });
+        PNPushNotificationManageRequest *request = [PNPushNotificationManageRequest requestToRemoveDeviceWithToken:self.devicePushTokenString
+                                                                                                          pushType:PNFCMPush];
+        [client managePushNotificationWithRequest:request completion:^(PNAcknowledgmentStatus *status) {
+            XCTAssertFalse(status.isError);
+            XCTAssertEqual(status.operation, PNRemoveAllPushNotificationsOperation);
+            XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+            XCTAssertEqualObjects(request.request.query[@"type"], @"gcm");
+            
+            handler();
+        }];
     }];
     
     
@@ -1330,31 +1266,6 @@
     }];
 }
 
-- (void)testItShouldAuditPushNotificationsWithDefaultToAPNSPushType {
-    NSArray<NSString *> *channels = [self channelsWithNames:@[@"test-channel1", @"test-channel2"]];
-    NSSet *addedChannelsSet = [NSSet setWithArray:channels];
-    
-    [self disableAllPushNotificationsOnDevice];
-    [self enabledPushNotificationsForChannels:channels];
-    
-    
-    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client pushNotificationEnabledChannelsForDeviceWithPushToken:self.devicePushTokenData
-                             andCompletion:^(PNAPNSEnabledChannelsResult *result, PNErrorStatus *status) {
-            
-            NSSet *fetchedChannelsSet = [NSSet setWithArray:result.data.channels];
-            NSString *url = result.clientRequest.URL.absoluteString;
-            XCTAssertNil(status);
-            XCTAssertNotNil(fetchedChannelsSet);
-            XCTAssertNotNil(url);
-            XCTAssertNotEqual([url rangeOfString:@"type=apns"].location, NSNotFound);
-            XCTAssertTrue([fetchedChannelsSet isEqualToSet:addedChannelsSet]);
-            
-            handler();
-        }];
-    }];
-}
-
 - (void)testItShouldAuditPushNotificationsWithFCMPushType {
     NSArray<NSString *> *channels = [self channelsWithNames:@[@"test-channel1", @"test-channel2"]];
     NSSet *addedChannelsSet = [NSSet setWithArray:channels];
@@ -1365,16 +1276,14 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client pushNotificationEnabledChannelsForDeviceWithPushToken:self.devicePushTokenString
-          pushType:self.pushType andCompletion:^(PNAPNSEnabledChannelsResult *result, PNErrorStatus *status) {
-            
+        PNPushNotificationFetchRequest *request = [PNPushNotificationFetchRequest requestWithDevicePushToken:self.devicePushTokenString
+                                                                                                    pushType:self.pushType];
+        [self.client fetchPushNotificationWithRequest:request completion:^(PNAPNSEnabledChannelsResult *result, PNErrorStatus *status) {
             NSSet *fetchedChannelsSet = [NSSet setWithArray:result.data.channels];
-            NSString *url = result.clientRequest.URL.absoluteString;
             XCTAssertNil(status);
             XCTAssertNotNil(fetchedChannelsSet);
-            XCTAssertNotNil(url);
-            XCTAssertNotEqual([url rangeOfString:@"type=gcm"].location, NSNotFound);
             XCTAssertTrue([fetchedChannelsSet isEqualToSet:addedChannelsSet]);
+            XCTAssertEqualObjects(request.request.query[@"type"], @"gcm");
             
             handler();
         }];
@@ -1391,16 +1300,14 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client pushNotificationEnabledChannelsForDeviceWithPushToken:self.devicePushTokenString
-          pushType:self.pushType andCompletion:^(PNAPNSEnabledChannelsResult *result, PNErrorStatus *status) {
-            
+        PNPushNotificationFetchRequest *request = [PNPushNotificationFetchRequest requestWithDevicePushToken:self.devicePushTokenString
+                                                                                                    pushType:self.pushType];
+        [self.client fetchPushNotificationWithRequest:request completion:^(PNAPNSEnabledChannelsResult *result, PNErrorStatus *status) {
             NSSet *fetchedChannelsSet = [NSSet setWithArray:result.data.channels];
-            NSString *url = result.clientRequest.URL.absoluteString;
             XCTAssertNil(status);
             XCTAssertNotNil(fetchedChannelsSet);
-            XCTAssertNotNil(url);
-            XCTAssertNotEqual([url rangeOfString:@"type=mpns"].location, NSNotFound);
             XCTAssertTrue([fetchedChannelsSet isEqualToSet:addedChannelsSet]);
+            XCTAssertEqualObjects(request.request.query[@"type"], @"mpns");
             
             handler();
         }];
@@ -1413,22 +1320,30 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client pushNotificationEnabledChannelsForDeviceWithPushToken:devicePushToken
-                         andCompletion:^(PNAPNSEnabledChannelsResult *result, PNErrorStatus *status) {
+        PNPushNotificationFetchRequest *request = [PNPushNotificationFetchRequest requestWithDevicePushToken:devicePushToken
+                                                                                                    pushType:self.pushType];
+        __block __weak PNPushNotificationsStateAuditCompletionBlock weakBlock;
+        __block PNPushNotificationsStateAuditCompletionBlock block;
+        
+        block = ^(PNAPNSEnabledChannelsResult *result, PNErrorStatus *status) {
+            __strong PNPushNotificationsStateAuditCompletionBlock strongBlock = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
             
             XCTAssertNil(result);
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNPushNotificationEnabledChannelsOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             if (!retried) {
                 retried = YES;
-                [status retry];
+                [self.client fetchPushNotificationWithRequest:request completion:strongBlock];
             } else {
                 handler();
             }
-        }];
+        };
+        
+        weakBlock = block;
+        [self.client fetchPushNotificationWithRequest:request completion:block];
     }];
 }
 
@@ -1444,7 +1359,6 @@
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNPushNotificationEnabledChannelsOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             handler();
         }];
@@ -1464,7 +1378,6 @@
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNPushNotificationEnabledChannelsOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             handler();
         }];
@@ -1484,7 +1397,6 @@
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNPushNotificationEnabledChannelsOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             handler();
         }];
@@ -1504,7 +1416,6 @@
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNPushNotificationEnabledChannelsOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             handler();
         }];
@@ -1524,7 +1435,6 @@
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNPushNotificationEnabledChannelsOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             handler();
         }];
@@ -1571,19 +1481,20 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client pushNotificationEnabledChannelsForDeviceWithPushToken:self.devicePushTokenData
-                                  pushType:self.pushType environment:self.apnsEnvironment topic:topic
-                             andCompletion:^(PNAPNSEnabledChannelsResult *result, PNErrorStatus *status) {
-            
-            NSString *topicQuery = [@[@"topic", self.apns2Topic] componentsJoinedByString:@"="];
+        PNPushNotificationFetchRequest *request = [PNPushNotificationFetchRequest requestWithDevicePushToken:self.devicePushTokenData
+                                                                                                    pushType:self.pushType];
+        request.environment = self.apnsEnvironment;
+        request.topic = topic;
+        
+        [self.client fetchPushNotificationWithRequest:request completion:^(PNAPNSEnabledChannelsResult *result, PNErrorStatus *status) {
             NSSet *fetchedChannelsSet = [NSSet setWithArray:result.data.channels];
-            NSString *url = result.clientRequest.URL.absoluteString;
             XCTAssertNil(status);
-            XCTAssertNotNil(url);
             XCTAssertNotNil(fetchedChannelsSet);
-            XCTAssertNotEqual([url rangeOfString:@"devices-apns2"].location, NSNotFound);
-            XCTAssertNotEqual([url rangeOfString:topicQuery].location, NSNotFound);
             XCTAssertTrue([fetchedChannelsSet isEqualToSet:addedChannelsSet]);
+            
+            PNTransportRequest *transportRequest = request.request;
+            XCTAssertTrue([transportRequest.path containsString:@"devices-apns2"]);
+            XCTAssertEqualObjects(transportRequest.query[@"topic"], self.apns2Topic);
             
             handler();
         }];
@@ -1605,7 +1516,6 @@
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNPushNotificationEnabledChannelsV2Operation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             handler();
         }];
@@ -1626,23 +1536,20 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        client.push().audit()
-            .token(self.devicePushTokenString)
-            .pushType(PNFCMPush)
-            .performWithCompletion(^(PNAPNSEnabledChannelsResult *result, PNErrorStatus *status) {
-
-                NSSet *fetchedChannelsSet = [NSSet setWithArray:result.data.channels];
-                NSString *url = result.clientRequest.URL.absoluteString;
-                XCTAssertNil(status);
-                XCTAssertNotNil(result);
-                XCTAssertNotNil(fetchedChannelsSet);
-                XCTAssertNotNil(url);
-                XCTAssertEqual(result.operation, PNPushNotificationEnabledChannelsOperation);
-                XCTAssertNotEqual([url rangeOfString:@"type=gcm"].location, NSNotFound);
-                XCTAssertTrue([fetchedChannelsSet isEqualToSet:addedChannelsSet]);
-                
-                handler();
-            });
+        PNPushNotificationFetchRequest *request = [PNPushNotificationFetchRequest requestWithDevicePushToken:self.devicePushTokenString
+                                                                                                    pushType:self.pushType];
+        
+        [client fetchPushNotificationWithRequest:request completion:^(PNAPNSEnabledChannelsResult *result, PNErrorStatus *status) {
+            NSSet *fetchedChannelsSet = [NSSet setWithArray:result.data.channels];
+            XCTAssertNil(status);
+            XCTAssertNotNil(result);
+            XCTAssertNotNil(fetchedChannelsSet);
+            XCTAssertTrue([fetchedChannelsSet isEqualToSet:addedChannelsSet]);
+            XCTAssertEqual(result.operation, PNPushNotificationEnabledChannelsOperation);
+            XCTAssertEqualObjects(request.request.query[@"type"], @"gcm");
+            
+            handler();
+        }];
     }];
 }
 

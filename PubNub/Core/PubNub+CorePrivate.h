@@ -5,17 +5,18 @@
 #import <PubNub/PNTransport.h>
 #import <PubNub/PNJSONCoder.h>
 #import <PubNub/PNLock.h>
+#import "PNNetworkResponseLogEntry+Private.h"
+#import "PNNetworkRequestLogEntry+Private.h"
 #import "PNOperationDataParser.h"
 #import "PNBaseRequest+Private.h"
 #import "PNPrivateStructures.h"
-#import "PubNub+Deprecated.h"
 #import "PNPublishSequence.h"
 #import "PNStateListener.h"
+#import "PNLoggerManager.h"
 #import "PNFilesManager.h"
 #import "PNClientState.h"
 #import "PNSubscriber.h"
 #import "PNHeartbeat.h"
-#import "PNLogMacro.h"
 
 
 #pragma mark Class forward
@@ -150,27 +151,6 @@ typedef void(^PNParsedRequestCompletionBlock)(PNTransportRequest *,
 /// - Returns: Ready to use operation data parser.
 - (PNOperationDataParser *)parserWithStatus:(Class)statusClass
                                cryptoModule:(nullable id<PNCryptoProvider>)cryptoModule;
-
-
-#pragma mark - Operation information
-
-/// Calculate actual size of packet for passed `operationType` which will be sent to the **PubNub** network.
-///
-/// - Parameters:
-///   - operationType: One of the `PNOperationType` enum fields which specify for what kind of operation packet size
-///   should be calculated.
-///   - parameters: List of passed parameters which should be passed to URL builder.
-///   - data: Data which can be pushed along with request to the **PubNub** network if required.
-/// - Returns: Size of the packet which include request string, host, headers and HTTP post body.
-- (NSInteger)packetSizeForOperation:(PNOperationType)operationType
-                     withParameters:(PNRequestParameters *)parameters
-                               data:(NSData *)data
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with the next major update.");
-
-/// Add available client information to object instance subclassed from `PNOperationResult` (`PNStatus`).
-///
-/// - Parameter result: Reference on object which should be updated with client information.
-- (void)appendClientInformation:(PNOperationResult *)result;
 
 
 #pragma mark - Events notification

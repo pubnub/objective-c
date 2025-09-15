@@ -9,8 +9,6 @@
 #import <CommonCrypto/CommonHMAC.h>
 #import "PubNub+CorePrivate.h"
 #import "PNConstants.h"
-#import "PNLogMacro.h"
-#import "PNLLogger.h"
 #import "PNHelpers.h"
 #import "PNError.h"
 
@@ -18,7 +16,7 @@
 #pragma mark Static
 
 /**
- * @brief Initialisation vector used to initialise (de)cryptor.
+ * @brief Initialization vector used to initialize (de)cryptor.
  */
 static uint8_t kPNAESInitializationVector[kCCBlockSizeAES128] = "0123456789012345";
 
@@ -253,17 +251,7 @@ NS_ASSUME_NONNULL_END
                                           userInfo:@{ NSLocalizedDescriptionKey: description }];
     }
     
-    if (encryptionError) {
-        if (error != NULL) {
-            *error = encryptionError;
-        } else {
-            PNLLogger *logger = [PNLLogger loggerWithIdentifier:kPNClientIdentifier];
-#if DEBUG
-            [logger enableLogLevel:PNAESErrorLogLevel];
-#endif
-            PNLogAESError(logger, @"<PubNub::AES> Encryption error: %@", encryptionError);
-        }
-    }
+    if (encryptionError && error != NULL)  *error = encryptionError;
     
     return processedData ? [PNData base64StringFrom:processedData] : nil;
 }
@@ -336,17 +324,7 @@ NS_ASSUME_NONNULL_END
                                           userInfo:@{ NSLocalizedDescriptionKey: description }];
     }
     
-    if (decryptionError) {
-        if (error != NULL) {
-            *error = decryptionError;
-        } else {
-            PNLLogger *logger = [PNLLogger loggerWithIdentifier:kPNClientIdentifier];
-#if DEBUG
-            [logger enableLogLevel:PNAESErrorLogLevel];
-#endif
-            PNLogAESError(logger, @"<PubNub::AES> Decryption error: %@", decryptionError);
-        }
-    }
+    if (decryptionError && error != NULL) *error = decryptionError;
     
     return decryptedObject;
 }
@@ -497,25 +475,11 @@ NS_ASSUME_NONNULL_END
         if (!processingError) {
             processingError = [cryptor processFileAtURL:sourceURL toURL:targetURL];
         }
-            
-        if (processingError) {
-            PNLLogger *logger = [PNLLogger loggerWithIdentifier:kPNClientIdentifier];
-    #if DEBUG
-            [logger enableLogLevel:PNAESErrorLogLevel];
-    #endif
-            PNLogAESError(logger, @"<PubNub::AES> %@ error: %@",
-                          cryptor.operation == kCCEncrypt ? @"Encryption" : @"Decryption", processingError);
-        }
-        
+
         block(!processingError ? targetURL : nil, processingError);
         
-        if (isTemporary || processingError) {
-            if (![NSFileManager.defaultManager removeItemAtURL:targetURL error:&processingError]) {
-                NSLog(@"<PubNub::AES> %@ clean up error: %@",
-                      cryptor.operation == kCCEncrypt ? @"Encryption" : @"Decryption",
-                      processingError);
-            }
-        }
+        if (isTemporary || processingError)
+            [NSFileManager.defaultManager removeItemAtURL:targetURL error:&processingError];
     });
 }
 

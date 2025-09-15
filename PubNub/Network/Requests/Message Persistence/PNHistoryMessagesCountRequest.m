@@ -40,7 +40,7 @@ NS_ASSUME_NONNULL_END
 @implementation PNHistoryMessagesCountRequest
 
 
-#pragma mark - Propeperties
+#pragma mark - Properties
 
 - (PNOperationType)operation {
     return PNMessageCountOperation;
@@ -109,6 +109,20 @@ NS_ASSUME_NONNULL_END
     }
     
     return nil;
+}
+
+
+#pragma mark - Misc
+
+- (NSDictionary *)dictionaryRepresentation {
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary:@{
+        @"timetokens": self.timetokens ?: @"missing",
+        @"channels": self.channels ?: @"missing"
+    }];
+    
+    if (self.arbitraryQueryParameters) dictionary[@"arbitraryQueryParameters"] = self.arbitraryQueryParameters;
+    
+    return dictionary;
 }
 
 #pragma mark -

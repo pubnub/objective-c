@@ -42,8 +42,8 @@ Pod::Spec.new do |spec|
             'PubNub/Data/Transport/{PNTransportMiddleware.h,PNTransportMiddlewareConfiguration.h}',
             'PubNub/Misc/{PNConstants,PNPrivateStructures}.h',
             'PubNub/Misc/Helpers/{PNArray,PNChannel,PNData,PNDate,PNDictionary,PNGZIP,PNHelpers,PNJSON,PNLockSupport,PNNumber,PNString,PNURLRequest}.h',
-            'PubNub/Misc/Logger/PNLogMacro.h',
-            'PubNub/Misc/Logger/Data/*.h',
+            'PubNub/Misc/Logger/Additional/File/PNFileLoggerFileInformation.h',
+            'PubNub/Misc/Logger/Additional/Console/*.h',
             'PubNub/Misc/Protocols/{PNKeyValueStorageProtocol,PNParser}.h',
             "PubNub/Modules/Transport/{PNURLSessionTransportResponse,PNURLSessionTransport}.h",
             "PubNub/Modules/Serializer/Object/{Categories,Models}/*.h",
@@ -57,14 +57,6 @@ Pod::Spec.new do |spec|
             'PubNub/Protocols/PNRequest.h',
         ]
         core.pod_target_xcconfig = { 'APPLICATION_EXTENSION_API_ONLY' => 'YES' }
-    end
-
-    spec.subspec 'Logger' do |logger|
-        logger.source_files = 'PubNub/Misc/Logger/{Core,Data}/**/*', 'PubNub/Misc/Helpers/{PNLockSupport,PNDefines}.{h,m}'
-        logger.private_header_files = [
-            'PubNub/Misc/Logger/Data/*.h',
-            'PubNub/Misc/Helpers/{PNLockSupport,PNDefines}.h'
-        ]
     end
 
     spec.library   = 'z'

@@ -4,6 +4,7 @@
  */
 #import "PNRecordableTestCase.h"
 #import <PubNub/NSDateFormatter+PNCacheable.h>
+#import <PubNub/PNBaseRequest+Private.h>
 #import <PubNub/PNHelpers.h>
 
 
@@ -185,28 +186,37 @@ NS_ASSUME_NONNULL_END
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.objects().setChannelMetadata(identifier)
-            .name(name)
-            .information(information)
-            .custom(custom)
-            .performWithCompletion(^(PNSetChannelMetadataStatus *status) {
-                if (!retried && !YHVVCR.cassette.isNewCassette) {
-                    XCTAssertTrue(status.error);
-                    XCTAssertEqual(status.operation, PNSetChannelMetadataOperation);
-                    XCTAssertEqual(status.category, PNMalformedResponseCategory);
+        PNSetChannelMetadataRequest *request = [PNSetChannelMetadataRequest requestWithChannel:identifier];
+        request.name = name;
+        request.information = information;
+        request.custom = custom;
+        __block __weak PNSetChannelMetadataCompletionBlock weakBlock;
+        __block PNSetChannelMetadataCompletionBlock block;
+        
+        block = ^(PNSetChannelMetadataStatus *status) {
+            __strong PNSetChannelMetadataCompletionBlock strongBlock = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
+            
+            if (!retried && !YHVVCR.cassette.isNewCassette) {
+                XCTAssertTrue(status.error);
+                XCTAssertEqual(status.operation, PNSetChannelMetadataOperation);
+                XCTAssertEqual(status.category, PNMalformedResponseCategory);
 
-                    retried = YES;
-                    [status retry];
-                } else {
-                    PNChannelMetadata *metadata = status.data.metadata;
-                    XCTAssertFalse(status.isError);
-                    XCTAssertNotNil(metadata);
-                    XCTAssertEqualObjects(metadata.custom, custom);
-                    XCTAssertEqualObjects(metadata.information, information);
-                    
-                    handler();
-                }
-            });
+                retried = YES;
+                [self.client setChannelMetadataWithRequest:request completion:strongBlock];
+            } else {
+                PNChannelMetadata *metadata = status.data.metadata;
+                XCTAssertFalse(status.isError);
+                XCTAssertNotNil(metadata);
+                XCTAssertEqualObjects(metadata.custom, custom);
+                XCTAssertEqualObjects(metadata.information, information);
+                
+                handler();
+            }
+        };
+        
+        weakBlock = block;
+        [self.client setChannelMetadataWithRequest:request completion:block];
     }];
 
     [self removeChannelsMetadata:@[identifier] usingClient:nil];
@@ -233,25 +243,34 @@ NS_ASSUME_NONNULL_END
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.objects().removeChannelMetadata(channels.firstObject.channel)
-            .performWithCompletion(^(PNAcknowledgmentStatus *status) {
-                if (!retried && !YHVVCR.cassette.isNewCassette) {
-                    XCTAssertTrue(status.error);
-                    XCTAssertEqual(status.operation, PNRemoveChannelMetadataOperation);
-                    XCTAssertEqual(status.category, PNMalformedResponseCategory);
+        PNRemoveChannelMetadataRequest *request = [PNRemoveChannelMetadataRequest requestWithChannel:channels.firstObject.channel];
+        __block __weak PNRemoveChannelMetadataCompletionBlock weakBlock;
+        __block PNRemoveChannelMetadataCompletionBlock block;
+        
+        block = ^(PNAcknowledgmentStatus *status) {
+            __strong PNRemoveChannelMetadataCompletionBlock strongBlock = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
+            
+            if (!retried && !YHVVCR.cassette.isNewCassette) {
+                XCTAssertTrue(status.error);
+                XCTAssertEqual(status.operation, PNRemoveChannelMetadataOperation);
+                XCTAssertEqual(status.category, PNMalformedResponseCategory);
 
-                    retried = YES;
-                    [status retry];
-                } else {
-                    XCTAssertFalse(status.error);
-                    XCTAssertEqual(status.operation, PNRemoveChannelMetadataOperation);
-                    XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+                retried = YES;
+                [self.client removeChannelMetadataWithRequest:request completion:strongBlock];
+            } else {
+                XCTAssertFalse(status.error);
+                XCTAssertEqual(status.operation, PNRemoveChannelMetadataOperation);
+                XCTAssertEqual(status.category, PNAcknowledgmentCategory);
 
-                    [self removeCachedChannelsMetadata:channels.firstObject.channel];
-                    
-                    handler();
-                }
-            });
+                [self removeCachedChannelsMetadata:channels.firstObject.channel];
+                
+                handler();
+            }
+        };
+        
+        weakBlock = block;
+        [self.client removeChannelMetadataWithRequest:request completion:block];
     }];
 
 
@@ -353,20 +372,29 @@ NS_ASSUME_NONNULL_END
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.objects().channelMetadata(identifier)
-            .includeFields(PNChannelCustomField)
-            .performWithCompletion(^(PNFetchChannelMetadataResult *result, PNErrorStatus *status) {
-                XCTAssertNil(result);
-                XCTAssertTrue(status.isError);
-                XCTAssertEqual(status.statusCode, 404);
-                
-                if (!retried) {
-                    retried = YES;
-                    [status retry];
-                } else {
-                    handler();
-                }
-            });
+        PNFetchChannelMetadataRequest *request = [PNFetchChannelMetadataRequest requestWithChannel:identifier];
+        request.includeFields = PNChannelCustomField;
+        __block __weak PNFetchChannelMetadataCompletionBlock weakBlock;
+        __block PNFetchChannelMetadataCompletionBlock block;
+        
+        block = ^(PNFetchChannelMetadataResult *result, PNErrorStatus *status) {
+            __strong PNFetchChannelMetadataCompletionBlock strongBlock = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
+            
+            XCTAssertNil(result);
+            XCTAssertTrue(status.isError);
+            XCTAssertEqual(status.category, PNResourceNotFoundCategory);
+            
+            if (!retried) {
+                retried = YES;
+                [self.client channelMetadataWithRequest:request completion:strongBlock];
+            } else {
+                handler();
+            }
+        };
+        
+        weakBlock = block;
+        [self.client channelMetadataWithRequest:request completion:block];
     }];
 }
 
@@ -391,16 +419,23 @@ NS_ASSUME_NONNULL_END
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.objects().allChannelsMetadata()
-            .includeCount(NO)
-            .performWithCompletion(^(PNFetchAllChannelsMetadataResult *result, PNErrorStatus *status) {
+        PNFetchAllChannelsMetadataRequest *request = [PNFetchAllChannelsMetadataRequest new];
+        // Unset included fields.
+        request.includeFields = 0;
+        __block __weak PNFetchAllChannelsMetadataCompletionBlock weakBlock;
+        __block PNFetchAllChannelsMetadataCompletionBlock block;
+        
+        block = ^(PNFetchAllChannelsMetadataResult *result, PNErrorStatus *status) {
+            __strong PNFetchAllChannelsMetadataCompletionBlock strongBlock = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
+                
             if (!retried && !YHVVCR.cassette.isNewCassette) {
                 XCTAssertTrue(status.error);
                 XCTAssertEqual(status.operation, PNFetchAllChannelsMetadataOperation);
                 XCTAssertEqual(status.category, PNMalformedResponseCategory);
 
                 retried = YES;
-                [status retry];
+                [self.client allChannelsMetadataWithRequest:request completion:strongBlock];
             } else {
                 XCTAssertNil(status);
                 XCTAssertEqual(result.data.metadata.count, channels.count);
@@ -409,7 +444,10 @@ NS_ASSUME_NONNULL_END
                 
                 handler();
             }
-        });
+        };
+        
+        weakBlock = block;
+        [self.client allChannelsMetadataWithRequest:request completion:block];
     }];
 
     [self removeChannelsMetadataUsingClient:nil];
@@ -421,27 +459,25 @@ NS_ASSUME_NONNULL_END
     NSArray<PNChannelMetadata *> *channels = [self setChannelsMetadata:6 usingClient:nil];
     NSUInteger targetChannelOffset = 3;
     NSDate *targetChannelMetadataUpdateDate = channels[targetChannelOffset].updated;
-    NSString *filterExpression = [NSString stringWithFormat:@"updated >= '%@'",
-                                  [formatter stringFromDate:targetChannelMetadataUpdateDate]];
-    NSString *expectedFilterExpression = [PNString percentEscapedString:filterExpression];
+    NSString *expectedFilterExpression = [NSString stringWithFormat:@"updated >= '%@'",
+                                          [formatter stringFromDate:targetChannelMetadataUpdateDate]];
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.objects().allChannelsMetadata()
-            .includeCount(YES)
-            .filter(filterExpression)
-            .performWithCompletion(^(PNFetchAllChannelsMetadataResult *result, PNErrorStatus *status) {
-                NSURLRequest *request = [result valueForKey:@"clientRequest"];
-                XCTAssertNil(status);
-                XCTAssertEqual(result.data.totalCount, channels.count - targetChannelOffset);
-                XCTAssertEqual(result.data.metadata.count, result.data.totalCount);
-                XCTAssertNil(result.data.prev);
-                XCTAssertNotNil(result.data.next);
-                XCTAssertNotEqual([request.URL.absoluteString rangeOfString:expectedFilterExpression].location,
-                                  NSNotFound);
-                
-                handler();
-        });
+        PNFetchAllChannelsMetadataRequest *request = [PNFetchAllChannelsMetadataRequest new];
+        request.includeFields = PNChannelTotalCountField;
+        request.filter = expectedFilterExpression;
+        
+        [self.client allChannelsMetadataWithRequest:request completion:^(PNFetchAllChannelsMetadataResult *result, PNErrorStatus *status) {
+            XCTAssertNil(status);
+            XCTAssertEqual(result.data.totalCount, channels.count - targetChannelOffset);
+            XCTAssertEqual(result.data.metadata.count, result.data.totalCount);
+            XCTAssertNil(result.data.prev);
+            XCTAssertNotNil(result.data.next);
+            XCTAssertEqualObjects(request.request.query[@"filter"], expectedFilterExpression);
+            
+            handler();
+        }];
     }];
 
     [self removeChannelsMetadataUsingClient:nil];
@@ -449,7 +485,7 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldFetchSortedChannelsMetadataWhenSortIsSet {
     NSArray<PNChannelMetadata *> *channels = [self setChannelsMetadata:6 usingClient:nil];
-    NSString *expectedSort = @"name%3Adesc%2Cupdated";
+    NSString *expectedSort = @"name:desc,updated";
     NSArray<PNChannelMetadata *> *expectedChannelsOrder = [channels sortedArrayUsingDescriptors:@[
         [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:NO],
         [NSSortDescriptor sortDescriptorWithKey:@"updated" ascending:YES]
@@ -457,24 +493,23 @@ NS_ASSUME_NONNULL_END
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.objects().allChannelsMetadata()
-            .includeCount(YES)
-            .sort(@[@"name:desc", @"updated"])
-            .performWithCompletion(^(PNFetchAllChannelsMetadataResult *result, PNErrorStatus *status) {
-                NSURLRequest *request = [result valueForKey:@"clientRequest"];
-                XCTAssertNil(status);
-                XCTAssertNil(result.data.prev);
-                XCTAssertNotNil(result.data.next);
-                XCTAssertNotEqual([request.URL.absoluteString rangeOfString:expectedSort].location,
-                                  NSNotFound);
-                
-                for (NSUInteger idx = 0; idx < result.data.metadata.count; idx++) {
-                    XCTAssertEqualObjects(result.data.metadata[idx].channel,
-                                          expectedChannelsOrder[idx].channel);
-                }
-                
-                handler();
-        });
+        PNFetchAllChannelsMetadataRequest *request = [PNFetchAllChannelsMetadataRequest new];
+        request.includeFields = PNChannelTotalCountField;
+        request.sort = @[@"name:desc", @"updated"];
+        
+        [self.client allChannelsMetadataWithRequest:request completion:^(PNFetchAllChannelsMetadataResult *result, PNErrorStatus *status) {
+            XCTAssertNil(status);
+            XCTAssertNil(result.data.prev);
+            XCTAssertNotNil(result.data.next);
+            XCTAssertEqualObjects(request.request.query[@"sort"], expectedSort);
+            
+            for (NSUInteger idx = 0; idx < result.data.metadata.count; idx++) {
+                XCTAssertEqualObjects(result.data.metadata[idx].channel,
+                                      expectedChannelsOrder[idx].channel);
+            }
+            
+            handler();
+        }];
     }];
 
     [self removeChannelsMetadataUsingClient:nil];

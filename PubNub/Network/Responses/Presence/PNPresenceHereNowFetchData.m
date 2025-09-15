@@ -163,7 +163,7 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Helpers
 
 - (NSDictionary *)dictionaryRepresentation {
-    NSMutableDictionary *dictionary = [@{ @"uuid": self.uuid } mutableCopy];
+    NSMutableDictionary *dictionary = [@{ @"uuid": self.uuid ?: @"not set" } mutableCopy];
     if (self.state) dictionary[@"state"] = self.state;
 
     return dictionary;
@@ -233,7 +233,7 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Helpers
 
 - (NSDictionary *)dictionaryRepresentation {
-    NSMutableDictionary *dictionary = [@{ @"occupancy": self.occupancy } mutableCopy];
+    NSMutableDictionary *dictionary = [@{ @"occupancy": self.occupancy ?: @"not set" } mutableCopy];
 
     if (self.uuids.count) {
         if (self.verbosityLevel == PNHereNowUUID) dictionary[@"uuids"] = [self.uuids valueForKey:@"uuid"];
@@ -333,7 +333,7 @@ NS_ASSUME_NONNULL_END
 
 - (NSDictionary *)dictionaryRepresentation {
     NSMutableDictionary *dictionary = [@{
-        @"totalOccupancy": self.totalOccupancy, @"totalChannels": self.totalChannels
+        @"totalOccupancy": self.totalOccupancy ?: @"not set", @"totalChannels": self.totalChannels ?: @"not set"
     } mutableCopy];
 
     if (self.channels.count) {

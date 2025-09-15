@@ -54,7 +54,7 @@ NS_ASSUME_NONNULL_END
     PNSetUUIDMetadataRequest *request = [PNSetUUIDMetadataRequest requestWithUUID:[NSUUID UUID].UUIDString];
     
     
-    XCTAssertEqual(request.includeFields, PNUUIDCustomField);
+    XCTAssertEqual(request.includeFields, PNUUIDCustomField|PNUUIDStatusField|PNUUIDTypeField);
 }
 
 
@@ -81,7 +81,9 @@ NS_ASSUME_NONNULL_END
 
             XCTAssertNil([request validate]);
             XCTAssertEqualObjects(request.identifier, expectedId);
-            XCTAssertEqualObjects(request.request.query[@"include"], @"custom");
+            XCTAssertTrue([request.query[@"include"] containsString:@"custom"]);
+            XCTAssertTrue([request.query[@"include"] containsString:@"status"]);
+            XCTAssertTrue([request.query[@"include"] containsString:@"type"]);
             XCTAssertEqualObjects(request.body, expectedPayload);
         });
     
@@ -117,9 +119,11 @@ NS_ASSUME_NONNULL_END
 
         XCTAssertNil([request validate]);
         XCTAssertNotNil(request.headers[@"If-Match"]);
-        XCTAssertEqualObjects(request.headers[@"If-Match"], expectedId);
+        XCTAssertEqualObjects(request.headers[@"If-Match"], expectedETag);
         XCTAssertEqualObjects(request.identifier, expectedId);
-        XCTAssertEqualObjects(request.request.query[@"include"], @"custom");
+        XCTAssertTrue([request.query[@"include"] containsString:@"custom"]);
+        XCTAssertTrue([request.query[@"include"] containsString:@"status"]);
+        XCTAssertTrue([request.query[@"include"] containsString:@"type"]);
         XCTAssertEqualObjects(request.body, expectedPayload);
     });
 
@@ -162,7 +166,9 @@ NS_ASSUME_NONNULL_END
             PNSetUUIDMetadataRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
 
             XCTAssertEqualObjects(request.identifier, expectedId);
-            XCTAssertEqualObjects(request.query[@"include"], @"custom");
+            XCTAssertTrue([request.query[@"include"] containsString:@"custom"]);
+            XCTAssertTrue([request.query[@"include"] containsString:@"status"]);
+            XCTAssertTrue([request.query[@"include"] containsString:@"type"]);
         });
 
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
@@ -276,7 +282,7 @@ NS_ASSUME_NONNULL_END
     PNFetchUUIDMetadataRequest *request = [PNFetchUUIDMetadataRequest requestWithUUID:[NSUUID UUID].UUIDString];
     
     
-    XCTAssertEqual(request.includeFields, PNUUIDCustomField);
+    XCTAssertEqual(request.includeFields, PNUUIDCustomField|PNUUIDStatusField|PNUUIDTypeField);
 }
 
 
@@ -293,7 +299,9 @@ NS_ASSUME_NONNULL_END
             PNFetchUUIDMetadataRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
 
             XCTAssertEqualObjects(request.identifier, expectedId);
-            XCTAssertEqualObjects(request.query[@"include"], @"custom");
+            XCTAssertTrue([request.query[@"include"] containsString:@"custom"]);
+            XCTAssertTrue([request.query[@"include"] containsString:@"status"]);
+            XCTAssertTrue([request.query[@"include"] containsString:@"type"]);
         });
     
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
@@ -332,7 +340,9 @@ NS_ASSUME_NONNULL_END
             PNFetchUUIDMetadataRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
 
             XCTAssertEqualObjects(request.identifier, expectedId);
-            XCTAssertEqualObjects(request.query[@"include"], @"custom");
+            XCTAssertTrue([request.query[@"include"] containsString:@"custom"]);
+            XCTAssertTrue([request.query[@"include"] containsString:@"status"]);
+            XCTAssertTrue([request.query[@"include"] containsString:@"type"]);
         });
 
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
@@ -352,7 +362,7 @@ NS_ASSUME_NONNULL_END
     PNFetchAllUUIDMetadataRequest *request = [PNFetchAllUUIDMetadataRequest new];
     
     
-    XCTAssertEqual(request.includeFields, PNUUIDTotalCountField);
+    XCTAssertEqual(request.includeFields, PNUUIDTotalCountField|PNUUIDStatusField|PNUUIDTypeField);
 }
 
 

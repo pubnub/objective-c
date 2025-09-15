@@ -3,6 +3,8 @@
  * @copyright © 2010-2020 PubNub, Inc.
  */
 #import "PNRecordableTestCase.h"
+#import <PubNub/PNBaseRequest+Private.h>
+#import <PubNub/PubNub+CorePrivate.h>
 #import "NSString+PNTest.h"
 
 
@@ -54,18 +56,18 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldFetchPubNubTimeAndReceiveResultWithExpectedOperation {
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        PNTimeRequest *request = [PNTimeRequest new];
         [self.client setAuthToken:@"secret-token"];
         
-        [self.client timeWithCompletion:^(PNTimeResult *result, PNErrorStatus *status) {
+        [self.client timeWithRequest:request completion:^(PNTimeResult *result, PNErrorStatus *status) {
+            PNTransportRequest *transportRequest = [self.client.serviceNetwork transportRequestFromTransportRequest:request.request];
             XCTAssertNil(status);
             XCTAssertNotNil(result.data.timetoken);
             XCTAssertEqual([@0 compare:result.data.timetoken], NSOrderedAscending);
             XCTAssertEqual(result.operation, PNTimeOperation);
             XCTAssertNotNil(self.client.currentConfiguration.authKey);
             XCTAssertNotNil([self.client.currentConfiguration valueForKey:@"authToken"]);
-            
-            NSURLRequest *request = [result valueForKey:@"clientRequest"];
-            XCTAssertNotEqual([request.URL.query rangeOfString:@"auth=secret-token"].location, NSNotFound);
+            XCTAssertEqualObjects(transportRequest.query[@"auth"], @"secret-token");
             
             handler();
         }];
@@ -86,21 +88,31 @@ NS_ASSUME_NONNULL_END
     __block BOOL retried = NO;
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client timeWithCompletion:^(PNTimeResult *result, PNErrorStatus *status) {
+        PNTimeRequest *request = [PNTimeRequest new];
+        __block __weak PNTimeCompletionBlock weakBlock;
+        __block PNTimeCompletionBlock block;
+        
+        block = ^(PNTimeResult *result, PNErrorStatus *status) {
+            __strong PNTimeCompletionBlock strongBlock = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
+            
             if (!retried) {
                 XCTAssertTrue(status.isError);
                 XCTAssertEqual(status.operation, PNTimeOperation);
                 XCTAssertEqual(status.category, PNMalformedResponseCategory);
                 
                 retried = YES;
-                [status retry];
+                [self.client timeWithRequest:request completion:strongBlock];
             } else {
                 XCTAssertNil(status);
                 XCTAssertNotNil(result.data.timetoken);
                 XCTAssertEqual([@0 compare:result.data.timetoken], NSOrderedAscending);
                 handler();
             }
-        }];
+        };
+        
+        weakBlock = block;
+        [self.client timeWithRequest:request completion:block];
     }];
 }
 

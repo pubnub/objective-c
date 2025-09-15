@@ -1,3 +1,4 @@
+#import "PNRemoveMessageActionRequest+Private.h"
 #import "PubNub+MessageActions.h"
 #import "PubNub+CorePrivate.h"
 #import "PNStatus+Private.h"
@@ -11,9 +12,14 @@
 @implementation PubNub (MessageActions)
 
 
-#pragma mark - Message Actions API builder interdace (deprecated)
+#pragma mark - Message Actions API builder interface (deprecated)
 
 - (PNAddMessageActionAPICallBuilder * (^)(void))addMessageAction {
+    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"Builder-based interface deprecated. Please use corresponding "
+                "request-based interfaces."];
+    }];
+    
     PNAddMessageActionAPICallBuilder *builder = nil;
     
     PNWeakify(self);
@@ -37,6 +43,11 @@
 }
 
 - (PNRemoveMessageActionAPICallBuilder * (^)(void))removeMessageAction {
+    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"Builder-based interface deprecated. Please use corresponding "
+                "request-based interfaces."];
+    }];
+    
     PNRemoveMessageActionAPICallBuilder *builder = nil;
     
     PNWeakify(self);
@@ -61,6 +72,11 @@
 }
 
 - (PNFetchMessagesActionsAPICallBuilder * (^)(void))fetchMessageActions {
+    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"Builder-based interface deprecated. Please use corresponding "
+                "request-based interfaces."];
+    }];
+    
     PNFetchMessagesActionsAPICallBuilder *builder = nil;
     
     PNWeakify(self);
@@ -98,17 +114,21 @@
                 PNOperationDataParseResult<PNAddMessageActionStatus *, PNAddMessageActionStatus *> *result) {
         PNStrongify(self);
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self addMessageActionWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+        if (!result.status.isError) {
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                NSNumber *actionTimetoken = result.status.data.action.actionTimetoken;
+                return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Message action add success. Message action "
+                                                                         "added with timetoken: %@", actionTimetoken)];
+            }];
         }
 
         [self callBlock:block status:YES withResult:nil andStatus:result.status];
     };
+    
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Add message action with parameters:"];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
@@ -125,17 +145,21 @@
                 PNOperationDataParseResult<PNAcknowledgmentStatus *, PNAcknowledgmentStatus *> *result) {
         PNStrongify(self);
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self removeMessageActionWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+        if (!result.status.isError) {
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Message action remove success. Removed "
+                                                                         "message action with %@ timetoken.",
+                                                                         userRequest.messageActionTimetoken)];
+            }];
         }
 
         [self callBlock:block status:YES withResult:nil andStatus:result.status];
     };
+    
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Remove message action with parameters:"];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
@@ -152,17 +176,21 @@
                 PNOperationDataParseResult<PNFetchMessageActionsResult *, PNErrorStatus *> *result) {
         PNStrongify(self);
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self fetchMessageActionsWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+        if (!result.status.isError) {
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                NSUInteger actionsCount = result.result.data.actions.count;
+                return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Fetch message actions success. Received %@ "
+                                                                         "message actions.", @(actionsCount))];
+            }];
         }
 
         [self callBlock:block status:NO withResult:result.result andStatus:result.status];
     };
+    
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Fetch message actions with parameters:"];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }

@@ -159,6 +159,34 @@ NS_ASSUME_NONNULL_END
     return nil;
 }
 
+
+#pragma mark - Misc
+
+- (NSDictionary *)dictionaryRepresentation {
+    NSString *pushType = @"apns";
+    if (self.pushType == PNAPNS2Push) pushType = @"apns2";
+    else if (self.pushType == PNFCMPush) pushType = @"fcm";
+    else if (self.pushType == PNMPNSPush) pushType = @"mpns";
+    
+    NSString *pushToken = @"missing";
+    if (self.pushToken) {
+        if ([self.pushToken isKindOfClass:[NSData class]])
+            pushToken = [PNData HEXFromDevicePushToken:self.pushToken].lowercaseString;
+        else pushToken = self.pushToken;
+    }
+    
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary:@{
+        @"environment": self.environment == PNAPNSDevelopment ? @"development" : @"production",
+        @"pushToken": pushToken,
+        @"pushType": pushType
+    }];
+    
+    if (self.arbitraryQueryParameters) dictionary[@"arbitraryQueryParameters"] = self.arbitraryQueryParameters;
+    if (self.topic) dictionary[@"topic"] = self.topic;
+    
+    return dictionary;
+}
+
 #pragma mark -
 
 

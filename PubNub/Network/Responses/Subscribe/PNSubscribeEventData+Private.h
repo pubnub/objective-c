@@ -23,11 +23,14 @@ NS_ASSUME_NONNULL_BEGIN
 /// Identifier of client which sent message (set only for publish).
 @property(strong, nullable, nonatomic, readonly) NSString *senderIdentifier;
 
-/// Sequence nubmer of published messages (clients keep track of their own value locally).
+/// Sequence number of published messages (clients keep track of their own value locally).
 @property(strong, nullable, nonatomic, readonly) NSNumber *sequenceNumber;
 
 /// Shard number on which the event has been stored.
 @property(strong, nonatomic, readonly) NSString *shardIdentifier;
+
+/// Unique payload message finerprint.
+@property(strong, nullable, nonatomic) NSString *pnFingerprint;
 
 /// PubNub defined event type.
 @property(strong, nullable, nonatomic) NSNumber *messageType;
@@ -37,6 +40,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Stores reference on **PubNub** server region identifier (which generated `timetoken` value).
 @property (nonatomic, readonly) NSNumber *region;
+
+
+#pragma mark - Misc
+
+/// Serialize subscribe event data object.
+///
+/// - Returns: Subscribe event object data represented as `NSDictionary`.
+- (NSDictionary *)dictionaryRepresentation;
 
 #pragma mark -
 

@@ -29,6 +29,14 @@ NS_ASSUME_NONNULL_BEGIN
 /// - Returns: There is a digest that will be used with cryptographic functions.
 - (NSData *)digestForKey:(NSString *)key;
 
+
+#pragma mark - Misc
+
+/// Serialize cryptor object.
+///
+/// - Returns: Cryptor represented as `NSDictionary`.
+- (NSDictionary *)dictionaryRepresentation;
+
 #pragma mark -
 
 

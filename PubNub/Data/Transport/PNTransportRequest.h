@@ -119,6 +119,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// > Note: By default set to `YES`.
 @property(assign, nonatomic, readonly) BOOL secure;
 
+/// Whether request failed or not.
+///
+/// > Note: By default set to `NO`.
+@property(assign, nonatomic, readonly) BOOL failed;
+
 #pragma mark -
 
 

@@ -157,7 +157,6 @@
 		791582811BD709C60084FC70 /* PNReachability.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0F21BD03DE4001FC34D /* PNReachability.h */; };
 		791582831BD709C60084FC70 /* PNURLRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0BD1BD03DE4001FC34D /* PNURLRequest.h */; };
 		791582841BD709C60084FC70 /* PNStatus+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0A01BD03DE4001FC34D /* PNStatus+Private.h */; };
-		791582851BD709C60084FC70 /* PNLogMacro.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0C61BD03DE4001FC34D /* PNLogMacro.h */; };
 		791582871BD709C60084FC70 /* PNServiceData+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB09D1BD03DE4001FC34D /* PNServiceData+Private.h */; };
 		791582891BD709C60084FC70 /* PNClientState.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB06D1BD03DE4001FC34D /* PNClientState.h */; };
 		7915828B1BD709C60084FC70 /* PNString.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0BB1BD03DE4001FC34D /* PNString.h */; };
@@ -259,7 +258,6 @@
 		7915832A1BD709D10084FC70 /* PNReachability.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0F21BD03DE4001FC34D /* PNReachability.h */; };
 		7915832C1BD709D10084FC70 /* PNURLRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0BD1BD03DE4001FC34D /* PNURLRequest.h */; };
 		7915832D1BD709D10084FC70 /* PNStatus+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0A01BD03DE4001FC34D /* PNStatus+Private.h */; };
-		7915832E1BD709D10084FC70 /* PNLogMacro.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0C61BD03DE4001FC34D /* PNLogMacro.h */; };
 		791583301BD709D10084FC70 /* PNServiceData+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB09D1BD03DE4001FC34D /* PNServiceData+Private.h */; };
 		791583321BD709D10084FC70 /* PNClientState.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB06D1BD03DE4001FC34D /* PNClientState.h */; };
 		791583341BD709D10084FC70 /* PNString.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0BB1BD03DE4001FC34D /* PNString.h */; };
@@ -276,26 +274,6 @@
 		791583481BD709D10084FC70 /* PubNub+CorePrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB05C1BD03DE4001FC34D /* PubNub+CorePrivate.h */; };
 		7915834A1BD709D10084FC70 /* PubNub+SubscribePrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0681BD03DE4001FC34D /* PubNub+SubscribePrivate.h */; };
 		7915834F1BD709D10084FC70 /* PNErrorStatus+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB08B1BD03DE4001FC34D /* PNErrorStatus+Private.h */; };
-		7925DB871D3FFCAC00857C0D /* PNLLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 7925DB821D3FFCAC00857C0D /* PNLLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7925DB881D3FFCAC00857C0D /* PNLLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 7925DB821D3FFCAC00857C0D /* PNLLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7925DB891D3FFCAC00857C0D /* PNLLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 7925DB821D3FFCAC00857C0D /* PNLLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7925DB8A1D3FFCAC00857C0D /* PNLLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 7925DB821D3FFCAC00857C0D /* PNLLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7925DB8C1D3FFCAC00857C0D /* PNLLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 7925DB821D3FFCAC00857C0D /* PNLLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7925DB8E1D3FFCAC00857C0D /* PNLLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 7925DB831D3FFCAC00857C0D /* PNLLogger.m */; };
-		7925DB8F1D3FFCAC00857C0D /* PNLLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 7925DB831D3FFCAC00857C0D /* PNLLogger.m */; };
-		7925DB901D3FFCAC00857C0D /* PNLLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 7925DB831D3FFCAC00857C0D /* PNLLogger.m */; };
-		7925DB911D3FFCAC00857C0D /* PNLLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 7925DB831D3FFCAC00857C0D /* PNLLogger.m */; };
-		7925DB931D3FFCAC00857C0D /* PNLLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 7925DB831D3FFCAC00857C0D /* PNLLogger.m */; };
-		7925DB951D3FFCAC00857C0D /* PNLLogFileInformation.h in Headers */ = {isa = PBXBuildFile; fileRef = 7925DB851D3FFCAC00857C0D /* PNLLogFileInformation.h */; };
-		7925DB961D3FFCAC00857C0D /* PNLLogFileInformation.h in Headers */ = {isa = PBXBuildFile; fileRef = 7925DB851D3FFCAC00857C0D /* PNLLogFileInformation.h */; };
-		7925DB971D3FFCAC00857C0D /* PNLLogFileInformation.h in Headers */ = {isa = PBXBuildFile; fileRef = 7925DB851D3FFCAC00857C0D /* PNLLogFileInformation.h */; };
-		7925DB981D3FFCAC00857C0D /* PNLLogFileInformation.h in Headers */ = {isa = PBXBuildFile; fileRef = 7925DB851D3FFCAC00857C0D /* PNLLogFileInformation.h */; };
-		7925DB9A1D3FFCAC00857C0D /* PNLLogFileInformation.h in Headers */ = {isa = PBXBuildFile; fileRef = 7925DB851D3FFCAC00857C0D /* PNLLogFileInformation.h */; };
-		7925DB9C1D3FFCAC00857C0D /* PNLLogFileInformation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7925DB861D3FFCAC00857C0D /* PNLLogFileInformation.m */; };
-		7925DB9D1D3FFCAC00857C0D /* PNLLogFileInformation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7925DB861D3FFCAC00857C0D /* PNLLogFileInformation.m */; };
-		7925DB9E1D3FFCAC00857C0D /* PNLLogFileInformation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7925DB861D3FFCAC00857C0D /* PNLLogFileInformation.m */; };
-		7925DB9F1D3FFCAC00857C0D /* PNLLogFileInformation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7925DB861D3FFCAC00857C0D /* PNLLogFileInformation.m */; };
-		7925DBA11D3FFCAC00857C0D /* PNLLogFileInformation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7925DB861D3FFCAC00857C0D /* PNLLogFileInformation.m */; };
 		7932485E1D874D9F00FBDF36 /* PNPublishSequence.h in Headers */ = {isa = PBXBuildFile; fileRef = 7932485C1D874D9F00FBDF36 /* PNPublishSequence.h */; };
 		7932485F1D874D9F00FBDF36 /* PNPublishSequence.h in Headers */ = {isa = PBXBuildFile; fileRef = 7932485C1D874D9F00FBDF36 /* PNPublishSequence.h */; };
 		793248601D874D9F00FBDF36 /* PNPublishSequence.h in Headers */ = {isa = PBXBuildFile; fileRef = 7932485C1D874D9F00FBDF36 /* PNPublishSequence.h */; };
@@ -490,7 +468,6 @@
 		798842911C18F292003E8948 /* PNJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0BA1BD03DE4001FC34D /* PNJSON.m */; };
 		798842921C18F292003E8948 /* PNString.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0BC1BD03DE4001FC34D /* PNString.m */; };
 		798842931C18F292003E8948 /* PNURLRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0BE1BD03DE4001FC34D /* PNURLRequest.m */; };
-		7988429A1C18F2AD003E8948 /* PNLogMacro.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0C61BD03DE4001FC34D /* PNLogMacro.h */; };
 		7988429D1C18F2BD003E8948 /* PNReachability.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0F21BD03DE4001FC34D /* PNReachability.h */; };
 		798842A21C18F2C2003E8948 /* PNReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0F31BD03DE4001FC34D /* PNReachability.m */; };
 		798842EC1C18FC54003E8948 /* PubNub-iOS-Info.plist in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7915839D1BD7119E0084FC70 /* PubNub-iOS-Info.plist */; };
@@ -880,7 +857,6 @@
 		79A8BC981C58F93900015BDE /* PNReachability.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0F21BD03DE4001FC34D /* PNReachability.h */; };
 		79A8BC9A1C58F93900015BDE /* PNURLRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0BD1BD03DE4001FC34D /* PNURLRequest.h */; };
 		79A8BC9B1C58F93900015BDE /* PNStatus+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0A01BD03DE4001FC34D /* PNStatus+Private.h */; };
-		79A8BC9C1C58F93900015BDE /* PNLogMacro.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0C61BD03DE4001FC34D /* PNLogMacro.h */; };
 		79A8BC9E1C58F93900015BDE /* PNServiceData+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB09D1BD03DE4001FC34D /* PNServiceData+Private.h */; };
 		79A8BCA01C58F93900015BDE /* PNClientState.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB06D1BD03DE4001FC34D /* PNClientState.h */; };
 		79A8BCA21C58F93900015BDE /* PNString.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0BB1BD03DE4001FC34D /* PNString.h */; };
@@ -994,7 +970,6 @@
 		79CBB1581BD03DE4001FC34D /* PNString.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0BC1BD03DE4001FC34D /* PNString.m */; };
 		79CBB1591BD03DE4001FC34D /* PNURLRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0BD1BD03DE4001FC34D /* PNURLRequest.h */; };
 		79CBB15A1BD03DE4001FC34D /* PNURLRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 79CBB0BE1BD03DE4001FC34D /* PNURLRequest.m */; };
-		79CBB1611BD03DE4001FC34D /* PNLogMacro.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0C61BD03DE4001FC34D /* PNLogMacro.h */; };
 		79CBB1621BD03DE4001FC34D /* PNConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0C71BD03DE4001FC34D /* PNConstants.h */; };
 		79CBB1641BD03DE4001FC34D /* PNPrivateStructures.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0C91BD03DE4001FC34D /* PNPrivateStructures.h */; };
 		79CBB1651BD03DE4001FC34D /* PNStructures.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0CA1BD03DE4001FC34D /* PNStructures.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1038,16 +1013,6 @@
 		79DA780B24BFC1CF00AC72F2 /* PNDownloadFileRequest+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79DA780824BFC1CF00AC72F2 /* PNDownloadFileRequest+Private.h */; };
 		79DA780C24BFC1CF00AC72F2 /* PNDownloadFileRequest+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79DA780824BFC1CF00AC72F2 /* PNDownloadFileRequest+Private.h */; };
 		79DA780D24BFC1CF00AC72F2 /* PNDownloadFileRequest+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 79DA780824BFC1CF00AC72F2 /* PNDownloadFileRequest+Private.h */; };
-		79E20D151C8AEC3A001BC9CC /* PNEnvelopeInformation.h in Headers */ = {isa = PBXBuildFile; fileRef = 79E20D131C8AEC3A001BC9CC /* PNEnvelopeInformation.h */; };
-		79E20D161C8AEC3A001BC9CC /* PNEnvelopeInformation.m in Sources */ = {isa = PBXBuildFile; fileRef = 79E20D141C8AEC3A001BC9CC /* PNEnvelopeInformation.m */; };
-		79E20D171C8AEC43001BC9CC /* PNEnvelopeInformation.h in Headers */ = {isa = PBXBuildFile; fileRef = 79E20D131C8AEC3A001BC9CC /* PNEnvelopeInformation.h */; };
-		79E20D181C8AEC43001BC9CC /* PNEnvelopeInformation.h in Headers */ = {isa = PBXBuildFile; fileRef = 79E20D131C8AEC3A001BC9CC /* PNEnvelopeInformation.h */; };
-		79E20D191C8AEC44001BC9CC /* PNEnvelopeInformation.h in Headers */ = {isa = PBXBuildFile; fileRef = 79E20D131C8AEC3A001BC9CC /* PNEnvelopeInformation.h */; };
-		79E20D1B1C8AEC4C001BC9CC /* PNEnvelopeInformation.h in Headers */ = {isa = PBXBuildFile; fileRef = 79E20D131C8AEC3A001BC9CC /* PNEnvelopeInformation.h */; };
-		79E20D1D1C8AEC51001BC9CC /* PNEnvelopeInformation.m in Sources */ = {isa = PBXBuildFile; fileRef = 79E20D141C8AEC3A001BC9CC /* PNEnvelopeInformation.m */; };
-		79E20D1E1C8AEC51001BC9CC /* PNEnvelopeInformation.m in Sources */ = {isa = PBXBuildFile; fileRef = 79E20D141C8AEC3A001BC9CC /* PNEnvelopeInformation.m */; };
-		79E20D1F1C8AEC52001BC9CC /* PNEnvelopeInformation.m in Sources */ = {isa = PBXBuildFile; fileRef = 79E20D141C8AEC3A001BC9CC /* PNEnvelopeInformation.m */; };
-		79E20D211C8AEC53001BC9CC /* PNEnvelopeInformation.m in Sources */ = {isa = PBXBuildFile; fileRef = 79E20D141C8AEC3A001BC9CC /* PNEnvelopeInformation.m */; };
 		79E20D2B1C8B0A70001BC9CC /* PNPresenceChannelGroupHereNowResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 79CBB0901BD03DE4001FC34D /* PNPresenceChannelGroupHereNowResult.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		79F857FA219640A200BFD0B1 /* PNClientStateGetResult.m in Sources */ = {isa = PBXBuildFile; fileRef = DD71B20066E72A597492173C /* PNClientStateGetResult.m */; };
 		79F857FB219640A200BFD0B1 /* PNClientStateGetResult.m in Sources */ = {isa = PBXBuildFile; fileRef = DD71B20066E72A597492173C /* PNClientStateGetResult.m */; };
@@ -1462,6 +1427,66 @@
 		A504E1DF24B04751006DCF5B /* PNFilesManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A504E1D724B04751006DCF5B /* PNFilesManager.m */; };
 		A504E1E024B04751006DCF5B /* PNFilesManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A504E1D724B04751006DCF5B /* PNFilesManager.m */; };
 		A504E1E124B04751006DCF5B /* PNFilesManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A504E1D724B04751006DCF5B /* PNFilesManager.m */; };
+		A510342E2E527E5D005486BC /* PNLogEntry+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A510342D2E527E5D005486BC /* PNLogEntry+Private.h */; };
+		A510342F2E527E5D005486BC /* PNLogEntry+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A510342D2E527E5D005486BC /* PNLogEntry+Private.h */; };
+		A51034302E527E5D005486BC /* PNLogEntry+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A510342D2E527E5D005486BC /* PNLogEntry+Private.h */; };
+		A51034312E527E5D005486BC /* PNLogEntry+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A510342D2E527E5D005486BC /* PNLogEntry+Private.h */; };
+		A51034322E527E5D005486BC /* PNLogEntry+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A510342D2E527E5D005486BC /* PNLogEntry+Private.h */; };
+		A51034352E52832A005486BC /* PNStringLogEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = A51034332E52832A005486BC /* PNStringLogEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A51034362E52832A005486BC /* PNStringLogEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = A51034342E52832A005486BC /* PNStringLogEntry.m */; };
+		A51034372E52832A005486BC /* PNStringLogEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = A51034332E52832A005486BC /* PNStringLogEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A51034382E52832A005486BC /* PNStringLogEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = A51034342E52832A005486BC /* PNStringLogEntry.m */; };
+		A51034392E52832A005486BC /* PNStringLogEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = A51034332E52832A005486BC /* PNStringLogEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A510343A2E52832A005486BC /* PNStringLogEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = A51034342E52832A005486BC /* PNStringLogEntry.m */; };
+		A510343B2E52832A005486BC /* PNStringLogEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = A51034342E52832A005486BC /* PNStringLogEntry.m */; };
+		A510343C2E52832A005486BC /* PNStringLogEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = A51034332E52832A005486BC /* PNStringLogEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A510343D2E52832A005486BC /* PNStringLogEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = A51034342E52832A005486BC /* PNStringLogEntry.m */; };
+		A510343E2E52832A005486BC /* PNStringLogEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = A51034332E52832A005486BC /* PNStringLogEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A51034412E528803005486BC /* PNDictionaryLogEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = A51034402E528803005486BC /* PNDictionaryLogEntry.m */; };
+		A51034422E528803005486BC /* PNDictionaryLogEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = A510343F2E528803005486BC /* PNDictionaryLogEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A51034432E528803005486BC /* PNDictionaryLogEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = A51034402E528803005486BC /* PNDictionaryLogEntry.m */; };
+		A51034442E528803005486BC /* PNDictionaryLogEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = A510343F2E528803005486BC /* PNDictionaryLogEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A51034452E528803005486BC /* PNDictionaryLogEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = A510343F2E528803005486BC /* PNDictionaryLogEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A51034462E528803005486BC /* PNDictionaryLogEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = A51034402E528803005486BC /* PNDictionaryLogEntry.m */; };
+		A51034472E528803005486BC /* PNDictionaryLogEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = A510343F2E528803005486BC /* PNDictionaryLogEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A51034482E528803005486BC /* PNDictionaryLogEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = A51034402E528803005486BC /* PNDictionaryLogEntry.m */; };
+		A51034492E528803005486BC /* PNDictionaryLogEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = A510343F2E528803005486BC /* PNDictionaryLogEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A510344A2E528803005486BC /* PNDictionaryLogEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = A51034402E528803005486BC /* PNDictionaryLogEntry.m */; };
+		A51034592E528C7B005486BC /* PNErrorLogEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = A51034582E528C7B005486BC /* PNErrorLogEntry.m */; };
+		A510345A2E528C7B005486BC /* PNErrorLogEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = A51034572E528C7B005486BC /* PNErrorLogEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A510345B2E528C7B005486BC /* PNErrorLogEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = A51034572E528C7B005486BC /* PNErrorLogEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A510345C2E528C7B005486BC /* PNErrorLogEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = A51034582E528C7B005486BC /* PNErrorLogEntry.m */; };
+		A510345D2E528C7B005486BC /* PNErrorLogEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = A51034572E528C7B005486BC /* PNErrorLogEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A510345E2E528C7B005486BC /* PNErrorLogEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = A51034582E528C7B005486BC /* PNErrorLogEntry.m */; };
+		A510345F2E528C7B005486BC /* PNErrorLogEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = A51034572E528C7B005486BC /* PNErrorLogEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A51034602E528C7B005486BC /* PNErrorLogEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = A51034582E528C7B005486BC /* PNErrorLogEntry.m */; };
+		A51034612E528C7B005486BC /* PNErrorLogEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = A51034582E528C7B005486BC /* PNErrorLogEntry.m */; };
+		A51034622E528C7B005486BC /* PNErrorLogEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = A51034572E528C7B005486BC /* PNErrorLogEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A510346B2E528DBB005486BC /* PNNetworkRequestLogEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = A51034692E528DBB005486BC /* PNNetworkRequestLogEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A510346C2E528DBB005486BC /* PNNetworkRequestLogEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = A510346A2E528DBB005486BC /* PNNetworkRequestLogEntry.m */; };
+		A510346D2E528DBB005486BC /* PNNetworkRequestLogEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = A51034692E528DBB005486BC /* PNNetworkRequestLogEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A510346E2E528DBB005486BC /* PNNetworkRequestLogEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = A510346A2E528DBB005486BC /* PNNetworkRequestLogEntry.m */; };
+		A510346F2E528DBB005486BC /* PNNetworkRequestLogEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = A510346A2E528DBB005486BC /* PNNetworkRequestLogEntry.m */; };
+		A51034702E528DBB005486BC /* PNNetworkRequestLogEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = A51034692E528DBB005486BC /* PNNetworkRequestLogEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A51034712E528DBB005486BC /* PNNetworkRequestLogEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = A51034692E528DBB005486BC /* PNNetworkRequestLogEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A51034722E528DBB005486BC /* PNNetworkRequestLogEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = A510346A2E528DBB005486BC /* PNNetworkRequestLogEntry.m */; };
+		A51034732E528DBB005486BC /* PNNetworkRequestLogEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = A510346A2E528DBB005486BC /* PNNetworkRequestLogEntry.m */; };
+		A51034742E528DBB005486BC /* PNNetworkRequestLogEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = A51034692E528DBB005486BC /* PNNetworkRequestLogEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A51034762E528E36005486BC /* PNNetworkRequestLogEntry+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A51034752E528E36005486BC /* PNNetworkRequestLogEntry+Private.h */; };
+		A51034772E528E36005486BC /* PNNetworkRequestLogEntry+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A51034752E528E36005486BC /* PNNetworkRequestLogEntry+Private.h */; };
+		A51034782E528E36005486BC /* PNNetworkRequestLogEntry+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A51034752E528E36005486BC /* PNNetworkRequestLogEntry+Private.h */; };
+		A51034792E528E36005486BC /* PNNetworkRequestLogEntry+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A51034752E528E36005486BC /* PNNetworkRequestLogEntry+Private.h */; };
+		A510347A2E528E36005486BC /* PNNetworkRequestLogEntry+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A51034752E528E36005486BC /* PNNetworkRequestLogEntry+Private.h */; };
+		A510347D2E5290FC005486BC /* PNNetworkResponseLogEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = A510347C2E5290FC005486BC /* PNNetworkResponseLogEntry.m */; };
+		A510347E2E5290FC005486BC /* PNNetworkResponseLogEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = A510347B2E5290FC005486BC /* PNNetworkResponseLogEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A510347F2E5290FC005486BC /* PNNetworkResponseLogEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = A510347B2E5290FC005486BC /* PNNetworkResponseLogEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A51034802E5290FC005486BC /* PNNetworkResponseLogEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = A510347C2E5290FC005486BC /* PNNetworkResponseLogEntry.m */; };
+		A51034812E5290FC005486BC /* PNNetworkResponseLogEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = A510347B2E5290FC005486BC /* PNNetworkResponseLogEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A51034822E5290FC005486BC /* PNNetworkResponseLogEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = A510347C2E5290FC005486BC /* PNNetworkResponseLogEntry.m */; };
+		A51034832E5290FC005486BC /* PNNetworkResponseLogEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = A510347C2E5290FC005486BC /* PNNetworkResponseLogEntry.m */; };
+		A51034842E5290FC005486BC /* PNNetworkResponseLogEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = A510347B2E5290FC005486BC /* PNNetworkResponseLogEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A51034852E5290FC005486BC /* PNNetworkResponseLogEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = A510347B2E5290FC005486BC /* PNNetworkResponseLogEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A51034862E5290FC005486BC /* PNNetworkResponseLogEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = A510347C2E5290FC005486BC /* PNNetworkResponseLogEntry.m */; };
 		A5105B50238F027D00CB693D /* PNDate.h in Headers */ = {isa = PBXBuildFile; fileRef = A5105B4E238F027D00CB693D /* PNDate.h */; };
 		A5105B51238F027D00CB693D /* PNDate.h in Headers */ = {isa = PBXBuildFile; fileRef = A5105B4E238F027D00CB693D /* PNDate.h */; };
 		A5105B52238F027D00CB693D /* PNDate.h in Headers */ = {isa = PBXBuildFile; fileRef = A5105B4E238F027D00CB693D /* PNDate.h */; };
@@ -1757,16 +1782,6 @@
 		A5567E652C1F8C53003C974F /* PNOperationDataParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A5567E5D2C1F8C53003C974F /* PNOperationDataParser.m */; };
 		A5567E662C1F8C53003C974F /* PNOperationDataParser.h in Headers */ = {isa = PBXBuildFile; fileRef = A5567E5C2C1F8C53003C974F /* PNOperationDataParser.h */; };
 		A5567E672C1F8C53003C974F /* PNOperationDataParser.m in Sources */ = {isa = PBXBuildFile; fileRef = A5567E5D2C1F8C53003C974F /* PNOperationDataParser.m */; };
-		A5567E6A2C1FBE44003C974F /* PubNub+Deprecated.m in Sources */ = {isa = PBXBuildFile; fileRef = A5567E692C1FBE44003C974F /* PubNub+Deprecated.m */; };
-		A5567E6B2C1FBE44003C974F /* PubNub+Deprecated.h in Headers */ = {isa = PBXBuildFile; fileRef = A5567E682C1FBE44003C974F /* PubNub+Deprecated.h */; };
-		A5567E6C2C1FBE44003C974F /* PubNub+Deprecated.m in Sources */ = {isa = PBXBuildFile; fileRef = A5567E692C1FBE44003C974F /* PubNub+Deprecated.m */; };
-		A5567E6D2C1FBE44003C974F /* PubNub+Deprecated.h in Headers */ = {isa = PBXBuildFile; fileRef = A5567E682C1FBE44003C974F /* PubNub+Deprecated.h */; };
-		A5567E6E2C1FBE44003C974F /* PubNub+Deprecated.h in Headers */ = {isa = PBXBuildFile; fileRef = A5567E682C1FBE44003C974F /* PubNub+Deprecated.h */; };
-		A5567E6F2C1FBE44003C974F /* PubNub+Deprecated.m in Sources */ = {isa = PBXBuildFile; fileRef = A5567E692C1FBE44003C974F /* PubNub+Deprecated.m */; };
-		A5567E702C1FBE44003C974F /* PubNub+Deprecated.h in Headers */ = {isa = PBXBuildFile; fileRef = A5567E682C1FBE44003C974F /* PubNub+Deprecated.h */; };
-		A5567E712C1FBE44003C974F /* PubNub+Deprecated.m in Sources */ = {isa = PBXBuildFile; fileRef = A5567E692C1FBE44003C974F /* PubNub+Deprecated.m */; };
-		A5567E722C1FBE44003C974F /* PubNub+Deprecated.h in Headers */ = {isa = PBXBuildFile; fileRef = A5567E682C1FBE44003C974F /* PubNub+Deprecated.h */; };
-		A5567E732C1FBE44003C974F /* PubNub+Deprecated.m in Sources */ = {isa = PBXBuildFile; fileRef = A5567E692C1FBE44003C974F /* PubNub+Deprecated.m */; };
 		A5567E772C1FCADC003C974F /* PNPushNotificationFetchData.m in Sources */ = {isa = PBXBuildFile; fileRef = A5567E762C1FCADC003C974F /* PNPushNotificationFetchData.m */; };
 		A5567E782C1FCADC003C974F /* PNPushNotificationFetchData.h in Headers */ = {isa = PBXBuildFile; fileRef = A5567E752C1FCADC003C974F /* PNPushNotificationFetchData.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A5567E792C1FCADC003C974F /* PNPushNotificationFetchData.m in Sources */ = {isa = PBXBuildFile; fileRef = A5567E762C1FCADC003C974F /* PNPushNotificationFetchData.m */; };
@@ -2692,6 +2707,16 @@
 		A57A30F3238DDCA300DE8C68 /* PNAPNSNotificationPayload+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A57A30F0238DDCA200DE8C68 /* PNAPNSNotificationPayload+Private.h */; };
 		A57A30F4238DDCA300DE8C68 /* PNAPNSNotificationPayload+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A57A30F0238DDCA200DE8C68 /* PNAPNSNotificationPayload+Private.h */; };
 		A57A30F6238DDCA300DE8C68 /* PNAPNSNotificationPayload+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A57A30F0238DDCA200DE8C68 /* PNAPNSNotificationPayload+Private.h */; };
+		A58146EE2E524AA600887E5F /* PNLoggerManager.h in Headers */ = {isa = PBXBuildFile; fileRef = A58146EC2E524AA600887E5F /* PNLoggerManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A58146EF2E524AA600887E5F /* PNLoggerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A58146ED2E524AA600887E5F /* PNLoggerManager.m */; };
+		A58146F02E524AA600887E5F /* PNLoggerManager.h in Headers */ = {isa = PBXBuildFile; fileRef = A58146EC2E524AA600887E5F /* PNLoggerManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A58146F12E524AA600887E5F /* PNLoggerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A58146ED2E524AA600887E5F /* PNLoggerManager.m */; };
+		A58146F22E524AA600887E5F /* PNLoggerManager.h in Headers */ = {isa = PBXBuildFile; fileRef = A58146EC2E524AA600887E5F /* PNLoggerManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A58146F32E524AA600887E5F /* PNLoggerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A58146ED2E524AA600887E5F /* PNLoggerManager.m */; };
+		A58146F42E524AA600887E5F /* PNLoggerManager.h in Headers */ = {isa = PBXBuildFile; fileRef = A58146EC2E524AA600887E5F /* PNLoggerManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A58146F52E524AA600887E5F /* PNLoggerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A58146ED2E524AA600887E5F /* PNLoggerManager.m */; };
+		A58146F62E524AA600887E5F /* PNLoggerManager.h in Headers */ = {isa = PBXBuildFile; fileRef = A58146EC2E524AA600887E5F /* PNLoggerManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A58146F72E524AA600887E5F /* PNLoggerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A58146ED2E524AA600887E5F /* PNLoggerManager.m */; };
 		A586A9E52337E581008856D2 /* PNFetchMessageActionsResult.m in Sources */ = {isa = PBXBuildFile; fileRef = A586A9E32337E581008856D2 /* PNFetchMessageActionsResult.m */; };
 		A586A9E62337E581008856D2 /* PNFetchMessageActionsResult.m in Sources */ = {isa = PBXBuildFile; fileRef = A586A9E32337E581008856D2 /* PNFetchMessageActionsResult.m */; };
 		A586A9E72337E581008856D2 /* PNFetchMessageActionsResult.m in Sources */ = {isa = PBXBuildFile; fileRef = A586A9E32337E581008856D2 /* PNFetchMessageActionsResult.m */; };
@@ -2822,6 +2847,51 @@
 		A5A7B0332349330F0060113B /* PNBaseMessageActionRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = A5A7AFF82349330F0060113B /* PNBaseMessageActionRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A5A7B0342349330F0060113B /* PNBaseMessageActionRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = A5A7AFF82349330F0060113B /* PNBaseMessageActionRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A5A7B0362349330F0060113B /* PNBaseMessageActionRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = A5A7AFF82349330F0060113B /* PNBaseMessageActionRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A5AA75CF2E662B8E00944A22 /* PNLoggerManager+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A5AA75CE2E662B8E00944A22 /* PNLoggerManager+Private.h */; };
+		A5AA75D02E662B8E00944A22 /* PNLoggerManager+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A5AA75CE2E662B8E00944A22 /* PNLoggerManager+Private.h */; };
+		A5AA75D12E662B8E00944A22 /* PNLoggerManager+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A5AA75CE2E662B8E00944A22 /* PNLoggerManager+Private.h */; };
+		A5AA75D22E662B8E00944A22 /* PNLoggerManager+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A5AA75CE2E662B8E00944A22 /* PNLoggerManager+Private.h */; };
+		A5AA75D32E662B8E00944A22 /* PNLoggerManager+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A5AA75CE2E662B8E00944A22 /* PNLoggerManager+Private.h */; };
+		A5AA75D52E662D1900944A22 /* PNNetworkResponseLogEntry+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A5AA75D42E662D1900944A22 /* PNNetworkResponseLogEntry+Private.h */; };
+		A5AA75D62E662D1900944A22 /* PNNetworkResponseLogEntry+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A5AA75D42E662D1900944A22 /* PNNetworkResponseLogEntry+Private.h */; };
+		A5AA75D72E662D1900944A22 /* PNNetworkResponseLogEntry+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A5AA75D42E662D1900944A22 /* PNNetworkResponseLogEntry+Private.h */; };
+		A5AA75D82E662D1900944A22 /* PNNetworkResponseLogEntry+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A5AA75D42E662D1900944A22 /* PNNetworkResponseLogEntry+Private.h */; };
+		A5AA75D92E662D1900944A22 /* PNNetworkResponseLogEntry+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A5AA75D42E662D1900944A22 /* PNNetworkResponseLogEntry+Private.h */; };
+		A5AA75DB2E672B3600944A22 /* PNPublishFileMessageRequest+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A5AA75DA2E672B3600944A22 /* PNPublishFileMessageRequest+Private.h */; };
+		A5AA75DC2E672B3600944A22 /* PNPublishFileMessageRequest+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A5AA75DA2E672B3600944A22 /* PNPublishFileMessageRequest+Private.h */; };
+		A5AA75DD2E672B3600944A22 /* PNPublishFileMessageRequest+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A5AA75DA2E672B3600944A22 /* PNPublishFileMessageRequest+Private.h */; };
+		A5AA75DE2E672B3600944A22 /* PNPublishFileMessageRequest+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A5AA75DA2E672B3600944A22 /* PNPublishFileMessageRequest+Private.h */; };
+		A5AA75DF2E672B3600944A22 /* PNPublishFileMessageRequest+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A5AA75DA2E672B3600944A22 /* PNPublishFileMessageRequest+Private.h */; };
+		A5ACCAA42E560730003D828D /* PNFileLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = A5ACCA9F2E560730003D828D /* PNFileLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A5ACCAA52E560730003D828D /* PNConsoleLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = A5ACCA9C2E560730003D828D /* PNConsoleLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A5ACCAA62E560730003D828D /* PNFileLoggerFileInformation.h in Headers */ = {isa = PBXBuildFile; fileRef = A5ACCAA12E560730003D828D /* PNFileLoggerFileInformation.h */; };
+		A5ACCAA72E560730003D828D /* PNFileLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = A5ACCAA02E560730003D828D /* PNFileLogger.m */; };
+		A5ACCAA82E560730003D828D /* PNConsoleLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = A5ACCA9D2E560730003D828D /* PNConsoleLogger.m */; };
+		A5ACCAA92E560730003D828D /* PNFileLoggerFileInformation.m in Sources */ = {isa = PBXBuildFile; fileRef = A5ACCAA22E560730003D828D /* PNFileLoggerFileInformation.m */; };
+		A5ACCAAA2E560730003D828D /* PNFileLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = A5ACCA9F2E560730003D828D /* PNFileLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A5ACCAAB2E560730003D828D /* PNConsoleLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = A5ACCA9C2E560730003D828D /* PNConsoleLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A5ACCAAC2E560730003D828D /* PNFileLoggerFileInformation.h in Headers */ = {isa = PBXBuildFile; fileRef = A5ACCAA12E560730003D828D /* PNFileLoggerFileInformation.h */; };
+		A5ACCAAD2E560730003D828D /* PNFileLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = A5ACCAA02E560730003D828D /* PNFileLogger.m */; };
+		A5ACCAAE2E560730003D828D /* PNConsoleLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = A5ACCA9D2E560730003D828D /* PNConsoleLogger.m */; };
+		A5ACCAAF2E560730003D828D /* PNFileLoggerFileInformation.m in Sources */ = {isa = PBXBuildFile; fileRef = A5ACCAA22E560730003D828D /* PNFileLoggerFileInformation.m */; };
+		A5ACCAB02E560730003D828D /* PNFileLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = A5ACCAA02E560730003D828D /* PNFileLogger.m */; };
+		A5ACCAB12E560730003D828D /* PNConsoleLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = A5ACCA9D2E560730003D828D /* PNConsoleLogger.m */; };
+		A5ACCAB22E560730003D828D /* PNFileLoggerFileInformation.m in Sources */ = {isa = PBXBuildFile; fileRef = A5ACCAA22E560730003D828D /* PNFileLoggerFileInformation.m */; };
+		A5ACCAB32E560730003D828D /* PNFileLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = A5ACCA9F2E560730003D828D /* PNFileLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A5ACCAB42E560730003D828D /* PNConsoleLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = A5ACCA9C2E560730003D828D /* PNConsoleLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A5ACCAB52E560730003D828D /* PNFileLoggerFileInformation.h in Headers */ = {isa = PBXBuildFile; fileRef = A5ACCAA12E560730003D828D /* PNFileLoggerFileInformation.h */; };
+		A5ACCAB62E560730003D828D /* PNFileLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = A5ACCAA02E560730003D828D /* PNFileLogger.m */; };
+		A5ACCAB72E560730003D828D /* PNConsoleLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = A5ACCA9D2E560730003D828D /* PNConsoleLogger.m */; };
+		A5ACCAB82E560730003D828D /* PNFileLoggerFileInformation.m in Sources */ = {isa = PBXBuildFile; fileRef = A5ACCAA22E560730003D828D /* PNFileLoggerFileInformation.m */; };
+		A5ACCAB92E560730003D828D /* PNFileLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = A5ACCA9F2E560730003D828D /* PNFileLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A5ACCABA2E560730003D828D /* PNConsoleLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = A5ACCA9C2E560730003D828D /* PNConsoleLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A5ACCABB2E560730003D828D /* PNFileLoggerFileInformation.h in Headers */ = {isa = PBXBuildFile; fileRef = A5ACCAA12E560730003D828D /* PNFileLoggerFileInformation.h */; };
+		A5ACCABC2E560730003D828D /* PNFileLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = A5ACCA9F2E560730003D828D /* PNFileLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A5ACCABD2E560730003D828D /* PNConsoleLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = A5ACCA9C2E560730003D828D /* PNConsoleLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A5ACCABE2E560730003D828D /* PNFileLoggerFileInformation.h in Headers */ = {isa = PBXBuildFile; fileRef = A5ACCAA12E560730003D828D /* PNFileLoggerFileInformation.h */; };
+		A5ACCABF2E560730003D828D /* PNFileLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = A5ACCAA02E560730003D828D /* PNFileLogger.m */; };
+		A5ACCAC02E560730003D828D /* PNConsoleLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = A5ACCA9D2E560730003D828D /* PNConsoleLogger.m */; };
+		A5ACCAC12E560730003D828D /* PNFileLoggerFileInformation.m in Sources */ = {isa = PBXBuildFile; fileRef = A5ACCAA22E560730003D828D /* PNFileLoggerFileInformation.m */; };
 		A5ADD6262AC0CE8100310A08 /* NSInputStream+PNCrypto.h in Headers */ = {isa = PBXBuildFile; fileRef = A5ADD6242AC0CE8100310A08 /* NSInputStream+PNCrypto.h */; };
 		A5ADD6272AC0CE8100310A08 /* NSInputStream+PNCrypto.h in Headers */ = {isa = PBXBuildFile; fileRef = A5ADD6242AC0CE8100310A08 /* NSInputStream+PNCrypto.h */; };
 		A5ADD6282AC0CE8100310A08 /* NSInputStream+PNCrypto.h in Headers */ = {isa = PBXBuildFile; fileRef = A5ADD6242AC0CE8100310A08 /* NSInputStream+PNCrypto.h */; };
@@ -3247,6 +3317,21 @@
 		A5E3BA142B3118BE00D3AA18 /* PNRequestRetryConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E3BA0C2B3118BE00D3AA18 /* PNRequestRetryConfiguration.m */; };
 		A5E3BA152B3118BE00D3AA18 /* PNRequestRetryConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E3BA0C2B3118BE00D3AA18 /* PNRequestRetryConfiguration.m */; };
 		A5E3BA162B3118BE00D3AA18 /* PNRequestRetryConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E3BA0C2B3118BE00D3AA18 /* PNRequestRetryConfiguration.m */; };
+		A5E72FEA2E43FD9700ECC1F8 /* PNLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = A5E72FE92E43FD9700ECC1F8 /* PNLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A5E72FEB2E43FD9700ECC1F8 /* PNLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = A5E72FE92E43FD9700ECC1F8 /* PNLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A5E72FEC2E43FD9700ECC1F8 /* PNLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = A5E72FE92E43FD9700ECC1F8 /* PNLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A5E72FED2E43FD9700ECC1F8 /* PNLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = A5E72FE92E43FD9700ECC1F8 /* PNLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A5E72FEE2E43FD9700ECC1F8 /* PNLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = A5E72FE92E43FD9700ECC1F8 /* PNLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A5E72FF12E44024900ECC1F8 /* PNLogEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = A5E72FEF2E44024900ECC1F8 /* PNLogEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A5E72FF22E44024900ECC1F8 /* PNLogEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E72FF02E44024900ECC1F8 /* PNLogEntry.m */; };
+		A5E72FF32E44024900ECC1F8 /* PNLogEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E72FF02E44024900ECC1F8 /* PNLogEntry.m */; };
+		A5E72FF42E44024900ECC1F8 /* PNLogEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = A5E72FEF2E44024900ECC1F8 /* PNLogEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A5E72FF52E44024900ECC1F8 /* PNLogEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E72FF02E44024900ECC1F8 /* PNLogEntry.m */; };
+		A5E72FF62E44024900ECC1F8 /* PNLogEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = A5E72FEF2E44024900ECC1F8 /* PNLogEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A5E72FF72E44024900ECC1F8 /* PNLogEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E72FF02E44024900ECC1F8 /* PNLogEntry.m */; };
+		A5E72FF82E44024900ECC1F8 /* PNLogEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = A5E72FEF2E44024900ECC1F8 /* PNLogEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A5E72FF92E44024900ECC1F8 /* PNLogEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = A5E72FEF2E44024900ECC1F8 /* PNLogEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A5E72FFA2E44024900ECC1F8 /* PNLogEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E72FF02E44024900ECC1F8 /* PNLogEntry.m */; };
 		A5FADC342490270E001D7704 /* PubNub+Files.h in Headers */ = {isa = PBXBuildFile; fileRef = A5FADC322490270E001D7704 /* PubNub+Files.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A5FADC352490270E001D7704 /* PubNub+Files.h in Headers */ = {isa = PBXBuildFile; fileRef = A5FADC322490270E001D7704 /* PubNub+Files.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A5FADC362490270E001D7704 /* PubNub+Files.h in Headers */ = {isa = PBXBuildFile; fileRef = A5FADC322490270E001D7704 /* PubNub+Files.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -3293,10 +3378,6 @@
 		3D5BE99C2BCD3DA30091ACA7 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		7915839D1BD7119E0084FC70 /* PubNub-iOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PubNub-iOS-Info.plist"; sourceTree = "<group>"; };
 		7915839E1BD7119E0084FC70 /* PubNub-watchOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PubNub-watchOS-Info.plist"; sourceTree = "<group>"; };
-		7925DB821D3FFCAC00857C0D /* PNLLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNLLogger.h; sourceTree = "<group>"; };
-		7925DB831D3FFCAC00857C0D /* PNLLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNLLogger.m; sourceTree = "<group>"; };
-		7925DB851D3FFCAC00857C0D /* PNLLogFileInformation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNLLogFileInformation.h; sourceTree = "<group>"; };
-		7925DB861D3FFCAC00857C0D /* PNLLogFileInformation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNLLogFileInformation.m; sourceTree = "<group>"; };
 		7932485C1D874D9F00FBDF36 /* PNPublishSequence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNPublishSequence.h; sourceTree = "<group>"; };
 		7932485D1D874D9F00FBDF36 /* PNPublishSequence.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNPublishSequence.m; sourceTree = "<group>"; };
 		793887021BEAD49100DCC662 /* PNNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNNumber.h; sourceTree = "<group>"; };
@@ -3479,7 +3560,6 @@
 		79CBB0BC1BD03DE4001FC34D /* PNString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNString.m; sourceTree = "<group>"; };
 		79CBB0BD1BD03DE4001FC34D /* PNURLRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNURLRequest.h; sourceTree = "<group>"; };
 		79CBB0BE1BD03DE4001FC34D /* PNURLRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNURLRequest.m; sourceTree = "<group>"; };
-		79CBB0C61BD03DE4001FC34D /* PNLogMacro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNLogMacro.h; sourceTree = "<group>"; };
 		79CBB0C71BD03DE4001FC34D /* PNConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNConstants.h; sourceTree = "<group>"; };
 		79CBB0C91BD03DE4001FC34D /* PNPrivateStructures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNPrivateStructures.h; sourceTree = "<group>"; };
 		79CBB0CA1BD03DE4001FC34D /* PNStructures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNStructures.h; sourceTree = "<group>"; };
@@ -3498,8 +3578,6 @@
 		79CFA2B826DE1C4900D206D4 /* PNPAMToken.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNPAMToken.m; sourceTree = "<group>"; };
 		79CFA2CF26DE1CD100D206D4 /* PNPAMToken+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PNPAMToken+Private.h"; sourceTree = "<group>"; };
 		79DA780824BFC1CF00AC72F2 /* PNDownloadFileRequest+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PNDownloadFileRequest+Private.h"; sourceTree = "<group>"; };
-		79E20D131C8AEC3A001BC9CC /* PNEnvelopeInformation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNEnvelopeInformation.h; sourceTree = "<group>"; };
-		79E20D141C8AEC3A001BC9CC /* PNEnvelopeInformation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNEnvelopeInformation.m; sourceTree = "<group>"; };
 		79F90F171FDEC1B9007132A3 /* PNPresenceHeartbeatAPICallBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNPresenceHeartbeatAPICallBuilder.m; sourceTree = "<group>"; };
 		79F90F181FDEC1B9007132A3 /* PNPresenceHeartbeatAPICallBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNPresenceHeartbeatAPICallBuilder.h; sourceTree = "<group>"; };
 		A50319AA2AA48F1A00B25A44 /* PNCryptor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNCryptor.h; sourceTree = "<group>"; };
@@ -3545,6 +3623,18 @@
 		A504E1BF24AE78E4006DCF5B /* PNGenerateFileUploadURLRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNGenerateFileUploadURLRequest.h; sourceTree = "<group>"; };
 		A504E1D624B04751006DCF5B /* PNFilesManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNFilesManager.h; sourceTree = "<group>"; };
 		A504E1D724B04751006DCF5B /* PNFilesManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNFilesManager.m; sourceTree = "<group>"; };
+		A510342D2E527E5D005486BC /* PNLogEntry+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PNLogEntry+Private.h"; sourceTree = "<group>"; };
+		A51034332E52832A005486BC /* PNStringLogEntry.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNStringLogEntry.h; sourceTree = "<group>"; };
+		A51034342E52832A005486BC /* PNStringLogEntry.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNStringLogEntry.m; sourceTree = "<group>"; };
+		A510343F2E528803005486BC /* PNDictionaryLogEntry.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNDictionaryLogEntry.h; sourceTree = "<group>"; };
+		A51034402E528803005486BC /* PNDictionaryLogEntry.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNDictionaryLogEntry.m; sourceTree = "<group>"; };
+		A51034572E528C7B005486BC /* PNErrorLogEntry.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNErrorLogEntry.h; sourceTree = "<group>"; };
+		A51034582E528C7B005486BC /* PNErrorLogEntry.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNErrorLogEntry.m; sourceTree = "<group>"; };
+		A51034692E528DBB005486BC /* PNNetworkRequestLogEntry.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNNetworkRequestLogEntry.h; sourceTree = "<group>"; };
+		A510346A2E528DBB005486BC /* PNNetworkRequestLogEntry.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNNetworkRequestLogEntry.m; sourceTree = "<group>"; };
+		A51034752E528E36005486BC /* PNNetworkRequestLogEntry+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PNNetworkRequestLogEntry+Private.h"; sourceTree = "<group>"; };
+		A510347B2E5290FC005486BC /* PNNetworkResponseLogEntry.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNNetworkResponseLogEntry.h; sourceTree = "<group>"; };
+		A510347C2E5290FC005486BC /* PNNetworkResponseLogEntry.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNNetworkResponseLogEntry.m; sourceTree = "<group>"; };
 		A5105B4E238F027D00CB693D /* PNDate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNDate.h; sourceTree = "<group>"; };
 		A5105B4F238F027D00CB693D /* PNDate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNDate.m; sourceTree = "<group>"; };
 		A51B4A0B2BF0ADD6008C3370 /* PNJSONSerializer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNJSONSerializer.h; sourceTree = "<group>"; };
@@ -3603,8 +3693,6 @@
 		A5567E512C1F0484003C974F /* PNSignalRequest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNSignalRequest.m; sourceTree = "<group>"; };
 		A5567E5C2C1F8C53003C974F /* PNOperationDataParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNOperationDataParser.h; sourceTree = "<group>"; };
 		A5567E5D2C1F8C53003C974F /* PNOperationDataParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNOperationDataParser.m; sourceTree = "<group>"; };
-		A5567E682C1FBE44003C974F /* PubNub+Deprecated.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PubNub+Deprecated.h"; sourceTree = "<group>"; };
-		A5567E692C1FBE44003C974F /* PubNub+Deprecated.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "PubNub+Deprecated.m"; sourceTree = "<group>"; };
 		A5567E752C1FCADC003C974F /* PNPushNotificationFetchData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNPushNotificationFetchData.h; sourceTree = "<group>"; };
 		A5567E762C1FCADC003C974F /* PNPushNotificationFetchData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNPushNotificationFetchData.m; sourceTree = "<group>"; };
 		A5567E812C1FCF0F003C974F /* PNChannelGroupFetchData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChannelGroupFetchData.m; sourceTree = "<group>"; };
@@ -3815,6 +3903,8 @@
 		A57A30D9238DC87400DE8C68 /* PNAPNSNotificationTarget.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNAPNSNotificationTarget.m; sourceTree = "<group>"; };
 		A57A30E8238DCAAF00DE8C68 /* PNAPNSNotificationTarget+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PNAPNSNotificationTarget+Private.h"; sourceTree = "<group>"; };
 		A57A30F0238DDCA200DE8C68 /* PNAPNSNotificationPayload+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PNAPNSNotificationPayload+Private.h"; sourceTree = "<group>"; };
+		A58146EC2E524AA600887E5F /* PNLoggerManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNLoggerManager.h; sourceTree = "<group>"; };
+		A58146ED2E524AA600887E5F /* PNLoggerManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNLoggerManager.m; sourceTree = "<group>"; };
 		A586A9E32337E581008856D2 /* PNFetchMessageActionsResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNFetchMessageActionsResult.m; sourceTree = "<group>"; };
 		A586A9E42337E581008856D2 /* PNFetchMessageActionsResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNFetchMessageActionsResult.h; sourceTree = "<group>"; };
 		A589756822FEF0F70093BD9A /* PNBaseObjectsRequest+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PNBaseObjectsRequest+Private.h"; sourceTree = "<group>"; };
@@ -3852,6 +3942,15 @@
 		A5A7AFF62349330E0060113B /* PNRemoveMessageActionRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNRemoveMessageActionRequest.m; path = Message/PNRemoveMessageActionRequest.m; sourceTree = "<group>"; };
 		A5A7AFF72349330F0060113B /* PNRemoveMessageActionRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PNRemoveMessageActionRequest.h; path = Message/PNRemoveMessageActionRequest.h; sourceTree = "<group>"; };
 		A5A7AFF82349330F0060113B /* PNBaseMessageActionRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PNBaseMessageActionRequest.h; path = Message/PNBaseMessageActionRequest.h; sourceTree = "<group>"; };
+		A5AA75CE2E662B8E00944A22 /* PNLoggerManager+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PNLoggerManager+Private.h"; sourceTree = "<group>"; };
+		A5AA75D42E662D1900944A22 /* PNNetworkResponseLogEntry+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PNNetworkResponseLogEntry+Private.h"; sourceTree = "<group>"; };
+		A5AA75DA2E672B3600944A22 /* PNPublishFileMessageRequest+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PNPublishFileMessageRequest+Private.h"; sourceTree = "<group>"; };
+		A5ACCA9C2E560730003D828D /* PNConsoleLogger.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNConsoleLogger.h; sourceTree = "<group>"; };
+		A5ACCA9D2E560730003D828D /* PNConsoleLogger.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNConsoleLogger.m; sourceTree = "<group>"; };
+		A5ACCA9F2E560730003D828D /* PNFileLogger.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNFileLogger.h; sourceTree = "<group>"; };
+		A5ACCAA02E560730003D828D /* PNFileLogger.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNFileLogger.m; sourceTree = "<group>"; };
+		A5ACCAA12E560730003D828D /* PNFileLoggerFileInformation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNFileLoggerFileInformation.h; sourceTree = "<group>"; };
+		A5ACCAA22E560730003D828D /* PNFileLoggerFileInformation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNFileLoggerFileInformation.m; sourceTree = "<group>"; };
 		A5ADD6242AC0CE8100310A08 /* NSInputStream+PNCrypto.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSInputStream+PNCrypto.h"; sourceTree = "<group>"; };
 		A5ADD6252AC0CE8100310A08 /* NSInputStream+PNCrypto.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSInputStream+PNCrypto.m"; sourceTree = "<group>"; };
 		A5CB33A82C035D7D008527AA /* PNTransportRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNTransportRequest.h; sourceTree = "<group>"; };
@@ -3938,6 +4037,9 @@
 		A5E3B9FF2B2F669200D3AA18 /* PNRequestRetryConfiguration+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PNRequestRetryConfiguration+Private.h"; sourceTree = "<group>"; };
 		A5E3BA0B2B3118BD00D3AA18 /* PNRequestRetryConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNRequestRetryConfiguration.h; sourceTree = "<group>"; };
 		A5E3BA0C2B3118BE00D3AA18 /* PNRequestRetryConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNRequestRetryConfiguration.m; sourceTree = "<group>"; };
+		A5E72FE92E43FD9700ECC1F8 /* PNLogger.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNLogger.h; sourceTree = "<group>"; };
+		A5E72FEF2E44024900ECC1F8 /* PNLogEntry.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNLogEntry.h; sourceTree = "<group>"; };
+		A5E72FF02E44024900ECC1F8 /* PNLogEntry.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNLogEntry.m; sourceTree = "<group>"; };
 		A5FADC322490270E001D7704 /* PubNub+Files.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PubNub+Files.h"; sourceTree = "<group>"; };
 		A5FADC332490270E001D7704 /* PubNub+Files.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "PubNub+Files.m"; sourceTree = "<group>"; };
 		A5FADC3F2490292A001D7704 /* PNSendFileRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNSendFileRequest.h; sourceTree = "<group>"; };
@@ -3997,8 +4099,9 @@
 		7925DB811D3FFCAC00857C0D /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				7925DB821D3FFCAC00857C0D /* PNLLogger.h */,
-				7925DB831D3FFCAC00857C0D /* PNLLogger.m */,
+				A510342D2E527E5D005486BC /* PNLogEntry+Private.h */,
+				A5E72FEF2E44024900ECC1F8 /* PNLogEntry.h */,
+				A5E72FF02E44024900ECC1F8 /* PNLogEntry.m */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -4006,8 +4109,18 @@
 		7925DB841D3FFCAC00857C0D /* Data */ = {
 			isa = PBXGroup;
 			children = (
-				7925DB851D3FFCAC00857C0D /* PNLLogFileInformation.h */,
-				7925DB861D3FFCAC00857C0D /* PNLLogFileInformation.m */,
+				A5AA75D42E662D1900944A22 /* PNNetworkResponseLogEntry+Private.h */,
+				A510347B2E5290FC005486BC /* PNNetworkResponseLogEntry.h */,
+				A510347C2E5290FC005486BC /* PNNetworkResponseLogEntry.m */,
+				A51034752E528E36005486BC /* PNNetworkRequestLogEntry+Private.h */,
+				A51034692E528DBB005486BC /* PNNetworkRequestLogEntry.h */,
+				A510346A2E528DBB005486BC /* PNNetworkRequestLogEntry.m */,
+				A510343F2E528803005486BC /* PNDictionaryLogEntry.h */,
+				A51034402E528803005486BC /* PNDictionaryLogEntry.m */,
+				A51034332E52832A005486BC /* PNStringLogEntry.h */,
+				A51034342E52832A005486BC /* PNStringLogEntry.m */,
+				A51034572E528C7B005486BC /* PNErrorLogEntry.h */,
+				A51034582E528C7B005486BC /* PNErrorLogEntry.m */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -4015,6 +4128,7 @@
 		799D610024C36D3000171C29 /* Publish */ = {
 			isa = PBXGroup;
 			children = (
+				A5AA75DA2E672B3600944A22 /* PNPublishFileMessageRequest+Private.h */,
 				799D611324C391A100171C29 /* PNPublishFileMessageRequest.h */,
 				799D611424C391A100171C29 /* PNPublishFileMessageRequest.m */,
 				797ABBAC24C415B50008CA1E /* PNBasePublishRequest+Private.h */,
@@ -4226,8 +4340,6 @@
 				A56FAEF1233161570072ADD6 /* PubNub+MessageActions.m */,
 				79CBB0581BD03DE4001FC34D /* PubNub+ChannelGroup.h */,
 				79CBB0591BD03DE4001FC34D /* PubNub+ChannelGroup.m */,
-				A5567E682C1FBE44003C974F /* PubNub+Deprecated.h */,
-				A5567E692C1FBE44003C974F /* PubNub+Deprecated.m */,
 				79CBB0681BD03DE4001FC34D /* PubNub+SubscribePrivate.h */,
 				79CBB0661BD03DE4001FC34D /* PubNub+Subscribe.h */,
 				79CBB0671BD03DE4001FC34D /* PubNub+Subscribe.m */,
@@ -4266,8 +4378,6 @@
 				79CBB06C1BD03DE4001FC34D /* Managers */,
 				79A0D8091DC22C950039A264 /* Builders */,
 				A55A86A322FD817E002D0A72 /* Models */,
-				79E20D131C8AEC3A001BC9CC /* PNEnvelopeInformation.h */,
-				79E20D141C8AEC3A001BC9CC /* PNEnvelopeInformation.m */,
 				79CBB0771BD03DE4001FC34D /* PNClientInformation.h */,
 				79CBB0781BD03DE4001FC34D /* PNClientInformation.m */,
 				79CFA2AB26DE0AEB00D206D4 /* PNCBORDecoder.h */,
@@ -4292,6 +4402,9 @@
 			children = (
 				7932485C1D874D9F00FBDF36 /* PNPublishSequence.h */,
 				7932485D1D874D9F00FBDF36 /* PNPublishSequence.m */,
+				A5AA75CE2E662B8E00944A22 /* PNLoggerManager+Private.h */,
+				A58146EC2E524AA600887E5F /* PNLoggerManager.h */,
+				A58146ED2E524AA600887E5F /* PNLoggerManager.m */,
 				79CBB0711BD03DE4001FC34D /* PNStateListener.h */,
 				79CBB0721BD03DE4001FC34D /* PNStateListener.m */,
 				A504E1D624B04751006DCF5B /* PNFilesManager.h */,
@@ -4390,9 +4503,9 @@
 		79CBB0BF1BD03DE4001FC34D /* Logger */ = {
 			isa = PBXGroup;
 			children = (
+				A510348D2E529713005486BC /* Additional */,
 				7925DB811D3FFCAC00857C0D /* Core */,
 				7925DB841D3FFCAC00857C0D /* Data */,
-				79CBB0C61BD03DE4001FC34D /* PNLogMacro.h */,
 			);
 			path = Logger;
 			sourceTree = "<group>";
@@ -4405,6 +4518,7 @@
 				A56BBFBA2AB63F8F00260D83 /* PNCryptoProvider.h */,
 				79CBB0CC1BD03DE4001FC34D /* PNEventsListener.h */,
 				A50319AA2AA48F1A00B25A44 /* PNCryptor.h */,
+				A5E72FE92E43FD9700ECC1F8 /* PNLogger.h */,
 				79CBB0CD1BD03DE4001FC34D /* PNParser.h */,
 			);
 			path = Protocols;
@@ -4483,6 +4597,15 @@
 				A504E18F24AAA72E006DCF5B /* PNDeleteFileAPICallBuilder.m */,
 			);
 			path = Files;
+			sourceTree = "<group>";
+		};
+		A510348D2E529713005486BC /* Additional */ = {
+			isa = PBXGroup;
+			children = (
+				A5ACCA9E2E560730003D828D /* Console */,
+				A5ACCAA32E560730003D828D /* File */,
+			);
+			path = Additional;
 			sourceTree = "<group>";
 		};
 		A51B4A092BF0ADAA008C3370 /* Serializer */ = {
@@ -5202,6 +5325,26 @@
 			path = APNS;
 			sourceTree = "<group>";
 		};
+		A5ACCA9E2E560730003D828D /* Console */ = {
+			isa = PBXGroup;
+			children = (
+				A5ACCA9C2E560730003D828D /* PNConsoleLogger.h */,
+				A5ACCA9D2E560730003D828D /* PNConsoleLogger.m */,
+			);
+			path = Console;
+			sourceTree = "<group>";
+		};
+		A5ACCAA32E560730003D828D /* File */ = {
+			isa = PBXGroup;
+			children = (
+				A5ACCAA12E560730003D828D /* PNFileLoggerFileInformation.h */,
+				A5ACCAA22E560730003D828D /* PNFileLoggerFileInformation.m */,
+				A5ACCA9F2E560730003D828D /* PNFileLogger.h */,
+				A5ACCAA02E560730003D828D /* PNFileLogger.m */,
+			);
+			path = File;
+			sourceTree = "<group>";
+		};
 		A5CB33A72C035D4C008527AA /* Transport */ = {
 			isa = PBXGroup;
 			children = (
@@ -5457,7 +5600,9 @@
 				A55681202C242EE6003C974F /* PNPresenceEventResult.h in Headers */,
 				79A238DE1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfigurationPrivate.h in Headers */,
 				A51B4A1F2BF0AE79008C3370 /* PNEncoder.h in Headers */,
+				A51034302E527E5D005486BC /* PNLogEntry+Private.h in Headers */,
 				A55DAF0724B1FEC800766EE9 /* PNXML+Private.h in Headers */,
+				A5AA75DD2E672B3600944A22 /* PNPublishFileMessageRequest+Private.h in Headers */,
 				79AA8EC926EAB81500ADA747 /* PNConfiguration+Private.h in Headers */,
 				A58975B223005AAC0093BD9A /* PNManageMembershipsStatus.h in Headers */,
 				79A238D01D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.h in Headers */,
@@ -5524,12 +5669,10 @@
 				A57A30DA238DC87400DE8C68 /* PNAPNSNotificationTarget.h in Headers */,
 				7951954326BD44E9001E308C /* PubNub+PAM.h in Headers */,
 				A51B49E02BDA7806008C3370 /* PNRequestRetryConfiguration+Private.h in Headers */,
-				79E20D151C8AEC3A001BC9CC /* PNEnvelopeInformation.h in Headers */,
 				A55A864122FD80B9002D0A72 /* PNFetchAllUUIDMetadataAPICallBuilder.h in Headers */,
 				A5567F0B2C219757003C974F /* PNBaseAppContextObject.h in Headers */,
 				A5046E17247844E70008C81E /* PNSetChannelMembersAPICallBuilder.h in Headers */,
 				A5CFE5492C18D3A700274165 /* PNPresenceStateSetRequest.h in Headers */,
-				7925DB951D3FFCAC00857C0D /* PNLLogFileInformation.h in Headers */,
 				A55A87FF22FD8272002D0A72 /* PNSetChannelMetadataRequest.h in Headers */,
 				A5897592230014220093BD9A /* PNManageChannelMembersAPICallBuilder.h in Headers */,
 				A5567EDB2C209FF7003C974F /* PNPresenceWhereNowFetchData.h in Headers */,
@@ -5539,6 +5682,7 @@
 				A5CFE5312C18D33500274165 /* PNHereNowRequest.h in Headers */,
 				79650C2C1E775E8300006F66 /* PNDefines.h in Headers */,
 				A523EEE12BFE910A009F45AA /* PNURLSessionTransport.h in Headers */,
+				A510347F2E5290FC005486BC /* PNNetworkResponseLogEntry.h in Headers */,
 				A5567F6C2C21F0EA003C974F /* PNUUIDMetadataFetchData.h in Headers */,
 				79A0D85C1DC22C950039A264 /* PNStateModificationAPICallBuilder.h in Headers */,
 				79A3E418221569BA00F2ADB9 /* PNMessageCountResult.h in Headers */,
@@ -5556,6 +5700,7 @@
 				A55A87C722FD8272002D0A72 /* PNRemoveUUIDMetadataRequest.h in Headers */,
 				A5567F4E2C21E965003C974F /* PNMembershipsFetchData.h in Headers */,
 				A53249092C2C7262003510FF /* PNHistoryFetchRequest+Private.h in Headers */,
+				A5AA75D12E662B8E00944A22 /* PNLoggerManager+Private.h in Headers */,
 				A55A866B22FD80B9002D0A72 /* PNFetchAllChannelsMetadataAPICallBuilder.h in Headers */,
 				79A0D84E1DC22C950039A264 /* PNPresenceChannelHereNowAPICallBuilder.h in Headers */,
 				A56FAEF2233161570072ADD6 /* PubNub+MessageActions.h in Headers */,
@@ -5564,6 +5709,8 @@
 				7915825D1BD709C60084FC70 /* PubNub+ChannelGroup.h in Headers */,
 				79A0D8561DC22C950039A264 /* PNPublishSizeAPICallBuilder.h in Headers */,
 				799D611524C391A100171C29 /* PNPublishFileMessageRequest.h in Headers */,
+				A51034392E52832A005486BC /* PNStringLogEntry.h in Headers */,
+				A510345D2E528C7B005486BC /* PNErrorLogEntry.h in Headers */,
 				A5046E21247844E70008C81E /* PNSetMembershipsAPICallBuilder.h in Headers */,
 				A5A7B0002349330F0060113B /* PNBaseMessageActionRequest+Private.h in Headers */,
 				A5A7AFF92349330F0060113B /* PNFetchMessageActionsRequest.h in Headers */,
@@ -5583,6 +5730,7 @@
 				A5CFE4712C14A90900274165 /* NSError+PNTransport.h in Headers */,
 				A5FADC412490292A001D7704 /* PNSendFileRequest.h in Headers */,
 				A55680FC2C242D7C003C974F /* PNMessageActionResult.h in Headers */,
+				A51034452E528803005486BC /* PNDictionaryLogEntry.h in Headers */,
 				A58975C223005BD80093BD9A /* PNMembership.h in Headers */,
 				A55680662C2311D0003C974F /* PNGenerateFileDownloadURLRequest.h in Headers */,
 				79A0D8641DC22C950039A264 /* PNSubscribeAPIBuilder.h in Headers */,
@@ -5641,6 +5789,7 @@
 				A51B4A0C2BF0ADD6008C3370 /* PNJSONSerializer.h in Headers */,
 				791582711BD709C60084FC70 /* PNErrorStatus.h in Headers */,
 				A5DB70F22AAEFE58005B6559 /* PNLegacyCryptor.h in Headers */,
+				A5E72FF12E44024900ECC1F8 /* PNLogEntry.h in Headers */,
 				79A0D8581DC22C950039A264 /* PNStateAPICallBuilder.h in Headers */,
 				79A0D8621DC22C950039A264 /* PNStreamModificationAPICallBuilder.h in Headers */,
 				7915826A1BD709C60084FC70 /* PNServiceData.h in Headers */,
@@ -5666,6 +5815,9 @@
 				A5CFE5CE2C1AFF9100274165 /* PNErrorData+Private.h in Headers */,
 				A5567F1E2C21D53D003C974F /* PNChannelMembersManageData.h in Headers */,
 				A55680F02C242D11003C974F /* PNSignalResult.h in Headers */,
+				A5E72FEC2E43FD9700ECC1F8 /* PNLogger.h in Headers */,
+				A5AA75D62E662D1900944A22 /* PNNetworkResponseLogEntry+Private.h in Headers */,
+				A510346D2E528DBB005486BC /* PNNetworkRequestLogEntry.h in Headers */,
 				A55680042C225579003C974F /* PNPresenceUserStateFetchData+Private.h in Headers */,
 				A57A304C238D59B500DE8C68 /* PNBasePushNotificationsRequest.h in Headers */,
 				A5CFE51C2C18969900274165 /* PNBasePushNotificationsRequest+Private.h in Headers */,
@@ -5702,6 +5854,9 @@
 				A5CFE59F2C1933BD00274165 /* PNPresenceLeaveRequest.h in Headers */,
 				A55A878822FD8272002D0A72 /* PNSetUUIDMetadataRequest.h in Headers */,
 				A55A863A22FD80B9002D0A72 /* PNFetchUUIDMetadataAPICallBuilder.h in Headers */,
+				A5ACCAB92E560730003D828D /* PNFileLogger.h in Headers */,
+				A5ACCABA2E560730003D828D /* PNConsoleLogger.h in Headers */,
+				A5ACCABB2E560730003D828D /* PNFileLoggerFileInformation.h in Headers */,
 				7915826E1BD709C60084FC70 /* PubNub+Time.h in Headers */,
 				A5CFE4F22C16528700274165 /* PNTimeData.h in Headers */,
 				A5CFE5062C1658E700274165 /* PNHistoryFetchData.h in Headers */,
@@ -5712,7 +5867,6 @@
 				A556808E2C235360003C974F /* PNFileDownloadData+Private.h in Headers */,
 				7915826B1BD709C60084FC70 /* PubNub+APNS.h in Headers */,
 				A5567E3F2C1ECC59003C974F /* PNPresenceStateFetchResult.h in Headers */,
-				791582851BD709C60084FC70 /* PNLogMacro.h in Headers */,
 				7960B6631F6811D700FFAEBB /* PNDeleteMessageAPICallBuilder.h in Headers */,
 				A556807C2C234B4E003C974F /* PNFileListFetchData+Private.h in Headers */,
 				A55BCD16231D26110019DB68 /* PNMessageAction.h in Headers */,
@@ -5727,7 +5881,6 @@
 				A504E18424AAA724006DCF5B /* PNDownloadFileAPICallBuilder.h in Headers */,
 				A5DB70942AAE778F005B6559 /* PNSequenceInputStream.h in Headers */,
 				791582931BD709C60084FC70 /* PNChannel.h in Headers */,
-				A5567E6B2C1FBE44003C974F /* PubNub+Deprecated.h in Headers */,
 				7915827F1BD709C60084FC70 /* PNHelpers.h in Headers */,
 				A51B4A622BF0B117008C3370 /* PNJSONCodableObjects.h in Headers */,
 				A5105B50238F027D00CB693D /* PNDate.h in Headers */,
@@ -5741,7 +5894,6 @@
 				A55A861722FD80B9002D0A72 /* PNSetUUIDMetadataAPICallBuilder.h in Headers */,
 				79A0D86A1DC22C950039A264 /* PNUnsubscribeChannelsOrGroupsAPICallBuilder.h in Headers */,
 				A5567E882C1FCF0F003C974F /* PNChannelGroupFetchData.h in Headers */,
-				7925DB871D3FFCAC00857C0D /* PNLLogger.h in Headers */,
 				793887041BEAD49100DCC662 /* PNNumber.h in Headers */,
 				A5567F422C21E723003C974F /* PNChannelMembersFetchData.h in Headers */,
 				A57A30B2238DC6B600DE8C68 /* PNAPNSNotificationPayload.h in Headers */,
@@ -5763,12 +5915,14 @@
 				A56BBFBB2AB63F8F00260D83 /* PNCryptoProvider.h in Headers */,
 				A504E1D824B04751006DCF5B /* PNFilesManager.h in Headers */,
 				A5567EE72C20A51A003C974F /* PNPresenceHeartbeatRequest.h in Headers */,
+				A58146F42E524AA600887E5F /* PNLoggerManager.h in Headers */,
 				A55A872622FD81E3002D0A72 /* PNFetchChannelMetadataResult.h in Headers */,
 				A5567FE82C222F1B003C974F /* PNHistoryMessageCountData.h in Headers */,
 				A5567FD42C2213AF003C974F /* PNFetchAllChannelsMetadataResult.h in Headers */,
 				A53248AE2C24D987003510FF /* PNJSONDecoder+Private.h in Headers */,
 				A504E10424AA8F44006DCF5B /* PNListFilesResult.h in Headers */,
 				A51B4A482BF0B0B0008C3370 /* PNJSONEncoder.h in Headers */,
+				A51034792E528E36005486BC /* PNNetworkRequestLogEntry+Private.h in Headers */,
 				7915828F1BD709C60084FC70 /* PNArray.h in Headers */,
 				79CFA2D026DE1CD100D206D4 /* PNPAMToken+Private.h in Headers */,
 				A5CB33D52C0C70B2008527AA /* PNTransportMiddleware.h in Headers */,
@@ -5822,7 +5976,9 @@
 				A55681242C242EE6003C974F /* PNPresenceEventResult.h in Headers */,
 				79A0D92C1DC230AB0039A264 /* PNStreamAPICallBuilder.h in Headers */,
 				79A238E01D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfigurationPrivate.h in Headers */,
+				A510342E2E527E5D005486BC /* PNLogEntry+Private.h in Headers */,
 				A51B4A212BF0AE79008C3370 /* PNEncoder.h in Headers */,
+				A5AA75DB2E672B3600944A22 /* PNPublishFileMessageRequest+Private.h in Headers */,
 				A55DAF0924B1FEC800766EE9 /* PNXML+Private.h in Headers */,
 				79AA8ECB26EAB81500ADA747 /* PNConfiguration+Private.h in Headers */,
 				A58975B423005AAC0093BD9A /* PNManageMembershipsStatus.h in Headers */,
@@ -5894,16 +6050,15 @@
 				A5567F0E2C219757003C974F /* PNBaseAppContextObject.h in Headers */,
 				A5046E19247844E70008C81E /* PNSetChannelMembersAPICallBuilder.h in Headers */,
 				A5CFE54C2C18D3A700274165 /* PNPresenceStateSetRequest.h in Headers */,
-				79E20D181C8AEC43001BC9CC /* PNEnvelopeInformation.h in Headers */,
 				A55A880122FD8272002D0A72 /* PNSetChannelMetadataRequest.h in Headers */,
 				A5897594230014220093BD9A /* PNManageChannelMembersAPICallBuilder.h in Headers */,
 				A5567EDE2C209FF7003C974F /* PNPresenceWhereNowFetchData.h in Headers */,
 				A55A85D322FD8078002D0A72 /* PubNub+Objects.h in Headers */,
 				A5567EF32C20D3DF003C974F /* PNPresenceHereNowFetchData+Private.h in Headers */,
-				7925DB971D3FFCAC00857C0D /* PNLLogFileInformation.h in Headers */,
 				A5CFE5342C18D33500274165 /* PNHereNowRequest.h in Headers */,
 				79650C301E775E8C00006F66 /* PNDefines.h in Headers */,
 				A523EEE62BFE910A009F45AA /* PNURLSessionTransport.h in Headers */,
+				A51034842E5290FC005486BC /* PNNetworkResponseLogEntry.h in Headers */,
 				79A0D9811DC2314C0039A264 /* PNTimeAPICallBuilder.h in Headers */,
 				A5567F6F2C21F0EA003C974F /* PNUUIDMetadataFetchData.h in Headers */,
 				79A3E41A221569BA00F2ADB9 /* PNMessageCountResult.h in Headers */,
@@ -5921,6 +6076,7 @@
 				A55A87C922FD8272002D0A72 /* PNRemoveUUIDMetadataRequest.h in Headers */,
 				A5567F512C21E965003C974F /* PNMembershipsFetchData.h in Headers */,
 				A532490B2C2C7262003510FF /* PNHistoryFetchRequest+Private.h in Headers */,
+				A5AA75D02E662B8E00944A22 /* PNLoggerManager+Private.h in Headers */,
 				A55A866D22FD80B9002D0A72 /* PNFetchAllChannelsMetadataAPICallBuilder.h in Headers */,
 				79A0D9381DC230CC0039A264 /* PNStreamModificationAPICallBuilder.h in Headers */,
 				A56FAEF4233161570072ADD6 /* PubNub+MessageActions.h in Headers */,
@@ -5929,6 +6085,8 @@
 				791583061BD709D10084FC70 /* PubNub+ChannelGroup.h in Headers */,
 				791583481BD709D10084FC70 /* PubNub+CorePrivate.h in Headers */,
 				799D611724C391A100171C29 /* PNPublishFileMessageRequest.h in Headers */,
+				A510343C2E52832A005486BC /* PNStringLogEntry.h in Headers */,
+				A510345A2E528C7B005486BC /* PNErrorLogEntry.h in Headers */,
 				A5046E23247844E70008C81E /* PNSetMembershipsAPICallBuilder.h in Headers */,
 				A5A7B0022349330F0060113B /* PNBaseMessageActionRequest+Private.h in Headers */,
 				A5A7AFFB2349330F0060113B /* PNFetchMessageActionsRequest.h in Headers */,
@@ -5948,6 +6106,7 @@
 				A5FADC432490292A001D7704 /* PNSendFileRequest.h in Headers */,
 				A55681002C242D7C003C974F /* PNMessageActionResult.h in Headers */,
 				A58975C423005BD80093BD9A /* PNMembership.h in Headers */,
+				A51034442E528803005486BC /* PNDictionaryLogEntry.h in Headers */,
 				A55680692C2311D0003C974F /* PNGenerateFileDownloadURLRequest.h in Headers */,
 				7915830C1BD709D10084FC70 /* PNSubscribeStatus.h in Headers */,
 				A5567E7B2C1FCADC003C974F /* PNPushNotificationFetchData.h in Headers */,
@@ -6006,6 +6165,7 @@
 				A51B4A0E2BF0ADD6008C3370 /* PNJSONSerializer.h in Headers */,
 				7915833D1BD709D10084FC70 /* PNSubscriber.h in Headers */,
 				A5DB70F42AAEFE58005B6559 /* PNLegacyCryptor.h in Headers */,
+				A5E72FF92E44024900ECC1F8 /* PNLogEntry.h in Headers */,
 				7915832C1BD709D10084FC70 /* PNURLRequest.h in Headers */,
 				79A0D8CC1DC22FFA0039A264 /* PNPresenceWhereNowAPICallBuilder.h in Headers */,
 				79A0D9501DC230F50039A264 /* PNSubscribeAPIBuilder.h in Headers */,
@@ -6031,6 +6191,9 @@
 				A5CFE5D02C1AFF9100274165 /* PNErrorData+Private.h in Headers */,
 				A5567F212C21D53D003C974F /* PNChannelMembersManageData.h in Headers */,
 				A55680F42C242D11003C974F /* PNSignalResult.h in Headers */,
+				A5E72FEB2E43FD9700ECC1F8 /* PNLogger.h in Headers */,
+				A5AA75D52E662D1900944A22 /* PNNetworkResponseLogEntry+Private.h in Headers */,
+				A51034702E528DBB005486BC /* PNNetworkRequestLogEntry.h in Headers */,
 				A55680062C225579003C974F /* PNPresenceUserStateFetchData+Private.h in Headers */,
 				A5DB71492AAEFE58005B6559 /* PNCryptorHeader.h in Headers */,
 				A5CFE51E2C18969900274165 /* PNBasePushNotificationsRequest+Private.h in Headers */,
@@ -6067,7 +6230,9 @@
 				A5CFE5A22C1933BD00274165 /* PNPresenceLeaveRequest.h in Headers */,
 				A55A878A22FD8272002D0A72 /* PNSetUUIDMetadataRequest.h in Headers */,
 				A55A863C22FD80B9002D0A72 /* PNFetchUUIDMetadataAPICallBuilder.h in Headers */,
-				7915832E1BD709D10084FC70 /* PNLogMacro.h in Headers */,
+				A5ACCAAA2E560730003D828D /* PNFileLogger.h in Headers */,
+				A5ACCAAB2E560730003D828D /* PNConsoleLogger.h in Headers */,
+				A5ACCAAC2E560730003D828D /* PNFileLoggerFileInformation.h in Headers */,
 				A5CFE4F52C16528700274165 /* PNTimeData.h in Headers */,
 				A5CFE5092C1658E700274165 /* PNHistoryFetchData.h in Headers */,
 				A5A45207246F268C008ECC74 /* PNRemoveMembershipsAPICallBuilder.h in Headers */,
@@ -6092,8 +6257,6 @@
 				A504E18624AAA724006DCF5B /* PNDownloadFileAPICallBuilder.h in Headers */,
 				A5DB70962AAE778F005B6559 /* PNSequenceInputStream.h in Headers */,
 				791583281BD709D10084FC70 /* PNHelpers.h in Headers */,
-				A5567E6E2C1FBE44003C974F /* PubNub+Deprecated.h in Headers */,
-				7925DB891D3FFCAC00857C0D /* PNLLogger.h in Headers */,
 				A51B4A652BF0B117008C3370 /* PNJSONCodableObjects.h in Headers */,
 				A5105B52238F027D00CB693D /* PNDate.h in Headers */,
 				79CD276224D6A371000698DD /* PNKeyValueStorage.h in Headers */,
@@ -6128,12 +6291,14 @@
 				A56BBFBD2AB63F8F00260D83 /* PNCryptoProvider.h in Headers */,
 				A504E1DA24B04751006DCF5B /* PNFilesManager.h in Headers */,
 				A5567EEA2C20A51A003C974F /* PNPresenceHeartbeatRequest.h in Headers */,
+				A58146F62E524AA600887E5F /* PNLoggerManager.h in Headers */,
 				A55A872822FD81E3002D0A72 /* PNFetchChannelMetadataResult.h in Headers */,
 				A5567FEB2C222F1B003C974F /* PNHistoryMessageCountData.h in Headers */,
 				A5567FD62C2213AF003C974F /* PNFetchAllChannelsMetadataResult.h in Headers */,
 				A53248B02C24D987003510FF /* PNJSONDecoder+Private.h in Headers */,
 				A504E10624AA8F44006DCF5B /* PNListFilesResult.h in Headers */,
 				A51B4A4B2BF0B0B0008C3370 /* PNJSONEncoder.h in Headers */,
+				A510347A2E528E36005486BC /* PNNetworkRequestLogEntry+Private.h in Headers */,
 				791583371BD709D10084FC70 /* PNData.h in Headers */,
 				79CFA2D226DE1CD100D206D4 /* PNPAMToken+Private.h in Headers */,
 				A5CB33D92C0C70B2008527AA /* PNTransportMiddleware.h in Headers */,
@@ -6194,6 +6359,7 @@
 				A5567F682C21ECBE003C974F /* PNPagedAppContextData+Private.h in Headers */,
 				A504E16424AAA6FE006DCF5B /* PNSendFileAPICallBuilder.h in Headers */,
 				A55680492C229D8D003C974F /* PNFileSendData.h in Headers */,
+				A51034422E528803005486BC /* PNDictionaryLogEntry.h in Headers */,
 				A57A306E238D6BCC00DE8C68 /* PNFCMNotificationPayload.h in Headers */,
 				A556811B2C242E96003C974F /* PNFileEventResult.h in Headers */,
 				798842401C18F13C003E8948 /* PNChannelGroupClientStateResult.h in Headers */,
@@ -6213,6 +6379,7 @@
 				A5CFE5192C1892AD00274165 /* PNPushNotificationManageRequest.h in Headers */,
 				A55A872422FD81E3002D0A72 /* PNSetChannelMetadataStatus.h in Headers */,
 				A53248BE2C24E3D4003510FF /* PNSubscribeFileEventData+Private.h in Headers */,
+				A51034622E528C7B005486BC /* PNErrorLogEntry.h in Headers */,
 				A5DB714B2AAEFE59005B6559 /* PNCryptorHeader.h in Headers */,
 				798842481C18F166003E8948 /* PNPresenceGlobalHereNowResult.h in Headers */,
 				A56BBFBF2AB63F8F00260D83 /* PNCryptoProvider.h in Headers */,
@@ -6231,6 +6398,7 @@
 				79A0D8871DC22F520039A264 /* PNAPNSAPICallBuilder.h in Headers */,
 				A5A451C1246DE8C3008ECC74 /* PNRemoveChannelMembersRequest.h in Headers */,
 				A5CFE5CC2C1AE33500274165 /* PNBaseOperationData+Private.h in Headers */,
+				A5E72FEE2E43FD9700ECC1F8 /* PNLogger.h in Headers */,
 				A5CB33F02C0C7E94008527AA /* PNTransportConfiguration+Private.h in Headers */,
 				A51B4A992BF0B1E3008C3370 /* PNLock.h in Headers */,
 				A5567EBE2C2077AE003C974F /* PNSubscribeData.h in Headers */,
@@ -6257,6 +6425,7 @@
 				A55A864622FD80B9002D0A72 /* PNFetchAllUUIDMetadataAPICallBuilder.h in Headers */,
 				A5ADD62A2AC0CE8100310A08 /* NSInputStream+PNCrypto.h in Headers */,
 				A5CFE4472C11E8D500274165 /* PNChannelGroupManageRequest.h in Headers */,
+				A5AA75D22E662B8E00944A22 /* PNLoggerManager+Private.h in Headers */,
 				79A0D9591DC230FA0039A264 /* PNSubscribeChannelsOrGroupsAPIBuilder.h in Headers */,
 				7988422A1C18F07B003E8948 /* PubNub+SubscribePrivate.h in Headers */,
 				A568657E230072810014E17C /* PNManageChannelMembersStatus.h in Headers */,
@@ -6269,6 +6438,7 @@
 				A55A86E522FD81E3002D0A72 /* PNFetchUUIDMetadataResult.h in Headers */,
 				798842291C18F071003E8948 /* PubNub+PresencePrivate.h in Headers */,
 				A504E10824AA8F44006DCF5B /* PNListFilesResult.h in Headers */,
+				A5E72FF82E44024900ECC1F8 /* PNLogEntry.h in Headers */,
 				A55680082C225579003C974F /* PNPresenceUserStateFetchData+Private.h in Headers */,
 				A5567F732C21F0EA003C974F /* PNUUIDMetadataFetchData.h in Headers */,
 				A5DB70F12AAEFE58005B6559 /* PNCCCryptorWrapper.h in Headers */,
@@ -6290,9 +6460,9 @@
 				A5DB70E22AAEFE58005B6559 /* PNEncryptedData.h in Headers */,
 				A57A30AD238D78C400DE8C68 /* PNBaseNotificationPayload+Private.h in Headers */,
 				A55BCD1B231D26110019DB68 /* PNMessageAction.h in Headers */,
+				A51034322E527E5D005486BC /* PNLogEntry+Private.h in Headers */,
 				799D60EE24C1B33900171C29 /* PNSendFileStatus.h in Headers */,
 				A504E17024AAA70A006DCF5B /* PNListFilesAPICallBuilder.h in Headers */,
-				7925DB9A1D3FFCAC00857C0D /* PNLLogFileInformation.h in Headers */,
 				A52DC1EB2307E10B001F20B0 /* NSDateFormatter+PNCacheable.h in Headers */,
 				A51B4AA52BF0B428008C3370 /* PNError.h in Headers */,
 				A51B4A8D2BF0B198008C3370 /* PNFunctions.h in Headers */,
@@ -6302,13 +6472,13 @@
 				79650C391E775E9800006F66 /* PNLockSupport.h in Headers */,
 				A5567F122C219757003C974F /* PNBaseAppContextObject.h in Headers */,
 				A55681272C242EE6003C974F /* PNPresenceEventResult.h in Headers */,
-				79E20D1B1C8AEC4C001BC9CC /* PNEnvelopeInformation.h in Headers */,
 				A504E19424AAA72E006DCF5B /* PNDeleteFileAPICallBuilder.h in Headers */,
 				A568658E2300729E0014E17C /* PNFetchChannelMembersResult.h in Headers */,
 				A5DB70E72AAEFE58005B6559 /* PNEncryptedStream.h in Headers */,
 				A53248FB2C2AB5B3003510FF /* PNRemoveMessageActionRequest+Private.h in Headers */,
 				A55A882022FD8272002D0A72 /* PNFetchAllChannelsMetadataRequest.h in Headers */,
 				A5567F012C210714003C974F /* PNPresenceChannelHereNowResult+Private.h in Headers */,
+				A51034742E528DBB005486BC /* PNNetworkRequestLogEntry.h in Headers */,
 				79A0D8F91DC230470039A264 /* PNPublishSizeAPICallBuilder.h in Headers */,
 				A504E1DC24B04751006DCF5B /* PNFilesManager.h in Headers */,
 				A5046E1B247844E70008C81E /* PNSetChannelMembersAPICallBuilder.h in Headers */,
@@ -6333,11 +6503,13 @@
 				798842351C18F0FB003E8948 /* PNClientInformation.h in Headers */,
 				A5567EF52C20D3DF003C974F /* PNPresenceHereNowFetchData+Private.h in Headers */,
 				A5CFE4162C0F246400274165 /* PNBaseRequest.h in Headers */,
+				A58146F02E524AA600887E5F /* PNLoggerManager.h in Headers */,
 				79A0D9111DC230770039A264 /* PNStateAuditAPICallBuilder.h in Headers */,
 				798842301C18F0A2003E8948 /* PubNub+CorePrivate.h in Headers */,
 				A5CB33D02C046A1A008527AA /* PNTransportConfiguration.h in Headers */,
 				A55A86CB22FD817E002D0A72 /* PNUUIDMetadata.h in Headers */,
 				798842771C18F208003E8948 /* PNSubscribeStatus.h in Headers */,
+				A510347E2E5290FC005486BC /* PNNetworkResponseLogEntry.h in Headers */,
 				A55A867022FD80B9002D0A72 /* PNFetchAllChannelsMetadataAPICallBuilder.h in Headers */,
 				A51B4A172BF0AE36008C3370 /* PNCodable.h in Headers */,
 				A51B4A752BF0B136008C3370 /* NSNumberFormatter+PNJSONCodable.h in Headers */,
@@ -6346,6 +6518,9 @@
 				A53248CA2C28A3B5003510FF /* PNHistoryMessagesDeleteRequest.h in Headers */,
 				79F85804219640CA00BFD0B1 /* PNClientStateGetResult.h in Headers */,
 				79CFA2D426DE1CD100D206D4 /* PNPAMToken+Private.h in Headers */,
+				A5ACCAB32E560730003D828D /* PNFileLogger.h in Headers */,
+				A5ACCAB42E560730003D828D /* PNConsoleLogger.h in Headers */,
+				A5ACCAB52E560730003D828D /* PNFileLoggerFileInformation.h in Headers */,
 				A5046E332478471D0008C81E /* PNSetChannelMembersRequest.h in Headers */,
 				A55680BB2C238EEB003C974F /* PNSubscribeObjectEventData.h in Headers */,
 				A556812E2C2435A5003C974F /* PNSubscribeRequest+Private.h in Headers */,
@@ -6419,6 +6594,8 @@
 				A51B4AB22BF37F03008C3370 /* PNChannelGroupFetchRequest.h in Headers */,
 				A5567F312C21DB10003C974F /* PNMembershipsManageData.h in Headers */,
 				79A0D9351DC230BD0039A264 /* PNStreamAuditAPICallBuilder.h in Headers */,
+				A5AA75D92E662D1900944A22 /* PNNetworkResponseLogEntry+Private.h in Headers */,
+				A5AA75DC2E672B3600944A22 /* PNPublishFileMessageRequest+Private.h in Headers */,
 				A55A87CC22FD8272002D0A72 /* PNRemoveUUIDMetadataRequest.h in Headers */,
 				A5CFE5D22C1AFF9100274165 /* PNErrorData+Private.h in Headers */,
 				798842891C18F287003E8948 /* PNURLRequest.h in Headers */,
@@ -6430,6 +6607,7 @@
 				A5567E8C2C1FCF0F003C974F /* PNChannelGroupFetchData.h in Headers */,
 				7951954726BD44E9001E308C /* PubNub+PAM.h in Headers */,
 				79A0D8B71DC22FBC0039A264 /* PNPresenceAPICallBuilder.h in Headers */,
+				A51034772E528E36005486BC /* PNNetworkRequestLogEntry+Private.h in Headers */,
 				A5105B55238F027D00CB693D /* PNDate.h in Headers */,
 				7988422E1C18F092003E8948 /* PubNub+State.h in Headers */,
 				798842781C18F20C003E8948 /* PNTimeResult.h in Headers */,
@@ -6475,7 +6653,6 @@
 				79A0D8751DC22F0A0039A264 /* PNAPICallBuilder+Private.h in Headers */,
 				A5CCEC672C0E816A00DB02A4 /* PNTransport.h in Headers */,
 				798842311C18F0A6003E8948 /* PubNub+Core.h in Headers */,
-				7988429A1C18F2AD003E8948 /* PNLogMacro.h in Headers */,
 				A5567E392C1EB4ED003C974F /* PNTimeRequest.h in Headers */,
 				A5567F8B2C21F31E003C974F /* PNChannelMetadataFetchAllData.h in Headers */,
 				A55A87E122FD8272002D0A72 /* PNBaseObjectsRequest.h in Headers */,
@@ -6501,7 +6678,6 @@
 				79A0D8BD1DC22FCA0039A264 /* PNPresenceChannelGroupHereNowAPICallBuilder.h in Headers */,
 				79A0D9651DC231050039A264 /* PNUnsubscribeChannelsOrGroupsAPICallBuilder.h in Headers */,
 				A5DB710A2AAEFE58005B6559 /* PNAESCBCCryptor+Private.h in Headers */,
-				7925DB8C1D3FFCAC00857C0D /* PNLLogger.h in Headers */,
 				79CFA2BD26DE1C4900D206D4 /* PNPAMToken.h in Headers */,
 				79A3E4142215699900F2ADB9 /* PNMessageCountAPICallBuilder.h in Headers */,
 				A55A866222FD80B9002D0A72 /* PNFetchChannelMetadataAPICallBuilder.h in Headers */,
@@ -6510,8 +6686,8 @@
 				A55A878D22FD8272002D0A72 /* PNSetUUIDMetadataRequest.h in Headers */,
 				7988427E1C18F272003E8948 /* PNParser.h in Headers */,
 				797D607622D2E44000E64C94 /* PNSignalStatus.h in Headers */,
+				A510343E2E52832A005486BC /* PNStringLogEntry.h in Headers */,
 				A5897597230014220093BD9A /* PNManageChannelMembersAPICallBuilder.h in Headers */,
-				A5567E722C1FBE44003C974F /* PubNub+Deprecated.h in Headers */,
 				A51B4A432BF0B097008C3370 /* PNJSONDecoder.h in Headers */,
 				798842751C18F1FE003E8948 /* PNStatus.h in Headers */,
 				A55A886D22FD8272002D0A72 /* PNManageMembershipsRequest.h in Headers */,
@@ -6551,7 +6727,9 @@
 				A55681212C242EE6003C974F /* PNPresenceEventResult.h in Headers */,
 				79A0D92B1DC230AB0039A264 /* PNStreamAPICallBuilder.h in Headers */,
 				79A238DF1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfigurationPrivate.h in Headers */,
+				A510342F2E527E5D005486BC /* PNLogEntry+Private.h in Headers */,
 				A51B4A202BF0AE79008C3370 /* PNEncoder.h in Headers */,
+				A5AA75DF2E672B3600944A22 /* PNPublishFileMessageRequest+Private.h in Headers */,
 				A55DAF0824B1FEC800766EE9 /* PNXML+Private.h in Headers */,
 				79AA8ECA26EAB81500ADA747 /* PNConfiguration+Private.h in Headers */,
 				A58975B323005AAC0093BD9A /* PNManageMembershipsStatus.h in Headers */,
@@ -6623,16 +6801,15 @@
 				A5567F0D2C219757003C974F /* PNBaseAppContextObject.h in Headers */,
 				A5046E18247844E70008C81E /* PNSetChannelMembersAPICallBuilder.h in Headers */,
 				A5CFE54B2C18D3A700274165 /* PNPresenceStateSetRequest.h in Headers */,
-				79E20D171C8AEC43001BC9CC /* PNEnvelopeInformation.h in Headers */,
 				A55A880022FD8272002D0A72 /* PNSetChannelMetadataRequest.h in Headers */,
 				A5897593230014220093BD9A /* PNManageChannelMembersAPICallBuilder.h in Headers */,
 				A5567EDD2C209FF7003C974F /* PNPresenceWhereNowFetchData.h in Headers */,
 				A55A85D222FD8078002D0A72 /* PubNub+Objects.h in Headers */,
 				A5567EF22C20D3DE003C974F /* PNPresenceHereNowFetchData+Private.h in Headers */,
-				7925DB961D3FFCAC00857C0D /* PNLLogFileInformation.h in Headers */,
 				A5CFE5332C18D33500274165 /* PNHereNowRequest.h in Headers */,
 				79650C2F1E775E8C00006F66 /* PNDefines.h in Headers */,
 				A523EEE42BFE910A009F45AA /* PNURLSessionTransport.h in Headers */,
+				A51034812E5290FC005486BC /* PNNetworkResponseLogEntry.h in Headers */,
 				79A0D9801DC2314B0039A264 /* PNTimeAPICallBuilder.h in Headers */,
 				A5567F6E2C21F0EA003C974F /* PNUUIDMetadataFetchData.h in Headers */,
 				79A3E419221569BA00F2ADB9 /* PNMessageCountResult.h in Headers */,
@@ -6650,6 +6827,7 @@
 				A55A87C822FD8272002D0A72 /* PNRemoveUUIDMetadataRequest.h in Headers */,
 				A5567F502C21E965003C974F /* PNMembershipsFetchData.h in Headers */,
 				A532490A2C2C7262003510FF /* PNHistoryFetchRequest+Private.h in Headers */,
+				A5AA75D32E662B8E00944A22 /* PNLoggerManager+Private.h in Headers */,
 				A55A866C22FD80B9002D0A72 /* PNFetchAllChannelsMetadataAPICallBuilder.h in Headers */,
 				79A0D9371DC230CB0039A264 /* PNStreamModificationAPICallBuilder.h in Headers */,
 				A56FAEF3233161570072ADD6 /* PubNub+MessageActions.h in Headers */,
@@ -6658,6 +6836,8 @@
 				79A8BC731C58F93900015BDE /* PubNub+ChannelGroup.h in Headers */,
 				79A8BCB71C58F93900015BDE /* PubNub+CorePrivate.h in Headers */,
 				799D611624C391A100171C29 /* PNPublishFileMessageRequest.h in Headers */,
+				A51034352E52832A005486BC /* PNStringLogEntry.h in Headers */,
+				A510345F2E528C7B005486BC /* PNErrorLogEntry.h in Headers */,
 				A5046E22247844E70008C81E /* PNSetMembershipsAPICallBuilder.h in Headers */,
 				A5A7B0012349330F0060113B /* PNBaseMessageActionRequest+Private.h in Headers */,
 				A5A7AFFA2349330F0060113B /* PNFetchMessageActionsRequest.h in Headers */,
@@ -6677,6 +6857,7 @@
 				A5FADC422490292A001D7704 /* PNSendFileRequest.h in Headers */,
 				A55680FD2C242D7C003C974F /* PNMessageActionResult.h in Headers */,
 				A58975C323005BD80093BD9A /* PNMembership.h in Headers */,
+				A51034492E528803005486BC /* PNDictionaryLogEntry.h in Headers */,
 				A55680682C2311D0003C974F /* PNGenerateFileDownloadURLRequest.h in Headers */,
 				79A8BC791C58F93900015BDE /* PNSubscribeStatus.h in Headers */,
 				A5567E7A2C1FCADC003C974F /* PNPushNotificationFetchData.h in Headers */,
@@ -6735,6 +6916,7 @@
 				A51B4A0D2BF0ADD6008C3370 /* PNJSONSerializer.h in Headers */,
 				79A8BCAB1C58F93900015BDE /* PNSubscriber.h in Headers */,
 				A5DB70F32AAEFE58005B6559 /* PNLegacyCryptor.h in Headers */,
+				A5E72FF42E44024900ECC1F8 /* PNLogEntry.h in Headers */,
 				79A8BC9A1C58F93900015BDE /* PNURLRequest.h in Headers */,
 				79A0D8CB1DC22FF90039A264 /* PNPresenceWhereNowAPICallBuilder.h in Headers */,
 				79A0D94F1DC230F50039A264 /* PNSubscribeAPIBuilder.h in Headers */,
@@ -6760,6 +6942,9 @@
 				A5CFE5CF2C1AFF9100274165 /* PNErrorData+Private.h in Headers */,
 				A5567F202C21D53D003C974F /* PNChannelMembersManageData.h in Headers */,
 				A55680F12C242D11003C974F /* PNSignalResult.h in Headers */,
+				A5E72FED2E43FD9700ECC1F8 /* PNLogger.h in Headers */,
+				A5AA75D82E662D1900944A22 /* PNNetworkResponseLogEntry+Private.h in Headers */,
+				A51034712E528DBB005486BC /* PNNetworkRequestLogEntry.h in Headers */,
 				A55680052C225579003C974F /* PNPresenceUserStateFetchData+Private.h in Headers */,
 				A5DB71482AAEFE58005B6559 /* PNCryptorHeader.h in Headers */,
 				A5CFE51D2C18969900274165 /* PNBasePushNotificationsRequest+Private.h in Headers */,
@@ -6796,7 +6981,9 @@
 				A5CFE5A12C1933BD00274165 /* PNPresenceLeaveRequest.h in Headers */,
 				A55A878922FD8272002D0A72 /* PNSetUUIDMetadataRequest.h in Headers */,
 				A55A863B22FD80B9002D0A72 /* PNFetchUUIDMetadataAPICallBuilder.h in Headers */,
-				79A8BC9C1C58F93900015BDE /* PNLogMacro.h in Headers */,
+				A5ACCABC2E560730003D828D /* PNFileLogger.h in Headers */,
+				A5ACCABD2E560730003D828D /* PNConsoleLogger.h in Headers */,
+				A5ACCABE2E560730003D828D /* PNFileLoggerFileInformation.h in Headers */,
 				A5CFE4F42C16528700274165 /* PNTimeData.h in Headers */,
 				A5CFE5082C1658E700274165 /* PNHistoryFetchData.h in Headers */,
 				A5A45206246F268C008ECC74 /* PNRemoveMembershipsAPICallBuilder.h in Headers */,
@@ -6821,8 +7008,6 @@
 				A504E18524AAA724006DCF5B /* PNDownloadFileAPICallBuilder.h in Headers */,
 				A5DB70952AAE778F005B6559 /* PNSequenceInputStream.h in Headers */,
 				79A8BC961C58F93900015BDE /* PNHelpers.h in Headers */,
-				A5567E6D2C1FBE44003C974F /* PubNub+Deprecated.h in Headers */,
-				7925DB881D3FFCAC00857C0D /* PNLLogger.h in Headers */,
 				A51B4A632BF0B117008C3370 /* PNJSONCodableObjects.h in Headers */,
 				A5105B51238F027D00CB693D /* PNDate.h in Headers */,
 				79CD276124D6A371000698DD /* PNKeyValueStorage.h in Headers */,
@@ -6857,12 +7042,14 @@
 				A56BBFBC2AB63F8F00260D83 /* PNCryptoProvider.h in Headers */,
 				A504E1D924B04751006DCF5B /* PNFilesManager.h in Headers */,
 				A5567EE92C20A51A003C974F /* PNPresenceHeartbeatRequest.h in Headers */,
+				A58146F22E524AA600887E5F /* PNLoggerManager.h in Headers */,
 				A55A872722FD81E3002D0A72 /* PNFetchChannelMetadataResult.h in Headers */,
 				A5567FEA2C222F1B003C974F /* PNHistoryMessageCountData.h in Headers */,
 				A5567FD52C2213AF003C974F /* PNFetchAllChannelsMetadataResult.h in Headers */,
 				A53248AF2C24D987003510FF /* PNJSONDecoder+Private.h in Headers */,
 				A504E10524AA8F44006DCF5B /* PNListFilesResult.h in Headers */,
 				A51B4A492BF0B0B0008C3370 /* PNJSONEncoder.h in Headers */,
+				A51034782E528E36005486BC /* PNNetworkRequestLogEntry+Private.h in Headers */,
 				79A8BCA51C58F93900015BDE /* PNData.h in Headers */,
 				79CFA2D126DE1CD100D206D4 /* PNPAMToken+Private.h in Headers */,
 				A5CB33D82C0C70B2008527AA /* PNTransportMiddleware.h in Headers */,
@@ -6916,7 +7103,9 @@
 				A55681262C242EE6003C974F /* PNPresenceEventResult.h in Headers */,
 				79A0D92D1DC230AC0039A264 /* PNStreamAPICallBuilder.h in Headers */,
 				79A238E11D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfigurationPrivate.h in Headers */,
+				A51034312E527E5D005486BC /* PNLogEntry+Private.h in Headers */,
 				A51B4A222BF0AE79008C3370 /* PNEncoder.h in Headers */,
+				A5AA75DE2E672B3600944A22 /* PNPublishFileMessageRequest+Private.h in Headers */,
 				A55DAF0A24B1FEC800766EE9 /* PNXML+Private.h in Headers */,
 				79AA8ECC26EAB81500ADA747 /* PNConfiguration+Private.h in Headers */,
 				A58975B523005AAC0093BD9A /* PNManageMembershipsStatus.h in Headers */,
@@ -6988,7 +7177,6 @@
 				A5567F102C219757003C974F /* PNBaseAppContextObject.h in Headers */,
 				A5046E1A247844E70008C81E /* PNSetChannelMembersAPICallBuilder.h in Headers */,
 				A5CFE54F2C18D3A700274165 /* PNPresenceStateSetRequest.h in Headers */,
-				79E20D191C8AEC44001BC9CC /* PNEnvelopeInformation.h in Headers */,
 				A55A880222FD8272002D0A72 /* PNSetChannelMetadataRequest.h in Headers */,
 				A5897595230014220093BD9A /* PNManageChannelMembersAPICallBuilder.h in Headers */,
 				A5567EE02C209FF7003C974F /* PNPresenceWhereNowFetchData.h in Headers */,
@@ -6998,6 +7186,7 @@
 				79650C311E775E8D00006F66 /* PNDefines.h in Headers */,
 				A523EEE72BFE910A009F45AA /* PNURLSessionTransport.h in Headers */,
 				79A0D9821DC2314C0039A264 /* PNTimeAPICallBuilder.h in Headers */,
+				A51034852E5290FC005486BC /* PNNetworkResponseLogEntry.h in Headers */,
 				A5567F712C21F0EA003C974F /* PNUUIDMetadataFetchData.h in Headers */,
 				79CBB1641BD03DE4001FC34D /* PNPrivateStructures.h in Headers */,
 				79A3E41B221569BA00F2ADB9 /* PNMessageCountResult.h in Headers */,
@@ -7014,6 +7203,7 @@
 				A55A87CA22FD8272002D0A72 /* PNRemoveUUIDMetadataRequest.h in Headers */,
 				A5567F532C21E965003C974F /* PNMembershipsFetchData.h in Headers */,
 				A55A866E22FD80B9002D0A72 /* PNFetchAllChannelsMetadataAPICallBuilder.h in Headers */,
+				A5AA75CF2E662B8E00944A22 /* PNLoggerManager+Private.h in Headers */,
 				A532490C2C2C7262003510FF /* PNHistoryFetchRequest+Private.h in Headers */,
 				79A0D93A1DC230CD0039A264 /* PNStreamModificationAPICallBuilder.h in Headers */,
 				79CBB0FA1BD03DE4001FC34D /* PubNub+ChannelGroup.h in Headers */,
@@ -7023,6 +7213,8 @@
 				79CBB0FE1BD03DE4001FC34D /* PubNub+CorePrivate.h in Headers */,
 				799D611824C391A100171C29 /* PNPublishFileMessageRequest.h in Headers */,
 				A5046E24247844E70008C81E /* PNSetMembershipsAPICallBuilder.h in Headers */,
+				A51034372E52832A005486BC /* PNStringLogEntry.h in Headers */,
+				A510345B2E528C7B005486BC /* PNErrorLogEntry.h in Headers */,
 				A5A7B0032349330F0060113B /* PNBaseMessageActionRequest+Private.h in Headers */,
 				A5A7AFFC2349330F0060113B /* PNFetchMessageActionsRequest.h in Headers */,
 				A53248B72C24E2D1003510FF /* PNSubscribeMessageEventData+Private.h in Headers */,
@@ -7042,6 +7234,7 @@
 				A5FADC442490292A001D7704 /* PNSendFileRequest.h in Headers */,
 				A55681022C242D7C003C974F /* PNMessageActionResult.h in Headers */,
 				A58975C523005BD80093BD9A /* PNMembership.h in Headers */,
+				A51034472E528803005486BC /* PNDictionaryLogEntry.h in Headers */,
 				A556806B2C2311D0003C974F /* PNGenerateFileDownloadURLRequest.h in Headers */,
 				79CBB1391BD03DE4001FC34D /* PNOperationResult+Private.h in Headers */,
 				A5567E7D2C1FCADC003C974F /* PNPushNotificationFetchData.h in Headers */,
@@ -7100,6 +7293,7 @@
 				A51B4A0F2BF0ADD6008C3370 /* PNJSONSerializer.h in Headers */,
 				79CBB1591BD03DE4001FC34D /* PNURLRequest.h in Headers */,
 				A5DB70F52AAEFE58005B6559 /* PNLegacyCryptor.h in Headers */,
+				A5E72FF62E44024900ECC1F8 /* PNLogEntry.h in Headers */,
 				79A0D8CD1DC22FFA0039A264 /* PNPresenceWhereNowAPICallBuilder.h in Headers */,
 				79CBB1651BD03DE4001FC34D /* PNStructures.h in Headers */,
 				79A0D9511DC230F50039A264 /* PNSubscribeAPIBuilder.h in Headers */,
@@ -7125,6 +7319,9 @@
 				A5CFE5D12C1AFF9100274165 /* PNErrorData+Private.h in Headers */,
 				A5567F232C21D53D003C974F /* PNChannelMembersManageData.h in Headers */,
 				A55680F62C242D11003C974F /* PNSignalResult.h in Headers */,
+				A5AA75D72E662D1900944A22 /* PNNetworkResponseLogEntry+Private.h in Headers */,
+				A5E72FEA2E43FD9700ECC1F8 /* PNLogger.h in Headers */,
+				A510346B2E528DBB005486BC /* PNNetworkRequestLogEntry.h in Headers */,
 				A55680072C225579003C974F /* PNPresenceUserStateFetchData+Private.h in Headers */,
 				A5DB714A2AAEFE59005B6559 /* PNCryptorHeader.h in Headers */,
 				A5CFE51F2C18969900274165 /* PNBasePushNotificationsRequest+Private.h in Headers */,
@@ -7157,10 +7354,12 @@
 				A5A7B02D2349330F0060113B /* PNRemoveMessageActionRequest.h in Headers */,
 				A586A9EF2337E581008856D2 /* PNFetchMessageActionsResult.h in Headers */,
 				A57A309C238D784A00DE8C68 /* PNBaseNotificationPayload.h in Headers */,
-				79CBB1611BD03DE4001FC34D /* PNLogMacro.h in Headers */,
 				A5CFE5A52C1933BD00274165 /* PNPresenceLeaveRequest.h in Headers */,
 				A55A878B22FD8272002D0A72 /* PNSetUUIDMetadataRequest.h in Headers */,
 				A55A863D22FD80B9002D0A72 /* PNFetchUUIDMetadataAPICallBuilder.h in Headers */,
+				A5ACCAA42E560730003D828D /* PNFileLogger.h in Headers */,
+				A5ACCAA52E560730003D828D /* PNConsoleLogger.h in Headers */,
+				A5ACCAA62E560730003D828D /* PNFileLoggerFileInformation.h in Headers */,
 				A5CFE4F82C16528700274165 /* PNTimeData.h in Headers */,
 				A5CFE50C2C1658E700274165 /* PNHistoryFetchData.h in Headers */,
 				A5A45208246F268C008ECC74 /* PNRemoveMembershipsAPICallBuilder.h in Headers */,
@@ -7185,8 +7384,6 @@
 				A55A872222FD81E3002D0A72 /* PNSetChannelMetadataStatus.h in Headers */,
 				A504E18724AAA724006DCF5B /* PNDownloadFileAPICallBuilder.h in Headers */,
 				A5DB70972AAE778F005B6559 /* PNSequenceInputStream.h in Headers */,
-				7925DB8A1D3FFCAC00857C0D /* PNLLogger.h in Headers */,
-				A5567E702C1FBE44003C974F /* PubNub+Deprecated.h in Headers */,
 				793887071BEAD4A800DCC662 /* PNNumber.h in Headers */,
 				A51B4A672BF0B117008C3370 /* PNJSONCodableObjects.h in Headers */,
 				A5105B53238F027D00CB693D /* PNDate.h in Headers */,
@@ -7209,7 +7406,6 @@
 				A5046E322478471D0008C81E /* PNSetChannelMembersRequest.h in Headers */,
 				79CBB1401BD03DE4001FC34D /* PNStatus.h in Headers */,
 				A57A306C238D6BCC00DE8C68 /* PNFCMNotificationPayload.h in Headers */,
-				7925DB981D3FFCAC00857C0D /* PNLLogFileInformation.h in Headers */,
 				A5567EC82C207800003C974F /* PNSubscribeCursorData.h in Headers */,
 				797ABBB724C4408A0008CA1E /* PNPublishFileMessageAPICallBuilder.h in Headers */,
 				A5567F2F2C21DB10003C974F /* PNMembershipsManageData.h in Headers */,
@@ -7222,12 +7418,14 @@
 				A56BBFBE2AB63F8F00260D83 /* PNCryptoProvider.h in Headers */,
 				A504E1DB24B04751006DCF5B /* PNFilesManager.h in Headers */,
 				A5567EEC2C20A51A003C974F /* PNPresenceHeartbeatRequest.h in Headers */,
+				A58146EE2E524AA600887E5F /* PNLoggerManager.h in Headers */,
 				A55A872922FD81E3002D0A72 /* PNFetchChannelMetadataResult.h in Headers */,
 				A5567FED2C222F1B003C974F /* PNHistoryMessageCountData.h in Headers */,
 				A5567FD72C2213AF003C974F /* PNFetchAllChannelsMetadataResult.h in Headers */,
 				A53248B12C24D987003510FF /* PNJSONDecoder+Private.h in Headers */,
 				A504E10724AA8F44006DCF5B /* PNListFilesResult.h in Headers */,
 				A51B4A4D2BF0B0B0008C3370 /* PNJSONEncoder.h in Headers */,
+				A51034762E528E36005486BC /* PNNetworkRequestLogEntry+Private.h in Headers */,
 				79CBB14E1BD03DE4001FC34D /* PNData.h in Headers */,
 				79CFA2D326DE1CD100D206D4 /* PNPAMToken+Private.h in Headers */,
 				A5CB33DB2C0C70B2008527AA /* PNTransportMiddleware.h in Headers */,
@@ -7735,6 +7933,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A53248D22C28D211003510FF /* PNHistoryMessageCountData.m in Sources */,
+				A51034802E5290FC005486BC /* PNNetworkResponseLogEntry.m in Sources */,
 				A5CFE5542C18D3B600274165 /* PNPresenceStateFetchRequest.m in Sources */,
 				A5046F0424784CAB0008C81E /* PNFetchChannelMetadataAPICallBuilder.m in Sources */,
 				7951954826BD44E9001E308C /* PubNub+PAM.m in Sources */,
@@ -7748,6 +7947,7 @@
 				797ABBA724C4148C0008CA1E /* PNBasePublishRequest.m in Sources */,
 				A5046EFB24784CAB0008C81E /* PNManageMembershipsAPICallBuilder.m in Sources */,
 				A5046F1624784CAB0008C81E /* PNFetchChannelMembersRequest.m in Sources */,
+				A58146F52E524AA600887E5F /* PNLoggerManager.m in Sources */,
 				A523EEE22BFE910A009F45AA /* PNURLSessionTransport.m in Sources */,
 				791582411BD709C60084FC70 /* PNPresenceChannelGroupHereNowResult.m in Sources */,
 				A5567FB72C221136003C974F /* PNChannelMetadataFetchData.m in Sources */,
@@ -7767,6 +7967,9 @@
 				A5046F0724784CAB0008C81E /* PNRemoveUUIDMetadataAPICallBuilder.m in Sources */,
 				79A0D8431DC22C950039A264 /* PNAPNSAPICallBuilder.m in Sources */,
 				A5567ECE2C208652003C974F /* PNSubscribeEventData.m in Sources */,
+				A5ACCAB62E560730003D828D /* PNFileLogger.m in Sources */,
+				A5ACCAB72E560730003D828D /* PNConsoleLogger.m in Sources */,
+				A5ACCAB82E560730003D828D /* PNFileLoggerFileInformation.m in Sources */,
 				A55BCCFD231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.m in Sources */,
 				797ABBB924C4408A0008CA1E /* PNPublishFileMessageAPICallBuilder.m in Sources */,
 				7915820A1BD709C60084FC70 /* PNPresenceGlobalHereNowResult.m in Sources */,
@@ -7786,6 +7989,7 @@
 				A5046F1824784CAB0008C81E /* PNSetChannelMetadataRequest.m in Sources */,
 				A5CFE53C2C18D38600274165 /* PNWhereNowRequest.m in Sources */,
 				A5567EE62C20A51A003C974F /* PNPresenceHeartbeatRequest.m in Sources */,
+				A510346E2E528DBB005486BC /* PNNetworkRequestLogEntry.m in Sources */,
 				A5DB71012AAEFE58005B6559 /* PNLegacyCryptor.m in Sources */,
 				791582471BD709C60084FC70 /* PNAPNSEnabledChannelsResult.m in Sources */,
 				A53248FF2C2AC5C1003510FF /* PNChannelGroupsResult.m in Sources */,
@@ -7802,8 +8006,6 @@
 				791582211BD709C60084FC70 /* PNAcknowledgmentStatus.m in Sources */,
 				A5CFE5302C18D33500274165 /* PNHereNowRequest.m in Sources */,
 				A55680832C23527D003C974F /* PNFileDownloadData.m in Sources */,
-				79E20D161C8AEC3A001BC9CC /* PNEnvelopeInformation.m in Sources */,
-				7925DB9C1D3FFCAC00857C0D /* PNLLogFileInformation.m in Sources */,
 				7915822C1BD709C60084FC70 /* PNClientInformation.m in Sources */,
 				793248651D874D9F00FBDF36 /* PNPublishSequence.m in Sources */,
 				A5567FCF2C2213AF003C974F /* PNFetchAllChannelsMetadataResult.m in Sources */,
@@ -7855,8 +8057,8 @@
 				A53248D82C28D3BC003510FF /* PNMembershipsFetchData.m in Sources */,
 				A5DB711F2AAEFE58005B6559 /* PNEncryptedStream.m in Sources */,
 				7915821F1BD709C60084FC70 /* PNStateListener.m in Sources */,
+				A510343A2E52832A005486BC /* PNStringLogEntry.m in Sources */,
 				79A0D8491DC22C950039A264 /* PNHistoryAPICallBuilder.m in Sources */,
-				A5567E6A2C1FBE44003C974F /* PubNub+Deprecated.m in Sources */,
 				A5046F0024784CAB0008C81E /* PNFetchChannelMembersAPICallBuilder.m in Sources */,
 				A5567E9B2C20243C003C974F /* PNMessageActionFetchData.m in Sources */,
 				79A0D8511DC22C950039A264 /* PNPresenceHereNowAPICallBuilder.m in Sources */,
@@ -7870,6 +8072,7 @@
 				A5DB70992AAE778F005B6559 /* PNSequenceInputStream.m in Sources */,
 				A5CFE59E2C1933BD00274165 /* PNPresenceLeaveRequest.m in Sources */,
 				A504E14624AA94C8006DCF5B /* PNFile.m in Sources */,
+				A51034462E528803005486BC /* PNDictionaryLogEntry.m in Sources */,
 				A5567F1D2C21D53D003C974F /* PNChannelMembersManageData.m in Sources */,
 				799D610824C36D5B00171C29 /* PNPublishRequest.m in Sources */,
 				A556811F2C242EE6003C974F /* PNPresenceEventResult.m in Sources */,
@@ -7966,7 +8169,6 @@
 				A5046F1024784CAB0008C81E /* PNManageMembershipsRequest.m in Sources */,
 				79A3E41F221569BA00F2ADB9 /* PNMessageCountResult.m in Sources */,
 				A504E1A124ACCA42006DCF5B /* PNFileDownloadURLAPICallBuilder.m in Sources */,
-				7925DB8E1D3FFCAC00857C0D /* PNLLogger.m in Sources */,
 				A5567F772C21F203003C974F /* PNUUIDMetadataFetchAllData.m in Sources */,
 				A55680412C229D8D003C974F /* PNFileSendData.m in Sources */,
 				797D606122D2E41100E64C94 /* PNSignalAPICallBuilder.m in Sources */,
@@ -7977,6 +8179,7 @@
 				A5CFE5BD2C1AAAAC00274165 /* PNErrorData.m in Sources */,
 				A5A7B01C2349330F0060113B /* PNFetchMessageActionsRequest.m in Sources */,
 				A55681132C242E96003C974F /* PNFileEventResult.m in Sources */,
+				A5E72FF22E44024900ECC1F8 /* PNLogEntry.m in Sources */,
 				791582431BD709C60084FC70 /* PNStatus.m in Sources */,
 				A5567F412C21E723003C974F /* PNChannelMembersFetchData.m in Sources */,
 				A51B4AAA2BF37F03008C3370 /* PNChannelGroupFetchRequest.m in Sources */,
@@ -7994,6 +8197,7 @@
 				A5567F0A2C219757003C974F /* PNBaseAppContextObject.m in Sources */,
 				A56FAEF9233161570072ADD6 /* PubNub+MessageActions.m in Sources */,
 				A55680532C22BE6D003C974F /* PNFileUploadRequest.m in Sources */,
+				A510345E2E528C7B005486BC /* PNErrorLogEntry.m in Sources */,
 				A5DB70F72AAEFE58005B6559 /* PNCCCryptorWrapper.m in Sources */,
 				A5DB712E2AAEFE58005B6559 /* PNCryptorInputStream.m in Sources */,
 				79A0D8651DC22C950039A264 /* PNSubscribeAPIBuilder.m in Sources */,
@@ -8023,6 +8227,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A53248D42C28D211003510FF /* PNHistoryMessageCountData.m in Sources */,
+				A51034832E5290FC005486BC /* PNNetworkResponseLogEntry.m in Sources */,
 				A5CFE5592C18D3B600274165 /* PNPresenceStateFetchRequest.m in Sources */,
 				A5046EA624784CAA0008C81E /* PNFetchChannelMetadataAPICallBuilder.m in Sources */,
 				7951954A26BD44E9001E308C /* PubNub+PAM.m in Sources */,
@@ -8036,6 +8241,7 @@
 				797ABBA924C4148C0008CA1E /* PNBasePublishRequest.m in Sources */,
 				A5046E9D24784CAA0008C81E /* PNManageMembershipsAPICallBuilder.m in Sources */,
 				A5046EB824784CAA0008C81E /* PNFetchChannelMembersRequest.m in Sources */,
+				A58146F72E524AA600887E5F /* PNLoggerManager.m in Sources */,
 				A523EEE52BFE910A009F45AA /* PNURLSessionTransport.m in Sources */,
 				79A238D91D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.m in Sources */,
 				A5567FBC2C221136003C974F /* PNChannelMetadataFetchData.m in Sources */,
@@ -8055,6 +8261,9 @@
 				A5046EA924784CAA0008C81E /* PNRemoveUUIDMetadataAPICallBuilder.m in Sources */,
 				A5567ED32C208652003C974F /* PNSubscribeEventData.m in Sources */,
 				79A0D88A1DC22F620039A264 /* PNAPNSAPICallBuilder.m in Sources */,
+				A5ACCAAD2E560730003D828D /* PNFileLogger.m in Sources */,
+				A5ACCAAE2E560730003D828D /* PNConsoleLogger.m in Sources */,
+				A5ACCAAF2E560730003D828D /* PNFileLoggerFileInformation.m in Sources */,
 				A55BCCFF231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.m in Sources */,
 				797ABBBB24C4408A0008CA1E /* PNPublishFileMessageAPICallBuilder.m in Sources */,
 				791582B31BD709D10084FC70 /* PNPresenceGlobalHereNowResult.m in Sources */,
@@ -8074,6 +8283,7 @@
 				A5046EB724784CAA0008C81E /* PNSetMembershipsRequest.m in Sources */,
 				A5046EBA24784CAA0008C81E /* PNSetChannelMetadataRequest.m in Sources */,
 				A5CFE5412C18D38600274165 /* PNWhereNowRequest.m in Sources */,
+				A510346F2E528DBB005486BC /* PNNetworkRequestLogEntry.m in Sources */,
 				A5567EEB2C20A51A003C974F /* PNPresenceHeartbeatRequest.m in Sources */,
 				A5DB71032AAEFE58005B6559 /* PNLegacyCryptor.m in Sources */,
 				A53249032C2AC5C1003510FF /* PNChannelGroupsResult.m in Sources */,
@@ -8102,11 +8312,9 @@
 				A5046EC224784CAA0008C81E /* PNObjectsPaginatedRequest.m in Sources */,
 				A5CFE5162C1892AD00274165 /* PNPushNotificationManageRequest.m in Sources */,
 				A5046EA724784CAA0008C81E /* PNSetChannelMetadataAPICallBuilder.m in Sources */,
-				79E20D1E1C8AEC51001BC9CC /* PNEnvelopeInformation.m in Sources */,
 				A504E17324AAA70A006DCF5B /* PNListFilesAPICallBuilder.m in Sources */,
 				A57A3092238D751400DE8C68 /* PNMPNSNotificationPayload.m in Sources */,
 				A5567E352C1EB4ED003C974F /* PNTimeRequest.m in Sources */,
-				7925DB9E1D3FFCAC00857C0D /* PNLLogFileInformation.m in Sources */,
 				A5567E632C1F8C53003C974F /* PNOperationDataParser.m in Sources */,
 				A5CFE4752C14A90900274165 /* NSError+PNTransport.m in Sources */,
 				A5CFE4442C11E8D500274165 /* PNChannelGroupManageRequest.m in Sources */,
@@ -8143,9 +8351,9 @@
 				791582E51BD709D10084FC70 /* PubNub+Presence.m in Sources */,
 				A53248DA2C28D3BC003510FF /* PNMembershipsFetchData.m in Sources */,
 				A5DB71212AAEFE58005B6559 /* PNEncryptedStream.m in Sources */,
+				A510343B2E52832A005486BC /* PNStringLogEntry.m in Sources */,
 				791582E41BD709D10084FC70 /* PNPublishStatus.m in Sources */,
 				79A0D8D21DC2300F0039A264 /* PNPresenceAPICallBuilder.m in Sources */,
-				A5567E6F2C1FBE44003C974F /* PubNub+Deprecated.m in Sources */,
 				A5046EA224784CAA0008C81E /* PNFetchChannelMembersAPICallBuilder.m in Sources */,
 				A5567EA02C20243C003C974F /* PNMessageActionFetchData.m in Sources */,
 				79A0D8AE1DC22FB40039A264 /* PNHistoryAPICallBuilder.m in Sources */,
@@ -8158,6 +8366,7 @@
 				A51B4A662BF0B117008C3370 /* PNJSONCodableObjects.m in Sources */,
 				A5DB709B2AAE778F005B6559 /* PNSequenceInputStream.m in Sources */,
 				A5CFE5A32C1933BD00274165 /* PNPresenceLeaveRequest.m in Sources */,
+				A51034432E528803005486BC /* PNDictionaryLogEntry.m in Sources */,
 				A504E14824AA94C8006DCF5B /* PNFile.m in Sources */,
 				A5567F222C21D53D003C974F /* PNChannelMembersManageData.m in Sources */,
 				799D610A24C36D5B00171C29 /* PNPublishRequest.m in Sources */,
@@ -8258,13 +8467,13 @@
 				A5567F7C2C21F203003C974F /* PNUUIDMetadataFetchAllData.m in Sources */,
 				A55680462C229D8D003C974F /* PNFileSendData.m in Sources */,
 				797D606322D2E41100E64C94 /* PNSignalAPICallBuilder.m in Sources */,
-				7925DB901D3FFCAC00857C0D /* PNLLogger.m in Sources */,
 				791582F11BD709D10084FC70 /* PNOperationResult.m in Sources */,
 				A5CB33CD2C046A1A008527AA /* PNTransportConfiguration.m in Sources */,
 				A55BCD1F231D26110019DB68 /* PNMessageAction.m in Sources */,
 				A5CFE5C22C1AAAAD00274165 /* PNErrorData.m in Sources */,
 				A5A7B01E2349330F0060113B /* PNFetchMessageActionsRequest.m in Sources */,
 				A55681172C242E96003C974F /* PNFileEventResult.m in Sources */,
+				A5E72FFA2E44024900ECC1F8 /* PNLogEntry.m in Sources */,
 				79F857FB219640A200BFD0B1 /* PNClientStateGetResult.m in Sources */,
 				A5567F462C21E723003C974F /* PNChannelMembersFetchData.m in Sources */,
 				A51B4AAF2BF37F03008C3370 /* PNChannelGroupFetchRequest.m in Sources */,
@@ -8282,6 +8491,7 @@
 				A5567F0F2C219757003C974F /* PNBaseAppContextObject.m in Sources */,
 				A56FAEFB233161570072ADD6 /* PubNub+MessageActions.m in Sources */,
 				A55680582C22BE6D003C974F /* PNFileUploadRequest.m in Sources */,
+				A51034592E528C7B005486BC /* PNErrorLogEntry.m in Sources */,
 				A5DB70F92AAEFE58005B6559 /* PNCCCryptorWrapper.m in Sources */,
 				A5DB71302AAEFE58005B6559 /* PNCryptorInputStream.m in Sources */,
 				79A0D96D1DC2313A0039A264 /* PNSubscribeChannelsOrGroupsAPIBuilder.m in Sources */,
@@ -8311,6 +8521,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A53248D62C28D211003510FF /* PNHistoryMessageCountData.m in Sources */,
+				A510347D2E5290FC005486BC /* PNNetworkResponseLogEntry.m in Sources */,
 				A5CFE55D2C18D3B600274165 /* PNPresenceStateFetchRequest.m in Sources */,
 				A5046E4824784CA90008C81E /* PNFetchChannelMetadataAPICallBuilder.m in Sources */,
 				7951954C26BD44E9001E308C /* PubNub+PAM.m in Sources */,
@@ -8324,6 +8535,7 @@
 				797ABBAB24C4148C0008CA1E /* PNBasePublishRequest.m in Sources */,
 				A5046E3F24784CA90008C81E /* PNManageMembershipsAPICallBuilder.m in Sources */,
 				A5046E5A24784CA90008C81E /* PNFetchChannelMembersRequest.m in Sources */,
+				A58146F12E524AA600887E5F /* PNLoggerManager.m in Sources */,
 				A523EEE92BFE910A009F45AA /* PNURLSessionTransport.m in Sources */,
 				79A238DC1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.m in Sources */,
 				A5567FC02C221136003C974F /* PNChannelMetadataFetchData.m in Sources */,
@@ -8343,6 +8555,9 @@
 				A5046E4B24784CA90008C81E /* PNRemoveUUIDMetadataAPICallBuilder.m in Sources */,
 				A5567ED72C208652003C974F /* PNSubscribeEventData.m in Sources */,
 				79A0D88D1DC22F630039A264 /* PNAPNSAPICallBuilder.m in Sources */,
+				A5ACCAB02E560730003D828D /* PNFileLogger.m in Sources */,
+				A5ACCAB12E560730003D828D /* PNConsoleLogger.m in Sources */,
+				A5ACCAB22E560730003D828D /* PNFileLoggerFileInformation.m in Sources */,
 				A55BCD02231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.m in Sources */,
 				797ABBBD24C4408A0008CA1E /* PNPublishFileMessageAPICallBuilder.m in Sources */,
 				7988426B1C18F1E3003E8948 /* PNPresenceGlobalHereNowResult.m in Sources */,
@@ -8362,6 +8577,7 @@
 				A5046E5C24784CA90008C81E /* PNSetChannelMetadataRequest.m in Sources */,
 				A5CFE5452C18D38600274165 /* PNWhereNowRequest.m in Sources */,
 				A5567EEF2C20A51A003C974F /* PNPresenceHeartbeatRequest.m in Sources */,
+				A51034732E528DBB005486BC /* PNNetworkRequestLogEntry.m in Sources */,
 				A5DB71052AAEFE58005B6559 /* PNLegacyCryptor.m in Sources */,
 				79A0D8E71DC2301F0039A264 /* PNPresenceHereNowAPICallBuilder.m in Sources */,
 				A53249072C2AC5C1003510FF /* PNChannelGroupsResult.m in Sources */,
@@ -8390,11 +8606,9 @@
 				A5046E6424784CA90008C81E /* PNObjectsPaginatedRequest.m in Sources */,
 				A5CFE51A2C1892AD00274165 /* PNPushNotificationManageRequest.m in Sources */,
 				A5046E4924784CA90008C81E /* PNSetChannelMetadataAPICallBuilder.m in Sources */,
-				79E20D211C8AEC53001BC9CC /* PNEnvelopeInformation.m in Sources */,
 				A504E17524AAA70A006DCF5B /* PNListFilesAPICallBuilder.m in Sources */,
 				A57A3095238D751400DE8C68 /* PNMPNSNotificationPayload.m in Sources */,
 				A5567E3A2C1EB4ED003C974F /* PNTimeRequest.m in Sources */,
-				7925DBA11D3FFCAC00857C0D /* PNLLogFileInformation.m in Sources */,
 				A5567E672C1F8C53003C974F /* PNOperationDataParser.m in Sources */,
 				A5CFE4792C14A90900274165 /* NSError+PNTransport.m in Sources */,
 				A5CFE4482C11E8D500274165 /* PNChannelGroupManageRequest.m in Sources */,
@@ -8431,8 +8645,8 @@
 				A53248DC2C28D3BC003510FF /* PNMembershipsFetchData.m in Sources */,
 				A5DB71232AAEFE58005B6559 /* PNEncryptedStream.m in Sources */,
 				7988426D1C18F1E3003E8948 /* PNPublishStatus.m in Sources */,
+				A510343D2E52832A005486BC /* PNStringLogEntry.m in Sources */,
 				79A0D8D51DC230100039A264 /* PNPresenceAPICallBuilder.m in Sources */,
-				A5567E732C1FBE44003C974F /* PubNub+Deprecated.m in Sources */,
 				A5046E4424784CA90008C81E /* PNFetchChannelMembersAPICallBuilder.m in Sources */,
 				A5567EA42C20243C003C974F /* PNMessageActionFetchData.m in Sources */,
 				79A0D8B11DC22FB60039A264 /* PNHistoryAPICallBuilder.m in Sources */,
@@ -8446,6 +8660,7 @@
 				A5DB709D2AAE778F005B6559 /* PNSequenceInputStream.m in Sources */,
 				A5CFE5A72C1933BD00274165 /* PNPresenceLeaveRequest.m in Sources */,
 				A504E14A24AA94C8006DCF5B /* PNFile.m in Sources */,
+				A51034412E528803005486BC /* PNDictionaryLogEntry.m in Sources */,
 				A5567F262C21D53D003C974F /* PNChannelMembersManageData.m in Sources */,
 				799D610C24C36D5B00171C29 /* PNPublishRequest.m in Sources */,
 				A55681282C242EE6003C974F /* PNPresenceEventResult.m in Sources */,
@@ -8546,13 +8761,13 @@
 				A5567F802C21F203003C974F /* PNUUIDMetadataFetchAllData.m in Sources */,
 				A556804A2C229D8D003C974F /* PNFileSendData.m in Sources */,
 				797D606622D2E41100E64C94 /* PNSignalAPICallBuilder.m in Sources */,
-				7925DB931D3FFCAC00857C0D /* PNLLogger.m in Sources */,
 				7988426E1C18F1E3003E8948 /* PNOperationResult.m in Sources */,
 				A5CB33D12C046A1A008527AA /* PNTransportConfiguration.m in Sources */,
 				A55BCD22231D26110019DB68 /* PNMessageAction.m in Sources */,
 				A5CFE5C62C1AAAAD00274165 /* PNErrorData.m in Sources */,
 				A5A7B0212349330F0060113B /* PNFetchMessageActionsRequest.m in Sources */,
 				A556811C2C242E96003C974F /* PNFileEventResult.m in Sources */,
+				A5E72FF72E44024900ECC1F8 /* PNLogEntry.m in Sources */,
 				79F857FE219640AB00BFD0B1 /* PNClientStateGetResult.m in Sources */,
 				A5567F4A2C21E723003C974F /* PNChannelMembersFetchData.m in Sources */,
 				A51B4AB32BF37F03008C3370 /* PNChannelGroupFetchRequest.m in Sources */,
@@ -8570,6 +8785,7 @@
 				A5567F132C219757003C974F /* PNBaseAppContextObject.m in Sources */,
 				A56FAEFE233161570072ADD6 /* PubNub+MessageActions.m in Sources */,
 				A556805C2C22BE6D003C974F /* PNFileUploadRequest.m in Sources */,
+				A51034612E528C7B005486BC /* PNErrorLogEntry.m in Sources */,
 				A5DB70FB2AAEFE58005B6559 /* PNCCCryptorWrapper.m in Sources */,
 				A5DB71322AAEFE58005B6559 /* PNCryptorInputStream.m in Sources */,
 				79A0D96F1DC2313B0039A264 /* PNSubscribeChannelsOrGroupsAPIBuilder.m in Sources */,
@@ -8599,6 +8815,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A53248D32C28D211003510FF /* PNHistoryMessageCountData.m in Sources */,
+				A51034822E5290FC005486BC /* PNNetworkResponseLogEntry.m in Sources */,
 				A5CFE5562C18D3B600274165 /* PNPresenceStateFetchRequest.m in Sources */,
 				A5046ED524784CAB0008C81E /* PNFetchChannelMetadataAPICallBuilder.m in Sources */,
 				7951954926BD44E9001E308C /* PubNub+PAM.m in Sources */,
@@ -8612,6 +8829,7 @@
 				797ABBA824C4148C0008CA1E /* PNBasePublishRequest.m in Sources */,
 				A5046ECC24784CAB0008C81E /* PNManageMembershipsAPICallBuilder.m in Sources */,
 				A5046EE724784CAB0008C81E /* PNFetchChannelMembersRequest.m in Sources */,
+				A58146F32E524AA600887E5F /* PNLoggerManager.m in Sources */,
 				A523EEE32BFE910A009F45AA /* PNURLSessionTransport.m in Sources */,
 				79A238D81D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.m in Sources */,
 				A5567FB92C221136003C974F /* PNChannelMetadataFetchData.m in Sources */,
@@ -8631,6 +8849,9 @@
 				A5046ED824784CAB0008C81E /* PNRemoveUUIDMetadataAPICallBuilder.m in Sources */,
 				A5567ED02C208652003C974F /* PNSubscribeEventData.m in Sources */,
 				79A0D8891DC22F610039A264 /* PNAPNSAPICallBuilder.m in Sources */,
+				A5ACCABF2E560730003D828D /* PNFileLogger.m in Sources */,
+				A5ACCAC02E560730003D828D /* PNConsoleLogger.m in Sources */,
+				A5ACCAC12E560730003D828D /* PNFileLoggerFileInformation.m in Sources */,
 				A55BCCFE231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.m in Sources */,
 				797ABBBA24C4408A0008CA1E /* PNPublishFileMessageAPICallBuilder.m in Sources */,
 				79A8BC1F1C58F93900015BDE /* PNPresenceGlobalHereNowResult.m in Sources */,
@@ -8650,6 +8871,7 @@
 				A5046EE624784CAB0008C81E /* PNSetMembershipsRequest.m in Sources */,
 				A5046EE924784CAB0008C81E /* PNSetChannelMetadataRequest.m in Sources */,
 				A5CFE53E2C18D38600274165 /* PNWhereNowRequest.m in Sources */,
+				A51034722E528DBB005486BC /* PNNetworkRequestLogEntry.m in Sources */,
 				A5567EE82C20A51A003C974F /* PNPresenceHeartbeatRequest.m in Sources */,
 				A5DB71022AAEFE58005B6559 /* PNLegacyCryptor.m in Sources */,
 				A53249002C2AC5C1003510FF /* PNChannelGroupsResult.m in Sources */,
@@ -8678,11 +8900,9 @@
 				A5046EF124784CAB0008C81E /* PNObjectsPaginatedRequest.m in Sources */,
 				A5CFE5132C1892AD00274165 /* PNPushNotificationManageRequest.m in Sources */,
 				A5046ED624784CAB0008C81E /* PNSetChannelMetadataAPICallBuilder.m in Sources */,
-				79E20D1D1C8AEC51001BC9CC /* PNEnvelopeInformation.m in Sources */,
 				A504E17224AAA70A006DCF5B /* PNListFilesAPICallBuilder.m in Sources */,
 				A57A3091238D751400DE8C68 /* PNMPNSNotificationPayload.m in Sources */,
 				A5567E342C1EB4ED003C974F /* PNTimeRequest.m in Sources */,
-				7925DB9D1D3FFCAC00857C0D /* PNLLogFileInformation.m in Sources */,
 				A5567E602C1F8C53003C974F /* PNOperationDataParser.m in Sources */,
 				A5CFE4722C14A90900274165 /* NSError+PNTransport.m in Sources */,
 				A5CFE4412C11E8D500274165 /* PNChannelGroupManageRequest.m in Sources */,
@@ -8719,9 +8939,9 @@
 				79A8BC531C58F93900015BDE /* PubNub+Presence.m in Sources */,
 				A53248D92C28D3BC003510FF /* PNMembershipsFetchData.m in Sources */,
 				A5DB71202AAEFE58005B6559 /* PNEncryptedStream.m in Sources */,
+				A51034362E52832A005486BC /* PNStringLogEntry.m in Sources */,
 				79A8BC511C58F93900015BDE /* PNPublishStatus.m in Sources */,
 				79A0D8D11DC2300F0039A264 /* PNPresenceAPICallBuilder.m in Sources */,
-				A5567E6C2C1FBE44003C974F /* PubNub+Deprecated.m in Sources */,
 				A5046ED124784CAB0008C81E /* PNFetchChannelMembersAPICallBuilder.m in Sources */,
 				A5567E9D2C20243C003C974F /* PNMessageActionFetchData.m in Sources */,
 				79A0D8AD1DC22FB40039A264 /* PNHistoryAPICallBuilder.m in Sources */,
@@ -8734,6 +8954,7 @@
 				A51B4A642BF0B117008C3370 /* PNJSONCodableObjects.m in Sources */,
 				A5DB709A2AAE778F005B6559 /* PNSequenceInputStream.m in Sources */,
 				A5CFE5A02C1933BD00274165 /* PNPresenceLeaveRequest.m in Sources */,
+				A510344A2E528803005486BC /* PNDictionaryLogEntry.m in Sources */,
 				A504E14724AA94C8006DCF5B /* PNFile.m in Sources */,
 				A5567F1F2C21D53D003C974F /* PNChannelMembersManageData.m in Sources */,
 				799D610924C36D5B00171C29 /* PNPublishRequest.m in Sources */,
@@ -8834,13 +9055,13 @@
 				A5567F792C21F203003C974F /* PNUUIDMetadataFetchAllData.m in Sources */,
 				A55680432C229D8D003C974F /* PNFileSendData.m in Sources */,
 				797D606222D2E41100E64C94 /* PNSignalAPICallBuilder.m in Sources */,
-				7925DB8F1D3FFCAC00857C0D /* PNLLogger.m in Sources */,
 				79A8BC5E1C58F93900015BDE /* PNOperationResult.m in Sources */,
 				A5CB33CA2C046A1A008527AA /* PNTransportConfiguration.m in Sources */,
 				A55BCD1E231D26110019DB68 /* PNMessageAction.m in Sources */,
 				A5CFE5BF2C1AAAAC00274165 /* PNErrorData.m in Sources */,
 				A5A7B01D2349330F0060113B /* PNFetchMessageActionsRequest.m in Sources */,
 				A55681162C242E96003C974F /* PNFileEventResult.m in Sources */,
+				A5E72FF32E44024900ECC1F8 /* PNLogEntry.m in Sources */,
 				79F857FA219640A200BFD0B1 /* PNClientStateGetResult.m in Sources */,
 				A5567F432C21E723003C974F /* PNChannelMembersFetchData.m in Sources */,
 				A51B4AAD2BF37F03008C3370 /* PNChannelGroupFetchRequest.m in Sources */,
@@ -8858,6 +9079,7 @@
 				A5567F0C2C219757003C974F /* PNBaseAppContextObject.m in Sources */,
 				A56FAEFA233161570072ADD6 /* PubNub+MessageActions.m in Sources */,
 				A55680552C22BE6D003C974F /* PNFileUploadRequest.m in Sources */,
+				A51034602E528C7B005486BC /* PNErrorLogEntry.m in Sources */,
 				A5DB70F82AAEFE58005B6559 /* PNCCCryptorWrapper.m in Sources */,
 				A5DB712F2AAEFE58005B6559 /* PNCryptorInputStream.m in Sources */,
 				79A0D96E1DC2313A0039A264 /* PNSubscribeChannelsOrGroupsAPIBuilder.m in Sources */,
@@ -8887,6 +9109,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A53248D52C28D211003510FF /* PNHistoryMessageCountData.m in Sources */,
+				A51034862E5290FC005486BC /* PNNetworkResponseLogEntry.m in Sources */,
 				A5CFE55A2C18D3B600274165 /* PNPresenceStateFetchRequest.m in Sources */,
 				A5046E7724784CAA0008C81E /* PNFetchChannelMetadataAPICallBuilder.m in Sources */,
 				7951954B26BD44E9001E308C /* PubNub+PAM.m in Sources */,
@@ -8900,6 +9123,7 @@
 				797ABBAA24C4148C0008CA1E /* PNBasePublishRequest.m in Sources */,
 				A5046E6E24784CAA0008C81E /* PNManageMembershipsAPICallBuilder.m in Sources */,
 				A5046E8924784CAA0008C81E /* PNFetchChannelMembersRequest.m in Sources */,
+				A58146EF2E524AA600887E5F /* PNLoggerManager.m in Sources */,
 				A523EEE82BFE910A009F45AA /* PNURLSessionTransport.m in Sources */,
 				79A238DA1D2E70BD00D080CD /* NSURLSessionConfiguration+PNConfiguration.m in Sources */,
 				A5567FBE2C221136003C974F /* PNChannelMetadataFetchData.m in Sources */,
@@ -8919,6 +9143,9 @@
 				A5046E7A24784CAA0008C81E /* PNRemoveUUIDMetadataAPICallBuilder.m in Sources */,
 				A5567ED52C208652003C974F /* PNSubscribeEventData.m in Sources */,
 				79A0D88B1DC22F620039A264 /* PNAPNSAPICallBuilder.m in Sources */,
+				A5ACCAA72E560730003D828D /* PNFileLogger.m in Sources */,
+				A5ACCAA82E560730003D828D /* PNConsoleLogger.m in Sources */,
+				A5ACCAA92E560730003D828D /* PNFileLoggerFileInformation.m in Sources */,
 				A55BCD00231D222B0019DB68 /* PNRemoveMessageActionAPICallBuilder.m in Sources */,
 				797ABBBC24C4408A0008CA1E /* PNPublishFileMessageAPICallBuilder.m in Sources */,
 				79CBB1341BD03DE4001FC34D /* PNPresenceGlobalHereNowResult.m in Sources */,
@@ -8938,6 +9165,7 @@
 				A5046E8B24784CAA0008C81E /* PNSetChannelMetadataRequest.m in Sources */,
 				A5CFE5422C18D38600274165 /* PNWhereNowRequest.m in Sources */,
 				A5567EED2C20A51A003C974F /* PNPresenceHeartbeatRequest.m in Sources */,
+				A510346C2E528DBB005486BC /* PNNetworkRequestLogEntry.m in Sources */,
 				A5DB71042AAEFE58005B6559 /* PNLegacyCryptor.m in Sources */,
 				79A0D8E51DC2301E0039A264 /* PNPresenceHereNowAPICallBuilder.m in Sources */,
 				A53249042C2AC5C1003510FF /* PNChannelGroupsResult.m in Sources */,
@@ -8966,11 +9194,9 @@
 				A5046E9324784CAA0008C81E /* PNObjectsPaginatedRequest.m in Sources */,
 				A5CFE5172C1892AD00274165 /* PNPushNotificationManageRequest.m in Sources */,
 				A5046E7824784CAA0008C81E /* PNSetChannelMetadataAPICallBuilder.m in Sources */,
-				79E20D1F1C8AEC52001BC9CC /* PNEnvelopeInformation.m in Sources */,
 				A504E17424AAA70A006DCF5B /* PNListFilesAPICallBuilder.m in Sources */,
 				A57A3093238D751400DE8C68 /* PNMPNSNotificationPayload.m in Sources */,
 				A5567E382C1EB4ED003C974F /* PNTimeRequest.m in Sources */,
-				7925DB9F1D3FFCAC00857C0D /* PNLLogFileInformation.m in Sources */,
 				A5567E652C1F8C53003C974F /* PNOperationDataParser.m in Sources */,
 				A5CFE4762C14A90900274165 /* NSError+PNTransport.m in Sources */,
 				A5CFE4452C11E8D500274165 /* PNChannelGroupManageRequest.m in Sources */,
@@ -9007,8 +9233,8 @@
 				A53248DB2C28D3BC003510FF /* PNMembershipsFetchData.m in Sources */,
 				A5DB71222AAEFE58005B6559 /* PNEncryptedStream.m in Sources */,
 				79CBB1381BD03DE4001FC34D /* PNPublishStatus.m in Sources */,
+				A51034382E52832A005486BC /* PNStringLogEntry.m in Sources */,
 				79A0D8D31DC2300F0039A264 /* PNPresenceAPICallBuilder.m in Sources */,
-				A5567E712C1FBE44003C974F /* PubNub+Deprecated.m in Sources */,
 				A5046E7324784CAA0008C81E /* PNFetchChannelMembersAPICallBuilder.m in Sources */,
 				A5567EA22C20243C003C974F /* PNMessageActionFetchData.m in Sources */,
 				79A0D8AF1DC22FB50039A264 /* PNHistoryAPICallBuilder.m in Sources */,
@@ -9022,6 +9248,7 @@
 				A5DB709C2AAE778F005B6559 /* PNSequenceInputStream.m in Sources */,
 				A5CFE5A42C1933BD00274165 /* PNPresenceLeaveRequest.m in Sources */,
 				A504E14924AA94C8006DCF5B /* PNFile.m in Sources */,
+				A51034482E528803005486BC /* PNDictionaryLogEntry.m in Sources */,
 				A5567F242C21D53D003C974F /* PNChannelMembersManageData.m in Sources */,
 				799D610B24C36D5B00171C29 /* PNPublishRequest.m in Sources */,
 				A55681252C242EE6003C974F /* PNPresenceEventResult.m in Sources */,
@@ -9122,13 +9349,13 @@
 				A5567F7E2C21F203003C974F /* PNUUIDMetadataFetchAllData.m in Sources */,
 				A55680482C229D8D003C974F /* PNFileSendData.m in Sources */,
 				797D606422D2E41100E64C94 /* PNSignalAPICallBuilder.m in Sources */,
-				7925DB911D3FFCAC00857C0D /* PNLLogger.m in Sources */,
 				793887091BEAD4E100DCC662 /* PNNumber.m in Sources */,
 				A5CB33CF2C046A1A008527AA /* PNTransportConfiguration.m in Sources */,
 				A55BCD20231D26110019DB68 /* PNMessageAction.m in Sources */,
 				A5CFE5C32C1AAAAD00274165 /* PNErrorData.m in Sources */,
 				A5A7B01F2349330F0060113B /* PNFetchMessageActionsRequest.m in Sources */,
 				A55681192C242E96003C974F /* PNFileEventResult.m in Sources */,
+				A5E72FF52E44024900ECC1F8 /* PNLogEntry.m in Sources */,
 				79F857FC219640A300BFD0B1 /* PNClientStateGetResult.m in Sources */,
 				A5567F482C21E723003C974F /* PNChannelMembersFetchData.m in Sources */,
 				A51B4AB12BF37F03008C3370 /* PNChannelGroupFetchRequest.m in Sources */,
@@ -9146,6 +9373,7 @@
 				A5567F112C219757003C974F /* PNBaseAppContextObject.m in Sources */,
 				A56FAEFC233161570072ADD6 /* PubNub+MessageActions.m in Sources */,
 				A556805A2C22BE6D003C974F /* PNFileUploadRequest.m in Sources */,
+				A510345C2E528C7B005486BC /* PNErrorLogEntry.m in Sources */,
 				A5DB70FA2AAEFE58005B6559 /* PNCCCryptorWrapper.m in Sources */,
 				A5DB71312AAEFE58005B6559 /* PNCryptorInputStream.m in Sources */,
 				79A0D9711DC2313C0039A264 /* PNSubscribeChannelsOrGroupsAPIBuilder.m in Sources */,

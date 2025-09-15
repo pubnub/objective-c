@@ -53,7 +53,7 @@ NS_ASSUME_NONNULL_END
     PNSetChannelMetadataRequest *request = [PNSetChannelMetadataRequest requestWithChannel:[NSUUID UUID].UUIDString];
 
 
-    XCTAssertEqual(request.includeFields, PNChannelCustomField);
+    XCTAssertEqual(request.includeFields, PNChannelCustomField|PNChannelStatusField|PNChannelTypeField);
 }
 
 #pragma mark - Tests :: Set :: Call
@@ -81,7 +81,9 @@ NS_ASSUME_NONNULL_END
 
             XCTAssertNil([request validate]);
             XCTAssertEqualObjects(request.identifier, expectedId);
-            XCTAssertEqualObjects(request.query[@"include"], @"custom");
+            XCTAssertTrue([request.query[@"include"] containsString:@"custom"]);
+            XCTAssertTrue([request.query[@"include"] containsString:@"status"]);
+            XCTAssertTrue([request.query[@"include"] containsString:@"type"]);
             XCTAssertEqualObjects(request.body, expectedPayload);
         });
 
@@ -119,7 +121,9 @@ NS_ASSUME_NONNULL_END
         XCTAssertNil([request validate]);
         XCTAssertEqualObjects(request.identifier, expectedId);
         XCTAssertEqualObjects(request.headers[@"If-Match"], expectedETag);
-        XCTAssertEqualObjects(request.query[@"include"], @"custom");
+        XCTAssertTrue([request.query[@"include"] containsString:@"custom"]);
+        XCTAssertTrue([request.query[@"include"] containsString:@"status"]);
+        XCTAssertTrue([request.query[@"include"] containsString:@"type"]);
         XCTAssertEqualObjects(request.body, expectedPayload);
     });
 
@@ -232,7 +236,7 @@ NS_ASSUME_NONNULL_END
     PNFetchChannelMetadataRequest *request = [PNFetchChannelMetadataRequest requestWithChannel:[NSUUID UUID].UUIDString];
 
 
-    XCTAssertEqual(request.includeFields, PNChannelCustomField);
+    XCTAssertEqual(request.includeFields, PNChannelCustomField|PNChannelStatusField|PNChannelTypeField);
 }
 
 - (void)testItShouldFetchChannelMetadataWhenCalled {
@@ -246,7 +250,9 @@ NS_ASSUME_NONNULL_END
             PNFetchChannelMetadataRequest *request = [self objectForInvocation:invocation argumentAtIndex:1];
 
             XCTAssertEqualObjects(request.identifier, expectedId);
-            XCTAssertEqualObjects(request.query[@"include"], @"custom");
+            XCTAssertTrue([request.query[@"include"] containsString:@"custom"]);
+            XCTAssertTrue([request.query[@"include"] containsString:@"status"]);
+            XCTAssertTrue([request.query[@"include"] containsString:@"type"]);
         });
 
     [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
@@ -286,7 +292,7 @@ NS_ASSUME_NONNULL_END
     PNFetchAllChannelsMetadataRequest *request = [PNFetchAllChannelsMetadataRequest new];
     
     
-    XCTAssertEqual(request.includeFields, PNChannelTotalCountField);
+    XCTAssertEqual(request.includeFields, PNChannelTotalCountField|PNChannelStatusField|PNChannelTypeField);
 }
 
 

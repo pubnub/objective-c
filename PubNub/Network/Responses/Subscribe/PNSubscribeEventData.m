@@ -65,7 +65,7 @@ NS_ASSUME_NONNULL_END
 }
 
 + (NSArray<NSString *> *)ignoredKeys {
-    return @[@"timetoken", @"region"];
+    return @[@"timetoken", @"region", @"pnFingerprint"];
 }
 
 - (NSString *)subscription {
@@ -82,6 +82,32 @@ NS_ASSUME_NONNULL_END
 
 - (NSNumber *)region {
     return self.publishTimetoken.region;
+}
+
+
+#pragma mark - Misc
+
+- (NSDictionary *)dictionaryRepresentation {
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary:@{
+        @"subscription": self.subscription ?: @"missing",
+        @"timetoken": self.timetoken ?: @"missing",
+        @"data": self.pnFingerprint ?: @"not set",
+        @"channel": self.channel ?: @"missing",
+        @"region": self.region ?: @"not set"
+    }];
+    
+    if (self.senderIdentifier) dictionary[@"senderIdentifier"] = self.senderIdentifier;
+    if (self.shardIdentifier) dictionary[@"shardIdentifier"] = self.shardIdentifier;
+    if (self.sequenceNumber) dictionary[@"sequenceNumber"] = self.sequenceNumber;
+    if (self.userMetadata) dictionary[@"userMetadata"] = self.userMetadata;
+    if (self.messageType) dictionary[@"messageType"] = self.messageType;
+    if (self.debugFlags) dictionary[@"debugFlags"] = self.debugFlags;
+    if (self.userTimetoken.timetoken) {
+        dictionary[@"userTimetoken"] = [@{ @"timetoken": self.userTimetoken.timetoken } mutableCopy];
+        if (self.userTimetoken.region) dictionary[@"userTimetoken"][@"region"] = self.userTimetoken.region;
+    }
+    
+    return dictionary;
 }
 
 #pragma mark -

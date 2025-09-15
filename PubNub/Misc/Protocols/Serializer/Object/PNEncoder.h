@@ -96,14 +96,14 @@ NS_ASSUME_NONNULL_BEGIN
 /// Encodes a `NSString` instance and associates it with string key.
 ///
 /// - Parameters:
-///   - number: `NSString` instance to encode.
+///   - string: `NSString` instance to encode.
 ///   - key: The key to associate the value with.
 - (void)encodeString:(NSString *)string forKey:(NSString *)key;
 
 /// Encodes a `NSString` instance if not `nil` and associates it with string key.
 ///
 /// - Parameters:
-///   - number: `NSString` instance to encode.
+///   - string: `NSString` instance to encode.
 ///   - key: The key to associate the value with.
 - (void)encodeIfPresentString:(nullable NSString *)string forKey:(NSString *)key;
 

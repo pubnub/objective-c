@@ -67,14 +67,14 @@ typedef void(^PNDownloadRequestCompletionBlock)(PNTransportRequest *request,
 ///
 /// - Parameters:
 ///   - request: The transport request to be processed.
-///   - block: Request prociessing completion handler block.
+///   - block: Request processing completion handler block.
 - (void)sendRequest:(PNTransportRequest *)request withCompletionBlock:(PNRequestCompletionBlock)block;
 
 /// Download remote resource using provided request.
 ///
 /// - Parameters:
 ///   - request: The transport download request to be processed.
-///   - block: Request prociessing completion handler block.
+///   - block: Request processing completion handler block.
 - (void)sendDownloadRequest:(PNTransportRequest *)request withCompletionBlock:(PNDownloadRequestCompletionBlock)block;
 
 /// Pre-processed transport request.

@@ -60,7 +60,7 @@ NS_ASSUME_NONNULL_END
 - (instancetype)initWithUUID:(NSString *)uuid channels:(NSArray<NSDictionary *> *)channels {
     if ((self = [super initWithObject:@"UUID" identifier:uuid])) {
         [self setRelationToObjects:channels ofType:@"channel"];
-        self.includeFields = PNMembershipsTotalCountField;
+        self.includeFields |= PNMembershipsTotalCountField|PNMembershipStatusField|PNMembershipTypeField;
     }
     
     return self;

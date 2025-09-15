@@ -52,7 +52,7 @@ NS_ASSUME_NONNULL_END
 
 - (instancetype)initWithUUID:(NSString *)uuid {
     if ((self = [super initWithObject:@"UUID" identifier:uuid])) {
-        self.includeFields = PNMembershipsTotalCountField;
+        self.includeFields |= PNMembershipsTotalCountField|PNMembershipStatusField|PNMembershipTypeField;
     }
     
     return self;

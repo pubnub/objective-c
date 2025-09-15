@@ -32,14 +32,14 @@ NS_ASSUME_NONNULL_BEGIN
 @property(assign, nonatomic) BOOL presenceOnly;
 
 
-#pragma mark - Initialization and Configuratioun
+#pragma mark - Initialization and Configuration
 
 /// Initialize `Subscribe` request.
 ///
 /// - Parameters:
 ///   - channels: List of channel names on which client should try to subscribe.
 ///   - channelGroups: List of channel group names on which client should try to subscribe.
-///   - presenceOnly: hether real-time updates should be received for both regular and presence events or only for
+///   - presenceOnly: Whether real-time updates should be received for both regular and presence events or only for
 ///   presence.
 /// - Returns: Initialized `Subscribe` request.
 - (instancetype)initWithChannels:(nullable NSArray<NSString *> *)channels
@@ -153,6 +153,24 @@ NS_ASSUME_NONNULL_END
     }
     
     return nil;
+}
+
+
+#pragma mark - Misc
+
+- (NSDictionary *)dictionaryRepresentation {
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary:@{
+        @"observePresence": @(self.shouldObservePresence),
+        @"channels": self.channels.count ? self.channels : @","
+    }];
+    
+    if (self.arbitraryQueryParameters) dictionary[@"arbitraryQueryParameters"] = self.arbitraryQueryParameters;
+    if (self.channelGroups) dictionary[@"channelGroups"] = self.channelGroups;
+    if (self.timetoken) dictionary[@"timetoken"] = self.timetoken;
+    if (self.region) dictionary[@"region"] = self.region;
+    if (self.state) dictionary[@"state"] = self.state;
+    
+    return dictionary;
 }
 
 #pragma mark -

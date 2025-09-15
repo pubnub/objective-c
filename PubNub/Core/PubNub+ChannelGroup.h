@@ -68,8 +68,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///         // Handle channels for group audition error. Check `category` property to find out possible issue because of
 ///         // which request did fail.
-///         //
-///         // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -79,7 +77,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///   - block: Channels audition completion block.
 - (void)channelsForGroup:(NSString *)group withCompletion:(PNGroupChannelsAuditCompletionBlock)block
     NS_SWIFT_NAME(channelsForGroup(_:withCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-fetchChannelsForChannelGroupWithRequest:completion:' method instead.");
 
 
@@ -159,8 +157,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///         // Handle channels list modification for group error. Check `category` property to find out possible issue
 ///         // because of which request did fail.
-///         //
-///         // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -173,7 +169,7 @@ NS_ASSUME_NONNULL_BEGIN
             toGroup:(NSString *)group
      withCompletion:(nullable PNChannelGroupChangeCompletionBlock)block
     NS_SWIFT_NAME(addChannels(_:toGroup:withCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-manageChannelGroupWithRequest:completion:' method instead.");
 
 
@@ -190,8 +186,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///         // Handle channels list modification for group error. Check `category` property to find out possible issue
 ///         // because of which request did fail.
-///         //
-///         // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -204,7 +198,7 @@ NS_ASSUME_NONNULL_BEGIN
              fromGroup:(NSString *)group
         withCompletion:(nullable PNChannelGroupChangeCompletionBlock)block
     NS_SWIFT_NAME(removeChannels(_:fromGroup:withCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-manageChannelGroupWithRequest:completion:' method instead.");
 
 /// Remove all channels from `group`.
@@ -220,8 +214,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///        // Handle channel group removal error. Check 'category' property to find out possible
 ///        // issue because of which request did fail.
-///        //
-///        // Request can be resent using: [status retry];
 ///     }
 /// }];
 /// ```
@@ -231,7 +223,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///   - block: Channel group removal completion block.
 - (void)removeChannelsFromGroup:(NSString *)group withCompletion:(nullable PNChannelGroupChangeCompletionBlock)block
     NS_SWIFT_NAME(removeChannelsFromGroup(_:withCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-manageChannelGroupWithRequest:completion:' method instead.");
 
 #pragma mark -

@@ -50,14 +50,6 @@ NS_ASSUME_NONNULL_END
     return self;
 }
 
-
-#pragma mark - Helpers
-
-- (NSString *)description {
-    return [NSString stringWithFormat:@"<PNEncryptedData: %p>\n\t- metadata: %@\n\t- data: %@",
-            self, self.metadata.debugDescription, self.data.debugDescription];
-}
-
 #pragma mark -
 
 

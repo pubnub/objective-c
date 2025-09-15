@@ -32,6 +32,13 @@
     return nil;
 }
 
+
+#pragma mark - Misc
+
+- (NSDictionary *)dictionaryRepresentation {
+    return @{};
+}
+
 #pragma mark -
 
 
