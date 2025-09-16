@@ -189,6 +189,11 @@ NS_ASSUME_NONNULL_END
             if (!userRequest.channelGroups.count && userRequest.channels.count == 1) {
                 [result.result.data setPresenceChannel:userRequest.channels.firstObject];
             }
+            
+            if (userRequest.operation != PNHereNowGlobalOperation &&
+                result.result.data.totalOccupancy.unsignedIntegerValue == userRequest.limit) {
+                result.result.data.next = @(userRequest.offset + 1);
+            } else result.result.data.next = @(-1);
         }
 
         if (!result.status.isError) {

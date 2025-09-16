@@ -3,6 +3,7 @@
  * @copyright © 2010-2020 PubNub, Inc.
  */
 #import "PNRecordableTestCase.h"
+#import "PubNub+CorePrivate.h"
 #import "NSString+PNTest.h"
 
 
@@ -454,6 +455,81 @@ NS_ASSUME_NONNULL_END
             XCTAssertNotNil(fetchedOccupancy);
             XCTAssertEqual(fetchedOccupancy.unsignedIntegerValue, clients.count);
 
+            handler();
+        }];
+    }];
+    
+    for (NSUInteger clientIdx = 0; clientIdx < clients.count; clientIdx++) {
+        [self unsubscribeClient:clients[clientIdx] fromChannels:@[channel] withPresence:NO];
+    }
+    
+    [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
+}
+
+- (void)testItShouldFetchChannelHereNowWithNextSetWhenParticipantsMoreOrEqualToTheLimit {
+    NSString *channel = [self channelsWithNames:@[@"test-channel1"]].lastObject;
+    NSUInteger expectedNumberOfParticipants = 3;
+    NSArray<PubNub *> *clients = [self createPubNubClients:expectedNumberOfParticipants];
+    
+    
+    for (NSUInteger clientIdx = 0; clientIdx < clients.count; clientIdx++) {
+        [self subscribeClient:clients[clientIdx] toChannels:@[channel] withPresence:NO];
+    }
+    
+    [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 5.f : 0.f)];
+    
+    
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        PNHereNowRequest *request = [PNHereNowRequest requestForChannels:@[channel]];
+        request.limit = expectedNumberOfParticipants;
+        
+        [self.client hereNowWithRequest:request completion:^(PNPresenceHereNowResult *result, PNErrorStatus *status) {
+            PNTransportRequest *transportRequest = [clients[0].serviceNetwork transportRequestFromTransportRequest:request.request];
+            NSNumber *fetchedOccupancy = result.data.totalOccupancy;
+            XCTAssertNil(status);
+            XCTAssertNotNil(fetchedOccupancy);
+            XCTAssertEqual(fetchedOccupancy.unsignedIntegerValue, clients.count);
+            XCTAssertEqualObjects(transportRequest.query[@"limit"], @(request.limit).stringValue);
+            XCTAssertEqualObjects(transportRequest.query[@"offset"], @"0");
+            XCTAssertEqualObjects(result.data.next, @1);
+            
+            handler();
+        }];
+    }];
+    
+    for (NSUInteger clientIdx = 0; clientIdx < clients.count; clientIdx++) {
+        [self unsubscribeClient:clients[clientIdx] fromChannels:@[channel] withPresence:NO];
+    }
+    
+    [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
+}
+
+- (void)testItShouldFetchChannelHereNowWithoutNextSetWhenParticipantsLessThanTheLimit {
+    NSString *channel = [self channelsWithNames:@[@"test-channel1"]].lastObject;
+    NSArray<PubNub *> *clients = [self createPubNubClients:3];
+    
+    
+    for (NSUInteger clientIdx = 0; clientIdx < clients.count; clientIdx++) {
+        [self subscribeClient:clients[clientIdx] toChannels:@[channel] withPresence:NO];
+    }
+    
+    [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 5.f : 0.f)];
+    
+    
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        PNHereNowRequest *request = [PNHereNowRequest requestForChannels:@[channel]];
+        request.limit = 2000;
+        
+        [self.client hereNowWithRequest:request completion:^(PNPresenceHereNowResult *result, PNErrorStatus *status) {
+            PNTransportRequest *transportRequest = [clients[0].serviceNetwork transportRequestFromTransportRequest:request.request];
+            NSNumber *fetchedOccupancy = result.data.totalOccupancy;
+            XCTAssertNil(status);
+            XCTAssertNotNil(fetchedOccupancy);
+            XCTAssertEqual(fetchedOccupancy.unsignedIntegerValue, clients.count);
+            XCTAssertEqualObjects(transportRequest.query[@"limit"], @"1000");
+            XCTAssertEqualObjects(transportRequest.query[@"offset"], @"0");
+            XCTAssertEqualObjects(result.data.next, @(-1));
+            
             handler();
         }];
     }];

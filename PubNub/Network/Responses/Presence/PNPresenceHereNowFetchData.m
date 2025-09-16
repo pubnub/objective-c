@@ -104,6 +104,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// Total number of active channels.
 @property(strong, nonatomic) NSNumber *totalChannels;
 
+/// Index of next page which can be used for ``offset``.
+///
+/// > Note: `-1` will be returned if there is are more pages.
+@property(strong, nonatomic) NSNumber *next;
+
 
 #pragma mark - Initialization and Configuration
 
@@ -257,7 +262,7 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Properties
 
 + (NSArray<NSString *> *)ignoredKeys {
-    return @[@"verbosityLevel"];
+    return @[@"verbosityLevel", @"next"];
 }
 
 

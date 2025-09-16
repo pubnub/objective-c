@@ -5,9 +5,15 @@
 #import "PNHelpers.h"
 
 
+#pragma mark Contants
+
+/// Maximum allowed number of users returned with a single response.
+static NSUInteger kPNHereNowMaximumLimit = 1000;
+
+
 NS_ASSUME_NONNULL_BEGIN
 
-#pragma mark Private interface declaration
+#pragma mark - Private interface declaration
 
 /// `Presence` request private extension.
 @interface PNHereNowRequest ()
@@ -51,6 +57,10 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Properties
 
+- (void)setLimit:(NSUInteger)limit {
+    _limit = MIN(limit, kPNHereNowMaximumLimit);
+}
+
 - (NSDictionary *)query {
     NSMutableDictionary *query = [([super query] ?: @{}) mutableCopy];
     query[@"disable_uuids"] = @"1";
@@ -63,6 +73,11 @@ NS_ASSUME_NONNULL_END
     
     if (self.operation == PNHereNowForChannelGroupOperation) {
         query[@"channel-group"] = [self.channelGroups componentsJoinedByString:@","];
+    }
+    
+    if (self.operation != PNHereNowGlobalOperation) {
+        query[@"offset"] = @(self.offset).stringValue;
+        query[@"limit"] = @(self.limit).stringValue;
     }
     
     if (self.arbitraryQueryParameters) [query addEntriesFromDictionary:self.arbitraryQueryParameters];
@@ -105,7 +120,10 @@ NS_ASSUME_NONNULL_END
 }
 
 - (instancetype)initWithOperation:(PNOperationType)operation {
-    if ((self = [super init])) _operation = operation;
+    if ((self = [super init])) {
+        _limit = kPNHereNowMaximumLimit;
+        _operation = operation;
+    }
     return self;
 }
 
@@ -136,6 +154,11 @@ NS_ASSUME_NONNULL_END
         @"channels": self.channels.count ? self.channels : @",",
         @"verbosityLevel": @(self.verbosityLevel)
     }];
+    
+    if (self.operation != PNHereNowGlobalOperation) {
+        dictionary[@"offset"] = @(self.offset);
+        dictionary[@"limit"] = @(self.limit);
+    }
     
     if (self.arbitraryQueryParameters) dictionary[@"arbitraryQueryParameters"] = self.arbitraryQueryParameters;
     if (self.channelGroups) dictionary[@"channelGroups"] = self.channelGroups;

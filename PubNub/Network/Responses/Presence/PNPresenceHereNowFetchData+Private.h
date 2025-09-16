@@ -29,14 +29,19 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Private interface declaration
 
-/// Here now presence request response private extensino.
+/// Here now presence request response private extension.
 @interface PNPresenceHereNowFetchData (Private)
 
 
-#pragma mark - Properies
+#pragma mark - Properties
 
 /// Presence information details level.
 @property(assign, nonatomic, readonly) PNHereNowVerbosityLevel verbosityLevel;
+
+/// Index of next page which can be used for ``offset``.
+///
+/// > Note: `-1` will be returned if there is are more pages.
+@property(strong, nonatomic) NSNumber *next;
 
 
 #pragma mark - Helpers

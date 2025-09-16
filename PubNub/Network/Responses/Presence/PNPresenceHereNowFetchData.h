@@ -62,6 +62,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// Total number of active channels.
 @property(strong, nonatomic, readonly) NSNumber *totalChannels;
 
+/// Index of next page which can be used for ``offset``.
+///
+/// > Note: `-1` will be returned if there is are more pages.
+@property(strong, nonatomic, readonly) NSNumber *next;
+
 #pragma mark -
 
 
