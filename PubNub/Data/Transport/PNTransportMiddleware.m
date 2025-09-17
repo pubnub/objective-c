@@ -41,8 +41,6 @@ NS_ASSUME_NONNULL_BEGIN
 NS_ASSUME_NONNULL_END
 
 
-
-
 @implementation PNTransportMiddleware
 
 
@@ -63,7 +61,6 @@ NS_ASSUME_NONNULL_END
                                                   details:@"Create with configuration:"];
         }];
         [_configuration.transport setupWithConfiguration:configuration.transportConfiguration];
-        
     }
     
     return self;

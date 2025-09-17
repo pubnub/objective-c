@@ -447,14 +447,17 @@ NS_ASSUME_NONNULL_END
             [self heartbeatWithCompletion:block];
             [self.heartbeatManager startHeartbeatIfRequired];
         } else {
-            [self cancelSubscribeOperations];
-            [self.subscriberManager unsubscribeFromChannels:presenceChannels
-                                                     groups:presenceChannelGroups
-                                        withQueryParameters:nil
-                                      listenersNotification:NO
-                                                 completion:^(PNSubscribeStatus *status) {
-                if (block) block((id)status);
-            }];
+            dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_MSEC), queue, ^{
+                [self cancelSubscribeOperations];
+                [self.subscriberManager unsubscribeFromChannels:presenceChannels
+                                                         groups:presenceChannelGroups
+                                            withQueryParameters:nil
+                                          listenersNotification:NO
+                                                     completion:^(PNSubscribeStatus *status) {
+                    if (block) block((id)status);
+                }];
+            });
         }
     } else {
         PNErrorStatus *badRequestStatus = errorStatus(PNBadRequestCategory);

@@ -786,10 +786,13 @@ NS_ASSUME_NONNULL_END
         [self updateStateTo:PNDisconnectedSubscriberState
                  withStatus:(PNSubscribeStatus *)status
                  completion:^(PNStatusCategory category) {
-            [self.client cancelSubscribeOperations];
-            [status updateCategory:category];
-            
-            [self.client callBlock:nil status:YES withResult:nil andStatus:status];
+            dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_MSEC), queue, ^{
+                [self.client cancelSubscribeOperations];
+                [status updateCategory:category];
+                
+                [self.client callBlock:nil status:YES withResult:nil andStatus:status];
+            });
         }];
     }
     #pragma clang diagnostic pop

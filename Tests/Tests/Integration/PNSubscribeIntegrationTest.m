@@ -261,7 +261,7 @@ NS_ASSUME_NONNULL_END
     
 
     [client2 subscribeToPresenceChannels:@[channels.lastObject]];
-    [self waitTask:@"waitForSubscribeOnPresence" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
+    [self waitTask:@"waitForSubscribeOnPresence" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.1f)];
 
     XCTAssertTrue([client2 isSubscribedOn:[channels.lastObject stringByAppendingString:@"-pnpres"]]);
     
@@ -826,7 +826,7 @@ NS_ASSUME_NONNULL_END
     
 
     client2.subscribe().presenceChannels(@[channels.lastObject]).perform();
-    [self waitTask:@"waitForSubscribeOnPresence" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
+    [self waitTask:@"waitForSubscribeOnPresence" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.1f)];
     
     
     XCTAssertTrue([client2 isSubscribedOn:[channels.lastObject stringByAppendingString:@"-pnpres"]]);
@@ -1017,7 +1017,7 @@ NS_ASSUME_NONNULL_END
     }
     
     [client2 unsubscribeFromPresenceChannels:@[channels.lastObject]];
-    [self waitTask:@"waitForUnsubscribeFromPresence" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
+    [self waitTask:@"waitForUnsubscribeFromPresence" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.1f)];
     
     
     XCTAssertFalse([client2 isSubscribedOn:[channels.lastObject stringByAppendingString:@"-pnpres"]]);
@@ -1272,7 +1272,7 @@ NS_ASSUME_NONNULL_END
     }
     
     client2.unsubscribe().presenceChannels(@[channels.lastObject]).perform();
-    [self waitTask:@"waitForUnsubscribeFromPresence" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
+    [self waitTask:@"waitForUnsubscribeFromPresence" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.1f)];
     
     
     XCTAssertFalse([client2 isSubscribedOn:[channels.lastObject stringByAppendingString:@"-pnpres"]]);

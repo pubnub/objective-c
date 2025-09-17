@@ -95,8 +95,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Properties
 
-/// Resources access lock.
-@property(strong, nonatomic) PNLock *lock;
 @property(strong, nonatomic) id<PNTransport> subscriptionNetwork;
 @property(assign, nonatomic) PNStatusCategory recentClientStatus;
 @property(strong, nonatomic) PNPublishSequence *sequenceManager;
@@ -112,6 +110,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property(strong, nonatomic) PNLoggerManager *logger;
 @property(copy, nonatomic) NSString *instanceID;
 @property(strong, nonatomic) PNJSONCoder *coder;
+/// Resources access lock.
+@property(strong, nonatomic) PNLock *lock;
 
 /// Reachability helper.
 ///
@@ -408,8 +408,11 @@ NS_ASSUME_NONNULL_END
             #pragma clang diagnostic push
             #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
             [weakSelf.reachability stopServicePing];
-            [weakSelf cancelSubscribeOperations];
-            [weakSelf.subscriberManager restoreSubscriptionCycleIfRequiredWithCompletion:nil];
+            dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_MSEC), queue, ^{
+                [weakSelf cancelSubscribeOperations];
+                [weakSelf.subscriberManager restoreSubscriptionCycleIfRequiredWithCompletion:nil];
+            });
             #pragma clang diagnostic pop
         }
     }];

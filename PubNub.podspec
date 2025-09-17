@@ -36,7 +36,7 @@ Pod::Spec.new do |spec|
             'PubNub/**/*Private.h',
             'PubNub/PubNub+Deprecated.h',
             'PubNub/Data/PNEnvelopeInformation.h',
-            'PubNub/Data/Managers/**/*.h',
+            'PubNub/Data/Managers/**/{PNPublishSequence,PNStateListener,PNFilesManager,PNClientState,PNSubscriber,PNHeartbeat}.h',
             'PubNub/Data/Models/PNXML.h',
             'PubNub/Data/Service Objects/File Sharing/PNGenerateFileUploadURLStatus.h',
             'PubNub/Data/Transport/{PNTransportMiddleware.h,PNTransportMiddlewareConfiguration.h}',

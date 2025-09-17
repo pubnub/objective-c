@@ -212,8 +212,11 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Subscription
 
 - (void)subscribeWithRequest:(PNSubscribeRequest *)request {
-    [self cancelSubscribeOperations];
-    [self.subscriberManager subscribeWithRequest:request];
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_MSEC), queue, ^{
+        [self cancelSubscribeOperations];
+        [self.subscriberManager subscribeWithRequest:request];
+    });
 }
 
 - (void)subscribeWithRequest:(PNSubscribeRequest *)userRequest completion:(PNSubscriberCompletionBlock)handleBlock {
@@ -345,9 +348,12 @@ NS_ASSUME_NONNULL_END
 
 - (void)unsubscribeWithRequest:(PNPresenceLeaveRequest *)request {
     if (request.channels.count == 0 && request.channelGroups.count == 0) return;
-
-    [self cancelSubscribeOperations];
-    [self.subscriberManager unsubscribeWithRequest:request completion:nil];
+    
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_MSEC), queue, ^{
+        [self cancelSubscribeOperations];
+        [self.subscriberManager unsubscribeWithRequest:request completion:nil];
+    });
 }
 
 - (void)unsubscribeWithRequest:(PNPresenceLeaveRequest *)userRequest
@@ -411,8 +417,11 @@ NS_ASSUME_NONNULL_END
     request.observePresence = shouldObservePresence;
 
     if (request.channels.count || request.channelGroups.count) {
-        [self cancelSubscribeOperations];
-        [self.subscriberManager unsubscribeWithRequest:request completion:block];
+        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_MSEC), queue, ^{
+            [self cancelSubscribeOperations];
+            [self.subscriberManager unsubscribeWithRequest:request completion:block];
+        });
     } else if (block) {
         pn_dispatch_async(self.callbackQueue, ^{
             block(nil);
@@ -449,8 +458,11 @@ NS_ASSUME_NONNULL_END
         return [PNStringLogEntry entryWithMessage:@"Unsubscribe all channels and groups"];
     }];
     
-    [self cancelSubscribeOperations];
-    [self.subscriberManager unsubscribeFromAllWithQueryParameters:queryParameters completion:block];
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_MSEC), queue, ^{
+        [self cancelSubscribeOperations];
+        [self.subscriberManager unsubscribeFromAllWithQueryParameters:queryParameters completion:block];
+    });
 }
 
 

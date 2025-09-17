@@ -96,7 +96,6 @@ FOUNDATION_EXPORT const unsigned char PubNubVersionString[];
 #import <PubNub/PNDictionaryLogEntry.h>
 #import <PubNub/PNStringLogEntry.h>
 #import <PubNub/PNLoggerManager.h>
-#import <PubNub/PNConsoleLogger.h>
 #import <PubNub/PNErrorLogEntry.h>
 #import <PubNub/PNFileLogger.h>
 #import <PubNub/PNLogEntry.h>
