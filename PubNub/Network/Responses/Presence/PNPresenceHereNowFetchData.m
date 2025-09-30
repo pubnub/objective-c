@@ -1,7 +1,7 @@
 #import "PNPresenceHereNowFetchData+Private.h"
-#import <PubNub/PNJSONDecoder.h>
-#import <PubNub/PNStructures.h>
-#import <PubNub/PNCodable.h>
+#import "PNJSONDecoder.h"
+#import "PNStructures.h"
+#import "PNCodable.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -103,14 +103,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Total number of active channels.
 @property(strong, nonatomic) NSNumber *totalChannels;
-
-/// Index of next page which can be used for ``offset``.
-///
-/// > Note: `-1` will be returned if there is are more pages.
-@property(strong, nonatomic) NSNumber *next;
-
-
-#pragma mark - Initialization and Configuration
 
 #pragma mark -
 

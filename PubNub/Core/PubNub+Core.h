@@ -23,9 +23,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Information
 
-/// **PubNub** client logger instance which can be used to add additional logs.
-@property(strong, nonatomic, readonly) PNLoggerManager *logger;
-
 /// Basic information about **PubNub** client.
 ///
 /// - Returns: Instance which hold information about **PubNub** client.
@@ -166,6 +163,11 @@ NS_ASSUME_NONNULL_BEGIN
                 callbackQueue:(nullable dispatch_queue_t)callbackQueue
                    completion:(void(^)(PubNub *client))block
     NS_SWIFT_NAME(copyWithConfiguration(_:callbackQueue:completion:));
+
+/// Change PubNub client logger minimum logs level.
+///
+/// - Parameter level: Minimum log message level to be handled by logger.
+- (void)setLogLevel:(PNLogLevel)level;
 
 #pragma mark -
 

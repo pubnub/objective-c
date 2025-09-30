@@ -75,11 +75,7 @@ NS_ASSUME_NONNULL_END
         query[@"channel-group"] = [self.channelGroups componentsJoinedByString:@","];
     }
     
-    if (self.operation != PNHereNowGlobalOperation) {
-        query[@"offset"] = @(self.offset).stringValue;
-        query[@"limit"] = @(self.limit).stringValue;
-    }
-    
+    if (self.operation != PNHereNowGlobalOperation) query[@"limit"] = @(self.limit).stringValue;
     if (self.arbitraryQueryParameters) [query addEntriesFromDictionary:self.arbitraryQueryParameters];
     
     return query;
@@ -155,11 +151,7 @@ NS_ASSUME_NONNULL_END
         @"verbosityLevel": @(self.verbosityLevel)
     }];
     
-    if (self.operation != PNHereNowGlobalOperation) {
-        dictionary[@"offset"] = @(self.offset);
-        dictionary[@"limit"] = @(self.limit);
-    }
-    
+    if (self.operation != PNHereNowGlobalOperation) dictionary[@"limit"] = @(self.limit);
     if (self.arbitraryQueryParameters) dictionary[@"arbitraryQueryParameters"] = self.arbitraryQueryParameters;
     if (self.channelGroups) dictionary[@"channelGroups"] = self.channelGroups;
     

@@ -1,6 +1,8 @@
 #import "PubNub+Time.h"
 #import "PubNub+CorePrivate.h"
 #import "PNStatus+Private.h"
+#import "PNStringLogEntry.h"
+#import "PNFunctions.h"
 
 // Deprecated
 #import "PNAPICallBuilder+Private.h"
@@ -15,11 +17,6 @@
 #pragma mark - Time token API builder interface (deprecated)
 
 - (PNTimeAPICallBuilder * (^)(void))time {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"Builder-based interface deprecated. Please use corresponding "
-                "request-based interfaces."];
-    }];
-    
     PNTimeAPICallBuilder *builder = nil;
     builder = [PNTimeAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags, NSDictionary *parameters) {
         PNTimeRequest *request = [PNTimeRequest new];
@@ -64,11 +61,6 @@
 }
 
 - (void)timeWithCompletion:(PNTimeCompletionBlock)block {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
-                "'-timeWithRequest:completion:' method instead."];
-    }];
-    
     [self timeWithRequest:[PNTimeRequest new] completion:block];
 }
 

@@ -1,7 +1,7 @@
 #import "PNFileListFetchData+Private.h"
-#import <PubNub/PNJSONDecoder.h>
-#import <PubNub/PNCodable.h>
 #import "PNFile+Private.h"
+#import "PNJSONDecoder.h"
+#import "PNCodable.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

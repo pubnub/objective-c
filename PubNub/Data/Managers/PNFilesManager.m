@@ -1,4 +1,5 @@
 #import "PNFilesManager.h"
+#import "PNDictionaryLogEntry.h"
 #import "NSInputStream+PNURL.h"
 #import "PubNub+CorePrivate.h"
 #import "PNFunctions.h"

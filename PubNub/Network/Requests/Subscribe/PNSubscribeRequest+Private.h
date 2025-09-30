@@ -1,4 +1,4 @@
-#import <PubNub/PNSubscribeRequest.h>
+#import "PNSubscribeRequest.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

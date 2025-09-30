@@ -4,6 +4,7 @@
  */
 #import "PNReachability.h"
 #import "PubNub+CorePrivate.h"
+#import "PNStringLogEntry.h"
 #import "PNConfiguration.h"
 #import "PNTimeResult.h"
 #import "PNStructures.h"

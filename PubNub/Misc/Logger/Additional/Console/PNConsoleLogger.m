@@ -18,10 +18,10 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Properties
 
 /// Map of logger objects to the log categories.
-@property(strong, nonatomic) NSDictionary<NSString *, os_log_t> *logObjects;
+@property(class, strong, nonatomic, readonly) NSDictionary<NSString *, os_log_t> *logObjects;
 
 /// Formatter that is used to translate log entry timestamp to ISO8601 standardized string.
-@property(strong, nonatomic) NSISO8601DateFormatter *dateFormatter;
+@property(class, strong, nonatomic, readonly) NSISO8601DateFormatter *dateFormatter;
 
 
 #pragma mark - Logging
@@ -34,12 +34,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Misc
 
-/// Serialize log entry into string.
-///
-/// - Parameter logEntry: Generated log entry for serialization.
-/// - Returns: String that can be used for the console or written to the file.
-- (NSString *)stringifiedLogEntry:(PNLogEntry *)logEntry;
-
 /// Stringify dictionary object.
 ///
 /// Dictionary object could be received from the log entry with structured data or from pre-processed data created for
@@ -50,7 +44,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///   - level: Current nesting level for proper entries indention.
 ///   - skipIndentOnce: Whether the first entry in the collection shouldn't have indention or not.
 /// - Returns: Stringified `NSDictionary` representation.
-- (NSString *)stringifiedDictionary:(NSDictionary<NSString *, id> *)dictionary
++ (NSString *)stringifiedDictionary:(NSDictionary<NSString *, id> *)dictionary
                        nestingLevel:(NSUInteger)level
                      skipIndentOnce:(BOOL)skipIndentOnce;
 
@@ -63,19 +57,19 @@ NS_ASSUME_NONNULL_BEGIN
 ///   - array: `NSArray` which may contain nested data for stringification.
 ///   - level: Current nesting level for proper entries indention.
 /// - Returns: Stringified `NSArray` representation.
-- (NSString *)stringifiedArray:(NSArray *)array nestingLevel:(NSUInteger)level;
++ (NSString *)stringifiedArray:(NSArray *)array nestingLevel:(NSUInteger)level;
 
 /// Stringify request object.
 ///
 /// - Parameter logEntry: Generated log entry with transport request as a `message`.
 /// - Returns: Stringified `PNNetworkRequestLogEntry` representation.
-- (NSString *)stringifiedNetworkRequestLogEntry:(PNNetworkRequestLogEntry *)logEntry;
++ (NSString *)stringifiedNetworkRequestLogEntry:(PNNetworkRequestLogEntry *)logEntry;
 
 /// Stringify response object.
 ///
 /// - Parameter logEntry: Generated log entry with transport response as a `message`.
 /// - Returns: Stringified `PNNetworkResponseLogEntry` representation.
-- (NSString *)stringifiedNetworkLogEntry:(PNNetworkResponseLogEntry *)logEntry;
++ (NSString *)stringifiedNetworkLogEntry:(PNNetworkResponseLogEntry *)logEntry;
 
 /// Stringify error object.
 ///
@@ -83,19 +77,19 @@ NS_ASSUME_NONNULL_BEGIN
 ///   - error: Generated log entry with `NSError` as a `message`.
 ///   - level: Current nesting level for proper entries indention.
 /// - Returns: Stringified `NSError` representation.
-- (NSString *)stringifiedError:(NSError *)error nestingLevel:(NSUInteger)level;
++ (NSString *)stringifiedError:(NSError *)error nestingLevel:(NSUInteger)level;
 
 /// Stringify log level.
 ///
 /// - Parameter logLevel: One of log level enum fields.
 /// - Returns: Stringified log level representation.
-- (NSString *)stringifiedLogLevel:(PNLogLevel)logLevel;
++ (NSString *)stringifiedLogLevel:(PNLogLevel)logLevel;
 
 /// Retrieve OS log object suitable for log `entry` representation.
 ///
 /// - Parameter entry: Generated log entry that should be printed out.
 /// - Returns: Appropriate OS log object.
-- (os_log_t)logObjectForEntry:(PNLogEntry *)entry;
++ (os_log_t)logObjectForEntry:(PNLogEntry *)entry;
 
 #pragma mark -
 
@@ -110,20 +104,32 @@ NS_ASSUME_NONNULL_END
 @implementation PNConsoleLogger
 
 
-#pragma mark - Initialization and Configuration
+#pragma mark - Properties
 
-- (instancetype)init {
-    if ((self = [super init])) {
++ (NSISO8601DateFormatter *)dateFormatter {
+    static NSISO8601DateFormatter *_dateFormatter;
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
         _dateFormatter = [NSISO8601DateFormatter new];
         _dateFormatter.formatOptions = NSISO8601DateFormatWithInternetDateTime|NSISO8601DateFormatWithFractionalSeconds;
-        
+    });
+    
+    return _dateFormatter;
+}
+
++ (NSDictionary<NSString *,os_log_t> *)logObjects {
+    static NSDictionary<NSString *, os_log_t> *_logObjects;
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
         _logObjects = @{
             @"api": os_log_create("com.pubnub.sdk", "api"),
             @"transport": os_log_create("com.pubnub.transport", "network"),
         };
-    }
+    });
     
-    return self;
+    return _logObjects;
 }
 
 
@@ -153,8 +159,8 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Logging
 
 - (void)logMessage:(PNLogEntry *)message {
-    os_log_t logObject = [self logObjectForEntry:message];
-    NSString *logMessage = message.preProcessedString ?: [self stringifiedLogEntry:message];
+    os_log_t logObject = [PNConsoleLogger logObjectForEntry:message];
+    NSString *logMessage = message.preProcessedString ?: [PNConsoleLogger stringifiedLogEntry:message];
     if (!message.preProcessedString) message.preProcessedString = logMessage;
     
     switch (message.logLevel) {
@@ -178,7 +184,7 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Misc
 
-- (NSString *)stringifiedLogEntry:(PNLogEntry *)logEntry {
++ (NSString *)stringifiedLogEntry:(PNLogEntry *)logEntry {
     NSMutableString *string = [NSMutableString stringWithFormat:@"%@ PubNub-%@ %@ %@ ",
                                [self.dateFormatter stringFromDate:logEntry.timestamp],
                                logEntry.pubNubId,
@@ -201,7 +207,7 @@ NS_ASSUME_NONNULL_END
     return string;
 }
 
-- (NSString *)stringifiedDictionary:(NSDictionary<NSString *, id> *)dictionary
++ (NSString *)stringifiedDictionary:(NSDictionary<NSString *, id> *)dictionary
                        nestingLevel:(NSUInteger)level
                      skipIndentOnce:(BOOL)skipIndentOnce {
     NSUInteger longestKeyLength = ((NSNumber *)[dictionary.allKeys valueForKeyPath:@"@max.length"]).unsignedIntValue;
@@ -234,7 +240,7 @@ NS_ASSUME_NONNULL_END
     return lines.count == 0 ? @"{}" : [lines componentsJoinedByString:@"\n"];
 }
 
-- (NSString *)stringifiedArray:(NSArray *)array nestingLevel:(NSUInteger)level {
++ (NSString *)stringifiedArray:(NSArray *)array nestingLevel:(NSUInteger)level {
     NSString *indent = [@"" stringByPaddingToLength:level * 2 withString:@" " startingAtIndex:0];
     NSMutableArray *lines = [NSMutableArray new];
     
@@ -259,7 +265,7 @@ NS_ASSUME_NONNULL_END
     return lines.count == 0 ? @"[]" : [lines componentsJoinedByString:@"\n"];
 }
 
-- (NSString *)stringifiedNetworkRequestLogEntry:(PNNetworkRequestLogEntry *)logEntry {
++ (NSString *)stringifiedNetworkRequestLogEntry:(PNNetworkRequestLogEntry *)logEntry {
     PNTransportRequest *request = logEntry.message;
     BOOL onlyBasicInfo = request.cancelled || request.failed;
     NSMutableString *string = [!onlyBasicInfo ? @"Sending" : (request.cancelled ? @"Canceled" : @"Failed") mutableCopy];
@@ -300,7 +306,7 @@ NS_ASSUME_NONNULL_END
     return string;
 }
 
-- (NSString *)stringifiedNetworkLogEntry:(PNNetworkResponseLogEntry *)logEntry {
++ (NSString *)stringifiedNetworkLogEntry:(PNNetworkResponseLogEntry *)logEntry {
     id<PNTransportResponse> response = logEntry.message;
     NSMutableString *string = [@"Received HTTP response:\n" mutableCopy];
     NSMutableDictionary *details = [@{ @"URL": response.url } mutableCopy];
@@ -320,7 +326,7 @@ NS_ASSUME_NONNULL_END
     return string;
 }
 
-- (NSString *)stringifiedError:(NSError *)error nestingLevel:(NSUInteger)level {
++ (NSString *)stringifiedError:(NSError *)error nestingLevel:(NSUInteger)level {
     NSMutableDictionary *info = [error.userInfo ?: @{} mutableCopy];
     NSMutableString *string = [NSMutableString new];
     NSMutableDictionary<NSString *, id> *details = [@{
@@ -390,7 +396,7 @@ NS_ASSUME_NONNULL_END
     return string;
 }
 
-- (NSString *)stringifiedLogLevel:(PNLogLevel)logLevel {
++ (NSString *)stringifiedLogLevel:(PNLogLevel)logLevel {
     static NSArray<NSString *> *_logLevelNames;
     static dispatch_once_t onceToken;
     
@@ -407,7 +413,7 @@ NS_ASSUME_NONNULL_END
     return logLevel != PNNoneLogLevel && logLevel <= PNErrorLogLevel ? _logLevelNames[logLevel] : @"UNKNW";
 }
 
-- (os_log_t)logObjectForEntry:(PNLogEntry *)entry {
++ (os_log_t)logObjectForEntry:(PNLogEntry *)entry {
     if (entry.messageType == PNNetworkRequestLogMessageType ||
         entry.messageType == PNNetworkResponseLogMessageType ||
         [entry.location containsString:@"Transport"]) {

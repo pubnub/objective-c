@@ -1,8 +1,10 @@
 #import "PubNub+SubscribePrivate.h"
+#import "PNDictionaryLogEntry+Private.h"
 #import "PNBaseOperationData+Private.h"
 #import "PNSubscribeRequest+Private.h"
 #import "PNOperationResult+Private.h"
 #import "PNSubscribeStatus+Private.h"
+#import "PNStringLogEntry+Private.h"
 #import "PNConfiguration+Private.h"
 #import "PubNub+CorePrivate.h"
 #import "PNStatus+Private.h"
@@ -145,11 +147,6 @@ NS_ASSUME_NONNULL_END
 #pragma mark - API Builder support
 
 - (PNSubscribeAPIBuilder * (^)(void))subscribe {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"Builder-based interface deprecated. Please use corresponding "
-                "request-based interfaces."];
-    }];
-    
     PNSubscribeAPIBuilder *builder = nil;
     builder = [PNSubscribeAPIBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags, NSDictionary *parameters) {
         NSArray *presenceChannels = parameters[NSStringFromSelector(@selector(presenceChannels))];
@@ -178,11 +175,6 @@ NS_ASSUME_NONNULL_END
 }
 
 - (PNUnsubscribeAPICallBuilder * (^)(void))unsubscribe {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"Builder-based interface deprecated. Please use corresponding "
-                "request-based interfaces."];
-    }];
-    
     PNUnsubscribeAPICallBuilder *builder = nil;
     builder = [PNUnsubscribeAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags, 
                                                                        NSDictionary *parameters) {
@@ -240,7 +232,8 @@ NS_ASSUME_NONNULL_END
     
     [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
         return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
-                                              details:@"Subscribe with parameters:"];
+                                              details:@"Subscribe with parameters:"
+                                            operation:PNSubscribeLogMessageOperation];
     }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
@@ -266,11 +259,6 @@ NS_ASSUME_NONNULL_END
                withPresence:(BOOL)shouldObservePresence
              usingTimeToken:(NSNumber *)timeToken
                 clientState:(NSDictionary<NSString *, id> *)state {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use '-subscribeWithRequest:' method "
-                "instead."];
-    }];
-    
     [self subscribeToChannels:channels
                        groups:nil
                  withPresence:shouldObservePresence
@@ -299,11 +287,6 @@ NS_ASSUME_NONNULL_END
                     withPresence:(BOOL)shouldObservePresence
                   usingTimeToken:(NSNumber *)timeToken
                      clientState:(NSDictionary<NSString *, id> *)state {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use '-subscribeWithRequest:' method "
-                "instead."];
-    }];
-    
     [self subscribeToChannels:nil
                        groups:groups
                  withPresence:shouldObservePresence
@@ -328,11 +311,6 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)subscribeToPresenceChannels:(NSArray<NSString *> *)channels {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use '-subscribeWithRequest:' method "
-                "instead."];
-    }];
-    
     [self subscribeToPresenceChannels:channels withQueryParameters:nil];
 }
 
@@ -382,27 +360,18 @@ NS_ASSUME_NONNULL_END
                         
     [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
         return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
-                                                                  details:@"Unsubscribe with parameters:"];
+                                                                  details:@"Unsubscribe with parameters:"
+                                            operation:PNPresenceLogMessageOperation];
     }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
 
 - (void)unsubscribeFromChannels:(NSArray<NSString *> *)channels withPresence:(BOOL)presence {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use '-unsubscribWithRequest:' "
-                "method instead."];
-    }];
-    
     [self unsubscribeFromChannels:channels groups:nil withPresence:presence queryParameters:nil completion:nil];
 }
 
 - (void)unsubscribeFromChannelGroups:(NSArray<NSString *> *)groups withPresence:(BOOL)presence {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use '-unsubscribWithRequest:' "
-                "method instead."];
-    }];
-    
     [self unsubscribeFromChannels:nil groups:groups withPresence:presence queryParameters:nil completion:nil];
 }
 
@@ -430,11 +399,6 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)unsubscribeFromPresenceChannels:(NSArray<NSString *> *)channels {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use '-unsubscribWithRequest:' "
-                "method instead."];
-    }];
-    
     [self unsubscribeFromPresenceChannels:channels withQueryParameters:nil];
 }
 
@@ -455,7 +419,8 @@ NS_ASSUME_NONNULL_END
 
 - (void)unsubscribeFromAllWithQueryParameters:(NSDictionary *)queryParameters completion:(PNStatusBlock)block {
     [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"Unsubscribe all channels and groups"];
+        return [PNStringLogEntry entryWithMessage:@"Unsubscribe all channels and groups"
+                                        operation:PNPresenceLogMessageOperation];
     }];
     
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);

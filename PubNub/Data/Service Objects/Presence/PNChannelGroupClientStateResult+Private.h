@@ -1,5 +1,5 @@
-#import <PubNub/PNChannelGroupClientStateResult.h>
-#import <PubNub/PNPresenceStateFetchResult.h>
+#import "PNChannelGroupClientStateResult.h"
+#import "PNPresenceStateFetchResult.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

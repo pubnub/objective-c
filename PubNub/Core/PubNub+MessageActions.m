@@ -1,7 +1,10 @@
 #import "PNRemoveMessageActionRequest+Private.h"
+#import "PNDictionaryLogEntry+Private.h"
+#import "PNStringLogEntry+Private.h"
 #import "PubNub+MessageActions.h"
 #import "PubNub+CorePrivate.h"
 #import "PNStatus+Private.h"
+#import "PNFunctions.h"
 
 // Deprecated
 #import "PNAPICallBuilder+Private.h"
@@ -15,11 +18,6 @@
 #pragma mark - Message Actions API builder interface (deprecated)
 
 - (PNAddMessageActionAPICallBuilder * (^)(void))addMessageAction {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"Builder-based interface deprecated. Please use corresponding "
-                "request-based interfaces."];
-    }];
-    
     PNAddMessageActionAPICallBuilder *builder = nil;
     
     PNWeakify(self);
@@ -43,11 +41,6 @@
 }
 
 - (PNRemoveMessageActionAPICallBuilder * (^)(void))removeMessageAction {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"Builder-based interface deprecated. Please use corresponding "
-                "request-based interfaces."];
-    }];
-    
     PNRemoveMessageActionAPICallBuilder *builder = nil;
     
     PNWeakify(self);
@@ -72,11 +65,6 @@
 }
 
 - (PNFetchMessagesActionsAPICallBuilder * (^)(void))fetchMessageActions {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"Builder-based interface deprecated. Please use corresponding "
-                "request-based interfaces."];
-    }];
-    
     PNFetchMessagesActionsAPICallBuilder *builder = nil;
     
     PNWeakify(self);
@@ -118,7 +106,8 @@
             [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
                 NSNumber *actionTimetoken = result.status.data.action.actionTimetoken;
                 return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Message action add success. Message action "
-                                                                         "added with timetoken: %@", actionTimetoken)];
+                                                                         "added with timetoken: %@", actionTimetoken)
+                                                operation:PNMessageReactionsLogMessageOperation];
             }];
         }
 
@@ -127,7 +116,8 @@
     
     [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
         return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
-                                              details:@"Add message action with parameters:"];
+                                              details:@"Add message action with parameters:"
+                                            operation:PNMessageReactionsLogMessageOperation];
     }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
@@ -149,7 +139,8 @@
             [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
                 return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Message action remove success. Removed "
                                                                          "message action with %@ timetoken.",
-                                                                         userRequest.messageActionTimetoken)];
+                                                                         userRequest.messageActionTimetoken)
+                                                operation:PNMessageReactionsLogMessageOperation];
             }];
         }
 
@@ -158,7 +149,8 @@
     
     [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
         return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
-                                              details:@"Remove message action with parameters:"];
+                                              details:@"Remove message action with parameters:"
+                                            operation:PNMessageReactionsLogMessageOperation];
     }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
@@ -180,7 +172,8 @@
             [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
                 NSUInteger actionsCount = result.result.data.actions.count;
                 return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Fetch message actions success. Received %@ "
-                                                                         "message actions.", @(actionsCount))];
+                                                                         "message actions.", @(actionsCount))
+                                                operation:PNMessageReactionsLogMessageOperation];
             }];
         }
 
@@ -189,7 +182,8 @@
     
     [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
         return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
-                                              details:@"Fetch message actions with parameters:"];
+                                              details:@"Fetch message actions with parameters:"
+                                            operation:PNMessageReactionsLogMessageOperation];
     }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];

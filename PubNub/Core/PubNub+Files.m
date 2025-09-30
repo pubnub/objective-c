@@ -4,11 +4,13 @@
 #import "PNGenerateFileUploadURLRequest.h"
 #import "PNGenerateFileUploadURLStatus.h"
 #import "PNDownloadFileRequest+Private.h"
+#import "PNDictionaryLogEntry+Private.h"
 #import "PNBaseOperationData+Private.h"
 #import "PNFileListFetchData+Private.h"
 #import "PNFileDownloadData+Private.h"
 #import "PNSendFileRequest+Private.h"
 #import "PNOperationResult+Private.h"
+#import "PNStringLogEntry+Private.h"
 #import "PNFileSendData+Private.h"
 #import "PNBaseRequest+Private.h"
 #import "PNFileUploadRequest.h"
@@ -18,6 +20,7 @@
 #import "PNPublishStatus.h"
 #import "PubNub+Publish.h"
 #import "PNCryptoModule.h"
+#import "PNFunctions.h"
 #import "PubNub+PAM.h"
 #import "PNHelpers.h"
 
@@ -127,11 +130,6 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Files API builder interface (deprecated)
 
 - (PNFilesAPICallBuilder * (^)(void))files {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"Builder-based interface deprecated. Please use corresponding "
-                "request-based interfaces."];
-    }];
-    
     PNFilesAPICallBuilder *builder = nil;
     __weak __typeof(self) weakSelf = self;
 
@@ -277,7 +275,8 @@ NS_ASSUME_NONNULL_END
     
     [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
         return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
-                                              details:@"Send file with parameters:"];
+                                              details:@"Send file with parameters:"
+                                            operation:PNFilesLogMessageOperation];
     }];
 
     [self performRequest:urlRequest withParser:responseParser completion:handler];
@@ -304,7 +303,8 @@ NS_ASSUME_NONNULL_END
             
             [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
                 return [PNStringLogEntry entryWithMessage:PNStringFormat(@"List files success. There are %@ uploaded "
-                                                                         "files.", @(result.result.data.files.count))];
+                                                                         "files.", @(result.result.data.files.count))
+                                                operation:PNFilesLogMessageOperation];
             }];
         }
 
@@ -313,7 +313,8 @@ NS_ASSUME_NONNULL_END
     
     [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
         return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
-                                              details:@"List files with parameters:"];
+                                              details:@"List files with parameters:"
+                                            operation:PNFilesLogMessageOperation];
     }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
@@ -395,7 +396,8 @@ NS_ASSUME_NONNULL_END
                 downloadResult = [PNDownloadFileResult objectWithOperation:userRequest.operation response:data];
                 
                 [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-                    return [PNStringLogEntry entryWithMessage:@"Download file success."];
+                    return [PNStringLogEntry entryWithMessage:@"Download file success."
+                                                    operation:PNFilesLogMessageOperation];
                 }];
             }
 
@@ -406,7 +408,8 @@ NS_ASSUME_NONNULL_END
     
     [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
         return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
-                                              details:@"Download file with parameters:"];
+                                              details:@"Download file with parameters:"
+                                            operation:PNFilesLogMessageOperation];
     }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
@@ -428,7 +431,8 @@ NS_ASSUME_NONNULL_END
         if (!result.status.isError) {
             [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
                 return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Delete file success. Deleted file with "
-                                                                         "%@ ID.", userRequest.identifier)];
+                                                                         "%@ ID.", userRequest.identifier)
+                                                operation:PNFilesLogMessageOperation];
             }];
         }
 
@@ -437,7 +441,8 @@ NS_ASSUME_NONNULL_END
     
     [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
         return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
-                                              details:@"Delete file with parameters:"];
+                                              details:@"Delete file with parameters:"
+                                            operation:PNFilesLogMessageOperation];
     }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
@@ -535,7 +540,8 @@ NS_ASSUME_NONNULL_END
             } else {
                 [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
                     return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Send file success. File shared with "
-                                                                             "%@ ID.", fileIdentifier)];
+                                                                             "%@ ID.", fileIdentifier)
+                                                    operation:PNFilesLogMessageOperation];
                 }];
                 
                 data.category = status.category;

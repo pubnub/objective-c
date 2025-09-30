@@ -60,6 +60,41 @@ typedef NS_ENUM(NSUInteger, PNLogMessageType) {
     PNNetworkResponseLogMessageType
 };
 
+/// List of known operations for which log message created.
+///
+/// - Since: 6.0.0
+typedef NS_ENUM(NSUInteger, PNLogMessageOperation) {
+    /// Unknown operation.
+    PNUnknownLogMessageOperation,
+    
+    /// The operation to send messages.
+    PNMessageSendLogMessageOperation,
+    
+    /// The operation for real-time update retrieval.
+    PNSubscribeLogMessageOperation,
+    
+    /// The operation to access and manage `user_id` presence and fetch channel presence information.
+    PNPresenceLogMessageOperation,
+    
+    /// The operation to access and manage files in channel-specific storage.
+    PNFilesLogMessageOperation,
+    
+    /// The operation to access and manage messages for a specific channel(s) in the persistent storage.
+    PNMessageStorageLogMessageOperation,
+    
+    /// The operation to access and manage channel groups.
+    PNChannelGroupsLogMessageOperation,
+    
+    /// The operation to access and manage device registration for channel push notifications.
+    PNDevicePushNotificationsLogMessageOperation,
+    
+    /// The operation to access and manage App Context objects.
+    PNAppContextLogMessageOperation,
+    
+    /// The operation to access and manage reactions for a specific message.
+    PNMessageReactionsLogMessageOperation
+};
+
 #pragma mark - Class forwarding
 
 @class PNLogEntry;

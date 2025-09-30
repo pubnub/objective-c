@@ -4,7 +4,7 @@ set -e
 
 FRAMEWORKS_BUILD_CONFIGURATION="Release"
 FRAMEWORKS_PATH="${BUILD_DIR}/Frameworks"
-FRAMEWORKS_TARGET_ARCHITECTURES='i386 x86_64'
+FRAMEWORKS_TARGET_ARCHITECTURES='x86_64 arm64'
 PNENABLE_BITCODE="YES"
 [[ "${TARGET_NAME}" =~ (iOS|tvOS|watchOS|Fabric) ]] && FRAMEWORK_NAME="PubNub (${BASH_REMATCH[1]})"
 [[ ${BUILDING_STATIC_FRAMEWORK:=0} == 1 ]] && FRAMEWORK_NAME="Static ${FRAMEWORK_NAME}"
@@ -22,17 +22,18 @@ for sdk in "${PLATFORMS[@]}"
 do
     echo "Building ${FRAMEWORK_NAME} for ${sdk}..."
     if [[ $sdk =~ (simulator) ]]; then
-        [[ "${sdk}" =~ (iphone) ]] && FRAMEWORKS_TARGET_ARCHITECTURES="i386 x86_64"
-        [[ "${sdk}" =~ (appletv) ]] && FRAMEWORKS_TARGET_ARCHITECTURES="x86_64"
-        [[ "${sdk}" =~ (watch) ]] && FRAMEWORKS_TARGET_ARCHITECTURES="i386"
+        [[ "${sdk}" =~ (iphone) ]] && FRAMEWORKS_TARGET_ARCHITECTURES="x86_64 arm64"
+        [[ "${sdk}" =~ (appletv) ]] && FRAMEWORKS_TARGET_ARCHITECTURES="x86_64 arm64"
+        [[ "${sdk}" =~ (watch) ]] && FRAMEWORKS_TARGET_ARCHITECTURES="x86_64 arm64"
     else
-        [[ "${sdk}" =~ (iphone) ]] && FRAMEWORKS_TARGET_ARCHITECTURES="armv7 armv7s arm64"
+        [[ "${sdk}" =~ (iphone) ]] && FRAMEWORKS_TARGET_ARCHITECTURES="arm64"
         [[ "${sdk}" =~ (appletv) ]] && FRAMEWORKS_TARGET_ARCHITECTURES="arm64"
-        [[ "${sdk}" =~ (watch) ]] && FRAMEWORKS_TARGET_ARCHITECTURES="armv7k"
+        [[ "${sdk}" =~ (watch) ]] && FRAMEWORKS_TARGET_ARCHITECTURES="arm64_32"
     fi
 
 echo "xcrun --no-cache xcodebuild -project \"${PROJECT_FILE_PATH}\" -target \"${FRAMEWORK_NAME}\" -configuration \"${FRAMEWORKS_BUILD_CONFIGURATION}\" -sdk \"${sdk}\" BUILD_DIR=\"${BUILD_DIR}\" OBJROOT=\"${OBJROOT}/DependantBuilds\" BUILD_ROOT=\"${BUILD_ROOT}\" SYMROOT=\"${SYMROOT}\" ARCHS=\"${FRAMEWORKS_TARGET_ARCHITECTURES}\" VALID_ARCHS=\"${FRAMEWORKS_TARGET_ARCHITECTURES}\" ONLY_ACTIVE_ARCH=NO ENABLE_BITCODE=${PNENABLE_BITCODE} $ACTION > /dev/null"
-    xcrun --no-cache xcodebuild -project "${PROJECT_FILE_PATH}" -target "${FRAMEWORK_NAME}" -configuration "${FRAMEWORKS_BUILD_CONFIGURATION}" -sdk "${sdk}" BUILD_DIR="${BUILD_DIR}" OBJROOT="${OBJROOT}/DependantBuilds" BUILD_ROOT="${BUILD_ROOT}" SYMROOT="${SYMROOT}" ARCHS="${FRAMEWORKS_TARGET_ARCHITECTURES}" VALID_ARCHS="${FRAMEWORKS_TARGET_ARCHITECTURES}" ONLY_ACTIVE_ARCH=NO ENABLE_BITCODE=$PNENABLE_BITCODE $ACTION > /dev/null
+#    xcrun --no-cache xcodebuild -project "${PROJECT_FILE_PATH}" -target "${FRAMEWORK_NAME}" -configuration "${FRAMEWORKS_BUILD_CONFIGURATION}" -sdk "${sdk}" BUILD_DIR="${BUILD_DIR}" OBJROOT="${OBJROOT}/DependantBuilds" BUILD_ROOT="${BUILD_ROOT}" SYMROOT="${SYMROOT}" ARCHS="${FRAMEWORKS_TARGET_ARCHITECTURES}" VALID_ARCHS="${FRAMEWORKS_TARGET_ARCHITECTURES}" ONLY_ACTIVE_ARCH=NO ENABLE_BITCODE=$PNENABLE_BITCODE $ACTION > /dev/null
+    xcrun --no-cache xcodebuild -project "${PROJECT_FILE_PATH}" -target "${FRAMEWORK_NAME}" -configuration "${FRAMEWORKS_BUILD_CONFIGURATION}" -sdk "${sdk}" BUILD_DIR="${BUILD_DIR}" OBJROOT="${OBJROOT}/DependantBuilds" BUILD_ROOT="${BUILD_ROOT}" SYMROOT="${SYMROOT}" ARCHS="${FRAMEWORKS_TARGET_ARCHITECTURES}" VALID_ARCHS="${FRAMEWORKS_TARGET_ARCHITECTURES}" ONLY_ACTIVE_ARCH=NO ENABLE_BITCODE=$PNENABLE_BITCODE $ACTION
     echo "Built ${FRAMEWORK_NAME} for ${sdk}"
 done
 

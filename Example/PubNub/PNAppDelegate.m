@@ -84,6 +84,9 @@
 
     // Bind config
     self.client = [PubNub clientWithConfiguration:self.myConfig];
+    
+    // Modify log level after instance creation.
+//    [self.client setLogLevel:PNErrorLogLevel];
 
     // Bind didReceiveMessage, didReceiveStatus, and didReceivePresenceEvent 'listeners' to this delegate
     // just be sure the target has implemented the PNObjectEventListener extension
@@ -779,6 +782,17 @@
     
     // Messages threshold
     self.myConfig.requestMessageCountThreshold = 100;
+    
+    // Configure file logger (optional)
+    NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
+    NSString *logsPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).lastObject;
+    logsPath = [logsPath stringByAppendingPathComponent:bundleIdentifier];
+    logsPath = [logsPath stringByAppendingPathComponent:@"Logs"];
+    
+    PNFileLogger *logger = [PNFileLogger loggerWithLogsDirectoryPath:logsPath];
+    logger.maximumLogFileSize = (10 * 1024 * 1024);
+    logger.maximumNumberOfLogFiles = 10;
+    self.myConfig.loggers = @[logger];
 }
 
 - (NSString *)randomString {

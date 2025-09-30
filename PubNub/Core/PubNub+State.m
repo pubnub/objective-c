@@ -3,9 +3,13 @@
 #import "PNPresenceUserStateFetchData+Private.h"
 #import "PNChannelClientStateResult+Private.h"
 #import "PNClientStateGetResult+Private.h"
+#import "PNDictionaryLogEntry+Private.h"
 #import "PNOperationResult+Private.h"
+#import "PNStringLogEntry+Private.h"
 #import "PubNub+CorePrivate.h"
 #import "PNStatus+Private.h"
+#import "PNFunctions.h"
+
 
 // Deprecated
 #import "PNAPICallBuilder+Private.h"
@@ -102,11 +106,6 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Presence API builder interface (deprecated)
 
 - (PNStateAPICallBuilder * (^)(void))state {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"Builder-based interface deprecated. Please use corresponding "
-                "request-based interfaces."];
-    }];
-    
     PNStateAPICallBuilder *builder = nil;
     builder = [PNStateAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags, NSDictionary *parameters) {
         NSArray<NSString *> *groups = parameters[NSStringFromSelector(@selector(channelGroups))];
@@ -154,7 +153,8 @@ NS_ASSUME_NONNULL_END
 
         if (!result.status.isError) {
             [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-                return [PNStringLogEntry entryWithMessage:@"Set presence state success."];
+                return [PNStringLogEntry entryWithMessage:@"Set presence state success."
+                                                operation:PNPresenceLogMessageOperation];
             }];
         }
 
@@ -167,7 +167,8 @@ NS_ASSUME_NONNULL_END
                              
     [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
         return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
-                                              details:@"Set presence state with parameters:"];
+                                              details:@"Set presence state with parameters:"
+                                            operation:PNPresenceLogMessageOperation];
     }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
@@ -177,11 +178,6 @@ NS_ASSUME_NONNULL_END
            forUUID:(NSString *)uuid
          onChannel:(NSString *)channel
     withCompletion:(PNSetStateCompletionBlock)block {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
-                "'-setPresenceStateWithRequest:completion:' method instead."];
-    }];
-
     NSArray *channels = channel ? @[channel] : nil;
 
     [self setState:state
@@ -196,11 +192,6 @@ NS_ASSUME_NONNULL_END
            forUUID:(NSString *)uuid
     onChannelGroup:(NSString *)group
     withCompletion:(PNSetStateCompletionBlock)block {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
-                "'-setPresenceStateWithRequest:completion:' method instead."];
-    }];
-
     NSArray *groups = group ? @[group] : nil;
 
     [self setState:state
@@ -247,7 +238,8 @@ NS_ASSUME_NONNULL_END
                 NSUInteger channelsCount = data.channels ? data.channels.count : (data.state ? 1 : 0);
                 return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Fetch presence state success. Received "
                                                                          "presence state for %@ channels.",
-                                                                         @(channelsCount))];
+                                                                         @(channelsCount))
+                                                operation:PNPresenceLogMessageOperation];
             }];
         }
 
@@ -261,7 +253,8 @@ NS_ASSUME_NONNULL_END
                                
     [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
         return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
-                                              details:@"Fetch presence state with parameters:"];
+                                              details:@"Fetch presence state with parameters:"
+                                            operation:PNPresenceLogMessageOperation];
     }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
@@ -270,11 +263,6 @@ NS_ASSUME_NONNULL_END
 - (void)stateForUUID:(NSString *)uuid
            onChannel:(NSString *)channel
       withCompletion:(PNChannelStateCompletionBlock)block {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
-                "'-fetchPresenceStateWithRequest:completion:' method instead."];
-    }];
-    
     NSArray *channels = channel ? @[channel] : nil;
     
     [self stateForUUID:uuid
@@ -288,11 +276,6 @@ NS_ASSUME_NONNULL_END
 - (void)stateForUUID:(NSString *)uuid
       onChannelGroup:(NSString *)group
       withCompletion:(PNChannelGroupStateCompletionBlock)block {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
-                "'-fetchPresenceStateWithRequest:completion:' method instead."];
-    }];
-    
     NSArray *groups = group ? @[group] : nil;
     
     [self stateForUUID:uuid

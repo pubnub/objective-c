@@ -9,6 +9,12 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PNLoggerManager (Private)
 
 
+#pragma mark - Properties
+
+/// Configured minimum log entries level.
+@property(assign, atomic) PNLogLevel logLevel;
+
+
 #pragma mark - Initialization and Configuration
 
 /// Create loggers' manager.

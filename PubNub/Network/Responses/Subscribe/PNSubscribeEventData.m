@@ -1,5 +1,5 @@
 #import "PNSubscribeEventData+Private.h"
-#import <PubNub/PNCodable.h>
+#import "PNCodable.h"
 #import "PNHelpers.h"
 
 

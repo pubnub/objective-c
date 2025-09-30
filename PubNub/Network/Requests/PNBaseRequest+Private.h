@@ -1,9 +1,9 @@
 #import "PNBaseRequest.h"
 #import "PNTransportRequest+Private.h"
-#import <PubNub/PNCryptoProvider.h>
-#import <PubNub/PNConfiguration.h>
-#import <PubNub/PNBaseRequest.h>
-#import <PubNub/PNRequest.h>
+#import "PNCryptoProvider.h"
+#import "PNConfiguration.h"
+#import "PNBaseRequest.h"
+#import "PNRequest.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

@@ -1,5 +1,5 @@
-#import <PubNub/PNSubscribeEventData.h>
-#import <PubNub/PNSubscribeCursorData.h>
+#import "PNSubscribeEventData.h"
+#import "PNSubscribeCursorData.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

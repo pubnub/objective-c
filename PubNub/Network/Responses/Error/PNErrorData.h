@@ -3,7 +3,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-#pragma mark Interface implementaation
+#pragma mark Interface implementation
 
 /// Error status object additional information.
 @interface PNErrorData : PNBaseOperationData

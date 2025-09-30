@@ -15,6 +15,12 @@ NS_ASSUME_NONNULL_BEGIN
 /// Logged message payload.
 @property(strong, nullable, nonatomic, readonly) MessageType message;
 
+/// Operation for which ``message`` has been created.
+///
+/// > Note: The `PNUnknownLogMessageOperation` operation means that the message is explicitly not related to the API
+/// usage.
+@property(assign, atomic, readonly) PNLogMessageOperation operation;
+
 /// Additional information about the logger message (object, request, or response).
 @property(strong, nullable, nonatomic, readonly) NSString *details;
 

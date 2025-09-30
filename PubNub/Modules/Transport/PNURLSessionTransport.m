@@ -1,18 +1,19 @@
 #import "PNURLSessionTransport.h"
+#import "NSURLSessionConfiguration+PNConfigurationPrivate.h"
 #if TARGET_OS_IOS && !defined(TARGET_IS_EXTENSION)
 #import <UIKit/UIKit.h>
 #endif // TARGET_OS_IOS && !defined(TARGET_IS_EXTENSION)
-#import <PubNub/PNRequestRetryConfiguration+Private.h>
-#import <PubNub/PNTransportRequest+Private.h>
+#import "PNRequestRetryConfiguration+Private.h"
 #import "PNNetworkRequestLogEntry+Private.h"
-#import <PubNub/NSError+PNTransport.h>
-#import <PubNub/PNFunctions.h>
-#import <PubNub/PNHelpers.h>
-#import <PubNub/PNGZIP.h>
-#import <PubNub/PNLock.h>
-
-#import "NSURLSessionConfiguration+PNConfigurationPrivate.h"
 #import "PNURLSessionTransportResponse.h"
+#import "PNTransportRequest+Private.h"
+#import "PNDictionaryLogEntry.h"
+#import "NSError+PNTransport.h"
+#import "PNStringLogEntry.h"
+#import "PNFunctions.h"
+#import "PNHelpers.h"
+#import "PNGZIP.h"
+#import "PNLock.h"
 
 
 #pragma mark Static

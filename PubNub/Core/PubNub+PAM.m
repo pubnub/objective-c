@@ -2,6 +2,9 @@
 #import "PNConfiguration+Private.h"
 #import "PubNub+CorePrivate.h"
 #import "PNPAMToken+Private.h"
+#import "PNLogEntry+Private.h"
+#import "PNStringLogEntry.h"
+#import "PNFunctions.h"
 
 
 #pragma mark Interface implementation

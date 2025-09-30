@@ -1,5 +1,5 @@
-#import <PubNub/PNHistoryFetchData.h>
-#import <Pubnub/PNCryptoProvider.h>
+#import "PNHistoryFetchData.h"
+#import "PNCryptoProvider.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

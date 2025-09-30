@@ -1,4 +1,4 @@
-#import <PubNub/PNFileDownloadData.h>
+#import "PNFileDownloadData.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

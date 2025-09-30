@@ -220,10 +220,6 @@ NS_ASSUME_NONNULL_END
 }
 
 - (NSString *)uuid {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use 'userID' method instead."];
-    }];
-    
     return [self userID];
 }
 
@@ -346,6 +342,10 @@ NS_ASSUME_NONNULL_END
             block(client);
         });
     }
+}
+
+- (void)setLogLevel:(PNLogLevel)level {
+    self.logger.logLevel = level;
 }
 
 - (void)setRecentClientStatus:(PNStatusCategory)recentClientStatus withReachabilityCheck:(BOOL)shouldCheckReachability {
@@ -645,8 +645,9 @@ NS_ASSUME_NONNULL_END
 
 - (void)setupClientLogger {
     if (_configuration.logLevel == PNNoneLogLevel) return;
+    NSMutableArray<id<PNLogger>> *loggers = [NSMutableArray new];
     
-    NSMutableArray<id<PNLogger>> *loggers = [NSMutableArray arrayWithObject:[PNConsoleLogger new]];
+    if (_configuration.shouldEnableDefaultConsoleLogger) [loggers addObject:[PNConsoleLogger new]];
     if (_configuration.loggers.count) [loggers addObjectsFromArray:_configuration.loggers];
     
     self.logger = [PNLoggerManager managerWithClientIdentifier:[_instanceID substringToIndex:6]

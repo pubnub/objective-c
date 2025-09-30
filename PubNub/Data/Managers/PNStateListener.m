@@ -6,9 +6,11 @@
  */
 #import "PNStateListener.h"
 #import "PNSubscribeEventData+Private.h"
-#import "PNEventsListener.h"
+#import "PNDictionaryLogEntry+Private.h"
 #import "PubNub+CorePrivate.h"
 #import "PNSubscribeStatus.h"
+#import "PNEventsListener.h"
+#import "PNFunctions.h"
 #import "PNHelpers.h"
 
 
@@ -257,7 +259,8 @@ NS_ASSUME_NONNULL_END
     
     [self.client.logger debugWithLocation:@"PNStateListener" andMessageFactory:^PNLogEntry *{
         return [PNDictionaryLogEntry entryWithMessage:[message.data dictionaryRepresentation]
-                                              details:@"Received message:"];
+                                              details:@"Received message:"
+                                            operation:PNSubscribeLogMessageOperation];
     }];
     
     /**
@@ -281,7 +284,8 @@ NS_ASSUME_NONNULL_END
     
     [self.client.logger debugWithLocation:@"PNStateListener" andMessageFactory:^PNLogEntry *{
         return [PNDictionaryLogEntry entryWithMessage:[signal.data dictionaryRepresentation]
-                                              details:@"Received signal:"];
+                                              details:@"Received signal:"
+                                            operation:PNSubscribeLogMessageOperation];
     }];
 
     pn_dispatch_async(self.client.callbackQueue, ^{
@@ -296,7 +300,8 @@ NS_ASSUME_NONNULL_END
     
     [self.client.logger debugWithLocation:@"PNStateListener" andMessageFactory:^PNLogEntry *{
         return [PNDictionaryLogEntry entryWithMessage:[action.data dictionaryRepresentation]
-                                              details:@"Received message action event:"];
+                                              details:@"Received message action event:"
+                                            operation:PNSubscribeLogMessageOperation];
     }];
 
     pn_dispatch_async(self.client.callbackQueue, ^{
@@ -311,7 +316,8 @@ NS_ASSUME_NONNULL_END
     
     [self.client.logger debugWithLocation:@"PNStateListener" andMessageFactory:^PNLogEntry *{
         return [PNDictionaryLogEntry entryWithMessage:[event.data dictionaryRepresentation]
-                                              details:@"Received presence event:"];
+                                              details:@"Received presence event:"
+                                            operation:PNSubscribeLogMessageOperation];
     }];
 
     pn_dispatch_async(self.client.callbackQueue, ^{
@@ -326,7 +332,8 @@ NS_ASSUME_NONNULL_END
     
     [self.client.logger debugWithLocation:@"PNStateListener" andMessageFactory:^PNLogEntry *{
         return [PNDictionaryLogEntry entryWithMessage:[event.data dictionaryRepresentation]
-                                              details:@"Received app context event:"];
+                                              details:@"Received app context event:"
+                                            operation:PNSubscribeLogMessageOperation];
     }];
 
     pn_dispatch_async(self.client.callbackQueue, ^{
@@ -341,7 +348,8 @@ NS_ASSUME_NONNULL_END
     
     [self.client.logger debugWithLocation:@"PNStateListener" andMessageFactory:^PNLogEntry *{
         return [PNDictionaryLogEntry entryWithMessage:[event.data dictionaryRepresentation]
-                                              details:@"Received file share event:"];
+                                              details:@"Received file share event:"
+                                            operation:PNSubscribeLogMessageOperation];
     }];
 
     pn_dispatch_async(self.client.callbackQueue, ^{

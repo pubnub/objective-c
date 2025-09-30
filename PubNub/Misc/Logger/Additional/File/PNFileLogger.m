@@ -3,6 +3,7 @@
 #import "PNNetworkResponseLogEntry.h"
 #import "PNNetworkRequestLogEntry.h"
 #import "PNLogEntry+Private.h"
+#import "PNConsoleLogger.h"
 #import "PNLockSupport.h"
 
 
@@ -41,7 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(strong, nullable, nonatomic) NSFileHandle *currentLogHandler;
 
 /// Formatter that is used to translate log entry timestamp to ISO8601 standardized string.
-@property(strong, nonatomic) NSISO8601DateFormatter *dateFormatter;
+@property(strong, nonatomic) NSDateFormatter *dateFormatter;
 
 /// Shared resources access protection lock.
 @property(assign, nonatomic) pthread_mutex_t accessLock;
@@ -221,8 +222,10 @@ NS_ASSUME_NONNULL_END
 
 - (instancetype)initWithLogsDirectoryPath:(NSString *)path {
     if ((self = [super init])) {
-        _dateFormatter = [NSISO8601DateFormatter new];
-        _dateFormatter.formatOptions = NSISO8601DateFormatWithInternetDateTime;
+        _dateFormatter = [NSDateFormatter new];
+        _dateFormatter.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
+        _dateFormatter.dateFormat = @"yyyy'-'MM'-'dd' 'HH'-'mm'-'ss'";
+        _dateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
         
         _maximumNumberOfLogFiles = kPNDefaultMaximumNumberOfLogFiles;
         _maximumLogFileSize = kPNDefaultMaximumLogFileSize;
@@ -276,10 +279,11 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Logging
 
 - (void)logMessage:(PNLogEntry *)message {
-    if (!message.preProcessedString) return;
+    NSString *logMessage = message.preProcessedString ?: [PNConsoleLogger stringifiedLogEntry:message];
+    if (!logMessage) return;
     
     dispatch_async(self.queue, ^{
-        NSData *messageData = [message.preProcessedString dataUsingEncoding:NSUTF8StringEncoding];
+        NSData *messageData = [[logMessage stringByAppendingString:@"\n"] dataUsingEncoding:NSUTF8StringEncoding];
         
         @try {
             pn_lock(&self->_accessLock, ^{
@@ -291,10 +295,20 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)indexExistingLogFiles {
+    NSString *pattern = [NSString stringWithFormat:@".+\\d{4}-\\d{2}-\\d{2}\\s\\d{2}-\\d{2}-\\d{2}(\\s\\d+)?\\.(txt)"];
+    NSRegularExpressionOptions options = NSRegularExpressionCaseInsensitive;
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:options error:nil];
+    
     NSFileManager *manager = [NSFileManager defaultManager];
     self.logFilesInformation = [NSMutableArray new];
     
     NSMutableArray<NSString *> *fileNames = [[manager contentsOfDirectoryAtPath:self.directory error:nil] mutableCopy];
+    for (NSString *fileName in [fileNames copy]) {
+        NSRange matchRange = NSMakeRange(0, fileName.length);
+        NSArray *matches = [regex matchesInString:fileName options:(NSMatchingOptions)0 range:matchRange];
+        if (matches.count == 0) [fileNames removeObject:fileName];
+    }
+    
     NSArray<NSString *> *logFilePaths = [self.directory stringsByAppendingPaths:fileNames];
     
     for (NSString *filePath in logFilePaths) {
@@ -342,7 +356,6 @@ NS_ASSUME_NONNULL_END
 
 - (void)deleteLogsIfRequired {
     NSMutableArray<PNFileLoggerFileInformation *> *forRemoval = [NSMutableArray new];
-    
     if (self->_maximumNumberOfLogFiles > 0 && self.logFilesInformation.count >= self->_maximumNumberOfLogFiles) {
         NSUInteger filesCount = self.logFilesInformation.count;
         

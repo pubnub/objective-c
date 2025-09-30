@@ -1,4 +1,4 @@
-#import <PubNub/PNFileSendData.h>
+#import "PNFileSendData.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

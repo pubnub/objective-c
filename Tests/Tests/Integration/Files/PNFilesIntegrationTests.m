@@ -464,7 +464,10 @@ NS_ASSUME_NONNULL_END
     
     XCTAssertNotNil(downloadURL);
     XCTAssertTrue([downloadURL.absoluteString containsString:expectedUserId]);
-    XCTAssertTrue([downloadURL.absoluteString containsString:expectedAuth]);
+    XCTAssertTrue([downloadURL.absoluteString containsString:expectedAuth],
+                  @"'%@' doesn't have '%@'",
+                  downloadURL.absoluteString,
+                  expectedAuth);
     XCTAssertTrue([downloadURL.absoluteString containsString:identifier]);
     XCTAssertTrue([downloadURL.absoluteString containsString:fileName]);
 }

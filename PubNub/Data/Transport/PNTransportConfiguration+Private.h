@@ -1,4 +1,4 @@
-#import <PubNub/PubNub.h>
+#import "PNTransportConfiguration.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

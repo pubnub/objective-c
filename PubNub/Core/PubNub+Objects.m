@@ -1,7 +1,10 @@
 #import "PubNub+Objects.h"
 #import "PNBaseObjectsRequest+Private.h"
+#import "PNDictionaryLogEntry+Private.h"
+#import "PNStringLogEntry+Private.h"
 #import "PubNub+CorePrivate.h"
 #import "PNStatus+Private.h"
+#import "PNFunctions.h"
 #import "PNHelpers.h"
 
 // Deprecated
@@ -140,11 +143,6 @@ NS_ASSUME_NONNULL_END
 #pragma mark - App Context API builder interface (deprecated)
 
 - (PNObjectsAPICallBuilder *(^)(void))objects {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"Builder-based interface deprecated. Please use corresponding "
-                "request-based interfaces."];
-    }];
-    
     PNObjectsAPICallBuilder *builder = nil;
     __weak __typeof(self) weakSelf = self;
 
@@ -479,7 +477,8 @@ NS_ASSUME_NONNULL_END
             [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
                 return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Set UUID metadata object success. "
                                                                          "Removed '%@' UUID metadata object.",
-                                                                         userRequest.identifier)];
+                                                                         userRequest.identifier)
+                                                operation:PNAppContextLogMessageOperation];
             }];
         }
 
@@ -488,7 +487,8 @@ NS_ASSUME_NONNULL_END
                             
     [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
         return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
-                                              details:@"Remove UUID metadata object with parameters:"];
+                                              details:@"Remove UUID metadata object with parameters:"
+                                            operation:PNAppContextLogMessageOperation];
     }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
@@ -510,7 +510,8 @@ NS_ASSUME_NONNULL_END
             [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
                 NSString *identifier = userRequest.identifier;
                 return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Set UUID metadata object success. Updated "
-                                                                         "'%@' UUID metadata object.", identifier)];
+                                                                         "'%@' UUID metadata object.", identifier)
+                                                operation:PNAppContextLogMessageOperation];
             }];
         }
 
@@ -519,7 +520,8 @@ NS_ASSUME_NONNULL_END
                                
     [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
         return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
-                                              details:@"Set UUID metadata object with parameters:"];
+                                              details:@"Set UUID metadata object with parameters:"
+                                            operation:PNAppContextLogMessageOperation];
     }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
@@ -542,7 +544,8 @@ NS_ASSUME_NONNULL_END
             [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
                 return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Fetch UUID metadata object success. "
                                                                          "Received '%@' UUID metadata object.",
-                                                                         userRequest.identifier)];
+                                                                         userRequest.identifier)
+                                                operation:PNAppContextLogMessageOperation];
             }];
         }
 
@@ -551,7 +554,8 @@ NS_ASSUME_NONNULL_END
                          
     [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
         return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
-                                              details:@"Fetch UUID metadata object with parameters:"];
+                                              details:@"Fetch UUID metadata object with parameters:"
+                                            operation:PNAppContextLogMessageOperation];
     }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
@@ -573,7 +577,8 @@ NS_ASSUME_NONNULL_END
             [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
                 return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Fetch all UUID metadata success. Received "
                                                                          "%@ UUID metadata objects.",
-                                                                         @(result.result.data.metadata.count))];
+                                                                         @(result.result.data.metadata.count))
+                                                operation:PNAppContextLogMessageOperation];
             }];
         }
 
@@ -582,7 +587,8 @@ NS_ASSUME_NONNULL_END
                             
     [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
         return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
-                                              details:@"Fetch all UUID metadata objects with parameters:"];
+                                              details:@"Fetch all UUID metadata objects with parameters:"
+                                            operation:PNAppContextLogMessageOperation];
     }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
@@ -605,7 +611,8 @@ NS_ASSUME_NONNULL_END
             [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
                 return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Set Channel metadata object success. "
                                                                          "Updated '%@' Channel metadata object.",
-                                                                         userRequest.identifier)];
+                                                                         userRequest.identifier)
+                                                operation:PNAppContextLogMessageOperation];
             }];
         }
 
@@ -614,7 +621,8 @@ NS_ASSUME_NONNULL_END
                                
     [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
         return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
-                                              details:@"Set Channel metadata object with parameters:"];
+                                              details:@"Set Channel metadata object with parameters:"
+                                            operation:PNAppContextLogMessageOperation];
     }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
@@ -635,7 +643,8 @@ NS_ASSUME_NONNULL_END
             [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
                 return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Remove Channel metadata object success. "
                                                                          "Removed '%@' Channel metadata object.",
-                                                                         userRequest.identifier)];
+                                                                         userRequest.identifier)
+                                                operation:PNAppContextLogMessageOperation];
             }];
         }
 
@@ -644,7 +653,8 @@ NS_ASSUME_NONNULL_END
                                   
     [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
         return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
-                                              details:@"Remove Channel metadata object with parameters:"];
+                                              details:@"Remove Channel metadata object with parameters:"
+                                            operation:PNAppContextLogMessageOperation];
     }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
@@ -666,7 +676,8 @@ NS_ASSUME_NONNULL_END
             [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
                 return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Fetch Channel metadata object success. "
                                                                          "Received '%@' Channel metadata object.",
-                                                                         userRequest.identifier)];
+                                                                         userRequest.identifier)
+                                                operation:PNAppContextLogMessageOperation];
             }];
         }
 
@@ -675,7 +686,8 @@ NS_ASSUME_NONNULL_END
                             
     [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
         return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
-                                              details:@"Fetch Channel metadata object with parameters:"];
+                                              details:@"Fetch Channel metadata object with parameters:"
+                                            operation:PNAppContextLogMessageOperation];
     }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
@@ -697,7 +709,8 @@ NS_ASSUME_NONNULL_END
             [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
                 return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Fetch all Channel metadata objects success. "
                                                                          "Received %@ Channel metadata objects.",
-                                                                         @(result.result.data.metadata.count))];
+                                                                         @(result.result.data.metadata.count))
+                                                operation:PNAppContextLogMessageOperation];
             }];
         }
 
@@ -706,7 +719,8 @@ NS_ASSUME_NONNULL_END
                                 
     [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
         return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
-                                              details:@"Fetch all Channel metadata objects with parameters:"];
+                                              details:@"Fetch all Channel metadata objects with parameters:"
+                                            operation:PNAppContextLogMessageOperation];
     }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
@@ -731,7 +745,8 @@ NS_ASSUME_NONNULL_END
             [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
                 return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Set memberships success. There are %@ "
                                                                          "memberships now.",
-                                                                         @(result.result.data.memberships.count))];
+                                                                         @(result.result.data.memberships.count))
+                                                operation:PNAppContextLogMessageOperation];
             }];
         }
 
@@ -740,7 +755,8 @@ NS_ASSUME_NONNULL_END
                            
     [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
         return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
-                                              details:@"Set memberships with parameters:"];
+                                              details:@"Set memberships with parameters:"
+                                            operation:PNAppContextLogMessageOperation];
     }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
@@ -762,7 +778,8 @@ NS_ASSUME_NONNULL_END
             [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
                 return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Remove memberships success. There are %@ "
                                                                          "memberships now.",
-                                                                         @(result.result.data.memberships.count))];
+                                                                         @(result.result.data.memberships.count))
+                                                operation:PNAppContextLogMessageOperation];
             }];
         }
 
@@ -771,7 +788,8 @@ NS_ASSUME_NONNULL_END
                               
     [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
         return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
-                                              details:@"Remove memberships with parameters:"];
+                                              details:@"Remove memberships with parameters:"
+                                            operation:PNAppContextLogMessageOperation];
     }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
@@ -793,7 +811,8 @@ NS_ASSUME_NONNULL_END
             [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
                 return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Manage memberships success. There are %@ "
                                                                          "memberships now.",
-                                                                         @(result.result.data.memberships.count))];
+                                                                         @(result.result.data.memberships.count))
+                                                operation:PNAppContextLogMessageOperation];
             }];
         }
 
@@ -802,7 +821,8 @@ NS_ASSUME_NONNULL_END
                               
     [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
         return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
-                                              details:@"Manage memberships with parameters:"];
+                                              details:@"Manage memberships with parameters:"
+                                            operation:PNAppContextLogMessageOperation];
     }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
@@ -825,7 +845,8 @@ NS_ASSUME_NONNULL_END
             [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
                 return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Fetch memberships success. Received %@ "
                                                                          "memberships.",
-                                                                         @(result.result.data.memberships.count))];
+                                                                         @(result.result.data.memberships.count))
+                                                operation:PNAppContextLogMessageOperation];
             }];
         }
 
@@ -834,7 +855,8 @@ NS_ASSUME_NONNULL_END
                         
     [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
         return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
-                                              details:@"Fetch memberships with parameters:"];
+                                              details:@"Fetch memberships with parameters:"
+                                            operation:PNAppContextLogMessageOperation];
     }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
@@ -855,7 +877,8 @@ NS_ASSUME_NONNULL_END
             [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
                 return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Set channel members success. There are %@ "
                                                                          "channel members now.",
-                                                                         @(result.result.data.members.count))];
+                                                                         @(result.result.data.members.count))
+                                                operation:PNAppContextLogMessageOperation];
             }];
         }
 
@@ -864,7 +887,8 @@ NS_ASSUME_NONNULL_END
                               
     [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
         return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
-                                              details:@"Set channel members with parameters:"];
+                                              details:@"Set channel members with parameters:"
+                                            operation:PNAppContextLogMessageOperation];
     }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
@@ -885,7 +909,8 @@ NS_ASSUME_NONNULL_END
             [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
                 return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Remove channel members success. There are "
                                                                          "%@ channel members now.",
-                                                                         @(result.result.data.members.count))];
+                                                                         @(result.result.data.members.count))
+                                                operation:PNAppContextLogMessageOperation];
             }];
         }
 
@@ -894,7 +919,8 @@ NS_ASSUME_NONNULL_END
                                  
     [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
         return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
-                                              details:@"Remove channel members with parameters:"];
+                                              details:@"Remove channel members with parameters:"
+                                            operation:PNAppContextLogMessageOperation];
     }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
@@ -915,7 +941,8 @@ NS_ASSUME_NONNULL_END
             [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
                 return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Manage channel members success. There are "
                                                                          "%@ channel members now.",
-                                                                         @(result.result.data.members.count))];
+                                                                         @(result.result.data.members.count))
+                                                operation:PNAppContextLogMessageOperation];
             }];
         }
 
@@ -924,7 +951,8 @@ NS_ASSUME_NONNULL_END
                                  
     [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
         return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
-                                              details:@"Manage channel members with parameters:"];
+                                              details:@"Manage channel members with parameters:"
+                                            operation:PNAppContextLogMessageOperation];
     }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
@@ -947,7 +975,8 @@ NS_ASSUME_NONNULL_END
             [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
                 return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Fetch channel members success. Received %@ "
                                                                          "channel members.",
-                                                                         @(result.result.data.members.count))];
+                                                                         @(result.result.data.members.count))
+                                                operation:PNAppContextLogMessageOperation];
             }];
         }
 
@@ -956,7 +985,8 @@ NS_ASSUME_NONNULL_END
                            
     [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
         return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
-                                              details:@"Fetch channel members with parameters:"];
+                                              details:@"Fetch channel members with parameters:"
+                                            operation:PNAppContextLogMessageOperation];
     }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];

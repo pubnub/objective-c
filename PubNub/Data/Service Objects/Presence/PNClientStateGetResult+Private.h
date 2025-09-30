@@ -1,5 +1,5 @@
-#import <PubNub/PNClientStateGetResult.h>
-#import <PubNub/PNPresenceStateFetchResult.h>
+#import "PNClientStateGetResult.h"
+#import "PNPresenceStateFetchResult.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

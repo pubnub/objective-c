@@ -1,5 +1,4 @@
-#import <PubNub/PNPresenceGlobalHereNowResult.h>
-#import <PubNub/PNPresenceHereNowResult.h>
+#import "PNPresenceHereNowResult.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

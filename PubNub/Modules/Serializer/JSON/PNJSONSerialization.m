@@ -1,5 +1,5 @@
 #import "PNJSONSerialization.h"
-#import <PubNub/PNFunctions.h>
+#import "PNFunctions.h"
 
 
 #pragma mark Interface implementation

@@ -104,6 +104,7 @@ NS_ASSUME_NONNULL_END
         _origin = [kPNDefaultOrigin copy];
         _publishKey = [publishKey copy];
         _subscribeKey = [subscribeKey copy];
+        _enableDefaultConsoleLogger = YES;
         _logLevel = PNNoneLogLevel;
         
         self.userID = userID;
@@ -145,6 +146,7 @@ NS_ASSUME_NONNULL_END
     configuration.authToken = [self.authToken copy];
     configuration.userID = [self.userID copy];
     configuration.cryptoModule = self.cryptoModule;
+    configuration.enableDefaultConsoleLogger = self.shouldEnableDefaultConsoleLogger;
     configuration.logLevel = self.logLevel;
     configuration.loggers = self.loggers;
     configuration.filterExpression = [self.filterExpression copy];

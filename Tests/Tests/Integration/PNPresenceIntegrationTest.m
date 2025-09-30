@@ -490,8 +490,6 @@ NS_ASSUME_NONNULL_END
             XCTAssertNotNil(fetchedOccupancy);
             XCTAssertEqual(fetchedOccupancy.unsignedIntegerValue, clients.count);
             XCTAssertEqualObjects(transportRequest.query[@"limit"], @(request.limit).stringValue);
-            XCTAssertEqualObjects(transportRequest.query[@"offset"], @"0");
-            XCTAssertEqualObjects(result.data.next, @1);
             
             handler();
         }];
@@ -527,8 +525,6 @@ NS_ASSUME_NONNULL_END
             XCTAssertNotNil(fetchedOccupancy);
             XCTAssertEqual(fetchedOccupancy.unsignedIntegerValue, clients.count);
             XCTAssertEqualObjects(transportRequest.query[@"limit"], @"1000");
-            XCTAssertEqualObjects(transportRequest.query[@"offset"], @"0");
-            XCTAssertEqualObjects(result.data.next, @(-1));
             
             handler();
         }];

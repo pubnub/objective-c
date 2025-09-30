@@ -1,6 +1,6 @@
-#import <PubNub/PNPresenceHereNowFetchData.h>
-#import <PubNub/PNStructures.h>
-#import <PubNub/PNCodable.h>
+#import "PNPresenceHereNowFetchData.h"
+#import "PNStructures.h"
+#import "PNCodable.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -37,11 +37,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Presence information details level.
 @property(assign, nonatomic, readonly) PNHereNowVerbosityLevel verbosityLevel;
-
-/// Index of next page which can be used for ``offset``.
-///
-/// > Note: `-1` will be returned if there is are more pages.
-@property(strong, nonatomic) NSNumber *next;
 
 
 #pragma mark - Helpers

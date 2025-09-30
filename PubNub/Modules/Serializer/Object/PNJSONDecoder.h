@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
-#import <PubNub/PNJSONSerializer.h>
-#import <PubNub/PNDecoder.h>
+#import "PNJSONSerializer.h"
+#import "PNDecoder.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

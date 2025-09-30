@@ -1,8 +1,8 @@
 #import "PNHistoryFetchData+Private.h"
-#import <PubNub/PNCryptoProvider.h>
-#import <PubNub/PNCodable.h>
+#import "PNCryptoProvider.h"
 #import "PNLoggerManager.h"
 #import "PNConstants.h"
+#import "PNCodable.h"
 #import "PNHelpers.h"
 #import "PNError.h"
 

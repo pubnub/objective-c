@@ -1,5 +1,5 @@
-#import <PubNub/PNSubscribeStatus.h>
-#import <PubNub/PNSubscribeData.h>
+#import "PNSubscribeStatus.h"
+#import "PNSubscribeData.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

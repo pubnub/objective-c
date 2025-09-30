@@ -1,8 +1,8 @@
 #import "PNJSONCodableObjects.h"
 #import <objc/runtime.h>
-#import <PubNub/PNFunctions.h>
-#import <PubNub/PNCodable.h>
-#import <PubNub/PNLock.h>
+#import "PNFunctions.h"
+#import "PNCodable.h"
+#import "PNLock.h"
 
 
 #pragma mark Static

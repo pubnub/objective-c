@@ -32,9 +32,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// pagination.
 @property(assign, nonatomic) NSUInteger limit;
 
-/// Starting position of results to return, used for pagination.
-@property(assign, nonatomic) NSUInteger offset;
-
 
 #pragma mark - Initialization and Configuration
 

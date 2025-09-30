@@ -1,6 +1,6 @@
 #import "PNPagedAppContextData+Private.h"
-#import <PubNub/PNJSONDecoder.h>
-#import <PubNub/PNCodable.h>
+#import "PNJSONDecoder.h"
+#import "PNCodable.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

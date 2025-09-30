@@ -1,4 +1,4 @@
-#import <PubNub/PNBaseOperationData.h>
+#import "PNBaseOperationData.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

@@ -1,8 +1,11 @@
 #import "PubNub+Publish.h"
 #import "PNPublishFileMessageRequest+Private.h"
 #import "PNBasePublishRequest+Private.h"
+#import "PNDictionaryLogEntry+Private.h"
+#import "PNStringLogEntry+Private.h"
 #import "PubNub+CorePrivate.h"
 #import "PNStatus+Private.h"
+#import "PNFunctions.h"
 #import "PNHelpers.h"
 
 // Deprecated
@@ -95,11 +98,6 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Publish API builder interface (deprecated)
 
 - (PNPublishFileMessageAPICallBuilder * (^)(void))publishFileMessage {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"Builder-based interface deprecated. Please use corresponding "
-                "request-based interfaces."];
-    }];
-    
     PNPublishFileMessageAPICallBuilder *builder = nil;
     __weak __typeof(self) weakSelf = self;
     
@@ -132,11 +130,6 @@ NS_ASSUME_NONNULL_END
 }
 
 - (PNPublishAPICallBuilder * (^)(void))publish {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"Builder-based interface deprecated. Please use corresponding "
-                "request-based interfaces."];
-    }];
-    
     PNPublishAPICallBuilder *builder = nil;
     __weak __typeof(self) weakSelf = self;
 
@@ -151,11 +144,6 @@ NS_ASSUME_NONNULL_END
 }
 
 - (PNPublishAPICallBuilder * (^)(void))fire {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"Builder-based interface deprecated. Please use corresponding "
-                "request-based interfaces."];
-    }];
-    
     PNPublishAPICallBuilder *builder = nil;
     __weak __typeof(self) weakSelf = self;
 
@@ -173,11 +161,6 @@ NS_ASSUME_NONNULL_END
 }
 
 - (PNSignalAPICallBuilder * (^)(void))signal {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"Builder-based interface deprecated. Please use corresponding "
-                "request-based interfaces."];
-    }];
-    
     PNSignalAPICallBuilder * builder = nil;
     __weak __typeof(self) weakSelf = self;
     builder = [PNSignalAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
@@ -219,7 +202,8 @@ NS_ASSUME_NONNULL_END
             [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
                 return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Publish file message success. File message "
                                                                          "published with timetoken: %@",
-                                                                         result.status.data.timetoken)];
+                                                                         result.status.data.timetoken)
+                                                operation:PNMessageSendLogMessageOperation];
             }];
         }
 
@@ -228,7 +212,8 @@ NS_ASSUME_NONNULL_END
                                
     [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
         return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
-                                              details:@"Publish file message with parameters:"];
+                                              details:@"Publish file message with parameters:"
+                                            operation:PNMessageSendLogMessageOperation];
     }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
@@ -251,7 +236,8 @@ NS_ASSUME_NONNULL_END
         if (!result.status.isError) {
             [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
                 return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Publish success with timetoken: %@",
-                                                                         result.status.data.timetoken)];
+                                                                         result.status.data.timetoken)
+                                                operation:PNMessageSendLogMessageOperation];
             }];
         }
 
@@ -260,18 +246,14 @@ NS_ASSUME_NONNULL_END
     
     [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
         return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
-                                              details:@"Publish with parameters:"];
+                                              details:@"Publish with parameters:"
+                                            operation:PNMessageSendLogMessageOperation];
     }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
 
 - (void)publish:(id)message toChannel:(NSString *)channel withCompletion:(PNPublishCompletionBlock)block {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
-                "'-publishWithRequest:completion:' method instead."];
-    }];
-    
     [self publish:message toChannel:channel withMetadata:nil completion:block];
 }
 
@@ -279,11 +261,6 @@ NS_ASSUME_NONNULL_END
        toChannel:(NSString *)channel
     withMetadata:(NSDictionary<NSString *, id> *)metadata
       completion:(PNPublishCompletionBlock)block {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
-                "'-publishWithRequest:completion:' method instead."];
-    }];
-    
     [self publish:message toChannel:channel compressed:NO withMetadata:metadata completion:block];
 }
 
@@ -291,11 +268,6 @@ NS_ASSUME_NONNULL_END
          toChannel:(NSString *)channel
         compressed:(BOOL)compressed
     withCompletion:(PNPublishCompletionBlock)block {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
-                "'-publishWithRequest:completion:' method instead."];
-    }];
-    
     [self publish:message toChannel:channel compressed:compressed withMetadata:nil completion:block];
 }
 
@@ -304,11 +276,6 @@ NS_ASSUME_NONNULL_END
       compressed:(BOOL)compressed
     withMetadata:(NSDictionary<NSString *, id> *)metadata
       completion:(PNPublishCompletionBlock)block {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
-                "'-publishWithRequest:completion:' method instead."];
-    }];
-    
     [self publish:message
          toChannel:channel
     storeInHistory:YES
@@ -321,11 +288,6 @@ NS_ASSUME_NONNULL_END
          toChannel:(NSString *)channel
     storeInHistory:(BOOL)shouldStore
     withCompletion:(PNPublishCompletionBlock)block {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
-                "'-publishWithRequest:completion:' method instead."];
-    }];
-    
     [self publish:message toChannel:channel storeInHistory:shouldStore withMetadata:nil completion:block];
 }
 
@@ -334,11 +296,6 @@ NS_ASSUME_NONNULL_END
     storeInHistory:(BOOL)shouldStore
       withMetadata:(NSDictionary<NSString *, id> *)metadata
         completion:(PNPublishCompletionBlock)block {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
-                "'-publishWithRequest:completion:' method instead."];
-    }];
-    
     [self publish:message
          toChannel:channel
     storeInHistory:shouldStore
@@ -352,11 +309,6 @@ NS_ASSUME_NONNULL_END
     storeInHistory:(BOOL)shouldStore
         compressed:(BOOL)compressed
     withCompletion:(PNPublishCompletionBlock)block {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
-                "'-publishWithRequest:completion:' method instead."];
-    }];
-    
     [self publish:message
          toChannel:channel
     storeInHistory:shouldStore
@@ -371,11 +323,6 @@ NS_ASSUME_NONNULL_END
         compressed:(BOOL)compressed
       withMetadata:(NSDictionary<NSString *, id> *)metadata
         completion:(PNPublishCompletionBlock)block {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
-                "'-publishWithRequest:completion:' method instead."];
-    }];
-    
     [self publish:message
             toChannel:channel
     mobilePushPayload:nil
@@ -392,11 +339,6 @@ NS_ASSUME_NONNULL_END
             toChannel:(NSString *)channel
     mobilePushPayload:(NSDictionary<NSString *, id> *)payloads
        withCompletion:(PNPublishCompletionBlock)block {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
-                "'-publishWithRequest:completion:' method instead."];
-    }];
-    
     [self publish:message toChannel:channel mobilePushPayload:payloads withMetadata:nil completion:block];
 }
 
@@ -405,11 +347,6 @@ NS_ASSUME_NONNULL_END
     mobilePushPayload:(NSDictionary<NSString *, id> *)payloads
          withMetadata:(NSDictionary<NSString *, id> *)metadata
            completion:(PNPublishCompletionBlock)block {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
-                "'-publishWithRequest:completion:' method instead."];
-    }];
-    
     [self publish:message
             toChannel:channel
     mobilePushPayload:payloads
@@ -423,11 +360,6 @@ NS_ASSUME_NONNULL_END
     mobilePushPayload:(NSDictionary<NSString *, id> *)payloads
            compressed:(BOOL)compressed
        withCompletion:(PNPublishCompletionBlock)block {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
-                "'-publishWithRequest:completion:' method instead."];
-    }];
-    
     [self publish:message
             toChannel:channel
     mobilePushPayload:payloads
@@ -442,11 +374,6 @@ NS_ASSUME_NONNULL_END
            compressed:(BOOL)compressed
          withMetadata:(NSDictionary<NSString *, id> *)metadata
            completion:(PNPublishCompletionBlock)block {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
-                "'-publishWithRequest:completion:' method instead."];
-    }];
-    
     [self publish:message
             toChannel:channel
     mobilePushPayload:payloads
@@ -461,11 +388,6 @@ NS_ASSUME_NONNULL_END
     mobilePushPayload:(NSDictionary<NSString *, id> *)payloads
        storeInHistory:(BOOL)shouldStore
        withCompletion:(PNPublishCompletionBlock)block {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
-                "'-publishWithRequest:completion:' method instead."];
-    }];
-    
     [self publish:message
             toChannel:channel
     mobilePushPayload:payloads
@@ -480,11 +402,6 @@ NS_ASSUME_NONNULL_END
        storeInHistory:(BOOL)shouldStore
          withMetadata:(NSDictionary<NSString *, id> *)metadata
            completion:(PNPublishCompletionBlock)block {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
-                "'-publishWithRequest:completion:' method instead."];
-    }];
-    
     [self publish:message
             toChannel:channel
     mobilePushPayload:payloads
@@ -500,11 +417,6 @@ NS_ASSUME_NONNULL_END
        storeInHistory:(BOOL)shouldStore
            compressed:(BOOL)compressed
        withCompletion:(PNPublishCompletionBlock)block {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
-                "'-publishWithRequest:completion:' method instead."];
-    }];
-    
     [self publish:message
             toChannel:channel
     mobilePushPayload:payloads
@@ -521,11 +433,6 @@ NS_ASSUME_NONNULL_END
            compressed:(BOOL)compressed
          withMetadata:(NSDictionary<NSString *, id> *)metadata
            completion:(PNPublishCompletionBlock)block {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
-                "'-publishWithRequest:completion:' method instead."];
-    }];
-    
     [self publish:message
             toChannel:channel
     mobilePushPayload:payloads
@@ -583,7 +490,8 @@ NS_ASSUME_NONNULL_END
         if (!result.status.isError) {
             [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
                 return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Signal success with timetoken: %@",
-                                                                         result.status.data.timetoken)];
+                                                                         result.status.data.timetoken)
+                                                operation:PNMessageSendLogMessageOperation];
             }];
         }
 
@@ -592,18 +500,14 @@ NS_ASSUME_NONNULL_END
     
     [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
         return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
-                                              details:@"Signal with parameters:"];
+                                              details:@"Signal with parameters:"
+                                            operation:PNMessageSendLogMessageOperation];
     }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
 
 - (void)signal:(id)message channel:(NSString *)channel withCompletion:(PNSignalCompletionBlock)block {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
-                "'-sendSignalWithRequest:completion:' method instead."];
-    }];
-    
     [self signal:message channel:channel customMessageType:nil withQueryParameters:nil completion:block];
 }
 

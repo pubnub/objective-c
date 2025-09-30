@@ -1,4 +1,4 @@
-#import <PubNub/PNLogEntry.h>
+#import "PNLogEntry.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -10,6 +10,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 #pragma mark - Properties
+
+/// Operation for which ``message`` has been created.
+///
+/// > Note: The `PNUnknownLogMessageOperation` operation means that the message is explicitly not related to the API
+/// usage.
+@property(assign, atomic) PNLogMessageOperation operation;
 
 /// Contains string which has been prepared for built-in ``PNConsoleLogger``.
 @property(strong, nonatomic) NSString *preProcessedString;

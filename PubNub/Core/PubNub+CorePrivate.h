@@ -1,10 +1,10 @@
 #import "PubNub+Core.h"
-#import <PubNub/PNJSONSerialization.h>
-#import <PubNub/PNTransportResponse.h>
-#import <PubNub/PNTransportRequest.h>
-#import <PubNub/PNTransport.h>
-#import <PubNub/PNJSONCoder.h>
-#import <PubNub/PNLock.h>
+#import "PNJSONSerialization.h"
+#import "PNTransportResponse.h"
+#import "PNTransportRequest.h"
+#import "PNTransport.h"
+#import "PNJSONCoder.h"
+#import "PNLock.h"
 #import "PNNetworkResponseLogEntry+Private.h"
 #import "PNNetworkRequestLogEntry+Private.h"
 #import "PNOperationDataParser.h"
@@ -81,6 +81,9 @@ typedef void(^PNParsedRequestCompletionBlock)(PNTransportRequest *,
 
 /// Transport for subscription loop.
 @property (nonatomic, strong) id<PNTransport> subscriptionNetwork;
+
+/// **PubNub** client logger instance which can be used to add additional logs.
+@property(strong, nonatomic, readonly) PNLoggerManager *logger;
 
 /// Transport for service requests (non-subscribe).
 @property (nonatomic, strong) id<PNTransport> serviceNetwork;

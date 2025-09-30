@@ -1,9 +1,9 @@
 #import "PNJSONEncoder.h"
 #import <objc/runtime.h>
-#import <PubNub/PNFunctions.h>
-#import <PubNub/PNCodable.h>
-#import <PubNub/PNError.h>
 #import "PNJSONCodableObjects.h"
+#import "PNFunctions.h"
+#import "PNCodable.h"
+#import "PNError.h"
 
 
 #pragma mark Static

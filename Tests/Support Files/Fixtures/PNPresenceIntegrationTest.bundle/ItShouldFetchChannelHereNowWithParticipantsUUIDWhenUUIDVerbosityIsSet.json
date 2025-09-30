@@ -235,7 +235,7 @@
       },
       "pipeline" : false,
       "network" : 0,
-      "url" : "https:\/\/ps.pndsn.com\/v2\/presence\/sub-key\/demo\/channel\/test-channel1?offset=0&disable_uuids=0&limit=1000&pnsdk=PubNub-ObjC-iOS\/4.x.x&uuid=Serhii&state=0"
+      "url" : "https:\/\/ps.pndsn.com\/v2\/presence\/sub-key\/demo\/channel\/test-channel1?disable_uuids=0&limit=1000&pnsdk=PubNub-ObjC-iOS\/4.x.x&uuid=Serhii&state=0"
     },
     "type" : 0
   },
@@ -244,7 +244,7 @@
     "data" : {
       "status" : 200,
       "cls" : "NSHTTPURLResponse",
-      "url" : "https:\/\/ps.pndsn.com\/v2\/presence\/sub-key\/demo\/channel\/test-channel1?offset=0&disable_uuids=0&limit=1000&pnsdk=PubNub-ObjC-iOS\/4.x.x&uuid=Serhii&state=0",
+      "url" : "https:\/\/ps.pndsn.com\/v2\/presence\/sub-key\/demo\/channel\/test-channel1?disable_uuids=0&limit=1000&pnsdk=PubNub-ObjC-iOS\/4.x.x&uuid=Serhii&state=0",
       "headers" : {
         "Access-Control-Allow-Credentials" : "true",
         "Content-Type" : "text\/javascript; charset=\"UTF-8\"",

@@ -1,5 +1,5 @@
-#import <PubNub/PNPagedAppContextData.h>
-#import <PubNub/PNBaseAppContextObject.h>
+#import "PNPagedAppContextData.h"
+#import "PNBaseAppContextObject.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

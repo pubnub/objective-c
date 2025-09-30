@@ -1,4 +1,4 @@
-#import <PubNub/PNNetworkResponseLogEntry.h>
+#import "PNNetworkResponseLogEntry.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

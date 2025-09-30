@@ -1,5 +1,5 @@
 #import "PNOperationResult.h"
-#import <PubNub/PNObjectSerializer.h>
+#import "PNObjectSerializer.h"
 #import "PNStructures.h"
 
 

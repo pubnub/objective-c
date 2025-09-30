@@ -1,10 +1,13 @@
 #import "PubNub+History.h"
 #import "PNHistoryFetchRequest+Private.h"
+#import "PNDictionaryLogEntry+Private.h"
 #import "PNBaseOperationData+Private.h"
 #import "PNHistoryFetchData+Private.h"
+#import "PNStringLogEntry+Private.h"
 #import "PNErrorStatus+Private.h"
 #import "PubNub+CorePrivate.h"
 #import "PNStatus+Private.h"
+#import "PNFunctions.h"
 
 // Deprecated
 #import "PNAPICallBuilder+Private.h"
@@ -116,11 +119,6 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Message persistence API builder interface (deprecated)
 
 - (PNHistoryAPICallBuilder * (^)(void))history {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"Builder-based interface deprecated. Please use corresponding "
-                "request-based interfaces."];
-    }];
-    
     PNHistoryAPICallBuilder *builder = nil;
     builder = [PNHistoryAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
                                                                    NSDictionary *parameters) {
@@ -159,11 +157,6 @@ NS_ASSUME_NONNULL_END
 }
 
 - (PNDeleteMessageAPICallBuilder * (^)(void))deleteMessage {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"Builder-based interface deprecated. Please use corresponding "
-                "request-based interfaces."];
-    }];
-    
     PNDeleteMessageAPICallBuilder *builder = nil;
     builder = [PNDeleteMessageAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
                                                                          NSDictionary *parameters) {
@@ -182,11 +175,6 @@ NS_ASSUME_NONNULL_END
 }
 
 - (PNMessageCountAPICallBuilder * (^)(void))messageCounts {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"Builder-based interface deprecated. Please use corresponding "
-                "request-based interfaces."];
-    }];
-    
     PNMessageCountAPICallBuilder *builder = nil;
     builder = [PNMessageCountAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
                                                                               NSDictionary *parameters) {
@@ -229,7 +217,8 @@ NS_ASSUME_NONNULL_END
                 }
                 
                 return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Fetch history success. Received %@ messages.",
-                                                                         @(count))];
+                                                                         @(count))
+                                                operation:PNMessageStorageLogMessageOperation];
             }];
         }
 
@@ -238,7 +227,8 @@ NS_ASSUME_NONNULL_END
     
     [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
         return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
-                                              details:@"Fetch history with parameters:"];
+                                              details:@"Fetch history with parameters:"
+                                            operation:PNMessageStorageLogMessageOperation];
     }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
@@ -318,11 +308,6 @@ NS_ASSUME_NONNULL_END
           includeMetadata:(BOOL)shouldIncludeMetadata
     includeMessageActions:(BOOL)shouldIncludeMessageActions
            withCompletion:(PNHistoryCompletionBlock)block {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
-                "'-fetchHistoryWithRequest:completion:' method instead."];
-    }];
-    
     [self historyForChannels:NO
                       object:channel
                        start:startDate
@@ -405,11 +390,6 @@ NS_ASSUME_NONNULL_END
                   reverse:(BOOL)shouldReverseOrder
          includeTimeToken:(BOOL)shouldIncludeTimeToken
            withCompletion:(PNHistoryCompletionBlock)block {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
-                "'-fetchHistoryWithRequest:completion:' method instead."];
-    }];
-    
     [self historyForChannels:NO
                       object:channel
                        start:startDate
@@ -481,7 +461,8 @@ NS_ASSUME_NONNULL_END
 
         if (!result.status.isError) {
             [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-                return [PNStringLogEntry entryWithMessage:@"Delete messages success."];
+                return [PNStringLogEntry entryWithMessage:@"Delete messages success."
+                                                operation:PNMessageStorageLogMessageOperation];
             }];
         }
 
@@ -490,7 +471,8 @@ NS_ASSUME_NONNULL_END
                            
     [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
         return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
-                                              details:@"Delete messages with parameters:"];
+                                              details:@"Delete messages with parameters:"
+                                            operation:PNMessageStorageLogMessageOperation];
     }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
@@ -500,11 +482,6 @@ NS_ASSUME_NONNULL_END
                             start:(NSNumber *)startDate
                               end:(NSNumber *)endDate
                    withCompletion:(PNMessageDeleteCompletionBlock)block {
-    [self.logger warnWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
-        return [PNStringLogEntry entryWithMessage:@"This method deprecated. Please use "
-                "'-deleteMessagesWithRequest:completion:' method instead."];
-    }];
-    
     [self deleteMessagesFromChannel:channel
                               start:startDate
                                 end:endDate
@@ -546,7 +523,8 @@ NS_ASSUME_NONNULL_END
                 return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Fetch messages count success. There are %@ "
                                                                          "messages since provided reference timetoken%@",
                                                                          count,
-                                                                         userRequest.timetokens.count > 1 ? @"s" : @"")];
+                                                                         userRequest.timetokens.count > 1 ? @"s" : @"")
+                                                operation:PNMessageStorageLogMessageOperation];
             }];
         }
 
@@ -555,7 +533,8 @@ NS_ASSUME_NONNULL_END
                                
     [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
         return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
-                                              details:@"Fetch messages count with parameters:"];
+                                              details:@"Fetch messages count with parameters:"
+                                            operation:PNMessageStorageLogMessageOperation];
     }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];

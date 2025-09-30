@@ -4,6 +4,7 @@
 #import "PNSubscribeFileEventData+Private.h"
 #import "PNPresenceLeaveRequest+Private.h"
 #import "PNSubscribeEventData+Private.h"
+#import "PNDictionaryLogEntry+Private.h"
 #import "PNSubscribeRequest+Private.h"
 #import "PNOperationResult+Private.h"
 #import "PNSubscribeStatus+Private.h"
@@ -1221,7 +1222,8 @@ NS_ASSUME_NONNULL_END
             if (!error) return nil;
             NSString *errorMessage = error.localizedFailureReason ?: error.localizedDescription;
             return [PNDictionaryLogEntry entryWithMessage:@{ @"error": errorMessage }
-                                                  details:@"Message decryption error:"];
+                                                  details:@"Message decryption error:"
+                                                operation:PNSubscribeLogMessageOperation];
         }];
         
         [self.client.listenersManager notifyStatusChange:(id)status];
@@ -1271,7 +1273,8 @@ NS_ASSUME_NONNULL_END
             
             NSString *errorMessage = error.localizedFailureReason ?: error.localizedDescription;
             return [PNDictionaryLogEntry entryWithMessage:@{ @"error": errorMessage }
-                                                  details:@"File message decryption error:"];
+                                                  details:@"File message decryption error:"
+                                                operation:PNSubscribeLogMessageOperation];
         }];
         
         [self.client.listenersManager notifyStatusChange:(id)status];

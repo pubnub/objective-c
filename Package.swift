@@ -3,7 +3,7 @@
 //  Package.swift
 //
 //  PubNub Real-time Cloud-Hosted Push API and Push Notification Client Frameworks
-//  Copyright (c) 2013 PubNub Inc./Users/sergey/Documents/Develop/Objective-C/PubNub SDK (master)/PubNub.podspec
+//  Copyright (c) 2013 PubNub Inc.
 //  https://www.pubnub.com/
 //  https://www.pubnub.com/terms
 //

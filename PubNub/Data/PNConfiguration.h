@@ -234,14 +234,21 @@ DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with next
 ///
 /// > Note: In addition to the default console logger, which will print all messages to the Xcode console.
 ///
-/// - Since: 5.9.0
+/// - Since: 6.0.0
 @property(strong, nullable, nonatomic) NSArray<id <PNLogger>> *loggers;
+
+/// Whether bundled console logger should be enabled for corresponding `logLevel` or not.
+///
+/// **Default:** `YES`
+///
+/// - Since: 6.0.0
+@property(assign, nonatomic, getter = shouldEnableDefaultConsoleLogger) BOOL enableDefaultConsoleLogger;
 
 /// Minimum messages log level that should be passed to the logger.
 ///
 /// **Default:** `PNNoneLogLevel`
 ///
-/// - Since: 5.9.0
+/// - Since: 6.0.0
 @property(assign, nonatomic) PNLogLevel logLevel;
 
 

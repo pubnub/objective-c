@@ -1,6 +1,7 @@
 #import "PNChannelGroupManageRequest.h"
 #import "PNTransportRequest+Private.h"
 #import "PNBaseRequest+Private.h"
+#import "PNFunctions.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

@@ -1,5 +1,8 @@
 #import "PNLoggerManager+Private.h"
+#import "PNNetworkResponseLogEntry.h"
+#import "PNNetworkRequestLogEntry.h"
 #import "PNLogEntry+Private.h"
+#import "PNStructures.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -46,6 +49,15 @@ NS_ASSUME_NONNULL_BEGIN
 ///   - location: Call site from which the log message has been sent.
 ///   - message: Log entry message, which should be passed to the loggers.
 - (void)logWithLevel:(PNLogLevel)logLevel location:(NSString *)location andMessage:(nullable PNLogEntry *)message;
+
+
+#pragma mark - Helpers
+
+/// Identify operation for transport request / response log entries.
+///
+/// - Parameter message: Message object which may contain transport request / response payload.
+/// - Returns: Log operation.
+- (PNLogMessageOperation)logOperationFromMessage:(PNLogEntry *)message;
 
 #pragma mark -
 
@@ -141,6 +153,9 @@ NS_ASSUME_NONNULL_END
     message.location = [location copy];
     message.logLevel = logLevel;
     
+    // Assign operation for network request / response log messages.
+    if (message.operation == PNUnknownLogMessageOperation) message.operation = [self logOperationFromMessage:message];
+    
     for (id<PNLogger> logger in self.loggers) {
         if (message.logLevel == PNTraceLogLevel) [logger traceWithMessage:message];
         else if (message.logLevel == PNDebugLogLevel) [logger debugWithMessage:message];
@@ -148,6 +163,42 @@ NS_ASSUME_NONNULL_END
         else if (message.logLevel == PNWarnLogLevel) [logger warnWithMessage:message];
         else if (message.logLevel == PNErrorLogLevel) [logger errorWithMessage:message];
     }
+}
+
+
+#pragma mark - Helpers
+
+- (PNLogMessageOperation)logOperationFromMessage:(PNLogEntry *)message {
+    PNLogMessageOperation endpoint = PNUnknownLogMessageOperation;
+    PNLogMessageType messageType = message.messageType;
+    if (messageType != PNNetworkRequestLogMessageType && messageType != PNNetworkResponseLogMessageType)
+        return endpoint;
+    
+    NSString *path = nil;
+    
+    if (messageType == PNNetworkRequestLogMessageType) path = ((PNNetworkRequestLogEntry *)message).message.path;
+    else {
+        NSString *url = ((PNNetworkResponseLogEntry *)message).message.url;
+        if (url) path = [NSURL URLWithString:url].path;
+    }
+    
+    if (!path) return endpoint;
+    
+    if ([path hasPrefix:@"/v2/subscribe"]) endpoint = PNSubscribeLogMessageOperation;
+    else if ([path hasPrefix:@"/publish/"] || [path hasPrefix:@"/signal/"]) endpoint = PNMessageSendLogMessageOperation;
+    else if ([path hasPrefix:@"/v2/presence"]) endpoint = PNPresenceLogMessageOperation;
+    else if ([path hasPrefix:@"/v2/history/"] || [path hasPrefix:@"/v3/history"])
+        endpoint = PNMessageStorageLogMessageOperation;
+    else if ([path hasPrefix:@"/v1/message-actions/"]) endpoint = PNMessageReactionsLogMessageOperation;
+    else if ([path hasPrefix:@"/v1/channel-registration/"]) endpoint = PNChannelGroupsLogMessageOperation;
+    else if ([path hasPrefix:@"/v2/objects/"]) endpoint = PNAppContextLogMessageOperation;
+    else if ([path hasPrefix:@"/v1/push/"] || [path hasPrefix:@"/v2/push/"]) {
+        endpoint = PNDevicePushNotificationsLogMessageOperation;
+    } else if ([path hasPrefix:@"/v1/files/"]) {
+        endpoint = PNFilesLogMessageOperation;
+    }
+    
+    return endpoint;
 }
 
 #pragma mark -

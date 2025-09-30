@@ -1,4 +1,4 @@
-#import <PubNub/PNSubscribeFileEventData.h>
+#import "PNSubscribeFileEventData.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
