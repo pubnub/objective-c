@@ -9,7 +9,7 @@
 
 Pod::Spec.new do |spec|
     spec.name     = 'PubNub'
-    spec.version  = '5.8.0'
+    spec.version  = '6.0.0'
     spec.summary  = 'The PubNub Real-Time Network. Build real-time apps quickly and scale them globally.'
     spec.homepage = 'https://github.com/pubnub/objective-c'
 

@@ -1,9 +1,28 @@
 ---
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "5.8.0"
+version: "6.0.0"
 schema: 1
 changelog:
+  - date: 2025-09-30
+    version: v6.0.0
+    changes:
+      - type: feature
+        text: "BREAKING CHANGES: Replace the legacy logger with the new logger module with a bundled console logger with a unified (with other SDKs) logs output format."
+      - type: feature
+        text: "Provide interfaces for custom logger implementation."
+      - type: feature
+        text: "Add 'limit' and 'offset' parameters for 'PNHereNowRequest' for pagination support."
+      - type: feature
+        text: "Retry policy can be applied for all API endpoint groups (not only `subscribe`)."
+      - type: improvement
+        text: "Removed previously deprecated `packetSizeForOperation` methods group along with `size` builder from the `PubNub` client."
+      - type: improvement
+        text: "BREAKING CHANGES: Removed previously deprecated `retry` and `cancelAutomaticRetry` methods along with the `automaticallyRetry` property from API processing status objects."
+      - type: improvement
+        text: "BREAKING CHANGES: Removed previously deprecated properties: `TLSEnabled`, `authKey`, `origin`, `userID`, `uuid`, and `statusCode`."
+      - type: improvement
+        text: "BREAKING CHANGES: Removed previously deprecated `uuid`, `deviceID`, `applicationExtensionSharedGroupIdentifier`, and `completeRequestsBeforeSuspension` configuration options."
   - date: 2025-02-27
     version: v5.8.0
     changes:
@@ -1382,7 +1401,7 @@ sdks:
           - distribution-type: source
             distribution-repository: GitHub release
             package-name: PubNub.framework
-            location: https://github.com/pubnub/objective-c/archive/refs/tags/v5.8.0.zip
+            location: https://github.com/pubnub/objective-c/archive/refs/tags/v6.0.0.zip
             supported-platforms:
               supported-operating-systems:
                 macOS:
@@ -1443,7 +1462,7 @@ sdks:
           - distribution-type: library
             distribution-repository: GitHub release
             package-name: PubNub.ios.xcframework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v5.8.0/PubNub.ios.xcframework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v6.0.0/PubNub.ios.xcframework.tar.gz
             supported-platforms:
               supported-operating-systems:
                 iOS:
@@ -1462,7 +1481,7 @@ sdks:
           - distribution-type: library
             distribution-repository: GitHub release
             package-name: PubNub.macos.framework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v5.8.0/PubNub.macos.framework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v6.0.0/PubNub.macos.framework.tar.gz
             supported-platforms:
               supported-operating-systems:
                 macOS:
@@ -1478,7 +1497,7 @@ sdks:
           - distribution-type: library
             distribution-repository: GitHub release
             package-name: PubNub.tvos.xcframework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v5.8.0/PubNub.tvos.xcframework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v6.0.0/PubNub.tvos.xcframework.tar.gz
             supported-platforms:
               supported-operating-systems:
                 tvOS:
