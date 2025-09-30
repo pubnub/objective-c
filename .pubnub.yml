@@ -12,7 +12,7 @@ changelog:
       - type: feature
         text: "Provide interfaces for custom logger implementation."
       - type: feature
-        text: "Add 'limit' and 'offset' parameters for 'PNHereNowRequest' for pagination support."
+        text: "Add 'limit' parameter for 'PNHereNowRequest'."
       - type: feature
         text: "Retry policy can be applied for all API endpoint groups (not only `subscribe`)."
       - type: improvement
