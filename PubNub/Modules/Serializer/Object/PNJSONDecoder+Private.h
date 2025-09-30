@@ -1,4 +1,4 @@
-#import <PubNub/PNJSONDecoder.h>
+#import "PNJSONDecoder.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

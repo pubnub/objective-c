@@ -33,11 +33,11 @@ NS_ASSUME_NONNULL_END
 
 - (NSDictionary *)dictionaryRepresentation {
     return @{
-        @"type": self.type,
-        @"uuid": self.uuid,
-        @"actionTimetoken": self.actionTimetoken,
-        @"messageTimetoken": self.messageTimetoken,
-        @"value": self.value
+        @"type": self.type ?: @"missing",
+        @"uuid": self.uuid ?: @"missing",
+        @"actionTimetoken": self.actionTimetoken ?: @"missing",
+        @"messageTimetoken": self.messageTimetoken ?: @"missing",
+        @"value": self.value ?: @"missing"
     };
 }
 

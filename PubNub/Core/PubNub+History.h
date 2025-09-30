@@ -78,8 +78,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///        // Handle message history download error. Check `category` property to find out possible issue because of
 ///        // which request did fail.
-///        //
-///        // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -89,7 +87,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///   - block: History pull completion block.
 - (void)historyForChannel:(NSString *)channel withCompletion:(PNHistoryCompletionBlock)block
     NS_SWIFT_NAME(historyForChannel(_:withCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-fetchHistoryWithRequest:completion:' method instead.");
 
 /// Allow to fetch up to **100** events from specified `channel`'s events storage including `metadata` which has been
@@ -108,8 +106,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///        // Handle message history download error. Check `category` property to find out possible issue because of
 ///        // which request did fail.
-///        //
-///        // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -122,7 +118,7 @@ NS_ASSUME_NONNULL_BEGIN
              withMetadata:(BOOL)shouldIncludeMetadata
                completion:(PNHistoryCompletionBlock)block
     NS_SWIFT_NAME(historyForChannel(_:withMetadata:completion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-fetchHistoryWithRequest:completion:' method instead.");
 
 /// Allow to fetch up to **100** events from specified `channel`'s events storage including `actions` which has been 
@@ -142,8 +138,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///        // Handle message history download error. Check `category` property to find out possible issue because of
 ///        // which request did fail.
-///        //
-///        // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -156,7 +150,7 @@ NS_ASSUME_NONNULL_BEGIN
        withMessageActions:(BOOL)shouldIncludeMessageActions
                completion:(PNHistoryCompletionBlock)block
     NS_SWIFT_NAME(historyForChannel(_:withMessageActions:completion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-fetchHistoryWithRequest:completion:' method instead.");
 
 /// Allow to fetch up to **100** events from specified `channel`'s events storage including message `meta` and `actions`
@@ -177,8 +171,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///        // Handle message history download error. Check `category` property to find out possible issue because of
 ///        // which request did fail.
-///        //
-///        // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -193,7 +185,7 @@ NS_ASSUME_NONNULL_BEGIN
            messageActions:(BOOL)shouldIncludeMessageActions
                completion:(PNHistoryCompletionBlock)block
     NS_SWIFT_NAME(historyForChannel(_:withMetadata:messageActions:completion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-fetchHistoryWithRequest:completion:' method instead.");
 
 
@@ -218,8 +210,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///        // Handle message history download error. Check `category` property to find out possible issue because of
 ///        // which request did fail.
-///        //
-///        // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -236,7 +226,7 @@ NS_ASSUME_NONNULL_BEGIN
                       end:(nullable NSNumber *)endDate
            withCompletion:(PNHistoryCompletionBlock)block
     NS_SWIFT_NAME(historyForChannel(_:start:end:withCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-fetchHistoryWithRequest:completion:' method instead.");
 
 /// Allow to fetch events from specified `channel`'s history within specified time frame including `metadata` which has
@@ -260,8 +250,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///        // Handle message history download error. Check `category` property to find out possible issue because of
 ///        // which request did fail.
-///        //
-///        // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -280,7 +268,7 @@ NS_ASSUME_NONNULL_BEGIN
           includeMetadata:(BOOL)shouldIncludeMetadata
            withCompletion:(PNHistoryCompletionBlock)block
     NS_SWIFT_NAME(historyForChannel(_:start:end:includeMetadata:withCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-fetchHistoryWithRequest:completion:' method instead.");
 
 /// Allow to fetch events from specified `channel`'s history within specified time frame including `actions` which has
@@ -304,8 +292,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///        // Handle message history download error. Check `category` property to find out possible issue because of
 ///        // which request did fail.
-///        //
-///        // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -324,7 +310,7 @@ NS_ASSUME_NONNULL_BEGIN
     includeMessageActions:(BOOL)shouldIncludeMessageActions
            withCompletion:(PNHistoryCompletionBlock)block
     NS_SWIFT_NAME(historyForChannel(_:start:end:includeMessageActions:withCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-fetchHistoryWithRequest:completion:' method instead.");
 
 /// Allow to fetch events from specified `channel`'s history within specified time frame including message `meta` and
@@ -350,8 +336,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///        // Handle message history download error. Check `category` property to find out possible issue because of
 ///        // which request did fail.
-///        //
-///        // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -372,7 +356,7 @@ NS_ASSUME_NONNULL_BEGIN
     includeMessageActions:(BOOL)shouldIncludeMessageActions
            withCompletion:(PNHistoryCompletionBlock)block
     NS_SWIFT_NAME(historyForChannel(_:start:end:includeMetadata:includeMessageActions:withCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-fetchHistoryWithRequest:completion:' method instead.");
 
 /// Allow to fetch events from specified `channel`'s history within specified time frame.
@@ -395,8 +379,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///        // Handle message history download error. Check `category` property to find out possible issue because of
 ///        // which request did fail.
-///        //
-///        // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -415,7 +397,7 @@ NS_ASSUME_NONNULL_BEGIN
                     limit:(NSUInteger)limit
            withCompletion:(PNHistoryCompletionBlock)block 
     NS_SWIFT_NAME(historyForChannel(_:start:end:limit:withCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-fetchHistoryWithRequest:completion:' method instead.");
 
 
@@ -442,8 +424,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///        // Handle message history download error. Check `category` property to find out possible issue because of
 ///        // which request did fail.
-///        //
-///        // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -462,7 +442,7 @@ NS_ASSUME_NONNULL_BEGIN
          includeTimeToken:(BOOL)shouldIncludeTimeToken
            withCompletion:(PNHistoryCompletionBlock)block 
     NS_SWIFT_NAME(historyForChannel(_:start:end:includeTimeToken:withCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-fetchHistoryWithRequest:completion:' method instead.");
 
 /// Allow to fetch events from specified `channel`'s history within specified time frame.
@@ -486,8 +466,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///        // Handle message history download error. Check `category` property to find out possible issue because of
 ///        // which request did fail.
-///        //
-///        // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -508,7 +486,7 @@ NS_ASSUME_NONNULL_BEGIN
          includeTimeToken:(BOOL)shouldIncludeTimeToken
            withCompletion:(PNHistoryCompletionBlock)block
     NS_SWIFT_NAME(historyForChannel(_:start:end:limit:includeTimeToken:withCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-fetchHistoryWithRequest:completion:' method instead.");
 
 /// Allow to fetch events from specified `channel`'s history within specified time frame.
@@ -532,8 +510,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///        // Handle message history download error. Check `category` property to find out possible issue because of
 ///        // which request did fail.
-///        //
-///        // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -554,7 +530,7 @@ NS_ASSUME_NONNULL_BEGIN
                   reverse:(BOOL)shouldReverseOrder
            withCompletion:(PNHistoryCompletionBlock)block
     NS_SWIFT_NAME(historyForChannel(_:start:end:limit:reverse:withCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-fetchHistoryWithRequest:completion:' method instead.");
 
 /// Allow to fetch events from specified `channel`'s history within specified time frame.
@@ -580,8 +556,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///        // Handle message history download error. Check `category` property to find out possible issue because of
 ///        // which request did fail.
-///        //
-///        // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -604,7 +578,7 @@ NS_ASSUME_NONNULL_BEGIN
                   reverse:(BOOL)shouldReverseOrder includeTimeToken:(BOOL)shouldIncludeTimeToken
            withCompletion:(PNHistoryCompletionBlock)block
     NS_SWIFT_NAME(historyForChannel(_:start:end:limit:reverse:includeTimeToken:withCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-fetchHistoryWithRequest:completion:' method instead.");
 
 
@@ -651,8 +625,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///        // Handle message history download error. Check `category` property to find out possible issue because of
 ///        // which request did fail.
-///        //
-///        // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -671,7 +643,7 @@ NS_ASSUME_NONNULL_BEGIN
                               end:(nullable NSNumber *)endDate 
                    withCompletion:(nullable PNMessageDeleteCompletionBlock)block 
     NS_SWIFT_NAME(deleteMessagesFromChannel(_:start:end:withCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-deleteMessagesWithRequest:completion:' method instead.");
 
 
@@ -695,7 +667,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// ```
 ///
 /// - Parameters:
-///   - request: Request with information required to retrieve number of messaes for channels in specific timeframe.
+///   - request: Request with information required to retrieve number of messages for channels in specific timeframe.
 ///   - block: Messages count request completion block.
 - (void)fetchMessagesCountWithRequest:(PNHistoryMessagesCountRequest *)request
                            completion:(PNMessageCountCompletionBlock)block;

@@ -25,7 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// - Parameters:
 ///   - channel: Name of channel to which `file message` should be published.
 ///   - identifier: Unique identifier provided during file upload.
-///   - filename Name with which uploaded data has been stored.
+///   - filename: Name with which uploaded data has been stored.
 /// - Returns: Ready to use `publish message` request.
 + (instancetype)requestWithChannel:(NSString *)channel fileIdentifier:(NSString *)identifier name:(NSString *)filename;
 

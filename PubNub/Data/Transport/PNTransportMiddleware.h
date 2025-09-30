@@ -9,7 +9,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Transport middelware module.
 ///
-/// Middleware extend base transport module functionality with behaviour expected by the `PubNub` client.
+/// Middleware extend base transport module functionality with behavior expected by the `PubNub` client.
 @interface PNTransportMiddleware : NSObject <PNTransport>
 
 

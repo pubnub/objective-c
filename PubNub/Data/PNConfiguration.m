@@ -1,5 +1,6 @@
 #import "PNConfiguration+Private.h"
-#import <Foundation/Foundation.h>
+#import "PNRequestRetryConfiguration+Private.h"
+#import "PNCryptoModule+Private.h"
 #import "PNPrivateStructures.h"
 #import "PNConstants.h"
 
@@ -14,11 +15,23 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Properties
 
+/// String representation of filtering expression which should be applied to decide which updates should reach client.
+///
+/// > Warning: If your filter expression is malformed, ``PNEventsListener`` won't receive any messages and presence
+/// events from service (only error status).
 @property(copy, nullable, nonatomic) NSString *filterExpression;
+
+/// Token which is used along with every request to **PubNub** service to identify client user.
+///
+/// **PubNub** service provide **PAM** (PubNub Access Manager) functionality which allow to specify access rights to
+/// access **PubNub** service with provided `publishKey` and `subscribeKey` keys.
+/// Access can be limited to concrete users. **PAM** system use this key to check whether client user has rights to
+/// access to required service or not.
+///
+/// > Important: If `authToken` is set if till be used instead of `authKey`.
+///
+/// This property not set by default.
 @property(copy, nullable, nonatomic) NSString *authToken;
-@property(copy, nonatomic) NSString *deviceID
-    DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with next major update. Unique value will "
-                             "be generated for each PubNub client instance.");
 
 
 #pragma mark - Initialization and Configuration
@@ -57,14 +70,6 @@ NS_ASSUME_NONNULL_END
   _presenceHeartbeatInterval = (NSInteger)(_presenceHeartbeatValue * 0.5f) - 1;
 }
 
-- (NSString *)uuid {
-    return self.userID;
-}
-
-- (void)setUUID:(NSString *)uuid {
-    [self setUserID:uuid];
-}
-
 - (void)setUserID:(NSString *)userID {
     if (!userID || [userID stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0) {
         NSDictionary *errorInformation = @{
@@ -85,12 +90,6 @@ NS_ASSUME_NONNULL_END
 
 + (instancetype)configurationWithPublishKey:(NSString *)publishKey
                                subscribeKey:(NSString *)subscribeKey
-                                       uuid:(NSString *)uuid {
-    return [self configurationWithPublishKey:publishKey subscribeKey:subscribeKey userID:uuid];
-}
-
-+ (instancetype)configurationWithPublishKey:(NSString *)publishKey
-                               subscribeKey:(NSString *)subscribeKey
                                      userID:(NSString *)userID {
     NSParameterAssert(publishKey);
     NSParameterAssert(subscribeKey);
@@ -105,9 +104,10 @@ NS_ASSUME_NONNULL_END
         _origin = [kPNDefaultOrigin copy];
         _publishKey = [publishKey copy];
         _subscribeKey = [subscribeKey copy];
+        _enableDefaultConsoleLogger = YES;
+        _logLevel = PNNoneLogLevel;
         
         self.userID = userID;
-        _deviceID = [NSUUID UUID].UUIDString;
         _subscribeMaximumIdleTime = kPNDefaultSubscribeMaximumIdleTime;
         _nonSubscribeRequestTimeout = kPNDefaultNonSubscribeRequestTimeout;
         _TLSEnabled = kPNDefaultIsTLSEnabled;
@@ -120,9 +120,18 @@ NS_ASSUME_NONNULL_END
         _requestMessageCountThreshold = kPNDefaultRequestMessageCountThreshold;
         _fileMessagePublishRetryLimit = kPNDefaultFileMessagePublishRetryLimit;
         _maximumMessagesCacheSize = kPNDefaultMaximumMessagesCacheSize;
-#if TARGET_OS_IOS
-        _completeRequestsBeforeSuspension = YES;
-#endif // TARGET_OS_IOS
+        
+        PNRequestRetryConfiguration *retryConfiguration;
+        retryConfiguration = [PNRequestRetryConfiguration configurationWithExponentialDelayExcludingEndpoints:
+                              PNMessageSendEndpoint,
+                              PNPresenceEndpoint,
+                              PNFilesEndpoint,
+                              PNMessageStorageEndpoint,
+                              PNChannelGroupsEndpoint,
+                              PNDevicePushNotificationsEndpoint,
+                              PNAppContextEndpoint,
+                              PNMessageReactionsEndpoint, 0];
+        _requestRetry = retryConfiguration;
     }
     
     return self;
@@ -130,10 +139,6 @@ NS_ASSUME_NONNULL_END
 
 - (id)copyWithZone:(NSZone *)zone {
     PNConfiguration *configuration = [[PNConfiguration allocWithZone:zone] init];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    configuration.deviceID = [self.deviceID copy];
-#pragma clang diagnostic pop
     configuration.origin = [self.origin copy];
     configuration.publishKey = [self.publishKey copy];
     configuration.subscribeKey = [self.subscribeKey copy];
@@ -141,6 +146,9 @@ NS_ASSUME_NONNULL_END
     configuration.authToken = [self.authToken copy];
     configuration.userID = [self.userID copy];
     configuration.cryptoModule = self.cryptoModule;
+    configuration.enableDefaultConsoleLogger = self.shouldEnableDefaultConsoleLogger;
+    configuration.logLevel = self.logLevel;
+    configuration.loggers = self.loggers;
     configuration.filterExpression = [self.filterExpression copy];
     configuration.subscribeMaximumIdleTime = self.subscribeMaximumIdleTime;
     configuration.nonSubscribeRequestTimeout = self.nonSubscribeRequestTimeout;
@@ -153,22 +161,63 @@ NS_ASSUME_NONNULL_END
     configuration.keepTimeTokenOnListChange = self.shouldKeepTimeTokenOnListChange;
     configuration.catchUpOnSubscriptionRestore = self.shouldTryCatchUpOnSubscriptionRestore;
     configuration.fileMessagePublishRetryLimit = self.fileMessagePublishRetryLimit;
-    configuration.cryptoModule = self.cryptoModule;
     configuration.requestRetry = [self.requestRetry copy];
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     configuration.cipherKey = self.cipherKey;
     configuration.useRandomInitializationVector = self.shouldUseRandomInitializationVector;
-    configuration.applicationExtensionSharedGroupIdentifier = self.applicationExtensionSharedGroupIdentifier;
-#if TARGET_OS_IOS
-    configuration.completeRequestsBeforeSuspension = self.shouldCompleteRequestsBeforeSuspension;
-#endif // TARGET_OS_IOS
 #pragma clang diagnostic pop
     configuration.requestMessageCountThreshold = self.requestMessageCountThreshold;
     configuration.maximumMessagesCacheSize = self.maximumMessagesCacheSize;
 
     return configuration;
+}
+
+
+#pragma mark - Misc
+
+- (NSDictionary *)dictionaryRepresentation {
+    NSMutableArray *hbNotificationOptions = [NSMutableArray new];
+    if ((self.heartbeatNotificationOptions & PNHeartbeatNotifyAll) == PNHeartbeatNotifyAll) {
+        [hbNotificationOptions addObjectsFromArray:@[@"failure", @"success"]];
+    } else {
+        if ((self.heartbeatNotificationOptions & PNHeartbeatNotifyFailure) == PNHeartbeatNotifyFailure)
+            [hbNotificationOptions addObject:@"failure"];
+        if ((self.heartbeatNotificationOptions & PNHeartbeatNotifySuccess) == PNHeartbeatNotifySuccess)
+            [hbNotificationOptions addObject:@"success"];
+    }
+    
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary:@{
+        @"origin": self.origin ?: @"missing",
+        @"publishKey": self.publishKey ?: @"not set",
+        @"subscribeKey": self.subscribeKey ?: @"not set",
+        @"userID": self.userID ?: @"missing",
+        @"subscribeMaximumIdleTime": @(self.subscribeMaximumIdleTime),
+        @"nonSubscribeRequestTimeout": @(self.nonSubscribeRequestTimeout),
+        @"presenceHeartbeatValue": @(self.presenceHeartbeatValue),
+        @"presenceHeartbeatInterval": @(self.presenceHeartbeatInterval),
+        @"managePresenceListManually": self.shouldManagePresenceListManually ? @"YES" : @"NO",
+        @"suppressLeaveEvents": self.shouldSuppressLeaveEvents ? @"YES" : @"NO",
+        @"TLSEnabled": self.isTLSEnabled ? @"YES" : @"NO",
+        @"keepTimeTokenOnListChange": self.shouldKeepTimeTokenOnListChange ? @"YES" : @"NO",
+        @"catchUpOnSubscriptionRestore": self.shouldTryCatchUpOnSubscriptionRestore ? @"YES" : @"NO",
+        @"fileMessagePublishRetryLimit": @(self.fileMessagePublishRetryLimit),
+        @"requestMessageCountThreshold": @(self.requestMessageCountThreshold),
+        @"maximumMessagesCacheSize": @(self.maximumMessagesCacheSize)
+    }];
+    
+    if (hbNotificationOptions.count) dictionary[@"heartbeatNotificationOptions"] = hbNotificationOptions;
+    if (self.requestRetry) dictionary[@"requestRetry"] = [self.requestRetry dictionaryRepresentation];
+    if (self.cryptoModule) {
+        if ([self.cryptoModule respondsToSelector:@selector(dictionaryRepresentation)])
+            dictionary[@"cryptoModule"] = [self.cryptoModule performSelector:@selector(dictionaryRepresentation)];
+        else dictionary[@"cryptoModule"] = NSStringFromClass(self.cryptoModule.class);
+    }
+    if (self.filterExpression) dictionary[@"filterExpression"] = self.filterExpression;
+    if (self.authKey) dictionary[@"authKey"] = self.authKey;
+    
+    return dictionary;
 }
 
 #pragma mark -

@@ -10,7 +10,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Check whether `request` can be retried or not.
 ///
-/// A few scenarios may lead to `NO` result:
+/// A few scenarios may lead to the `NO` result:
 /// * request excluded
 /// * status code not retriable
 /// * reached the maximum number of retry attempts
@@ -26,6 +26,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSTimeInterval)retryDelayForFailedRequest:(NSURLRequest *)request
                                 withResponse:(NSURLResponse *)response
                                 retryAttempt:(NSUInteger)retryAttempt;
+
+/// Serialize retry configuration object.
+///
+/// - Returns: Retry configuration object data represented as `NSDictionary`.
+- (NSDictionary *)dictionaryRepresentation;
 
 #pragma mark -
 

@@ -24,6 +24,14 @@ NS_ASSUME_NONNULL_BEGIN
 /// List of channels for which here now information should be received.
 @property(copy, nonatomic, readonly) NSArray<NSString *> *channels;
 
+/// Maximum number of users that can be returned with a single response.
+///
+/// **Default:** `1000`
+///
+/// > Important: 1000 is the maximum number of users that can be returned with a single response. Use ``offset`` for
+/// pagination.
+@property(assign, nonatomic) NSUInteger limit;
+
 
 #pragma mark - Initialization and Configuration
 

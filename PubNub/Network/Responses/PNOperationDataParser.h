@@ -1,9 +1,9 @@
 #import <Foundation/Foundation.h>
-#import <PubNub/PNTransportResponse.h>
-#import <PubNub/PNTransportRequest.h>
-#import <PubNub/PNObjectSerializer.h>
-#import <PubNub/PNStructures.h>
-#import <PubNub/PNError.h>
+#import "PNTransportResponse.h"
+#import "PNTransportRequest.h"
+#import "PNObjectSerializer.h"
+#import "PNStructures.h"
+#import "PNError.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

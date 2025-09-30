@@ -29,6 +29,14 @@ NS_ASSUME_NONNULL_BEGIN
 /// This property not set by default.
 @property(copy, nullable, nonatomic) NSString *authToken;
 
+
+#pragma mark - Misc
+
+/// Serialize configuration object.
+///
+/// - Returns: Configuration object data represented as `NSDictionary`.
+- (NSDictionary *)dictionaryRepresentation;
+
 #pragma mark -
 
 

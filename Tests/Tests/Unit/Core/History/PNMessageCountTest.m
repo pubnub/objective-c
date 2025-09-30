@@ -137,35 +137,10 @@ NS_ASSUME_NONNULL_END
             .performWithCompletion(^(PNMessageCountResult *result, PNErrorStatus *status) {
                 XCTAssertNotNil(status);
                 XCTAssertTrue(status.isError);
-                XCTAssertEqual(status.statusCode, 400);
+                XCTAssertEqual(status.category, PNBadRequestCategory);
                 
                 handler();
             });
-    }];
-}
-
-
-#pragma mark - Tests :: Retry
-
-- (void)testItShouldRetryWhenRetryOnFailureCalled {
-    NSArray<NSString *> *channels = @[@"PubNub 1", @"PubNub-2"];
-    NSArray<NSNumber *> *timetokens = @[@(1550140202), @(1550140204), @(1550140206)];
-    __block PNErrorStatus *errorStatus = nil;
-    
-    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.messageCounts().channels(channels).timetokens(timetokens)
-            .performWithCompletion(^(PNMessageCountResult *result, PNErrorStatus *status) {
-                errorStatus = status;
-                handler();
-            });
-    }];
-    
-    id clientMock = [self mockForObject:self.client];
-    id recorded = OCMExpect([clientMock performRequest:[OCMArg isKindOfClass:[PNHistoryMessagesCountRequest class]]
-                                        withCompletion:[OCMArg any]]);
-
-    [self waitForObject:clientMock recordedInvocationCall:recorded afterBlock:^{
-        [errorStatus retry];
     }];
 }
 

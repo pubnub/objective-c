@@ -65,6 +65,7 @@ FOUNDATION_EXPORT const unsigned char PubNubVersionString[];
 #import <PubNub/PNEncoder.h>
 #import <PubNub/PNDecoder.h>
 #import <PubNub/PNCodable.h>
+#import <PubNub/PNLogger.h>
 
 #pragma mark - API
 
@@ -84,9 +85,20 @@ FOUNDATION_EXPORT const unsigned char PubNubVersionString[];
 #import <PubNub/PubNub+APNS.h>
 #import <PubNub/PubNub+Time.h>
 #import <PubNub/PubNub+PAM.h>
-#import <PubNub/PNLLogger.h>
 #import <PubNub/PNStatus.h>
 #import <PubNub/PNAES.h>
+
+
+#pragma mark - Logger
+
+#import <PubNub/PNNetworkResponseLogEntry.h>
+#import <PubNub/PNNetworkRequestLogEntry.h>
+#import <PubNub/PNDictionaryLogEntry.h>
+#import <PubNub/PNStringLogEntry.h>
+#import <PubNub/PNLoggerManager.h>
+#import <PubNub/PNErrorLogEntry.h>
+#import <PubNub/PNFileLogger.h>
+#import <PubNub/PNLogEntry.h>
 
 
 #pragma mark - Errors

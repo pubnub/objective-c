@@ -43,34 +43,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property(strong, nonatomic) NSNumber *lastTimeToken;
 
 
-#pragma mark - Properties (deprecated)
-
-/// Request auto-retry configuration information.
-///
-/// > Important: This property always will return `NO` because it is possible to set request retries configuration when
-/// setup **PubNub** client instance.
-@property(assign, nonatomic, getter = willAutomaticallyRetry) BOOL automaticallyRetry
-    DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with the next major update. Please call "
-                             "endpoint with already created request instance or setup retry configuration during PubNub"
-                             " instance configuration.");
-
-/// Block which can be used to cancel automatic retry on requests.
-///
-/// > Important: This property won't be used by the client code anymore.
-@property(copy, nullable, nonatomic) dispatch_block_t retryCancelBlock
-    DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with the next major update. Please call "
-                             "endpoint with already created request instance or setup retry configuration during PubNub"
-                             " instance configuration.");
-
-/// Block which can be used to retry request processing.
-///
-/// > Important: This property won't be used by the client code anymore.
-@property(copy, nullable, nonatomic) dispatch_block_t retryBlock
-    DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with the next major update. Please call "
-                             "endpoint with already created request instance or setup retry configuration during PubNub"
-                             " instance configuration.");
-
-
 #pragma mark - Initialization and Configuration
 
 /// Create operation status object.

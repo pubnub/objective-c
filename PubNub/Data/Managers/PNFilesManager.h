@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
-#import <PubNub/PNCryptoProvider.h>
-#import <PubNub/PubNub+Core.h>
+#import "PNCryptoProvider.h"
+#import "PubNub+Core.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

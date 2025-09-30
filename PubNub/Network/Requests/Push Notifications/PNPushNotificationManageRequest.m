@@ -113,6 +113,25 @@ NS_ASSUME_NONNULL_END
     return nil;
 }
 
+
+#pragma mark - Misc
+
+- (NSDictionary *)dictionaryRepresentation {
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary:[super dictionaryRepresentation]];
+    
+    if (self.operation == PNRemoveAllPushNotificationsOperation ||
+        self.operation == PNRemoveAllPushNotificationsV2Operation) {
+        dictionary[@"removeDevice"] = @YES;
+    }
+    if (self.channels) {
+        dictionary[@"addChannels"] = @(self.operation == PNAddPushNotificationsOnChannelsOperation ||
+                                       self.operation == PNAddPushNotificationsOnChannelsV2Operation);
+        dictionary[@"channels"] = self.channels;
+    }
+    
+    return dictionary;
+}
+
 #pragma mark -
 
 

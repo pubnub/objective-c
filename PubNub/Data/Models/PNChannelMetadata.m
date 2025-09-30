@@ -1,6 +1,6 @@
 #import "PNChannelMetadata.h"
-#import <PubNub/PNCodable.h>
 #import "PNBaseAppContextObject+Private.h"
+#import "PNCodable.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

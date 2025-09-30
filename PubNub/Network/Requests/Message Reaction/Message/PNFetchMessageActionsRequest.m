@@ -92,6 +92,18 @@ NS_ASSUME_NONNULL_END
     return nil;
 }
 
+
+#pragma mark - Misc
+
+- (NSDictionary *)dictionaryRepresentation {
+    return @{
+        @"channel": self.channel ?: @"missing",
+        @"start": self.start ?: @"no set",
+        @"end": self.end ?: @"not set",
+        @"limit": @(self.limit)
+    };
+}
+
 #pragma mark -
 
 

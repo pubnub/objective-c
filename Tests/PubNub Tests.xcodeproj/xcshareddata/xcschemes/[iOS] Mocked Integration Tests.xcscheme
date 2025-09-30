@@ -41,9 +41,6 @@
             </BuildableReference>
             <SkippedTests>
                <Test
-                  Identifier = "PNFilesIntegrationTests">
-               </Test>
-               <Test
                   Identifier = "PNRecordableTestCase">
                </Test>
             </SkippedTests>

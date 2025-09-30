@@ -1,8 +1,9 @@
 #import "PNBaseRequest.h"
-#import <PubNub/PNCryptoProvider.h>
-#import <PubNub/PNConfiguration.h>
-#import <PubNub/PNRequest.h>
 #import "PNTransportRequest+Private.h"
+#import "PNCryptoProvider.h"
+#import "PNConfiguration.h"
+#import "PNBaseRequest.h"
+#import "PNRequest.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -116,6 +117,14 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 /// - Throws: `PNInterfaceNotAvailable` exception.
 - (void)throwUnavailableInitInterface;
+
+
+#pragma mark - Misc
+
+/// Serialize request object.
+///
+/// - Returns: Request object data represented as `NSDictionary`.
+- (NSDictionary *)dictionaryRepresentation;
 
 #pragma mark -
 

@@ -1,4 +1,4 @@
-#import "PNPublishFileMessageRequest.h"
+#import "PNPublishFileMessageRequest+Private.h"
 #import "PNBasePublishRequest+Private.h"
 #import "PNBaseRequest+Private.h"
 #import "PNFunctions.h"
@@ -20,6 +20,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// **PubNub** client uses this instance to _encrypt_ and _decrypt_ data that has been sent and received from the
 /// **PubNub** network.
 @property(nonatomic, nullable, strong) id<PNCryptoProvider> cryptoModule;
+
+/// Whether the file message was published as part of a file-sharing API call or not.
+@property(assign, nonatomic) BOOL publishOnFileSharing;
 
 /**
  * @brief Unique identifier provided during file upload.
@@ -114,6 +117,18 @@ NS_ASSUME_NONNULL_END
     if (self.filename.length == 0) return [self missingParameterError:@"filename" forObjectRequest:@"Request"];
     
     return nil;
+}
+
+
+#pragma mark - Misc
+
+- (NSDictionary *)dictionaryRepresentation {
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary:[super dictionaryRepresentation]];
+    
+    if (self.identifier) dictionary[@"identifier"] = self.identifier;
+    if (self.filename) dictionary[@"filename"] = self.filename;
+    
+    return dictionary;
 }
 
 #pragma mark -

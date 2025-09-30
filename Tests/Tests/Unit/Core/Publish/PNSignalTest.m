@@ -100,7 +100,7 @@
     }];
 }
 
-- (void)testItShouldNotEncryptWhenCipherKeyIsSet {
+- (void)testItShouldNotEncryptWhenCryptoModuleIsSet {
     NSString *expectedMessage = [PNString percentEscapedString:@"{\"such\":\"object\"}"];
     NSString *expectedChannel = [NSUUID UUID].UUIDString;
     id message = @{ @"such": @"object" };
@@ -119,34 +119,6 @@
     [self waitForObject:self.client recordedInvocationCall:recorded afterBlock:^{
         self.client.signal().channel(expectedChannel).message(message)
             .performWithCompletion(^(PNSignalStatus * status) { });
-    }];
-}
-
-
-#pragma mark - Tests :: Retry
-
-- (void)testItShouldRetryWhenPreviousCallFails {
-    __block PNErrorStatus *errorStatus = nil;
-    id message = @"Hello real-time world!";
-
-
-    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.signal().message(message)
-            .performWithCompletion(^(PNSignalStatus * status) {
-                errorStatus = status;
-                // Hack. Non-error status doesn't have retry block.
-                status.retryBlock = ^{
-                    [self.client signal:@"Hello" channel:@"channel" withCompletion:nil];
-                };
-                handler();
-            });
-    }];
-    
-    id recorded = OCMExpect([(id)self.client performRequest:[OCMArg isKindOfClass:[PNSignalRequest class]]
-                                             withCompletion:[OCMArg any]]);
-
-    [self waitForObject:self.client recordedInvocationCall:recorded afterBlock:^{
-        [errorStatus retry];
     }];
 }
 

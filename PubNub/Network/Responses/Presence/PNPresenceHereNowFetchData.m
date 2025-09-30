@@ -1,7 +1,7 @@
 #import "PNPresenceHereNowFetchData+Private.h"
-#import <PubNub/PNJSONDecoder.h>
-#import <PubNub/PNStructures.h>
-#import <PubNub/PNCodable.h>
+#import "PNJSONDecoder.h"
+#import "PNStructures.h"
+#import "PNCodable.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -104,9 +104,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// Total number of active channels.
 @property(strong, nonatomic) NSNumber *totalChannels;
 
-
-#pragma mark - Initialization and Configuration
-
 #pragma mark -
 
 
@@ -163,7 +160,7 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Helpers
 
 - (NSDictionary *)dictionaryRepresentation {
-    NSMutableDictionary *dictionary = [@{ @"uuid": self.uuid } mutableCopy];
+    NSMutableDictionary *dictionary = [@{ @"uuid": self.uuid ?: @"not set" } mutableCopy];
     if (self.state) dictionary[@"state"] = self.state;
 
     return dictionary;
@@ -233,7 +230,7 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Helpers
 
 - (NSDictionary *)dictionaryRepresentation {
-    NSMutableDictionary *dictionary = [@{ @"occupancy": self.occupancy } mutableCopy];
+    NSMutableDictionary *dictionary = [@{ @"occupancy": self.occupancy ?: @"not set" } mutableCopy];
 
     if (self.uuids.count) {
         if (self.verbosityLevel == PNHereNowUUID) dictionary[@"uuids"] = [self.uuids valueForKey:@"uuid"];
@@ -257,7 +254,7 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Properties
 
 + (NSArray<NSString *> *)ignoredKeys {
-    return @[@"verbosityLevel"];
+    return @[@"verbosityLevel", @"next"];
 }
 
 
@@ -333,7 +330,7 @@ NS_ASSUME_NONNULL_END
 
 - (NSDictionary *)dictionaryRepresentation {
     NSMutableDictionary *dictionary = [@{
-        @"totalOccupancy": self.totalOccupancy, @"totalChannels": self.totalChannels
+        @"totalOccupancy": self.totalOccupancy ?: @"not set", @"totalChannels": self.totalChannels ?: @"not set"
     } mutableCopy];
 
     if (self.channels.count) {

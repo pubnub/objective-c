@@ -1,70 +1,49 @@
-/**
- @author Sergey Mamontov
- @since 4.5.0
- @copyright © 2010-2018 PubNub, Inc.
- */
-#import "PNLLogFileInformation.h"
+#import "PNFileLoggerFileInformation.h"
 #import "PNLockSupport.h"
 #import <sys/xattr.h>
 
 
-#pragma mark Static
+#pragma mark Statics
 
-/**
- @brief  Stores reference of file extended attribute name which is used to mark file as \c archived.
- 
- @since 4.5.0
- */
+/// File extended attribute name which is used to mark file as `archived`.
 static NSString * const kPNLArchivedFileAttributeName = @"com.pubnub.logger.archived";
 
 
-#pragma mark Private interface declaration
+NS_ASSUME_NONNULL_BEGIN
 
-@interface PNLLogFileInformation ()
+#pragma mark - Private interface declaration
+
+/// `File`-based logger log file representation model private extension.
+@interface PNFileLoggerFileInformation ()
 
 
 #pragma mark - Properties
 
-@property (nonatomic, copy) NSString *path;
-@property (nonatomic, copy) NSString *name;
-@property (nonatomic, copy) NSString *extension;
+/// Shared resources access protection lock.
+@property(assign, nonatomic) pthread_mutex_t accessLock;
 
-/**
- @brief  Stores referenced log file attributes set.
- 
- @since 4.5.0
- */
+/// Log file attributes set.
 @property (nonatomic, copy) NSDictionary *attributes;
 
-/**
- @brief Lock which is used to protect access to shared resources from multiple threads.
+/// Full path to file location, which is represented by receiver.
+@property(copy, nonatomic) NSString *path;
 
- @since 4.16.1
- */
-@property (nonatomic, assign) pthread_mutex_t accessLock;
+/// Name of referenced log file.
+@property(copy, nonatomic) NSString *name;
 
 
 #pragma mark - Initialization and Configuration
 
-/**
- @brief  Initialize information model object for file at specified \c path.
- 
- @since 4.5.0
- 
- @param path Full path to location of file for which wrapper model should be created.
- 
- @return Initialized and ready to use file information model.
- */
+/// Initialize `file`-based logger log file representation object.
+///
+/// - Parameter path: Full path to location of file for which wrapper model should be created.
+/// - Returns: Initialized log file representation object.
 - (instancetype)initForFileAtPath:(NSString *)path;
 
 
 #pragma mark - Misc
 
-/**
- * @brief  Exclude represented file from device local and iCloud backups.
- *
- * @since 4.7.7
- */
+/// Exclude represented file from device local and iCloud backups.
 - (void)excludeFromBackup;
 
 /**
@@ -94,13 +73,15 @@ static NSString * const kPNLArchivedFileAttributeName = @"com.pubnub.logger.arch
 
 @end
 
+NS_ASSUME_NONNULL_END
+
 
 #pragma mark - Interface implementation
 
-@implementation PNLLogFileInformation
+@implementation PNFileLoggerFileInformation
 
 
-#pragma mark - Information
+#pragma mark - Properties
 
 - (NSDictionary *)attributes {
 
@@ -141,22 +122,18 @@ static NSString * const kPNLArchivedFileAttributeName = @"com.pubnub.logger.arch
     [self setAttribute:archived withName:kPNLArchivedFileAttributeName];
 }
 
-
 #pragma mark - Initialization and Configuration
 
 + (instancetype)informationForFileAtPath:(NSString *)path {
-    
     return [[self alloc] initForFileAtPath:path];
 }
 
 - (instancetype)initForFileAtPath:(NSString *)path {
-    
-    // Check whether initialization has been successful or not.
     if ((self = [super init])) {
-        pthread_mutex_init(&_accessLock, nil);
+        _name = [[path lastPathComponent] copy];
         _path = [path copy];
-        _name = [[_path lastPathComponent] copy];
-        _extension = ([_path pathExtension].length ? [_path pathExtension] : nil);
+        
+        pthread_mutex_init(&_accessLock, nil);
         
         [self excludeFromBackup];
     }
@@ -168,18 +145,16 @@ static NSString * const kPNLArchivedFileAttributeName = @"com.pubnub.logger.arch
 #pragma mark - Misc
 
 - (BOOL)isEqual:(id)object {
-    
     BOOL isEqual = NO;
+    
     if ([object isKindOfClass:[self class]]) {
-        
-        isEqual = [((PNLLogFileInformation *)object).path isEqualToString:self.path];
+        isEqual = [((PNFileLoggerFileInformation *)object).path isEqualToString:self.path];
     }
     
     return isEqual;
 }
 
 - (void)excludeFromBackup {
-    
     NSError *error = nil;
     
     if (![[NSURL fileURLWithPath:self.path] setResourceValue:@YES forKey:NSURLIsExcludedFromBackupKey error:&error]) {

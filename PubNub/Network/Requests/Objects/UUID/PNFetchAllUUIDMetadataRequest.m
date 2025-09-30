@@ -27,7 +27,7 @@
 
 + (instancetype)new {
     PNFetchAllUUIDMetadataRequest *request = [[self alloc] initWithObject:@"UUID" identifier:nil];
-    request.includeFields = PNUUIDTotalCountField;
+    request.includeFields |= PNUUIDTotalCountField|PNUUIDStatusField|PNUUIDTypeField;
 
     return request;
 }

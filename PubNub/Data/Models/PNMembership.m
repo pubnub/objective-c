@@ -1,7 +1,7 @@
 #import "PNMembership.h"
-#import <PubNub/PNUUIDMetadata.h>
-#import <PubNub/PNCodable.h>
 #import "PNBaseAppContextObject+Private.h"
+#import "PNUUIDMetadata.h"
+#import "PNCodable.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

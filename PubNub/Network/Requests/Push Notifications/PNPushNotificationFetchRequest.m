@@ -1,4 +1,5 @@
 #import "PNPushNotificationFetchRequest.h"
+#import "PNBasePushNotificationsRequest+Private.h"
 #import "PNBaseRequest+Private.h"
 #import "PNFunctions.h"
 
@@ -13,6 +14,13 @@
 - (PNOperationType)operation {
     return self.pushType == PNAPNS2Push ? PNPushNotificationEnabledChannelsV2Operation
                                         : PNPushNotificationEnabledChannelsOperation;
+}
+
+
+#pragma mark - Initialization and Configuration
+
++ (instancetype)requestWithDevicePushToken:(id)pushToken pushType:(PNPushType)pushType {
+    return [super requestWithDevicePushToken:pushToken pushType:pushType];
 }
 
 #pragma mark -

@@ -90,6 +90,18 @@ NS_ASSUME_NONNULL_END
     return nil;
 }
 
+
+#pragma mark - Misc
+
+- (NSDictionary *)dictionaryRepresentation {
+    NSMutableDictionary *dictionary = [NSMutableDictionary new];
+    
+    if (self.arbitraryQueryParameters) dictionary[@"arbitraryQueryParameters"] = self.arbitraryQueryParameters;
+    if (self.channelGroup) dictionary[@"channelGroup"] = self.channelGroup;
+    
+    return dictionary;
+}
+
 #pragma mark -
 
 @end

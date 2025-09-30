@@ -1,4 +1,4 @@
-#import <PubNub/PubNub.h>
+#import "PNTransportConfiguration.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -17,12 +17,18 @@ NS_ASSUME_NONNULL_BEGIN
 /// Maximum simultaneously connections which can be opened.
 @property(assign, nonatomic) NSUInteger maximumConnections;
 
-#ifndef PUBNUB_DISABLE_LOGGER
 /// `PubNub` client instance logger.
 ///
-/// Logger can be used to add additional logs into console and file (if enabled).
-@property(strong, nonatomic) PNLLogger *logger;
-#endif // PUBNUB_DISABLE_LOGGER
+/// Logger can be used to add additional logs.
+@property(strong, nonatomic) PNLoggerManager *logger;
+
+
+#pragma mark - Misc
+
+/// Serialize configuration object.
+///
+/// - Returns: Configuration object data represented as `NSDictionary`.
+- (NSDictionary *)dictionaryRepresentation;
 
 #pragma mark -
 

@@ -166,6 +166,19 @@ NS_ASSUME_NONNULL_END
     return serializedObjects;
 }
 
+
+#pragma mark - Misc
+
+- (NSDictionary *)dictionaryRepresentation {
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary:[super dictionaryRepresentation]];
+    
+    if (self.membershipBodyPayload[@"set"].count) dictionary[@"set"] = self.membershipBodyPayload[@"set"].allObjects;
+    if (self.membershipBodyPayload[@"delete"].count)
+        dictionary[@"delete"] = self.membershipBodyPayload[@"delete"].allObjects;
+    
+    return dictionary;
+}
+
 #pragma mark -
 
 

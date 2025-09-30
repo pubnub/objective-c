@@ -1,5 +1,5 @@
-#import <PubNub/PNBaseRequest.h>
-#import <PubNub/PNCryptoProvider.h>
+#import "PNBaseRequest.h"
+#import "PNCryptoProvider.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

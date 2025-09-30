@@ -27,7 +27,7 @@
 
 + (instancetype)new {
     PNFetchAllChannelsMetadataRequest *request = [[self alloc] initWithObject:@"Channel" identifier:nil];
-    request.includeFields = PNChannelTotalCountField;
+    request.includeFields |= PNChannelTotalCountField|PNChannelStatusField|PNChannelTypeField;
 
     return request;
 }

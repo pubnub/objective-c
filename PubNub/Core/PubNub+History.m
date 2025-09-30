@@ -1,10 +1,13 @@
 #import "PubNub+History.h"
 #import "PNHistoryFetchRequest+Private.h"
+#import "PNDictionaryLogEntry+Private.h"
 #import "PNBaseOperationData+Private.h"
 #import "PNHistoryFetchData+Private.h"
+#import "PNStringLogEntry+Private.h"
 #import "PNErrorStatus+Private.h"
 #import "PubNub+CorePrivate.h"
 #import "PNStatus+Private.h"
+#import "PNFunctions.h"
 
 // Deprecated
 #import "PNAPICallBuilder+Private.h"
@@ -113,7 +116,7 @@ NS_ASSUME_NONNULL_END
 @implementation PubNub (History)
 
 
-#pragma mark - Message persistence API builder interdace (deprecated)
+#pragma mark - Message persistence API builder interface (deprecated)
 
 - (PNHistoryAPICallBuilder * (^)(void))history {
     PNHistoryAPICallBuilder *builder = nil;
@@ -196,39 +199,37 @@ NS_ASSUME_NONNULL_END
     PNHistoryCompletionBlock block = [handlerBlock copy];
     PNParsedRequestCompletionBlock handler;
 
-    if (userRequest.multipleChannels) {
-        PNLogAPICall(self.logger, @"<PubNub::API> History for '%@' channels%@%@ with %@ limit.",
-                     (userRequest.channels != nil ? [userRequest.channels componentsJoinedByString:@", "] : @"<error>"),
-                     (userRequest.start ? [NSString stringWithFormat:@" from %@", userRequest.start] : @""),
-                     (userRequest.end ? [NSString stringWithFormat:@" to %@", userRequest.end] : @""),
-                     @(userRequest.limit));
-    } else {
-        PNLogAPICall(self.logger, @"<PubNub::API> %@ for '%@' channel%@%@ with %@ limit%@.",
-                     (userRequest.reverse ? @"Reversed history" : @"History"),
-                     (userRequest.channels.firstObject?: @"<error>"),
-                     (userRequest.start ? [NSString stringWithFormat:@" from %@", userRequest.start] : @""),
-                     (userRequest.end ? [NSString stringWithFormat:@" to %@", userRequest.end] : @""),
-                     @(userRequest.limit), (userRequest.includeTimeToken ? @" (including: message time tokens" : @""));
-    }
-
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
                 PNOperationDataParseResult<PNHistoryResult *, PNErrorStatus *> *result) {
         PNStrongify(self);
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self fetchHistoryWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
-        } else if (result.result && !userRequest.multipleChannels && userRequest.channels.count == 1) {
-            [result.result.data setSingleChannelName:userRequest.channels.firstObject];
+        if (!result.status.isError){
+            if (result.result && !userRequest.multipleChannels && userRequest.channels.count == 1)
+                [result.result.data setSingleChannelName:userRequest.channels.firstObject];
+            
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                NSUInteger count = result.result.data.messages.count;
+                if (count == 0 && userRequest.multipleChannels && userRequest.channels.count > 1) {
+                    for(NSArray *messages in result.result.data.channels.allValues) {
+                        count += messages.count;
+                    }
+                }
+                
+                return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Fetch history success. Received %@ messages.",
+                                                                         @(count))
+                                                operation:PNMessageStorageLogMessageOperation];
+            }];
         }
 
         [self handleHistoryResult:result.result withStatus:result.status completion:block];
     };
+    
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Fetch history with parameters:"
+                                            operation:PNMessageStorageLogMessageOperation];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 
@@ -453,31 +454,26 @@ NS_ASSUME_NONNULL_END
     PNMessageDeleteCompletionBlock block = [handleBlock copy];
     PNParsedRequestCompletionBlock handler; 
 
-    PNLogAPICall(self.logger, @"<PubNub::API> Delete messages from '%@' channel%@%@.",
-                 (userRequest.channel?: @"<error>"),
-                 (userRequest.start 
-                  ? [NSString stringWithFormat:@" %@ %@", userRequest.end ? @"from" : @"till", userRequest.start]
-                  : @""),
-                 (userRequest.end 
-                  ? [NSString stringWithFormat:@" %@ %@", userRequest.start ? @"to" : @"from", userRequest.end]
-                  : @""));
-
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
                 PNOperationDataParseResult<PNAcknowledgmentStatus *, PNAcknowledgmentStatus *> *result) {
         PNStrongify(self);
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self deleteMessagesWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+        if (!result.status.isError) {
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                return [PNStringLogEntry entryWithMessage:@"Delete messages success."
+                                                operation:PNMessageStorageLogMessageOperation];
+            }];
         }
 
         [self callBlock:block status:YES withResult:nil andStatus:result.status];
     };
+                           
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Delete messages with parameters:"
+                                            operation:PNMessageStorageLogMessageOperation];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
@@ -509,39 +505,37 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - Messages count
 
-
 - (void)fetchMessagesCountWithRequest:(PNHistoryMessagesCountRequest *)userRequest
                            completion:(PNMessageCountCompletionBlock)handleBlock {
     PNOperationDataParser *responseParser = [self parserWithResult:[PNMessageCountResult class]
                                                             status:[PNErrorStatus class]];
     PNMessageCountCompletionBlock block = [handleBlock copy];
-    PNParsedRequestCompletionBlock handler; 
-
-    PNLogAPICall(self.logger, @"<PubNub::API> Messages count fetch for '%@' channels%@%@.",
-                 [userRequest.channels componentsJoinedByString:@", "],
-                 (userRequest.timetokens.count == 1
-                  ? [NSString stringWithFormat:@" starting from %@", userRequest.timetokens.firstObject]
-                  : @""),
-                 (userRequest.timetokens.count > 1
-                  ? [NSString stringWithFormat:@" with per-channel starting point %@", [userRequest.timetokens componentsJoinedByString:@","]]
-                  : @""));
+    PNParsedRequestCompletionBlock handler;
 
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
                 PNOperationDataParseResult<PNMessageCountResult *, PNErrorStatus *> *result) {
         PNStrongify(self);
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self fetchMessagesCountWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+        if (!result.status.isError) {
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                NSNumber *count = [result.result.data.channels.allValues valueForKeyPath:@"@sum.self"];
+                return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Fetch messages count success. There are %@ "
+                                                                         "messages since provided reference timetoken%@",
+                                                                         count,
+                                                                         userRequest.timetokens.count > 1 ? @"s" : @"")
+                                                operation:PNMessageStorageLogMessageOperation];
+            }];
         }
 
         [self callBlock:block status:NO withResult:result.result andStatus:result.status];
     };
+                               
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Fetch messages count with parameters:"
+                                            operation:PNMessageStorageLogMessageOperation];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }

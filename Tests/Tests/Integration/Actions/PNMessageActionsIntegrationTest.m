@@ -166,26 +166,34 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.addMessageAction()
-            .channel(channel)
-            .messageTimetoken(timetoken)
-            .type(expectedType)
-            .value(expectedValue)
-            .performWithCompletion(^(PNAddMessageActionStatus *status) {
-                NSString *errorInformation = status.errorData.information;
-                XCTAssertTrue(status.isError);
-                XCTAssertNotNil(errorInformation);
-                XCTAssertTrue([errorInformation pnt_includesString:@"'channel'"]);
-                XCTAssertEqual(status.operation, PNAddMessageActionOperation);
-                XCTAssertEqual(status.category, PNBadRequestCategory);
-                
-                if (!retried) {
-                    retried = YES;
-                    [status retry];
-                } else {
-                    handler();
-                }
-            });
+        PNAddMessageActionRequest *request = [PNAddMessageActionRequest requestWithChannel:channel
+                                                                          messageTimetoken:timetoken];
+        request.value = expectedValue;
+        request.type = expectedType;
+        __block __weak PNAddMessageActionCompletionBlock weakBlock;
+        __block PNAddMessageActionCompletionBlock block;
+        
+        block = ^(PNAddMessageActionStatus *status) {
+            __strong PNAddMessageActionCompletionBlock strongBlock = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
+            
+            NSString *errorInformation = status.errorData.information;
+            XCTAssertTrue(status.isError);
+            XCTAssertNotNil(errorInformation);
+            XCTAssertTrue([errorInformation pnt_includesString:@"'channel'"]);
+            XCTAssertEqual(status.operation, PNAddMessageActionOperation);
+            XCTAssertEqual(status.category, PNBadRequestCategory);
+            
+            if (!retried) {
+                retried = YES;
+                [self.client addMessageActionWithRequest:request completion:strongBlock];
+            } else {
+                handler();
+            }
+        };
+        
+        weakBlock = block;
+        [self.client addMessageActionWithRequest:request completion:block];
     }];
 }
 
@@ -458,25 +466,33 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.removeMessageAction()
-            .channel(channel)
-            .messageTimetoken(messageTimetoken)
-            .actionTimetoken(actionTimetoken)
-            .performWithCompletion(^(PNAcknowledgmentStatus *status) {
-                NSString *errorInformation = status.errorData.information;
-                XCTAssertTrue(status.isError);
-                XCTAssertNotNil(errorInformation);
-                XCTAssertTrue([errorInformation pnt_includesString:@"'channel'"]);
-                XCTAssertEqual(status.operation, PNRemoveMessageActionOperation);
-                XCTAssertEqual(status.category, PNBadRequestCategory);
-                
-                if (!retried) {
-                    retried = YES;
-                    [status retry];
-                } else {
-                    handler();
-                }
-            });
+        PNRemoveMessageActionRequest *request = [PNRemoveMessageActionRequest requestWithChannel:channel
+                                                                                messageTimetoken:messageTimetoken
+                                                                                 actionTimetoken:actionTimetoken];
+        __block __weak PNRemoveMessageActionCompletionBlock weakBlock;
+        __block PNRemoveMessageActionCompletionBlock block;
+        
+        block = ^(PNAcknowledgmentStatus *status) {
+            __strong PNRemoveMessageActionCompletionBlock strongBlock = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
+            
+            NSString *errorInformation = status.errorData.information;
+            XCTAssertTrue(status.isError);
+            XCTAssertNotNil(errorInformation);
+            XCTAssertTrue([errorInformation pnt_includesString:@"'channel'"]);
+            XCTAssertEqual(status.operation, PNRemoveMessageActionOperation);
+            XCTAssertEqual(status.category, PNBadRequestCategory);
+            
+            if (!retried) {
+                retried = YES;
+                [self.client removeMessageActionWithRequest:request completion:strongBlock];
+            } else {
+                handler();
+            }
+        };
+        
+        weakBlock = block;
+        [self.client removeMessageActionWithRequest:request completion:block];
     }];
 }
 
@@ -648,23 +664,31 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.fetchMessageActions()
-            .channel(channel)
-            .performWithCompletion(^(PNFetchMessageActionsResult *result, PNErrorStatus *status) {
-                NSString *errorInformation = status.errorData.information;
-                XCTAssertTrue(status.isError);
-                XCTAssertNotNil(errorInformation);
-                XCTAssertTrue([errorInformation pnt_includesString:@"'channel'"]);
-                XCTAssertEqual(status.operation, PNFetchMessagesActionsOperation);
-                XCTAssertEqual(status.category, PNBadRequestCategory);
-                
-                if (!retried) {
-                    retried = YES;
-                    [status retry];
-                } else {
-                    handler();
-                }
-            });
+        PNFetchMessageActionsRequest *request = [PNFetchMessageActionsRequest requestWithChannel:channel];
+        __block __weak PNFetchMessageActionsCompletionBlock weakBlock;
+        __block PNFetchMessageActionsCompletionBlock block;
+        
+        block = ^(PNFetchMessageActionsResult *result, PNErrorStatus *status) {
+            __strong PNFetchMessageActionsCompletionBlock strongBlock = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
+            
+            NSString *errorInformation = status.errorData.information;
+            XCTAssertTrue(status.isError);
+            XCTAssertNotNil(errorInformation);
+            XCTAssertTrue([errorInformation pnt_includesString:@"'channel'"]);
+            XCTAssertEqual(status.operation, PNFetchMessagesActionsOperation);
+            XCTAssertEqual(status.category, PNBadRequestCategory);
+            
+            if (!retried) {
+                retried = YES;
+                [self.client fetchMessageActionsWithRequest:request completion:strongBlock];
+            } else {
+                handler();
+            }
+        };
+        
+        weakBlock = block;
+        [self.client fetchMessageActionsWithRequest:request completion:block];
     }];
 }
 

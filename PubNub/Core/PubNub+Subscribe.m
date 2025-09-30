@@ -1,8 +1,10 @@
 #import "PubNub+SubscribePrivate.h"
+#import "PNDictionaryLogEntry+Private.h"
 #import "PNBaseOperationData+Private.h"
 #import "PNSubscribeRequest+Private.h"
 #import "PNOperationResult+Private.h"
 #import "PNSubscribeStatus+Private.h"
+#import "PNStringLogEntry+Private.h"
 #import "PNConfiguration+Private.h"
 #import "PubNub+CorePrivate.h"
 #import "PNStatus+Private.h"
@@ -202,8 +204,11 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Subscription
 
 - (void)subscribeWithRequest:(PNSubscribeRequest *)request {
-    [self cancelSubscribeOperations];
-    [self.subscriberManager subscribeWithRequest:request];
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_MSEC), queue, ^{
+        [self cancelSubscribeOperations];
+        [self.subscriberManager subscribeWithRequest:request];
+    });
 }
 
 - (void)subscribeWithRequest:(PNSubscribeRequest *)userRequest completion:(PNSubscriberCompletionBlock)handleBlock {
@@ -224,6 +229,12 @@ NS_ASSUME_NONNULL_END
 
         [self callBlock:block status:YES withResult:nil andStatus:result.status];
     };
+    
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Subscribe with parameters:"
+                                            operation:PNSubscribeLogMessageOperation];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
@@ -315,9 +326,12 @@ NS_ASSUME_NONNULL_END
 
 - (void)unsubscribeWithRequest:(PNPresenceLeaveRequest *)request {
     if (request.channels.count == 0 && request.channelGroups.count == 0) return;
-
-    [self cancelSubscribeOperations];
-    [self.subscriberManager unsubscribeWithRequest:request completion:nil];
+    
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_MSEC), queue, ^{
+        [self cancelSubscribeOperations];
+        [self.subscriberManager unsubscribeWithRequest:request completion:nil];
+    });
 }
 
 - (void)unsubscribeWithRequest:(PNPresenceLeaveRequest *)userRequest
@@ -341,9 +355,14 @@ NS_ASSUME_NONNULL_END
                                                             response:result.status.responseData];
         }
         
-        [self updateResult:subscribeStatus withRequest:request response:response];
         [self callBlock:block status:YES withResult:nil andStatus:subscribeStatus];
     };
+                        
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                                                  details:@"Unsubscribe with parameters:"
+                                            operation:PNPresenceLogMessageOperation];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
@@ -367,8 +386,11 @@ NS_ASSUME_NONNULL_END
     request.observePresence = shouldObservePresence;
 
     if (request.channels.count || request.channelGroups.count) {
-        [self cancelSubscribeOperations];
-        [self.subscriberManager unsubscribeWithRequest:request completion:block];
+        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_MSEC), queue, ^{
+            [self cancelSubscribeOperations];
+            [self.subscriberManager unsubscribeWithRequest:request completion:block];
+        });
     } else if (block) {
         pn_dispatch_async(self.callbackQueue, ^{
             block(nil);
@@ -396,8 +418,16 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)unsubscribeFromAllWithQueryParameters:(NSDictionary *)queryParameters completion:(PNStatusBlock)block {
-    [self cancelSubscribeOperations];
-    [self.subscriberManager unsubscribeFromAllWithQueryParameters:queryParameters completion:block];
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNStringLogEntry entryWithMessage:@"Unsubscribe all channels and groups"
+                                        operation:PNPresenceLogMessageOperation];
+    }];
+    
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_MSEC), queue, ^{
+        [self cancelSubscribeOperations];
+        [self.subscriberManager unsubscribeFromAllWithQueryParameters:queryParameters completion:block];
+    });
 }
 
 

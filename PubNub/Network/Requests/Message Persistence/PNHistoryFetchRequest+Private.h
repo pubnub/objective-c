@@ -1,4 +1,4 @@
-#import <PubNub/PNHistoryFetchRequest.h>
+#import "PNHistoryFetchRequest.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

@@ -102,6 +102,17 @@ NS_ASSUME_NONNULL_END
     return nil;
 }
 
+
+#pragma mark - Misc
+
+- (NSDictionary *)dictionaryRepresentation {
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary:[super dictionaryRepresentation]];
+    dictionary[@"value"] = self.value ?: @"missing";
+    dictionary[@"type"] = self.type ?: @"missing";
+    
+    return dictionary;
+}
+
 #pragma mark -
 
 

@@ -1,4 +1,5 @@
 #import "PNFilesManager.h"
+#import "PNDictionaryLogEntry.h"
 #import "NSInputStream+PNURL.h"
 #import "PubNub+CorePrivate.h"
 #import "PNFunctions.h"
@@ -20,6 +21,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// **PubNub** client uses this instance to _encrypt_ and _decrypt_ data that has been sent and received from the
 /// **PubNub** network.
 @property(nonatomic, nullable, strong) id<PNCryptoProvider> cryptoModule;
+
+/// **PubNub** client logger instance which can be used to add additional logs.
+@property(weak, nonatomic, readonly) PNLoggerManager *logger;
 
 
 #pragma mark - Initialization and configuration
@@ -59,7 +63,11 @@ NS_ASSUME_NONNULL_END
 }
 
 - (instancetype)initWithClient:(PubNub *)client {
-    if ((self = [super init])) _cryptoModule = client.configuration.cryptoModule;
+    if ((self = [super init])) {
+        _cryptoModule = client.configuration.cryptoModule;
+        _logger = client.logger;
+    }
+    
     return self;
 }
 
@@ -112,7 +120,11 @@ NS_ASSUME_NONNULL_END
             block(!decryptResult.isError ? storeURL : nil, decryptError);
 
             if (temporary && !decryptError && ![fileManager removeItemAtURL:location error:&decryptError]) {
-                NSLog(@"<PubNub::FilesManager> Encrypted file clean up error: %@", decryptError);
+                [self.logger debugWithLocation:@"PNFilesManager" andMessageFactory:^PNLogEntry * {
+                    NSString *error = decryptError.localizedFailureReason ?: decryptError.localizedDescription;
+                    return [PNDictionaryLogEntry entryWithMessage:@{ @"error": error }
+                                                          details:@"Encrypted file clean up error:"];
+                }];
             }
         });
     } else {
@@ -120,7 +132,11 @@ NS_ASSUME_NONNULL_END
         block(storeURL, tempRemoveError);
 
         if (temporary && ![fileManager removeItemAtURL:location error:&tempRemoveError]) {
-            NSLog(@"<PubNub::FilesManager> Temporary file clean up error: %@", tempRemoveError);
+            [self.logger debugWithLocation:@"PNFilesManager" andMessageFactory:^PNLogEntry * {
+                NSString *error = tempRemoveError.localizedFailureReason ?: tempRemoveError.localizedDescription;
+                return [PNDictionaryLogEntry entryWithMessage:@{ @"error": error }
+                                                      details:@"Temporary file clean up error:"];
+            }];
         }
     }
 }

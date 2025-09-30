@@ -115,6 +115,27 @@ NS_ASSUME_NONNULL_END
     return nil;
 }
 
+
+#pragma mark - Misc
+
+- (NSDictionary *)dictionaryRepresentation {
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary:@{
+        @"identifier": self.identifier ?: @"missing",
+        @"channel": self.channel ?: @"missing",
+        @"name": self.name ?: @"missing"
+    }];
+    
+    if (self.cryptoModule) {
+        if ([self.cryptoModule respondsToSelector:@selector(dictionaryRepresentation)])
+            dictionary[@"cryptoModule"] = [self.cryptoModule performSelector:@selector(dictionaryRepresentation)];
+        else dictionary[@"cryptoModule"] = NSStringFromClass(self.cryptoModule.class);
+    }
+    if (self.arbitraryQueryParameters) dictionary[@"arbitraryQueryParameters"] = self.arbitraryQueryParameters;
+    if (self.targetURL) dictionary[@"targetURL"] = self.targetURL.absoluteString;
+    
+    return dictionary;
+}
+
 #pragma mark -
 
 

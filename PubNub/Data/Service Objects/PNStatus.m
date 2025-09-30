@@ -101,25 +101,8 @@ NS_ASSUME_NONNULL_END
     status.lastTimeToken = self.lastTimeToken;
     status.currentTimeTokenRegion = self.currentTimeTokenRegion;
     status.lastTimeTokenRegion = self.lastTimeTokenRegion;
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    status.automaticallyRetry = self.willAutomaticallyRetry;
-    status.retryBlock = self.retryBlock;
-    status.retryCancelBlock = self.retryCancelBlock;
-#pragma clang diagnostic pop
 
     return status;
-}
-
-
-#pragma mark - Recovery (deprecated)
-
-- (void)retry {
-    if (self.retryBlock) self.retryBlock();
-}
-
-- (void)cancelAutomaticRetry {
-    // Method deprecated. Do nothing.
 }
 
 #pragma mark -

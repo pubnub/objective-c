@@ -32,7 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PubNub (Presence)
 
 
-#pragma mark - Presence API builder interdace (deprecated)
+#pragma mark - Presence API builder interface (deprecated)
 
 /// Presence API access builder.
 @property (nonatomic, readonly, strong) PNPresenceAPICallBuilder * (^presence)(void)
@@ -139,8 +139,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///         // Handle presence audit error. Check `category` property to find out possible issue because of which
 ///         // request did fail.
-///         //
-///         // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -148,7 +146,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// - Parameter block: Here now fetch completion block.
 - (void)hereNowWithCompletion:(PNGlobalHereNowCompletionBlock)block
     NS_SWIFT_NAME(hereNowWithCompletion(_:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-hereNowWithRequest:completion:' method instead.");
 
 /// Request information about subscribers on all remote data objects live feeds.
@@ -172,8 +170,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///         // Handle presence audit error. Check `category` property to find out possible issue because of which 
 ///         // request did fail.
-///         //
-///         // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -184,7 +180,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)hereNowWithVerbosity:(PNHereNowVerbosityLevel)level
                   completion:(PNGlobalHereNowCompletionBlock)block
     NS_SWIFT_NAME(hereNowWithVerbosity(_:completion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-hereNowWithRequest:completion:' method instead.");
 
 
@@ -207,8 +203,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///         // Handle presence audit error. Check `category` property to find out possible issue because of which
 ///         // request did fail.
-///         //
-///         // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -218,7 +212,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///   - block: Here now fetch completion block.
 - (void)hereNowForChannel:(NSString *)channel withCompletion:(PNChannelHereNowCompletionBlock)block
     NS_SWIFT_NAME(hereNowForChannel(_:withCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-hereNowWithRequest:completion:' method instead.");
 
 /// Request information about subscribers on specific channel live feeds.
@@ -236,8 +230,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///         // Handle presence audit error. Check `category` property to find out possible issue because of which
 ///         // request did fail.
-///         //
-///         // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -250,7 +242,7 @@ NS_ASSUME_NONNULL_BEGIN
             withVerbosity:(PNHereNowVerbosityLevel)level
                completion:(PNChannelHereNowCompletionBlock)block
     NS_SWIFT_NAME(hereNowForChannel(_:withVerbosity:completion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-hereNowWithRequest:completion:' method instead.");
 
 
@@ -277,8 +269,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///         // Handle presence audit error. Check `category` property to find out possible issue because of which 
 ///         // request did fail.
-///         //
-///         // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -288,7 +278,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///   - block: Here now fetch completion block.
 - (void)hereNowForChannelGroup:(NSString *)group withCompletion:(PNChannelGroupHereNowCompletionBlock)block
     NS_SWIFT_NAME(hereNowForChannelGroup(_:withCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-hereNowWithRequest:completion:' method instead.");
 
 /// Request information about subscribers on specific channel group live feeds.
@@ -310,8 +300,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///         // Handle presence audit error. Check `category` property to find out possible issue because of which 
 ///         // request did fail.
-///         //
-///         // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -324,7 +312,7 @@ NS_ASSUME_NONNULL_BEGIN
                  withVerbosity:(PNHereNowVerbosityLevel)level
                     completion:(PNChannelGroupHereNowCompletionBlock)block
     NS_SWIFT_NAME(hereNowForChannelGroup(_:withVerbosity:completion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-hereNowWithRequest:completion:' method instead.");
 
 
@@ -363,8 +351,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///         // Handle presence audit error. Check `category` property to find out possible issue because of which
 ///         // request did fail.
-///         //
-///         // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -374,7 +360,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///   - block: Where now fetch completion block.
 - (void)whereNowUUID:(NSString *)uuid withCompletion:(PNWhereNowCompletionBlock)block
     NS_SWIFT_NAME(whereNowUUID(_:withCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-whereNowWithRequest:completion:' method instead.");
 
 #pragma mark -

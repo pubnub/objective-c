@@ -1,13 +1,16 @@
 #import "PubNub+Files.h"
+#import "PNPublishFileMessageRequest+Private.h"
 #import "PNGenerateFileDownloadURLRequest.h"
 #import "PNGenerateFileUploadURLRequest.h"
 #import "PNGenerateFileUploadURLStatus.h"
 #import "PNDownloadFileRequest+Private.h"
+#import "PNDictionaryLogEntry+Private.h"
 #import "PNBaseOperationData+Private.h"
 #import "PNFileListFetchData+Private.h"
 #import "PNFileDownloadData+Private.h"
 #import "PNSendFileRequest+Private.h"
 #import "PNOperationResult+Private.h"
+#import "PNStringLogEntry+Private.h"
 #import "PNFileSendData+Private.h"
 #import "PNBaseRequest+Private.h"
 #import "PNFileUploadRequest.h"
@@ -17,6 +20,7 @@
 #import "PNPublishStatus.h"
 #import "PubNub+Publish.h"
 #import "PNCryptoModule.h"
+#import "PNFunctions.h"
 #import "PubNub+PAM.h"
 #import "PNHelpers.h"
 
@@ -32,7 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PubNub (FilesProtected)
 
 
-#pragma mark - Files API builder interdace (deprecated)
+#pragma mark - Files API builder interface (deprecated)
 
 /// Process information provider by user with builder API call and use it to send request which will upload file.
 ///
@@ -123,7 +127,7 @@ NS_ASSUME_NONNULL_END
 @implementation PubNub (Files)
 
 
-#pragma mark - Files API builder interdace (deprecated)
+#pragma mark - Files API builder interface (deprecated)
 
 - (PNFilesAPICallBuilder * (^)(void))files {
     PNFilesAPICallBuilder *builder = nil;
@@ -244,9 +248,9 @@ NS_ASSUME_NONNULL_END
     [urlRequest setupWithClientConfiguration:self.configuration];
     PNParsedRequestCompletionBlock handler;
 
+    if (!userRequest.cryptoModule) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    if (!userRequest.cryptoModule) {
         NSString *cipherKey = userRequest.cipherKey ?: self.configuration.cipherKey;
         if (!cipherKey) userRequest.cryptoModule = self.configuration.cryptoModule;
         else if (![cipherKey isEqualToString:self.configuration.cipherKey]) {
@@ -254,19 +258,26 @@ NS_ASSUME_NONNULL_END
             userRequest.cryptoModule = [PNCryptoModule legacyCryptoModuleWithCipherKey:cipherKey
                                                             randomInitializationVector:YES];
         } else userRequest.cryptoModule = self.configuration.cryptoModule;
-    }
 #pragma clang diagnostic pop
+    }
 
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
                 PNOperationDataParseResult<PNGenerateFileUploadURLStatus *, PNGenerateFileUploadURLStatus *> *result) {
         PNStrongify(self);
+        
         PNGenerateFileUploadURLStatus *status = result.status;
 
         if (!status.isError) {
             [self handleGenerateFileUploadURLSuccessWithStatus:status sendFileRequest:userRequest completion:block];
         } else [self handleGenerateFileUploadURLErrorWithStatus:status sendFileRequest:userRequest completion:block];
     };
+    
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Send file with parameters:"
+                                            operation:PNFilesLogMessageOperation];
+    }];
 
     [self performRequest:urlRequest withParser:responseParser completion:handler];
 }
@@ -289,19 +300,22 @@ NS_ASSUME_NONNULL_END
             [result.result.data setFilesDownloadURLWithBlock:^NSURL *(NSString *identifier, NSString *name) {
                 return [self downloadURLForFileWithName:name identifier:identifier inChannel:userRequest.channel];
             }];
-        }
-
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self listFilesWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+            
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                return [PNStringLogEntry entryWithMessage:PNStringFormat(@"List files success. There are %@ uploaded "
+                                                                         "files.", @(result.result.data.files.count))
+                                                operation:PNFilesLogMessageOperation];
+            }];
         }
 
         [self callBlock:block status:NO withResult:result.result andStatus:result.status];
     };
+    
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"List files with parameters:"
+                                            operation:PNFilesLogMessageOperation];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
@@ -341,9 +355,9 @@ NS_ASSUME_NONNULL_END
     PNDownloadFileCompletionBlock block = [handlerBlock copy];
     PNParsedRequestCompletionBlock handler;
 
+    if (!userRequest.cryptoModule) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    if (!userRequest.cryptoModule) {
         NSString *cipherKey = userRequest.cipherKey ?: self.configuration.cipherKey;
         if (!cipherKey) userRequest.cryptoModule = self.configuration.cryptoModule;
         else if (![cipherKey isEqualToString:self.configuration.cipherKey]) {
@@ -351,8 +365,8 @@ NS_ASSUME_NONNULL_END
             userRequest.cryptoModule = [PNCryptoModule legacyCryptoModuleWithCipherKey:cipherKey
                                                             randomInitializationVector:YES];
         } else userRequest.cryptoModule = self.configuration.cryptoModule;
-    }
 #pragma clang diagnostic pop
+    }
 
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, NSURL *url,
@@ -372,30 +386,31 @@ NS_ASSUME_NONNULL_END
                 status = [PNErrorStatus objectWithOperation:userRequest.operation
                                                    category:PNUnknownCategory
                                                    response:data];
-                [self updateResult:status withRequest:request response:response];
             }
 
-            if (status && status.isError) {
-                if (status.category == PNUnknownCategory) status.category = PNDownloadErrorCategory;
-
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-                status.retryBlock = ^{
-                    [self downloadFileWithRequest:userRequest completion:block];
-                };
-#pragma clang diagnostic pop
-            }
+            if (status && status.isError && status.category == PNUnknownCategory)
+                status.category = PNDownloadErrorCategory;
 
             if (!status.isError) {
                 PNFileDownloadData *data = [PNFileDownloadData dataForFileAtLocation:location temporarily:temporary];
                 downloadResult = [PNDownloadFileResult objectWithOperation:userRequest.operation response:data];
-                [self updateResult:downloadResult withRequest:request response:response];
+                
+                [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                    return [PNStringLogEntry entryWithMessage:@"Download file success."
+                                                    operation:PNFilesLogMessageOperation];
+                }];
             }
 
             if (!temporary) [self callBlock:block status:NO withResult:downloadResult andStatus:status];
             else if (block) block(downloadResult, status);
         }];
     };
+    
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Download file with parameters:"
+                                            operation:PNFilesLogMessageOperation];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
@@ -413,17 +428,22 @@ NS_ASSUME_NONNULL_END
                 PNOperationDataParseResult<PNAcknowledgmentStatus *, PNAcknowledgmentStatus *> *result) {
         PNStrongify(self);
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self deleteFileWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+        if (!result.status.isError) {
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Delete file success. Deleted file with "
+                                                                         "%@ ID.", userRequest.identifier)
+                                                operation:PNFilesLogMessageOperation];
+            }];
         }
 
         [self callBlock:block status:YES withResult:nil andStatus:result.status];
     };
+    
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Delete file with parameters:"
+                                            operation:PNFilesLogMessageOperation];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
@@ -476,12 +496,6 @@ NS_ASSUME_NONNULL_END
     PNSendFileStatus *sendStatus = [PNSendFileStatus objectWithOperation:sendFileRequest.operation
                                                                 category:category
                                                                 response:fileData];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    sendStatus.statusCode = status.statusCode;
-    sendStatus.retryBlock = ^{};
-    [self updateResult:sendStatus withRequest:nil response:nil];
-#pragma clang diagnostic pop
     sendStatus.error = YES;
 
     [self callBlock:block status:YES withResult:nil andStatus:sendStatus];
@@ -503,38 +517,42 @@ NS_ASSUME_NONNULL_END
     request.metadata = sendFileRequest.fileMessageMetadata;
     request.store = sendFileRequest.fileMessageStore;
     request.message = sendFileRequest.message;
+    request.publishOnFileSharing = YES;
     if (request.store) request.ttl = sendFileRequest.fileMessageTTL;
     
+    __block __weak PNPublishCompletionBlock weakPublishCompletion = nil;
+    __block PNPublishCompletionBlock publishCompletion = nil;
     __block NSUInteger publishAttemptsCount = 1;
     PNWeakify(self);
-
-    [self publishFileMessageWithRequest:request completion:^(PNPublishStatus *status) {
+                                           
+    publishCompletion = ^(PNPublishStatus *status) {
+        __strong PNPublishCompletionBlock strongPublishCompletion = weakPublishCompletion;
         PNStrongify(self);
-
-        if (!status.isError || publishAttemptsCount >= fileMessagePublishRetryLimit) {
+        
+        if (!status.isError || !strongPublishCompletion || publishAttemptsCount >= fileMessagePublishRetryLimit) {
             PNFileSendData *data = [PNFileSendData fileDataWithId:fileIdentifier name:fileName];
             PNSendFileStatus *sendFileStatus = nil;
-
+            
             if (!status.isError) {
                 data.timetoken = status.data.timetoken;
                 sendFileStatus = [PNSendFileStatus objectWithOperation:sendFileRequest.operation response:data];
                 sendFileStatus.category = PNAcknowledgmentCategory;
             } else {
+                [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                    return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Send file success. File shared with "
+                                                                             "%@ ID.", fileIdentifier)
+                                                    operation:PNFilesLogMessageOperation];
+                }];
+                
                 data.category = status.category;
                 sendFileStatus = [PNSendFileStatus objectWithOperation:sendFileRequest.operation
                                                               category:status.category
                                                               response:data];
             }
-
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            sendFileStatus.statusCode = status.statusCode;
-            sendFileStatus.retryBlock = ^{};
-#pragma clang diagnostic pop
+            
             sendFileStatus.data.fileUploaded = YES;
             sendFileStatus.error = status.isError;
-
-            [self appendClientInformation:sendFileStatus];
+            
             [self callBlock:block status:YES withResult:nil andStatus:sendFileStatus];
         } else {
             dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
@@ -542,13 +560,13 @@ NS_ASSUME_NONNULL_END
             publishAttemptsCount++;
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, delayInNanoseconds), queue, ^{
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-                [status retry];
-#pragma clang diagnostic pop
+                [self publishFileMessageWithRequest:request completion:strongPublishCompletion];
             });
         }
-    }];
+    };
+    weakPublishCompletion = publishCompletion;
+
+    [self publishFileMessageWithRequest:request completion:publishCompletion];
 }
 
 - (void)handleUploadFileErrorWithFileIdentifier:(NSString *)fileIdentifier
@@ -558,12 +576,6 @@ NS_ASSUME_NONNULL_END
     PNFileSendData *data = [PNFileSendData fileDataWithId:fileIdentifier name:fileName];
     category = category != PNUnknownCategory ? category : PNSendFileErrorCategory;
     PNSendFileStatus *status = [PNSendFileStatus objectWithOperation:PNSendFileOperation category:category response:data];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    status.statusCode = status.statusCode;
-    status.retryBlock = ^{};
-    [self updateResult:status withRequest:nil response:nil];
-#pragma clang diagnostic pop
     status.error = YES;
 
     [self callBlock:block status:YES withResult:nil andStatus:status];

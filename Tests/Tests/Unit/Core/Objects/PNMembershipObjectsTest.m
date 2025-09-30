@@ -55,7 +55,7 @@ NS_ASSUME_NONNULL_END
                                                                        channels:@[]];
 
 
-    XCTAssertEqual(request.includeFields, PNMembershipsTotalCountField);
+    XCTAssertEqual(request.includeFields, PNMembershipsTotalCountField|PNMembershipStatusField|PNMembershipTypeField);
 }
 
 
@@ -142,7 +142,7 @@ NS_ASSUME_NONNULL_END
                                                                              channels:@[]];
 
 
-    XCTAssertEqual(request.includeFields, PNMembershipsTotalCountField);
+    XCTAssertEqual(request.includeFields, PNMembershipsTotalCountField|PNMembershipStatusField|PNMembershipTypeField);
 }
 
 
@@ -222,7 +222,7 @@ NS_ASSUME_NONNULL_END
     PNManageMembershipsRequest *request = [PNManageMembershipsRequest requestWithUUID:[NSUUID UUID].UUIDString];
 
 
-    XCTAssertEqual(request.includeFields, PNMembershipsTotalCountField);
+    XCTAssertEqual(request.includeFields, PNMembershipsTotalCountField|PNMembershipStatusField|PNMembershipTypeField);
 }
 
 
@@ -332,7 +332,7 @@ NS_ASSUME_NONNULL_END
     PNFetchMembershipsRequest *request = [PNFetchMembershipsRequest requestWithUUID:[NSUUID UUID].UUIDString];
 
 
-    XCTAssertEqual(request.includeFields, PNMembershipsTotalCountField);
+    XCTAssertEqual(request.includeFields, PNMembershipsTotalCountField|PNMembershipStatusField|PNMembershipTypeField);
 }
 
 

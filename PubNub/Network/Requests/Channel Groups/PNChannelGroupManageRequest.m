@@ -1,6 +1,7 @@
 #import "PNChannelGroupManageRequest.h"
 #import "PNTransportRequest+Private.h"
 #import "PNBaseRequest+Private.h"
+#import "PNFunctions.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -122,6 +123,24 @@ NS_ASSUME_NONNULL_END
     }
     
     return nil;
+}
+
+
+#pragma mark - Misc
+
+- (NSDictionary *)dictionaryRepresentation {
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary:@{
+        @"channelGroup": self.channelGroup ?: @"missing",
+        @"removeChannels": @(self.removeChannels)
+    }];
+    
+    if (self.arbitraryQueryParameters) dictionary[@"arbitraryQueryParameters"] = self.arbitraryQueryParameters;
+    if (self.channels) {
+        dictionary[@"removeChannels"] = @(self.removeChannels);
+        dictionary[@"channels"] = self.channels;
+    } else dictionary[@"removeChannelGroup"] = @(self.removeChannels);
+    
+    return dictionary;
 }
 
 #pragma mark -

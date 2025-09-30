@@ -2,6 +2,7 @@
 #import <PubNub/PNRequestRetryConfiguration.h>
 #import <PubNub/PNCryptoProvider.h>
 #import <PubNub/PNStructures.h>
+#import <PubNub/PNLogger.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -48,18 +49,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Unique client identifier used to identify concrete client user from another which currently use **PubNub** services.
 ///
-/// This value is different from `authKey` (which is used only by **PAM**) and represent concrete client across server.
-/// This identifier is used for presence events to tell what some client joined or leaved live feed.
-///
-/// > Warning: There can't be two same client identifiers online at the same time.
-///
-/// - Throws: An exception in case if `uuid` is empty string.
-@property(copy, nonatomic, setter = setUUID:) NSString *uuid
-    DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with next major update. Please use `userID` "
-                             "instead.");
-
-/// Unique client identifier used to identify concrete client user from another which currently use **PubNub** services.
-///
 /// This value is different from ``authKey`` (which is used only by **PAM**) and represent concrete client across
 /// server. This identifier is used for presence events to tell what some client joined or leaved live feed.
 ///
@@ -81,11 +70,6 @@ DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with next
 /// **PubNub** client uses this instance to _encrypt_ and _decrypt_ data that has been sent and received from the
 /// **PubNub** network.
 @property(strong, nonatomic) id<PNCryptoProvider> cryptoModule;
-
-/// Unique device identifier based on bundle identifier used by software vendor.
-@property(copy, nonatomic, readonly) NSString *deviceID
-    DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with next major update. Unique value will "
-                             "be generated for each PubNub client instance.");
 
 /// Maximum number of seconds which client should wait for events from live feed.
 ///
@@ -118,7 +102,7 @@ DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with next
 /// This property not set by default.
 @property(assign, nonatomic) NSInteger presenceHeartbeatInterval;
 
-/// Bitfield which describe client's behaviour on which heartbeat request processing states delegate should be notified.
+/// Bitfield which describe client's behavior on which heartbeat request processing states delegate should be notified.
 ///
 /// This property is set to **PNHeartbeatNotifyFailure** by default to notify only about failed requests.
 ///
@@ -170,33 +154,6 @@ DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with next
 @property(assign, nonatomic, getter = shouldTryCatchUpOnSubscriptionRestore) BOOL catchUpOnSubscriptionRestore
     NS_SWIFT_NAME(catchUpOnSubscriptionRestore);
 
-/// Group identifier which is used to share request cache between application extension and it's containing application.
-///
-/// When identifier is set it let configure **PubNub** client instance to operate properly when used in application
-/// extension context.
-/// There only effective API which can operate in this mode w/o limitations is - **publish** API.
-///
-/// > Important: In this mode client is able to process one API call at time. If multiple requests should be 
-/// processed - they should be called from completion block of previous API call.
-///
-/// > Note: Because **NSURLSession** for application extensions can operate only as background data pull it doesn't have
-/// cache (where temporary data can be loaded) in application extension. Shared data container will be used by
-/// **NSURLSession** during request processing.
-///
-/// > Warning: If property is set to valid identifier (registered in 'App Groups' inside of 'Capabilities') client will
-/// be limited in functionality because of application extension life-cycle. Any API which pull data from **PubNub**
-/// network may be useless because as soon as extension will complete it's tasks system will suspend or terminate it and
-/// there will be no way to \c `consume` received data. If extension was able to operate or resumed operation (if wasn't
-/// killed by system) requested data will be received and returned in completion block).
-///
-/// > Warning: Subscribe / unsubscribe API calls will be silently ignored.
-///
-/// - Since: 4.5.4
-@property(copy, nonatomic) NSString *applicationExtensionSharedGroupIdentifier
-    NS_SWIFT_NAME(applicationExtensionSharedGroupIdentifier) NS_AVAILABLE(10_10, 8_0)
-    DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with the next major update. Data doesn't "
-                             "need to be shared between the main app and the extension.");
-
 /// Number of maximum expected messages from **PubNub** network in single response.
 ///
 /// This value can be set to some specific value and in case if with single subscribe request will get number of
@@ -211,7 +168,7 @@ DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with next
  * @brief Messages de-duplication cache size.
  *
  * @discussion This value is responsible for messages cache size which is used during messages
- * de-duplication rocess. In various situations (for rexample in case of enabled multi-regional
+ * de-duplication rocess. In various situations (for example in case of enabled multi-regional
  * support) \b PubNub service may decide to re-send few messages to ensure what they won't be missed
  * (for example when region switched for better performance).
  * De-duplication ensure what at the end listeners won't receive message which has been processed
@@ -238,19 +195,6 @@ DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with next
 @property(assign, nonatomic) NSUInteger maximumMessagesCacheSize
     NS_SWIFT_NAME(maximumMessagesCacheSize);
 
-#if TARGET_OS_OSX || TARGET_OS_IOS && !defined(TARGET_IS_EXTENSION)
-/// Whether client should try complete all API call which is done before application will be completely suspended.
-///
-/// > Note: This property ignored when SDK compiled for application with application extension.
-///
-/// This property is set to **YES** by default to complete tasks which has been scheduled before `client` resign active.
-@property(assign, nonatomic, getter = shouldCompleteRequestsBeforeSuspension) BOOL completeRequestsBeforeSuspension
-    NS_SWIFT_NAME(completeRequestsBeforeSuspension)
-    DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with the next major update. Every time the "
-                             "application switches to a background execution context, PubNub SDK requests more "
-                             "background time to complete ongoing requests.");
-#endif // TARGET_OS_OSX || TARGET_OS_IOS && !defined(TARGET_IS_EXTENSION)
-
 /// Whether PNAES should use random initialization vector for each encrypted message.
 ///
 /// > Warning: This option doesn't have backward compatibility and if enabled, older messages can't be decrypted.
@@ -259,8 +203,8 @@ DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with next
 ///
 /// - Since: 4.16.0
 @property(assign, nonatomic, getter = shouldUseRandomInitializationVector) BOOL useRandomInitializationVector
-    DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with next major update. Please use "
-                             "`cryptoModule` instead.");
+DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with next major update. Please use "
+                         "`cryptoModule` instead.");
 
 /// How many times **PubNub** client should retry `file message publish` before returning error.
 ///
@@ -286,25 +230,29 @@ DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with next
 /// - Since: 5.3.0
 @property(strong, nullable, nonatomic) PNRequestRetryConfiguration *requestRetry;
 
+/// List of additional loggers that will handle log entries.
+///
+/// > Note: In addition to the default console logger, which will print all messages to the Xcode console.
+///
+/// - Since: 6.0.0
+@property(strong, nullable, nonatomic) NSArray<id <PNLogger>> *loggers;
+
+/// Whether bundled console logger should be enabled for corresponding `logLevel` or not.
+///
+/// **Default:** `YES`
+///
+/// - Since: 6.0.0
+@property(assign, nonatomic, getter = shouldEnableDefaultConsoleLogger) BOOL enableDefaultConsoleLogger;
+
+/// Minimum messages log level that should be passed to the logger.
+///
+/// **Default:** `PNNoneLogLevel`
+///
+/// - Since: 6.0.0
+@property(assign, nonatomic) PNLogLevel logLevel;
+
 
 #pragma mark - Initialization and Configuration
-
-/// Create **PubNub** configuration wrapper instance.
-///
-/// - Throws: Exception in case if `userID` is empty string.
-///
-/// - Parameters:
-///   - publishKey: Key which is used to push data / state to the **PubNub** network.
-///   - subscribeKey: Key which is used to fetch data / state from the **PubNub** network.
-///   - uuid: Unique client identifier used to identify concrete client user from another which currently use
-///   **PubNub** services.
-/// - Returns: Initialized **PubNub** configuration wrapper instance.
-+ (instancetype)configurationWithPublishKey:(NSString *)publishKey
-                               subscribeKey:(NSString *)subscribeKey
-                                       uuid:(NSString *)uuid
-    NS_SWIFT_NAME(init(publishKey:subscribeKey:uuid:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
-                             "`+ publishKey:subscribeKey:userID:` instead.");
 
 /// Create **PubNub** configuration wrapper instance.
 ///

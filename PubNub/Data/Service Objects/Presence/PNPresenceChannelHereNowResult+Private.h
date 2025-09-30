@@ -1,5 +1,5 @@
-#import <PubNub/PNPresenceChannelHereNowResult.h>
-#import <PubNub/PNPresenceHereNowResult.h>
+#import "PNPresenceChannelHereNowResult.h"
+#import "PNPresenceHereNowResult.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

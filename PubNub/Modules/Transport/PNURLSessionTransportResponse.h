@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import <PubNub/PNTransportResponse.h>
+#import "PNTransportResponse.h"
 
 
 #pragma mark Interface declaration

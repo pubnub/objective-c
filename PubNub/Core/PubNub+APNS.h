@@ -24,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PubNub (APNS)
 
 
-#pragma mark - Push notification API builder interdace (deprecated)
+#pragma mark - Push notification API builder interface (deprecated)
 
 /// Push notification API access builder.
 @property (nonatomic, readonly, strong) PNAPNSAPICallBuilder * (^push)(void)
@@ -35,7 +35,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Manage notifications for device.
 ///
-/// Depending from used request it is possible to change channel notifications avaiability for device or disable all
+/// Depending from used request it is possible to change channel notifications availability for device or disable all
 /// notifications for device.
 ///
 /// #### Examples:
@@ -111,8 +111,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///         // Handle modification error. Check `category` property to find out possible issue because of which request
 ///         // did fail.
-///         //
-///         // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -125,7 +123,7 @@ NS_ASSUME_NONNULL_BEGIN
                    withDevicePushToken:(NSData *)pushToken
                          andCompletion:(nullable PNPushNotificationsStateModificationCompletionBlock)block
     NS_SWIFT_NAME(addPushNotificationsOnChannels(_:withDevicePushToken:andCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-managePushNotificationWithRequest:completion:' method instead.");
 
 /// Enable push notifications (sent using legacy APNs, FCM or MPNS) on provided set of `channels`.
@@ -141,8 +139,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///         // Handle modification error. Check `category` property to find out possible issue because of which request
 ///         // did fail.
-///         //
-///         // Request can be resent using: `[status retry];`
 ///     }
 /// }];
 /// ```
@@ -159,7 +155,7 @@ NS_ASSUME_NONNULL_BEGIN
                               pushType:(PNPushType)pushType
                          andCompletion:(nullable PNPushNotificationsStateModificationCompletionBlock)block
     NS_SWIFT_NAME(addPushNotificationsOnChannels(_:withDevicePushToken:pushType:andCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-managePushNotificationWithRequest:completion:' method instead.");
 
 /// Enable push notifications (sent using APNs over HTTP/2) on provided set of `channels`.
@@ -177,8 +173,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///         // Handle modification error. Check `category` property to find out possible issue because of which request
 ///         // did fail.
-///         //
-///         // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -200,7 +194,7 @@ NS_ASSUME_NONNULL_BEGIN
                                  topic:(NSString *)topic
                          andCompletion:(nullable PNPushNotificationsStateModificationCompletionBlock)block
     NS_SWIFT_NAME(addPushNotificationsOnChannels(_:withDevicePushToken:pushType:environment:topic:andCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-managePushNotificationWithRequest:completion:' method instead.");
 
 /// Disable push notifications on provided set of `channels`.
@@ -215,8 +209,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///         // Handle modification error. Check `category` property to find out possible issue because
 ///         // of which request did fail.
-///         //
-///         // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -229,7 +221,7 @@ NS_ASSUME_NONNULL_BEGIN
                         withDevicePushToken:(NSData *)pushToken
                               andCompletion:(nullable PNPushNotificationsStateModificationCompletionBlock)block
     NS_SWIFT_NAME(removePushNotificationsFromChannels(_:withDevicePushToken:andCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-managePushNotificationWithRequest:completion:' method instead.");
 
 /// Disable push notifications (sent using legacy APNs, FCM or MPNS) on provided set of `channels`.
@@ -245,8 +237,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///         // Handle modification error. Check `category` property to find out possible issue because of which request
 ///         // did fail.
-///         //
-///         // Request can be resent using: `[status retry];`
 ///     }
 /// }];
 /// ```
@@ -263,7 +253,7 @@ NS_ASSUME_NONNULL_BEGIN
                                    pushType:(PNPushType)pushType
                               andCompletion:(nullable PNPushNotificationsStateModificationCompletionBlock)block
     NS_SWIFT_NAME(removePushNotificationsFromChannels(_:withDevicePushToken:pushType:andCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-managePushNotificationWithRequest:completion:' method instead.");
 
 /// Disable push notifications (sent using APNs over HTTP/2) on provided set of `channels`.
@@ -281,8 +271,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///         // Handle modification error. Check `category` property to find out possible issue because of which request
 ///         // did fail.
-///         //
-///         // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -304,7 +292,7 @@ NS_ASSUME_NONNULL_BEGIN
                            topic:(NSString *)topic
                               andCompletion:(nullable PNPushNotificationsStateModificationCompletionBlock)block
     NS_SWIFT_NAME(removePushNotificationsFromChannels(_:withDevicePushToken:pushType:environment:topic:andCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-managePushNotificationWithRequest:completion:' method instead.");
 
 /// Disable push notifications from all channels which is registered with specified`pushToken`.
@@ -318,8 +306,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///         // Handle modification error. Check `category` property to find out possible issue because of which request
 ///         // did fail.
-///         //
-///         // Request can be resent using: `[status retry];`
 ///     }
 /// }];
 /// ```
@@ -330,7 +316,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)removeAllPushNotificationsFromDeviceWithPushToken:(NSData *)pushToken
                                             andCompletion:(nullable PNPushNotificationsStateModificationCompletionBlock)block
     NS_SWIFT_NAME(removeAllPushNotificationsFromDeviceWithPushToken(_:andCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-managePushNotificationWithRequest:completion:' method instead.");
 
 /// Disable push notifications (sent using legacy APNs, FCM or MPNS) from all channels which is registered with
@@ -346,8 +332,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///         // Handle modification error. Check `category` property to find out possible issue because of which request
 ///         // did fail.
-///         //
-///         // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -362,7 +346,7 @@ NS_ASSUME_NONNULL_BEGIN
                                                  pushType:(PNPushType)pushType
                                             andCompletion:(nullable PNPushNotificationsStateModificationCompletionBlock)block
     NS_SWIFT_NAME(removeAllPushNotificationsFromDeviceWithPushToken(_:pushType:andCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-managePushNotificationWithRequest:completion:' method instead.");
 
 /// Disable push notifications (sent using APNs over HTTP/2) from all channels which is registered with specified
@@ -380,8 +364,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///         // Handle modification error. Check `category` property to find out possible issue because of which request
 ///         // did fail.
-///         //
-///         // Request can be resent using: `[status retry];`
 ///     }
 /// }];
 /// ```
@@ -401,7 +383,7 @@ NS_ASSUME_NONNULL_BEGIN
                                                     topic:(NSString *)topic
                                             andCompletion:(nullable PNPushNotificationsStateModificationCompletionBlock)block
     NS_SWIFT_NAME(removeAllPushNotificationsFromDeviceWithPushToken(_:pushType:environment:topic:andCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-managePushNotificationWithRequest:completion:' method instead.");
 
 
@@ -409,7 +391,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// List notification enabled channels for device.
 ///
-/// Depending from used request it is possible to change channel notifications avaiability for device or disable all
+/// Depending from used request it is possible to change channel notifications availability for device or disable all
 /// notifications for device.
 ///
 /// #### Example:
@@ -447,8 +429,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///         // Handle audition error. Check `category` property to find out possible issue because of which request did
 ///         // fail.
-///         //
-///         // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -459,7 +439,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)pushNotificationEnabledChannelsForDeviceWithPushToken:(NSData *)pushToken
                                                 andCompletion:(PNPushNotificationsStateAuditCompletionBlock)block
     NS_SWIFT_NAME(pushNotificationEnabledChannelsForDeviceWithPushToken(_:andCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-fetchPushNotificationWithRequest:completion:' method instead.");
 
 /// Request for all channels on which push notification (sent using legacy APNs, FCM or MPNS) has been enabled using
@@ -475,8 +455,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///         // Handle audition error. Check `category` property to find out possible issue because of which request did
 ///         // fail.
-///         //
-///         // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -491,7 +469,7 @@ NS_ASSUME_NONNULL_BEGIN
                                                      pushType:(PNPushType)pushType
                                                 andCompletion:(PNPushNotificationsStateAuditCompletionBlock)block
     NS_SWIFT_NAME(pushNotificationEnabledChannelsForDeviceWithPushToken(_:pushType:andCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-fetchPushNotificationWithRequest:completion:' method instead.");
 
 /// Request for all channels on which push notification (sent using APNs over HTTP/2) has been enabled using specified
@@ -510,8 +488,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///         // Handle audition error. Check `category` property to find out possible issue because of which request did
 ///         // fail.
-///         //
-///         // Request can be resent using: `[status retry];`
 ///     }
 /// }];
 /// ```
@@ -531,7 +507,7 @@ NS_ASSUME_NONNULL_BEGIN
                                                         topic:(NSString *)topic
                                                 andCompletion:(PNPushNotificationsStateAuditCompletionBlock)block
     NS_SWIFT_NAME(pushNotificationEnabledChannelsForDeviceWithPushToken(_:pushType:environment:topic:andCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-fetchPushNotificationWithRequest:completion:' method instead.");
 
 #pragma mark -

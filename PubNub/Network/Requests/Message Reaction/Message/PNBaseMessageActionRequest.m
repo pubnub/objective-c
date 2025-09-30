@@ -70,6 +70,13 @@ NS_ASSUME_NONNULL_END
     return nil;
 }
 
+
+#pragma mark - Misc
+
+- (NSDictionary *)dictionaryRepresentation {
+    return @{ @"channel": self.channel ?: @"missing", @"messageTimetoken": self.messageTimetoken ?: @"missing" };
+}
+
 #pragma mark -
 
 

@@ -77,7 +77,7 @@
 - (void)pubNubInit {
 
     // Initialize PubNub client.
-    self.myConfig = [PNConfiguration configurationWithPublishKey:_pubKey subscribeKey:_subKey userID:@"pubnub"];
+    self.myConfig = [PNConfiguration configurationWithPublishKey:_pubKey subscribeKey:_subKey userID:[self randomString]];
 
     [self updateClientConfiguration];
     [self printClientConfiguration];
@@ -85,13 +85,8 @@
     // Bind config
     self.client = [PubNub clientWithConfiguration:self.myConfig];
     
-    // Configure logger
-    self.client.logger.enabled = YES;
-    self.client.logger.writeToFile = YES;
-    self.client.logger.maximumLogFileSize = (10 * 1024 * 1024);
-    self.client.logger.maximumNumberOfLogFiles = 10;
-    [self.client.logger setLogLevel:PNVerboseLogLevel];
-
+    // Modify log level after instance creation.
+//    [self.client setLogLevel:PNErrorLogLevel];
 
     // Bind didReceiveMessage, didReceiveStatus, and didReceivePresenceEvent 'listeners' to this delegate
     // just be sure the target has implemented the PNObjectEventListener extension
@@ -159,19 +154,6 @@
     [self pubNubAESDecrypt];
     [self pubNubAESEncrypt];
 
-#pragma mark - Message Size Check Methods
-
-    [self pubNubSizeOfMessage];
-
-}
-
-- (void)pubNubSizeOfMessage{
-
-    [self.client sizeOfMessage:@"Connected! I'm here!" toChannel:_channel1
-                withCompletion:^(NSInteger size) {
-
-                    NSLog(@"^^^^ Message size: %@", @(size));
-                }];
 }
 
 - (void)pubNubAESDecrypt{
@@ -215,7 +197,9 @@
 - (void)pubNubSetState {
     
     __weak __typeof(self) weakSelf = self;
-    [self.client setState:@{[self randomString] : @{[self randomString] : [self randomString]}} forUUID:_myConfig.uuid onChannel:_channel1 withCompletion:^(PNClientStateUpdateStatus *status) {
+    [self.client setState:@{[self randomString] : @{[self randomString] : [self randomString]}}
+                  forUUID:_myConfig.userID
+                onChannel:_channel1 withCompletion:^(PNClientStateUpdateStatus *status) {
         
         __strong __typeof(self) strongSelf = weakSelf;
         [strongSelf handleStatus:status];
@@ -224,7 +208,7 @@
 
 - (void)pubNubGetState{
 
-    [self.client stateForUUID:_myConfig.uuid onChannel:_channel1
+    [self.client stateForUUID:_myConfig.userID onChannel:_channel1
                withCompletion:^(PNChannelClientStateResult *result, PNErrorStatus *status) {
 
         if (status) {
@@ -586,7 +570,7 @@
 
     if (status.category == PNAccessDeniedCategory) {
         
-        NSLog(@"^^^^ handleErrorStatus: PAM Error: for resource Will Auto Retry?: %@", status.willAutomaticallyRetry ? @"YES" : @"NO");
+        NSLog(@"^^^^ handleErrorStatus: PAM Error");
         
         [self handlePAMError:status];
     }
@@ -778,13 +762,13 @@
 #pragma mark - Configuration
 
 - (void)updateClientConfiguration {
-
     // Set PubNub Configuration
     self.myConfig.TLSEnabled = NO;
-    self.myConfig.uuid = [self randomString];
-    self.myConfig.origin = @"pubsub.pubnub.com";
     self.myConfig.authKey = _authKey;
-
+    
+    // Configure logger
+    self.myConfig.logLevel = PNDebugLogLevel;
+    
     // Presence Settings
     self.myConfig.presenceHeartbeatValue = 120;
     self.myConfig.presenceHeartbeatInterval = 5;
@@ -798,6 +782,17 @@
     
     // Messages threshold
     self.myConfig.requestMessageCountThreshold = 100;
+    
+    // Configure file logger (optional)
+    NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
+    NSString *logsPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).lastObject;
+    logsPath = [logsPath stringByAppendingPathComponent:bundleIdentifier];
+    logsPath = [logsPath stringByAppendingPathComponent:@"Logs"];
+    
+    PNFileLogger *logger = [PNFileLogger loggerWithLogsDirectoryPath:logsPath];
+    logger.maximumLogFileSize = (10 * 1024 * 1024);
+    logger.maximumNumberOfLogFiles = 10;
+    self.myConfig.loggers = @[logger];
 }
 
 - (NSString *)randomString {
@@ -810,7 +805,7 @@
     NSLog(@"TLSEnabled: %@", (self.myConfig.isTLSEnabled ? @"YES" : @"NO"));
     NSLog(@"Origin: %@", self.myConfig.origin);
     NSLog(@"authKey: %@", self.myConfig.authKey);
-    NSLog(@"UUID: %@", self.myConfig.uuid);
+    NSLog(@"UUID: %@", self.myConfig.userID);
 
     // Time Token Handling Settings
     NSLog(@"keepTimeTokenOnChannelChange: %@",

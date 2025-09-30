@@ -26,7 +26,10 @@
 }
 
 - (instancetype)initWithObject:(NSString *)objectType identifier:(NSString *)identifier {
-    if ((self = [super initWithObject:objectType identifier:identifier])) self.includeFields = PNChannelCustomField;
+    if ((self = [super initWithObject:objectType identifier:identifier])) {
+        self.includeFields |= PNChannelCustomField|PNChannelStatusField|PNChannelTypeField;
+    }
+    
     return self;
 }
 

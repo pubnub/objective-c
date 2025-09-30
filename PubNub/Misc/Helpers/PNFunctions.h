@@ -25,6 +25,12 @@ extern BOOL PNNSObjectIsKindOfAnyClass(id object, NSArray<Class> *classes);
 /// - Returns: `YES` in case if `aClass` is subclass of at least one passes class.
 extern BOOL PNNSObjectIsSubclassOfAnyClass(id object, NSArray<Class> *classes);
 
+/// Compute fingerprint from received real-time update payload.
+///
+/// - Parameter payload: `NSDictionary` or `NSString` for which fingerprints should be computed.
+/// - Returns: Payload's fingerprints.
+extern NSString *PNMessageFingerprint(id payload);
+
 
 #pragma mark - String
 
@@ -32,7 +38,6 @@ extern BOOL PNNSObjectIsSubclassOfAnyClass(id object, NSArray<Class> *classes);
 ///
 /// - Parameters:
 ///   - format: String with placeholders for values in variable arguments list.
-///   - ...: List of values which will substitute placeholders in format.
 /// - Returns: `NSString` instance with pre-formatted text.
 extern NSString * PNStringFormat(NSString *format, ...) NS_FORMAT_FUNCTION(1,2);
 
@@ -45,7 +50,7 @@ extern NSString * PNStringFormat(NSString *format, ...) NS_FORMAT_FUNCTION(1,2);
 ///   - description: Short error description.
 ///   - reason: Insights on what may caused an error.
 ///   - recovery: Possible ways to recovery after reported error.
-///   - error: Underlying error signalled by other sub-system.
+///   - error: Underlying error signaled by other sub-system.
 /// - Returns: Dictionary with keys describing error.
 extern NSDictionary * PNErrorUserInfo(NSString * _Nullable description,
                                       NSString * _Nullable reason,

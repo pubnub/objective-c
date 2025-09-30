@@ -5,7 +5,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /**
- @brief      Interface delcaration for all classes which should be suitable for \b PubNub service response
+ @brief      Interface declaration for all classes which should be suitable for \b PubNub service response
              processing.
  @discussion Classes which conform to this protocol will be gathered at run-time and used when response on 
              corresponding operation will arrive.

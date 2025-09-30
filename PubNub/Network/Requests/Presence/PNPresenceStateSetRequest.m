@@ -94,6 +94,22 @@ NS_ASSUME_NONNULL_END
     return nil;
 }
 
+
+#pragma mark - Misc
+
+- (NSDictionary *)dictionaryRepresentation {
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary:@{
+        @"channels": self.channels.count ? self.channels : @",",
+        @"userId": self.userId ?: @"missing",
+    }];
+    
+    if (self.arbitraryQueryParameters) dictionary[@"arbitraryQueryParameters"] = self.arbitraryQueryParameters;
+    if (self.channelGroups) dictionary[@"channelGroups"] = self.channelGroups;
+    if (self.state) dictionary[@"state"] = self.state;
+    
+    return dictionary;
+}
+
 #pragma mark -
 
 

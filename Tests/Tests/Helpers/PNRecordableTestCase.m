@@ -12,12 +12,8 @@
 #pragma mark Defines
 
 #define WRITING_CASSETTES 0
-#define PUBNUB_DISABLE_LOGGER
-#ifndef PUBNUB_DISABLE_LOGGER
-#define PUBNUB_LOGGER_ENABLED YES
-#else
-#define PUBNUB_LOGGER_ENABLED NO
-#endif
+#define PUBNUB_LOGGER_ENABLED 0
+#define PUBNUB_LOGGER_TRACE 1
 
 
 #pragma mark - Types and structures
@@ -436,7 +432,7 @@ NS_ASSUME_NONNULL_END
     [self.classMocks removeAllObjects];
     
     if (shouldPostponeTearDown) {
-        NSTimeInterval waitDelay = shouldWaitToRecordResponses ? 0.5f : 0.005f;
+        NSTimeInterval waitDelay = shouldWaitToRecordResponses ? 0.5f : 0.1f;
 
         if (![self shouldSetupVCR]) {
             waitDelay = 0.1f;
@@ -768,10 +764,7 @@ NS_ASSUME_NONNULL_END
                                                                      subscribeKey:subscribeKey
                                                                            userID:uuid];
     configuration.authKey = [self pubNubAuthForTestCaseWithName:self.name];
-
-    // TODO: REMOVE
-//    configuration.origin = @"ingress-tcp-pub.az1.pdx1.aws.int.ps.pn";
-//    configuration.TLSEnabled = false;
+    configuration.requestRetry = nil;
 
     return configuration;
 }
@@ -794,14 +787,9 @@ NS_ASSUME_NONNULL_END
 - (PubNub *)createPubNubForUser:(NSString *)user withConfiguration:(PNConfiguration *)configuration {
     dispatch_queue_t callbackQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     configuration.userID = [self uuidForUser:user];
-
+    configuration.logLevel = PUBNUB_LOGGER_ENABLED ? PUBNUB_LOGGER_TRACE ? PNTraceLogLevel : PNDebugLogLevel : PNNoneLogLevel;
+    
     PubNub *client = [PubNub clientWithConfiguration:configuration callbackQueue:callbackQueue];
-#ifndef PUBNUB_DISABLE_LOGGER
-    client.logger.enabled = PUBNUB_LOGGER_ENABLED;
-    client.logger.logLevel  = PUBNUB_LOGGER_ENABLED ? PNVerboseLogLevel : PNSilentLogLevel;
-    client.logger.writeToConsole = PUBNUB_LOGGER_ENABLED;
-    client.logger.writeToFile = PUBNUB_LOGGER_ENABLED;
-#endif // PUBNUB_DISABLE_LOGGER
     [client addListener:self];
     
     if (!self.clients[user]) {
@@ -904,6 +892,11 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)unsubscribeClient:(PubNub *)client fromChannels:(NSArray<NSString *> *)channels withPresence:(BOOL)usePresence {
+    if ([self shouldSetupVCR]) {
+        NSTimeInterval waitDelay = YHVVCR.cassette.isNewCassette ? 0.5f : 0.01f;
+        [self waitTask:@"clientsUnsubscribeDelay" completionFor:waitDelay];
+    }
+    
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     __block BOOL handlerCalled = NO;
     
@@ -1281,7 +1274,7 @@ NS_ASSUME_NONNULL_END
             NSLog(@"%@ CHANNELS HAS BEEN REMOVED", @(channels.count));
         }
         
-        [self waitTask:@"waitForDistribution" completionFor:1.f];
+        [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 1.f : 0.05f)];
     }
 }
 
@@ -1499,11 +1492,8 @@ NS_ASSUME_NONNULL_END
                 if (YHVVCR.cassette.isNewCassette) {
                     XCTAssertFalse(status.isError, @"Error reason: %@", status.errorData.information);
 
-                    if (status.isError) {
-                        NSLog(@"'%@' UUID MEMBERSHIP REMOVE ERROR: %@\n%@",
-                              uuid, status.errorData.information,
-                              [status valueForKey:@"clientRequest"]);
-                    }
+                    if (status.isError)
+                        NSLog(@"'%@' UUID MEMBERSHIP REMOVE ERROR: %@", uuid, status.errorData.information);
                 }
                 
                 handler();
@@ -1538,11 +1528,8 @@ NS_ASSUME_NONNULL_END
                     if (YHVVCR.cassette.isNewCassette) {
                         XCTAssertFalse(status.isError, @"Error reason: %@", status.errorData.information);
 
-                        if (status.isError) {
-                            NSLog(@"'%@' UUID METADATA REMOVE ERROR: %@\n%@",
-                                  uuid, status.errorData.information,
-                                  [status valueForKey:@"clientRequest"]);
-                        }
+                        if (status.isError)
+                            NSLog(@"'%@' UUID METADATA REMOVE ERROR: %@", uuid, status.errorData.information);
                     }
 
                     handler();
@@ -1761,11 +1748,8 @@ NS_ASSUME_NONNULL_END
         client.objects().removeChannelMembers(channel).uuids(uuids).performWithCompletion(^(PNManageChannelMembersStatus *status) {
             XCTAssertFalse(status.isError);
             
-            if (status.isError) {
-                NSLog(@"'%@' CHANNEL MEMBERS REMOVE ERROR: %@\n%@",
-                      channel, status.errorData.information,
-                      [status valueForKey:@"clientRequest"]);
-            }
+            if (status.isError)
+                NSLog(@"'%@' CHANNEL MEMBERS REMOVE ERROR: %@", channel, status.errorData.information);
             
             handler();
         });
@@ -1797,11 +1781,8 @@ NS_ASSUME_NONNULL_END
                 if (YHVVCR.cassette.isNewCassette) {
                     XCTAssertFalse(status.isError, @"Error reason: %@", status.errorData.information);
                     
-                    if (status.isError) {
-                        NSLog(@"'%@' CHANNEL METADATA REMOVE ERROR: %@\n%@",
-                              channel, status.errorData.information,
-                              [status valueForKey:@"clientRequest"]);
-                    }
+                    if (status.isError)
+                        NSLog(@"'%@' CHANNEL METADATA REMOVE ERROR: %@", channel, status.errorData.information);
                 }
 
                 handler();

@@ -1,6 +1,10 @@
 #import "PNTransportMiddleware.h"
+#import "PNNetworkResponseLogEntry+Private.h"
+#import "PNNetworkRequestLogEntry+Private.h"
+#import "PNTransportConfiguration+Private.h"
 #import "PNTransportRequest+Private.h"
 #import "PNConfiguration+Private.h"
+#import "PNErrorLogEntry+Private.h"
 #import "PNConstants.h"
 #import "PNFunctions.h"
 
@@ -9,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Private interface declaration
 
-/// Transport middelware module private extension.
+/// Transport middleware module private extension.
 @interface PNTransportMiddleware ()
 
 
@@ -38,8 +42,6 @@ NS_ASSUME_NONNULL_BEGIN
 NS_ASSUME_NONNULL_END
 
 
-
-
 @implementation PNTransportMiddleware
 
 
@@ -52,7 +54,13 @@ NS_ASSUME_NONNULL_END
 - (instancetype)initWithConfiguration:(PNTransportMiddlewareConfiguration *)configuration {
     if ((self = [super init])) {
         _pnsdk = PNStringFormat(@"PubNub-%@/%@", kPNClientName, kPNLibraryVersion);
+        PNLoggerManager *logger = configuration.transportConfiguration.logger;
         _configuration = configuration;
+        
+        [logger debugWithLocation:@"PNTransportMiddleware" andMessageFactory:^PNLogEntry * {
+            return [PNDictionaryLogEntry entryWithMessage:[configuration.transportConfiguration dictionaryRepresentation]
+                                                  details:@"Create with configuration:"];
+        }];
         [_configuration.transport setupWithConfiguration:configuration.transportConfiguration];
     }
     
@@ -74,13 +82,70 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Request processing
 
 - (void)sendRequest:(PNTransportRequest *)request withCompletionBlock:(PNRequestCompletionBlock)block {
-    [self.configuration.transport sendRequest:[self transportRequestFromTransportRequest:request]
-                          withCompletionBlock:[block copy]];
+    PNTransportRequest *transportRequest = [self transportRequestFromTransportRequest:request];
+    PNLoggerManager *logger = self.configuration.transportConfiguration.logger;
+    PNRequestCompletionBlock userBlock = [block copy];
+
+    PNNetworkRequestLogEntry *entry = [PNNetworkRequestLogEntry entryWithMessage:transportRequest details:nil];
+    [logger debugWithLocation:@"PNTransportMiddleware" andMessage:entry];
+    
+    [self.configuration.transport sendRequest:transportRequest
+                          withCompletionBlock:^(PNTransportRequest *request,
+                                                id<PNTransportResponse> response,
+                                                PNError * error) {
+        if (response.url) {
+            [logger debugWithLocation:@"PNTransportMiddleware" andMessageFactory:^PNLogEntry * {
+                return [PNNetworkResponseLogEntry entryWithMessage:response];
+            }];
+        }
+        if (error) {
+            if (error.code == PNTransportErrorRequestCancelled) {
+                [logger debugWithLocation:@"PNTransportMiddleware" andMessageFactory:^PNLogEntry * {
+                    return [PNErrorLogEntry entryWithMessage:error operation:entry.operation];
+                }];
+            } else {
+                [logger warnWithLocation:@"PNTransportMiddleware" andMessageFactory:^PNLogEntry * {
+                    return [PNErrorLogEntry entryWithMessage:error operation:entry.operation];
+                }];
+            }
+        }
+        
+        userBlock(request, response, error);
+    }];
 }
 
 - (void)sendDownloadRequest:(PNTransportRequest *)request withCompletionBlock:(PNDownloadRequestCompletionBlock)block {
-    [self.configuration.transport sendDownloadRequest:[self transportRequestFromTransportRequest:request]
-                                  withCompletionBlock:[block copy]];
+    PNTransportRequest *transportRequest = [self transportRequestFromTransportRequest:request];
+    PNLoggerManager *logger = self.configuration.transportConfiguration.logger;
+    PNDownloadRequestCompletionBlock userBlock = [block copy];
+    
+    PNNetworkRequestLogEntry *entry = [PNNetworkRequestLogEntry entryWithMessage:transportRequest details:nil];
+    [logger debugWithLocation:@"PNTransportMiddleware" andMessage:entry];
+    
+    [self.configuration.transport sendDownloadRequest:transportRequest
+                                  withCompletionBlock:^(PNTransportRequest *request,
+                                                        id<PNTransportResponse> response,
+                                                        NSURL *path,
+                                                        PNError *error) {
+        if (response) {
+            [logger debugWithLocation:@"PNTransportMiddleware" andMessageFactory:^PNLogEntry * {
+                return [PNNetworkResponseLogEntry entryWithMessage:response];
+            }];
+        }
+        if (error) {
+            if (error.code == PNTransportErrorRequestCancelled) {
+                [logger debugWithLocation:@"PNTransportMiddleware" andMessageFactory:^PNLogEntry * {
+                    return [PNErrorLogEntry entryWithMessage:error operation:entry.operation];
+                }];
+            } else {
+                [logger warnWithLocation:@"PNTransportMiddleware" andMessageFactory:^PNLogEntry * {
+                    return [PNErrorLogEntry entryWithMessage:error operation:entry.operation];
+                }];
+            }
+        }
+        
+        userBlock(request, response, path, error);
+    }];
 }
 
 - (PNTransportRequest *)transportRequestFromTransportRequest:(PNTransportRequest *)request {

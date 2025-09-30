@@ -1,12 +1,11 @@
 #import <Foundation/Foundation.h>
-#import <PubNub/PNBaseRequest.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Interface declaration
 
-/// General request implementatoin.
+/// General request implementation.
 ///
 /// Base class for all request objects.
 @interface PNBaseRequest : NSObject

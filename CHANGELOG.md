@@ -1,3 +1,18 @@
+## v6.0.0
+September 30 2025
+
+#### Added
+- BREAKING CHANGES: Replace the legacy logger with the new logger module with a bundled console logger with a unified (with other SDKs) logs output format.
+- Provide interfaces for custom logger implementation.
+- Add 'limit' and 'offset' parameters for 'PNHereNowRequest' for pagination support.
+- Retry policy can be applied for all API endpoint groups (not only `subscribe`).
+
+#### Modified
+- Removed previously deprecated `packetSizeForOperation` methods group along with `size` builder from the `PubNub` client.
+- BREAKING CHANGES: Removed previously deprecated `retry` and `cancelAutomaticRetry` methods along with the `automaticallyRetry` property from API processing status objects.
+- BREAKING CHANGES: Removed previously deprecated properties: `TLSEnabled`, `authKey`, `origin`, `userID`, `uuid`, and `statusCode`.
+- BREAKING CHANGES: Removed previously deprecated `uuid`, `deviceID`, `applicationExtensionSharedGroupIdentifier`, and `completeRequestsBeforeSuspension` configuration options.
+
 ## v5.8.0
 February 27 2025
 

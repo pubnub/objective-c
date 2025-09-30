@@ -1,5 +1,5 @@
-#import <PubNub/PNBaseMessageActionRequest.h>
-#import <PubNub/PNRequest.h>
+#import "PNBaseMessageActionRequest.h"
+#import "PNRequest.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

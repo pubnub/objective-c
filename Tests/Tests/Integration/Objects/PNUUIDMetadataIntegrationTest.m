@@ -4,6 +4,7 @@
  */
 #import "PNRecordableTestCase.h"
 #import <PubNub/NSDateFormatter+PNCacheable.h>
+#import <PubNub/PNBaseRequest+Private.h>
 #import <PubNub/PNHelpers.h>
 
 
@@ -196,38 +197,45 @@ NS_ASSUME_NONNULL_END
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.objects().setUUIDMetadata()
-            .uuid(identifier)
-            .name(name)
-            .externalId(externalId)
-            .profileUrl(profileUrl)
-            .email(email)
-            .custom(custom)
-            .includeFields(PNUUIDCustomField)
-            .performWithCompletion(^(PNSetUUIDMetadataStatus *status) {
-                if (!retried && !YHVVCR.cassette.isNewCassette) {
-                    XCTAssertTrue(status.error);
-                    XCTAssertEqual(status.operation, PNSetUUIDMetadataOperation);
-                    XCTAssertEqual(status.category, PNMalformedResponseCategory);
-
-                    retried = YES;
-                    [status retry];
-                } else {
-                    PNUUIDMetadata *metadata = status.data.metadata;
-                    XCTAssertFalse(status.isError);
-                    XCTAssertNotNil(metadata);
-                    XCTAssertEqualObjects(metadata.externalId, externalId);
-                    XCTAssertEqualObjects(metadata.profileUrl, profileUrl);
-                    XCTAssertEqualObjects(metadata.uuid, identifier);
-                    XCTAssertEqualObjects(metadata.custom, custom);
-                    XCTAssertEqualObjects(metadata.email, email);
-                    XCTAssertEqualObjects(metadata.name, name);
-                    XCTAssertNotNil(metadata.updated);
-                    XCTAssertNotNil(metadata.eTag);
-                    
-                    handler();
-                    }
-            });
+        __block __weak PNSetUUIDMetadataCompletionBlock weakBlock;
+        __block PNSetUUIDMetadataCompletionBlock block;
+        PNSetUUIDMetadataRequest *request = [PNSetUUIDMetadataRequest requestWithUUID:identifier];
+        request.name = name;
+        request.externalId = externalId;
+        request.profileUrl = profileUrl;
+        request.email = email;
+        request.custom = custom;
+        request.includeFields = PNUUIDCustomField;
+        
+        block = ^(PNSetUUIDMetadataStatus *status) {
+            __strong PNSetUUIDMetadataCompletionBlock strongBlock = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
+            
+            if (!retried && !YHVVCR.cassette.isNewCassette) {
+                XCTAssertTrue(status.error);
+                XCTAssertEqual(status.operation, PNSetUUIDMetadataOperation);
+                XCTAssertEqual(status.category, PNMalformedResponseCategory);
+                
+                retried = YES;
+                [self.client setUUIDMetadataWithRequest:request completion:strongBlock];
+            } else {
+                PNUUIDMetadata *metadata = status.data.metadata;
+                XCTAssertFalse(status.isError);
+                XCTAssertNotNil(metadata);
+                XCTAssertEqualObjects(metadata.externalId, externalId);
+                XCTAssertEqualObjects(metadata.profileUrl, profileUrl);
+                XCTAssertEqualObjects(metadata.uuid, identifier);
+                XCTAssertEqualObjects(metadata.custom, custom);
+                XCTAssertEqualObjects(metadata.email, email);
+                XCTAssertEqualObjects(metadata.name, name);
+                XCTAssertNotNil(metadata.updated);
+                XCTAssertNotNil(metadata.eTag);
+                
+                handler();
+            }
+        };
+        weakBlock = block;
+        [self.client setUUIDMetadataWithRequest:request completion:block];
     }];
 
     [self removeUUIDsMetadata:@[identifier] usingClient:nil];
@@ -254,26 +262,34 @@ NS_ASSUME_NONNULL_END
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.objects().removeUUIDMetadata()
-            .uuid(uuids.firstObject.uuid)
-            .performWithCompletion(^(PNAcknowledgmentStatus *status) {
-                if (!retried && !YHVVCR.cassette.isNewCassette) {
-                    XCTAssertTrue(status.error);
-                    XCTAssertEqual(status.operation, PNRemoveUUIDMetadataOperation);
-                    XCTAssertEqual(status.category, PNMalformedResponseCategory);
-
-                    retried = YES;
-                    [status retry];
-                } else {
-                    XCTAssertFalse(status.error);
-                    XCTAssertEqual(status.operation, PNRemoveUUIDMetadataOperation);
-                    XCTAssertEqual(status.category, PNAcknowledgmentCategory);
-
-                    [self removeCachedUUIDMetadata:uuids.firstObject.uuid];
-                    
-                    handler();
-                }
-            });
+        PNRemoveUUIDMetadataRequest *request = [PNRemoveUUIDMetadataRequest requestWithUUID:uuids.firstObject.uuid];
+        __block __weak PNRemoveUUIDMetadataCompletionBlock weakBlock;
+        __block PNRemoveUUIDMetadataCompletionBlock block;
+        
+        block = ^(PNAcknowledgmentStatus *status) {
+            __strong PNRemoveUUIDMetadataCompletionBlock strongBlock = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
+            
+            if (!retried && !YHVVCR.cassette.isNewCassette) {
+                XCTAssertTrue(status.error);
+                XCTAssertEqual(status.operation, PNRemoveUUIDMetadataOperation);
+                XCTAssertEqual(status.category, PNMalformedResponseCategory);
+                
+                retried = YES;
+                [self.client removeUUIDMetadataWithRequest:request completion:strongBlock];
+            } else {
+                XCTAssertFalse(status.error);
+                XCTAssertEqual(status.operation, PNRemoveUUIDMetadataOperation);
+                XCTAssertEqual(status.category, PNAcknowledgmentCategory);
+                
+                [self removeCachedUUIDMetadata:uuids.firstObject.uuid];
+                
+                handler();
+            }
+        };
+        
+        weakBlock = block;
+        [self.client removeUUIDMetadataWithRequest:request completion:block];
     }];
 
 
@@ -377,21 +393,29 @@ NS_ASSUME_NONNULL_END
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.objects().uuidMetadata()
-            .uuid(identifier)
-            .includeFields(PNUUIDCustomField)
-            .performWithCompletion(^(PNFetchUUIDMetadataResult *result, PNErrorStatus *status) {
-                XCTAssertNil(result);
-                XCTAssertTrue(status.isError);
-                XCTAssertEqual(status.statusCode, 404);
-                
-                if (!retried) {
-                    retried = YES;
-                    [status retry];
-                } else {
-                    handler();
-                }
-            });
+        PNFetchUUIDMetadataRequest *request = [PNFetchUUIDMetadataRequest requestWithUUID:identifier];
+        request.includeFields = PNUUIDCustomField;
+        __block __weak PNFetchUUIDMetadataCompletionBlock weakBlock;
+        __block PNFetchUUIDMetadataCompletionBlock block;
+        
+        block = ^(PNFetchUUIDMetadataResult *result, PNErrorStatus *status) {
+            __strong PNFetchUUIDMetadataCompletionBlock strongBlock = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
+            
+            XCTAssertNil(result);
+            XCTAssertTrue(status.isError);
+            XCTAssertEqual(status.category, PNResourceNotFoundCategory);
+            
+            if (!retried) {
+                retried = YES;
+                [self.client uuidMetadataWithRequest:request completion:strongBlock];
+            } else {
+                handler();
+            }
+        };
+        
+        weakBlock = block;
+        [self.client uuidMetadataWithRequest:request completion:block];
     }];
 }
 
@@ -416,25 +440,35 @@ NS_ASSUME_NONNULL_END
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.objects().allUUIDMetadata()
-            .includeCount(NO)
-            .performWithCompletion(^(PNFetchAllUUIDMetadataResult *result, PNErrorStatus *status) {
-                if (!retried && !YHVVCR.cassette.isNewCassette) {
-                    XCTAssertTrue(status.error);
-                    XCTAssertEqual(status.operation, PNFetchAllUUIDMetadataOperation);
-                    XCTAssertEqual(status.category, PNMalformedResponseCategory);
-                    
-                    retried = YES;
-                    [status retry];
-                } else {
-                    XCTAssertNil(status);
-                    XCTAssertEqual(result.data.metadata.count, uuids.count);
-                    XCTAssertEqual(result.data.totalCount, 0);
-                    XCTAssertEqual(result.operation, PNFetchAllUUIDMetadataOperation);
-                    
-                    handler();
-                }
-            });
+        PNFetchAllUUIDMetadataRequest *request = [PNFetchAllUUIDMetadataRequest new];
+        // Unset included fields.
+        request.includeFields = 0;
+        __block __weak PNFetchAllUUIDMetadataCompletionBlock weakBlock;
+        __block PNFetchAllUUIDMetadataCompletionBlock block;
+        
+        block = ^(PNFetchAllUUIDMetadataResult *result, PNErrorStatus *status) {
+            __strong PNFetchAllUUIDMetadataCompletionBlock strongBlock = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
+            
+            if (!retried && !YHVVCR.cassette.isNewCassette) {
+                XCTAssertTrue(status.error);
+                XCTAssertEqual(status.operation, PNFetchAllUUIDMetadataOperation);
+                XCTAssertEqual(status.category, PNMalformedResponseCategory);
+                
+                retried = YES;
+                [self.client allUUIDMetadataWithRequest:request completion:strongBlock];
+            } else {
+                XCTAssertNil(status);
+                XCTAssertEqual(result.data.metadata.count, uuids.count);
+                XCTAssertEqual(result.data.totalCount, 0);
+                XCTAssertEqual(result.operation, PNFetchAllUUIDMetadataOperation);
+                
+                handler();
+            }
+        };
+        
+        weakBlock = block;
+        [self.client allUUIDMetadataWithRequest:request completion:block];
     }];
 
     [self removeAllUUIDMetadataUsingClient:nil];
@@ -446,27 +480,25 @@ NS_ASSUME_NONNULL_END
     NSArray<PNUUIDMetadata *> *uuids = [self setUUIDMetadata:6 usingClient:nil];
     NSUInteger targetUUIDOffset = 3;
     NSDate *targetUUIDUpdateDate = uuids[targetUUIDOffset].updated;
-    NSString *filterExpression = [NSString stringWithFormat:@"updated >= '%@'",
-                                  [formatter stringFromDate:targetUUIDUpdateDate]];
-    NSString *expectedFilterExpression = [PNString percentEscapedString:filterExpression];
+    NSString *expectedFilterExpression = [NSString stringWithFormat:@"updated >= '%@'",
+                                          [formatter stringFromDate:targetUUIDUpdateDate]];
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.objects().allUUIDMetadata()
-            .includeCount(YES)
-            .filter(filterExpression)
-            .performWithCompletion(^(PNFetchAllUUIDMetadataResult *result, PNErrorStatus *status) {
-                NSURLRequest *request = [result valueForKey:@"clientRequest"];
-                XCTAssertNil(status);
-                XCTAssertEqual(result.data.totalCount, uuids.count - targetUUIDOffset);
-                XCTAssertEqual(result.data.metadata.count, result.data.totalCount);
-                XCTAssertNil(result.data.prev);
-                XCTAssertNotNil(result.data.next);
-                XCTAssertNotEqual([request.URL.absoluteString rangeOfString:expectedFilterExpression].location,
-                                  NSNotFound);
-                
-                handler();
-            });
+        PNFetchAllUUIDMetadataRequest *request = [PNFetchAllUUIDMetadataRequest new];
+        request.includeFields |= PNUUIDTotalCountField;
+        request.filter = expectedFilterExpression;
+        
+        [self.client allUUIDMetadataWithRequest:request completion:^(PNFetchAllUUIDMetadataResult *result, PNErrorStatus *status) {
+            XCTAssertNil(status);
+            XCTAssertEqual(result.data.totalCount, uuids.count - targetUUIDOffset);
+            XCTAssertEqual(result.data.metadata.count, result.data.totalCount);
+            XCTAssertNil(result.data.prev);
+            XCTAssertNotNil(result.data.next);
+            XCTAssertEqualObjects(request.request.query[@"filter"], expectedFilterExpression);
+            
+            handler();
+        }];
     }];
 
     [self removeAllUUIDMetadataUsingClient:nil];
@@ -474,7 +506,7 @@ NS_ASSUME_NONNULL_END
 
 - (void)testItShouldFetchSortedUUIDMetadataWhenSortIsSet {
     NSArray<PNUUIDMetadata *> *uuids = [self setUUIDMetadata:6 usingClient:nil];
-    NSString *expectedSort = @"name%3Adesc%2Cupdated";
+    NSString *expectedSort = @"name:desc,updated";
     NSArray<PNUUIDMetadata *> *expectedUUIDsOrder = [uuids sortedArrayUsingDescriptors:@[
         [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:NO],
         [NSSortDescriptor sortDescriptorWithKey:@"updated" ascending:YES]
@@ -482,25 +514,24 @@ NS_ASSUME_NONNULL_END
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.objects().allUUIDMetadata()
-            .includeCount(YES)
-            .sort(@[@"name:desc", @"updated"])
-            .performWithCompletion(^(PNFetchAllUUIDMetadataResult *result, PNErrorStatus *status) {
-                NSArray<PNUUIDMetadata *> *fetchedUUIDs = result.data.metadata;
-                NSURLRequest *request = [result valueForKey:@"clientRequest"];
-                XCTAssertNil(status);
-                XCTAssertNotNil(fetchedUUIDs);
-                XCTAssertNil(result.data.prev);
-                XCTAssertNotNil(result.data.next);
-                XCTAssertNotEqual([request.URL.absoluteString rangeOfString:expectedSort].location,
-                                  NSNotFound);
-                
-                for (NSUInteger idx = 0; idx < fetchedUUIDs.count; idx++) {
-                    XCTAssertEqualObjects(fetchedUUIDs[idx].uuid, expectedUUIDsOrder[idx].uuid);
-                }
-                
-                handler();
-            });
+        PNFetchAllUUIDMetadataRequest *request = [PNFetchAllUUIDMetadataRequest new];
+        request.includeFields |= PNUUIDTotalCountField;
+        request.sort = @[@"name:desc", @"updated"];
+        
+        [self.client allUUIDMetadataWithRequest:request completion:^(PNFetchAllUUIDMetadataResult *result, PNErrorStatus *status) {
+            NSArray<PNUUIDMetadata *> *fetchedUUIDs = result.data.metadata;
+            XCTAssertNil(status);
+            XCTAssertNotNil(fetchedUUIDs);
+            XCTAssertNil(result.data.prev);
+            XCTAssertNotNil(result.data.next);
+            XCTAssertEqualObjects(request.request.query[@"sort"], expectedSort);
+            
+            for (NSUInteger idx = 0; idx < fetchedUUIDs.count; idx++) {
+                XCTAssertEqualObjects(fetchedUUIDs[idx].uuid, expectedUUIDsOrder[idx].uuid);
+            }
+            
+            handler();
+        }];
     }];
 
     [self removeAllUUIDMetadataUsingClient:nil];

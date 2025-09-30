@@ -3,6 +3,8 @@
  * @copyright © 2010-2020 PubNub, Inc.
  */
 #import "PNRecordableTestCase.h"
+#import "PubNub+CorePrivate.h"
+#import "PNBaseRequest+Private.h"
 #import <PubNub/PNDefines.h>
 #import "NSString+PNTest.h"
 
@@ -53,7 +55,7 @@
     configuration.useRandomInitializationVector = [self.name rangeOfString:@"RandomIV"].location != NSNotFound;
     
     if ([self.name pnt_includesString:@"Encrypt"]) configuration.cipherKey = self.cipherKey;
-
+    
     return configuration;
 }
 
@@ -80,7 +82,7 @@
         [client publishWithRequest:request completion:^(PNPublishStatus *status) {
             XCTAssertFalse(status.isError);
             XCTAssertNotNil(status.data.timetoken);
-            XCTAssertEqual(status.statusCode, 200);
+            XCTAssertEqual(status.category, PNAcknowledgmentCategory);
             
             handler();
         }];
@@ -102,7 +104,7 @@
         [client publishWithRequest:request completion:^(PNPublishStatus *status) {
             XCTAssertFalse(status.isError);
             XCTAssertNotNil(status.data.timetoken);
-            XCTAssertEqual(status.statusCode, 200);
+            XCTAssertEqual(status.category, PNAcknowledgmentCategory);
             
             handler();
         }];
@@ -124,7 +126,7 @@
         [client publishWithRequest:request completion:^(PNPublishStatus *status) {
             XCTAssertFalse(status.isError);
             XCTAssertNotNil(status.data.timetoken);
-            XCTAssertEqual(status.statusCode, 200);
+            XCTAssertEqual(status.category, PNAcknowledgmentCategory);
             
             handler();
         }];
@@ -142,7 +144,7 @@
         [client publish:expectedMessage toChannel:channel withCompletion:^(PNPublishStatus *status) {
             XCTAssertFalse(status.isError);
             XCTAssertNotNil(status.data.timetoken);
-            XCTAssertEqual(status.statusCode, 200);
+            XCTAssertEqual(status.category, PNAcknowledgmentCategory);
             
             handler();
         }];
@@ -197,7 +199,6 @@
 
             XCTAssertEqual(status.operation, PNPublishOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             handler();
         }];
@@ -215,7 +216,6 @@
             XCTAssertNotNil(status.errorData.information);
             XCTAssertEqual(status.operation, PNPublishOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             handler();
         }];
@@ -230,18 +230,16 @@
     XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        client.publish()
-            .message(expectedMessage)
-            .channel(channel)
-            .ttl(120)
-            .performWithCompletion(^(PNPublishStatus *status) {
-                NSString *url = status.clientRequest.URL.absoluteString;
-                XCTAssertFalse(status.isError);
-                XCTAssertNotNil(url);
-                XCTAssertTrue([url pnt_includesString:@"ttl=120"]);
-                
-                handler();
-            });
+        PNPublishRequest *request = [PNPublishRequest requestWithChannel:channel];
+        request.message = expectedMessage;
+        request.ttl = 120;
+        
+        [client publishWithRequest:request completion:^(PNPublishStatus *status) {
+            XCTAssertFalse(status.isError);
+            XCTAssertEqualObjects(request.request.query[@"ttl"], @"120");
+            
+            handler();
+        }];
     }];
 }
 
@@ -253,20 +251,18 @@
     XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        client.publish()
-            .message(expectedMessage)
-            .channel(channel)
-            .ttl(120)
-            .shouldStore(NO)
-            .performWithCompletion(^(PNPublishStatus *status) {
-                NSString *url = status.clientRequest.URL.absoluteString;
-                XCTAssertFalse(status.isError);
-                XCTAssertNotNil(url);
-                XCTAssertTrue([url pnt_includesString:@"store=0"]);
-                XCTAssertFalse([url pnt_includesString:@"ttl=120"]);
-                
-                handler();
-            });
+        PNPublishRequest *request = [PNPublishRequest requestWithChannel:channel];
+        request.message = expectedMessage;
+        request.store = NO;
+        request.ttl = 120;
+        
+        [client publishWithRequest:request completion:^(PNPublishStatus *status) {
+            XCTAssertFalse(status.isError);
+            XCTAssertEqualObjects(request.request.query[@"store"], @"0");
+            XCTAssertNil(request.request.query[@"ttl"]);
+            
+            handler();
+        }];
     }];
 }
 
@@ -278,18 +274,16 @@
     XCTAssertFalse(client.currentConfiguration.shouldUseRandomInitializationVector);
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        client.publish()
-            .message(expectedMessage)
-            .channel(channel)
-            .replicate(NO)
-            .performWithCompletion(^(PNPublishStatus *status) {
-                NSString *url = status.clientRequest.URL.absoluteString;
-                XCTAssertFalse(status.isError);
-                XCTAssertNotNil(url);
-                XCTAssertTrue([url pnt_includesString:@"norep=true"]);
-                
-                handler();
-            });
+        PNPublishRequest *request = [PNPublishRequest requestWithChannel:channel];
+        request.message = expectedMessage;
+        request.replicate = NO;
+        
+        [client publishWithRequest:request completion:^(PNPublishStatus *status) {
+            XCTAssertFalse(status.isError);
+            XCTAssertEqualObjects(request.request.query[@"norep"], @"true");
+            
+            handler();
+        }];
     }];
 }
 
@@ -527,19 +521,29 @@
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         XCTAssertEqual(expectedMessage.length, 100000);
+        PNPublishRequest *request = [PNPublishRequest requestWithChannel:channel];
+        request.message = expectedMessage;
+        __block __weak PNPublishCompletionBlock weakBlock;
+        __block PNPublishCompletionBlock block;
         
-        [client publish:expectedMessage toChannel:channel withCompletion:^(PNPublishStatus *status) {
+        block = ^(PNPublishStatus *status) {
+            __strong PNPublishCompletionBlock strongBlock = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
+            
             XCTAssertTrue(status.isError);
-            XCTAssertEqual(status.statusCode, 414);
+            XCTAssertEqual(status.category, PNRequestURITooLongCategory);
             XCTAssertNotNil(status.errorData.information);
             
             if (!retried) {
                 retried = YES;
-                [status retry];
+                [client publishWithRequest:request completion:strongBlock];
             } else {
                 handler();
             }
-        }];
+        };
+        
+        weakBlock = block;
+        [client publishWithRequest:request completion:block];
     }];
 
     XCTAssertTrue(retried);
@@ -1119,8 +1123,6 @@
     
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
 
-    XCTAssertFalse(client1.currentConfiguration.shouldUseRandomInitializationVector);
-    XCTAssertFalse(client2.currentConfiguration.shouldUseRandomInitializationVector);
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:client2 withBlock:^(PubNub *client, PNMessageResult *message, BOOL *shouldRemove) {
@@ -1152,14 +1154,17 @@
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         XCTAssertEqual(expectedMessage.length, 10000);
+        PNPublishRequest *request = [PNPublishRequest requestWithChannel:channel];
+        request.message = expectedMessage;
+        request.compress = YES;
         
-        [client publish:expectedMessage toChannel:channel compressed:YES withCompletion:^(PNPublishStatus *status) {
-            NSURLRequest *request = status.clientRequest;
+        [client publishWithRequest:request completion:^(PNPublishStatus *status) {
+            PNTransportRequest *transportRequest = [client.serviceNetwork transportRequestFromTransportRequest:request.request];
             XCTAssertFalse(status.isError);
-            XCTAssertNotNil(request);
-            XCTAssertEqualObjects(request.HTTPMethod.lowercaseString, @"post");
-            XCTAssertEqualObjects(request.allHTTPHeaderFields[@"Content-Encoding"], @"gzip");
-            XCTAssertLessThan(request.allHTTPHeaderFields[@"Content-Length"].intValue, expectedMessage.length);
+            XCTAssertNotNil(transportRequest);
+            XCTAssertEqual(transportRequest.method, TransportPOSTMethod);
+            XCTAssertEqualObjects(transportRequest.headers[@"content-encoding"], @"gzip");
+            XCTAssertLessThan(((NSString *)transportRequest.headers[@"content-length"]).intValue, expectedMessage.length);
             
             handler();
         }];
@@ -1270,7 +1275,6 @@
         [client signal:expectedSignal channel:channel withCompletion:^(PNSignalStatus *status) {
             XCTAssertFalse(status.isError);
             XCTAssertNotNil(status.data.timetoken);
-            XCTAssertEqual(status.statusCode, 200);
             
             handler();
         }];
@@ -1302,7 +1306,15 @@
     
 
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [client signal:expectedSignal channel:channel withCompletion:^(PNSignalStatus *status) {
+        PNSignalRequest *request = [PNSignalRequest requestWithChannel:channel signal:expectedSignal];
+        __block __weak PNSignalCompletionBlock weakBlock;
+        __block PNSignalCompletionBlock block;
+        
+        
+        block = ^(PNSignalStatus *status) {
+            __strong PNSignalCompletionBlock strongBlock = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
+            
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNSignalOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
@@ -1311,11 +1323,14 @@
             
             if (!retried) {
                 retried = YES;
-                [status retry];
+                [client sendSignalWithRequest:request completion:strongBlock];
             } else {
                 handler();
             }
-        }];
+        };
+        
+        weakBlock = block;
+        [client sendSignalWithRequest:request completion:block];
     }];
 
     XCTAssertTrue(retried);

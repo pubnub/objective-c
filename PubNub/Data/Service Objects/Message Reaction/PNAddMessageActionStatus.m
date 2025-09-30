@@ -1,7 +1,7 @@
 #import "PNAddMessageActionStatus.h"
-#import <PubNub/PNErrorData.h>
 #import "PNOperationResult+Private.h"
 #import "PNStatus+Private.h"
+#import "PNErrorData.h"
 
 
 #pragma mark Interface implementation

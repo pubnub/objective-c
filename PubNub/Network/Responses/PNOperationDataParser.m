@@ -1,9 +1,9 @@
 #import "PNOperationDataParser.h"
-#import <PubNub/PNErrorStatus.h>
 #import "PNBaseOperationData+Private.h"
 #import "PNOperationResult+Private.h"
 #import "PNErrorData+Private.h"
 #import "PNStatus+Private.h"
+#import "PNErrorStatus.h"
 #import "PNFunctions.h"
 #import "PNXMLParser.h"
 

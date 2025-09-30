@@ -46,11 +46,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property(strong, nonatomic, readonly) PNSignalAPICallBuilder * (^signal)(void)
     DEPRECATED_MSG_ATTRIBUTE("Builder-based interface deprecated. Please use corresponding request-based interfaces.");
 
-/// Publish message size calculation builder.
-@property (nonatomic, readonly, strong) PNPublishSizeAPICallBuilder * (^size)(void)
-DEPRECATED_MSG_ATTRIBUTE("This builder-based interface deprecated. Completion block always will be called with '0' "
-                         "size.");
-
 
 #pragma mark - Files message
 
@@ -122,8 +117,6 @@ DEPRECATED_MSG_ATTRIBUTE("This builder-based interface deprecated. Completion bl
 ///     } else {
 ///         // Handle message publish error. Check `category` property to find out possible issue because of which
 ///         // request did fail.
-///         //
-///         // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -137,7 +130,7 @@ DEPRECATED_MSG_ATTRIBUTE("This builder-based interface deprecated. Completion bl
          toChannel:(NSString *)channel
     withCompletion:(nullable PNPublishCompletionBlock)block
     NS_SWIFT_NAME(publish(_:toChannel:withCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-publishWithRequest:completion:' method instead.");
 
 /// Send provided Foundation object to **PubNub** service.
@@ -156,8 +149,6 @@ DEPRECATED_MSG_ATTRIBUTE("This builder-based interface deprecated. Completion bl
 ///     } else {
 ///         // Handle message publish error. Check `category` property to find out possible issue because of which
 ///         // request did fail.
-///         //
-///         // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -172,7 +163,7 @@ DEPRECATED_MSG_ATTRIBUTE("This builder-based interface deprecated. Completion bl
     withMetadata:(nullable NSDictionary<NSString *, id> *)metadata
       completion:(nullable PNPublishCompletionBlock)block
     NS_SWIFT_NAME(publish(_:toChannel:withMetadata:completion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-publishWithRequest:completion:' method instead.");
 
 /// Send provided Foundation object to **PubNub** service.
@@ -191,8 +182,6 @@ DEPRECATED_MSG_ATTRIBUTE("This builder-based interface deprecated. Completion bl
 ///     } else {
 ///         // Handle message publish error. Check `category` property to find out possible issue because of which
 ///         // request did fail.
-///         //
-///         // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -207,7 +196,7 @@ DEPRECATED_MSG_ATTRIBUTE("This builder-based interface deprecated. Completion bl
         compressed:(BOOL)compressed
     withCompletion:(nullable PNPublishCompletionBlock)block
     NS_SWIFT_NAME(publish(_:toChannel:compressed:withCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-publishWithRequest:completion:' method instead.");
 
 /// Send provided Foundation object to **PubNub** service.
@@ -227,8 +216,6 @@ DEPRECATED_MSG_ATTRIBUTE("This builder-based interface deprecated. Completion bl
 ///     } else {
 ///         // Handle message publish error. Check `category` property to find out possible issue because of which
 ///         // request did fail.
-///         //
-///         // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -245,7 +232,7 @@ DEPRECATED_MSG_ATTRIBUTE("This builder-based interface deprecated. Completion bl
     withMetadata:(nullable NSDictionary<NSString *, id> *)metadata
       completion:(nullable PNPublishCompletionBlock)block
     NS_SWIFT_NAME(publish(_:toChannel:compressed:withMetadata:completion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-publishWithRequest:completion:' method instead.");
 
 /// Send provided Foundation object to **PubNub** service.
@@ -264,8 +251,6 @@ DEPRECATED_MSG_ATTRIBUTE("This builder-based interface deprecated. Completion bl
 ///     } else {
 ///         // Handle message publish error. Check `category` property to find out possible issue because of which
 ///         // request did fail.
-///         //
-///         // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -280,7 +265,7 @@ DEPRECATED_MSG_ATTRIBUTE("This builder-based interface deprecated. Completion bl
     storeInHistory:(BOOL)shouldStore
     withCompletion:(nullable PNPublishCompletionBlock)block
     NS_SWIFT_NAME(publish(_:toChannel:storeInHistory:withCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-publishWithRequest:completion:' method instead.");
 
 /// Send provided Foundation object to **PubNub** service.
@@ -300,8 +285,6 @@ DEPRECATED_MSG_ATTRIBUTE("This builder-based interface deprecated. Completion bl
 ///     } else {
 ///         // Handle message publish error. Check `category` property to find out possible issue because of which
 ///         // request did fail.
-///         //
-///         // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -318,7 +301,7 @@ DEPRECATED_MSG_ATTRIBUTE("This builder-based interface deprecated. Completion bl
       withMetadata:(nullable NSDictionary<NSString *, id> *)metadata
         completion:(nullable PNPublishCompletionBlock)block
     NS_SWIFT_NAME(publish(_:toChannel:storeInHistory:withMetadata:completion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-publishWithRequest:completion:' method instead.");
 
 /// Send provided Foundation object to **PubNub** service.
@@ -337,8 +320,6 @@ DEPRECATED_MSG_ATTRIBUTE("This builder-based interface deprecated. Completion bl
 ///     } else {
 ///         // Handle message publish error. Check `category` property to find out possible issue because of which
 ///         // request did fail.
-///         //
-///         // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -355,7 +336,7 @@ DEPRECATED_MSG_ATTRIBUTE("This builder-based interface deprecated. Completion bl
         compressed:(BOOL)compressed
     withCompletion:(nullable PNPublishCompletionBlock)block
     NS_SWIFT_NAME(publish(_:toChannel:storeInHistory:compressed:withCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-publishWithRequest:completion:' method instead.");
 
 /// Send provided Foundation object to **PubNub** service.
@@ -375,8 +356,6 @@ DEPRECATED_MSG_ATTRIBUTE("This builder-based interface deprecated. Completion bl
 ///     } else {
 ///         // Handle message publish error. Check `category` property to find out possible issue because of which
 ///         // request did fail.
-///         //
-///         // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -395,7 +374,7 @@ DEPRECATED_MSG_ATTRIBUTE("This builder-based interface deprecated. Completion bl
       withMetadata:(nullable NSDictionary<NSString *, id> *)metadata
         completion:(nullable PNPublishCompletionBlock)block
     NS_SWIFT_NAME(publish(_:toChannel:storeInHistory:compressed:withMetadata:completion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-publishWithRequest:completion:' method instead.");
 
 
@@ -417,8 +396,6 @@ DEPRECATED_MSG_ATTRIBUTE("This builder-based interface deprecated. Completion bl
 ///     } else {
 ///         // Handle message publish error. Check `category` property to find out possible issue because of which
 ///         // request did fail.
-///         //
-///         // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -434,7 +411,7 @@ DEPRECATED_MSG_ATTRIBUTE("This builder-based interface deprecated. Completion bl
     mobilePushPayload:(nullable NSDictionary<NSString *, id> *)payloads
        withCompletion:(nullable PNPublishCompletionBlock)block
     NS_SWIFT_NAME(publish(_:toChannel:mobilePushPayload:withCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-publishWithRequest:completion:' method instead.");
 
 /// Send provided Foundation object to **PubNub** service.
@@ -454,8 +431,6 @@ DEPRECATED_MSG_ATTRIBUTE("This builder-based interface deprecated. Completion bl
 ///     } else {
 ///         // Handle message publish error. Check `category` property to find out possible issue because of which
 ///         // request did fail.
-///         //
-///         // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -465,6 +440,7 @@ DEPRECATED_MSG_ATTRIBUTE("This builder-based interface deprecated. Completion bl
 ///   - channel: Name of the channel to which message should be published.
 ///   - payloads: `NSDictionary` with payloads for different push notification services (Apple with "apns" key and
 ///   Google with "gcm").
+///   - metadata: `NSDictionary` with values which should be used by **PubNub** service to filter messages.   
 ///   - block: Publish completion block.
 - (void)publish:(nullable id)message
             toChannel:(NSString *)channel
@@ -472,7 +448,7 @@ DEPRECATED_MSG_ATTRIBUTE("This builder-based interface deprecated. Completion bl
          withMetadata:(nullable NSDictionary<NSString *, id> *)metadata
            completion:(nullable PNPublishCompletionBlock)block
     NS_SWIFT_NAME(publish(_:toChannel:mobilePushPayload:withMetadata:completion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-publishWithRequest:completion:' method instead.");
 
 /// Send provided Foundation object to **PubNub** service.
@@ -492,8 +468,6 @@ DEPRECATED_MSG_ATTRIBUTE("This builder-based interface deprecated. Completion bl
 ///     } else {
 ///         // Handle message publish error. Check `category` property to find out possible issue because of which
 ///         // request did fail.
-///         //
-///         // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -511,7 +485,7 @@ DEPRECATED_MSG_ATTRIBUTE("This builder-based interface deprecated. Completion bl
            compressed:(BOOL)compressed
        withCompletion:(nullable PNPublishCompletionBlock)block
     NS_SWIFT_NAME(publish(_:toChannel:mobilePushPayload:compressed:withCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-publishWithRequest:completion:' method instead.");
 
 /// Send provided Foundation object to **PubNub** service.
@@ -532,8 +506,6 @@ DEPRECATED_MSG_ATTRIBUTE("This builder-based interface deprecated. Completion bl
 ///     } else {
 ///         // Handle message publish error. Check `category` property to find out possible issue because of which
 ///         // request did fail.
-///         //
-///         // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -553,7 +525,7 @@ DEPRECATED_MSG_ATTRIBUTE("This builder-based interface deprecated. Completion bl
          withMetadata:(nullable NSDictionary<NSString *, id> *)metadata
            completion:(nullable PNPublishCompletionBlock)block
     NS_SWIFT_NAME(publish(_:toChannel:mobilePushPayload:compressed:withMetadata:completion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-publishWithRequest:completion:' method instead.");
 
 /// Send provided Foundation object to **PubNub** service.
@@ -573,8 +545,6 @@ DEPRECATED_MSG_ATTRIBUTE("This builder-based interface deprecated. Completion bl
 ///     } else {
 ///         // Handle message publish error. Check `category` property to find out possible issue because of which
 ///         // request did fail.
-///         //
-///         // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -592,7 +562,7 @@ DEPRECATED_MSG_ATTRIBUTE("This builder-based interface deprecated. Completion bl
        storeInHistory:(BOOL)shouldStore
        withCompletion:(nullable PNPublishCompletionBlock)block
     NS_SWIFT_NAME(publish(_:toChannel:mobilePushPayload:storeInHistory:withCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-publishWithRequest:completion:' method instead.");
 
 /// Send provided Foundation object to **PubNub** service.
@@ -613,8 +583,6 @@ DEPRECATED_MSG_ATTRIBUTE("This builder-based interface deprecated. Completion bl
 ///     } else {
 ///         // Handle message publish error. Check `category` property to find out possible issue because of which
 ///         // request did fail.
-///         //
-///         // Request can be resent using: `[status retry];`
 ///     }
 /// }];
 /// ```
@@ -634,7 +602,7 @@ DEPRECATED_MSG_ATTRIBUTE("This builder-based interface deprecated. Completion bl
          withMetadata:(nullable NSDictionary<NSString *, id> *)metadata
            completion:(nullable PNPublishCompletionBlock)block
     NS_SWIFT_NAME(publish(_:toChannel:mobilePushPayload:storeInHistory:withMetadata:completion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-publishWithRequest:completion:' method instead.");
 
 /// Send provided Foundation object to **PubNub** service.
@@ -655,8 +623,6 @@ DEPRECATED_MSG_ATTRIBUTE("This builder-based interface deprecated. Completion bl
 ///     } else {
 ///         // Handle message publish error. Check `category` property to find out possible issue because of which
 ///         // request did fail.
-///         //
-///         // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -676,7 +642,7 @@ DEPRECATED_MSG_ATTRIBUTE("This builder-based interface deprecated. Completion bl
            compressed:(BOOL)compressed
        withCompletion:(nullable PNPublishCompletionBlock)block
     NS_SWIFT_NAME(publish(_:toChannel:mobilePushPayload:storeInHistory:compressed:withCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-publishWithRequest:completion:' method instead.");
 
 /// Send provided Foundation object to **PubNub** service.
@@ -698,8 +664,6 @@ DEPRECATED_MSG_ATTRIBUTE("This builder-based interface deprecated. Completion bl
 ///     } else {
 ///         // Handle message publish error. Check `category` property to find out possible issue because of which
 ///         // request did fail.
-///         //
-///         // Request can be resent using: `[status retry];`
 ///     }
 /// }];
 /// ```
@@ -721,7 +685,7 @@ DEPRECATED_MSG_ATTRIBUTE("This builder-based interface deprecated. Completion bl
          withMetadata:(nullable NSDictionary<NSString *, id> *)metadata
            completion:(nullable PNPublishCompletionBlock)block
     NS_SWIFT_NAME(publish(_:toChannel:mobilePushPayload:storeInHistory:compressed:withMetadata:completion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-publishWithRequest:completion:' method instead.");
 
 
@@ -764,8 +728,6 @@ DEPRECATED_MSG_ATTRIBUTE("This builder-based interface deprecated. Completion bl
 ///     } else {
 ///         // Handle signal sending error. Check `category` property to find out possible issue because of which 
 ///         // request did fail.
-///         //
-///         // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -778,235 +740,8 @@ DEPRECATED_MSG_ATTRIBUTE("This builder-based interface deprecated. Completion bl
            channel:(NSString *)channel
     withCompletion:(nullable PNSignalCompletionBlock)block
     NS_SWIFT_NAME(signal(_:channel:withCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-sendSignalWithRequest:completion:' method instead.");
-
-
-#pragma mark - Message helper
-
-/// Helper method which allow to calculate resulting message before it will be sent to **PubNub** network.
-///
-/// Size calculation use percent-escaped `message` and all added headers to get full size.
-///
-/// #### Example:
-/// ```objc
-/// [self.client sizeOfMessage:@{ @"Hello": @"world" } toChannel:@"announcement" withCompletion:^(NSInteger size) {
-///     // Actual message size is: size
-/// }];
-/// ```
-///
-/// - Parameters:
-///   - message: Message for which size should be calculated.
-///   - channel: Name of the channel to which message should be published.
-///   - block: Message size calculation completion block.
-- (void)sizeOfMessage:(id)message
-            toChannel:(NSString *)channel
-       withCompletion:(PNMessageSizeCalculationCompletionBlock)block
-    NS_SWIFT_NAME(sizeOfMessage(_:toChannel:withCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Completion block"
-                             " always will be called with '0' size.");
-
-/// Helper method which allow to calculate resulting message before it will be sent to **PubNub** network.
-///
-/// Size calculation use percent-escaped `message` and all added headers to get full size.
-///
-/// #### Example:
-/// ```objc
-/// [self.client sizeOfMessage:@{ @"Hello": @"world" } 
-///                  toChannel:@"announcement"
-///               withMetadata:@{ @"to": @"John Doe" }
-///                 completion:^(NSInteger size) {
-///     // Actual message size is: size
-/// }];
-/// ```
-///
-/// - Parameters:
-///   - message: Message for which size should be calculated.
-///   - channel: Name of the channel to which message should be published.
-///   - metadata:`NSDictionary` with values which should be used by **PubNub** service to filter messages.
-///   - block: Message size calculation completion block.
-- (void)sizeOfMessage:(id)message
-            toChannel:(NSString *)channel
-         withMetadata:(nullable NSDictionary<NSString *, id> *)metadata
-           completion:(PNMessageSizeCalculationCompletionBlock)block
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Completion block"
-                             " always will be called with '0' size.");
-
-/// Helper method which allow to calculate resulting message before it will be sent to **PubNub** network.
-///
-/// Size calculation use percent-escaped `message` and all added headers to get full size.
-///
-/// #### Example:
-/// ```objc
-/// [self.client sizeOfMessage:@{ @"Hello": @"world" } 
-///                  toChannel:@"announcement" 
-///                 compressed:YES
-///             withCompletion:^(NSInteger size) {
-///     // Actual message size is: size
-/// }];
-/// ```
-///
-/// - Parameters:
-///   - message: Message for which size should be calculated.
-///   - channel: Name of the channel to which message should be published.
-///   - compressMessage: Whether message should be compressed before sending or not.
-///   - block: Message size calculation completion block.
-- (void)sizeOfMessage:(id)message
-            toChannel:(NSString *)channel
-           compressed:(BOOL)compressMessage
-       withCompletion:(PNMessageSizeCalculationCompletionBlock)block
-    NS_SWIFT_NAME(sizeOfMessage(_:toChannel:compressed:withCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Completion block"
-                             " always will be called with '0' size.");
-
-/// Helper method which allow to calculate resulting message before it will be sent to **PubNub** network.
-///
-/// Size calculation use percent-escaped `message` and all added headers to get full size.
-///
-/// #### Example:
-/// ```objc
-/// [self.client sizeOfMessage:@{ @"Hello": @"world" } 
-///                  toChannel:@"announcement" compressed:YES
-///               withMetadata:@{ @"to": @"John Doe" }
-///                 completion:^(NSInteger size) {
-///     // Actual message size is: size
-/// }];
-/// ```
-///
-/// - Parameters:
-///   - message: Message for which size should be calculated.
-///   - channel: Name of the channel to which message should be published.
-///   - compressMessage: Whether message should be compressed before sending or not.
-///   - metadata: `NSDictionary` with values which should be used by **PubNub** service to filter messages.
-///   - block: Message size calculation completion block.
-- (void)sizeOfMessage:(id)message
-            toChannel:(NSString *)channel
-           compressed:(BOOL)compressMessage
-         withMetadata:(nullable NSDictionary<NSString *, id> *)metadata 
-           completion:(PNMessageSizeCalculationCompletionBlock)block
-    NS_SWIFT_NAME(sizeOfMessage(_:toChannel:compressed:withMetadata:completion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Completion block"
-                             " always will be called with '0' size.");
-
-/// Helper method which allow to calculate resulting message before it will be sent to **PubNub** network.
-///
-/// Size calculation use percent-escaped `message` and all added headers to get full size.
-///
-/// #### Example:
-/// ```objc
-/// [self.client sizeOfMessage:@{ @"Hello": @"world" } 
-///                  toChannel:@"announcement"
-///             storeInHistory:NO
-///             withCompletion:^(NSInteger size) {
-///     // Actual message size is: size
-/// }];
-/// ```
-///
-/// - Parameters:
-///   - message: Message for which size should be calculated.
-///   - channel: Name of the channel to which message should be published.
-///   - shouldStore: Whether message should be stored and available with history API or not.
-///   - block: Message size calculation completion block.
-- (void)sizeOfMessage:(id)message
-            toChannel:(NSString *)channel
-       storeInHistory:(BOOL)shouldStore
-       withCompletion:(PNMessageSizeCalculationCompletionBlock)block
-    NS_SWIFT_NAME(sizeOfMessage(_:toChannel:storeInHistory:withCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Completion block"
-                             " always will be called with '0' size.");
-
-/// Helper method which allow to calculate resulting message before it will be sent to **PubNub** network.
-///
-/// Size calculation use percent-escaped `message` and all added headers to get full size.
-///
-/// #### Example:
-/// ```objc
-/// [self.client sizeOfMessage:@{ @"Hello": @"world" } 
-///                  toChannel:@"announcement"
-///             storeInHistory:NO
-///               withMetadata:@{ @"to": @"John Doe" }
-///                 completion:^(NSInteger size) {
-///     // Actual message size is: size
-/// }];
-/// ```
-///
-/// - Parameters:
-///   - message: Message for which size should be calculated.
-///   - channel: Name of the channel to which message should be published.
-///   - shouldStore: Whether message should be stored and available with history API or not.
-///   - metadata: `NSDictionary` with values which should be used by **PubNub** service to filter messages.
-///   - block: Message size calculation completion block.
-- (void)sizeOfMessage:(id)message
-            toChannel:(NSString *)channel
-       storeInHistory:(BOOL)shouldStore
-         withMetadata:(nullable NSDictionary<NSString *, id> *)metadata 
-           completion:(PNMessageSizeCalculationCompletionBlock)block
-    NS_SWIFT_NAME(sizeOfMessage(_:toChannel:storeInHistory:withMetadata:completion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Completion block"
-                             " always will be called with '0' size.");
-
-/// Helper method which allow to calculate resulting message before it will be sent to **PubNub** network.
-///
-/// Size calculation use percent-escaped `message` and all added headers to get full size.
-///
-/// #### Example:
-/// ```objc
-/// [self.client sizeOfMessage:@{ @"Hello": @"world" }
-///                  toChannel:@"announcement"
-///                 compressed:NO
-///             storeInHistory:NO
-///             withCompletion:^(NSInteger size) {
-///     // Actual message size is: size
-/// }];
-/// ```
-///
-/// - Parameters:
-///   - message: Message for which size should be calculated.
-///   - channel: Name of the channel to which message should be published.
-///   - compressMessage: Whether message should be compressed before sending or not.
-///   - shouldStore: Whether message should be stored and available with history API or not.
-///   - block: Message size calculation completion block.
-- (void)sizeOfMessage:(id)message
-            toChannel:(NSString *)channel
-           compressed:(BOOL)compressMessage
-       storeInHistory:(BOOL)shouldStore
-       withCompletion:(PNMessageSizeCalculationCompletionBlock)block
-    NS_SWIFT_NAME(sizeOfMessage(_:toChannel:compressed:storeInHistory:withCompletion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Completion block"
-                             " always will be called with '0' size.");
-
-/// Helper method which allow to calculate resulting message before it will be sent to **PubNub** network.
-///
-/// Size calculation use percent-escaped `message` and all added headers to get full size.
-///
-/// #### Example:
-/// ```objc
-/// [self.client sizeOfMessage:@{ @"Hello": @"world" }
-///                  toChannel:@"announcement" 
-///                 compressed:NO
-///             storeInHistory:NO
-///               withMetadata:@{ @"to": @"John Doe" }
-///                 completion:^(NSInteger size) {
-///     // Actual message size is: size
-/// }];
-/// ```
-///
-/// - Parameters:
-///   - message: Message for which size should be calculated.
-///   - channel: Name of the channel to which message should be published.
-///   - compressMessage: Whether message should be compressed before sending or not.
-///   - shouldStore: Whether message should be stored and available with history API or not.
-///   - metadata: `NSDictionary` with values which should be used by **PubNub** service to filter messages.
-///   - block: Message size calculation completion block.
-- (void)sizeOfMessage:(id)message
-            toChannel:(NSString *)channel
-           compressed:(BOOL)compressMessage
-       storeInHistory:(BOOL)shouldStore
-         withMetadata:(nullable NSDictionary<NSString *, id> *)metadata
-           completion:(PNMessageSizeCalculationCompletionBlock)block
-    NS_SWIFT_NAME(sizeOfMessage(_:toChannel:compressed:storeInHistory:withMetadata:completion:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Completion block"
-                             " always will be called with '0' size.");
 
 #pragma mark -
 

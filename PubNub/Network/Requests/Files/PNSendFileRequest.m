@@ -14,12 +14,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Properties
 
-/// Crypto module which should be used for uploaded data _encryption_.
-///
-/// This property allows setting up data _encryption_ using a different crypto module than the one set during **PubNub**
-/// client instance configuration.
-@property(strong, nullable, nonatomic) id<PNCryptoProvider> cryptoModule;
-
 /// Request configuration error.
 @property(strong, nullable, nonatomic) PNError *parametersError;
 
@@ -197,6 +191,52 @@ NS_ASSUME_NONNULL_END
 
 - (PNError *)validate {
     return self.parametersError;
+}
+
+
+#pragma mark - Misc
+
+- (NSDictionary *)dictionaryRepresentation {
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary:@{
+        @"fileMessageTTL": @(self.fileMessageTTL),
+        @"filename": self.filename ?: @"missing",
+        @"channel": self.channel ?: @"missing",
+    }];
+    
+    if (self.arbitraryQueryParameters) dictionary[@"arbitraryQueryParameters"] = self.arbitraryQueryParameters;
+    if (self.fileMessageMetadata) dictionary[@"fileMessageMetadata"] = self.fileMessageMetadata;
+    if (self.customMessageType) dictionary[@"customMessageType"] = self.customMessageType;
+    if (self.fileMessageStore) dictionary[@"fileMessageStore"] = @(self.fileMessageStore);
+    if (self.cryptoModule) {
+        if ([self.cryptoModule respondsToSelector:@selector(dictionaryRepresentation)])
+            dictionary[@"cryptoModule"] = [self.cryptoModule performSelector:@selector(dictionaryRepresentation)];
+        else dictionary[@"cryptoModule"] = NSStringFromClass(self.cryptoModule.class);
+    }
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    if (self.cipherKey) dictionary[@"cipherKey"] = self.cipherKey;
+#pragma clang diagnostic pop
+    if (self.message) dictionary[@"message"] = self.message;
+    if (self.stream) {
+        NSString *streamStatus = @"closed";
+        if (self.stream.streamStatus == NSStreamStatusAtEnd) streamStatus = @"atEnd";
+        else if (self.stream.streamStatus == NSStreamStatusError) streamStatus = @"error";
+        else if (self.stream.streamStatus == NSStreamStatusNotOpen) streamStatus = @"not open";
+        else if (self.stream.streamStatus == NSStreamStatusOpen) streamStatus = @"open";
+        else if (self.stream.streamStatus == NSStreamStatusOpening) streamStatus = @"opening";
+        else if (self.stream.streamStatus == NSStreamStatusReading) streamStatus = @"reading";
+        else if (self.stream.streamStatus == NSStreamStatusWriting) streamStatus = @"writing";
+        
+        NSMutableDictionary *streamDictionary = [NSMutableDictionary dictionaryWithDictionary:@{
+            @"hasBytesAvailable": @(self.stream.hasBytesAvailable),
+            @"streamStatus": streamStatus
+        }];
+        if (self.stream.streamError) streamDictionary[@"error"] = self.stream.streamError;
+        
+        dictionary[@"stream"] = streamDictionary;
+    }
+    
+    return dictionary;
 }
 
 #pragma mark -

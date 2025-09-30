@@ -3,6 +3,7 @@
  * @copyright © 2010-2020 PubNub, Inc.
  */
 #import "PNRecordableTestCase.h"
+#import "PubNub+CorePrivate.h"
 #import "NSString+PNTest.h"
 
 
@@ -211,8 +212,14 @@ NS_ASSUME_NONNULL_END
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client hereNowWithVerbosity:PNHereNowOccupancy
-                               completion:^(PNPresenceGlobalHereNowResult *result, PNErrorStatus *status) {
+        PNHereNowRequest *request = [PNHereNowRequest requestGlobal];
+        request.verbosityLevel = PNHereNowOccupancy;
+        __block __weak PNHereNowCompletionBlock weakBlock;
+        __block PNHereNowCompletionBlock block;
+        
+        block = ^(PNPresenceHereNowResult *result, PNErrorStatus *status) {
+            __strong PNHereNowCompletionBlock strongBlock = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
             
             if (!retried) {
                 XCTAssertTrue(status.error);
@@ -220,22 +227,25 @@ NS_ASSUME_NONNULL_END
                 XCTAssertEqual(status.category, PNMalformedResponseCategory);
 
                 retried = YES;
-                [status retry];
+                [self.client hereNowWithRequest:request completion:strongBlock];
             } else {
-                NSDictionary<NSString *, NSDictionary *> *fetchedChannels = result.data.channels;
+                NSDictionary<NSString *, PNPresenceChannelData *> *fetchedChannels = result.data.channels;
                 XCTAssertNil(status);
                 XCTAssertNotNil(fetchedChannels);
 
                 for (NSUInteger channelIdx = 0; channelIdx < channels.count; channelIdx++) {
-                    NSDictionary *channelInformation = fetchedChannels[channels[channelIdx]];
+                    PNPresenceChannelData *channelInformation = fetchedChannels[channels[channelIdx]];
                     
-                    XCTAssertNil(channelInformation[@"uuids"]);
-                    XCTAssertEqual(((NSNumber *)channelInformation[@"occupancy"]).unsignedIntegerValue, 1);
+                    XCTAssertNil(channelInformation.uuids);
+                    XCTAssertEqual(((NSNumber *)channelInformation.occupancy).unsignedIntegerValue, 1);
                 }
 
                 handler();
             }
-        }];
+        };
+        
+        weakBlock = block;
+        [self.client hereNowWithRequest:request completion:block];
     }];
     
     for (NSUInteger clientIdx = 0; clientIdx < clients.count; clientIdx++) {
@@ -456,27 +466,104 @@ NS_ASSUME_NONNULL_END
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
 }
 
-- (void)testItShouldNotFetchChannelHereNowAndReceiveBadRequestStatusWhenChannelIsNil {
+- (void)testItShouldFetchChannelHereNowWithNextSetWhenParticipantsMoreOrEqualToTheLimit {
+    NSString *channel = [self channelsWithNames:@[@"test-channel1"]].lastObject;
+    NSUInteger expectedNumberOfParticipants = 3;
+    NSArray<PubNub *> *clients = [self createPubNubClients:expectedNumberOfParticipants];
+    
+    
+    for (NSUInteger clientIdx = 0; clientIdx < clients.count; clientIdx++) {
+        [self subscribeClient:clients[clientIdx] toChannels:@[channel] withPresence:NO];
+    }
+    
+    [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 5.f : 0.f)];
+    
+    
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        PNHereNowRequest *request = [PNHereNowRequest requestForChannels:@[channel]];
+        request.limit = expectedNumberOfParticipants;
+        
+        [self.client hereNowWithRequest:request completion:^(PNPresenceHereNowResult *result, PNErrorStatus *status) {
+            PNTransportRequest *transportRequest = [clients[0].serviceNetwork transportRequestFromTransportRequest:request.request];
+            NSNumber *fetchedOccupancy = result.data.totalOccupancy;
+            XCTAssertNil(status);
+            XCTAssertNotNil(fetchedOccupancy);
+            XCTAssertEqual(fetchedOccupancy.unsignedIntegerValue, clients.count);
+            XCTAssertEqualObjects(transportRequest.query[@"limit"], @(request.limit).stringValue);
+            
+            handler();
+        }];
+    }];
+    
+    for (NSUInteger clientIdx = 0; clientIdx < clients.count; clientIdx++) {
+        [self unsubscribeClient:clients[clientIdx] fromChannels:@[channel] withPresence:NO];
+    }
+    
+    [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
+}
+
+- (void)testItShouldFetchChannelHereNowWithoutNextSetWhenParticipantsLessThanTheLimit {
+    NSString *channel = [self channelsWithNames:@[@"test-channel1"]].lastObject;
+    NSArray<PubNub *> *clients = [self createPubNubClients:3];
+    
+    
+    for (NSUInteger clientIdx = 0; clientIdx < clients.count; clientIdx++) {
+        [self subscribeClient:clients[clientIdx] toChannels:@[channel] withPresence:NO];
+    }
+    
+    [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 5.f : 0.f)];
+    
+    
+    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
+        PNHereNowRequest *request = [PNHereNowRequest requestForChannels:@[channel]];
+        request.limit = 2000;
+        
+        [self.client hereNowWithRequest:request completion:^(PNPresenceHereNowResult *result, PNErrorStatus *status) {
+            PNTransportRequest *transportRequest = [clients[0].serviceNetwork transportRequestFromTransportRequest:request.request];
+            NSNumber *fetchedOccupancy = result.data.totalOccupancy;
+            XCTAssertNil(status);
+            XCTAssertNotNil(fetchedOccupancy);
+            XCTAssertEqual(fetchedOccupancy.unsignedIntegerValue, clients.count);
+            XCTAssertEqualObjects(transportRequest.query[@"limit"], @"1000");
+            
+            handler();
+        }];
+    }];
+    
+    for (NSUInteger clientIdx = 0; clientIdx < clients.count; clientIdx++) {
+        [self unsubscribeClient:clients[clientIdx] fromChannels:@[channel] withPresence:NO];
+    }
+    
+    [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
+}
+
+- (void)testItShouldNotFetchChannelsHereNowAndReceiveBadRequestStatusWhenChannelsIsEmpty {
     __block BOOL retried = NO;
-    NSString *channel = nil;
         
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client hereNowForChannel:channel
-                        withCompletion:^(PNPresenceChannelHereNowResult *result, PNErrorStatus *status) {
+        PNHereNowRequest *request = [PNHereNowRequest requestForChannels:@[]];
+        __block __weak PNHereNowCompletionBlock weakBlock;
+        __block PNHereNowCompletionBlock block;
+        
+        block = ^(PNPresenceHereNowResult *result, PNErrorStatus *status) {
+            __strong PNHereNowCompletionBlock strongBlock = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
             
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNHereNowForChannelOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             if (!retried) {
                 retried = YES;
-                [status retry];
+                [self.client hereNowWithRequest:request completion:strongBlock];
             } else {
                 handler();
             }
-        }];
+        };
+        
+        weakBlock = block;
+        [self.client hereNowWithRequest:request completion:block];
     }];
 }
 
@@ -757,27 +844,33 @@ NS_ASSUME_NONNULL_END
     [self removeChannelGroup:channelGroup usingClient:nil];
 }
 
-- (void)testItShouldNotFetchChannelGroupHereNowAndReceiveBadRequestStatusWhenChannelGroupIsNil {
-    NSString *channelGroup = nil;
+- (void)testItShouldNotFetchChannelGroupsHereNowAndReceiveBadRequestStatusWhenChannelGroupsIsEmpty {
     __block BOOL retried = NO;
         
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client hereNowForChannelGroup:channelGroup
-                             withCompletion:^(PNPresenceChannelGroupHereNowResult *result, PNErrorStatus *status) {
+        PNHereNowRequest *request = [PNHereNowRequest requestForChannelGroups:@[]];
+        __block __weak PNHereNowCompletionBlock weakBlock;
+        __block PNHereNowCompletionBlock block;
+        
+        block = ^(PNPresenceHereNowResult *result, PNErrorStatus *status) {
+            __strong PNHereNowCompletionBlock strongBlock = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
             
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNHereNowForChannelGroupOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             if (!retried) {
                 retried = YES;
-                [status retry];
+                [self.client hereNowWithRequest:request completion:strongBlock];
             } else {
                 handler();
             }
-        }];
+        };
+        
+        weakBlock = block;
+        [self.client hereNowWithRequest:request completion:block];
     }];
 }
 
@@ -922,21 +1015,28 @@ NS_ASSUME_NONNULL_END
         
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client whereNowUUID:uuid
-                   withCompletion:^(PNPresenceWhereNowResult *result, PNErrorStatus *status) {
+        PNWhereNowRequest *request = [PNWhereNowRequest requestForUserId:uuid];
+        __block __weak PNWhereNowCompletionBlock weakBlock;
+        __block PNWhereNowCompletionBlock block;
+        
+        block = ^(PNPresenceWhereNowResult *result, PNErrorStatus *status) {
+            __strong PNWhereNowCompletionBlock strongBlock = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
             
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNWhereNowOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             if (!retried) {
                 retried = YES;
-                [status retry];
+                [self.client whereNowWithRequest:request completion:strongBlock];
             } else {
                 handler();
             }
-        }];
+        };
+        
+        weakBlock = block;
+        [self.client whereNowWithRequest:request completion:block];
     }];
 }
 
@@ -1070,22 +1170,27 @@ NS_ASSUME_NONNULL_END
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.presence()
-            .connected(YES)
-            .channels(channels)
-            .performWithCompletion(^(PNStatus *status) {
-                XCTAssertTrue(status.isError);
-                XCTAssertEqual(status.operation, PNHeartbeatOperation);
-                XCTAssertEqual(status.category, PNBadRequestCategory);
-                XCTAssertEqual(status.statusCode, 400);
-                
-                if (!retried) {
-                    retried = YES;
-                    [status retry];
-                } else {
-                    handler();
-                }
-            });
+        __block __weak void (^weakBlock)(PNStatus *status);
+        __block void (^block)(PNStatus *status);
+        
+        block = ^(PNStatus *status) {
+            __strong void (^strongBlock)(PNStatus *status) = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
+            
+            XCTAssertTrue(status.isError);
+            XCTAssertEqual(status.operation, PNHeartbeatOperation);
+            XCTAssertEqual(status.category, PNBadRequestCategory);
+            
+            if (!retried) {
+                retried = YES;
+                self.client.presence().connected(YES).channels(channels).performWithCompletion(strongBlock);
+            } else {
+                handler();
+            }
+        };
+        
+        weakBlock = block;
+        self.client.presence().connected(YES).channels(channels).performWithCompletion(block);
     }];
 }
 
@@ -1095,22 +1200,27 @@ NS_ASSUME_NONNULL_END
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.presence()
-            .connected(YES)
-            .channels(channels)
-            .performWithCompletion(^(PNStatus *status) {
-                XCTAssertFalse(status.isError);
-                XCTAssertEqual(status.operation, PNHeartbeatOperation);
-                XCTAssertEqual(status.category, PNCancelledCategory);
-                XCTAssertEqual(status.statusCode, 200);
-                
-                if (!retried) {
-                    retried = YES;
-                    [status retry];
-                } else {
-                    handler();
-                }
-            });
+        __block __weak void (^weakBlock)(PNStatus *status);
+        __block void (^block)(PNStatus *status);
+        
+        block = ^(PNStatus *status) {
+            __strong void (^strongBlock)(PNStatus *status) = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
+            
+            XCTAssertFalse(status.isError);
+            XCTAssertEqual(status.operation, PNHeartbeatOperation);
+            XCTAssertEqual(status.category, PNCancelledCategory);
+            
+            if (!retried) {
+                retried = YES;
+                self.client.presence().connected(YES).channels(channels).performWithCompletion(strongBlock);
+            } else {
+                handler();
+            }
+        };
+        
+        weakBlock = block;
+        self.client.presence().connected(YES).channels(channels).performWithCompletion(block);
     }];
 }
 
@@ -1164,22 +1274,27 @@ NS_ASSUME_NONNULL_END
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.presence()
-            .connected(NO)
-            .channels(channels)
-            .performWithCompletion(^(PNStatus *status) {
-                XCTAssertTrue(status.isError);
-                XCTAssertEqual(status.operation, PNUnsubscribeOperation);
-                XCTAssertEqual(status.category, PNBadRequestCategory);
-                XCTAssertEqual(status.statusCode, 400);
-                
-                if (!retried) {
-                    retried = YES;
-                    [status retry];
-                } else {
-                    handler();
-                }
-            });
+        __block __weak void (^weakBlock)(PNStatus *status);
+        __block void (^block)(PNStatus *status);
+        
+        block = ^(PNStatus *status) {
+            __strong void (^strongBlock)(PNStatus *status) = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
+            
+            XCTAssertTrue(status.isError);
+            XCTAssertEqual(status.operation, PNUnsubscribeOperation);
+            XCTAssertEqual(status.category, PNBadRequestCategory);
+            
+            if (!retried) {
+                retried = YES;
+                self.client.presence().connected(NO).channels(channels).performWithCompletion(strongBlock);
+            } else {
+                handler();
+            }
+        };
+        
+        weakBlock = block;
+        self.client.presence().connected(NO).channels(channels).performWithCompletion(block);
     }];
 }
 
@@ -1293,22 +1408,27 @@ NS_ASSUME_NONNULL_END
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.presence()
-            .connected(YES)
-            .channelGroups(channelGroups)
-            .performWithCompletion(^(PNStatus *status) {
-                XCTAssertTrue(status.isError);
-                XCTAssertEqual(status.operation, PNHeartbeatOperation);
-                XCTAssertEqual(status.category, PNBadRequestCategory);
-                XCTAssertEqual(status.statusCode, 400);
-                
-                if (!retried) {
-                    retried = YES;
-                    [status retry];
-                } else {
-                    handler();
-                }
-            });
+        __block __weak void (^weakBlock)(PNStatus *status);
+        __block void (^block)(PNStatus *status);
+        
+        block = ^(PNStatus *status) {
+            __strong void (^strongBlock)(PNStatus *status) = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
+            
+            XCTAssertTrue(status.isError);
+            XCTAssertEqual(status.operation, PNHeartbeatOperation);
+            XCTAssertEqual(status.category, PNBadRequestCategory);
+            
+            if (!retried) {
+                retried = YES;
+                self.client.presence().connected(YES).channelGroups(channelGroups).performWithCompletion(strongBlock);
+            } else {
+                handler();
+            }
+        };
+        
+        weakBlock = block;
+        self.client.presence().connected(YES).channelGroups(channelGroups).performWithCompletion(block);
     }];
 }
 
@@ -1318,22 +1438,27 @@ NS_ASSUME_NONNULL_END
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.presence()
-            .connected(YES)
-            .channelGroups(channelGroups)
-            .performWithCompletion(^(PNStatus *status) {
-                XCTAssertFalse(status.isError);
-                XCTAssertEqual(status.operation, PNHeartbeatOperation);
-                XCTAssertEqual(status.category, PNCancelledCategory);
-                XCTAssertEqual(status.statusCode, 200);
-                
-                if (!retried) {
-                    retried = YES;
-                    [status retry];
-                } else {
-                    handler();
-                }
-            });
+        __block __weak void (^weakBlock)(PNStatus *status);
+        __block void (^block)(PNStatus *status);
+        
+        block = ^(PNStatus *status) {
+            __strong void (^strongBlock)(PNStatus *status) = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
+            
+            XCTAssertFalse(status.isError);
+            XCTAssertEqual(status.operation, PNHeartbeatOperation);
+            XCTAssertEqual(status.category, PNCancelledCategory);
+            
+            if (!retried) {
+                retried = YES;
+                self.client.presence().connected(YES).channelGroups(channelGroups).performWithCompletion(strongBlock);
+            } else {
+                handler();
+            }
+        };
+        
+        weakBlock = block;
+        self.client.presence().connected(YES).channelGroups(channelGroups).performWithCompletion(block);
     }];
 }
 
@@ -1394,22 +1519,27 @@ NS_ASSUME_NONNULL_END
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        self.client.presence()
-            .connected(NO)
-            .channelGroups(channelGroups)
-            .performWithCompletion(^(PNStatus *status) {
-                XCTAssertTrue(status.isError);
-                XCTAssertEqual(status.operation, PNUnsubscribeOperation);
-                XCTAssertEqual(status.category, PNBadRequestCategory);
-                XCTAssertEqual(status.statusCode, 400);
-                
-                if (!retried) {
-                    retried = YES;
-                    [status retry];
-                } else {
-                    handler();
-                }
-            });
+        __block __weak void (^weakBlock)(PNStatus *status);
+        __block void (^block)(PNStatus *status);
+        
+        block = ^(PNStatus *status) {
+            __strong void (^strongBlock)(PNStatus *status) = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
+            
+            XCTAssertTrue(status.isError);
+            XCTAssertEqual(status.operation, PNUnsubscribeOperation);
+            XCTAssertEqual(status.category, PNBadRequestCategory);
+            
+            if (!retried) {
+                retried = YES;
+                self.client.presence().connected(NO).channelGroups(channelGroups).performWithCompletion(strongBlock);
+            } else {
+                handler();
+            }
+        };
+        
+        weakBlock = block;
+        self.client.presence().connected(NO).channelGroups(channelGroups).performWithCompletion(block);
     }];
 }
 

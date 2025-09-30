@@ -280,10 +280,6 @@ NS_ASSUME_NONNULL_END
     return [PNResult resultWithData:length error:nil];
 }
 
-- (NSString *)description {
-    return [NSString stringWithFormat:@"<PNCryptorHeader: %p>%@", self, self.headerData];
-}
-
 #pragma mark -
 
 

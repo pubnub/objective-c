@@ -1,8 +1,11 @@
 #import "PubNub+Publish.h"
+#import "PNPublishFileMessageRequest+Private.h"
 #import "PNBasePublishRequest+Private.h"
+#import "PNDictionaryLogEntry+Private.h"
+#import "PNStringLogEntry+Private.h"
 #import "PubNub+CorePrivate.h"
 #import "PNStatus+Private.h"
-#import "PNLogMacro.h"
+#import "PNFunctions.h"
 #import "PNHelpers.h"
 
 // Deprecated
@@ -67,37 +70,6 @@ NS_ASSUME_NONNULL_BEGIN
              completion:(nullable PNSignalCompletionBlock)block;
 
 
-#pragma mark - Message helper
-
-/// Helper method which allow to calculate resulting message before it will be sent to the **PubNub** network.
-///
-/// > Note: Size calculation use percent-escaped `message` and all added headers to get full size.
-///
-/// - Parameters:
-///   - message: Message for which size should be calculated.
-///   - channel: Name of the channel to which message should be published.
-///   - compressMessage: Whether message should be compressed before sending or not.
-///   - shouldStore: Whether message should be stored and available with history API or not.
-///   - ttl: How long message should be stored in channel's storage. If **0** it will be stored forever or
-///   if `nil` - depends from account configuration.
-///   - replicate: Whether message should be replicated across the PubNub network and sent simultaneously to all
-///   subscribed clients on a channel.
-///   - metadata: `NSDictionary` with values which should be used by **PubNub** service to filter messages.
-///   - queryParameters: List arbitrary query parameters which should be sent along with original API call.
-///   - block: Message size calculation completion block.
-- (void)sizeOfMessage:(id)message
-            toChannel:(NSString *)channel
-           compressed:(BOOL)compressMessage
-       storeInHistory:(BOOL)shouldStore
-                  ttl:(nullable NSNumber *)ttl
-      withReplication:(BOOL)replicate
-             metadata:(nullable NSDictionary<NSString *, id> *)metadata
-      queryParameters:(nullable NSDictionary *)queryParameters
-           completion:(PNMessageSizeCalculationCompletionBlock)block
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Completion block"
-                             " always will be called with '0' size.");
-
-
 #pragma mark - Handlers
 
 /// Handle publish builder perform with block call.
@@ -123,7 +95,7 @@ NS_ASSUME_NONNULL_END
 @implementation PubNub (Publish)
 
 
-#pragma mark - Publish API builder interdace (deprecated)
+#pragma mark - Publish API builder interface (deprecated)
 
 - (PNPublishFileMessageAPICallBuilder * (^)(void))publishFileMessage {
     PNPublishFileMessageAPICallBuilder *builder = nil;
@@ -211,37 +183,6 @@ NS_ASSUME_NONNULL_END
     };
 }
 
-- (PNPublishSizeAPICallBuilder * (^)(void))size {
-    PNPublishSizeAPICallBuilder *builder = nil;
-    builder = [PNPublishSizeAPICallBuilder builderWithExecutionBlock:^(NSArray<NSString *> *flags,
-                                                                       NSDictionary *parameters) {
-        id message = parameters[NSStringFromSelector(@selector(message))];
-        NSString *channel = parameters[NSStringFromSelector(@selector(channel))];
-        NSNumber *shouldStore = parameters[NSStringFromSelector(@selector(shouldStore))];
-        NSNumber *ttl = parameters[NSStringFromSelector(@selector(ttl))];
-        NSNumber *compressed = parameters[NSStringFromSelector(@selector(compress))];
-        NSNumber *replicate = parameters[NSStringFromSelector(@selector(replicate))];
-        NSDictionary *metadata = parameters[NSStringFromSelector(@selector(metadata))];
-        NSDictionary *queryParam = parameters[@"queryParam"];
-        id block = parameters[@"block"];
-
-        if (shouldStore && !shouldStore.boolValue) ttl = nil;
-        [self sizeOfMessage:message
-                  toChannel:channel
-                 compressed:compressed.boolValue
-             storeInHistory:(shouldStore ? shouldStore.boolValue : YES)
-                        ttl:ttl
-            withReplication:(replicate ? replicate.boolValue : YES)
-                   metadata:metadata
-            queryParameters:queryParam
-                 completion:block];
-    }];
-    
-    return ^PNPublishSizeAPICallBuilder * {
-        return builder;
-    };
-}
-
 
 #pragma mark - Files message
 
@@ -252,29 +193,28 @@ NS_ASSUME_NONNULL_END
     PNOperationDataParser *responseParser = [self parserWithStatus:[PNPublishStatus class]];
     PNParsedRequestCompletionBlock handler;
 
-    PNLogAPICall(self.logger, @"<PubNub::API> Publish '%@' file message to '%@' channel%@%@%@",
-                 (userRequest.identifier ?: @"<error>"),
-                 (userRequest.channel ?: @"<error>"),
-                 (userRequest.metadata ? [NSString stringWithFormat:@" with metadata (%@)", userRequest.metadata] : @""),
-                 (!userRequest.shouldStore ? @" which won't be saved in history" : @""),
-                 [NSString stringWithFormat:@": %@", (userRequest.preFormattedMessage ?: @"<error>")]);
-
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
                 PNOperationDataParseResult<PNPublishStatus *, PNPublishStatus *> *result) {
         PNStrongify(self);
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self publishFileMessageWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+        if (!result.status.isError && !userRequest.publishOnFileSharing) {
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Publish file message success. File message "
+                                                                         "published with timetoken: %@",
+                                                                         result.status.data.timetoken)
+                                                operation:PNMessageSendLogMessageOperation];
+            }];
         }
 
         [self callBlock:block status:YES withResult:nil andStatus:result.status];
     };
+                               
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Publish file message with parameters:"
+                                            operation:PNMessageSendLogMessageOperation];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
@@ -288,30 +228,27 @@ NS_ASSUME_NONNULL_END
     PNOperationDataParser *responseParser = [self parserWithStatus:[PNPublishStatus class]];
     PNParsedRequestCompletionBlock handler;
 
-    PNLogAPICall(self.logger, @"<PubNub::API> Publish%@ message to '%@' channel%@%@%@",
-                 (userRequest.shouldCompress ? @" compressed" : @""),
-                 (userRequest.channel ?: @"<error>"),
-                 (userRequest.metadata ? [NSString stringWithFormat:@" with metadata (%@)", userRequest.metadata] : @""),
-                 (!userRequest.shouldStore ? @" which won't be saved in history" : @""),
-                 (!userRequest.shouldCompress ? [NSString stringWithFormat:@": %@",
-                                                 (userRequest.message ?: @"<error>")] : @"."));
-
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
                 PNOperationDataParseResult<PNPublishStatus *, PNPublishStatus *> *result) {
         PNStrongify(self);
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self publishWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+        if (!result.status.isError) {
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Publish success with timetoken: %@",
+                                                                         result.status.data.timetoken)
+                                                operation:PNMessageSendLogMessageOperation];
+            }];
         }
 
         [self callBlock:block status:YES withResult:nil andStatus:result.status];
     };
+    
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Publish with parameters:"
+                                            operation:PNMessageSendLogMessageOperation];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
@@ -545,24 +482,27 @@ NS_ASSUME_NONNULL_END
     PNSignalCompletionBlock block = [handlerBlock copy];
     PNParsedRequestCompletionBlock handler;
 
-    PNLogAPICall(self.logger, @"<PubNub::API> Signal to '%@' channel.", (userRequest.channel ?: @"<error>"));
-
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
                 PNOperationDataParseResult<PNSignalStatus *, PNSignalStatus *> *result) {
         PNStrongify(self);
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self sendSignalWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+        if (!result.status.isError) {
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Signal success with timetoken: %@",
+                                                                         result.status.data.timetoken)
+                                                operation:PNMessageSendLogMessageOperation];
+            }];
         }
 
         [self callBlock:block status:YES withResult:nil andStatus:result.status];
     };
+    
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Signal with parameters:"
+                                            operation:PNMessageSendLogMessageOperation];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
@@ -582,113 +522,6 @@ NS_ASSUME_NONNULL_END
     request.arbitraryQueryParameters = queryParameters;
     [self sendSignalWithRequest:request completion:block];
 }
-
-
-#pragma mark - Message helper
-
-- (void)sizeOfMessage:(id)message
-            toChannel:(NSString *)channel
-       withCompletion:(PNMessageSizeCalculationCompletionBlock)block {
-    [self sizeOfMessage:message toChannel:channel withMetadata:nil completion:block];
-}
-
-- (void)sizeOfMessage:(id)message
-            toChannel:(NSString *)channel
-         withMetadata:(NSDictionary<NSString *, id> *)metadata
-           completion:(PNMessageSizeCalculationCompletionBlock)block {
-    [self sizeOfMessage:message toChannel:channel compressed:NO withMetadata:metadata completion:block];
-}
-
-- (void)sizeOfMessage:(id)message
-            toChannel:(NSString *)channel
-           compressed:(BOOL)compressMessage
-       withCompletion:(PNMessageSizeCalculationCompletionBlock)block {
-    [self sizeOfMessage:message toChannel:channel compressed:compressMessage withMetadata:nil completion:block];
-}
-
-- (void)sizeOfMessage:(id)message
-            toChannel:(NSString *)channel
-           compressed:(BOOL)compressMessage
-         withMetadata:(NSDictionary<NSString *, id> *)metadata
-           completion:(PNMessageSizeCalculationCompletionBlock)block {
-    [self sizeOfMessage:message
-              toChannel:channel
-             compressed:compressMessage
-         storeInHistory:YES
-           withMetadata:metadata
-             completion:block];
-}
-
-- (void)sizeOfMessage:(id)message
-            toChannel:(NSString *)channel
-       storeInHistory:(BOOL)shouldStore
-       withCompletion:(PNMessageSizeCalculationCompletionBlock)block {
-    [self sizeOfMessage:message
-              toChannel:channel
-         storeInHistory:shouldStore
-           withMetadata:nil
-             completion:block];
-}
-
-- (void)sizeOfMessage:(id)message
-            toChannel:(NSString *)channel
-       storeInHistory:(BOOL)shouldStore
-         withMetadata:(NSDictionary<NSString *, id> *)metadata
-           completion:(PNMessageSizeCalculationCompletionBlock)block {
-    [self sizeOfMessage:message
-              toChannel:channel
-             compressed:NO
-         storeInHistory:shouldStore
-           withMetadata:metadata
-             completion:block];
-}
-
-- (void)sizeOfMessage:(id)message
-            toChannel:(NSString *)channel
-           compressed:(BOOL)compressMessage
-       storeInHistory:(BOOL)shouldStore
-       withCompletion:(PNMessageSizeCalculationCompletionBlock)block {
-    [self sizeOfMessage:message
-              toChannel:channel
-             compressed:compressMessage
-         storeInHistory:shouldStore
-           withMetadata:nil
-             completion:block];
-}
-
-- (void)sizeOfMessage:(id)message
-            toChannel:(NSString *)channel
-           compressed:(BOOL)compressMessage
-       storeInHistory:(BOOL)shouldStore
-         withMetadata:(NSDictionary<NSString *, id> *)metadata
-           completion:(PNMessageSizeCalculationCompletionBlock)block {
-    [self sizeOfMessage:message
-              toChannel:channel
-             compressed:compressMessage
-         storeInHistory:shouldStore
-                    ttl:nil
-        withReplication:YES
-               metadata:metadata
-        queryParameters:nil
-             completion:block];
-}
-
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-implementations"
-- (void)sizeOfMessage:(id)__unused message
-            toChannel:(NSString *)__unused channel
-           compressed:(BOOL)__unused compressMessage
-       storeInHistory:(BOOL)__unused shouldStore
-                  ttl:(NSNumber *)__unused ttl
-      withReplication:(BOOL)__unused replicate
-             metadata:(NSDictionary<NSString *, id> *)__unused metadata
-      queryParameters:(NSDictionary *)__unused queryParameters
-           completion:(PNMessageSizeCalculationCompletionBlock)block {
-    pn_dispatch_async(self.callbackQueue, ^{
-        block(0);
-    });
-}
-#pragma clang diagnostic pop
 
 
 #pragma mark - Handlers

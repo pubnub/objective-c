@@ -1,4 +1,4 @@
-#import <PubNub/PNBaseRequest.h>
+#import "PNBaseRequest.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

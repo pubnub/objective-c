@@ -234,15 +234,16 @@ NS_ASSUME_NONNULL_END
     return delay + (float)arc4random_uniform(UINT32_MAX) / UINT32_MAX;
 }
 
-- (NSString *)debugDescription {
-    return [NSString stringWithFormat:@"<PNRequestRetryConfiguration: %p\n\tpolicy: %@\n\tminimum delay: %f%@"
-                                       "\n\tmaximum retry attempts: %lu\n>",
-        self,
-        self.policy == PNLinearRetryPolicy ? @"linear" : @"exponential",
-        self.minimumDelay,
-        self.policy == PNExponentialRetryPolicy ? [NSString stringWithFormat:@"\n\tmaximum delay: %f", self.maximumInterval] : @"",
-        self.maximumRetry
-    ];
+- (NSDictionary *)dictionaryRepresentation {
+    NSMutableDictionary *representation = [NSMutableDictionary dictionaryWithDictionary:@{
+        @"policy": self.policy == PNLinearRetryPolicy ? @"linear" : @"exponential",
+        @"minimumDelay": @(self.minimumDelay),
+        @"maximumRetry": @(self.maximumRetry)
+    }];
+    
+    if (self.policy == PNExponentialRetryPolicy) representation[@"maximumInterval"] = @(self.maximumInterval);
+    
+    return representation;
 }
 
 #pragma mark -

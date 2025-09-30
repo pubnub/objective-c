@@ -4,12 +4,12 @@
  */
 #import "PNReachability.h"
 #import "PubNub+CorePrivate.h"
+#import "PNStringLogEntry.h"
 #import "PNConfiguration.h"
 #import "PNTimeResult.h"
 #import "PNStructures.h"
 #import "PubNub+Time.h"
 #import "PubNub+Core.h"
-#import "PNLogMacro.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -102,12 +102,8 @@ NS_ASSUME_NONNULL_END
     // Check whether initialization was successful or not.
     if ((self = [super init])) {
         _client = client;
-#ifndef PUBNUB_DISABLE_LOGGER
-        [_client.logger enableLogLevel:PNReachabilityLogLevel];
-#endif // PUBNUB_DISABLE_LOGGER
         _pingCompleteBlock = [block copy];
-        _resourceAccessQueue = dispatch_queue_create("com.pubnub.reachability",
-                                                     DISPATCH_QUEUE_CONCURRENT);
+        _resourceAccessQueue = dispatch_queue_create("com.pubnub.reachability", DISPATCH_QUEUE_CONCURRENT);
         _reachable = YES;
     }
     
@@ -163,11 +159,15 @@ NS_ASSUME_NONNULL_END
     BOOL successfulPing = result.data != nil;
 
     if (self.reachable && !successfulPing) {
-        PNLogReachability(self.client.logger, @"<PubNub::Reachability> Connection went down.");
+        [self.client.logger debugWithLocation:@"PNReachability" andMessageFactory:^PNLogEntry * _Nullable{
+            return [PNStringLogEntry entryWithMessage:@"Connection went down."];
+        }];
     }
     
     if (!self.reachable && successfulPing) {
-        PNLogReachability(self.client.logger, @"<PubNub::Reachability> Connection restored.");
+        [self.client.logger debugWithLocation:@"PNReachability" andMessageFactory:^PNLogEntry * _Nullable{
+            return [PNStringLogEntry entryWithMessage:@"Connection restored."];
+        }];
     }
 
     if (self.pingCompleteBlock) {

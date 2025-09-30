@@ -81,7 +81,7 @@ NS_ASSUME_NONNULL_END
 
     if (self.customMessageType.length) query[@"custom_message_type"] = self.customMessageType;
     if (self.preparedMetadata.length) query[@"meta"] = self.preparedMetadata;
-    if (self.ttl > 0) query[@"ttl"] = @(self.ttl).stringValue;
+    if (self.shouldStore && self.ttl > 0) query[@"ttl"] = @(self.ttl).stringValue;
     if (!self.shouldReplicate) query[@"norep"] = @"true";
     if (!self.shouldStore) query[@"store"] = @"0";
     query[@"seqn"] = @(self.sequenceNumber);
@@ -243,6 +243,25 @@ NS_ASSUME_NONNULL_END
     }
     
     return encryptedMessage;
+}
+
+
+#pragma mark - Misc
+
+- (NSDictionary *)dictionaryRepresentation {
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary:@{
+        @"replicate": @(self.shouldReplicate),
+        @"store": @(self.shouldStore),
+        @"channel": self.channel ?: @"missing",
+        @"ttl": @(self.ttl)
+    }];
+    
+    if (self.arbitraryQueryParameters) dictionary[@"arbitraryQueryParameters"] = self.arbitraryQueryParameters;
+    if (self.customMessageType) dictionary[@"customMessageType"] = self.customMessageType;
+    if (self.metadata) dictionary[@"metadata"] = self.metadata;
+    if (self.message) dictionary[@"message"] = self.message;
+    
+    return dictionary;
 }
 
 #pragma mark -

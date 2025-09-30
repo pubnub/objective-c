@@ -1,6 +1,6 @@
 #import "PNFileGenerateUploadURLData.h"
-#import <PubNub/PNTransportRequest.h>
-#import <PubNub/PNCodable.h>
+#import "PNTransportRequest.h"
+#import "PNCodable.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

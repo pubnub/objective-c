@@ -124,31 +124,39 @@ NS_ASSUME_NONNULL_END
     [self waitTask:@"waitForDistribution" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
 }
 
-- (void)testItShouldNotSetPresenceStateForChannelAndReceiveBadRequestStatusWhenChannelIsNil {
+- (void)testItShouldNotSetPresenceStateForChannelsAndReceiveBadRequestStatusWhenChannelsIsEmpty {
     NSString *uuid = self.client.currentConfiguration.userID;
     NSDictionary *state = @{
         @"channel1-state": [self randomizedValuesWithValues:@[@"channel-1-random-value"]]
     };
     __block BOOL retried = NO;
-    NSString *channel = nil;
         
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client setState:state forUUID:uuid onChannel:channel
-               withCompletion:^(PNClientStateUpdateStatus *status) {
+        PNPresenceStateSetRequest *request = [PNPresenceStateSetRequest requestWithUserId:uuid];
+        request.channels = @[];
+        request.state = state;
+        __block __weak PNSetStateCompletionBlock weakBlock;
+        __block PNSetStateCompletionBlock block;
+        
+        block = ^(PNClientStateUpdateStatus *status) {
+            __strong PNSetStateCompletionBlock strongBlock = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
             
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNSetStateOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             if (!retried) {
                 retried = YES;
-                [status retry];
+                [self.client setPresenceStateWithRequest:request completion:strongBlock];
             } else {
                 handler();
             }
-        }];
+        };
+        
+        weakBlock = block;
+        [self.client setPresenceStateWithRequest:request completion:block];
     }];
 }
 
@@ -162,21 +170,30 @@ NS_ASSUME_NONNULL_END
         
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client setState:state forUUID:uuid onChannel:channel
-               withCompletion:^(PNClientStateUpdateStatus *status) {
+        PNPresenceStateSetRequest *request = [PNPresenceStateSetRequest requestWithUserId:uuid];
+        request.channels = @[channel];
+        request.state = state;
+        __block __weak PNSetStateCompletionBlock weakBlock;
+        __block PNSetStateCompletionBlock block;
+        
+        block = ^(PNClientStateUpdateStatus *status) {
+            __strong PNSetStateCompletionBlock strongBlock = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
             
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNSetStateOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             if (!retried) {
                 retried = YES;
-                [status retry];
+                [self.client setPresenceStateWithRequest:request completion:strongBlock];
             } else {
                 handler();
             }
-        }];
+        };
+        
+        weakBlock = block;
+        [self.client setPresenceStateWithRequest:request completion:block];
     }];
 }
 
@@ -266,9 +283,8 @@ NS_ASSUME_NONNULL_END
     }];
 }
 
-- (void)testItShouldNotSetPresenceStateForChannelGroupAndReceiveBadRequestStatusWhenChannelGroupIsNil {
+- (void)testItShouldNotSetPresenceStateForChannelGroupsAndReceiveBadRequestStatusWhenChannelGroupsIsEmpty {
     NSString *uuid = self.client.currentConfiguration.userID;
-    NSString *channelGroup = nil;
     NSDictionary *state = @{
         @"user-state": [self randomizedValuesWithValues:@[@"users-random-value"]]
     };
@@ -276,21 +292,30 @@ NS_ASSUME_NONNULL_END
         
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client setState:state forUUID:uuid onChannelGroup:channelGroup
-               withCompletion:^(PNClientStateUpdateStatus *status) {
+        PNPresenceStateSetRequest *request = [PNPresenceStateSetRequest requestWithUserId:uuid];
+        request.channelGroups = @[];
+        request.state = state;
+        __block __weak PNSetStateCompletionBlock weakBlock;
+        __block PNSetStateCompletionBlock block;
+        
+        block = ^(PNClientStateUpdateStatus *status) {
+            __strong PNSetStateCompletionBlock strongBlock = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
             
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNSetStateOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             if (!retried) {
                 retried = YES;
-                [status retry];
+                [self.client setPresenceStateWithRequest:request completion:strongBlock];
             } else {
                 handler();
             }
-        }];
+        };
+        
+        weakBlock = block;
+        [self.client setPresenceStateWithRequest:request completion:block];
     }];
 }
 
@@ -304,21 +329,30 @@ NS_ASSUME_NONNULL_END
         
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client setState:state forUUID:uuid onChannelGroup:channelGroup
-               withCompletion:^(PNClientStateUpdateStatus *status) {
+        PNPresenceStateSetRequest *request = [PNPresenceStateSetRequest requestWithUserId:uuid];
+        request.channelGroups = @[channelGroup];
+        request.state = state;
+        __block __weak PNSetStateCompletionBlock weakBlock;
+        __block PNSetStateCompletionBlock block;
+        
+        block = ^(PNClientStateUpdateStatus *status) {
+            __strong PNSetStateCompletionBlock strongBlock = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
             
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNSetStateOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             if (!retried) {
                 retried = YES;
-                [status retry];
+                [self.client setPresenceStateWithRequest:request completion:strongBlock];
             } else {
                 handler();
             }
-        }];
+        };
+        
+        weakBlock = block;
+        [self.client setPresenceStateWithRequest:request completion:block];
     }];
 }
 
@@ -399,27 +433,34 @@ NS_ASSUME_NONNULL_END
     }];
 }
 
-- (void)testItShouldNotFetchPresenceStateForChannelAndReceiveBadRequestStatusWhenChannelIsNil {
+- (void)testItShouldNotFetchPresenceStateForChannelsAndReceiveBadRequestStatusWhenChannelsIsEmpty {
     NSString *uuid = self.client.currentConfiguration.userID;
     __block BOOL retried = NO;
-    NSString *channel = nil;
         
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client stateForUUID:uuid onChannel:channel
-                   withCompletion:^(PNChannelClientStateResult *result, PNErrorStatus *status) {
+        PNPresenceStateFetchRequest *request = [PNPresenceStateFetchRequest requestWithUserId:uuid];
+        request.channels = @[];
+        __block __weak PNPresenceStateFetchCompletionBlock weakBlock;
+        __block PNPresenceStateFetchCompletionBlock block;
+        
+        block = ^(PNPresenceStateFetchResult *result, PNErrorStatus *status) {
+            __strong PNPresenceStateFetchCompletionBlock strongBlock = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
             
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             if (!retried) {
                 retried = YES;
-                [status retry];
+                [self.client fetchPresenceStateWithRequest:request completion:strongBlock];
             } else {
                 handler();
             }
-        }];
+        };
+        
+        weakBlock = block;
+        [self.client fetchPresenceStateWithRequest:request completion:block];
     }];
 }
 
@@ -430,21 +471,29 @@ NS_ASSUME_NONNULL_END
         
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client stateForUUID:uuid onChannel:channel
-                   withCompletion:^(PNChannelClientStateResult *result, PNErrorStatus *status) {
+        PNPresenceStateFetchRequest *request = [PNPresenceStateFetchRequest requestWithUserId:uuid];
+        request.channels = @[channel];
+        __block __weak PNPresenceStateFetchCompletionBlock weakBlock;
+        __block PNPresenceStateFetchCompletionBlock block;
+        
+        block = ^(PNPresenceStateFetchResult *result, PNErrorStatus *status) {
+            __strong PNPresenceStateFetchCompletionBlock strongBlock = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
             
             XCTAssertTrue(status.isError);
-            XCTAssertEqual(status.operation, PNStateForChannelOperation);
+            XCTAssertEqual(status.operation, PNGetStateOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             if (!retried) {
                 retried = YES;
-                [status retry];
+                [self.client fetchPresenceStateWithRequest:request completion:strongBlock];
             } else {
                 handler();
             }
-        }];
+        };
+        
+        weakBlock = block;
+        [self.client fetchPresenceStateWithRequest:request completion:block];
     }];
 }
 
@@ -538,27 +587,34 @@ NS_ASSUME_NONNULL_END
     [self removeChannelGroup:channelGroup usingClient:nil];
 }
 
-- (void)testItShouldNotFetchPresenceStateForChannelGroupAndReceiveBadRequestStatusWhenChannelGroupIsNil {
+- (void)testItShouldNotFetchPresenceStateForChannelGroupsAndReceiveBadRequestStatusWhenChannelGroupsIsEmpty {
     NSString *uuid = self.client.currentConfiguration.userID;
-    NSString *channelGroup = nil;
     __block BOOL retried = NO;
         
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client stateForUUID:uuid onChannelGroup:channelGroup
-                   withCompletion:^(PNChannelGroupClientStateResult *result, PNErrorStatus *status) {
+        PNPresenceStateFetchRequest *request = [PNPresenceStateFetchRequest requestWithUserId:uuid];
+        request.channelGroups = @[];
+        __block __weak PNPresenceStateFetchCompletionBlock weakBlock;
+        __block PNPresenceStateFetchCompletionBlock block;
+        
+        block = ^(PNPresenceStateFetchResult *result, PNErrorStatus *status) {
+            __strong PNPresenceStateFetchCompletionBlock strongBlock = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
             
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             if (!retried) {
                 retried = YES;
-                [status retry];
+                [self.client fetchPresenceStateWithRequest:request completion:strongBlock];
             } else {
                 handler();
             }
-        }];
+        };
+        
+        weakBlock = block;
+        [self.client fetchPresenceStateWithRequest:request completion:block];
     }];
 }
 
@@ -569,21 +625,29 @@ NS_ASSUME_NONNULL_END
         
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client stateForUUID:uuid onChannelGroup:channelGroup
-                   withCompletion:^(PNChannelGroupClientStateResult *result, PNErrorStatus *status) {
+        PNPresenceStateFetchRequest *request = [PNPresenceStateFetchRequest requestWithUserId:uuid];
+        request.channelGroups = @[channelGroup];
+        __block __weak PNPresenceStateFetchCompletionBlock weakBlock;
+        __block PNPresenceStateFetchCompletionBlock block;
+        
+        block = ^(PNPresenceStateFetchResult *result, PNErrorStatus *status) {
+            __strong PNPresenceStateFetchCompletionBlock strongBlock = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
             
             XCTAssertTrue(status.isError);
-            XCTAssertEqual(status.operation, PNStateForChannelGroupOperation);
+            XCTAssertEqual(status.operation, PNGetStateOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             if (!retried) {
                 retried = YES;
-                [status retry];
+                [self.client fetchPresenceStateWithRequest:request completion:strongBlock];
             } else {
                 handler();
             }
-        }];
+        };
+        
+        weakBlock = block;
+        [self.client fetchPresenceStateWithRequest:request completion:block];
     }];
 }
 

@@ -68,7 +68,7 @@ NS_ASSUME_NONNULL_END
             configuration.cipherKey = @"secret";
         }
     }
-
+    
     self.initializedClientsCount++;
     
     return configuration;
@@ -261,7 +261,7 @@ NS_ASSUME_NONNULL_END
     
 
     [client2 subscribeToPresenceChannels:@[channels.lastObject]];
-    [self waitTask:@"waitForSubscribeOnPresence" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
+    [self waitTask:@"waitForSubscribeOnPresence" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.1f)];
 
     XCTAssertTrue([client2 isSubscribedOn:[channels.lastObject stringByAppendingString:@"-pnpres"]]);
     
@@ -405,38 +405,9 @@ NS_ASSUME_NONNULL_END
                               withBlock:^(PubNub *client, PNSubscribeStatus *status, BOOL *remove) {
             
             if (status.operation == PNSubscribeOperation && status.category == PNAccessDeniedCategory) {
-                XCTAssertTrue(status.willAutomaticallyRetry);
-                [status cancelAutomaticRetry];
-                
                 *remove = YES;
                 
                 handler();
-            }
-        }];
-        
-        [self.client subscribeToChannels:@[channel] withPresence:NO];
-    }];
-}
-
-- (void)testItShouldNotSubscribeToChannelAndRetryWhenReceiveAccessDeniedEvent {
-    NSString *channel = [self channelWithName:@"test-channel1"];
-    __block NSUInteger retriedCount = 0;
-    
-    
-    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self addStatusHandlerForClient:self.client
-                              withBlock:^(PubNub *client, PNSubscribeStatus *status, BOOL *remove) {
-            
-            if (status.operation == PNSubscribeOperation && status.category == PNAccessDeniedCategory) {
-                XCTAssertTrue(status.willAutomaticallyRetry);
-                
-                if (retriedCount == 1) {
-                    [status cancelAutomaticRetry];
-                    *remove = YES;
-                    handler();
-                } else {
-                    retriedCount++;
-                }
             }
         }];
         
@@ -775,38 +746,9 @@ NS_ASSUME_NONNULL_END
                               withBlock:^(PubNub *client, PNSubscribeStatus *status, BOOL *remove) {
             
             if (status.operation == PNSubscribeOperation && status.category == PNAccessDeniedCategory) {
-                XCTAssertTrue(status.willAutomaticallyRetry);
-                [status cancelAutomaticRetry];
-                
                 *remove = YES;
                 
                 handler();
-            }
-        }];
-        
-        [self.client subscribeToChannelGroups:@[channelGroup] withPresence:NO];
-    }];
-}
-
-- (void)testItShouldNotSubscribeToChannelGroupAndRetryWhenReceiveAccessDeniedEvent {
-    NSString *channelGroup = [self channelGroupWithName:@"test-channel-group1"];
-    __block NSUInteger retriedCount = 0;
-    
-
-    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self addStatusHandlerForClient:self.client
-                              withBlock:^(PubNub *client, PNSubscribeStatus *status, BOOL *remove) {
-            
-            if (status.operation == PNSubscribeOperation && status.category == PNAccessDeniedCategory) {
-                XCTAssertTrue(status.willAutomaticallyRetry);
-                
-                if (retriedCount == 1) {
-                    [status cancelAutomaticRetry];
-                    *remove = YES;
-                    handler();
-                } else {
-                    retriedCount++;
-                }
             }
         }];
         
@@ -884,7 +826,7 @@ NS_ASSUME_NONNULL_END
     
 
     client2.subscribe().presenceChannels(@[channels.lastObject]).perform();
-    [self waitTask:@"waitForSubscribeOnPresence" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
+    [self waitTask:@"waitForSubscribeOnPresence" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.1f)];
     
     
     XCTAssertTrue([client2 isSubscribedOn:[channels.lastObject stringByAppendingString:@"-pnpres"]]);
@@ -928,6 +870,11 @@ NS_ASSUME_NONNULL_END
             handler();
         }];
         
+        if ([self shouldSetupVCR]) {
+            NSTimeInterval waitDelay = YHVVCR.cassette.isNewCassette ? 0.5f : 0.01f;
+            [self waitTask:@"clientsUnsubscribeDelay" completionFor:waitDelay];
+        }
+        
         [self.client unsubscribeFromChannels:@[channel] withPresence:NO];
     }];
 }
@@ -957,6 +904,11 @@ NS_ASSUME_NONNULL_END
             }
         }];
         
+        if ([self shouldSetupVCR]) {
+            NSTimeInterval waitDelay = YHVVCR.cassette.isNewCassette ? 0.5f : 0.01f;
+            [self waitTask:@"clientsUnsubscribeDelay" completionFor:waitDelay];
+        }
+        
         [client1 unsubscribeFromChannels:@[channel] withPresence:NO];
     }];
 }
@@ -982,6 +934,11 @@ NS_ASSUME_NONNULL_END
                 handler();
             }
         }];
+        
+        if ([self shouldSetupVCR]) {
+            NSTimeInterval waitDelay = YHVVCR.cassette.isNewCassette ? 0.5f : 0.01f;
+            [self waitTask:@"clientsUnsubscribeDelay" completionFor:waitDelay];
+        }
         
         [self.client unsubscribeFromChannels:channels withPresence:NO];
     }];
@@ -1015,6 +972,11 @@ NS_ASSUME_NONNULL_END
             }
         }];
         
+        if ([self shouldSetupVCR]) {
+            NSTimeInterval waitDelay = YHVVCR.cassette.isNewCassette ? 0.5f : 0.01f;
+            [self waitTask:@"clientsUnsubscribeDelay" completionFor:waitDelay];
+        }
+        
         [client1 unsubscribeFromChannels:channels withPresence:NO];
     }];
 }
@@ -1040,12 +1002,22 @@ NS_ASSUME_NONNULL_END
                 handler();
             }
         }];
+        
+        if ([self shouldSetupVCR]) {
+            NSTimeInterval waitDelay = YHVVCR.cassette.isNewCassette ? 0.5f : 0.01f;
+            [self waitTask:@"clientsUnsubscribeDelay" completionFor:waitDelay];
+        }
 
         [client1 unsubscribeFromChannels:@[channels.firstObject] withPresence:NO];
     }];
     
+    if ([self shouldSetupVCR]) {
+        NSTimeInterval waitDelay = YHVVCR.cassette.isNewCassette ? 0.5f : 0.01f;
+        [self waitTask:@"clientsUnsubscribeDelay" completionFor:waitDelay];
+    }
+    
     [client2 unsubscribeFromPresenceChannels:@[channels.lastObject]];
-    [self waitTask:@"waitForUnsubscribeFromPresence" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
+    [self waitTask:@"waitForUnsubscribeFromPresence" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.1f)];
     
     
     XCTAssertFalse([client2 isSubscribedOn:[channels.lastObject stringByAppendingString:@"-pnpres"]]);
@@ -1061,6 +1033,11 @@ NS_ASSUME_NONNULL_END
                 handler();
             }
         }];
+        
+        if ([self shouldSetupVCR]) {
+            NSTimeInterval waitDelay = YHVVCR.cassette.isNewCassette ? 0.5f : 0.01f;
+            [self waitTask:@"clientsUnsubscribeDelay" completionFor:waitDelay];
+        }
         
         [client1 unsubscribeFromChannels:@[channels.lastObject] withPresence:NO];
     }];
@@ -1090,6 +1067,11 @@ NS_ASSUME_NONNULL_END
             
             handler();
         }];
+        
+        if ([self shouldSetupVCR]) {
+            NSTimeInterval waitDelay = YHVVCR.cassette.isNewCassette ? 0.5f : 0.01f;
+            [self waitTask:@"clientsUnsubscribeDelay" completionFor:waitDelay];
+        }
         
         [self.client unsubscribeFromChannelGroups:@[channelGroup] withPresence:NO];
     }];
@@ -1124,6 +1106,11 @@ NS_ASSUME_NONNULL_END
             }
         }];
         
+        if ([self shouldSetupVCR]) {
+            NSTimeInterval waitDelay = YHVVCR.cassette.isNewCassette ? 0.5f : 0.01f;
+            [self waitTask:@"clientsUnsubscribeDelay" completionFor:waitDelay];
+        }
+        
         [client1 unsubscribeFromChannelGroups:@[channelGroup] withPresence:NO];
     }];
     
@@ -1155,6 +1142,11 @@ NS_ASSUME_NONNULL_END
                 handler();
             }
         }];
+        
+        if ([self shouldSetupVCR]) {
+            NSTimeInterval waitDelay = YHVVCR.cassette.isNewCassette ? 0.5f : 0.01f;
+            [self waitTask:@"clientsUnsubscribeDelay" completionFor:waitDelay];
+        }
         
         [self.client unsubscribeFromChannelGroups:channelGroups withPresence:NO];
     }];
@@ -1193,6 +1185,11 @@ NS_ASSUME_NONNULL_END
                 handler();
             }
         }];
+        
+        if ([self shouldSetupVCR]) {
+            NSTimeInterval waitDelay = YHVVCR.cassette.isNewCassette ? 0.5f : 0.01f;
+            [self waitTask:@"clientsUnsubscribeDelay" completionFor:waitDelay];
+        }
         
         [client1 unsubscribeFromChannelGroups:channelGroups withPresence:NO];
     }];
@@ -1260,12 +1257,22 @@ NS_ASSUME_NONNULL_END
                 handler();
             }
         }];
+        
+        if ([self shouldSetupVCR]) {
+            NSTimeInterval waitDelay = YHVVCR.cassette.isNewCassette ? 0.5f : 0.01f;
+            [self waitTask:@"clientsUnsubscribeDelay" completionFor:waitDelay];
+        }
 
         [client1 unsubscribeFromChannels:@[channels.firstObject] withPresence:NO];
     }];
     
+    if ([self shouldSetupVCR]) {
+        NSTimeInterval waitDelay = YHVVCR.cassette.isNewCassette ? 0.5f : 0.01f;
+        [self waitTask:@"clientsUnsubscribeDelay" completionFor:waitDelay];
+    }
+    
     client2.unsubscribe().presenceChannels(@[channels.lastObject]).perform();
-    [self waitTask:@"waitForUnsubscribeFromPresence" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.f)];
+    [self waitTask:@"waitForUnsubscribeFromPresence" completionFor:(YHVVCR.cassette.isNewCassette ? 3.f : 0.1f)];
     
     
     XCTAssertFalse([client2 isSubscribedOn:[channels.lastObject stringByAppendingString:@"-pnpres"]]);
@@ -1281,6 +1288,11 @@ NS_ASSUME_NONNULL_END
                 handler();
             }
         }];
+        
+        if ([self shouldSetupVCR]) {
+            NSTimeInterval waitDelay = YHVVCR.cassette.isNewCassette ? 0.5f : 0.01f;
+            [self waitTask:@"clientsUnsubscribeDelay" completionFor:waitDelay];
+        }
         
         [client1 unsubscribeFromChannels:@[channels.lastObject] withPresence:NO];
     }];
@@ -1549,8 +1561,8 @@ NS_ASSUME_NONNULL_END
     NSString *channel = [self channelWithName:@"test-channel1"];
     PubNub *client1 = [self createPubNubForUser:@"serhii"];
     PubNub *client2 = [self createPubNubForUser:@"david"];
-
-
+    
+    
     NSString *encryptedMessage = [PNAES encrypt:publishedMessageData withKey:client1.currentConfiguration.cipherKey];
     
     [self subscribeClient:client2 toChannels:@[channel] withPresence:NO];
@@ -1560,7 +1572,7 @@ NS_ASSUME_NONNULL_END
     XCTAssertNotNil(client1.currentConfiguration.cipherKey);
     XCTAssertNotNil(client2.currentConfiguration.cipherKey);
     XCTAssertNotEqualObjects(client1.currentConfiguration.cipherKey, client2.currentConfiguration.cipherKey);
-
+    
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addStatusHandlerForClient:client2 withBlock:^(PubNub *client, PNSubscribeStatus *status, BOOL *remove) {
             if (status.operation == PNSubscribeOperation && status.category == PNDecryptionErrorCategory) {
@@ -1747,10 +1759,7 @@ NS_ASSUME_NONNULL_END
     [self waitToNotCompleteIn:self.falseTestCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:self.client
                                withBlock:^(PubNub *client, PNMessageResult *message, BOOL *remove) {
-            NSURLRequest *request = [message valueForKey:@"clientRequest"];
-            
             if ([message.data.publisher isEqualToString:self.client.currentConfiguration.userID]) {
-                XCTAssertTrue([request.URL.absoluteString pnt_includesString:lastTimetoken.stringValue]);
                 XCTAssertEqualObjects(message.data.message, publishedMessage);
                 *remove = YES;
                 
@@ -1874,9 +1883,6 @@ NS_ASSUME_NONNULL_END
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:self.client
                                withBlock:^(PubNub *client, PNMessageResult *message, BOOL *remove) {
-
-            NSURLRequest *request = [message valueForKey:@"clientRequest"];
-            
             if ([message.data.publisher isEqualToString:self.client.currentConfiguration.userID]) {
                 XCTAssertEqualObjects(message.data.message, publishedMessage);
                 *remove = YES;
@@ -1934,10 +1940,7 @@ NS_ASSUME_NONNULL_END
     [self waitToNotCompleteIn:self.falseTestCompletionDelay codeBlock:^(dispatch_block_t handler) {
         [self addMessageHandlerForClient:self.client
                                withBlock:^(PubNub *client, PNMessageResult *message, BOOL *remove) {
-            NSURLRequest *request = [message valueForKey:@"clientRequest"];
-            
             if ([message.data.publisher isEqualToString:self.client.currentConfiguration.userID]) {
-                XCTAssertTrue([request.URL.absoluteString pnt_includesString:lastTimetoken.stringValue]);
                 XCTAssertEqualObjects(message.data.message, publishedMessage);
                 *remove = YES;
                 

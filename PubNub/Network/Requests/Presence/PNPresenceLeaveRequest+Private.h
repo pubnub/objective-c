@@ -1,4 +1,4 @@
-#import <PubNub/PNPresenceLeaveRequest.h>
+#import "PNPresenceLeaveRequest.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

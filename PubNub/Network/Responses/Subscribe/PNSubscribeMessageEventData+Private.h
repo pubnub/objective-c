@@ -1,4 +1,4 @@
-#import <PubNub/PNSubscribeMessageEventData.h>
+#import "PNSubscribeMessageEventData.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -11,8 +11,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Properties
 
-/// Whether decryption error happened during data processing or not.
-@property(assign, nonatomic) BOOL decryptionError;
+/// Decryption error happened during data processing or not.
+@property(strong, nonatomic) NSError *decryptionError;
 
 #pragma mark -
 

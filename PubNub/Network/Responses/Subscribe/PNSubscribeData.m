@@ -1,22 +1,19 @@
 #import "PNSubscribeData.h"
-#import <PubNub/PNSubscribeMessageActionEventData.h>
-#import <PubNub/PNSubscribePresenceEventData.h>
-#import <PubNub/PNSubscribeMessageEventData.h>
-#import <PubNub/PNSubscribeObjectEventData.h>
-#import <PubNub/PNSubscribeSignalEventData.h>
-#import <PubNub/PNSubscribeFileEventData.h>
-#import <PubNub/PNCryptoProvider.h>
-#import <PubNub/PNJSONDecoder.h>
-#import <PubNub/PNCodable.h>
-#ifndef PUBNUB_DISABLE_LOGGER
-#import <PubNub/PNLLogger.h>
-#import "PNLogMacro.h"
-#endif // PUBNUB_DISABLE_LOGGER
+#import "PNSubscribeMessageActionEventData.h"
+#import "PNSubscribePresenceEventData.h"
+#import "PNSubscribeMessageEventData.h"
+#import "PNSubscribeObjectEventData.h"
+#import "PNSubscribeSignalEventData.h"
+#import "PNSubscribeFileEventData.h"
+#import "PNCryptoProvider.h"
+#import "PNJSONDecoder.h"
+#import "PNCodable.h"
 #import "PNSubscribeMessageEventData+Private.h"
 #import "PNSubscribeFileEventData+Private.h"
 #import "PNSubscribeEventData+Private.h"
 #import "PNPrivateStructures.h"
 #import "PNConstants.h"
+#import "PNFunctions.h"
 #import "PNHelpers.h"
 
 
@@ -24,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Interface declaration
 
-/// Subscribe request response private extenson.
+/// Subscribe request response private extension.
 @interface PNSubscribeData () <PNCodable>
 
 
@@ -103,6 +100,7 @@ NS_ASSUME_NONNULL_END
 
     [receivedUpdates enumerateObjectsUsingBlock:^(NSDictionary *update, __unused NSUInteger idx, __unused BOOL *stop) {
         PNMessageType messageType = ((NSNumber *)update[@"e"]).unsignedIntegerValue;
+        NSString *fingerprint = PNMessageFingerprint(update[@"d"]);
         NSMutableDictionary *patchedUpdate = [update mutableCopy];
         NSString *channel = update[@"c"];
         id updatePayload = update[@"d"];
@@ -171,13 +169,14 @@ NS_ASSUME_NONNULL_END
         }
 
         data = [PNJSONDecoder decodedObjectOfClass:dataClass fromDictionary:patchedUpdate withError:&error];
+        if (fingerprint) data.pnFingerprint = fingerprint;
 
         if (data && !error) {
             data.messageType = @(messageType);
             
             if (decryptionError) {
-                if (messageType == PNFileMessageType) ((PNSubscribeFileEventData *)data).decryptionError = YES;
-                ((PNSubscribeMessageEventData *)data).decryptionError = YES;
+                if (messageType == PNFileMessageType) ((PNSubscribeFileEventData *)data).decryptionError = decryptionError;
+                else ((PNSubscribeMessageEventData *)data).decryptionError = decryptionError;
             }
 
             [updates addObject:data];
@@ -217,12 +216,6 @@ NS_ASSUME_NONNULL_END
         if (!decryptionError) {
             decryptionError = [NSError errorWithDomain:PNCryptorErrorDomain code:PNCryptorErrorDecryption userInfo:nil];
         }
-
-#ifndef PUBNUB_DISABLE_LOGGER
-        PNLLogger *logger = [PNLLogger loggerWithIdentifier:kPNClientIdentifier];
-        [logger enableLogLevel:PNAESErrorLogLevel];
-        PNLogAESError(logger, @"<PubNub::AES> Message decryption error: %@", decryptionError);
-#endif // PUBNUB_DISABLE_LOGGER
         *error = decryptionError;
 
         return isDictionary ? ((NSDictionary *)data)[@"pn_other"] : data;

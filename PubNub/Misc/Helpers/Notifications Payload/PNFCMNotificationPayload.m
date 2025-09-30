@@ -84,7 +84,7 @@
         payload[@"notification"] = notification;
     }
     
-    return payload.count ? payload : nil;;
+    return payload.count ? payload : nil;
 }
 
 #pragma mark -

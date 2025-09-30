@@ -3,9 +3,13 @@
 #import "PNPresenceUserStateFetchData+Private.h"
 #import "PNChannelClientStateResult+Private.h"
 #import "PNClientStateGetResult+Private.h"
+#import "PNDictionaryLogEntry+Private.h"
 #import "PNOperationResult+Private.h"
+#import "PNStringLogEntry+Private.h"
 #import "PubNub+CorePrivate.h"
 #import "PNStatus+Private.h"
+#import "PNFunctions.h"
+
 
 // Deprecated
 #import "PNAPICallBuilder+Private.h"
@@ -142,28 +146,16 @@ NS_ASSUME_NONNULL_END
     PNSetStateCompletionBlock block = [handlerBlock copy];
     PNParsedRequestCompletionBlock handler; 
 
-    PNLogAPICall(self.logger, @"<PubNub::API> Set %@'s state on%@%@: %@.",
-                 userRequest.userId,
-                 (userRequest.channels.count
-                  ? [NSString stringWithFormat:@" channels (%@)", [userRequest.channels componentsJoinedByString:@","]]
-                  : @""),
-                 (userRequest.channelGroups.count
-                  ? [NSString stringWithFormat:@" %@channel groups (%@)", userRequest.channels.count ? @"and " : @"", [userRequest.channelGroups componentsJoinedByString:@","]]
-                  : @""),
-                 userRequest.state);
-
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
                 PNOperationDataParseResult<PNClientStateUpdateStatus *, PNClientStateUpdateStatus *> *result) {
         PNStrongify(self);
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self setPresenceStateWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+        if (!result.status.isError) {
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                return [PNStringLogEntry entryWithMessage:@"Set presence state success."
+                                                operation:PNPresenceLogMessageOperation];
+            }];
         }
 
         [self handleSetStateStatus:result.status
@@ -172,6 +164,12 @@ NS_ASSUME_NONNULL_END
                             groups:userRequest.channelGroups
                     withCompletion:block];
     };
+                             
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Set presence state with parameters:"
+                                            operation:PNPresenceLogMessageOperation];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
@@ -229,28 +227,20 @@ NS_ASSUME_NONNULL_END
     PNPresenceStateFetchCompletionBlock block = [handlerBlock copy];
     PNParsedRequestCompletionBlock handler;
 
-    PNLogAPICall(self.logger, @"<PubNub::API> State request on %@%@ for %@.",
-                 (userRequest.channels.count
-                  ? [NSString stringWithFormat:@" channels (%@)", [userRequest.channels componentsJoinedByString:@","]]
-                  : @""),
-                 (userRequest.channelGroups.count
-                  ? [NSString stringWithFormat:@" %@channel groups (%@)", userRequest.channels.count ? @"and " : @"",
-                             [userRequest.channelGroups componentsJoinedByString:@","]] 
-                  : @""),
-                 userRequest.userId);
-
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
                 PNOperationDataParseResult<PNPresenceStateFetchResult *, PNErrorStatus *> *result) {
         PNStrongify(self);
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self fetchPresenceStateWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+        if (!result.status.isError) {
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                PNPresenceUserStateFetchData * data = result.result.data;
+                NSUInteger channelsCount = data.channels ? data.channels.count : (data.state ? 1 : 0);
+                return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Fetch presence state success. Received "
+                                                                         "presence state for %@ channels.",
+                                                                         @(channelsCount))
+                                                operation:PNPresenceLogMessageOperation];
+            }];
         }
 
         [self handleStateResult:result.result
@@ -260,6 +250,12 @@ NS_ASSUME_NONNULL_END
                          groups:userRequest.channelGroups
                  withCompletion:block];
     };
+                               
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Fetch presence state with parameters:"
+                                            operation:PNPresenceLogMessageOperation];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }

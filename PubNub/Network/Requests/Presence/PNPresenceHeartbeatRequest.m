@@ -111,6 +111,21 @@ NS_ASSUME_NONNULL_END
     return nil;
 }
 
+
+#pragma mark - Misc
+
+- (NSDictionary *)dictionaryRepresentation {
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary:@{
+        @"presenceHeartbeatValue": @(self.presenceHeartbeatValue),
+        @"channels": self.channels.count ? self.channels : @","
+    }];
+    
+    if (self.channelGroups) dictionary[@"channelGroups"] = self.channelGroups;
+    if (self.state) dictionary[@"state"] = self.state;
+    
+    return dictionary;
+}
+
 #pragma mark -
 
 

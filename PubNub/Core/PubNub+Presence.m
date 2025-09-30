@@ -3,8 +3,10 @@
 #import "PNPresenceChannelHereNowResult+Private.h"
 #import "PNPresenceGlobalHereNowResult+Private.h"
 #import "PNPresenceHereNowFetchData+Private.h"
+#import "PNDictionaryLogEntry+Private.h"
 #import "PNBaseOperationData+Private.h"
 #import "PNOperationResult+Private.h"
+#import "PNStringLogEntry+Private.h"
 #import "PubNub+SubscribePrivate.h"
 #import "PubNub+CorePrivate.h"
 #import "PNStatus+Private.h"
@@ -105,7 +107,7 @@ NS_ASSUME_NONNULL_END
 @implementation PubNub (Presence)
 
 
-#pragma mark - Presence API builder interdace (deprecated)
+#pragma mark - Presence API builder interface (deprecated)
 
 - (PNPresenceAPICallBuilder * (^)(void))presence {
     PNPresenceAPICallBuilder *builder = nil;
@@ -175,16 +177,6 @@ NS_ASSUME_NONNULL_END
     PNHereNowCompletionBlock block = [handleBlock copy];
     PNParsedRequestCompletionBlock handler; 
 
-    if (userRequest.operation == PNHereNowGlobalOperation) {
-        PNLogAPICall(self.logger, @"<PubNub::API> Global 'here now' information with %@ data.",
-                     PNHereNowDataStrings[userRequest.verbosityLevel]);
-    } else {
-        PNLogAPICall(self.logger, @"<PubNub::API> Channel%@ 'here now' information for %@ with "
-                     "%@ data.", (userRequest.operation == PNHereNowForChannelGroupOperation ? @" group" : @""),
-                     ([userRequest.channels ?: userRequest.channelGroups componentsJoinedByString:@","] ?: @"<error>"),
-                     PNHereNowDataStrings[userRequest.verbosityLevel]);
-    }
-
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
                 PNOperationDataParseResult<PNPresenceHereNowResult *, PNErrorStatus *> *result) {
@@ -196,17 +188,25 @@ NS_ASSUME_NONNULL_END
             }
         }
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self hereNowWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+        if (!result.status.isError) {
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                PNPresenceHereNowFetchData * data = result.result.data;
+                return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Here now success. There are %@ participants "
+                                                                         "in %@ channels.",
+                                                                         data.totalOccupancy,
+                                                                         data.totalChannels)
+                                                operation:PNPresenceLogMessageOperation];
+            }];
         }
 
         [self callBlock:block status:NO withResult:result.result andStatus:result.status];
     };
+    
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Here now with parameters:"
+                                            operation:PNPresenceLogMessageOperation];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
@@ -252,14 +252,12 @@ NS_ASSUME_NONNULL_END
 
 - (void)hereNowForChannelGroup:(NSString *)group
                 withCompletion:(PNChannelGroupHereNowCompletionBlock)block {
-
     [self hereNowForChannelGroup:group withVerbosity:PNHereNowState completion:block];
 }
 
 - (void)hereNowForChannelGroup:(NSString *)group
                  withVerbosity:(PNHereNowVerbosityLevel)level
                     completion:(PNChannelGroupHereNowCompletionBlock)block {
-    
     [self hereNowWithVerbosity:level
                     forObjects:(group ? @[group] : nil)
              withOperationType:PNHereNowForChannelGroupOperation
@@ -319,25 +317,28 @@ NS_ASSUME_NONNULL_END
     PNWhereNowCompletionBlock block = [handleBlock copy];
     PNParsedRequestCompletionBlock handler;
 
-    PNLogAPICall(self.logger, @"<PubNub::API> 'Where now' presence information for %@.",
-                 userRequest.userId ?: @"<error>");
-
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
                 PNOperationDataParseResult<PNPresenceWhereNowResult *, PNErrorStatus *> *result) {
         PNStrongify(self);
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self whereNowWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+        if (!result.status.isError) {
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                NSUInteger channelsCount = result.result.data.channels.count;
+                return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Where now success. Currently present in %@ "
+                                                                         "channels.", @(channelsCount))
+                                                operation:PNPresenceLogMessageOperation];
+            }];
         }
 
         [self callBlock:block status:NO withResult:result.result andStatus:result.status];
     };
+    
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Where now with parameters:"
+                                            operation:PNPresenceLogMessageOperation];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }
@@ -369,20 +370,6 @@ NS_ASSUME_NONNULL_END
         PNErrorStatus *badRequestStatus = [PNErrorStatus objectWithOperation:operation
                                                                     category:category
                                                                     response:nil];
-        PNWeakify(self);
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        badRequestStatus.retryBlock = ^{
-            PNStrongify(self);
-            [self setConnected:connected 
-                   forChannels:channels
-                 channelGroups:channelGroups
-                     withState:states
-               completionBlock:block];
-        };
-#pragma clang diagnostic pop
-        [self updateResult:badRequestStatus withRequest:nil response:nil];
-
         return badRequestStatus;
     };
 
@@ -392,6 +379,17 @@ NS_ASSUME_NONNULL_END
         [self callBlock:block status:YES withResult:nil andStatus:badRequestStatus];
         return;
     }
+         
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary:@{ @"connected": @(connected) }];
+        if (channelGroups.count) dictionary[@"channelGroups"] = channelGroups;
+        if (channels.count) dictionary[@"channels"] = channels;
+        if (states) dictionary[@"states"] = states;
+        
+        return [PNDictionaryLogEntry entryWithMessage:dictionary
+                                              details:@"Change presence with parameters:"
+                                            operation:PNPresenceLogMessageOperation];
+    }];
 
     NSArray *presenceChannels = [PNChannel objectsWithOutPresenceFrom:channels];
     NSArray *presenceChannelGroups = [PNChannel objectsWithOutPresenceFrom:channelGroups];
@@ -412,14 +410,17 @@ NS_ASSUME_NONNULL_END
             [self heartbeatWithCompletion:block];
             [self.heartbeatManager startHeartbeatIfRequired];
         } else {
-            [self cancelSubscribeOperations];
-            [self.subscriberManager unsubscribeFromChannels:presenceChannels
-                                                     groups:presenceChannelGroups
-                                        withQueryParameters:nil
-                                      listenersNotification:NO
-                                                 completion:^(PNSubscribeStatus *status) {
-                if (block) block((id)status);
-            }];
+            dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_MSEC), queue, ^{
+                [self cancelSubscribeOperations];
+                [self.subscriberManager unsubscribeFromChannels:presenceChannels
+                                                         groups:presenceChannelGroups
+                                            withQueryParameters:nil
+                                          listenersNotification:NO
+                                                     completion:^(PNSubscribeStatus *status) {
+                    if (block) block((id)status);
+                }];
+            });
         }
     } else {
         PNErrorStatus *badRequestStatus = errorStatus(PNBadRequestCategory);
@@ -432,33 +433,26 @@ NS_ASSUME_NONNULL_END
     PNStatusBlock block = [handleBlock copy];
     PNParsedRequestCompletionBlock handler;
 
-    PNLogAPICall(self.logger, @"<PubNub::API> Heartbeat for %@%@%@.",
-                 userRequest.channels.count
-                 ? [NSString stringWithFormat:@"channel%@ '%@'", userRequest.channels.count > 1 ? @"s" : @"",
-                    [userRequest.channels componentsJoinedByString:@", "]]
-                 : @"",
-                 userRequest.channels.count && userRequest.channelGroups.count ? @" and " : @"",
-                 userRequest.channelGroups.count
-                 ? [NSString stringWithFormat:@"group%@ '%@'", userRequest.channelGroups.count > 1 ? @"s" : @"",
-                    [userRequest.channelGroups componentsJoinedByString:@", "]]
-                 : @"");
-
     PNWeakify(self);
     handler = ^(PNTransportRequest *request, id<PNTransportResponse> response, __unused NSURL *location,
                 PNOperationDataParseResult<PNErrorStatus *, PNErrorStatus *> *result) {
         PNStrongify(self);
 
-        if (result.status.isError) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            result.status.retryBlock = ^{
-                [self heartbeatWithRequest:userRequest completion:block];
-            };
-#pragma clang diagnostic pop
+        if (!result.status.isError) {
+            [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+                return [PNStringLogEntry entryWithMessage:@"Heartbeat success."
+                                                operation:PNPresenceLogMessageOperation];
+            }];
         }
 
         [self callBlock:block status:YES withResult:nil andStatus:result.status];
     };
+    
+    [self.logger debugWithLocation:@"PubNub" andMessageFactory:^PNLogEntry * {
+        return [PNDictionaryLogEntry entryWithMessage:[userRequest dictionaryRepresentation]
+                                              details:@"Heartbeat with parameters:"
+                                            operation:PNPresenceLogMessageOperation];
+    }];
 
     [self performRequest:userRequest withParser:responseParser completion:handler];
 }

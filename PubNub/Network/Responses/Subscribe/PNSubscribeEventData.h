@@ -7,7 +7,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// General real-time subscription update.
 ///
-/// Object conatins general information which is common for every entry in subscription request response.
+/// Object contains general information which is common for every entry in subscription request response.
 @interface PNSubscribeEventData : PNBaseOperationData
 
 

@@ -54,7 +54,7 @@ NS_ASSUME_NONNULL_END
                                                                                    uuids:@[]];
 
 
-    XCTAssertEqual(request.includeFields, PNChannelMembersTotalCountField);
+    XCTAssertEqual(request.includeFields, PNChannelMembersTotalCountField|PNChannelMemberStatusField|PNChannelMemberTypeField);
 }
 
 
@@ -137,7 +137,7 @@ NS_ASSUME_NONNULL_END
                                                                                          uuids:@[]];
 
 
-    XCTAssertEqual(request.includeFields, PNChannelMembersTotalCountField);
+    XCTAssertEqual(request.includeFields, PNChannelMembersTotalCountField|PNChannelMemberStatusField|PNChannelMemberTypeField);
 }
 
 
@@ -193,7 +193,7 @@ NS_ASSUME_NONNULL_END
     PNManageChannelMembersRequest *request = [PNManageChannelMembersRequest requestWithChannel:[NSUUID UUID].UUIDString];
 
 
-    XCTAssertEqual(request.includeFields, PNChannelMembersTotalCountField);
+    XCTAssertEqual(request.includeFields, PNChannelMembersTotalCountField|PNChannelMemberStatusField|PNChannelMemberTypeField);
 }
 
 
@@ -280,7 +280,7 @@ NS_ASSUME_NONNULL_END
     PNFetchChannelMembersRequest *request = [PNFetchChannelMembersRequest requestWithChannel:[NSUUID UUID].UUIDString];
 
 
-    XCTAssertEqual(request.includeFields, PNChannelMembersTotalCountField);
+    XCTAssertEqual(request.includeFields, PNChannelMembersTotalCountField|PNChannelMemberStatusField|PNChannelMemberTypeField);
 }
 
 

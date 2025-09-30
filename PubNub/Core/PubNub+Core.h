@@ -1,11 +1,9 @@
 #import <Foundation/Foundation.h>
 #import <PubNub/PNAcknowledgmentStatus.h>
 #import <PubNub/PNClientInformation.h>
+#import <PubNub/PNLoggerManager.h>
 #import <PubNub/PNErrorStatus.h>
 #import <PubNub/PNStructures.h>
-#ifndef PUBNUB_DISABLE_LOGGER
-#import <PubNub/PNLLogger.h>
-#endif // PUBNUB_DISABLE_LOGGER
 
 
 #pragma mark Class forward
@@ -24,12 +22,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 #pragma mark - Information
-
-#ifndef PUBNUB_DISABLE_LOGGER
-/// **PubNub** client logger instance which can be used to add additional logs into console (if enabled) and file
-/// (if enabled).
-@property (nonatomic, readonly, strong) PNLLogger *logger;
-#endif // PUBNUB_DISABLE_LOGGER
 
 /// Basic information about **PubNub** client.
 ///
@@ -171,6 +163,11 @@ NS_ASSUME_NONNULL_BEGIN
                 callbackQueue:(nullable dispatch_queue_t)callbackQueue
                    completion:(void(^)(PubNub *client))block
     NS_SWIFT_NAME(copyWithConfiguration(_:callbackQueue:completion:));
+
+/// Change PubNub client logger minimum logs level.
+///
+/// - Parameter level: Minimum log message level to be handled by logger.
+- (void)setLogLevel:(PNLogLevel)level;
 
 #pragma mark -
 

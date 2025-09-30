@@ -200,6 +200,15 @@ NS_ASSUME_NONNULL_END
                                  userInfo:errorInformation];
 }
 
+
+#pragma mark - Misc
+
+- (NSDictionary *)dictionaryRepresentation {
+    @throw [NSException exceptionWithName:@"PNRequestValidation"
+                                   reason:@"Not implemented by subclass"
+                                 userInfo:nil];
+}
+
 #pragma mark -
 
 

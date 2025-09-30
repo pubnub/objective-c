@@ -1,6 +1,6 @@
-#import <PubNub/PNPresenceHereNowFetchData.h>
-#import <PubNub/PNStructures.h>
-#import <PubNub/PNCodable.h>
+#import "PNPresenceHereNowFetchData.h"
+#import "PNStructures.h"
+#import "PNCodable.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -29,11 +29,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Private interface declaration
 
-/// Here now presence request response private extensino.
+/// Here now presence request response private extension.
 @interface PNPresenceHereNowFetchData (Private)
 
 
-#pragma mark - Properies
+#pragma mark - Properties
 
 /// Presence information details level.
 @property(assign, nonatomic, readonly) PNHereNowVerbosityLevel verbosityLevel;

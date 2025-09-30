@@ -64,7 +64,9 @@ NS_ASSUME_NONNULL_END
 }
 
 - (instancetype)initWithObject:(NSString *)objectType identifier:(NSString *)identifier {
-    if ((self = [super initWithObject:objectType identifier:identifier])) _includeFields = PNUUIDCustomField;
+    if ((self = [super initWithObject:objectType identifier:identifier])) {
+        _includeFields |= PNUUIDCustomField|PNUUIDStatusField|PNUUIDTypeField;
+    }
     return self;
 }
 
@@ -125,6 +127,24 @@ NS_ASSUME_NONNULL_END
     }
     
     return nil;
+}
+
+
+#pragma mark - Misc
+
+- (NSDictionary *)dictionaryRepresentation {
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary:[super dictionaryRepresentation]];
+    
+    if (self.ifMatchesEtag) dictionary[@"ifMatchesEtag"] = self.ifMatchesEtag;
+    if (self.externalId) dictionary[@"externalId"] = self.externalId;
+    if (self.profileUrl) dictionary[@"profileUrl"] = self.profileUrl;
+    if (self.custom) dictionary[@"custom"] = self.custom;
+    if (self.status) dictionary[@"status"] = self.status;
+    if (self.email) dictionary[@"email"] = self.email;
+    if (self.name) dictionary[@"name"] = self.name;
+    if (self.type) dictionary[@"type"] = self.type;
+    
+    return dictionary;
 }
 
 #pragma mark -

@@ -75,8 +75,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///         // Handle client state modification error. Check `category` property to find out possible issue because of
 ///         // which request did fail.
-///         //
-///         // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -108,8 +106,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///         // Handle client state modification error. Check `category` property to find out possible issue because of
 ///         // which request did fail.
-///         //
-///         // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -169,8 +165,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///         // Handle presence state fetch error. Check `category` property to find out possible issue because of which
 ///         // request did fail.
-///         //
-///         // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```
@@ -199,8 +193,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///     } else {
 ///         // Handle presence state fetch error. Check `category` property to find out possible issue because of which
 ///         // request did fail.
-///         //
-///         // Request can be resent using: `[status retry];`.
 ///     }
 /// }];
 /// ```

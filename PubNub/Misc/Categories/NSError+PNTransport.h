@@ -1,6 +1,5 @@
-#import <Foundation/Foundation.h>
-#import <PubNub/PNTransportRequest.h>
 #import <PubNub/PNTransportResponse.h>
+#import <PubNub/PNTransportRequest.h>
 
 
 NS_ASSUME_NONNULL_BEGIN

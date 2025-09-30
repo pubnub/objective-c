@@ -9,7 +9,7 @@
 #import <PubNub/PubNub.h>
 #import "AppDelegate.h"
 
-@interface AppDelegate () <PNObjectEventListener>
+@interface AppDelegate () <PNEventsListener>
 
 #pragma mark - Properties
 
@@ -76,20 +76,13 @@
 - (void)pubNubInit {
     
     // Initialize PubNub client.
-    self.myConfig = [PNConfiguration configurationWithPublishKey:_pubKey subscribeKey:_subKey];
+    self.myConfig = [PNConfiguration configurationWithPublishKey:_pubKey subscribeKey:_subKey userID:[self randomString]];
     
     [self updateClientConfiguration];
     [self printClientConfiguration];
     
     // Bind config
     self.client = [PubNub clientWithConfiguration:self.myConfig];
-    
-    // Configure logger
-    self.client.logger.enabled = YES;
-    self.client.logger.writeToFile = YES;
-    self.client.logger.maximumLogFileSize = (10 * 1024 * 1024);
-    self.client.logger.maximumNumberOfLogFiles = 10;
-    [self.client.logger setLogLevel:PNVerboseLogLevel];
     
     // Bind didReceiveMessage, didReceiveStatus, and didReceivePresenceEvent 'listeners' to this delegate
     // just be sure the target has implemented the PNObjectEventListener extension
@@ -157,19 +150,6 @@
     [self pubNubAESDecrypt];
     [self pubNubAESEncrypt];
     
-#pragma mark - Message Size Check Methods
-    
-    [self pubNubSizeOfMessage];
-    
-}
-
-- (void)pubNubSizeOfMessage{
-    
-    [self.client sizeOfMessage:@"Connected! I'm here!" toChannel:_channel1
-                withCompletion:^(NSInteger size) {
-                    
-                    NSLog(@"^^^^ Message size: %@", @(size));
-                }];
 }
 
 - (void)pubNubAESDecrypt{
@@ -213,7 +193,10 @@
 - (void)pubNubSetState {
     
     __weak __typeof(self) weakSelf = self;
-    [self.client setState:@{[self randomString] : @{[self randomString] : [self randomString]}} forUUID:_myConfig.uuid onChannel:_channel1 withCompletion:^(PNClientStateUpdateStatus *status) {
+    [self.client setState:@{[self randomString] : @{[self randomString] : [self randomString]}}
+                  forUUID:_myConfig.userID
+                onChannel:_channel1
+           withCompletion:^(PNClientStateUpdateStatus *status) {
         
         __strong __typeof(self) strongSelf = weakSelf;
         [strongSelf handleStatus:status];
@@ -222,7 +205,8 @@
 
 - (void)pubNubGetState{
     
-    [self.client stateForUUID:_myConfig.uuid onChannel:_channel1
+    [self.client stateForUUID:_myConfig.userID
+                    onChannel:_channel1
                withCompletion:^(PNChannelClientStateResult *result, PNErrorStatus *status) {
                    
                    if (status) {
@@ -585,7 +569,7 @@
     
     if (status.category == PNAccessDeniedCategory) {
         
-        NSLog(@"^^^^ handleErrorStatus: PAM Error: for resource Will Auto Retry?: %@", status.willAutomaticallyRetry ? @"YES" : @"NO");
+        NSLog(@"^^^^ handleErrorStatus: PAM Error");
         
         [self handlePAMError:status];
     }
@@ -594,9 +578,8 @@
         NSLog(@"Decryption error. Be sure the data is encrypted and/or encrypted with the correct cipher key.");
         NSLog(@"You can find the raw data returned from the server in the status.data attribute: %@", status.associatedObject);
         if (status.operation == PNSubscribeOperation) {
-            
-            NSLog(@"Decryption failed for message from channel: %@",
-                  ((PNMessageData *)status.associatedObject).channel);
+            PNSubscribeMessageEventData *data = status.associatedObject;
+            NSLog(@"Decryption failed for message from channel: %@\nmessage: %@", data.channel, data.message);
         }
     }
     else if (status.category == PNMalformedFilterExpressionCategory) {
@@ -775,12 +758,12 @@
 #pragma mark - Configuration
 
 - (void)updateClientConfiguration {
-    
     // Set PubNub Configuration
     self.myConfig.TLSEnabled = NO;
-    self.myConfig.uuid = [self randomString];
-    self.myConfig.origin = @"pubsub.pubnub.com";
     self.myConfig.authKey = _authKey;
+    
+    // Configure logger
+    self.myConfig.logLevel = PNDebugLogLevel;
     
     // Presence Settings
     self.myConfig.presenceHeartbeatValue = 120;
@@ -807,7 +790,7 @@
     NSLog(@"TLSEnabled: %@", (self.myConfig.isTLSEnabled ? @"YES" : @"NO"));
     NSLog(@"Origin: %@", self.myConfig.origin);
     NSLog(@"authKey: %@", self.myConfig.authKey);
-    NSLog(@"UUID: %@", self.myConfig.uuid);
+    NSLog(@"UUID: %@", self.myConfig.userID);
     
     // Time Token Handling Settings
     NSLog(@"keepTimeTokenOnChannelChange: %@",

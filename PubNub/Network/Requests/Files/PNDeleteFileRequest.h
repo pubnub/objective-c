@@ -14,6 +14,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// Arbitrary percent encoded query parameters which should be sent along with original API call.
 @property(strong, nullable, nonatomic) NSDictionary *arbitraryQueryParameters;
 
+/// Unique `file` identifier which has been assigned during `file` upload.
+@property(copy, nonatomic, readonly) NSString *identifier;
+
 
 #pragma mark - Initialization and Configuration
 
@@ -21,8 +24,8 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 /// - Parameters:
 ///   - channel: Name of channel from which `file` with `name` should be `deleted`.
-///   - identifier Unique `file` identifier which has been assigned during `file` upload.
-///   - name Name under which uploaded `file` is stored for `channel`.
+///   - identifier: Unique `file` identifier which has been assigned during `file` upload.
+///   - name: Name under which uploaded `file` is stored for `channel`.
 /// - Returns: Ready to use `delete file` request.
 + (instancetype)requestWithChannel:(NSString *)channel identifier:(NSString *)identifier name:(NSString *)name;
 

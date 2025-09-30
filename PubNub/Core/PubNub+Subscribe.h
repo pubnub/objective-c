@@ -143,7 +143,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///   - shouldObservePresence: Whether presence observation should be enabled for `channels` or not.
 - (void)subscribeToChannels:(NSArray<NSString *> *)channels withPresence:(BOOL)shouldObservePresence
     NS_SWIFT_NAME(subscribeToChannels(_:withPresence:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-subscribeWithRequest:' method instead.");
 
 /// Try subscribe on specified set of channels.
@@ -168,7 +168,7 @@ NS_ASSUME_NONNULL_BEGIN
                withPresence:(BOOL)shouldObservePresence
              usingTimeToken:(nullable NSNumber *)timeToken
     NS_SWIFT_NAME(subscribeToChannels(_:withPresence:usingTimeToken:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-subscribeWithRequest:' method instead.");
 
 /// Try subscribe on specified set of channels.
@@ -191,7 +191,7 @@ NS_ASSUME_NONNULL_BEGIN
                withPresence:(BOOL)shouldObservePresence
                 clientState:(nullable NSDictionary<NSString *, id> *)state
     NS_SWIFT_NAME(subscribeToChannels(_:withPresence:clientState:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-subscribeWithRequest:' method instead.");
 
 /// Try subscribe on specified set of channels.
@@ -221,7 +221,7 @@ NS_ASSUME_NONNULL_BEGIN
              usingTimeToken:(nullable NSNumber *)timeToken 
                 clientState:(nullable NSDictionary<NSString *, id> *)state
     NS_SWIFT_NAME(subscribeToChannels(_:withPresence:usingTimeToken:clientState:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-subscribeWithRequest:' method instead.");
 
 /// Try subscribe on specified set of channel groups.
@@ -241,7 +241,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///   - shouldObservePresence: Whether presence observation should be enabled for `groups` or not.
 - (void)subscribeToChannelGroups:(NSArray<NSString *> *)groups withPresence:(BOOL)shouldObservePresence
     NS_SWIFT_NAME(subscribeToChannelGroups(_:withPresence:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-subscribeWithRequest:' method instead.");
 
 /// Try subscribe on specified set of channel groups.
@@ -266,7 +266,7 @@ NS_ASSUME_NONNULL_BEGIN
                     withPresence:(BOOL)shouldObservePresence
                   usingTimeToken:(nullable NSNumber *)timeToken
     NS_SWIFT_NAME(subscribeToChannelGroups(_:withPresence:usingTimeToken:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-subscribeWithRequest:' method instead.");
 
 /// Try subscribe on specified set of channel groups.
@@ -291,7 +291,7 @@ NS_ASSUME_NONNULL_BEGIN
                     withPresence:(BOOL)shouldObservePresence
                      clientState:(nullable NSDictionary<NSString *, id> *)state
     NS_SWIFT_NAME(subscribeToChannelGroups(_:withPresence:clientState:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-subscribeWithRequest:' method instead.");
 
 /// Try subscribe on specified set of channel groups.
@@ -321,7 +321,7 @@ NS_ASSUME_NONNULL_BEGIN
                   usingTimeToken:(nullable NSNumber *)timeToken 
                      clientState:(nullable NSDictionary<NSString *, id> *)state
     NS_SWIFT_NAME(subscribeToChannelGroups(_:withPresence:usingTimeToken:clientState:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-subscribeWithRequest:' method instead.");
 
 /// Enable presence observation on specified `channels`.
@@ -336,7 +336,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// - Parameter channels: List of channel names for which client should try to subscribe on presence observing channels.
 - (void)subscribeToPresenceChannels:(NSArray<NSString *> *)channels
     NS_SWIFT_NAME(subscribeToPresenceChannels(_:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-subscribeWithRequest:' method instead.");
 
 
@@ -380,7 +380,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///   listening for presence event on them.
 - (void)unsubscribeFromChannels:(NSArray<NSString *> *)channels withPresence:(BOOL)shouldObservePresence
     NS_SWIFT_NAME(unsubscribeFromChannels(_:withPresence:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-unsubscribWithRequest:' method instead.");
 
 /// Unsubscribe / leave from specified set of channel groups.
@@ -398,7 +398,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///   listening for presence event on them.
 - (void)unsubscribeFromChannelGroups:(NSArray<NSString *> *)groups withPresence:(BOOL)shouldObservePresence
     NS_SWIFT_NAME(unsubscribeFromChannelGroups(_:withPresence:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-unsubscribWithRequest:' method instead.");
 
 /// Disable presence events observation on specified channels.
@@ -412,7 +412,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// channels.
 - (void)unsubscribeFromPresenceChannels:(NSArray<NSString *> *)channels
     NS_SWIFT_NAME(unsubscribeFromPresenceChannels(_:))
-    DEPRECATED_MSG_ATTRIBUTE("This method deprecated since and will be removed with next major update. Please use "
+    DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-unsubscribWithRequest:' method instead.");
 
 /// Unsubscribe from all channels and groups on which client has been subscribed so far.

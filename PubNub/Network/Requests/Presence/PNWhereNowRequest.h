@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Create `User presence` request.
 ///
-/// - Parameter userId: Unique identifer of the user for which presence information should be retrieved.
+/// - Parameter userId: Unique identifier of the user for which presence information should be retrieved.
 /// - Returns: Ready to use `User presence` request.
 + (instancetype)requestForUserId:(NSString *)userId;
 

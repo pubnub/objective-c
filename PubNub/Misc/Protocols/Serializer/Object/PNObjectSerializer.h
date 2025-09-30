@@ -36,7 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 /// - Parameters:
 ///   - aClass: Expected class of de-serialized object.
-///   - object: Custom or native object which should be serialized.
+///   - data: Custom or native object which should be serialized.
 ///   - error: If an error occurs, upon return contains an `NSError` object that describes the problem.
 /// - Returns: De-serialized object, or `nil` in case of decoding failure.
 - (nullable id)objectOfClass:(Class)aClass fromData:(id)data withError:(NSError * _Nullable *)error;
@@ -48,7 +48,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 /// - Parameters:
 ///   - aClass: Expected class of de-serialized object.
-///   - object: Custom or native object which should be serialized.
+///   - data: Custom or native object which should be serialized.
 ///   - additionalData: Additional information which can be used by `aClass` custom initializer.
 ///   - error: If an error occurs, upon return contains an `NSError` object that describes the problem.
 /// - Returns: De-serialized object, or `nil` in case of decoding failure.

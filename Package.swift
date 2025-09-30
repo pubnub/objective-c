@@ -36,10 +36,10 @@ import PackageDescription
 let package = Package(
   name: "PubNub",
   platforms: [
-    .iOS(.v9),
-    .macOS(.v10_11),
-    .tvOS(.v10),
-    .watchOS(.v4)
+    .iOS(.v14),
+    .macOS(.v11),
+    .tvOS(.v14),
+    .watchOS(.v7)
   ],
   products: [
     .library(
@@ -53,7 +53,7 @@ let package = Package(
       name: "PubNub",
       dependencies: [],
       path: "Sources/PubNub",
-      resources: [.copy("PrivacyInfo.xcprivacy")]
+      resources: [.copy("../../Framework/PubNub/PrivacyInfo.xcprivacy")]
     )
   ],
   swiftLanguageVersions: [.v5]

@@ -134,21 +134,29 @@
         
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client addChannels:self.channels toGroup:channelGroup
-                  withCompletion:^(PNAcknowledgmentStatus *status) {
+        PNChannelGroupManageRequest *request = [PNChannelGroupManageRequest requestToAddChannels:self.channels
+                                                                                  toChannelGroup:channelGroup];
+        __block __weak PNChannelGroupChangeCompletionBlock weakBlock;
+        __block PNChannelGroupChangeCompletionBlock block;
+        
+        block =^(PNAcknowledgmentStatus *status) {
+            __strong PNChannelGroupChangeCompletionBlock strongBlock = weakBlock;
+            if (!strongBlock) XCTFail(@"Completion block invalidated.");
             
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNAddChannelsToGroupOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             if (!retried) {
                 retried = YES;
-                [status retry];
+                [self.client manageChannelGroupWithRequest:request completion:strongBlock];
             } else {
                 handler();
             }
-        }];
+        };
+        
+        weakBlock = block;
+        [self.client manageChannelGroupWithRequest:request completion:block];
     }];
 }
 
@@ -222,21 +230,29 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client removeChannels:self.channels fromGroup:channelGroup
-                     withCompletion:^(PNAcknowledgmentStatus *status) {
+        PNChannelGroupManageRequest *request = [PNChannelGroupManageRequest requestToRemoveChannels:self.channels
+                                                                                   fromChannelGroup:channelGroup];
+        __block __weak PNChannelGroupChangeCompletionBlock weakBlock;
+        __block PNChannelGroupChangeCompletionBlock block;
+        
+        block = ^(PNAcknowledgmentStatus *status) {
+            __strong PNChannelGroupChangeCompletionBlock strongBlock = weakBlock;
+            if (!weakBlock) XCTFail(@"Completion block invalidated.");
             
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNRemoveChannelsFromGroupOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             if (!retried) {
                 retried = YES;
-                [status retry];
+                [self.client manageChannelGroupWithRequest:request completion:strongBlock];
             } else {
                 handler();
             }
-        }];
+        };
+        
+        weakBlock = block;
+        [self.client manageChannelGroupWithRequest:request completion:block];
     }];
         
         
@@ -315,19 +331,28 @@
         
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client removeChannelsFromGroup:channelGroup withCompletion:^(PNAcknowledgmentStatus *status) {
+        PNChannelGroupManageRequest *request = [PNChannelGroupManageRequest requestToRemoveChannelGroup:channelGroup];
+        __block __weak PNChannelGroupChangeCompletionBlock weakBlock;
+        __block PNChannelGroupChangeCompletionBlock block;
+        
+        block = ^(PNAcknowledgmentStatus *status) {
+            __strong PNChannelGroupChangeCompletionBlock strongBlock = weakBlock;
+            if (!weakBlock) XCTFail(@"Completion block invalidated.");
+            
             XCTAssertTrue(status.isError);
             XCTAssertEqual(status.operation, PNRemoveGroupOperation);
             XCTAssertEqual(status.category, PNBadRequestCategory);
-            XCTAssertEqual(status.statusCode, 400);
             
             if (!retried) {
                 retried = YES;
-                [status retry];
+                [self.client manageChannelGroupWithRequest:request completion:strongBlock];
             } else {
                 handler();
             }
-        }];
+        };
+        
+        weakBlock = block;
+        [self.client manageChannelGroupWithRequest:request completion:block];
     }];
         
         
@@ -380,16 +405,19 @@
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client channelsForGroup:self.channelGroup
-                       withCompletion:^(PNChannelGroupChannelsResult *result, PNErrorStatus *status) {
-            
+        PNChannelGroupFetchRequest *request = [PNChannelGroupFetchRequest requestWithChannelGroup:self.channelGroup];
+        __block __weak PNGroupChannelsAuditCompletionBlock weakBlock;
+        __block PNGroupChannelsAuditCompletionBlock block;
+        
+        block = ^(PNChannelGroupChannelsResult *result, PNErrorStatus *status) {
+            __strong PNGroupChannelsAuditCompletionBlock strongBlock = weakBlock;
             if (!retried) {
                 XCTAssertTrue(status.isError);
                 XCTAssertEqual(status.operation, PNChannelsForGroupOperation);
                 XCTAssertEqual(status.category, PNMalformedResponseCategory);
                 
                 retried = YES;
-                [status retry];
+                [self.client fetchChannelsForChannelGroupWithRequest:request completion:strongBlock];
             } else {
                 NSSet *fetchedChannelsSet = [NSSet setWithArray:result.data.channels];
                 XCTAssertNil(status);
@@ -399,7 +427,10 @@
                 
                 handler();
             }
-        }];
+        };
+        
+        weakBlock = block;
+        [self.client fetchChannelsForChannelGroupWithRequest:request completion:block];
     }];
 }
 

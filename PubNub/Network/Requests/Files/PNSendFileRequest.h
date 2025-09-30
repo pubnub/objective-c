@@ -22,6 +22,12 @@ NS_ASSUME_NONNULL_BEGIN
 /// `NSDictionary` with values which should be used by **PubNub** service to filter `file messages`.
 @property(strong, nullable, nonatomic) NSDictionary *fileMessageMetadata;
 
+/// Crypto module which should be used for uploaded data _encryption_.
+///
+/// This property allows setting up data _encryption_ using a different crypto module than the one set during **PubNub**
+/// client instance configuration.
+@property(strong, nullable, nonatomic) id<PNCryptoProvider> cryptoModule;
+
 /// User-specified message type.
 ///
 /// > Important: string limited by **3**-**50** case-sensitive alphanumeric characters with only `-` and `_` special
@@ -32,7 +38,9 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 /// This property allows setting up data _encryption_ using a different cipher key than the one set during **PubNub**
 /// client instance configuration.
-@property(copy, nullable, nonatomic) NSString *cipherKey;
+@property(copy, nullable, nonatomic) NSString *cipherKey
+    DEPRECATED_MSG_ATTRIBUTE("This property deprecated and will be removed with next major update. Please use "
+                             "`cryptoModule` instead.");
 
 /// How long message should be stored in channel's storage.
 ///
