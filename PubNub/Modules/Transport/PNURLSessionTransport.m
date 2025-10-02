@@ -118,6 +118,25 @@ NS_ASSUME_NONNULL_BEGIN
                               withURL:(nullable NSURL *)requestUrl
                                 error:(nullable NSError *)transportError;
 
+/// Format information available in task transaction metrics.
+///
+/// > Note: This is a helper method for logger support.
+///
+/// - Parameters:
+///   - transaction: Single task request transaction object with request processing metrics.
+///   - isRedirection: Whether the transaction is part of a redirection chain or not.
+/// - Returns: Formatted object suitable for output with logger.
+- (NSDictionary *)formattedMetricsWithTransaction:(NSURLSessionTaskTransactionMetrics *)transaction
+                                      redirection:(BOOL)isRedirection;
+
+/// Compose single event duration string.
+///
+/// - Parameters:
+///   - start: Request event start date.
+///   - end: Request event end date (if completed without error).
+/// - Returns: String with event start and duration.
+- (NSString *)metricEventDurationWithStart:(NSDate *)start end:(nullable NSDate *)end;
+
 /// Print out any session configuration instance customizations which have been done by developer.
 - (void)printIfRequiredSessionCustomizationInformation;
 
@@ -429,6 +448,30 @@ NS_ASSUME_NONNULL_END
     return configuration;
 }
 
+- (void)URLSession:(NSURLSession *)session
+                          task:(NSURLSessionTask *)task
+    didFinishCollectingMetrics:(NSURLSessionTaskMetrics *)metrics {
+    [self.configuration.logger traceWithLocation:@"PNURLSessionTransport" andMessageFactory:^PNLogEntry * {
+        BOOL hasRedirections = metrics.redirectCount > 0;
+        NSMutableDictionary *metricsData = [@{
+            @"url": task.originalRequest.URL.absoluteString,
+            @"redirectionsCount": @(metrics.redirectCount),
+            @"duration": PNStringFormat(@"%.4f", metrics.taskInterval.duration),
+            @"transactions": [NSMutableArray new]
+        } mutableCopy];
+        
+        [metrics.transactionMetrics enumerateObjectsUsingBlock:^(NSURLSessionTaskTransactionMetrics *transaction,
+                                                                 __unused NSUInteger transactionIdx,
+                                                                 __unused BOOL *stop) {
+            NSDictionary *data = [self formattedMetricsWithTransaction:transaction redirection:hasRedirections];
+            [(NSMutableArray *)metricsData[@"transactions"] addObject:data];
+        }];
+        
+        
+        return [PNDictionaryLogEntry entryWithMessage:metricsData details:@"Request processing metrics:"];
+    }];
+}
+
 - (void)URLSession:(NSURLSession *)session didBecomeInvalidWithError:(NSError *)error {
     if (!error) return;
     
@@ -504,6 +547,78 @@ NS_ASSUME_NONNULL_END
     }
     
     return error;
+}
+
+- (NSDictionary *)formattedMetricsWithTransaction:(NSURLSessionTaskTransactionMetrics *)transaction
+                                      redirection:(BOOL)isRedirection {
+    NSMutableDictionary *data = [@{
+        @"persistent": @(transaction.isReusedConnection),
+        @"proxied": @(transaction.isProxyConnection),
+        @"constrained": @(transaction.isConstrained),
+        @"expensive": @(transaction.isExpensive),
+        @"multipath": @(transaction.isMultipath),
+        @"cellular": @(transaction.isCellular),
+    } mutableCopy];
+    NSMutableDictionary *timings = [NSMutableDictionary new];
+    NSURLRequest *request = transaction.request;
+    
+    if (isRedirection) data[@"url"] = request.URL.absoluteString;
+    if (transaction.negotiatedTLSProtocolVersion) data[@"tlsProtocolVersion"] = transaction.negotiatedTLSProtocolVersion;
+    if (transaction.networkProtocolName) data[@"protocol"] = transaction.networkProtocolName;
+    if (transaction.remoteAddress) {
+        data[@"remoteAddress"] = transaction.remoteAddress;
+        if (transaction.remotePort)
+            data[@"remoteAddress"] = PNStringFormat(@"%@:%@", data[@"remoteAddress"], transaction.remotePort);
+    }
+    
+    if(transaction.fetchStartDate) {
+        timings[@"fetch"] = [self metricEventDurationWithStart:transaction.fetchStartDate
+                                                           end:transaction.responseEndDate];
+    }
+    
+    if (transaction.isReusedConnection && !transaction.domainLookupStartDate)
+        timings[@"domainLookup"] = @"- (duration: 0.0000)";
+    else if (transaction.domainLookupStartDate) {
+        timings[@"domainLookup"] = [self metricEventDurationWithStart:transaction.domainLookupStartDate
+                                                                  end:transaction.domainLookupEndDate];
+    }
+    
+    if (transaction.isReusedConnection && !transaction.connectStartDate)
+        timings[@"connection"] = @"- (duration: 0.0000)";
+    else if (transaction.connectStartDate) {
+        timings[@"connection"] = [self metricEventDurationWithStart:transaction.connectStartDate
+                                                                end:transaction.connectEndDate];
+    }
+    
+    if (transaction.isReusedConnection && !transaction.secureConnectionStartDate)
+        timings[@"secureConnection"] = @"- (duration: 0.0000)";
+    else if (transaction.secureConnectionStartDate) {
+        timings[@"secureConnection"] = [self metricEventDurationWithStart:transaction.secureConnectionStartDate
+                                                                      end:transaction.secureConnectionEndDate];
+    }
+    
+    if (transaction.requestStartDate) {
+        timings[@"request"] = [self metricEventDurationWithStart:transaction.requestStartDate
+                                                             end:transaction.requestEndDate];
+    }
+    
+    if (transaction.requestStartDate) {
+        timings[@"response"] = [self metricEventDurationWithStart:transaction.responseStartDate
+                                                              end:transaction.responseEndDate];
+    }
+    
+    if (timings.count) data[@"timings"] = timings;
+    
+    return data;
+}
+
+- (NSString *)metricEventDurationWithStart:(NSDate *)start end:(NSDate *)end {
+    NSMutableString *duration = [start.description mutableCopy];
+    
+    if (end) [duration appendFormat:@" (duration: %.4f)", [end timeIntervalSinceDate:start]];
+    else [duration appendString:@" (incomplete)"];
+    
+    return duration;
 }
 
 - (void)printIfRequiredSessionCustomizationInformation {
