@@ -1,3 +1,9 @@
+## v6.1.0
+October 02 2025
+
+#### Added
+- Add request processing metrics log with the `trace` level.
+
 ## v6.0.0
 September 30 2025
 
