@@ -1366,6 +1366,16 @@ NS_ASSUME_NONNULL_END
                 NSString *redirection = [self formattedMetricsDataFrom:transaction redirection:YES];
                 [redirections addObject:redirection];
             }
+        } else if (self.client.logger.logLevel & PNAPICallLogLevel &&
+                   transaction.fetchStartDate &&
+                   transaction.requestEndDate &&
+                   [transaction.requestEndDate timeIntervalSinceDate:transaction.fetchStartDate] > 3.f) {
+            NSMutableString *metrics = [self formattedMetricsDataFrom:transaction redirection:NO];
+            [metrics replaceOccurrencesOfString:self.client.configuration.uuid withString:@"uu***id"
+                                        options:NSCaseInsensitiveSearch range:NSMakeRange(0, metrics.length)];
+            [metrics replaceOccurrencesOfString:self.client.configuration.authKey withString:@"au***ey"
+                                        options:NSCaseInsensitiveSearch range:NSMakeRange(0, metrics.length)];
+            PNLogAPICall(self.client.logger, @"%@", metrics);
         }
 
         NSTimeInterval responseStartDate = [transaction.requestStartDate timeIntervalSince1970];
