@@ -1373,8 +1373,10 @@ NS_ASSUME_NONNULL_END
             NSMutableString *metrics = [self formattedMetricsDataFrom:transaction redirection:NO];
             [metrics replaceOccurrencesOfString:self.client.configuration.uuid withString:@"uu***id"
                                         options:NSCaseInsensitiveSearch range:NSMakeRange(0, metrics.length)];
-            [metrics replaceOccurrencesOfString:self.client.configuration.authKey withString:@"au***ey"
-                                        options:NSCaseInsensitiveSearch range:NSMakeRange(0, metrics.length)];
+            if (self.client.configuration.authKey) {
+                [metrics replaceOccurrencesOfString:self.client.configuration.authKey withString:@"au***ey"
+                                            options:NSCaseInsensitiveSearch range:NSMakeRange(0, metrics.length)];
+            }
             PNLogAPICall(self.client.logger, @"%@", metrics);
         }
 
@@ -1464,6 +1466,11 @@ NS_ASSUME_NONNULL_END
     [metricsData appendFormat:@" (%@; ", transaction.networkProtocolName?: @"<unknown>"];
     [metricsData appendFormat:@"persistent: %@; ", transaction.isReusedConnection ? @"YES": @"NO"];
     [metricsData appendFormat:@"proxy: %@; ", transaction.isProxyConnection ? @"YES": @"NO"];
+    if (transaction.remoteAddress) {
+        [metricsData appendFormat:@"remote address: %@%@; ",
+         transaction.remoteAddress,
+         transaction.remotePort ? [@":" stringByAppendingString:transaction.remotePort.description] : @""];
+    }
     
     // Add request duration.
     NSDate *fetchStartDate = transaction.fetchStartDate;
