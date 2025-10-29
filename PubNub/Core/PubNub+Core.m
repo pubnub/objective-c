@@ -23,6 +23,7 @@
 #import "PNKeychain+Private.h"
 #import "PNSubscribeStatus.h"
 #import "PubNub+PAMPrivate.h"
+#import "PNNetworkMonitor.h"
 #import "PNEventsListener.h"
 #import "PNResult+Private.h"
 #import "PNStatus+Private.h"
@@ -102,6 +103,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Properties
 
+@property (strong, nonatomic) PNNetworkMonitor *networkMonitor;
 @property (nonatomic, nullable, strong) dispatch_queue_t resourceAccessQueue;
 @property (nonatomic, strong) PNLLogger *logger;
 @property (nonatomic, strong) dispatch_queue_t callbackQueue;
@@ -300,6 +302,7 @@ NS_ASSUME_NONNULL_END
         _listenersManager = [PNStateListener stateListenerForClient:self];
         _heartbeatManager = [PNHeartbeat heartbeatForClient:self];
         _telemetryManager = [PNTelemetry new];
+        _networkMonitor = [PNNetworkMonitor monitorForClient:self];
 
         [self addListener:self];
         [self prepareReachability];
@@ -805,6 +808,8 @@ NS_ASSUME_NONNULL_END
     [_telemetryManager invalidate];
     [_filesManager invalidate];
     _filesManager = nil;
+    [_networkMonitor invalidate];
+    _networkMonitor = nil;
 }
 
 #pragma mark -

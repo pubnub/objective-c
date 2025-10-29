@@ -181,7 +181,6 @@
 				511725D01BE92F7B008F069E /* Sources */,
 				511725D11BE92F7B008F069E /* Frameworks */,
 				511725D21BE92F7B008F069E /* Resources */,
-				79258BFB218645C4009C5FBE /* Cleanup CocoaPods scripts */,
 			);
 			buildRules = (
 			);
@@ -199,7 +198,6 @@
 				6003F586195388D20070C39A /* Sources */,
 				6003F587195388D20070C39A /* Frameworks */,
 				6003F588195388D20070C39A /* Resources */,
-				79258BF9218645A0009C5FBE /* Cleanup CocoaPods scripts */,
 			);
 			buildRules = (
 			);
@@ -271,37 +269,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		79258BF9218645A0009C5FBE /* Cleanup CocoaPods scripts */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Cleanup CocoaPods scripts";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "find \"${TARGET_TEMP_DIR}\" -name 'Script-*.sh' -exec rm -rf {} \\;\n";
-		};
-		79258BFB218645C4009C5FBE /* Cleanup CocoaPods scripts */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Cleanup CocoaPods scripts";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "find \"${TARGET_TEMP_DIR}\" -name 'Script-*.sh' -exec rm -rf {} \\;\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		511725D01BE92F7B008F069E /* Sources */ = {

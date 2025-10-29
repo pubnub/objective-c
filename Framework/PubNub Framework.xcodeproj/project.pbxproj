@@ -2493,6 +2493,16 @@
 		A5A7B0332349330F0060113B /* PNBaseMessageActionRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = A5A7AFF82349330F0060113B /* PNBaseMessageActionRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A5A7B0342349330F0060113B /* PNBaseMessageActionRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = A5A7AFF82349330F0060113B /* PNBaseMessageActionRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A5A7B0362349330F0060113B /* PNBaseMessageActionRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = A5A7AFF82349330F0060113B /* PNBaseMessageActionRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A5E5A57B2EB2AA3500111F9D /* PNNetworkMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E5A57A2EB2AA3500111F9D /* PNNetworkMonitor.m */; };
+		A5E5A57C2EB2AA3500111F9D /* PNNetworkMonitor.h in Headers */ = {isa = PBXBuildFile; fileRef = A5E5A5792EB2AA3500111F9D /* PNNetworkMonitor.h */; };
+		A5E5A57D2EB2AA3500111F9D /* PNNetworkMonitor.h in Headers */ = {isa = PBXBuildFile; fileRef = A5E5A5792EB2AA3500111F9D /* PNNetworkMonitor.h */; };
+		A5E5A57E2EB2AA3500111F9D /* PNNetworkMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E5A57A2EB2AA3500111F9D /* PNNetworkMonitor.m */; };
+		A5E5A57F2EB2AA3500111F9D /* PNNetworkMonitor.h in Headers */ = {isa = PBXBuildFile; fileRef = A5E5A5792EB2AA3500111F9D /* PNNetworkMonitor.h */; };
+		A5E5A5802EB2AA3500111F9D /* PNNetworkMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E5A57A2EB2AA3500111F9D /* PNNetworkMonitor.m */; };
+		A5E5A5812EB2AA3500111F9D /* PNNetworkMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E5A57A2EB2AA3500111F9D /* PNNetworkMonitor.m */; };
+		A5E5A5822EB2AA3500111F9D /* PNNetworkMonitor.h in Headers */ = {isa = PBXBuildFile; fileRef = A5E5A5792EB2AA3500111F9D /* PNNetworkMonitor.h */; };
+		A5E5A5832EB2AA3500111F9D /* PNNetworkMonitor.h in Headers */ = {isa = PBXBuildFile; fileRef = A5E5A5792EB2AA3500111F9D /* PNNetworkMonitor.h */; };
+		A5E5A5842EB2AA3500111F9D /* PNNetworkMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E5A57A2EB2AA3500111F9D /* PNNetworkMonitor.m */; };
 		A5FADC342490270E001D7704 /* PubNub+Files.h in Headers */ = {isa = PBXBuildFile; fileRef = A5FADC322490270E001D7704 /* PubNub+Files.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A5FADC352490270E001D7704 /* PubNub+Files.h in Headers */ = {isa = PBXBuildFile; fileRef = A5FADC322490270E001D7704 /* PubNub+Files.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A5FADC362490270E001D7704 /* PubNub+Files.h in Headers */ = {isa = PBXBuildFile; fileRef = A5FADC322490270E001D7704 /* PubNub+Files.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -3043,6 +3053,8 @@
 		A5A7AFF62349330E0060113B /* PNRemoveMessageActionRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PNRemoveMessageActionRequest.m; path = Message/PNRemoveMessageActionRequest.m; sourceTree = "<group>"; };
 		A5A7AFF72349330F0060113B /* PNRemoveMessageActionRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PNRemoveMessageActionRequest.h; path = Message/PNRemoveMessageActionRequest.h; sourceTree = "<group>"; };
 		A5A7AFF82349330F0060113B /* PNBaseMessageActionRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PNBaseMessageActionRequest.h; path = Message/PNBaseMessageActionRequest.h; sourceTree = "<group>"; };
+		A5E5A5792EB2AA3500111F9D /* PNNetworkMonitor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNNetworkMonitor.h; sourceTree = "<group>"; };
+		A5E5A57A2EB2AA3500111F9D /* PNNetworkMonitor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNNetworkMonitor.m; sourceTree = "<group>"; };
 		A5FADC322490270E001D7704 /* PubNub+Files.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PubNub+Files.h"; sourceTree = "<group>"; };
 		A5FADC332490270E001D7704 /* PubNub+Files.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "PubNub+Files.m"; sourceTree = "<group>"; };
 		A5FADC3F2490292A001D7704 /* PNSendFileRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNSendFileRequest.h; sourceTree = "<group>"; };
@@ -3570,6 +3582,8 @@
 				79CBB0F11BD03DE4001FC34D /* PNNetworkResponseSerializer.m */,
 				79CBB0F41BD03DE4001FC34D /* PNRequestParameters.h */,
 				79CBB0F51BD03DE4001FC34D /* PNRequestParameters.m */,
+				A5E5A5792EB2AA3500111F9D /* PNNetworkMonitor.h */,
+				A5E5A57A2EB2AA3500111F9D /* PNNetworkMonitor.m */,
 				79CBB0F21BD03DE4001FC34D /* PNReachability.h */,
 				79CBB0F31BD03DE4001FC34D /* PNReachability.m */,
 				79CBB0F61BD03DE4001FC34D /* PNURLBuilder.h */,
@@ -4269,6 +4283,7 @@
 				793887041BEAD49100DCC662 /* PNNumber.h in Headers */,
 				A57A30B2238DC6B600DE8C68 /* PNAPNSNotificationPayload.h in Headers */,
 				7915828C1BD709C60084FC70 /* PNParser.h in Headers */,
+				A5E5A57D2EB2AA3500111F9D /* PNNetworkMonitor.h in Headers */,
 				A5046E2F2478471D0008C81E /* PNSetChannelMembersRequest.h in Headers */,
 				7915828B1BD709C60084FC70 /* PNString.h in Headers */,
 				A57A3069238D6BCC00DE8C68 /* PNFCMNotificationPayload.h in Headers */,
@@ -4544,6 +4559,7 @@
 				791583341BD709D10084FC70 /* PNString.h in Headers */,
 				A57A30B4238DC6B600DE8C68 /* PNAPNSNotificationPayload.h in Headers */,
 				79A0D95C1DC230FE0039A264 /* PNUnsubscribeAPICallBuilder.h in Headers */,
+				A5E5A57C2EB2AA3500111F9D /* PNNetworkMonitor.h in Headers */,
 				A5046E312478471D0008C81E /* PNSetChannelMembersRequest.h in Headers */,
 				7915831D1BD709D10084FC70 /* PNResult.h in Headers */,
 				A57A306B238D6BCC00DE8C68 /* PNFCMNotificationPayload.h in Headers */,
@@ -4815,6 +4831,7 @@
 				798842281C18F02F003E8948 /* PubNub+APNS.h in Headers */,
 				A5A4517E246D8CBE008ECC74 /* PNBaseObjectsMembershipRequest.h in Headers */,
 				79A0D8751DC22F0A0039A264 /* PNAPICallBuilder+Private.h in Headers */,
+				A5E5A57F2EB2AA3500111F9D /* PNNetworkMonitor.h in Headers */,
 				798842311C18F0A6003E8948 /* PubNub+Core.h in Headers */,
 				7988429A1C18F2AD003E8948 /* PNLogMacro.h in Headers */,
 				79E2D0F21C56434700BAA244 /* PNKeychain.h in Headers */,
@@ -5093,6 +5110,7 @@
 				79A8BCA21C58F93900015BDE /* PNString.h in Headers */,
 				A57A30B3238DC6B600DE8C68 /* PNAPNSNotificationPayload.h in Headers */,
 				79A0D95B1DC230FE0039A264 /* PNUnsubscribeAPICallBuilder.h in Headers */,
+				A5E5A5832EB2AA3500111F9D /* PNNetworkMonitor.h in Headers */,
 				A5046E302478471D0008C81E /* PNSetChannelMembersRequest.h in Headers */,
 				79A8BC8A1C58F93900015BDE /* PNResult.h in Headers */,
 				A57A306A238D6BCC00DE8C68 /* PNFCMNotificationPayload.h in Headers */,
@@ -5368,6 +5386,7 @@
 				79CBB13A1BD03DE4001FC34D /* PNResult.h in Headers */,
 				A57A30B5238DC6B600DE8C68 /* PNAPNSNotificationPayload.h in Headers */,
 				79A0D95D1DC230FF0039A264 /* PNUnsubscribeAPICallBuilder.h in Headers */,
+				A5E5A5822EB2AA3500111F9D /* PNNetworkMonitor.h in Headers */,
 				A5046E322478471D0008C81E /* PNSetChannelMembersRequest.h in Headers */,
 				79CBB1401BD03DE4001FC34D /* PNStatus.h in Headers */,
 				A57A306C238D6BCC00DE8C68 /* PNFCMNotificationPayload.h in Headers */,
@@ -6014,6 +6033,7 @@
 				A5105B57238F027D00CB693D /* PNDate.m in Sources */,
 				791582101BD709C60084FC70 /* PNDictionary.m in Sources */,
 				791582321BD709C60084FC70 /* PNURLRequest.m in Sources */,
+				A5E5A57E2EB2AA3500111F9D /* PNNetworkMonitor.m in Sources */,
 				A55BCD0D231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.m in Sources */,
 				A5046EFD24784CAB0008C81E /* PNRemoveChannelMembersAPICallBuilder.m in Sources */,
 				A57A3070238D6BCC00DE8C68 /* PNFCMNotificationPayload.m in Sources */,
@@ -6244,6 +6264,7 @@
 				A5105B59238F027D00CB693D /* PNDate.m in Sources */,
 				791582DC1BD709D10084FC70 /* PNTimeParser.m in Sources */,
 				791582DB1BD709D10084FC70 /* PNURLRequest.m in Sources */,
+				A5E5A57B2EB2AA3500111F9D /* PNNetworkMonitor.m in Sources */,
 				A55BCD0F231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.m in Sources */,
 				A5046E9F24784CAA0008C81E /* PNRemoveChannelMembersAPICallBuilder.m in Sources */,
 				A57A3072238D6BCC00DE8C68 /* PNFCMNotificationPayload.m in Sources */,
@@ -6474,6 +6495,7 @@
 				A5105B5C238F027D00CB693D /* PNDate.m in Sources */,
 				798842C21C18F2EB003E8948 /* PNTimeParser.m in Sources */,
 				798842731C18F1E3003E8948 /* PNTimeResult.m in Sources */,
+				A5E5A5802EB2AA3500111F9D /* PNNetworkMonitor.m in Sources */,
 				A55BCD12231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.m in Sources */,
 				A5046E4124784CA90008C81E /* PNRemoveChannelMembersAPICallBuilder.m in Sources */,
 				A57A3075238D6BCC00DE8C68 /* PNFCMNotificationPayload.m in Sources */,
@@ -6704,6 +6726,7 @@
 				A5105B58238F027D00CB693D /* PNDate.m in Sources */,
 				79A8BC481C58F93900015BDE /* PNTimeParser.m in Sources */,
 				79A8BC471C58F93900015BDE /* PNURLRequest.m in Sources */,
+				A5E5A5842EB2AA3500111F9D /* PNNetworkMonitor.m in Sources */,
 				A55BCD0E231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.m in Sources */,
 				A5046ECE24784CAB0008C81E /* PNRemoveChannelMembersAPICallBuilder.m in Sources */,
 				A57A3071238D6BCC00DE8C68 /* PNFCMNotificationPayload.m in Sources */,
@@ -6934,6 +6957,7 @@
 				A5105B5A238F027D00CB693D /* PNDate.m in Sources */,
 				79CBB1141BD03DE4001FC34D /* PNSubscriber.m in Sources */,
 				79CBB1071BD03DE4001FC34D /* PubNub+State.m in Sources */,
+				A5E5A5812EB2AA3500111F9D /* PNNetworkMonitor.m in Sources */,
 				A55BCD10231D22400019DB68 /* PNFetchMessagesActionsAPICallBuilder.m in Sources */,
 				A5046E7024784CAA0008C81E /* PNRemoveChannelMembersAPICallBuilder.m in Sources */,
 				A57A3073238D6BCC00DE8C68 /* PNFCMNotificationPayload.m in Sources */,
@@ -7075,7 +7099,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = "PubNub/PubNub-iOS-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CFLAGS = "";
@@ -7104,7 +7128,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = "PubNub/PubNub-iOS-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CFLAGS = "";
@@ -7142,7 +7166,7 @@
 				SUPPORTED_PLATFORMS = "watchsimulator watchos";
 				TARGETED_DEVICE_FAMILY = 4;
 				TVOS_DEPLOYMENT_TARGET = 10.0;
-				WATCHOS_DEPLOYMENT_TARGET = 4.0;
+				WATCHOS_DEPLOYMENT_TARGET = 8.7;
 			};
 			name = Debug;
 		};
@@ -7169,7 +7193,7 @@
 				SUPPORTED_PLATFORMS = "watchsimulator watchos";
 				TARGETED_DEVICE_FAMILY = 4;
 				TVOS_DEPLOYMENT_TARGET = 10.0;
-				WATCHOS_DEPLOYMENT_TARGET = 4.0;
+				WATCHOS_DEPLOYMENT_TARGET = 8.7;
 			};
 			name = Release;
 		};
@@ -7188,7 +7212,7 @@
 					"$(inherited)",
 				);
 				GENERATE_MASTER_OBJECT_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
@@ -7213,7 +7237,7 @@
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = "PN_STATIC_LIBRARY=1";
 				GENERATE_MASTER_OBJECT_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
@@ -7284,7 +7308,7 @@
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "appletvsimulator appletvos";
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 10.0;
+				TVOS_DEPLOYMENT_TARGET = 15.6;
 				WATCHOS_DEPLOYMENT_TARGET = 4.0;
 			};
 			name = Debug;
@@ -7312,7 +7336,7 @@
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "appletvsimulator appletvos";
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 10.0;
+				TVOS_DEPLOYMENT_TARGET = 15.6;
 				WATCHOS_DEPLOYMENT_TARGET = 4.0;
 			};
 			name = Release;
@@ -7477,7 +7501,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -7508,7 +7532,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
