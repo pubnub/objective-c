@@ -1393,10 +1393,10 @@ features:
 sdks:
   - full-name: Objective-C SDK
     short-name: Objective-C
+    tier: 1
     artifacts:
       - artifact-type: api-client
         language: Objective-C
-        tier: 1
         tags:
           - Desktop
           - Mobile
