@@ -2640,16 +2640,6 @@
 		A57A3072238D6BCC00DE8C68 /* PNFCMNotificationPayload.m in Sources */ = {isa = PBXBuildFile; fileRef = A57A3068238D6BCC00DE8C68 /* PNFCMNotificationPayload.m */; };
 		A57A3073238D6BCC00DE8C68 /* PNFCMNotificationPayload.m in Sources */ = {isa = PBXBuildFile; fileRef = A57A3068238D6BCC00DE8C68 /* PNFCMNotificationPayload.m */; };
 		A57A3075238D6BCC00DE8C68 /* PNFCMNotificationPayload.m in Sources */ = {isa = PBXBuildFile; fileRef = A57A3068238D6BCC00DE8C68 /* PNFCMNotificationPayload.m */; };
-		A57A3089238D751400DE8C68 /* PNMPNSNotificationPayload.h in Headers */ = {isa = PBXBuildFile; fileRef = A57A3087238D751400DE8C68 /* PNMPNSNotificationPayload.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A57A308A238D751400DE8C68 /* PNMPNSNotificationPayload.h in Headers */ = {isa = PBXBuildFile; fileRef = A57A3087238D751400DE8C68 /* PNMPNSNotificationPayload.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A57A308B238D751400DE8C68 /* PNMPNSNotificationPayload.h in Headers */ = {isa = PBXBuildFile; fileRef = A57A3087238D751400DE8C68 /* PNMPNSNotificationPayload.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A57A308C238D751400DE8C68 /* PNMPNSNotificationPayload.h in Headers */ = {isa = PBXBuildFile; fileRef = A57A3087238D751400DE8C68 /* PNMPNSNotificationPayload.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A57A308E238D751400DE8C68 /* PNMPNSNotificationPayload.h in Headers */ = {isa = PBXBuildFile; fileRef = A57A3087238D751400DE8C68 /* PNMPNSNotificationPayload.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A57A3090238D751400DE8C68 /* PNMPNSNotificationPayload.m in Sources */ = {isa = PBXBuildFile; fileRef = A57A3088238D751400DE8C68 /* PNMPNSNotificationPayload.m */; };
-		A57A3091238D751400DE8C68 /* PNMPNSNotificationPayload.m in Sources */ = {isa = PBXBuildFile; fileRef = A57A3088238D751400DE8C68 /* PNMPNSNotificationPayload.m */; };
-		A57A3092238D751400DE8C68 /* PNMPNSNotificationPayload.m in Sources */ = {isa = PBXBuildFile; fileRef = A57A3088238D751400DE8C68 /* PNMPNSNotificationPayload.m */; };
-		A57A3093238D751400DE8C68 /* PNMPNSNotificationPayload.m in Sources */ = {isa = PBXBuildFile; fileRef = A57A3088238D751400DE8C68 /* PNMPNSNotificationPayload.m */; };
-		A57A3095238D751400DE8C68 /* PNMPNSNotificationPayload.m in Sources */ = {isa = PBXBuildFile; fileRef = A57A3088238D751400DE8C68 /* PNMPNSNotificationPayload.m */; };
 		A57A3099238D784A00DE8C68 /* PNBaseNotificationPayload.h in Headers */ = {isa = PBXBuildFile; fileRef = A57A3097238D784A00DE8C68 /* PNBaseNotificationPayload.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A57A309A238D784A00DE8C68 /* PNBaseNotificationPayload.h in Headers */ = {isa = PBXBuildFile; fileRef = A57A3097238D784A00DE8C68 /* PNBaseNotificationPayload.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A57A309B238D784A00DE8C68 /* PNBaseNotificationPayload.h in Headers */ = {isa = PBXBuildFile; fileRef = A57A3097238D784A00DE8C68 /* PNBaseNotificationPayload.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -3895,8 +3885,6 @@
 		A57A3058238D65A200DE8C68 /* PNNotificationsPayload.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNNotificationsPayload.m; sourceTree = "<group>"; };
 		A57A3067238D6BCC00DE8C68 /* PNFCMNotificationPayload.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNFCMNotificationPayload.h; sourceTree = "<group>"; };
 		A57A3068238D6BCC00DE8C68 /* PNFCMNotificationPayload.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNFCMNotificationPayload.m; sourceTree = "<group>"; };
-		A57A3087238D751400DE8C68 /* PNMPNSNotificationPayload.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNMPNSNotificationPayload.h; sourceTree = "<group>"; };
-		A57A3088238D751400DE8C68 /* PNMPNSNotificationPayload.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNMPNSNotificationPayload.m; sourceTree = "<group>"; };
 		A57A3097238D784A00DE8C68 /* PNBaseNotificationPayload.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNBaseNotificationPayload.h; sourceTree = "<group>"; };
 		A57A3098238D784A00DE8C68 /* PNBaseNotificationPayload.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNBaseNotificationPayload.m; sourceTree = "<group>"; };
 		A57A30A7238D78C400DE8C68 /* PNBaseNotificationPayload+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PNBaseNotificationPayload+Private.h"; sourceTree = "<group>"; };
@@ -5304,8 +5292,6 @@
 			isa = PBXGroup;
 			children = (
 				A57A30AF238DC6B600DE8C68 /* APNS */,
-				A57A3087238D751400DE8C68 /* PNMPNSNotificationPayload.h */,
-				A57A3088238D751400DE8C68 /* PNMPNSNotificationPayload.m */,
 				A57A3067238D6BCC00DE8C68 /* PNFCMNotificationPayload.h */,
 				A57A3068238D6BCC00DE8C68 /* PNFCMNotificationPayload.m */,
 				A57A30A7238D78C400DE8C68 /* PNBaseNotificationPayload+Private.h */,
@@ -5760,7 +5746,6 @@
 				A58975D223005BE60093BD9A /* PNChannelMember.h in Headers */,
 				A55DAEFC24B1FE9E00766EE9 /* PNXML.h in Headers */,
 				A55A87DC22FD8272002D0A72 /* PNBaseObjectsRequest.h in Headers */,
-				A57A3089238D751400DE8C68 /* PNMPNSNotificationPayload.h in Headers */,
 				A5567FC42C221231003C974F /* PNChannelMetadataSetData.h in Headers */,
 				79A0D86E1DC22C950039A264 /* PNAPICallBuilder+Private.h in Headers */,
 				A5DB70D92AAEFE58005B6559 /* PNCryptoModule.h in Headers */,
@@ -6138,7 +6123,6 @@
 				A58975D423005BE60093BD9A /* PNChannelMember.h in Headers */,
 				A55DAEFE24B1FE9E00766EE9 /* PNXML.h in Headers */,
 				A55A87DE22FD8272002D0A72 /* PNBaseObjectsRequest.h in Headers */,
-				A57A308B238D751400DE8C68 /* PNMPNSNotificationPayload.h in Headers */,
 				A5567FC72C221231003C974F /* PNChannelMetadataSetData.h in Headers */,
 				791583111BD709D10084FC70 /* PNHistoryResult.h in Headers */,
 				A5DB70DB2AAEFE58005B6559 /* PNCryptoModule.h in Headers */,
@@ -6434,7 +6418,6 @@
 				A55DAF0B24B1FEC800766EE9 /* PNXML+Private.h in Headers */,
 				A5DB710F2AAEFE58005B6559 /* PNCryptorInputStream.h in Headers */,
 				A504E15824AA9CFB006DCF5B /* PNFilesAPICallBuilder.h in Headers */,
-				A57A308E238D751400DE8C68 /* PNMPNSNotificationPayload.h in Headers */,
 				A5CFE4E02C16500F00274165 /* PNSignalData.h in Headers */,
 				A5A7AFFE2349330F0060113B /* PNFetchMessageActionsRequest.h in Headers */,
 				A504E18824AAA724006DCF5B /* PNDownloadFileAPICallBuilder.h in Headers */,
@@ -6895,7 +6878,6 @@
 				A58975D323005BE60093BD9A /* PNChannelMember.h in Headers */,
 				A55DAEFD24B1FE9E00766EE9 /* PNXML.h in Headers */,
 				A55A87DD22FD8272002D0A72 /* PNBaseObjectsRequest.h in Headers */,
-				A57A308A238D751400DE8C68 /* PNMPNSNotificationPayload.h in Headers */,
 				A5567FC62C221231003C974F /* PNChannelMetadataSetData.h in Headers */,
 				79A8BC7E1C58F93900015BDE /* PNHistoryResult.h in Headers */,
 				A5DB70DA2AAEFE58005B6559 /* PNCryptoModule.h in Headers */,
@@ -7275,7 +7257,6 @@
 				A58975D523005BE60093BD9A /* PNChannelMember.h in Headers */,
 				A55DAEFF24B1FE9E00766EE9 /* PNXML.h in Headers */,
 				A55A87DF22FD8272002D0A72 /* PNBaseObjectsRequest.h in Headers */,
-				A57A308C238D751400DE8C68 /* PNMPNSNotificationPayload.h in Headers */,
 				A5567FC92C221231003C974F /* PNChannelMetadataSetData.h in Headers */,
 				79CBB11A1BD03DE4001FC34D /* PNConfiguration.h in Headers */,
 				A5DB70DC2AAEFE58005B6559 /* PNCryptoModule.h in Headers */,
@@ -8008,7 +7989,6 @@
 				A5CFE5112C1892AD00274165 /* PNPushNotificationManageRequest.m in Sources */,
 				A5046F0524784CAB0008C81E /* PNSetChannelMetadataAPICallBuilder.m in Sources */,
 				A504E17124AAA70A006DCF5B /* PNListFilesAPICallBuilder.m in Sources */,
-				A57A3090238D751400DE8C68 /* PNMPNSNotificationPayload.m in Sources */,
 				A5567E322C1EB4ED003C974F /* PNTimeRequest.m in Sources */,
 				A5567E5E2C1F8C53003C974F /* PNOperationDataParser.m in Sources */,
 				A5CFE4702C14A90900274165 /* NSError+PNTransport.m in Sources */,
@@ -8306,7 +8286,6 @@
 				A5CFE5162C1892AD00274165 /* PNPushNotificationManageRequest.m in Sources */,
 				A5046EA724784CAA0008C81E /* PNSetChannelMetadataAPICallBuilder.m in Sources */,
 				A504E17324AAA70A006DCF5B /* PNListFilesAPICallBuilder.m in Sources */,
-				A57A3092238D751400DE8C68 /* PNMPNSNotificationPayload.m in Sources */,
 				A5567E352C1EB4ED003C974F /* PNTimeRequest.m in Sources */,
 				A5567E632C1F8C53003C974F /* PNOperationDataParser.m in Sources */,
 				A5CFE4752C14A90900274165 /* NSError+PNTransport.m in Sources */,
@@ -8600,7 +8579,6 @@
 				A5CFE51A2C1892AD00274165 /* PNPushNotificationManageRequest.m in Sources */,
 				A5046E4924784CA90008C81E /* PNSetChannelMetadataAPICallBuilder.m in Sources */,
 				A504E17524AAA70A006DCF5B /* PNListFilesAPICallBuilder.m in Sources */,
-				A57A3095238D751400DE8C68 /* PNMPNSNotificationPayload.m in Sources */,
 				A5567E3A2C1EB4ED003C974F /* PNTimeRequest.m in Sources */,
 				A5567E672C1F8C53003C974F /* PNOperationDataParser.m in Sources */,
 				A5CFE4792C14A90900274165 /* NSError+PNTransport.m in Sources */,
@@ -8894,7 +8872,6 @@
 				A5CFE5132C1892AD00274165 /* PNPushNotificationManageRequest.m in Sources */,
 				A5046ED624784CAB0008C81E /* PNSetChannelMetadataAPICallBuilder.m in Sources */,
 				A504E17224AAA70A006DCF5B /* PNListFilesAPICallBuilder.m in Sources */,
-				A57A3091238D751400DE8C68 /* PNMPNSNotificationPayload.m in Sources */,
 				A5567E342C1EB4ED003C974F /* PNTimeRequest.m in Sources */,
 				A5567E602C1F8C53003C974F /* PNOperationDataParser.m in Sources */,
 				A5CFE4722C14A90900274165 /* NSError+PNTransport.m in Sources */,
@@ -9188,7 +9165,6 @@
 				A5CFE5172C1892AD00274165 /* PNPushNotificationManageRequest.m in Sources */,
 				A5046E7824784CAA0008C81E /* PNSetChannelMetadataAPICallBuilder.m in Sources */,
 				A504E17424AAA70A006DCF5B /* PNListFilesAPICallBuilder.m in Sources */,
-				A57A3093238D751400DE8C68 /* PNMPNSNotificationPayload.m in Sources */,
 				A5567E382C1EB4ED003C974F /* PNTimeRequest.m in Sources */,
 				A5567E652C1F8C53003C974F /* PNOperationDataParser.m in Sources */,
 				A5CFE4762C14A90900274165 /* NSError+PNTransport.m in Sources */,

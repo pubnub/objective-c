@@ -1,6 +1,5 @@
 #import <Foundation/Foundation.h>
 #import <PubNub/PNAPNSNotificationPayload.h>
-#import <PubNub/PNMPNSNotificationPayload.h>
 #import <PubNub/PNFCMNotificationPayload.h>
 
 
@@ -28,14 +27,6 @@ NS_ASSUME_NONNULL_BEGIN
  * allow to make advanced configuration.
  */
 @property (nonatomic, readonly, strong) PNAPNSNotificationPayload *apns;
-
-/**
- * @brief Access to MPNS specific notification builder.
- *
- * @discussion Allows to set specific general keys and provides access to mutable payload which
- * allow to make advanced configuration.
- */
-@property (nonatomic, readonly, strong) PNMPNSNotificationPayload *mpns;
 
 /**
  * @brief Access to FCM specific notification builder.
