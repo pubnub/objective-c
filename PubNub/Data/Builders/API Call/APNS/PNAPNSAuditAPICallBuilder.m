@@ -35,13 +35,6 @@
     return self.pushType(PNFCMPush).token;
 }
 
-- (PNAPNSAuditAPICallBuilder * (^)(NSString *token))mpnsToken {
-    return ^PNAPNSAuditAPICallBuilder * (NSString *token) {
-        [self setValue:token forParameter:NSStringFromSelector(_cmd)];
-        return self;
-    };
-}
-
 - (PNAPNSAuditAPICallBuilder * (^)(PNAPNSEnvironment environment))environment {
     return ^PNAPNSAuditAPICallBuilder * (PNAPNSEnvironment environment) {
         [self setValue:@(environment) forParameter:NSStringFromSelector(_cmd)];

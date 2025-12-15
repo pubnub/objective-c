@@ -71,8 +71,8 @@ NS_ASSUME_NONNULL_END
     NSMutableDictionary *query = [NSMutableDictionary new];
     NSString *tokenType = @"apns";
     
-    if (self.pushType == PNFCMPush) tokenType = @"gcm";
-    else if (self.pushType == PNMPNSPush) tokenType = @"mpns";
+    if (self.pushType == PNFCMPush)
+        tokenType = @"gcm";
     
     if (self.pushType == PNAPNS2Push) {
         NSString *environment = self.environment == PNAPNSDevelopment ? @"development" : @"production";
@@ -145,7 +145,7 @@ NS_ASSUME_NONNULL_END
                ![self.pushToken isKindOfClass:[NSString class]]) {
         userInfo = @{
             NSLocalizedDescriptionKey: @"Push Notifications API access request configuration error",
-            NSLocalizedFailureReasonErrorKey: [NSString stringWithFormat:@"FCM / GCM / MPNS expects "
+            NSLocalizedFailureReasonErrorKey: [NSString stringWithFormat:@"FCM / GCM expects "
                                                "device token / identifier to be instance of "
                                                "NSString, but got: %@",
                                                NSStringFromClass([self.pushToken class])]
@@ -166,7 +166,6 @@ NS_ASSUME_NONNULL_END
     NSString *pushType = @"apns";
     if (self.pushType == PNAPNS2Push) pushType = @"apns2";
     else if (self.pushType == PNFCMPush) pushType = @"fcm";
-    else if (self.pushType == PNMPNSPush) pushType = @"mpns";
     
     NSString *pushToken = @"missing";
     if (self.pushToken) {

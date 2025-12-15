@@ -504,11 +504,7 @@ typedef NS_OPTIONS(NSUInteger, PNPushType) {
      * @brief Firebase Cloud Messaging (Google Cloud Messaging) used to deliver notifications to
      * specified device.
      */
-    PNFCMPush = 1 << 2,
-    /**
-     * @brief Microsoft Push Notification Service used to deliver notifications to specified device.
-     */
-    PNMPNSPush = 1 << 3
+    PNFCMPush = 1 << 2
 };
 
 /**

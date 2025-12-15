@@ -181,30 +181,6 @@
     [self verifyEnabledForPushNotificationsChannels:channels];
 }
 
-- (void)testItShouldAddPushNotificationsWithMPNSPushType {
-    NSArray<NSString *> *channels = [self channelsWithNames:@[@"test-channel1", @"test-channel2"]];
-    self.pushType = PNMPNSPush;
-    
-    [self disableAllPushNotificationsOnDevice];
-    
-    
-    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        PNPushNotificationManageRequest *request = [PNPushNotificationManageRequest requestToAddChannels:channels
-                                                                                       toDeviceWithToken:self.devicePushTokenString
-                                                                                                pushType:self.pushType];
-        
-        [self.client managePushNotificationWithRequest:request completion:^(PNAcknowledgmentStatus *status) {
-            XCTAssertFalse(status.isError);
-            XCTAssertEqualObjects(request.request.query[@"type"], @"mpns");
-            
-            handler();
-        }];
-    }];
-    
-    
-    [self verifyEnabledForPushNotificationsChannels:channels];
-}
-
 - (void)testItShouldNotAddPushNotificationsAndReceiveBadRequestStatusWhenChannelsIsNil {
     NSArray<NSString *> *channels = nil;
     __block BOOL retried = NO;
@@ -308,48 +284,6 @@
     NSArray<NSString *> *channels = [self channelsWithNames:@[@"test-channel1", @"test-channel2"]];
     NSString *devicePushToken = (id)@2010;
     self.pushType = PNFCMPush;
-    
-    
-    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        PNPushNotificationManageRequest *request = [PNPushNotificationManageRequest requestToAddChannels:channels
-                                                                                       toDeviceWithToken:devicePushToken
-                                                                                                pushType:self.pushType];
-        
-        [self.client managePushNotificationWithRequest:request completion:^(PNAcknowledgmentStatus *status) {
-            XCTAssertTrue(status.isError);
-            XCTAssertEqual(status.operation, PNAddPushNotificationsOnChannelsOperation);
-            XCTAssertEqual(status.category, PNBadRequestCategory);
-            
-            handler();
-        }];
-    }];
-}
-
-- (void)testItShouldNotAddPushNotificationsAndReceiveBadRequestStatusWhenMPNSDevicePushTokenIsNil {
-    NSArray<NSString *> *channels = [self channelsWithNames:@[@"test-channel1", @"test-channel2"]];
-    NSString *devicePushToken = nil;
-    self.pushType = PNMPNSPush;
-    
-    
-    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        PNPushNotificationManageRequest *request = [PNPushNotificationManageRequest requestToAddChannels:channels
-                                                                                       toDeviceWithToken:devicePushToken
-                                                                                                pushType:self.pushType];
-        
-        [self.client managePushNotificationWithRequest:request completion:^(PNAcknowledgmentStatus *status) {
-            XCTAssertTrue(status.isError);
-            XCTAssertEqual(status.operation, PNAddPushNotificationsOnChannelsOperation);
-            XCTAssertEqual(status.category, PNBadRequestCategory);
-            
-            handler();
-        }];
-    }];
-}
-
-- (void)testItShouldNotAddPushNotificationsAndReceiveBadRequestStatusWhenMPNSDevicePushTokenIsNotNSString {
-    NSArray<NSString *> *channels = [self channelsWithNames:@[@"test-channel1", @"test-channel2"]];
-    NSString *devicePushToken = (id)@2010;
-    self.pushType = PNMPNSPush;
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
@@ -579,33 +513,6 @@
     [self verifyEnabledForPushNotificationsChannels:@[channels.lastObject]];
 }
 
-- (void)testItShouldRemovePushNotificationsWithMPNSPushType {
-    NSArray<NSString *> *channels = [self channelsWithNames:@[@"test-channel1", @"test-channel2"]];
-    self.pushType = PNMPNSPush;
-    
-    [self disableAllPushNotificationsOnDevice];
-    [self enabledPushNotificationsForChannels:channels];
-    
-    [self verifyEnabledForPushNotificationsChannels:channels];
-    
-    
-    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        PNPushNotificationManageRequest *request = [PNPushNotificationManageRequest requestToRemoveChannels:@[channels.firstObject]
-                                                                                        fromDeviceWithToken:self.devicePushTokenString
-                                                                                                   pushType:self.pushType];
-        
-        [self.client managePushNotificationWithRequest:request completion:^(PNAcknowledgmentStatus *status) {
-            XCTAssertFalse(status.isError);
-            XCTAssertEqualObjects(request.request.query[@"type"], @"mpns");
-            
-            handler();
-        }];
-    }];
-    
-    
-    [self verifyEnabledForPushNotificationsChannels:@[channels.lastObject]];
-}
-
 - (void)testItShouldNotRemovePushNotificationsAndReceiveBadRequestStatusWhenChannelsIsNil {
     NSArray<NSString *> *channels1 = [self channelsWithNames:@[@"test-channel1", @"test-channel2"]];
     NSArray<NSString *> *channels2 = nil;
@@ -707,44 +614,6 @@
     NSArray<NSString *> *channels = [self channelsWithNames:@[@"test-channel1", @"test-channel2"]];
     NSString *devicePushToken = (id)@2010;
     self.pushType = PNFCMPush;
-    
-    
-    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client removePushNotificationsFromChannels:channels withDevicePushToken:devicePushToken
-                                                pushType:self.pushType andCompletion:^(PNAcknowledgmentStatus *status) {
-            
-            XCTAssertTrue(status.isError);
-            XCTAssertEqual(status.operation, PNRemovePushNotificationsFromChannelsOperation);
-            XCTAssertEqual(status.category, PNBadRequestCategory);
-            
-            handler();
-        }];
-    }];
-}
-
-- (void)testItShouldNotRemovePushNotificationsAndReceiveBadRequestStatusWhenMPNSDevicePushTokenIsNil {
-    NSArray<NSString *> *channels = [self channelsWithNames:@[@"test-channel1", @"test-channel2"]];
-    NSString *devicePushToken = nil;
-    self.pushType = PNMPNSPush;
-    
-    
-    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client removePushNotificationsFromChannels:channels withDevicePushToken:devicePushToken
-                                                pushType:self.pushType andCompletion:^(PNAcknowledgmentStatus *status) {
-            
-            XCTAssertTrue(status.isError);
-            XCTAssertEqual(status.operation, PNRemovePushNotificationsFromChannelsOperation);
-            XCTAssertEqual(status.category, PNBadRequestCategory);
-            
-            handler();
-        }];
-    }];
-}
-
-- (void)testItShouldNotRemovePushNotificationsAndReceiveBadRequestStatusWhenMPNSDevicePushTokenIsNotNSString {
-    NSArray<NSString *> *channels = [self channelsWithNames:@[@"test-channel1", @"test-channel2"]];
-    NSString *devicePushToken = (id)@2010;
-    self.pushType = PNMPNSPush;
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
@@ -981,31 +850,6 @@
     [self verifyEnabledForPushNotificationsChannels:@[]];
 }
 
-- (void)testItShouldRemoveAllPushNotificationsWithMPNSPushType {
-    NSArray<NSString *> *channels = [self channelsWithNames:@[@"test-channel1", @"test-channel2"]];
-    self.pushType = PNMPNSPush;
-    
-    [self disableAllPushNotificationsOnDevice];
-    [self enabledPushNotificationsForChannels:channels];
-    
-    [self verifyEnabledForPushNotificationsChannels:channels];
-    
-    
-    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        PNPushNotificationManageRequest *request = [PNPushNotificationManageRequest requestToRemoveDeviceWithToken:self.devicePushTokenString
-                                                                                                          pushType:self.pushType];
-        [self.client managePushNotificationWithRequest:request completion:^(PNAcknowledgmentStatus *status) {
-            XCTAssertFalse(status.isError);
-            XCTAssertEqualObjects(request.request.query[@"type"], @"mpns");
-            
-            handler();
-        }];
-    }];
-    
-    
-    [self verifyEnabledForPushNotificationsChannels:@[]];
-}
-
 - (void)testItShouldNotRemoveAllPushNotificationsAndReceiveBadRequestStatusWhenAPNSDevicePushTokenIsNil {
     NSData *devicePushToken = nil;
     __block BOOL retried = NO;
@@ -1076,42 +920,6 @@
 - (void)testItShouldNotRemoveAllPushNotificationsAndReceiveBadRequestStatusWhenFCMDevicePushTokenIsNotNSString {
     NSString *devicePushToken = (id)@2010;
     self.pushType = PNFCMPush;
-    
-    
-    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client removeAllPushNotificationsFromDeviceWithPushToken:devicePushToken pushType:self.pushType
-                                                         andCompletion:^(PNAcknowledgmentStatus *status) {
-            
-            XCTAssertTrue(status.isError);
-            XCTAssertEqual(status.operation, PNRemoveAllPushNotificationsOperation);
-            XCTAssertEqual(status.category, PNBadRequestCategory);
-            
-            handler();
-        }];
-    }];
-}
-
-- (void)testItShouldNotRemoveAllPushNotificationsAndReceiveBadRequestStatusWhenMPNSDevicePushTokenIsNil {
-    NSString *devicePushToken = nil;
-    self.pushType = PNMPNSPush;
-    
-    
-    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client removeAllPushNotificationsFromDeviceWithPushToken:devicePushToken pushType:self.pushType
-                                                         andCompletion:^(PNAcknowledgmentStatus *status) {
-            
-            XCTAssertTrue(status.isError);
-            XCTAssertEqual(status.operation, PNRemoveAllPushNotificationsOperation);
-            XCTAssertEqual(status.category, PNBadRequestCategory);
-            
-            handler();
-        }];
-    }];
-}
-
-- (void)testItShouldNotRemoveAllPushNotificationsAndReceiveBadRequestStatusWhenMPNSDevicePushTokenIsNotNSString {
-    NSString *devicePushToken = (id)@2010;
-    self.pushType = PNMPNSPush;
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
@@ -1290,30 +1098,6 @@
     }];
 }
 
-- (void)testItShouldAuditPushNotificationsWithMPNSPushType {
-    NSArray<NSString *> *channels = [self channelsWithNames:@[@"test-channel1", @"test-channel2"]];
-    NSSet *addedChannelsSet = [NSSet setWithArray:channels];
-    self.pushType = PNMPNSPush;
-    
-    [self disableAllPushNotificationsOnDevice];
-    [self enabledPushNotificationsForChannels:channels];
-    
-    
-    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        PNPushNotificationFetchRequest *request = [PNPushNotificationFetchRequest requestWithDevicePushToken:self.devicePushTokenString
-                                                                                                    pushType:self.pushType];
-        [self.client fetchPushNotificationWithRequest:request completion:^(PNAPNSEnabledChannelsResult *result, PNErrorStatus *status) {
-            NSSet *fetchedChannelsSet = [NSSet setWithArray:result.data.channels];
-            XCTAssertNil(status);
-            XCTAssertNotNil(fetchedChannelsSet);
-            XCTAssertTrue([fetchedChannelsSet isEqualToSet:addedChannelsSet]);
-            XCTAssertEqualObjects(request.request.query[@"type"], @"mpns");
-            
-            handler();
-        }];
-    }];
-}
-
 - (void)testItShouldNotAuditPushNotificationsAndReceiveBadRequestStatusWhenAPNSDevicePushTokenIsNil {
     NSData *devicePushToken = nil;
     __block BOOL retried = NO;
@@ -1387,44 +1171,6 @@
 - (void)testItShouldNotAuditPushNotificationsAndReceiveBadRequestStatusWhenFCMDevicePushTokenIsNotNSString {
     NSString *devicePushToken = (id)@2010;
     self.pushType = PNFCMPush;
-    
-    
-    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client pushNotificationEnabledChannelsForDeviceWithPushToken:devicePushToken pushType:self.pushType
-                         andCompletion:^(PNAPNSEnabledChannelsResult *result, PNErrorStatus *status) {
-            
-            XCTAssertNil(result);
-            XCTAssertTrue(status.isError);
-            XCTAssertEqual(status.operation, PNPushNotificationEnabledChannelsOperation);
-            XCTAssertEqual(status.category, PNBadRequestCategory);
-            
-            handler();
-        }];
-    }];
-}
-
-- (void)testItShouldNotAuditPushNotificationsAndReceiveBadRequestStatusWhenMPNSDevicePushTokenIsNil {
-    NSString *devicePushToken = nil;
-    self.pushType = PNMPNSPush;
-    
-    
-    [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {
-        [self.client pushNotificationEnabledChannelsForDeviceWithPushToken:devicePushToken pushType:self.pushType
-                         andCompletion:^(PNAPNSEnabledChannelsResult *result, PNErrorStatus *status) {
-            
-            XCTAssertNil(result);
-            XCTAssertTrue(status.isError);
-            XCTAssertEqual(status.operation, PNPushNotificationEnabledChannelsOperation);
-            XCTAssertEqual(status.category, PNBadRequestCategory);
-            
-            handler();
-        }];
-    }];
-}
-
-- (void)testItShouldNotAuditPushNotificationsAndReceiveBadRequestStatusWhenMPNSDevicePushTokenIsNotNSString {
-    NSString *devicePushToken = (id)@2010;
-    self.pushType = PNMPNSPush;
     
     
     [self waitToCompleteIn:self.testCompletionDelay codeBlock:^(dispatch_block_t handler) {

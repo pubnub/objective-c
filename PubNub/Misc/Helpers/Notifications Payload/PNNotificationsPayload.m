@@ -27,14 +27,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) PNAPNSNotificationPayload *apns;
 
 /**
- * @brief Access to MPNS specific notification builder.
- *
- * @discussion Allows to set specific general keys and provides access to mutable payload which
- * allow to make advanced configuration.
- */
-@property (nonatomic, strong) PNMPNSNotificationPayload *mpns;
-
-/**
  * @brief Access to FCM specific notification builder.
  *
  * @discussion Allows to set specific general keys and provides access to mutable payload which
@@ -46,7 +38,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief Mutable dictionary which allow to access raw content (w/o helper builders usage) to make
  * direct modifications (if required).
  *
- * @note Platform specific payloads stored under: \c apns, \c fcm and \c mpns keys. Values for those
+ * @note Platform specific payloads stored under: \c apns, \c fcm  keys. Values for those
  * keys also mutable dictionaries which allow to make direct changes to payload before it will be
  * used.
  */
@@ -80,19 +72,16 @@ NS_ASSUME_NONNULL_END
 
 - (void)setSubtitle:(NSString *)subtitle {
     self.apns.subtitle = subtitle;
-    self.mpns.subtitle = subtitle;
     self.fcm.subtitle = subtitle;
 }
 
 - (void)setBadge:(NSNumber *)badge {
     self.apns.badge = badge;
-    self.mpns.badge = badge;
     self.fcm.badge = badge;
 }
 
 - (void)setSound:(NSString *)sound {
     self.apns.sound = sound;
-    self.mpns.sound = sound;
     self.fcm.sound = sound;
 }
 
@@ -107,18 +96,13 @@ NS_ASSUME_NONNULL_END
     if ((self = [super init])) {
         _payload = [@{
             @"apns": [NSMutableDictionary new],
-            @"fcm": [NSMutableDictionary new],
-            @"mpns": [NSMutableDictionary new]
+            @"fcm": [NSMutableDictionary new]
         } mutableCopy];
         
         _apns = [PNAPNSNotificationPayload payloadWithStorage:_payload[@"apns"]
                                             notificationTitle:title
                                                          body:body];
-        
-        _mpns = [PNMPNSNotificationPayload payloadWithStorage:_payload[@"mpns"]
-                                            notificationTitle:title
-                                                         body:body];
-        
+                
         _fcm = [PNFCMNotificationPayload payloadWithStorage:_payload[@"fcm"]
                                           notificationTitle:title
                                                        body:body];
@@ -151,14 +135,6 @@ NS_ASSUME_NONNULL_END
         
         if (apnsPayload.count) {
             payload[@"pn_apns"] = apnsPayload;
-        }
-    }
-    
-    if ((pushTypes & PNMPNSPush) == PNMPNSPush) {
-        NSDictionary *mpnsPayload = [self.mpns dictionaryRepresentation];
-        
-        if (mpnsPayload.count) {
-            payload[@"pn_mpns"] = mpnsPayload;
         }
     }
     

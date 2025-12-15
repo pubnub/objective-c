@@ -62,7 +62,6 @@ NS_ASSUME_NONNULL_END
                                                                                        body:expectedBody];
     
     XCTAssertNotNil(builder.apns);
-    XCTAssertNotNil(builder.mpns);
     XCTAssertNotNil(builder.fcm);
 }
 
@@ -76,8 +75,6 @@ NS_ASSUME_NONNULL_END
     
     XCTAssertEqualObjects([[builder.apns dictionaryRepresentation] valueForKeyPath:@"aps.alert.title"], expectedTitle);
     XCTAssertEqualObjects([[builder.apns dictionaryRepresentation] valueForKeyPath:@"aps.alert.body"], expectedBody);
-    XCTAssertEqualObjects([[builder.mpns dictionaryRepresentation] valueForKeyPath:@"title"], expectedTitle);
-    XCTAssertEqualObjects([[builder.mpns dictionaryRepresentation] valueForKeyPath:@"back_content"], expectedBody);
     XCTAssertEqualObjects([[builder.fcm dictionaryRepresentation] valueForKeyPath:@"notification.title"], expectedTitle);
     XCTAssertEqualObjects([[builder.fcm dictionaryRepresentation] valueForKeyPath:@"notification.body"], expectedBody);
 }
@@ -91,7 +88,6 @@ NS_ASSUME_NONNULL_END
     builder.subtitle = expectedSubtitle;
     
     XCTAssertEqualObjects([[builder.apns dictionaryRepresentation] valueForKeyPath:@"aps.alert.subtitle"], expectedSubtitle);
-    XCTAssertEqualObjects([[builder.mpns dictionaryRepresentation] valueForKeyPath:@"back_title"], expectedSubtitle);
     XCTAssertEqual(builder.fcm.notification.count, 2);
 }
 
@@ -104,7 +100,6 @@ NS_ASSUME_NONNULL_END
     builder.badge = expectedBadge;
     
     XCTAssertEqualObjects([[builder.apns dictionaryRepresentation] valueForKeyPath:@"aps.badge"], expectedBadge);
-    XCTAssertEqualObjects([[builder.mpns dictionaryRepresentation] valueForKeyPath:@"count"], expectedBadge);
     XCTAssertEqual(builder.fcm.notification.count, 2);
 }
 
@@ -117,7 +112,6 @@ NS_ASSUME_NONNULL_END
     builder.sound = expectedSound;
     
     XCTAssertEqualObjects([[builder.apns dictionaryRepresentation] valueForKeyPath:@"aps.sound"], expectedSound);
-    XCTAssertEqual(builder.mpns.payload.count, 2);
     XCTAssertEqualObjects([[builder.fcm dictionaryRepresentation] valueForKeyPath:@"notification.sound"], expectedSound);
 }
 
@@ -527,127 +521,6 @@ NS_ASSUME_NONNULL_END
     
     XCTAssertEqualObjects([target dictionaryRepresentation], expectedTarget);
 }
-
-
-#pragma mark - Tests :: MPNS builder
-
-- (void)testItShouldSetNotificationTitleBodyWhenCalledMPNSBuilderWithAllFieldsSet {
-    NSString *expectedTitle = [NSUUID UUID].UUIDString;
-    NSString *expectedBody = [NSUUID UUID].UUIDString;
-    
-    
-    [PNMPNSNotificationPayload payloadWithStorage:self.platformPayloadStorage
-                                notificationTitle:expectedTitle
-                                             body:expectedBody];
-    
-    XCTAssertEqualObjects(self.platformPayloadStorage[@"title"], expectedTitle);
-    XCTAssertEqualObjects(self.platformPayloadStorage[@"back_content"], expectedBody);
-}
-
-- (void)testItShouldSetTitleWhenSubtitlePassedToMPNSBuilder {
-    NSString *expectedSubtitle = [NSUUID UUID].UUIDString;
-    
-    
-    PNMPNSNotificationPayload *builder = [PNMPNSNotificationPayload payloadWithStorage:self.platformPayloadStorage
-                                                                     notificationTitle:nil
-                                                                                  body:nil];
-    builder.subtitle = expectedSubtitle;
-    
-    XCTAssertEqualObjects(self.platformPayloadStorage[@"back_title"], expectedSubtitle);
-}
-
-- (void)testItShouldSetBackTitleWhenBackTitlePassedToMPNSBuilder {
-    NSString *expectedSubtitle = [NSUUID UUID].UUIDString;
-    
-    
-    PNMPNSNotificationPayload *builder = [PNMPNSNotificationPayload payloadWithStorage:self.platformPayloadStorage
-                                                                     notificationTitle:nil
-                                                                                  body:nil];
-    builder.backTitle = expectedSubtitle;
-    
-    XCTAssertEqualObjects(self.platformPayloadStorage[@"back_title"], expectedSubtitle);
-}
-
-- (void)testItShouldSetBackContentWhenBodyPassedToMPNSBuilder {
-    NSString *expectedBody = [NSUUID UUID].UUIDString;
-    
-    
-    PNMPNSNotificationPayload *builder = [PNMPNSNotificationPayload payloadWithStorage:self.platformPayloadStorage
-                                                                     notificationTitle:nil
-                                                                                  body:nil];
-    builder.body = expectedBody;
-    
-    XCTAssertEqualObjects(self.platformPayloadStorage[@"back_content"], expectedBody);
-}
-
-- (void)testItShouldSetBackContentWhenBackContentPassedToMPNSBuilder {
-    NSString *expectedBody = [NSUUID UUID].UUIDString;
-    
-    
-    PNMPNSNotificationPayload *builder = [PNMPNSNotificationPayload payloadWithStorage:self.platformPayloadStorage
-                                                                     notificationTitle:nil
-                                                                                  body:nil];
-    builder.backContent = expectedBody;
-    
-    XCTAssertEqualObjects(self.platformPayloadStorage[@"back_content"], expectedBody);
-}
-
-- (void)testItShouldSetCountWhenBadgePassedToMPNSBuilder {
-    NSNumber *expectedBadge = @26;
-    
-    
-    PNMPNSNotificationPayload *builder = [PNMPNSNotificationPayload payloadWithStorage:self.platformPayloadStorage
-                                                                     notificationTitle:nil
-                                                                                  body:nil];
-    builder.badge = expectedBadge;
-    
-    XCTAssertEqualObjects(self.platformPayloadStorage[@"count"], expectedBadge);
-}
-
-- (void)testItShouldSetCountWhenCountPassedToMPNSBuilder {
-    NSNumber *expectedBadge = @26;
-    
-    
-    PNMPNSNotificationPayload *builder = [PNMPNSNotificationPayload payloadWithStorage:self.platformPayloadStorage
-                                                                     notificationTitle:nil
-                                                                                  body:nil];
-    builder.count = expectedBadge;
-    
-    XCTAssertEqualObjects(self.platformPayloadStorage[@"count"], expectedBadge);
-}
-
-- (void)testItShouldNotProvidePayloadWhenNoInformationPassedToMPNSBuilder {
-    PNMPNSNotificationPayload *builder = [PNMPNSNotificationPayload payloadWithStorage:self.platformPayloadStorage
-                                                                     notificationTitle:nil
-                                                                                  body:nil];
-    
-    XCTAssertNil([builder dictionaryRepresentation]);
-}
-
-- (void)testItShouldProvidePayloadWhenAllInformationPassedToMPNSBuilder {
-    NSString *expectedSubtitle = [NSUUID UUID].UUIDString;
-    NSString *expectedTitle = [NSUUID UUID].UUIDString;
-    NSString *expectedBody = [NSUUID UUID].UUIDString;
-    NSNumber *expectedCount = @26;
-    NSDictionary *expectedPayload = @{
-        @"type": @"flip",
-        @"title": expectedTitle,
-        @"back_title": expectedSubtitle,
-        @"back_content": expectedBody,
-        @"count": expectedCount
-    };
-    
-    
-    PNMPNSNotificationPayload *builder = [PNMPNSNotificationPayload payloadWithStorage:self.platformPayloadStorage
-                                                                     notificationTitle:expectedTitle
-                                                                                  body:expectedBody];
-    builder.type = @"flip";
-    builder.subtitle = expectedSubtitle;
-    builder.count = expectedCount;
-    
-    XCTAssertEqualObjects([builder dictionaryRepresentation], expectedPayload);
-}
-
 
 #pragma mark - Tests :: FCM builder
 

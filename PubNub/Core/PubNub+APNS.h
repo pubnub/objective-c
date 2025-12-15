@@ -126,7 +126,7 @@ NS_ASSUME_NONNULL_BEGIN
     DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-managePushNotificationWithRequest:completion:' method instead.");
 
-/// Enable push notifications (sent using legacy APNs, FCM or MPNS) on provided set of `channels`.
+/// Enable push notifications (sent using legacy APNs, FCM) on provided set of `channels`.
 ///
 /// #### Example:
 /// ```objc
@@ -224,7 +224,7 @@ NS_ASSUME_NONNULL_BEGIN
     DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-managePushNotificationWithRequest:completion:' method instead.");
 
-/// Disable push notifications (sent using legacy APNs, FCM or MPNS) on provided set of `channels`.
+/// Disable push notifications (sent using legacy APNs, FCM) on provided set of `channels`.
 ///
 /// #### Example:
 /// ```objc 
@@ -319,7 +319,7 @@ NS_ASSUME_NONNULL_BEGIN
     DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-managePushNotificationWithRequest:completion:' method instead.");
 
-/// Disable push notifications (sent using legacy APNs, FCM or MPNS) from all channels which is registered with
+/// Disable push notifications (sent using legacy APNs, FCM) from all channels which is registered with
 /// specified `pushToken`.
 ///
 /// #### Example:
@@ -442,7 +442,7 @@ NS_ASSUME_NONNULL_BEGIN
     DEPRECATED_MSG_ATTRIBUTE("This method deprecated and will be removed with next major update. Please use "
                              "'-fetchPushNotificationWithRequest:completion:' method instead.");
 
-/// Request for all channels on which push notification (sent using legacy APNs, FCM or MPNS) has been enabled using
+/// Request for all channels on which push notification (sent using legacy APNs, FCM) has been enabled using
 /// specified `pushToken`.
 ///
 /// #### Example:
