@@ -1,3 +1,9 @@
+## 6.1.1
+December 15 2025
+
+#### Modified
+- Remove MPNS (Microsoft Push Notification Service) support due to its end of life.
+
 ## v6.1.0
 October 02 2025
 
