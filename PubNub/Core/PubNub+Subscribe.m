@@ -132,11 +132,17 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Filtering
 
 - (NSString *)filterExpression {
-    return self.configuration.filterExpression;
+    __block NSString *expression;
+    [self.lock readAccessWithBlock:^{
+        expression = self.configuration.filterExpression;
+    }];
+    return expression;
 }
 
 - (void)setFilterExpression:(NSString *)filterExpression {
-    self.configuration.filterExpression = filterExpression;
+    [self.lock syncWriteAccessWithBlock:^{
+        self.configuration.filterExpression = filterExpression;
+    }];
 
     if ([self.subscriberManager allObjects].count) {
         [self subscribeWithRequest:[PNSubscribeRequest requestWithChannels:@[] channelGroups:@[]]];

@@ -30,14 +30,14 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @since 4.7.5
  */
-@property (nonatomic, strong) NSMutableArray *presenceChannels;
+@property (nonatomic, strong) NSMutableSet *presenceChannels;
 
 /**
  * @brief Stores reference on list of channel groups for which client's connected state has been set to \c YES.
  *
  * @since 4.7.5
  */
-@property (nonatomic, strong) NSMutableArray *presenceChannelGroups;
+@property (nonatomic, strong) NSMutableSet *presenceChannelGroups;
 
 /**
  * @brief Stores reference on timer used to trigger heartbeat requests.
@@ -104,8 +104,8 @@ NS_ASSUME_NONNULL_END
 - (instancetype)initForClient:(PubNub *)client {
     if ((self = [super init])) {
         _client = client;
-        _presenceChannels = [NSMutableArray array];
-        _presenceChannelGroups = [NSMutableArray array];
+        _presenceChannels = [NSMutableSet set];
+        _presenceChannelGroups = [NSMutableSet set];
         _resourceAccessQueue = dispatch_queue_create("com.pubnub.heartbeat", DISPATCH_QUEUE_CONCURRENT);
     }
     
@@ -135,8 +135,8 @@ NS_ASSUME_NONNULL_END
     NSMutableArray<NSString *> *allObjects = [NSMutableArray array];
 
     pn_safe_property_read(self.resourceAccessQueue, ^{
-        [allObjects addObjectsFromArray:self->_presenceChannels];
-        [allObjects addObjectsFromArray:self->_presenceChannelGroups];
+        [allObjects addObjectsFromArray:self->_presenceChannels.allObjects];
+        [allObjects addObjectsFromArray:self->_presenceChannelGroups.allObjects];
     });
 
     return allObjects;
@@ -146,7 +146,7 @@ NS_ASSUME_NONNULL_END
     __block NSArray<NSString *> *channels = nil;
 
     pn_safe_property_read(self.resourceAccessQueue, ^{
-        channels = self->_presenceChannels;
+        channels = self->_presenceChannels.allObjects;
     });
 
     return channels;
@@ -156,8 +156,7 @@ NS_ASSUME_NONNULL_END
     __block NSArray<NSString *> *channelGroups = nil;
 
     pn_safe_property_read(self.resourceAccessQueue, ^{
-        channelGroups = self->_presenceChannelGroups;
-
+        channelGroups = self->_presenceChannelGroups.allObjects;
     });
 
     return channelGroups;
@@ -169,7 +168,7 @@ NS_ASSUME_NONNULL_END
             if (connected) {
                 [self->_presenceChannels addObjectsFromArray:channels];
             } else {
-                [self->_presenceChannels removeObjectsInArray:channels];
+                [self->_presenceChannels minusSet:[NSSet setWithArray:channels]];
             }
         });
     }
@@ -181,8 +180,7 @@ NS_ASSUME_NONNULL_END
             if (connected) {
                 [self->_presenceChannelGroups addObjectsFromArray:channelGroups];
             } else {
-                [self->_presenceChannelGroups removeObjectsInArray:channelGroups];
-
+                [self->_presenceChannelGroups minusSet:[NSSet setWithArray:channelGroups]];
             }
         });
     }

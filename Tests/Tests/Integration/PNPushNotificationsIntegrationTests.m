@@ -85,7 +85,8 @@
 
 - (BOOL)shouldSetupVCR {
     BOOL shouldSetupVCR = [super shouldSetupVCR];
-    
+    if (!shouldSetupVCR && !self.isMockedIntegrationTestSuite) return NO;
+
     if (!shouldSetupVCR) {
         NSArray<NSString *> *testNames = @[
             @"ShouldNotAddPushNotificationsAndReceiveBadRequestStatusWhenChannelsIsNil",
@@ -93,10 +94,10 @@
             @"ShouldNotRemovePushNotificationsAndReceiveBadRequestStatusWhenChannelsIsNil",
             @"ShouldNotRemovePushNotificationsUsingV2APIAndReceiveBadRequestStatusWhenChannelsIsNil"
         ];
-        
+
         shouldSetupVCR = [self.name pnt_includesAnyString:testNames];
     }
-    
+
     return shouldSetupVCR;
 }
 

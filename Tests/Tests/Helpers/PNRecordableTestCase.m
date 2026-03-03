@@ -478,6 +478,16 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - VCR configuration
 
+- (BOOL)isMockedIntegrationTestSuite {
+    static BOOL isMocked;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSString *bundleIdentifier = [NSBundle bundleForClass:[self class]].bundleIdentifier;
+        isMocked = [bundleIdentifier pnt_includesString:@"mocked-integration"];
+    });
+    return isMocked;
+}
+
 - (BOOL)shouldSetupVCR {
     NSString *bundleIdentifier = [NSBundle bundleForClass:[self class]].bundleIdentifier;
     BOOL shouldSetupVCR = [bundleIdentifier rangeOfString:@"mocked-integration"].location != NSNotFound;
@@ -2204,16 +2214,9 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Helpers
 
 - (BOOL)shouldSkipTestWithManuallyModifiedMockedResponse {
-    static BOOL _isMockedIntegration;
-    static dispatch_once_t onceToken;
     BOOL shouldSkip = NO;
-    
-    dispatch_once(&onceToken, ^{
-        NSString *bundleIdentifier = [NSBundle bundleForClass:[self class]].bundleIdentifier;
-        _isMockedIntegration = [bundleIdentifier pnt_includesString:@"mocked-integration"];
-    });
-    
-    if (_isMockedIntegration) {
+
+    if (self.isMockedIntegrationTestSuite) {
         if (YHVVCR.cassette.isNewCassette) {
             NSString *logSeparator1 = @"\n------------\n\n\n";
             NSString *logSeparator2 = @"\n\n\n------------";

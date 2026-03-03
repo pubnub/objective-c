@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
-#import <PubNub/PNTransportMiddlewareConfiguration.h>
 #import <PubNub/PNTransport.h>
+#import "PNTransportMiddlewareConfiguration.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

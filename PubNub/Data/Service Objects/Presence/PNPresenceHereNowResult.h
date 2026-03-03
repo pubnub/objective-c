@@ -1,4 +1,4 @@
-#import <PubNub/PubNub.h>
+#import <PubNub/PNOperationResult.h>
 #import <PubNub/PNPresenceHereNowFetchData.h>
 
 

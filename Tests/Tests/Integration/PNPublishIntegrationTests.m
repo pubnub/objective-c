@@ -40,11 +40,12 @@
 
 - (BOOL)shouldSetupVCR {
     BOOL shouldSetupVCR = [super shouldSetupVCR];
-    
+    if (!shouldSetupVCR && !self.isMockedIntegrationTestSuite) return NO;
+
     if ([self.name pnt_includesString:@"Size"] || [self.name pnt_includesString:@"RandomIV"]) {
         shouldSetupVCR = NO;
     }
-    
+
     return shouldSetupVCR;
 }
 

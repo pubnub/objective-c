@@ -42,18 +42,19 @@
 
 - (BOOL)shouldSetupVCR {
     BOOL shouldSetupVCR = [super shouldSetupVCR];
-    
+    if (!shouldSetupVCR && !self.isMockedIntegrationTestSuite) return NO;
+
     if (!shouldSetupVCR) {
         NSArray<NSString *> *testNames = @[
             @"ShouldNotDeleteMessagesForChannelAndReceiveBadRequestStatusWhenChannelIsNil",
             @"ItShouldFetchHistoryForChannelWithEncryptedMessagesAndDecrypt"
         ];
-        
+
         shouldSetupVCR = [self.name pnt_includesAnyString:testNames];
     } else if ([self.name rangeOfString:@"RandomIV"].location != NSNotFound) {
         shouldSetupVCR = NO;
     }
-    
+
     return shouldSetupVCR;
 }
 

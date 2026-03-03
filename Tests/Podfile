@@ -35,6 +35,8 @@ end
 target '[iOS] Integration Tests' do
   platform :ios, '14.0'
   pod 'PubNub', :path => '../'
+  pod 'OCMock', '= 3.6'
+  pod 'YAHTTPVCR'
 end
 
 

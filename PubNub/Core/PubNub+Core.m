@@ -1,3 +1,5 @@
+#import "PNDictionaryLogEntry+Private.h"
+#import "PNStringLogEntry+Private.h"
 #import "PubNub+CorePrivate.h"
 #define PN_CORE_PROTOCOLS PNEventsListener
 

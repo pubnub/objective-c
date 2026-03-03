@@ -9,6 +9,7 @@
 #import "PNLockSupport.h"
 #import "PNURLRequest.h"
 #import "PNDictionary.h"
+#import "PNFunctions.h"
 #import "PNDefines.h"
 #import "PNChannel.h"
 #import "PNString.h"

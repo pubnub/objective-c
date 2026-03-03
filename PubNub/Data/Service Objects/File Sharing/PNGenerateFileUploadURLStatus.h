@@ -1,5 +1,5 @@
 #import <PubNub/PNAcknowledgmentStatus.h>
-#import <PubNub/PNFileGenerateUploadURLData.h>
+#import "PNFileGenerateUploadURLData.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

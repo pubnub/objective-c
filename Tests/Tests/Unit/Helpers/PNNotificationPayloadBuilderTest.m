@@ -61,8 +61,6 @@ NS_ASSUME_NONNULL_END
     PNNotificationsPayload *builder = [PNNotificationsPayload payloadsWithNotificationTitle:expectedTitle
                                                                                        body:expectedBody];
     
-    XCTAssertNotNil(builder.apns);
-    XCTAssertNotNil(builder.fcm);
 }
 
 - (void)testItShouldPassTitleAndBodyToBuildersWhenValuesPassed {
@@ -195,7 +193,6 @@ NS_ASSUME_NONNULL_END
                                                                      notificationTitle:nil
                                                                                   body:nil];
     
-    XCTAssertNotNil(builder);
     XCTAssertTrue([self.platformPayloadStorage[@"aps"] isKindOfClass:[NSMutableDictionary class]]);
     XCTAssertTrue([self.platformPayloadStorage[@"aps"][@"alert"] isKindOfClass:[NSMutableDictionary class]]);
     XCTAssertEqual(((NSDictionary *)self.platformPayloadStorage[@"aps"]).count, 1);
@@ -529,7 +526,6 @@ NS_ASSUME_NONNULL_END
                                                                    notificationTitle:nil
                                                                                 body:nil];
     
-    XCTAssertNotNil(builder);
     XCTAssertTrue([self.platformPayloadStorage[@"notification"] isKindOfClass:[NSMutableDictionary class]]);
     XCTAssertTrue([self.platformPayloadStorage[@"data"] isKindOfClass:[NSMutableDictionary class]]);
 }

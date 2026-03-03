@@ -1,6 +1,7 @@
 #import "PNTransportMiddleware.h"
 #import "PNNetworkResponseLogEntry+Private.h"
 #import "PNNetworkRequestLogEntry+Private.h"
+#import "PNDictionaryLogEntry.h"
 #import "PNTransportConfiguration+Private.h"
 #import "PNTransportRequest+Private.h"
 #import "PNConfiguration+Private.h"

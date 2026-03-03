@@ -42,16 +42,17 @@
 
 - (BOOL)shouldSetupVCR {
     BOOL shouldSetupVCR = [super shouldSetupVCR];
-    
+    if (!shouldSetupVCR && !self.isMockedIntegrationTestSuite) return NO;
+
     if (!shouldSetupVCR) {
         NSArray<NSString *> *testNames = @[
             @"ShouldNotRemoveChannelsFromGroupAndReceiveBadRequestStatusWhenChannelGroupIsNil",
             @"ShouldNotRemoveAllChannelsFromChannelGroupAndReceiveBadRequestStatusWhenChannelGroupIsNil"
         ];
-        
+
         shouldSetupVCR = [self.name pnt_includesAnyString:testNames];
     }
-    
+
     return shouldSetupVCR;
 }
 

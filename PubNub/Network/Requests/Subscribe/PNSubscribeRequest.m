@@ -129,10 +129,10 @@ NS_ASSUME_NONNULL_END
                    channelGroups:(NSArray<NSString *> *)channelGroups
                     presenceOnly:(BOOL)presenceOnly {
     if ((self = [super init])) {
-        _channelGroups = [channelGroups copy];
+        _channelGroups = channelGroups ? [[NSSet setWithArray:channelGroups].allObjects copy] : nil;
         _observePresence = presenceOnly;
         _presenceOnly = presenceOnly;
-        _channels = [channels copy];
+        _channels = channels ? [[NSSet setWithArray:channels].allObjects copy] : nil;
     }
 
     return self;

@@ -1,3 +1,4 @@
+#import "PNPresenceGlobalHereNowResult.h"
 #import "PNPresenceHereNowResult.h"
 
 
