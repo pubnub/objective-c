@@ -87,9 +87,9 @@ NS_ASSUME_NONNULL_END
                          channels:(NSArray<NSString *> *)channels
                     channelGroups:(NSArray<NSString *> *)channelGroups {
     if ((self = [super init])) {
-        _channelGroups = [channelGroups copy];
+        _channelGroups = channelGroups ? [[NSSet setWithArray:channelGroups].allObjects copy] : nil;
         _presenceHeartbeatValue = heartbeat;
-        _channels = [channels copy];
+        _channels = channels ? [[NSSet setWithArray:channels].allObjects copy] : nil;
     }
 
     return self;

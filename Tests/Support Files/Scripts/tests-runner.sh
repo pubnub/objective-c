@@ -26,6 +26,7 @@ TEST_SCHEME_TYPE="Mocked Integration Tests"
 [[ $2 == coverage ]] && TEST_SCHEME_TYPE="Code Coverage"
 [[ $2 == contract ]] && TEST_SCHEME_TYPE="Contract Tests"
 [[ $2 == contract-beta ]] && TEST_SCHEME_TYPE="Contract Tests Beta"
+[[ $2 == unit ]] && TEST_SCHEME_TYPE="Unit Tests"
 
 # Maximum number of tests which should run for same device type (various versions).
 [[ -n $3 ]] && MAXIMUM_DESTINATIONS="$3" || MAXIMUM_DESTINATIONS=3
@@ -103,7 +104,7 @@ for destinationPlatformIdx in "${!DESTINATIONS[@]}"; do
 		-scheme "[$PLATFORM] $TEST_SCHEME_TYPE" \
 		-destination "$DESTINATION_PLATFORM" \
 		-parallel-testing-enabled NO \
-		test | xcpretty --simple && XCODE_BUILD_EXITCODE="${PIPESTATUS[0]}"
+		test 2>&1 | if command -v xcpretty &>/dev/null; then xcpretty --simple; else cat; fi && XCODE_BUILD_EXITCODE="${PIPESTATUS[0]}"
 
   	if [[ $2 == contract || $2 == contract-beta ]]; then
     	REPORT_FILENAME="$CUCUMBER_REPORTS_PATH/CucumberishTestResults-[$PLATFORM] $TEST_SCHEME_TYPE.json"

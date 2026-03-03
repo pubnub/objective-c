@@ -130,10 +130,12 @@ NS_ASSUME_NONNULL_END
                                 estimatedResultLength - processedDataLength,
                                 &finalisedDataLength);
         processedData.length = processedDataLength + finalisedDataLength;
-    } else {
+    }
+
+    if (status != kCCSuccess) {
         error = [[self class] errorFromCryptorStatus:status andOperation:self.operation];
     }
-    
+
     return [PNResult resultWithData:processedData error:error];
 }
 

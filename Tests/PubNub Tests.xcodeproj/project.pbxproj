@@ -7,6 +7,65 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		04BC9E9121DA9952E0432246 /* PNPushRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E10F799FD1078C2F9A4B212 /* PNPushRequestTest.m */; };
+		058538B0A821FF0034FD3F48 /* PNPublishRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A532BE184FA3B8C7B01E32DE /* PNPublishRequestTest.m */; };
+		058FBBF60DD08FC740998174 /* PNResultTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EB116DE2F3241E748F6174A /* PNResultTest.m */; };
+		062F4437206A7532B22817F2 /* PNSubscribeErrorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 19BF7C177326B1C6CDF3DA10 /* PNSubscribeErrorTest.m */; };
+		0F9367763694D9F9119B8A1B /* PNTimeRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B02A4F0F50A4C9342039266D /* PNTimeRequestTest.m */; };
+		12F82D5B71425C9D98B3DE04 /* PNHistoryRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 31F20174EB19D78E1FD97599 /* PNHistoryRequestTest.m */; };
+		162C1DCA65589A9F83FA1328 /* PNSubscribeRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = C6E503A1DE0FDA061E31B74A /* PNSubscribeRequestTest.m */; };
+		193FD75C837B66D19A3B886E /* Pods_MockableTests__tvOS__Unit_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCCBDE0DC8023B3FEA8BA2A5 /* Pods_MockableTests__tvOS__Unit_Tests.framework */; };
+		1B562E2394C6D5708F5FC7C9 /* PNSubscribeErrorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 19BF7C177326B1C6CDF3DA10 /* PNSubscribeErrorTest.m */; };
+		1CD01667C2A5B2931DC0AA78 /* PNThreadSafetyTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FD175125650C0611EEEEA7F9 /* PNThreadSafetyTest.m */; };
+		1FD4EEE14CB8FBEE698C187F /* Pods_MockableTests__macOS__Mocked_Integration_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C67E6D8CFAD7122AEF9B9F3B /* Pods_MockableTests__macOS__Mocked_Integration_Tests.framework */; };
+		237F24FAEAACB2B4BD898FAE /* PNCryptoModuleTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 093FE0A4C2D6AEECB0F9679E /* PNCryptoModuleTest.m */; };
+		2662B0A2DAD4F7CCA9C3215F /* PNHistoryErrorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 80297BA7962383B632F60CB9 /* PNHistoryErrorTest.m */; };
+		2694FB777645089272313DB7 /* PNMockTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = 62D67A5C9C84B246FE62141C /* PNMockTransport.m */; };
+		270C969F5BB07F540E5017A5 /* PNHistoryRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 31F20174EB19D78E1FD97599 /* PNHistoryRequestTest.m */; };
+		282A2F3E76BB2114EA62F40C /* PNPresenceRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BD87A37DBF18CA8914A73C9 /* PNPresenceRequestTest.m */; };
+		298914DB5FB0F533B2E35715 /* PNPushRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E10F799FD1078C2F9A4B212 /* PNPushRequestTest.m */; };
+		2EDEF855F8EFB17E0B84FA99 /* PNStatusTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 165DEF4A7D063584BDD27C17 /* PNStatusTest.m */; };
+		2FBF0763AE95E08BAF9118DE /* PNFilesErrorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A089AC6BB27DBDB3901F7C /* PNFilesErrorTest.m */; };
+		300EDFC452DC9C74A458F3C6 /* PNThreadSafetyTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FD175125650C0611EEEEA7F9 /* PNThreadSafetyTest.m */; };
+		3563561AA89A7130C2171761 /* PNObjectsRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 526A09E4456A59C2B2481A39 /* PNObjectsRequestTest.m */; };
+		387756F2A5F34648F5943740 /* PNSubscribeErrorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 19BF7C177326B1C6CDF3DA10 /* PNSubscribeErrorTest.m */; };
+		39097D404BA5812A63BE4A1E /* Pods_ContractTests__iOS__Contract_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6525EDE436B0654BA479F783 /* Pods_ContractTests__iOS__Contract_Tests.framework */; };
+		39D956CF4A5715357DDB3D35 /* PNMessageActionsErrorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = D1F2BD9F8EC8C75ACFDFE2BB /* PNMessageActionsErrorTest.m */; };
+		3B6D6E21F968A21FC765816A /* PNMessageActionsErrorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = D1F2BD9F8EC8C75ACFDFE2BB /* PNMessageActionsErrorTest.m */; };
+		40E8F187501278AF56405925 /* PNPresenceErrorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DDD622C9ADDEE8D1C1DF8A6F /* PNPresenceErrorTest.m */; };
+		41DDE35AB4B6F51779AD0AED /* PNConsoleLoggerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A23F08EC70398AF2082E698E /* PNConsoleLoggerTest.m */; };
+		44B7B3DEC0D495C38CA73E43 /* Pods_MockableTests__iOS__Unit_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D30F78DC5D7C2E9D8B17B7C /* Pods_MockableTests__iOS__Unit_Tests.framework */; };
+		465210D19F96C8F1B6F3719E /* PNEncryptedDataTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 64BF29B938B31ADA4DD658C4 /* PNEncryptedDataTest.m */; };
+		467AD85A45B720BEB8F51DBA /* PNNetworkReachabilityTest.m in Sources */ = {isa = PBXBuildFile; fileRef = F876C90B1703896A31964AD8 /* PNNetworkReachabilityTest.m */; };
+		467CB93F40B4DA9596F785C9 /* PNNetworkReachabilityTest.m in Sources */ = {isa = PBXBuildFile; fileRef = F876C90B1703896A31964AD8 /* PNNetworkReachabilityTest.m */; };
+		46AC80C8E1C3E7C8C55A6D8D /* PNRelationsRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 952F37A94003D0BF689B1429 /* PNRelationsRequestTest.m */; };
+		4745A637B1211A322F3657A6 /* PNHistoryErrorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 80297BA7962383B632F60CB9 /* PNHistoryErrorTest.m */; };
+		476A652B261C64426B13677A /* PNFileLoggerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DE32A535F1EEC78F77BB80F7 /* PNFileLoggerTest.m */; };
+		47E47D1397EECE01B80F570C /* PNRelationsRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 952F37A94003D0BF689B1429 /* PNRelationsRequestTest.m */; };
+		48E61C64BC1A2DAF25730014 /* PNEncryptedDataTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 64BF29B938B31ADA4DD658C4 /* PNEncryptedDataTest.m */; };
+		4BCCE6959DBED1F83D20A886 /* PNTimeRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B02A4F0F50A4C9342039266D /* PNTimeRequestTest.m */; };
+		4C0043C033103575F195BDB9 /* PNFilesErrorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A089AC6BB27DBDB3901F7C /* PNFilesErrorTest.m */; };
+		4E071D388C01CCBBEF4DE3CB /* PNPublishErrorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 56AA27CE7081C5CE2181EEBC /* PNPublishErrorTest.m */; };
+		5356F7077A4FE8A430B98AE5 /* PNRelationsRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 952F37A94003D0BF689B1429 /* PNRelationsRequestTest.m */; };
+		5636212D520497EAC489FB9B /* PNThreadSafetyTest.m in Sources */ = {isa = PBXBuildFile; fileRef = FD175125650C0611EEEEA7F9 /* PNThreadSafetyTest.m */; };
+		564319F90A0CBCB0AB09C6C4 /* Pods_ContractTests__iOS__Contract_Tests_Beta.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 947A44E5142056BAE3081C97 /* Pods_ContractTests__iOS__Contract_Tests_Beta.framework */; };
+		569E2DE2ACEFFFE4D34D41EB /* PNPublishErrorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 56AA27CE7081C5CE2181EEBC /* PNPublishErrorTest.m */; };
+		56DD00486694EC77052B58FC /* PNNetworkReachabilityTest.m in Sources */ = {isa = PBXBuildFile; fileRef = F876C90B1703896A31964AD8 /* PNNetworkReachabilityTest.m */; };
+		60B7D04D0F8B9CC5FFC89964 /* PNPublishRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A532BE184FA3B8C7B01E32DE /* PNPublishRequestTest.m */; };
+		60FC4D068CE1F13FCC8071C7 /* PNCryptoModuleTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 093FE0A4C2D6AEECB0F9679E /* PNCryptoModuleTest.m */; };
+		616CEF9EB86BBE2DA7E0D0EA /* PNHistoryErrorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 80297BA7962383B632F60CB9 /* PNHistoryErrorTest.m */; };
+		623FF93991A555AE8C8512B4 /* PNObjectsErrorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 80CC146647A79FE6FC209B24 /* PNObjectsErrorTest.m */; };
+		63BF18FA88A7E19A20D99306 /* PNPresenceRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BD87A37DBF18CA8914A73C9 /* PNPresenceRequestTest.m */; };
+		64274928442B2ED295B2206D /* PNEncryptedDataTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 64BF29B938B31ADA4DD658C4 /* PNEncryptedDataTest.m */; };
+		6667C1B496EC1B049CEDB34A /* PNLegacyCryptorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 32B90B876DCD3863117CC5FA /* PNLegacyCryptorTest.m */; };
+		66BFB66C9746515470AC2B72 /* PNMockTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = 62D67A5C9C84B246FE62141C /* PNMockTransport.m */; };
+		6BE828A024F484227C0784AD /* PNPushRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E10F799FD1078C2F9A4B212 /* PNPushRequestTest.m */; };
+		73902F9404B2D5D0ED20AA40 /* PNEventResultTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A66E35544C7F66CEDA34E1F /* PNEventResultTest.m */; };
+		7553E0A136475DD7963E4DBF /* PNConsoleLoggerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A23F08EC70398AF2082E698E /* PNConsoleLoggerTest.m */; };
+		75F94EA97C629DBC13263DC9 /* PNObjectsRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 526A09E4456A59C2B2481A39 /* PNObjectsRequestTest.m */; };
+		7632F08681CA1457FB229439 /* PNMessageActionsRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B129B1EE9735B885316F0D4 /* PNMessageActionsRequestTest.m */; };
+		76F8D4AF3CBC4DDBA87008A7 /* PNPresenceRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BD87A37DBF18CA8914A73C9 /* PNPresenceRequestTest.m */; };
+		780B481401DC08659804A92B /* PNChannelGroupRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 62A6B4886DE2AA8C28208D73 /* PNChannelGroupRequestTest.m */; };
 		79657A7B2719CD5B00BACEC5 /* PNAccessContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = 79BB4BDE270A66E100EDC466 /* PNAccessContractTestSteps.m */; };
 		79657A7C2719CD5B00BACEC5 /* PNMessageActionsContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = 79BB4BD6270A60A900EDC466 /* PNMessageActionsContractTestSteps.m */; };
 		79657A7D2719CD5B00BACEC5 /* PNSubscribeContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = 796E6538270895F5001B57F4 /* PNSubscribeContractTestSteps.m */; };
@@ -31,6 +90,7 @@
 		797ABBE524C9BECA0008CA1E /* PNFilesIntegrationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 797ABBE324C9BECA0008CA1E /* PNFilesIntegrationTests.m */; };
 		797ABBE624C9BECA0008CA1E /* PNFilesIntegrationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 797ABBE324C9BECA0008CA1E /* PNFilesIntegrationTests.m */; };
 		797ABBE724C9BECA0008CA1E /* PNFilesIntegrationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 797ABBE324C9BECA0008CA1E /* PNFilesIntegrationTests.m */; };
+		79B37BEAB9DF52613FE5ED01 /* PNObjectsErrorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 80CC146647A79FE6FC209B24 /* PNObjectsErrorTest.m */; };
 		79BB4BCF2709D70C00EDC466 /* PNPublishContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = 79BB4BCE2709D70C00EDC466 /* PNPublishContractTestSteps.m */; };
 		79BB4BD32709EA5400EDC466 /* PNPushContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = 79BB4BD22709EA5400EDC466 /* PNPushContractTestSteps.m */; };
 		79BB4BD7270A60A900EDC466 /* PNMessageActionsContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = 79BB4BD6270A60A900EDC466 /* PNMessageActionsContractTestSteps.m */; };
@@ -43,6 +103,24 @@
 		79DDA2B0278DC75E00A5B24C /* PNConfigurationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 79DDA2AF278DC75E00A5B24C /* PNConfigurationTest.m */; };
 		79DDA2B1278DC75E00A5B24C /* PNConfigurationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 79DDA2AF278DC75E00A5B24C /* PNConfigurationTest.m */; };
 		79DDA2B2278DC75E00A5B24C /* PNConfigurationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 79DDA2AF278DC75E00A5B24C /* PNConfigurationTest.m */; };
+		7B88EDEF352946D429891A5D /* PNObjectsRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 526A09E4456A59C2B2481A39 /* PNObjectsRequestTest.m */; };
+		7D0AA1A0155E4B9A78710023 /* PNFilesErrorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A089AC6BB27DBDB3901F7C /* PNFilesErrorTest.m */; };
+		7D5524168B386391F112003F /* PNLoggerManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 647419614AE0C530B2239D40 /* PNLoggerManagerTest.m */; };
+		7F7600F3D673DFE43FB92530 /* PNStatusTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 165DEF4A7D063584BDD27C17 /* PNStatusTest.m */; };
+		805C6EC12BCD5D58CEA95956 /* PNObjectsErrorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 80CC146647A79FE6FC209B24 /* PNObjectsErrorTest.m */; };
+		81C3DFA3C1EEB56AC8BFAE0B /* PNFileLoggerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DE32A535F1EEC78F77BB80F7 /* PNFileLoggerTest.m */; };
+		84ECFAD5772CC715EED23E11 /* PNPublishRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A532BE184FA3B8C7B01E32DE /* PNPublishRequestTest.m */; };
+		8849AD288B9EC6F155DE367B /* Pods_MockableTests__iOS__Mocked_Integration_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81D4F301DAA6A91D40D23457 /* Pods_MockableTests__iOS__Mocked_Integration_Tests.framework */; };
+		8F2C19F503D211176B71B109 /* PNAESCBCCryptorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1791A709672BABB38657D9DF /* PNAESCBCCryptorTest.m */; };
+		971C4586064200646C3DC561 /* PNLockTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AAD89BD8238516462734950 /* PNLockTest.m */; };
+		981E23D8B2D55CAAE7FC3572 /* PNPublishErrorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 56AA27CE7081C5CE2181EEBC /* PNPublishErrorTest.m */; };
+		9AE002BD58D28F0FE9D63AB4 /* PNEventResultTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A66E35544C7F66CEDA34E1F /* PNEventResultTest.m */; };
+		9BB7D860DAE77ECC6FE02EFF /* PNLoggerManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 647419614AE0C530B2239D40 /* PNLoggerManagerTest.m */; };
+		9E88A450D47057CF287848F7 /* PNFilesRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A51FE3097F33740EB9A2498 /* PNFilesRequestTest.m */; };
+		9FF9796557639DA7C21C09A6 /* PNHistoryRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 31F20174EB19D78E1FD97599 /* PNHistoryRequestTest.m */; };
+		A05F34B9DA96AB370EC77B25 /* PNLegacyCryptorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 32B90B876DCD3863117CC5FA /* PNLegacyCryptorTest.m */; };
+		A0C29915B07D27CA71DFC53A /* PNConsoleLoggerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A23F08EC70398AF2082E698E /* PNConsoleLoggerTest.m */; };
+		A1102DE62241FFCD62A1D1E8 /* PNEventResultTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A66E35544C7F66CEDA34E1F /* PNEventResultTest.m */; };
 		A529271023B181FE00FF46DD /* PNRecordableTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = A529270F23B181FE00FF46DD /* PNRecordableTestCase.m */; };
 		A529271123B181FE00FF46DD /* PNRecordableTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = A529270F23B181FE00FF46DD /* PNRecordableTestCase.m */; };
 		A529271223B181FE00FF46DD /* PNRecordableTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = A529270F23B181FE00FF46DD /* PNRecordableTestCase.m */; };
@@ -197,9 +275,102 @@
 		A5F8E9DC2476D47A007F79AB /* PNObjectsAPICallBuilderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F8E9DA2476D46D007F79AB /* PNObjectsAPICallBuilderTest.m */; };
 		A5F8E9DD2476D47C007F79AB /* PNObjectsAPICallBuilderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F8E9DA2476D46D007F79AB /* PNObjectsAPICallBuilderTest.m */; };
 		A5F8E9DE2476D47D007F79AB /* PNObjectsAPICallBuilderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F8E9DA2476D46D007F79AB /* PNObjectsAPICallBuilderTest.m */; };
+		A6E34A67CC2A097449B9ED12 /* PNAESCBCCryptorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1791A709672BABB38657D9DF /* PNAESCBCCryptorTest.m */; };
+		A8DFD8AA707B7A06955D91A3 /* PNLockTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AAD89BD8238516462734950 /* PNLockTest.m */; };
+		AFADD04ED859E4D0ADA51774 /* PNLogEntryTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 971257940752F215B480B28A /* PNLogEntryTest.m */; };
+		B10A000126F00001001E72AF /* PNGZIPTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B10A000026F00001001E72AF /* PNGZIPTest.m */; };
+		B10A000226F00001001E72AF /* PNGZIPTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B10A000026F00001001E72AF /* PNGZIPTest.m */; };
+		B10A000326F00001001E72AF /* PNGZIPTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B10A000026F00001001E72AF /* PNGZIPTest.m */; };
+		B10A000526F00002001E72AF /* PNStringTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B10A000426F00002001E72AF /* PNStringTest.m */; };
+		B10A000626F00002001E72AF /* PNStringTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B10A000426F00002001E72AF /* PNStringTest.m */; };
+		B10A000726F00002001E72AF /* PNStringTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B10A000426F00002001E72AF /* PNStringTest.m */; };
+		B10A000926F00003001E72AF /* PNDictionaryTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B10A000826F00003001E72AF /* PNDictionaryTest.m */; };
+		B10A000A26F00003001E72AF /* PNDictionaryTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B10A000826F00003001E72AF /* PNDictionaryTest.m */; };
+		B10A000B26F00003001E72AF /* PNDictionaryTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B10A000826F00003001E72AF /* PNDictionaryTest.m */; };
+		B10A000D26F00004001E72AF /* PNChannelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B10A000C26F00004001E72AF /* PNChannelTest.m */; };
+		B10A000E26F00004001E72AF /* PNChannelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B10A000C26F00004001E72AF /* PNChannelTest.m */; };
+		B10A000F26F00004001E72AF /* PNChannelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B10A000C26F00004001E72AF /* PNChannelTest.m */; };
+		B10A001126F00005001E72AF /* PNDateTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B10A001026F00005001E72AF /* PNDateTest.m */; };
+		B10A001226F00005001E72AF /* PNDateTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B10A001026F00005001E72AF /* PNDateTest.m */; };
+		B10A001326F00005001E72AF /* PNDateTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B10A001026F00005001E72AF /* PNDateTest.m */; };
+		B10A001526F00006001E72AF /* PNJSONHelperTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B10A001426F00006001E72AF /* PNJSONHelperTest.m */; };
+		B10A001626F00006001E72AF /* PNJSONHelperTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B10A001426F00006001E72AF /* PNJSONHelperTest.m */; };
+		B10A001726F00006001E72AF /* PNJSONHelperTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B10A001426F00006001E72AF /* PNJSONHelperTest.m */; };
+		B10A001926F00007001E72AF /* PNArrayTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B10A001826F00007001E72AF /* PNArrayTest.m */; };
+		B10A001A26F00007001E72AF /* PNArrayTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B10A001826F00007001E72AF /* PNArrayTest.m */; };
+		B10A001B26F00007001E72AF /* PNArrayTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B10A001826F00007001E72AF /* PNArrayTest.m */; };
+		B10A001D26F00008001E72AF /* PNURLRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B10A001C26F00008001E72AF /* PNURLRequestTest.m */; };
+		B10A001E26F00008001E72AF /* PNURLRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B10A001C26F00008001E72AF /* PNURLRequestTest.m */; };
+		B10A001F26F00008001E72AF /* PNURLRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B10A001C26F00008001E72AF /* PNURLRequestTest.m */; };
+		B10A002126F00009001E72AF /* PNDataTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B10A002026F00009001E72AF /* PNDataTest.m */; };
+		B10A002226F00009001E72AF /* PNDataTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B10A002026F00009001E72AF /* PNDataTest.m */; };
+		B10A002326F00009001E72AF /* PNDataTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B10A002026F00009001E72AF /* PNDataTest.m */; };
+		B10A002526F0000A001E72AF /* PNNumberTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B10A002426F0000A001E72AF /* PNNumberTest.m */; };
+		B10A002626F0000A001E72AF /* PNNumberTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B10A002426F0000A001E72AF /* PNNumberTest.m */; };
+		B10A002726F0000A001E72AF /* PNNumberTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B10A002426F0000A001E72AF /* PNNumberTest.m */; };
+		B10A002926F0000B001E72AF /* PNFunctionsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B10A002826F0000B001E72AF /* PNFunctionsTest.m */; };
+		B10A002A26F0000B001E72AF /* PNFunctionsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B10A002826F0000B001E72AF /* PNFunctionsTest.m */; };
+		B10A002B26F0000B001E72AF /* PNFunctionsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B10A002826F0000B001E72AF /* PNFunctionsTest.m */; };
+		B1BC20E88E54228CACBDD2DA /* PNCryptoModuleTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 093FE0A4C2D6AEECB0F9679E /* PNCryptoModuleTest.m */; };
+		B5DF93E316DCC294BBC9EFE2 /* PNChannelGroupRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 62A6B4886DE2AA8C28208D73 /* PNChannelGroupRequestTest.m */; };
+		B8F976AFEA38339B1398E743 /* Pods__iOS__Integration_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D82F3EDD9B779712BB30F6CF /* Pods__iOS__Integration_Tests.framework */; };
+		BC88C073FAB54B116644A596 /* PNLogEntryTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 971257940752F215B480B28A /* PNLogEntryTest.m */; };
+		BC9F3DC13A60CFDA1D009FEE /* PNSubscribeRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = C6E503A1DE0FDA061E31B74A /* PNSubscribeRequestTest.m */; };
+		BEA0092DE3C3BC014A9E7D9E /* PNTimeRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B02A4F0F50A4C9342039266D /* PNTimeRequestTest.m */; };
+		CB54F4A634CD739CE8A17249 /* PNMessageActionsRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B129B1EE9735B885316F0D4 /* PNMessageActionsRequestTest.m */; };
+		CBB76F3172ACA55C91C80CE2 /* PNChannelGroupErrorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 64FFAD4A2656869CC895ECF7 /* PNChannelGroupErrorTest.m */; };
+		CC67974165E9CBC701722D7D /* PNMessageActionsErrorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = D1F2BD9F8EC8C75ACFDFE2BB /* PNMessageActionsErrorTest.m */; };
+		CC8F37BC6D08707441AE6A23 /* PNChannelGroupErrorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 64FFAD4A2656869CC895ECF7 /* PNChannelGroupErrorTest.m */; };
+		CD2CBFFF17F44B2900025694 /* PNAESCBCCryptorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1791A709672BABB38657D9DF /* PNAESCBCCryptorTest.m */; };
+		CDDF13424502756DBC2E2889 /* PNSubscribeRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = C6E503A1DE0FDA061E31B74A /* PNSubscribeRequestTest.m */; };
+		D179179876010515FABF3534 /* PNChannelGroupRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 62A6B4886DE2AA8C28208D73 /* PNChannelGroupRequestTest.m */; };
+		D1DBC99745A63BB23339BAC0 /* PNLockTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AAD89BD8238516462734950 /* PNLockTest.m */; };
+		D211216B7F5D635C0440B7BC /* PNFilesRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A51FE3097F33740EB9A2498 /* PNFilesRequestTest.m */; };
+		D21BDE27E902AE9A8E3C361D /* PNResultTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EB116DE2F3241E748F6174A /* PNResultTest.m */; };
+		D87FE9BAEE57FAE4E790C294 /* PNPresenceErrorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DDD622C9ADDEE8D1C1DF8A6F /* PNPresenceErrorTest.m */; };
+		DEECE528F6AF398E911BCC2C /* PNFileLoggerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DE32A535F1EEC78F77BB80F7 /* PNFileLoggerTest.m */; };
+		DF19678C9972950E60CB11AF /* PNPresenceErrorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DDD622C9ADDEE8D1C1DF8A6F /* PNPresenceErrorTest.m */; };
+		E4A9EBBAD8EEFC9C8F8DB1E7 /* PNLoggerManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 647419614AE0C530B2239D40 /* PNLoggerManagerTest.m */; };
+		E5FABBFBFAE3DBE4D0FC7E91 /* PNResultTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EB116DE2F3241E748F6174A /* PNResultTest.m */; };
+		E91EA41C3C70DD66DF9A91BA /* PNStatusTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 165DEF4A7D063584BDD27C17 /* PNStatusTest.m */; };
+		EFD833C07B11D39222612B81 /* PNChannelGroupErrorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 64FFAD4A2656869CC895ECF7 /* PNChannelGroupErrorTest.m */; };
+		F4D4E3EDE940F20D89E99A1B /* Pods_MockableTests__macOS__Unit_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94110E8F4D9E60C81C89230D /* Pods_MockableTests__macOS__Unit_Tests.framework */; };
+		F5C17A633F93A87BE8230B09 /* Pods_MockableTests__tvOS__Mocked_Integration_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 205C7F4879904D40A9E13489 /* Pods_MockableTests__tvOS__Mocked_Integration_Tests.framework */; };
+		F63B2B636C672D5C7AC41015 /* PNMockTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = 62D67A5C9C84B246FE62141C /* PNMockTransport.m */; };
+		F981DA01D20ECB01839D64C6 /* PNFilesRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A51FE3097F33740EB9A2498 /* PNFilesRequestTest.m */; };
+		F9C90DC751EE4B5FE4DEEBDE /* PNMessageActionsRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B129B1EE9735B885316F0D4 /* PNMessageActionsRequestTest.m */; };
+		FE368482933A15CB3139C4A9 /* PNLegacyCryptorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 32B90B876DCD3863117CC5FA /* PNLegacyCryptorTest.m */; };
+		FF9129721EA3EB95C95FE113 /* PNLogEntryTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 971257940752F215B480B28A /* PNLogEntryTest.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		01FD138F1D9143FB281121EC /* Pods-[iOS] Integration Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-[iOS] Integration Tests.release.xcconfig"; path = "Target Support Files/Pods-[iOS] Integration Tests/Pods-[iOS] Integration Tests.release.xcconfig"; sourceTree = "<group>"; };
+		04A089AC6BB27DBDB3901F7C /* PNFilesErrorTest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PNFilesErrorTest.m; sourceTree = "<group>"; };
+		093FE0A4C2D6AEECB0F9679E /* PNCryptoModuleTest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PNCryptoModuleTest.m; sourceTree = "<group>"; };
+		13FDDE6376033A34187C1FC1 /* Pods-MockableTests-[iOS] Unit Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MockableTests-[iOS] Unit Tests.debug.xcconfig"; path = "Target Support Files/Pods-MockableTests-[iOS] Unit Tests/Pods-MockableTests-[iOS] Unit Tests.debug.xcconfig"; sourceTree = "<group>"; };
+		165DEF4A7D063584BDD27C17 /* PNStatusTest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PNStatusTest.m; sourceTree = "<group>"; };
+		1791A709672BABB38657D9DF /* PNAESCBCCryptorTest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PNAESCBCCryptorTest.m; sourceTree = "<group>"; };
+		19BF7C177326B1C6CDF3DA10 /* PNSubscribeErrorTest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PNSubscribeErrorTest.m; sourceTree = "<group>"; };
+		1AAD89BD8238516462734950 /* PNLockTest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PNLockTest.m; sourceTree = "<group>"; };
+		205C7F4879904D40A9E13489 /* Pods_MockableTests__tvOS__Mocked_Integration_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MockableTests__tvOS__Mocked_Integration_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		2E10F799FD1078C2F9A4B212 /* PNPushRequestTest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PNPushRequestTest.m; sourceTree = "<group>"; };
+		31F20174EB19D78E1FD97599 /* PNHistoryRequestTest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PNHistoryRequestTest.m; sourceTree = "<group>"; };
+		32B90B876DCD3863117CC5FA /* PNLegacyCryptorTest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PNLegacyCryptorTest.m; sourceTree = "<group>"; };
+		33BEB83945085F2AEBB08569 /* Pods-MockableTests-[iOS] Mocked Integration Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MockableTests-[iOS] Mocked Integration Tests.release.xcconfig"; path = "Target Support Files/Pods-MockableTests-[iOS] Mocked Integration Tests/Pods-MockableTests-[iOS] Mocked Integration Tests.release.xcconfig"; sourceTree = "<group>"; };
+		37E54F107BD09641FA12F7D0 /* Pods-MockableTests-[macOS] Mocked Integration Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MockableTests-[macOS] Mocked Integration Tests.release.xcconfig"; path = "Target Support Files/Pods-MockableTests-[macOS] Mocked Integration Tests/Pods-MockableTests-[macOS] Mocked Integration Tests.release.xcconfig"; sourceTree = "<group>"; };
+		41E0773DB321A7C37C16CE47 /* Pods-ContractTests-[iOS] Contract Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ContractTests-[iOS] Contract Tests.release.xcconfig"; path = "Target Support Files/Pods-ContractTests-[iOS] Contract Tests/Pods-ContractTests-[iOS] Contract Tests.release.xcconfig"; sourceTree = "<group>"; };
+		4A51FE3097F33740EB9A2498 /* PNFilesRequestTest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PNFilesRequestTest.m; sourceTree = "<group>"; };
+		4BC7B27C62C862E41744AC12 /* Pods-MockableTests-[tvOS] Mocked Integration Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MockableTests-[tvOS] Mocked Integration Tests.release.xcconfig"; path = "Target Support Files/Pods-MockableTests-[tvOS] Mocked Integration Tests/Pods-MockableTests-[tvOS] Mocked Integration Tests.release.xcconfig"; sourceTree = "<group>"; };
+		526A09E4456A59C2B2481A39 /* PNObjectsRequestTest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PNObjectsRequestTest.m; sourceTree = "<group>"; };
+		56AA27CE7081C5CE2181EEBC /* PNPublishErrorTest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PNPublishErrorTest.m; sourceTree = "<group>"; };
+		5F7B03D6706F383B4D1016C8 /* Pods-[iOS] Integration Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-[iOS] Integration Tests.debug.xcconfig"; path = "Target Support Files/Pods-[iOS] Integration Tests/Pods-[iOS] Integration Tests.debug.xcconfig"; sourceTree = "<group>"; };
+		62A6B4886DE2AA8C28208D73 /* PNChannelGroupRequestTest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PNChannelGroupRequestTest.m; sourceTree = "<group>"; };
+		62D67A5C9C84B246FE62141C /* PNMockTransport.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PNMockTransport.m; sourceTree = "<group>"; };
+		647419614AE0C530B2239D40 /* PNLoggerManagerTest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PNLoggerManagerTest.m; sourceTree = "<group>"; };
+		64BF29B938B31ADA4DD658C4 /* PNEncryptedDataTest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PNEncryptedDataTest.m; sourceTree = "<group>"; };
+		64FFAD4A2656869CC895ECF7 /* PNChannelGroupErrorTest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PNChannelGroupErrorTest.m; sourceTree = "<group>"; };
+		6525EDE436B0654BA479F783 /* Pods_ContractTests__iOS__Contract_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ContractTests__iOS__Contract_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6B67CB35405BA8A5D64355F1 /* Pods-ContractTests-[iOS] Contract Tests Beta.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ContractTests-[iOS] Contract Tests Beta.debug.xcconfig"; path = "Target Support Files/Pods-ContractTests-[iOS] Contract Tests Beta/Pods-ContractTests-[iOS] Contract Tests Beta.debug.xcconfig"; sourceTree = "<group>"; };
 		7941EE5E270C73B30054D9EF /* ios-contract-tests.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "ios-contract-tests.plist"; sourceTree = "<group>"; };
 		79657A8F2719CD5B00BACEC5 /* [iOS] Contract Tests Beta.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "[iOS] Contract Tests Beta.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		796E65292707B33A001B57F4 /* PNContractCucumberTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNContractCucumberTest.m; sourceTree = "<group>"; };
@@ -226,6 +397,22 @@
 		79BB4BE2270A6FBF00EDC466 /* PNFilesContractTestSteps.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNFilesContractTestSteps.m; sourceTree = "<group>"; };
 		79CFA2D626DE25CD00D206D4 /* PNPAMTokenTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNPAMTokenTest.m; sourceTree = "<group>"; };
 		79DDA2AF278DC75E00A5B24C /* PNConfigurationTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNConfigurationTest.m; sourceTree = "<group>"; };
+		7A66E35544C7F66CEDA34E1F /* PNEventResultTest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PNEventResultTest.m; sourceTree = "<group>"; };
+		7B129B1EE9735B885316F0D4 /* PNMessageActionsRequestTest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PNMessageActionsRequestTest.m; sourceTree = "<group>"; };
+		7D30F78DC5D7C2E9D8B17B7C /* Pods_MockableTests__iOS__Unit_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MockableTests__iOS__Unit_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		80297BA7962383B632F60CB9 /* PNHistoryErrorTest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PNHistoryErrorTest.m; sourceTree = "<group>"; };
+		80CC146647A79FE6FC209B24 /* PNObjectsErrorTest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PNObjectsErrorTest.m; sourceTree = "<group>"; };
+		81D4F301DAA6A91D40D23457 /* Pods_MockableTests__iOS__Mocked_Integration_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MockableTests__iOS__Mocked_Integration_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		828EFFC330107C0A76C78310 /* Pods-MockableTests-[tvOS] Unit Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MockableTests-[tvOS] Unit Tests.debug.xcconfig"; path = "Target Support Files/Pods-MockableTests-[tvOS] Unit Tests/Pods-MockableTests-[tvOS] Unit Tests.debug.xcconfig"; sourceTree = "<group>"; };
+		8F86174540901D21E718D8F1 /* Pods-MockableTests-[iOS] Unit Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MockableTests-[iOS] Unit Tests.release.xcconfig"; path = "Target Support Files/Pods-MockableTests-[iOS] Unit Tests/Pods-MockableTests-[iOS] Unit Tests.release.xcconfig"; sourceTree = "<group>"; };
+		911C9D8D1CDF9A6875A4E22F /* Pods-MockableTests-[macOS] Mocked Integration Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MockableTests-[macOS] Mocked Integration Tests.debug.xcconfig"; path = "Target Support Files/Pods-MockableTests-[macOS] Mocked Integration Tests/Pods-MockableTests-[macOS] Mocked Integration Tests.debug.xcconfig"; sourceTree = "<group>"; };
+		94110E8F4D9E60C81C89230D /* Pods_MockableTests__macOS__Unit_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MockableTests__macOS__Unit_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		947A44E5142056BAE3081C97 /* Pods_ContractTests__iOS__Contract_Tests_Beta.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ContractTests__iOS__Contract_Tests_Beta.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		952F37A94003D0BF689B1429 /* PNRelationsRequestTest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PNRelationsRequestTest.m; sourceTree = "<group>"; };
+		971257940752F215B480B28A /* PNLogEntryTest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PNLogEntryTest.m; sourceTree = "<group>"; };
+		9BD87A37DBF18CA8914A73C9 /* PNPresenceRequestTest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PNPresenceRequestTest.m; sourceTree = "<group>"; };
+		9EB116DE2F3241E748F6174A /* PNResultTest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PNResultTest.m; sourceTree = "<group>"; };
+		A23F08EC70398AF2082E698E /* PNConsoleLoggerTest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PNConsoleLoggerTest.m; sourceTree = "<group>"; };
 		A529268323B0D07500FF46DD /* [iOS] Code Coverage.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "[iOS] Code Coverage.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A52926D823B0E3CF00FF46DD /* ios-tests.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ios-tests.plist"; sourceTree = "<group>"; };
 		A52926DF23B0E6C500FF46DD /* [tvOS] Mocked Integration Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "[tvOS] Mocked Integration Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -242,6 +429,7 @@
 		A531DFD82D64A06D00AEE218 /* PNAppContextObjectsRelationMetadataContractTestSteps.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNAppContextObjectsRelationMetadataContractTestSteps.h; sourceTree = "<group>"; };
 		A531DFD92D64A06D00AEE218 /* PNAppContextObjectsRelationMetadataContractTestSteps.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNAppContextObjectsRelationMetadataContractTestSteps.m; sourceTree = "<group>"; };
 		A532490F2C304F90003510FF /* PNSubscribeTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNSubscribeTest.m; sourceTree = "<group>"; };
+		A532BE184FA3B8C7B01E32DE /* PNPublishRequestTest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PNPublishRequestTest.m; sourceTree = "<group>"; };
 		A53D0AED23E9BF60001E72AF /* PNMembershipsObjectsAPICallBuilderTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNMembershipsObjectsAPICallBuilderTest.m; sourceTree = "<group>"; };
 		A53D0AF123E9F42B001E72AF /* PNChannelMembersObjectsAPICallBuilderTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNChannelMembersObjectsAPICallBuilderTest.m; sourceTree = "<group>"; };
 		A53D0AF523E9F7D7001E72AF /* PNChannelMetadataAPICallBuilderTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNChannelMetadataAPICallBuilderTest.m; sourceTree = "<group>"; };
@@ -283,6 +471,35 @@
 		A5E3BA012B2FA76700D3AA18 /* PNRequestRetryConfigurationTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNRequestRetryConfigurationTest.m; sourceTree = "<group>"; };
 		A5E3BA062B3030BB00D3AA18 /* PNRequestRetryConfigurationIntegrationTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNRequestRetryConfigurationIntegrationTest.m; sourceTree = "<group>"; };
 		A5F8E9DA2476D46D007F79AB /* PNObjectsAPICallBuilderTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNObjectsAPICallBuilderTest.m; sourceTree = "<group>"; };
+		B02A4F0F50A4C9342039266D /* PNTimeRequestTest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PNTimeRequestTest.m; sourceTree = "<group>"; };
+		B10A000026F00001001E72AF /* PNGZIPTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNGZIPTest.m; sourceTree = "<group>"; };
+		B10A000426F00002001E72AF /* PNStringTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNStringTest.m; sourceTree = "<group>"; };
+		B10A000826F00003001E72AF /* PNDictionaryTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNDictionaryTest.m; sourceTree = "<group>"; };
+		B10A000C26F00004001E72AF /* PNChannelTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNChannelTest.m; sourceTree = "<group>"; };
+		B10A001026F00005001E72AF /* PNDateTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNDateTest.m; sourceTree = "<group>"; };
+		B10A001426F00006001E72AF /* PNJSONHelperTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNJSONHelperTest.m; sourceTree = "<group>"; };
+		B10A001826F00007001E72AF /* PNArrayTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNArrayTest.m; sourceTree = "<group>"; };
+		B10A001C26F00008001E72AF /* PNURLRequestTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNURLRequestTest.m; sourceTree = "<group>"; };
+		B10A002026F00009001E72AF /* PNDataTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNDataTest.m; sourceTree = "<group>"; };
+		B10A002426F0000A001E72AF /* PNNumberTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNNumberTest.m; sourceTree = "<group>"; };
+		B10A002826F0000B001E72AF /* PNFunctionsTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNFunctionsTest.m; sourceTree = "<group>"; };
+		BB1BF4F52A6788409FCABA1A /* Pods-MockableTests-[tvOS] Mocked Integration Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MockableTests-[tvOS] Mocked Integration Tests.debug.xcconfig"; path = "Target Support Files/Pods-MockableTests-[tvOS] Mocked Integration Tests/Pods-MockableTests-[tvOS] Mocked Integration Tests.debug.xcconfig"; sourceTree = "<group>"; };
+		C0CCA7BD2B4C6CD160949FF7 /* Pods-MockableTests-[iOS] Mocked Integration Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MockableTests-[iOS] Mocked Integration Tests.debug.xcconfig"; path = "Target Support Files/Pods-MockableTests-[iOS] Mocked Integration Tests/Pods-MockableTests-[iOS] Mocked Integration Tests.debug.xcconfig"; sourceTree = "<group>"; };
+		C478061E7C0E54A479A59738 /* Pods-ContractTests-[iOS] Contract Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ContractTests-[iOS] Contract Tests.debug.xcconfig"; path = "Target Support Files/Pods-ContractTests-[iOS] Contract Tests/Pods-ContractTests-[iOS] Contract Tests.debug.xcconfig"; sourceTree = "<group>"; };
+		C4C69FE3D81194BB29FC5A04 /* Pods-MockableTests-[macOS] Unit Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MockableTests-[macOS] Unit Tests.release.xcconfig"; path = "Target Support Files/Pods-MockableTests-[macOS] Unit Tests/Pods-MockableTests-[macOS] Unit Tests.release.xcconfig"; sourceTree = "<group>"; };
+		C67E6D8CFAD7122AEF9B9F3B /* Pods_MockableTests__macOS__Mocked_Integration_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MockableTests__macOS__Mocked_Integration_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C6E503A1DE0FDA061E31B74A /* PNSubscribeRequestTest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PNSubscribeRequestTest.m; sourceTree = "<group>"; };
+		CCCBDE0DC8023B3FEA8BA2A5 /* Pods_MockableTests__tvOS__Unit_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MockableTests__tvOS__Unit_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D1F2BD9F8EC8C75ACFDFE2BB /* PNMessageActionsErrorTest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PNMessageActionsErrorTest.m; sourceTree = "<group>"; };
+		D4FE56602E20124B56F1266C /* Pods-MockableTests-[macOS] Unit Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MockableTests-[macOS] Unit Tests.debug.xcconfig"; path = "Target Support Files/Pods-MockableTests-[macOS] Unit Tests/Pods-MockableTests-[macOS] Unit Tests.debug.xcconfig"; sourceTree = "<group>"; };
+		D82F3EDD9B779712BB30F6CF /* Pods__iOS__Integration_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods__iOS__Integration_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DD0FCB2DA90E435F25B87C6C /* Pods-ContractTests-[iOS] Contract Tests Beta.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ContractTests-[iOS] Contract Tests Beta.release.xcconfig"; path = "Target Support Files/Pods-ContractTests-[iOS] Contract Tests Beta/Pods-ContractTests-[iOS] Contract Tests Beta.release.xcconfig"; sourceTree = "<group>"; };
+		DDD622C9ADDEE8D1C1DF8A6F /* PNPresenceErrorTest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PNPresenceErrorTest.m; sourceTree = "<group>"; };
+		DE32A535F1EEC78F77BB80F7 /* PNFileLoggerTest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PNFileLoggerTest.m; sourceTree = "<group>"; };
+		E743CC9BF8671E22FF0B6BDE /* Pods-MockableTests-[tvOS] Unit Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MockableTests-[tvOS] Unit Tests.release.xcconfig"; path = "Target Support Files/Pods-MockableTests-[tvOS] Unit Tests/Pods-MockableTests-[tvOS] Unit Tests.release.xcconfig"; sourceTree = "<group>"; };
+		F765D4A0CBB489A473F525EC /* PNMockTransport.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = PNMockTransport.h; sourceTree = "<group>"; };
+		F876C90B1703896A31964AD8 /* PNNetworkReachabilityTest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PNNetworkReachabilityTest.m; sourceTree = "<group>"; };
+		FD175125650C0611EEEEA7F9 /* PNThreadSafetyTest.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PNThreadSafetyTest.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -290,6 +507,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				564319F90A0CBCB0AB09C6C4 /* Pods_ContractTests__iOS__Contract_Tests_Beta.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -297,6 +515,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				39097D404BA5812A63BE4A1E /* Pods_ContractTests__iOS__Contract_Tests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -311,6 +530,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F5C17A633F93A87BE8230B09 /* Pods_MockableTests__tvOS__Mocked_Integration_Tests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -318,6 +538,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				193FD75C837B66D19A3B886E /* Pods_MockableTests__tvOS__Unit_Tests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -325,6 +546,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1FD4EEE14CB8FBEE698C187F /* Pods_MockableTests__macOS__Mocked_Integration_Tests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -332,6 +554,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F4D4E3EDE940F20D89E99A1B /* Pods_MockableTests__macOS__Unit_Tests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -339,6 +562,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				44B7B3DEC0D495C38CA73E43 /* Pods_MockableTests__iOS__Unit_Tests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -346,6 +570,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8849AD288B9EC6F155DE367B /* Pods_MockableTests__iOS__Mocked_Integration_Tests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -353,12 +578,95 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B8F976AFEA38339B1398E743 /* Pods__iOS__Integration_Tests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0C888D8CE986A1295244F2E2 /* MessageActions */ = {
+			isa = PBXGroup;
+			children = (
+				D1F2BD9F8EC8C75ACFDFE2BB /* PNMessageActionsErrorTest.m */,
+			);
+			path = MessageActions;
+			sourceTree = "<group>";
+		};
+		25126C6D9057DBEF349C7446 /* Presence */ = {
+			isa = PBXGroup;
+			children = (
+				DDD622C9ADDEE8D1C1DF8A6F /* PNPresenceErrorTest.m */,
+			);
+			path = Presence;
+			sourceTree = "<group>";
+		};
+		384DBB3A0D8B805891F2AFB6 /* ChannelGroups */ = {
+			isa = PBXGroup;
+			children = (
+				64FFAD4A2656869CC895ECF7 /* PNChannelGroupErrorTest.m */,
+			);
+			path = ChannelGroups;
+			sourceTree = "<group>";
+		};
+		4196B2D4214CEEE7044D8D6A /* Subscribe */ = {
+			isa = PBXGroup;
+			children = (
+				C6E503A1DE0FDA061E31B74A /* PNSubscribeRequestTest.m */,
+			);
+			path = Subscribe;
+			sourceTree = "<group>";
+		};
+		49AFB0F08AD46D0A180B08E5 /* Time */ = {
+			isa = PBXGroup;
+			children = (
+				B02A4F0F50A4C9342039266D /* PNTimeRequestTest.m */,
+			);
+			path = Time;
+			sourceTree = "<group>";
+		};
+		55883B5C336BAC9248E00E44 /* Push */ = {
+			isa = PBXGroup;
+			children = (
+				2E10F799FD1078C2F9A4B212 /* PNPushRequestTest.m */,
+			);
+			path = Push;
+			sourceTree = "<group>";
+		};
+		6DA5C342E25722601751F750 /* Reachability */ = {
+			isa = PBXGroup;
+			children = (
+				F876C90B1703896A31964AD8 /* PNNetworkReachabilityTest.m */,
+				62D67A5C9C84B246FE62141C /* PNMockTransport.m */,
+				F765D4A0CBB489A473F525EC /* PNMockTransport.h */,
+			);
+			path = Reachability;
+			sourceTree = "<group>";
+		};
+		7032925208352665E9607218 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				6525EDE436B0654BA479F783 /* Pods_ContractTests__iOS__Contract_Tests.framework */,
+				947A44E5142056BAE3081C97 /* Pods_ContractTests__iOS__Contract_Tests_Beta.framework */,
+				81D4F301DAA6A91D40D23457 /* Pods_MockableTests__iOS__Mocked_Integration_Tests.framework */,
+				7D30F78DC5D7C2E9D8B17B7C /* Pods_MockableTests__iOS__Unit_Tests.framework */,
+				C67E6D8CFAD7122AEF9B9F3B /* Pods_MockableTests__macOS__Mocked_Integration_Tests.framework */,
+				94110E8F4D9E60C81C89230D /* Pods_MockableTests__macOS__Unit_Tests.framework */,
+				205C7F4879904D40A9E13489 /* Pods_MockableTests__tvOS__Mocked_Integration_Tests.framework */,
+				CCCBDE0DC8023B3FEA8BA2A5 /* Pods_MockableTests__tvOS__Unit_Tests.framework */,
+				D82F3EDD9B779712BB30F6CF /* Pods__iOS__Integration_Tests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		74C094835BA8E2329BCA287A /* ChannelGroups */ = {
+			isa = PBXGroup;
+			children = (
+				62A6B4886DE2AA8C28208D73 /* PNChannelGroupRequestTest.m */,
+			);
+			path = ChannelGroups;
+			sourceTree = "<group>";
+		};
 		796E65282707A864001B57F4 /* Steps */ = {
 			isa = PBXGroup;
 			children = (
@@ -481,6 +789,43 @@
 			path = Data;
 			sourceTree = "<group>";
 		};
+		8C4E400FD78DD7C75A822587 /* Crypto */ = {
+			isa = PBXGroup;
+			children = (
+				32B90B876DCD3863117CC5FA /* PNLegacyCryptorTest.m */,
+				64BF29B938B31ADA4DD658C4 /* PNEncryptedDataTest.m */,
+				1791A709672BABB38657D9DF /* PNAESCBCCryptorTest.m */,
+				093FE0A4C2D6AEECB0F9679E /* PNCryptoModuleTest.m */,
+			);
+			path = Crypto;
+			sourceTree = "<group>";
+		};
+		9134BE35F920B07165FDDF14 /* Modules */ = {
+			isa = PBXGroup;
+			children = (
+				8C4E400FD78DD7C75A822587 /* Crypto */,
+				D3BCB1ACDED7ED9CBB61E72F /* Logger */,
+			);
+			path = Modules;
+			sourceTree = "<group>";
+		};
+		939D9165977A9204F5AB6DAB /* Files */ = {
+			isa = PBXGroup;
+			children = (
+				4A51FE3097F33740EB9A2498 /* PNFilesRequestTest.m */,
+			);
+			path = Files;
+			sourceTree = "<group>";
+		};
+		9AA4BA5323DEDBCD57037954 /* Objects */ = {
+			isa = PBXGroup;
+			children = (
+				952F37A94003D0BF689B1429 /* PNRelationsRequestTest.m */,
+				526A09E4456A59C2B2481A39 /* PNObjectsRequestTest.m */,
+			);
+			path = Objects;
+			sourceTree = "<group>";
+		};
 		A52926AF23B0D63100FF46DD /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -506,8 +851,11 @@
 		A52926B523B0D67C00FF46DD /* Unit */ = {
 			isa = PBXGroup;
 			children = (
+				DEE8C411DCE820AB5E484AE2 /* Concurrency */,
 				A5E3BA002B2FA73B00D3AA18 /* Network */,
+				9134BE35F920B07165FDDF14 /* Modules */,
 				A53D0B2923EA0FDC001E72AF /* Helpers */,
+				CF2CDCC0D7E5242AE97268F9 /* Models */,
 				A59ECFDA23BB56E900E84300 /* Core */,
 				79DDA2AE278DC6F100A5B24C /* Data */,
 			);
@@ -560,6 +908,7 @@
 			isa = PBXGroup;
 			children = (
 				A532490F2C304F90003510FF /* PNSubscribeTest.m */,
+				19BF7C177326B1C6CDF3DA10 /* PNSubscribeErrorTest.m */,
 			);
 			path = Subscribe;
 			sourceTree = "<group>";
@@ -626,6 +975,7 @@
 				A53D0B1223EA0A07001E72AF /* PNChannelMemberObjectsTest.m */,
 				A53D0B1623EA0AB4001E72AF /* PNChannelMetadataObjectsTest.m */,
 				A53D0B1A23EA0C5C001E72AF /* PNUUIDMetadataObjectsTest.m */,
+				80CC146647A79FE6FC209B24 /* PNObjectsErrorTest.m */,
 			);
 			path = Objects;
 			sourceTree = "<group>";
@@ -650,6 +1000,7 @@
 			isa = PBXGroup;
 			children = (
 				A53D0B2523EA0EAD001E72AF /* PNMessageCountTest.m */,
+				80297BA7962383B632F60CB9 /* PNHistoryErrorTest.m */,
 			);
 			path = History;
 			sourceTree = "<group>";
@@ -657,7 +1008,18 @@
 		A53D0B2923EA0FDC001E72AF /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				B10A001826F00007001E72AF /* PNArrayTest.m */,
+				B10A000C26F00004001E72AF /* PNChannelTest.m */,
+				B10A002026F00009001E72AF /* PNDataTest.m */,
+				B10A001026F00005001E72AF /* PNDateTest.m */,
+				B10A000826F00003001E72AF /* PNDictionaryTest.m */,
+				B10A002826F0000B001E72AF /* PNFunctionsTest.m */,
+				B10A000026F00001001E72AF /* PNGZIPTest.m */,
+				B10A001426F00006001E72AF /* PNJSONHelperTest.m */,
 				A53D0B2A23EA0FEF001E72AF /* PNNotificationPayloadBuilderTest.m */,
+				B10A002426F0000A001E72AF /* PNNumberTest.m */,
+				B10A000426F00002001E72AF /* PNStringTest.m */,
+				B10A001C26F00008001E72AF /* PNURLRequestTest.m */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -683,6 +1045,11 @@
 				A53D0B1E23EA0DA1001E72AF /* Actions */,
 				A59ECFDB23BB56F100E84300 /* Publish */,
 				A53D0B2423EA0E92001E72AF /* History */,
+				384DBB3A0D8B805891F2AFB6 /* ChannelGroups */,
+				B382A6F8A912484A76350780 /* Requests */,
+				25126C6D9057DBEF349C7446 /* Presence */,
+				B92773A2F183C762E69C7BA8 /* Files */,
+				0C888D8CE986A1295244F2E2 /* MessageActions */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -691,6 +1058,7 @@
 			isa = PBXGroup;
 			children = (
 				A59ECFDC23BB571200E84300 /* PNSignalTest.m */,
+				56AA27CE7081C5CE2181EEBC /* PNPublishErrorTest.m */,
 			);
 			path = Publish;
 			sourceTree = "<group>";
@@ -710,6 +1078,7 @@
 				A52926AF23B0D63100FF46DD /* Support Files */,
 				A5B65D5523B03DB1006B7BFB /* Products */,
 				DC23E0797E4D29A69E09CCB4 /* Pods */,
+				7032925208352665E9607218 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -773,15 +1142,121 @@
 			isa = PBXGroup;
 			children = (
 				A5E3BA012B2FA76700D3AA18 /* PNRequestRetryConfigurationTest.m */,
+				6DA5C342E25722601751F750 /* Reachability */,
 			);
 			path = Network;
+			sourceTree = "<group>";
+		};
+		B382A6F8A912484A76350780 /* Requests */ = {
+			isa = PBXGroup;
+			children = (
+				74C094835BA8E2329BCA287A /* ChannelGroups */,
+				9AA4BA5323DEDBCD57037954 /* Objects */,
+				49AFB0F08AD46D0A180B08E5 /* Time */,
+				4196B2D4214CEEE7044D8D6A /* Subscribe */,
+				55883B5C336BAC9248E00E44 /* Push */,
+				B7C55E1709FA0A5D774171B4 /* Publish */,
+				E32CA04C870CBD05F633C5BA /* Presence */,
+				FA73158339A27CB6E745507C /* History */,
+				939D9165977A9204F5AB6DAB /* Files */,
+				FE69D17CC04B7DF363AE2535 /* MessageActions */,
+			);
+			path = Requests;
+			sourceTree = "<group>";
+		};
+		B7C55E1709FA0A5D774171B4 /* Publish */ = {
+			isa = PBXGroup;
+			children = (
+				A532BE184FA3B8C7B01E32DE /* PNPublishRequestTest.m */,
+			);
+			path = Publish;
+			sourceTree = "<group>";
+		};
+		B92773A2F183C762E69C7BA8 /* Files */ = {
+			isa = PBXGroup;
+			children = (
+				04A089AC6BB27DBDB3901F7C /* PNFilesErrorTest.m */,
+			);
+			path = Files;
+			sourceTree = "<group>";
+		};
+		CF2CDCC0D7E5242AE97268F9 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				165DEF4A7D063584BDD27C17 /* PNStatusTest.m */,
+				7A66E35544C7F66CEDA34E1F /* PNEventResultTest.m */,
+				9EB116DE2F3241E748F6174A /* PNResultTest.m */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		D3BCB1ACDED7ED9CBB61E72F /* Logger */ = {
+			isa = PBXGroup;
+			children = (
+				A23F08EC70398AF2082E698E /* PNConsoleLoggerTest.m */,
+				971257940752F215B480B28A /* PNLogEntryTest.m */,
+				DE32A535F1EEC78F77BB80F7 /* PNFileLoggerTest.m */,
+				647419614AE0C530B2239D40 /* PNLoggerManagerTest.m */,
+			);
+			path = Logger;
 			sourceTree = "<group>";
 		};
 		DC23E0797E4D29A69E09CCB4 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
+				C478061E7C0E54A479A59738 /* Pods-ContractTests-[iOS] Contract Tests.debug.xcconfig */,
+				41E0773DB321A7C37C16CE47 /* Pods-ContractTests-[iOS] Contract Tests.release.xcconfig */,
+				6B67CB35405BA8A5D64355F1 /* Pods-ContractTests-[iOS] Contract Tests Beta.debug.xcconfig */,
+				DD0FCB2DA90E435F25B87C6C /* Pods-ContractTests-[iOS] Contract Tests Beta.release.xcconfig */,
+				C0CCA7BD2B4C6CD160949FF7 /* Pods-MockableTests-[iOS] Mocked Integration Tests.debug.xcconfig */,
+				33BEB83945085F2AEBB08569 /* Pods-MockableTests-[iOS] Mocked Integration Tests.release.xcconfig */,
+				13FDDE6376033A34187C1FC1 /* Pods-MockableTests-[iOS] Unit Tests.debug.xcconfig */,
+				8F86174540901D21E718D8F1 /* Pods-MockableTests-[iOS] Unit Tests.release.xcconfig */,
+				911C9D8D1CDF9A6875A4E22F /* Pods-MockableTests-[macOS] Mocked Integration Tests.debug.xcconfig */,
+				37E54F107BD09641FA12F7D0 /* Pods-MockableTests-[macOS] Mocked Integration Tests.release.xcconfig */,
+				D4FE56602E20124B56F1266C /* Pods-MockableTests-[macOS] Unit Tests.debug.xcconfig */,
+				C4C69FE3D81194BB29FC5A04 /* Pods-MockableTests-[macOS] Unit Tests.release.xcconfig */,
+				BB1BF4F52A6788409FCABA1A /* Pods-MockableTests-[tvOS] Mocked Integration Tests.debug.xcconfig */,
+				4BC7B27C62C862E41744AC12 /* Pods-MockableTests-[tvOS] Mocked Integration Tests.release.xcconfig */,
+				828EFFC330107C0A76C78310 /* Pods-MockableTests-[tvOS] Unit Tests.debug.xcconfig */,
+				E743CC9BF8671E22FF0B6BDE /* Pods-MockableTests-[tvOS] Unit Tests.release.xcconfig */,
+				5F7B03D6706F383B4D1016C8 /* Pods-[iOS] Integration Tests.debug.xcconfig */,
+				01FD138F1D9143FB281121EC /* Pods-[iOS] Integration Tests.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		DEE8C411DCE820AB5E484AE2 /* Concurrency */ = {
+			isa = PBXGroup;
+			children = (
+				FD175125650C0611EEEEA7F9 /* PNThreadSafetyTest.m */,
+				1AAD89BD8238516462734950 /* PNLockTest.m */,
+			);
+			path = Concurrency;
+			sourceTree = "<group>";
+		};
+		E32CA04C870CBD05F633C5BA /* Presence */ = {
+			isa = PBXGroup;
+			children = (
+				9BD87A37DBF18CA8914A73C9 /* PNPresenceRequestTest.m */,
+			);
+			path = Presence;
+			sourceTree = "<group>";
+		};
+		FA73158339A27CB6E745507C /* History */ = {
+			isa = PBXGroup;
+			children = (
+				31F20174EB19D78E1FD97599 /* PNHistoryRequestTest.m */,
+			);
+			path = History;
+			sourceTree = "<group>";
+		};
+		FE69D17CC04B7DF363AE2535 /* MessageActions */ = {
+			isa = PBXGroup;
+			children = (
+				7B129B1EE9735B885316F0D4 /* PNMessageActionsRequestTest.m */,
+			);
+			path = MessageActions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -791,9 +1266,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 79657A8C2719CD5B00BACEC5 /* Build configuration list for PBXNativeTarget "[iOS] Contract Tests Beta" */;
 			buildPhases = (
+				AB7182EAD1A61D20D3989AC6 /* [CP] Check Pods Manifest.lock */,
 				79657A7A2719CD5B00BACEC5 /* Sources */,
 				79657A852719CD5B00BACEC5 /* Frameworks */,
 				79657A872719CD5B00BACEC5 /* Resources */,
+				FC5BB3C042E98A9647C68269 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -808,9 +1285,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 796F6307270344DF00DE6F07 /* Build configuration list for PBXNativeTarget "[iOS] Contract Tests" */;
 			buildPhases = (
+				DF9B0259CDD274CD59761913 /* [CP] Check Pods Manifest.lock */,
 				796F62F1270344DF00DE6F07 /* Sources */,
 				796F6303270344DF00DE6F07 /* Frameworks */,
 				796F6304270344DF00DE6F07 /* Resources */,
+				07AC1933C6075A17BB69F6FA /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -842,9 +1321,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A52926E423B0E6C500FF46DD /* Build configuration list for PBXNativeTarget "[tvOS] Mocked Integration Tests" */;
 			buildPhases = (
+				B19BE4F3126ED2F6FAD7CDA4 /* [CP] Check Pods Manifest.lock */,
 				A52926DB23B0E6C500FF46DD /* Sources */,
 				A52926DC23B0E6C500FF46DD /* Frameworks */,
 				A52926DD23B0E6C500FF46DD /* Resources */,
+				7A1129B7078F4B3B21B9E50C /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -859,9 +1340,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A52926F023B0E6DD00FF46DD /* Build configuration list for PBXNativeTarget "[tvOS] Unit Tests" */;
 			buildPhases = (
+				35956CDA52542FE656C9F34D /* [CP] Check Pods Manifest.lock */,
 				A52926E723B0E6DC00FF46DD /* Sources */,
 				A52926E823B0E6DC00FF46DD /* Frameworks */,
 				A52926E923B0E6DC00FF46DD /* Resources */,
+				02751715E529E4036BAF1590 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -876,9 +1359,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A52926FC23B0E71700FF46DD /* Build configuration list for PBXNativeTarget "[macOS] Mocked Integration Tests" */;
 			buildPhases = (
+				8AF8B1681C3DCD2C68E9D869 /* [CP] Check Pods Manifest.lock */,
 				A52926F323B0E71700FF46DD /* Sources */,
 				A52926F423B0E71700FF46DD /* Frameworks */,
 				A52926F523B0E71700FF46DD /* Resources */,
+				7B8371BC29754BFFB9022CDD /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -893,9 +1378,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A529270823B0E72500FF46DD /* Build configuration list for PBXNativeTarget "[macOS] Unit Tests" */;
 			buildPhases = (
+				07B0ECB1B8FB5DF7E01CB24E /* [CP] Check Pods Manifest.lock */,
 				A52926FF23B0E72500FF46DD /* Sources */,
 				A529270023B0E72500FF46DD /* Frameworks */,
 				A529270123B0E72500FF46DD /* Resources */,
+				BD3BA944E10797F2715C91FB /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -910,9 +1397,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A5B65D7B23B03DB4006B7BFB /* Build configuration list for PBXNativeTarget "[iOS] Unit Tests" */;
 			buildPhases = (
+				8DB0A6CA5E21A7D93101D039 /* [CP] Check Pods Manifest.lock */,
 				A5B65D6B23B03DB4006B7BFB /* Sources */,
 				A5B65D6C23B03DB4006B7BFB /* Frameworks */,
 				A5B65D6D23B03DB4006B7BFB /* Resources */,
+				EA4A14C57D031490EDDAE937 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -927,9 +1416,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A5B65D8723B03FFD006B7BFB /* Build configuration list for PBXNativeTarget "[iOS] Mocked Integration Tests" */;
 			buildPhases = (
+				ADB1817F8D94781BBD844ADF /* [CP] Check Pods Manifest.lock */,
 				A5B65D7E23B03FFD006B7BFB /* Sources */,
 				A5B65D7F23B03FFD006B7BFB /* Frameworks */,
 				A5B65D8023B03FFD006B7BFB /* Resources */,
+				33AEB79FC97D1C88F0CBD8A6 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -944,9 +1435,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A5B65D9423B04148006B7BFB /* Build configuration list for PBXNativeTarget "[iOS] Integration Tests" */;
 			buildPhases = (
+				FE36CC054B1BFEF6BB2B1CA1 /* [CP] Check Pods Manifest.lock */,
 				A5B65D8B23B04148006B7BFB /* Sources */,
 				A5B65D8C23B04148006B7BFB /* Frameworks */,
 				A5B65D8D23B04148006B7BFB /* Resources */,
+				5DBCBF820B2F34714594FA81 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1112,6 +1605,360 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		02751715E529E4036BAF1590 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MockableTests-[tvOS] Unit Tests/Pods-MockableTests-[tvOS] Unit Tests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MockableTests-[tvOS] Unit Tests/Pods-MockableTests-[tvOS] Unit Tests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MockableTests-[tvOS] Unit Tests/Pods-MockableTests-[tvOS] Unit Tests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		07AC1933C6075A17BB69F6FA /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ContractTests-[iOS] Contract Tests/Pods-ContractTests-[iOS] Contract Tests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ContractTests-[iOS] Contract Tests/Pods-ContractTests-[iOS] Contract Tests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ContractTests-[iOS] Contract Tests/Pods-ContractTests-[iOS] Contract Tests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		07B0ECB1B8FB5DF7E01CB24E /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-MockableTests-[macOS] Unit Tests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		33AEB79FC97D1C88F0CBD8A6 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MockableTests-[iOS] Mocked Integration Tests/Pods-MockableTests-[iOS] Mocked Integration Tests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MockableTests-[iOS] Mocked Integration Tests/Pods-MockableTests-[iOS] Mocked Integration Tests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MockableTests-[iOS] Mocked Integration Tests/Pods-MockableTests-[iOS] Mocked Integration Tests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		35956CDA52542FE656C9F34D /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-MockableTests-[tvOS] Unit Tests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5DBCBF820B2F34714594FA81 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-[iOS] Integration Tests/Pods-[iOS] Integration Tests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-[iOS] Integration Tests/Pods-[iOS] Integration Tests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-[iOS] Integration Tests/Pods-[iOS] Integration Tests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		7A1129B7078F4B3B21B9E50C /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MockableTests-[tvOS] Mocked Integration Tests/Pods-MockableTests-[tvOS] Mocked Integration Tests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MockableTests-[tvOS] Mocked Integration Tests/Pods-MockableTests-[tvOS] Mocked Integration Tests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MockableTests-[tvOS] Mocked Integration Tests/Pods-MockableTests-[tvOS] Mocked Integration Tests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		7B8371BC29754BFFB9022CDD /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MockableTests-[macOS] Mocked Integration Tests/Pods-MockableTests-[macOS] Mocked Integration Tests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MockableTests-[macOS] Mocked Integration Tests/Pods-MockableTests-[macOS] Mocked Integration Tests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MockableTests-[macOS] Mocked Integration Tests/Pods-MockableTests-[macOS] Mocked Integration Tests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		8AF8B1681C3DCD2C68E9D869 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-MockableTests-[macOS] Mocked Integration Tests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		8DB0A6CA5E21A7D93101D039 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-MockableTests-[iOS] Unit Tests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		AB7182EAD1A61D20D3989AC6 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-ContractTests-[iOS] Contract Tests Beta-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		ADB1817F8D94781BBD844ADF /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-MockableTests-[iOS] Mocked Integration Tests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B19BE4F3126ED2F6FAD7CDA4 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-MockableTests-[tvOS] Mocked Integration Tests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		BD3BA944E10797F2715C91FB /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MockableTests-[macOS] Unit Tests/Pods-MockableTests-[macOS] Unit Tests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MockableTests-[macOS] Unit Tests/Pods-MockableTests-[macOS] Unit Tests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MockableTests-[macOS] Unit Tests/Pods-MockableTests-[macOS] Unit Tests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		DF9B0259CDD274CD59761913 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-ContractTests-[iOS] Contract Tests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		EA4A14C57D031490EDDAE937 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MockableTests-[iOS] Unit Tests/Pods-MockableTests-[iOS] Unit Tests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MockableTests-[iOS] Unit Tests/Pods-MockableTests-[iOS] Unit Tests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MockableTests-[iOS] Unit Tests/Pods-MockableTests-[iOS] Unit Tests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		FC5BB3C042E98A9647C68269 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ContractTests-[iOS] Contract Tests Beta/Pods-ContractTests-[iOS] Contract Tests Beta-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ContractTests-[iOS] Contract Tests Beta/Pods-ContractTests-[iOS] Contract Tests Beta-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ContractTests-[iOS] Contract Tests Beta/Pods-ContractTests-[iOS] Contract Tests Beta-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		FE36CC054B1BFEF6BB2B1CA1 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-[iOS] Integration Tests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		79657A7A2719CD5B00BACEC5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -1195,6 +2042,17 @@
 				A5E3BA032B2FA76700D3AA18 /* PNRequestRetryConfigurationTest.m in Sources */,
 				A53D0B1023EA07E5001E72AF /* PNMembershipObjectsTest.m in Sources */,
 				A53D0B2C23EA0FEF001E72AF /* PNNotificationPayloadBuilderTest.m in Sources */,
+				B10A000226F00001001E72AF /* PNGZIPTest.m in Sources */,
+				B10A000626F00002001E72AF /* PNStringTest.m in Sources */,
+				B10A000A26F00003001E72AF /* PNDictionaryTest.m in Sources */,
+				B10A000E26F00004001E72AF /* PNChannelTest.m in Sources */,
+				B10A001226F00005001E72AF /* PNDateTest.m in Sources */,
+				B10A001626F00006001E72AF /* PNJSONHelperTest.m in Sources */,
+				B10A001A26F00007001E72AF /* PNArrayTest.m in Sources */,
+				B10A001E26F00008001E72AF /* PNURLRequestTest.m in Sources */,
+				B10A002226F00009001E72AF /* PNDataTest.m in Sources */,
+				B10A002626F0000A001E72AF /* PNNumberTest.m in Sources */,
+				B10A002A26F0000B001E72AF /* PNFunctionsTest.m in Sources */,
 				A53D0AFB23E9FBE4001E72AF /* PNUUIDMetadataAPICallBuilderTest.m in Sources */,
 				A5DB1E9623B2D212009B1B23 /* NSInvocation+PNTest.m in Sources */,
 				A59ECFDE23BB571200E84300 /* PNSignalTest.m in Sources */,
@@ -1215,6 +2073,40 @@
 				79DDA2B1278DC75E00A5B24C /* PNConfigurationTest.m in Sources */,
 				A53D0AF323E9F42B001E72AF /* PNChannelMembersObjectsAPICallBuilderTest.m in Sources */,
 				A53D0B1823EA0AB4001E72AF /* PNChannelMetadataObjectsTest.m in Sources */,
+				CBB76F3172ACA55C91C80CE2 /* PNChannelGroupErrorTest.m in Sources */,
+				79B37BEAB9DF52613FE5ED01 /* PNObjectsErrorTest.m in Sources */,
+				D179179876010515FABF3534 /* PNChannelGroupRequestTest.m in Sources */,
+				5356F7077A4FE8A430B98AE5 /* PNRelationsRequestTest.m in Sources */,
+				3563561AA89A7130C2171761 /* PNObjectsRequestTest.m in Sources */,
+				0F9367763694D9F9119B8A1B /* PNTimeRequestTest.m in Sources */,
+				CDDF13424502756DBC2E2889 /* PNSubscribeRequestTest.m in Sources */,
+				04BC9E9121DA9952E0432246 /* PNPushRequestTest.m in Sources */,
+				84ECFAD5772CC715EED23E11 /* PNPublishRequestTest.m in Sources */,
+				282A2F3E76BB2114EA62F40C /* PNPresenceRequestTest.m in Sources */,
+				270C969F5BB07F540E5017A5 /* PNHistoryRequestTest.m in Sources */,
+				F981DA01D20ECB01839D64C6 /* PNFilesRequestTest.m in Sources */,
+				CB54F4A634CD739CE8A17249 /* PNMessageActionsRequestTest.m in Sources */,
+				1B562E2394C6D5708F5FC7C9 /* PNSubscribeErrorTest.m in Sources */,
+				4E071D388C01CCBBEF4DE3CB /* PNPublishErrorTest.m in Sources */,
+				D87FE9BAEE57FAE4E790C294 /* PNPresenceErrorTest.m in Sources */,
+				2662B0A2DAD4F7CCA9C3215F /* PNHistoryErrorTest.m in Sources */,
+				7D0AA1A0155E4B9A78710023 /* PNFilesErrorTest.m in Sources */,
+				CC67974165E9CBC701722D7D /* PNMessageActionsErrorTest.m in Sources */,
+				467AD85A45B720BEB8F51DBA /* PNNetworkReachabilityTest.m in Sources */,
+				66BFB66C9746515470AC2B72 /* PNMockTransport.m in Sources */,
+				E91EA41C3C70DD66DF9A91BA /* PNStatusTest.m in Sources */,
+				9AE002BD58D28F0FE9D63AB4 /* PNEventResultTest.m in Sources */,
+				D21BDE27E902AE9A8E3C361D /* PNResultTest.m in Sources */,
+				300EDFC452DC9C74A458F3C6 /* PNThreadSafetyTest.m in Sources */,
+				971C4586064200646C3DC561 /* PNLockTest.m in Sources */,
+				A05F34B9DA96AB370EC77B25 /* PNLegacyCryptorTest.m in Sources */,
+				48E61C64BC1A2DAF25730014 /* PNEncryptedDataTest.m in Sources */,
+				A6E34A67CC2A097449B9ED12 /* PNAESCBCCryptorTest.m in Sources */,
+				237F24FAEAACB2B4BD898FAE /* PNCryptoModuleTest.m in Sources */,
+				7553E0A136475DD7963E4DBF /* PNConsoleLoggerTest.m in Sources */,
+				FF9129721EA3EB95C95FE113 /* PNLogEntryTest.m in Sources */,
+				DEECE528F6AF398E911BCC2C /* PNFileLoggerTest.m in Sources */,
+				9BB7D860DAE77ECC6FE02EFF /* PNLoggerManagerTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1250,6 +2142,17 @@
 				A5E3BA022B2FA76700D3AA18 /* PNRequestRetryConfigurationTest.m in Sources */,
 				A53D0B0F23EA07E5001E72AF /* PNMembershipObjectsTest.m in Sources */,
 				A53D0B2B23EA0FEF001E72AF /* PNNotificationPayloadBuilderTest.m in Sources */,
+				B10A000126F00001001E72AF /* PNGZIPTest.m in Sources */,
+				B10A000526F00002001E72AF /* PNStringTest.m in Sources */,
+				B10A000926F00003001E72AF /* PNDictionaryTest.m in Sources */,
+				B10A000D26F00004001E72AF /* PNChannelTest.m in Sources */,
+				B10A001126F00005001E72AF /* PNDateTest.m in Sources */,
+				B10A001526F00006001E72AF /* PNJSONHelperTest.m in Sources */,
+				B10A001926F00007001E72AF /* PNArrayTest.m in Sources */,
+				B10A001D26F00008001E72AF /* PNURLRequestTest.m in Sources */,
+				B10A002126F00009001E72AF /* PNDataTest.m in Sources */,
+				B10A002526F0000A001E72AF /* PNNumberTest.m in Sources */,
+				B10A002926F0000B001E72AF /* PNFunctionsTest.m in Sources */,
 				A53D0AFA23E9FBE4001E72AF /* PNUUIDMetadataAPICallBuilderTest.m in Sources */,
 				A5DB1E9423B2D212009B1B23 /* NSInvocation+PNTest.m in Sources */,
 				A59ECFDD23BB571200E84300 /* PNSignalTest.m in Sources */,
@@ -1270,6 +2173,40 @@
 				79DDA2B0278DC75E00A5B24C /* PNConfigurationTest.m in Sources */,
 				A53D0AF223E9F42B001E72AF /* PNChannelMembersObjectsAPICallBuilderTest.m in Sources */,
 				A53D0B1723EA0AB4001E72AF /* PNChannelMetadataObjectsTest.m in Sources */,
+				EFD833C07B11D39222612B81 /* PNChannelGroupErrorTest.m in Sources */,
+				623FF93991A555AE8C8512B4 /* PNObjectsErrorTest.m in Sources */,
+				780B481401DC08659804A92B /* PNChannelGroupRequestTest.m in Sources */,
+				46AC80C8E1C3E7C8C55A6D8D /* PNRelationsRequestTest.m in Sources */,
+				7B88EDEF352946D429891A5D /* PNObjectsRequestTest.m in Sources */,
+				BEA0092DE3C3BC014A9E7D9E /* PNTimeRequestTest.m in Sources */,
+				BC9F3DC13A60CFDA1D009FEE /* PNSubscribeRequestTest.m in Sources */,
+				298914DB5FB0F533B2E35715 /* PNPushRequestTest.m in Sources */,
+				058538B0A821FF0034FD3F48 /* PNPublishRequestTest.m in Sources */,
+				63BF18FA88A7E19A20D99306 /* PNPresenceRequestTest.m in Sources */,
+				9FF9796557639DA7C21C09A6 /* PNHistoryRequestTest.m in Sources */,
+				9E88A450D47057CF287848F7 /* PNFilesRequestTest.m in Sources */,
+				7632F08681CA1457FB229439 /* PNMessageActionsRequestTest.m in Sources */,
+				387756F2A5F34648F5943740 /* PNSubscribeErrorTest.m in Sources */,
+				981E23D8B2D55CAAE7FC3572 /* PNPublishErrorTest.m in Sources */,
+				40E8F187501278AF56405925 /* PNPresenceErrorTest.m in Sources */,
+				4745A637B1211A322F3657A6 /* PNHistoryErrorTest.m in Sources */,
+				4C0043C033103575F195BDB9 /* PNFilesErrorTest.m in Sources */,
+				3B6D6E21F968A21FC765816A /* PNMessageActionsErrorTest.m in Sources */,
+				56DD00486694EC77052B58FC /* PNNetworkReachabilityTest.m in Sources */,
+				F63B2B636C672D5C7AC41015 /* PNMockTransport.m in Sources */,
+				7F7600F3D673DFE43FB92530 /* PNStatusTest.m in Sources */,
+				73902F9404B2D5D0ED20AA40 /* PNEventResultTest.m in Sources */,
+				058FBBF60DD08FC740998174 /* PNResultTest.m in Sources */,
+				1CD01667C2A5B2931DC0AA78 /* PNThreadSafetyTest.m in Sources */,
+				D1DBC99745A63BB23339BAC0 /* PNLockTest.m in Sources */,
+				6667C1B496EC1B049CEDB34A /* PNLegacyCryptorTest.m in Sources */,
+				64274928442B2ED295B2206D /* PNEncryptedDataTest.m in Sources */,
+				8F2C19F503D211176B71B109 /* PNAESCBCCryptorTest.m in Sources */,
+				60FC4D068CE1F13FCC8071C7 /* PNCryptoModuleTest.m in Sources */,
+				41DDE35AB4B6F51779AD0AED /* PNConsoleLoggerTest.m in Sources */,
+				AFADD04ED859E4D0ADA51774 /* PNLogEntryTest.m in Sources */,
+				476A652B261C64426B13677A /* PNFileLoggerTest.m in Sources */,
+				7D5524168B386391F112003F /* PNLoggerManagerTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1280,6 +2217,17 @@
 				A5E3BA042B2FA76700D3AA18 /* PNRequestRetryConfigurationTest.m in Sources */,
 				A53D0B1123EA07E5001E72AF /* PNMembershipObjectsTest.m in Sources */,
 				A53D0B2D23EA0FEF001E72AF /* PNNotificationPayloadBuilderTest.m in Sources */,
+				B10A000326F00001001E72AF /* PNGZIPTest.m in Sources */,
+				B10A000726F00002001E72AF /* PNStringTest.m in Sources */,
+				B10A000B26F00003001E72AF /* PNDictionaryTest.m in Sources */,
+				B10A000F26F00004001E72AF /* PNChannelTest.m in Sources */,
+				B10A001326F00005001E72AF /* PNDateTest.m in Sources */,
+				B10A001726F00006001E72AF /* PNJSONHelperTest.m in Sources */,
+				B10A001B26F00007001E72AF /* PNArrayTest.m in Sources */,
+				B10A001F26F00008001E72AF /* PNURLRequestTest.m in Sources */,
+				B10A002326F00009001E72AF /* PNDataTest.m in Sources */,
+				B10A002726F0000A001E72AF /* PNNumberTest.m in Sources */,
+				B10A002B26F0000B001E72AF /* PNFunctionsTest.m in Sources */,
 				A53D0AFC23E9FBE4001E72AF /* PNUUIDMetadataAPICallBuilderTest.m in Sources */,
 				A5DB1E9A23B2D212009B1B23 /* NSInvocation+PNTest.m in Sources */,
 				A59ECFDF23BB571200E84300 /* PNSignalTest.m in Sources */,
@@ -1300,6 +2248,40 @@
 				79DDA2B2278DC75E00A5B24C /* PNConfigurationTest.m in Sources */,
 				A53D0AF423E9F42B001E72AF /* PNChannelMembersObjectsAPICallBuilderTest.m in Sources */,
 				A53D0B1923EA0AB4001E72AF /* PNChannelMetadataObjectsTest.m in Sources */,
+				CC8F37BC6D08707441AE6A23 /* PNChannelGroupErrorTest.m in Sources */,
+				805C6EC12BCD5D58CEA95956 /* PNObjectsErrorTest.m in Sources */,
+				B5DF93E316DCC294BBC9EFE2 /* PNChannelGroupRequestTest.m in Sources */,
+				47E47D1397EECE01B80F570C /* PNRelationsRequestTest.m in Sources */,
+				75F94EA97C629DBC13263DC9 /* PNObjectsRequestTest.m in Sources */,
+				4BCCE6959DBED1F83D20A886 /* PNTimeRequestTest.m in Sources */,
+				162C1DCA65589A9F83FA1328 /* PNSubscribeRequestTest.m in Sources */,
+				6BE828A024F484227C0784AD /* PNPushRequestTest.m in Sources */,
+				60B7D04D0F8B9CC5FFC89964 /* PNPublishRequestTest.m in Sources */,
+				76F8D4AF3CBC4DDBA87008A7 /* PNPresenceRequestTest.m in Sources */,
+				12F82D5B71425C9D98B3DE04 /* PNHistoryRequestTest.m in Sources */,
+				D211216B7F5D635C0440B7BC /* PNFilesRequestTest.m in Sources */,
+				F9C90DC751EE4B5FE4DEEBDE /* PNMessageActionsRequestTest.m in Sources */,
+				062F4437206A7532B22817F2 /* PNSubscribeErrorTest.m in Sources */,
+				569E2DE2ACEFFFE4D34D41EB /* PNPublishErrorTest.m in Sources */,
+				DF19678C9972950E60CB11AF /* PNPresenceErrorTest.m in Sources */,
+				616CEF9EB86BBE2DA7E0D0EA /* PNHistoryErrorTest.m in Sources */,
+				2FBF0763AE95E08BAF9118DE /* PNFilesErrorTest.m in Sources */,
+				39D956CF4A5715357DDB3D35 /* PNMessageActionsErrorTest.m in Sources */,
+				467CB93F40B4DA9596F785C9 /* PNNetworkReachabilityTest.m in Sources */,
+				2694FB777645089272313DB7 /* PNMockTransport.m in Sources */,
+				2EDEF855F8EFB17E0B84FA99 /* PNStatusTest.m in Sources */,
+				A1102DE62241FFCD62A1D1E8 /* PNEventResultTest.m in Sources */,
+				E5FABBFBFAE3DBE4D0FC7E91 /* PNResultTest.m in Sources */,
+				5636212D520497EAC489FB9B /* PNThreadSafetyTest.m in Sources */,
+				A8DFD8AA707B7A06955D91A3 /* PNLockTest.m in Sources */,
+				FE368482933A15CB3139C4A9 /* PNLegacyCryptorTest.m in Sources */,
+				465210D19F96C8F1B6F3719E /* PNEncryptedDataTest.m in Sources */,
+				CD2CBFFF17F44B2900025694 /* PNAESCBCCryptorTest.m in Sources */,
+				B1BC20E88E54228CACBDD2DA /* PNCryptoModuleTest.m in Sources */,
+				A0C29915B07D27CA71DFC53A /* PNConsoleLoggerTest.m in Sources */,
+				BC88C073FAB54B116644A596 /* PNLogEntryTest.m in Sources */,
+				81C3DFA3C1EEB56AC8BFAE0B /* PNFileLoggerTest.m in Sources */,
+				E4A9EBBAD8EEFC9C8F8DB1E7 /* PNLoggerManagerTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1358,6 +2340,7 @@
 /* Begin XCBuildConfiguration section */
 		79657A8D2719CD5B00BACEC5 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6B67CB35405BA8A5D64355F1 /* Pods-ContractTests-[iOS] Contract Tests Beta.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_CODE_COVERAGE = YES;
 				CODE_SIGN_IDENTITY = "-";
@@ -1388,6 +2371,7 @@
 		};
 		79657A8E2719CD5B00BACEC5 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DD0FCB2DA90E435F25B87C6C /* Pods-ContractTests-[iOS] Contract Tests Beta.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_CODE_COVERAGE = YES;
 				CODE_SIGN_IDENTITY = "-";
@@ -1413,6 +2397,7 @@
 		};
 		796F6308270344DF00DE6F07 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C478061E7C0E54A479A59738 /* Pods-ContractTests-[iOS] Contract Tests.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_CODE_COVERAGE = YES;
 				CODE_SIGN_IDENTITY = "-";
@@ -1438,6 +2423,7 @@
 		};
 		796F6309270344DF00DE6F07 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 41E0773DB321A7C37C16CE47 /* Pods-ContractTests-[iOS] Contract Tests.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_CODE_COVERAGE = YES;
 				CODE_SIGN_IDENTITY = "-";
@@ -1511,6 +2497,7 @@
 		};
 		A52926E523B0E6C500FF46DD /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = BB1BF4F52A6788409FCABA1A /* Pods-MockableTests-[tvOS] Mocked Integration Tests.debug.xcconfig */;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -1537,6 +2524,7 @@
 		};
 		A52926E623B0E6C500FF46DD /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4BC7B27C62C862E41744AC12 /* Pods-MockableTests-[tvOS] Mocked Integration Tests.release.xcconfig */;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -1564,6 +2552,7 @@
 		};
 		A52926F123B0E6DD00FF46DD /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 828EFFC330107C0A76C78310 /* Pods-MockableTests-[tvOS] Unit Tests.debug.xcconfig */;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -1590,6 +2579,7 @@
 		};
 		A52926F223B0E6DD00FF46DD /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E743CC9BF8671E22FF0B6BDE /* Pods-MockableTests-[tvOS] Unit Tests.release.xcconfig */;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -1617,6 +2607,7 @@
 		};
 		A52926FD23B0E71700FF46DD /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 911C9D8D1CDF9A6875A4E22F /* Pods-MockableTests-[macOS] Mocked Integration Tests.debug.xcconfig */;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -1642,6 +2633,7 @@
 		};
 		A52926FE23B0E71700FF46DD /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 37E54F107BD09641FA12F7D0 /* Pods-MockableTests-[macOS] Mocked Integration Tests.release.xcconfig */;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -1668,6 +2660,7 @@
 		};
 		A529270923B0E72500FF46DD /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D4FE56602E20124B56F1266C /* Pods-MockableTests-[macOS] Unit Tests.debug.xcconfig */;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -1693,6 +2686,7 @@
 		};
 		A529270A23B0E72500FF46DD /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C4C69FE3D81194BB29FC5A04 /* Pods-MockableTests-[macOS] Unit Tests.release.xcconfig */;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -1843,6 +2837,7 @@
 		};
 		A5B65D7C23B03DB4006B7BFB /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 13FDDE6376033A34187C1FC1 /* Pods-MockableTests-[iOS] Unit Tests.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Manual;
@@ -1867,6 +2862,7 @@
 		};
 		A5B65D7D23B03DB4006B7BFB /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8F86174540901D21E718D8F1 /* Pods-MockableTests-[iOS] Unit Tests.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Manual;
@@ -1891,6 +2887,7 @@
 		};
 		A5B65D8823B03FFD006B7BFB /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C0CCA7BD2B4C6CD160949FF7 /* Pods-MockableTests-[iOS] Mocked Integration Tests.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Manual;
@@ -1916,6 +2913,7 @@
 		};
 		A5B65D8923B03FFD006B7BFB /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 33BEB83945085F2AEBB08569 /* Pods-MockableTests-[iOS] Mocked Integration Tests.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Manual;
@@ -1941,6 +2939,7 @@
 		};
 		A5B65D9523B04148006B7BFB /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5F7B03D6706F383B4D1016C8 /* Pods-[iOS] Integration Tests.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_CODE_COVERAGE = YES;
 				CODE_SIGN_IDENTITY = "-";
@@ -1966,6 +2965,7 @@
 		};
 		A5B65D9623B04148006B7BFB /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 01FD138F1D9143FB281121EC /* Pods-[iOS] Integration Tests.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_CODE_COVERAGE = YES;
 				CODE_SIGN_IDENTITY = "-";

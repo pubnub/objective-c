@@ -107,6 +107,14 @@ typedef void (^PNTClientDidReceiveStatusHandler)(PubNub *client, PNSubscribeStat
 @property (nonatomic, readonly, nullable, strong) PubNub *client;
 
 /**
+ * @brief Whether the current test suite is a mocked integration test suite or not.
+ *
+ * @discussion Uses the test bundle identifier to determine if the suite is running as part of
+ * the mocked integration test target.
+ */
+@property (nonatomic, readonly, getter=isMockedIntegrationTestSuite) BOOL mockedIntegrationTestSuite;
+
+/**
  * @brief Whether current test case uses mocked objects or not.
  *
  * @discussion Value of this property affects \b PubNub client instance on-demand creation by

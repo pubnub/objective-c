@@ -157,7 +157,7 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Prepare
 
 - (PNError *)validate {
-    if (self.identifier) {
+    if (self.identifier.length) {
         if (self.identifier.length > 92) {
             return [self valueTooLongErrorForParameter:self.objectType
                                        ofObjectRequest:self.objectType

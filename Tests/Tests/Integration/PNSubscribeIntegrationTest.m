@@ -36,11 +36,12 @@ NS_ASSUME_NONNULL_END
 
 - (BOOL)shouldSetupVCR {
     BOOL shouldSetupVCR = [super shouldSetupVCR];
-    
+    if (!shouldSetupVCR && !self.isMockedIntegrationTestSuite) return NO;
+
     if ([self.name pnt_includesString:@"RandomIV"]) {
         shouldSetupVCR = NO;
     }
-    
+
     return shouldSetupVCR;
 }
 

@@ -94,6 +94,17 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Prepare
 
 - (PNError *)validate {
+    if (self.message && ![NSJSONSerialization isValidJSONObject:@[self.message]]) {
+        NSDictionary *userInfo = PNErrorUserInfo(
+            @"Request parameters error",
+            @"Message serialization did fail",
+            @"Ensure that only JSON-compatible values used in 'message'.",
+            nil
+        );
+
+        return [PNError errorWithDomain:PNAPIErrorDomain code:PNAPIErrorUnacceptableParameters userInfo:userInfo];
+    }
+
     PNError *error = nil;
     NSString *messageForPublish = [PNJSON JSONStringFrom:self.message withError:&error];
 

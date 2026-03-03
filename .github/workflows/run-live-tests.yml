@@ -1,0 +1,70 @@
+name: Live Integration Tests
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Run every two weeks on Saturday at midnight UTC (1st and 3rd Saturday of each month)
+    - cron: '0 0 1-7 * 6'
+    - cron: '0 0 15-21 * 6'
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+defaults:
+  run:
+    shell: bash
+env:
+  TESTS_PAM_SUBSCRIBE_KEY: ${{ secrets.SDK_PAM_SUB_KEY }}
+  TESTS_PAM_PUBLISH_KEY: ${{ secrets.SDK_PAM_PUB_KEY }}
+  TESTS_SUBSCRIBE_KEY: ${{ secrets.SDK_SUB_KEY }}
+  TESTS_PUBLISH_KEY: ${{ secrets.SDK_PUB_KEY }}
+  LANG: en_US.UTF-8
+  LANGUAGE: en_US.UTF-8
+  LC_ALL: en_US.UTF-8
+  LC_CTYPE: en_US.UTF-8
+
+jobs:
+  live-tests:
+    name: Live integration tests
+    runs-on:
+      group: organization/macos-gh
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+      - name: Checkout actions
+        uses: actions/checkout@v4
+        with:
+          repository: pubnub/client-engineering-deployment-tools
+          ref: v1
+          token: ${{ secrets.GH_TOKEN }}
+          path: .github/.release/actions
+      - name: Setup Ruby 3.2.2
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2.2
+          bundler-cache: false
+      - name: Setup CocoaPods
+        run: gem install cocoapods
+      - name: Cache installed Pods
+        uses: actions/cache@v4
+        with:
+          path: Tests/Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('**/Tests/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+      - name: Pre-load simulators list
+        run: xcrun simctl list -j
+      - name: Install dependencies
+        run: |
+          gem install xcpretty -v 0.3.0
+          cd ./Tests && pod install && cd ..
+      - name: Configure test environment
+        run: |
+          ./Tests/Support\ Files/Scripts/create-configuration.sh
+      - name: Run iOS live integration tests
+        run: |
+          ./Tests/Support\ Files/Scripts/tests-runner.sh ios integration 1
+      - name: Cancel workflow runs for commit on error
+        if: failure()
+        uses: ./.github/.release/actions/actions/utils/fast-jobs-failure

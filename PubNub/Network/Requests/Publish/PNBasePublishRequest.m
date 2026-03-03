@@ -130,6 +130,17 @@ NS_ASSUME_NONNULL_END
     NSString *messageForPublish = @"";
     NSError *error = nil;
 
+    if (preFormattedMessage && ![NSJSONSerialization isValidJSONObject:@[preFormattedMessage]]) {
+        NSDictionary *userInfo = PNErrorUserInfo(
+            @"Request parameters error",
+            @"Message serialization did fail",
+            @"Ensure that only JSON-compatible values used in 'message'.",
+            nil
+        );
+
+        return [PNError errorWithDomain:PNAPIErrorDomain code:PNAPIErrorUnacceptableParameters userInfo:userInfo];
+    }
+
     messageForPublish = [PNJSON JSONStringFrom:preFormattedMessage withError:&error];
     BOOL isMessageEncrypted = NO;
 
@@ -183,6 +194,17 @@ NS_ASSUME_NONNULL_END
     else self.preparedMessage = messageForPublish;
 
     if (self.metadata) {
+        if (![NSJSONSerialization isValidJSONObject:self.metadata]) {
+            NSDictionary *userInfo = PNErrorUserInfo(
+                @"Request parameters error",
+                @"Metadata serialization did fail",
+                @"Ensure that only JSON-compatible values used in 'metadata'.",
+                nil
+            );
+
+            return [PNError errorWithDomain:PNAPIErrorDomain code:PNAPIErrorUnacceptableParameters userInfo:userInfo];
+        }
+
         NSString *metadataForPublish = [PNJSON JSONStringFrom:self.metadata withError:&error];
         if (!error && metadataForPublish.length) self.preparedMetadata = [metadataForPublish copy];
         else if (error) {

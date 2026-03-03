@@ -1184,7 +1184,7 @@
       },
       "pipeline" : false,
       "network" : 0,
-      "url" : "https:\/\/ps.pndsn.com\/v3\/history-with-actions\/sub-key\/demo\/channel\/test-channel?include_uuid=1&uuid=Serhii&pnsdk=PubNub-ObjC-iOS\/4.x.x&include_custom_message_type=1&include_message_type=1"
+      "url" : "https:\/\/ps.pndsn.com\/v3\/history-with-actions\/sub-key\/demo\/channel\/test-channel?include_uuid=1&uuid=Serhii&pnsdk=PubNub-ObjC-iOS\/4.x.x&max=25&include_custom_message_type=1&include_message_type=1"
     },
     "type" : 0
   },
@@ -1193,7 +1193,7 @@
     "data" : {
       "status" : 200,
       "cls" : "NSHTTPURLResponse",
-      "url" : "https:\/\/ps.pndsn.com\/v3\/history-with-actions\/sub-key\/demo\/channel\/test-channel?include_uuid=1&uuid=Serhii&pnsdk=PubNub-ObjC-iOS\/4.x.x&include_custom_message_type=1&include_message_type=1",
+      "url" : "https:\/\/ps.pndsn.com\/v3\/history-with-actions\/sub-key\/demo\/channel\/test-channel?include_uuid=1&uuid=Serhii&pnsdk=PubNub-ObjC-iOS\/4.x.x&max=25&include_custom_message_type=1&include_message_type=1",
       "headers" : {
         "Access-Control-Allow-Credentials" : "true",
         "Content-Type" : "text\/javascript; charset=\"UTF-8\"",

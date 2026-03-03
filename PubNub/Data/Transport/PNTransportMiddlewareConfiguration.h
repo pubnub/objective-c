@@ -1,5 +1,8 @@
 #import <Foundation/Foundation.h>
-#import <PubNub/PubNub.h>
+#import <PubNub/PNConfiguration.h>
+#import <PubNub/PNTransportConfiguration.h>
+#import <PubNub/PNTransport.h>
+#import <PubNub/PNLoggerManager.h>
 
 
 NS_ASSUME_NONNULL_BEGIN

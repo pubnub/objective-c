@@ -76,15 +76,18 @@ NS_ASSUME_NONNULL_END
     if (self.limit > 0) limitValue = MIN(self.limit, defaultLimit);
 
     if (operation == PNHistoryWithActionsOperation) {
-        limitValue = self.limit;
         limitQueryKeyName = @"max";
+        defaultLimit = 25;
+        limitValue = self.limit > 0 ? MIN(self.limit, defaultLimit) : defaultLimit;
     }
 
     if (self.multipleChannels) {
         if (self.limit > 0 || (operation != PNHistoryWithActionsOperation && self.channels.count == 1)) {
             query[limitQueryKeyName] = @(limitValue).stringValue;
         }
-    } else if (self.limit > 0) query[limitQueryKeyName] = @(limitValue).stringValue;
+    } else if (self.limit > 0 || operation == PNHistoryWithActionsOperation) {
+        query[limitQueryKeyName] = @(limitValue).stringValue;
+    }
 
 
     if (startDate) query[@"start"] = [PNNumber timeTokenFromNumber:startDate].stringValue;
@@ -158,7 +161,7 @@ NS_ASSUME_NONNULL_END
         );
 
         return [PNError errorWithDomain:PNAPIErrorDomain code:PNAPIErrorUnacceptableParameters userInfo:userInfo];
-    } else if (!self.multipleChannels && self.channels.count == 0) {
+    } else if (!self.multipleChannels && (self.channels.count == 0 || self.channels.firstObject.length == 0)) {
         return [self missingParameterError:@"channel" forObjectRequest:@"PNHistoryFetchRequest"];
     } else if (self.multipleChannels && self.channels.count == 0) {
         return [self missingParameterError:@"channels" forObjectRequest:@"PNHistoryFetchRequest"];
