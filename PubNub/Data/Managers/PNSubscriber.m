@@ -96,17 +96,14 @@ NS_ASSUME_NONNULL_BEGIN
 /// **0** for initial subscription loop and non-zero for long-poll requests.
 @property(copy, nonatomic, readonly) NSNumber *lastTimeTokenRegion;
 
-/// Whether subscriber potentially should expect for subscription restore call or not.
-///
-/// In case if client tried to connect and failed or disconnected because of network issues this flag should be set to
-/// `YES`.
-@property(assign, nonatomic) BOOL mayRequireSubscriptionRestore;
-
-/// Whether subscriber recovers after network issues.
-@property(assign, nonatomic) BOOL restoringAfterNetworkIssues;
-
 /// Current subscriber state.
 @property(assign, nonatomic) PNSubscriberState currentState;
+
+/// Generation counter incremented on each new initial subscribe cycle.
+///
+/// Used to detect and discard stale continuation calls that were dispatched asynchronously before a new subscribe
+/// cycle started, preventing duplicate subscribe loops.
+@property(assign, nonatomic) NSUInteger subscribeCycleGeneration;
 
 /// Time token which is used for current subscribe loop iteration.
 ///
@@ -345,7 +342,6 @@ NS_ASSUME_NONNULL_END
 
 @implementation PNSubscriber
 
-@synthesize restoringAfterNetworkIssues = _restoringAfterNetworkIssues;
 @synthesize currentTimeTokenRegion = _currentTimeTokenRegion;
 @synthesize lastTimeTokenRegion = _lastTimeTokenRegion;
 @synthesize overrideTimeToken = _overrideTimeToken;
@@ -355,21 +351,6 @@ NS_ASSUME_NONNULL_END
 
 #pragma mark - State Information and Manipulation
 
-- (BOOL)restoringAfterNetworkIssues {
-    __block BOOL restoring = NO;
-    
-    [self.lock readAccessWithBlock:^{
-        restoring = self->_restoringAfterNetworkIssues;
-    }];
-
-    return restoring;
-}
-
-- (void)setRestoringAfterNetworkIssues:(BOOL)restoringAfterNetworkIssues {
-    [self.lock writeAccessWithBlock:^{
-        self->_restoringAfterNetworkIssues = restoringAfterNetworkIssues;
-    }];
-}
 
 - (NSArray<NSString *> *)allObjects {
     return [[[self channels] arrayByAddingObjectsFromArray:[self presenceChannels]]
@@ -543,7 +524,6 @@ NS_ASSUME_NONNULL_END
         BOOL shouldHandleTransition = NO;
         
         if (targetState == PNConnectedSubscriberState) {
-            self.mayRequireSubscriptionRestore = YES;
             category = PNConnectedCategory;
             
             // Check whether client transit from 'disconnected' -> 'connected' state.
@@ -581,23 +561,19 @@ NS_ASSUME_NONNULL_END
                                        targetState == currentState));
             category = ((targetState == PNDisconnectedSubscriberState) ? PNDisconnectedCategory :
                         PNUnexpectedDisconnectCategory);
-            self.mayRequireSubscriptionRestore = shouldHandleTransition;
         } else if (targetState == PNAccessRightsErrorSubscriberState) {
-            self.mayRequireSubscriptionRestore = NO;
             shouldHandleTransition = YES;
             category = PNAccessDeniedCategory;
         } else if (targetState == PNMalformedFilterExpressionErrorSubscriberState) {
             // Change state to 'Unexpected disconnect'
             targetState = PNDisconnectedUnexpectedlySubscriberState;
             
-            self.mayRequireSubscriptionRestore = NO;
             shouldHandleTransition = YES;
             category = PNMalformedFilterExpressionCategory;
         } else if (targetState == PNPNRequestURITooLongErrorSubscriberState) {
             // Change state to 'Unexpected disconnect'
             targetState = PNDisconnectedUnexpectedlySubscriberState;
-            
-            self.mayRequireSubscriptionRestore = NO;
+
             shouldHandleTransition = YES;
             category = PNRequestURITooLongCategory;
         }
@@ -694,8 +670,7 @@ NS_ASSUME_NONNULL_END
         }
     }
 
-    self.restoringAfterNetworkIssues = NO;
-    [self subscribe:YES 
+    [self subscribe:YES
      usingTimeToken:request.timetoken
           withState:request.state 
     queryParameters:request.arbitraryQueryParameters
@@ -719,12 +694,12 @@ NS_ASSUME_NONNULL_END
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
     if ([self allObjects].count) {
-        if (!self.restoringAfterNetworkIssues) self.overrideTimeToken = timeToken;
+        self.overrideTimeToken = timeToken;
 
         if (initialSubscribe) {
             [self.lock writeAccessWithBlock:^{
-                self.mayRequireSubscriptionRestore = NO;
-                
+                self->_subscribeCycleGeneration++;
+
                 if (self->_currentTimeToken && [self->_currentTimeToken compare:@0] != NSOrderedSame) {
                     self->_lastTimeToken = self->_currentTimeToken;
                 }
@@ -774,7 +749,6 @@ NS_ASSUME_NONNULL_END
             self->_currentTimeToken = @0;
             self->_lastTimeTokenRegion = @(-1);
             self->_currentTimeTokenRegion = @(-1);
-            self->_restoringAfterNetworkIssues = NO;
             self->_overrideTimeToken = nil;
         }];
 
@@ -797,24 +771,6 @@ NS_ASSUME_NONNULL_END
         }];
     }
     #pragma clang diagnostic pop
-}
-
-- (void)restoreSubscriptionCycleIfRequiredWithCompletion:(PNSubscriberCompletionBlock)block {
-    __block BOOL shouldRestore;
-    __block BOOL ableToRestore;
-
-    [self.lock readAccessWithBlock:^{
-        shouldRestore = ((self.currentState == PNDisconnectedUnexpectedlySubscriberState &&
-                          self.mayRequireSubscriptionRestore));
-        ableToRestore = [self.channelsSet count] || [self.channelGroupsSet count] ||
-                         [self.presenceChannelsSet count];
-    }];
-
-    if (shouldRestore && ableToRestore) {
-        self.restoringAfterNetworkIssues = YES;
-        
-        [self subscribe:YES usingTimeToken:nil withState:nil queryParameters:nil completion:block];
-    } else if (block) block(nil);
 }
 
 - (void)continueSubscriptionCycleIfRequiredWithCompletion:(PNSubscriberCompletionBlock)block {
@@ -909,11 +865,10 @@ NS_ASSUME_NONNULL_END
             self->_currentTimeToken = @0;
             self->_lastTimeTokenRegion = @(-1);
             self->_currentTimeTokenRegion = @(-1);
-            self->_restoringAfterNetworkIssues = NO;
             self->_overrideTimeToken = nil;
         }];
     }
-    
+
     if (channelsWithOutPresence.count || groupsWithOutPresence.count) {
         PNPresenceLeaveRequest *request = [PNPresenceLeaveRequest requestWithChannels:channelsWithOutPresence
                                                                         channelGroups:groupsWithOutPresence];
@@ -1024,9 +979,6 @@ NS_ASSUME_NONNULL_END
             statusCategory == PNTLSConnectionFailedCategory) {
             PNSubscriberState subscriberState = PNAccessRightsErrorSubscriberState;
             
-            if (statusCategory != PNMalformedFilterExpressionCategory && statusCategory != PNRequestURITooLongCategory)
-                ((PNStatus *)status).requireNetworkAvailabilityCheck = NO;
-
             if (statusCategory == PNMalformedFilterExpressionCategory) {
                 subscriberState = PNMalformedFilterExpressionErrorSubscriberState;
             } else if(statusCategory == PNRequestURITooLongCategory) {
@@ -1043,8 +995,6 @@ NS_ASSUME_NONNULL_END
             
             [self updateStateTo:subscriberState withStatus:status completion:nil];
         } else {
-            ((PNStatus *)status).requireNetworkAvailabilityCheck = YES;
-
             [self.lock writeAccessWithBlock:^{
                 if (self.client.configuration.shouldTryCatchUpOnSubscriptionRestore) {
                     if (self->_currentTimeToken &&
@@ -1085,10 +1035,8 @@ NS_ASSUME_NONNULL_END
 
 - (void)handleSubscription:(BOOL)initialSubscription timeToken:(NSNumber *)timeToken region:(NSNumber *)region {
     [self.lock writeAccessWithBlock:^{
-        BOOL restoringAfterNetworkIssues = self->_restoringAfterNetworkIssues;
-        self->_restoringAfterNetworkIssues = NO;
         BOOL shouldAcceptNewTimeToken = YES;
-        
+
         // Whether time token should be overridden despite subscription behavior configuration.
         BOOL shouldOverrideTimeToken = (initialSubscription && self->_overrideTimeToken &&
                                         [self->_overrideTimeToken compare:@0] != NSOrderedSame);
@@ -1098,13 +1046,8 @@ NS_ASSUME_NONNULL_END
         if (initialSubscription) {
             // 'shouldKeepTimeTokenOnListChange' property should never allow to reset time tokens in
             // case if there is a few more subscribe requests is waiting for their turn to be sent.
-            BOOL shouldUseLastTimeToken = self.client.configuration.shouldKeepTimeTokenOnListChange;
-            
-            if (!shouldUseLastTimeToken && restoringAfterNetworkIssues) {
-                shouldUseLastTimeToken = self.client.configuration.shouldTryCatchUpOnSubscriptionRestore;
-            }
-            
-            shouldUseLastTimeToken = (shouldUseLastTimeToken && !shouldOverrideTimeToken);
+            BOOL shouldUseLastTimeToken = (self.client.configuration.shouldKeepTimeTokenOnListChange &&
+                                           !shouldOverrideTimeToken);
             
             // Ensure what we already don't use value from previous time token assigned during
             // previous sessions.
@@ -1148,14 +1091,19 @@ NS_ASSUME_NONNULL_END
     NSUInteger messageCountThreshold = self.client.configuration.requestMessageCountThreshold;
     NSMutableArray<PNSubscribeEventData *> *events = [status.data.updates mutableCopy];
     NSUInteger eventsCount = events.count;
-    
+
+    __block NSUInteger generation;
+    [self.lock readAccessWithBlock:^{
+        generation = self->_subscribeCycleGeneration;
+    }];
+
     if (!events.count) {
         [self continueSubscriptionCycleIfRequiredWithCompletion:nil];
         return;
     }
 
     [self.client.listenersManager notifyWithBlock:^{
-        // Check whether after initial subscription client should use user-provided timetoken to catch up on messages 
+        // Check whether after initial subscription client should use user-provided timetoken to catch up on messages
         // since specified date.
         if (initialSubscription && overrideTimeToken && [overrideTimeToken compare:@0] != NSOrderedSame) {
             [self clearCacheFromMessagesNewerThan:overrideTimeToken];
@@ -1163,7 +1111,18 @@ NS_ASSUME_NONNULL_END
 
         // Remove message duplicates from received events list.
         [self deDuplicateMessages:events];
-        [self continueSubscriptionCycleIfRequiredWithCompletion:nil];
+
+        __block BOOL shouldContinue;
+        [self.lock readAccessWithBlock:^{
+            shouldContinue = (generation == self->_subscribeCycleGeneration);
+        }];
+
+        if (shouldContinue) {
+            [self continueSubscriptionCycleIfRequiredWithCompletion:nil];
+        } else {
+            NSLog(@"~~~~~> HOD UP");
+            NSLog(@"~~~~~> HOD UP BOI");
+        }
 
         // Check whether number of messages exceed specified threshold or not.
         if (messageCountThreshold > 0 && eventsCount >= messageCountThreshold) {

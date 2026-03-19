@@ -20,7 +20,6 @@
 #import "PNEventsListener.h"
 #import "PNConfiguration.h"
 #import "PNConsoleLogger.h"
-#import "PNReachability.h"
 #import "PNConstants.h"
 #import "PNHelpers.h"
 
@@ -113,12 +112,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// Resources access lock.
 @property(strong, nonatomic) PNLock *lock;
 
-/// Reachability helper.
-///
-/// Helper used by client to know about when something happened with network and when it is safe to issue requests to
-/// the **PubNub** network.
-@property (nonatomic, strong) PNReachability *reachability;
-
 
 #pragma mark - Initialization
 
@@ -141,25 +134,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Update current client state.
 ///
-/// Use subscription status to translate it to proper client state and launch service reachability check if will be
-/// required.
-///
-/// - Parameters:
-///   - recentClientStatus: Recent subscriber state which should be used to set proper client state.
-///   - shouldCheckReachability: Whether service reachability check should be started or not.
-- (void)setRecentClientStatus:(PNStatusCategory)recentClientStatus withReachabilityCheck:(BOOL)shouldCheckReachability;
+/// - Parameter recentClientStatus: Recent subscriber state which should be used to set proper client state.
+- (void)setRecentClientStatus:(PNStatusCategory)recentClientStatus;
 
 
 #pragma mark - Crypto module
 
 /// Initialize and configure crypto module.
 - (void)prepareCryptoModule;
-
-
-#pragma mark - Reachability
-
-/// Complete reachability helper configuration.
-- (void)prepareReachability;
 
 
 #pragma mark - PubNub Network managers
@@ -264,7 +246,6 @@ NS_ASSUME_NONNULL_END
         _heartbeatManager = [PNHeartbeat heartbeatForClient:self];
 
         [self addListener:self];
-        [self prepareReachability];
 
 #if TARGET_OS_OSX || TARGET_OS_IOS && !defined(TARGET_IS_EXTENSION)
         SEL selector = @selector(handleContextTransition:);
@@ -348,28 +329,17 @@ NS_ASSUME_NONNULL_END
     self.logger.logLevel = level;
 }
 
-- (void)setRecentClientStatus:(PNStatusCategory)recentClientStatus withReachabilityCheck:(BOOL)shouldCheckReachability {
-    PNStatusCategory previousState = self.recentClientStatus;
+- (void)setRecentClientStatus:(PNStatusCategory)recentClientStatus {
     PNStatusCategory currentState = recentClientStatus;
-    
+
     if (currentState == PNReconnectedCategory) currentState = PNConnectedCategory;
     if (currentState == PNDisconnectedCategory && ([[self channels] count] ||
                                                    [[self channelGroups] count] ||
                                                    [[self presenceChannels] count])) {
         currentState = PNConnectedCategory;
     }
-    
+
     self->_recentClientStatus = currentState;
-    
-    if (currentState == PNUnexpectedDisconnectCategory && shouldCheckReachability) {
-        if (previousState == PNDisconnectedCategory) return;
-        
-        __weak __typeof(self) weakSelf = self;
-        dispatch_time_t delay = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC));
-        dispatch_after(delay, self.callbackQueue, ^{
-            [weakSelf.reachability startServicePing];
-        });
-    }
 }
 
 
@@ -390,32 +360,6 @@ NS_ASSUME_NONNULL_END
     self.configuration.cryptoModule = [PNCryptoModule legacyCryptoModuleWithCipherKey:self.configuration.cipherKey
                                                            randomInitializationVector:self.configuration.useRandomInitializationVector];
 #pragma clang diagnostic pop
-}
-
-
-#pragma mark - Reachability
-
-- (void)prepareReachability {
-    __weak __typeof(self) weakSelf = self;
-    _reachability = [PNReachability reachabilityForClient:self withPingStatus:^(BOOL pingSuccessful) {
-        if (pingSuccessful) {
-            /**
-             * Silence static analyzer warnings.
-             * Code is aware about this case and at the end will simply call on 'nil' object method.
-             * In most cases if referenced object become 'nil' it mean what there is no more need in
-             * it and probably whole client instance has been deallocated.
-             */
-            #pragma clang diagnostic push
-            #pragma clang diagnostic ignored "-Warc-repeated-use-of-weak"
-            [weakSelf.reachability stopServicePing];
-            dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_MSEC), queue, ^{
-                [weakSelf cancelSubscribeOperations];
-                [weakSelf.subscriberManager restoreSubscriptionCycleIfRequiredWithCompletion:nil];
-            });
-            #pragma clang diagnostic pop
-        }
-    }];
 }
 
 
@@ -576,7 +520,7 @@ NS_ASSUME_NONNULL_END
         status.category == PNReconnectedCategory ||
         status.category == PNDisconnectedCategory ||
         status.category == PNUnexpectedDisconnectCategory) {
-        [self setRecentClientStatus:status.category withReachabilityCheck:status.requireNetworkAvailabilityCheck];
+        [self setRecentClientStatus:status.category];
     }
 }
 

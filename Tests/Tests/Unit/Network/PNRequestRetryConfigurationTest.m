@@ -1,4 +1,9 @@
 #import <PubNub/PNRequestRetryConfiguration+Private.h>
+#import <PubNub/PubNub+CorePrivate.h>
+#import <PubNub/PNConfiguration.h>
+#import "PNPresenceHeartbeatRequest.h"
+#import "PNFileUploadRequest.h"
+#import "PNBaseRequest+Private.h"
 #import "PNRecordableTestCase.h"
 
 
@@ -130,6 +135,60 @@ NS_ASSUME_NONNULL_END
     XCTAssertEqual([configuration retryDelayForFailedRequest:request withResponse:response retryAttempt:2], -1.f);
 }
 
+- (void)testItShouldNotRetryNonSubscribeEndpointsWithDefaultConfiguration {
+    PNConfiguration *clientConfiguration = [PNConfiguration configurationWithPublishKey:@"demo"
+                                                                           subscribeKey:@"demo"
+                                                                                 userID:@"test-user"];
+    PNConfiguration *copiedConfiguration = [clientConfiguration copy];
+    PNRequestRetryConfiguration *retryConfig = copiedConfiguration.requestRetry;
+
+    XCTAssertNotNil(retryConfig);
+
+    NSURLRequest *publishRequest = [self requestForEndpoint:PNMessageSendEndpoint];
+    NSURLResponse *publishResponse = [self failedURLResponseForRequest:publishRequest withStatusCode:500 headers:nil];
+    XCTAssertEqual([retryConfig retryDelayForFailedRequest:publishRequest withResponse:publishResponse retryAttempt:1], -1.f,
+                   @"Publish should not be retried with default configuration");
+
+    NSURLRequest *presenceRequest = [self requestForEndpoint:PNPresenceEndpoint];
+    NSURLResponse *presenceResponse = [self failedURLResponseForRequest:presenceRequest withStatusCode:500 headers:nil];
+    XCTAssertEqual([retryConfig retryDelayForFailedRequest:presenceRequest withResponse:presenceResponse retryAttempt:1], -1.f,
+                   @"Presence should not be retried with default configuration");
+
+    NSURLRequest *historyRequest = [self requestForEndpoint:PNMessageStorageEndpoint];
+    NSURLResponse *historyResponse = [self failedURLResponseForRequest:historyRequest withStatusCode:500 headers:nil];
+    XCTAssertEqual([retryConfig retryDelayForFailedRequest:historyRequest withResponse:historyResponse retryAttempt:1], -1.f,
+                   @"Message storage should not be retried with default configuration");
+
+    NSURLRequest *filesRequest = [self requestForEndpoint:PNFilesEndpoint];
+    NSURLResponse *filesResponse = [self failedURLResponseForRequest:filesRequest withStatusCode:500 headers:nil];
+    XCTAssertEqual([retryConfig retryDelayForFailedRequest:filesRequest withResponse:filesResponse retryAttempt:1], -1.f,
+                   @"Files should not be retried with default configuration");
+
+    NSURLRequest *appContextRequest = [self requestForEndpoint:PNAppContextEndpoint];
+    NSURLResponse *appContextResponse = [self failedURLResponseForRequest:appContextRequest withStatusCode:500 headers:nil];
+    XCTAssertEqual([retryConfig retryDelayForFailedRequest:appContextRequest withResponse:appContextResponse retryAttempt:1], -1.f,
+                   @"App Context should not be retried with default configuration");
+}
+
+- (void)testItShouldPreserveExcludedEndpointsAfterCopyWithLinearPolicy {
+    PNRequestRetryConfiguration *configuration = [PNRequestRetryConfiguration configurationWithLinearDelay:4.5f
+                                                                                              maximumRetry:5
+                                                                                         excludedEndpoints:PNAppContextEndpoint, PNMessageSendEndpoint, 0];
+    PNRequestRetryConfiguration *configurationCopy = [configuration copy];
+
+    NSURLRequest *appContextRequest = [self requestForEndpoint:PNAppContextEndpoint];
+    NSURLResponse *appContextResponse = [self failedURLResponseForRequest:appContextRequest withStatusCode:500 headers:nil];
+    XCTAssertEqual([configurationCopy retryDelayForFailedRequest:appContextRequest withResponse:appContextResponse retryAttempt:1], -1.f);
+
+    NSURLRequest *publishRequest = [self requestForEndpoint:PNMessageSendEndpoint];
+    NSURLResponse *publishResponse = [self failedURLResponseForRequest:publishRequest withStatusCode:500 headers:nil];
+    XCTAssertEqual([configurationCopy retryDelayForFailedRequest:publishRequest withResponse:publishResponse retryAttempt:1], -1.f);
+
+    NSURLRequest *presenceRequest = [self requestForEndpoint:PNPresenceEndpoint];
+    NSURLResponse *presenceResponse = [self failedURLResponseForRequest:presenceRequest withStatusCode:500 headers:nil];
+    XCTAssertEqualWithAccuracy([configurationCopy retryDelayForFailedRequest:presenceRequest withResponse:presenceResponse retryAttempt:1], 4.5f, 1.f);
+}
+
 
 #pragma mark - Tests :: Exponential policy
 
@@ -226,6 +285,67 @@ NS_ASSUME_NONNULL_END
     NSURLResponse *response = [self failedURLResponseForRequest:request withStatusCode:403 headers:nil];
 
     XCTAssertEqual([configuration retryDelayForFailedRequest:request withResponse:response retryAttempt:2], -1.f);
+}
+
+- (void)testSubscribeRequestShouldBeRetriableWithDefaultConfiguration {
+    PNConfiguration *clientConfiguration = [PNConfiguration configurationWithPublishKey:@"demo"
+                                                                           subscribeKey:@"demo"
+                                                                                 userID:@"test-user"];
+    PNConfiguration *copiedConfiguration = [clientConfiguration copy];
+    PNRequestRetryConfiguration *retryConfig = copiedConfiguration.requestRetry;
+
+    XCTAssertNotNil(retryConfig);
+
+    NSURLRequest *subscribeRequest = [self requestForEndpoint:PNSubscribeEndpoint];
+    NSURLResponse *subscribeResponse = [self failedURLResponseForRequest:subscribeRequest withStatusCode:500 headers:nil];
+    NSTimeInterval delay = [retryConfig retryDelayForFailedRequest:subscribeRequest withResponse:subscribeResponse retryAttempt:1];
+
+    XCTAssertGreaterThan(delay, 0,
+                         @"Subscribe should be retried with default configuration for 500 errors");
+}
+
+- (void)testHeartbeatRequestShouldNotBeRetriable {
+    PNPresenceHeartbeatRequest *heartbeatRequest = [PNPresenceHeartbeatRequest requestWithHeartbeat:300
+                                                                                          channels:@[@"test-channel"]
+                                                                                     channelGroups:nil];
+    [heartbeatRequest setupWithClientConfiguration:self.client.configuration];
+    PNTransportRequest *transportRequest = heartbeatRequest.request;
+
+    XCTAssertFalse(transportRequest.retriable,
+                   @"Heartbeat request should not be retriable because it has its own timer-based retry loop");
+}
+
+- (void)testFileUploadRequestShouldNotBeRetriable {
+    NSURL *uploadURL = [NSURL URLWithString:@"https://s3.amazonaws.com/bucket/test-file"];
+    PNFileUploadRequest *uploadRequest = [PNFileUploadRequest requestWithURL:uploadURL
+                                                                 httpMethod:@"POST"
+                                                                   formData:@[]];
+    [uploadRequest setupWithClientConfiguration:self.client.configuration];
+    PNTransportRequest *transportRequest = uploadRequest.request;
+
+    XCTAssertFalse(transportRequest.retriable,
+                   @"File upload request should not be retriable because body streams cannot be rewound");
+}
+
+- (void)testItShouldPreserveExcludedEndpointsAfterCopyWithExponentialPolicy {
+    PNRequestRetryConfiguration *configuration = [PNRequestRetryConfiguration configurationWithExponentialDelay:4.5f
+                                                                                                   maximumDelay:20.f
+                                                                                                   maximumRetry:5
+                                                                                              excludedEndpoints:PNAppContextEndpoint, PNMessageSendEndpoint, 0];
+    PNRequestRetryConfiguration *configurationCopy = [configuration copy];
+
+    NSURLRequest *appContextRequest = [self requestForEndpoint:PNAppContextEndpoint];
+    NSURLResponse *appContextResponse = [self failedURLResponseForRequest:appContextRequest withStatusCode:500 headers:nil];
+    XCTAssertEqual([configurationCopy retryDelayForFailedRequest:appContextRequest withResponse:appContextResponse retryAttempt:1], -1.f);
+
+    NSURLRequest *publishRequest = [self requestForEndpoint:PNMessageSendEndpoint];
+    NSURLResponse *publishResponse = [self failedURLResponseForRequest:publishRequest withStatusCode:500 headers:nil];
+    XCTAssertEqual([configurationCopy retryDelayForFailedRequest:publishRequest withResponse:publishResponse retryAttempt:1], -1.f);
+
+    NSTimeInterval expectedDelay = [self exponentialDelayWithBaseInterval:4.5f maxInterval:20.f retryAttempt:1];
+    NSURLRequest *presenceRequest = [self requestForEndpoint:PNPresenceEndpoint];
+    NSURLResponse *presenceResponse = [self failedURLResponseForRequest:presenceRequest withStatusCode:500 headers:nil];
+    XCTAssertEqualWithAccuracy([configurationCopy retryDelayForFailedRequest:presenceRequest withResponse:presenceResponse retryAttempt:1], expectedDelay, 1.f);
 }
 
 

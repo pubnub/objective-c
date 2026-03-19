@@ -50,7 +50,6 @@ Pod::Spec.new do |spec|
             "PubNub/Modules/Serializer/Object/{PNJSONDecoder,PNJSONEncoder}.h",
             "PubNub/Modules/Crypto/Cryptors/AES/PNCCCryptorWrapper.h",
             "PubNub/Modules/Crypto/Header/*.h",
-            'PubNub/Network/PNReachability.h',
             'PubNub/Network/Requests/Files/PNGenerateFileUploadURLRequest.h',
             'PubNub/Network/Parsers/**/*.h',
             'PubNub/Network/Streams/*.h',
