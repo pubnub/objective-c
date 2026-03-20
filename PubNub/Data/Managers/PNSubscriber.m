@@ -1117,12 +1117,7 @@ NS_ASSUME_NONNULL_END
             shouldContinue = (generation == self->_subscribeCycleGeneration);
         }];
 
-        if (shouldContinue) {
-            [self continueSubscriptionCycleIfRequiredWithCompletion:nil];
-        } else {
-            NSLog(@"~~~~~> HOD UP");
-            NSLog(@"~~~~~> HOD UP BOI");
-        }
+        if (shouldContinue) [self continueSubscriptionCycleIfRequiredWithCompletion:nil];
 
         // Check whether number of messages exceed specified threshold or not.
         if (messageCountThreshold > 0 && eventsCount >= messageCountThreshold) {
