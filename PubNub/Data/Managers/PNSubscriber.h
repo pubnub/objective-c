@@ -97,12 +97,6 @@ typedef void(^PNSubscriberCompletionBlock)(PNSubscribeStatus * _Nullable status)
 /// - Parameter request: Request with information about resources from which client will receive real-time updates.
 - (void)subscribeWithRequest:(PNSubscribeRequest *)request;
 
-/// Try restore subscription cycle by using **0** time token and if required try to catch up on previous subscribe time
-/// token (basing on user configuration).
-///
-/// - Parameter block: Subscription completion block which is used to notify code.
-- (void)restoreSubscriptionCycleIfRequiredWithCompletion:(nullable PNSubscriberCompletionBlock)block;
-
 /// Continue subscription cycle using `currentTimeToken` value and channels, stored in cache.
 ///
 /// - Parameter block: Subscription completion block which is used to notify code.

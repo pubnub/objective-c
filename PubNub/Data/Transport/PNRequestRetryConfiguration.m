@@ -172,6 +172,7 @@ NS_ASSUME_NONNULL_END
 
 - (id)copyWithZone:(NSZone *)zone {
     PNRequestRetryConfiguration *configuration = [[PNRequestRetryConfiguration allocWithZone:zone] init];
+    configuration.excludedEndpoints = self.excludedEndpoints;
     configuration.maximumInterval = self.maximumInterval;
     configuration.minimumDelay = self.minimumDelay;
     configuration.maximumRetry = self.maximumRetry;

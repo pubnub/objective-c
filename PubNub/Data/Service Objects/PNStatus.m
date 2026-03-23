@@ -92,7 +92,6 @@ NS_ASSUME_NONNULL_END
 
 - (id)copyWithZone:(NSZone *)zone {
     PNStatus *status = [super copyWithZone:zone];
-    status.requireNetworkAvailabilityCheck = self.requireNetworkAvailabilityCheck;
     status.category = self.category;
     status.subscribedChannels = self.subscribedChannels;
     status.subscribedChannelGroups = self.subscribedChannelGroups;

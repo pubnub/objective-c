@@ -9,7 +9,7 @@
 
 Pod::Spec.new do |spec|
     spec.name     = 'PubNub'
-    spec.version  = '6.1.1'
+    spec.version  = '7.0.0'
     spec.summary  = 'The PubNub Real-Time Network. Build real-time apps quickly and scale them globally.'
     spec.homepage = 'https://github.com/pubnub/objective-c'
 
@@ -50,7 +50,6 @@ Pod::Spec.new do |spec|
             "PubNub/Modules/Serializer/Object/{PNJSONDecoder,PNJSONEncoder}.h",
             "PubNub/Modules/Crypto/Cryptors/AES/PNCCCryptorWrapper.h",
             "PubNub/Modules/Crypto/Header/*.h",
-            'PubNub/Network/PNReachability.h',
             'PubNub/Network/Requests/Files/PNGenerateFileUploadURLRequest.h',
             'PubNub/Network/Parsers/**/*.h',
             'PubNub/Network/Streams/*.h',

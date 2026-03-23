@@ -1,5 +1,6 @@
 #import "PNPresenceHeartbeatRequest.h"
 #import "PNBaseRequest+Private.h"
+#import "PNTransportRequest.h"
 #import "PNFunctions.h"
 #import "PNHelpers.h"
 
@@ -51,6 +52,13 @@ NS_ASSUME_NONNULL_END
 
 
 #pragma mark - Properties
+
+- (PNTransportRequest *)request {
+    PNTransportRequest *request = super.request;
+    request.retriable = NO;
+
+    return request;
+}
 
 - (PNOperationType)operation {
     return PNHeartbeatOperation;

@@ -20,9 +20,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// List of channels on which client currently subscribed.
 @property(copy, nonatomic) NSArray<NSString *> *subscribedChannels;
 
-/// Whether request require network availability check or not.
-@property(assign, nonatomic) BOOL requireNetworkAvailabilityCheck;
-
 /// **PubNub** server region identifier (which generated `currentTimetoken` value).
 @property(strong, nonatomic) NSNumber *currentTimeTokenRegion;
 

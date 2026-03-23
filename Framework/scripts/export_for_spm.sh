@@ -114,20 +114,15 @@ else
 	done
 fi
 
-[[ -e "PubNub.h" ]] && rm "PubNub.h"
-
 cd "../"
 
-if [[ $PUBLIC_ONLY == 1 ]]; then
-	for HEADER_PATH in "${PUBLIC_HEADERS[@]}"; do
-		FILENAME="$(echo "$HEADER_PATH" | rev | cut -d/ -f1 | rev)"
-		! [[ -e "$FILENAME" ]] && ln -s "../$HEADER_PATH"
-	done
-else
-	for HEADER_PATH in "${ALL_HEADERS[@]}"; do
-		FILENAME="$(echo "$HEADER_PATH" | rev | cut -d/ -f1 | rev)"
-		! [[ -e "$FILENAME" ]] && ln -s "../$HEADER_PATH" "$FILENAME"
-	done
-fi
-
-[[ -e "PubNub.h" ]] && rm "PubNub.h"
+# Create module.modulemap that uses a directory umbrella instead of an umbrella header.
+# This avoids SPM enforcing that all public headers must be imported through PubNub.h,
+# while still allowing `#import <PubNub/PubNub.h>` and `#import <PubNub/XXX.h>` to resolve.
+cat > module.modulemap <<'MODULEMAP'
+module PubNub {
+    umbrella "PubNub"
+    export *
+    module * { export * }
+}
+MODULEMAP

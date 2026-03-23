@@ -66,7 +66,6 @@ NS_ASSUME_NONNULL_END
     PNTransportRequest *request = super.request;
     request.timeout = self.subscribeMaximumIdleTime;
     request.cancellable = YES;
-    request.retriable = NO;
 
     return request;
 }
