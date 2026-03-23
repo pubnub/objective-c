@@ -1,3 +1,19 @@
+## 7.0.0
+March 23 2026
+
+#### Fixed
+- Fix `PNRequestRetryConfiguration` `copyWithZone` not copying `excludedEndpoints`, causing all endpoint groups to become eligible for retry after `PNConfiguration` copy.
+- Remove hardcoded `retriable = NO` from `PNSubscribeRequest` so transport-level retry configuration is applied to subscribe long-poll requests.
+- Add `subscribeCycleGeneration` counter to `PNSubscriber` to detect and discard stale continuation calls dispatched asynchronously before a new subscribe cycle started.
+
+#### Modified
+- Add `retriable = NO` to `PNFileUploadRequest` because body streams cannot be rewound after a partial send.
+- Add `request` method override with `retriable = NO` to `PNPresenceHeartbeatRequest` because presence heartbeat has its own timer-based periodic mechanism.
+- BREAKING CHANGES: Delete `PNReachability` class and remove references from `PubNub.podspec` and Framework project in favor of transport-level retry for network recovery.
+- Update export script to generate a directory umbrella modulemap instead of flat header symlinks. Configure publicHeadersPath and cSettings in Package.swift.
+- Add unit tests for `copyWithZone` preserving excluded endpoints, default configuration retrying only subscribe, and heartbeat / file upload requests not being retriable.
+- Add generation counter and retry tests Add unit tests verifying generation counter prevents stale subscribe continuations and transport-level retry works for subscribe requests using `NSURLProtocol` interception.
+
 ## 6.1.1
 December 15 2025
 
