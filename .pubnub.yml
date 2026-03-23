@@ -1,30 +1,9 @@
 ---
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "6.1.2"
+version: "6.1.1"
 schema: 1
 changelog:
-  - date: 2026-03-23
-    version: 6.1.2
-    changes:
-      - type: bug
-        text: "Fix `PNRequestRetryConfiguration` `copyWithZone` not copying `excludedEndpoints`, causing all endpoint groups to become eligible for retry after `PNConfiguration` copy."
-      - type: bug
-        text: "Remove hardcoded `retriable = NO` from `PNSubscribeRequest` so transport-level retry configuration is applied to subscribe long-poll requests."
-      - type: bug
-        text: "Add `subscribeCycleGeneration` counter to `PNSubscriber` to detect and discard stale continuation calls dispatched asynchronously before a new subscribe cycle started."
-      - type: improvement
-        text: "Add `retriable = NO` to `PNFileUploadRequest` because body streams cannot be rewound after a partial send."
-      - type: improvement
-        text: "Add `request` method override with `retriable = NO` to `PNPresenceHeartbeatRequest` because presence heartbeat has its own timer-based periodic mechanism."
-      - type: improvement
-        text: "Delete `PNReachability` class and remove references from `PubNub.podspec` and Framework project in favor of transport-level retry for network recovery."
-      - type: improvement
-        text: "Update export script to generate a directory umbrella modulemap instead of flat header symlinks. Configure publicHeadersPath and cSettings in Package.swift."
-      - type: improvement
-        text: "Add unit tests for `copyWithZone` preserving excluded endpoints, default configuration retrying only subscribe, and heartbeat / file upload requests not being retriable."
-      - type: improvement
-        text: "Add generation counter and retry tests Add unit tests verifying generation counter prevents stale subscribe continuations and transport-level retry works for subscribe requests using `NSURLProtocol` interception."
   - date: 2025-12-15
     version: 6.1.1
     changes:
@@ -1432,7 +1411,7 @@ sdks:
           - distribution-type: source
             distribution-repository: GitHub release
             package-name: PubNub.framework
-            location: https://github.com/pubnub/objective-c/archive/refs/tags/v6.1.2.zip
+            location: https://github.com/pubnub/objective-c/archive/refs/tags/v6.1.1.zip
             supported-platforms:
               supported-operating-systems:
                 macOS:
@@ -1493,7 +1472,7 @@ sdks:
           - distribution-type: library
             distribution-repository: GitHub release
             package-name: PubNub.ios.xcframework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v6.1.2/PubNub.ios.xcframework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v6.1.1/PubNub.ios.xcframework.tar.gz
             supported-platforms:
               supported-operating-systems:
                 iOS:
@@ -1512,7 +1491,7 @@ sdks:
           - distribution-type: library
             distribution-repository: GitHub release
             package-name: PubNub.macos.framework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v6.1.2/PubNub.macos.framework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v6.1.1/PubNub.macos.framework.tar.gz
             supported-platforms:
               supported-operating-systems:
                 macOS:
@@ -1528,7 +1507,7 @@ sdks:
           - distribution-type: library
             distribution-repository: GitHub release
             package-name: PubNub.tvos.xcframework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v6.1.2/PubNub.tvos.xcframework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v6.1.1/PubNub.tvos.xcframework.tar.gz
             supported-platforms:
               supported-operating-systems:
                 tvOS:
