@@ -43,6 +43,8 @@
 		79DDA2B0278DC75E00A5B24C /* PNConfigurationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 79DDA2AF278DC75E00A5B24C /* PNConfigurationTest.m */; };
 		79DDA2B1278DC75E00A5B24C /* PNConfigurationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 79DDA2AF278DC75E00A5B24C /* PNConfigurationTest.m */; };
 		79DDA2B2278DC75E00A5B24C /* PNConfigurationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 79DDA2AF278DC75E00A5B24C /* PNConfigurationTest.m */; };
+		8050801C637E739BEB375B19 /* PNCopyWithConfigurationSubscribeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 950BF637F94393F2C58AFD38 /* PNCopyWithConfigurationSubscribeTest.m */; };
+		92ABA80160F9DDDCFFEEF846 /* PNCopyWithConfigurationSubscribeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 950BF637F94393F2C58AFD38 /* PNCopyWithConfigurationSubscribeTest.m */; };
 		A529271023B181FE00FF46DD /* PNRecordableTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = A529270F23B181FE00FF46DD /* PNRecordableTestCase.m */; };
 		A529271123B181FE00FF46DD /* PNRecordableTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = A529270F23B181FE00FF46DD /* PNRecordableTestCase.m */; };
 		A529271223B181FE00FF46DD /* PNRecordableTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = A529270F23B181FE00FF46DD /* PNRecordableTestCase.m */; };
@@ -197,6 +199,7 @@
 		A5F8E9DC2476D47A007F79AB /* PNObjectsAPICallBuilderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F8E9DA2476D46D007F79AB /* PNObjectsAPICallBuilderTest.m */; };
 		A5F8E9DD2476D47C007F79AB /* PNObjectsAPICallBuilderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F8E9DA2476D46D007F79AB /* PNObjectsAPICallBuilderTest.m */; };
 		A5F8E9DE2476D47D007F79AB /* PNObjectsAPICallBuilderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F8E9DA2476D46D007F79AB /* PNObjectsAPICallBuilderTest.m */; };
+		F0643D5CAA6879B7D42EBCDB /* PNCopyWithConfigurationSubscribeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 950BF637F94393F2C58AFD38 /* PNCopyWithConfigurationSubscribeTest.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -226,6 +229,7 @@
 		79BB4BE2270A6FBF00EDC466 /* PNFilesContractTestSteps.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNFilesContractTestSteps.m; sourceTree = "<group>"; };
 		79CFA2D626DE25CD00D206D4 /* PNPAMTokenTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNPAMTokenTest.m; sourceTree = "<group>"; };
 		79DDA2AF278DC75E00A5B24C /* PNConfigurationTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNConfigurationTest.m; sourceTree = "<group>"; };
+		950BF637F94393F2C58AFD38 /* PNCopyWithConfigurationSubscribeTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNCopyWithConfigurationSubscribeTest.m; sourceTree = "<group>"; };
 		A529268323B0D07500FF46DD /* [iOS] Code Coverage.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "[iOS] Code Coverage.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A52926D823B0E3CF00FF46DD /* ios-tests.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ios-tests.plist"; sourceTree = "<group>"; };
 		A52926DF23B0E6C500FF46DD /* [tvOS] Mocked Integration Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "[tvOS] Mocked Integration Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -559,6 +563,7 @@
 		A532490E2C304F50003510FF /* Subscribe */ = {
 			isa = PBXGroup;
 			children = (
+				950BF637F94393F2C58AFD38 /* PNCopyWithConfigurationSubscribeTest.m */,
 				A532490F2C304F90003510FF /* PNSubscribeTest.m */,
 			);
 			path = Subscribe;
@@ -1203,6 +1208,7 @@
 				A5F8E9DD2476D47C007F79AB /* PNObjectsAPICallBuilderTest.m in Sources */,
 				79CFA2D926DE25DC00D206D4 /* PNPAMTokenTest.m in Sources */,
 				A53249112C304F90003510FF /* PNSubscribeTest.m in Sources */,
+				92ABA80160F9DDDCFFEEF846 /* PNCopyWithConfigurationSubscribeTest.m in Sources */,
 				A53D0B2723EA0EAD001E72AF /* PNMessageCountTest.m in Sources */,
 				A53D0B0623EA063A001E72AF /* PNSignalAPIBuilderTest.m in Sources */,
 				A53D0B1C23EA0C5C001E72AF /* PNUUIDMetadataObjectsTest.m in Sources */,
@@ -1258,6 +1264,7 @@
 				A5F8E9DC2476D47A007F79AB /* PNObjectsAPICallBuilderTest.m in Sources */,
 				79CFA2D826DE25DA00D206D4 /* PNPAMTokenTest.m in Sources */,
 				A53249102C304F90003510FF /* PNSubscribeTest.m in Sources */,
+				8050801C637E739BEB375B19 /* PNCopyWithConfigurationSubscribeTest.m in Sources */,
 				A53D0B2623EA0EAD001E72AF /* PNMessageCountTest.m in Sources */,
 				A53D0B0523EA063A001E72AF /* PNSignalAPIBuilderTest.m in Sources */,
 				A53D0B1B23EA0C5C001E72AF /* PNUUIDMetadataObjectsTest.m in Sources */,
@@ -1288,6 +1295,7 @@
 				A5F8E9DE2476D47D007F79AB /* PNObjectsAPICallBuilderTest.m in Sources */,
 				79CFA2DA26DE25DD00D206D4 /* PNPAMTokenTest.m in Sources */,
 				A53249122C304F90003510FF /* PNSubscribeTest.m in Sources */,
+				F0643D5CAA6879B7D42EBCDB /* PNCopyWithConfigurationSubscribeTest.m in Sources */,
 				A53D0B2823EA0EAD001E72AF /* PNMessageCountTest.m in Sources */,
 				A53D0B0723EA063A001E72AF /* PNSignalAPIBuilderTest.m in Sources */,
 				A53D0B1D23EA0C5C001E72AF /* PNUUIDMetadataObjectsTest.m in Sources */,

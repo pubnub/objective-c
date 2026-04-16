@@ -178,13 +178,13 @@ NS_ASSUME_NONNULL_END
     NSHashTable *stateListeners = [listener listenersCopyFrom:listener.stateListeners];
     
     dispatch_async(self.resourceAccessQueue, ^{
-        self.messageListeners = messageListeners;
-        self.signalListeners = signalListeners;
-        self.messageActionListeners = actionListeners;
-        self.presenceEventListeners = presenceEventListeners;
-        self.objectEventListeners = objectEventListeners;
-        self.fileEventListeners = fileEventListeners;
-        self.stateListeners = stateListeners;
+        [self.messageListeners unionHashTable:messageListeners];
+        [self.signalListeners unionHashTable:signalListeners];
+        [self.messageActionListeners unionHashTable:actionListeners];
+        [self.presenceEventListeners unionHashTable:presenceEventListeners];
+        [self.objectEventListeners unionHashTable:objectEventListeners];
+        [self.fileEventListeners unionHashTable:fileEventListeners];
+        [self.stateListeners unionHashTable:stateListeners];
     });
 }
 

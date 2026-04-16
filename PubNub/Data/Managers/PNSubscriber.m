@@ -635,7 +635,8 @@ NS_ASSUME_NONNULL_END
     _channelsSet = [subscriber.channelsSet mutableCopy];
     
     if (_channelsSet.count || _channelGroupsSet.count || _presenceChannelsSet.count) {
-        _currentState = PNDisconnectedSubscriberState;
+        if (subscriber.currentState != PNInitializedSubscriberState) _currentState = PNDisconnectedSubscriberState;
+        else _currentState = PNInitializedSubscriberState;
     }
     
     _cachedObjects = [subscriber.cachedObjects mutableCopy];
@@ -774,7 +775,12 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)continueSubscriptionCycleIfRequiredWithCompletion:(PNSubscriberCompletionBlock)block {
-    [self subscribe:NO usingTimeToken:nil withState:nil queryParameters:nil completion:block];
+    __block BOOL isInitialSubscribe;
+    [self.lock readAccessWithBlock:^{
+        isInitialSubscribe = self.currentState == PNInitializedSubscriberState;
+    }];
+    
+    [self subscribe:isInitialSubscribe usingTimeToken:nil withState:nil queryParameters:nil completion:block];
 }
 
 - (void)unsubscribeWithRequest:(PNPresenceLeaveRequest *)request completion:(PNSubscriberCompletionBlock)block {

@@ -326,7 +326,10 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)setLogLevel:(PNLogLevel)level {
-    self.logger.logLevel = level;
+    [self.lock writeAccessWithBlock:^{
+        self->_configuration.logLevel = level;
+        [self setupClientLogger];
+    }];
 }
 
 - (void)setRecentClientStatus:(PNStatusCategory)recentClientStatus {
@@ -588,7 +591,7 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Helpers
 
 - (void)setupClientLogger {
-    if (_configuration.logLevel == PNNoneLogLevel) return;
+    if (_configuration.logLevel == PNNoneLogLevel || self.logger) return;
     NSMutableArray<id<PNLogger>> *loggers = [NSMutableArray new];
     
     if (_configuration.shouldEnableDefaultConsoleLogger) [loggers addObject:[PNConsoleLogger new]];
