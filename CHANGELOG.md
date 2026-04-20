@@ -1,3 +1,12 @@
+## 7.0.1
+April 20 2026
+
+#### Fixed
+- Preserve the source's actual state so mid-subscribe copies inherit `Initialized` and receive proper `Connected` or `UnexpectedDisconnect` callbacks.
+- Check `currentState` for `PNInitializedSubscriberState` to pass the proper `subscribe` parameter value so the proper initial subscribe executes.
+- Use `unionHashTable:` to merge inherited listeners with existing ones so the new client can receive and forward status callbacks instead of hash table replacement.
+- Update `_configuration.logLevel` with every `setLogLevel:` call and call `setupClientLogger` to create the logger on demand with an early return guard when it already exists.
+
 ## 7.0.0
 March 23 2026
 
