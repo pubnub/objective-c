@@ -288,7 +288,7 @@ NS_ASSUME_NONNULL_END
     [client addListener:client];
     
     dispatch_block_t subscriptionRestoreBlock = ^{
-        [client.subscriberManager continueSubscriptionCycleIfRequiredWithCompletion:^(__unused PNSubscribeStatus *status) {
+        [client.subscriberManager continueSubscriptionCycleIfRequiredRestoringSubscription:YES completion:^(__unused PNSubscribeStatus *status) {
             if (block) {
                 pn_dispatch_async(client.callbackQueue, ^{
                     block(client);

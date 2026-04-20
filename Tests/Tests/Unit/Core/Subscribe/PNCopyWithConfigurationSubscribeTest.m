@@ -341,9 +341,8 @@ NS_ASSUME_NONNULL_END
         }
     }];
 
-    // Step 5: Trigger subscription via continueSubscriptionCycleIfRequiredWithCompletion: (the real code path).
-    // After fix, this method detects Initialized state and internally calls subscribe:YES.
-    [newClient.subscriberManager continueSubscriptionCycleIfRequiredWithCompletion:nil];
+    // Step 5: Trigger subscription restoration (the real code path from copyWithConfiguration:).
+    [newClient.subscriberManager continueSubscriptionCycleIfRequiredRestoringSubscription:YES completion:nil];
 
     // Wait for the NEW client's subscribe request to be captured (pending count was 0 after reset).
     [self waitForCondition:^BOOL {
@@ -404,9 +403,8 @@ NS_ASSUME_NONNULL_END
         }
     }];
 
-    // Step 5: Trigger subscription via continueSubscriptionCycleIfRequiredWithCompletion: (the real code path).
-    // After fix, this method detects Initialized state and internally calls subscribe:YES.
-    [newClient.subscriberManager continueSubscriptionCycleIfRequiredWithCompletion:nil];
+    // Step 5: Trigger subscription restoration (the real code path from copyWithConfiguration:).
+    [newClient.subscriberManager continueSubscriptionCycleIfRequiredRestoringSubscription:YES completion:nil];
 
     // Wait for the request to be captured, then complete it successfully.
     [self waitForCondition:^BOOL {
@@ -498,13 +496,10 @@ NS_ASSUME_NONNULL_END
 }
 
 
-#pragma mark - Tests :: continueSubscriptionCycleIfRequiredWithCompletion initial subscribe detection
+#pragma mark - Tests :: continueSubscriptionCycleIfRequiredRestoringSubscription:completion: initial subscribe detection
 
-/// Verify that `continueSubscriptionCycleIfRequiredWithCompletion:` calls `subscribe:YES` when the subscriber is in
-/// `PNInitializedSubscriberState`, triggering a proper initial subscribe handshake.
-///
-/// This tests the fix to `continueSubscriptionCycleIfRequiredWithCompletion:` which checks `currentState` to decide
-/// whether to use `subscribe:YES` (initial) or `subscribe:NO` (continuation).
+/// Verify that `continueSubscriptionCycleIfRequiredRestoringSubscription:completion:` calls `subscribe:YES` when restoring
+/// and the subscriber is in `PNInitializedSubscriberState`, triggering a proper initial subscribe handshake.
 - (void)testContinuationUsesInitialSubscribeWhenStateIsInitialized {
     PNSubscriber *subscriber = self.client.subscriberManager;
     [subscriber addChannels:@[@"test-channel"]];
@@ -537,15 +532,15 @@ NS_ASSUME_NONNULL_END
             subscribeCalled = YES;
         });
 
-    [subscriber continueSubscriptionCycleIfRequiredWithCompletion:nil];
+    [subscriber continueSubscriptionCycleIfRequiredRestoringSubscription:YES completion:nil];
 
     XCTAssertTrue(subscribeCalled, @"subscribe:usingTimeToken:... should have been called");
     XCTAssertTrue(capturedInitialSubscribe,
                   @"Continuation from Initialized state should call subscribe:YES (initial subscribe)");
 }
 
-/// Verify that `continueSubscriptionCycleIfRequiredWithCompletion:` calls `subscribe:NO` when the subscriber is in
-/// `PNConnectedSubscriberState`, using the existing timetoken for a long-poll continuation.
+/// Verify that `continueSubscriptionCycleIfRequiredRestoringSubscription:completion:` calls `subscribe:NO` when restoring
+/// and the subscriber is in `PNConnectedSubscriberState`, using the existing timetoken for a long-poll continuation.
 - (void)testContinuationUsesLongPollWhenStateIsConnected {
     PNSubscriber *subscriber = self.client.subscriberManager;
     [subscriber addChannels:@[@"test-channel"]];
@@ -575,7 +570,7 @@ NS_ASSUME_NONNULL_END
             subscribeCalled = YES;
         });
 
-    [subscriber continueSubscriptionCycleIfRequiredWithCompletion:nil];
+    [subscriber continueSubscriptionCycleIfRequiredRestoringSubscription:YES completion:nil];
 
     XCTAssertTrue(subscribeCalled, @"subscribe:usingTimeToken:... should have been called");
     XCTAssertFalse(capturedInitialSubscribe,

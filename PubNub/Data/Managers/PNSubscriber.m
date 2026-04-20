@@ -774,12 +774,13 @@ NS_ASSUME_NONNULL_END
     #pragma clang diagnostic pop
 }
 
-- (void)continueSubscriptionCycleIfRequiredWithCompletion:(PNSubscriberCompletionBlock)block {
+- (void)continueSubscriptionCycleIfRequiredRestoringSubscription:(BOOL)restoring
+                                                      completion:(PNSubscriberCompletionBlock)block {
     __block BOOL isInitialSubscribe;
     [self.lock readAccessWithBlock:^{
-        isInitialSubscribe = self.currentState == PNInitializedSubscriberState;
+        isInitialSubscribe = restoring && self.currentState == PNInitializedSubscriberState;
     }];
-    
+
     [self subscribe:isInitialSubscribe usingTimeToken:nil withState:nil queryParameters:nil completion:block];
 }
 
@@ -1104,7 +1105,7 @@ NS_ASSUME_NONNULL_END
     }];
 
     if (!events.count) {
-        [self continueSubscriptionCycleIfRequiredWithCompletion:nil];
+        [self continueSubscriptionCycleIfRequiredRestoringSubscription:NO completion:nil];
         return;
     }
 
@@ -1123,7 +1124,7 @@ NS_ASSUME_NONNULL_END
             shouldContinue = (generation == self->_subscribeCycleGeneration);
         }];
 
-        if (shouldContinue) [self continueSubscriptionCycleIfRequiredWithCompletion:nil];
+        if (shouldContinue) [self continueSubscriptionCycleIfRequiredRestoringSubscription:NO completion:nil];
 
         // Check whether number of messages exceed specified threshold or not.
         if (messageCountThreshold > 0 && eventsCount >= messageCountThreshold) {

@@ -99,8 +99,11 @@ typedef void(^PNSubscriberCompletionBlock)(PNSubscribeStatus * _Nullable status)
 
 /// Continue subscription cycle using `currentTimeToken` value and channels, stored in cache.
 ///
-/// - Parameter block: Subscription completion block which is used to notify code.
-- (void)continueSubscriptionCycleIfRequiredWithCompletion:(nullable PNSubscriberCompletionBlock)block;
+/// - Parameters:
+///   - restoring: Whether the subscription cycle is being restored after a `copyWithConfiguration:` call.
+///   - block: Subscription completion block which is used to notify code.
+- (void)continueSubscriptionCycleIfRequiredRestoringSubscription:(BOOL)restoring
+                                                      completion:(nullable PNSubscriberCompletionBlock)block;
 
 
 #pragma mark - Unsubscription
