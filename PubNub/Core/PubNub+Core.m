@@ -288,7 +288,7 @@ NS_ASSUME_NONNULL_END
     [client addListener:client];
     
     dispatch_block_t subscriptionRestoreBlock = ^{
-        [client.subscriberManager continueSubscriptionCycleIfRequiredWithCompletion:^(__unused PNSubscribeStatus *status) {
+        [client.subscriberManager continueSubscriptionCycleIfRequiredRestoringSubscription:YES completion:^(__unused PNSubscribeStatus *status) {
             if (block) {
                 pn_dispatch_async(client.callbackQueue, ^{
                     block(client);
@@ -326,7 +326,10 @@ NS_ASSUME_NONNULL_END
 }
 
 - (void)setLogLevel:(PNLogLevel)level {
-    self.logger.logLevel = level;
+    [self.lock writeAccessWithBlock:^{
+        self->_configuration.logLevel = level;
+        [self setupClientLogger];
+    }];
 }
 
 - (void)setRecentClientStatus:(PNStatusCategory)recentClientStatus {
@@ -588,7 +591,7 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Helpers
 
 - (void)setupClientLogger {
-    if (_configuration.logLevel == PNNoneLogLevel) return;
+    if (_configuration.logLevel == PNNoneLogLevel || self.logger) return;
     NSMutableArray<id<PNLogger>> *loggers = [NSMutableArray new];
     
     if (_configuration.shouldEnableDefaultConsoleLogger) [loggers addObject:[PNConsoleLogger new]];

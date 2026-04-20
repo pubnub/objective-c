@@ -1,9 +1,20 @@
 ---
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "7.0.0"
+version: "7.0.1"
 schema: 1
 changelog:
+  - date: 2026-04-20
+    version: 7.0.1
+    changes:
+      - type: bug
+        text: "Preserve the source's actual state so mid-subscribe copies inherit `Initialized` and receive proper `Connected` or `UnexpectedDisconnect` callbacks."
+      - type: bug
+        text: "Check `currentState` for `PNInitializedSubscriberState` to pass the proper `subscribe` parameter value so the proper initial subscribe executes."
+      - type: bug
+        text: "Use `unionHashTable:` to merge inherited listeners with existing ones so the new client can receive and forward status callbacks instead of hash table replacement."
+      - type: bug
+        text: "Update `_configuration.logLevel` with every `setLogLevel:` call and call `setupClientLogger` to create the logger on demand with an early return guard when it already exists."
   - date: 2026-03-23
     version: 7.0.0
     changes:
@@ -1432,7 +1443,7 @@ sdks:
           - distribution-type: source
             distribution-repository: GitHub release
             package-name: PubNub.framework
-            location: https://github.com/pubnub/objective-c/archive/refs/tags/v7.0.0.zip
+            location: https://github.com/pubnub/objective-c/archive/refs/tags/v7.0.1.zip
             supported-platforms:
               supported-operating-systems:
                 macOS:
@@ -1493,7 +1504,7 @@ sdks:
           - distribution-type: library
             distribution-repository: GitHub release
             package-name: PubNub.ios.xcframework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v7.0.0/PubNub.ios.xcframework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v7.0.1/PubNub.ios.xcframework.tar.gz
             supported-platforms:
               supported-operating-systems:
                 iOS:
@@ -1512,7 +1523,7 @@ sdks:
           - distribution-type: library
             distribution-repository: GitHub release
             package-name: PubNub.macos.framework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v7.0.0/PubNub.macos.framework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v7.0.1/PubNub.macos.framework.tar.gz
             supported-platforms:
               supported-operating-systems:
                 macOS:
@@ -1528,7 +1539,7 @@ sdks:
           - distribution-type: library
             distribution-repository: GitHub release
             package-name: PubNub.tvos.xcframework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v7.0.0/PubNub.tvos.xcframework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v7.0.1/PubNub.tvos.xcframework.tar.gz
             supported-platforms:
               supported-operating-systems:
                 tvOS:

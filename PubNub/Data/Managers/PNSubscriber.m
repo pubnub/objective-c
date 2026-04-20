@@ -635,7 +635,8 @@ NS_ASSUME_NONNULL_END
     _channelsSet = [subscriber.channelsSet mutableCopy];
     
     if (_channelsSet.count || _channelGroupsSet.count || _presenceChannelsSet.count) {
-        _currentState = PNDisconnectedSubscriberState;
+        if (subscriber.currentState != PNInitializedSubscriberState) _currentState = PNDisconnectedSubscriberState;
+        else _currentState = PNInitializedSubscriberState;
     }
     
     _cachedObjects = [subscriber.cachedObjects mutableCopy];
@@ -773,8 +774,14 @@ NS_ASSUME_NONNULL_END
     #pragma clang diagnostic pop
 }
 
-- (void)continueSubscriptionCycleIfRequiredWithCompletion:(PNSubscriberCompletionBlock)block {
-    [self subscribe:NO usingTimeToken:nil withState:nil queryParameters:nil completion:block];
+- (void)continueSubscriptionCycleIfRequiredRestoringSubscription:(BOOL)restoring
+                                                      completion:(PNSubscriberCompletionBlock)block {
+    __block BOOL isInitialSubscribe;
+    [self.lock readAccessWithBlock:^{
+        isInitialSubscribe = restoring && self.currentState == PNInitializedSubscriberState;
+    }];
+
+    [self subscribe:isInitialSubscribe usingTimeToken:nil withState:nil queryParameters:nil completion:block];
 }
 
 - (void)unsubscribeWithRequest:(PNPresenceLeaveRequest *)request completion:(PNSubscriberCompletionBlock)block {
@@ -1098,7 +1105,7 @@ NS_ASSUME_NONNULL_END
     }];
 
     if (!events.count) {
-        [self continueSubscriptionCycleIfRequiredWithCompletion:nil];
+        [self continueSubscriptionCycleIfRequiredRestoringSubscription:NO completion:nil];
         return;
     }
 
@@ -1117,7 +1124,7 @@ NS_ASSUME_NONNULL_END
             shouldContinue = (generation == self->_subscribeCycleGeneration);
         }];
 
-        if (shouldContinue) [self continueSubscriptionCycleIfRequiredWithCompletion:nil];
+        if (shouldContinue) [self continueSubscriptionCycleIfRequiredRestoringSubscription:NO completion:nil];
 
         // Check whether number of messages exceed specified threshold or not.
         if (messageCountThreshold > 0 && eventsCount >= messageCountThreshold) {
