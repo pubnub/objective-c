@@ -302,12 +302,8 @@ NS_ASSUME_NONNULL_END
         [self cancelSubscribeOperations];
 
         BOOL uuidChanged = ![configuration.userID isEqualToString:self.configuration.userID];
-        BOOL authKeyChanged = ((self.configuration.authKey && !configuration.authKey) ||
-                               (!self.configuration.authKey && configuration.authKey) ||
-                               (configuration.authKey && self.configuration.authKey &&
-                                ![configuration.authKey isEqualToString:self.configuration.authKey]));
-        
-        if (uuidChanged || authKeyChanged) {
+
+        if (uuidChanged) {
             [self unsubscribeFromChannels:self.subscriberManager.channels 
                                    groups:self.subscriberManager.channelGroups
                              withPresence:YES
