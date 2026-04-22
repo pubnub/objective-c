@@ -1,9 +1,14 @@
 ---
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "7.0.1"
+version: "7.0.2"
 schema: 1
 changelog:
+  - date: 2026-04-22
+    version: 7.0.2
+    changes:
+      - type: improvement
+        text: "Don't unsubscribe old client as part of `-copyWithConfiguration:completion:` call when only `auth` has been changed."
   - date: 2026-04-20
     version: 7.0.1
     changes:
@@ -1443,7 +1448,7 @@ sdks:
           - distribution-type: source
             distribution-repository: GitHub release
             package-name: PubNub.framework
-            location: https://github.com/pubnub/objective-c/archive/refs/tags/v7.0.1.zip
+            location: https://github.com/pubnub/objective-c/archive/refs/tags/v7.0.2.zip
             supported-platforms:
               supported-operating-systems:
                 macOS:
@@ -1504,7 +1509,7 @@ sdks:
           - distribution-type: library
             distribution-repository: GitHub release
             package-name: PubNub.ios.xcframework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v7.0.1/PubNub.ios.xcframework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v7.0.2/PubNub.ios.xcframework.tar.gz
             supported-platforms:
               supported-operating-systems:
                 iOS:
@@ -1523,7 +1528,7 @@ sdks:
           - distribution-type: library
             distribution-repository: GitHub release
             package-name: PubNub.macos.framework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v7.0.1/PubNub.macos.framework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v7.0.2/PubNub.macos.framework.tar.gz
             supported-platforms:
               supported-operating-systems:
                 macOS:
@@ -1539,7 +1544,7 @@ sdks:
           - distribution-type: library
             distribution-repository: GitHub release
             package-name: PubNub.tvos.xcframework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v7.0.1/PubNub.tvos.xcframework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v7.0.2/PubNub.tvos.xcframework.tar.gz
             supported-platforms:
               supported-operating-systems:
                 tvOS:

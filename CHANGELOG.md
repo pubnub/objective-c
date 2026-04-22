@@ -1,3 +1,9 @@
+## 7.0.2
+April 22 2026
+
+#### Modified
+- Don't unsubscribe old client as part of `-copyWithConfiguration:completion:` call when only `auth` has been changed.
+
 ## 7.0.1
 April 20 2026
 
