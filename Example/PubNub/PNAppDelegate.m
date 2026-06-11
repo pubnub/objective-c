@@ -763,7 +763,6 @@
 
 - (void)updateClientConfiguration {
     // Set PubNub Configuration
-    self.myConfig.TLSEnabled = NO;
     self.myConfig.authKey = _authKey;
     
     // Configure logger
@@ -774,7 +773,7 @@
     self.myConfig.presenceHeartbeatInterval = 5;
 
     // Cipher Key Settings
-//    self.myConfig.cipherKey = @"enigma";
+    // self.myConfig.cipherKey = @"enigma";
 
     // Time Token Handling Settings
     self.myConfig.keepTimeTokenOnListChange = YES;
