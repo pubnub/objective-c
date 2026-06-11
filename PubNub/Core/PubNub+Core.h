@@ -117,7 +117,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// ```objc
 /// __weak __typeof(self) weakSelf = self;
 /// PNConfiguration *configuration = [self.pubnub currentConfiguration];
-/// configuration.TLSEnabled = NO;
+/// configuration.presenceHeartbeatValue = 60;
 /// [self.client copyWithConfiguration:configuration completion:^(PubNub *pubnub) {
 ///     // Store reference on new client with updated configuration.
 ///     weakSelf.pubnub = pubnub;
@@ -148,7 +148,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// __weak __typeof(self) weakSelf = self;
 /// dispatch_queue_t queue = dispatch_queue_create("com.my-app.callback-queue", DISPATCH_QUEUE_SERIAL);
 /// PNConfiguration *configuration = [self.pubnub currentConfiguration];
-/// configuration.TLSEnabled = NO;
+/// configuration.presenceHeartbeatValue = 60;
 /// [self.pubnub copyWithConfiguration:configuration callbackQueue:queue completion:^(PubNub *pubnub) {
 ///     // Store reference on new client with updated configuration.
 ///     weakSelf.pubnub = pubnub;

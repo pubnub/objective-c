@@ -759,7 +759,6 @@
 
 - (void)updateClientConfiguration {
     // Set PubNub Configuration
-    self.myConfig.TLSEnabled = NO;
     self.myConfig.authKey = _authKey;
     
     // Configure logger
