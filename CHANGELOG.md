@@ -1,3 +1,9 @@
+## 7.0.3
+June 15 2026
+
+#### Modified
+- Remove TLSEnabled = NO from docs and sample apps.
+
 ## 7.0.2
 April 22 2026
 
