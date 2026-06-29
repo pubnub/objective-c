@@ -141,12 +141,21 @@ NS_ASSUME_NONNULL_END
             initializationVector = [encryptedData subdataWithRange:NSMakeRange(0, kCCBlockSizeAES128)];
             encryptedData = [encryptedData subdataWithRange:NSMakeRange(kCCBlockSizeAES128, encryptedDataLength)];
         } else {
-            return [PNResult resultWithData:nil error:[PNCCCryptorWrapper genericDecryptionError]];
+            NSError *error = [NSError errorWithDomain:PNCryptorErrorDomain
+                                                 code:PNCryptorErrorDecryption
+                                             userInfo:@{
+                NSLocalizedDescriptionKey: @"Insufficient amount of data to read cryptor-defined metadata."
+            }];
+
+            return [PNResult resultWithData:nil error:error];
         }
     }
 
     if (encryptedData.length == 0) {
-        return [PNResult resultWithData:nil error:[PNCCCryptorWrapper genericDecryptionError]];
+        NSError *error = [NSError errorWithDomain:PNCryptorErrorDomain
+                                             code:PNCryptorErrorDecryption
+                                         userInfo:@{ NSLocalizedDescriptionKey: @"Unable to decrypt empty data." }];
+        return [PNResult resultWithData:nil error:error];
     }
 
     PNResult<PNCCCryptorWrapper *> *wrapper = [PNCCCryptorWrapper AESCBCDecryptorWithCipherKey:self.cipherKey
@@ -194,7 +203,13 @@ NS_ASSUME_NONNULL_END
     else if (initializationVector.length == 0 && length > kCCBlockSizeAES128) {
         initializationVector = [stream.stream readCryptorMetadataWithLength:kCCBlockSizeAES128].data;
     } else if (length < kCCBlockSizeAES128) {
-        return [PNResult resultWithData:nil error:[PNCCCryptorWrapper genericDecryptionError]];
+        NSError *error = [NSError errorWithDomain:PNCryptorErrorDomain
+                                             code:PNCryptorErrorDecryption
+                                         userInfo:@{
+            NSLocalizedDescriptionKey: @"Insufficient amount of data to read cryptor-defined metadata."
+        }];
+
+        return [PNResult resultWithData:nil error:error];
     }
 
     PNResult<PNCCCryptorWrapper *> *wrapper = [PNCCCryptorWrapper AESCBCDecryptorWithCipherKey:self.cipherKey
@@ -202,7 +217,10 @@ NS_ASSUME_NONNULL_END
     if (wrapper.isError) return (PNResult<NSInputStream *> *)wrapper;
 
     if (stream.stream.inputDataLength == 0) {
-        return [PNResult resultWithData:nil error:[PNCCCryptorWrapper genericDecryptionError]];
+        NSError *error = [NSError errorWithDomain:PNCryptorErrorDomain
+                                             code:PNCryptorErrorDecryption
+                                         userInfo:@{ NSLocalizedDescriptionKey: @"Unable to decrypt empty stream." }];
+        return [PNResult resultWithData:nil error:error];
     }
 
     PNCryptorInputStream *cryptorStream = nil;
