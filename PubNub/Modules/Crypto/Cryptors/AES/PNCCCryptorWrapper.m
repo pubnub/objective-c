@@ -6,6 +6,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+#pragma mark Constants
+
+/// `NSError.userInfo` key under which the original `CCCryptorStatus` is preserved for internal
+/// diagnostics. This must never be surfaced to callers as part of the public error.
+NSString * const PNCryptorUnderlyingStatusKey = @"PNCryptorUnderlyingStatus";
+
+
 #pragma mark Private interface declaration
 
 /// Wrapper around common cryptor private extension.
@@ -47,6 +54,14 @@ NS_ASSUME_NONNULL_BEGIN
 ///   - operation: Operation during which error occurred.
 /// - Returns: `NSError` instance with `CCCryptor` error status information.
 + (NSError *)errorFromCryptorStatus:(CCCryptorStatus)status andOperation:(CCOperation)operation;
+
+/// Build the canonical generic decryption error, optionally preserving the underlying status.
+///
+/// - Parameter status: Original `CCCryptorStatus`; pass `kCCSuccess` when there is no status to
+///   preserve. When non-success, it is stored under ``PNCryptorUnderlyingStatusKey`` for internal
+///   diagnostics only.
+/// - Returns: `NSError` with the canonical generic decryption domain, code and message.
++ (NSError *)genericDecryptionErrorWithCryptorStatus:(CCCryptorStatus)status;
 
 #pragma mark -
 
@@ -130,10 +145,12 @@ NS_ASSUME_NONNULL_END
                                 estimatedResultLength - processedDataLength,
                                 &finalisedDataLength);
         processedData.length = processedDataLength + finalisedDataLength;
-    } else {
-        error = [[self class] errorFromCryptorStatus:status andOperation:self.operation];
     }
-    
+
+    // CCCryptorFinal is where PKCS7 padding is validated, so its status must be checked too;
+    // otherwise a bad-padding failure would be silently treated as success.
+    if (status != kCCSuccess) error = [[self class] errorFromCryptorStatus:status andOperation:self.operation];
+
     return [PNResult resultWithData:processedData error:error];
 }
 
@@ -181,9 +198,15 @@ NS_ASSUME_NONNULL_END
 }
 
 + (NSError *)errorFromCryptorStatus:(CCCryptorStatus)status andOperation:(CCOperation)operation {
+    // Decryption failures must not be distinguishable from one another: surfacing whether a
+    // failure was caused by bad padding vs. wrong length vs. other reasons gives an attacker a
+    // padding-oracle bit (AES-CBC + PKCS7). All decrypt failures return one identical generic
+    // error; the real CommonCrypto status is preserved only for internal diagnostics.
+    if (operation != kCCEncrypt) return [self genericDecryptionErrorWithCryptorStatus:status];
+
     NSInteger errorCode = PNErrorUnknown;
     NSString *description = @"Unknown error";
-    
+
     switch (status) {
         case kCCParamError:
         case kCCAlignmentError:
@@ -204,15 +227,31 @@ NS_ASSUME_NONNULL_END
         case kCCOverflow:
         case kCCRNGFailure:
             description = @"Provided data can't be processed.";
-            errorCode = operation == kCCEncrypt ? PNCryptorErrorEncryption : PNCryptorErrorDecryption;
+            errorCode = PNCryptorErrorEncryption;
             break;
         default:
             break;
     }
-    
+
     return [NSError errorWithDomain:PNCryptorErrorDomain
                                code:errorCode
                            userInfo:@{ NSLocalizedDescriptionKey: description }];
+}
+
++ (NSError *)genericDecryptionError {
+    return [self genericDecryptionErrorWithCryptorStatus:kCCSuccess];
+}
+
++ (NSError *)genericDecryptionErrorWithCryptorStatus:(CCCryptorStatus)status {
+    NSMutableDictionary *userInfo = [@{
+        NSLocalizedDescriptionKey: @"Decryption failed."
+    } mutableCopy];
+
+    if (status != kCCSuccess) userInfo[PNCryptorUnderlyingStatusKey] = @(status);
+
+    return [NSError errorWithDomain:PNCryptorErrorDomain
+                               code:PNCryptorErrorDecryption
+                           userInfo:userInfo];
 }
 
 

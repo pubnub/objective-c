@@ -215,7 +215,8 @@ NS_ASSUME_NONNULL_END
         else dictionary[@"cryptoModule"] = NSStringFromClass(self.cryptoModule.class);
     }
     if (self.filterExpression) dictionary[@"filterExpression"] = self.filterExpression;
-    if (self.authKey) dictionary[@"authKey"] = self.authKey;
+
+    dictionary[@"authKey"] = self.authKey ? @"***" : @"not set";
     
     return dictionary;
 }

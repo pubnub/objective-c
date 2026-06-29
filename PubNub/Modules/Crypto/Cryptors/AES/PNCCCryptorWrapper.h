@@ -4,6 +4,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+#pragma mark Constants
+
+/// `NSError.userInfo` key under which the original `CCCryptorStatus` is preserved for internal
+/// diagnostics. This must never be surfaced to callers as part of the public error.
+extern NSString * const PNCryptorUnderlyingStatusKey;
+
+
 #pragma mark Interface declaration
 
 /// Wrapper around common cryptor.
@@ -62,6 +69,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// - Parameter length: Source data length.
 /// - Returns: Fully processed data length.
 - (NSUInteger)processedDataLength:(NSUInteger)length;
+
+/// Single generic error returned for every decryption failure.
+///
+/// - Returns: `NSError` with the canonical generic decryption domain, code and message.
++ (NSError *)genericDecryptionError;
 
 #pragma mark -
 
