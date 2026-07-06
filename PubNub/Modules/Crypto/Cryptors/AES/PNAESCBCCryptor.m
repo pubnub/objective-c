@@ -269,7 +269,6 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Misc
 
 - (NSDictionary *)dictionaryRepresentation {
-    // Cipher key is sensitive and must never be logged, even partially.
     NSString *cipherKey = self.cipherKeyString ? @"***" : @"missing";
 
     NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary:@{
