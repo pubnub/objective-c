@@ -4,7 +4,6 @@
 #import "PNSequenceInputStream.h"
 #import "PNAESCBCCryptor.h"
 #import "PNLegacyCryptor.h"
-#import "PNCCCryptorWrapper.h"
 #import "PNCryptorHeader.h"
 #import "PNResult.h"
 #import "PNError.h"
@@ -145,7 +144,10 @@ NS_ASSUME_NONNULL_END
 
 - (PNResult<NSData *> *)decryptData:(NSData *)data {
     if (data.length == 0) {
-        return [PNResult resultWithData:nil error:[PNCCCryptorWrapper genericDecryptionError]];
+        NSError *error = [NSError errorWithDomain:PNCryptorErrorDomain
+                                             code:PNCryptorErrorDecryption
+                                         userInfo:@{ NSLocalizedDescriptionKey: @"Unable to decrypt empty data." }];
+        return [PNResult resultWithData:nil error:error];
     }
 
     PNResult<PNCryptorHeader *> *headerResult = [PNCryptorHeader headerFromData:data];
@@ -218,7 +220,10 @@ NS_ASSUME_NONNULL_END
 
 - (PNResult<NSInputStream *> *)decryptStream:(NSInputStream *)stream dataLength:(NSUInteger)length {
     if (length == 0) {
-        return [PNResult resultWithData:nil error:[PNCCCryptorWrapper genericDecryptionError]];
+        NSError *error = [NSError errorWithDomain:PNCryptorErrorDomain
+                                             code:PNCryptorErrorDecryption
+                                         userInfo:@{ NSLocalizedDescriptionKey: @"Unable to decrypt empty stream." }];
+        return [PNResult resultWithData:nil error:error];
     }
 
     PNCryptorInputStream *cryptorStream = [PNCryptorInputStream inputStreamWithInputStream:stream dataLength:length];
