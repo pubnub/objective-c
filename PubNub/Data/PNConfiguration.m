@@ -216,7 +216,7 @@ NS_ASSUME_NONNULL_END
     }
     if (self.filterExpression) dictionary[@"filterExpression"] = self.filterExpression;
 
-    dictionary[@"authKey"] = self.authKey ? @"***" : @"not set";
+    if (self.authKey) dictionary[@"authKey"] = @"***";
     
     return dictionary;
 }
