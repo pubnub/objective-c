@@ -1,9 +1,18 @@
 ---
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "7.0.3"
+version: "7.0.4"
 schema: 1
 changelog:
+  - date: 2026-07-08
+    version: 7.0.4
+    changes:
+      - type: bug
+        text: "The cryptor wrapper now returns a single generic error on any decryption failure instead of surfacing whether it was caused by bad padding, wrong length or other reasons."
+      - type: bug
+        text: "Validate the CCCryptorFinal status, where PKCS7 padding is checked, to avoid bad-padding failures being silently treated as successful decryptions."
+      - type: bug
+        text: "`PNAESCBCCryptor` and `PNConfiguration` no longer expose the cipher key or auth key in `dictionaryRepresentation`; both are masked."
   - date: 2026-06-15
     version: 7.0.3
     changes:
@@ -1453,7 +1462,7 @@ sdks:
           - distribution-type: source
             distribution-repository: GitHub release
             package-name: PubNub.framework
-            location: https://github.com/pubnub/objective-c/archive/refs/tags/v7.0.3.zip
+            location: https://github.com/pubnub/objective-c/archive/refs/tags/v7.0.4.zip
             supported-platforms:
               supported-operating-systems:
                 macOS:
@@ -1514,7 +1523,7 @@ sdks:
           - distribution-type: library
             distribution-repository: GitHub release
             package-name: PubNub.ios.xcframework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v7.0.3/PubNub.ios.xcframework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v7.0.4/PubNub.ios.xcframework.tar.gz
             supported-platforms:
               supported-operating-systems:
                 iOS:
@@ -1533,7 +1542,7 @@ sdks:
           - distribution-type: library
             distribution-repository: GitHub release
             package-name: PubNub.macos.framework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v7.0.3/PubNub.macos.framework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v7.0.4/PubNub.macos.framework.tar.gz
             supported-platforms:
               supported-operating-systems:
                 macOS:
@@ -1549,7 +1558,7 @@ sdks:
           - distribution-type: library
             distribution-repository: GitHub release
             package-name: PubNub.tvos.xcframework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v7.0.3/PubNub.tvos.xcframework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v7.0.4/PubNub.tvos.xcframework.tar.gz
             supported-platforms:
               supported-operating-systems:
                 tvOS:
