@@ -146,7 +146,7 @@ NS_ASSUME_NONNULL_END
     if (data.length == 0) {
         NSError *error = [NSError errorWithDomain:PNCryptorErrorDomain
                                              code:PNCryptorErrorDecryption
-                                         userInfo:@{ NSLocalizedDescriptionKey: @"Unable to encrypt empty data." }];
+                                         userInfo:@{ NSLocalizedDescriptionKey: @"Unable to decrypt empty data." }];
         return [PNResult resultWithData:nil error:error];
     }
 
@@ -222,7 +222,7 @@ NS_ASSUME_NONNULL_END
     if (length == 0) {
         NSError *error = [NSError errorWithDomain:PNCryptorErrorDomain
                                              code:PNCryptorErrorDecryption
-                                         userInfo:@{ NSLocalizedDescriptionKey: @"Unable to encrypt empty data." }];
+                                         userInfo:@{ NSLocalizedDescriptionKey: @"Unable to decrypt empty stream." }];
         return [PNResult resultWithData:nil error:error];
     }
 

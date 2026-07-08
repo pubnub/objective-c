@@ -130,10 +130,12 @@ NS_ASSUME_NONNULL_END
                                 estimatedResultLength - processedDataLength,
                                 &finalisedDataLength);
         processedData.length = processedDataLength + finalisedDataLength;
-    } else {
-        error = [[self class] errorFromCryptorStatus:status andOperation:self.operation];
     }
-    
+
+    // CCCryptorFinal is where PKCS7 padding is validated, so its status must be checked too;
+    // otherwise a bad-padding failure would be silently treated as success.
+    if (status != kCCSuccess) error = [[self class] errorFromCryptorStatus:status andOperation:self.operation];
+
     return [PNResult resultWithData:processedData error:error];
 }
 
@@ -181,9 +183,15 @@ NS_ASSUME_NONNULL_END
 }
 
 + (NSError *)errorFromCryptorStatus:(CCCryptorStatus)status andOperation:(CCOperation)operation {
+    // Decryption failures must not be distinguishable from one another: surfacing whether a
+    // failure was caused by bad padding vs. wrong length vs. other reasons gives an attacker a
+    // padding-oracle bit (AES-CBC + PKCS7). All decrypt failures return one identical generic
+    // error with the underlying CommonCrypto status discarded.
+    if (operation != kCCEncrypt) return [self genericDecryptionError];
+
     NSInteger errorCode = PNErrorUnknown;
     NSString *description = @"Unknown error";
-    
+
     switch (status) {
         case kCCParamError:
         case kCCAlignmentError:
@@ -204,15 +212,21 @@ NS_ASSUME_NONNULL_END
         case kCCOverflow:
         case kCCRNGFailure:
             description = @"Provided data can't be processed.";
-            errorCode = operation == kCCEncrypt ? PNCryptorErrorEncryption : PNCryptorErrorDecryption;
+            errorCode = PNCryptorErrorEncryption;
             break;
         default:
             break;
     }
-    
+
     return [NSError errorWithDomain:PNCryptorErrorDomain
                                code:errorCode
                            userInfo:@{ NSLocalizedDescriptionKey: description }];
+}
+
++ (NSError *)genericDecryptionError {
+    return [NSError errorWithDomain:PNCryptorErrorDomain
+                               code:PNCryptorErrorDecryption
+                           userInfo:@{ NSLocalizedDescriptionKey: @"Decryption failed." }];
 }
 
 

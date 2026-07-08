@@ -63,6 +63,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// - Returns: Fully processed data length.
 - (NSUInteger)processedDataLength:(NSUInteger)length;
 
+/// Single generic error returned for every decryption failure.
+///
+/// - Returns: `NSError` with the canonical generic decryption domain, code and message.
++ (NSError *)genericDecryptionError;
+
 #pragma mark -
 
 

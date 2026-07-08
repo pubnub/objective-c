@@ -269,18 +269,8 @@ NS_ASSUME_NONNULL_END
 #pragma mark - Misc
 
 - (NSDictionary *)dictionaryRepresentation {
-    NSString *cipherKey = self.cipherKeyString;
-    if (cipherKey) {
-        if (cipherKey.length <= 5) cipherKey = @"*****";
-        else {
-            NSUInteger maskLength = cipherKey.length - 2;
-            NSMutableString *maskedCipherKey = [[cipherKey substringToIndex:1] mutableCopy];
-            for (NSUInteger i = 0; i < maskLength; i++) [maskedCipherKey appendString:@"*"];
-            [maskedCipherKey appendString:[cipherKey substringFromIndex:cipherKey.length - 1]];
-            cipherKey = maskedCipherKey;
-        }
-    } else cipherKey = @"missing";
-    
+    NSString *cipherKey = self.cipherKeyString ? @"***" : @"missing";
+
     NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary:@{
         @"class": NSStringFromClass(self.class),
         @"userRandomIV": @(self.useRandomIV),

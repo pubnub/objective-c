@@ -1,3 +1,11 @@
+## 7.0.4
+July 08 2026
+
+#### Fixed
+- The cryptor wrapper now returns a single generic error on any decryption failure instead of surfacing whether it was caused by bad padding, wrong length or other reasons.
+- Validate the CCCryptorFinal status, where PKCS7 padding is checked, to avoid bad-padding failures being silently treated as successful decryptions.
+- `PNAESCBCCryptor` and `PNConfiguration` no longer expose the cipher key or auth key in `dictionaryRepresentation`; both are masked.
+
 ## 7.0.3
 June 15 2026
 
