@@ -8,6 +8,7 @@
 #import "PNTransportRequest+Private.h"
 #import "PNBaseRequest+Private.h"
 #import "PNURLSessionTransport.h"
+#import <PubNub/PNLock.h>
 
 
 #pragma mark Slow subscribe protocol
@@ -136,6 +137,9 @@ static const NSUInteger PNTestConnectedSubscriberState = 3;
 /// Subscription channels set.
 @property (strong, nonatomic, readonly) NSMutableSet<NSString *> *channelsSet;
 
+/// Isolation lock guarding subscriber state mutations.
+@property (strong, nonatomic, readonly) PNLock *lock;
+
 /// Handle subscribe status (success or failure).
 - (void)handleSubscriptionStatus:(PNSubscribeStatus *)status;
 
@@ -154,6 +158,14 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Interface declaration
 
 @interface PNCopyWithConfigurationSubscribeTest : PNRecordableTestCase
+
+/// Live clients created by mid-subscribe tests that must be torn down to stop leaked async completions from polluting
+/// the next test.
+@property (strong, nonatomic) NSMutableArray<PubNub *> *liveClients;
+
+/// Live transports whose `NSURLSession` must be invalidated in teardown.
+@property (strong, nonatomic) NSMutableArray<PNURLSessionTransport *> *liveTransports;
+
 @end
 
 NS_ASSUME_NONNULL_END
@@ -175,11 +187,45 @@ NS_ASSUME_NONNULL_END
 - (void)setUp {
     [super setUp];
     [PNSlowSubscribeProtocol reset];
+    self.liveClients = [NSMutableArray new];
+    self.liveTransports = [NSMutableArray new];
 }
 
 - (void)tearDown {
+    // Stop the subscribe loop on every live client before dropping references. A timed-out mid-subscribe test leaves an
+    // in-flight subscribe whose continuation keeps scheduling new requests. If we invalidated the session instead, that
+    // continuation would try to create a task on an invalidated session and NSURLSession would throw, crashing the test
+    // runner. Cancelling subscribe operations halts the loop cleanly so no further tasks are created.
+    for (PubNub *client in self.liveClients) {
+        [client cancelSubscribeOperations];
+    }
+
     [PNSlowSubscribeProtocol reset];
+
+    // Drain any completion already dispatched to the main queue so it fires before the next test starts.
+    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.05]];
+
+    [self.liveTransports removeAllObjects];
+    [self.liveClients removeAllObjects];
+
     [super tearDown];
+}
+
+/// Register a client and transport for teardown cleanup.
+- (void)trackLiveClient:(PubNub *)client transport:(PNURLSessionTransport *)transport {
+    if (client) [self.liveClients addObject:client];
+    if (transport) [self.liveTransports addObject:transport];
+}
+
+/// Block until every pending state mutation on the subscriber has committed.
+///
+/// `addChannels:` and the `currentState`/time-token setters write through `-[PNLock writeAccessWithBlock:]`, which is a
+/// `dispatch_barrier_async` — the write is queued, not applied inline. `inheritStateFromSubscriber:` then reads the
+/// backing sets directly without taking the lock. A synchronous read submitted after those writes is FIFO-ordered
+/// behind them, so when it returns the writes have committed. Without this drain the inherit read races the async write
+/// and intermittently sees an empty channel set / Initialized state.
+- (void)drainSubscriberState:(PNSubscriber *)subscriber {
+    [subscriber.lock syncReadAccessWithBlock:^{}];
 }
 
 
@@ -195,6 +241,7 @@ NS_ASSUME_NONNULL_END
 - (void)testInheritStatePreservesInitializedWhenSourceHasNotConnected {
     PNSubscriber *source = self.client.subscriberManager;
     [source addChannels:@[@"test-channel"]];
+    [self drainSubscriberState:source];
 
     // Source is freshly initialized — still in PNInitializedSubscriberState (no subscribe response yet).
     XCTAssertEqual(source.currentState, PNTestInitializedSubscriberState,
@@ -220,6 +267,7 @@ NS_ASSUME_NONNULL_END
     [source addChannels:@[@"test-channel"]];
     source.currentState = PNTestConnectedSubscriberState;
     source.currentTimeToken = @17000000000000000;
+    [self drainSubscriberState:source];
 
     PubNub *newClient = [PubNub clientWithConfiguration:self.client.configuration
                                           callbackQueue:dispatch_get_main_queue()];
@@ -242,6 +290,7 @@ NS_ASSUME_NONNULL_END
     [source addChannels:@[@"test-channel"]];
     source.currentTimeToken = @0;
     source.lastTimeToken = @12345;
+    [self drainSubscriberState:source];
 
     PubNub *newClient = [PubNub clientWithConfiguration:self.client.configuration
                                           callbackQueue:dispatch_get_main_queue()];
@@ -286,9 +335,11 @@ NS_ASSUME_NONNULL_END
 
     // Replace client's subscription transport with the slow one.
     self.client.subscriptionNetwork = transport;
+    [self trackLiveClient:self.client transport:transport];
 
     // Step 1: Start subscribing on the original client. The subscribe request will hang (slow origin).
     [self.client.subscriberManager addChannels:@[@"test-channel"]];
+    [self drainSubscriberState:self.client.subscriberManager];
     [self.client.subscriberManager subscribe:YES usingTimeToken:@0 withState:nil queryParameters:nil completion:nil];
     
     // Wait for the slow protocol to capture the original client's request.
@@ -328,6 +379,7 @@ NS_ASSUME_NONNULL_END
                                                          delegateQueue:failQueue];
     [failTransport setValue:failSession forKey:@"session"];
     newClient.subscriptionNetwork = failTransport;
+    [self trackLiveClient:newClient transport:failTransport];
 
     // Step 4: Listen for unexpected disconnect on the new client.
     XCTestExpectation *unexpectedDisconnectExpectation =
@@ -369,6 +421,7 @@ NS_ASSUME_NONNULL_END
     // Step 1: Set up original client with channels (simulating mid-subscribe).
     [self.client.subscriberManager addChannels:@[@"test-channel"]];
     self.client.subscriberManager.currentTimeToken = @0;
+    [self drainSubscriberState:self.client.subscriberManager];
 
     // Step 2: Create new client and inherit state.
     PNConfiguration *newConfig = [self.client.configuration copy];
@@ -391,6 +444,7 @@ NS_ASSUME_NONNULL_END
     NSURLSession *session = [NSURLSession sessionWithConfiguration:sessionConfig delegate:nil delegateQueue:opQueue];
     [successTransport setValue:session forKey:@"session"];
     newClient.subscriptionNetwork = successTransport;
+    [self trackLiveClient:newClient transport:successTransport];
 
     // Step 4: Listen for connected status.
     XCTestExpectation *connectedExpectation =
@@ -617,6 +671,7 @@ NS_ASSUME_NONNULL_END
 
     [self.client copyWithConfiguration:newConfig completion:^(PubNub *client) {
         client.subscriptionNetwork = transport;
+        [self trackLiveClient:client transport:transport];
         [completionExpectation fulfill];
     }];
 
@@ -657,7 +712,22 @@ NS_ASSUME_NONNULL_END
 
     XCTestExpectation *completionExpectation = [self expectationWithDescription:@"copyWithConfiguration: should complete"];
 
+    // Set up transport that will intercept the new client's subscribe.
+    PNURLSessionTransport *transport = [PNURLSessionTransport new];
+    PNTransportConfiguration *transportConfig = [PNTransportConfiguration new];
+    transportConfig.maximumConnections = 1;
+    [transport setupWithConfiguration:transportConfig];
+
+    NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration ephemeralSessionConfiguration];
+    sessionConfig.protocolClasses = @[[PNSlowSubscribeProtocol class]];
+    NSOperationQueue *opQueue = [NSOperationQueue new];
+    opQueue.maxConcurrentOperationCount = 1;
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:sessionConfig delegate:nil delegateQueue:opQueue];
+    [transport setValue:session forKey:@"session"];
+
     [self.client copyWithConfiguration:newConfig completion:^(PubNub *client) {
+        client.subscriptionNetwork = transport;
+        [self trackLiveClient:client transport:transport];
         [completionExpectation fulfill];
     }];
 
@@ -679,13 +749,20 @@ NS_ASSUME_NONNULL_END
 
 
 /// Poll until `condition` returns YES or `timeout` elapses.
+///
+/// The subscribe request reaches `PNSlowSubscribeProtocol` through the `NSURLSession` delegate operation queue, which
+/// runs on a background thread independent of this run loop. Each iteration runs the run loop briefly and then yields
+/// the CPU with a short sleep so the tight polling loop does not starve that background queue. Starving it was the
+/// cause of intermittent timeouts where `pendingCount` never became positive under machine load.
 - (void)waitForCondition:(BOOL (^)(void))condition
              withTimeout:(NSTimeInterval)timeout
              description:(NSString *)description {
     NSDate *deadline = [NSDate dateWithTimeIntervalSinceNow:timeout];
 
     while (!condition() && [deadline timeIntervalSinceNow] > 0) {
-        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.05]];
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+        // Yield so the URLSession delegate queue can make progress on a loaded machine.
+        usleep(5000);
     }
 
     XCTAssertTrue(condition(), @"%@", description);
