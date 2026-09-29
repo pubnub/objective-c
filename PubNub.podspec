@@ -22,10 +22,10 @@ Pod::Spec.new do |spec|
         :tag => "v#{spec.version}"
     }
 
-    spec.ios.deployment_target = '14.0'
-    spec.watchos.deployment_target = '7.0'
-    spec.osx.deployment_target = '11.00'
-    spec.tvos.deployment_target = '14.0'
+    spec.osx.deployment_target = '14.6'
+    spec.ios.deployment_target = '17.6'
+    spec.tvos.deployment_target = '17.6'
+    spec.watchos.deployment_target = '10.6'
     spec.requires_arc = true
     
     spec.resource_bundles = { "PubNub" => ["Framework/PubNub/PrivacyInfo.xcprivacy"]}

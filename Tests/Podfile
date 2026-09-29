@@ -8,32 +8,32 @@ abstract_target 'MockableTests' do
   pod 'YAHTTPVCR'
  
   target '[macOS] Mocked Integration Tests' do
-    platform :osx, '11.00'
+    platform :osx, '14.6'
   end
 
   target '[tvOS] Mocked Integration Tests' do
-    platform :tvos, '14.0'
+    platform :tvos, '17.6'
   end
 
   target '[iOS] Mocked Integration Tests' do
-    platform :ios, '14.0'
+    platform :ios, '17.6'
   end
 
   target '[macOS] Unit Tests' do
-    platform :osx, '11.00'
+    platform :osx, '14.6'
   end
 
   target '[tvOS] Unit Tests' do
-    platform :tvos, '14.0'
+    platform :tvos, '17.6'
   end
 
   target '[iOS] Unit Tests' do
-    platform :ios, '14.0'
+    platform :ios, '17.6'
   end
 end
 
 target '[iOS] Integration Tests' do
-  platform :ios, '14.0'
+  platform :ios, '17.6'
   pod 'PubNub', :path => '../'
 end
 
@@ -44,11 +44,11 @@ abstract_target 'ContractTests' do
   pod 'PubNub', :path => '../'
 
   target '[iOS] Contract Tests' do
-    platform :ios, '14.0'
+    platform :ios, '17.6'
   end
 
   target '[iOS] Contract Tests Beta' do
-    platform :ios, '14.0'
+    platform :ios, '17.6'
   end
 end
 
@@ -69,13 +69,13 @@ post_install do |installer_representation|
         target.build_configurations.each do |config|
             config.build_settings['CLANG_ENABLE_CODE_COVERAGE'] = target.name =~ /PubNub/ ? 'YES' : 'NO'
             config.build_settings['CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER'] = 'NO'
-            config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '14.0'
+            config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '17.6'
         end
         if target.name =~ /OCMock/
             target.build_configurations.each do |config|
-              config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
-              config.build_settings['MACOSX_DEPLOYMENT_TARGET'] = '12.0'
-              config.build_settings['TVOS_DEPLOYMENT_TARGET'] = '14.0'
+              config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '17.6'
+              config.build_settings['MACOSX_DEPLOYMENT_TARGET'] = '14.6'
+              config.build_settings['TVOS_DEPLOYMENT_TARGET'] = '17.6'
             end
         end
     end

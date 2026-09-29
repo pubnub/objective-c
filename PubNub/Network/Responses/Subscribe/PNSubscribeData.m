@@ -11,6 +11,8 @@
 #import "PNSubscribeMessageEventData+Private.h"
 #import "PNSubscribeFileEventData+Private.h"
 #import "PNSubscribeEventData+Private.h"
+#import "PNStringLogEntry+Private.h"
+#import "PNLoggerManager+Private.h"
 #import "PNPrivateStructures.h"
 #import "PNConstants.h"
 #import "PNFunctions.h"
@@ -86,6 +88,7 @@ NS_ASSUME_NONNULL_END
 
 - (instancetype)initObjectWithCoder:(id<PNDecoder>)coder {
     id<PNCryptoProvider> cryptoModule = coder.additionalData[@"cryptoModule"];
+    PNLoggerManager *logger = coder.additionalData[@"logger"];
     NSDictionary *payload = [coder decodeObjectOfClass:[NSDictionary class]];
     if (![payload isKindOfClass:[NSDictionary class]] || !payload[@"t"] || !payload[@"m"]) return nil;
 
@@ -109,35 +112,15 @@ NS_ASSUME_NONNULL_END
         Class dataClass;
 
         [patchedUpdate removeObjectForKey:@"d"];
-        if (messageType == PNRegularMessageType && [PNChannel isPresenceObject:channel]) {
-            NSMutableDictionary *presenceData = [updatePayload mutableCopy];
-            dataClass = [PNSubscribePresenceEventData class];
-            messageType = PNPresenceMessageType;
-
-            if (presenceData[@"data"]) presenceData[@"state"] = presenceData[@"data"];
-
-            // Rearrange for deserialization model.
-            [patchedUpdate addEntriesFromDictionary:@{
-                @"action": updatePayload[@"action"],
-                @"presence": presenceData
-            }];
-        } else if (!update[@"e"] || messageType == PNRegularMessageType || messageType == PNSignalMessageType) {
-            if (!update[@"e"]) messageType = PNRegularMessageType;
-            dataClass = messageType == PNRegularMessageType ? [PNSubscribeMessageEventData class]
-                                                            : [PNSubscribeSignalEventData class];
-
-            if (messageType == PNRegularMessageType) {
-                updatePayload = [self decryptedMessageFromData:updatePayload
-                                              withCryptoModule:cryptoModule
-                                                         error:&decryptionError];
-            }
-
+        if (messageType == PNSignalMessageType) {
+            dataClass = [PNSubscribeSignalEventData class];
+            
             // Rearrange for deserialization model.
             [patchedUpdate addEntriesFromDictionary:@{ @"message": updatePayload }];
         } else if (messageType == PNObjectMessageType) {
             NSMutableDictionary *membershipData = [updatePayload mutableCopy];
             dataClass = [PNSubscribeObjectEventData class];
-
+            
             // Rearrange for deserialization model.
             if (membershipData[@"data"][@"uuid"]) {
                 NSMutableDictionary *data = [membershipData[@"data"] mutableCopy];
@@ -145,43 +128,78 @@ NS_ASSUME_NONNULL_END
                 [data removeObjectForKey:@"uuid"];
                 membershipData[@"data"] = data;
             }
-
+            
             // Rearrange for deserialization model.
             [patchedUpdate addEntriesFromDictionary:membershipData];
         } else if (messageType == PNMessageActionType) {
             dataClass = [PNSubscribeMessageActionEventData class];
-
+            
             // Rearrange for deserialization model.
             NSMutableDictionary *actionEventData = [updatePayload mutableCopy];
             NSMutableDictionary *actionData = [actionEventData[@"data"] mutableCopy];
             actionData[@"uuid"] = update[@"i"];
             actionEventData[@"data"] = actionData;
-
+            
             [patchedUpdate addEntriesFromDictionary:actionEventData];
         } else if (messageType == PNFileMessageType) {
             dataClass = [PNSubscribeFileEventData class];
+            
+            // Handle potentially encrypted data.
             updatePayload = [self decryptedMessageFromData:updatePayload
                                           withCryptoModule:cryptoModule
                                                      error:&decryptionError];
-
+            
             // Rearrange for deserialization model.
             [patchedUpdate addEntriesFromDictionary:updatePayload];
-        }
-
-        data = [PNJSONDecoder decodedObjectOfClass:dataClass fromDictionary:patchedUpdate withError:&error];
-        if (fingerprint) data.pnFingerprint = fingerprint;
-
-        if (data && !error) {
-            data.messageType = @(messageType);
-            
-            if (decryptionError) {
-                if (messageType == PNFileMessageType) ((PNSubscribeFileEventData *)data).decryptionError = decryptionError;
-                else ((PNSubscribeMessageEventData *)data).decryptionError = decryptionError;
+        } else {
+            if ([PNChannel isPresenceObject:channel]) {
+                NSMutableDictionary *presenceData = [updatePayload mutableCopy];
+                dataClass = [PNSubscribePresenceEventData class];
+                messageType = PNPresenceMessageType;
+                
+                if (presenceData[@"data"]) presenceData[@"state"] = presenceData[@"data"];
+                
+                // Rearrange for deserialization model.
+                [patchedUpdate addEntriesFromDictionary:@{
+                    @"action": updatePayload[@"action"],
+                    @"presence": presenceData
+                }];
+            } else if (messageType == PNRegularMessageType) {
+                dataClass = [PNSubscribeMessageEventData class];
+                
+                // Handle potentially encrypted data.
+                updatePayload = [self decryptedMessageFromData:updatePayload
+                                              withCryptoModule:cryptoModule
+                                                         error:&decryptionError];
+                
+                // Rearrange for deserialization model.
+                [patchedUpdate addEntriesFromDictionary:@{ @"message": updatePayload }];
             }
-
-            [updates addObject:data];
         }
-        else if (error) *stop = YES;
+        
+        if (dataClass) {
+            data = [PNJSONDecoder decodedObjectOfClass:dataClass fromDictionary:patchedUpdate withError:&error];
+            if (fingerprint) data.pnFingerprint = fingerprint;
+            
+            if (data && !error) {
+                data.messageType = @(messageType);
+                
+                if (decryptionError) {
+                    if (messageType == PNFileMessageType)
+                        ((PNSubscribeFileEventData *)data).decryptionError = decryptionError;
+                    else ((PNSubscribeMessageEventData *)data).decryptionError = decryptionError;
+                }
+                
+                [updates addObject:data];
+            }
+            else if (error) *stop = YES;
+        } else {
+            [logger debugWithLocation:@"Subscription" andMessageFactory:^PNLogEntry * {
+                return [PNStringLogEntry entryWithMessage:PNStringFormat(@"Unknown event type (%@) has been received",
+                                                                         @(messageType))
+                                                operation:PNSubscribeLogMessageOperation];
+            }];
+        }
     }];
 
     return !error ? [self initWithUpdates:updates cursor:cursor] : nil;
