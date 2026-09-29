@@ -1506,7 +1506,7 @@ sdks:
                   maximum-os-version:
                     - watchOS 27.0
                   target-architecture:
-                    - arm64_32
+                    - arm64-32
                   target-devices:
                     - Apple Watch
       - artifact-type: library
@@ -1625,7 +1625,7 @@ sdks:
                   maximum-os-version:
                     - watchOS 27.0
                   target-architecture:
-                    - arm64_32
+                    - arm64-32
                   target-devices:
                     - Apple Watch
 supported-platforms:
