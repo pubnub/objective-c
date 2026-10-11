@@ -1,4 +1,6 @@
-# PubNub 7.0.4 for iOS 9+
+<img width="1920" height="600" alt="objective-c-header" src="https://github.com/user-attachments/assets/b11e7793-d926-4f73-bd84-83546293cf0a" />
+
+# PubNub 7.0.4 for iOS 17+
 [![Twitter](https://img.shields.io/badge/twitter-%40PubNub-blue.svg?style=flat)](https://twitter.com/PubNub)
 [![Twitter Releases](https://img.shields.io/badge/twitter-%40PubNubRelease-blue.svg?style=flat)](https://twitter.com/PubNubRelease)
 [![CocoaPods Compatible](https://img.shields.io/cocoapods/v/PubNub.svg?style=flat)](https://img.shields.io/cocoapods/v/PubNub.svg)
@@ -24,12 +26,12 @@ You will need the publish and subscribe keys to authenticate your app. Get your 
     ```
 
     ```groovy
-    platform :ios, '9.0'
+    platform :ios, '17.0'
 
     target 'application-target-name' do
         use_frameworks!
 
-        pod "PubNub", "~> 4"
+        pod "PubNub", "~> 7"
     end
     ```
 
