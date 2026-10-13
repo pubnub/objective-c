@@ -1,9 +1,14 @@
 ---
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "7.0.4"
+version: "7.0.5"
 schema: 1
 changelog:
+  - date: 2026-10-13
+    version: 7.0.5
+    changes:
+      - type: bug
+        text: "Fix issue with unknown (new `e` field value) real-time event handling, which could cause subscription loop disruption."
   - date: 2026-07-08
     version: 7.0.4
     changes:
@@ -1462,16 +1467,16 @@ sdks:
           - distribution-type: source
             distribution-repository: GitHub release
             package-name: PubNub.framework
-            location: https://github.com/pubnub/objective-c/archive/refs/tags/v7.0.4.zip
+            location: https://github.com/pubnub/objective-c/archive/refs/tags/v7.0.5.zip
             supported-platforms:
               supported-operating-systems:
                 macOS:
                   runtime-version:
                     - Objective-C 2.0
                   minimum-os-version:
-                    - OS X 10.11
+                    - macOS 14.6
                   maximum-os-version:
-                    - macOS 11.4
+                    - macOS 27.0
                   target-architecture:
                     - arm64
                     - x86_64
@@ -1479,12 +1484,11 @@ sdks:
                   runtime-version:
                     - Objective-C 2.0
                   minimum-os-version:
-                    - iOS 9.0
+                    - iOS 17.6
                   maximum-os-version:
-                    - iOS 14.6
+                    - iOS 27.0
                   target-architecture:
                     - arm64
-                    - armv7
                   target-devices:
                     - iPhone
                     - iPad
@@ -1492,9 +1496,9 @@ sdks:
                   runtime-version:
                     - Objective-C 2.0
                   minimum-os-version:
-                    - tvOS 10.0
+                    - tvOS 17.6
                   maximum-os-version:
-                    - tvOS 14.6
+                    - tvOS 27.0
                   target-architecture:
                     - arm64
                   target-devices:
@@ -1503,12 +1507,11 @@ sdks:
                   runtime-version:
                     - Objective-C 2.0
                   minimum-os-version:
-                    - watchOS 4.0
+                    - watchOS 10.6
                   maximum-os-version:
-                    - watchOS 7.5
+                    - watchOS 27.0
                   target-architecture:
-                    - armv7k
-                    - arm64_32
+                    - arm64-32
                   target-devices:
                     - Apple Watch
       - artifact-type: library
@@ -1523,51 +1526,50 @@ sdks:
           - distribution-type: library
             distribution-repository: GitHub release
             package-name: PubNub.ios.xcframework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v7.0.4/PubNub.ios.xcframework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v7.0.5/PubNub.ios.xcframework.tar.gz
             supported-platforms:
               supported-operating-systems:
                 iOS:
                   runtime-version:
                     - Objective-C 2.0
                   minimum-os-version:
-                    - iOS 9.0
+                    - iOS 17.6
                   maximum-os-version:
-                    - iOS 14.6
+                    - iOS 27.0
                   target-architecture:
                     - arm64
-                    - armv7
                   target-devices:
                     - iPhone
                     - iPad
           - distribution-type: library
             distribution-repository: GitHub release
             package-name: PubNub.macos.framework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v7.0.4/PubNub.macos.framework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v7.0.5/PubNub.macos.framework.tar.gz
             supported-platforms:
               supported-operating-systems:
                 macOS:
                   runtime-version:
                     - Objective-C 2.0
                   minimum-os-version:
-                    - OS X 10.11
+                    - macOS 14.6
                   maximum-os-version:
-                    - macOS 11.4
+                    - macOS 27.0
                   target-architecture:
                     - arm64
                     - x86_64
           - distribution-type: library
             distribution-repository: GitHub release
             package-name: PubNub.tvos.xcframework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v7.0.4/PubNub.tvos.xcframework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v7.0.5/PubNub.tvos.xcframework.tar.gz
             supported-platforms:
               supported-operating-systems:
                 tvOS:
                   runtime-version:
                     - Objective-C 2.0
                   minimum-os-version:
-                    - tvOS 10.0
+                    - tvOS 17.6
                   maximum-os-version:
-                    - tvOS 14.6
+                    - tvOS 27.0
                   target-architecture:
                     - arm64
                   target-devices:
@@ -1591,9 +1593,9 @@ sdks:
                   runtime-version:
                     - Objective-C 2.0
                   minimum-os-version:
-                    - OS X 10.11
+                    - macOS 14.6
                   maximum-os-version:
-                    - macOS 11.4
+                    - macOS 27.0
                   target-architecture:
                     - arm64
                     - x86_64
@@ -1601,12 +1603,11 @@ sdks:
                   runtime-version:
                     - Objective-C 2.0
                   minimum-os-version:
-                    - iOS 9.0
+                    - iOS 17.6
                   maximum-os-version:
-                    - iOS 14.6
+                    - iOS 27.0
                   target-architecture:
                     - arm64
-                    - armv7
                   target-devices:
                     - iPhone
                     - iPad
@@ -1614,9 +1615,9 @@ sdks:
                   runtime-version:
                     - Objective-C 2.0
                   minimum-os-version:
-                    - tvOS 10.0
+                    - tvOS 17.6
                   maximum-os-version:
-                    - tvOS 14.6
+                    - tvOS 27.0
                   target-architecture:
                     - arm64
                   target-devices:
@@ -1625,24 +1626,23 @@ sdks:
                   runtime-version:
                     - Objective-C 2.0
                   minimum-os-version:
-                    - watchOS 4.0
+                    - watchOS 10.6
                   maximum-os-version:
-                    - watchOS 7.5
+                    - watchOS 27.0
                   target-architecture:
-                    - armv7k
-                    - arm64_32
+                    - arm64-32
                   target-devices:
                     - Apple Watch
 supported-platforms:
   - version: PubNub Objective-C SDK
     platforms:
-      - iOS 9.0 or higher.
-      - watchOS 4.0 or higher.
-      - tvOS 10.0 or higher.
-      - macOS 10.11 or higher.
+      - macOS 14.6 or higher.
+      - iOS 17.6 or higher.
+      - tvOS 17.6 or higher.
+      - watchOS 10.6 or higher.
   - version: PubNub Swift SDK
     platforms:
-      - iOS 9.0 or higher.
-      - watchOS 4.0 or higher.
-      - tvOS 10.0 or higher.
-      - macOS 10.11 or higher.
+      - macOS 14.6 or higher.
+      - iOS 17.6 or higher.
+      - tvOS 17.6 or higher.
+      - watchOS 10.6 or higher.

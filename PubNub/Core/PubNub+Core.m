@@ -476,9 +476,10 @@ NS_ASSUME_NONNULL_END
 - (PNOperationDataParser *)parserWithResult:(Class)resultClass
                                      status:(Class)statusClass
                                cryptoModule:(id<PNCryptoProvider>)cryptoModule {
-    NSDictionary *additionalData;
+    NSMutableDictionary *additionalData = [NSMutableDictionary new];
+    if (self.logger) additionalData[@"logger"] = self.logger;
     if (cryptoModule || self.configuration.cryptoModule) {
-        additionalData = @{ @"cryptoModule": cryptoModule ?: self.configuration.cryptoModule };
+        additionalData[@"cryptoModule"] = cryptoModule ?: self.configuration.cryptoModule;
     }
 
     return [PNOperationDataParser parserWithSerializer:self.coder

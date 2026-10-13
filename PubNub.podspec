@@ -9,7 +9,7 @@
 
 Pod::Spec.new do |spec|
     spec.name     = 'PubNub'
-    spec.version  = '7.0.4'
+    spec.version  = '7.0.5'
     spec.summary  = 'The PubNub Real-Time Network. Build real-time apps quickly and scale them globally.'
     spec.homepage = 'https://github.com/pubnub/objective-c'
 
@@ -22,10 +22,10 @@ Pod::Spec.new do |spec|
         :tag => "v#{spec.version}"
     }
 
-    spec.ios.deployment_target = '14.0'
-    spec.watchos.deployment_target = '7.0'
-    spec.osx.deployment_target = '11.00'
-    spec.tvos.deployment_target = '14.0'
+    spec.osx.deployment_target = '14.6'
+    spec.ios.deployment_target = '17.6'
+    spec.tvos.deployment_target = '17.6'
+    spec.watchos.deployment_target = '10.6'
     spec.requires_arc = true
     
     spec.resource_bundles = { "PubNub" => ["Framework/PubNub/PrivacyInfo.xcprivacy"]}

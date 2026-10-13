@@ -998,6 +998,16 @@ NS_ASSUME_NONNULL_END
                 
                 subscriberState = PNDisconnectedUnexpectedlySubscriberState;
                 [(PNStatus *)status updateCategory:PNUnexpectedDisconnectCategory];
+                
+                // Reconnection will use previous timetoken and cause another malformed response error. Reset timetoken.
+                if (statusCategory == PNMalformedResponseCategory) {
+                    [self.lock writeAccessWithBlock:^{
+                        self->_currentTimeToken = @0;
+                        self->_lastTimeToken = @0;
+                        self->_currentTimeTokenRegion = @(-1);
+                        self->_lastTimeTokenRegion = @(-1);
+                    }];
+                }
             }
             
             [self updateStateTo:subscriberState withStatus:status completion:nil];

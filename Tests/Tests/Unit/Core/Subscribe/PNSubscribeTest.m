@@ -4,6 +4,9 @@
 #import "PNSubscribeMessageEventData+Private.h"
 #import "PNSubscribeEventData+Private.h"
 #import "PNSubscribeStatus+Private.h"
+#import "PNSubscribeSignalEventData.h"
+#import "PNSubscribePresenceEventData.h"
+#import <PubNub/PNJSONDecoder.h>
 #import "PNTransportConfiguration+Private.h"
 #import "PNTransportRequest+Private.h"
 #import "PNBaseRequest+Private.h"
@@ -62,6 +65,21 @@ static NSInteger _PNSubscribeRetryProtocolRequestCount = 0;
 
 /// Generation counter for subscribe cycle.
 @property (assign, nonatomic) NSUInteger subscribeCycleGeneration;
+
+/// Current subscribe cycle timetoken.
+@property (strong, nonatomic) NSNumber *currentTimeToken;
+
+/// Last subscribe cycle timetoken.
+@property (strong, nonatomic) NSNumber *lastTimeToken;
+
+/// Current subscribe cycle timetoken region.
+@property (copy, nonatomic) NSNumber *currentTimeTokenRegion;
+
+/// Last subscribe cycle timetoken region.
+@property (copy, nonatomic) NSNumber *lastTimeTokenRegion;
+
+/// Handle failed subscription status.
+- (void)handleFailedSubscriptionStatus:(PNSubscribeStatus *)status;
 
 /// Process live feed events from subscribe response.
 - (void)handleLiveFeedEvents:(PNSubscribeStatus *)status
@@ -283,6 +301,111 @@ NS_ASSUME_NONNULL_END
         dispatch_semaphore_signal(semaphore);
     });
     dispatch_semaphore_wait(semaphore, dispatch_time(DISPATCH_TIME_NOW, (int64_t)((delay + 2) * NSEC_PER_SEC)));
+}
+
+
+#pragma mark - Tests :: Response parsing :: Event type dispatch
+
+/// Decode a subscribe response payload directly through the same decoder used by the network layer.
+///
+/// Each event is merged with the base fields the subscribe deserializer requires (`a`, `f`, `p`, `c`) so callers only
+/// need to specify the fields relevant to the case under test.
+- (PNSubscribeData *)decodedSubscribeDataFromEvents:(NSArray<NSDictionary *> *)events {
+    NSMutableArray<NSDictionary *> *completeEvents = [NSMutableArray arrayWithCapacity:events.count];
+    for (NSDictionary *event in events) {
+        NSMutableDictionary *completeEvent = [@{
+            @"a": @"5",
+            @"f": @0,
+            @"p": @{ @"t": @"17000000000000000", @"r": @2 },
+            @"c": @"ch-a"
+        } mutableCopy];
+        [completeEvent addEntriesFromDictionary:event];
+        [completeEvents addObject:completeEvent];
+    }
+
+    NSDictionary *payload = @{ @"t": @{ @"t": @"17000000000000000", @"r": @2 }, @"m": completeEvents };
+    NSError *error;
+    PNSubscribeData *data = [PNJSONDecoder decodedObjectOfClass:[PNSubscribeData class]
+                                                 fromDictionary:payload
+                                             withAdditionalData:nil
+                                                          error:&error];
+    XCTAssertNil(error);
+
+    return data;
+}
+
+/// An event carrying an unknown `e` value on a regular channel must be ignored instead of delivered.
+- (void)testItShouldSkipEventWhenUnknownEventTypeReceivedOnRegularChannel {
+    PNSubscribeData *data = [self decodedSubscribeDataFromEvents:@[
+        @{ @"c": @"ch-a", @"e": @99, @"d": @{ @"text": @"hello" } }
+    ]];
+
+    XCTAssertEqual(data.updates.count, 0);
+}
+
+/// An unknown event must not discard sibling valid events received in the same batch.
+- (void)testItShouldDeliverValidEventWhenUnknownEventTypeReceivedInSameBatch {
+    PNSubscribeData *data = [self decodedSubscribeDataFromEvents:@[
+        @{ @"c": @"ch-a", @"e": @99, @"d": @{ @"text": @"unknown" } },
+        @{ @"c": @"ch-a", @"e": @1, @"d": @{ @"text": @"signal" } }
+    ]];
+
+    XCTAssertEqual(data.updates.count, 1);
+    XCTAssertTrue([data.updates.firstObject isKindOfClass:[PNSubscribeSignalEventData class]]);
+}
+
+/// A presence event that carries an explicit `e` value on a `-pnpres` channel must still be parsed as presence.
+- (void)testItShouldParsePresenceWhenEventTypePresentOnPresenceChannel {
+    PNSubscribeData *data = [self decodedSubscribeDataFromEvents:@[
+        @{
+            @"c": @"ch-a-pnpres",
+            @"e": @99,
+            @"d": @{ @"action": @"join", @"uuid": @"user-a", @"occupancy": @1, @"timestamp": @17000000000 }
+        }
+    ]];
+
+    XCTAssertEqual(data.updates.count, 1);
+    XCTAssertTrue([data.updates.firstObject isKindOfClass:[PNSubscribePresenceEventData class]]);
+}
+
+
+#pragma mark - Tests :: Failed subscription :: Malformed response
+
+/// Build a mocked failed subscribe status for the passed category.
+- (id)mockFailedSubscribeStatusWithCategory:(PNStatusCategory)category {
+    id mockStatus = OCMClassMock([PNSubscribeStatus class]);
+    OCMStub([mockStatus isError]).andReturn(YES);
+    OCMStub([(PNSubscribeStatus *)mockStatus category]).andReturn(category);
+
+    return mockStatus;
+}
+
+/// A malformed response must reset the timetoken so reconnect does not replay the poison event.
+- (void)testItShouldResetTimeTokenWhenMalformedResponseReceived {
+    PNSubscriber *subscriber = self.client.subscriberManager;
+    subscriber.currentTimeToken = @17000000000000000;
+    subscriber.lastTimeToken = @16000000000000000;
+    subscriber.currentTimeTokenRegion = @2;
+    subscriber.lastTimeTokenRegion = @2;
+
+    [subscriber handleFailedSubscriptionStatus:[self mockFailedSubscribeStatusWithCategory:PNMalformedResponseCategory]];
+
+    XCTAssertEqualObjects(subscriber.currentTimeToken, @0);
+    XCTAssertEqualObjects(subscriber.lastTimeToken, @0);
+    XCTAssertEqualObjects(subscriber.currentTimeTokenRegion, @(-1));
+    XCTAssertEqualObjects(subscriber.lastTimeTokenRegion, @(-1));
+}
+
+/// A transient TLS failure must NOT reset the timetoken (guards the malformed-only narrowing).
+- (void)testItShouldNotResetTimeTokenWhenTLSConnectionFailed {
+    PNSubscriber *subscriber = self.client.subscriberManager;
+    subscriber.currentTimeToken = @17000000000000000;
+    subscriber.lastTimeToken = @16000000000000000;
+
+    [subscriber handleFailedSubscriptionStatus:[self mockFailedSubscribeStatusWithCategory:PNTLSConnectionFailedCategory]];
+
+    XCTAssertEqualObjects(subscriber.currentTimeToken, @17000000000000000);
+    XCTAssertEqualObjects(subscriber.lastTimeToken, @16000000000000000);
 }
 
 #pragma mark -
