@@ -1,3 +1,9 @@
+## 7.0.5
+October 13 2026
+
+#### Fixed
+- Fix issue with unknown (new `e` field value) real-time event handling, which could cause subscription loop disruption.
+
 ## 7.0.4
 July 08 2026
 
