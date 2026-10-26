@@ -35,7 +35,7 @@ if [[ -n "$DUPLICATES" ]]; then
   exit 1
 fi
 
-path_for() { echo "$ALL" | awk -F/ -v n="$1" '$NF == n { print; exit }'; }
+path_for() { echo "$ALL" | awk -F/ -v n="$1" '$NF == n && !found { print; found = 1 }'; }
 
 PUBLIC=()
 QUEUE=("PubNub.h")
