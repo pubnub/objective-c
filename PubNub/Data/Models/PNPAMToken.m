@@ -52,6 +52,42 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+
+@interface PNPAMTokenCategory ()
+
+
+#pragma mark - Information
+
+@property (nonatomic, strong) PNPAMResourcePermission *channels;
+@property (nonatomic, strong) PNPAMResourcePermission *uuids;
+
+
+#pragma mark - Initialization & Configuration
+
+/**
+ * @brief Initialize categories permission representation instance.
+ *
+ * @param permission Bit fields which specify permissions granted to categories.
+ *
+ * @return Initialized and ready to use permission object.
+ */
+- (instancetype)initWithCategories:(PAMResourcesDictionary *)permission;
+
+/**
+ * @brief Process PAM token content for easier consumption.
+ *
+ * @param permissions Specific category permissions.
+ *
+ * @return Processed category permissions.
+ */
+- (PNPAMResourcePermission *)categoryPermissionsFrom:(NSNumber *)permissions;
+
+#pragma mark -
+
+
+@end
+
+
 @interface PNPAMTokenResource ()
 
 
@@ -98,6 +134,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, nullable, strong) NSDictionary *parsedToken;
 
+@property (nonatomic, strong) PNPAMTokenCategory *categories;
 @property (nonatomic, strong) PNPAMTokenResource *resources;
 @property (nonatomic, strong) PNPAMTokenResource *patterns;
 
@@ -262,6 +299,44 @@ NS_ASSUME_NONNULL_END
 @end
 
 
+@implementation PNPAMTokenCategory
+
+
+#pragma mark - Initialization & Configuration
+
+- (instancetype)initWithCategories:(PAMResourcesDictionary *)resourcesPermission {
+    if ((self = [super init])) {
+        _channels = [self categoryPermissionsFrom:resourcesPermission[@"chan"]];
+        _uuids = [self categoryPermissionsFrom:resourcesPermission[@"uuid"]];
+    }
+    
+    return self;
+}
+
+- (PNPAMResourcePermission *)categoryPermissionsFrom:(NSNumber *)permissions {
+    if (!permissions) return nil;
+    
+    return [PNPAMResourcePermission permissionWithValue:permissions.unsignedIntegerValue];
+}
+
+
+#pragma mark - Misc
+
+- (NSString *)description {
+    NSMutableString *categoryPermissions = [NSMutableString new];
+    
+    if (self.channels) [categoryPermissions appendFormat:@"\n\t\t- channels: %@", self.channels];
+    if (self.uuids) [categoryPermissions appendFormat:@"\n\t\t- uuids: %@", self.uuids];
+    
+    return categoryPermissions.length ? categoryPermissions : @"not granted";
+}
+
+#pragma mark -
+
+
+@end
+
+
 @implementation PNPAMToken
 
 
@@ -349,6 +424,7 @@ NS_ASSUME_NONNULL_END
     if (self.parsedToken && error == nil) {
         self.resources = [[PNPAMTokenResource alloc] initWithResources:self.parsedToken[@"res"]];
         self.patterns = [[PNPAMTokenResource alloc] initWithResources:self.parsedToken[@"pat"]];
+        self.categories = [[PNPAMTokenCategory alloc] initWithCategories:self.parsedToken[@"cat"]];
     }
     
     NSTimeInterval tokenExpiration = self.timestamp + self.ttl * 60.f;
@@ -384,6 +460,7 @@ NS_ASSUME_NONNULL_END
             "\n\t- Authorized UUID: %@"
             "\n\t- Resources: %@"
             "\n\t- Patterns: %@"
+            "\n\t- Categories: %@"
             "\n\t- Metadata: %@"
             "\n\t- Token version: %@"
             "\n\t- Signature: %@",
@@ -392,6 +469,7 @@ NS_ASSUME_NONNULL_END
             self.authorizedUUID,
             self.resources.description,
             self.patterns.description,
+            self.categories.description,
             [[NSString alloc] initWithData:metaJSONData encoding:NSUTF8StringEncoding],
             @(self.version),
             self.signature];

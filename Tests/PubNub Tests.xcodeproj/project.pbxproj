@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 50;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -189,6 +189,9 @@
 		A5DB1EA023B41476009B1B23 /* tests-configuration.json in Resources */ = {isa = PBXBuildFile; fileRef = A529271823B1855A00FF46DD /* tests-configuration.json */; };
 		A5DB71502AB03F6C005B6559 /* PNCryptoModuleContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = A5DB714F2AB03F6C005B6559 /* PNCryptoModuleContractTestSteps.m */; };
 		A5DB71512AB03F6C005B6559 /* PNCryptoModuleContractTestSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = A5DB714F2AB03F6C005B6559 /* PNCryptoModuleContractTestSteps.m */; };
+		A5E06CDF308F54B20080389F /* PNAESGCMCryptorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E06CDD308F54B20080389F /* PNAESGCMCryptorTests.m */; };
+		A5E06CE0308F54B20080389F /* PNAESGCMCryptorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E06CDD308F54B20080389F /* PNAESGCMCryptorTests.m */; };
+		A5E06CE1308F54B20080389F /* PNAESGCMCryptorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E06CDD308F54B20080389F /* PNAESGCMCryptorTests.m */; };
 		A5E3BA022B2FA76700D3AA18 /* PNRequestRetryConfigurationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E3BA012B2FA76700D3AA18 /* PNRequestRetryConfigurationTest.m */; };
 		A5E3BA032B2FA76700D3AA18 /* PNRequestRetryConfigurationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E3BA012B2FA76700D3AA18 /* PNRequestRetryConfigurationTest.m */; };
 		A5E3BA042B2FA76700D3AA18 /* PNRequestRetryConfigurationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E3BA012B2FA76700D3AA18 /* PNRequestRetryConfigurationTest.m */; };
@@ -284,6 +287,7 @@
 		A5DB1E9B23B412E7009B1B23 /* PNPublishIntegrationTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNPublishIntegrationTests.m; sourceTree = "<group>"; };
 		A5DB714E2AB03F6C005B6559 /* PNCryptoModuleContractTestSteps.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PNCryptoModuleContractTestSteps.h; sourceTree = "<group>"; };
 		A5DB714F2AB03F6C005B6559 /* PNCryptoModuleContractTestSteps.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNCryptoModuleContractTestSteps.m; sourceTree = "<group>"; };
+		A5E06CDD308F54B20080389F /* PNAESGCMCryptorTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNAESGCMCryptorTests.m; sourceTree = "<group>"; };
 		A5E3BA012B2FA76700D3AA18 /* PNRequestRetryConfigurationTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNRequestRetryConfigurationTest.m; sourceTree = "<group>"; };
 		A5E3BA062B3030BB00D3AA18 /* PNRequestRetryConfigurationIntegrationTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNRequestRetryConfigurationIntegrationTest.m; sourceTree = "<group>"; };
 		A5F8E9DA2476D46D007F79AB /* PNObjectsAPICallBuilderTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PNObjectsAPICallBuilderTest.m; sourceTree = "<group>"; };
@@ -688,6 +692,7 @@
 				A53D0B1E23EA0DA1001E72AF /* Actions */,
 				A59ECFDB23BB56F100E84300 /* Publish */,
 				A53D0B2423EA0E92001E72AF /* History */,
+				A5E06CDE308F54B20080389F /* Crypto */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -770,6 +775,14 @@
 			children = (
 				A5DB714E2AB03F6C005B6559 /* PNCryptoModuleContractTestSteps.h */,
 				A5DB714F2AB03F6C005B6559 /* PNCryptoModuleContractTestSteps.m */,
+			);
+			path = Crypto;
+			sourceTree = "<group>";
+		};
+		A5E06CDE308F54B20080389F /* Crypto */ = {
+			isa = PBXGroup;
+			children = (
+				A5E06CDD308F54B20080389F /* PNAESGCMCryptorTests.m */,
 			);
 			path = Crypto;
 			sourceTree = "<group>";
@@ -1202,6 +1215,7 @@
 				A53D0B2C23EA0FEF001E72AF /* PNNotificationPayloadBuilderTest.m in Sources */,
 				A53D0AFB23E9FBE4001E72AF /* PNUUIDMetadataAPICallBuilderTest.m in Sources */,
 				A5DB1E9623B2D212009B1B23 /* NSInvocation+PNTest.m in Sources */,
+				A5E06CE1308F54B20080389F /* PNAESGCMCryptorTests.m in Sources */,
 				A59ECFDE23BB571200E84300 /* PNSignalTest.m in Sources */,
 				A53D0B0123EA00EB001E72AF /* PNMessageActionsAPICallBuilderTest.m in Sources */,
 				A53D0B2123EA0DB7001E72AF /* PNMessageActionsTest.m in Sources */,
@@ -1258,6 +1272,7 @@
 				A53D0B2B23EA0FEF001E72AF /* PNNotificationPayloadBuilderTest.m in Sources */,
 				A53D0AFA23E9FBE4001E72AF /* PNUUIDMetadataAPICallBuilderTest.m in Sources */,
 				A5DB1E9423B2D212009B1B23 /* NSInvocation+PNTest.m in Sources */,
+				A5E06CE0308F54B20080389F /* PNAESGCMCryptorTests.m in Sources */,
 				A59ECFDD23BB571200E84300 /* PNSignalTest.m in Sources */,
 				A53D0B0023EA00EB001E72AF /* PNMessageActionsAPICallBuilderTest.m in Sources */,
 				A53D0B2023EA0DB7001E72AF /* PNMessageActionsTest.m in Sources */,
@@ -1289,6 +1304,7 @@
 				A53D0B2D23EA0FEF001E72AF /* PNNotificationPayloadBuilderTest.m in Sources */,
 				A53D0AFC23E9FBE4001E72AF /* PNUUIDMetadataAPICallBuilderTest.m in Sources */,
 				A5DB1E9A23B2D212009B1B23 /* NSInvocation+PNTest.m in Sources */,
+				A5E06CDF308F54B20080389F /* PNAESGCMCryptorTests.m in Sources */,
 				A59ECFDF23BB571200E84300 /* PNSignalTest.m in Sources */,
 				A53D0B0223EA00EB001E72AF /* PNMessageActionsAPICallBuilderTest.m in Sources */,
 				A53D0B2223EA0DB7001E72AF /* PNMessageActionsTest.m in Sources */,

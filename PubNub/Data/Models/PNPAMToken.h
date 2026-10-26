@@ -89,6 +89,37 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 /**
+ * @brief \b PubNub Access Manager category permissions.
+ *
+ * @discussion Object represent category permissions stored in PAM token.
+ *
+ * @author Serhii Mamontov
+ * @version 7.1.0
+ * @since 7.1.0
+ * @copyright © 2010-2026 PubNub, Inc.
+ */
+@interface PNPAMTokenCategory : NSObject
+
+
+#pragma mark - Information
+
+/**
+ * @brief Permissions granted to channels category.
+ */
+@property (nonatomic, readonly, strong) PNPAMResourcePermission *channels;
+
+/**
+ * @brief Permissions granted to uuids category.
+ */
+@property (nonatomic, readonly, strong) PNPAMResourcePermission *uuids;
+
+#pragma mark -
+
+
+@end
+
+
+/**
  * @brief \b PubNub Access Manager Token.
  *
  * @discussion Object represent decoded token content.
@@ -122,6 +153,11 @@ NS_ASSUME_NONNULL_BEGIN
  * @brief The uuid that is exclusively authorized to use this token to make API requests.
  */
 @property (nonatomic, nullable, readonly, strong) NSString *authorizedUUID;
+
+/**
+ * @brief Permissions granted to resource categories.
+ */
+@property (nonatomic, readonly, strong) PNPAMTokenCategory *categories;
 
 /**
  * @brief Permissions granted to specific resources.
