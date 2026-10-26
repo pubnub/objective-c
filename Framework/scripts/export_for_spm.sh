@@ -1,128 +1,97 @@
-#!/bin/sh
+#!/usr/bin/env bash
+#
+# Regenerates `PubNub/include/` which is used by Swift Package Manager (see `Package.swift`).
+#
+# SPM requires all public headers to be located in a single directory (`publicHeadersPath`). The SDK keeps headers
+# next to sources, so this script mirrors them as relative symlinks into `PubNub/include/PubNub/`.
+#
+# Headers which get mirrored:
+#   - every header reachable from `PubNub/PubNub.h` through `#import "X.h"` / `#import <PubNub/X.h>`;
+#   - every header imported anywhere in framework style (`<PubNub/X.h>` / `"PubNub/X.h"`), because such
+#     imports can only be resolved through the module directory.
+# Header file names must be unique (the `<PubNub/X.h>` namespace is flat).
+#
+# Usage: Framework/scripts/export_for_spm.sh [--check]
+#   --check   Don't modify anything. Exit with 1 if the committed `include/` is out of date.
 
-set -e
+set -euo pipefail
 
-WORKING_DIRECTORY="$(pwd)"
-SOURCES_FOLDER="$1"
-[[ "$2" == public-only ]] && PUBLIC_ONLY=1 || PUBLIC_ONLY=0
-PRIVATE_HEADERS=()
-PUBLIC_HEADERS=()
-ALL_HEADERS=()
-FILES=()
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+SOURCES="$ROOT/PubNub"
+INCLUDE="$SOURCES/include"
+TARGET="$INCLUDE/PubNub"
+CHECK=0
+[[ "${1:-}" == "--check" ]] && CHECK=1
 
+cd "$SOURCES"
 
-# Function allow retrieve relative path to header by it's filename.
-path_for_file() {
-	local relative_path=""
-	for file in "${FILES[@]}"; do
-		filename="${file%%:*}"
-		path="${file##*:}"
+# Relative paths of all headers (without generated `include/`).
+ALL="$(find . -type f -name '*.h' -not -path './include/*' | sed 's|^\./||' | LC_ALL=C sort)"
 
-		if [[ "$filename" == "$1" ]]; then
-			relative_path="$path"
-			break
-		fi
-	done
-
-	echo "$relative_path"
-}
-
-store_public_header() {
-	local headerAlreadyAdded=0
-	for header in "${PUBLIC_HEADERS[@]}"; do
-		if [[ "$header" == "$1" ]]; then
-			headerAlreadyAdded=1
-			break
-		fi
-	done
-
-	if [[ $headerAlreadyAdded == 0 ]]; then
-		PUBLIC_HEADERS+=("$1")
- 	fi
-}
-
-
-# Function allow to retrieve list of headers which has been imported in file 
-# and add them to public list of headers
-gather_imported_headers_in_file() {
-	regex="import <PubNub\/(.*)>"
-	while IFS='' read -r line; do
-		[[ -z "$line" || ! "$line" =~ $regex ]] && continue
-		imported_header_path="$(path_for_file "${BASH_REMATCH[1]}")"
-
-		# Skip file which doesn't exists.
-		if [[ -z "$imported_header_path" ]]; then 
-			echo "WARNING: Imported file doesn't exists: ${BASH_REMATCH[1]}"
-			continue
-		fi
-		
-		store_public_header "$imported_header_path"
-		gather_imported_headers_in_file "$SOURCES_FOLDER/$imported_header_path"
-	done < "$1"
-}
-
-
-if [[ $PUBLIC_ONLY == 1 ]]; then
-	regex=".*Private.h"
-	# Retrieve list of potentially public headers.
-	while IFS='' read -r HEADER_PATH; do
-		RELATIVE_PATH="${HEADER_PATH#"$WORKING_DIRECTORY/$SOURCES_FOLDER/"}"
-		FILENAME="$(echo "$RELATIVE_PATH" | rev | cut -d/ -f1 | rev)"
-		FILES+=( "$FILENAME:$RELATIVE_PATH" )
-		ALL_HEADERS+=("$RELATIVE_PATH")
-		[[ "$RELATIVE_PATH" =~ $regex ]] && PRIVATE_HEADERS+=("$RELATIVE_PATH")
-	done <<< "$(find "$WORKING_DIRECTORY/$SOURCES_FOLDER" -type f ! \( -name "*.m" -o -name ".DS_Store" -o -name "*Private.h" \))"
-
-	# Scan for public headers
-	gather_imported_headers_in_file "$SOURCES_FOLDER/PubNub.h"
-else
-	regex=".*Private.h"
-	# Retrieve list of all headers.
-	while IFS='' read -r HEADER_PATH; do
-		RELATIVE_PATH="${HEADER_PATH#"$WORKING_DIRECTORY/$SOURCES_FOLDER/"}"
-		FILENAME="$(echo "$RELATIVE_PATH" | rev | cut -d/ -f1 | rev)"
-		FILES+=( "$FILENAME:$RELATIVE_PATH" )
-		ALL_HEADERS+=("$RELATIVE_PATH")
-		[[ "$RELATIVE_PATH" =~ $regex ]] && PRIVATE_HEADERS+=("$RELATIVE_PATH")
-	done <<< "$(find "$WORKING_DIRECTORY/$SOURCES_FOLDER" -type f ! \( -name "*.m" -o -name ".DS_Store" \))"
+DUPLICATES="$(echo "$ALL" | awk -F/ '{print $NF}' | sort | uniq -d)"
+if [[ -n "$DUPLICATES" ]]; then
+  echo "error: duplicate header file names (flat <PubNub/...> namespace requires unique names):" >&2
+  echo "$DUPLICATES" >&2
+  exit 1
 fi
 
+path_for() { echo "$ALL" | awk -F/ -v n="$1" '$NF == n && !found { print; found = 1 }'; }
 
-# Create required folders structure.
-! [[ -d "$WORKING_DIRECTORY/Sources" ]] && mkdir -p "$WORKING_DIRECTORY/Sources"
-! [[ -d "$1/include" ]] && mkdir -p "$1/include/PubNub"
+PUBLIC=()
+QUEUE=("PubNub.h")
+SEEN=" PubNub.h "
 
+while IFS= read -r NAME; do
+  FOUND="$(path_for "$NAME")"
+  if [[ -n "$FOUND" && "$SEEN" != *" $FOUND "* ]]; then
+    SEEN="$SEEN$FOUND "
+    QUEUE+=("$FOUND")
+  fi
+done < <(grep -rhoE --include='*.h' --include='*.m' '#[[:space:]]*(import|include)[[:space:]]+[<"]PubNub/[^">]+\.h' . \
+         | sed -E 's|.*PubNub/||' | awk -F/ '{print $NF}' | sort -u)
 
-# Create symbolic link to Objective-C SDK source files.
-pushd "$WORKING_DIRECTORY/Sources"
-! [[ -e PubNub ]] && ln -s ../PubNub
-popd
+while [[ ${#QUEUE[@]} -gt 0 ]]; do
+  CURRENT="${QUEUE[0]}"
+  QUEUE=("${QUEUE[@]:1}")
+  PUBLIC+=("$CURRENT")
+  while IFS= read -r NAME; do
+    [[ -z "$NAME" ]] && continue
+    FOUND="$(path_for "$NAME")"
+    [[ -z "$FOUND" ]] && continue # System / third-party header.
+    if [[ "$SEEN" != *" $FOUND "* ]]; then
+      SEEN="$SEEN$FOUND "
+      QUEUE+=("$FOUND")
+    fi
+  done < <(sed -n -E 's/^[[:space:]]*#[[:space:]]*(import|include)[[:space:]]+(<PubNub\/|")([^">]+\.h)[">].*/\3/p' "$CURRENT" \
+           | awk -F/ '{print $NF}' | sort -u)
+done
 
+EXPECTED="$(for P in "${PUBLIC[@]}"; do echo "$(basename "$P") -> ../../$P"; done | LC_ALL=C sort)"
 
-# Create symbolic links for public headers
-cd "$1/include/PubNub"
-
-if [[ $PUBLIC_ONLY == 1 ]]; then
-	for HEADER_PATH in "${PUBLIC_HEADERS[@]}"; do
-		FILENAME="$(echo "$HEADER_PATH" | rev | cut -d/ -f1 | rev)"
-		! [[ -e "$FILENAME" ]] && ln -s "../../$HEADER_PATH"
-	done
-else
-	for HEADER_PATH in "${ALL_HEADERS[@]}"; do
-		FILENAME="$(echo "$HEADER_PATH" | rev | cut -d/ -f1 | rev)"
-		! [[ -e "$FILENAME" ]] && ln -s "../../$HEADER_PATH" "$FILENAME"
-	done
+if [[ $CHECK == 1 ]]; then
+  ACTUAL="$( (cd "$TARGET" 2>/dev/null && for L in *; do [[ -L "$L" ]] && echo "$L -> $(readlink "$L")"; done) | LC_ALL=C sort || true)"
+  if [[ "$EXPECTED" != "$ACTUAL" ]]; then
+    echo "error: PubNub/include/PubNub is out of date. Run Framework/scripts/export_for_spm.sh" >&2
+    diff <(echo "$EXPECTED") <(echo "$ACTUAL") | head -20 >&2 || true
+    exit 1
+  fi
+  exit 0
 fi
 
-cd "../"
+rm -rf "$TARGET"
+mkdir -p "$TARGET"
+for P in "${PUBLIC[@]}"; do
+  ln -s "../../$P" "$TARGET/$(basename "$P")"
+done
 
-# Create module.modulemap that uses a directory umbrella instead of an umbrella header.
-# This avoids SPM enforcing that all public headers must be imported through PubNub.h,
-# while still allowing `#import <PubNub/PubNub.h>` and `#import <PubNub/XXX.h>` to resolve.
-cat > module.modulemap <<'MODULEMAP'
+# Directory umbrella: every header in `include/PubNub` belongs to the module, so SPM doesn't require all of them to
+# be reachable from a single umbrella header.
+cat > "$INCLUDE/module.modulemap" <<'MODULEMAP'
 module PubNub {
     umbrella "PubNub"
     export *
     module * { export * }
 }
 MODULEMAP
+
+echo "Generated ${#PUBLIC[@]} header links in PubNub/include/PubNub"

@@ -9,7 +9,7 @@
 
 #pragma mark Contants
 
-/// C identifier for legacy cryptors.
+/// C identifier for AES-CBC cryptors.
 static NSData *kPNAESCBCCryptorIdentifier;
 
 

@@ -53,15 +53,23 @@ abstract_target 'ContractTests' do
 end
 
 
-# Making all interfaces visible for all targets on explicit import
-pre_install do |installer_representation|
-    installer_representation.aggregate_targets.each do |aggregate_target|
-        aggregate_target.spec_consumers.each do |spec_consumer|
-            unless spec_consumer.private_header_files.empty?
-                spec_consumer.spec.attributes_hash['private_header_files'].clear
-            end 
+# Make PubNub's internal headers accessible to tests,
+# except the manually declared Swift compatibility interface.
+pre_install do |installer|
+  installer.pod_targets.each do |pod_target|
+    next unless pod_target.pod_name == 'PubNub'
+
+    pod_target.specs.each do |spec|
+      private_headers = Array(spec.attributes_hash['private_header_files'])
+
+      next if private_headers.empty?
+
+      spec.attributes_hash['private_header_files'] =
+        private_headers.select do |pattern|
+          pattern == 'PubNub/Modules/Crypto/Cryptors/AES/PNCryptoKitWrapper.h'
         end
     end
+  end
 end
 
 post_install do |installer_representation|
@@ -70,13 +78,22 @@ post_install do |installer_representation|
             config.build_settings['CLANG_ENABLE_CODE_COVERAGE'] = target.name =~ /PubNub/ ? 'YES' : 'NO'
             config.build_settings['CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER'] = 'NO'
             config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '17.6'
+            config.build_settings['MACOSX_DEPLOYMENT_TARGET'] = '14.6'
+            config.build_settings['TVOS_DEPLOYMENT_TARGET'] = '17.6'
         end
         if target.name =~ /OCMock/
-            target.build_configurations.each do |config|
-              config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '17.6'
-              config.build_settings['MACOSX_DEPLOYMENT_TARGET'] = '14.6'
-              config.build_settings['TVOS_DEPLOYMENT_TARGET'] = '17.6'
-            end
+          target.build_configurations.each do |config|
+            config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '17.6'
+            config.build_settings['MACOSX_DEPLOYMENT_TARGET'] = '14.6'
+            config.build_settings['TVOS_DEPLOYMENT_TARGET'] = '17.6'
+          end
+        end
+        if target.name =~ /YAHTTPVCR/
+          target.build_configurations.each do |config|
+            config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '17.6'
+            config.build_settings['MACOSX_DEPLOYMENT_TARGET'] = '14.6'
+            config.build_settings['TVOS_DEPLOYMENT_TARGET'] = '17.6'
+          end
         end
     end
 end

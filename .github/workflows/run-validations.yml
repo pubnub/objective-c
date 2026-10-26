@@ -36,9 +36,18 @@ jobs:
       - name: Cancel workflow runs for commit on error
         if: failure()
         uses: ./.github/.release/actions/actions/utils/fast-jobs-failure
+  spm-headers:
+    name: "Validate SPM headers"
+    runs-on:
+      group: organization/Default
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+      - name: "Check 'PubNub/include' is up to date"
+        run: bash Framework/scripts/export_for_spm.sh --check
   all-validations:
     name: Validations
-    needs: [pubnub-yml]
+    needs: [pubnub-yml, spm-headers]
     runs-on:
       group: organization/Default
     steps:

@@ -61,6 +61,47 @@ NS_ASSUME_NONNULL_END
     XCTAssertEqual(token.patterns.channels[@"^channel-\\S*$"].value, PNPAMPermissionAll);
     XCTAssertEqual(token.patterns.groups[@"^:channel_group-\\S*$"].value, PNPAMPermissionRead | PNPAMPermissionManage);
     XCTAssertEqual(token.patterns.uuids[@"^uuid-\\S*$"].value, PNPAMPermissionDelete | PNPAMPermissionGet | PNPAMPermissionUpdate);
+    XCTAssertNil(token.categories.channels);
+    XCTAssertNil(token.categories.uuids);
+}
+
+- (void)testItShouldParseTokenWithCategoryAndReturnsCategoryAndResourcePermissions {
+    NSString *base64Token = @"qWF2AmF0GmEJDXxjdHRsGDxjcmVzomRjaGFuoWljaGFubmVsLTEYIGR1dWlkoWZ1dWlkLTEYIGNwYXShZGNoYW6hbV5jaGFubmVsLVxTKiQYIGNjYXSiZGNoYW4YIGR1dWlkGCBkbWV0YaBkdXVpZHR0ZXN0LWF1dGhvcml6ZWQtdXVpZGNzaWdE-lT68A==";
+    
+    PNPAMToken *token = [self.client parseAuthToken:base64Token];
+    
+    XCTAssertNotNil(token.categories, @"'categories' is missing");
+    XCTAssertNotNil(token.resources, @"'resources' is missing");
+    XCTAssertNotNil(token.patterns, @"'patterns' is missing");
+    XCTAssertEqualObjects(token.authorizedUUID, @"test-authorized-uuid");
+    XCTAssertEqual(token.categories.channels.value, PNPAMPermissionGet);
+    XCTAssertEqual(token.categories.uuids.value, PNPAMPermissionGet);
+    
+    XCTAssertEqual(token.resources.channels[@"channel-1"].value, PNPAMPermissionGet);
+    XCTAssertEqual(token.resources.uuids[@"uuid-1"].value, PNPAMPermissionGet);
+    XCTAssertEqual(token.patterns.channels[@"^channel-\\S*$"].value, PNPAMPermissionGet);
+}
+
+- (void)testItShouldParseTokenOnlyWithCategoryAndReturnsCategoryOnlyPermissions {
+    NSString *base64Token = @"pmF2AmF0GmEJDXxjdHRsGDxjY2F0oWR1dWlkGCBkdXVpZHR0ZXN0LWF1dGhvcml6ZWQtdXVpZGNzaWdE-lT68A==";
+    
+    PNPAMToken *token = [self.client parseAuthToken:base64Token];
+    
+    XCTAssertNotNil(token.categories, @"'categories' is missing");
+    XCTAssertNotNil(token.resources, @"'resources' is missing");
+    XCTAssertNotNil(token.patterns, @"'patterns' is missing");
+    
+    XCTAssertEqualObjects(token.authorizedUUID, @"test-authorized-uuid");
+    XCTAssertEqual(token.categories.uuids.value, PNPAMPermissionGet);
+    XCTAssertNil(token.categories.channels);
+    
+    XCTAssertEqual(token.resources.channels.count, 0);
+    XCTAssertEqual(token.resources.groups.count, 0);
+    XCTAssertEqual(token.resources.uuids.count, 0);
+    XCTAssertEqual(token.patterns.channels.count, 0);
+    XCTAssertEqual(token.patterns.groups.count, 0);
+    XCTAssertEqual(token.patterns.uuids.count, 0);
+    XCTAssertNil(token.meta);
 }
 
 - (void)testItShouldSetToken {
