@@ -90,16 +90,16 @@ NS_ASSUME_NONNULL_END
 }
 
 - (PNResult<NSData *> *)decryptData:(PNEncryptedData *)data {
-    NSData *metadata = data.metadata;
-    NSData *ciphertext = data.data;
-    NSData *nonce = nil;
+    NSMutableData *ciphertext = [data.data mutableCopy];
+    NSData *nonce = data.metadata;
     NSData *tag = nil;
     
-    if (metadata.length != (kPNAESGCMNonceLength + kPNAESGCMTagLength)) {
+    if (nonce.length != kPNAESGCMNonceLength || ciphertext.length < kPNAESGCMTagLength) {
         return [self decryptionFailure];
     }
-    nonce = [metadata subdataWithRange:NSMakeRange(0, kPNAESGCMNonceLength)];
-    tag = [metadata subdataWithRange:NSMakeRange(kPNAESGCMNonceLength, kPNAESGCMTagLength)];
+    
+    tag = [ciphertext subdataWithRange:NSMakeRange(ciphertext.length - kPNAESGCMTagLength, kPNAESGCMTagLength)];
+    ciphertext.length  -= kPNAESGCMTagLength;
     
     NSError *error = nil;
     NSData *plaintext = [PNCryptoKitWrapper decryptWithKey:self.cipherKey
@@ -125,7 +125,7 @@ NS_ASSUME_NONNULL_END
     NSUInteger remaining = stream.stream.inputDataLength;
     NSData *metadata = stream.metadata;
     
-    if (metadata.length != (kPNAESGCMNonceLength + kPNAESGCMTagLength)) {
+    if (metadata.length != kPNAESGCMNonceLength || remaining < kPNAESGCMTagLength) {
         return [self decryptionFailure];
     }
     

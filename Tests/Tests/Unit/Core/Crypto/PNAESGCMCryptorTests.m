@@ -80,20 +80,20 @@ NS_ASSUME_NONNULL_END
 
     for (NSDictionary<NSString *, NSString *> *vector in vectors) {
         NSString *name = vector[@"name"];
-        NSData *nonce = [self dataFromHex:vector[@"nonce"]];
         NSData *tag = [self dataFromHex:vector[@"tag"]];
         NSData *ciphertext = [self dataFromHex:vector[@"ciphertext"]];
         NSData *metadata = [self dataFromHex:vector[@"metadata"]];
         NSData *payload = [self dataFromHex:vector[@"payload"]];
-        NSMutableData *expectedMetadata = [nonce mutableCopy];
-        [expectedMetadata appendData:tag];
+        NSData *expectedMetadata = [self dataFromHex:vector[@"nonce"]];
         XCTAssertEqualObjects(metadata, expectedMetadata, @"%@ metadata", name);
-        NSMutableData *expectedPayload = [[self dataFromHex:@"504e4544014143474d1c"] mutableCopy];
+        NSMutableData *expectedCiphertext = [ciphertext mutableCopy];
+        [expectedCiphertext appendData:tag];
+        NSMutableData *expectedPayload = [[self dataFromHex:@"504e4544014143474d0c"] mutableCopy];
         [expectedPayload appendData:metadata];
-        [expectedPayload appendData:ciphertext];
+        [expectedPayload appendData:expectedCiphertext];
         XCTAssertEqualObjects(payload, expectedPayload, @"%@ envelope", name);
         PNAESGCMCryptor *cryptor = [PNAESGCMCryptor cryptorWithCipherKey:vector[@"key"]];
-        PNResult<NSData *> *result = [cryptor decryptData:[PNEncryptedData encryptedDataWithData:ciphertext metadata:metadata]];
+        PNResult<NSData *> *result = [cryptor decryptData:[PNEncryptedData encryptedDataWithData:expectedCiphertext metadata:metadata]];
         XCTAssertFalse(result.isError, @"%@: %@", name, result.error);
         XCTAssertEqualObjects(result.data, [self dataFromHex:vector[@"plaintext"]], @"%@ plaintext", name);
     }
@@ -350,8 +350,8 @@ NS_ASSUME_NONNULL_END
             @"nonce": @"0102030405060708090a0b0c",
             @"tag": @"dabd1d02d7219c77218ad262c4a9aecc",
             @"ciphertext": @"ea1b5780788b593294f898",
-            @"metadata": @"0102030405060708090a0b0cdabd1d02d7219c77218ad262c4a9aecc",
-            @"payload": @"504e4544014143474d1c0102030405060708090a0b0cdabd1d02d7219c77218ad262c4a9aeccea1b5780788b593294f898"
+            @"metadata": @"0102030405060708090a0b0c",
+            @"payload": @"504e4544014143474d0c0102030405060708090a0b0cea1b5780788b593294f898dabd1d02d7219c77218ad262c4a9aecc"
         },
         @{ @"name": @"unicode",
            @"key": @"enigma",
@@ -360,8 +360,8 @@ NS_ASSUME_NONNULL_END
            @"nonce": @"111111111111111111111111",
            @"tag": @"a5dd072360f4433e2979f440fc7827b3",
            @"ciphertext": @"d138fbfc4bd0c337e29d9f2c98",
-           @"metadata": @"111111111111111111111111a5dd072360f4433e2979f440fc7827b3",
-           @"payload": @"504e4544014143474d1c111111111111111111111111a5dd072360f4433e2979f440fc7827b3d138fbfc4bd0c337e29d9f2c98"
+           @"metadata": @"111111111111111111111111",
+           @"payload": @"504e4544014143474d0c111111111111111111111111d138fbfc4bd0c337e29d9f2c98a5dd072360f4433e2979f440fc7827b3"
         },
         @{ @"name": @"binary",
            @"key": @"myCipherKey",
@@ -370,8 +370,8 @@ NS_ASSUME_NONNULL_END
            @"nonce": @"000102030405060708090a0b",
            @"tag": @"8fefca7becf7235b4d09b970d4d56d19",
            @"ciphertext": @"c411f0f1",
-           @"metadata": @"000102030405060708090a0b8fefca7becf7235b4d09b970d4d56d19",
-           @"payload": @"504e4544014143474d1c000102030405060708090a0b8fefca7becf7235b4d09b970d4d56d19c411f0f1"
+           @"metadata": @"000102030405060708090a0b",
+           @"payload": @"504e4544014143474d0c000102030405060708090a0bc411f0f18fefca7becf7235b4d09b970d4d56d19"
         },
         @{ @"name": @"json",
            @"key": @"enigma",
@@ -380,8 +380,8 @@ NS_ASSUME_NONNULL_END
            @"nonce": @"2a2a2a2a2a2a2a2a2a2a2a2a",
            @"tag": @"5ec45c5bf84510f3081ef929e1847a47",
            @"ciphertext": @"9146b82b625b4e94b6201d6cf76ed8da",
-           @"metadata": @"2a2a2a2a2a2a2a2a2a2a2a2a5ec45c5bf84510f3081ef929e1847a47",
-           @"payload": @"504e4544014143474d1c2a2a2a2a2a2a2a2a2a2a2a2a5ec45c5bf84510f3081ef929e1847a479146b82b625b4e94b6201d6cf76ed8da"
+           @"metadata": @"2a2a2a2a2a2a2a2a2a2a2a2a",
+           @"payload": @"504e4544014143474d0c2a2a2a2a2a2a2a2a2a2a2a2a9146b82b625b4e94b6201d6cf76ed8da5ec45c5bf84510f3081ef929e1847a47"
         },
         @{ @"name": @"empty",
            @"key": @"enigma",
@@ -390,8 +390,8 @@ NS_ASSUME_NONNULL_END
            @"nonce": @"0c0d0e0f1011121314151617",
            @"tag": @"ce987c5b7fef3f6d3b1706547f27fece",
            @"ciphertext": @"",
-           @"metadata": @"0c0d0e0f1011121314151617ce987c5b7fef3f6d3b1706547f27fece",
-           @"payload": @"504e4544014143474d1c0c0d0e0f1011121314151617ce987c5b7fef3f6d3b1706547f27fece"
+           @"metadata": @"0c0d0e0f1011121314151617",
+           @"payload": @"504e4544014143474d0c0c0d0e0f1011121314151617ce987c5b7fef3f6d3b1706547f27fece"
         }
     ];
 }
