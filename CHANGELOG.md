@@ -1,3 +1,16 @@
+## 7.1.0
+November 03 2026
+
+#### Added
+- Add `PNAESGCMCryptor` as secondary cryptor in `PNCryptoModule` to decrypt AES-GCM payloads.
+- Parse `cat` section into `PNPAMTokenCategory` exposed as `categories` on `PNPAMToken`.
+
+#### Modified
+- Rewrite `export_for_spm.sh` to mirror reachable headers and support `--check`.
+- Add `spm-headers` job running `export_for_spm.sh --check`.
+- Restructure README with requirements, installation and quickstart sections.
+- Add `PNAESGCMCryptorTests` and `PNPAMTokenTest`. Update `Tests/Podfile` and `Podfile.lock`.
+
 ## 7.0.5
 October 13 2026
 

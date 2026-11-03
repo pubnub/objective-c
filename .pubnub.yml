@@ -1,9 +1,24 @@
 ---
 name: objective-c
 scm: github.com/pubnub/objective-c
-version: "7.0.5"
+version: "7.1.0"
 schema: 1
 changelog:
+  - date: 2026-11-03
+    version: 7.1.0
+    changes:
+      - type: feature
+        text: "Add `PNAESGCMCryptor` as secondary cryptor in `PNCryptoModule` to decrypt AES-GCM payloads."
+      - type: feature
+        text: "Parse `cat` section into `PNPAMTokenCategory` exposed as `categories` on `PNPAMToken`."
+      - type: improvement
+        text: "Rewrite `export_for_spm.sh` to mirror reachable headers and support `--check`."
+      - type: improvement
+        text: "Add `spm-headers` job running `export_for_spm.sh --check`."
+      - type: improvement
+        text: "Restructure README with requirements, installation and quickstart sections."
+      - type: improvement
+        text: "Add `PNAESGCMCryptorTests` and `PNPAMTokenTest`. Update `Tests/Podfile` and `Podfile.lock`."
   - date: 2026-10-13
     version: 7.0.5
     changes:
@@ -1467,7 +1482,7 @@ sdks:
           - distribution-type: source
             distribution-repository: GitHub release
             package-name: PubNub.framework
-            location: https://github.com/pubnub/objective-c/archive/refs/tags/v7.0.5.zip
+            location: https://github.com/pubnub/objective-c/archive/refs/tags/v7.1.0.zip
             supported-platforms:
               supported-operating-systems:
                 macOS:
@@ -1526,7 +1541,7 @@ sdks:
           - distribution-type: library
             distribution-repository: GitHub release
             package-name: PubNub.ios.xcframework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v7.0.5/PubNub.ios.xcframework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v7.1.0/PubNub.ios.xcframework.tar.gz
             supported-platforms:
               supported-operating-systems:
                 iOS:
@@ -1544,7 +1559,7 @@ sdks:
           - distribution-type: library
             distribution-repository: GitHub release
             package-name: PubNub.macos.framework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v7.0.5/PubNub.macos.framework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v7.1.0/PubNub.macos.framework.tar.gz
             supported-platforms:
               supported-operating-systems:
                 macOS:
@@ -1560,7 +1575,7 @@ sdks:
           - distribution-type: library
             distribution-repository: GitHub release
             package-name: PubNub.tvos.xcframework.tar.gz
-            location: https://github.com/pubnub/objective-c/releases/download/v7.0.5/PubNub.tvos.xcframework.tar.gz
+            location: https://github.com/pubnub/objective-c/releases/download/v7.1.0/PubNub.tvos.xcframework.tar.gz
             supported-platforms:
               supported-operating-systems:
                 tvOS:
