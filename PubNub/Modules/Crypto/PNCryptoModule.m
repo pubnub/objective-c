@@ -2,6 +2,7 @@
 #import "PNCryptorInputStream+Private.h"
 #import "NSInputStream+PNCrypto.h"
 #import "PNSequenceInputStream.h"
+#import "PNAESGCMCryptor.h"
 #import "PNAESCBCCryptor.h"
 #import "PNLegacyCryptor.h"
 #import "PNCryptorHeader.h"
@@ -97,17 +98,19 @@ NS_ASSUME_NONNULL_END
     id<PNCryptor> legacyCryptor = [PNLegacyCryptor cryptorWithCipherKey:cipherKey
                                              randomInitializationVector:useRandomInitializationVector];
     id<PNCryptor> aesCBCCryptor = [PNAESCBCCryptor cryptorWithCipherKey:cipherKey];
+    id<PNCryptor> aesGCMCryptor = [PNAESGCMCryptor cryptorWithCipherKey:cipherKey];
 
-    return [self moduleWithDefaultCryptor:aesCBCCryptor cryptors:@[legacyCryptor]];
+    return [self moduleWithDefaultCryptor:aesCBCCryptor cryptors:@[legacyCryptor, aesGCMCryptor]];
 }
 
 + (instancetype)legacyCryptoModuleWithCipherKey:(NSString *)cipherKey
                      randomInitializationVector:(BOOL)useRandomInitializationVector {
     id<PNCryptor> aesCBCCryptor = [PNAESCBCCryptor cryptorWithCipherKey:cipherKey];
+    id<PNCryptor> aesGCMCryptor = [PNAESGCMCryptor cryptorWithCipherKey:cipherKey];
     id<PNCryptor> legacyCryptor = [PNLegacyCryptor cryptorWithCipherKey:cipherKey
                                              randomInitializationVector:useRandomInitializationVector];
 
-    return [self moduleWithDefaultCryptor:legacyCryptor cryptors:@[aesCBCCryptor]];
+    return [self moduleWithDefaultCryptor:legacyCryptor cryptors:@[aesCBCCryptor, aesGCMCryptor]];
 }
 
 - (instancetype)initWithDefaultCryptor:(id<PNCryptor>)cryptor

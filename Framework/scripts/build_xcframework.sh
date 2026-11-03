@@ -10,6 +10,11 @@ framework module PubNub {
   link "z"
   export *
   module * { export * }
+
+  explicit module Swift {
+    header "PubNub-Swift.h"
+    requires objc
+  }
 }
 EOF
 }
@@ -27,21 +32,19 @@ fi
 if [[ "$SUPPORTED_PLATFORMS" =~ (iphone) ]]; then
     DEVICE_SDK="iphoneos"
     SIMULATOR_SDK="iphonesimulator"
-    DEVICE_TARGET_ARCHITECTURES="armv7 arm64"
     SIMULATOR_TARGET_ARCHITECTURES="x86_64 arm64"
 elif [[ "$SUPPORTED_PLATFORMS" =~ (appletv) ]]; then
     DEVICE_SDK="appletvos"
     SIMULATOR_SDK="appletvsimulator"
-    DEVICE_TARGET_ARCHITECTURES="arm64"
     SIMULATOR_TARGET_ARCHITECTURES="x86_64 arm64"
 elif [[ "$SUPPORTED_PLATFORMS" =~ (watch) ]]; then
     DEVICE_SDK="watchos"
     SIMULATOR_SDK="watchsimulator"
-    DEVICE_TARGET_ARCHITECTURES="armv7k"
-    SIMULATOR_TARGET_ARCHITECTURES="i386 arm64"
+    SIMULATOR_TARGET_ARCHITECTURES="x86_64 arm64"
 fi
 
 
+SCHEME_NAME="${TARGET_NAME/XCFramework/Framework}"
 ARCHIVES_PATH="$(mktemp -d)"
 PRODUCTS_PATH="${SRCROOT}/Products"
 DERIVED_DATA_PATH="$ARCHIVES_PATH/DerivedData"
@@ -60,12 +63,13 @@ mkdir -p "$PRODUCTS_PATH"
 
 # Build framework for general device
 xcodebuild archive \
-    -scheme "${TARGET_NAME:2}" \
+    -scheme "$SCHEME_NAME" \
     -sdk "$DEVICE_SDK" \
     -archivePath "$DEVICE_ARCHIVE_PATH" \
     -derivedDataPath "$DERIVED_DATA_PATH" \
     SKIP_INSTALL=NO \
-    BUILD_LIBRARIES_FOR_DISTRIBUTION=YES \
+    BUILD_LIBRARY_FOR_DISTRIBUTION=YES \
+    SWIFT_EMIT_MODULE_INTERFACE=YES \
     ONLY_ACTIVE_ARCH=NO \
     SUPPORTS_MACCATALYST=NO \
     clean
@@ -74,14 +78,15 @@ echo "[XCFramework] Archive has been created for '$DEVICE_SDK': $DEVICE_ARCHIVE_
 
 # Build framework for simulator
 xcodebuild archive \
-    -scheme "${TARGET_NAME:2}" \
+    -scheme "$SCHEME_NAME" \
     -sdk "$SIMULATOR_SDK" \
     -archivePath "$SIMULATOR_ARCHIVE_PATH" \
     -derivedDataPath "$DERIVED_DATA_PATH" \
     ARCHS="$SIMULATOR_TARGET_ARCHITECTURES" \
     VALID_ARCHS="$SIMULATOR_TARGET_ARCHITECTURES" \
     SKIP_INSTALL=NO \
-    BUILD_LIBRARIES_FOR_DISTRIBUTION=YES \
+    BUILD_LIBRARY_FOR_DISTRIBUTION=YES \
+    SWIFT_EMIT_MODULE_INTERFACE=YES \
     ONLY_ACTIVE_ARCH=NO \
     SUPPORTS_MACCATALYST=NO \
     clean
@@ -91,14 +96,20 @@ echo "[XCFramework] Archive has been created for '$SIMULATOR_SDK': $SIMULATOR_AR
 # Build iOS for macOS framework if Catalyst support required.
 if [ "$BUILD_WITH_CATALYST_SUPPORT" == 1 ]; then
 
+    # Destination matching reads SUPPORTS_MACCATALYST from the environment, not from the command line settings. Without
+    # it exported (when script is started from Xcode with other destination) xcodebuild reports 'Found no destinations
+    # which allow the archive action'.
+    export SUPPORTS_MACCATALYST=YES
+
     xcodebuild archive \
-        -scheme "${TARGET_NAME:2}" \
+        -scheme "$SCHEME_NAME" \
         -sdk macosx \
         -archivePath "$MACOS_ARCHIVE_PATH" \
         -derivedDataPath "$DERIVED_DATA_PATH" \
         -destination 'platform=macOS,arch=x86_64,variant=Mac Catalyst' \
         SKIP_INSTALL=NO \
-        BUILD_LIBRARIES_FOR_DISTRIBUTION=YES \
+        BUILD_LIBRARY_FOR_DISTRIBUTION=YES \
+        SWIFT_EMIT_MODULE_INTERFACE=YES \
         ONLY_ACTIVE_ARCH=NO \
         SUPPORTS_MACCATALYST=YES \
         clean

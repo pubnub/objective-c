@@ -1,0 +1,5 @@
+module PubNub {
+    umbrella "PubNub"
+    export *
+    module * { export * }
+}

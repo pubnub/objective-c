@@ -12,6 +12,11 @@ framework module PubNub {
   link "z"
   export *
   module * { export * }
+
+  explicit module Swift {
+    header "PubNub-Swift.h"
+    requires objc
+  }
 }
 EOF
     }

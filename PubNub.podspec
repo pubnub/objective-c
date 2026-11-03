@@ -9,7 +9,7 @@
 
 Pod::Spec.new do |spec|
     spec.name     = 'PubNub'
-    spec.version  = '7.0.5'
+    spec.version  = '7.1.0'
     spec.summary  = 'The PubNub Real-Time Network. Build real-time apps quickly and scale them globally.'
     spec.homepage = 'https://github.com/pubnub/objective-c'
 
@@ -31,7 +31,7 @@ Pod::Spec.new do |spec|
     spec.resource_bundles = { "PubNub" => ["Framework/PubNub/PrivacyInfo.xcprivacy"]}
 
     spec.subspec 'Core' do |core|
-        core.source_files = 'PubNub/{Core,Data,Modules,Misc,Network,Protocols}/**/*', 'PubNub/PubNub.h'
+        core.source_files = 'PubNub/{Core,Data,Modules,Misc,Network,Protocols}/**/*', 'PubNub/PubNub.h', 'PubNub/**/*.swift'
         core.private_header_files = [
             'PubNub/**/*Private.h',
             'PubNub/PubNub+Deprecated.h',
@@ -49,6 +49,7 @@ Pod::Spec.new do |spec|
             "PubNub/Modules/Serializer/Object/{Categories,Models}/*.h",
             "PubNub/Modules/Serializer/Object/{PNJSONDecoder,PNJSONEncoder}.h",
             "PubNub/Modules/Crypto/Cryptors/AES/PNCCCryptorWrapper.h",
+            "PubNub/Modules/Crypto/Cryptors/AES/PNCryptoKitWrapper.h",
             "PubNub/Modules/Crypto/Header/*.h",
             'PubNub/Network/Requests/Files/PNGenerateFileUploadURLRequest.h',
             'PubNub/Network/Parsers/**/*.h',
@@ -61,4 +62,5 @@ Pod::Spec.new do |spec|
     spec.library   = 'z'
     spec.default_subspec = 'Core'
     spec.license = { :type => 'PubNub Software Development Kit License', :file => 'LICENSE' }
+    spec.swift_version =  '5.9'
 end

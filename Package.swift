@@ -1,4 +1,4 @@
-// swift-tools-version:5.3
+// swift-tools-version:5.9
 //
 //  Package.swift
 //
@@ -31,15 +31,31 @@
 //  https://www.pubnub.com/terms
 //
 
+import Foundation
 import PackageDescription
+
+// Sources import headers by file name only (Xcode resolves them with header maps, SPM has none), so every source
+// directory has to be on the header search path.
+let sourcesPath = URL(fileURLWithPath: #filePath).deletingLastPathComponent().appendingPathComponent("PubNub").path
+let headerSearchPaths: [String] = {
+  let enumerator = FileManager.default.enumerator(atPath: sourcesPath)
+  var paths = [String]()
+  while let relative = enumerator?.nextObject() as? String {
+    var isDirectory: ObjCBool = false
+    let exists = FileManager.default.fileExists(atPath: sourcesPath + "/" + relative, isDirectory: &isDirectory)
+    guard exists, isDirectory.boolValue, !relative.hasPrefix("include") else { continue }
+    paths.append(relative)
+  }
+  return paths.sorted()
+}()
 
 let package = Package(
   name: "PubNub",
   platforms: [
-    .iOS(.v14),
-    .macOS(.v11),
-    .tvOS(.v14),
-    .watchOS(.v7)
+    .iOS("17.6"),
+    .macOS("14.6"),
+    .tvOS("17.6"),
+    .watchOS("10.6")
   ],
   products: [
     .library(
@@ -51,13 +67,17 @@ let package = Package(
   targets: [
     .target(
       name: "PubNub",
-      dependencies: [],
-      path: "Sources/PubNub",
-      resources: [.copy("../../Framework/PubNub/PrivacyInfo.xcprivacy")],
+      dependencies: ["PubNubCryptoKit"],
+      path: "PubNub",
+      exclude: ["Modules/Crypto/Cryptors/AES/CryptoKit"],
+      resources: [.copy("../Framework/PubNub/PrivacyInfo.xcprivacy")],
       publicHeadersPath: "include",
-      cSettings: [
-        .headerSearchPath("include/PubNub")
-      ]
+      cSettings: [.headerSearchPath("include/PubNub")] + headerSearchPaths.map { .headerSearchPath($0) }
+    ),
+    .target(
+      name: "PubNubCryptoKit",
+      path: "PubNub/Modules/Crypto/Cryptors/AES/CryptoKit",
+      sources: ["PNCryptoKitWrapper.swift"]
     )
   ],
   swiftLanguageVersions: [.v5]
