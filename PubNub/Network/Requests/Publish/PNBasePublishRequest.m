@@ -235,7 +235,7 @@ NS_ASSUME_NONNULL_END
     PNResult<NSData *> *encryptionResult = [self.cryptoModule encryptData:JSONData];
 
     if (encryptionResult.isError) {
-        *error = encryptionResult.error;
+        if (error) *error = encryptionResult.error;
         encryptedMessage = nil;
     } else {
         NSString *base64 = [encryptionResult.data base64EncodedStringWithOptions:(NSDataBase64EncodingOptions)0];
