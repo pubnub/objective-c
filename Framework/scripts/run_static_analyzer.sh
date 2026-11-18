@@ -14,16 +14,7 @@ LOG="$DERIVED/analyzer.log"
 mkdir -p "$DERIVED"
 
 cd "$ROOT"
-# Suppressed checkers (reviewed baseline, see CLEN-3957):
-#  - nullability.* (CLANG_ANALYZER_NONNULL=NO): ~40 findings where public nonnull annotations are intentionally
-#    violated (e.g. `data` returning nil for error statuses, nil-ing ivars in dealloc/invalidate). Fixing them
-#    means changing public API annotations; tracked as follow-up.
-#  - osx.NumberObjectConversion: all findings are plain `if (number)` nil checks, which are intentional.
-#  - osx.cocoa.IncompatibleMethodTypes: covariant builder block types in PNPresence*HereNowAPICallBuilder
-#    subclasses are intentional (fluent API).
-#  - osx.cocoa.NSError: only remaining finding is NSInputStream+PNURL `pn_writeToFileAtURL:` returning void
-#    (changing the signature is an API change). Other NSError findings were fixed in code.
-EXTRA_FLAGS='$(inherited) -Xclang -analyzer-disable-checker -Xclang osx.cocoa.IncompatibleMethodTypes -Xclang -analyzer-disable-checker -Xclang osx.cocoa.NSError'
+EXTRA_FLAGS="$(inherited) -Xclang -analyzer-disable-checker -Xclang osx.cocoa.IncompatibleMethodTypes -Xclang -analyzer-disable-checker -Xclang osx.cocoa.NSError"
 
 set +e
 xcodebuild analyze \
