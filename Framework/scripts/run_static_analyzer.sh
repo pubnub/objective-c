@@ -14,7 +14,7 @@ LOG="$DERIVED/analyzer.log"
 mkdir -p "$DERIVED"
 
 cd "$ROOT"
-EXTRA_FLAGS="$(inherited) -Xclang -analyzer-disable-checker -Xclang osx.cocoa.IncompatibleMethodTypes -Xclang -analyzer-disable-checker -Xclang osx.cocoa.NSError"
+EXTRA_FLAGS='$(inherited)'" -Xclang -analyzer-disable-checker -Xclang osx.cocoa.IncompatibleMethodTypes -Xclang -analyzer-disable-checker -Xclang osx.cocoa.NSError"
 
 set +e
 xcodebuild analyze \
