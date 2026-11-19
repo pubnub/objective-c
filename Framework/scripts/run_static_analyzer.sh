@@ -15,6 +15,7 @@ mkdir -p "$DERIVED"
 
 cd "$ROOT"
 EXTRA_FLAGS='$(inherited)'" -Xclang -analyzer-disable-checker -Xclang osx.cocoa.IncompatibleMethodTypes -Xclang -analyzer-disable-checker -Xclang osx.cocoa.NSError"
+EXTRA_FLAGS+=" -Xclang -analyzer-checker -Xclang optin.performance.GCDAntipattern -Xclang -analyzer-checker -Xclang osx.cocoa.AutoreleaseWrite"
 
 set +e
 xcodebuild analyze \
@@ -49,4 +50,5 @@ if [ -n "$WARNINGS" ]; then
   echo "$WARNINGS" >&2
   exit 1
 fi
+
 echo "Clang Static Analyzer: no issues found."
