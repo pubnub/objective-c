@@ -45,9 +45,18 @@ jobs:
         uses: actions/checkout@v4
       - name: "Check 'PubNub/include' is up to date"
         run: bash Framework/scripts/export_for_spm.sh --check
+  static-analyzer:
+    name: "Clang Static Analyzer"
+    runs-on:
+      group: organization/macos-gh
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+      - name: Run Clang Static Analyzer
+        run: bash Framework/scripts/run_static_analyzer.sh
   all-validations:
     name: Validations
-    needs: [pubnub-yml, spm-headers]
+    needs: [pubnub-yml, spm-headers, static-analyzer]
     runs-on:
       group: organization/Default
     steps:

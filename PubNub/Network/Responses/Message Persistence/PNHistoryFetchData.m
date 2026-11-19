@@ -234,7 +234,7 @@ NS_ASSUME_NONNULL_END
         if (!decError && error) decError = error;
     }];
 
-    if (decError) *processingError = decError;
+    if (decError && processingError) *processingError = decError;
 
     return processed;
 }
@@ -264,7 +264,7 @@ NS_ASSUME_NONNULL_END
     if (decryptionError || !decryptedMessage) {
         if (!decryptionError)
             decryptionError = [NSError errorWithDomain:PNCryptorErrorDomain code:PNCryptorErrorDecryption userInfo:nil];
-        *error = decryptionError;
+        if (error) *error = decryptionError;
 
         return isDictionary ? ((NSDictionary *)data)[@"pn_other"] : data;
     } else if (isDictionary) {

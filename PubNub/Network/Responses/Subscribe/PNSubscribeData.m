@@ -234,7 +234,7 @@ NS_ASSUME_NONNULL_END
         if (!decryptionError) {
             decryptionError = [NSError errorWithDomain:PNCryptorErrorDomain code:PNCryptorErrorDecryption userInfo:nil];
         }
-        *error = decryptionError;
+        if (error) *error = decryptionError;
 
         return isDictionary ? ((NSDictionary *)data)[@"pn_other"] : data;
     } else if (isDictionary) {
