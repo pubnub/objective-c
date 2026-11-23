@@ -53,7 +53,7 @@ jobs:
       - name: Checkout project
         uses: actions/checkout@v4
       - name: Run Clang Static Analyzer
-        run: bash Framework/scripts/run_static_analyzer.sh
+        run: bash .github/workflows/scripts/run_static_analyzer.sh
   all-validations:
     name: Validations
     needs: [pubnub-yml, spm-headers, static-analyzer]

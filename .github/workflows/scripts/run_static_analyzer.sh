@@ -3,11 +3,11 @@
 # Runs Clang Static Analyzer on the PubNub SDK target (Framework (iOS) scheme)
 # and fails if the analyzer reports any warning. Pods and Tests are not analyzed.
 #
-# Usage: Framework/scripts/run_static_analyzer.sh [destination-sdk]  (default: iphonesimulator)
+# Usage: .github/workflows/scripts/run_static_analyzer.sh [destination-sdk]  (default: iphonesimulator)
 
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 SDK="${1:-iphonesimulator}"
 DERIVED="${ANALYZER_DERIVED_DATA:-$(mktemp -d)}"
 LOG="$DERIVED/analyzer.log"
