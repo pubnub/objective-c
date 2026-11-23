@@ -141,7 +141,6 @@ NS_ASSUME_NONNULL_END
     
     NSError *jsonError = nil;
     id payload = [NSJSONSerialization JSONObjectWithData:body options:(NSJSONReadingOptions)0 error:&jsonError];
-    NSDictionary *additionalDetails = nil;
     NSString *errorMessage = nil;
     NSString *errorReason = nil;
     
@@ -193,24 +192,9 @@ NS_ASSUME_NONNULL_END
         if ([dictionary[@"status"] isKindOfClass:[NSNumber class]]) {
             errorCode = [self pn_errorCodeFromStatusCode:((NSNumber *)dictionary[@"status"]).integerValue];
         }
-        
-        if (dictionary[@"payload"]) {
-            NSMutableDictionary *details = [NSMutableDictionary dictionaryWithDictionary:@{
-                @"channels": [dictionary valueForKeyPath:@"payload.channels"] ?: @[],
-                @"channelGroups": [dictionary valueForKeyPath:@"payload.channel-groups"] ?: @[],
-            }];
-
-            if (((NSArray *)details[@"channels"]).count == 0 && ((NSArray *)details[@"channelGroups"]).count == 0) {
-                [details removeAllObjects];
-                details[@"data"] = dictionary[@"payload"];
-            }
-            
-            additionalDetails = details;
-        }
     }
-    
+
     if ([errorMessage containsString:@"not enabled"]) errorCode = PNAPIErrorFeatureNotEnabled;
-    if (!payload && body.length) payload = [[NSString alloc] initWithData:body encoding:NSUTF8StringEncoding];
     
     NSMutableDictionary *info = [NSMutableDictionary dictionaryWithDictionary:PNErrorUserInfo(
         [self pn_errorDescriptionForErrorCode:errorCode],
